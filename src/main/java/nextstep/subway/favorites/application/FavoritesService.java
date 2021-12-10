@@ -30,19 +30,20 @@ public class FavoritesService {
     public FavoritesResponse createFavorites(LoginMember loginMember, FavoritesRequest favoritesRequest) {
         Station upStation = stationService.findStationById(favoritesRequest.getSource());
         Station downStation = stationService.findStationById(favoritesRequest.getTarget());
-        Member owner = memberRepository.findById(loginMember.getId()).orElseThrow(() -> new ServiceException("사용자를 찾을 수 없습니다"));
+        Member owner = getMember(loginMember);
         Favorites persistFavorites = favoritesRepository.save(new Favorites(owner, upStation, downStation));
         return FavoritesResponse.of(persistFavorites);
     }
 
     public List<FavoritesResponse> getAll(LoginMember loginMember) {
-        Member owner = memberRepository.findById(loginMember.getId()).orElseThrow(() -> new ServiceException("사용자를 찾을 수 없습니다"));
+        Member owner = getMember(loginMember);
         return FavoritesResponse.ofList(favoritesRepository.findByOwner(owner));
     }
 
     public FavoritesResponse findOne(LoginMember loginMember, Long id) {
         Favorites favorites = favoritesRepository.findById(id).orElseThrow(() -> new FavoritesNotFoundException(id));
-        if (!favorites.isOwner(loginMember.getId())) {
+        Member member = getMember(loginMember);
+        if (!favorites.isOwner(member)) {
             throw new ServiceException("다른 소유자의 즐겨찾기는 조회할 수 없습니다.");
         }
         return FavoritesResponse.of(favorites);
@@ -50,9 +51,14 @@ public class FavoritesService {
 
     public void deleteOne(LoginMember loginMember, Long id) {
         Favorites favorites = favoritesRepository.findById(id).orElseThrow(() -> new FavoritesNotFoundException(id));
-        if (!favorites.isOwner(loginMember.getId())) {
+        Member member = getMember(loginMember);
+        if (!favorites.isOwner(member)) {
             throw new ServiceException("다른 소유자의 즐겨찾기는 삭제할 수 없습니다.");
         }
         favoritesRepository.delete(favorites);
+    }
+
+    private Member getMember(LoginMember loginMember) {
+        return memberRepository.findById(loginMember.getId()).orElseThrow(() -> new ServiceException("사용자를 찾을 수 없습니다"));
     }
 }

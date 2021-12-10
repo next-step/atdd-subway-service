@@ -14,7 +14,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

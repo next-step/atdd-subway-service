@@ -20,8 +20,8 @@ public class FavoritesResponse {
 
     public static FavoritesResponse of(Favorites favorites) {
         return new FavoritesResponse(favorites.getId(),
-                StationResponse.of(favorites.getUpStation()),
-                StationResponse.of(favorites.getDownStation())
+                StationResponse.of(favorites.getDepartureStation()),
+                StationResponse.of(favorites.getArrivalStation())
         );
     }
 

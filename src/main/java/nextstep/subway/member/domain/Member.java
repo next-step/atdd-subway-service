@@ -59,4 +59,8 @@ public class Member extends BaseEntity {
             throw new AuthorizationException();
         }
     }
+
+    public boolean isOwner(Member member) {
+        return id.equals(member.getId());
+    }
 }

@@ -16,27 +16,27 @@ public class Favorites extends BaseEntity {
     private Member owner;
 
     @ManyToOne
-    private Station upStation;
+    private Station departureStation;
 
     @ManyToOne
-    private Station downStation;
+    private Station arrivalStation;
 
     protected Favorites() {
     }
 
-    public Favorites(Member owner, Station upStation, Station downStation) {
+    public Favorites(Member owner, Station departureStation, Station arrivalStation) {
         this.owner = owner;
-        this.upStation = upStation;
-        this.downStation = downStation;
+        this.departureStation = departureStation;
+        this.arrivalStation = arrivalStation;
     }
 
-    public Favorites(Long id, Member owner, Station upStation, Station downStation) {
-        this(owner, upStation, downStation);
+    public Favorites(Long id, Member owner, Station departureStation, Station arrivalStation) {
+        this(owner, departureStation, arrivalStation);
         this.id = id;
     }
 
-    public boolean isOwner(Long id) {
-        return id.equals(owner.getId());
+    public boolean isOwner(Member member) {
+        return owner.isOwner(member);
     }
 
     public Long getId() {
@@ -47,11 +47,11 @@ public class Favorites extends BaseEntity {
         return owner;
     }
 
-    public Station getUpStation() {
-        return upStation;
+    public Station getDepartureStation() {
+        return departureStation;
     }
 
-    public Station getDownStation() {
-        return downStation;
+    public Station getArrivalStation() {
+        return arrivalStation;
     }
 }

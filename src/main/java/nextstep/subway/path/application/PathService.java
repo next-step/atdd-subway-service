@@ -1,8 +1,9 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.common.exception.ServiceException;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.FareCalculator;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathResult;
@@ -18,37 +19,25 @@ public class PathService {
     private final StationService stationService;
     private final LineService lineService;
     private final PathFinder pathFinder;
+    private final FareCalculator fareCalculator;
 
-    public PathService(StationService stationService, LineService lineService, PathFinder pathFinder) {
+    public PathService(StationService stationService, LineService lineService, PathFinder pathFinder, FareCalculator fareCalculator) {
         this.stationService = stationService;
         this.lineService = lineService;
         this.pathFinder = pathFinder;
+        this.fareCalculator = fareCalculator;
     }
 
-    public PathResponse getShortCut(Long sourceStationId, Long targetStationId) {
-        validateParameters(sourceStationId, targetStationId);
-
+    public PathResponse getShortCut(Long sourceStationId, Long targetStationId, LoginMember loginMember) {
         Station source = stationService.findStationById(sourceStationId);
         Station target = stationService.findStationById(targetStationId);
 
         Set<Line> lines = new HashSet<>(lineService.findLineByStation(source));
         lines.addAll(lineService.findLineByStation(target));
 
-        PathResult shortCut = findShortCut(source, target, lines);
-        return PathResponse.of(shortCut);
-    }
-
-    private void validateParameters(Long sourceStationId, Long targetStationId) {
-        if (sourceStationId.equals(targetStationId)) {
-            throw new ServiceException("출발지와 목적지가 같습니다.");
-        }
-    }
-
-    private PathResult findShortCut(Station source, Station target, Set<Line> lines) {
         PathResult shortCut = pathFinder.findShortCut(lines, source, target);
-        if (shortCut.isEmpty()) {
-            throw new ServiceException("최단 경로를 찾을 수 없습니다");
-        }
-        return shortCut;
+        int fare = fareCalculator.getFare(loginMember, shortCut);
+
+        return PathResponse.of(shortCut, fare);
     }
 }
