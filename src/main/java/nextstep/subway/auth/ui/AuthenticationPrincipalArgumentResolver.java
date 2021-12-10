@@ -11,7 +11,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import nextstep.subway.auth.application.AuthService;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.auth.exception.AuthorizationException;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
@@ -31,11 +30,11 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 		NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 		String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
 
-		LoginMember loginMember = authService.findMemberByToken(credentials);
-
-		if (loginMember.isNull()) {
-			throw new AuthorizationException();
+		if (credentials == null) {
+			return new LoginMember.Guest();
 		}
+
+		LoginMember loginMember = authService.findMemberByToken(credentials);
 
 		return loginMember;
 	}

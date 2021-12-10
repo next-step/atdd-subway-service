@@ -26,6 +26,10 @@ public class AuthStaticAcceptance {
 			.extract();
 	}
 
+	public static TokenResponse 로그인_되어있음(TokenRequest params) {
+		return 로그인_요청(params).as(TokenResponse.class);
+	}
+
 	public static void 로그인_성공됨(ExtractableResponse<Response> loginResponse) {
 		assertThat(loginResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 		assertThat(loginResponse.as(TokenResponse.class).getAccessToken()).isNotEmpty();

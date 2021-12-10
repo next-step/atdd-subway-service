@@ -41,7 +41,7 @@ public class AuthServiceTest {
 	@DisplayName("로그인 시도시 토큰이 반환되는지 확인하는 테스트")
 	@Test
 	void login() {
-		when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
+		when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(Member.from(EMAIL, PASSWORD, AGE)));
 		when(jwtTokenProvider.createToken(anyString())).thenReturn("TOKEN");
 
 		TokenResponse token = authService.login(new TokenRequest(EMAIL, PASSWORD));
