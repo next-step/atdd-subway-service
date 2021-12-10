@@ -2,20 +2,12 @@ package nextstep.subway.path;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.domain.JgraphtPathFinder;
 import nextstep.subway.path.domain.PathResult;
 import nextstep.subway.path.domain.PathFinder;
-import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +44,7 @@ public class PathFinderTest {
         List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
 
         //when
-        PathFinder pathFinder = new PathFinder();
+        PathFinder pathFinder = new JgraphtPathFinder();
         PathResult path = pathFinder.find(lines, 강남역, 남부터미널역);
 
         //then
@@ -79,7 +71,7 @@ public class PathFinderTest {
         List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
 
         //when
-        PathFinder pathFinder = new PathFinder();
+        PathFinder pathFinder = new JgraphtPathFinder();
         assertThatThrownBy(() -> pathFinder.find(lines, 강남역, 강남역)).isInstanceOf(IllegalStateException.class);
     }
 
@@ -100,7 +92,7 @@ public class PathFinderTest {
         List<Line> lines = Arrays.asList(이호선, 삼호선);
 
         //when
-        PathFinder pathFinder = new PathFinder();
+        PathFinder pathFinder = new JgraphtPathFinder();
         assertThatThrownBy(() -> pathFinder.find(lines, 강남역, 남부터미널역)).isInstanceOf(IllegalStateException.class);
     }
 
