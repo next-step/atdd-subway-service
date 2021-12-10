@@ -6,6 +6,8 @@ import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록�
 import static nextstep.subway.utils.AcceptanceTestUtil.get;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -13,6 +15,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 
 @DisplayName("지하철 경로 조회")
@@ -51,11 +54,27 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 최단_경로_조회() {
         // when
-        PathResponse 교대역_양재역_경로 = 최단_경로_조회(교대역, 양재역);
+        PathResponse 교대역_양재역_경로 = 최단_경로_조회(교대역, 양재역).as(PathResponse.class);;
 
         // then
         거리가_5인_교대역_남부터미널역_양재역_경로_응답(교대역_양재역_경로);
 
+    }
+
+
+    @Test
+    @DisplayName("출발지와 도착지가 같은 경우 예외 발생")
+    void 경로조회_출발지와_도착지가_같은_경우_예외() {
+        // when
+        ExtractableResponse<Response> 출발지_도착지_같은_경우_응답 = 최단_경로_조회(교대역, 교대역);
+
+        // then
+        경로_조회_실패(출발지_도착지_같은_경우_응답);
+    }
+
+    private void 경로_조회_실패(ExtractableResponse<Response> 출발지_도착지_같은_경우_응답) {
+        assertThat(출발지_도착지_같은_경우_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(출발지_도착지_같은_경우_응답.body().asString()).isEqualTo("출발역과 도착역이 같습니다.");
     }
 
     private void 거리가_5인_교대역_남부터미널역_양재역_경로_응답(PathResponse 교대역_양재역_경로) {
@@ -64,9 +83,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
             .containsExactly(교대역.getName(), 남부터미널역.getName(), 양재역.getName());
     }
 
-    private PathResponse 최단_경로_조회(StationResponse 출발역, StationResponse 도착역) {
-        return get("/paths?source=" + 출발역.getId() + "&target=" + 도착역.getId())
-            .as(PathResponse.class);
+    private ExtractableResponse<Response> 최단_경로_조회(StationResponse 출발역, StationResponse 도착역) {
+        return get("/paths?source=" + 출발역.getId() + "&target=" + 도착역.getId());
     }
 
 }

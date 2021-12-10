@@ -10,6 +10,7 @@ import java.util.Optional;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -73,7 +74,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
         // when
-        PathResponse paths = pathService.findShortestPath(1L, 2L);
+        PathResponse paths = pathService.findShortestPath(new PathRequest(1L, 2L));
 
         // then
         assertThat(paths.getDistance()).isEqualTo(5);
@@ -89,26 +90,12 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
         // when
-        PathResponse paths = pathService.findShortestPath(1L, 2L);
+        PathResponse paths = pathService.findShortestPath(new PathRequest(1L, 2L));
 
         // then
         assertThat(paths.getDistance()).isEqualTo(12);
         assertThat(paths.getStations()).extracting(StationResponse::getName)
             .containsExactly("남부터미널역", "양재역", "강남역");
-    }
-
-    @DisplayName("출발역과 도착역이 같은 경우 예외 발생")
-    @Test
-    void 최단경로조회_예외1() {
-        // given
-        when(stationRepository.findById(any())).thenReturn(Optional.of(양재역));
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(신분당선, 이호선, 삼호선));
-
-        // when, then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> pathService.findShortestPath(1L, 1L)
-            )
-            .withMessage("출발역과 도착역이 같습니다.");
     }
 
     @DisplayName("출발역이 없는 역일 경우 예외 발생")
@@ -120,7 +107,7 @@ class PathServiceTest {
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> pathService.findShortestPath(1L, 2L)
+                () -> pathService.findShortestPath(new PathRequest(1L, 2L))
             )
             .withMessageContaining("id에 해당하는 역이 없습니다.");
     }
@@ -134,7 +121,7 @@ class PathServiceTest {
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> pathService.findShortestPath(1L, 2L)
+                () -> pathService.findShortestPath(new PathRequest(1L, 2L))
             )
             .withMessageContaining("id에 해당하는 역이 없습니다.");
     }
@@ -152,7 +139,7 @@ class PathServiceTest {
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> pathService.findShortestPath(1L, 2L)
+                () -> pathService.findShortestPath(new PathRequest(1L, 2L))
             )
             .withMessageContaining("출발역과 도착역이 이어진 경로가 없습니다.");
     }

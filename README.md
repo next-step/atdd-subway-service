@@ -53,6 +53,16 @@ npm run dev
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
 
+## step3 요구사항
+- [X] 토큰 발급 기능 인수 테스트
+- [X] 유효하지 않은 토큰에 대한 처리
+- [X] 인증이 포함된 내 정보 조회 인수테스트 작성
+- [X] 인증이 포함된 즐겨찾기 인수테스트 작성
+- [X] 즐겨찾기 기능 구현
+  - [X] 즐겨찾기 모델 설계 
+  - [X] 즐겨찾기 추가
+  - [X] 즐겨찾기 목록 조회
+  - [X] 즐겨찾기 삭제
 
 ## step2 요구사항
 - [X] 최단 경로 조회 인수 테스트 만들기
