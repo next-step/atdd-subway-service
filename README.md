@@ -62,3 +62,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - LineService 리팩터링
   - LineService의 비즈니스 로직을 도메인으로 옮기기
   - Domain의 단위 테스트를 작성하기(SectionsTest나 LineTest 클래스)
+
+## 2단계 - 경로 조회 기능
+
+- 최단 경로 조회 인수테스트 만들기
+- 최단 경로 조회 기능 구현하기
+- 예외 상황 구현하기
+  - 출발역과 도착역이 같은 경우
+  - 출발역과 도착역이 연결이 되어있지 않은 경우
+  - 존재하지 않은 출발역이나 도착역을 조회할 경우
