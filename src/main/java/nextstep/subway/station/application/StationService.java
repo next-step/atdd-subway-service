@@ -39,4 +39,15 @@ public class StationService {
         return stationRepository.findById(id)
             .orElseThrow(() -> NotFoundException.of(StationErrorCode.SECTION_NOT_FOUND));
     }
+
+    public void validStationExist(Long stationId) {
+        boolean exist = stationRepository.existsById(stationId);
+        if (!exist) {
+            throw NotFoundException.of(StationErrorCode.SECTION_NOT_FOUND);
+        }
+    }
+
+    public List<Station> findAllById(List<Long> stationIds) {
+        return stationRepository.findAllById(stationIds);
+    }
 }
