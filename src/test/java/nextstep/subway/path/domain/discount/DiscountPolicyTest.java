@@ -11,16 +11,16 @@ class DiscountPolicyTest {
     @DisplayName("청소년은 350원을 공제한 금액에 20% 할인된 금액을 반환한다.")
     @ParameterizedTest
     @CsvSource(value = {"0,0", "350,0", "1000,520", "3300,2360", "17580,13784"})
-    void calculateKidDiscountFee(int fee, int expected) {
-        int discount = new AdolescentDiscountPolicy().getDiscountFee(fee);
+    void calculateKidDiscountFare(int fare, int expected) {
+        int discount = new AdolescentDiscountPolicy().getDiscountFare(fare);
         assertEquals(expected, discount);
     }
 
     @DisplayName("어린이는 350원을 공제한 금액에 50% 할인된 금액을 반환한다.")
     @ParameterizedTest
     @CsvSource(value = {"0,0", "350,0", "1000,325", "3300,1475", "17580,8615"})
-    void calculateAdolescentDiscountFee(int fee, int expected) {
-        int discount = new KidDiscountPolicy().getDiscountFee(fee);
+    void calculateAdolescentDiscountFare(int fare, int expected) {
+        int discount = new KidDiscountPolicy().getDiscountFare(fare);
         assertEquals(expected, discount);
     }
 

@@ -2,9 +2,9 @@ package nextstep.subway.path.domain.discount;
 
 public interface DiscountPolicy {
 
-    int getDiscountFee(int fee);
+    int getDiscountFare(int fare);
 
-    default int calculateDiscountFee(int fee, double discountRete) {
-        return fee - (int)(Math.ceil(fee * discountRete));
+    default int calculateDiscountFare(int fare, double discountRete) {
+        return fare - (int)(Math.ceil(fare * discountRete));
     }
 }

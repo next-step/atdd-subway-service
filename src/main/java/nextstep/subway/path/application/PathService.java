@@ -10,11 +10,11 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
-import nextstep.subway.path.domain.SubwayFee;
+import nextstep.subway.path.domain.SubwayFare;
 import nextstep.subway.path.dto.PathFinderResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStationResponse;
-import nextstep.subway.path.dto.SubwayFeeRequest;
+import nextstep.subway.path.dto.SubwayFareRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
@@ -36,15 +36,15 @@ public class PathService {
         Station targetStation = stationService.findStationById(target);
         Set<Section> allSection = lineService.findAllSection();
         PathFinderResponse pathFinderResponse = pathFinder.getShortestPaths(allSection, sourceStation, targetStation);
-        int subwayUsageFee = SubwayFee.getSubwayUsageFee(new SubwayFeeRequest(
+        int subwayUsageFare = SubwayFare.getSubwayUsageFare(new SubwayFareRequest(
             pathFinderResponse.getDistance(), pathFinderResponse.getLineSurcharge(), loginMember.getAgeType()));
 
         return convertPathResponse(pathFinderResponse.getStations(), pathFinderResponse.getDistance(),
-            subwayUsageFee);
+            subwayUsageFare);
     }
 
-    private PathResponse convertPathResponse(List<Station> stations, double weight, int subwayFee) {
-        return new PathResponse(convertPathStationResponses(stations), (int)weight, subwayFee);
+    private PathResponse convertPathResponse(List<Station> stations, double weight, int subwayFare) {
+        return new PathResponse(convertPathStationResponses(stations), (int)weight, subwayFare);
     }
 
     private List<PathStationResponse> convertPathStationResponses(List<Station> stations) {
