@@ -8,14 +8,16 @@ import nextstep.subway.station.domain.*;
 public class PathResponse {
     private final List<Station> stations;
     private final int totalDistance;
+    private final int fare;
 
-    private PathResponse(List<Station> stations, int totalDistance) {
+    private PathResponse(List<Station> stations, int totalDistance, int fare) {
         this.stations = stations;
         this.totalDistance = totalDistance;
+        this.fare = fare;
     }
 
     public static PathResponse from(Path path) {
-        return new PathResponse(path.getStations(), path.getTotalDistance());
+        return new PathResponse(path.getStations(), path.getTotalDistance(), path.getFare());
     }
 
     public List<Station> getStations() {
@@ -24,6 +26,10 @@ public class PathResponse {
 
     public int getTotalDistance() {
         return totalDistance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 
     @Override
