@@ -2,6 +2,7 @@ package nextstep.subway.line.domain.fixture;
 
 import static nextstep.subway.line.domain.fixture.LineFixture.사호선;
 import static nextstep.subway.line.domain.fixture.LineFixture.삼호선;
+import static nextstep.subway.line.domain.fixture.LineFixture.이호선;
 import static nextstep.subway.line.domain.fixture.LineFixture.일호선;
 import static nextstep.subway.station.domain.StationFixture.강남역;
 import static nextstep.subway.station.domain.StationFixture.사당역;
@@ -50,19 +51,19 @@ public class SectionFixture {
     }
 
     public static Section 일호선_구간_하행추가_서울역_용산역() {
-        return new Section(7L, 일호선(), 서울역(), 용산역(), 1);
+        return new Section(7L, 이호선(), 서울역(), 용산역(), 1);
     }
 
     public static Section 이호선_구간_합정역_홍대입구역() {
-        return new Section(8L, 일호선(), 합정역(), 홍대입구역(), 10);
+        return new Section(8L, 이호선(), 합정역(), 홍대입구역(), 10);
     }
 
     public static Section 이호선_구간_홍대입구역_신촌역() {
-        return new Section(9L, 일호선(), 홍대입구역(), 신촌역(), 5);
+        return new Section(9L, 이호선(), 홍대입구역(), 신촌역(), 5);
     }
 
     public static Section 이호선_구간_신촌역_을지로3가역() {
-        return new Section(10L, 일호선(), 신촌역(), 을지로3가역(), 5);
+        return new Section(10L, 이호선(), 신촌역(), 을지로3가역(), 5);
     }
 
     public static Section 삼호선_구간_안국역_종로3가역() {
