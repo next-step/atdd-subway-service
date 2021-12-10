@@ -4,7 +4,6 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,7 +16,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-    private Sections sections;
+    private final Sections sections = new Sections();
 
     public Line() {
     }
@@ -30,7 +29,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        this.sections = new Sections(new Section(this, upStation, downStation, distance));
+        this.sections.add(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
@@ -51,6 +50,10 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections.getSections();
+        return this.sections.getSections();
+    }
+
+    public List<Station> getStations() {
+        return this.sections.getStations();
     }
 }
