@@ -37,12 +37,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_실패(response);
     }
 
-    private void 로그인_됨(ExtractableResponse<Response> response) {
+     public static void 로그인_됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(TokenResponse.class).getAccessToken()).isNotBlank();
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest param = new TokenRequest(email, password);
         return RestAssured
                 .given().log().all()

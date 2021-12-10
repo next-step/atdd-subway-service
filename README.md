@@ -151,13 +151,19 @@ PathFinder 의존성 주입으로 생성하게 하여 확장에 유연하게 만
 
 ## 3단계 - 인증을 통한 기능 구현
 * [x] 토큰 발급 기능 (로그인) 인수 테스트 만들기
-* [ ] 인증 - 내 정보 조회 인수 테스트 만들기
-* [ ] 인증 - 내 정보 조회 기능 구현
-  * [ ] 내 정보 조회
-  * [ ] 내 정보 수정
+* [ ] 인증 - 내 정보 관리 인수 테스트 만들기
+  * [x] 내 정보 조회
+  * [x] 내 정보 수정
   * [ ] 내 정보 삭제
 * [ ] 인증 - 즐겨 찾기 관리 인수 테스트
 * [ ] 즐겨찾기 기능 구현
   * [ ] 즐겨찾기 생성
   * [ ] 즐겨찾기 목록 조회
   * [ ] 즐겨찾기 삭제
+
+### 공부정리
+
+* RestAssured jwt auth 테스트 방법
+  * 참고자료1 : https://stackoverflow.com/questions/42790021/rest-assured-bearer-authentication
+  * 참고자료2 : https://www.baeldung.com/rest-assured-authentication <- oauth2 검색
+  * given().auth().oauth2(token) 사용하면 된다.
