@@ -2,9 +2,9 @@ package nextstep.subway.path;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.JgraphtPathFinder;
-import nextstep.subway.path.domain.PathResult;
-import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.infra.JgraphtPathFinder;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.infra.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class PathFinderTest {
+public class PathTest {
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -45,11 +45,13 @@ public class PathFinderTest {
 
         //when
         PathFinder pathFinder = new JgraphtPathFinder();
-        PathResult path = pathFinder.find(lines, 강남역, 남부터미널역);
+        Path path = new Path(pathFinder);
+        List<Station> paths = path.findPaths(lines, 강남역, 남부터미널역);
+        Distance distance = path.findPathWeight(lines, 강남역, 남부터미널역);
 
         //then
-        assertThat(path.getDistance()).isEqualTo(new Distance(12));
-        assertThat(path.getStations().stream().map(Station::getName)).containsExactly("강남역", "교대역", "남부터미널역");
+        assertThat(distance).isEqualTo(new Distance(12));
+        assertThat(paths.stream().map(Station::getName)).containsExactly("강남역", "교대역", "남부터미널역");
     }
 
     @DisplayName("출발역과 도착역이 같을 때 최단경로 찾기")
@@ -72,7 +74,10 @@ public class PathFinderTest {
 
         //when
         PathFinder pathFinder = new JgraphtPathFinder();
-        assertThatThrownBy(() -> pathFinder.find(lines, 강남역, 강남역)).isInstanceOf(IllegalStateException.class);
+        Path path = new Path(pathFinder);
+
+        //then
+        assertThatThrownBy(() -> path.findPaths(lines, 강남역, 강남역)).isInstanceOf(IllegalStateException.class);
     }
 
     @DisplayName("출발역과 도착역이 연결되지 않을 때 최단경로 찾기")
@@ -93,7 +98,9 @@ public class PathFinderTest {
 
         //when
         PathFinder pathFinder = new JgraphtPathFinder();
-        assertThatThrownBy(() -> pathFinder.find(lines, 강남역, 남부터미널역)).isInstanceOf(IllegalStateException.class);
+        Path path = new Path(pathFinder);
+
+        assertThatThrownBy(() -> path.findPaths(lines, 강남역, 남부터미널역)).isInstanceOf(IllegalStateException.class);
     }
 
 }
