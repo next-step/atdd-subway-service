@@ -63,7 +63,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // When 지하철 경로 조회 요청
         PathResponse pathResponse = 지하철_경로_조회_요청(남부터미널역, 강남역);
         // Then 지하철 경로 조회됨
-        지하철_경로_조회됨(pathResponse, Arrays.asList(남부터미널역, 양재역, 강남역));
+        지하철_경로_조회됨(pathResponse, Arrays.asList(남부터미널역, 교대역, 양재역, 강남역));
         // AND 지하철 경로 길이가 예상과 같음
         지하철_경로_길이_같음(pathResponse, 12);
     }
