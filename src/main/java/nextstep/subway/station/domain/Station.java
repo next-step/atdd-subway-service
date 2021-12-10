@@ -47,4 +47,8 @@ public class Station extends BaseEntity {
     public int hashCode() {
         return Objects.hash(id, name);
     }
+
+	public boolean equalsId(int source) {
+        return this.id == (long)source;
+	}
 }

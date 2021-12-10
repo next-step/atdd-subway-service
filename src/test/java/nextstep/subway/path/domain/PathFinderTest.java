@@ -16,15 +16,12 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 class PathFinderTest {
-
 	private static Station 강남역 = new Station(1L, "강남역");
 	private static Station 역삼역 = new Station(2L, "역삼역");
 	private static Station 선릉역 = new Station(3L, "선릉역");
-
 	private static Section 첫번째_구간 = new Section(null, null, 강남역, 역삼역, Distance.of(10));
 	private static Section 두번째_구간 = new Section(null, null, 역삼역, 선릉역, Distance.of(10));
 	private static Section 세번째_구간 = new Section(null, null, 강남역, 선릉역, Distance.of(100));
-
 	private static PathFinder pathFinder;
 
 	@BeforeEach
