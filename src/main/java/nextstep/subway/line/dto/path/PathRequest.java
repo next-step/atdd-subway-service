@@ -18,7 +18,7 @@ public class PathRequest {
 
     private void validEmpty(Long source, Long target) {
         if (Objects.isNull(source) || Objects.isNull(target)) {
-            throw InvalidParameterException.of(CommonErrorCode.NOT_EMPTY);
+            throw InvalidParameterException.of(PathErrorCode.NOT_EMPTY);
         }
 
         if (source.equals(target)) {

@@ -43,6 +43,7 @@ class FavoriteServiceTest {
     }
 
     @Test
+    @DisplayName("좋아요 저장 후 좋아요 검증")
     void getFavorite() {
         // when
         favoriteService.saveFavorite(MEMBER_ID, SOURCE_ID, TARGET_ID);
@@ -54,6 +55,7 @@ class FavoriteServiceTest {
     }
 
     @Test
+    @DisplayName("좋아요 삭제 검증")
     void removeFavorite() {
         // when
         favoriteService.saveFavorite(MEMBER_ID, SOURCE_ID, TARGET_ID);
