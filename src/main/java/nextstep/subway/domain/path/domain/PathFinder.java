@@ -5,18 +5,13 @@ import nextstep.subway.domain.path.exception.NotConnectedStation;
 import nextstep.subway.domain.path.exception.SameDepartureAndArrivalStationException;
 import nextstep.subway.domain.path.exception.StationNotFoundException;
 import nextstep.subway.domain.station.domain.Station;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class PathFinder {
 
-    private final WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-    private final DijkstraShortestPath<Long, Long> dijkstraShortestPath = new DijkstraShortestPath(graph);
+    private final Path path = new DijkstraShortestPath();
 
     protected PathFinder() {
     }
@@ -26,24 +21,8 @@ public class PathFinder {
     }
 
     private void createGraph(final List<Line> lines) {
-        createVertex(lines);
-        createEdge(lines);
-    }
-
-    private void createEdge(final List<Line> lines) {
-        lines.stream()
-                .map(Line::getSections)
-                .flatMap(Collection::stream)
-                .forEach(section ->
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation().getId(), section.getDownStation().getId()), section.getDistance().getDistance()));
-    }
-
-    private void createVertex(final List<Line> lines) {
-        lines.stream()
-                .map(Line::getStations)
-                .flatMap(Collection::stream)
-                .distinct()
-                .forEach(station -> graph.addVertex(station.getId()));
+        path.createVertex(lines);
+        path.createEdge(lines);
     }
 
     public List<Station> findShortestRoute(List<Station> stations, Long source, Long target) {
@@ -67,7 +46,7 @@ public class PathFinder {
 
     private List<Long> getVertex(final Long source, final Long target) {
         try {
-            return dijkstraShortestPath.getPath(source, target).getVertexList();
+            return path.getVertex(source, target);
         }catch (IllegalArgumentException e) {
             throw new NotConnectedStation(String.format("departure : %d, arrival : %d", source, target));
         }
@@ -81,14 +60,14 @@ public class PathFinder {
 
     private List<Station> getShortestStations(final List<Station> stations, final List<Long> vertexList) {
         final List<Station> result = new ArrayList<>();
-        for (int i = 0; i< vertexList.size(); i++) {
-            Station station = getStation(stations, vertexList.get(i));
+        for (Long stationId : vertexList) {
+            Station station = getStation(stations, stationId);
             result.add(station);
         }
         return result;
     }
 
     public int findShortestDistance(Long source, Long target) {
-        return (int) dijkstraShortestPath.getPath(source, target).getWeight();
+        return path.getWeight(source, target);
     }
 }
