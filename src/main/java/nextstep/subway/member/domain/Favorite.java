@@ -49,16 +49,6 @@ public class Favorite {
         return new Favorite(stationSourceId, stationTargetId);
     }
 
-    private void valid(Long stationSourceId, Long stationTargetId) {
-        if (Objects.isNull(stationSourceId) || Objects.isNull(stationTargetId)) {
-            throw InvalidParameterException.of(FavoriteErrorCode.NOT_EMPTY);
-        }
-
-        if (Objects.equals(stationSourceId, stationTargetId)) {
-            throw InvalidParameterException.of(FavoriteErrorCode.SOURCE_TARGET_NOT_SAME);
-        }
-    }
-
     public boolean isDuplicate(Favorite favorite) {
         return Objects.equals(stationSourceId, favorite.stationSourceId)
             && Objects.equals(stationTargetId, favorite.stationTargetId);
@@ -70,6 +60,16 @@ public class Favorite {
 
     public List<Long> getStationIds() {
         return Arrays.asList(stationSourceId, stationTargetId);
+    }
+
+    private void valid(Long stationSourceId, Long stationTargetId) {
+        if (Objects.isNull(stationSourceId) || Objects.isNull(stationTargetId)) {
+            throw InvalidParameterException.of(FavoriteErrorCode.NOT_EMPTY);
+        }
+
+        if (Objects.equals(stationSourceId, stationTargetId)) {
+            throw InvalidParameterException.of(FavoriteErrorCode.SOURCE_TARGET_NOT_SAME);
+        }
     }
 
     @Override

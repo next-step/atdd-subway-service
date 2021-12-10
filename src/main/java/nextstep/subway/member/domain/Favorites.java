@@ -39,17 +39,6 @@ public class Favorites {
         return favorites;
     }
 
-    private void validateDuplicate(Favorite favorite) {
-        if (isDuplicate(favorite)) {
-            throw InvalidParameterException.of(FavoriteErrorCode.NOT_DUPLICATE);
-        }
-    }
-
-    private boolean isDuplicate(Favorite favorite) {
-        return favorites.stream()
-            .anyMatch(favorite::isDuplicate);
-    }
-
     public void removeById(Long favoriteId) {
         favorites.stream()
             .filter(favorite -> favorite.isSameId(favoriteId))
@@ -62,5 +51,16 @@ public class Favorites {
             .map(Favorite::getStationIds)
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
+    }
+
+    private void validateDuplicate(Favorite favorite) {
+        if (isDuplicate(favorite)) {
+            throw InvalidParameterException.of(FavoriteErrorCode.NOT_DUPLICATE);
+        }
+    }
+
+    private boolean isDuplicate(Favorite favorite) {
+        return favorites.stream()
+            .anyMatch(favorite::isDuplicate);
     }
 }
