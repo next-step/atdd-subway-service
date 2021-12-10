@@ -40,13 +40,14 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         즐거찾기_추가_정상(즐겨찾기_추가_응답);
 
-        // when 즐겨찾기 조회
+        // when
         ExtractableResponse<Response> 즐겨찾기_조회_응답 = 로그인_회원_즐겨찾기_조회(token);
         // then
         즐겨찾기_조회_정상(즐겨찾기_조회_응답, sourceId, targetId);
 
-        // when 즐겨찾기 삭제
+        // when
         ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 로그인_회원_즐겨찾기_삭제(즐겨찾기_조회_응답, token);
+        // then
         즐겨찾기_삭제_정상(즐겨찾기_삭제_응답);
     }
 }
