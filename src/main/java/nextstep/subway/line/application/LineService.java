@@ -4,6 +4,7 @@ import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.*;
 
 import nextstep.subway.common.exception.*;
+import nextstep.subway.fare.*;
 import nextstep.subway.line.domain.*;
 import nextstep.subway.line.dto.*;
 import nextstep.subway.station.domain.*;
@@ -31,7 +32,7 @@ public class LineService {
             lineReadService.getUpStation(request.getUpStationId()),
             lineReadService.getDownStation(request.getDownStationId()),
             Distance.from(request.getDistance()),
-            request.getExtraFare())
+            Fare.from(request.getExtraFare()))
         );
         return LineResponse.of(newLine);
     }

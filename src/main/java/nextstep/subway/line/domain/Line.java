@@ -7,6 +7,7 @@ import javax.persistence.*;
 import org.jgrapht.graph.*;
 
 import nextstep.subway.*;
+import nextstep.subway.fare.*;
 import nextstep.subway.line.dto.*;
 import nextstep.subway.path.domain.*;
 import nextstep.subway.station.domain.*;
@@ -25,7 +26,8 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
-    private int extraFare;
+    @Embedded
+    private Fare extraFare;
 
     public Line() {
     }
@@ -39,10 +41,10 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         sections.addSection(this, upStation, downStation, distance);
-        this.extraFare = 0;
+        this.extraFare = Fare.from(0);
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, Distance distance, int extraFare) {
+    public Line(String name, String color, Station upStation, Station downStation, Distance distance, Fare extraFare) {
         this.name = name;
         this.color = color;
         sections.addSection(this, upStation, downStation, distance);
@@ -50,11 +52,11 @@ public class Line extends BaseEntity {
     }
 
     public static Line of(String name, String color, Station upStation, Station downStation, Distance distance) {
-        return new Line(name, color, upStation, downStation, distance, 0);
+        return new Line(name, color, upStation, downStation, distance, Fare.from(0));
     }
 
     public static Line of(String name, String color, Station upStation, Station downStation, Distance distance,
-        int extraFare) {
+        Fare extraFare) {
         return new Line(name, color, upStation, downStation, distance, extraFare);
     }
 
@@ -85,7 +87,7 @@ public class Line extends BaseEntity {
     }
 
     public int getExtraFare() {
-        return extraFare;
+        return extraFare.fare();
     }
 
     public List<Station> stations() {

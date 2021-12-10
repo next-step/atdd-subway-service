@@ -3,11 +3,6 @@ package nextstep.subway.fare;
 import java.util.*;
 import java.util.function.*;
 
-import org.jgrapht.*;
-
-import nextstep.subway.path.domain.*;
-import nextstep.subway.station.domain.*;
-
 public enum FareByDistancePolicy {
     LESS_THAN_TEN(
         distance -> distance <= FareByDistancePolicy.TEN_KILOMETER,
@@ -34,15 +29,13 @@ public enum FareByDistancePolicy {
         this.function = function;
     }
 
-    public static int calculateFare(GraphPath<Station, WeightedEdgeWithLine> shortestPath) {
-        int distance = (int)shortestPath.getWeight();
-
+    public static Fare calculateFare(int distance) {
         FareByDistancePolicy fareByDistance = Arrays.stream(values())
             .filter(value -> value.distancePolicy.test(distance))
             .findFirst()
             .orElseThrow(IllegalArgumentException::new);
 
-        return fareByDistance.function.apply(distance);
+        return Fare.from(fareByDistance.function.apply(distance));
     }
 
     private static int calculateBasicFare(int distance) {
