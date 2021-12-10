@@ -52,4 +52,8 @@ public class Station extends BaseEntity {
     public String toString() {
         return name;
     }
+
+    public boolean equalsName(Station upStation) {
+        return this.name.equals(upStation.getName());
+    }
 }
