@@ -52,4 +52,17 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         즐겨찾기_삭제_정상(즐겨찾기_삭제_응답);
     }
+
+    @Test
+    @DisplayName("없는 역 즐겨찾기 추가 실패")
+    void 즐겨찾기_없는_역_추가_실패() {
+        // given
+        Long sourceId = 강남역.getId();
+        Long 없는역ID = 100L;
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_추가_응답 = 즐겨찾기_생성_됨(token, sourceId, 없는역ID);
+        // then
+        즐거찾기_추가_실패(즐겨찾기_추가_응답);
+    }
 }

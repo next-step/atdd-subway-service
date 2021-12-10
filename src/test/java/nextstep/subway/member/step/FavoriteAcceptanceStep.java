@@ -73,4 +73,8 @@ public class FavoriteAcceptanceStep {
     public static void 즐겨찾기_삭제_정상(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    public static void 즐거찾기_추가_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }

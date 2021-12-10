@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import nextstep.subway.member.domain.Favorite;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.station.infrastructure.StationRepository;
+import nextstep.subway.station.application.StationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class FavoriteServiceTest {
 
     @Mock
-    private StationRepository stationRepository;
+    private StationService stationService;
 
     @Mock
     private MemberService memberService;
@@ -35,7 +35,7 @@ class FavoriteServiceTest {
     @BeforeEach
     void setUp() {
         // given
-        favoriteService = new FavoriteService(stationRepository, memberService);
+        favoriteService = new FavoriteService(stationService, memberService);
 
         member = new Member("email@email.com", "password", 10);
 

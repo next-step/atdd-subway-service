@@ -5,8 +5,8 @@ import nextstep.subway.member.domain.Favorite;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberFavoriteCollection;
 import nextstep.subway.member.dto.favorite.FavoriteResponse;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.infrastructure.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,15 +14,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class FavoriteService {
 
-    private final StationRepository stationRepository;
+    private final StationService stationService;
     private final MemberService memberService;
 
-    public FavoriteService(StationRepository stationRepository, MemberService memberService) {
-        this.stationRepository = stationRepository;
+    public FavoriteService(StationService stationService, MemberService memberService) {
+        this.stationService = stationService;
         this.memberService = memberService;
     }
 
     public void saveFavorite(Long memberId, Long sourceId, Long targetId) {
+        this.stationService.validStationExist(sourceId);
+        this.stationService.validStationExist(targetId);
         Member member = memberService.findMemberById(memberId);
 
         member.addFavorite(Favorite.of(sourceId, targetId));
@@ -38,11 +40,10 @@ public class FavoriteService {
     public List<FavoriteResponse> getFavorite(Long memberId) {
         Member member = memberService.findMemberById(memberId);
 
-        List<Station> stations = this.stationRepository.findAllById(member.getFavoriteStationIds());
+        List<Station> stations = this.stationService.findAllById(member.getFavoriteStationIds());
 
         MemberFavoriteCollection favoriteCollection = MemberFavoriteCollection.of(member, stations);
 
         return favoriteCollection.toFavoriteResponses();
     }
-
 }
