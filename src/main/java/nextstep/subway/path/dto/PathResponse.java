@@ -9,12 +9,12 @@ public class PathResponse {
     private List<StationResponse> stations = new ArrayList<>();
     private int distance;
 
+    protected PathResponse() {
+    }
+
     public PathResponse(List<StationResponse> stations, int distance) {
         this.stations = stations;
         this.distance = distance;
-    }
-
-    protected PathResponse() {
     }
 
     public List<StationResponse> getStations() {
