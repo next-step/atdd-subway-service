@@ -1,8 +1,8 @@
 package nextstep.subway.auth.acceptance;
 
 import static nextstep.subway.auth.step.AuthAcceptanceStep.*;
-import static nextstep.subway.member.acceptance.MemberAcceptanceTest.회원_생성을_요청;
 import static nextstep.subway.member.step.MemberAcceptanceStep.내정보_조회_요청;
+import static nextstep.subway.member.step.MemberAcceptanceStep.회원_생성을_요청;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
