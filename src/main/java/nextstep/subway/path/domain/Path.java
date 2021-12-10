@@ -41,11 +41,11 @@ public class Path {
     public void addEdge(List<Line> lines) {
         lines.stream()
                 .forEach(it -> it.getSections()
-                        .forEach(section -> {
-                            SectionEdge sectionEdge = new SectionEdge(section);
-                            subwayGraph.addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
-                            subwayGraph.setEdgeWeight(sectionEdge, section.getDistanceValue());
-                        }));
+                        .forEach(section -> makeSectionEdge(section)));
+    }
+
+    private void makeSectionEdge(Section section) {
+        subwayGraph.addEdge(section, section.getUpStation(), section.getDownStation());
     }
 
     public List<Station> findShortestPath(List<Line> lines) {
@@ -71,7 +71,6 @@ public class Path {
     }
 
     private boolean isNotConnectSourceAndTargetStation() {
-
         GraphPath<Station, SectionEdge> shortestPaths = findShortestPaths();
         return isEmptyPaths(shortestPaths);
     }
@@ -83,16 +82,24 @@ public class Path {
     private GraphPath<Station, SectionEdge> findShortestPaths() {
         DijkstraShortestPath<Station, SectionEdge> dijkstraAlg = new DijkstraShortestPath(subwayGraph);
         ShortestPathAlgorithm.SingleSourcePaths<Station, SectionEdge> singleSourcePaths = dijkstraAlg.getPaths(source);
-        GraphPath<Station, SectionEdge> shortestPaths = singleSourcePaths.getPath(target);
-        return shortestPaths;
+        return singleSourcePaths.getPath(target);
     }
 
-    public Distance findShortestPathDistance(List<Line> lines) {
-        List<Station> shortestStations = findShortestPath(lines);
+    public Distance findShortestPathDistance(List<Line> lines, List<Station> shortestPaths) {
+        List<Station> shortestStations = shortestPaths;
         List<Section> foundSections = findSection(lines, shortestStations);
         int distanceSum = foundSections.stream().
-                mapToInt(it -> it.getDistance().distance()).sum();
+                mapToInt(it -> it.getDistanceValue()).sum();
         return new Distance(distanceSum);
+    }
+
+    private List<Section> findSection(List<Line> lines, List<Station> shortestStations) {
+        List<Section> allSections = findAllSections(lines);
+        List<Section> foundSections = new ArrayList<>();
+        for (int i = 0; i < shortestStations.size() - 1; i++) {
+            searchFoundSections(shortestStations, allSections, foundSections, i);
+        }
+        return foundSections;
     }
 
     private List<Section> findAllSections(List<Line> lines) {
@@ -101,16 +108,6 @@ public class Path {
             allSections.addAll(line.getSections());
         }
         return allSections;
-    }
-
-    private List<Section> findSection(List<Line> lines, List<Station> shortestStations) {
-
-        List<Section> allSections = findAllSections(lines);
-        List<Section> foundSections = new ArrayList<>();
-        for (int i = 0; i < shortestStations.size() - 1; i++) {
-            searchFoundSections(shortestStations, allSections, foundSections, i);
-        }
-        return foundSections;
     }
 
     private void searchFoundSections(List<Station> shortestStations, List<Section> allSections, List<Section> foundSections, int i) {
