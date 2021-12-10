@@ -4,6 +4,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.ApiRequest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +49,49 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // given
+        회원_생성되어있음_요청(EMAIL, PASSWORD, AGE);
+        TokenResponse token = 로그인_요청되어_있음(EMAIL, PASSWORD).as(TokenResponse.class);
 
+        // when
+        ExtractableResponse<Response> searchResponse = 나의_정보를_조회_한다(EMAIL, PASSWORD);
+
+        // then
+        회원_정보_조회됨(searchResponse, EMAIL, AGE);
+
+        // when
+        나의_정보를_수정_한다(token, "new@email.com", "dklfsaj", 2);
+
+        // then
+        AuthAcceptanceTest.로그인을_요청한다(EMAIL, PASSWORD); // TODO : 수정 후 반영 결과 확인 방법
+
+        // when
+        ExtractableResponse<Response> response = 나의_정보를_삭제_한다(token);
+
+        // then
+        회원_삭제됨(response);
+    }
+
+    private void 회원_생성되어있음_요청(String email, String password, int age) {
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+    }
+
+    private ExtractableResponse<Response> 나의_정보를_삭제_한다(TokenResponse token) {
+        return ApiRequest.deleteWithAuth("/members/me", token.getAccessToken());
+    }
+
+    private ExtractableResponse<Response> 로그인_요청되어_있음(String email, String password) {
+        return AuthAcceptanceTest.로그인을_요청한다(email, password);
+    }
+
+    private ExtractableResponse<Response> 나의_정보를_조회_한다(String email, String password) {
+        TokenResponse tokenResponse = AuthAcceptanceTest.로그인을_요청한다(email, password).as(TokenResponse.class);
+        return ApiRequest.getWithAuth("/members/me", tokenResponse.getAccessToken());
+    }
+
+    private ExtractableResponse<Response> 나의_정보를_수정_한다(TokenResponse token, String email, String password, int age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+        return ApiRequest.putWithAuth("/members/me", token.getAccessToken(), memberRequest);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {

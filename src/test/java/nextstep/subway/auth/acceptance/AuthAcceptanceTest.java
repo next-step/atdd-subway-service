@@ -29,35 +29,46 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
+        // when
         ExtractableResponse<Response> response = 로그인을_요청한다("email@test.com", "dflkasjdfsl@fdkljsa!");
+
+        // then
         로그인_됨(response);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
+        // when
         ExtractableResponse<Response> response = 로그인을_요청한다("wrong@idtest.com", "123123213");
+
+        // then
         로그인_실패(response);
     }
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-        ExtractableResponse<Response> tokenResponse = 로그인을_요청한다("email@test.com", "dflkasjdfsl@fdkljsa!");
-        ExtractableResponse<Response> memberResponse = 토큰으로_멤버를_요청한다(tokenResponse.as(TokenResponse.class));
-        같은_멤버인지_확인한다(memberResponse.as(LoginMember.class), "email@test.com");
+        // given
+        TokenResponse wrongToken = new TokenResponse("wrongToken");
+
+        // when
+        ExtractableResponse<Response> response = 다른_토큰으로_멤버를_요청한다(wrongToken);
+
+        // then
+        로그인_실패(response);
     }
 
     private ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, int age) {
         return MemberAcceptanceTest.회원_생성을_요청(email, password, age);
     }
 
-    private ExtractableResponse<Response> 로그인을_요청한다(String email, String password) {
+    public static ExtractableResponse<Response> 로그인을_요청한다(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
         return ApiRequest.post("/login/token", tokenRequest);
     }
 
-    private ExtractableResponse<Response> 토큰으로_멤버를_요청한다(TokenResponse tokenResponse) {
-        return ApiRequest.get("/token/check?token=" + tokenResponse.getAccessToken());
+    private ExtractableResponse<Response> 다른_토큰으로_멤버를_요청한다(TokenResponse tokenResponse) {
+        return ApiRequest.getWithAuth("/members/me", tokenResponse.getAccessToken());
     }
 
     private void 로그인_됨(ExtractableResponse<Response> response) {
@@ -66,10 +77,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private void 로그인_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    private void 같은_멤버인지_확인한다(LoginMember loginMember, String email) {
-        assertThat(loginMember.getEmail()).isEqualTo(email);
     }
 
 

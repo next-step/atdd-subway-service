@@ -24,10 +24,4 @@ public class AuthController {
         TokenResponse token = authService.login(request);
         return ResponseEntity.ok().body(token);
     }
-
-    @GetMapping("/token/check")
-    public ResponseEntity<LoginMember> checkToken(@RequestParam(name = "token") String token) {
-        LoginMember loginMember = authService.findMemberByToken(token);
-        return ResponseEntity.ok().body(loginMember);
-    }
 }

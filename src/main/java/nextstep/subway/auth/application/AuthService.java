@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
+    private static final String NOT_VALID_TOKEN_MESSAGE = "유효하지 않은 토큰 입니다.";
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -30,7 +31,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new AuthorizationException(NOT_VALID_TOKEN_MESSAGE);
         }
 
         String email = jwtTokenProvider.getPayload(credentials);

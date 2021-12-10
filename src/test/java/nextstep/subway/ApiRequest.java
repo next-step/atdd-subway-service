@@ -3,6 +3,7 @@ package nextstep.subway;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.member.dto.MemberRequest;
 import org.springframework.http.MediaType;
 
 public class ApiRequest {
@@ -41,6 +42,37 @@ public class ApiRequest {
     public static ExtractableResponse<Response> delete(String uri) {
         return RestAssured
                 .given().log().all()
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> getWithAuth(String uri, String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> putWithAuth(String uri, String token, MemberRequest memberResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberResponse)
+                .when().put(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> deleteWithAuth(String uri, String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete(uri)
                 .then().log().all()
                 .extract();
