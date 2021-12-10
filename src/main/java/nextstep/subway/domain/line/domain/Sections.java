@@ -1,9 +1,9 @@
 package nextstep.subway.domain.line.domain;
 
 import nextstep.subway.domain.station.domain.Station;
-import nextstep.subway.global.exception.NoRegisterSectionException;
-import nextstep.subway.global.exception.SectionAlreadyRegisterException;
-import nextstep.subway.global.exception.SectionNoRegistrationException;
+import nextstep.subway.domain.line.exception.NoRegisterSectionException;
+import nextstep.subway.domain.line.exception.SectionAlreadyRegisterException;
+import nextstep.subway.domain.line.exception.SectionNoRegistrationException;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;

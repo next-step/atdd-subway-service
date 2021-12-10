@@ -1,6 +1,7 @@
-package nextstep.subway.global.exception;
+package nextstep.subway.domain.line.exception;
 
 import nextstep.subway.global.error.ErrorCode;
+import nextstep.subway.global.exception.BusinessException;
 
 public class SectionNoRegistrationException extends BusinessException {
 

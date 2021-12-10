@@ -1,9 +1,9 @@
 package nextstep.subway.domain.line.domain;
 
 import nextstep.subway.domain.station.domain.Station;
-import nextstep.subway.global.exception.SectionAlreadyRegisterException;
-import nextstep.subway.global.exception.SectionDistanceFewerThanMaximum;
-import nextstep.subway.global.exception.SectionNoRegistrationException;
+import nextstep.subway.domain.line.exception.SectionAlreadyRegisterException;
+import nextstep.subway.domain.line.exception.SectionDistanceFewerThanMaximum;
+import nextstep.subway.domain.line.exception.SectionNoRegistrationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

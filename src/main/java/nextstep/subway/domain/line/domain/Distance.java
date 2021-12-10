@@ -1,7 +1,7 @@
 package nextstep.subway.domain.line.domain;
 
-import nextstep.subway.global.exception.SectionDistanceFewerThanMaximum;
-import nextstep.subway.global.exception.SectionDistanceLessThanMinimumException;
+import nextstep.subway.domain.line.exception.SectionDistanceFewerThanMaximum;
+import nextstep.subway.domain.line.exception.SectionDistanceLessThanMinimumException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
