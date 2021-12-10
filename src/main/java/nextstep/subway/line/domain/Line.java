@@ -95,4 +95,10 @@ public class Line extends BaseEntity {
 	public int hashCode() {
 		return id.hashCode();
 	}
+
+	public void updateSections(Section newSection) {
+		this.sections.updateSections(newSection);
+
+	}
+
 }

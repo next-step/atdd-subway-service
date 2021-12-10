@@ -2,6 +2,7 @@ package nextstep.subway.line;
 
 import static nextstep.subway.station.StationTest.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -72,6 +73,85 @@ public class SectionsTest {
 
 		// then
 		assertThat(stations).containsExactly(노포역, 서면역, 부산진역, 다대포해수욕장역);
+	}
+
+	@Test
+	@DisplayName("구간들 사이에 새 구간을 추가한다")
+	void updateSectionsTest() {
+		// given
+		Section section1 = Section.of(1L, 노포역, 서면역, 10);
+		Section section2 = Section.of(2L, 서면역, 부산진역, 5);
+		Section section3 = Section.of(3L, 부산진역, 다대포해수욕장역, 10);
+		Sections sections = Sections.of(Arrays.asList(section1, section2, section3));
+		Section section4 = Section.of(4L, 서면역, 범내골역, 1);
+
+		// when
+		sections.updateSections(section4);
+
+		// then
+		assertAll(
+			() -> assertThat(sections.getStations()).containsExactly(노포역, 서면역, 범내골역, 부산진역, 다대포해수욕장역),
+			() -> assertThat(section2.getDistance()).isEqualTo(4)
+		);
+	}
+
+	@Test
+	@DisplayName("구간들 사이에 새 구간을 추가한다2")
+	void updateSectionsTest2() {
+		// given
+		Section section1 = Section.of(1L, 노포역, 서면역, 10);
+		Section section2 = Section.of(2L, 서면역, 부산진역, 5);
+		Section section3 = Section.of(3L, 부산진역, 다대포해수욕장역, 10);
+		Sections sections = Sections.of(Arrays.asList(section1, section2, section3));
+		Section section4 = Section.of(4L, 범내골역, 서면역, 1);
+
+		// when
+		sections.updateSections(section4);
+
+		// then
+		assertAll(
+			() -> assertThat(sections.getStations())
+				.containsExactly(노포역, 범내골역, 서면역, 부산진역, 다대포해수욕장역),
+			() -> assertThat(section1.getDistance()).isEqualTo(9)
+		);
+	}
+
+	@Test
+	@DisplayName("상행종점에 새 구간을 추가한다")
+	void updateSectionsTest3() {
+		// given
+		Section section1 = Section.of(1L, 노포역, 서면역, 10);
+		Section section2 = Section.of(2L, 서면역, 부산진역, 5);
+		Section section3 = Section.of(3L, 부산진역, 다대포해수욕장역, 10);
+		Sections sections = Sections.of(Arrays.asList(section1, section2, section3));
+		Station 새상행종점 = Station.of(99L, "새상행종점");
+		Section section4 = Section.of(4L, 새상행종점, 노포역, 1);
+
+		// when
+		sections.updateSections(section4);
+
+		// then
+		assertThat(sections.getStations())
+			.containsExactly(새상행종점, 노포역, 서면역, 부산진역, 다대포해수욕장역);
+	}
+
+	@Test
+	@DisplayName("하행종점에 새 구간을 추가한다")
+	void updateSectionsTest4() {
+		// given
+		Section section1 = Section.of(1L, 노포역, 서면역, 10);
+		Section section2 = Section.of(2L, 서면역, 부산진역, 5);
+		Section section3 = Section.of(3L, 부산진역, 다대포해수욕장역, 10);
+		Sections sections = Sections.of(Arrays.asList(section1, section2, section3));
+		Station 새하행종점 = Station.of(99L, "새하행종점");
+		Section section4 = Section.of(4L, 다대포해수욕장역, 새하행종점, 1);
+
+		// when
+		sections.updateSections(section4);
+
+		// then
+		assertThat(sections.getStations())
+			.containsExactly(노포역, 서면역, 부산진역, 다대포해수욕장역, 새하행종점);
 	}
 
 }

@@ -68,6 +68,59 @@ public class Sections {
 				new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "첫 상행선 종점을 찾을 수 없습니다"));
 	}
 
+	public void updateSections(Section newSection) {
+		validateUpdateSections(newSection);
+		List<Station> stations = this.getStations();
+		if (stations.isEmpty()) {
+			this.getSections().add(newSection);
+			return;
+		}
+		updateUpStationIfExists(stations, newSection);
+		updateDownStationIfExists(stations, newSection);
+	}
+
+	private void updateUpStationIfExists(List<Station> stations, Section newSection) {
+		boolean isUpStationExisted = isStationExisted(stations, newSection.getUpStation());
+		if (!isUpStationExisted) {
+			return;
+		}
+		this.getSections().stream()
+			.filter(it -> it.getUpStation() == newSection.getUpStation())
+			.findFirst()
+			.ifPresent(it -> it.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
+		this.getSections().add(newSection);
+	}
+
+	private void updateDownStationIfExists(List<Station> stations, Section newSection) {
+		boolean isDownStationExisted = isStationExisted(stations, newSection.getDownStation());
+		if (!isDownStationExisted) {
+			return;
+		}
+		this.getSections().stream()
+			.filter(it -> it.getDownStation() == newSection.getDownStation())
+			.findFirst()
+			.ifPresent(it -> it.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
+		this.getSections().add(newSection);
+	}
+
+	private void validateUpdateSections(Section newSection) {
+		List<Station> stations = this.getStations();
+		boolean isUpStationExisted = isStationExisted(stations, newSection.getUpStation());
+		boolean isDownStationExisted = isStationExisted(stations, newSection.getDownStation());
+
+		if (isUpStationExisted && isDownStationExisted) {
+			throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "이미 등록된 구간 입니다.");
+		}
+
+		if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+			throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "등록할 수 없는 구간 입니다.");
+		}
+	}
+
+	private boolean isStationExisted(List<Station> stations, Station station) {
+		return stations.stream().anyMatch(it -> it.equals(station));
+	}
+
 	public List<Section> getSections() {
 		return this.sections;
 	}
@@ -88,4 +141,5 @@ public class Sections {
 	public int hashCode() {
 		return sections.hashCode();
 	}
+
 }
