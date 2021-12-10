@@ -73,4 +73,23 @@ public class LineTest {
                 .hasMessageContaining("거리는 1 이상이어야 합니다.");
     }
 
+    @Test
+    @DisplayName("추가 요금 사용하기")
+    public void addExtraCharge() throws Exception {
+        //given
+        int distance = Distance.MIN_DISTANCE;
+        int noCharge = ExtraCharge.MIN_FARE;
+        int useCharge = 5_000;
+
+        Line line = Line.of("1호선", "남색", 강남역, 광교역, distance, noCharge);
+        Line line2 = Line.of("2호선", "녹색", 강남역, 광교역, distance, useCharge);
+
+        //then
+        assertThat(line.useCharge()).isFalse();
+        assertThat(line.extraCharge()).isEqualTo(0);
+
+        assertThat(line2.useCharge()).isTrue();
+        assertThat(line2.extraCharge()).isEqualTo(5_000);
+    }
+
 }

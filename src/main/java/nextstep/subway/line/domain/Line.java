@@ -2,7 +2,6 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.SimpleWeightedGraph;
 
 import javax.persistence.*;
 import java.util.List;
@@ -17,6 +16,9 @@ public class Line extends BaseEntity {
     private String name;
 
     private String color;
+
+    @Embedded
+    private ExtraCharge extraCharge;
 
     @Embedded
     private final Sections sections = new Sections();
@@ -35,6 +37,13 @@ public class Line extends BaseEntity {
         addSection(Section.of(this, upStation, downStation, Distance.of(distance)));
     }
 
+    private Line(String name, String color, Station upStation, Station downStation, int distance, int extraCharge) {
+        this.name = name;
+        this.color = color;
+        this.extraCharge = ExtraCharge.of(extraCharge);
+        addSection(Section.of(this, upStation, downStation, Distance.of(distance)));
+    }
+
     public static Line of(String name, String color) {
         return new Line(name, color);
     }
@@ -43,9 +52,25 @@ public class Line extends BaseEntity {
         return new Line(name, color, upStation, downStation, distance);
     }
 
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance, int extraCharge) {
+        return new Line(name, color, upStation, downStation, distance, extraCharge);
+    }
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
+    }
+
+    public void removeStation(Long stationId) {
+        sections.remove(stationId);
+    }
+
+    public boolean useCharge() {
+        return extraCharge.useCharge();
     }
 
     public Long getId() {
@@ -72,11 +97,7 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
-    public void addSection(Section section) {
-        sections.add(section);
-    }
-
-    public void removeStation(Long stationId) {
-        sections.remove(stationId);
+    public int extraCharge() {
+        return extraCharge.value();
     }
 }
