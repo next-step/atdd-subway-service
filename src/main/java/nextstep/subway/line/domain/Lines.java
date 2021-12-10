@@ -18,10 +18,9 @@ public class Lines {
     }
 
     private Sections allSections() {
-        List<Section> sections = lines.stream()
+        return lines.stream()
             .map(Line::getSections)
             .flatMap(Collection::stream)
-            .collect(Collectors.toList());
-        return Sections.of(sections);
+            .collect(Collectors.collectingAndThen(Collectors.toList(), Sections::of));
     }
 }
