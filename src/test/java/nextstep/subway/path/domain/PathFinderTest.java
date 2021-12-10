@@ -1,10 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.*;
 import nextstep.subway.member.domain.Favorite;
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.exception.MemberNotFoundException;
@@ -33,16 +30,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * author : haedoang
  * date : 2021/12/05
  * description : PathFinder Test
- * <p>
+ * <p>                                      [추가요금 2_000]
  * 왕십리(start)   ←-------------- (20) ---------------→ 응봉 ←-------------- (20) ---------------→ 옥수          ## 40
- * ↕(2)                                                                                      	 ↘(3)
- * 한양대                                                                                            압구정
- * ↕(2)                                                                                 	         ↘(3)
- * 뚝섬                                                                                                 신사
- * ↕(2)                                                                            	                    ↘(3)
- * 성수                                                                                                     잠원
- * ↕(2)  ## 8                                                                                              ↘(3)   ## 12 + 40 => 52 (7개역)
+ * ↕(2)                                                                                          	 ↘(3)
+ * 한양대                                                                                               압구정
+ * ↕(2)                                                                                 	            ↘(3)
+ * 뚝섬  [추가요금 500]                                                                                      신사   [추가요금_1000]
+ * ↕(2)                                                                            	                        ↘(3)
+ * 성수                                                                                                        잠원
+ * ↕(2)  ## 8                                                                                                  ↘(3)   ## 12 + 40 => 52 (7개역)(추가요금 2,000원)
  * 건대입구  ←- (7) -→ 뚝섬유원지 ←- (7) -→ 청담 ←- (7) -→ 강남구청 ←- (7) -→ 학동 ←- (7) -→  논현 ←- (7) -→ 반포 ←- (7) -→ 고속터미널(end)  ## 49 + 8 = 57
+ *                                           [추가요금 _1500]
  */
 @DataJpaTest
 class PathFinderTest {
@@ -66,6 +64,10 @@ class PathFinderTest {
         int DISTANCE_경의중앙선 = 20;
         int DISTANCE_삼호선 = 3;
         int DISTANCE_칠호선 = 7;
+        int EXTRA_CHARGE_이호선 = 500;
+        int EXTRA_CHARGE_경의중앙선 = 2_000;
+        int EXTRA_CHARGE_삼호선 = ExtraCharge.NO_FARE;
+        int EXTRA_CHARGE_칠호선 = 1_500;
 
         사용자 = memberRepository.save(new Member("haedoang@gmail.com", "12", 33));
 
@@ -75,9 +77,9 @@ class PathFinderTest {
         Station 한양대 = new Station("한양대");
         왕십리_START = new Station("왕십리");
 
-        //경의중앙
-        Station 응봉 = new Station("응봉");
+        //경의중앙선
         Station 옥수 = new Station("옥수");
+        Station 응봉 = new Station("응봉");
 
         //3호선
         Station 압구정 = new Station("압구정");
@@ -101,12 +103,12 @@ class PathFinderTest {
                 Arrays.asList(
                         성수, 뚝섬, 왕십리_START, 한양대, 응봉, 옥수, 압구정, 신사, 잠원, 고속터미널_END, 건대입구, 뚝섬유원지, 청담, 강남구청, 학동, 논현, 반포, 경로없는역));
 
-        Line 이호선 = lineRepository.save(Line.of("2호선", "그린", 왕십리_START, 한양대, DISTANCE_이호선));
+        Line 이호선 = lineRepository.save(Line.of("2호선", "그린", 왕십리_START, 한양대, DISTANCE_이호선, EXTRA_CHARGE_이호선));
         이호선.addSection(Section.of(이호선, 한양대, 뚝섬, Distance.of(DISTANCE_이호선)));
         이호선.addSection(Section.of(이호선, 뚝섬, 성수, Distance.of(DISTANCE_이호선)));
         이호선.addSection(Section.of(이호선, 성수, 건대입구, Distance.of(DISTANCE_이호선)));
 
-        Line 칠호선 = lineRepository.save(Line.of("7호선", "카고", 건대입구, 뚝섬유원지, DISTANCE_칠호선));
+        Line 칠호선 = lineRepository.save(Line.of("7호선", "카고", 건대입구, 뚝섬유원지, DISTANCE_칠호선, EXTRA_CHARGE_칠호선));
         칠호선.addSection(Section.of(칠호선, 뚝섬유원지, 청담, Distance.of(DISTANCE_칠호선)));
         칠호선.addSection(Section.of(칠호선, 청담, 강남구청, Distance.of(DISTANCE_칠호선)));
         칠호선.addSection(Section.of(칠호선, 강남구청, 학동, Distance.of(DISTANCE_칠호선)));
@@ -114,10 +116,10 @@ class PathFinderTest {
         칠호선.addSection(Section.of(칠호선, 논현, 반포, Distance.of(DISTANCE_칠호선)));
         칠호선.addSection(Section.of(칠호선, 반포, 고속터미널_END, Distance.of(DISTANCE_칠호선)));
 
-        Line 경의중앙선 = lineRepository.save(Line.of("경의중앙선", "민트", 왕십리_START, 응봉, DISTANCE_경의중앙선));
+        Line 경의중앙선 = lineRepository.save(Line.of("경의중앙선", "민트", 왕십리_START, 응봉, DISTANCE_경의중앙선, EXTRA_CHARGE_경의중앙선));
         경의중앙선.addSection(Section.of(경의중앙선, 응봉, 옥수, Distance.of(DISTANCE_경의중앙선)));
 
-        Line 삼호선 = lineRepository.save(Line.of("삼호선", "주황", 옥수, 압구정, DISTANCE_삼호선));
+        Line 삼호선 = lineRepository.save(Line.of("삼호선", "주황", 옥수, 압구정, DISTANCE_삼호선, EXTRA_CHARGE_삼호선));
         삼호선.addSection(Section.of(삼호선, 압구정, 신사, Distance.of(DISTANCE_삼호선)));
         삼호선.addSection(Section.of(삼호선, 신사, 잠원, Distance.of(DISTANCE_삼호선)));
         삼호선.addSection(Section.of(삼호선, 잠원, 고속터미널_END, Distance.of(DISTANCE_삼호선)));

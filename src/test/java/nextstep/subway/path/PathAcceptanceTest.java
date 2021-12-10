@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.common.util.ExtraChargeGenerator;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -144,7 +145,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 지하철_이용_요금_응답됨(PathResponse pathResponse, int expect) {
         assertThat(pathResponse.getFare()).isNotNull();
-        assertThat(pathResponse.getFare()).isEqualTo(expect);
+        assertThat(pathResponse.getFare()).isEqualTo(expect + ExtraChargeGenerator.value());
     }
 
     private PathResponse 최단거리_조회_응답됨(ExtractableResponse<Response> response) {

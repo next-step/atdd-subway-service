@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import nextstep.subway.auth.domain.Stranger;
 import nextstep.subway.auth.domain.User;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.ExtraCharge;
 import nextstep.subway.line.domain.SubwayFare;
 import nextstep.subway.line.domain.SubwayUser;
 import nextstep.subway.path.domain.Path;
@@ -33,18 +34,17 @@ public class PathResponse {
         this.fare = SubwayFare.rateInquiry(distance);
     }
 
-    private PathResponse(List<StationResponse> stations, Distance distance, User user) {
+    private PathResponse(List<StationResponse> stations, Distance distance, User user, ExtraCharge extraCharge) {
         this.stations = new ArrayList<>(stations);
         this.distance = distance.intValue();
-        this.fare = calculateFare(distance, user);
+        this.fare = calculateFare(distance, user, extraCharge);
     }
 
-    private int calculateFare(Distance distance, User user) {
-        int fare = SubwayFare.rateInquiry(distance);
-        if (user instanceof Stranger) {
-            return fare;
+    private int calculateFare(Distance distance, User user, ExtraCharge extraCharge) {
+        if(user instanceof Stranger) {
+            return SubwayFare.rateInquiry(distance, extraCharge);
         }
-        return SubwayFare.discountFare(fare, SubwayUser.of(user.getAge()));
+        return SubwayFare.rateInquiry(distance, SubwayUser.of(user.getAge()), extraCharge);
     }
 
     public static PathResponse of(Path path) {
@@ -52,6 +52,6 @@ public class PathResponse {
     }
 
     public static PathResponse of(Path path, User user) {
-        return new PathResponse(StationResponse.ofList(path.stations()), path.distance(), user);
+        return new PathResponse(StationResponse.ofList(path.stations()), path.distance(), user, path.extraCharge());
     }
 }

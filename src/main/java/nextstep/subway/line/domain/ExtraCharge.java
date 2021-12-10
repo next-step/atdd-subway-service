@@ -16,9 +16,9 @@ import javax.persistence.Transient;
 @Embeddable
 public class ExtraCharge {
     @Transient
-    public static final int MIN_FARE = 0;
+    public static final int NO_FARE = 0;
 
-    private Integer extraCharge;
+    private Integer extraCharge = NO_FARE;
 
     protected ExtraCharge() {
     }
@@ -33,13 +33,13 @@ public class ExtraCharge {
     }
 
     private void validate(int extraCharge) {
-        if (extraCharge < MIN_FARE) {
+        if (extraCharge < NO_FARE) {
             throw new IllegalFareException();
         }
     }
 
     public boolean useCharge() {
-        return extraCharge > MIN_FARE;
+        return extraCharge > NO_FARE;
     }
 
     public int value() {

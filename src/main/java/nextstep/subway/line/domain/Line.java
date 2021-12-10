@@ -18,7 +18,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-    private ExtraCharge extraCharge;
+    private ExtraCharge extraCharge = ExtraCharge.of(ExtraCharge.NO_FARE);
 
     @Embedded
     private final Sections sections = new Sections();

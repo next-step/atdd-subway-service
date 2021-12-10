@@ -1,7 +1,8 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Sections;
+import nextstep.subway.line.domain.ExtraCharge;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
@@ -14,21 +15,25 @@ import java.util.List;
  * description :
  */
 public class Path {
-    private Sections sections;
+    private List<Section> sections;
     private List<Station> stations;
+    private Station source;
+    private Station target;
     private Distance distance;
 
-    public Path(Sections sections, List<Station> stations, Distance distance) {
+    public Path(List<Section> sections, List<Station> stations, Station source, Station target, Distance distance) {
         this.sections = sections;
         this.stations = stations;
+        this.source = source;
+        this.target = target;
         this.distance = distance;
     }
 
-    public static Path of(Sections sections, List<Station> stations, Distance distance) {
-        return new Path(sections, stations, distance);
+    public static Path of(List<Section> sections, List<Station> stations, Station source, Station target, Distance distance) {
+        return new Path(sections, stations, source, target, distance);
     }
 
-    public Sections sections() {
+    public List<Section> sections() {
         return sections;
     }
 
@@ -41,10 +46,17 @@ public class Path {
     }
 
     public Station source() {
-        return sections.firstStation();
+        return source;
     }
 
     public Station target() {
-        return sections.lastStation();
+        return target;
+    }
+
+    public ExtraCharge extraCharge() {
+        return ExtraCharge.of(sections.stream()
+                .map(it -> it.getLine().extraCharge())
+                .max(Integer::compareTo)
+                .orElse(ExtraCharge.NO_FARE));
     }
 }

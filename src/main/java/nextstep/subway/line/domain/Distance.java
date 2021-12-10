@@ -50,10 +50,6 @@ public class Distance {
         return Distance.of(distance - newDistance.distance);
     }
 
-    public Distance minus(int newDistance) {
-        return Distance.of(distance - newDistance);
-    }
-
     public int intValue() {
         return distance;
     }

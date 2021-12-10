@@ -6,7 +6,6 @@ import nextstep.subway.line.exception.section.SectionNoStationException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.exception.StationNotDeleteException;
 import nextstep.subway.station.exception.StationNotFoundException;
-import org.jgrapht.graph.SimpleWeightedGraph;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;

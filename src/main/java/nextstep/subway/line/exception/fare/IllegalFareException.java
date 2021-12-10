@@ -18,6 +18,6 @@ public class IllegalFareException extends ServiceException {
     public static final String message = "요금은 %d 이상이어야 합니다.";
 
     public IllegalFareException() {
-        super(status, String.format(message, ExtraCharge.MIN_FARE));
+        super(status, String.format(message, ExtraCharge.NO_FARE));
     }
 }

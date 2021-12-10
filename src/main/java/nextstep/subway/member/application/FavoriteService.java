@@ -27,6 +27,7 @@ public class FavoriteService {
     public FavoriteResponse addFavorite(Long id, FavoriteRequest request) {
         Member member = findMemberById(id);
         member.addFavorite(getFavorite(request));
+        memberRepository.save(member);
         final Favorite persistFavorite = favoriteRepository.findFavorite(request.getSource(), request.getTarget(), id);
         return FavoriteResponse.of(persistFavorite);
     }

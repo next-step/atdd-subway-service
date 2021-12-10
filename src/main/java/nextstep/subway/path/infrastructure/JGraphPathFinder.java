@@ -3,7 +3,6 @@ package nextstep.subway.path.infrastructure;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.exception.EdgeCreateException;
@@ -13,7 +12,6 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.exception.StationNotFoundException;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
@@ -44,7 +42,7 @@ public class JGraphPathFinder implements PathFinder {
 
         try {
             GraphPath<Station, Section> path = dijkstraShortestPath.getPath(srcStation, destStation);
-            return Path.of(Sections.of(path.getEdgeList()), path.getVertexList(),  Distance.of((int) path.getWeight()));
+            return Path.of(path.getEdgeList(), path.getVertexList(), srcStation, destStation, Distance.of((int) path.getWeight()));
         } catch (NullPointerException npe) {
             throw new PathNotFoundException();
         }
