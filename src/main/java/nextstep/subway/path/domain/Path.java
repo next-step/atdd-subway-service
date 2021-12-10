@@ -7,14 +7,20 @@ import nextstep.subway.station.domain.*;
 public class Path {
     private final List<Station> stations;
     private final int totalDistance;
+    private final int fare;
 
-    private Path(List<Station> stations, int totalDistance) {
+    private Path(List<Station> stations, int totalDistance, int fare) {
         this.stations = stations;
         this.totalDistance = totalDistance;
+        this.fare = fare;
     }
 
     public static Path of(List<Station> stations, int totalDistance) {
-        return new Path(stations, totalDistance);
+        return new Path(stations, totalDistance, 0);
+    }
+
+    public static Path of(List<Station> stations, int totalDistance, int fare) {
+        return new Path(stations, totalDistance, fare);
     }
 
     public List<Station> getStations() {
@@ -25,11 +31,7 @@ public class Path {
         return totalDistance;
     }
 
-    @Override
-    public String toString() {
-        return "Path{" +
-            "stations=" + stations +
-            ", totalDistance=" + totalDistance +
-            '}';
+    public int getFare() {
+        return fare;
     }
 }
