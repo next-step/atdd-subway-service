@@ -21,6 +21,10 @@ public class Distance {
 		return new Distance(distance);
 	}
 
+	public static Distance of(double distance) {
+		return new Distance((int)distance);
+	}
+
 	public boolean lessThan(Distance distance) {
 		return this.distance < distance.distance;
 	}
@@ -31,6 +35,10 @@ public class Distance {
 
 	public Distance increase(Distance distance) {
 		return new Distance(this.distance + distance.distance);
+	}
+
+	public int value() {
+		return distance;
 	}
 
 	@Override
@@ -47,4 +55,6 @@ public class Distance {
 	public int hashCode() {
 		return Objects.hash(distance);
 	}
+
+
 }

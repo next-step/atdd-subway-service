@@ -64,8 +64,20 @@ public class Section {
 		return distance;
 	}
 
+	public Long getUpStationId() {
+		return getUpStation().getId();
+	}
+
+	public Long getDownStationId() {
+		return getDownStation().getId();
+	}
+
+	public int getDistanceValue() {
+		return getDistance().value();
+	}
+
 	public void updateUpStation(Section section) {
-		if(distance.lessThan(section.distance)){
+		if (distance.lessThan(section.distance)) {
 			throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
 		}
 		this.upStation = section.getDownStation();
@@ -73,7 +85,7 @@ public class Section {
 	}
 
 	public void updateDownStation(Section section) {
-		if(distance.lessThan(section.distance)){
+		if (distance.lessThan(section.distance)) {
 			throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
 		}
 		this.downStation = section.getUpStation();
@@ -102,4 +114,5 @@ public class Section {
 	public int hashCode() {
 		return Objects.hash(id);
 	}
+
 }

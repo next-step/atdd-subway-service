@@ -24,7 +24,7 @@ public class Sections {
 
 	public Sections(Section... sections) {
 		for (Section section : sections) {
-			this.sections.add(section);
+			addSection(section);
 		}
 	}
 
@@ -81,13 +81,13 @@ public class Sections {
 	}
 
 	public void addSection(Section section) {
-		validateStationsExisted(section);
-		validateStationNonMatch(section);
-
 		if (getStations().isEmpty()) {
 			sections.add(section);
 			return;
 		}
+
+		validateStationsExisted(section);
+		validateStationNonMatch(section);
 
 		if (isUpStationExisted(section)) {
 			updateUpStation(section);
