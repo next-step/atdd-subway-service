@@ -15,7 +15,6 @@ public class BasicPriceCalculator implements PriceCalculator {
 
 		/* 각 구간별 금액 구하기 */
 		int price = Arrays.stream(policies)
-			.skip(1)
 			.mapToInt(policy -> policy.calculateSectionPrice(pathDistance))
 			.sum();
 

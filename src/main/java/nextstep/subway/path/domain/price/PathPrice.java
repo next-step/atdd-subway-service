@@ -33,6 +33,6 @@ public class PathPrice {
 	public void addLineExtraPrice(Set<Line> lines) {
 		price += lines.stream()
 			.mapToInt(Line::getExtraPrice)
-			.sum();
+			.max().orElse(0);
 	}
 }
