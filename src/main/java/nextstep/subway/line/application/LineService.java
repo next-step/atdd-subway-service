@@ -75,7 +75,8 @@ public class LineService {
 
     @Transactional
     public void deleteLineById(Long id) {
-        lineRepository.deleteById(id);
+        final Line line = getLineById(id);
+        lineRepository.delete(line);
     }
 
     private Line getLineById(final Long id) {
