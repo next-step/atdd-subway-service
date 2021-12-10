@@ -1,6 +1,6 @@
 package nextstep.subway.station.application;
 
-import nextstep.subway.common.exception.ErrorCode;
+import nextstep.subway.common.exception.CommonErrorCode;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.infrastructure.StationRepository;
@@ -37,6 +37,6 @@ public class StationService {
 
     public Station findStationById(Long id) {
         return stationRepository.findById(id)
-            .orElseThrow(() -> NotFoundException.of(ErrorCode.SECTION_NOT_FOUND));
+            .orElseThrow(() -> NotFoundException.of(CommonErrorCode.SECTION_NOT_FOUND));
     }
 }

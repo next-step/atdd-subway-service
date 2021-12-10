@@ -1,6 +1,6 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.common.exception.ErrorCode;
+import nextstep.subway.common.exception.CommonErrorCode;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.infrastructure.line.LineRepository;
@@ -71,7 +71,7 @@ public class LineService {
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id)
-            .orElseThrow(() -> NotFoundException.of(ErrorCode.LINE_NOT_FOUND));
+            .orElseThrow(() -> NotFoundException.of(CommonErrorCode.LINE_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)

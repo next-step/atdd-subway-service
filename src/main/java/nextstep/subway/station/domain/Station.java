@@ -4,7 +4,7 @@ import nextstep.subway.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Objects;
-import nextstep.subway.common.exception.ErrorCode;
+import nextstep.subway.common.exception.CommonErrorCode;
 import nextstep.subway.common.exception.InvalidParameterException;
 
 @Entity
@@ -43,7 +43,7 @@ public class Station extends BaseEntity {
 
     private void validEmpty(String name) {
         if (Objects.isNull(name) || name.isEmpty()) {
-            throw InvalidParameterException.of(ErrorCode.NOT_EMPTY);
+            throw InvalidParameterException.of(CommonErrorCode.NOT_EMPTY);
         }
     }
 

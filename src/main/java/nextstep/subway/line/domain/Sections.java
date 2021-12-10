@@ -9,7 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import nextstep.subway.common.exception.ErrorCode;
+import nextstep.subway.common.exception.CommonErrorCode;
 import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.station.domain.Station;
 
@@ -131,19 +131,19 @@ public class Sections {
 
     private void validateDuplicate(Section section) {
         if (isDuplicatedSection(section)) {
-            throw InvalidParameterException.of(ErrorCode.SECTION_EXIST);
+            throw InvalidParameterException.of(CommonErrorCode.SECTION_EXIST);
         }
     }
 
     private void validateAddAblePosition(Section section) {
         if (isAddAblePositionInSections(section)) {
-            throw InvalidParameterException.of(ErrorCode.SECTION_ADD_NO_POSITION);
+            throw InvalidParameterException.of(CommonErrorCode.SECTION_ADD_NO_POSITION);
         }
     }
 
     private void validateDeleteAbleSize() {
         if (sections.size() == MIN_LINE_STATION_SIZE) {
-            throw InvalidParameterException.of(ErrorCode.SECTION_ONE_COUNT_CAN_NOT_REMOVE);
+            throw InvalidParameterException.of(CommonErrorCode.SECTION_ONE_COUNT_CAN_NOT_REMOVE);
         }
     }
 
