@@ -74,8 +74,12 @@ public class Sections {
     }
 
     public Station findUpStation() {
-
         Station upStation = this.sections.stream().findAny().get().getUpStation();
+        return findUpStation(upStation);
+    }
+
+    public Station findUpStation(Station upStation) {
+
         Station finalDownStation = upStation;
         Optional<Section> nextLineStation = findLineStation(it -> it.getDownStation() == finalDownStation);
 

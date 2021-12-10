@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
+
     private LineRepository lineRepository;
     private StationService stationService;
 
@@ -32,6 +33,12 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
+
+        Optional<Line> line = lineRepository.findByName(request.getName());
+        if(line.isPresent()) {
+            throw new IllegalArgumentException("노선이 이미 등록되었습니다.");
+        }
+
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         List<StationResponse> stations = persistLine.getStationsByOrder().stream()
                 .map(StationResponse::of)

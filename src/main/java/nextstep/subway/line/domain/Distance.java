@@ -13,7 +13,7 @@ public class Distance {
     }
 
     public Distance(Integer value) {
-        validateDistanceValue(value);
+        validateLaterEqualZero(value);
         this.value = value;
     }
 
@@ -21,7 +21,7 @@ public class Distance {
         return value;
     }
 
-    private void validateDistanceValue(Integer value) {
+    private void validateLaterEqualZero(Integer value) {
         if(value <= 0) {
             throw new IllegalArgumentException("거리가 0보다 작을 수 없습니다.");
         }

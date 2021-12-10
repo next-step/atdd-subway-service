@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 public class LineResponse {
     private Long id;
     private String name;
@@ -34,7 +36,7 @@ public class LineResponse {
     public static LineResponse of(Line line) {
         List<StationResponse> stations = line.getStationsByOrder().stream()
                 .map(StationResponse::of)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
     }

@@ -1,5 +1,7 @@
 package nextstep.subway.line.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -203,5 +206,4 @@ public class LineTest {
         //when
         assertThatThrownBy(() -> line.removeSection(강남역)).isInstanceOf(RuntimeException.class);
     }
-
 }
