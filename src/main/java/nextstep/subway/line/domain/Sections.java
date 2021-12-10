@@ -159,13 +159,23 @@ public class Sections {
 
 	public void remove(Line line, Station station) {
 		validateSectionsSize();
+
+		Section newUpSection = Section.DUMMY_SECTION;
+		Section newDownSection = Section.DUMMY_SECTION;
+		Distance newSectionDistance = Distance.DUMMY_DISTANCE;
+
 		List<Section> removeSections = findRemoveSections(station);
+
 		if (isMiddleStation(removeSections)) {
-			Station newUpStation = getNewUpStation(removeSections, station);
-			Station newDownStation = getNewDownStation(removeSections, station);
-			Distance newSectionDistance = getNewSectionDistance(removeSections);
-			sections.add(new Section(line, newUpStation, newDownStation, newSectionDistance));
+			newUpSection = getNewUpStation(removeSections, station);
+			newDownSection = getNewDownStation(removeSections, station);
+			newSectionDistance = getNewSectionDistance(removeSections);
 		}
+
+		if (!newUpSection.isDummy() && !newDownSection.isDummy() && !newSectionDistance.equalDummy()) {
+			sections.add(new Section(line, newUpSection.getUpStation(), newDownSection.getDownStation(), newSectionDistance));
+		}
+
 		removeSections.stream()
 			.forEach(section -> sections.remove(section));
 	}
@@ -183,20 +193,18 @@ public class Sections {
 			.orElse(Distance.DUMMY_DISTANCE);
 	}
 
-	private Station getNewUpStation(List<Section> sections, Station station) {
+	private Section getNewUpStation(List<Section> sections, Station station) {
 		return sections.stream()
 			.filter(section -> section.equalsDownStation(station))
 			.findFirst()
-			.orElse(Section.DUMMY_SECTION)
-			.getUpStation();
+			.orElse(Section.DUMMY_SECTION);
 	}
 
-	private Station getNewDownStation(List<Section> sections, Station station) {
+	private Section getNewDownStation(List<Section> sections, Station station) {
 		return sections.stream()
 			.filter(section -> section.equalsUpStation(station))
 			.findFirst()
-			.orElse(Section.DUMMY_SECTION)
-			.getDownStation();
+			.orElse(Section.DUMMY_SECTION);
 	}
 
 	private boolean isMiddleStation(List<Section> sections) {

@@ -41,6 +41,10 @@ public class Distance {
 		return distance;
 	}
 
+	public boolean equalDummy() {
+		return this == DUMMY_DISTANCE;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -55,6 +59,5 @@ public class Distance {
 	public int hashCode() {
 		return Objects.hash(distance);
 	}
-
 
 }

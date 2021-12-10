@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 public class Station extends BaseEntity {
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -51,4 +51,5 @@ public class Station extends BaseEntity {
 	public boolean equalsId(int source) {
         return this.id == (long)source;
 	}
+
 }
