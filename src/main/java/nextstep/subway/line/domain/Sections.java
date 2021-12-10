@@ -151,4 +151,8 @@ public class Sections {
 	private Optional<Section> findFirst(Predicate<? super Section> conditional) {
 		return sections.stream().filter(conditional).findFirst();
 	}
+
+	public List<Section> getSections() {
+		return Collections.unmodifiableList(sections);
+	}
 }
