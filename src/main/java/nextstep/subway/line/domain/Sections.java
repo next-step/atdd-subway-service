@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -15,6 +16,8 @@ import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
+
+	private static final int MINIMUM = 1;
 
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
@@ -68,7 +71,7 @@ public class Sections {
 				new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "첫 상행선 종점을 찾을 수 없습니다"));
 	}
 
-	public void updateSections(Section newSection) {
+	public void addStation(Section newSection) {
 		validateUpdateSections(newSection);
 		List<Station> stations = this.getStations();
 		if (stations.isEmpty()) {
@@ -119,6 +122,36 @@ public class Sections {
 
 	private boolean isStationExisted(List<Station> stations, Station station) {
 		return stations.stream().anyMatch(it -> it.equals(station));
+	}
+
+	public void removeStation(Station station, Line line) {
+		validateRemoveStation();
+		Optional<Section> backwardSection = findByUpStation(station);
+		Optional<Section> forwardSection = findByDownStation(station);
+		if (backwardSection.isPresent() && forwardSection.isPresent()) {
+			Section section = Section.combine(forwardSection.get(), backwardSection.get());
+			this.sections.add(section);
+		}
+		backwardSection.ifPresent(it -> line.getSections().remove(it));
+		forwardSection.ifPresent(it -> line.getSections().remove(it));
+	}
+
+	private void validateRemoveStation() {
+		if (this.sections.size() <= MINIMUM) {
+			throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "구간이 {}개 이하일 때는 삭제가 안됩니다", MINIMUM);
+		}
+	}
+
+	private Optional<Section> findByUpStation(Station upStation) {
+		return this.sections.stream()
+			.filter(it -> it.getUpStation() == upStation)
+			.findFirst();
+	}
+
+	private Optional<Section> findByDownStation(Station upStation) {
+		return this.sections.stream()
+			.filter(it -> it.getDownStation() == upStation)
+			.findFirst();
 	}
 
 	public List<Section> getSections() {

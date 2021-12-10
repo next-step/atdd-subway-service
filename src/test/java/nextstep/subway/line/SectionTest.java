@@ -1,10 +1,12 @@
 package nextstep.subway.line;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.StationTest;
 
@@ -31,11 +33,11 @@ public class SectionTest {
 		Section section = Section.of(1L, StationTest.노포역, StationTest.다대포해수욕장역, 10);
 
 		// when
-		section.updateUpStation(StationTest.서면역, 1);
+		section.updateUpStation(StationTest.서면역, Distance.of(1));
 
 		// then
 		assertThat(section.getUpStation()).isEqualTo(StationTest.서면역);
-		assertThat(section.getDistance()).isEqualTo(9);
+		assertThat(section.getDistance()).isEqualTo(Distance.of(9));
 	}
 
 	@DisplayName("하행역을 업데이트한다")
@@ -45,11 +47,29 @@ public class SectionTest {
 		Section section = Section.of(1L, StationTest.노포역, StationTest.다대포해수욕장역, 10);
 
 		// when
-		section.updateDownStation(StationTest.서면역, 1);
+		section.updateDownStation(StationTest.서면역, Distance.of(1));
 
 		// then
 		assertThat(section.getDownStation()).isEqualTo(StationTest.서면역);
-		assertThat(section.getDistance()).isEqualTo(9);
+		assertThat(section.getDistance()).isEqualTo(Distance.of(9));
+	}
+
+	@Test
+	@DisplayName("중간 역을 삭제하여 새 구간을 생성한다")
+	void combineTest() {
+		// given
+		Section frontSection = Section.of(1L, StationTest.노포역, StationTest.서면역, 10);
+		Section backwardSection = Section.of(2L, StationTest.서면역, StationTest.범내골역, 10);
+
+		// when
+		Section section = Section.combine(frontSection, backwardSection);
+
+		// then
+		assertAll(
+			() -> assertThat(section.getDistance()).isEqualTo(Distance.of(20)),
+			() -> assertThat(section.getUpStation()).isEqualTo(StationTest.노포역),
+			() -> assertThat(section.getDownStation()).isEqualTo(StationTest.범내골역)
+		);
 	}
 
 }

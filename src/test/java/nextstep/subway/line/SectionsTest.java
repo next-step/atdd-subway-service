@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
@@ -86,12 +87,12 @@ public class SectionsTest {
 		Section section4 = Section.of(4L, 서면역, 범내골역, 1);
 
 		// when
-		sections.updateSections(section4);
+		sections.addStation(section4);
 
 		// then
 		assertAll(
 			() -> assertThat(sections.getStations()).containsExactly(노포역, 서면역, 범내골역, 부산진역, 다대포해수욕장역),
-			() -> assertThat(section2.getDistance()).isEqualTo(4)
+			() -> assertThat(section2.getDistance()).isEqualTo(Distance.of(4))
 		);
 	}
 
@@ -106,13 +107,13 @@ public class SectionsTest {
 		Section section4 = Section.of(4L, 범내골역, 서면역, 1);
 
 		// when
-		sections.updateSections(section4);
+		sections.addStation(section4);
 
 		// then
 		assertAll(
 			() -> assertThat(sections.getStations())
 				.containsExactly(노포역, 범내골역, 서면역, 부산진역, 다대포해수욕장역),
-			() -> assertThat(section1.getDistance()).isEqualTo(9)
+			() -> assertThat(section1.getDistance()).isEqualTo(Distance.of(9))
 		);
 	}
 
@@ -128,7 +129,7 @@ public class SectionsTest {
 		Section section4 = Section.of(4L, 새상행종점, 노포역, 1);
 
 		// when
-		sections.updateSections(section4);
+		sections.addStation(section4);
 
 		// then
 		assertThat(sections.getStations())
@@ -147,7 +148,7 @@ public class SectionsTest {
 		Section section4 = Section.of(4L, 다대포해수욕장역, 새하행종점, 1);
 
 		// when
-		sections.updateSections(section4);
+		sections.addStation(section4);
 
 		// then
 		assertThat(sections.getStations())
