@@ -32,10 +32,11 @@ public class ExceptionResponseHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(DataIntegrityViolationException.class)
-	public ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+	public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
 		HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 		ExceptionResponse response = new ExceptionResponse(
 			httpStatus, ex.getMessage(), EMPTY_DESCRIPTION, LocalDateTime.now());
-		return ResponseEntity.status(httpStatus).body(response);
+		return ResponseEntity.status(httpStatus)
+			.body(response);
 	}
 }
