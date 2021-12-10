@@ -15,13 +15,11 @@ import nextstep.subway.member.application.exception.FavoriteErrorCode;
 @Embeddable
 public class Favorites {
 
-
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
     @JoinColumn(name = "member_id", updatable = false, nullable = false)
     private List<Favorite> favorites = new ArrayList<>();
 
     protected Favorites() {
-
     }
 
     public static Favorites of() {

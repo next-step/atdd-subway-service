@@ -4,7 +4,7 @@ import java.util.List;
 import nextstep.subway.member.domain.Favorite;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberFavoriteCollection;
-import nextstep.subway.member.dto.FavoriteResponse;
+import nextstep.subway.member.dto.favorite.FavoriteResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.infrastructure.StationRepository;
 import org.springframework.stereotype.Service;

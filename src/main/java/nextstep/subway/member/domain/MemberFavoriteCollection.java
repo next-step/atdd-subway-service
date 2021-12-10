@@ -3,9 +3,9 @@ package nextstep.subway.member.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import nextstep.subway.common.exception.CommonErrorCode;
 import nextstep.subway.common.exception.InvalidParameterException;
-import nextstep.subway.member.dto.FavoriteResponse;
+import nextstep.subway.member.application.exception.FavoriteErrorCode;
+import nextstep.subway.member.dto.favorite.FavoriteResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -37,10 +37,11 @@ public class MemberFavoriteCollection {
         return result;
     }
 
-    private StationResponse getStationResponseById(Long stationSourceId) {
+    private StationResponse getStationResponseById(Long stationId) {
         return StationResponse.of(stations.stream()
-            .filter(it -> Objects.equals(it.getId(), stationSourceId))
+            .filter(station -> Objects.equals(station.getId(), stationId))
             .findFirst()
-            .orElseThrow(() -> InvalidParameterException.of(CommonErrorCode.NOT_EMPTY)));
+            .orElseThrow(
+                () -> InvalidParameterException.of(FavoriteErrorCode.FAVORITE_STATION_NOT_FOUND)));
     }
 }

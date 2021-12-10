@@ -1,8 +1,9 @@
-package nextstep.subway.member.dto;
+package nextstep.subway.member.dto.member;
 
 import nextstep.subway.member.domain.Member;
 
 public class MemberResponse {
+
     private Long id;
     private String email;
     private Integer age;

@@ -4,8 +4,8 @@ import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.member.application.exception.MemberErrorCode;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.infrastructure.MemberRepository;
-import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.member.dto.member.MemberRequest;
+import nextstep.subway.member.dto.member.MemberResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
