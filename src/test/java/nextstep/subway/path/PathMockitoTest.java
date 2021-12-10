@@ -55,8 +55,8 @@ public class PathMockitoTest {
         LineRepository lineRepository = mock(LineRepository.class);
         JGraphPathFinder pathFinder = mock(JGraphPathFinder.class);
 
-        List<Line> lines = Lists.newArrayList(
-                Line.of("1호선", "남색", 강남역, 역삼역, 5));
+        final Line line1 = Line.of("1호선", "남색", 강남역, 역삼역, 5);
+        List<Line> lines = Lists.newArrayList(line1);
 
         List<Station> stations = Lists.newArrayList(강남역, 역삼역);
 
@@ -65,7 +65,7 @@ public class PathMockitoTest {
         when(stationRepository.findAll()).thenReturn(stations);
 
         when(pathFinder.getShortestPath(anyList(), anyList(), anyLong(), anyLong()))
-                .thenReturn(Path.of(new Station("1"), new Station("2"), stations, Distance.of(5)));
+                .thenReturn(Path.of(line1.sections(), Distance.of(5)));
 
         PathService pathService = new PathService(pathFinder, stationRepository, lineRepository);
 
@@ -74,8 +74,8 @@ public class PathMockitoTest {
         final PathResponse pathResponse = PathResponse.of(path);
 
         // then
-        assertThat(pathResponse.getStations()).hasSize(2);
-        assertThat(pathResponse.getDistance()).isEqualTo(5);
-        assertThat(pathResponse.getFare()).isEqualTo(SubwayFare.BASE_RATE);
+        assertThat(pathResponse.stations()).hasSize(2);
+        assertThat(pathResponse.distance()).isEqualTo(5);
+        assertThat(pathResponse.fare()).isEqualTo(SubwayFare.BASE_RATE);
     }
 }

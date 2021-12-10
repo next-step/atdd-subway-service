@@ -8,6 +8,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.exception.MemberNotFoundException;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.PathBeginIsEndException;
 import nextstep.subway.path.exception.PathNotFoundException;
 import nextstep.subway.path.infrastructure.JGraphPathFinder;
@@ -134,8 +135,12 @@ class PathFinderTest {
         Path path = pathFinder.getShortestPath(lines, stations, 왕십리_START.getId(), 고속터미널_END.getId());
 
         // then
-        assertThat(path.routes()).hasSize(7);
+        assertThat(path.stations()).hasSize(7);
         assertThat(path.distance()).isEqualTo(Distance.of(52));
+
+        // when
+        final PathResponse pathResponse = PathResponse.of(path);
+        assertThat(pathResponse.fare()).isEqualTo(2_150);
     }
 
     @Test

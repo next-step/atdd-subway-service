@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.SimpleWeightedGraph;
 
 import javax.persistence.*;
 import java.util.List;
@@ -57,6 +58,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public Sections sections() {
+        return sections;
     }
 
     public List<Section> getSections() {

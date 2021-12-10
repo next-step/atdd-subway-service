@@ -2,6 +2,8 @@ package nextstep.subway.path.infrastructure;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.exception.EdgeCreateException;
@@ -11,8 +13,7 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.exception.StationNotFoundException;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
+import org.jgrapht.graph.SimpleWeightedGraph;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -35,40 +36,39 @@ public class JGraphPathFinder implements PathFinder {
         Station srcStation = getStation(stations, srcStationId);
         Station destStation = getStation(stations, destStationId);
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        SimpleWeightedGraph<Station, Section> graph = new SimpleWeightedGraph<>(Section.class);
+        DijkstraShortestPath<Station, Section> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
         drawGraph(lines, stations, graph);
 
         try {
-            GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(srcStation, destStation);
-            return Path.of(srcStation, destStation, path.getVertexList(), Distance.of((int) path.getWeight()));
+            GraphPath<Station, Section> path = dijkstraShortestPath.getPath(srcStation, destStation);
+            return Path.of(Sections.of(path.getEdgeList()), Distance.of((int) path.getWeight()));
         } catch (NullPointerException npe) {
             throw new PathNotFoundException();
         }
     }
 
-    private void drawGraph(List<Line> lines, List<Station> stations, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void drawGraph(List<Line> lines, List<Station> stations, SimpleWeightedGraph<Station, Section> graph) {
         drawVertex(stations, graph);
         checkVertexDrawn(graph);
-        drawEdge(lines, graph);
+        lines.forEach(line -> drawEdge(line, graph));
     }
 
-    private void checkVertexDrawn(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void checkVertexDrawn(SimpleWeightedGraph<Station, Section> graph) {
         if (graph.vertexSet().isEmpty()) {
             throw new EdgeCreateException();
         }
     }
 
-    private void drawEdge(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        lines.forEach(line -> line.getSections()
-                .forEach(section -> graph.setEdgeWeight(
-                        graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().intValue())
-                )
-        );
+    private void drawEdge(Line line, SimpleWeightedGraph<Station, Section> graph) {
+        line.getSections().forEach(section -> {
+            graph.addEdge(section.getUpStation(), section.getDownStation(), section);
+            graph.setEdgeWeight(section, section.getDistance().intValue());
+        });
     }
 
-    private void drawVertex(List<Station> stations, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void drawVertex(List<Station> stations, SimpleWeightedGraph<Station, Section> graph) {
         stations.stream().forEach(graph::addVertex);
     }
 

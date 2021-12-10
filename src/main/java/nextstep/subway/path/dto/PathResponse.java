@@ -47,27 +47,23 @@ public class PathResponse {
         return SubwayFare.discountFare(fare, SubwayUser.of(user.getAge()));
     }
 
-    public static PathResponse of(List<Station> stations, Distance distance) {
-        return new PathResponse(StationResponse.ofList(stations), distance);
-    }
-
     public static PathResponse of(Path path) {
-        return PathResponse.of(path.routes(), path.distance());
+        return new PathResponse(StationResponse.ofList(path.stations()), path.distance());
     }
 
     public static PathResponse of(Path path, User user) {
-        return new PathResponse(StationResponse.ofList(path.routes()), path.distance(), user);
+        return new PathResponse(StationResponse.ofList(path.stations()), path.distance(), user);
     }
 
-    public List<StationResponse> getStations() {
+    public List<StationResponse> stations() {
         return stations;
     }
 
-    public int getFare() {
+    public int fare() {
         return fare;
     }
 
-    public int getDistance() {
+    public int distance() {
         return distance;
     }
 }

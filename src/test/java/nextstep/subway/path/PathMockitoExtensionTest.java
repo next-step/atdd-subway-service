@@ -86,19 +86,15 @@ public class PathMockitoExtensionTest {
     @DisplayName("경로 조회")
     void findPaths() throws Exception {
         // given
-        List<Line> lines = Lists.newArrayList(
-                Line.of("1호선", "남색", 강남역, 역삼역, 5)
-        );
+        final Line line1 = Line.of("1호선", "남색", 강남역, 역삼역, 5);
+        List<Line> lines = Lists.newArrayList(line1);
 
         List<Station> stations = Lists.newArrayList(강남역, 역삼역);
 
         when(stationRepository.findAll()).thenReturn(stations);
-
         when(lineRepository.findAll()).thenReturn(lines);
-
-        when(finder.getShortestPath(anyList(), anyList(), anyLong(), anyLong())).thenReturn(
-                Path.of(new Station("강남역"), new Station("역삼역"), stations, Distance.of(5))
-        );
+        when(finder.getShortestPath(anyList(), anyList(), anyLong(), anyLong()))
+                .thenReturn(Path.of(line1.sections(), Distance.of(5)));
 
         PathService pathService = new PathService(finder, stationRepository, lineRepository);
 
@@ -106,8 +102,8 @@ public class PathMockitoExtensionTest {
         final PathResponse pathResponse = PathResponse.of(pathService.getShortestPath(강남역.getId(), 역삼역.getId()));
 
         // then
-        assertThat(pathResponse.getStations()).hasSize(2);
-        assertThat(pathResponse.getDistance()).isEqualTo(5);
-        assertThat(pathResponse.getFare()).isEqualTo(SubwayFare.BASE_RATE);
+        assertThat(pathResponse.stations()).hasSize(2);
+        assertThat(pathResponse.distance()).isEqualTo(5);
+        assertThat(pathResponse.fare()).isEqualTo(SubwayFare.BASE_RATE);
     }
 }
