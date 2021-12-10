@@ -25,8 +25,7 @@ public class PathService {
     private final StationService stationService;
     private final PathFinder pathFinder;
 
-    public PathService(LineService lineService, StationService stationService,
-        PathFinder pathFinder) {
+    public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
         this.lineService = lineService;
         this.stationService = stationService;
         this.pathFinder = pathFinder;
@@ -38,8 +37,7 @@ public class PathService {
         Set<Section> allSection = lineService.findAllSection();
         PathFinderResponse pathFinderResponse = pathFinder.getShortestPaths(allSection, sourceStation, targetStation);
         int subwayUsageFee = SubwayFee.getSubwayUsageFee(new SubwayFeeRequest(
-            pathFinderResponse.getDistance(), pathFinderResponse.getLineSurcharge(),
-            loginMember.isGuest(), loginMember.getAgeType()));
+            pathFinderResponse.getDistance(), pathFinderResponse.getLineSurcharge(), loginMember.getAgeType()));
 
         return convertPathResponse(pathFinderResponse.getStations(), pathFinderResponse.getDistance(),
             subwayUsageFee);

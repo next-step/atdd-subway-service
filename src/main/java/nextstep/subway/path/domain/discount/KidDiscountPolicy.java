@@ -7,7 +7,7 @@ public class KidDiscountPolicy implements DiscountPolicy {
     private static final int FREE_FEE = 0;
 
     @Override
-    public int discount(int fee) {
+    public int getDiscountFee(int fee) {
         fee -= DEDUCTIBLE_FEE;
         if (fee <= FREE_FEE) {
             return FREE_FEE;

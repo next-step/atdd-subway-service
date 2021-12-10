@@ -12,7 +12,7 @@ class DiscountPolicyTest {
     @ParameterizedTest
     @CsvSource(value = {"0,0", "350,0", "1000,520", "3300,2360", "17580,13784"})
     void calculateKidDiscountFee(int fee, int expected) {
-        int discount = new AdolescentDiscountPolicy().discount(fee);
+        int discount = new AdolescentDiscountPolicy().getDiscountFee(fee);
         assertEquals(expected, discount);
     }
 
@@ -20,7 +20,7 @@ class DiscountPolicyTest {
     @ParameterizedTest
     @CsvSource(value = {"0,0", "350,0", "1000,325", "3300,1475", "17580,8615"})
     void calculateAdolescentDiscountFee(int fee, int expected) {
-        int discount = new KidDiscountPolicy().discount(fee);
+        int discount = new KidDiscountPolicy().getDiscountFee(fee);
         assertEquals(expected, discount);
     }
 

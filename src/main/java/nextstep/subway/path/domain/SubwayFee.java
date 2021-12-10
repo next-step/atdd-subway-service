@@ -20,12 +20,11 @@ public class SubwayFee {
     private static final int LIMIT_OVER_MAX_FEE = BASIC_FEE + LIMIT_OVER_MAX_QUOTIENT * OVER_FEE;
 
     private SubwayFee() {
-
     }
 
     public static int getSubwayUsageFee(SubwayFeeRequest subwayFeeRequest) {
         int fee = calculateSubwayFee(subwayFeeRequest.getDistance(), subwayFeeRequest.getLineSurcharge());
-        if (subwayFeeRequest.isGuest() || subwayFeeRequest.getMemberAgeType().isNone()) {
+        if (subwayFeeRequest.getMemberAgeType().isNone()) {
             return fee;
         }
         return discountFeeByPolicy(fee, subwayFeeRequest.getMemberAgeType());
@@ -33,9 +32,9 @@ public class SubwayFee {
 
     private static int discountFeeByPolicy(int fee, LoginMember.AgeType memberAgeType) {
         if (memberAgeType.isKid()) {
-            return new KidDiscountPolicy().discount(fee);
+            return new KidDiscountPolicy().getDiscountFee(fee);
         }
-        return new AdolescentDiscountPolicy().discount(fee);
+        return new AdolescentDiscountPolicy().getDiscountFee(fee);
     }
 
     private static int calculateSubwayFee(int distance, int lineSurcharge) {
