@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jgrapht.GraphPath;
@@ -35,8 +36,8 @@ class PathTest {
 		upStation1 = Station.from("강남역");
 		downStation1 = Station.from("광교역");
 		downStation2 = Station.from("삼성역");
-		line1 = Line.of("신분당선", "red");
-		line2 = Line.of("이호선", "green");
+		line1 = Line.of("신분당선", "red", 100);
+		line2 = Line.of("이호선", "green", 200);
 		section1 = Section.of(line1, upStation1, downStation1, 10);
 		section2 = Section.of(line2, downStation1, downStation2, 10);
 
@@ -116,5 +117,18 @@ class PathTest {
 			() -> assertThat(shortestPath.getVertexList()).hasSize(3),
 			() -> assertThat(shortestPath.getWeight()).isEqualTo(20)
 		);
+	}
+
+	@DisplayName("거리와 노선 추가 요금기준 최종 요금를 생성하는 메소드 테스트")
+	@Test
+	void generateSubwayPrice() {
+		// given
+		Path path = Path.of(Arrays.asList(line1, line2), upStation1, downStation2);
+
+		// when
+		Price price = path.getPrice();
+
+		// then
+		assertThat(price.getIntPrice()).isEqualTo(1850);
 	}
 }
