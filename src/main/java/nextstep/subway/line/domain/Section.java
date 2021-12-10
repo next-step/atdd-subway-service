@@ -97,4 +97,15 @@ public class Section implements Comparable<Section> {
     public int hashCode() {
         return Objects.hash(id, line, upStation, downStation, distance);
     }
+
+    @Override
+    public int compareTo(Section o) {
+        if (this.upStation.equals(o.downStation)) {
+            return 1;
+        }
+        if (this.downStation.equals(o.upStation)) {
+            return -1;
+        }
+        return 0;
+    }
 }
