@@ -61,7 +61,8 @@ class PathServiceTest {
 
 		final PathResponse pathResponse = pathService.findPath(강남역.getId(), 남부터미널역.getId());
 
-		final List<Long> actualStationIds = pathResponse.getStations().stream().map(StationResponse::getId).collect(Collectors.toList());
+		final List<Long> actualStationIds = pathResponse.getStations().stream()
+			.map(StationResponse::getId).collect(Collectors.toList());
 		assertThat(actualStationIds).containsExactly(강남역.getId(), 양재역.getId(), 남부터미널역.getId());
 		assertThat(pathResponse.getDistance()).isEqualTo(12d);
 	}
