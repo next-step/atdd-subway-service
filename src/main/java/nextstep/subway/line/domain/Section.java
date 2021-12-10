@@ -39,10 +39,6 @@ public class Section {
         return id;
     }
 
-    public Line getLine() {
-        return line;
-    }
-
     public Station getUpStation() {
         return upStation;
     }
@@ -77,5 +73,9 @@ public class Section {
 
     public boolean isEqualToDownStation(Station station) {
         return downStation.equals(station);
+    }
+
+    public int getAdditionalPrice() {
+        return line.getAdditionalPrice();
     }
 }

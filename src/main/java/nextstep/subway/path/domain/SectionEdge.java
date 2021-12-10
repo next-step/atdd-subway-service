@@ -12,7 +12,7 @@ public class SectionEdge extends DefaultWeightedEdge {
     }
 
     public static SectionEdge of(Section section) {
-        return new SectionEdge(section.getLine().getAdditionalPrice());
+        return new SectionEdge(section.getAdditionalPrice());
     }
 
     public int getAdditionalPrice() {
