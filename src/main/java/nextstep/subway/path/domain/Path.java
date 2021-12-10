@@ -15,15 +15,17 @@ import java.util.List;
  */
 public class Path {
     private Sections sections;
+    private List<Station> stations;
     private Distance distance;
 
-    public Path(Sections sections, Distance distance) {
+    public Path(Sections sections, List<Station> stations, Distance distance) {
         this.sections = sections;
+        this.stations = stations;
         this.distance = distance;
     }
 
-    public static Path of(Sections sections, Distance distance) {
-        return new Path(sections, distance);
+    public static Path of(Sections sections, List<Station> stations, Distance distance) {
+        return new Path(sections, stations, distance);
     }
 
     public Sections sections() {
@@ -35,7 +37,7 @@ public class Path {
     }
 
     public List<Station> stations() {
-        return sections.getStations();
+        return stations;
     }
 
     public Station source() {

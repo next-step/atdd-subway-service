@@ -1,5 +1,6 @@
 package nextstep.subway.path.dto;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.subway.auth.domain.Stranger;
 import nextstep.subway.auth.domain.User;
@@ -7,12 +8,10 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.SubwayFare;
 import nextstep.subway.line.domain.SubwayUser;
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * packageName : nextstep.subway.path.dto
@@ -22,6 +21,7 @@ import java.util.stream.Collectors;
  * description :
  */
 @NoArgsConstructor
+@Getter
 public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
@@ -53,17 +53,5 @@ public class PathResponse {
 
     public static PathResponse of(Path path, User user) {
         return new PathResponse(StationResponse.ofList(path.stations()), path.distance(), user);
-    }
-
-    public List<StationResponse> stations() {
-        return stations;
-    }
-
-    public int fare() {
-        return fare;
-    }
-
-    public int distance() {
-        return distance;
     }
 }

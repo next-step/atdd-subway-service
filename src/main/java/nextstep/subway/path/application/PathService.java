@@ -31,13 +31,13 @@ public class PathService {
     private final LineRepository lineRepository;
 
     public Path getShortestPath(Long srcStationId, Long destStationId) {
-        final List<Station> stations = stationRepository.findAll();
-        final List<Line> lines = lineRepository.findAll();
+        List<Station> stations = stationRepository.findAll();
+        List<Line> lines = lineRepository.findAll();
         return pathHandler.getShortestPath(lines, stations, srcStationId, destStationId);
     }
 
     public PathResponse getShortestPath(Long srcStationId, Long destStationId, User user) {
-        final Path path = getShortestPath(srcStationId, destStationId);
+        Path path = getShortestPath(srcStationId, destStationId);
         return PathResponse.of(path, user);
     }
 

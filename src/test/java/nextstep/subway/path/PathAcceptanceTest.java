@@ -139,12 +139,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void 최단거리를_응답됨(PathResponse pathResponse, int expect) {
-        assertThat(pathResponse.distance()).isEqualTo(expect);
+        assertThat(pathResponse.getDistance()).isEqualTo(expect);
     }
 
     private void 지하철_이용_요금_응답됨(PathResponse pathResponse, int expect) {
-        assertThat(pathResponse.fare()).isNotNull();
-        assertThat(pathResponse.fare()).isEqualTo(expect);
+        assertThat(pathResponse.getFare()).isNotNull();
+        assertThat(pathResponse.getFare()).isEqualTo(expect);
     }
 
     private PathResponse 최단거리_조회_응답됨(ExtractableResponse<Response> response) {

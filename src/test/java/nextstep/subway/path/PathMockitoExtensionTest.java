@@ -94,7 +94,7 @@ public class PathMockitoExtensionTest {
         when(stationRepository.findAll()).thenReturn(stations);
         when(lineRepository.findAll()).thenReturn(lines);
         when(finder.getShortestPath(anyList(), anyList(), anyLong(), anyLong()))
-                .thenReturn(Path.of(line1.sections(), Distance.of(5)));
+                .thenReturn(Path.of(line1.sections(), stations, Distance.of(5)));
 
         PathService pathService = new PathService(finder, stationRepository, lineRepository);
 
@@ -102,8 +102,8 @@ public class PathMockitoExtensionTest {
         final PathResponse pathResponse = PathResponse.of(pathService.getShortestPath(강남역.getId(), 역삼역.getId()));
 
         // then
-        assertThat(pathResponse.stations()).hasSize(2);
-        assertThat(pathResponse.distance()).isEqualTo(5);
-        assertThat(pathResponse.fare()).isEqualTo(SubwayFare.BASE_RATE);
+        assertThat(pathResponse.getStations()).hasSize(2);
+        assertThat(pathResponse.getDistance()).isEqualTo(5);
+        assertThat(pathResponse.getFare()).isEqualTo(SubwayFare.BASE_RATE);
     }
 }

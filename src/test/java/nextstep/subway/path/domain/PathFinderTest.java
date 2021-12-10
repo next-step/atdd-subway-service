@@ -140,7 +140,7 @@ class PathFinderTest {
 
         // when
         final PathResponse pathResponse = PathResponse.of(path);
-        assertThat(pathResponse.fare()).isEqualTo(2_150);
+        assertThat(pathResponse.getFare()).isEqualTo(2_150);
     }
 
     @Test

@@ -71,7 +71,7 @@ public class PathSpringExtensionTest {
         when(lineRepository.findAll()).thenReturn(lines);
         when(stationRepository.findAll()).thenReturn(stations);
         when(pathFinder.getShortestPath(anyList(), anyList(), anyLong(), anyLong()))
-                .thenReturn(Path.of(line1.sections(), Distance.of(5)));
+                .thenReturn(Path.of(line1.sections(), stations, Distance.of(5)));
 
         PathService pathService = new PathService(pathFinder, stationRepository, lineRepository);
 
@@ -80,8 +80,8 @@ public class PathSpringExtensionTest {
         final PathResponse pathResponse = PathResponse.of(path);
 
         //then
-        assertThat(pathResponse.stations()).hasSize(2);
-        assertThat(pathResponse.distance()).isEqualTo(5);
-        assertThat(pathResponse.fare()).isEqualTo(SubwayFare.BASE_RATE);
+        assertThat(pathResponse.getStations()).hasSize(2);
+        assertThat(pathResponse.getDistance()).isEqualTo(5);
+        assertThat(pathResponse.getFare()).isEqualTo(SubwayFare.BASE_RATE);
     }
 }
