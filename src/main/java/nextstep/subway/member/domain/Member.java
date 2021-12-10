@@ -1,13 +1,13 @@
 package nextstep.subway.member.domain;
 
-import nextstep.subway.common.BaseEntity;
-import nextstep.subway.auth.application.AuthorizationException;
-import org.apache.commons.lang3.StringUtils;
-
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import nextstep.subway.common.BaseEntity;
+import nextstep.subway.exception.AuthorizationException;
+import org.apache.commons.lang3.StringUtils;
 
 @Entity
 public class Member extends BaseEntity {
@@ -54,4 +54,22 @@ public class Member extends BaseEntity {
             throw new AuthorizationException();
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Member other = (Member) o;
+        return id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
 }

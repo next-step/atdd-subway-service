@@ -3,8 +3,6 @@ package nextstep.subway.path.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import nextstep.subway.exception.InvalidArgumentException;
@@ -12,6 +10,7 @@ import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.infrastructure.WeightedMultiStationGraph;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,31 +19,21 @@ import org.junit.jupiter.api.Test;
 @DisplayName("지하철 경로 찾기 테스트")
 public class PathFinderTest {
 
-    private static final Station 교대역 = spy(new Station("교대역"));
-    private static final Station 강남역= spy(new Station("강남역"));
-    private static final Station 양재역= spy(new Station("양재역"));
-    private static final Station 남부터미널역= spy(new Station("남부터미널역"));
-    private static final Station 양재시민의숲= spy(new Station("양재시민의숲"));
-    private static final Station 서초역= spy(new Station("서초역"));
-    private static final Station 고속터미널= spy(new Station("고속터미널"));
-    private static final Station 반포역= spy(new Station("반포역"));
-
-    static {
-        when(교대역.getId()).thenReturn(1L);
-        when(강남역.getId()).thenReturn(2L);
-        when(양재역.getId()).thenReturn(3L);
-        when(남부터미널역.getId()).thenReturn(4L);
-        when(양재시민의숲.getId()).thenReturn(5L);
-        when(서초역.getId()).thenReturn(6L);
-        when(고속터미널.getId()).thenReturn(7L);
-        when(반포역.getId()).thenReturn(8L);
-    }
+    private final Station 교대역 = new Station("교대역");
+    private final Station 강남역= new Station("강남역");
+    private final Station 양재역= new Station("양재역");
+    private final Station 남부터미널역= new Station("남부터미널역");
+    private final Station 양재시민의숲= new Station("양재시민의숲");
+    private final Station 서초역= new Station("서초역");
+    private final Station 고속터미널= new Station("고속터미널");
+    private final Station 반포역= new Station("반포역");
 
     Line 신분당선;
     Line 이호선;
     Line 삼호선;
     Line 칠호선;
 
+    final WeightedMultiStationGraph stationGraph = new WeightedMultiStationGraph();
 
     /**
      *                     고속터미널--- *7호선* 5 -----  반포역
@@ -80,9 +69,7 @@ public class PathFinderTest {
     @Test
     @DisplayName("교대역-양재역 지하철 최단 경로 조회")
     void getShortestList_교대역_양재역() {
-
-        PathFinder graph = PathFinder.createWeightedMultiStationGraph(Arrays.asList(신분당선, 이호선, 삼호선));
-
+        PathFinder graph = PathFinder.create(stationGraph, Arrays.asList(신분당선, 이호선, 삼호선));
         Path shortestPath = graph.findShortestPath(교대역, 양재역);
 
         assertAll(() -> {
@@ -95,8 +82,7 @@ public class PathFinderTest {
     @Test
     @DisplayName("서초역_양재시민의숲 지하철 최단 경로 조회")
     void getShortestList_서초역_양재시민의숲() {
-        when(강남역.getId()).thenReturn(1L);
-        PathFinder graph = PathFinder.createWeightedMultiStationGraph(Arrays.asList(신분당선, 이호선, 삼호선));
+        PathFinder graph = PathFinder.create(stationGraph, Arrays.asList(신분당선, 이호선, 삼호선));
 
         Path shortestPath = graph.findShortestPath(서초역, 양재시민의숲);
 
@@ -111,7 +97,7 @@ public class PathFinderTest {
     @DisplayName("최단 경로 조회 시 출발역과 도착역이 같은 경우 InvalidArgumentException 발생")
     void getShortestListSameFromToFail() {
 
-        PathFinder graph = PathFinder.createWeightedMultiStationGraph(Arrays.asList(신분당선));
+        PathFinder graph = PathFinder.create(stationGraph, Arrays.asList(신분당선));
 
         assertThatThrownBy(() -> graph.findShortestPath(양재역, 양재역))
             .isInstanceOf(InvalidArgumentException.class)
@@ -122,7 +108,7 @@ public class PathFinderTest {
     @DisplayName("출발역과 도착역이 연결되어 있지 경우 InvalidArgumentException 발생")
     void getShortestListConnectedFail() {
 
-        PathFinder graph = PathFinder.createWeightedMultiStationGraph(Arrays.asList(신분당선, 칠호선));
+        PathFinder graph = PathFinder.create(stationGraph, Arrays.asList(신분당선, 칠호선));
 
         assertThatThrownBy(() -> graph.findShortestPath(반포역, 강남역))
             .isInstanceOf(InvalidArgumentException.class)
@@ -133,7 +119,7 @@ public class PathFinderTest {
     @DisplayName("출발역, 도착역이 존재하지 않는 경우 NotFoundException 발생")
     void getShortestListNoFoundStationFail() {
 
-        PathFinder graph = PathFinder.createWeightedMultiStationGraph(Arrays.asList(이호선, 삼호선));
+        PathFinder graph = PathFinder.create(stationGraph, Arrays.asList(이호선, 삼호선));
 
         assertThatThrownBy(() -> graph.findShortestPath(양재시민의숲, 강남역))
             .isInstanceOf(NotFoundException.class)

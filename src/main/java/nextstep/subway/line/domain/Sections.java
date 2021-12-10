@@ -17,13 +17,14 @@ import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
+
     private static final int MIN_SIZE = 1;
     private static final int START_SECTION_INDEX = 0;
 
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    protected Sections () {
+    protected Sections() {
     }
 
     public void add(Section section) {
@@ -34,7 +35,7 @@ public class Sections {
 
     public List<Station> getSortedStations() {
         return getSortedSections().stream()
-            .flatMap(it -> it.getUpDownStations())
+            .flatMap(Section::getUpDownStations)
             .filter(distinctByKey(Station::getName))
             .collect(Collectors.toList());
     }
@@ -54,7 +55,9 @@ public class Sections {
     }
 
     public boolean isEmptyStation() {
-        return getStationStream().collect(Collectors.toList()).isEmpty();
+        return getStationStream()
+            .collect(Collectors.toList())
+            .isEmpty();
     }
 
     public boolean isMinSize() {
@@ -77,7 +80,7 @@ public class Sections {
 
         remove(removeSection);
 
-        for (Section section: sections) {
+        for (Section section : sections) {
             section.updateConnect(removeSection);
         }
     }
@@ -113,10 +116,7 @@ public class Sections {
             .filter(it -> it.isUpStationOfSection(section))
             .findFirst();
         optional.ifPresent(it -> it.updateUpStationBySection(section));
-        if (optional.isPresent()) {
-            return true;
-        }
-        return false;
+        return optional.isPresent();
     }
 
     private void updateByDownStation(Section section) {
@@ -141,6 +141,7 @@ public class Sections {
     private List<Section> sortedSection(Section firstSection) {
         List<Section> list = new ArrayList<>();
         Optional<Section> optional = Optional.of(firstSection);
+
         while (optional.isPresent()) {
             Section finalSection = firstSection;
             optional = sections.stream()
@@ -149,6 +150,7 @@ public class Sections {
             firstSection = optional.orElse(finalSection);
             optional.ifPresent(list::add);
         }
+
         return list;
     }
 
@@ -157,7 +159,8 @@ public class Sections {
             return Optional.empty();
         }
         Section section = sections.get(START_SECTION_INDEX);
-        Optional<Section>  optional = Optional.of(section);
+        Optional<Section> optional = Optional.of(section);
+
         while (optional.isPresent()) {
             Section finalSection = section;
             optional = sections.stream()
@@ -165,6 +168,7 @@ public class Sections {
                 .findFirst();
             section = optional.orElse(finalSection);
         }
+
         return Optional.of(section);
     }
 

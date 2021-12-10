@@ -1,0 +1,104 @@
+package nextstep.subway.favorite.domain;
+
+import java.util.Objects;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import nextstep.subway.exception.CannotDeleteException;
+import nextstep.subway.exception.InvalidArgumentException;
+import nextstep.subway.station.domain.Station;
+
+@Entity
+public class Favorite {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, optional = false)
+    private Station source;
+
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, optional = false)
+    private Station target;
+
+    private Long ownerId;
+
+    protected Favorite() {
+    }
+
+    private Favorite(Station source, Station target, Long ownerId) {
+        validateEqualStation(source, target);
+        this.source = source;
+        this.target = target;
+        this.ownerId = ownerId;
+    }
+
+    public static Favorite of(Station source, Station target, Long ownerId) {
+        return new Favorite(source, target, ownerId);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Station getSource() {
+        return source;
+    }
+
+    public Station getTarget() {
+        return target;
+    }
+
+    public boolean equalsFavorite(Favorite other) {
+        return source.equalsName(other.source)
+            && target.equalsName(other.target)
+            && isOwner(other.ownerId);
+    }
+
+    public void validateDelete(Long ownerId) {
+        if (!isOwner(ownerId)) {
+            throw new CannotDeleteException("다른사람의 즐겨찾기는 삭제할 수 없습니다.");
+        }
+    }
+
+    protected boolean isOwner(Long ownerId) {
+        return this.ownerId.equals(ownerId);
+    }
+
+    private void validateEqualStation(Station source, Station target) {
+        if (source.equalsName(target)) {
+            throw new InvalidArgumentException("출발역과 도착역이 같습니다.");
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Favorite other = (Favorite) o;
+        return id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Favorite{" +
+            "id=" + id +
+            ", source=" + source +
+            ", target=" + target +
+            ", ownerId=" + ownerId +
+            '}';
+    }
+}

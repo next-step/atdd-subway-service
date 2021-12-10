@@ -17,6 +17,7 @@ import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -123,7 +124,7 @@ public class Section extends BaseEntity {
         return Stream.of(upStation, downStation);
     }
 
-    public void updateUpStationBySection(Section section){
+    public void updateUpStationBySection(Section section) {
         update(section.downStation, this.downStation, minus(section));
     }
 

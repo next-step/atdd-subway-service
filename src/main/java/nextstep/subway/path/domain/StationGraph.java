@@ -1,12 +1,12 @@
 package nextstep.subway.path.domain;
 
+import java.util.List;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
 public interface StationGraph {
 
-    void addVertex(Station s);
-
-    void addEdgeWithDistance(Station source, Station target, Integer distance);
+    StationGraph createGraph(List<Line> lines);
 
     boolean containsVertex(Station station);
 
