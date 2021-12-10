@@ -70,7 +70,7 @@ public class PathServiceTest {
     @Test
     void findPaths() {
         // given
-        when(stationService.findStationById(any())).thenReturn(교대역, 양재역);
+        when(stationService.findById(any())).thenReturn(교대역, 양재역);
         when(lineService.findLines()).thenReturn(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
         // when
