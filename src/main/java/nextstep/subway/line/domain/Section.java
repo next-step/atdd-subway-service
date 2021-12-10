@@ -83,4 +83,15 @@ public class Section implements Comparable<Section> {
         }
         return 0;
     }
+
+    @Override
+    public int compareTo(Section o) {
+        if (this.upStation.equals(o.downStation)) {
+            return 1;
+        }
+        if (this.downStation.equals(o.upStation)) {
+            return -1;
+        }
+        return 0;
+    }
 }
