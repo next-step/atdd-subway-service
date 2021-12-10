@@ -1,12 +1,12 @@
 package nextstep.subway.path.domain;
 
 import java.util.*;
+import java.util.stream.*;
 
 import org.jgrapht.*;
 import org.jgrapht.alg.shortestpath.*;
 import org.jgrapht.graph.*;
 
-import nextstep.subway.fare.*;
 import nextstep.subway.line.domain.*;
 import nextstep.subway.station.domain.*;
 
@@ -27,18 +27,13 @@ public class DijkstraPathFinder implements PathFinder {
 
     public Path shortestPath(Station source, Station target) {
         GraphPath<Station, WeightedEdgeWithLine> graphPath = dijkstraShortestPath.getPath(source, target);
-
-        int fareByDistance = FareByDistancePolicy.calculateFare(graphPath);
-        int extraFareByLine = calculateExtraFareByLine(graphPath);
-        return Path.of(graphPath.getVertexList(), (int)graphPath.getWeight(), fareByDistance + extraFareByLine);
+        return Path.of(graphPath.getVertexList(), (int)graphPath.getWeight(), flatLines(graphPath));
     }
 
-    private int calculateExtraFareByLine(GraphPath<Station, WeightedEdgeWithLine> shortestPath) {
+    private List<Line> flatLines(GraphPath<Station, WeightedEdgeWithLine> shortestPath) {
         return shortestPath.getEdgeList()
             .stream()
             .map(WeightedEdgeWithLine::line)
-            .mapToInt(Line::getExtraFare)
-            .max()
-            .orElse(0);
+            .collect(Collectors.toList());
     }
 }

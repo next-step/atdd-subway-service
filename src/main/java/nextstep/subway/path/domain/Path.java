@@ -2,25 +2,22 @@ package nextstep.subway.path.domain;
 
 import java.util.*;
 
+import nextstep.subway.line.domain.*;
 import nextstep.subway.station.domain.*;
 
 public class Path {
     private final List<Station> stations;
     private final int totalDistance;
-    private final int fare;
+    private final List<Line> lines;
 
-    private Path(List<Station> stations, int totalDistance, int fare) {
+    private Path(List<Station> stations, int totalDistance, List<Line> lines) {
         this.stations = stations;
         this.totalDistance = totalDistance;
-        this.fare = fare;
+        this.lines = lines;
     }
 
-    public static Path of(List<Station> stations, int totalDistance) {
-        return new Path(stations, totalDistance, 0);
-    }
-
-    public static Path of(List<Station> stations, int totalDistance, int fare) {
-        return new Path(stations, totalDistance, fare);
+    public static Path of(List<Station> stations, int totalDistance, List<Line> lines) {
+        return new Path(stations, totalDistance, lines);
     }
 
     public List<Station> getStations() {
@@ -31,7 +28,7 @@ public class Path {
         return totalDistance;
     }
 
-    public int getFare() {
-        return fare;
+    public List<Line> getLines() {
+        return lines;
     }
 }

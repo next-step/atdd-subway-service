@@ -6,7 +6,6 @@ import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.*;
 
 import nextstep.subway.common.exception.*;
-import nextstep.subway.fare.*;
 import nextstep.subway.line.domain.*;
 import nextstep.subway.path.domain.*;
 import nextstep.subway.station.domain.*;
@@ -15,7 +14,6 @@ import nextstep.subway.station.domain.*;
 @Transactional(readOnly = true)
 public class PathService {
     private static final String STATION = "역";
-    private static final int DEFAULT_GENERAL_AGE = 19;
 
     private final StationRepository stationRepository;
     private final LineRepository lineRepository;
@@ -26,10 +24,6 @@ public class PathService {
     }
 
     public Path shortestPath(long source, long target) {
-        return shortestPath(source, target, DEFAULT_GENERAL_AGE);
-    }
-
-    public Path shortestPath(long source, long target, int age) {
         List<Station> findResult = stationRepository.findAllByIdIn(Arrays.asList(source, target));
 
         Station startStation = getStation(findResult, source);
@@ -41,7 +35,7 @@ public class PathService {
 
         return Path.of(path.getStations(),
             path.getTotalDistance(),
-            FareByAgePolicy.calculateFare(age, path.getFare())
+            path.getLines()
         );
     }
 

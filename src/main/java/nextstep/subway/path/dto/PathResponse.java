@@ -2,22 +2,23 @@ package nextstep.subway.path.dto;
 
 import java.util.*;
 
+import nextstep.subway.line.domain.*;
 import nextstep.subway.path.domain.*;
 import nextstep.subway.station.domain.*;
 
 public class PathResponse {
     private final List<Station> stations;
     private final int totalDistance;
-    private final int fare;
+    private final List<Line> lines;
 
-    private PathResponse(List<Station> stations, int totalDistance, int fare) {
+    private PathResponse(List<Station> stations, int totalDistance, List<Line> lines) {
         this.stations = stations;
         this.totalDistance = totalDistance;
-        this.fare = fare;
+        this.lines = lines;
     }
 
     public static PathResponse from(Path path) {
-        return new PathResponse(path.getStations(), path.getTotalDistance(), path.getFare());
+        return new PathResponse(path.getStations(), path.getTotalDistance(), path.getLines());
     }
 
     public List<Station> getStations() {
@@ -28,15 +29,16 @@ public class PathResponse {
         return totalDistance;
     }
 
-    public int getFare() {
-        return fare;
+    public List<Line> getLines() {
+        return lines;
     }
 
     @Override
     public String toString() {
-        return "Path{" +
+        return "PathResponse{" +
             "stations=" + stations +
             ", totalDistance=" + totalDistance +
+            ", lines=" + lines +
             '}';
     }
 }
