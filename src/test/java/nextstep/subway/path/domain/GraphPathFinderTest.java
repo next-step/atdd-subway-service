@@ -59,7 +59,7 @@ class GraphPathFinderTest {
         assertThat(findPath.getStations()).extracting("name")
             .containsExactly(강남역.getName(), 양재역.getName(), 남부터미널역.getName());
         assertEquals(12, findPath.getDistance());
-        assertEquals(10, findPath.getMaxLineSurcharge());
+        assertEquals(10, findPath.getLineSurcharge());
     }
 
     @DisplayName("출발역과 도착역이 같은 경우 경로를 조회할 수 없다.")

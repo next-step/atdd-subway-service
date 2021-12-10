@@ -37,8 +37,8 @@ public class PathService {
         Station targetStation = stationService.findStationById(target);
         Set<Section> allSection = lineService.findAllSection();
         PathFinderResponse pathFinderResponse = pathFinder.getShortestPaths(allSection, sourceStation, targetStation);
-        int subwayUsageFee = new SubwayFee().getSubwayUsageFee(SubwayFeeRequest.of(
-            pathFinderResponse.getDistance(), pathFinderResponse.getMaxLineSurcharge(),
+        int subwayUsageFee = SubwayFee.getSubwayUsageFee(new SubwayFeeRequest(
+            pathFinderResponse.getDistance(), pathFinderResponse.getLineSurcharge(),
             loginMember.isGuest(), loginMember.getAgeType()));
 
         return convertPathResponse(pathFinderResponse.getStations(), pathFinderResponse.getDistance(),

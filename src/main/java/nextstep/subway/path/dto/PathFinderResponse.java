@@ -8,12 +8,12 @@ public class PathFinderResponse {
 
     private final List<Station> stations;
     private final int distance;
-    private final int maxLineSurcharge;
+    private final int lineSurcharge;
 
-    public PathFinderResponse(List<Station> stations, int distance, int maxLineSurcharge) {
+    public PathFinderResponse(List<Station> stations, int distance, int lineSurcharge) {
         this.stations = stations;
         this.distance = distance;
-        this.maxLineSurcharge = maxLineSurcharge;
+        this.lineSurcharge = lineSurcharge;
     }
 
     public List<Station> getStations() {
@@ -24,7 +24,7 @@ public class PathFinderResponse {
         return distance;
     }
 
-    public int getMaxLineSurcharge() {
-        return maxLineSurcharge;
+    public int getLineSurcharge() {
+        return lineSurcharge;
     }
 }

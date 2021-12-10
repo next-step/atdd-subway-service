@@ -19,33 +19,33 @@ public class SubwayFee {
     private static final int LIMIT_OVER_MAX_QUOTIENT = (LIMIT_DISTANCE - BASIC_DISTANCE) / LIMIT_FEE_DISTANCE;
     private static final int LIMIT_OVER_MAX_FEE = BASIC_FEE + LIMIT_OVER_MAX_QUOTIENT * OVER_FEE;
 
-    public int getSubwayUsageFee(SubwayFeeRequest subwayFeeRequest) {
-        int fee = calculateSubwayFee(subwayFeeRequest.getDistance(), subwayFeeRequest.getMaxLineSurcharge());
+    private SubwayFee() {
+
+    }
+
+    public static int getSubwayUsageFee(SubwayFeeRequest subwayFeeRequest) {
+        int fee = calculateSubwayFee(subwayFeeRequest.getDistance(), subwayFeeRequest.getLineSurcharge());
         if (subwayFeeRequest.isGuest() || subwayFeeRequest.getMemberAgeType().isNone()) {
             return fee;
         }
         return discountFeeByPolicy(fee, subwayFeeRequest.getMemberAgeType());
     }
 
-    private int discountFeeByPolicy(int fee, LoginMember.AgeType memberAgeType) {
+    private static int discountFeeByPolicy(int fee, LoginMember.AgeType memberAgeType) {
         if (memberAgeType.isKid()) {
             return new KidDiscountPolicy().discount(fee);
         }
         return new AdolescentDiscountPolicy().discount(fee);
     }
 
-    private int calculateSubwayFee(int distance, int maxLineSurcharge) {
-        if (distance == FREE_FEE) {
-            return FREE_FEE;
-        }
-        return calculateSubwayDistanceFee(distance) + maxLineSurcharge;
-    }
-
-    private int calculateSubwayDistanceFee(int distance) {
+    private static int calculateSubwayFee(int distance, int lineSurcharge) {
         if (distance <= ZERO_DISTANCE) {
             return FREE_FEE;
         }
+        return calculateSubwayDistanceFee(distance) + lineSurcharge;
+    }
 
+    private static int calculateSubwayDistanceFee(int distance) {
         if (distance <= BASIC_DISTANCE) {
             return BASIC_FEE;
         }
