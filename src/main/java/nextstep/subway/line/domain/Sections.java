@@ -35,26 +35,44 @@ public class Sections {
 
     public boolean hasNextSectionByUpStation(Station station) {
         return sections.stream()
-                .anyMatch(section -> section.getUpStation() == station);
+                .anyMatch(section -> section.isEqualUpStation(station));
     }
 
     public boolean hasNextSectionByDownStation(Station station) {
         return sections.stream()
-                .anyMatch(section -> section.getDownStation() == station);
+                .anyMatch(section -> section.isEqualDownStation(station));
+    }
+
+    public boolean hasDeletableSection() {
+        return sections.size() > 1;
     }
 
     public Section getNextSectionByUpStation(Station station) {
         return sections.stream()
-                .filter(section -> section.getUpStation() == station)
+                .filter(section -> section.isEqualUpStation(station))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException(String.format("다음 구간이 없습니다. (sectionId: %d)", station.getId())));
     }
 
     public Section getNextSectionByDownStation(Station station) {
         return sections.stream()
-                .filter(section -> section.getDownStation() == station)
+                .filter(section -> section.isEqualDownStation(station))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException(String.format("다음 구간이 없습니다. (sectionId: %d)", station.getId())));
+    }
+
+    public Section getOldSectionByUpStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.isEqualUpStation(station))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException(String.format("상행역이 일치하는 기존 구간이 없습니다. (upStationId: %d)", station.getId())));
+    }
+
+    public Section getOldSectionByDownStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.isEqualDownStation(station))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException(String.format("하행역이 일치하는 기존 구간이 없습니다. (downStationId: %d)", station.getId())));
     }
 
     private Stations getStations() {

@@ -4,7 +4,6 @@ import nextstep.subway.common.ErrorCode;
 import nextstep.subway.exception.NotFoundApiException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -73,26 +71,8 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
-        if (line.getSections().getSections().size() <= 1) {
-            throw new RuntimeException();
-        }
 
-        Optional<Section> upLineStation = line.getSections().getSections().stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = line.getSections().getSections().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
-
-        upLineStation.ifPresent(it -> line.getSections().getSections().remove(it));
-        downLineStation.ifPresent(it -> line.getSections().getSections().remove(it));
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
-        }
+        line.deleteSection(station);
     }
 
     private Line toLine(LineRequest request) {

@@ -1,6 +1,8 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.common.ErrorCode;
+import nextstep.subway.exception.NotAcceptableApiException;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
@@ -11,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 @Entity
@@ -93,6 +96,32 @@ public class Line extends BaseEntity {
         getSections().add(newSection);
     }
 
+    public void deleteSection(Station station) {
+        validateDeleteStation(station);
+
+        if (isFirstStation(station)) {
+            deleteFirstStation(station);
+            return;
+        }
+
+        if (isLastStation(station)) {
+            deleteLastStation(station);
+            return;
+        }
+
+        deleteBetweenStation(station);
+    }
+
+    private boolean isFirstStation(Station station) {
+        Station upStation = findUpStation();
+        return station.equals(upStation);
+    }
+
+    private boolean isLastStation(Station station) {
+        Station downStation = findDownStation();
+        return station.equals(downStation);
+    }
+
     private Station findUpStation() {
         Station station = getFirstSection().getUpStation();
 
@@ -103,10 +132,56 @@ public class Line extends BaseEntity {
         return station;
     }
 
+    private Station findDownStation() {
+        Station station = getFirstSection().getDownStation();
+
+        while (sections.hasNextSectionByUpStation(station)) {
+            Section nextSection = sections.getNextSectionByUpStation(station);
+            station = nextSection.getDownStation();
+        }
+        return station;
+    }
+
     private Section getFirstSection() {
         if (sections.isEmpty()) {
             throw new NoSuchElementException("구간 목록이 비어있습니다.");
         }
         return sections.getSections().get(0);
+    }
+
+    private void validateDeleteStation(Station station) {
+        if (!getSections().hasDeletableSection()) {
+            throw new NotAcceptableApiException(ErrorCode.CAN_NOT_REMOVE_SECTION);
+        }
+        if (getStations().notContains(station)) {
+            throw new NotAcceptableApiException(ErrorCode.NOT_REGISTERED_STATION_TO_LINE);
+        }
+    }
+
+    private void deleteFirstStation(Station station) {
+        sections.getSections().stream()
+                .filter(section -> section.isEqualUpStation(station))
+                .findFirst()
+                .ifPresent(findSection -> sections.getSections().remove(findSection));
+    }
+
+    private void deleteLastStation(Station station) {
+        sections.getSections().stream()
+                .filter(section -> section.isEqualDownStation(station))
+                .findFirst()
+                .ifPresent(findSection -> sections.getSections().remove(findSection));
+    }
+
+    private void deleteBetweenStation(Station station) {
+        Section oldSection = sections.getOldSectionByDownStation(station);
+        Section nextOldSection = sections.getOldSectionByUpStation(station);
+
+        Station newUpStation = oldSection.getUpStation();
+        Station newDownStation = nextOldSection.getDownStation();
+        int newDistance = oldSection.getDistance() + nextOldSection.getDistance();
+        Section newSection = Section.of(this, newUpStation, newDownStation, newDistance);
+
+        sections.getSections().removeAll(Arrays.asList(oldSection, nextOldSection));
+        sections.add(newSection);
     }
 }

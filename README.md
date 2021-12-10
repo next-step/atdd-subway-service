@@ -59,7 +59,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 - [ ] LineSectionAcceptanceTest 리팩터링
 
-- [ ] LineService 리팩터링
+- [x] LineService 리팩터링
 
     - [x] 노선 추가 로직 리팩터링
 
@@ -67,4 +67,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
     - [x] 구간 추가 로직 Sections 도메인으로 이동
 
-    - [ ] 구간 제거 로직 Sections 도메인으로 이동
+    - [x] 구간 제거 로직 Sections 도메인으로 이동
