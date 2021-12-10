@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,10 +37,7 @@ public class LineService {
 	}
 
 	public List<LineResponse> findLines() {
-		List<Line> persistLines = lineRepository.findAll();
-		return persistLines.stream()
-			.map(LineResponse::of)
-			.collect(Collectors.toList());
+		return LineResponse.ofList(lineRepository.findAll());
 	}
 
 	public Line findLineById(Long id) {
