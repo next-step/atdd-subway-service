@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
@@ -19,6 +20,7 @@ import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.RestApiFixture;
 
 @DisplayName("지하철 경로 조회")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PathAcceptanceTest extends AcceptanceTest {
 	private long 신분당선_ID;
 	private long 이호선_ID;
