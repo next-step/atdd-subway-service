@@ -17,7 +17,8 @@ public enum ErrorCode {
 
     // Path
     SAME_DEPARTURE_AND_ARRIVAL_STATION(400, "P001", "출발역과 도착역이 동일합니다."),
-    NOT_CONNECTED_STATION(400, "P002", "출발역과 도착역이 연결되어 있지 않습니다.");
+    NOT_CONNECTED_STATION(400, "P002", "출발역과 도착역이 연결되어 있지 않습니다."),
+    STATION_NOT_FOUND(400, "P003", "출발역 또는 도착역이 존재하지 않습니다");
 
     private final String code;
     private final String message;

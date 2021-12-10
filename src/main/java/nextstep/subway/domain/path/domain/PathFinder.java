@@ -3,6 +3,7 @@ package nextstep.subway.domain.path.domain;
 import nextstep.subway.domain.line.domain.Line;
 import nextstep.subway.domain.path.exception.NotConnectedStation;
 import nextstep.subway.domain.path.exception.SameDepartureAndArrivalStationException;
+import nextstep.subway.domain.path.exception.StationNotFoundException;
 import nextstep.subway.domain.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -46,10 +47,23 @@ public class PathFinder {
     }
 
     public List<Station> findShortestRoute(List<Station> stations, Long source, Long target) {
+        existStationValidator(stations, source, target);
         sameDepartureAndArrivalStationValidator(source, target);
         final List<Long> vertexList = dijkstraShortestPath.getPath(source, target).getVertexList();
         stationConnectedValidator(source, target, vertexList);
         return getShortestStations(stations, vertexList);
+    }
+
+    private void existStationValidator(final List<Station> stations, final Long source, final Long target) {
+        getStation(stations, source);
+        getStation(stations, target);
+    }
+
+    private Station getStation(final List<Station> stations, final Long stationId) {
+        return stations.stream()
+                .filter(station -> station.getId().equals(stationId))
+                .findFirst()
+                .orElseThrow(() -> new StationNotFoundException(String.format("stationId : %d", stationId)));
     }
 
     private void stationConnectedValidator(final Long source, final Long target, final List<Long> vertexList) {
@@ -71,7 +85,7 @@ public class PathFinder {
             Station station = stations.stream()
                     .filter(st -> st.getId().equals(vertexList.get(finalIndex)))
                     .findFirst()
-                    .get();
+                    .orElseThrow(() -> new StationNotFoundException(String.format("stationId : %d", finalIndex)));
             result.add(station);
         }
         return result;

@@ -7,6 +7,7 @@ import nextstep.subway.domain.line.domain.LineRepository;
 import nextstep.subway.domain.path.dto.PathFinderRequest;
 import nextstep.subway.domain.path.dto.PathFinderResponse;
 import nextstep.subway.domain.path.exception.SameDepartureAndArrivalStationException;
+import nextstep.subway.domain.path.exception.StationNotFoundException;
 import nextstep.subway.domain.station.application.StationService;
 import nextstep.subway.domain.station.domain.Station;
 import nextstep.subway.domain.station.domain.StationRepository;
@@ -80,6 +81,23 @@ class PathServiceTest {
         // when
         final PathFinderRequest pathFinderRequest = new PathFinderRequest(교대역.getId(), 교대역.getId());
         assertThrows(SameDepartureAndArrivalStationException.class,
+                () -> pathService.findPaths(pathFinderRequest));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 역")
+    void stationNotFound() {
+        // given
+        final Station 강남역 = new Station(1L, "강남역");
+        final Station 교대역 = new Station(3L, "교대역");
+        final Line 이호선 = new Line("이호선", "bg-green-400", 교대역, 강남역, new Distance(10));
+
+        when(lineService.findAll()).thenReturn(Arrays.asList(이호선));
+        when(stationService.findAll()).thenReturn(Arrays.asList(강남역,교대역));
+
+        // when
+        final PathFinderRequest pathFinderRequest = new PathFinderRequest(교대역.getId(), 100L);
+        assertThrows(StationNotFoundException.class,
                 () -> pathService.findPaths(pathFinderRequest));
     }
 }
