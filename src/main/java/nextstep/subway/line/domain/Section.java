@@ -26,7 +26,7 @@ public class Section {
   @Embedded
   private Distance distance;
 
-  public Section() {
+  protected Section() {
   }
 
   public Section(Line line, Station upStation, Station downStation, Distance distance) {
