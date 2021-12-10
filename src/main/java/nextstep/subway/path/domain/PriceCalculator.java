@@ -8,8 +8,10 @@ public class PriceCalculator {
         throw new UnsupportedOperationException();
     }
 
-    public static int process(AgeType ageType, int distance, int additionalPrice) {
-        return ageType.getDiscountPrice(calculateDistancePrice(distance) + additionalPrice);
+    public static int process(AgeType ageType, ShortestPath shortestPath) {
+        int price = calculateDistancePrice(shortestPath.getDistance()) + shortestPath.getAdditionalPrice();
+
+        return ageType.getDiscountPrice(price);
     }
 
     private static int calculateDistancePrice(int distance) {

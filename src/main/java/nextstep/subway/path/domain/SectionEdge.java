@@ -3,7 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Section;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-public class SectionEdge extends DefaultWeightedEdge {
+class SectionEdge extends DefaultWeightedEdge {
 
     private final int additionalPrice;
 

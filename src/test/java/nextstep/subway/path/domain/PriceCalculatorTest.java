@@ -1,13 +1,21 @@
 package nextstep.subway.path.domain;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @DisplayName("거리 가격 계산 테스트")
+@ExtendWith(MockitoExtension.class)
 class PriceCalculatorTest {
+
+    @Mock
+    ShortestPath shortestPath;
 
     @DisplayName("일반인 요금 확인")
     @ParameterizedTest(name = "{displayName} ({index}) -> param = [{arguments}]")
@@ -17,8 +25,11 @@ class PriceCalculatorTest {
         AgeType 일반인 = AgeType.DEFAULT;
         int 추가요금 = 0;
 
+        when(shortestPath.getDistance()).thenReturn(distance);
+        when(shortestPath.getAdditionalPrice()).thenReturn(추가요금);
+
         // when
-        int actualPrice = PriceCalculator.process(일반인, distance, 추가요금);
+        int actualPrice = PriceCalculator.process(일반인, shortestPath);
 
         // then
         assertThat(actualPrice).isEqualTo(expectedPrice);
@@ -32,8 +43,11 @@ class PriceCalculatorTest {
         AgeType 일반인 = AgeType.DEFAULT;
         int 추가요금 = 500;
 
+        when(shortestPath.getDistance()).thenReturn(distance);
+        when(shortestPath.getAdditionalPrice()).thenReturn(추가요금);
+
         // when
-        int actualPrice = PriceCalculator.process(일반인, distance, 추가요금);
+        int actualPrice = PriceCalculator.process(일반인, shortestPath);
 
         // then
         assertThat(actualPrice).isEqualTo(expectedPrice);
@@ -47,8 +61,11 @@ class PriceCalculatorTest {
         AgeType 어린이 = AgeType.CHILD;
         int 추가요금 = 0;
 
+        when(shortestPath.getDistance()).thenReturn(distance);
+        when(shortestPath.getAdditionalPrice()).thenReturn(추가요금);
+
         // when
-        int actualPrice = PriceCalculator.process(어린이, distance, 추가요금);
+        int actualPrice = PriceCalculator.process(어린이, shortestPath);
 
         // then
         assertThat(actualPrice).isEqualTo(expectedPrice);
@@ -62,8 +79,11 @@ class PriceCalculatorTest {
         AgeType 어린이 = AgeType.CHILD;
         int 추가요금 = 500;
 
+        when(shortestPath.getDistance()).thenReturn(distance);
+        when(shortestPath.getAdditionalPrice()).thenReturn(추가요금);
+
         // when
-        int actualPrice = PriceCalculator.process(어린이, distance, 추가요금);
+        int actualPrice = PriceCalculator.process(어린이, shortestPath);
 
         // then
         assertThat(actualPrice).isEqualTo(expectedPrice);
@@ -77,8 +97,11 @@ class PriceCalculatorTest {
         AgeType 청소년 = AgeType.TEENAGER;
         int 추가요금 = 0;
 
+        when(shortestPath.getDistance()).thenReturn(distance);
+        when(shortestPath.getAdditionalPrice()).thenReturn(추가요금);
+
         // when
-        int actualPrice = PriceCalculator.process(청소년, distance, 추가요금);
+        int actualPrice = PriceCalculator.process(청소년, shortestPath);
 
         // then
         assertThat(actualPrice).isEqualTo(expectedPrice);
@@ -92,8 +115,11 @@ class PriceCalculatorTest {
         AgeType 청소년 = AgeType.TEENAGER;
         int 추가요금 = 500;
 
+        when(shortestPath.getDistance()).thenReturn(distance);
+        when(shortestPath.getAdditionalPrice()).thenReturn(추가요금);
+
         // when
-        int actualPrice = PriceCalculator.process(청소년, distance, 추가요금);
+        int actualPrice = PriceCalculator.process(청소년, shortestPath);
 
         // then
         assertThat(actualPrice).isEqualTo(expectedPrice);

@@ -39,13 +39,12 @@ public class PathFinder {
         }
     }
 
-    public Path findShortestPath(AgeType ageType, Station source, Station target) {
+    public ShortestPath findShortestPath(Station source, Station target) {
         validateRequestStation(source, target);
 
         GraphPath<Station, SectionEdge> graphPath = getShortestPath(source, target);
-        int price = PriceCalculator.process(ageType, (int) graphPath.getWeight(), findAdditionalPrice(graphPath));
 
-        return Path.of(graphPath.getVertexList(), (int) graphPath.getWeight(), price);
+        return ShortestPath.of(graphPath.getEdgeList(), graphPath.getVertexList(), (int) graphPath.getWeight());
     }
 
     private GraphPath<Station, SectionEdge> getShortestPath(Station source, Station target) {
@@ -61,14 +60,6 @@ public class PathFinder {
         }
 
         return graphPath;
-    }
-
-    private int findAdditionalPrice(GraphPath<Station, SectionEdge> graphPath) {
-        return graphPath.getEdgeList()
-                .stream()
-                .map(SectionEdge::getAdditionalPrice)
-                .max(Integer::compareTo)
-                .orElse(0);
     }
 
     private void validateRequestStation(Station source, Station target) {
