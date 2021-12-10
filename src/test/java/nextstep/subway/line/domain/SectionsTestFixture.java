@@ -10,7 +10,7 @@ public class SectionsTestFixture {
     }
 
     @Transient
-    public static Line 이호선 = new Line("이호선", "bg-green-600");
+    public static Line 이호선 = Line.of("이호선", "bg-green-600");
     @Transient
     public static Station 강남역 = new Station("강남역");
     @Transient

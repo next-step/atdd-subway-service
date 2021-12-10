@@ -62,10 +62,10 @@ class PathServiceTest {
         동작역 = new Station("신림역");
         이촌역 = new Station("이촌역");
 
-        Line 신분당선 = new Line("신분당선", "bg-red-600");
-        Line 이호선 = new Line("이호선", "bg-red-600");
-        Line 삼호선 = new Line("삼호선", "bg-red-600");
-        Line 사호선 = new Line("사호선", "bg-red-600");
+        Line 신분당선 = Line.of("신분당선", "bg-red-600");
+        Line 이호선 = Line.of("이호선", "bg-red-600");
+        Line 삼호선 = Line.of("삼호선", "bg-red-600");
+        Line 사호선 = Line.of("사호선", "bg-red-600");
 
         List<Section> sections = new ArrayList<>();
         sections.add(new Section(신분당선, 강남역, 양재역, 10));

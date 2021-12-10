@@ -56,10 +56,10 @@ public class LineRequest {
     }
 
     public Line toLine() {
-        return new Line(name, color);
+        return Line.of(name, color);
     }
 
     public Line toLine(Station upStation, Station downStation) {
-        return new Line(name, color, additionalPrice, upStation, downStation, distance);
+        return Line.of(name, color, additionalPrice, upStation, downStation, distance);
     }
 }

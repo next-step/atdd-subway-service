@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -25,36 +24,40 @@ public class Line extends BaseEntity {
     private String color;
 
     @Column
-    private int additionalPrice = 0;
+    private int additionalPrice;
 
     @Embedded
-    private Sections sections = new Sections();
+    private final Sections sections = new Sections();
 
     public Line() {
     }
 
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
-
-    public Line(String name, String color, int additionalPrice) {
+    private Line(String name, String color, int additionalPrice) {
         this.name = name;
         this.color = color;
         this.additionalPrice = additionalPrice;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
-        sections = Sections.of(Collections.singletonList(new Section(this, upStation, downStation, distance)));
+    public static Line of(String name, String color) {
+        return new Line(name, color, 0);
     }
 
-    public Line(String name, String color, int additionalPrice, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
-        this.additionalPrice = additionalPrice;
-        sections = Sections.of(Collections.singletonList(new Section(this, upStation, downStation, distance)));
+    public static Line of(String name, String color, int additionalPrice) {
+        return new Line(name, color, additionalPrice);
+    }
+
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
+        Line line = new Line(name, color, 0);
+        line.addSection(upStation, downStation, distance);
+
+        return line;
+    }
+
+    public static Line of(String name, String color, int additionalPrice, Station upStation, Station downStation, int distance) {
+        Line line = new Line(name, color, additionalPrice);
+        line.addSection(upStation, downStation, distance);
+
+        return line;
     }
 
     public void update(Line line) {

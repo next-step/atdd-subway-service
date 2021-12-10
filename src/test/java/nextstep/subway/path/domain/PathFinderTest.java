@@ -45,10 +45,10 @@ class PathFinderTest {
         이촌역 = new Station("이촌역");
         판교역 = new Station("판교역");
 
-        Line 신분당선 = new Line("신분당선", "bg-red-600", 800);
-        Line 이호선 = new Line("이호선", "bg-red-600", 0);
-        Line 삼호선 = new Line("삼호선", "bg-red-600", 0);
-        Line 사호선 = new Line("사호선", "bg-red-600", 0);
+        Line 신분당선 = Line.of("신분당선", "bg-red-600", 800);
+        Line 이호선 = Line.of("이호선", "bg-red-600", 0);
+        Line 삼호선 = Line.of("삼호선", "bg-red-600", 0);
+        Line 사호선 = Line.of("사호선", "bg-red-600", 0);
 
         List<Section> sections = new ArrayList<>();
         sections.add(new Section(신분당선, 강남역, 양재역, 10));
