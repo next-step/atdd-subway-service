@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.common.util.ExtraChargeGenerator;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -46,6 +47,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성됨(response);
+        지하철_추가_요금_추가됨(response);
+    }
+
+    private void 지하철_추가_요금_추가됨(ExtractableResponse<Response> response) {
+        final int extraCharge = response.jsonPath().getObject("", LineResponse.class).getExtraCharge();
+        assertThat(extraCharge).isEqualTo(ExtraChargeGenerator.value());
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")

@@ -30,6 +30,10 @@ public class LineRequest {
         this.extraCharge = extraCharge;
     }
 
+    public void useExtraCharge(int extraCharge) {
+        this.extraCharge = extraCharge;
+    }
+
     public String getName() {
         return name;
     }
@@ -51,10 +55,6 @@ public class LineRequest {
     }
 
     public Line toLine(Station upStation, Station downStation) {
-        return Line.of(name, color, upStation, downStation, distance);
-    }
-
-    public Line toLine(Station upStation, Station downStation, int extraCharge) {
         return Line.of(name, color, upStation, downStation, distance, extraCharge);
     }
 }
