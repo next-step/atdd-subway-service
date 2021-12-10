@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.member.domain.Member;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +16,24 @@ import static org.assertj.core.api.Assertions.assertThat;
  * description :
  */
 public class SubwayFareTest {
+    private SubwayUser infantUser;
+    private SubwayUser childUser;
+    private SubwayUser youthUser;
+    private SubwayUser adultUser;
+
+    @BeforeEach
+    void setUp() {
+        final Member infant = new Member("infant@gmail.com", "11", 3);
+        final Member child = new Member("child@gmail.com", "11", 6);
+        final Member youth = new Member("child@gmail.com", "11", 17);
+        final Member adult = new Member("child@gmail.com", "11", 20);
+
+        infantUser = SubwayUser.of(infant.getAge());
+        childUser = SubwayUser.of(child.getAge());
+        youthUser = SubwayUser.of(youth.getAge());
+        adultUser = SubwayUser.of(adult.getAge());
+    }
+
     @Test
     @DisplayName("요금 구간조회")
     public void findFare() {
@@ -116,5 +136,75 @@ public class SubwayFareTest {
         assertThat(result90).isEqualTo(2_550);
         assertThat(result98).isEqualTo(2_650);
         assertThat(result106).isEqualTo(2_750);
+
+        // 할인액 계산
+        assertThat(SubwayFare.discountFare(result10, infantUser)).isEqualTo(0);
+        assertThat(SubwayFare.discountFare(result10, infantUser)).isEqualTo(0);
+        assertThat(SubwayFare.discountFare(result15, infantUser)).isEqualTo(0);
+        assertThat(SubwayFare.discountFare(result20, infantUser)).isEqualTo(0);
+        assertThat(SubwayFare.discountFare(result25, infantUser)).isEqualTo(0);
+        assertThat(SubwayFare.discountFare(result30, infantUser)).isEqualTo(0);
+        assertThat(SubwayFare.discountFare(result35, infantUser)).isEqualTo(0);
+        assertThat(SubwayFare.discountFare(result40, infantUser)).isEqualTo(0);
+        assertThat(SubwayFare.discountFare(result45, infantUser)).isEqualTo(0);
+        assertThat(SubwayFare.discountFare(result50, infantUser)).isEqualTo(0);
+        assertThat(SubwayFare.discountFare(result58, infantUser)).isEqualTo(0);
+        assertThat(SubwayFare.discountFare(result66, infantUser)).isEqualTo(0);
+        assertThat(SubwayFare.discountFare(result74, infantUser)).isEqualTo(0);
+        assertThat(SubwayFare.discountFare(result82, infantUser)).isEqualTo(0);
+        assertThat(SubwayFare.discountFare(result90, infantUser)).isEqualTo(0);
+        assertThat(SubwayFare.discountFare(result98, infantUser)).isEqualTo(0);
+        assertThat(SubwayFare.discountFare(result106, infantUser)).isEqualTo(0);
+
+        assertThat(SubwayFare.discountFare(result10, childUser)).isEqualTo(450);
+        assertThat(SubwayFare.discountFare(result15, childUser)).isEqualTo(500);
+        assertThat(SubwayFare.discountFare(result20, childUser)).isEqualTo(550);
+        assertThat(SubwayFare.discountFare(result25, childUser)).isEqualTo(600);
+        assertThat(SubwayFare.discountFare(result30, childUser)).isEqualTo(650);
+        assertThat(SubwayFare.discountFare(result35, childUser)).isEqualTo(700);
+        assertThat(SubwayFare.discountFare(result40, childUser)).isEqualTo(750);
+        assertThat(SubwayFare.discountFare(result45, childUser)).isEqualTo(800);
+        assertThat(SubwayFare.discountFare(result50, childUser)).isEqualTo(850);
+        assertThat(SubwayFare.discountFare(result58, childUser)).isEqualTo(900);
+        assertThat(SubwayFare.discountFare(result66, childUser)).isEqualTo(950);
+        assertThat(SubwayFare.discountFare(result74, childUser)).isEqualTo(1000);
+        assertThat(SubwayFare.discountFare(result82, childUser)).isEqualTo(1050);
+        assertThat(SubwayFare.discountFare(result90, childUser)).isEqualTo(1100);
+        assertThat(SubwayFare.discountFare(result98, childUser)).isEqualTo(1150);
+        assertThat(SubwayFare.discountFare(result106, childUser)).isEqualTo(1200);
+
+        assertThat(SubwayFare.discountFare(result10, youthUser)).isEqualTo(720);
+        assertThat(SubwayFare.discountFare(result15, youthUser)).isEqualTo(800);
+        assertThat(SubwayFare.discountFare(result20, youthUser)).isEqualTo(880);
+        assertThat(SubwayFare.discountFare(result25, youthUser)).isEqualTo(960);
+        assertThat(SubwayFare.discountFare(result30, youthUser)).isEqualTo(1040);
+        assertThat(SubwayFare.discountFare(result35, youthUser)).isEqualTo(1120);
+        assertThat(SubwayFare.discountFare(result40, youthUser)).isEqualTo(1200);
+        assertThat(SubwayFare.discountFare(result45, youthUser)).isEqualTo(1280);
+        assertThat(SubwayFare.discountFare(result50, youthUser)).isEqualTo(1360);
+        assertThat(SubwayFare.discountFare(result58, youthUser)).isEqualTo(1440);
+        assertThat(SubwayFare.discountFare(result66, youthUser)).isEqualTo(1520);
+        assertThat(SubwayFare.discountFare(result74, youthUser)).isEqualTo(1600);
+        assertThat(SubwayFare.discountFare(result82, youthUser)).isEqualTo(1680);
+        assertThat(SubwayFare.discountFare(result90, youthUser)).isEqualTo(1760);
+        assertThat(SubwayFare.discountFare(result98, youthUser)).isEqualTo(1840);
+        assertThat(SubwayFare.discountFare(result106, youthUser)).isEqualTo(1920);
+
+        assertThat(SubwayFare.discountFare(result10, adultUser)).isEqualTo(result10);
+        assertThat(SubwayFare.discountFare(result15, adultUser)).isEqualTo(result15);
+        assertThat(SubwayFare.discountFare(result20, adultUser)).isEqualTo(result20);
+        assertThat(SubwayFare.discountFare(result25, adultUser)).isEqualTo(result25);
+        assertThat(SubwayFare.discountFare(result30, adultUser)).isEqualTo(result30);
+        assertThat(SubwayFare.discountFare(result35, adultUser)).isEqualTo(result35);
+        assertThat(SubwayFare.discountFare(result40, adultUser)).isEqualTo(result40);
+        assertThat(SubwayFare.discountFare(result45, adultUser)).isEqualTo(result45);
+        assertThat(SubwayFare.discountFare(result50, adultUser)).isEqualTo(result50);
+        assertThat(SubwayFare.discountFare(result58, adultUser)).isEqualTo(result58);
+        assertThat(SubwayFare.discountFare(result66, adultUser)).isEqualTo(result66);
+        assertThat(SubwayFare.discountFare(result74, adultUser)).isEqualTo(result74);
+        assertThat(SubwayFare.discountFare(result82, adultUser)).isEqualTo(result82);
+        assertThat(SubwayFare.discountFare(result90, adultUser)).isEqualTo(result90);
+        assertThat(SubwayFare.discountFare(result98, adultUser)).isEqualTo(result98);
+        assertThat(SubwayFare.discountFare(result106, adultUser)).isEqualTo(result106);
     }
 }

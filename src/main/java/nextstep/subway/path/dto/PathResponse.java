@@ -1,8 +1,11 @@
 package nextstep.subway.path.dto;
 
 import lombok.NoArgsConstructor;
+import nextstep.subway.auth.domain.Stranger;
+import nextstep.subway.auth.domain.User;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.SubwayFare;
+import nextstep.subway.line.domain.SubwayUser;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -30,17 +33,30 @@ public class PathResponse {
         this.fare = SubwayFare.rateInquiry(distance);
     }
 
-    public static PathResponse of(List<Station> stations, Distance distance) {
-        List<StationResponse> stationResponses =
-                stations.stream()
-                        .map(StationResponse::of)
-                        .collect(Collectors.toList());
+    private PathResponse(List<StationResponse> stations, Distance distance, User user) {
+        this.stations = new ArrayList<>(stations);
+        this.distance = distance.intValue();
+        this.fare = calculateFare(distance, user);
+    }
 
-        return new PathResponse(stationResponses, distance);
+    private int calculateFare(Distance distance, User user) {
+        int fare = SubwayFare.rateInquiry(distance);
+        if (user instanceof Stranger) {
+            return fare;
+        }
+        return SubwayFare.discountFare(fare, SubwayUser.of(user.getAge()));
+    }
+
+    public static PathResponse of(List<Station> stations, Distance distance) {
+        return new PathResponse(StationResponse.ofList(stations), distance);
     }
 
     public static PathResponse of(Path path) {
         return PathResponse.of(path.routes(), path.distance());
+    }
+
+    public static PathResponse of(Path path, User user) {
+        return new PathResponse(StationResponse.ofList(path.routes()), path.distance(), user);
     }
 
     public List<StationResponse> getStations() {

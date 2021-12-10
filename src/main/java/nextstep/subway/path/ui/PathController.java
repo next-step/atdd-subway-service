@@ -1,6 +1,8 @@
 package nextstep.subway.path.ui;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.User;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +25,10 @@ public class PathController {
     private final PathService pathService;
 
     @GetMapping
-    public ResponseEntity<PathResponse> getShortestPath(@RequestParam(name = "source") Long source,
+    public ResponseEntity<PathResponse> getShortestPath(@AuthenticationPrincipal User user,
+                                                        @RequestParam(name = "source") Long source,
                                                         @RequestParam(name = "target") Long target) {
-        PathResponse path = PathResponse.of(pathService.getShortestPath(source, target));
+        PathResponse path = pathService.getShortestPath(source, target, user);
         return ResponseEntity.ok().body(path);
     }
 }

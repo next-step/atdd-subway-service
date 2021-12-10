@@ -1,5 +1,8 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.Stranger;
+import nextstep.subway.auth.domain.User;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
@@ -15,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -45,5 +49,20 @@ public class AuthServiceTest {
         TokenResponse token = authService.login(new TokenRequest(EMAIL, PASSWORD));
 
         assertThat(token.getAccessToken()).isNotBlank();
+    }
+
+    @Test
+    @DisplayName("회원 비회원을 구분한다.")
+    void separateUser() {
+        when(jwtTokenProvider.validateToken(null)).thenReturn(false);
+        when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
+        when(jwtTokenProvider.getPayload(anyString())).thenReturn("1");
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
+
+        User stranger = authService.findMemberByToken(null);
+        User member = authService.findMemberByToken("token");
+
+        assertThat(stranger).isInstanceOf(Stranger.class);
+        assertThat(member).isInstanceOf(LoginMember.class);
     }
 }

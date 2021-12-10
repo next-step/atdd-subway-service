@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * packageName : nextstep.subway.line.domain
@@ -23,7 +22,7 @@ class SubwayUserTest {
         final Member infant = new Member("infant@gmail.com", "11", 3);
         final Member child = new Member("child@gmail.com", "11", 6);
         final Member youth = new Member("child@gmail.com", "11", 17);
-        final Member adult = new Member("child@gmail.com", "11", 17);
+        final Member adult = new Member("child@gmail.com", "11", 20);
 
         //when
         final SubwayUser infantUser = SubwayUser.of(infant.getAge());

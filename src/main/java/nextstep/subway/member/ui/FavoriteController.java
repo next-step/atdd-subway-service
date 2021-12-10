@@ -2,7 +2,7 @@ package nextstep.subway.member.ui;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.User;
 import nextstep.subway.member.application.FavoriteService;
 import nextstep.subway.member.dto.FavoriteRequest;
 import nextstep.subway.member.dto.FavoriteResponse;
@@ -27,20 +27,20 @@ public class FavoriteController {
     private final FavoriteService favoriteService;
 
     @PostMapping
-    public ResponseEntity<FavoriteResponse> saveFavorite(@AuthenticationPrincipal LoginMember member, @RequestBody FavoriteRequest request) {
-        final FavoriteResponse favorite = favoriteService.addFavorite(member.getId(), request);
+    public ResponseEntity<FavoriteResponse> saveFavorite(@AuthenticationPrincipal User user, @RequestBody FavoriteRequest request) {
+        final FavoriteResponse favorite = favoriteService.addFavorite(user.getId(), request);
         return ResponseEntity.created(URI.create("/lines/" + favorite.getId())).body(favorite);
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoriteResponse>> findFavorites(@AuthenticationPrincipal LoginMember member) {
-        List<FavoriteResponse> responses = favoriteService.findFavorites(member.getId());
+    public ResponseEntity<List<FavoriteResponse>> findFavorites(@AuthenticationPrincipal User user) {
+        List<FavoriteResponse> responses = favoriteService.findFavorites(user.getId());
         return ResponseEntity.ok().body(responses);
     }
 
     @DeleteMapping("{favoriteId}")
-    public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember member, @PathVariable Long favoriteId) {
-        favoriteService.deleteFavorite(member.getId(), favoriteId);
+    public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal User user, @PathVariable Long favoriteId) {
+        favoriteService.deleteFavorite(user.getId(), favoriteId);
         return ResponseEntity.noContent().build();
     }
 }

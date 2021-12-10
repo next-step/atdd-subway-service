@@ -91,6 +91,28 @@ public enum SubwayFare {
                 .sum();
     }
 
+    public static int rateInquiry(Distance distance, SubwayUser user) {
+        int fare = Arrays.stream(SubwayFare.values())
+                .mapToInt(it -> it.useExtraCharge ? it.calculateOverFare(distance) : BASE_RATE)
+                .sum();
+
+        discountFare(fare, user);
+        return 1;
+    }
+
+    public static int discountFare(int fare, SubwayUser user) {
+        if(!user.isPayUser()) {
+            return NO_CHARGE;
+        }
+
+        if (!user.isDiscountUser()) {
+            return fare;
+        }
+
+        return (fare - user.getDeductibleAmount()) * (100 - user.getDiscountRate()) / 100;
+    }
+
+
     private int calculateOverFare(Distance distance) {
         int chargeDistance = toChargeDistance(distance);
         return chargeDistance == NO_CHARGE ? NO_CHARGE : (int) ((Math.ceil((chargeDistance) / per) + 1) * charges);
