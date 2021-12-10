@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.StationRepository;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("단위 테스트 - SpringExtension을 활용한 가짜 협력 객체 사용")
 @ExtendWith(org.springframework.test.context.junit.jupiter.SpringExtension.class)
-public class SpringExtensionTest {
+class SpringExtensionTest {
     @MockBean
     private LineRepository lineRepository;
     @MockBean
