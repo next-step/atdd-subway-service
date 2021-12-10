@@ -4,11 +4,9 @@ public class LoginMember {
     private Long id;
     private String email;
     private Integer age;
-    private boolean guest = false;
     private AgeType ageType;
 
-    public LoginMember(boolean guest) {
-        this.guest = guest;
+    public LoginMember() {
         this.ageType = AgeType.NONE;
     }
 
@@ -29,10 +27,6 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
-    }
-
-    public boolean isGuest() {
-        return guest;
     }
 
     public AgeType getAgeType() {

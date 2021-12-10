@@ -20,7 +20,7 @@ class LoginMemberTest {
     @DisplayName("게스트 회원은 NONE 타입을 가지게 된다.")
     @Test
     void findGuestMemberAgeType() {
-        LoginMember loginMember = new LoginMember(true);
+        LoginMember loginMember = new LoginMember();
         assertEquals(LoginMember.AgeType.NONE, loginMember.getAgeType());
     }
 

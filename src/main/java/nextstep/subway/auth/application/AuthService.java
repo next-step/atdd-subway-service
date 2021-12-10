@@ -47,6 +47,6 @@ public class AuthService {
         if (loginRequired) {
             throw new AuthorizationException(WRONG_TOKEN);
         }
-        return new LoginMember(true);
+        return new LoginMember();
     }
 }
