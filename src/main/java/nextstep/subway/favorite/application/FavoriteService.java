@@ -68,5 +68,4 @@ public class FavoriteService {
 			throw new IllegalStateException(ERROR_MESSAGE_MEMBER_NOT_OWN_FAVORITE);
 		}
 	}
-
 }
