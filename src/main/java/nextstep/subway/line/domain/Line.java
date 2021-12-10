@@ -21,8 +21,7 @@ public class Line extends BaseEntity {
   @Embedded
   private Sections sections = new Sections();
 
-  public Line() {
-  }
+  protected Line() {}
 
   public Line(String name, String color) {
     this.name = name;
@@ -37,8 +36,7 @@ public class Line extends BaseEntity {
   }
 
   public Line(String name, String color, Station upStation, Station downStation, Distance distance) {
-    this.name = name;
-    this.color = color;
+    this(name, color);
     sections.add(new Section(this, upStation, downStation, distance));
   }
 
@@ -73,6 +71,6 @@ public class Line extends BaseEntity {
   }
 
   public List<Station> getStations() {
-    return sections.getOrderedStations().getStations();
+    return sections.getOrderedStations();
   }
 }
