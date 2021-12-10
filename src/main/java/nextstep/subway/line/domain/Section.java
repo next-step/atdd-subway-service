@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.stream.Stream;
 
 @Entity
 public class Section {
@@ -65,5 +66,9 @@ public class Section {
         this.distance.validateGreaterThanNewDistance(newDistance);
         this.downStation = station;
         this.distance = new Distance(this.distance.getValue() - newDistance);
+    }
+
+    public Stream<Station> stations() {
+        return Stream.of(upStation, downStation);
     }
 }
