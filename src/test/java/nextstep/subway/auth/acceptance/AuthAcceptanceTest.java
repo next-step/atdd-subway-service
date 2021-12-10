@@ -53,7 +53,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 로그인_실패(ExtractableResponse<Response> response) {
+    public static void 로그인_실패(ExtractableResponse<Response> response) {
         String accessToken = response.jsonPath().getString("accessToken");
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
         assertThat(accessToken).isNull();

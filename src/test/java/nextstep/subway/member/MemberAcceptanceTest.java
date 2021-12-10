@@ -5,7 +5,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -66,9 +65,28 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         accessToken = getAccessToken(AuthAcceptanceTest.로그인_요청(NEW_EMAIL, NEW_PASSWORD));
         나의_정보_수정_검증(accessToken);
 
-        //나의_정보_삭제_요청(accessToken);
+        ExtractableResponse<Response> deleteResponse = 나의_정보_삭제_요청(accessToken);
 
+        나의_정보_삭제_됨(deleteResponse);
+        나의_정보_삭제_검증();
+    }
 
+    private void 나의_정보_삭제_검증() {
+        ExtractableResponse<Response> response = AuthAcceptanceTest.로그인_요청(NEW_EMAIL, NEW_PASSWORD);
+        AuthAcceptanceTest.로그인_실패(response);
+    }
+
+    private void 나의_정보_삭제_됨(ExtractableResponse<Response> deleteResponse) {
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private ExtractableResponse<Response> 나의_정보_삭제_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
     }
 
     private String getAccessToken(ExtractableResponse<Response> createToken) {
