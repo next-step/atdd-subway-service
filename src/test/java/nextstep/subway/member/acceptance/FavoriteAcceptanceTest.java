@@ -49,6 +49,4 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 로그인_회원_즐겨찾기_삭제(즐겨찾기_조회_응답, token);
         즐겨찾기_삭제_정상(즐겨찾기_삭제_응답);
     }
-
-
 }
