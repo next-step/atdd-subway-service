@@ -1,7 +1,6 @@
 package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.auth.application.AuthorizationException;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
@@ -42,10 +41,6 @@ public class Member extends BaseEntity {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public Integer getAge() {
         return age;
     }
@@ -56,9 +51,7 @@ public class Member extends BaseEntity {
         this.age = member.age;
     }
 
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException("비밀번호가 일치하지 않습니다.");
-        }
+    public boolean checkPassword(String password) {
+        return StringUtils.equals(this.password, password);
     }
 }

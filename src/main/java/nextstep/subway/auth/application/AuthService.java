@@ -24,7 +24,10 @@ public class AuthService {
     public TokenResponse login(TokenRequest request) {
         Member member = memberRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AuthorizationException("요청한 이메일을 사용하는 사용자가 존재하지 않습니다."));
-        member.checkPassword(request.getPassword());
+
+        if (!member.checkPassword(request.getPassword())) {
+            throw new AuthorizationException("비밀번호가 일치하지 않습니다.");
+        }
 
         String token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(token);
