@@ -89,10 +89,26 @@ Feature: 경로 관련 기능
 ## 인증 기능 구현
 
 Feature: 로그인 기능   
-Scenario: 로그인을 시도한다.   
-Given 회원 등록되어 있음   
-When 로그인 요청   
-Then 로그인 됨  
+    Scenario: 로그인을 시도한다.   
+        Given 회원 등록되어 있음   
+        When 로그인 요청   
+        Then 로그인 됨
+
+## 내 정보 기능 구현
+
+Feature: 회원 기능  
+    Background  
+        Given 회원 등록되어 있음  
+        And 로그인 요청되어 있음  
+    Scenario: 나의 정보 관리    
+        When 나의 정보를 조회 한다   
+        Then 회원 정보 조회됨  
+        When 출발역과 도착역이 같은 경로 조회 요청  
+        Then 최단 경로 조회 실패  
+        When 나의 정보를 수정 한다  
+        Then 로그인을_요청한다  
+        When 나의 정보를 삭제 한다  
+        Then 회원 삭제됨
 
 ## 할 일
 - [x] LineSectionAcceptanceTest 리팩터링
