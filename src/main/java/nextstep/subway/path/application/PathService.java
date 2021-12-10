@@ -15,9 +15,9 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class PathService {
-    private StationService stationService;
-    private LineService lineService;
-    private PathFinder pathFinder;
+    private final StationService stationService;
+    private final LineService lineService;
+    private final PathFinder pathFinder;
 
     public PathService(StationService stationService, LineService lineService, PathFinder pathFinder) {
         this.stationService = stationService;
