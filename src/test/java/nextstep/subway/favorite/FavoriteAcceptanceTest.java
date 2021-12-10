@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +38,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-
         // given
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
@@ -57,14 +57,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void favorite() {
 
         ExtractableResponse<Response> addResponse = 즐겨찾기_등록_요청(사용자토큰, 강남역, 광교역);
-
         즐겨찾기_등록_됨(addResponse);
 
-
         ExtractableResponse<Response> listResponse = 즐겨찾기_목록_조회_요청(사용자토큰);
-
         즐겨찾기_목록_조회_됨(listResponse, Arrays.asList(addResponse));
-
 
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_조회요청(사용자토큰, addResponse);
         즐겨찾기_삭제_됨(deleteResponse);
@@ -113,6 +109,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(사용자토큰)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(favoriteRequest)
                 .when().post("/favorites")
                 .then().log().all()
