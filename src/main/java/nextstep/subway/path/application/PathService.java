@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import nextstep.graph.Graph;
 import nextstep.graph.GraphEdge;
+import nextstep.subway.fare.FarePolicy;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathRequest;
@@ -34,8 +35,9 @@ public class PathService {
 
         Graph<Station> graph = toGraphFrom(lines);
 
+        int distance = (int) graph.getShortestPathWeight(source, target);
         return new PathResponse(StationResponse.of(graph.getShortestPathList(source, target)),
-            (int) graph.getShortestPathWeight(source, target));
+            distance, FarePolicy.fareByDistance(distance));
     }
 
     private Graph<Station> toGraphFrom(List<Line> lines) {
