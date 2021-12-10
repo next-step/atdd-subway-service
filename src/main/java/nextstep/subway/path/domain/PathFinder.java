@@ -33,6 +33,16 @@ public class PathFinder {
         return new PathFinder(new DijkstraShortestPath<>(graph));
     }
 
+    public boolean isValidatePath(Station sourceStation, Station targetStation) {
+        try {
+            findShortestPath(sourceStation, targetStation);
+        } catch (PathFindException pathFindException) {
+            return false;
+        }
+
+        return true;
+    }
+
     private static void validateNonEmpty(Sections sections) {
         if (sections.isEmpty()) {
             throw new PathFindException("빈 구간으로 조회할 수 없습니다.");

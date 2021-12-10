@@ -33,7 +33,9 @@ public class FavoriteService {
         Station sourceStation = stationService.findStationById(favoriteRequest.getSource());
         Station targetStation = stationService.findStationById(favoriteRequest.getTarget());
 
-        pathService.findPath(loginMember, favoriteRequest.getSource(), favoriteRequest.getTarget());
+        if (!pathService.validatePath(sourceStation, targetStation)) {
+            throw new FavoriteException("유효하지 않은 경로를 즐겨찾기로 등록 요청하였습니다.");
+        }
 
         Favorite favorite = favoriteRepository.save(Favorite.of(loginMember.getId(), sourceStation, targetStation));
 

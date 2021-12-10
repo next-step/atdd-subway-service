@@ -34,4 +34,11 @@ public class PathService {
 
         return PathResponse.of(shortestPath, price);
     }
+
+    public boolean validatePath(Station sourceStation, Station targetStation) {
+        Sections sections = sectionService.findAll();
+        PathFinder pathFinder = PathFinder.of(sections);
+
+        return pathFinder.isValidatePath(sourceStation, targetStation);
+    }
 }
