@@ -40,12 +40,12 @@ public class LoginMember {
     }
 
     private void initAgeType() {
-        if (AgeType.isKid(age)) {
+        if (AgeType.isKidAge(age)) {
             ageType = AgeType.KID;
             return;
         }
 
-        if (AgeType.isAdolescent(age)) {
+        if (AgeType.isAdolescentAge(age)) {
             ageType = AgeType.ADOLESCENT;
             return;
         }
@@ -56,14 +56,21 @@ public class LoginMember {
     public enum AgeType {
         NONE, KID, ADOLESCENT;
 
-        public static boolean isKid(int age) {
+        public static boolean isKidAge(int age) {
             return age >= 6 && age < 13;
         }
 
-        public static boolean isAdolescent(int age) {
+        public static boolean isAdolescentAge(int age) {
             return age >= 13 && age < 19;
         }
 
+        public boolean isNone() {
+            return this == NONE;
+        }
+
+        public boolean isKid() {
+            return this == KID;
+        }
     }
 
 }
