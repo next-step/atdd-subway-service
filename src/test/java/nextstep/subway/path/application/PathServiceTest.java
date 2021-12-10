@@ -21,13 +21,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
 
-    private final Station 교대역 = new Station(1L, "교대역");
-    private final Station 양재역 = new Station(2L, "양재역");
-    private final Station 강남역 = new Station(3L, "강남역");
+    Station 교대역 = new Station(1L, "교대역");
+    Station 양재역 = new Station(2L, "양재역");
+    Station 강남역 = new Station(3L, "강남역");
 
-    private final Line 신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
-    private final Line 이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 1);
-    private final Line 삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5);
+    Line 신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
+    Line 이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 1);
+    Line 삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5);
 
     @Mock
     LineRepository lineRepository;
@@ -58,6 +58,5 @@ class PathServiceTest {
                         .map(stationResponse -> stationResponse.getName())
                         .collect(Collectors.toList())).contains(양재역.getName(), 교대역.getName(), 강남역.getName())
         );
-
     }
 }
