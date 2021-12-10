@@ -33,13 +33,6 @@ public class Section {
 	public Section() {
 	}
 
-	public Section(Line line, Station upStation, Station downStation, int distance) {
-		this.line = line;
-		this.upStation = upStation;
-		this.downStation = downStation;
-		this.distance = distance;
-	}
-
 	public Section(Long id, Line line, Station upStation, Station downStation, int distance) {
 		this.id = id;
 		this.line = line;
@@ -48,8 +41,16 @@ public class Section {
 		this.distance = distance;
 	}
 
+	public static Section of(Long id, Line line, Station upStation, Station downStation, int distance) {
+		return new Section(id, line, upStation, downStation, distance);
+	}
+
 	public static Section of(Long id, Station upStation, Station downStation, int distance) {
 		return new Section(id, null, upStation, downStation, distance);
+	}
+
+	public static Section of(Line line, Station upStation, Station downStation, int distance) {
+		return new Section(null, line, upStation, downStation, distance);
 	}
 
 	public Long getId() {

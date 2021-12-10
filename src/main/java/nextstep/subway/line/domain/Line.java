@@ -41,16 +41,22 @@ public class Line extends BaseEntity {
 	public Line(String name, String color, Station upStation, Station downStation, int distance) {
 		this.name = name;
 		this.color = color;
-		sections.add(new Section(this, upStation, downStation, distance));
+		sections.add(Section.of(this, upStation, downStation, distance));
+	}
+
+	public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
+		Line line = new Line(null, name, color);
+		line.sections.add(Section.of(line, upStation, downStation, distance));
+		return line;
 	}
 
 	public static Line of(Long id, String name, String color, Station upStation, Station downStation, int distance) {
 		Line line = new Line(id, name, color);
-		Section section = new Section(line, upStation, downStation, distance);
+		Section section = Section.of(line, upStation, downStation, distance);
 		line.addSection(section);
 		return line;
 	}
-
+	
 	private void addSection(Section section) {
 		this.sections.add(section);
 	}
