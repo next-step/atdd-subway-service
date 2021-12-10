@@ -1,20 +1,16 @@
 package nextstep.subway.member;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
+import static org.assertj.core.api.Assertions.*;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_됨;
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.*;
+import org.springframework.http.*;
+
+import io.restassured.*;
+import io.restassured.response.*;
+import nextstep.subway.*;
+import nextstep.subway.auth.dto.*;
+import nextstep.subway.member.dto.*;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -72,7 +68,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(findResponse, MY_EMAIL, MY_AGE);
 
         // 수정
-        ExtractableResponse<Response> updateResponse = 토큰_기반_수정_요청(tokenResponse, MY_NEW_EMAIL, MY_NEW_PASSWORD, MY_NEW_AGE);
+        ExtractableResponse<Response> updateResponse = 토큰_기반_수정_요청(tokenResponse, MY_NEW_EMAIL, MY_NEW_PASSWORD,
+            MY_NEW_AGE);
         회원_정보_수정됨(updateResponse);
 
         // 재로그인
@@ -86,7 +83,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
-
     private static ExtractableResponse<Response> 토큰_기반_조회_요청(TokenResponse tokenResponse) {
         return RestAssured
             .given().log().all()
@@ -97,7 +93,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    private static ExtractableResponse<Response> 토큰_기반_수정_요청(TokenResponse tokenResponse, String email, String password, int age) {
+    private static ExtractableResponse<Response> 토큰_기반_수정_요청(TokenResponse tokenResponse, String email, String password,
+        int age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
@@ -116,6 +113,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .auth().oauth2(tokenResponse.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().delete("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_생성을_요청(MemberRequest memberRequest) {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(memberRequest)
+            .when().post("/members")
             .then().log().all()
             .extract();
     }
@@ -143,7 +150,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email,
+        String password, Integer age) {
         String uri = response.header("Location");
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
