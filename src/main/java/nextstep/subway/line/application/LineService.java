@@ -64,9 +64,13 @@ public class LineService {
     }
 
     @Transactional
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
+    public void updateLine(final Long id, final LineRequest request) {
         final Line line = getLineById(id);
-        line.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        if (!line.nameEquals(request.getName())) {
+            checkLineNameIsUnique(request.getName());
+        }
+        line.changeName(request.getName());
+        line.changeColor(request.getColor());
     }
 
     @Transactional
