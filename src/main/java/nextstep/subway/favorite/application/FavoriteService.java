@@ -4,6 +4,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.line.domain.PathFinder;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.PathRequest;
@@ -33,19 +34,24 @@ public class FavoriteService {
     }
 
     public FavoriteResponse save(LoginMember loginMember, PathRequest request) {
+        Member member = memberRepository.findByIdElseThrow(loginMember.getId());
+        Favorite persistFavorite = favoriteRepository.save(validPathFavorite(member, request));
+        return FavoriteResponse.of(persistFavorite);
+    }
+
+    private Favorite validPathFavorite(Member member, PathRequest request) {
         Station source = stationRepository.findByIdElseThrow(request.getSource());
         Station target = stationRepository.findByIdElseThrow(request.getTarget());
-        Member member = memberRepository.findByIdElseThrow(loginMember.getId());
         Sections sections = new Sections(sectionRepository.findAll());
-        sections.generatePaths(source, target);
-        Favorite persistFavorite = favoriteRepository.save(new Favorite(member, source, target));
-        return FavoriteResponse.of(persistFavorite);
+        PathFinder graph = new PathFinder().enrollPaths(sections);
+        graph.findPaths(source, target);
+        return new Favorite(member, source, target);
     }
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findByMember(LoginMember loginMember) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
-        return favorites.stream()
+        return favoriteRepository.findByMemberId(loginMember.getId())
+                .stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
     }

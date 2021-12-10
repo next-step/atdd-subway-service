@@ -4,7 +4,6 @@ import nextstep.subway.exception.AlreadyAddSectionException;
 import nextstep.subway.exception.NotFoundSectionException;
 import nextstep.subway.exception.NotIncludeStationException;
 import nextstep.subway.exception.NotRemovableSectionsSize;
-import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
@@ -141,10 +140,19 @@ public class Sections {
         }
     }
 
-    public PathResponse generatePaths(final Station source, final Station target) {
+    public SectionGraph generatePaths(final Station source, final Station target) {
         PathFinder graph = new PathFinder().enrollPaths(this);
-        return new PathResponse(graph.findPaths(source, target));
+        return graph.findPaths(source, target);
     }
+
+    public int selectMaxSurcharge(final SectionGraph paths) {
+        return sections.stream().filter(
+                paths::containsSection)
+                .map(Section::getSurcharge)
+                .max(Integer::compareTo)
+                .orElse(0);
+    }
+
 
     public Stations getAllStationsBySections() {
         if (sections.isEmpty()) {

@@ -8,8 +8,8 @@ import static nextstep.subway.station.domain.StationTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineTest {
-    public static final Line 신분당선 = new Line("신분당선", "bg-red-600");
-    public static final Line 수인분당선 = new Line("수인분당선", "bg-yellow-600");
+    public static final Line 신분당선 = new Line("신분당선", "bg-red-600", 500);
+    public static final Line 수인분당선 = new Line("수인분당선", "bg-yellow-600", 200);
     private Line LINE_2;
 
     @BeforeEach
@@ -20,7 +20,7 @@ public class LineTest {
     @DisplayName("노선 생성")
     @Test
     void createLine() {
-        Line actual = new Line("신분당선", "bg-red-600");
+        Line actual = new Line("신분당선", "bg-red-600", 500);
         assertThat(actual).isEqualTo(신분당선);
     }
 

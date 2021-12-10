@@ -98,7 +98,8 @@ class SectionsTest {
     @DisplayName("최단 경로 구하기")
     @Test
     void generatePathsTest() {
-        PathResponse pathResponse = sections.generatePaths(역삼역, 사당역);
+        SectionGraph graph = sections.generatePaths(역삼역, 사당역);
+        PathResponse pathResponse = new PathResponse(graph, sections.selectMaxSurcharge(graph));
         List<StationResponse> expected = Stream.of(역삼역, 양재역, 사당역)
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
