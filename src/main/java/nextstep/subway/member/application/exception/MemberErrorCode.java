@@ -1,7 +1,6 @@
 package nextstep.subway.member.application.exception;
 
 
-import nextstep.subway.common.exception.CommonErrorCode;
 import nextstep.subway.common.exception.ErrorCode;
 
 public enum MemberErrorCode implements ErrorCode {
