@@ -1,6 +1,8 @@
 package nextstep.subway.domain.path.domain;
 
+import nextstep.subway.domain.line.domain.Distance;
 import nextstep.subway.domain.line.domain.Line;
+import nextstep.subway.domain.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -15,8 +17,8 @@ public class DijkstraShortestPath implements Path {
     private final org.jgrapht.alg.shortestpath.DijkstraShortestPath<Long, Long> dijkstraShortestPath = new org.jgrapht.alg.shortestpath.DijkstraShortestPath(graph);
 
     @Override
-    public int getWeight(final Long source, final Long target) {
-        return (int) dijkstraShortestPath.getPath(source, target).getWeight();
+    public Distance getWeight(final Station source, final Station target) {
+        return new Distance((int) dijkstraShortestPath.getPath(source.getId(), target.getId()).getWeight());
     }
 
     @Override
@@ -38,8 +40,8 @@ public class DijkstraShortestPath implements Path {
     }
 
     @Override
-    public Optional<List<Long>> getVertex(final Long source, final Long target) {
-        final GraphPath<Long, Long> path = dijkstraShortestPath.getPath(source, target);
+    public Optional<List<Long>> getVertex(final Station source, final Station target) {
+        final GraphPath<Long, Long> path = dijkstraShortestPath.getPath(source.getId(), target.getId());
         try {
             return Optional.of(path.getVertexList());
         }catch (NullPointerException e) {
