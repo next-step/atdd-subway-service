@@ -68,6 +68,10 @@ public class Sections {
 		validateToDelete();
 		final Optional<Section> maybeUpSection = findFirst(section -> section.equalsUpStation(station));
 		final Optional<Section> maybeDownSection = findFirst(section -> section.equalsDownStation(station));
+		// @discussion: https://stackoverflow.com/questions/48446622/how-to-use-java-8-optionals-performing-an-action-if-all-three-are-present
+		// if (maybeUpSection.isPresent() && maybeDownSection.isPresent()) {
+		// 	sections.add(createSection(maybeUpSection.get(), maybeDownSection.get()));
+		// }
 		maybeUpSection.ifPresent(upSection ->
 			maybeDownSection.ifPresent(downSection -> sections.add(createSection(upSection, downSection)))
 		);
@@ -146,5 +150,9 @@ public class Sections {
 
 	private Optional<Section> findFirst(Predicate<? super Section> conditional) {
 		return sections.stream().filter(conditional).findFirst();
+	}
+
+	public List<Section> getSections() {
+		return Collections.unmodifiableList(sections);
 	}
 }

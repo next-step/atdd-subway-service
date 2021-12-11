@@ -25,18 +25,18 @@ public class RestApiFixture {
 		return response(request().delete(path, pathParams));
 	}
 
-	private static RequestSpecification request() {
+	public static RequestSpecification request() {
 		return RestAssured.given().log().all()
 			.accept(MediaType.APPLICATION_JSON_VALUE);
 	}
 
-	private static RequestSpecification request(Object body) {
+	public static RequestSpecification request(Object body) {
 		return request()
 			.body(body)
 			.contentType(MediaType.APPLICATION_JSON_VALUE);
 	}
 
-	private static ExtractableResponse<Response> response(Response response) {
+	public static ExtractableResponse<Response> response(Response response) {
 		return response.then().log().all().extract();
 	}
 }
