@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -29,10 +30,9 @@ public class PathService {
         Station targetStation = stationService.findById(targetId);
         
         PathFinder pathFinder = PathFinder.of(lineService.findLines());
-        List<Station> stations = pathFinder.findShortestPath(sourceStation, targetStation);
-        int distance = pathFinder.findShortestDistance(sourceStation, targetStation);
+        Path path = pathFinder.findShortestPath(sourceStation, targetStation);
         
-        return PathResponse.of(stations, distance);
+        return PathResponse.of(path);
     }
 
 }

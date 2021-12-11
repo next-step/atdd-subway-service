@@ -25,8 +25,11 @@ public class PathFinderTest {
         
         PathFinder pathFinder = PathFinder.of(Arrays.asList(이호선, 오호선));
         
-        // then, when
-        assertThat(pathFinder.findShortestDistance(을지로4가, 동대문역사문화공원)).isEqualTo(30);
+        // when
+        Path path = pathFinder.findShortestPath(을지로4가, 동대문역사문화공원);
+        
+        // then
+        assertThat(path.getDistance()).isEqualTo(30);
     }
     
     @Test
@@ -39,9 +42,9 @@ public class PathFinderTest {
         
         PathFinder pathFinder = PathFinder.of(Arrays.asList(이호선));
         
-        // then, when
+        // when, then 
         assertThrows(IllegalArgumentException.class, ()->{
-            pathFinder.findShortestDistance(서초역, 서초역);
+            pathFinder.findShortestPath(서초역, 서초역);
                 });
     }
     
@@ -58,9 +61,9 @@ public class PathFinderTest {
         
         PathFinder pathFinder = PathFinder.of(Arrays.asList(이호선, 사호선));
         
-        // then, when
+        // when, then
         assertThrows(IllegalArgumentException.class, ()->{
-            pathFinder.findShortestDistance(서초역, 이수역);
+            pathFinder.findShortestPath(서초역, 이수역);
                 });
     }
     
@@ -74,9 +77,9 @@ public class PathFinderTest {
         
         PathFinder pathFinder = PathFinder.of(Arrays.asList(이호선));
         
-        // then, when
+        // when, then
         assertThrows(IllegalArgumentException.class, ()->{
-            pathFinder.findShortestDistance(서초역, Station.from("봉천역"));
+            pathFinder.findShortestPath(서초역, Station.from("봉천역"));
                 });
     }
 }

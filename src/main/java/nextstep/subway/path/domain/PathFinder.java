@@ -29,17 +29,12 @@ public class PathFinder {
         return new PathFinder(graph);
     }
     
-    public List<Station> findShortestPath(Station sourceStation, Station targetStation) {
+    public Path findShortestPath(Station sourceStation, Station targetStation) {
         validationSameStation(sourceStation, targetStation);
-        validationConnectedStation(sourceStation, targetStation);
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
-        return graphPath.getVertexList();
-    }
-
-    public int findShortestDistance(Station sourceStation, Station targetStation) {
-        validationSameStation(sourceStation, targetStation);
-        validationConnectedStation(sourceStation, targetStation);
-        return (int) dijkstraShortestPath.getPathWeight(sourceStation, targetStation);
+        validationConnectedStation(graphPath);
+        
+        return Path.of(graphPath.getVertexList(), (int) dijkstraShortestPath.getPathWeight(sourceStation, targetStation));
     }
 
     private static void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
@@ -56,8 +51,7 @@ public class PathFinder {
         }
     }
     
-    private void validationConnectedStation(Station sourceStation, Station targetStation) {
-        GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+    private void validationConnectedStation(GraphPath<Station, DefaultWeightedEdge> graphPath) {
         if (Objects.isNull(graphPath)) {
             throw new IllegalArgumentException("출발역과 도착역이 연결되어있지 않습니다");
         }
