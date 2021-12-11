@@ -57,12 +57,23 @@ public class ApiRequest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> putWithAuth(String uri, String token, MemberRequest memberResponse) {
+    public static ExtractableResponse<Response> postWithAuth(String uri, String token, Object params) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberResponse)
+                .body(params)
+                .when().post(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> putWithAuth(String uri, String token, Object params) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
                 .when().put(uri)
                 .then().log().all()
                 .extract();

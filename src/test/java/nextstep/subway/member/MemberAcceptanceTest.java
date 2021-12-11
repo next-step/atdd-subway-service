@@ -50,7 +50,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMyInfo() {
         // given
-        회원_생성되어있음_요청(EMAIL, PASSWORD, AGE);
+        회원_생성되어있음(EMAIL, PASSWORD, AGE);
         TokenResponse token = 로그인_요청되어_있음(EMAIL, PASSWORD).as(TokenResponse.class);
 
         // when
@@ -72,8 +72,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(response);
     }
 
-    private void 회원_생성되어있음_요청(String email, String password, int age) {
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+    public static ExtractableResponse<Response> 회원_생성되어있음(String email, String password, int age) {
+        return 회원_생성을_요청(email, password, age);
     }
 
     private ExtractableResponse<Response> 나의_정보를_삭제_한다(TokenResponse token) {
