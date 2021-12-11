@@ -86,6 +86,6 @@ public class PathAcceptanceDynamicTest extends AcceptanceTest {
     }
 
     private void 지하철_이용_요금_포함(PathResponse 교대역_양재역_경로) {
-        assertThat(교대역_양재역_경로.getPay()).isNotNull();
+        assertThat(교대역_양재역_경로.getFare()).isNotNull();
     }
 }
