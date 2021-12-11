@@ -1,26 +1,37 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.utils.PathFinder;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @Transactional
 public class PathService {
     private final StationRepository stationRepository;
+    private final LineRepository lineRepository;
 
-    public PathService(StationRepository stationRepository) {
+    private final PathFinder pathFinder;
+
+    @Autowired
+    public PathService(StationRepository stationRepository, LineRepository lineRepository, PathFinder pathFinder) {
         this.stationRepository = stationRepository;
+        this.lineRepository = lineRepository;
+        this.pathFinder = pathFinder;
     }
 
     public PathResponse findPath(Long source, Long target) {
-        Optional<Station> sourceStation = stationRepository.findById(source);
-        Optional<Station> targetStation = stationRepository.findById(target);
+        Station sourceStation = stationRepository.findById(source).orElseThrow(IllegalArgumentException::new);
+        Station targetStation = stationRepository.findById(target).orElseThrow(IllegalArgumentException::new);
+        List<Line> lines = lineRepository.findAll();
 
-        return null;
+        return pathFinder.findPath(lines, sourceStation, targetStation);
     }
 }
