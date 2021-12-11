@@ -120,7 +120,7 @@ Feature: 지하철 구간 관련 기능
 
 ### 요구사항
 - 최단 경로 조회 인수 테스트 만들기
-  - [ ] PathAcceptanceTest 작성
+  - [x] PathAcceptanceTest 작성
 - 최단 경로 조회 기능 구현하기
   - [ ] 인수 테스트 성공 시키기
   - [ ] 컨트롤러 및 DTO 작성
