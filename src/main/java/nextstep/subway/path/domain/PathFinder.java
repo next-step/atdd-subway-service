@@ -14,11 +14,11 @@ import java.util.Set;
 
 import static nextstep.subway.path.application.exception.InvalidPathException.*;
 
-public class DijkstraPath {
+public class PathFinder {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-    public DijkstraPath(List<Line> lines) {
+    public PathFinder(List<Line> lines) {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         for (Line line : lines) {
@@ -46,7 +46,6 @@ public class DijkstraPath {
 
         return new Path(path.getVertexList(), (int) path.getWeight());
     }
-
 
     private void validateStation(Station source, Station target) {
         if (source.equals(target)) {

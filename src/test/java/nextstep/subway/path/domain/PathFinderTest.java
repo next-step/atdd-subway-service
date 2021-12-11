@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("지하철 경로 기능")
-class DijkstraPathTest {
+class PathFinderTest {
 
     private Station 강남;
     private Station 선릉;
@@ -28,7 +28,7 @@ class DijkstraPathTest {
     private Line 이호선;
     private Line 삼호선;
 
-    private DijkstraPath dijkstraPath;
+    private PathFinder dijkstraPath;
 
     /**
      * 교대역 ------- (2) ---- 강남역 ---- (3) --- 선릉
@@ -57,7 +57,7 @@ class DijkstraPathTest {
         삼호선.addSection(new Section(남부터미널, 양재, 2));
         삼호선.addSection(new Section(양재, 매봉, 4));
 
-        dijkstraPath = new DijkstraPath(Arrays.asList(이호선, 삼호선));
+        dijkstraPath = new PathFinder(Arrays.asList(이호선, 삼호선));
     }
 
 
@@ -67,7 +67,7 @@ class DijkstraPathTest {
         // given
         // 양재 -> 강남 : (양재-6-강남) 6 / (양재-2-남부터미널-1-교대-2-강남) 5
         Line 신분당선 = new Line("신분당선", "bg-red-600", 강남, 양재, 6);
-        dijkstraPath = new DijkstraPath(Arrays.asList(이호선, 삼호선, 신분당선));
+        dijkstraPath = new PathFinder(Arrays.asList(이호선, 삼호선, 신분당선));
 
         // when
         Path path = dijkstraPath.shortestPath(양재, 강남);
@@ -84,7 +84,7 @@ class DijkstraPathTest {
         // given
         // 양재 -> 강남 : (양재-5-강남) 5 / (양재-2-남부터미-1-교대-2-강남) 5
         Line 신분당선 = new Line("신분당선", "bg-red-600", 강남, 양재, 5);
-        dijkstraPath = new DijkstraPath(Arrays.asList(이호선, 삼호선, 신분당선));
+        dijkstraPath = new PathFinder(Arrays.asList(이호선, 삼호선, 신분당선));
 
         // when
         Path path = dijkstraPath.shortestPath(양재, 강남);
@@ -116,7 +116,7 @@ class DijkstraPathTest {
     void validateNotConnectable() {
         // given
         Line 사호선 = new Line("사호선", "bg-sky-600", 이수, 사당, 3);
-        dijkstraPath = new DijkstraPath(Arrays.asList(이호선, 삼호선, 사호선));
+        dijkstraPath = new PathFinder(Arrays.asList(이호선, 삼호선, 사호선));
 
         // when then
         assertThatThrownBy(() -> dijkstraPath.shortestPath(강남, 사당))
