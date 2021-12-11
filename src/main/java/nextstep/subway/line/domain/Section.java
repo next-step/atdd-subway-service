@@ -90,14 +90,14 @@ public class Section {
     }
 
     public boolean hasSameUpStation(Section section) {
-        return this.upStation == section.getUpStation();
+        return this.upStation.equals(section.getUpStation());
     }
 
     public boolean hasSameDownStation(Section section) {
-        return this.downStation == section.getDownStation();
+        return this.downStation.equals(section.getDownStation());
     }
 
     public boolean hasAnyMatchStation(Station station) {
-        return this.upStation == station || this.downStation == station;
+        return this.upStation.equals(station) || this.downStation.equals(station);
     }
 }
