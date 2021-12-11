@@ -82,7 +82,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // when 동일한 역으로 최단 경로 조회 요청
         ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역, 강남역);
 
-        // then 최단 경로 조회 됨
+        // then 최단 경로 조회 실패 됨
+        최단_경로_조회_실패됨(response);
+    }
+
+    @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 조회 할 수 없다.")
+    @Test
+    void findShortestPathNotLinkedStation() {
+        // given
+        StationResponse 연결안된역 = StationAcceptanceTest.지하철역_등록되어_있음("서울역").as(StationResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역, 연결안된역);
+
+        // then 최단 경로 조회 실패 됨
         최단_경로_조회_실패됨(response);
     }
 

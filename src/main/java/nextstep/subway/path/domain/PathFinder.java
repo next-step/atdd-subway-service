@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import java.util.List;
 import nextstep.subway.common.IllegalStationException;
+import nextstep.subway.common.PathNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -24,10 +25,17 @@ public class PathFinder {
 
     public PathResponse findShortestPath(final Station sourceStation, final Station targetStation) {
         validateDifferentStation(sourceStation, targetStation);
+        validateContainsStation(sourceStation, targetStation);
 
         return PathResponse.of(
             Path.of(DijkstraShortestPath.findPathBetween(graph, sourceStation, targetStation))
         );
+    }
+
+    private void validateContainsStation(Station sourceStation, Station targetStation) {
+        if (!graph.containsVertex(sourceStation) || !graph.containsVertex(targetStation)) {
+            throw new PathNotFoundException("역 사이의 경로를 찾을 수 없습니다.");
+        }
     }
 
     private void validateDifferentStation(Station sourceStation, Station targetStation) {
