@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.Objects;
 import javax.persistence.Embeddable;
 import nextstep.subway.exception.InvalidArgumentException;
+import nextstep.subway.path.domain.AgeFarePolicy;
 
 @Embeddable
 public class Fare {
@@ -27,6 +28,10 @@ public class Fare {
 
     public Fare plus(Fare other) {
         return Fare.valueOf(fare + other.fare);
+    }
+
+    public Fare getAgeFare(AgeFarePolicy ageFarePolicy) {
+        return Fare.valueOf(ageFarePolicy.discountedFare(this.fare));
     }
 
     private void validate(Integer fare) {

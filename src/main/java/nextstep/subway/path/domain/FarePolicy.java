@@ -4,9 +4,9 @@ import java.util.Arrays;
 import nextstep.subway.exception.InvalidArgumentException;
 
 public enum FarePolicy {
-    BASIC(0,10,0,0),
-    ADDITIONAL_10(10, 50, 5, 0),
-    ADDITIONAL_50(50, 2147483647, 8, 800);
+    BASIC(0,9,0,0),
+    ADDITIONAL_10(10, 49, 5, 0),
+    ADDITIONAL_50(50, Integer.MAX_VALUE, 8, 800);
 
     private static final int BASE_FARE = 1250;
     private static final int PER_FARE = 100;
@@ -16,7 +16,7 @@ public enum FarePolicy {
     private int addFare;
 
 
-    private FarePolicy(int min, int max, int distance, int addFare) {
+    FarePolicy(int min, int max, int distance, int addFare) {
         this.min = min;
         this.max = max;
         this.distance = distance;
@@ -40,7 +40,7 @@ public enum FarePolicy {
 
     private static FarePolicy includePolicy(int distance) {
         return Arrays.stream(values())
-            .filter(it -> it.min <= distance && it.max > distance)
+            .filter(it -> it.min <= distance && it.max >= distance)
             .findFirst()
             .orElseThrow(() -> new InvalidArgumentException("포함되는 정책이 없습니다. 다시 입력해 주세요."));
     }
