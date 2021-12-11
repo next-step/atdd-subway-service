@@ -74,7 +74,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ## 구현목록
 - [x] 최단 경로 조회 인수 테스트 추가
-- [ ] 최단 경로 조회 기능 추가
+- [x] 최단 경로 조회 기능 추가
 * Outside In
     - [x] 컨트롤러 레이어 구현
     - [x] 서비스 테스트 작성
