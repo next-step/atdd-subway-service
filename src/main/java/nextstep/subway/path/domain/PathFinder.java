@@ -43,7 +43,7 @@ public class PathFinder {
     }
 
     private static void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
-        line.getStations().forEach(station -> graph.addVertex(station));
+        line.getStations().forEach(graph::addVertex);
     }
 
     private static void setEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Sections sections) {
