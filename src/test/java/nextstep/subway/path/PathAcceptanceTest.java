@@ -1,9 +1,11 @@
 package nextstep.subway.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +22,7 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
 
@@ -79,8 +82,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 경로_조회_됨(ExtractableResponse<Response> response, List<StationResponse> stationResponses, int distance) {
         PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getStations()).containsExactlyElementsOf(stationResponses);
-        assertThat(pathResponse.getDistance()).isEqualTo(distance);
+        List<Station> stations = stationResponses.stream()
+                .map(stationResponse -> Station.from(stationResponse.getName()))
+                .collect(Collectors.toList());
+        
+        assertAll(
+                () -> assertThat(pathResponse.getStations()).containsExactlyElementsOf(stations),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(distance)
+                );
     }
     
 }
