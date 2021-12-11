@@ -27,7 +27,7 @@ public class SectionService {
     }
 
     @Transactional
-    public void addSection(final Long lineId, final SectionRequest request) {
+    public void addLineStation(final Long lineId, final SectionRequest request) {
         final Line line = lineRepository.findById(lineId)
             .orElseThrow(NoSuchElementException::new);
         final Section section = createSection(request);

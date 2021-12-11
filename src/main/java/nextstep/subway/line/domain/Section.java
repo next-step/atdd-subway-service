@@ -51,6 +51,35 @@ public class Section {
         this.line = line;
     }
 
+    public void adjustUpStation(final Section newSection) {
+        validateNewSection(newSection);
+        upStation = newSection.getDownStation();
+        adjustDistance(newSection.getDistance());
+    }
+
+    public void adjustDownStation(final Section newSection) {
+        validateNewSection(newSection);
+        downStation = newSection.getUpStation();
+        adjustDistance(newSection.getDistance());
+    }
+
+    private void validateNewSection(final Section section) {
+        if (equals(section)) {
+            throw new IllegalArgumentException("이미 노선에 등록된 구간을 추가할 수 없습니다.");
+        }
+        if (distance <= section.getDistance()) {
+            throw new IllegalArgumentException("새 구간의 역 사이 길이가 기존 역 사이 길이보다 크거나 같으면 등록 할 수 없습니다.");
+        }
+    }
+
+    private void adjustDistance(final int distance) {
+        this.distance -= distance;
+    }
+
+    public boolean hasStation(final Station station) {
+        return upStation.equals(station) || downStation.equals(station);
+    }
+
     public Long getId() {
         return id;
     }
@@ -69,21 +98,5 @@ public class Section {
 
     public int getDistance() {
         return distance;
-    }
-
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
     }
 }
