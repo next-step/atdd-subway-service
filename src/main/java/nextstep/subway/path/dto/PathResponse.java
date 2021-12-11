@@ -22,7 +22,9 @@ public class PathResponse {
     }
 
     public static PathResponse of(Path path) {
-        return new PathResponse(path.getTotalDistance(), StationResponse.ofList(path.getStations()), 0);
+        return new PathResponse(path.getTotalDistance(),
+            StationResponse.ofList(path.getStations()),
+            path.getTotalFare());
     }
 
     public int getDistance() {
@@ -31,5 +33,9 @@ public class PathResponse {
 
     public List<StationResponse> getStations() {
         return stations;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }

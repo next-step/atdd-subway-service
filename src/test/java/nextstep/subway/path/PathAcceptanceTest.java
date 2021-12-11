@@ -150,7 +150,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 총요금_조회됨(PathResponse pathResponse, int fare){
         // 총 요금
-        assertThat(pathResponse.getDistance()).isEqualTo(fare);
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 
     private ExtractableResponse<Response> 경로_조회_요청(Long source, Long target) {

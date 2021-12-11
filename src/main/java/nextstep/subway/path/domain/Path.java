@@ -7,10 +7,12 @@ public final class Path {
 
     private final List<Station> stations;
     private final Integer totalDistance;
+    private final Integer totalFare;
 
     private Path(List<Station> stations, Integer totalDistance) {
         this.stations = stations;
         this.totalDistance = totalDistance;
+        this.totalFare = FarePolicy.calculateOverFare(totalDistance);
     }
 
     public static Path of(List<Station> stations, Integer totalDistance) {
@@ -23,5 +25,9 @@ public final class Path {
 
     public Integer getTotalDistance() {
         return totalDistance;
+    }
+
+    public Integer getTotalFare() {
+        return totalFare;
     }
 }
