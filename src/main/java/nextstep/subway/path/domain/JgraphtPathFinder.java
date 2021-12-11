@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.error.SubwayException;
+import nextstep.subway.error.SubwayInternalException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -55,13 +55,13 @@ public class JgraphtPathFinder implements PathFinder {
 
     private void validationNotConnect(GraphPath graphPath) {
         if(Objects.isNull(graphPath)) {
-            throw new SubwayException("출발역과 도착역이 이어져 있지 않습니다.");
+            throw new SubwayInternalException("출발역과 도착역이 이어져 있지 않습니다.");
         }
     }
 
     private void validationSameStation(Station sourceStation, Station targetStation) {
         if (sourceStation.equals(targetStation)) {
-            throw new SubwayException("출발역과 도착역이 같습니다.");
+            throw new SubwayInternalException("출발역과 도착역이 같습니다.");
         }
     }
 }

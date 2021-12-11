@@ -1,6 +1,6 @@
 package nextstep.subway.line;
 
-import nextstep.subway.error.SubwayException;
+import nextstep.subway.error.SubwayInternalException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -88,7 +88,7 @@ public class SectionsTest {
 
         assertThatThrownBy(() -> {
             line.addSection(nextSection);
-        }).isInstanceOf(SubwayException.class)
+        }).isInstanceOf(SubwayInternalException.class)
                 .hasMessageContaining("이미 등록된 구간 입니다.");
     }
 
@@ -101,7 +101,7 @@ public class SectionsTest {
 
         assertThatThrownBy(() -> {
             line.addSection(nextSection);
-        }).isInstanceOf(SubwayException.class)
+        }).isInstanceOf(SubwayInternalException.class)
                 .hasMessageContaining("등록할 수 없는 구간 입니다.");
     }
 
@@ -156,7 +156,7 @@ public class SectionsTest {
 
         assertThatThrownBy(() -> {
             line.removeSection(downStation);
-        }).isInstanceOf(SubwayException.class)
+        }).isInstanceOf(SubwayInternalException.class)
                 .hasMessageContaining("구간이 최소 하나는 있어야 합니다.");
     }
 }

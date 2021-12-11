@@ -162,8 +162,21 @@ PathFinder 의존성 주입으로 생성하게 하여 확장에 유연하게 만
   * [x] 즐겨찾기 삭제
 
 ### 공부정리
-
 * RestAssured jwt auth 테스트 방법
   * 참고자료1 : https://stackoverflow.com/questions/42790021/rest-assured-bearer-authentication
   * 참고자료2 : https://www.baeldung.com/rest-assured-authentication <- oauth2 검색
   * given().auth().oauth2(token) 사용하면 된다.
+
+### 피드백 정리
+1. 모든 커스텀 예외처리가 INTERNAL_SERVER_ERROR이 맞을까요?
+~~~
+커스텀 예외처리를 두개로 나누어 INTERNAL_SERVER_ERROR, BAD_REQUEST 로 나눴습니다. :)
+~~~
+2. PathFinder를 의존성 주입으로 생성하게 하여 확장에 유연하게 만들었지만, 이제 PathFinder가 강하게 결합이 됐네요. 적절한 확장포인트를 생각하여 인터페이스를 통해 의존성을 끊어보면 좋겠어요!
+~~~
+PathFinder인터페이스를 도출하고 기존 파일은 JgraphtPathFinder로 명명하여 의존성을 줄이려고 했습니다.
+~~~
+3. 커스텀 예외처리를 분리하신 만큼 해당 서비스 내에 의도한 예외상황은 커스텀 예외처리를 활용해보면 좋겠습니다~
+~~~
+의도된 예외상황은 커스텀예외처리 했습니다~
+~~~

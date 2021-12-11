@@ -20,9 +20,15 @@ public class ExceptionHandlerAdvice {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(SubwayException.class)
-    public ResponseEntity<ErrorResponse> handleCommonException(SubwayException e) {
+    @ExceptionHandler(SubwayInternalException.class)
+    public ResponseEntity<ErrorResponse> handleSubwayInternalException(SubwayInternalException e) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        return new ResponseEntity(errorResponse, errorResponse.toHttpStatus());
+    }
+
+    @ExceptionHandler(SubwayBadRequestException.class)
+    public ResponseEntity<ErrorResponse> handleSubwayBadRequestException(SubwayInternalException e) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         return new ResponseEntity(errorResponse, errorResponse.toHttpStatus());
     }
 }
