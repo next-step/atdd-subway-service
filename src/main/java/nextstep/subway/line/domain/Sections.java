@@ -8,6 +8,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+import org.jgrapht.graph.builder.GraphBuilder;
+
 import nextstep.subway.common.exception.SubwayErrorCode;
 import nextstep.subway.common.exception.SubwayException;
 import nextstep.subway.station.domain.Station;
@@ -141,6 +146,19 @@ public class Sections {
                 .ifPresent(downLineStation -> downLineStation
                     .updateDownStation(section.getUpStation(), section.getDistance()));
         }
+    }
+
+    public Graph<Station, DefaultWeightedEdge> makeGraph() {
+        GraphBuilder<Station, DefaultWeightedEdge, WeightedMultigraph<Station, DefaultWeightedEdge>> graphBuilder =
+            new GraphBuilder<>(new WeightedMultigraph<>(DefaultWeightedEdge.class));
+
+        sections.forEach(section -> {
+            graphBuilder.addVertex(section.getUpStation());
+            graphBuilder.addVertex(section.getDownStation());
+            graphBuilder.addEdge(section.getUpStation(), section.getDownStation(), section.getDistanceValue());
+        });
+
+        return graphBuilder.buildAsUnmodifiable();
     }
 
 }

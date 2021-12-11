@@ -1,24 +1,17 @@
 package nextstep.subway.path;
 
-import static org.assertj.core.api.Assertions.*;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTestHelper;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTestHelper;
-import nextstep.subway.line.domain.Stations;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTestHelper;
@@ -54,11 +47,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = StationAcceptanceTestHelper.지하철역_등록되어_있음("남부터미널역")
             .as(StationResponse.class);
 
-        신분당선 = LineAcceptanceTestHelper.지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10)
+        신분당선 = LineAcceptanceTestHelper.지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 7)
             .as(LineResponse.class);
-        이호선 = LineAcceptanceTestHelper.지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10)
+        이호선 = LineAcceptanceTestHelper.지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 2)
             .as(LineResponse.class);
-        삼호선 = LineAcceptanceTestHelper.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5)
+        삼호선 = LineAcceptanceTestHelper.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 8)
             .as(LineResponse.class);
 
         LineSectionAcceptanceTestHelper.지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
@@ -68,8 +61,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void getPath() {
         // given
-        List<StationResponse> stations = Arrays.asList(교대역, 강남역, 양재역);
-        PathResponse pathResponse = new PathResponse(stations, 30);
+        List<StationResponse> stations = Arrays.asList(교대역, 남부터미널역, 양재역);
+        PathResponse pathResponse = new PathResponse(stations, 8);
 
         // when
         ExtractableResponse<Response> response = PathAcceptanceTestHelper.최단_경로_조회_요청(교대역.getId(), 양재역.getId());
