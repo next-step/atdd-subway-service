@@ -46,7 +46,7 @@ class LineTest {
 
         // then
         assertThat(line.getSections())
-                .extracting("upStation.name", "downStation.name", "distance.distance")
+                .extracting("upStation.name", "downStation.name", "distance")
                 .containsExactly(
                         tuple("강남", "양재", 3),
                         tuple("양재", "양재시민의숲", 4),
@@ -68,7 +68,7 @@ class LineTest {
 
         // then
         assertThat(line.getSections())
-                .extracting("upStation.name", "downStation.name", "distance.distance")
+                .extracting("upStation.name", "downStation.name", "distance")
                 .containsExactly(
                         tuple("강남", "양재", 3),
                         tuple("양재", "양재시민의숲", 2),
@@ -170,7 +170,7 @@ class LineTest {
 
         // then
         assertThat(line.getSections())
-                .extracting("upStation.name", "downStation.name", "distance.distance")
+                .extracting("upStation.name", "downStation.name", "distance")
                 .containsExactly(
                         tuple("양재", "양재시민의숲", 3)
                 );
@@ -189,7 +189,7 @@ class LineTest {
 
         // then
         assertThat(line.getSections())
-                .extracting("upStation.name", "downStation.name", "distance.distance")
+                .extracting("upStation.name", "downStation.name", "distance")
                 .containsExactly(
                         tuple("강남", "양재", 3),
                         tuple("양재", "판교", 6)

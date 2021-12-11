@@ -34,7 +34,7 @@ public class PathFinder {
     private void addEdges(List<Section> sections) {
         sections.forEach(section -> {
             DefaultWeightedEdge edge = graph.addEdge(section.getUpStation(), section.getDownStation());
-            graph.setEdgeWeight(edge, section.getWeight());
+            graph.setEdgeWeight(edge, section.getDistance());
         });
     }
 

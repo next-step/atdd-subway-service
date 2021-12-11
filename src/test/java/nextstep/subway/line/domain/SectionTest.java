@@ -67,7 +67,7 @@ class SectionTest {
         Section result = section.merge(newSection);
 
         // then
-        assertThat(section.getDistance()).isEqualTo(new Distance(3));
-        assertThat(result.getDistance()).isEqualTo(new Distance(4));
+        assertThat(section.getDistance()).isEqualTo(3);
+        assertThat(result.getDistance()).isEqualTo(4);
     }
 }

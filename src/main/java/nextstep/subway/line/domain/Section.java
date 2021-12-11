@@ -54,7 +54,7 @@ public class Section {
     public Section merge(Section newSection) {
         if (isBetweenStations(newSection) && distance.divisible(newSection.getDistance())) {
             changeStationLink(newSection);
-            distance = distance.minus(newSection.distance);
+            distance = distance.minus(newSection.getDistance());
         }
         return newSection;
     }
@@ -89,7 +89,7 @@ public class Section {
         return downStation.equals(station);
     }
 
-    public void mergeDistance(Distance deletedDistance) {
+    public void mergeDistance(int deletedDistance) {
         distance = distance.plus(deletedDistance);
     }
 
@@ -113,11 +113,11 @@ public class Section {
         return downStation;
     }
 
-    public Distance getDistance() {
-        return distance;
-    }
+//    public Distance getDistance() {
+//        return distance;
+//    }
 
-    public int getWeight() {
+    public int getDistance() {
         return distance.getDistance();
     }
 }

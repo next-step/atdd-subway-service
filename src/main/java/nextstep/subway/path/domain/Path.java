@@ -5,8 +5,8 @@ import nextstep.subway.station.domain.Station;
 import java.util.List;
 
 public class Path {
-    private List<Station> stations;
-    private int distance;
+    private final List<Station> stations;
+    private final int distance;
 
     public Path(List<Station> stations, int distance) {
         this.stations = stations;

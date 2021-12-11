@@ -26,19 +26,19 @@ public class Distance {
         }
     }
 
-    public boolean divisible(Distance divideDistance) {
-        if (distance <= divideDistance.getDistance()) {
+    public boolean divisible(int divideDistance) {
+        if (distance <= divideDistance) {
             throw LONGER_THAN_BETWEEN_SECTIONS;
         }
         return true;
     }
 
-    public Distance plus(Distance newDistance) {
-        return new Distance(this.distance + newDistance.distance);
+    public Distance plus(int newDistance) {
+        return new Distance(this.distance + newDistance);
     }
 
-    public Distance minus(Distance newDistance) {
-        return new Distance(this.distance - newDistance.distance);
+    public Distance minus(int newDistance) {
+        return new Distance(this.distance - newDistance);
     }
 
     private void setDistance(int distance) {

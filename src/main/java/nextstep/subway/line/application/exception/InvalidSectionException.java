@@ -12,6 +12,6 @@ public class InvalidSectionException extends RuntimeException {
     }
 
     public static InvalidSectionException shorterThanMinDistance(int minValue) {
-        return new InvalidSectionException("지하철 구간 사이의 거리는 최소 " + minValue + "이상이어야 합니다.");
+        return new InvalidSectionException("지하철 구간 사이의 거리는 최소 " + minValue + " 이상이어야 합니다.");
     }
 }
