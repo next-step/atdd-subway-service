@@ -44,7 +44,7 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@ModelAttribute LoginMember loginMember) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(LoginMember loginMember) {
         MemberResponse member = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(member);
     }

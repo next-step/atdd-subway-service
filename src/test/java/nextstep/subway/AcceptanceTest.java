@@ -20,4 +20,9 @@ public class AcceptanceTest {
         RestAssured.port = port;
         databaseCleanup.execute();
     }
+
+    public static Long extractId(String location) {
+        String id = location.replaceAll("[a-zA-Z/]", "");
+        return Long.parseLong(id);
+    }
 }
