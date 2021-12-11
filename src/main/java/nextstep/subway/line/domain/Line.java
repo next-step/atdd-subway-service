@@ -83,8 +83,8 @@ public class Line extends BaseEntity {
         Station station = findUpStation();
         stations.add(station);
 
-        while (sections.hasNextSectionByUpStation(station)) {
-            Section nextSection = sections.getNextSectionByUpStation(station);
+        while (sections.hasSectionByUpStation(station)) {
+            Section nextSection = sections.getSectionByUpStation(station);
             station = nextSection.getDownStation();
             stations.add(station);
         }
@@ -125,8 +125,8 @@ public class Line extends BaseEntity {
     private Station findUpStation() {
         Station station = getFirstSection().getUpStation();
 
-        while (sections.hasNextSectionByDownStation(station)) {
-            Section nextSection = sections.getNextSectionByDownStation(station);
+        while (sections.hasSectionByDownStation(station)) {
+            Section nextSection = sections.getSectionByDownStation(station);
             station = nextSection.getUpStation();
         }
         return station;
@@ -135,8 +135,8 @@ public class Line extends BaseEntity {
     private Station findDownStation() {
         Station station = getFirstSection().getDownStation();
 
-        while (sections.hasNextSectionByUpStation(station)) {
-            Section nextSection = sections.getNextSectionByUpStation(station);
+        while (sections.hasSectionByUpStation(station)) {
+            Section nextSection = sections.getSectionByUpStation(station);
             station = nextSection.getDownStation();
         }
         return station;
@@ -173,8 +173,8 @@ public class Line extends BaseEntity {
     }
 
     private void deleteBetweenStation(Station station) {
-        Section oldSection = sections.getOldSectionByDownStation(station);
-        Section nextOldSection = sections.getOldSectionByUpStation(station);
+        Section oldSection = sections.getSectionByDownStation(station);
+        Section nextOldSection = sections.getSectionByUpStation(station);
 
         Station newUpStation = oldSection.getUpStation();
         Station newDownStation = nextOldSection.getDownStation();

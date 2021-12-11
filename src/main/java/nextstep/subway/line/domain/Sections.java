@@ -33,12 +33,12 @@ public class Sections {
         return sections.isEmpty();
     }
 
-    public boolean hasNextSectionByUpStation(Station station) {
+    public boolean hasSectionByUpStation(Station station) {
         return sections.stream()
                 .anyMatch(section -> section.isEqualUpStation(station));
     }
 
-    public boolean hasNextSectionByDownStation(Station station) {
+    public boolean hasSectionByDownStation(Station station) {
         return sections.stream()
                 .anyMatch(section -> section.isEqualDownStation(station));
     }
@@ -47,32 +47,18 @@ public class Sections {
         return sections.size() > 1;
     }
 
-    public Section getNextSectionByUpStation(Station station) {
+    public Section getSectionByUpStation(Station station) {
         return sections.stream()
                 .filter(section -> section.isEqualUpStation(station))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException(String.format("다음 구간이 없습니다. (sectionId: %d)", station.getId())));
+                .orElseThrow(() -> new NoSuchElementException(String.format("상행역이 일치하는 구간이 없습니다. (upStationId: %d)", station.getId())));
     }
 
-    public Section getNextSectionByDownStation(Station station) {
+    public Section getSectionByDownStation(Station station) {
         return sections.stream()
                 .filter(section -> section.isEqualDownStation(station))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException(String.format("다음 구간이 없습니다. (sectionId: %d)", station.getId())));
-    }
-
-    public Section getOldSectionByUpStation(Station station) {
-        return sections.stream()
-                .filter(section -> section.isEqualUpStation(station))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException(String.format("상행역이 일치하는 기존 구간이 없습니다. (upStationId: %d)", station.getId())));
-    }
-
-    public Section getOldSectionByDownStation(Station station) {
-        return sections.stream()
-                .filter(section -> section.isEqualDownStation(station))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException(String.format("하행역이 일치하는 기존 구간이 없습니다. (downStationId: %d)", station.getId())));
+                .orElseThrow(() -> new NoSuchElementException(String.format("하행역이 일치하는 구간이 없습니다. (downStationId: %d)", station.getId())));
     }
 
     private Stations getStations() {
