@@ -61,15 +61,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithWrongBearerAuth() {
 
         //given
+        final String INVALID_TOKEN = "awsda";
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(createResponse);
         Header location = createResponse.headers().get("Location");
         String url = location.getValue();
         String s = url.replaceAll("[a-zA-Z/]", "");
-
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        ExtractableResponse<Response> 로그인 = 로그인_요청(tokenRequest);
-        String accessToken = 로그인.body().jsonPath().getString("accessToken");
 
         Map<String, Object> params = new HashMap<>();
         params.put("id", Long.parseLong(s));
@@ -79,7 +76,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         //when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", String.format("Bearer %s", accessToken))
+                .header("Authorization", String.format("Bearer %s", INVALID_TOKEN))
                 .params(params)
                 .when()
                 .get("/members/me")
@@ -87,7 +84,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
     
     public static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
