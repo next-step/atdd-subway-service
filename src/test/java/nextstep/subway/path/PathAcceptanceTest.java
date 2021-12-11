@@ -72,4 +72,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathAcceptanceTestHelper.최단경로_조회_예상된_결과_응답됨(response, pathResponse);
     }
 
+    @DisplayName("출발역과 도착역이 같은 최단 경로를 조회한다.")
+    @Test
+    void getPathWithSameSourceAndTarget() {
+        // given
+
+        // when
+        ExtractableResponse<Response> response = PathAcceptanceTestHelper.최단_경로_조회_요청(교대역.getId(), 교대역.getId());
+
+        // then
+        PathAcceptanceTestHelper.최단_경로_조회_실패됨(response);
+    }
+
 }

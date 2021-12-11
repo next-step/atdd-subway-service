@@ -32,4 +32,8 @@ public class PathAcceptanceTestHelper {
         PathResponse actual = response.as(PathResponse.class);
         assertThat(actual).isEqualTo(expected);
     }
+
+    public static void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }
