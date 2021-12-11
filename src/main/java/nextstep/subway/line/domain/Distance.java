@@ -21,6 +21,10 @@ public class Distance {
         return new Distance(distance);
     }
 
+    public static Distance of(double distance) {
+        return new Distance((int)distance);
+    }
+
     public int getDistance() {
         return distance;
     }
