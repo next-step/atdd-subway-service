@@ -46,6 +46,7 @@ class LineTest {
         // when
         신분당선.update(신규_신분당선);
 
+        // then
         assertAll(
                 () -> assertThat(신분당선.getName()).isEqualTo(name)
                 , () -> assertThat(신분당선.getColor()).isEqualTo(color)
