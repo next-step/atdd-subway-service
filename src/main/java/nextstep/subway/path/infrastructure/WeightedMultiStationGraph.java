@@ -6,7 +6,6 @@ import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.FarePolicy;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.StationGraph;
 import nextstep.subway.station.domain.Station;
@@ -45,10 +44,7 @@ public class WeightedMultiStationGraph implements StationGraph {
         if (path == null) {
             throw new NotFoundException("접점이 없습니다.");
         }
-        int totalDistance = Double.valueOf(path.getWeight()).intValue();
-        Fare totalFare = Fare.valueOf(FarePolicy.calculateOverFare(totalDistance))
-            .plus(getAdditionalFare(path));
-        return Path.of(path.getVertexList(), totalDistance, totalFare);
+        return Path.fromAdditionalFare(path.getVertexList(), Double.valueOf(path.getWeight()).intValue(), getAdditionalFare(path));
     }
 
     private Fare getAdditionalFare(GraphPath<Station, SectionEdge> path) {

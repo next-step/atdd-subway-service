@@ -20,6 +20,11 @@ public final class Path {
         return new Path(stations, totalDistance, totalFare);
     }
 
+    public static Path fromAdditionalFare(List<Station> stations, Integer totalDistance, Fare additionalFare) {
+        return new Path(stations, totalDistance,
+            Fare.valueOf(FarePolicy.calculateOverFare(totalDistance)).plus(additionalFare));
+    }
+
     public List<Station> getStations() {
         return stations;
     }
