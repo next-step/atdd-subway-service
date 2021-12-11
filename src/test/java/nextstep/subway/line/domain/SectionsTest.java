@@ -100,6 +100,18 @@ class SectionsTest {
                 .withMessage(ErrorCode.CAN_NOT_ADD_SECTION.toString());
     }
 
+    @DisplayName("구간 추가 실패 테스트 - 역과 역 사이에 구간을 추가할 경우 기존 거리보다 좁은 거리를 입력해야 한다")
+    @Test
+    void add_failure_invalidSectionDistance() {
+        // given
+        Section 신규_구간 = Section.of(신분당선, 강남역, 양재역, 강남역_광교역_거리);
+
+        // when & then
+        assertThatExceptionOfType(NotAcceptableApiException.class)
+                .isThrownBy(() -> 구간_목록.add(신규_구간))
+                .withMessage(ErrorCode.INVALID_SECTION_DISTANCE.toString());
+    }
+
     @DisplayName("상행역 구간 존재 여부 true 테스트")
     @Test
     void hasSectionByUpStation_true() {
