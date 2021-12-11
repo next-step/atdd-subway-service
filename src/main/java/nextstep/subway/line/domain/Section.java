@@ -100,15 +100,11 @@ public class Section {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Section section = (Section) o;
-        return Objects.equals(getId(), section.getId())
-                && Objects.equals(getLine(), section.getLine())
-                && Objects.equals(getUpStation(), section.getUpStation())
-                && Objects.equals(getDownStation(), section.getDownStation())
-                && Objects.equals(distance, section.distance);
+        return Objects.equals(getId(), section.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getLine(), getUpStation(), getDownStation(), distance);
+        return Objects.hash(getId());
     }
 }
