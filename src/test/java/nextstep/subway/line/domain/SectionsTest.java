@@ -26,7 +26,7 @@ class SectionsTest {
     void setUp() {
         거리5 = Distance.of(5);
         거리10 = Distance.of(10);
-        잠실역 = Station.from( "잠실역");
+        잠실역 = Station.from("잠실역");
         강변역 = Station.from("강변역");
         첫번째구간 = Section.of(이호선, 잠실역, 강변역, 거리10);
         구간목록.add(첫번째구간);
@@ -39,7 +39,7 @@ class SectionsTest {
         final Station 잠실새내역 = Station.from("잠실새내역");
         final Section 두번째구간 = Section.of(이호선, 잠실새내역, 잠실역, 거리10);
 
-        final Sections sections = Sections.from(이호선.getSections());
+        final Sections sections = Sections.from(이호선.getSectionList());
 
         sections.add(두번째구간, 이호선);
 
@@ -55,7 +55,7 @@ class SectionsTest {
         final Station 잠실나루역 = Station.from("잠실나루역");
         final Section 두번째구간 = Section.of(이호선, 강변역, 잠실나루역, 거리10);
 
-        final Sections sections = Sections.from(이호선.getSections());
+        final Sections sections = Sections.from(이호선.getSectionList());
 
         sections.add(두번째구간, 이호선);
 
@@ -71,14 +71,14 @@ class SectionsTest {
         final Station 잠실나루역 = Station.from("잠실나루역");
         final Section 두번째구간 = Section.of(이호선, 잠실역, 잠실나루역, 거리5);
 
-        final Sections sections = Sections.from(이호선.getSections());
+        final Sections sections = Sections.from(이호선.getSectionList());
 
         sections.add(두번째구간, 이호선);
 
         assertAll(
                 () -> assertThat(sections.getSections()).hasSize(2),
                 () -> assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(잠실나루역),
-                () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(5)
+                () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(Distance.of(5))
         );
     }
 
@@ -87,7 +87,7 @@ class SectionsTest {
     void add_예외1() {
         final Section 두번째구간 = Section.of(이호선, 잠실역, 강변역, 거리5);
 
-        final Sections sections = Sections.from(이호선.getSections());
+        final Sections sections = Sections.from(이호선.getSectionList());
 
         assertThatThrownBy(() -> sections.add(두번째구간, 이호선))
                 .isInstanceOf(RegisterAllIncludeException.class)
@@ -101,7 +101,7 @@ class SectionsTest {
         final Station 잠실새내역 = Station.from("잠실새내역");
         final Section 두번째구간 = Section.of(이호선, 잠실나루역, 잠실새내역, 거리5);
 
-        final Sections sections = Sections.from(이호선.getSections());
+        final Sections sections = Sections.from(이호선.getSectionList());
 
         assertThatThrownBy(() -> sections.add(두번째구간, 이호선))
                 .isInstanceOf(RegisterNotAllIncludeException.class)
@@ -114,7 +114,7 @@ class SectionsTest {
         final Station 잠실나루역 = Station.from("잠실나루역");
         final Section 두번째구간 = Section.of(이호선, 잠실역, 잠실나루역, 거리10);
 
-        final Sections sections = Sections.from(이호선.getSections());
+        final Sections sections = Sections.from(이호선.getSectionList());
 
         assertThatThrownBy(() -> sections.add(두번째구간, 이호선))
                 .isInstanceOf(RegisterDistanceException.class)
@@ -126,7 +126,7 @@ class SectionsTest {
     void mergeSection() {
         final Station 구의역 = Station.from("구의역");
         final Section 두번째구간 = Section.of(이호선, 강변역, 구의역, 거리10);
-        final Sections 이호선구간목록 = Sections.from(이호선.getSections());
+        final Sections 이호선구간목록 = Sections.from(이호선.getSectionList());
         이호선구간목록.add(두번째구간, 이호선);
 
         assertThat(이호선구간목록.getSections()).hasSize(2);
@@ -137,14 +137,14 @@ class SectionsTest {
                 () -> assertThat(이호선구간목록.getSections()).hasSize(1),
                 () -> assertThat(이호선구간목록.getSections().get(0).getUpStation()).isEqualTo(잠실역),
                 () -> assertThat(이호선구간목록.getSections().get(0).getDownStation()).isEqualTo(구의역),
-                () -> assertThat(이호선구간목록.getSections().get(0).getDistance()).isEqualTo(20)
+                () -> assertThat(이호선구간목록.getSections().get(0).getDistance()).isEqualTo(Distance.of(20))
         );
     }
 
     @DisplayName("노선에 구간이 하나인 경우 삭제가 불가능하다.")
     @Test
     void mergeSection_예외() {
-        final Sections sections = Sections.from(이호선.getSections());
+        final Sections sections = Sections.from(이호선.getSectionList());
 
         assertThat(sections.getSections()).hasSize(1);
 
@@ -159,7 +159,7 @@ class SectionsTest {
         final List<Section> 다른목록 = new ArrayList<>();
         final Line 다른이호선 = Line.of("8호선", "pink", Sections.from(다른목록));
 
-        final Sections sections = Sections.from(다른이호선.getSections());
+        final Sections sections = Sections.from(다른이호선.getSectionList());
 
         assertThatThrownBy(() -> sections.merge(잠실역))
                 .isInstanceOf(NoSectionDeleteException.class)

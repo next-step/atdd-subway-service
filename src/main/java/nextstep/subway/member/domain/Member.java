@@ -21,7 +21,7 @@ public class Member extends BaseEntity {
     protected Member() {
     }
 
-    public Member(String email, String password, Integer age) {
+    public Member(final String email, final String password, final Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
@@ -39,13 +39,13 @@ public class Member extends BaseEntity {
         return age;
     }
 
-    public void update(Member member) {
+    public void update(final Member member) {
         this.email = member.email;
         this.password = member.password;
         this.age = member.age;
     }
 
-    public void checkPassword(String password) {
+    public void checkPassword(final String password) {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }

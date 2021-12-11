@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class LineService {
     private final LineRepository lineRepository;
     private final StationService stationService;
@@ -24,6 +24,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(final LineRequest request) {
         final Station upStation = stationService.findStationById(request.getUpStationId());
         final Station downStation = stationService.findStationById(request.getDownStationId());
@@ -43,15 +44,18 @@ public class LineService {
         return LineResponse.from(persistLine);
     }
 
+    @Transactional
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
         final Line persistLine = findLineById(id);
         persistLine.update(Line.of(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Transactional
     public void deleteLineById(final Long id) {
         lineRepository.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(final Long lineId, final SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -60,6 +64,7 @@ public class LineService {
         line.addSection(section);
     }
 
+    @Transactional
     public void removeLineStation(final Long lineId, final Long stationId) {
         final Line line = findLineById(lineId);
         final Station station = stationService.findStationById(stationId);

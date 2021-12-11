@@ -29,8 +29,8 @@ public class Sections {
         this.sections = sections;
     }
 
-    public static Sections from(final List<Section> sectionList) {
-        return new Sections(sectionList);
+    public static Sections from(final List<Section> sections) {
+        return new Sections(sections);
     }
 
     public static Sections from(final Section section) {
