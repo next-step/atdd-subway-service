@@ -1,8 +1,6 @@
 package nextstep.subway.common;
 
-import nextstep.subway.line.exception.LineException;
-import nextstep.subway.line.exception.PathException;
-import nextstep.subway.line.exception.SectionException;
+import nextstep.subway.line.exception.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +25,16 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(PathException.class)
     public ResponseEntity pathExceptionHandler(PathException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(MemberException.class)
+    public ResponseEntity memberExceptionHandler(MemberException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(FavoriteException.class)
+    public ResponseEntity favoriteExceptionHandler(FavoriteException e) {
         return ResponseEntity.badRequest().build();
     }
 }

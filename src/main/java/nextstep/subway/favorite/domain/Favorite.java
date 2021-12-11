@@ -12,7 +12,6 @@ public class Favorite {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -51,5 +50,9 @@ public class Favorite {
 
     public Station getTargetStation() {
         return targetStation;
+    }
+
+    public boolean isOwner(Member member) {
+        return this.member.equals(member);
     }
 }

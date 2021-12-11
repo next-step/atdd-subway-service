@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,20 +56,69 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
         토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
     }
-
+    
+    @DisplayName("즐겨찾기를 관리하는 시나리오를 테스트한다.")
     @Test
     void scenarioTest() {
         //when
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(토큰, 강남역, 남부터미널역);
         //then
         즐겨찾기_생성됨(createResponse);
-        //when 즐겨찹기 목록 조회 요청
+        //when
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(토큰);
+        //then
+        즐겨찾기_목록_조회됨(findResponse);
+        //when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createResponse, 토큰);
+        //then
+        즐겨찾기_삭제됨(deleteResponse);
+    }
 
-        //then 즐겨찾기 목록 조회됨
+    @DisplayName("즐겨찾기 삭제시 유저가 즐겨찾기 주인이 아닌 경우 테스트")
+    @Test
+    void deleteFavorite() {
+        //given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(토큰, 강남역, 남부터미널역);
+        회원_생성을_요청(NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        String 새로운_유저_토큰 = 로그인_되어_있음(NEW_EMAIL, NEW_PASSWORD);
 
-        //when 즐겨찾기 삭제 요청
+        //when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createResponse, 새로운_유저_토큰);
 
-        //then 즐겨찾기 삭제됨
+        //then
+        즐겨찾기_삭제_실패됨(deleteResponse);
+    }
+
+    private void 즐겨찾기_삭제_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> response, String token) {
+        String uri = response.header("Location");
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
     }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
