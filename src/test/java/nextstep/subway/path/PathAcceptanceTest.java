@@ -39,6 +39,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     LineResponse 삼호선;
 
     /**
+     * 추가운임 : 신분당선 900, 2호선 0, 3호선 200
      * 서초역  --- *2호선* 10--- 교대역  --- *2호선* 15 -----  강남역
      *                        |                          |
      *                      *3호선* 10                 *신분당선* 10
@@ -69,18 +70,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         청계산입구 = 지하철역_등록되어_있음("청계산입구").as(StationResponse.class);
 
         // 노선 등록되어 있음
-        //신분당선 (강남-양재-양재시민의숲-청계산입구, 10-10-22)
+        //신분당선 (강남-양재-양재시민의숲-청계산입구, 10-10-22, 900)
         LineRequest lineRequest_신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 900);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest_신분당선).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 양재시민의숲, 7);
         지하철_노선에_지하철역_등록_요청(신분당선, 양재시민의숲, 청계산입구, 22);
 
-        //2호선 (서초-교대-강남, 10-15)
+        //2호선 (서초-교대-강남, 10-15, 0)
         LineRequest lineRequest_이호선 = new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 15, 0);
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest_이호선).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(이호선, 서초역, 교대역, 10);
 
-        //3호선 (교대-남부터미널-양재, 10-5)
+        //3호선 (교대-남부터미널-양재, 10-5, 200)
         LineRequest lineRequest_삼호선 = new LineRequest("삼호선", "orange", 교대역.getId(), 남부터미널역.getId(), 10, 200);
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest_삼호선).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 양재역, 5);
@@ -94,12 +95,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 경로_조회_요청(강남역.getId(), 남부터미널역.getId());
 
         PathResponse pathResponse = response.as(PathResponse.class);
-        //최단 경로 지하철 역 목록 조회됨 (강남역, 양재역, 남부터미널)
+        //최단 경로 지하철 역 목록 조회됨
         최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(강남역, 양재역, 남부터미널역));
         // 총겨리 조회됨
         총거리_조회됨(pathResponse, 15);
-        // 총요금 조회됨
-        총요금_조회됨(pathResponse, 1350);
+        // 총요금 조회됨 (신분당선 -> 3호선 환승, 추가운임 900)
+        총요금_조회됨(pathResponse, 2250);
     }
 
     @Test
@@ -110,12 +111,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         PathResponse pathResponse = response.as(PathResponse.class);
         //then
-        // 최단 경로 지하철 역 목록 조회됨 (교대역, 남부터미널역, 양재역), 5
+        // 최단 경로 지하철 역 목록 조회됨
         최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(서초역, 교대역, 남부터미널역, 양재역, 양재시민의숲));
         // 총겨리 조회됨
         총거리_조회됨(pathResponse, 32);
-        // 총요금 조회됨
-        총요금_조회됨(pathResponse, 1750);
+        // 총요금 조회됨 (이호선 -> 삼호선 -> 신분당선 환승, 추가운임 900)
+        총요금_조회됨(pathResponse, 2650);
 
     }
 
@@ -127,13 +128,28 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         PathResponse pathResponse = response.as(PathResponse.class);
         //then
-        // 최단 경로 지하철 역 목록 조회됨 (교대역, 남부터미널역, 양재역), 5
+        // 최단 경로 지하철 역 목록 조회됨
         최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(서초역, 교대역, 남부터미널역, 양재역, 양재시민의숲, 청계산입구));
         // 총겨리 조회됨
         총거리_조회됨(pathResponse, 54);
-        // 총요금 조회됨
-        총요금_조회됨(pathResponse, 2150);
+        // 총요금 조회됨 (이호선 -> 삼호선 -> 신분당선 환승, 추가운임 900)
+        총요금_조회됨(pathResponse, 3050);
+    }
 
+    @Test
+    @DisplayName("서초역-강남역 최단 거리 경로, 요금 조회")
+    void shortestPath_서초역_강남역() {
+        //when
+        ExtractableResponse<Response> response = 경로_조회_요청(서초역.getId(), 강남역.getId());
+
+        PathResponse pathResponse = response.as(PathResponse.class);
+        //then
+        // 최단 경로 지하철 역 목록 조회됨
+        최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(서초역, 교대역, 강남역));
+        // 총겨리 조회됨
+        총거리_조회됨(pathResponse, 54);
+        // 총요금 조회됨 (이호선 환승없음, 추가운임 0)
+        총요금_조회됨(pathResponse, 1550);
     }
 
     private void 최단_경로_지하철역_순서_정렬됨(PathResponse pathResponse, List<StationResponse> expectedStations) {
