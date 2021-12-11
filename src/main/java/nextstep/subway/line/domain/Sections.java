@@ -28,6 +28,10 @@ public class Sections {
 		}
 	}
 
+	public List<Section> getSections() {
+		return new ArrayList<>(sections);
+	}
+
 	public List<Station> getStations() {
 		if (sections.isEmpty()) {
 			return Arrays.asList();

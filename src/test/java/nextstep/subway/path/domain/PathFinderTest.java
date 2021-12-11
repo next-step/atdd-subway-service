@@ -42,9 +42,9 @@ class PathFinderTest {
 	public void PathFinderFindShortestPathVertexesTest() {
 		//given
 		//when
-		List<Long> shortestPathVertexes = pathFinder.findShortestPathVertexes(3, 1);
+		List<Station> shortestPathVertexes = pathFinder.findShortestPathVertexes(선릉역, 강남역);
 		//then
-		assertThat(shortestPathVertexes).containsExactly(3L, 2L, 1L);
+		assertThat(shortestPathVertexes).containsExactly(선릉역, 역삼역, 강남역);
 	}
 
 	@Test
@@ -52,7 +52,7 @@ class PathFinderTest {
 	public void PathFinderFindShortestPathDistanceTest() {
 		//given
 		//when
-		Distance shortestPathDistance = pathFinder.findShortestPathDistance(3, 1);
+		Distance shortestPathDistance = pathFinder.findShortestPathDistance(선릉역, 강남역);
 		//then
 		assertThat(shortestPathDistance).isEqualTo(Distance.of(20));
 	}

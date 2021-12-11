@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,8 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Lists;
 
-import nextstep.subway.line.application.SectionService;
+import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -21,21 +23,30 @@ import nextstep.subway.station.dto.StationResponse;
 public class PathService {
 
 	private final StationService stationService;
-	private final SectionService sectionService;
+	private final LineService lineService;
 
-	public PathService(StationService stationService, SectionService sectionService) {
+	public PathService(StationService stationService, LineService lineService) {
 		this.stationService = stationService;
-		this.sectionService = sectionService;
+		this.lineService = lineService;
 	}
 
 	public PathResponse findPaths(int source, int target) {
 		validateStartStationEqualsEndStation(source, target);
 		validateNoneStation(source, target);
-		PathFinder pathFinder = PathFinder.create(stationService.findAll(), sectionService.findAll());
-		List<StationResponse> stationResponses = extractStationResponses(
-			pathFinder.findShortestPathVertexes(source, target));
-		Distance distance = pathFinder.findShortestPathDistance(source, target);
+		Station sourceStation = stationService.findById((long)source);
+		Station targetStation = stationService.findById((long)target);
+		PathFinder pathFinder = PathFinder.create(stationService.findAll(), findAllSections());
+		List<StationResponse> stationResponses
+			= extractStationResponses(pathFinder.findShortestPathVertexes(sourceStation, targetStation));
+		Distance distance = pathFinder.findShortestPathDistance(sourceStation, targetStation);
 		return PathResponse.of(stationResponses, distance);
+	}
+
+	private List<Section> findAllSections() {
+		List<Section> allSections = new ArrayList<>();
+		lineService.findAll().stream()
+			.forEach(line -> allSections.addAll(line.getSections()));
+		return allSections;
 	}
 
 	private void validateNoneStation(int source, int target) {
@@ -58,9 +69,8 @@ public class PathService {
 		}
 	}
 
-	private List<StationResponse> extractStationResponses(List<Long> pathVertexes) {
+	private List<StationResponse> extractStationResponses(List<Station> pathVertexes) {
 		return pathVertexes.stream()
-			.map(stationService::findById)
 			.map(StationResponse::of)
 			.collect(Collectors.toList());
 	}

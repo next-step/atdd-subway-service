@@ -3,32 +3,30 @@ package nextstep.subway.path.domain;
 import java.util.List;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
-	private static WeightedMultigraph<Long, DefaultWeightedEdge> graph;
+	private static SubwayGraph graph2;
 
 	private PathFinder() {
 	}
 
 	public static PathFinder create(List<Station> stations, List<Section> sections) {
-		graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-		stations.stream().forEach(station -> graph.addVertex(station.getId()));
-		sections.stream().forEach(section -> graph.setEdgeWeight(
-			graph.addEdge(section.getUpStationId(), section.getDownStationId()), section.getDistanceValue()));
+		graph2 = new SubwayGraph(SectionEdge.class);
+		stations.stream().forEach(station -> graph2.addVertex(station));
+		sections.stream().forEach(section -> graph2.addSectionEdge(section));
 		return new PathFinder();
 	}
 
-	public List<Long> findShortestPathVertexes(int source, int target) {
-		return new DijkstraShortestPath(graph).getPath((long)source, (long)target).getVertexList();
+	public List<Station> findShortestPathVertexes(Station source, Station target) {
+		return new DijkstraShortestPath(graph2).getPath(source, target).getVertexList();
 	}
 
-	public Distance findShortestPathDistance(int source, int target) {
-		return Distance.of(new DijkstraShortestPath(graph).getPath((long)source, (long)target).getWeight());
+	public Distance findShortestPathDistance(Station source, Station target) {
+		return Distance.of(new DijkstraShortestPath(graph2).getPath(source, target).getWeight());
 	}
+
 }
