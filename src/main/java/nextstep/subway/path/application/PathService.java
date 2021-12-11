@@ -29,8 +29,8 @@ public class PathService {
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
 
-        PathFinder dijkstraPath = new PathFinder(lines);
-        Path path = dijkstraPath.shortestPath(source, target);
+        PathFinder pathFinder = new PathFinder(lines);
+        Path path = pathFinder.shortestPath(source, target);
         return PathResponse.ofList(path);
     }
 }
