@@ -4,9 +4,12 @@ import java.util.List;
 
 public class PathResponse {
 
-    private final List<PathStationResponse> stations;
-    private final int distance;
-    private final int fare;
+    private List<PathStationResponse> stations;
+    private int distance;
+    private int fare;
+
+    public PathResponse() {
+    }
 
     public PathResponse(List<PathStationResponse> stations, int distance, int fare) {
         this.stations = stations;
