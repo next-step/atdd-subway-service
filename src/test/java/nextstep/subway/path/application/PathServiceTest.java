@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -68,10 +70,14 @@ public class PathServiceTest {
 
         // when
         PathResponse response = pathService.findShortestPath(1L, 2L);
+        List<Station> stations = response.getStations()
+                .stream()
+                .map(stationResponse -> Station.from(stationResponse.getName()))
+                .collect(Collectors.toList());
 
         // then
         assertAll(
-                () -> assertThat(response.getStations()).containsExactlyElementsOf(Arrays.asList(교대역, 강남역, 양재역)),
+                () -> assertThat(stations).containsExactlyElementsOf(Arrays.asList(교대역, 강남역, 양재역)),
                 () -> assertThat(response.getDistance()).isEqualTo(80)
                 );
     }

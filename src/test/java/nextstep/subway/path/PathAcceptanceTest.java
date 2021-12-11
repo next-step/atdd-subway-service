@@ -82,12 +82,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 경로_조회_됨(ExtractableResponse<Response> response, List<StationResponse> stationResponses, int distance) {
         PathResponse pathResponse = response.as(PathResponse.class);
-        List<Station> stations = stationResponses.stream()
-                .map(stationResponse -> Station.from(stationResponse.getName()))
-                .collect(Collectors.toList());
         
         assertAll(
-                () -> assertThat(pathResponse.getStations()).containsExactlyElementsOf(stations),
+                () -> assertThat(pathResponse.getStations()).containsExactlyElementsOf(stationResponses),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(distance)
                 );
     }
