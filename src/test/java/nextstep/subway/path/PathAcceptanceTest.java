@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,7 +65,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void successPaths() {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역);
 
-        최단_경로_조회_됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5L);
+        최단_경로_조회_됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5L, new BigInteger("1250"));
     }
 
     @DisplayName("최단 경로를 조회한다. 실패 검증")
@@ -118,17 +119,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private void 최단_경로_조회_됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations, Long expectedDistance) {
+    private void 최단_경로_조회_됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations, Long expectedDistance, BigInteger expectedFare) {
         PathResponse path = response.as(PathResponse.class);
         List<Long> stationIds = path.getStations().stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
         Long distance = path.getDistance();
+        BigInteger fare = path.getFare();
         List<Long> expectedStationIds = expectedStations.stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
         assertThat(distance).isEqualTo(expectedDistance);
+        assertThat(fare).isEqualTo(expectedFare);
     }
 }

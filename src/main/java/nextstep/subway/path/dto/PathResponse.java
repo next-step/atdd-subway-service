@@ -3,6 +3,7 @@ package nextstep.subway.path.dto;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.dto.StationResponse;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,5 +30,9 @@ public class PathResponse {
 
     public Long getDistance() {
         return distance;
+    }
+
+    public BigInteger getFare() {
+        return null;
     }
 }
