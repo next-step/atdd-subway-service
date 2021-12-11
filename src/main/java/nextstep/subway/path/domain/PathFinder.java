@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import nextstep.subway.common.IllegalStationException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -22,9 +23,17 @@ public class PathFinder {
     }
 
     public PathResponse findShortestPath(final Station sourceStation, final Station targetStation) {
+        validateDifferentStation(sourceStation, targetStation);
+
         return PathResponse.of(
             Path.of(DijkstraShortestPath.findPathBetween(graph, sourceStation, targetStation))
         );
+    }
+
+    private void validateDifferentStation(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new IllegalStationException("출발역과 도착역이 동일합니다.");
+        }
     }
 
     private static WeightedMultigraph<Station, DefaultWeightedEdge> buildGraph(final List<Line> lines) {

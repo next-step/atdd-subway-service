@@ -76,6 +76,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로의_예상_거리_일치함(response, 13);
     }
 
+    @DisplayName("동일한 역으로 최단 경로를 조회 할 수 없다.")
+    @Test
+    void findShortestPathSameStation() {
+        // when 동일한 역으로 최단 경로 조회 요청
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역, 강남역);
+
+        // then 최단 경로 조회 됨
+        최단_경로_조회_실패됨(response);
+    }
+
+    static void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
     static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source,
         StationResponse target) {
         String uri = String.format("paths?source=%d&target=%d", source.getId(), target.getId());

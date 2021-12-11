@@ -31,4 +31,9 @@ public class ExceptionAdvice {
     protected ResponseEntity handleCannotSectionAddException(CannotSectionAddException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+
+    @ExceptionHandler(IllegalStationException.class)
+    protected ResponseEntity handleIllegalStationException(IllegalStationException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 }
