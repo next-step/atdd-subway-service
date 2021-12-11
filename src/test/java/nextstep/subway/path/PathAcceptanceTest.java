@@ -73,6 +73,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then 최단 경로 조회 됨
         최단_경로_조회됨(response);
         최단_경로와_예상_경로_일치함(response, Arrays.asList(강남역, 교대역, 남부터미널역));
+        최단_경로의_예상_거리_일치함(response, 13);
     }
 
     static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source,
@@ -99,5 +100,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
             .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+    }
+
+    static void 최단_경로의_예상_거리_일치함(ExtractableResponse<Response> response, int expectedDistance) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+
+        assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
     }
 }
