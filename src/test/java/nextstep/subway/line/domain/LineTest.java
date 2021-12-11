@@ -114,4 +114,21 @@ public class LineTest {
             .isInstanceOf(RuntimeException.class)
             .hasMessage("역이 포함된 구간이 없습니다.");
     }
+
+    @Test
+    @DisplayName("노선 생성시 추가요금 넣기")
+    void createLineWithAdditionalFare() {
+        Line line = Line.of("1호선_추가", "blue", 100);
+        assertThat(line.getAdditionalFare()).isEqualTo(Fare.valueOf(100));
+    }
+
+    @Test
+    @DisplayName("노선에 추가운임 수정")
+    void updateLineAdditionalFare() {
+        assertThat(line.getAdditionalFare()).isEqualTo(Fare.valueOf(0));
+
+        line.update(Line.of("1호선_수정", "blue", 200));
+
+        assertThat(line.getAdditionalFare()).isEqualTo(Fare.valueOf(200));
+    }
 }

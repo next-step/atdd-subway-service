@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -57,6 +58,7 @@ class LineServiceTest {
     @Test
     @DisplayName("라인 저장")
     void saveLine() {
+        line.update(Line.of("1호선", "blue", 900));
 
         when(stationService.findStation(1L))
             .thenReturn(seoulStation);
@@ -74,6 +76,7 @@ class LineServiceTest {
         assertAll(() -> {
             assertEquals(lineResponse.getName(), "1호선");
             assertSortedStations(lineResponse.getStations(), "서울역", "용산역");
+            assertThat(lineResponse.getAdditionalFare()).isEqualTo(900);
         });
     }
 
@@ -167,6 +170,21 @@ class LineServiceTest {
         lineService.removeLineStation(1L, 2L);
 
         assertThat(line.getStations()).extracting(Station::getName).containsExactly("서울역", "용산역");
+    }
+
+    @Test
+    @DisplayName("구간 정보 없이 노선 등록")
+    void saveLineWithoutSection() {
+        Line greenLine = Line.of("2호선", "green", 100);
+        when(lineRepository.save(ArgumentMatchers.any()))
+            .thenReturn(greenLine);
+        LineRequest lineRequest = new LineRequest("2호선", "green", 100);
+        LineResponse lineResponse = lineService.saveLine(lineRequest);
+
+        assertAll(() -> {
+            assertThat(lineResponse.getAdditionalFare()).isEqualTo(100);
+            assertThat(lineResponse.getStations()).isEmpty();
+        });
     }
 
     private void assertSortedStations(List<StationResponse> stations, String... expected) {

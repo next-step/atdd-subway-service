@@ -22,6 +22,9 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
+    private Fare additionalFare = new Fare();
+
+    @Embedded
     private Sections sections = new Sections();
 
     protected Line() {
@@ -32,9 +35,22 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    private Line(String name, String color, int additionFare) {
+        this.name = name;
+        this.color = color;
+        this.additionalFare = Fare.valueOf(additionFare);
+    }
+
     private Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        Section.create(this, upStation, downStation, Distance.valueOf(distance));
+    }
+
+    private Line(String name, String color, Station upStation, Station downStation, int distance, int additionalFare) {
+        this.name = name;
+        this.color = color;
+        this.additionalFare = Fare.valueOf(additionalFare);
         Section.create(this, upStation, downStation, Distance.valueOf(distance));
     }
 
@@ -42,13 +58,22 @@ public class Line extends BaseEntity {
         return new Line(name, color);
     }
 
+    public static Line of(String name, String color, int additionalFare) {
+        return new Line(name, color, additionalFare);
+    }
+
     public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
         return new Line(name, color, upStation, downStation, distance);
+    }
+
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance, int additionalFare) {
+        return new Line(name, color, upStation, downStation, distance, additionalFare);
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+        this.additionalFare = line.getAdditionalFare();
     }
 
     public Long getId() {
@@ -63,8 +88,11 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Station> getStations() {
+    public Fare getAdditionalFare() {
+        return additionalFare;
+    }
 
+    public List<Station> getStations() {
         return this.sections.getSortedStations();
     }
 
