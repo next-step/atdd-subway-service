@@ -29,11 +29,13 @@ public class PathFinder {
     }
     
     public List<Station> findShortestPath(Station sourceStation, Station targetStation) {
+        validationSameStation(sourceStation, targetStation);
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         return graphPath.getVertexList();
     }
 
     public int findShortestDistance(Station sourceStation, Station targetStation) {
+        validationSameStation(sourceStation, targetStation);
         return (int) dijkstraShortestPath.getPathWeight(sourceStation, targetStation);
     }
 
@@ -43,6 +45,12 @@ public class PathFinder {
 
     private static void setEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Sections sections) {
         sections.getSections().forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().getDistance()));
+    }
+    
+    private void validationSameStation(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같습니다");
+        }
     }
 
 }

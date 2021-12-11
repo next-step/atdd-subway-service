@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 
@@ -26,5 +27,21 @@ public class PathFinderTest {
         
         // then, when
         assertThat(pathFinder.findShortestDistance(을지로4가, 동대문역사문화공원)).isEqualTo(30);
+    }
+    
+    @Test
+    @DisplayName("출발역과 도착역이 같을 수 없다")
+    void 유효성_검사_출발역_도착역() {
+        // given
+        Station 서초역 = Station.from("서초역");
+        Station 교대역 = Station.from("교대역");
+        Line 이호선 = Line.of("이호선", "bg-green-600", 서초역, 교대역, Distance.from(20));
+        
+        PathFinder pathFinder = PathFinder.of(Arrays.asList(이호선));
+        
+        // then, when
+        assertThrows(IllegalArgumentException.class, ()->{
+            pathFinder.findShortestDistance(서초역, 서초역);
+                });
     }
 }
