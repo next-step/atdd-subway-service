@@ -32,6 +32,6 @@ public enum AgeFarePolicy {
 
     public int discountedFare(Integer fare) {
         int deductible = fare - this.deductible;
-        return deductible - Double.valueOf(deductible * this.discountRate).intValue();
+        return Double.valueOf(deductible * (1-this.discountRate)).intValue();
     }
 }

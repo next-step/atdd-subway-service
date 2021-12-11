@@ -2,19 +2,16 @@ package nextstep.subway.path.infrastructure;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import nextstep.subway.exception.NotFoundException;
-import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.FarePolicy;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.StationGraph;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
@@ -48,7 +45,10 @@ public class WeightedMultiStationGraph implements StationGraph {
         if (path == null) {
             throw new NotFoundException("접점이 없습니다.");
         }
-        return Path.of(path.getVertexList(), Double.valueOf(path.getWeight()).intValue(), getAdditionalFare(path));
+        int totalDistance = Double.valueOf(path.getWeight()).intValue();
+        Fare totalFare = Fare.valueOf(FarePolicy.calculateOverFare(totalDistance))
+            .plus(getAdditionalFare(path));
+        return Path.of(path.getVertexList(), totalDistance, totalFare);
     }
 
     private Fare getAdditionalFare(GraphPath<Station, SectionEdge> path) {

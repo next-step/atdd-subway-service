@@ -59,7 +59,7 @@ public class AuthServiceTest {
         when(jwtTokenProvider.getPayload(anyString())).thenReturn("1");
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
 
-        LoginMember loginMember = authService.findMemberByToken("TOKEN");
+        LoginMember loginMember = authService.findMemberByToken("TOKEN", false);
 
         assertAll(() -> {
             assertThat(loginMember.getEmail()).isEqualTo(EMAIL);
@@ -72,7 +72,7 @@ public class AuthServiceTest {
     void findMemberByTokenFail() {
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(false);
 
-        assertThatThrownBy(() -> authService.findMemberByToken("invalidToken"))
+        assertThatThrownBy(() -> authService.findMemberByToken("invalidToken", false))
             .isInstanceOf(AuthorizationException.class);
     }
 }

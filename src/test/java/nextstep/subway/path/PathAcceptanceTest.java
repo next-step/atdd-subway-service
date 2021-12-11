@@ -175,7 +175,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // 총겨리 조회됨
         총거리_조회됨(pathResponse, 25);
         // 총요금 조회됨 (이호선 환승없음, 추가운임 0)
-        총요금_조회됨(pathResponse, 980);
+        총요금_조회됨(pathResponse, 960);
     }
 
     @Test

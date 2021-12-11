@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.InvalidArgumentException;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;

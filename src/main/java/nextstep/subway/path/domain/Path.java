@@ -10,14 +10,14 @@ public final class Path {
     private final Integer totalDistance;
     private final Fare totalFare;
 
-    private Path(List<Station> stations, Integer totalDistance, Fare additionalFare) {
+    private Path(List<Station> stations, Integer totalDistance, Fare totalFare) {
         this.stations = stations;
         this.totalDistance = totalDistance;
-        this.totalFare = Fare.valueOf(FarePolicy.calculateOverFare(totalDistance)).plus(additionalFare);
+        this.totalFare = totalFare;
     }
 
-    public static Path of(List<Station> stations, Integer totalDistance, Fare additionalFare) {
-        return new Path(stations, totalDistance, additionalFare);
+    public static Path of(List<Station> stations, Integer totalDistance, Fare totalFare) {
+        return new Path(stations, totalDistance, totalFare);
     }
 
     public List<Station> getStations() {
@@ -30,5 +30,9 @@ public final class Path {
 
     public Integer getTotalFare() {
         return totalFare.get();
+    }
+
+    public Path applyAgePolicy(AgeFarePolicy ageFarePolicy) {
+        return Path.of(stations, totalDistance, totalFare.getAgeFare(ageFarePolicy));
     }
 }

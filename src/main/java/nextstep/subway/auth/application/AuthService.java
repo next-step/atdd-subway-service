@@ -29,7 +29,10 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public LoginMember findMemberByToken(String credentials, boolean onlyLoginUser) {
+        if (credentials == null && !onlyLoginUser){
+            return new LoginMember();
+        }
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException();
         }
