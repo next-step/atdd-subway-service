@@ -110,6 +110,23 @@ Feature: 회원 기능
         When 나의 정보를 삭제 한다  
         Then 회원 삭제됨
 
+## 즐겨찾기 기능 구현
+
+Feature: 즐겨찾기를 관리한다.
+    Background
+        Given 지하철역 등록되어 있음
+        And 지하철 노선 등록되어 있음
+        And 지하철 노선에 지하철역 등록되어 있음
+        And 회원 등록되어 있음
+        And 로그인 되어있음
+    Scenario: 즐겨찾기를 관리
+        When 즐겨찾기 생성을 요청
+        Then 즐겨찾기 생성됨
+        When 즐겨찾기 목록 조회 요청
+        Then 즐겨찾기 목록 조회됨
+        When 즐겨찾기 삭제 요청
+        Then 즐겨찾기 삭제됨
+
 ## 할 일
 - [x] LineSectionAcceptanceTest 리팩터링
 - [x] LineService 리팩터링
