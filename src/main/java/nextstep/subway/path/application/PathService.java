@@ -29,7 +29,6 @@ public class PathService {
 
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineRepository.findAll();
-
         return pathFinder.findPath(lines, source, target);
     }
 }

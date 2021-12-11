@@ -55,9 +55,9 @@ class JGraphTPathFinderTest {
         JGraphTPathFinder jGraphTPathFinder = new JGraphTPathFinder();
         PathResponse pathResponse = jGraphTPathFinder.findPath(lines, 교대역.getId(), 양재역.getId());
         assertThat(pathResponse.getDistance()).isEqualTo(5);
-//        assertThat(pathResponse.getStations().stream()
-//                .map(StationResponse::getName)
-//                .collect(Collectors.toList()))
-//                .containsExactlyElementsOf(Arrays.asList("교대역", "남부터미널역", "양재역"));
+        assertThat(pathResponse.getStations().stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList()))
+                .containsExactlyElementsOf(Arrays.asList("교대역", "남부터미널역", "양재역"));
     }
 }
