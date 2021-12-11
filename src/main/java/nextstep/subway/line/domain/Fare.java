@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import java.util.Objects;
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import nextstep.subway.exception.InvalidArgumentException;
 
@@ -24,6 +23,10 @@ public class Fare {
 
     public Integer get() {
         return fare;
+    }
+
+    public Fare plus(Fare other) {
+        return Fare.valueOf(fare + other.fare);
     }
 
     private void validate(Integer fare) {

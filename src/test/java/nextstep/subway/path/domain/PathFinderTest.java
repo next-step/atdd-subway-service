@@ -57,14 +57,14 @@ public class PathFinderTest {
      */
     @BeforeEach
     void setUp() {
-        신분당선 = Line.of("신분당선", "red", 강남역, 양재역, 10);
+        신분당선 = Line.of("신분당선", "red", 강남역, 양재역, 10, 900);
         신분당선.addLineStation(Section.create(양재역, 양재시민의숲, Distance.valueOf(7)));
         신분당선.addLineStation(Section.create(양재시민의숲, 청계산입구, Distance.valueOf(22)));
 
-        이호선 = Line.of("이호선", "green", 교대역, 강남역, 15);
+        이호선 = Line.of("이호선", "green", 교대역, 강남역, 15, 0);
         이호선.addLineStation(Section.create(서초역, 교대역, Distance.valueOf(10)));
 
-        삼호선 = Line.of("삼호선", "orange", 교대역, 남부터미널역, 10);
+        삼호선 = Line.of("삼호선", "orange", 교대역, 남부터미널역, 10, 200);
         삼호선.addLineStation(Section.create(남부터미널역, 양재역, Distance.valueOf(5)));
         삼호선.addLineStation(Section.create(고속터미널, 교대역, Distance.valueOf(3)));
 
@@ -82,7 +82,7 @@ public class PathFinderTest {
             assertThat(shortestPath.getTotalDistance()).isEqualTo(15);
             assertThat(shortestPath.getStations())
                 .extracting(Station::getName).containsExactly("교대역", "남부터미널역", "양재역" );
-            assertThat(shortestPath.getTotalFare()).isEqualTo(1350);
+            assertThat(shortestPath.getTotalFare()).isEqualTo(1550);
         });
     }
 
@@ -97,7 +97,7 @@ public class PathFinderTest {
             assertThat(shortestPath.getTotalDistance()).isEqualTo(32);
             assertThat(shortestPath.getStations()).extracting(Station::getName)
                 .containsExactly("서초역", "교대역", "남부터미널역", "양재역", "양재시민의숲" );
-            assertThat(shortestPath.getTotalFare()).isEqualTo(1750);
+            assertThat(shortestPath.getTotalFare()).isEqualTo(2650);
         });
     }
 
@@ -112,7 +112,7 @@ public class PathFinderTest {
             assertThat(shortestPath.getTotalDistance()).isEqualTo(54);
             assertThat(shortestPath.getStations()).extracting(Station::getName)
                 .containsExactly("서초역", "교대역", "남부터미널역", "양재역", "양재시민의숲", "청계산입구" );
-            assertThat(shortestPath.getTotalFare()).isEqualTo(2150);
+            assertThat(shortestPath.getTotalFare()).isEqualTo(3050);
         });
     }
 

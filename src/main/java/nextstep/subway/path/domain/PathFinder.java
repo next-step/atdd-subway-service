@@ -38,7 +38,7 @@ public class PathFinder {
     }
 
     private void validContains(Station fromStation, Station toStation) {
-        if (!(stationGraph.containsVertex(fromStation) && stationGraph.containsVertex(toStation))) {
+        if (!(stationGraph.containsStation(fromStation) && stationGraph.containsStation(toStation))) {
             throw new NotFoundException("출발역 또는 도착역이 존재하지 않습니다.");
         }
     }

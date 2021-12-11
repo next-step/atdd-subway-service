@@ -147,7 +147,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // 최단 경로 지하철 역 목록 조회됨
         최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(서초역, 교대역, 강남역));
         // 총겨리 조회됨
-        총거리_조회됨(pathResponse, 54);
+        총거리_조회됨(pathResponse, 25);
         // 총요금 조회됨 (이호선 환승없음, 추가운임 0)
         총요금_조회됨(pathResponse, 1550);
     }
