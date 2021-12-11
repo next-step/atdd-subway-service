@@ -80,6 +80,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [ ] 존재하지 않은 출발역이나 도착역을 조회 할 경우 인수 테스트 생성 (Inside Out)
 - [ ] 최단 경로 조회 기능 구현하기
     - [ ] 정상적으로 경로 조회 (Outside In)
+        - [ ] PathService 코드 구현
+        - [ ] PathFinder 코드 구현
     - [ ] 출발역과 도착역이 같은 경우 (Inside Out)
     - [ ] 출발역과 도착역이 연결이 되어 있지 않은 경우 (Inside Out)
     - [ ] 존재하지 않은 출발역이나 도착역을 조회 할 경우 (Inside Out)
