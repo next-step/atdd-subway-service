@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.Collections;
 import java.util.Objects;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.domain.fare.Money;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -18,12 +19,22 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
 
+    @Column
     private String color;
 
     @Embedded
     private final Sections sections = Sections.of();
 
+    @Column
+    private int additionalFare;
+
     public Line() {
+    }
+
+    public Line(String name, String color, int additionalFare) {
+        this.name = name;
+        this.color = color;
+        this.additionalFare = additionalFare;
     }
 
     public Line(String name, String color) {
@@ -34,6 +45,14 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        addSection(upStation, downStation, distance);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance,
+        int additionalFare) {
+        this.name = name;
+        this.color = color;
+        this.additionalFare = additionalFare;
         addSection(upStation, downStation, distance);
     }
 
@@ -75,5 +94,9 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return Collections.unmodifiableList(sections.getSections());
+    }
+
+    public Money sumAdditionalFare(Money money) {
+        return money.plus(Money.wons(additionalFare));
     }
 }

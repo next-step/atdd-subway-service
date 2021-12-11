@@ -4,6 +4,7 @@ import static nextstep.subway.station.StationFixtures.잠실;
 import static nextstep.subway.station.StationFixtures.잠실나루;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import nextstep.subway.line.domain.fare.Money;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -33,6 +34,19 @@ class LineTest {
         // then
         assertThat(line.getStations()).extracting("name")
             .containsExactly(잠실.getName(), 잠실나루.getName());
+    }
+
+    @Test
+    @DisplayName("노선 추가요금 설정")
+    void additionalFare() {
+        // given
+        Money additionalMoney = Money.wons(900);
+
+        // when
+        Line line = new Line("2호선", "RED", 잠실, 잠실나루, 100, additionalMoney.getMoney().intValue());
+
+        // then
+        assertThat(line.sumAdditionalFare(Money.ZERO)).isEqualTo(additionalMoney);
     }
 
 }
