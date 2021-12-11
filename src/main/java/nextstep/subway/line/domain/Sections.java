@@ -173,4 +173,8 @@ public class Sections {
             upDownSections.get(SINGLE_SECTION_INDEX)
         );
     }
+
+    public int size() {
+        return sections.size();
+    }
 }
