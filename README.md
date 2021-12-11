@@ -58,7 +58,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ## 인수테스트 시나리오
 - 지하철 노선
     ```
-    Feature: 지하철 노선 관련 기능
+    Feature: 지하철 노선 기능
     
       Background
         Given 지하철역 등록되어 있음
@@ -76,7 +76,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 - 지하철 구간
     ```
-    Feature: 지하철 구간 관련 기능
+    Feature: 지하철 구간 기능
     
       Background
         Given 지하철역 등록되어 있음
@@ -108,7 +108,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 - 경로 조회
     ```
-    Feature: 경로 조회 관련 기능
+    Feature: 경로 조회 기능
     
       Background
         Given 지하철역 등록되어 있음
@@ -128,4 +128,46 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         Or 출발역과 도착역이 연결이 되어 있지 않음
         When 최단 경로 조회 요청
         Then 최단 경로 조회 실패됨
+    ```
+
+- 로그인
+    ```
+    Feature: 로그인 기능
+
+      Scenario: 로그인 정상 기능
+        Given 회원 등록되어 있음
+        And 로그인 정보 일치함 
+        When 로그인 요청
+        Then 로그인 성공
+
+      Scenario: 로그인 예외 발생
+        Given 회원 등록되어 있지 않음
+        Or 로그인 정보 일치하지 않음
+        When 로그인 요청
+        Then 로그인 실패
+    ```
+
+- 회원
+    ```
+    Feature: 회원 기능
+
+      Scenario: 회원 정보 관리 정상 기능
+        Given 회원 등록되어 있음
+        When 회원 정보 조회 요청
+        Then 회원 정보 조회됨
+        When 회원 정보 수정 요청
+        Then 회원 정보 수정됨
+        When 회원 정보 삭제 요청
+        Then 회원 정보 삭제됨
+
+      Scenario: 내 정보 관리 정상 기능
+        Given 내 정보 등록되어 있음
+        When 로그인 요청
+        Then 토큰 반환됨
+        When 토큰으로 내 정보 조회 요청
+        Then 내 정보 조회됨
+        When 토큰으로 내 정보 수정 요청
+        Then 내 정보 수정됨
+        When 토큰으로 내 정보 삭제 요청
+        Then 내 정보 삭제됨
     ```
