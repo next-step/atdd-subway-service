@@ -5,8 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
@@ -82,12 +81,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
   private void 최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
     assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-    최단_경로_데이터_확인됨(response.jsonPath().getList("stations"), expectedStations);
+    최단_경로_데이터_확인됨(response.as(PathResponse.class).getStations(), expectedStations);
   }
 
-  private void 최단_경로_데이터_확인됨(List<Station> actualStations, List<StationResponse> expectedStations) {
-    assertThat(actualStations).isEqualTo(expectedStations.stream()
-            .map(StationResponse::toStation)
-            .collect(Collectors.toList()));
+  private void 최단_경로_데이터_확인됨(List<StationResponse> actualStations, List<StationResponse> expectedStations) {
+    assertThat(actualStations).isEqualTo(expectedStations);
   }
 }
