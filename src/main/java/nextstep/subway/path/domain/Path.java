@@ -7,9 +7,11 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.ErrorCode;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.exception.PathException;
 import nextstep.subway.station.domain.Station;
 
@@ -17,29 +19,38 @@ public class Path {
 
 	private List<Station> stations;
 	private Distance distance;
+	private Price price;
 
 	protected Path() {
 	}
 
-	private Path(final List<Station> stations, final Distance distance) {
+	private Path(final List<Station> stations, final Distance distance, final Price price) {
 		this.stations = stations;
 		this.distance = distance;
+		this.price = price;
 	}
 
 	public static Path of(List<Line> lines, Station sourceStation, Station targetStation) {
 		validSourceTargetStation(sourceStation, targetStation);
-		GraphPath<Station, DefaultWeightedEdge> shortestPath = generateShortestPath(lines, sourceStation,
+		GraphPath<Station, LineWeightedEdge> shortestPath = generateShortestPath(lines, sourceStation,
 			targetStation);
+		Distance distance = Distance.from((int)shortestPath.getWeight());
 
-		return new Path(shortestPath.getVertexList(), Distance.from((int)shortestPath.getWeight()));
+		return new Path(shortestPath.getVertexList(), distance, Price.of(distance, shortestPath.getEdgeList()));
 	}
 
-	public List<Station> getStations() {
-		return stations;
-	}
+	public static Path of(List<Line> lines, Station sourceStation, Station targetStation, LoginMember loginMember) {
+		GraphPath<Station, LineWeightedEdge> shortestPath = generateShortestPath(lines, sourceStation,
+			targetStation);
+		validSourceTargetStation(sourceStation, targetStation);
+		Distance distance = Distance.from((int)shortestPath.getWeight());
 
-	public int getDistance() {
-		return distance.getDistance();
+		if (loginMember.isGuest()) {
+			return new Path(shortestPath.getVertexList(), distance, Price.of(distance, shortestPath.getEdgeList()));
+		}
+
+		return new Path(shortestPath.getVertexList(), distance,
+			Price.of(distance, shortestPath.getEdgeList(), loginMember.getAge()));
 	}
 
 	private static boolean isSameSourceTargetStation(Station sourceStation, Station targetStation) {
@@ -52,15 +63,15 @@ public class Path {
 		}
 	}
 
-	private static GraphPath<Station, DefaultWeightedEdge> generateShortestPath(List<Line> lines
+	private static GraphPath<Station, LineWeightedEdge> generateShortestPath(List<Line> lines
 		, Station sourceStation
 		, Station targetStation) {
 		return generateDijkstraShortestPath(generateWeightedMultigraphFromLines(lines), sourceStation, targetStation);
 	}
 
-	private static WeightedMultigraph<Station, DefaultWeightedEdge> generateWeightedMultigraphFromLines(
+	private static WeightedMultigraph<Station, LineWeightedEdge> generateWeightedMultigraphFromLines(
 		List<Line> lines) {
-		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(
+		WeightedMultigraph<Station, LineWeightedEdge> graph = new WeightedMultigraph(
 			DefaultWeightedEdge.class);
 
 		lines.forEach(line -> {
@@ -71,25 +82,40 @@ public class Path {
 		return graph;
 	}
 
-	private static void addVertexFromLine(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
+	private static void addVertexFromLine(WeightedMultigraph<Station, LineWeightedEdge> graph, Line line) {
 		line.getStations()
 			.forEach(graph::addVertex);
 	}
 
-	private static void setEdgeWeightFromLine(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
+	private static void setEdgeWeightFromLine(WeightedMultigraph<Station, LineWeightedEdge> graph,
 		Line line) {
 		line.getSections()
-			.forEach(section -> graph.setEdgeWeight(
-				graph.addEdge(section.getUpStation(), section.getDownStation())
-				, section.getDistance())
-			);
+			.forEach(section -> setEdgeWeighted(graph, line, section));
 	}
 
-	private static GraphPath<Station, DefaultWeightedEdge> generateDijkstraShortestPath(
-		WeightedMultigraph<Station, DefaultWeightedEdge> graph, Station sourceStation, Station targetStation) {
-		DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+	private static void setEdgeWeighted(WeightedMultigraph<Station, LineWeightedEdge> graph, Line line,
+		Section section) {
+		LineWeightedEdge lineWeightedEdge = LineWeightedEdge.from(line);
+		graph.addEdge(section.getUpStation(), section.getDownStation(), lineWeightedEdge);
+		graph.setEdgeWeight(lineWeightedEdge, section.getDistance());
+	}
+
+	private static GraphPath<Station, LineWeightedEdge> generateDijkstraShortestPath(
+		WeightedMultigraph<Station, LineWeightedEdge> graph, Station sourceStation, Station targetStation) {
+		DijkstraShortestPath<Station, LineWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
 		return dijkstraShortestPath.getPath(sourceStation, targetStation);
 	}
 
+	public int getDistance() {
+		return distance.getDistance();
+	}
+
+	public List<Station> getStations() {
+		return stations;
+	}
+
+	public Price getPrice() {
+		return price;
+	}
 }

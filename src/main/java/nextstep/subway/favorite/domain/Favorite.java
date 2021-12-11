@@ -65,7 +65,7 @@ public class Favorite extends BaseEntity {
 	}
 
 	public boolean isOwner(Member member) {
-		return this.member.getId().equals(member.getId());
+		return this.member.equals(member);
 	}
 
 	public void validOwner(Member expectMember) {
