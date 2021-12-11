@@ -69,6 +69,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] 최단 경로 조회 기능 구현하기
   - Inside Out 으로 구현하기(도메인 테스트 -> Service 테스트)
 - 예외 상황 구현하기
-  - 출발역과 도착역이 같은 경우
-  - 출발역과 도착역이 연결이 되어있지 않은 경우
-  - 존재하지 않은 출발역이나 도착역을 조회할 경우
+  - [x] 출발역과 도착역이 같은 경우
+  - [x] 출발역과 도착역이 연결이 되어있지 않은 경우
+  - [x] 존재하지 않은 출발역이나 도착역을 조회할 경우

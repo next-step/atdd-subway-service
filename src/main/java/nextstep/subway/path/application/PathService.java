@@ -14,6 +14,8 @@ import java.util.List;
 @Service
 public class PathService {
     public SubwayPath findPath(List<Line> lines, Station sourceStation, Station targetStation) {
+        sourceStation.validateNotSame(targetStation);
+
         SubwayGraph subwayGraph = new SubwayGraph(DefaultWeightedEdge.class);
         subwayGraph.addVertexWithStations(lines);
         subwayGraph.setEdgeWeightWithSections(lines);

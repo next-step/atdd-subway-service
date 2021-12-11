@@ -11,6 +11,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -53,6 +54,7 @@ public class MapServiceTest {
         삼호선.addLineSection(교대역, 남부터미널역, 3);
     }
 
+    @DisplayName("최단 경로와 최단 거리 찾기")
     @Test
     void findShortestPath() {
         //given
