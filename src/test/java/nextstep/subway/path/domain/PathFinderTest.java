@@ -26,14 +26,14 @@ public class PathFinderTest {
         downStation = new Station("용마산역");
         line = new Line("7호선", "bg-red-600", upStation, downStation, 10);
 
-        pathFinder = new PathFinder();
+        pathFinder = new JgraphtPathFinder();
     }
 
     @DisplayName("최단거리 경로 검증")
     @Test
     void findPaths() {
         List<Line> lines = Arrays.asList(line);
-        PathFinder pathFinder = new PathFinder();
+        JgraphtPathFinder pathFinder = new JgraphtPathFinder();
 
         Path path = pathFinder.findPath(lines, upStation, downStation);
 

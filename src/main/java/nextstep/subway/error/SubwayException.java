@@ -1,6 +1,6 @@
 package nextstep.subway.error;
 
-public class SubwayException extends IllegalArgumentException {
+public class SubwayException extends RuntimeException {
 
     protected SubwayException() {
     }
