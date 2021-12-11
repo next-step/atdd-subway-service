@@ -45,11 +45,8 @@ public class PathFinder {
     }
 
     private List<Long> getVertex(final Long source, final Long target) {
-        try {
-            return path.getVertex(source, target);
-        }catch (IllegalArgumentException e) {
-            throw new NotConnectedStation(String.format("departure : %d, arrival : %d", source, target));
-        }
+        return path.getVertex(source, target)
+                .orElseThrow(() -> new NotConnectedStation(String.format("departure : %d, arrival : %d", source, target)));
     }
 
     private void sameDepartureAndArrivalStationValidator(final Long source, final Long target) {

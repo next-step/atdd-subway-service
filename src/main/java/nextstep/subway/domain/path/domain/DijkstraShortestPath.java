@@ -1,11 +1,13 @@
 package nextstep.subway.domain.path.domain;
 
 import nextstep.subway.domain.line.domain.Line;
+import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public class DijkstraShortestPath implements Path {
 
@@ -36,7 +38,12 @@ public class DijkstraShortestPath implements Path {
     }
 
     @Override
-    public List<Long> getVertex(final Long source, final Long target) {
-        return dijkstraShortestPath.getPath(source, target).getVertexList();
+    public Optional<List<Long>> getVertex(final Long source, final Long target) {
+        final GraphPath<Long, Long> path = dijkstraShortestPath.getPath(source, target);
+        try {
+            return Optional.of(path.getVertexList());
+        }catch (NullPointerException e) {
+            return Optional.empty();
+        }
     }
 }
