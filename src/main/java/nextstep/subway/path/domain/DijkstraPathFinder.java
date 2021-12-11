@@ -37,7 +37,7 @@ public class DijkstraPathFinder implements PathFinder {
     private Path getPath(GraphPath graphPath) {
         try {
             return Path.of(graphPath.getVertexList(), graphPath.getWeight());
-        } catch (IllegalArgumentException e) {
+        } catch (NullPointerException e) {
             throw new PathException(SOURCE_TARGET_NOT_LINK_MESSAGE);
         }
     }

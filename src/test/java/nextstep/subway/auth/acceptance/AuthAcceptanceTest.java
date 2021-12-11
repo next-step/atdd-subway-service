@@ -61,7 +61,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.as(TokenResponse.class).getAccessToken()).isNotBlank();
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
         return RestAssured
                 .given().log().all()
@@ -79,14 +79,4 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private void 조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
-
-    private ExtractableResponse<Response> 내정보_조회_요청(String token) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(token)
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
-    }
-
 }
