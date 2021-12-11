@@ -4,10 +4,10 @@ import nextstep.subway.member.domain.Member;
 
 public class MemberFixture {
     public static Member 사용자1() {
-        return new Member("user1@gmail.com","password",10);
+        return new Member(1L,"user1@gmail.com","password",10);
     }
 
     public static Member 사용자2() {
-        return new Member("user2@gmail.com","password",20);
+        return new Member(2L,"user2@gmail.com","password",20);
     }
 }

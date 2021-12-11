@@ -10,8 +10,10 @@ import static nextstep.subway.station.domain.StationFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import nextstep.subway.line.dto.PathResponse;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -63,7 +65,6 @@ class NavigationTest {
             .hasMessage(MESSAGE_NOT_CONNECTED_START_STATION_AND_END_STATION.getMessage());
     }
 
-
     /**
      *
      * 사호선 사당역 ---------오이도역
@@ -85,17 +86,17 @@ class NavigationTest {
 
         // when
         Navigation navigation = Navigation.of(subwayMap);
-        PathResponse fastPath = navigation.findFastPath(안국역(), 역삼역());
-
+        List<Station> fastPath = navigation.findFastPath(안국역(), 역삼역());
 
         // then
-        List<StationResponse> stations = fastPath.getStations();
-        Stream<String> stationNames = stations.stream().map(StationResponse::getName);
-        assertThat(stationNames).containsExactly("안국역", "종로3가역", "을지로3가역", "충무로역", "역삼역");
-        assertThat(fastPath.getDistance()).isEqualTo(9.0);
+        List<String> stationsNames = fastPath.stream()
+            .map(Station::getName)
+            .collect(Collectors.toList());
+        assertThat(stationsNames).containsExactly("안국역", "종로3가역", "을지로3가역", "충무로역", "역삼역");
+        assertThat(navigation.getDistance()).isEqualTo(new Distance(9.0));
     }
 
-    private List<Line> createSubwayMap() {
+    public static List<Line> createSubwayMap() {
         // given
         // 강남역 -- 신촌역 -- 역삼역
         Line 일호선 = 일호선();

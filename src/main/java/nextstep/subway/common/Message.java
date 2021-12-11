@@ -7,7 +7,8 @@ public enum Message {
     MESSAGE_NOT_EXISTS_START_STATION_OR_END_STATION("존재하지 않은 출발역이나 도착역을 조회 하였습니다."),
     MESSAGE_NOT_CONNECTED_START_STATION_AND_END_STATION("출발역과 도착역이 연결되어있지 않습니다."),
     MESSAGE_LINE_NOT_FOUND("라인이 존재하지 않습니다."),
-    MESSAGE_CAN_NOT_DELETE("삭제할 수 없습니다.")
+    MESSAGE_CAN_NOT_DELETE("삭제할 수 없습니다."),
+    MESSAGE_SECTION_DISTANCE_NOT_LESS_THAN_ZERO("구간의 거리가 0과 같거나 작을 수 없습니다.")
     ;
 
     private String message;
