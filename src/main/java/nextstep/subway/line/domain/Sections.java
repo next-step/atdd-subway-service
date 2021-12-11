@@ -12,6 +12,8 @@ import java.util.Optional;
 
 @Embeddable
 public class Sections {
+    private static final int FIRST_INDEX = 0;
+    private static final int MINIMUM_SECTIONS_SIZE = 1;
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -38,7 +40,7 @@ public class Sections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
+                    .filter(section -> section.getUpStation().equals(finalDownStation))
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
@@ -52,8 +54,8 @@ public class Sections {
 
     public void addLineStations(Section section) {
         List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+        boolean isUpStationExisted = stations.stream().anyMatch(station -> station.equals(section.getUpStation()));
+        boolean isDownStationExisted = stations.stream().anyMatch(station -> station.equals(section.getDownStation()));
 
         validateIsAllContainsStations(isUpStationExisted, isDownStationExisted);
 
@@ -61,12 +63,11 @@ public class Sections {
 
         if (isUpStationExisted) {
             addDownStation(section);
-            return;
         }
         if (isDownStationExisted) {
             addUpStation(section);
-            return;
         }
+
         sections.add(section);
     }
 
@@ -75,7 +76,7 @@ public class Sections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
+                    .filter(section -> section.getDownStation().equals(finalDownStation))
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
@@ -93,54 +94,50 @@ public class Sections {
     }
 
     private void validateIsNotAllContainsStations(Section section, List<Station> stations) {
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
-                stations.stream().noneMatch(it -> it == section.getDownStation())) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(station -> station.equals(section.getUpStation())) &&
+                stations.stream().noneMatch(station -> station.equals(section.getDownStation()))) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
     }
 
-    private void addDownStation(Section section) {
+    private void addDownStation(Section sectionToAdd) {
         sections.stream()
-                .filter(it -> it.getUpStation() == section.getUpStation())
+                .filter(section -> section.getUpStation().equals(sectionToAdd.getUpStation()))
                 .findFirst()
-                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
-        sections.add(section);
+                .ifPresent(section -> section.updateUpStation(sectionToAdd.getDownStation(), sectionToAdd.getDistance()));
     }
 
-    private void addUpStation(Section section) {
+    private void addUpStation(Section sectionToAdd) {
         sections.stream()
-                .filter(it -> it.getDownStation() == section.getDownStation())
+                .filter(section -> section.getDownStation().equals(sectionToAdd.getDownStation()))
                 .findFirst()
-                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-
-        sections.add(section);
+                .ifPresent(section -> section.updateDownStation(sectionToAdd.getUpStation(), sectionToAdd.getDistance()));
     }
 
     public void removeLineStation(Station station) {
-        if (sections.size() <= 1) {
+        if (sections.size() <= MINIMUM_SECTIONS_SIZE) {
             throw new RuntimeException();
         }
 
-        Optional<Section> upLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == station)
+        Optional<Section> upLineStationSection = sections.stream()
+                .filter(section -> section.getUpStation().equals(station))
                 .findFirst();
-        Optional<Section> downLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == station)
+        Optional<Section> downLineStationSection = sections.stream()
+                .filter(section -> section.getDownStation().equals(station))
                 .findFirst();
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+        if (upLineStationSection.isPresent() && downLineStationSection.isPresent()) {
+            Station newUpStation = downLineStationSection.get().getUpStation();
+            Station newDownStation = upLineStationSection.get().getDownStation();
+            int newDistance = upLineStationSection.get().getDistance() + downLineStationSection.get().getDistance();
             sections.add(new Section(getLine(), newUpStation, newDownStation, newDistance));
         }
 
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+        upLineStationSection.ifPresent(section -> sections.remove(section));
+        downLineStationSection.ifPresent(section -> sections.remove(section));
     }
 
     private Line getLine() {
-        return sections.get(0).getLine();
+        return sections.get(FIRST_INDEX).getLine();
     }
 }
