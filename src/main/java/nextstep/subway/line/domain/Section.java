@@ -1,14 +1,13 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.application.exception.InvalidSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
+import static nextstep.subway.line.application.exception.InvalidSectionException.SECTION_DUPLICATION;
+
 @Entity
 public class Section {
-    private static final String SECTION_DUPLICATION = "같은 상행역과 하행역으로 등록된 구간이 이미 존재합니다.";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,16 +41,20 @@ public class Section {
     }
 
     public boolean isConnectable(Section section) {
-        if (isDuplicate(section)) {
-            throw new InvalidSectionException(SECTION_DUPLICATION);
-        }
+        validateDuplication(section);
         return isTerminusExtend(section) || isBetweenStations(section);
+    }
+
+    private void validateDuplication(Section section) {
+        if (isDuplicate(section)) {
+            throw SECTION_DUPLICATION;
+        }
     }
 
     public Section merge(Section newSection) {
         if (isBetweenStations(newSection) && distance.divisible(newSection.getDistance())) {
             changeStationLink(newSection);
-            distance = distance.minus(newSection.distance);
+            distance = distance.minus(newSection.getDistance());
         }
         return newSection;
     }
@@ -86,7 +89,7 @@ public class Section {
         return downStation.equals(station);
     }
 
-    public void mergeDistance(Distance deletedDistance) {
+    public void mergeDistance(int deletedDistance) {
         distance = distance.plus(deletedDistance);
     }
 
@@ -110,7 +113,11 @@ public class Section {
         return downStation;
     }
 
-    public Distance getDistance() {
-        return distance;
+//    public Distance getDistance() {
+//        return distance;
+//    }
+
+    public int getDistance() {
+        return distance.getDistance();
     }
 }

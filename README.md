@@ -105,3 +105,27 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         When 지하철 노선에 등록된 역 목록 조회 요청
         Then 삭제한 지하철 구간이 반영되지 않은 역 목록이 조회됨
     ```
+
+- 경로 조회
+    ```
+    Feature: 경로 조회 관련 기능
+    
+      Background
+        Given 지하철역 등록되어 있음
+        And 지하철 노선 등록되어 있음
+        And 지하철 노선에 지하철역 등록되어 있음
+      
+      Scenario: 최단 경로 조회 정상 기능
+        Given 출발역과 도착역이 등록되어 있음
+        And 출발역과 도착역이 같지 않음
+        And 출발역과 도착역이 연결이 되어 있음
+        When 최단 경로 조회 요청
+        Then 최단 경로 조회됨
+  
+      Scenario: 최단 경로 조회 예외 발생
+        Given 출발역이나 도착역이 등록되어 있지 않음
+        Or 출발역과 도착역이 같음
+        Or 출발역과 도착역이 연결이 되어 있지 않음
+        When 최단 경로 조회 요청
+        Then 최단 경로 조회 실패됨
+    ```

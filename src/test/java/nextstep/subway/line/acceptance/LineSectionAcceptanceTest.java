@@ -20,10 +20,11 @@ import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_조회_요청;
+import static nextstep.subway.station.StationAcceptanceTest.getStationNames;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-@DisplayName("지하철 구간 관련 기능")
+@DisplayName("지하철 구간 인수 테스트")
 public class LineSectionAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private StationResponse 강남역;
@@ -90,20 +91,19 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 지하철_노선에_지하철역_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    public static void 지하철_구간_등록됨(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+        ExtractableResponse<Response> response = 지하철_구간_등록_요청(line, upStation, downStation, distance);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 지하철_노선에_지하철역_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
+    public static void 지하철_노선에_지하철역_등록_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 지하철_노선에_지하철역_정렬됨(ExtractableResponse<Response> response, List<StationResponse> excepted) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getList("stations.name"))
-                .isEqualTo(getStationNames(expectedStations));
-    }
-
-    private static List<String> getStationNames(List<StationResponse> expectedStations) {
-        return expectedStations.stream()
-                .map(StationResponse::getName)
-                .collect(Collectors.toList());
+                .isEqualTo(getStationNames(excepted));
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
@@ -119,6 +119,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

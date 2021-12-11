@@ -135,4 +135,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
+
+    public static List<String> getStationNames(List<StationResponse> expectedStations) {
+        return expectedStations.stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
+    }
 }
