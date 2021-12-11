@@ -21,10 +21,7 @@ class PathFinderTest {
         Station 양재역 = new Station("양재역");
         Station 판교역 = new Station("판교역");
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
-        graph.addVertex(강남역);
-        graph.addVertex(양재역);
-        graph.addVertex(판교역);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = createGraph(강남역, 양재역, 판교역);
         graph.setEdgeWeight(graph.addEdge(강남역, 양재역), 2);
         graph.setEdgeWeight(graph.addEdge(양재역, 판교역), 2);
         graph.setEdgeWeight(graph.addEdge(강남역, 판교역), 100);
@@ -60,10 +57,7 @@ class PathFinderTest {
         Station 양재역 = new Station("양재역");
         Station 판교역 = new Station("판교역");
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
-        graph.addVertex(강남역);
-        graph.addVertex(양재역);
-        graph.addVertex(판교역);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = createGraph(강남역, 양재역, 판교역);
         graph.setEdgeWeight(graph.addEdge(강남역, 양재역), 2);
 
         PathFinder pathFinder = new PathFinder(graph);
@@ -82,10 +76,7 @@ class PathFinderTest {
         Station 양재역 = new Station("양재역");
         Station 판교역 = new Station("판교역");
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
-        graph.addVertex(강남역);
-        graph.addVertex(양재역);
-        graph.addVertex(판교역);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = createGraph(강남역, 양재역, 판교역);
         graph.setEdgeWeight(graph.addEdge(강남역, 양재역), 2);
         graph.setEdgeWeight(graph.addEdge(양재역, 판교역), 2);
         graph.setEdgeWeight(graph.addEdge(강남역, 판교역), 100);
@@ -121,10 +112,7 @@ class PathFinderTest {
         Station 양재역 = new Station("양재역");
         Station 판교역 = new Station("판교역");
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
-        graph.addVertex(강남역);
-        graph.addVertex(양재역);
-        graph.addVertex(판교역);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = createGraph(강남역, 양재역, 판교역);
         graph.setEdgeWeight(graph.addEdge(강남역, 양재역), 2);
 
         PathFinder pathFinder = new PathFinder(graph);
@@ -133,5 +121,14 @@ class PathFinderTest {
         assertThatThrownBy(() -> pathFinder.findShortestDistance(판교역, 강남역))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발역과 도착역이 연결되어 있지 않습니다.");
+    }
+
+    private WeightedMultigraph<Station, DefaultWeightedEdge> createGraph(Station... stations) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph =
+                new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+        for (Station station : stations) {
+            graph.addVertex(station);
+        }
+        return graph;
     }
 }

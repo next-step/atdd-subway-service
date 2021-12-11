@@ -117,7 +117,7 @@ public class Section {
         return downStation;
     }
 
-    public Distance getDistance() {
-        return distance;
+    public int getDistance() {
+        return distance.getDistance();
     }
 }
