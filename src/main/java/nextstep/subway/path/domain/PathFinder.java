@@ -43,12 +43,25 @@ public class PathFinder {
   }
 
   public List<Station> findShortestPath(Station sourceStation, Station targetStation) {
+    Optional<GraphPath<Station, DefaultWeightedEdge>> graphPath = findGraphPath(sourceStation, targetStation);
+    return graphPath
+            .map(GraphPath::getVertexList)
+            .orElseThrow(this::connectionIsNotValid);
+  }
+
+  public int findShortestDistance(Station sourceStation, Station targetStation) {
+    Optional<GraphPath<Station, DefaultWeightedEdge>> graphPath = findGraphPath(sourceStation, targetStation);
+    return graphPath
+            .map(GraphPath::getWeight)
+            .orElseThrow(this::connectionIsNotValid)
+            .intValue();
+  }
+
+  private Optional<GraphPath<Station, DefaultWeightedEdge>> findGraphPath(Station sourceStation, Station targetStation) {
     checkDuplicateStation(sourceStation, targetStation);
     checkExistStations(sourceStation, targetStation);
     Optional<GraphPath<Station, DefaultWeightedEdge>> graphPath = Optional.ofNullable(shortestPath.getPath(sourceStation, targetStation));
-    return graphPath
-            .map(GraphPath::getVertexList)
-            .orElseThrow(() -> new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다."));
+    return graphPath;
   }
 
   private void checkExistStations(Station... stations) {
@@ -67,5 +80,9 @@ public class PathFinder {
     if (sourceStation.equals(targetStation)) {
       throw new IllegalArgumentException("출발역과 도착역이 같습니다. 입력 지하철역: " + sourceStation.getName());
     }
+  }
+
+  private IllegalArgumentException connectionIsNotValid() {
+    return new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
   }
 }
