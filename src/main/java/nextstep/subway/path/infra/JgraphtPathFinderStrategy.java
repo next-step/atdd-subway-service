@@ -16,10 +16,7 @@ import java.util.Objects;
 import static java.util.stream.Collectors.toList;
 
 @Component
-public class JgraphtPathFinder implements PathFinder {
-
-    public JgraphtPathFinder() {
-    }
+public class JgraphtPathFinderStrategy implements PathFinderStrategy {
 
     private void validateLinkSourceAndTarget(GraphPath path) {
         if(Objects.isNull(path)) {

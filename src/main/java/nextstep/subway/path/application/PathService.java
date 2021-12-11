@@ -3,8 +3,8 @@ package nextstep.subway.path.application;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.infra.PathFinder;
-import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.infra.PathFinderStrategy;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -17,9 +17,9 @@ public class PathService {
 
     private final LineRepository lineRepository;
     private final StationService stationService;
-    private final PathFinder pathFinder;
+    private final PathFinderStrategy pathFinder;
 
-    public PathService(LineRepository lineRepository, StationService stationService, PathFinder pathFinder) {
+    public PathService(LineRepository lineRepository, StationService stationService, PathFinderStrategy pathFinder) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
         this.pathFinder = pathFinder;
@@ -32,7 +32,7 @@ public class PathService {
 
         List<Line> lines = lineRepository.findAll();
 
-        Path path = new Path(pathFinder);
+        ShortestPath path = new ShortestPath(pathFinder);
         List<Station> paths = path.findPaths(lines, sourceStation, targetStation);
         Distance distance = path.findPathWeight(lines, sourceStation, targetStation);
         return new PathResponse(paths, distance);

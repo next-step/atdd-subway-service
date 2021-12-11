@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -20,8 +21,8 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Optional<Station> station = stationRepository.findByName(stationRequest.getName());
-        if(station.isPresent()) {
+        Station station = stationRepository.findByName(stationRequest.getName());
+        if(Objects.nonNull(station)) {
             throw new IllegalArgumentException("지하철역 이미 등록되었습니다.");
         }
         Station persistStation = stationRepository.save(stationRequest.toStation());

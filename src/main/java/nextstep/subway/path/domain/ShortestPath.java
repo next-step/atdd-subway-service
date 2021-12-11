@@ -2,16 +2,16 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.infra.PathFinder;
+import nextstep.subway.path.infra.PathFinderStrategy;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
 
-public class Path {
+public class ShortestPath {
 
-    private final PathFinder pathFinder;
+    private final PathFinderStrategy pathFinder;
 
-    public Path(PathFinder pathFinder) {
+    public ShortestPath(PathFinderStrategy pathFinder) {
         this.pathFinder = pathFinder;
     }
 
