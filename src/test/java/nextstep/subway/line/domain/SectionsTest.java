@@ -158,6 +158,7 @@ class SectionsTest {
         assertThat(구간_목록.hasDeletableSection()).isFalse();
     }
 
+    @DisplayName("상행역으로 구간 조회 true 테스트")
     @Test
     void getSectionByUpStation_true() {
         // when
@@ -171,6 +172,7 @@ class SectionsTest {
         );
     }
 
+    @DisplayName("상행역으로 구간 조회 false 테스트")
     @Test
     void getSectionByUpStation_false() {
         // when & then
@@ -178,6 +180,7 @@ class SectionsTest {
                 .isThrownBy(() -> 구간_목록.getSectionByUpStation(광교역));
     }
 
+    @DisplayName("하행역으로 구간 조회 true 테스트")
     @Test
     void getSectionByDownStation_true() {
         // when
@@ -191,6 +194,7 @@ class SectionsTest {
         );
     }
 
+    @DisplayName("하행역으로 구간 조회 false 테스트")
     @Test
     void getSectionByDownStation_false() {
         // when & then
