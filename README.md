@@ -83,8 +83,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [ ] 외부 라이브러리를 활용한 로직을 검증할 때는 가급적 실제 객체를 활용
     - [ ] Happy케이스에 대한 부분만 구현(Side 케이스에 대한 구현은 다음 단계)
 * Inside Out
-    - [ ] 도메인 테스트 작성
-    - [ ] 도메인 구현
+    - [x] 도메인 테스트 작성
+    - [x] 도메인 구현
     - [ ] 도메인과 관계를 맺는 객체에 대해 기능 구현
 - [ ] 예외처리
     - [ ] 출발역과 도착역이 같은 경우
