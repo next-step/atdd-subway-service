@@ -56,7 +56,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ## 기능목록정리
 
-- [ ] 인수테스트 리팩토링 : 하나의 테스트로 통합
+- [x] 인수테스트 리팩토링 : 하나의 테스트로 통합
 - [ ] 도메인 로직 테스트 생성
   - 도메인 테스트 생성
   - 비즈니스 로직을 도메인으로 옮기기
