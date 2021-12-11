@@ -208,10 +208,6 @@ public class Sections {
     return sectionsLastElement(sections).equals(downEndPoint());
   }
 
-  private Station stationsLastElement(List<Station> stations) {
-    return stations.get(stations.size() - 1);
-  }
-
   private Section sectionsLastElement(List<Section> sections) {
     return sections.get(sections.size() - 1);
   }

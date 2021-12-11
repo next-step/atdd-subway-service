@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -74,13 +76,16 @@ public class SectionsTest {
   @Test
   void 지하철_노선_구간_중간_추가_거리_검증() {
     // given
-    Section 신규_구간 = Section.of(2L, 교대역, 서초역, Distance.of(5));
-    지하철_2호선.addSection(신규_구간);
+    Section 신규_구간 = Section.of(2L, 교대역, 서초역, Distance.of(3));
+
+
     // when
-    System.out.println(지하철_2호선.getSections());
+    지하철_2호선.addSection(신규_구간);
 
     // then
-    assertThat(지하철_2호선.getStations()).containsExactly(강남역, 교대역, 서초역);
+    assertThat(지하철_2호선.getSections().stream()
+            .map(Section::getDistance)
+            .collect(Collectors.toList())).containsExactly(Distance.of(7), Distance.of(3));
   }
 
   @DisplayName("구간에 등록된 역들과 이어질 수 없는 구간을 추가할 경우 예외를 던진다.")
