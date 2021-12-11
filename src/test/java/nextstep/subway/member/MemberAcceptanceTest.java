@@ -77,7 +77,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 나의_정보를_삭제_한다(TokenResponse token) {
-        return ApiRequest.deleteWithAuth("/members/me", token.getAccessToken());
+        return ApiRequest.delete("/members/me", token.getAccessToken());
     }
 
     private ExtractableResponse<Response> 로그인_요청되어_있음(String email, String password) {
@@ -86,12 +86,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 나의_정보를_조회_한다(String email, String password) {
         TokenResponse tokenResponse = AuthAcceptanceTest.로그인을_요청한다(email, password).as(TokenResponse.class);
-        return ApiRequest.getWithAuth("/members/me", tokenResponse.getAccessToken());
+        return ApiRequest.get("/members/me", tokenResponse.getAccessToken());
     }
 
     private ExtractableResponse<Response> 나의_정보를_수정_한다(TokenResponse token, String email, String password, int age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
-        return ApiRequest.putWithAuth("/members/me", token.getAccessToken(), memberRequest);
+        return ApiRequest.put("/members/me", token.getAccessToken(), memberRequest);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {

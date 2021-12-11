@@ -79,7 +79,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response>  즐겨찾기_생성을_요청한다(String token, Long sourceId, Long targetId) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(sourceId, targetId);
-        return ApiRequest.postWithAuth("/favorites/me", token, favoriteRequest);
+        return ApiRequest.post("/favorites/me", token, favoriteRequest);
     }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> createResponse) {
@@ -99,7 +99,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String token) {
-        return ApiRequest.deleteWithAuth("/favorites/me", token);
+        return ApiRequest.delete("/favorites/me", token);
     }
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
@@ -107,6 +107,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String token) {
-        return ApiRequest.getWithAuth("/favorites/me", token);
+        return ApiRequest.get("/favorites/me", token);
     }
 }

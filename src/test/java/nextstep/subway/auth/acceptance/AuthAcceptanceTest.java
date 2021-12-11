@@ -4,7 +4,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.ApiRequest;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.MemberAcceptanceTest;
@@ -68,7 +67,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 다른_토큰으로_멤버를_요청한다(TokenResponse tokenResponse) {
-        return ApiRequest.getWithAuth("/members/me", tokenResponse.getAccessToken());
+        return ApiRequest.get("/members/me", tokenResponse.getAccessToken());
     }
 
     private void 로그인_됨(ExtractableResponse<Response> response) {

@@ -47,7 +47,7 @@ public class ApiRequest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> getWithAuth(String uri, String token) {
+    public static ExtractableResponse<Response> get(String uri, String token) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
@@ -57,7 +57,7 @@ public class ApiRequest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> postWithAuth(String uri, String token, Object params) {
+    public static ExtractableResponse<Response> post(String uri, String token, Object params) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
@@ -68,7 +68,7 @@ public class ApiRequest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> putWithAuth(String uri, String token, Object params) {
+    public static ExtractableResponse<Response> put(String uri, String token, Object params) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
@@ -79,7 +79,7 @@ public class ApiRequest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> deleteWithAuth(String uri, String token) {
+    public static ExtractableResponse<Response> delete(String uri, String token) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
