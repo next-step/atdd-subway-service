@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 @Embeddable
 public class Sections {
 
-    private static final int REMOVE_SECTION_MIN_SIZE = 1;
-    private static final int NOT_BETWEEN_SECTION = 1;
-    private static final int BETWEEN_SECTION = 2;
+    private static final int SECTION_MIN_SIZE = 1;
+    private static final int LAST_STOP_SECTION = 1;
+    private static final int BETWEEN_SECTIONS = 2;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -44,11 +44,20 @@ public class Sections {
         sections.add(section);
     }
 
-    public void remove(Station removeStation) {
+    public void remove(Station station) {
         validateRemove();
-        List<Section> findSections = findSections(removeStation);
-        removeSectionNotBetweenSections(findSections);
-        removeSectionBetweenSections(findSections);
+        List<Section> findSections = findSectionsBy(station);
+
+        if (findSections.size() == LAST_STOP_SECTION) {
+            sections.remove(findSections.get(0));
+        }
+
+        if (findSections.size() == BETWEEN_SECTIONS) {
+            Section upSection = findSections.get(0);
+            Section downSection = findSections.get(1);
+            upSection.merge(downSection);
+            sections.remove(downSection);
+        }
     }
 
     public List<Section> getOrderedSections() {
@@ -56,7 +65,15 @@ public class Sections {
             return sections;
         }
 
-        Section firstSection = findFirstSection();
+        Section firstSection = sections.get(0);
+        while (firstSection != null) {
+            Optional<Section> nextSection = findNextUpSection(firstSection.getUpStation());
+            if (!nextSection.isPresent()) {
+                break;
+            }
+            firstSection = nextSection.get();
+        }
+
         return makeOrderedSections(firstSection);
     }
 
@@ -65,36 +82,31 @@ public class Sections {
             return new ArrayList<>();
         }
 
-        Station firstUpStation = findFirstUpStation();
+        Station firstUpStation = sections.get(0).getUpStation();
+        while (firstUpStation != null) {
+            Optional<Section> nextSection = findNextUpSection(firstUpStation);
+
+            if (!nextSection.isPresent()) {
+                break;
+            }
+
+            firstUpStation = nextSection.get().getUpStation();
+        }
+
         return makeOrderedStations(firstUpStation);
     }
 
     private void validateRemove() {
-        if (sections.size() <= REMOVE_SECTION_MIN_SIZE) {
+        if (sections.size() <= SECTION_MIN_SIZE) {
             throw new BadRequestException("구간을 제거할 수 없습니다.");
         }
     }
 
-    private List<Section> findSections(Station removeStation) {
+    private List<Section> findSectionsBy(Station station) {
         return getOrderedSections().stream()
-                .filter(section -> section.hasSameUpStation(removeStation)
-                        || section.hasSameDownStation(removeStation))
+                .filter(section -> section.hasSameUpStation(station)
+                        || section.hasSameDownStation(station))
                 .collect(Collectors.toList());
-    }
-
-    private void removeSectionNotBetweenSections(List<Section> findSections) {
-        if (findSections.size() == NOT_BETWEEN_SECTION) {
-            sections.remove(findSections.get(0));
-        }
-    }
-
-    private void removeSectionBetweenSections(List<Section> findSections) {
-        if (findSections.size() == BETWEEN_SECTION) {
-            Section upSection = findSections.get(0);
-            Section downSection = findSections.get(1);
-            upSection.merge(downSection);
-            sections.remove(downSection);
-        }
     }
 
     private void modifyIfSameUpStationExisted(Section section) {
@@ -102,7 +114,7 @@ public class Sections {
             sections.stream()
                     .filter(it -> it.hasSameUpStation(section.getUpStation()))
                     .findFirst()
-                    .ifPresent(it -> it.changeUpStationToAddSectionDownStation(section));
+                    .ifPresent(it -> it.changeUpStationToDownStationOf(section));
         }
     }
 
@@ -111,41 +123,43 @@ public class Sections {
             sections.stream()
                     .filter(it -> it.hasSameDownStation(section.getDownStation()))
                     .findFirst()
-                    .ifPresent(it -> it.changeDownStationToRemoveSectionUpStation(section));
+                    .ifPresent(it -> it.changeDownStationToUpStationOf(section));
         }
     }
 
-    private List<Section> makeOrderedSections(Section downSection) {
+    private List<Section> makeOrderedSections(Section firstSection) {
         List<Section> orderedSections = new ArrayList<>();
-        orderedSections.add(downSection);
+        orderedSections.add(firstSection);
 
-        while (downSection != null) {
-            Optional<Section> nextSection = findNextDownSection(downSection.getDownStation());
+        Section nextSection = firstSection;
+        while (nextSection != null) {
+            Optional<Section> findSection = findNextDownSection(nextSection.getDownStation());
 
-            if (!nextSection.isPresent()) {
+            if (!findSection.isPresent()) {
                 break;
             }
 
-            downSection = nextSection.get();
-            orderedSections.add(downSection);
+            nextSection = findSection.get();
+            orderedSections.add(nextSection);
         }
 
         return orderedSections;
     }
 
-    private List<Station> makeOrderedStations(Station downStation) {
+    private List<Station> makeOrderedStations(Station firstStation) {
         List<Station> orderedStations = new ArrayList<>();
-        orderedStations.add(downStation);
+        orderedStations.add(firstStation);
 
-        while (downStation != null) {
-            Optional<Section> nextSection = findNextDownSection(downStation);
+        Station nextStation = firstStation;
+        while (nextStation != null) {
+            Optional<Section> findSection = findNextDownSection(nextStation);
 
-            if (!nextSection.isPresent()) {
+            if (!findSection.isPresent()) {
                 break;
             }
 
-            downStation = nextSection.get().getDownStation();
-            orderedStations.add(downStation);
+            nextStation = findSection.get().getDownStation();
+            orderedStations.add(nextStation);
         }
         return orderedStations;
     }
@@ -172,44 +186,15 @@ public class Sections {
                 .noneMatch(station -> station.equals(otherStation));
     }
 
-    private Section findFirstSection() {
-        Section downSection = sections.get(0);
-        while (downSection != null) {
-            Optional<Section> nextSection = findNextUpSection(downSection.getUpStation());
-
-            if (!nextSection.isPresent()) {
-                break;
-            }
-
-            downSection = nextSection.get();
-        }
-        return downSection;
-    }
-
-    private Station findFirstUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Optional<Section> nextSection = findNextUpSection(downStation);
-
-            if (!nextSection.isPresent()) {
-                break;
-            }
-
-            downStation = nextSection.get().getUpStation();
-        }
-
-        return downStation;
-    }
-
-    private Optional<Section> findNextDownSection(Station downStation) {
+    private Optional<Section> findNextDownSection(Station station) {
         return sections.stream()
-                .filter(it -> it.hasSameUpStation(downStation))
+                .filter(section -> section.hasSameUpStation(station))
                 .findFirst();
     }
 
-    private Optional<Section> findNextUpSection(Station downStation) {
+    private Optional<Section> findNextUpSection(Station station) {
         return sections.stream()
-                .filter(it -> it.hasSameDownStation(downStation))
+                .filter(section -> section.hasSameDownStation(station))
                 .findFirst();
     }
 }

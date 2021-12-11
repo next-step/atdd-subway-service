@@ -58,21 +58,21 @@ public class Section {
         return downStation;
     }
 
-    public void changeUpStationToAddSectionDownStation(Section addSection) {
-        validateDistance(addSection);
-        this.upStation = addSection.getDownStation();
-        this.distance = this.distance.minus(addSection.distance);
+    public void changeUpStationToDownStationOf(Section section) {
+        validateDistance(section);
+        this.upStation = section.getDownStation();
+        this.distance = this.distance.minus(section.distance);
     }
 
-    public void changeDownStationToRemoveSectionUpStation(Section addSection) {
-        validateDistance(addSection);
-        this.downStation = addSection.getUpStation();
-        this.distance = this.distance.minus(addSection.distance);
+    public void changeDownStationToUpStationOf(Section section) {
+        validateDistance(section);
+        this.downStation = section.getUpStation();
+        this.distance = this.distance.minus(section.distance);
     }
 
-    public void merge(Section removeSection) {
-        this.downStation = removeSection.getDownStation();
-        this.distance = this.distance.plus(removeSection.distance);
+    public void merge(Section section) {
+        this.downStation = section.getDownStation();
+        this.distance = this.distance.plus(section.distance);
     }
 
     public boolean hasSameDownStation(Station otherStation) {
