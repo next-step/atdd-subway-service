@@ -17,10 +17,6 @@ public class PathController {
 
     @GetMapping("/paths")
     public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target) {
-//        List<StationResponse> stations = new ArrayList<>();
-//        stations.add(StationResponse.of(new Station("강남역")));
-//        stations.add(StationResponse.of(new Station("양재역")));
-//        stations.add(StationResponse.of(new Station("남부터미널역")));
         PathResponse pathResponse = pathService.findPath(source, target);
         return ResponseEntity.ok(pathResponse);
 
