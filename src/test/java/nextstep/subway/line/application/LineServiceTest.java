@@ -64,7 +64,7 @@ class LineServiceTest {
             .thenReturn(yongsanStation);
         when(lineRepository.save(ArgumentMatchers.any()))
             .thenReturn(line);
-        LineRequest lineRequest = new LineRequest("1호선", "blue", 1L, 2L, 3);
+        LineRequest lineRequest = new LineRequest("1호선", "blue", 1L, 2L, 3, 900);
 
         // when 라인 저장 요청
         LineResponse lineResponse = lineService.saveLine(lineRequest);
@@ -123,7 +123,7 @@ class LineServiceTest {
             assertThat(line.getColor()).isEqualTo("blue");
         });
 
-        LineUpdateRequest lineRequest = new LineUpdateRequest("2호선", "green");
+        LineUpdateRequest lineRequest = new LineUpdateRequest("2호선", "green", 900);
 
         lineService.updateLine(1L, lineRequest);
 
