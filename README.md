@@ -67,3 +67,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] 역 목록 역할 클래스 추가
     - [X] 역 응답 목록 클래스 추가
 - [X] 공통 에러처리
+
+#### 코드리뷰
+- [ ] `NoSuchElementException` 대신 용도에 맞는 새로운 Exception 생성
+
+## 참고
+- [JPA 사용시 @Embedded 주의 사항](https://jojoldu.tistory.com/559)
+
