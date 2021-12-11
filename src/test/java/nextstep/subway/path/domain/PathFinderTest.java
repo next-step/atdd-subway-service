@@ -82,4 +82,42 @@ public class PathFinderTest {
             pathFinder.findShortestPath(서초역, Station.from("봉천역"));
                 });
     }
+    
+    @Test
+    @DisplayName("중복된 vertex를 추가해도 문제없이 잘 동작해야 한다")
+    void 유효성_검사_중복된_vertex_추가() {
+        // given
+        Station 을지로4가 = Station.from("을지로4가");
+        Station 동대문역사문화공원 = Station.from("동대문역사문화공원");
+        Line 이호선 = Line.of("이호선", "bg-green-600", 을지로4가, 동대문역사문화공원, Distance.from(30));
+        Line 오호선 = Line.of("오호선", "bg-purple-600", 을지로4가, 동대문역사문화공원, Distance.from(50));
+        
+        PathFinder pathFinder = PathFinder.of(Arrays.asList(이호선, 이호선, 오호선, 오호선));
+        
+        // when
+        Path path = pathFinder.findShortestPath(을지로4가, 동대문역사문화공원);
+        
+        // then
+        assertThat(path.getDistance()).isEqualTo(30);
+        
+    }
+    
+    @Test
+    @DisplayName("동일한 구간으로 여러 길이를 추가해도 문제없이 가장 짧은 길이가 나와야 한다")
+    void 유효성_검사_동일한_구간의_다양한_edge_추가() {
+        // given
+        Station 서초역 = Station.from("서초역");
+        Station 교대역 = Station.from("교대역");
+        Line 이호선_길이_20 = Line.of("이호선", "bg-green-600", 서초역, 교대역, Distance.from(20));
+        Line 이호선_길이_30 = Line.of("이호선", "bg-green-600", 서초역, 교대역, Distance.from(30));
+        
+        PathFinder pathFinder = PathFinder.of(Arrays.asList(이호선_길이_20, 이호선_길이_30));
+        
+        // when
+        Path path = pathFinder.findShortestPath(서초역, 교대역);
+        
+        // then
+        assertThat(path.getDistance()).isEqualTo(20);
+        
+    }
 }
