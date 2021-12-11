@@ -26,15 +26,15 @@ public class LoginMember {
         return age;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
+//
+//    public void setEmail(String email) {
+//        this.email = email;
+//    }
+//
+//    public void setAge(Integer age) {
+//        this.age = age;
+//    }
 }

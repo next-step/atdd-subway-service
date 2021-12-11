@@ -64,12 +64,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         final String INVALID_TOKEN = "awsda";
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(createResponse);
-        Header location = createResponse.headers().get("Location");
-        String url = location.getValue();
-        String s = url.replaceAll("[a-zA-Z/]", "");
+
+        String location = createResponse.header("Location");
+        Long id = extractId(location);
 
         Map<String, Object> params = new HashMap<>();
-        params.put("id", Long.parseLong(s));
+        params.put("id", id);
         params.put("email", EMAIL);
         params.put("age", AGE);
 
