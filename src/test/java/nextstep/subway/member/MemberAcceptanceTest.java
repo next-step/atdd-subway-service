@@ -4,6 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -45,10 +47,40 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
-    @DisplayName("나의 정보를 관리한다.")
+    @DisplayName("나의 정보를 조회한다.")
     @Test
-    void manageMyInfo() {
+    void searchMyInfo() {
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        로그인되어있음(EMAIL, PASSWORD);
+    }
 
+    @DisplayName("나의 정보를 수정한다.")
+    @Test
+    void modifyMyInfo() {
+        String modifyEmail = "abcd@google.com";
+        String modifyPassword = "1234";
+        int modifyAge = 33;
+        //given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> loginResponse = login(EMAIL, PASSWORD);
+        TokenResponse tokenResponse = loginResponse.as(TokenResponse.class);
+        //when
+        ExtractableResponse<Response> myInfoResponse = 나의_정보_수정(tokenResponse, new MemberRequest(modifyEmail, modifyPassword, modifyAge));
+        //then
+        회원_정보_수정됨(myInfoResponse);
+    }
+
+    @DisplayName("나의 정보를 삭제한다.")
+    @Test
+    void deleteMyInfo() {
+        //given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> loginResponse = login(EMAIL, PASSWORD);
+        TokenResponse tokenResponse = loginResponse.as(TokenResponse.class);
+        //when
+        ExtractableResponse<Response> response = 나의정보_삭제(tokenResponse);
+        //then
+        나의_정보_삭제됨(response);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -96,6 +128,37 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 나의정보_조회(TokenResponse token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 나의_정보_수정(TokenResponse token, MemberRequest memberRequest) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 나의정보_삭제(TokenResponse token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -113,5 +176,25 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 로그인되어있음(String email, String password) {
+        TokenResponse tokenResponse = login(email, password).as(TokenResponse.class);
+        assertThat(tokenResponse.getAccessToken()).isNotNull();
+    }
+
+    private void 나의_정보_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private static ExtractableResponse<Response> login(String email, String password) {
+        TokenRequest tokenRequest = new TokenRequest(email, password);
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all().
+                extract();
     }
 }
