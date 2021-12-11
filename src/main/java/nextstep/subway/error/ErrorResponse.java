@@ -1,4 +1,4 @@
-package nextstep.subway;
+package nextstep.subway.error;
 
 import org.springframework.http.HttpStatus;
 
@@ -20,7 +20,7 @@ public class ErrorResponse {
         return message;
     }
 
-    public HttpStatus toHttpStatus(){
+    public HttpStatus toHttpStatus() {
         return HttpStatus.valueOf(statusCode);
     }
 }

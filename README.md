@@ -127,3 +127,43 @@ Optional을 매개변수로 넘기면 그 메소드 안에서도 다시 ifPresen
   * [x] 출발역과 도착역이 같은 경우
   * [x] 출발역과 도착역이 연결이 되어 있지 않은 경우
   * [x] 존재하지 않은 출발역이나 도착역을 조회 할 경우
+
+### 피드백 및 공부 정리
+[피드백링크](https://github.com/next-step/atdd-subway-service/pull/401)
+1. 모든 IllegalArgumentException는 InternalServerError에 해당할까요? IllegalArgumentException도 표준예외기 때문에 https://github.com/next-step/atdd-subway-service/pull/377#discussion_r763763503의 문제가 남아있을 것 같네요~
+~~~
+IllegalArgumentException은 메시지를 감추고 새로운 에러 클래스를 사용하여 처리했습니다.
+~~~
+2. PathService와 PathFinder가 강하게 결합이 되어있네요! 경로를 구하는 알고리즘의 경우 언제든 변경될 수 있는 부분이기 때문에 언제든 확장할 수 있도록 수정해보면 어떨까요?
+~~~
+PathFinder 의존성 주입으로 생성하게 하여 확장에 유연하게 만들었습니다. 
+~~~
+3. PathService에 의존성을 제거하고 확장성을 고려해보라는 코멘트를 남겼는데, 해당 코멘트를 반영하면 mockito 없이 테스트를 작성하실 수 있으실거예요 ㅎㅎ
+~~~
+해당 부분은 mockito없이 PathFinderTest.java 로 테스트 해보았습니다. 감사합니다. :)
+~~~
+
+* 답변 정리: Mock 테스트 활용 방법은 어떤게 있나요?
+~~~
+외부에 영향을 받지 않고 싶을 때 Mock을 사용합니다!
+말씀하신 것 처럼 통제가 불가능한 의존성과의 의존성을 끊어줄 떄 사용하는게 일반적이고, 테스트 대상을 슬라이스 테스트 할 때도 사용됩니다!
+~~~
+
+## 3단계 - 인증을 통한 기능 구현
+* [x] 토큰 발급 기능 (로그인) 인수 테스트 만들기
+* [x] 인증 - 내 정보 관리 인수 테스트 만들기
+  * [x] 내 정보 조회
+  * [x] 내 정보 수정
+  * [x] 내 정보 삭제
+* [x] 인증 - 즐겨 찾기 관리 인수 테스트
+* [x] 즐겨찾기 기능 구현
+  * [x] 즐겨찾기 생성
+  * [x] 즐겨찾기 목록 조회
+  * [x] 즐겨찾기 삭제
+
+### 공부정리
+
+* RestAssured jwt auth 테스트 방법
+  * 참고자료1 : https://stackoverflow.com/questions/42790021/rest-assured-bearer-authentication
+  * 참고자료2 : https://www.baeldung.com/rest-assured-authentication <- oauth2 검색
+  * given().auth().oauth2(token) 사용하면 된다.

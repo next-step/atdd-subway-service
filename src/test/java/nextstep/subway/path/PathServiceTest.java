@@ -5,6 +5,7 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -33,7 +34,6 @@ public class PathServiceTest {
     private Station 교대역;
     private Station 남부터미널역;
 
-    @InjectMocks
     private PathService pathService;
 
     @Mock
@@ -63,13 +63,14 @@ public class PathServiceTest {
         삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 양재역, 5);
 
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, 3));
+        pathService = new PathService(stationService,lineService,new PathFinder());
     }
 
     @DisplayName("가짜 객체를 사용하여 findPaths 검증")
     @Test
     void findPaths() {
         // given
-        when(stationService.findStationById(any())).thenReturn(교대역, 양재역);
+        when(stationService.findById(any())).thenReturn(교대역, 양재역);
         when(lineService.findLines()).thenReturn(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
         // when

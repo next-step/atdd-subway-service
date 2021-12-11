@@ -83,11 +83,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> 존재하지_않은_출발역_도착역 = 최단_경로_조회_요청(-1L, 0L);
 
-        최단_경로_조회_실패(존재하지_않은_출발역_도착역);
+        존재하지_않은_지하철_조회_실패(존재하지_않은_출발역_도착역);
     }
 
     private void 최단_경로_조회_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    private void 존재하지_않은_지하철_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private static ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceId, Long targetId) {
