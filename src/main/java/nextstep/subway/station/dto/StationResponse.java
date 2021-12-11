@@ -32,6 +32,10 @@ public class StationResponse {
     this.modifiedDate = modifiedDate;
   }
 
+  public Station toStation() {
+    return new Station(id, name);
+  }
+
   public Long getId() {
     return id;
   }

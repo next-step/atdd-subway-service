@@ -107,11 +107,11 @@ Feature: 지하철 구간 관련 기능
 ```
 
 ### 1단계 미션 피드백 사항
-- [ ] SectionsTest 거리에 대한 검증 실시
+- [x] SectionsTest 거리에 대한 검증 실시
 - [x] 한 줄에 점을 하나만 찍을 것 -> 가독성, 협업 차원에서 유의미하다.
 - [x] @Transactional(readOnly=true) 클래스 레벨에서 선언하고, 데이터 쓰기 작업이 있을 경우 명확하게 나타내도록 하기
 - [x] 엔티티 기본 생성자 숨기기!!
 - [x] 주 생성자, 부 생성자 구분지어 사용하기!
-- [ ] 엔티티 cascade 옵션 고민해서 사용하기
-- [ ] jpa entity field 제약조건 공부하기
+- [x] 엔티티 cascade 옵션 고민해서 사용하기
+- [x] jpa entity field 제약조건 공부하기
 - [x] Stations 로직 점검 및 불필요 시 걷어내기

@@ -13,8 +13,8 @@ public class Sections {
   private static final int DELETABLE_SIZE = 2;
   private static final int SECTION_FIRST_INDEX = 0;
 
-  @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-  private final List<Section> sections = new ArrayList<>();
+  @OneToMany(mappedBy = "line", cascade = {CascadeType.ALL}, orphanRemoval = true)
+  private List<Section> sections = new ArrayList<>();
 
   protected Sections() {
   }
