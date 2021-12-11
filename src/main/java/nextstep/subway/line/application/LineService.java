@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.line.application.exception.LineNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineEditRequest;
@@ -12,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static nextstep.subway.line.application.exception.LineNotFoundException.NOT_FOUND_LINE;
 
 @Service
 @Transactional(readOnly = true)
@@ -74,6 +73,6 @@ public class LineService {
 
     private Line findLineById(Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(() -> NOT_FOUND_LINE);
+                .orElseThrow(LineNotFoundException::new);
     }
 }

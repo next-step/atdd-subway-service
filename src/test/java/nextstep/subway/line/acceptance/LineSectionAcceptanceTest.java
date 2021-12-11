@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_조회_요청;
