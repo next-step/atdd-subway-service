@@ -22,8 +22,12 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public TokenResponse login(TokenRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
-        member.checkPassword(request.getPassword());
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new AuthorizationException("요청한 이메일을 사용하는 사용자가 존재하지 않습니다."));
+
+        if (!member.checkPassword(request.getPassword())) {
+            throw new AuthorizationException("비밀번호가 일치하지 않습니다.");
+        }
 
         String token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(token);
@@ -32,11 +36,13 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("전달받은 토큰이 잘못되었습니다.");
         }
 
         Long memberId = Long.parseLong(jwtTokenProvider.getPayload(credentials));
-        Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new AuthorizationException("토큰과 일치하는 사용자가 존재하지 않습니다."));
+
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

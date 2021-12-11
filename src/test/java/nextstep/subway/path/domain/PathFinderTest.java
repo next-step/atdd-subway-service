@@ -30,6 +30,7 @@ class PathFinderTest {
     private Station 용산역;
     private Station 동작역;
     private Station 이촌역;
+    private Station 판교역;
     private Sections 전체_구간;
 
 
@@ -42,14 +43,16 @@ class PathFinderTest {
         용산역 = new Station("용산역");
         동작역 = new Station("신림역");
         이촌역 = new Station("이촌역");
+        판교역 = new Station("판교역");
 
-        Line 신분당선 = new Line("신분당선", "bg-red-600");
-        Line 이호선 = new Line("이호선", "bg-red-600");
-        Line 삼호선 = new Line("삼호선", "bg-red-600");
-        Line 사호선 = new Line("사호선", "bg-red-600");
+        Line 신분당선 = Line.of("신분당선", "bg-red-600", 800);
+        Line 이호선 = Line.of("이호선", "bg-red-600", 0);
+        Line 삼호선 = Line.of("삼호선", "bg-red-600", 0);
+        Line 사호선 = Line.of("사호선", "bg-red-600", 0);
 
         List<Section> sections = new ArrayList<>();
         sections.add(new Section(신분당선, 강남역, 양재역, 10));
+        sections.add(new Section(신분당선, 양재역, 판교역, 10));
         sections.add(new Section(이호선, 교대역, 강남역, 10));
         sections.add(new Section(삼호선, 교대역, 남부터미널역, 2));
         sections.add(new Section(삼호선, 남부터미널역, 양재역, 3));
@@ -65,15 +68,15 @@ class PathFinderTest {
         PathFinder pathFinder = PathFinder.of(전체_구간);
 
         // when
-        Path shortestPath = pathFinder.findShortestPath(교대역, 양재역);
+        ShortestPath shortestPath = pathFinder.findShortestPath(교대역, 판교역);
 
         // then
         assertAll(
-                () -> assertThat(shortestPath.getPathSize())
-                        .isEqualTo(3),
+                () -> assertThat(shortestPath.getPathStationCount())
+                        .isEqualTo(4),
                 () -> assertThat(shortestPath.getDistance())
-                        .isEqualTo(5),
-                () -> 최단_경로_확인(shortestPath, Arrays.asList(교대역, 남부터미널역, 양재역))
+                        .isEqualTo(15),
+                () -> 최단_경로_확인(shortestPath, Arrays.asList(교대역, 남부터미널역, 양재역, 판교역))
         );
     }
 
@@ -94,6 +97,7 @@ class PathFinderTest {
             assertThatThrownBy(throwingCallable)
                     .isInstanceOf(PathFindException.class);
         }
+
         @DisplayName("출발역과_도착역이_같음")
         @Test
         void 출발지와_목적지가_같음() {
@@ -107,7 +111,6 @@ class PathFinderTest {
             assertThatThrownBy(throwingCallable)
                     .isInstanceOf(PathFindException.class);
         }
-
         @DisplayName("출발역이 null")
         @Test
         void 출발지가_null() {
@@ -191,10 +194,9 @@ class PathFinderTest {
             assertThatThrownBy(throwingCallable)
                     .isInstanceOf(PathFindException.class);
         }
-
     }
 
-    public static void 최단_경로_확인(Path shortestPath, List<Station> expectedStations) {
+    public static void 최단_경로_확인(ShortestPath shortestPath, List<Station> expectedStations) {
         assertThat(shortestPath.getStations())
                 .containsExactlyElementsOf(expectedStations);
     }

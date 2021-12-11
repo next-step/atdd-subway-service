@@ -35,7 +35,7 @@ class FavoriteTest {
         );
     }
 
-    @DisplayName("생성 실패 테스트")
+    @DisplayName("즐겨찾기의 출발역, 도착역, 회원 id 는 필수이다.")
     @Nested
     class CreateFailTest {
         @DisplayName("잘못된 memberId")

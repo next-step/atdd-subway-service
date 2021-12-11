@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.InvalidRequestException;
 import nextstep.subway.station.domain.Station;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
@@ -118,7 +119,7 @@ class SectionsTest {
 
                 // then
                 assertThatThrownBy(throwingCallable)
-                        .isInstanceOf(RuntimeException.class);
+                        .isInstanceOf(InvalidRequestException.class);
             }
 
             @DisplayName("기존 구간의 길이보다 크거나 같음_하행역_기준")
@@ -134,7 +135,7 @@ class SectionsTest {
 
                 // then
                 assertThatThrownBy(throwingCallable)
-                        .isInstanceOf(RuntimeException.class);
+                        .isInstanceOf(InvalidRequestException.class);
             }
 
             @DisplayName("상행역과 하행역이 모두 등록되어 있음")
@@ -149,7 +150,7 @@ class SectionsTest {
 
                 // then
                 assertThatThrownBy(throwingCallable)
-                        .isInstanceOf(RuntimeException.class);
+                        .isInstanceOf(InvalidRequestException.class);
             }
 
             @DisplayName("상행역과 하행역 둘 중 하나도 포함되어 있지 않음")
@@ -164,7 +165,7 @@ class SectionsTest {
 
                 // then
                 assertThatThrownBy(throwingCallable)
-                        .isInstanceOf(RuntimeException.class);
+                        .isInstanceOf(InvalidRequestException.class);
             }
         }
     }
@@ -242,7 +243,7 @@ class SectionsTest {
 
                 // then
                 assertThatThrownBy(throwingCallable)
-                        .isInstanceOf(RuntimeException.class);
+                        .isInstanceOf(InvalidRequestException.class);
             }
 
             @DisplayName("노선의 마지막 구간을 제거 시도")
@@ -257,7 +258,7 @@ class SectionsTest {
 
                 // then
                 assertThatThrownBy(throwingCallable)
-                        .isInstanceOf(RuntimeException.class);
+                        .isInstanceOf(InvalidRequestException.class);
             }
         }
     }

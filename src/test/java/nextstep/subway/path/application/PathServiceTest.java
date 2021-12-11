@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.SectionService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -38,6 +39,8 @@ class PathServiceTest {
     @Mock
     SectionService sectionService;
 
+    private LoginMember 게스트;
+
     private Station 강남역;
     private Station 양재역;
     private Station 교대역;
@@ -49,6 +52,8 @@ class PathServiceTest {
 
     @BeforeEach
     public void setup() {
+        게스트 = LoginMember.GUEST;
+
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
         교대역 = new Station("교대역");
@@ -57,10 +62,10 @@ class PathServiceTest {
         동작역 = new Station("신림역");
         이촌역 = new Station("이촌역");
 
-        Line 신분당선 = new Line("신분당선", "bg-red-600");
-        Line 이호선 = new Line("이호선", "bg-red-600");
-        Line 삼호선 = new Line("삼호선", "bg-red-600");
-        Line 사호선 = new Line("사호선", "bg-red-600");
+        Line 신분당선 = Line.of("신분당선", "bg-red-600");
+        Line 이호선 = Line.of("이호선", "bg-red-600");
+        Line 삼호선 = Line.of("삼호선", "bg-red-600");
+        Line 사호선 = Line.of("사호선", "bg-red-600");
 
         List<Section> sections = new ArrayList<>();
         sections.add(new Section(신분당선, 강남역, 양재역, 10));
@@ -85,7 +90,7 @@ class PathServiceTest {
                 .thenReturn(전체_구간);
 
         // when
-        PathResponse pathResponse = pathService.findPath(1L, 2L);
+        PathResponse pathResponse = pathService.findPath(게스트, 1L, 2L);
 
         // then
         assertAll(
@@ -112,7 +117,7 @@ class PathServiceTest {
                     .thenReturn(전체_구간);
 
             // when
-            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathService.findPath(1L, 1L);
+            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathService.findPath(게스트, 1L, 1L);
 
             // then
             assertThatThrownBy(throwingCallable)
@@ -131,7 +136,7 @@ class PathServiceTest {
                     .thenReturn(전체_구간);
 
             // when
-            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathService.findPath(1L, 2L);
+            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathService.findPath(게스트, 1L, 2L);
 
             // then
             assertThatThrownBy(throwingCallable)
@@ -151,7 +156,7 @@ class PathServiceTest {
                     .thenReturn(전체_구간);
 
             // when
-            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathService.findPath(1L, 2L);
+            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathService.findPath(게스트, 1L, 2L);
 
             // then
             assertThatThrownBy(throwingCallable)
@@ -171,7 +176,7 @@ class PathServiceTest {
                     .thenReturn(전체_구간);
 
             // when
-            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathService.findPath(1L, 2L);
+            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathService.findPath(게스트, 1L, 2L);
 
             // then
             assertThatThrownBy(throwingCallable)
@@ -191,7 +196,7 @@ class PathServiceTest {
                     .thenReturn(전체_구간);
 
             // when
-            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathService.findPath(1L, 2L);
+            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathService.findPath(게스트, 1L, 2L);
 
             // then
             assertThatThrownBy(throwingCallable)

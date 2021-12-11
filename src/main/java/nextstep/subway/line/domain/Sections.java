@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.InvalidRequestException;
 import nextstep.subway.station.domain.Station;
 import org.springframework.util.CollectionUtils;
 
@@ -78,14 +79,14 @@ public class Sections {
 
     public void removeStation(Line line, Station targetStation) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new InvalidRequestException("마지막 구간은 삭제할 수 없습니다.");
         }
 
         Optional<Section> upLineStation = findSectionByUpStation(targetStation);
         Optional<Section> downLineStation = findSectionByDownStation(targetStation);
 
         if (!upLineStation.isPresent() && !downLineStation.isPresent()) {
-            throw new RuntimeException("존재하지 않는 역 입니다.");
+            throw new InvalidRequestException("존재하지 않는 역 입니다.");
         }
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
@@ -110,7 +111,7 @@ public class Sections {
             return;
         }
 
-        throw new RuntimeException();
+        throw new InvalidRequestException("업데이트 대상이 존재하지 않습니다.");
     }
 
     private void validateAbleToAdd(List<Station> stations, Station upStation, Station downStation) {
@@ -118,12 +119,12 @@ public class Sections {
         boolean isDownStationExisted = stations.contains(downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new InvalidRequestException("이미 등록된 구간 입니다.");
         }
 
         if (!isUpStationExisted
                 && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new InvalidRequestException("등록할 수 없는 구간 입니다.");
         }
     }
 

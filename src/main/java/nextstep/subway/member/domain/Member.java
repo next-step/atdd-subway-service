@@ -1,9 +1,9 @@
 package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.auth.application.AuthorizationException;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,8 +14,14 @@ public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true)
     private String email;
+
+    @Column
     private String password;
+
+    @Column
     private Integer age;
 
     public Member() {
@@ -35,10 +41,6 @@ public class Member extends BaseEntity {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public Integer getAge() {
         return age;
     }
@@ -49,9 +51,7 @@ public class Member extends BaseEntity {
         this.age = member.age;
     }
 
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
-        }
+    public boolean checkPassword(String password) {
+        return StringUtils.equals(this.password, password);
     }
 }

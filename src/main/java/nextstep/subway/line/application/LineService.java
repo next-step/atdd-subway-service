@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.exception.InvalidRequestException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -26,8 +27,8 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
 
         Line persistLine = lineRepository.save(request.toLine(upStation, downStation));
         List<StationResponse> stations = stationsToStationResponses(persistLine.getOrderedStations());
@@ -47,7 +48,8 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new InvalidRequestException("노선을 찾을 수 없습니다."));
     }
 
 
@@ -60,8 +62,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+        Line persistLine = findLineById(id);
 
         persistLine.update(lineUpdateRequest.toLine());
     }
