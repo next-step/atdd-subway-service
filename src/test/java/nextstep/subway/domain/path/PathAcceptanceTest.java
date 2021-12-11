@@ -68,26 +68,26 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void shortestRouteInquiry() {
         // when
-        final ExtractableResponse<Response> response = 최단_경로_조회_요청();
+        final ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
 
         // then
-        최단_경로_응답됨(response);
+        최단_경로_응답됨(response, Arrays.asList("교대역","남부터미널역","양재역"), 5);
     }
 
-    private void 최단_경로_응답됨(final ExtractableResponse<Response> response) {
+    private void 최단_경로_응답됨(final ExtractableResponse<Response> response, List<String> stations, int distance) {
         final PathFinderResponse pathFinderResponse = response.as(PathFinderResponse.class);
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(pathFinderResponse.getStations()).extracting("name").containsExactly("교대역","남부터미널역","양재역");
-            assertThat(pathFinderResponse.getDistance()).isEqualTo(5);
+            assertThat(pathFinderResponse.getStations()).extracting("name").containsExactlyElementsOf(stations);
+            assertThat(pathFinderResponse.getDistance()).isEqualTo(distance);
         });
     }
 
-    private ExtractableResponse<Response> 최단_경로_조회_요청() {
+    private ExtractableResponse<Response> 최단_경로_조회_요청(Long source, Long target) {
         return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .queryParam("source", 교대역.getId())
-                .queryParam("target", 양재역.getId())
+                .queryParam("source", source)
+                .queryParam("target", target)
                 .get("/paths")
                 .then().log().all()
                 .extract();
