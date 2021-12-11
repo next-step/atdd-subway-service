@@ -28,10 +28,8 @@ public class PathService {
     }
 
     public PathResponse findPath(Long source, Long target) {
-        Station sourceStation = stationRepository.findById(source).orElseThrow(IllegalArgumentException::new);
-        Station targetStation = stationRepository.findById(target).orElseThrow(IllegalArgumentException::new);
         List<Line> lines = lineRepository.findAll();
 
-        return pathFinder.findPath(lines, sourceStation, targetStation);
+        return pathFinder.findPath(lines, source, target);
     }
 }
