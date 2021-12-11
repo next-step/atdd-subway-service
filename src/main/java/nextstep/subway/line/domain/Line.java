@@ -63,6 +63,10 @@ public class Line extends BaseEntity {
         sections.add(section);
     }
 
+    public void deleteSection(final Station station) {
+        sections.deleteStation(station);
+    }
+
     public Long getId() {
         return id;
     }
@@ -73,10 +77,6 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
-    }
-
-    public List<Section> getSections() {
-        return sections.getSections();
     }
 
     public List<Station> getStationsInOrder() {

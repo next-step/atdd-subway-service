@@ -2,16 +2,12 @@ package nextstep.subway.line.application;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,16 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class LineService {
 
     private final LineRepository lineRepository;
-    private final StationService stationService;
     private final SectionService sectionService;
 
     public LineService(
         final LineRepository lineRepository,
-        final StationService stationService,
         final SectionService sectionService
     ) {
         this.lineRepository = lineRepository;
-        this.stationService = stationService;
         this.sectionService = sectionService;
     }
 
@@ -80,32 +73,6 @@ public class LineService {
     private Line getLineById(final Long id) {
         return lineRepository.findById(id)
             .orElseThrow(NoSuchElementException::new);
-    }
-
-    @Transactional
-    public void removeLineStation(Long lineId, Long stationId) {
-        Line line = getLineById(lineId);
-        Station station = stationService.findStationById(stationId);
-        if (line.getSections().size() <= 1) {
-            throw new RuntimeException();
-        }
-
-        Optional<Section> upLineStation = line.getSections().stream()
-            .filter(it -> it.getUpStation() == station)
-            .findFirst();
-        Optional<Section> downLineStation = line.getSections().stream()
-            .filter(it -> it.getDownStation() == station)
-            .findFirst();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(it -> line.getSections().remove(it));
-        downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
 
     private void checkLineNameIsUnique(final String requestedName) {

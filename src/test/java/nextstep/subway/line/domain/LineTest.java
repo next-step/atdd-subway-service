@@ -27,7 +27,7 @@ public class LineTest {
             () -> assertThat(line.getId()).isNotNull(),
             () -> assertThat(line.getName()).isEqualTo("신분당선"),
             () -> assertThat(line.getColor()).isEqualTo("bg-red-600"),
-            () -> assertThat(line.getSections()).isEmpty()
+            () -> assertThat(line.getStationsInOrder()).isEmpty()
         );
     }
 
@@ -46,7 +46,7 @@ public class LineTest {
             () -> assertThat(line.getId()).isNotNull(),
             () -> assertThat(line.getName()).isEqualTo("신분당선"),
             () -> assertThat(line.getColor()).isEqualTo("bg-red-600"),
-            () -> assertThat(line.getSections().size()).isEqualTo(1)
+            () -> assertThat(line.getStationsInOrder().size()).isEqualTo(2)
         );
     }
 

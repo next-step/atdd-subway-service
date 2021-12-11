@@ -30,18 +30,8 @@ public class StationService {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-            .map(station -> StationResponse.of(station))
+            .map(StationResponse::of)
             .collect(Collectors.toList());
-    }
-
-    @Transactional
-    public void deleteStationById(Long id) {
-        stationRepository.deleteById(id);
-    }
-
-    @Transactional(readOnly = true)
-    public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     @Transactional(readOnly = true)
@@ -53,5 +43,16 @@ public class StationService {
             throw new NoSuchElementException();
         }
         return stations;
+    }
+
+    @Transactional(readOnly = true)
+    public Station getStationById(final Long id) {
+        return stationRepository.findById(id)
+            .orElseThrow(NoSuchElementException::new);
+    }
+
+    @Transactional
+    public void deleteStationById(Long id) {
+        stationRepository.deleteById(id);
     }
 }

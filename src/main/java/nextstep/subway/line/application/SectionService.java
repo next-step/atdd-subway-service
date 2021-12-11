@@ -51,4 +51,12 @@ public class SectionService {
             .findFirst()
             .orElseThrow(NoSuchElementException::new);
     }
+
+    @Transactional
+    public void removeLineStation(final Long lineId, final Long stationId) {
+        final Line line = lineRepository.findById(lineId)
+            .orElseThrow(NoSuchElementException::new);
+        final Station station = stationService.getStationById(stationId);
+        line.deleteSection(station);
+    }
 }
