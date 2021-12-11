@@ -62,4 +62,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ## 🚀 2단계 - 경로 조회 기능
 ### 요구사항
 - [x] 최단 경로 조회 인수 테스트 만들기
-- [ ] 최단 경로 조회 기능 구현하기
+- [x] 최단 경로 조회 기능 구현하기
