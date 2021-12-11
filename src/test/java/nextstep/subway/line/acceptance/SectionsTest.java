@@ -28,14 +28,14 @@ public class SectionsTest {
     서초역 = new Station(3L, "서초역");
     방배역 = new Station(4L, "방배역");
     사당역 = new Station(5L, "사당역");
-    지하철_2호선 = new Line(1L, "2호선", "green", Section.of(강남역, 서초역, Distance.of(10)));
+    지하철_2호선 = new Line(1L, "2호선", "green", Section.of(1L, 강남역, 서초역, Distance.of(10)));
   }
 
   @DisplayName("지하철 노선 구간의 상행 종점에 역을 추가한다.")
   @Test
   void 지하철_노선_구간_상행_종점_추가() {
     // given
-    Section 신규_상행_종점 = Section.of(역삼역, 강남역, Distance.of(10));
+    Section 신규_상행_종점 = Section.of(2L, 역삼역, 강남역, Distance.of(10));
 
     // when
     지하철_2호선.addSection(신규_상행_종점);
@@ -48,7 +48,7 @@ public class SectionsTest {
   @Test
   void 지하철_노선_구간_하행_종점_추가() {
     // given
-    Section 신규_하행_종점 = Section.of(서초역, 방배역, Distance.of(10));
+    Section 신규_하행_종점 = Section.of(2L, 서초역, 방배역, Distance.of(10));
 
     // when
     지하철_2호선.addSection(신규_하행_종점);
@@ -61,10 +61,23 @@ public class SectionsTest {
   @Test
   void 지하철_노선_구간_중간_추가() {
     // given
-    Section 신규_구간 = Section.of(교대역, 서초역, Distance.of(5));
+    Section 신규_구간 = Section.of(2L, 교대역, 서초역, Distance.of(5));
 
     // when
     지하철_2호선.addSection(신규_구간);
+
+    // then
+    assertThat(지하철_2호선.getStations()).containsExactly(강남역, 교대역, 서초역);
+  }
+
+  @DisplayName("지하철 노선 구간을 중간에 추가 후 거리를 검증한다.")
+  @Test
+  void 지하철_노선_구간_중간_추가_거리_검증() {
+    // given
+    Section 신규_구간 = Section.of(2L, 교대역, 서초역, Distance.of(5));
+    지하철_2호선.addSection(신규_구간);
+    // when
+    System.out.println(지하철_2호선.getSections());
 
     // then
     assertThat(지하철_2호선.getStations()).containsExactly(강남역, 교대역, 서초역);
@@ -74,7 +87,7 @@ public class SectionsTest {
   @Test
   void 지하철_노선_구간_추가_연결된_역이_없을_경우_예외() {
     // given
-    Section 신규_구간 = Section.of(방배역, 사당역, Distance.of(10));
+    Section 신규_구간 = Section.of(2L, 방배역, 사당역, Distance.of(10));
 
     // when
     Throwable thrown = catchThrowable(() -> 지하철_2호선.addSection(신규_구간));
@@ -89,7 +102,7 @@ public class SectionsTest {
   @Test
   void 지하철_노선_구간_추가_이미_등록된_구간_추가_예외() {
     // given
-    Section 신규_구간 = Section.of(강남역, 서초역, Distance.of(10));
+    Section 신규_구간 = Section.of(2L, 강남역, 서초역, Distance.of(10));
 
     // when
     Throwable thrown = catchThrowable(() -> 지하철_2호선.addSection(신규_구간));
@@ -104,7 +117,7 @@ public class SectionsTest {
   @Test
   void 지하철_노선_구간_중간_추가_길이_예외() {
     // given
-    Section 신규_구간 = Section.of(교대역, 서초역, Distance.of(10));
+    Section 신규_구간 = Section.of(2L, 교대역, 서초역, Distance.of(10));
 
     // when
     Throwable thrown = catchThrowable(() -> 지하철_2호선.addSection(신규_구간));
@@ -119,7 +132,7 @@ public class SectionsTest {
   @Test
   void 지하철_노선_상행_종점_역_제거() {
     // given
-    Section 신규_구간 = Section.of(서초역, 방배역, Distance.of(10));
+    Section 신규_구간 = Section.of(2L, 서초역, 방배역, Distance.of(10));
     지하철_2호선.addSection(신규_구간);
 
     // when
@@ -133,7 +146,7 @@ public class SectionsTest {
   @Test
   void 지하철_노선_하행_종점_역_제거() {
     // given
-    Section 신규_구간 = Section.of(강남역, 교대역, Distance.of(5));
+    Section 신규_구간 = Section.of(2L, 강남역, 교대역, Distance.of(5));
     지하철_2호선.addSection(신규_구간);
 
     // when
@@ -147,8 +160,8 @@ public class SectionsTest {
   @Test
   void 지하철_노선_중간_역_제거() {
     // given
-    Section 신규_구간 = Section.of(강남역, 교대역, Distance.of(5));
-    Section 신규_구간2 = Section.of(서초역, 방배역, Distance.of(5));
+    Section 신규_구간 = Section.of(2L, 강남역, 교대역, Distance.of(5));
+    Section 신규_구간2 = Section.of(3L, 서초역, 방배역, Distance.of(5));
     지하철_2호선.addSection(신규_구간);
     지하철_2호선.addSection(신규_구간2);
 
@@ -163,7 +176,7 @@ public class SectionsTest {
   @Test
   void 지하철_노선_미등록_역_제거_예외() {
     // given
-    Section 신규_구간 = Section.of(강남역, 교대역, Distance.of(5));
+    Section 신규_구간 = Section.of(2L, 강남역, 교대역, Distance.of(5));
     지하철_2호선.addSection(신규_구간);
 
     // when

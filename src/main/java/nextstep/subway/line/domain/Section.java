@@ -4,6 +4,7 @@ import nextstep.subway.line.application.Distance;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Section {
@@ -36,8 +37,20 @@ public class Section {
     this.distance = distance;
   }
 
+  public Section(Long id, Line line, Station upStation, Station downStation, Distance distance) {
+    this.id = id;
+    this.line = line;
+    this.upStation = upStation;
+    this.downStation = downStation;
+    this.distance = distance;
+  }
+
   public static Section of(Station upStation, Station downStation, Distance distance) {
     return new Section(null, upStation, downStation, distance);
+  }
+
+  public static Section of(Long id, Station upStation, Station downStation, Distance distance) {
+    return new Section(id, null, upStation, downStation, distance);
   }
 
   public void addLine(Line line) {
@@ -81,5 +94,18 @@ public class Section {
 
   public Distance getDistance() {
     return distance;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Section section = (Section) o;
+    return Objects.equals(id, section.id) && Objects.equals(line, section.line);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, line);
   }
 }
