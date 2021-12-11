@@ -63,4 +63,20 @@ public class PathFinderTest {
             pathFinder.findShortestDistance(서초역, 이수역);
                 });
     }
+    
+    @Test
+    @DisplayName("존재하지 않는 출발역이나 도착역을 조회할수없다")
+    void 유효성_검사_존재하지_않는_역() {
+        // given
+        Station 서초역 = Station.from("서초역");
+        Station 교대역 = Station.from("교대역");
+        Line 이호선 = Line.of("이호선", "bg-green-600", 서초역, 교대역, Distance.from(20));
+        
+        PathFinder pathFinder = PathFinder.of(Arrays.asList(이호선));
+        
+        // then, when
+        assertThrows(IllegalArgumentException.class, ()->{
+            pathFinder.findShortestDistance(서초역, Station.from("봉천역"));
+                });
+    }
 }
