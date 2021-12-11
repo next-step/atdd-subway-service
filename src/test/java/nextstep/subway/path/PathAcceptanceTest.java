@@ -37,6 +37,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 남부터미널역;
     
+    /**
+     * 교대역    --- *2호선 (30)* ------- 강남역
+     * |                             |
+     * *3호선 (20)*                 *신분당선 (50)*
+     * |                             |
+     * 남부터미널역  --- *3호선(30)* ---- 양재역
+     */
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -48,7 +55,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         
         LineRequest 이호선_요청 = new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 30);
         LineRequest 신분당선_요청 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 50);
-        LineRequest 삼호선_요청 = new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 남부터미널역.getId(), 60);
+        LineRequest 삼호선_요청 = new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 남부터미널역.getId(), 20);
         
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(이호선_요청).as(LineResponse.class);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(신분당선_요청).as(LineResponse.class);
@@ -59,13 +66,71 @@ public class PathAcceptanceTest extends AcceptanceTest {
         
     }
     
+    @DisplayName("지하철 최단 경로 시나리오 통합 테스트")
+    @Test
+    void 지하철_최단_경로_통합_테스트() {
+        // When
+        ExtractableResponse<Response> 교대역_양재역_최단_경로_조회 = 경로_조회_요청(교대역, 양재역);
+
+        // Then
+        경로_조회_됨(교대역_양재역_최단_경로_조회, Arrays.asList(교대역, 남부터미널역, 양재역), 50);
+        
+        
+        // When
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_제외_요청(삼호선, 양재역);
+        ExtractableResponse<Response> 삼호선_양재역_삭제후_최단_경로_조회 = 경로_조회_요청(교대역, 양재역);
+        
+        // Then
+        경로_조회_됨(삼호선_양재역_삭제후_최단_경로_조회, Arrays.asList(교대역, 강남역, 양재역), 80);
+        
+        
+        // Given
+        StationResponse 신규역 = StationAcceptanceTest.지하철역_등록되어_있음("신규역").as(StationResponse.class);
+        
+        // When
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 신규역, 15);
+        ExtractableResponse<Response> 신분당선_신규역_등록후_최단_경로_조회 = 경로_조회_요청(교대역, 양재역);
+        
+        // Then
+        경로_조회_됨(신분당선_신규역_등록후_최단_경로_조회, Arrays.asList(교대역, 강남역, 신규역, 양재역), 80);
+        
+    }
+    
     
     @DisplayName("지하철 최단 경로를 조회한다")
     @Test
     void 지하철_최단_경로_조회() {
+        // When
         ExtractableResponse<Response> response = 경로_조회_요청(교대역, 양재역);
 
-        경로_조회_됨(response, Arrays.asList(교대역, 강남역, 양재역), 80);
+        // Then
+        경로_조회_됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 50);
+        
+    }
+    
+    @DisplayName("지하철역 제외 후 최단 경로를 조회한다")
+    @Test
+    void 지하철역_제외_후_지하철_최단_경로_조회() {
+        //When
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_제외_요청(삼호선, 양재역);
+        ExtractableResponse<Response> 삼호선_양재역_삭제후_최단_경로_조회 = 경로_조회_요청(교대역, 양재역);
+        
+        // Then
+        경로_조회_됨(삼호선_양재역_삭제후_최단_경로_조회, Arrays.asList(교대역, 강남역, 양재역), 80);
+        
+    }
+    
+    @DisplayName("지하철역 추가 후 최단 경로를 조회한다")
+    @Test
+    void 지하철역_추가_후_지하철_최단_경로_조회() {
+        // Given
+        StationResponse 신규역 = StationAcceptanceTest.지하철역_등록되어_있음("신규역").as(StationResponse.class);
+        // When
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 신규역, 10);
+        ExtractableResponse<Response> 삼호선_신규역_추가후_최단_경로_조회 = 경로_조회_요청(교대역, 양재역);
+        
+        // Then
+        경로_조회_됨(삼호선_신규역_추가후_최단_경로_조회, Arrays.asList(교대역, 남부터미널역, 신규역, 양재역), 50);
         
     }
     
