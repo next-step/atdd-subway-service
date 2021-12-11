@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -30,12 +31,14 @@ public class PathFinder {
     
     public List<Station> findShortestPath(Station sourceStation, Station targetStation) {
         validationSameStation(sourceStation, targetStation);
+        validationConnectedStation(sourceStation, targetStation);
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         return graphPath.getVertexList();
     }
 
     public int findShortestDistance(Station sourceStation, Station targetStation) {
         validationSameStation(sourceStation, targetStation);
+        validationConnectedStation(sourceStation, targetStation);
         return (int) dijkstraShortestPath.getPathWeight(sourceStation, targetStation);
     }
 
@@ -50,6 +53,13 @@ public class PathFinder {
     private void validationSameStation(Station sourceStation, Station targetStation) {
         if (sourceStation.equals(targetStation)) {
             throw new IllegalArgumentException("출발역과 도착역이 같습니다");
+        }
+    }
+    
+    private void validationConnectedStation(Station sourceStation, Station targetStation) {
+        GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        if (Objects.isNull(graphPath)) {
+            throw new IllegalArgumentException("출발역과 도착역이 연결되어있지 않습니다");
         }
     }
 

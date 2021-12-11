@@ -85,6 +85,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [x] 도메인과 관계를 맺는 객체에 대해 기능 구현
 - [ ] 예외처리
     - [x] 출발역과 도착역이 같은 경우
-    - [ ] 출발역과 도착역이 연결이 되어 있지 않은 경우
+    - [x] 출발역과 도착역이 연결이 되어 있지 않은 경우
     - [ ] 존재하지 않는 출발역이나 도착역을 조회할 경우
     
