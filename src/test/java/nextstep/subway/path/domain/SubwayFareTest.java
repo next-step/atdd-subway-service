@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.member.domain.MemberAgeType;
 import nextstep.subway.path.dto.SubwayFareRequest;
 
 class SubwayFareTest {
@@ -16,7 +16,7 @@ class SubwayFareTest {
     @CsvSource(value = {"0,0", "9,500", "11,500", "49,850", "57,900", "58,950", "120,1300"})
     void getSubwayUsageFareByKid(int distance, int expected) {
         int subwayUsageFare = SubwayFare.getSubwayUsageFare(new SubwayFareRequest(distance, 100,
-            LoginMember.AgeType.KID));
+            MemberAgeType.KID));
 
         assertEquals(expected, subwayUsageFare);
     }
@@ -26,7 +26,7 @@ class SubwayFareTest {
     @CsvSource(value = {"0,0", "9,800", "11,800", "49,1360", "57,1440", "58,1520", "120,2080"})
     void getSubwayUsageFareByAdolescent(int distance, int expected) {
         int subwayUsageFare = SubwayFare.getSubwayUsageFare(new SubwayFareRequest(distance, 100,
-            LoginMember.AgeType.ADOLESCENT));
+            MemberAgeType.ADOLESCENT));
 
         assertEquals(expected, subwayUsageFare);
     }
@@ -36,7 +36,7 @@ class SubwayFareTest {
     @CsvSource(value = {"0,0", "9,1350", "11,1350", "49,2050", "57,2150", "58,2250", "120,2950"})
     void getSubwayUsageFareByNone(int distance, int expected) {
         int subwayUsageFare = SubwayFare.getSubwayUsageFare(new SubwayFareRequest(distance, 100,
-            LoginMember.AgeType.NONE));
+            MemberAgeType.NONE));
 
         assertEquals(expected, subwayUsageFare);
     }

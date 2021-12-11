@@ -1,13 +1,13 @@
 package nextstep.subway.path.dto;
 
-import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.member.domain.MemberAgeType;
 
 public class SubwayFareRequest {
     private final int distance;
     private final int lineSurcharge;
-    private final LoginMember.AgeType memberAgeType;
+    private final MemberAgeType memberAgeType;
 
-    public SubwayFareRequest(int distance, int lineSurcharge, LoginMember.AgeType memberAgeType) {
+    public SubwayFareRequest(int distance, int lineSurcharge, MemberAgeType memberAgeType) {
         this.distance = distance;
         this.lineSurcharge = lineSurcharge;
         this.memberAgeType = memberAgeType;
@@ -21,7 +21,7 @@ public class SubwayFareRequest {
         return lineSurcharge;
     }
 
-    public LoginMember.AgeType getMemberAgeType() {
+    public MemberAgeType getMemberAgeType() {
         return memberAgeType;
     }
 }

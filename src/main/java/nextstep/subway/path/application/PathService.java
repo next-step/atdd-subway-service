@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.member.domain.MemberAgeType;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.SubwayFare;
 import nextstep.subway.path.dto.PathFinderResponse;
@@ -31,13 +31,14 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse getShortestPaths(Long source, Long target, LoginMember loginMember) {
+    public PathResponse getShortestPaths(Long source, Long target, int age) {
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
         Set<Section> allSection = lineService.findAllSection();
         PathFinderResponse pathFinderResponse = pathFinder.getShortestPaths(allSection, sourceStation, targetStation);
         int subwayUsageFare = SubwayFare.getSubwayUsageFare(new SubwayFareRequest(
-            pathFinderResponse.getDistance(), pathFinderResponse.getLineSurcharge(), loginMember.getAgeType()));
+            pathFinderResponse.getDistance(), pathFinderResponse.getLineSurcharge(),
+            MemberAgeType.getMemberAgeType(age)));
 
         return convertPathResponse(pathFinderResponse.getStations(), pathFinderResponse.getDistance(),
             subwayUsageFare);

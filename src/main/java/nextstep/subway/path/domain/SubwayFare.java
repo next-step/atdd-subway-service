@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.member.domain.MemberAgeType;
 import nextstep.subway.path.domain.discount.AdolescentDiscountPolicy;
 import nextstep.subway.path.domain.discount.KidDiscountPolicy;
 import nextstep.subway.path.dto.SubwayFareRequest;
@@ -30,7 +30,7 @@ public class SubwayFare {
         return discountFareByPolicy(subwayFare, subwayFareRequest.getMemberAgeType());
     }
 
-    private static int discountFareByPolicy(int fare, LoginMember.AgeType memberAgeType) {
+    private static int discountFareByPolicy(int fare, MemberAgeType memberAgeType) {
         if (memberAgeType.isKid()) {
             return new KidDiscountPolicy().getDiscountFare(fare);
         }
