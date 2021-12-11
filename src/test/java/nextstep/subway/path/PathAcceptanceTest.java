@@ -1,8 +1,10 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.getIdsByStationResponses;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_순서_정렬됨;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,6 +27,8 @@ import org.springframework.http.MediaType;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
+    final String EMAIL = "email@email.com";
+    final String PASSWORD = "password";
 
     StationResponse 교대역;
     StationResponse 강남역;
@@ -152,6 +156,50 @@ public class PathAcceptanceTest extends AcceptanceTest {
         총요금_조회됨(pathResponse, 1550);
     }
 
+    @Test
+    @DisplayName("15세 로그인 사용자 서초역-강남역 최단 거리 경로, 요금 조회")
+    void loginMemberShortestPath_서초역_강남역_15세() {
+        // Given
+        // And: 회원 등록되어 있음
+        회원_생성을_요청(EMAIL, PASSWORD, 15);
+        // And: 로그인 되어 있음
+        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        //when
+        ExtractableResponse<Response> response = 로그인_사용자_경로_조회_요청(accessToken, 서초역.getId(), 강남역.getId());
+
+        PathResponse pathResponse = response.as(PathResponse.class);
+        //then
+        // 최단 경로 지하철 역 목록 조회됨
+        최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(서초역, 교대역, 강남역));
+        // 총겨리 조회됨
+        총거리_조회됨(pathResponse, 25);
+        // 총요금 조회됨 (이호선 환승없음, 추가운임 0)
+        총요금_조회됨(pathResponse, 980);
+    }
+
+    @Test
+    @DisplayName("8세 로그인 사용자 서초역-강남역 최단 거리 경로, 요금 조회")
+    void loginMemberShortestPath_서초역_강남역_8세() {
+        // Given
+        // And: 회원 등록되어 있음
+        회원_생성을_요청(EMAIL, PASSWORD, 8);
+        // And: 로그인 되어 있음
+        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        //when
+        ExtractableResponse<Response> response = 로그인_사용자_경로_조회_요청(accessToken, 서초역.getId(), 강남역.getId());
+
+        PathResponse pathResponse = response.as(PathResponse.class);
+        //then
+        // 최단 경로 지하철 역 목록 조회됨
+        최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(서초역, 교대역, 강남역));
+        // 총겨리 조회됨
+        총거리_조회됨(pathResponse, 25);
+        // 총요금 조회됨 (이호선 환승없음, 추가운임 0)
+        총요금_조회됨(pathResponse, 600);
+    }
+
     private void 최단_경로_지하철역_순서_정렬됨(PathResponse pathResponse, List<StationResponse> expectedStations) {
         List<Long> stationIds = getIdsByStationResponses(pathResponse.getStations());
         List<Long> expectedStationIds = getIdsByStationResponses(expectedStations);
@@ -172,6 +220,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 경로_조회_요청(Long source, Long target) {
         return RestAssured
             .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .param("source", source)
+            .param("target", target)
+            .when().get("/paths")
+            .then().log().all()
+            .extract();
+    }
+
+    private ExtractableResponse<Response> 로그인_사용자_경로_조회_요청(String accessToken, Long source, Long target) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .param("source", source)
             .param("target", target)
