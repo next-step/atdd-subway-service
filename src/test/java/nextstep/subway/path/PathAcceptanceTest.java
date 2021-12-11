@@ -78,7 +78,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void shortestPathTest() {
         // When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
-        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 남부터미널역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 남부터미널역.getId(), 일반토큰);
 
         // Then 최단 거리 경로를 응답
         정답_응답_확인(response);
@@ -91,9 +91,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_이용_요금_응답_확인(response);
     }
 
-    public static ExtractableResponse<Response> 최단_경로_조회(Long source, Long target) {
+    public static ExtractableResponse<Response> 최단_경로_조회(Long source, Long target, String token) {
         return RestAssured
             .given().log().all()
+            .auth().oauth2(token)
             .get("/paths?source={source}&target={target}", source, target)
             .then().log().all()
             .extract()
@@ -102,8 +103,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 지하철_이용_요금_응답_확인(ExtractableResponse<Response> response) {
         PathResponse pathResponse = response.as(PathResponse.class);
-        fareCalculator = FareCalculator.from(pathResponse.getTotalDistance(), pathResponse.getLines(), 일반_아이디_생성_요청.getAge());
-        assertThat(fareCalculator.totalFare()).isEqualTo(Fare.from(1350));
+        assertThat(pathResponse.getFare()).isEqualTo(1350);
     }
 
     private void 정답_응답_확인(ExtractableResponse<Response> response) {

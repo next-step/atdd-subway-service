@@ -82,63 +82,63 @@ public class FareAcceptanceTest extends AcceptanceTest {
     @DisplayName("일반사용자가 추가요금 없는 노선을 8km 이용하면, 금액은 1250원이다")
     @Test
     void calculateFare1() {
-        ExtractableResponse<Response> response = 최단_경로_조회(교대역.getId(), 남부터미널역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회(교대역.getId(), 남부터미널역.getId(), 일반토큰);
         정상응답_및_요금_확인(response, 일반_아이디_생성_요청.getAge(), 1250);
     }
 
     @DisplayName("청소년사용자가 추가요금 없는 노선을 8km 이용하면, 금액은 720원이다")
     @Test
     void calculateFare2() {
-        ExtractableResponse<Response> response = 최단_경로_조회(교대역.getId(), 남부터미널역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회(교대역.getId(), 남부터미널역.getId(), 청소년토큰);
         정상응답_및_요금_확인(response, 청소년_아이디_생성_요청.getAge(), 720);
     }
 
     @DisplayName("어린이사용자가 추가요금 없는 노선을 8km 이용하면, 금액은 450원이다")
     @Test
     void calculateFare3() {
-        ExtractableResponse<Response> response = 최단_경로_조회(교대역.getId(), 남부터미널역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회(교대역.getId(), 남부터미널역.getId(), 어린이토큰);
         정상응답_및_요금_확인(response, 어린이_아이디_생성_요청.getAge(), 450);
     }
 
     @DisplayName("일반사용자가 900원 추가요금 있는 노선을 8km 이용하면, 금액은 2150원이다")
     @Test
     void calculateFare4() {
-        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 양재역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 양재역.getId(), 일반토큰);
         정상응답_및_요금_확인(response, 일반_아이디_생성_요청.getAge(), 2150);
     }
 
     @DisplayName("청소년사용자가 900원 추가요금 있는 노선을 8km 이용하면, 금액은 1440원이다")
     @Test
     void calculateFare5() {
-        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 양재역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 양재역.getId(), 청소년토큰);
         정상응답_및_요금_확인(response, 청소년_아이디_생성_요청.getAge(), 1440);
     }
 
     @DisplayName("어린이사용자가 900원 추가요금 있는 노선을 8km 이용하면, 금액은 900원이다")
     @Test
     void calculateFare6() {
-        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 양재역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 양재역.getId(), 어린이토큰);
         정상응답_및_요금_확인(response, 어린이_아이디_생성_요청.getAge(), 900);
     }
 
     @DisplayName("일반사용자가 900원 추가요금 있는 노선을 12km 이용하면, 금액은 2250원이다")
     @Test
     void calculateFare7() {
-        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 정자역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 정자역.getId(), 일반토큰);
         정상응답_및_요금_확인(response, 일반_아이디_생성_요청.getAge(), 2250);
     }
 
     @DisplayName("청소년사용자가 900원 추가요금 있는 노선을 12km 이용하면, 금액은 1520원이다")
     @Test
     void calculateFare8() {
-        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 정자역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 정자역.getId(), 청소년토큰);
         정상응답_및_요금_확인(response, 청소년_아이디_생성_요청.getAge(), 1520);
     }
 
     @DisplayName("어린이사용자가 900원 추가요금 있는 노선을 12km 이용하면, 금액은 950원이다")
     @Test
     void calculateFare9() {
-        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 정자역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 정자역.getId(), 어린이토큰);
         정상응답_및_요금_확인(response, 어린이_아이디_생성_요청.getAge(), 950);
     }
 
@@ -146,8 +146,6 @@ public class FareAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         PathResponse pathResponse = response.body().jsonPath().getObject(".", PathResponse.class);
         assertThat(pathResponse).isNotNull();
-
-        fareCalculator = FareCalculator.from(pathResponse.getTotalDistance(), pathResponse.getLines(), age);
-        assertThat(fareCalculator.totalFare()).isEqualTo(Fare.from(expected));
+        assertThat(pathResponse.getFare()).isEqualTo(expected);
     }
 }
