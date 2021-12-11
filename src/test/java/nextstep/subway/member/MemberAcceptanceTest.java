@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -53,7 +53,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void manageMyInfo() {
         //given
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        String 토큰 = 로그인_토큰(로그인_요청(EMAIL, PASSWORD));
+        String 토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
 
         // when
         ExtractableResponse<Response> findResponse = 내정보_조회_요청(토큰);

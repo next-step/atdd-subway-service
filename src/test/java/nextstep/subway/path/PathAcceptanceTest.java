@@ -149,15 +149,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 지하철_노선에_지하철역_등록되어_있음(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+    public static void 지하철_노선에_지하철역_등록되어_있음(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
     }
 
-    private LineResponse 지하철_노선_등록되어_있음(String lineName, String color, StationResponse upStation, StationResponse downStation, int distance) {
+    public static LineResponse 지하철_노선_등록되어_있음(String lineName, String color, StationResponse upStation, StationResponse downStation, int distance) {
         return LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(lineName, color, upStation.getId(), downStation.getId(), distance)).as(LineResponse.class);
     }
 
-    private StationResponse 지하철역_등록되어_있음(String name) {
+    public static StationResponse 지하철역_등록되어_있음(String name) {
         return StationAcceptanceTest.지하철역_등록되어_있음(name).as(StationResponse.class);
     }
 }
