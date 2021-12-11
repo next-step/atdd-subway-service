@@ -14,7 +14,8 @@ public class PathResponse {
         this.distance = distance;
     }
 
-    public PathResponse() {}
+    public PathResponse() {
+    }
 
     public List<StationResponse> getStations() {
         return stationResponses;

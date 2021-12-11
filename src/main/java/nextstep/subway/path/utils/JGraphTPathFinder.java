@@ -16,6 +16,9 @@ import java.util.stream.Collectors;
 
 @Component
 public class JGraphTPathFinder implements PathFinder {
+    public JGraphTPathFinder() {
+    }
+
     @Override
     public PathResponse findPath(List<Line> lines, Long sourceId, Long targetId) {
         validateSameSourceTarget(sourceId, targetId);
@@ -66,8 +69,5 @@ public class JGraphTPathFinder implements PathFinder {
                 .forEach(section -> graph.setEdgeWeight(graph.addEdge(String.valueOf(section.getUpStation()
                         .getId()), String.valueOf(section.getDownStation()
                         .getId())), section.getDistance()));
-    }
-
-    public JGraphTPathFinder() {
     }
 }
