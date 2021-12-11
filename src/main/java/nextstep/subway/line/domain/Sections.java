@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -70,7 +71,7 @@ public class Sections {
 
     private void validateRemove() {
         if (sections.size() <= REMOVE_SECTION_MIN_SIZE) {
-            throw new RuntimeException("구간을 제거할 수 없습니다.");
+            throw new BadRequestException("구간을 제거할 수 없습니다.");
         }
     }
 
@@ -151,13 +152,13 @@ public class Sections {
 
     private void validateExistsUpStationAndDownStation(Section section) {
         if (isExistsStation(section.getUpStation()) && isExistsStation(section.getDownStation())) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new BadRequestException("이미 등록된 구간 입니다.");
         }
     }
 
     private void validateNotExistsUpStationAndDownStation(Section section) {
         if (isNotExistsStation(section.getUpStation()) && isNotExistsStation(section.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new BadRequestException("등록할 수 없는 구간 입니다.");
         }
     }
 

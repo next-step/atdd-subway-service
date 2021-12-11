@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.BadRequestException;
+
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
@@ -38,7 +40,7 @@ public class Distance {
 
     private void validateDistance(int distance) {
         if (distance <= 0) {
-            throw new RuntimeException("구간의 거리는 1 이상으로 입력해주세요.");
+            throw new BadRequestException("구간의 거리는 1 이상으로 입력해주세요.");
         }
     }
 

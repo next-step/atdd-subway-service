@@ -1,5 +1,7 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.exception.BadRequestException;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -25,6 +27,7 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+        validateDuplicate(request);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         Line persistLine = lineRepository.save(Line.of(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
@@ -42,7 +45,7 @@ public class LineService {
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(NotFoundException::new);
     }
 
     @Transactional(readOnly = true)
@@ -53,7 +56,7 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(NotFoundException::new);
         persistLine.update(lineUpdateRequest.toLine());
     }
 
@@ -72,5 +75,11 @@ public class LineService {
         Line line = findLineById(lineId);
         Station removeStation = stationService.findStationById(stationId);
         line.removeSection(removeStation);
+    }
+
+    private void validateDuplicate(LineRequest request) {
+        if (lineRepository.existsByName(request.getName())) {
+            throw new BadRequestException("이미 존재하는 노선 이름입니다.");
+        }
     }
 }

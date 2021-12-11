@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -84,13 +85,13 @@ public class Section {
 
     private void validateDuplicate(Station upStation, Station downStation) {
         if (upStation.equals(downStation)) {
-            throw new RuntimeException("상행선과 하행선은 같을 수 없습니다.");
+            throw new BadRequestException("상행선과 하행선은 같을 수 없습니다.");
         }
     }
 
     private void validateDistance(Section addSection) {
         if (this.distance.isLessThanEqualTo(addSection.distance)) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new BadRequestException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
     }
 
