@@ -70,3 +70,11 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [x] 구간 추가 로직 Sections 도메인으로 이동
 
     - [x] 구간 제거 로직 Sections 도메인으로 이동
+
+- [x] 도메인으로 옮긴 로직 단위 테스트 작성
+
+    - [x] Section 도메인 단위 테스트 작성
+
+    - [x] Sections 도메인 단위 테스트 작성
+
+    - [x] Line 도메인 단위 테스트 작성
