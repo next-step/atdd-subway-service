@@ -4,6 +4,7 @@ import nextstep.subway.auth.domain.Stranger;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.line.domain.*;
+import nextstep.subway.path.infrastructure.SeoulMetroFare;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.path.dto.PathResponse;

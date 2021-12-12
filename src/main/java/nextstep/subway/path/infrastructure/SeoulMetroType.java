@@ -1,4 +1,7 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.infrastructure;
+
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Money;
 
 import java.util.Arrays;
 

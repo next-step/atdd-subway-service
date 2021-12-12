@@ -30,10 +30,6 @@ public class LineRequest {
         this.extraCharge = extraCharge;
     }
 
-    public void useExtraCharge(int extraCharge) {
-        this.extraCharge = extraCharge;
-    }
-
     public String getName() {
         return name;
     }

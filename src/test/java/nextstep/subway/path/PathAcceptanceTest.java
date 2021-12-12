@@ -6,7 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Money;
-import nextstep.subway.line.domain.SeoulMetroType;
+import nextstep.subway.path.infrastructure.SeoulMetroType;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;

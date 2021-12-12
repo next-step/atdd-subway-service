@@ -1,6 +1,8 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.infrastructure;
 
 import nextstep.subway.auth.domain.User;
+import nextstep.subway.line.domain.Money;
+import nextstep.subway.path.domain.SubwayFare;
 import nextstep.subway.path.domain.Path;
 import org.springframework.stereotype.Component;
 

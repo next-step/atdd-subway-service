@@ -18,7 +18,6 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-//    private ExtraCharge extraCharge = ExtraCharge.of(ExtraCharge.NO_FARE);
     private Money extraCharge = Money.of(Money.MIN_VALUE);
 
     @Embedded

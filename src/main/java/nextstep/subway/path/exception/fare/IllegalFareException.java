@@ -1,11 +1,11 @@
-//package nextstep.subway.line.exception.fare;
+//package nextstep.subway.path.exception.fare;
 //
 //import nextstep.subway.common.exception.ServiceException;
 //import nextstep.subway.line.domain.ExtraCharge;
 //import org.springframework.http.HttpStatus;
 //
 ///**
-// * packageName : nextstep.subway.line.exception.fare
+// * packageName : nextstep.subway.path.exception.fare
 // * fileName : IllegalFareException
 // * author : haedoang
 // * date : 2021/12/10

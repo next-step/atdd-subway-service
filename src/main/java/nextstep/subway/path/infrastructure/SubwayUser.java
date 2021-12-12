@@ -1,4 +1,4 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.infrastructure;
 
 import java.util.Arrays;
 

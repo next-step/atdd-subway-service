@@ -1,12 +1,13 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.path.infrastructure.SeoulMetroType;
+import nextstep.subway.path.infrastructure.SubwayUser;
 import nextstep.subway.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import static nextstep.subway.line.domain.SeoulMetroType.*;
+import static nextstep.subway.path.infrastructure.SeoulMetroType.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

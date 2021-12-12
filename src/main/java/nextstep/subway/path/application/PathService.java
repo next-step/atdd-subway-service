@@ -6,7 +6,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.domain.Money;
-import nextstep.subway.line.domain.SubwayFare;
+import nextstep.subway.path.domain.SubwayFare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;

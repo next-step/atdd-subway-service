@@ -1,11 +1,8 @@
 package nextstep.subway.path.domain;
 
 import lombok.NoArgsConstructor;
-import nextstep.subway.auth.domain.User;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Money;
-import nextstep.subway.line.domain.SubwayFare;
-import nextstep.subway.line.domain.SubwayUser;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;

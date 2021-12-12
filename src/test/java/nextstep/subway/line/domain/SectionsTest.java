@@ -1,10 +1,12 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.path.infrastructure.SeoulMetroFare;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.SubwayFare;
 import nextstep.subway.path.infrastructure.JGraphPathFinder;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;

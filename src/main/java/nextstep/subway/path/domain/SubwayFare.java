@@ -1,7 +1,7 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
 import nextstep.subway.auth.domain.User;
-import nextstep.subway.path.domain.Path;
+import nextstep.subway.line.domain.Money;
 
 /**
  * packageName : nextstep.subway.line.domain
