@@ -32,10 +32,45 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         // then 로그인 됨
         로그인_됨(response);
-        유효한_액세스_토근_반환됨(response);
+        유효한_액세스_토큰_반환됨(response);
     }
 
-    private void 유효한_액세스_토근_반환됨(ExtractableResponse<Response> response) {
+    @DisplayName("Bearer Auth 로그인 실패")
+    @Test
+    void myInfoWithBadBearerAuth() {
+        // given 회원 등록되어 있음
+        String email = "email@email.com";
+        String password = "password";
+        int age = 20;
+
+        String wrongEmail = "testemail@email.com";
+        String wrongPassword = "secret";
+
+        MemberAcceptanceTest.회원_등록되어_있음(email, password, age);
+
+        // when 잘못된 패스워드로 로그인 요청
+        ExtractableResponse<Response> response = 로그인_요청(email, wrongPassword);
+
+        // then 로그인 실패됨
+        로그인_실패됨(response);
+
+        // when 잘못된 이메일로 로그인 요청
+        ExtractableResponse<Response> response2 = 로그인_요청(wrongEmail, password);
+
+        // then
+        로그인_실패됨(response2);
+    }
+
+    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @Test
+    void myInfoWithWrongBearerAuth() {
+    }
+
+    private void 로그인_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private void 유효한_액세스_토큰_반환됨(ExtractableResponse<Response> response) {
         TokenResponse tokenResponse = response.as(TokenResponse.class);
         assertThat(tokenResponse.getAccessToken()).isNotBlank();
     }
@@ -50,15 +85,4 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         return RestTestApi.post(uri, tokenRequest);
     }
-
-    @DisplayName("Bearer Auth 로그인 실패")
-    @Test
-    void myInfoWithBadBearerAuth() {
-    }
-
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
-    @Test
-    void myInfoWithWrongBearerAuth() {
-    }
-
 }
