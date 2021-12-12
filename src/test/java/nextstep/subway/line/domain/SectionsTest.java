@@ -15,14 +15,14 @@ public class SectionsTest {
     @Test
     void create() {
         // given
-        final Station station1 = new Station("강남역");
-        final Station station2 = new Station("역삼역");
-        final Station station3 = new Station("선릉역");
-        final Section section1 = new Section(station1, station2, 1);
-        final Section section2 = new Section(station2, station3, 1);
+        final Station 강남역 = new Station("강남역");
+        final Station 역삼역 = new Station("역삼역");
+        final Station 선릉역 = new Station("선릉역");
+        final Section 강남_역삼_구간 = new Section(강남역, 역삼역, 1);
+        final Section 역삼_선릉_구간 = new Section(역삼역, 선릉역, 1);
 
         // when
-        final Sections sections = new Sections(Arrays.asList(section1, section2));
+        final Sections sections = new Sections(Arrays.asList(강남_역삼_구간, 역삼_선릉_구간));
 
         // then
         assertAll(
@@ -38,7 +38,6 @@ public class SectionsTest {
 
         // when
         final Section newSection = new Section(
-
             new Station("강남역"),
             new Station("역삼역"),
             1
@@ -56,7 +55,6 @@ public class SectionsTest {
     void add_prepend() {
         // given
         final Section firstSection = new Section(
-
             new Station("강남역"),
             new Station("역삼역"),
             1
@@ -65,7 +63,6 @@ public class SectionsTest {
 
         // when
         final Section newSection = new Section(
-
             new Station("교대역"),
             new Station("강남역"),
             1
@@ -83,7 +80,6 @@ public class SectionsTest {
     void add_append() {
         // given
         final Section lastSection = new Section(
-
             new Station("강남역"),
             new Station("역삼역"),
             1
@@ -109,14 +105,14 @@ public class SectionsTest {
     @Test
     void add_inBetween_matchingUpStation() {
         // given
-        final Station station1 = new Station("강남역");
-        final Station station2 = new Station("역삼역");
-        final Section section = new Section(station1, station2, 2);
-        final Sections sections = new Sections(Arrays.asList(section));
+        final Station 강남역 = new Station("강남역");
+        final Station 역삼역 = new Station("역삼역");
+        final Section 강남_역삼_구간 = new Section(강남역, 역삼역, 2);
+        final Sections sections = new Sections(Arrays.asList(강남_역삼_구간));
 
         // when
-        final Station station3 = new Station("테헤란역");
-        final Section newSection = new Section(station1, station3, 1);
+        final Station 테헤란역 = new Station("테헤란역");
+        final Section newSection = new Section(강남역, 테헤란역, 1);
         sections.add(newSection);
 
         // then
@@ -129,14 +125,14 @@ public class SectionsTest {
     @Test
     void add_inBetween_matchingUpStation_invalidDistance() {
         // given
-        final Station station1 = new Station("강남역");
-        final Station station2 = new Station("역삼역");
-        final Section section = new Section(station1, station2, 1);
+        final Station 강남역 = new Station("강남역");
+        final Station 역삼역 = new Station("역삼역");
+        final Section section = new Section(강남역, 역삼역, 1);
         final Sections sections = new Sections(Arrays.asList(section));
 
         // when
-        final Station station3 = new Station("테헤란역");
-        final Section newSection = new Section(station1, station3, 1);
+        final Station 테헤란역 = new Station("테헤란역");
+        final Section newSection = new Section(강남역, 테헤란역, 1);
 
         // then
         assertThatThrownBy(
@@ -147,14 +143,14 @@ public class SectionsTest {
     @Test
     void add_inBetween_matchingDownStation() {
         // given
-        final Station station1 = new Station("강남역");
-        final Station station2 = new Station("역삼역");
-        final Section section = new Section(station1, station2, 2);
+        final Station 강남역 = new Station("강남역");
+        final Station 역삼역 = new Station("역삼역");
+        final Section section = new Section(강남역, 역삼역, 2);
         final Sections sections = new Sections(Arrays.asList(section));
 
         // when
-        final Station station3 = new Station("테헤란역");
-        final Section newSection = new Section(station3, station2, 1);
+        final Station 테헤란역 = new Station("테헤란역");
+        final Section newSection = new Section(테헤란역, 역삼역, 1);
         sections.add(newSection);
 
         // then
@@ -167,14 +163,14 @@ public class SectionsTest {
     @Test
     void add_inBetween_matchingDownStation_invalidDistance() {
         // given
-        final Station station1 = new Station("강남역");
-        final Station station2 = new Station("역삼역");
-        final Section section = new Section(station1, station2, 1);
+        final Station 강남역 = new Station("강남역");
+        final Station 역삼역 = new Station("역삼역");
+        final Section section = new Section(강남역, 역삼역, 1);
         final Sections sections = new Sections(Arrays.asList(section));
 
         // when
-        final Station station3 = new Station("테헤란역");
-        final Section newSection = new Section(station3, station2, 1);
+        final Station 테헤란역 = new Station("테헤란역");
+        final Section newSection = new Section(테헤란역, 역삼역, 1);
 
         // then
         assertThatThrownBy(
@@ -186,7 +182,6 @@ public class SectionsTest {
     void add_existingSection() {
         // given
         final Section section = new Section(
-
             new Station("강남역"),
             new Station("역삼역"),
             2
@@ -203,7 +198,6 @@ public class SectionsTest {
     void add_noMatchingStations() {
         // given
         final Section section = new Section(
-
             new Station("강남역"),
             new Station("역삼역"),
             2
@@ -212,7 +206,6 @@ public class SectionsTest {
 
         // when
         final Section newSection = new Section(
-
             new Station("판교역"),
             new Station("광교역"),
             2
@@ -227,88 +220,88 @@ public class SectionsTest {
     @Test
     void getStationsInOrder_prepend() {
         // given
-        final Station station1 = new Station("강남역");
-        final Station station2 = new Station("역삼역");
-        final Section section = new Section(station1, station2, 1);
+        final Station 강남역 = new Station("강남역");
+        final Station 역삼역 = new Station("역삼역");
+        final Section section = new Section(강남역, 역삼역, 1);
         final Sections sections = new Sections(Arrays.asList(section));
 
         // when
-        final Station station3 = new Station("교대역");
-        final Section newSection = new Section(station3, station1, 1);
+        final Station 교대역 = new Station("교대역");
+        final Section newSection = new Section(교대역, 강남역, 1);
         sections.add(newSection);
         final List<Station> stationsInOrder = sections.getStationsInOrder();
 
         // then
         assertAll(
-            () -> assertThat(stationsInOrder.get(0)).isEqualTo(station3),
-            () -> assertThat(stationsInOrder.get(1)).isEqualTo(station1),
-            () -> assertThat(stationsInOrder.get(2)).isEqualTo(station2)
+            () -> assertThat(stationsInOrder.get(0)).isEqualTo(교대역),
+            () -> assertThat(stationsInOrder.get(1)).isEqualTo(강남역),
+            () -> assertThat(stationsInOrder.get(2)).isEqualTo(역삼역)
         );
     }
 
     @Test
     void getStationsInOrder_append() {
         // given
-        final Station station1 = new Station("강남역");
-        final Station station2 = new Station("역삼역");
-        final Section section = new Section(station1, station2, 1);
+        final Station 강남역 = new Station("강남역");
+        final Station 역삼역 = new Station("역삼역");
+        final Section section = new Section(강남역, 역삼역, 1);
         final Sections sections = new Sections(Arrays.asList(section));
 
         // when
-        final Station station3 = new Station("선릉역");
-        final Section newSection = new Section(station2, station3, 1);
+        final Station 선릉역 = new Station("선릉역");
+        final Section newSection = new Section(역삼역, 선릉역, 1);
         sections.add(newSection);
         final List<Station> stationsInOrder = sections.getStationsInOrder();
 
         // then
         assertAll(
-            () -> assertThat(stationsInOrder.get(0)).isEqualTo(station1),
-            () -> assertThat(stationsInOrder.get(1)).isEqualTo(station2),
-            () -> assertThat(stationsInOrder.get(2)).isEqualTo(station3)
+            () -> assertThat(stationsInOrder.get(0)).isEqualTo(강남역),
+            () -> assertThat(stationsInOrder.get(1)).isEqualTo(역삼역),
+            () -> assertThat(stationsInOrder.get(2)).isEqualTo(선릉역)
         );
     }
 
     @Test
     void getStationsInOrder_inBetween_matchingUpStation() {
         // given
-        final Station station1 = new Station("강남역");
-        final Station station2 = new Station("역삼역");
-        final Section section = new Section(station1, station2, 2);
+        final Station 강남역 = new Station("강남역");
+        final Station 역삼역 = new Station("역삼역");
+        final Section section = new Section(강남역, 역삼역, 2);
         final Sections sections = new Sections(Arrays.asList(section));
 
         // when
-        final Station station3 = new Station("테헤란역");
-        final Section newSection = new Section(station1, station3, 1);
+        final Station 테헤란역 = new Station("테헤란역");
+        final Section newSection = new Section(강남역, 테헤란역, 1);
         sections.add(newSection);
         final List<Station> stationsInOrder = sections.getStationsInOrder();
 
         // then
         assertAll(
-            () -> assertThat(stationsInOrder.get(0)).isEqualTo(station1),
-            () -> assertThat(stationsInOrder.get(1)).isEqualTo(station3),
-            () -> assertThat(stationsInOrder.get(2)).isEqualTo(station2)
+            () -> assertThat(stationsInOrder.get(0)).isEqualTo(강남역),
+            () -> assertThat(stationsInOrder.get(1)).isEqualTo(테헤란역),
+            () -> assertThat(stationsInOrder.get(2)).isEqualTo(역삼역)
         );
     }
 
     @Test
     void getStationsInOrder_inBetween_matchingDownStation() {
         // given
-        final Station station1 = new Station("강남역");
-        final Station station2 = new Station("역삼역");
-        final Section section = new Section(station1, station2, 2);
+        final Station 강남역 = new Station("강남역");
+        final Station 역삼역 = new Station("역삼역");
+        final Section section = new Section(강남역, 역삼역, 2);
         final Sections sections = new Sections(Arrays.asList(section));
 
         // when
-        final Station station3 = new Station("테헤란역");
-        final Section newSection = new Section(station3, station2, 1);
+        final Station 테헤란역 = new Station("테헤란역");
+        final Section newSection = new Section(테헤란역, 역삼역, 1);
         sections.add(newSection);
         final List<Station> stationsInOrder = sections.getStationsInOrder();
 
         // then
         assertAll(
-            () -> assertThat(stationsInOrder.get(0)).isEqualTo(station1),
-            () -> assertThat(stationsInOrder.get(1)).isEqualTo(station3),
-            () -> assertThat(stationsInOrder.get(2)).isEqualTo(station2)
+            () -> assertThat(stationsInOrder.get(0)).isEqualTo(강남역),
+            () -> assertThat(stationsInOrder.get(1)).isEqualTo(테헤란역),
+            () -> assertThat(stationsInOrder.get(2)).isEqualTo(역삼역)
         );
     }
 
@@ -327,16 +320,16 @@ public class SectionsTest {
     @Test
     void deleteStation_firstStation() {
         // given
-        final Station station1 = new Station("강남역");
-        final Station station2 = new Station("판교역");
-        final Station station3 = new Station("광교역");
-        final Section section1 = new Section(station1, station2, 4);
-        final Section section2 = new Section(station2, station3, 8);
-        final Sections sections = new Sections(Arrays.asList(section1, section2));
+        final Station 강남역 = new Station("강남역");
+        final Station 판교역 = new Station("판교역");
+        final Station 광교역 = new Station("광교역");
+        final Section 강남_판교_구간 = new Section(강남역, 판교역, 4);
+        final Section 판교_광교_구간 = new Section(판교역, 광교역, 8);
+        final Sections sections = new Sections(Arrays.asList(강남_판교_구간, 판교_광교_구간));
         assertThat(sections.size()).isEqualTo(2);
 
         // when
-        sections.deleteStation(station1);
+        sections.deleteStation(강남역);
 
         // then
         assertThat(sections.size()).isEqualTo(1);
@@ -345,16 +338,16 @@ public class SectionsTest {
     @Test
     void deleteStation_lastStation() {
         // given
-        final Station station1 = new Station("강남역");
-        final Station station2 = new Station("판교역");
-        final Station station3 = new Station("광교역");
-        final Section section1 = new Section(station1, station2, 4);
-        final Section section2 = new Section(station2, station3, 8);
-        final Sections sections = new Sections(Arrays.asList(section1, section2));
+        final Station 강남역 = new Station("강남역");
+        final Station 판교역 = new Station("판교역");
+        final Station 광교역 = new Station("광교역");
+        final Section 강남_판교_구간 = new Section(강남역, 판교역, 4);
+        final Section 판교_광교_구간 = new Section(판교역, 광교역, 8);
+        final Sections sections = new Sections(Arrays.asList(강남_판교_구간, 판교_광교_구간));
         assertThat(sections.size()).isEqualTo(2);
 
         // when
-        sections.deleteStation(station3);
+        sections.deleteStation(광교역);
 
         // then
         assertThat(sections.size()).isEqualTo(1);
@@ -363,16 +356,16 @@ public class SectionsTest {
     @Test
     void deleteStation_inBetween() {
         // given
-        final Station station1 = new Station("강남역");
-        final Station station2 = new Station("판교역");
-        final Station station3 = new Station("광교역");
-        final Section section1 = new Section(station1, station2, 4);
-        final Section section2 = new Section(station2, station3, 8);
-        final Sections sections = new Sections(Arrays.asList(section1, section2));
+        final Station 강남역 = new Station("강남역");
+        final Station 판교역 = new Station("판교역");
+        final Station 광교역 = new Station("광교역");
+        final Section 강남_판교_구간 = new Section(강남역, 판교역, 4);
+        final Section 판교_광교_구간 = new Section(판교역, 광교역, 8);
+        final Sections sections = new Sections(Arrays.asList(강남_판교_구간, 판교_광교_구간));
         assertThat(sections.size()).isEqualTo(2);
 
         // when
-        sections.deleteStation(station2);
+        sections.deleteStation(판교역);
 
         // then
         assertThat(sections.size()).isEqualTo(1);
@@ -393,23 +386,23 @@ public class SectionsTest {
     @Test
     void deleteStation_oneSection() {
         // given
-        final Station station1 = new Station("강남역");
-        final Station station2 = new Station("판교역");
-        final Section section = new Section(station1, station2, 4);
+        final Station 강남역 = new Station("강남역");
+        final Station 판교역 = new Station("판교역");
+        final Section section = new Section(강남역, 판교역, 4);
         final Sections sections = new Sections(Arrays.asList(section));
 
         // when, then
         assertThatThrownBy(
-            () -> sections.deleteStation(station1)
+            () -> sections.deleteStation(강남역)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void deleteStation_unknownStation() {
         // given
-        final Station station1 = new Station("강남역");
-        final Station station2 = new Station("판교역");
-        final Section section = new Section(station1, station2, 4);
+        final Station 강남역 = new Station("강남역");
+        final Station 판교역 = new Station("판교역");
+        final Section section = new Section(강남역, 판교역, 4);
         final Sections sections = new Sections(Arrays.asList(section));
         final Station unknownStation = new Station("광교역");
 
