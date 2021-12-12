@@ -44,6 +44,17 @@ public class RestTestApi {
             .extract();
     }
 
+    public static ExtractableResponse<Response> post(String uri, String accessToken, Object params) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post(uri)
+            .then().log().all().
+            extract();
+    }
+
     public static ExtractableResponse<Response> get(String uri, String accessToken) {
         return RestAssured
             .given().log().all()

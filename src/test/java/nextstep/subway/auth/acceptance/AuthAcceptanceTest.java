@@ -56,10 +56,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         // when 잘못된 이메일로 로그인 요청
         String wrongEmail = "testemail@email.com";
-        ExtractableResponse<Response> response2 = 로그인_요청(wrongEmail, PASSWORD);
+        ExtractableResponse<Response> response = 로그인_요청(wrongEmail, PASSWORD);
 
         // then
-        로그인_실패됨(response2);
+        로그인_실패됨(response);
     }
 
     @DisplayName("잘못된 비밀번호로 로그인을 시도하면 로그인이 실패한다.")
@@ -109,5 +109,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         TokenRequest tokenRequest = new TokenRequest(email, password);
 
         return RestTestApi.post(uri, tokenRequest);
+    }
+
+    public static TokenResponse 로그인_되어_있음(final String email, final String password) {
+        return 로그인_요청(email, password).as(TokenResponse.class);
     }
 }
