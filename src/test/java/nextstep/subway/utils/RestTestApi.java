@@ -43,4 +43,34 @@ public class RestTestApi {
             .then().log().all()
             .extract();
     }
+
+    public static ExtractableResponse<Response> get(String uri, String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get(uri)
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> put(String uri, String accessToken, Object params) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().put(uri)
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> delete(String uri, String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().delete(uri)
+            .then().log().all()
+            .extract();
+    }
 }
