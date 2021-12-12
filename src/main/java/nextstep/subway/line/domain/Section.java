@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.application.Distance;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
