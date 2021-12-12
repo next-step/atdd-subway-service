@@ -8,6 +8,7 @@ import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -43,7 +44,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 잘못된_비밀번호_응답 = 잘못된_비밀번호로_로그인_요청(MY_EMAIL, WRONG_PASSWORD);
 
         // then
-        assertThat(잘못된_비밀번호_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        로그인_실패함(잘못된_비밀번호_응답);
 
         // when
         ExtractableResponse<Response> 로그인_응답 = 로그인_요청함(MY_EMAIL, MY_PASSWORD);
@@ -55,12 +56,71 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("토큰 없이 내 정보 조회 시 실패한다.")
     @Test
     void myInfoWithBadBearerAuth() {
+        // when
+        ExtractableResponse<Response> response = 토큰_없이_내_정보_요청함();
 
+        // then
+        내_정보_조회_실패함(response);
     }
 
     @DisplayName("유효하지 않은 토큰으로 내 정보 조회 시 실패한다.")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // when
+        ExtractableResponse<Response> response = 유효하지_않은_토큰으로_내_정보_조회_요청("bearer wrong_bearer_token");
+
+        // then
+        내_정보_조회_실패함(response);
+    }
+
+    public static ExtractableResponse<Response> 로그인_요청함(String email, String password) {
+        Map<String, String> param = new HashMap<>();
+        param.put("email", email);
+        param.put("password", password);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(param)
+                .when().post("/login/token")
+                .then().log().all()
+                .extract();
+    }
+
+    public static String 로그인_됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        TokenResponse tokenResponse = response.as(TokenResponse.class);
+        String accessToken = tokenResponse.getAccessToken();
+        assertThat(tokenResponse).isNotNull();
+        assertThat(accessToken).isNotEmpty();
+
+        return accessToken;
+    }
+
+    private ExtractableResponse<Response> 유효하지_않은_토큰으로_내_정보_조회_요청(String accessToken) {
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+        return response;
+    }
+
+    private void 내_정보_조회_실패함(ExtractableResponse<Response> response) {
+        로그인_실패함(response);
+    }
+
+    private ExtractableResponse<Response> 토큰_없이_내_정보_요청함() {
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+        return response;
     }
 
     private void 회원이_등록되어_있음(String email, String password, int age) {
@@ -82,33 +142,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return 로그인_요청함(email, password);
     }
 
-    private ExtractableResponse<Response> 로그인_요청함(String email, String password) {
-        Map<String, String> param = new HashMap<>();
-        param.put("email", email);
-        param.put("password", password);
-
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(param)
-                .when().post("/login/token")
-                .then().log().all()
-                .extract();
-    }
-
     private void 로그인_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ExtractableResponse<Response> 잘못된_비밀번호로_로그인_요청(String email, String password) {
         return 로그인_요청함(email, password);
-    }
-
-    private void 로그인_됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-
-        TokenResponse tokenResponse = response.as(TokenResponse.class);
-        assertThat(tokenResponse).isNotNull();
-        assertThat(tokenResponse.getAccessToken()).isNotEmpty();
     }
 }
