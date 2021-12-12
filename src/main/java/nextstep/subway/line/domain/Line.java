@@ -39,7 +39,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(Section.of(this, upStation, downStation, distance));
+        sections.addSection(Section.of(this, upStation, downStation, distance));
     }
 
     public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
@@ -86,7 +86,7 @@ public class Line extends BaseEntity {
 
     public void addSection(Station upStation, Station downStation, int distance) {
         Section newSection = Section.of(this, upStation, downStation, distance);
-        getSections().add(newSection);
+        sections.addSection(newSection);
     }
 
     public void deleteSection(Station station) {
@@ -136,7 +136,7 @@ public class Line extends BaseEntity {
     }
 
     private void validateDeleteStation(Station station) {
-        if (!getSections().hasDeletableSection()) {
+        if (!sections.hasDeletableSection()) {
             throw new NotAcceptableApiException(ErrorCode.CAN_NOT_REMOVE_SECTION);
         }
         if (getStations().notContains(station)) {

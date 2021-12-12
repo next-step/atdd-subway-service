@@ -19,15 +19,12 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
-    public boolean add(Section section) {
-        if (sections.isEmpty()) {
-            return sections.add(section);
+    public boolean addSection(Section section) {
+        if (!sections.isEmpty()) {
+            validate(section);
+            updateSection(section);
         }
-        return insertBetweenSection(section);
+        return sections.add(section);
     }
 
     public boolean isEmpty() {
@@ -106,11 +103,6 @@ public class Sections {
         return stations;
     }
 
-    private boolean insertBetweenSection(Section section) {
-        validate(section);
-        return isUpdateUpStation(section) || isUpdateDownStation(section);
-    }
-
     private void validate(Section section) {
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
@@ -127,41 +119,22 @@ public class Sections {
         }
     }
 
-    private boolean isUpdateUpStation(Section section) {
-        if (getStations().contains(section.getUpStation())) {
-            updateUpStation(section);
-            return sections.add(section);
-        }
-        return false;
-    }
-
-    private boolean isUpdateDownStation(Section section) {
-        if (getStations().contains(section.getDownStation())) {
-            updateDownStation(section);
-            return sections.add(section);
-        }
-        return false;
-    }
-
-    private void updateUpStation(Section section) {
+    private void updateSection(Section section) {
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
         int distance = section.getDistance();
 
-        sections.stream()
-                .filter(it -> it.getUpStation().equals(upStation))
-                .findFirst()
-                .ifPresent(it -> it.updateUpStation(downStation, distance));
-    }
-
-    private void updateDownStation(Section section) {
-        Station upStation = section.getUpStation();
-        Station downStation = section.getDownStation();
-        int distance = section.getDistance();
-
-        sections.stream()
-                .filter(it -> it.getDownStation().equals(downStation))
-                .findFirst()
-                .ifPresent(it -> it.updateDownStation(upStation, distance));
+        if (getStations().contains(upStation)) {
+            sections.stream()
+                    .filter(it -> it.getUpStation().equals(upStation))
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+        }
+        if (getStations().contains(downStation)) {
+            sections.stream()
+                    .filter(it -> it.getDownStation().equals(downStation))
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
+        }
     }
 }

@@ -27,7 +27,7 @@ class SectionTest {
         강남역_광교역_거리 = 10;
 
         신분당선 = Line.of("신분당선", "red", 강남역, 광교역, 강남역_광교역_거리);
-        구간 = 신분당선.getSections().getSections().get(0);
+        구간 = 신분당선.getSections().getFirstSection();
     }
 
     @DisplayName("구간 상행역 업데이트 성공 테스트")

@@ -58,7 +58,7 @@ class LineTest {
     void getStations() {
         // given
         Section 신규_구간 = Section.of(신분당선, 강남역, 양재역, 5);
-        구간_목록.add(신규_구간);
+        구간_목록.addSection(신규_구간);
 
         // when & then
         assertThat(신분당선.getStations().getStations()).containsExactly(강남역, 양재역, 광교역);
@@ -126,7 +126,7 @@ class LineTest {
     void deleteSection_success_deleteFirstStation() {
         // given
         Section 신규_구간 = Section.of(신분당선, 강남역, 양재역, 5);
-        구간_목록.add(신규_구간);
+        구간_목록.addSection(신규_구간);
 
         // when
         신분당선.deleteSection(강남역);
@@ -140,7 +140,7 @@ class LineTest {
     void deleteSection_success_deleteLastStation() {
         // given
         Section 신규_구간 = Section.of(신분당선, 강남역, 양재역, 5);
-        구간_목록.add(신규_구간);
+        구간_목록.addSection(신규_구간);
 
         // when
         신분당선.deleteSection(광교역);
@@ -154,7 +154,7 @@ class LineTest {
     void deleteSection_success_deleteBetweenStation() {
         // given
         Section 신규_구간 = Section.of(신분당선, 강남역, 양재역, 5);
-        구간_목록.add(신규_구간);
+        구간_목록.addSection(신규_구간);
 
         // when
         신분당선.deleteSection(양재역);
@@ -177,7 +177,7 @@ class LineTest {
     void deleteSection_failure_notRegisteredStationToLine() {
         // given
         Section 신규_구간 = Section.of(신분당선, 강남역, 양재역, 5);
-        구간_목록.add(신규_구간);
+        구간_목록.addSection(신규_구간);
 
         // when & then
         assertThatExceptionOfType(NotAcceptableApiException.class)

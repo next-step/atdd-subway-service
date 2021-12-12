@@ -44,7 +44,7 @@ class SectionsTest {
         Section 신규_구간 = Section.of(신분당선, 용산역, 강남역, 5);
 
         // when
-        구간_목록.add(신규_구간);
+        구간_목록.addSection(신규_구간);
 
         // then
         assertThat(신분당선.getStations().getStations()).containsExactly(용산역, 강남역, 광교역);
@@ -57,7 +57,7 @@ class SectionsTest {
         Section 신규_구간 = Section.of(신분당선, 광교역, 호매실역, 5);
 
         // when
-        구간_목록.add(신규_구간);
+        구간_목록.addSection(신규_구간);
 
         // then
         assertThat(신분당선.getStations().getStations()).containsExactly(강남역, 광교역, 호매실역);
@@ -70,7 +70,7 @@ class SectionsTest {
         Section 신규_구간 = Section.of(신분당선, 강남역, 양재역, 5);
 
         // when
-        구간_목록.add(신규_구간);
+        구간_목록.addSection(신규_구간);
 
         // then
         assertThat(신분당선.getStations().getStations()).containsExactly(강남역, 양재역, 광교역);
@@ -84,7 +84,7 @@ class SectionsTest {
 
         // when & then
         assertThatExceptionOfType(NotAcceptableApiException.class)
-                .isThrownBy(() -> 구간_목록.add(신규_구간))
+                .isThrownBy(() -> 구간_목록.addSection(신규_구간))
                 .withMessage(ErrorCode.DUPLICATE_SECTION.toString());
     }
 
@@ -96,7 +96,7 @@ class SectionsTest {
 
         // when & then
         assertThatExceptionOfType(NotAcceptableApiException.class)
-                .isThrownBy(() -> 구간_목록.add(신규_구간))
+                .isThrownBy(() -> 구간_목록.addSection(신규_구간))
                 .withMessage(ErrorCode.CAN_NOT_ADD_SECTION.toString());
     }
 
@@ -108,7 +108,7 @@ class SectionsTest {
 
         // when & then
         assertThatExceptionOfType(NotAcceptableApiException.class)
-                .isThrownBy(() -> 구간_목록.add(신규_구간))
+                .isThrownBy(() -> 구간_목록.addSection(신규_구간))
                 .withMessage(ErrorCode.INVALID_SECTION_DISTANCE.toString());
     }
 
@@ -145,7 +145,7 @@ class SectionsTest {
     void hasDeletableSection_true() {
         // given
         Section 신규_구간 = Section.of(신분당선, 용산역, 강남역, 5);
-        구간_목록.add(신규_구간);
+        구간_목록.addSection(신규_구간);
 
         // when & then
         assertThat(구간_목록.hasDeletableSection()).isTrue();
