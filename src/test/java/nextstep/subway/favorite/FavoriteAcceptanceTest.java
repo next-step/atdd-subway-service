@@ -5,7 +5,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.RestAssuredApi;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.favorite.dto.FavoritePathRequest;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
@@ -88,7 +88,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성을_요청(TokenResponse token, StationResponse departure, StationResponse arrival) {
-        FavoritePathRequest request = new FavoritePathRequest(departure.getId(), arrival.getId());
+        FavoriteRequest request = new FavoriteRequest(departure.getId(), arrival.getId());
         return RestAssuredApi.authPost("/favorites", token.getAccessToken(), request);
     }
 

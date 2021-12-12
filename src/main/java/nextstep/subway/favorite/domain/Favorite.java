@@ -9,34 +9,34 @@ import javax.persistence.*;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
-public class FavoritePath extends BaseEntity {
+public class Favorite extends BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source_id")
     private Station source;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_id")
     private Station target;
 
-    protected FavoritePath() {
+    protected Favorite() {
     }
 
-    public FavoritePath(Member member, Station source, Station target) {
+    public Favorite(Member member, Station source, Station target) {
         this.member = member;
         this.source = source;
         this.target = target;
     }
 
-    public static FavoritePath of(Member member, Station source, Station target) {
-        return new FavoritePath(member, source, target);
+    public static Favorite of(Member member, Station source, Station target) {
+        return new Favorite(member, source, target);
     }
 
     public Long getId() {
