@@ -3,7 +3,6 @@ package nextstep.subway.line.domain;
 import java.util.Collections;
 import java.util.Objects;
 import nextstep.subway.BaseEntity;
-import nextstep.subway.line.domain.fare.Money;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -79,11 +78,6 @@ public class Line extends BaseEntity {
         sections.remove(station);
     }
 
-
-    public Money sumAdditionalFare(Money money) {
-        return money.plus(Money.wons(additionalFare));
-    }
-
     public Long getId() {
         return id;
     }
@@ -97,7 +91,7 @@ public class Line extends BaseEntity {
     }
 
     public Money getAdditionalFare() {
-        return Money.wons(additionalFare);
+        return Money.won(additionalFare);
     }
 
     public List<Section> getSections() {
