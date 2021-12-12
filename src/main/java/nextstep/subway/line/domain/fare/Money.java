@@ -3,7 +3,7 @@ package nextstep.subway.line.domain.fare;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class Money {
+public class Money implements Comparable<Money> {
 
     public static final Money ZERO = Money.wons(0);
 
@@ -40,5 +40,10 @@ public class Money {
 
     public int hashCode() {
         return Objects.hashCode(amount);
+    }
+
+    @Override
+    public int compareTo(Money o) {
+        return this.amount.compareTo(o.amount);
     }
 }
