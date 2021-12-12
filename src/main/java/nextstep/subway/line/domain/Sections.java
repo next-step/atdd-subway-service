@@ -98,10 +98,10 @@ public class Sections {
         final List<Station> stationsInOrder = new ArrayList<>(
             Arrays.asList(firstSection.getUpStation())
         );
-        Section it = firstSection;
-        while (it != null) {
-            final Section tmp = it;
-            it = sections.stream()
+        Section next = firstSection;
+        while (next != null) {
+            final Section tmp = next;
+            next = sections.stream()
                 .filter(s -> Objects.equals(s.getUpStation(), tmp.getDownStation()))
                 .findFirst()
                 .orElse(null);

@@ -89,7 +89,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
     @Test
     void removeLineSection1() {
-        // given
+        // givenㄴ
         지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
         지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 2);
 
