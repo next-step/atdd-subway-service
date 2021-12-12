@@ -36,4 +36,8 @@ public class PathAcceptanceTestHelper {
     public static void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
+
+    public static void 최단_경로_조회한_역이_존재하지_않음(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
 }

@@ -100,4 +100,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         PathAcceptanceTestHelper.최단_경로_조회_실패됨(response);
     }
+
+    @DisplayName("존재하지 않은 출발역이나 도착역으로 최단경로를 조회한다.")
+    @Test
+    void getPathWithNotExistSourceOrTarget() {
+        // when
+        ExtractableResponse<Response> response = PathAcceptanceTestHelper.최단_경로_조회_요청(교대역.getId(), 99L);
+
+        // then
+        PathAcceptanceTestHelper.최단_경로_조회한_역이_존재하지_않음(response);
+
+        // when
+        ExtractableResponse<Response> response2 = PathAcceptanceTestHelper.최단_경로_조회_요청(99L, 교대역.getId());
+
+        // then
+        PathAcceptanceTestHelper.최단_경로_조회한_역이_존재하지_않음(response2);
+    }
 }
