@@ -2,7 +2,7 @@ package nextstep.subway.line.infrastructure.fare.policycondition;
 
 import java.math.BigDecimal;
 import nextstep.subway.line.domain.Money;
-import nextstep.subway.line.domain.policycondition.AgeDiscountFareCondition;
+import nextstep.subway.line.domain.fare.policycondition.AgeDiscountFareCondition;
 import nextstep.subway.member.domain.Age;
 import nextstep.subway.member.domain.AgeGroup;
 

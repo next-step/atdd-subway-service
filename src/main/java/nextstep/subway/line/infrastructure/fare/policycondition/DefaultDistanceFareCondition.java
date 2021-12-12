@@ -1,6 +1,6 @@
 package nextstep.subway.line.infrastructure.fare.policycondition;
 
-import nextstep.subway.line.domain.policycondition.DistancePolicyCondition;
+import nextstep.subway.line.domain.fare.policycondition.DistancePolicyCondition;
 import nextstep.subway.line.domain.Money;
 
 public class DefaultDistanceFareCondition implements DistancePolicyCondition {

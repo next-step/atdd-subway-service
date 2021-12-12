@@ -11,7 +11,7 @@ import java.util.Arrays;
 import nextstep.subway.line.application.PathSearch;
 import nextstep.subway.line.application.PathService;
 import nextstep.subway.line.application.FarePolicyHandler;
-import nextstep.subway.line.domain.policy.LineAdditionalFarePolicy;
+import nextstep.subway.line.domain.fare.policy.LineAdditionalFarePolicy;
 import nextstep.subway.line.infrastructure.fare.policy.AgeDiscountPolicy;
 import nextstep.subway.line.infrastructure.fare.policy.DistancePolicy;
 import nextstep.subway.line.infrastructure.fare.policy.FarePolicyHandlerImpl;
@@ -49,7 +49,7 @@ class PathServiceTest {
         PathSearch pathSearch = new PathSearchImpl();
         pathService = new PathService(subwayFarePolicyHandler, lineRepository, stationService,
             pathSearch);
-        
+
         when(lineRepository.findAll()).thenReturn(전체구간());
     }
 

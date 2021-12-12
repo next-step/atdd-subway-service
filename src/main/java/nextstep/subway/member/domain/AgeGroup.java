@@ -5,7 +5,7 @@ import java.util.Arrays;
 public enum AgeGroup {
     CHILD(6, 12),
     YOUTH(13, 18),
-    ADULT(19, 150),
+    DEFAULT(19, 150),
     ;
 
     private final int minRangeAge;
@@ -16,11 +16,8 @@ public enum AgeGroup {
         this.maxRangeAge = maxRangeAge;
     }
 
-    public static AgeGroup valueOf(int age) {
-        return Arrays.stream(AgeGroup.values())
-            .filter(ageGroup -> ageGroup.isMatch(age))
-            .findFirst()
-            .orElse(null);
+    public int getMinRangeAge() {
+        return minRangeAge;
     }
 
     public boolean isMatch(int age) {

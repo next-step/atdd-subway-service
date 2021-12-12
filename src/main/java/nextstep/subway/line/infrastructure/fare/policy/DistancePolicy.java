@@ -2,8 +2,8 @@ package nextstep.subway.line.infrastructure.fare.policy;
 
 import java.util.Arrays;
 import java.util.List;
-import nextstep.subway.line.domain.policy.DistanceFarePolicy;
-import nextstep.subway.line.domain.policycondition.DistancePolicyCondition;
+import nextstep.subway.line.domain.fare.policy.DistanceFarePolicy;
+import nextstep.subway.line.domain.fare.policycondition.DistancePolicyCondition;
 import nextstep.subway.line.infrastructure.fare.policycondition.DefaultDistanceFareCondition;
 import nextstep.subway.line.infrastructure.fare.policycondition.DistanceFareFirstSectionCondition;
 import nextstep.subway.line.infrastructure.fare.policycondition.DistanceFareSecondSectionCondition;

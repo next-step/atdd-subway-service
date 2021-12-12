@@ -55,7 +55,6 @@ public class Money implements Comparable<Money> {
         return Objects.hashCode(amount);
     }
 
-    @Override
     public int compareTo(Money o) {
         return this.amount.compareTo(o.amount);
     }

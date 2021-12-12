@@ -5,7 +5,7 @@ import java.util.List;
 import nextstep.subway.line.application.FarePolicyHandler;
 import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Money;
-import nextstep.subway.line.domain.policy.BaseFarePolicy;
+import nextstep.subway.line.domain.fare.policy.BaseFarePolicy;
 
 public class FarePolicyHandlerImpl implements FarePolicyHandler {
 

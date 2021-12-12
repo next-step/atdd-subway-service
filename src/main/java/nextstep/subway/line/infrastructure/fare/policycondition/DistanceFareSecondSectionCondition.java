@@ -1,6 +1,6 @@
 package nextstep.subway.line.infrastructure.fare.policycondition;
 
-import nextstep.subway.line.domain.policycondition.DistancePolicyCondition;
+import nextstep.subway.line.domain.fare.policycondition.DistancePolicyCondition;
 import nextstep.subway.line.domain.Money;
 
 public class DistanceFareSecondSectionCondition implements DistancePolicyCondition {
@@ -22,7 +22,7 @@ public class DistanceFareSecondSectionCondition implements DistancePolicyConditi
         if (!isSatisfiedBy(distance)) {
             return Money.ZERO;
         }
-        
+
         return calculate(distance, MIN_DISTANCE, PREMIUM_DISTANCE, ADDITIONAL_FARE);
     }
 }

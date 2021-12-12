@@ -1,4 +1,4 @@
-package nextstep.subway.line.domain.policycondition;
+package nextstep.subway.line.domain.fare.policycondition;
 
 import java.math.BigDecimal;
 import nextstep.subway.line.domain.Money;

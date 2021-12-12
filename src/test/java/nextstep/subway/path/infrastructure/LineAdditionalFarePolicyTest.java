@@ -1,12 +1,11 @@
 package nextstep.subway.path.infrastructure;
 
-import static nextstep.subway.path.step.PathFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Money;
-import nextstep.subway.line.domain.policy.BaseFarePolicy;
-import nextstep.subway.line.domain.policy.LineAdditionalFarePolicy;
+import nextstep.subway.line.domain.fare.policy.BaseFarePolicy;
+import nextstep.subway.line.domain.fare.policy.LineAdditionalFarePolicy;
 import nextstep.subway.path.step.PathFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

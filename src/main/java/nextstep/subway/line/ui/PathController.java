@@ -26,7 +26,7 @@ public class PathController {
     public ResponseEntity<PathResponse> anonymousSearch(PathRequest pathRequest) {
         return ResponseEntity.ok(
             pathService.getShortestPath(pathRequest.getSource(), pathRequest.getTarget(),
-                Age.of(20)));
+                Age.DEFAULT_AGE));
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

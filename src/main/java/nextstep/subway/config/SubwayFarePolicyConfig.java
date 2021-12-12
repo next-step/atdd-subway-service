@@ -1,9 +1,9 @@
 package nextstep.subway.config;
 
 import nextstep.subway.line.application.FarePolicyHandler;
-import nextstep.subway.line.domain.policy.LineAdditionalFarePolicy;
+import nextstep.subway.line.domain.fare.policy.LineAdditionalFarePolicy;
 import nextstep.subway.line.infrastructure.fare.policy.FarePolicyHandlerImpl;
-import nextstep.subway.line.domain.policy.BaseFarePolicy;
+import nextstep.subway.line.domain.fare.policy.BaseFarePolicy;
 import nextstep.subway.line.infrastructure.fare.policy.AgeDiscountPolicy;
 import nextstep.subway.line.infrastructure.fare.policy.DistancePolicy;
 import org.springframework.context.annotation.Bean;

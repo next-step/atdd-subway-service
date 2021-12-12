@@ -9,9 +9,9 @@ import nextstep.subway.station.domain.Station;
 public class Path {
 
     private PathSearch pathSearch;
-    private Sections sections;
-    private Station source;
-    private Station target;
+    private final Sections sections;
+    private final Station source;
+    private final Station target;
 
     public Path(Sections sections, Station source, Station target, PathSearch pathSearch) {
         validNotSame(source, target);

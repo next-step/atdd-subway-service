@@ -2,8 +2,8 @@ package nextstep.subway.line.infrastructure.fare.policy;
 
 import java.util.Arrays;
 import java.util.List;
-import nextstep.subway.line.domain.policycondition.AgeDiscountFareCondition;
-import nextstep.subway.line.domain.policy.AgeDiscountFarePolicy;
+import nextstep.subway.line.domain.fare.policycondition.AgeDiscountFareCondition;
+import nextstep.subway.line.domain.fare.policy.AgeDiscountFarePolicy;
 import nextstep.subway.line.infrastructure.fare.policycondition.ChildDiscountCondition;
 import nextstep.subway.line.infrastructure.fare.policycondition.YouthDiscountCondition;
 

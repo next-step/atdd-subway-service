@@ -2,6 +2,8 @@ package nextstep.subway.member.domain;
 
 public class Age {
 
+    public static final Age DEFAULT_AGE = Age.of(AgeGroup.DEFAULT.getMinRangeAge());
+
     private Integer age;
 
     private Age(Integer age) {

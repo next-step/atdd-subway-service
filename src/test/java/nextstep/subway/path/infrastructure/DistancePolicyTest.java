@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Money;
-import nextstep.subway.line.domain.policy.BaseFarePolicy;
+import nextstep.subway.line.domain.fare.policy.BaseFarePolicy;
 import nextstep.subway.line.infrastructure.fare.policy.DistancePolicy;
 import nextstep.subway.path.step.PathFixtures;
 import org.junit.jupiter.api.DisplayName;
