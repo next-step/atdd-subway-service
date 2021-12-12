@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
 import java.net.URI;
 import java.util.List;
 
@@ -24,10 +25,9 @@ public class FavoriteController {
     }
 
     @PostMapping()
-    public ResponseEntity<FavoriteResponse> saveFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestParam FavoriteRequest favoriteRequest) {
+    public ResponseEntity<Response> saveFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest favoriteRequest) {
         Long favoriteId = favoriteService.save(loginMember.getId(), favoriteRequest);
         return ResponseEntity.created(URI.create("/favorites/" + favoriteId)).build();
-
     }
 
     @GetMapping()
@@ -36,9 +36,9 @@ public class FavoriteController {
         return ResponseEntity.ok(favorites);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<List<FavoriteResponse>> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
-        favoriteService.deleteFavorite(loginMember.getId());
+    @DeleteMapping("/{favoriteId}")
+    public ResponseEntity<List<FavoriteResponse>> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long favoriteId) {
+        favoriteService.deleteFavorite(favoriteId);
         return ResponseEntity.noContent().build();
     }
 

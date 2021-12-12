@@ -76,7 +76,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .body(tokenRequest)
                 .when().post("/login/token")
                 .then().log().all().
-                extract();
+                 extract();
     }
 
     private void login_success(ExtractableResponse<Response> response, TokenResponse tokenResponse) {
