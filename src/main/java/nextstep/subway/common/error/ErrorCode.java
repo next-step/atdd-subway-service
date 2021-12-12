@@ -15,7 +15,11 @@ public enum ErrorCode {
 
     // path
     PATH_NOT_FOUND(500, "P001", "경로를 찾을 수 없습니다."),
-    INVALID_PATH_STATION_VALUE(500, "S001", "경로를 찾기 위한 지하철 역 입력이 잘못되었습니다.");
+    INVALID_PATH_STATION_VALUE(500, "S001", "경로를 찾기 위한 지하철 역 입력이 잘못되었습니다."),
+
+    // auth
+    AUTHORIZATION_FAILED(401, "A001", "인증이 실패 했습니다."),
+    INVALID_TOKEN(401, "A002", "유효하지 않은 토큰 입니다.");
 
     private final int status;
     private final String code;

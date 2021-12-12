@@ -76,9 +76,19 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_실패됨(response);
     }
 
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @DisplayName("유효하지 않은 토큰으로 정보를 요청하면 실패한다.")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // when 유효하지 않은 토큰으로 정보 요청
+        String wrongToken = "wrongToken";
+        ExtractableResponse<Response> response = RestTestApi.get("/members/me", wrongToken);
+
+        // then
+        정보_요청_실패됨(response);
+    }
+
+    private void 정보_요청_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private void 로그인_실패됨(ExtractableResponse<Response> response) {
