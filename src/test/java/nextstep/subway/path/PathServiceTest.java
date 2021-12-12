@@ -5,6 +5,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.infra.PathFinderStrategy;
+import nextstep.subway.path.infra.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -35,7 +36,6 @@ public class PathServiceTest {
 
     @Mock
     private PathFinderStrategy pathFinder;
-
 
     @DisplayName("최단 경로 찾기 - 서비스 Layer")
     @Test
