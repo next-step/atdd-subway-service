@@ -82,4 +82,7 @@ public class Section {
     public boolean isLinkStation(Section currentSection) {
         return this.upStation.equals(currentSection.getDownStation());
     }
+    public Long getSurCharge(){
+        return line.getSurCharge();
+    }
 }

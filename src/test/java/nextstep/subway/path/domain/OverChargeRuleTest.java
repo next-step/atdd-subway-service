@@ -12,9 +12,9 @@ public class OverChargeRuleTest {
     @DisplayName("금액이 맞게 계산되는지 검증")
     @Test
     void calculateOverFare() {
-        BigInteger charge = OverChargeRule.calculateOverFare(23L);
+        long charge = OverChargeRule.calculateOverFare(23L);
 
-        assertThat(charge).isEqualTo(new BigInteger("500"));
+        assertThat(charge).isEqualTo(500L);
     }
 
     @DisplayName("거리에 맞게 역할이 분배되는지 검증")

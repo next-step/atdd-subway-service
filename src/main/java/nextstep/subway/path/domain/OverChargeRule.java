@@ -32,13 +32,12 @@ public enum OverChargeRule {
         return this.firstStandard <= distance && this.lastStandard >= distance;
     }
 
-    public static BigInteger calculateOverFare(Long distance) {
+    public static long calculateOverFare(Long distance) {
         OverChargeRule rule = valueOf(distance);
         if (rule != FROM_0KM_TO_10KM) {
-            Double charge = ((Math.ceil((distance - 1) / rule.perDistance) + 1) * rule.forCharge);
-            return new BigInteger(String.format("%.0f", charge));
+            return (long) (Math.ceil((distance - 1) / rule.perDistance) + 1) * rule.forCharge;
         }
-        return new BigInteger("0");
+        return 0L;
     }
 
     public long getFirstStandard() {

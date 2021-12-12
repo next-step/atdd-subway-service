@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 public class PathResponse {
     private List<StationResponse> stations;
     private Long distance;
-    private BigInteger fare;
+    private Long fare;
 
-    public PathResponse(List<StationResponse> stations, Long distance, BigInteger fare) {
+    public PathResponse(List<StationResponse> stations, Long distance, Long fare) {
         this.stations = stations;
         this.distance = distance;
         this.fare = fare;
@@ -34,7 +34,7 @@ public class PathResponse {
         return distance;
     }
 
-    public BigInteger getFare() {
+    public Long getFare() {
         return fare;
     }
 }

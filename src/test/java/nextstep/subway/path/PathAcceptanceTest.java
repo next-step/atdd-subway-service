@@ -28,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
+
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -37,6 +38,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
     private StationResponse 학여울역;
     private StationResponse 수서역;
+    private StationResponse 양재시민의숲;
 
     /**
      * 교대역 -- *2호선* 10 --- 강남역
@@ -45,6 +47,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * 3                        10
      * |                        |
      * 남부터미널역 -- *3호선* 2 -양재 -- *3호선* 15 -- 학여울역 -- *3호선* 50 -- 수서역
+     *                          |
+     *                          *신분당선*
+     *                          4
+     *                          |
+     *                          양재시민의숲
      */
     @BeforeEach
     public void setUp() {
@@ -56,31 +63,36 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
         학여울역 = StationAcceptanceTest.지하철역_등록되어_있음("학여울역").as(StationResponse.class);
         수서역 = StationAcceptanceTest.지하철역_등록되어_있음("수서역").as(StationResponse.class);
+        양재시민의숲 = StationAcceptanceTest.지하철역_등록되어_있음("양재시민의숲").as(StationResponse.class);
 
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
+        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 900L)).as(LineResponse.class);
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 양재역, 학여울역, 15);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 학여울역, 수서역, 50);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 양재시민의숲, 4);
     }
 
-    @DisplayName("최단 경로 및 요금을 조회한다. 성공 검증")
+    @DisplayName("다양한 최단 경로 및 요금을 조회한다. 성공 검증")
     @Test
     void successPaths() {
         ExtractableResponse<Response> 최단_경로_기본요금 = 최단_경로_조회_요청(교대역, 양재역);
 
-        최단_경로_조회_됨(최단_경로_기본요금, Arrays.asList(교대역, 남부터미널역, 양재역), 5L, new BigInteger("1250"));
+        최단_경로_조회_됨(최단_경로_기본요금, Arrays.asList(교대역, 남부터미널역, 양재역), 5L, 1250L);
 
         ExtractableResponse<Response> 중간_경로_요금 = 최단_경로_조회_요청(교대역, 학여울역);
 
-        최단_경로_조회_됨(중간_경로_요금, Arrays.asList(교대역, 남부터미널역, 양재역, 학여울역), 20L, new BigInteger("1650"));
+        최단_경로_조회_됨(중간_경로_요금, Arrays.asList(교대역, 남부터미널역, 양재역, 학여울역), 20L, 1650L);
 
         ExtractableResponse<Response> 최대_경로_요금 = 최단_경로_조회_요청(교대역, 수서역);
 
-        최단_경로_조회_됨(최대_경로_요금, Arrays.asList(교대역, 남부터미널역, 양재역, 학여울역, 수서역), 70L, new BigInteger("2150"));
+        최단_경로_조회_됨(최대_경로_요금, Arrays.asList(교대역, 남부터미널역, 양재역, 학여울역, 수서역), 70L, 2150L);
 
+        /*ExtractableResponse<Response> 노선별_요금 = 최단_경로_조회_요청(교대역, 양재시민의숲);
+
+        최단_경로_조회_됨(노선별_요금, Arrays.asList(교대역, 남부터미널역, 양재역, 양재시민의숲), 9L, new BigInteger("2150"));*/
     }
 
     @DisplayName("최단 경로를 조회한다. 실패 검증")
@@ -134,13 +146,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private void 최단_경로_조회_됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations, Long expectedDistance, BigInteger expectedFare) {
+    private void 최단_경로_조회_됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations, Long expectedDistance, long expectedFare) {
         PathResponse path = response.as(PathResponse.class);
         List<Long> stationIds = path.getStations().stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
         Long distance = path.getDistance();
-        BigInteger fare = path.getFare();
+        Long fare = path.getFare();
         List<Long> expectedStationIds = expectedStations.stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
