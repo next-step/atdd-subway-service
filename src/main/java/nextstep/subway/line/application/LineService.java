@@ -36,6 +36,7 @@ public class LineService {
         List<StationResponse> stations = persistLine.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
+
         return LineResponse.of(persistLine, stations);
     }
 
