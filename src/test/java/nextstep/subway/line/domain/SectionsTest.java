@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.station.domain.Station;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.ThrowableAssert;
@@ -89,7 +90,7 @@ class SectionsTest {
         ThrowableAssert.ThrowingCallable throwingCallable = () -> sections.add(Section.of(신분당선, 강남역, 양재역, distance));
 
         // then
-        Assertions.assertThatExceptionOfType(RuntimeException.class)
+        Assertions.assertThatExceptionOfType(BadRequestException.class)
                 .isThrownBy(throwingCallable);
     }
 
@@ -104,7 +105,7 @@ class SectionsTest {
         ThrowableAssert.ThrowingCallable throwingCallable = () -> sections.add(Section.of(신분당선, 강남역, 양재역, 10));
 
         // then
-        Assertions.assertThatExceptionOfType(RuntimeException.class)
+        Assertions.assertThatExceptionOfType(BadRequestException.class)
                 .isThrownBy(throwingCallable);
     }
 
@@ -119,7 +120,7 @@ class SectionsTest {
         ThrowableAssert.ThrowingCallable throwingCallable = () -> sections.add(Section.of(신분당선, 양재시민의숲, 청계산입구, 10));
 
         // then
-        Assertions.assertThatExceptionOfType(RuntimeException.class)
+        Assertions.assertThatExceptionOfType(BadRequestException.class)
                 .isThrownBy(throwingCallable);
     }
 
@@ -242,7 +243,7 @@ class SectionsTest {
         ThrowableAssert.ThrowingCallable throwingCallable = () -> sections.remove(강남역);
 
         // then
-        Assertions.assertThatExceptionOfType(RuntimeException.class)
+        Assertions.assertThatExceptionOfType(BadRequestException.class)
                 .isThrownBy(throwingCallable);
     }
 }
