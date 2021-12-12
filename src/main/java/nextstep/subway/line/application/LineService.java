@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -43,12 +44,12 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(final Long id) {
-        final Line persistLine = findLineById(id);
+        final Line persistLine = getLineById(id);
         return LineResponse.of(persistLine);
     }
 
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
-        final Line persistLine = findLineById(id);
+        final Line persistLine = getLineById(id);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -57,7 +58,7 @@ public class LineService {
     }
 
     public void addLineStation(final Long lineId, final SectionRequest request) {
-        final Line line = findLineById(lineId);
+        final Line line = getLineById(lineId);
         final Station upStation = stationService.findStationById(request.getUpStationId());
         final Station downStation = stationService.findStationById(request.getDownStationId());
 
@@ -65,13 +66,14 @@ public class LineService {
     }
 
     public void removeLineStation(final Long lineId, final Long stationId) {
-        final Line line = findLineById(lineId);
+        final Line line = getLineById(lineId);
         final Station targetStation = stationService.findStationById(stationId);
 
         line.removeStation(targetStation);
     }
 
-    private Line findLineById(final Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+    private Line getLineById(final Long id) {
+        return lineRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("지하철 노선을 찾을 수 없습니다."));
     }
 }

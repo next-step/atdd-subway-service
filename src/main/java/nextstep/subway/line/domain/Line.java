@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -74,10 +75,10 @@ public class Line extends BaseEntity {
             .collect(Collectors.toSet());
 
         if (matchedStations.isEmpty()) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+            throw new BadRequestException("등록할 수 없는 구간 입니다.");
         }
         if (matchedStations.containsAll(sectionStations)) {
-            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+            throw new BadRequestException("이미 등록된 구간 입니다.");
         }
     }
 
@@ -96,12 +97,12 @@ public class Line extends BaseEntity {
 
     private void validateDeletable(final Station station) {
         if (sections.size() <= SECTION_MIN_SIZE) {
-            throw new IllegalArgumentException("노선의 마지막 구간은 삭제할 수 없습니다.");
+            throw new BadRequestException("노선의 마지막 구간은 삭제할 수 없습니다.");
         }
 
         final Set<Station> allStations = extractAllStations();
         if (!allStations.contains(station)) {
-            throw new IllegalArgumentException("노선에 등록되어 있지 않은 역은 삭제할 수 없습니다.");
+            throw new BadRequestException("노선에 등록되어 있지 않은 역은 삭제할 수 없습니다.");
         }
     }
 
