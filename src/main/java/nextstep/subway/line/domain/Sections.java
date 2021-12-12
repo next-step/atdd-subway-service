@@ -177,4 +177,8 @@ public class Sections {
     public int size() {
         return sections.size();
     }
+
+    public List<Section> getSections() {
+        return sections;
+    }
 }

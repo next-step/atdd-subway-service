@@ -7,9 +7,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathRequest;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,9 +67,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_최단_경로_응답됨(response);
-        // TODO:
-        //  - 지하철_최단_경로
-        //  - 지하철_최단_거리
+
+        final PathResponse pathResponse = response.jsonPath()
+            .getObject(".", PathResponse.class);
+        지하철_최단_경로_일치함(pathResponse);
+        지하철_최단_거리_일치함(pathResponse);
     }
 
     private ExtractableResponse<Response> 지하철_최단_경로_조회_요청(final PathRequest params) {
@@ -81,5 +86,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 지하철_최단_경로_응답됨(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 지하철_최단_경로_일치함(final PathResponse pathResponse) {
+        final List<String> stationNames = pathResponse.getStations()
+            .stream()
+            .map(StationResponse::getName)
+            .collect(Collectors.toList());
+        assertThat(stationNames).containsExactly(강남역.getName(), 양재역.getName());
+    }
+
+    private void 지하철_최단_거리_일치함(final PathResponse pathResponse) {
+        assertThat(pathResponse.getDistance()).isEqualTo(10);
     }
 }
