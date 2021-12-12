@@ -58,7 +58,7 @@ public class DijkstraPathFinder implements PathFinder {
                 .map(sections -> sections.getSections())
                 .flatMap(List::stream)
                 .collect(Collectors.toList())
-                .forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().getValue()));
+                .forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistanceValue()));
     }
 
     private void addVertexes(List<Line> lines) {

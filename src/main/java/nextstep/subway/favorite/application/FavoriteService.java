@@ -15,6 +15,7 @@ import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static nextstep.subway.line.application.LineService.STATION_NOT_FOUND_MESSAGE;
@@ -24,7 +25,6 @@ import static nextstep.subway.line.application.LineService.STATION_NOT_FOUND_MES
 public class FavoriteService {
     public static final String MEMBER_NOT_FOUND_MESSAGE = "회원이 없습니다.";
     public static final String FAVORITE_NOT_FOUND_MESSAGE = "즐겨찾기가 없습니다.";
-    public static final String FAVORITE_NOT_OWNER = "즐겨찾기 삭제 권한이 없습니다.";
     private FavoriteRepository favoriteRepository;
     private MemberRepository memberRepository;
     private StationRepository stationRepository;
@@ -37,20 +37,27 @@ public class FavoriteService {
 
     public FavoriteResponse saveFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
         Member member = findMemberById(loginMember);
-        Station source = findStationById(favoriteRequest.getSource());
-        Station target = findStationById(favoriteRequest.getTarget());
+        List<Station> stations = findAllStationsByIds(favoriteRequest);
+        Station source = getStation(favoriteRequest.getSource(), stations);
+        Station target = getStation(favoriteRequest.getTarget(), stations);
+
         Favorite persistFavorite = favoriteRepository.save(new Favorite(member, source, target));
         return FavoriteResponse.from(persistFavorite);
+    }
+
+    public Station getStation(Long stationId, List<Station> stations) {
+        return stations.stream().filter(station -> station.getId() == stationId).findFirst().orElseThrow(() -> new StationException(STATION_NOT_FOUND_MESSAGE));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Station> findAllStationsByIds(FavoriteRequest favoriteRequest) {
+        List<Long> list = Arrays.asList(favoriteRequest.getSource(), favoriteRequest.getTarget());
+        return stationRepository.findAllById(list);
     }
 
     @Transactional(readOnly = true)
     public Member findMemberById(LoginMember loginMember) {
         return memberRepository.findById(loginMember.getId()).orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND_MESSAGE));
-    }
-
-    @Transactional(readOnly = true)
-    public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(() -> new StationException(STATION_NOT_FOUND_MESSAGE));
     }
 
     @Transactional(readOnly = true)
@@ -60,20 +67,12 @@ public class FavoriteService {
     }
 
     public void deleteFavorites(LoginMember loginMember, Long favoritesId) {
-        Favorite favorite = findFavoriteById(favoritesId);
-        Member member = findMemberById(loginMember);
-        validate(favorite, member);
+        Favorite favorite = findByIdAndMemberId(favoritesId, loginMember);
         favoriteRepository.deleteById(favorite.getId());
     }
 
-    private void validate(Favorite favorite, Member member) {
-        if (!favorite.isOwner(member)) {
-            throw new FavoriteException(FAVORITE_NOT_OWNER);
-        }
-    }
-
     @Transactional(readOnly = true)
-    public Favorite findFavoriteById(Long id) {
-        return favoriteRepository.findById(id).orElseThrow(() -> new FavoriteException(FAVORITE_NOT_FOUND_MESSAGE));
+    public Favorite findByIdAndMemberId(Long id, LoginMember loginMember) {
+        return favoriteRepository.findByIdAndMemberId(id, loginMember.getId()).orElseThrow(() -> new FavoriteException(FAVORITE_NOT_FOUND_MESSAGE));
     }
 }
