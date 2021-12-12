@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,6 +10,9 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 import nextstep.subway.exception.AppException;
 import nextstep.subway.exception.ErrorCode;
@@ -152,6 +156,26 @@ public class Sections {
 		return this.sections.stream()
 			.filter(it -> it.getDownStation() == upStation)
 			.findFirst();
+	}
+
+	public WeightedMultigraph<Station, DefaultWeightedEdge> toGraph() {
+		WeightedMultigraph<Station, DefaultWeightedEdge> graph
+			= new WeightedMultigraph(DefaultWeightedEdge.class);
+
+		this.sections.forEach(section -> graph.addVertex(section.getUpStation()));
+		this.sections.forEach(section -> graph.addVertex(section.getDownStation()));
+		this.sections.forEach(section -> graph.setEdgeWeight(
+			graph.addEdge(section.getUpStation(), section.getDownStation()),
+			section.getDistance().toInt()));
+		return graph;
+	}
+
+	public boolean containStation(Station station) {
+		List<Station> stations = this.sections.stream()
+			.map(Section::getStations)
+			.flatMap(Collection::stream)
+			.collect(Collectors.toList());
+		return stations.contains(station);
 	}
 
 	public List<Section> getSections() {

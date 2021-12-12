@@ -1,5 +1,8 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -78,6 +81,10 @@ public class Section {
 		return Section.of(forward.line, forward.upStation, backward.downStation, newDistance);
 	}
 
+	public List<Station> getStations() {
+		return Arrays.asList(upStation, downStation);
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -114,4 +121,5 @@ public class Section {
 	public int hashCode() {
 		return id.hashCode();
 	}
+
 }

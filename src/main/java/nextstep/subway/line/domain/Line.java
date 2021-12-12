@@ -50,7 +50,11 @@ public class Line extends BaseEntity {
 		return new Line(null, name, color);
 	}
 
-	private void addSection(Section section) {
+	public static Line of(Long id, String name, String color) {
+		return new Line(id, name, color);
+	}
+
+	public void addSection(Section section) {
 		this.sections.add(section);
 	}
 

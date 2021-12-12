@@ -35,6 +35,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private StationResponse 양재역;
 	private StationResponse 교대역;
 	private StationResponse 남부터미널역;
+	private StationResponse 서울역;
+	private StationResponse 옥수역;
 
 	/**
 	 * 교대역    --- *2호선* ---   강남역
@@ -51,6 +53,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
 		교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
 		남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+		서울역 = StationAcceptanceTest.지하철역_등록되어_있음("서울역").as(StationResponse.class);
+		옥수역 = StationAcceptanceTest.지하철역_등록되어_있음("옥수역").as(StationResponse.class);
 
 		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
 		이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
@@ -69,7 +73,40 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		// then
 		최단경로_조회_응답함(response);
 		최단경로_조회_경로_포함됨(response, Arrays.asList(양재역, 남부터미널역, 교대역), 5);
+	}
 
+	@DisplayName("최단경로 조회 시, 출발역과 도착역이 같으면 안됨")
+	@Test
+	void findPath2() {
+		// when
+		ExtractableResponse<Response> response = 최단경로_조회_요청함(양재역, 양재역);
+
+		// then
+		최단경로_조회_실패함(response);
+	}
+
+	@DisplayName("존재하지 않은 출발역과 도착역을 조회할 경우 안됨")
+	@Test
+	void findPath3() {
+		// when
+		ExtractableResponse<Response> response = 최단경로_조회_요청함(서울역, 옥수역);
+
+		// then
+		최단경로_조회_실패함(response);
+	}
+
+	@DisplayName("출발역과 도착역이 연결되지 않으면 안됨")
+	@Test
+	void findPath4() {
+		// when
+		ExtractableResponse<Response> response = 최단경로_조회_요청함(서울역, 양재역);
+
+		// then
+		최단경로_조회_실패함(response);
+	}
+
+	private void 최단경로_조회_실패함(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 
 	private void 최단경로_조회_경로_포함됨(ExtractableResponse<Response> response,
