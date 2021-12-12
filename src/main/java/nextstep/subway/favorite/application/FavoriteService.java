@@ -6,10 +6,13 @@ import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.stream.Collectors.*;
+
+@Service
 public class FavoriteService {
 
     private final StationService stationService;
@@ -27,10 +30,14 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findAll() {
-        return Collections.emptyList();
+
+        List<Favorite> favorites = favoriteRepository.findAll();
+        return favorites.stream()
+                .map(FavoriteResponse::of)
+                .collect(toList());
     }
 
     public void deleteFavorites(Long id) {
-
+        favoriteRepository.deleteById(id);
     }
 }

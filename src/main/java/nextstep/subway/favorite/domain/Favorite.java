@@ -12,10 +12,12 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "source")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "source")
     private Station source;
 
-    @Column(name = "target")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "target")
     private Station target;
 
     protected Favorite() {
@@ -41,5 +43,13 @@ public class Favorite {
 
     public Long getId() {
         return id;
+    }
+
+    public Station getSource() {
+        return source;
+    }
+
+    public Station getTarget() {
+        return target;
     }
 }
