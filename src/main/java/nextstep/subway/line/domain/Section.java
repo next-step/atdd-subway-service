@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -10,7 +9,7 @@ import static javax.persistence.FetchType.LAZY;
 
 
 @Entity
-public class Section extends DefaultWeightedEdge {
+public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

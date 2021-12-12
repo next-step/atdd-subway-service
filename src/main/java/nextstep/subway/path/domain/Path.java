@@ -2,7 +2,6 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Money;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
@@ -15,13 +14,13 @@ import java.util.List;
  * description :
  */
 public class Path {
-    private List<Section> sections;
+    private List<PathEdge> sections;
     private List<Station> stations;
     private Station source;
     private Station target;
     private Distance distance;
 
-    public Path(List<Section> sections, List<Station> stations, Station source, Station target, Distance distance) {
+    public Path(List<PathEdge> sections, List<Station> stations, Station source, Station target, Distance distance) {
         this.sections = sections;
         this.stations = stations;
         this.source = source;
@@ -29,11 +28,11 @@ public class Path {
         this.distance = distance;
     }
 
-    public static Path of(List<Section> sections, List<Station> stations, Station source, Station target, Distance distance) {
-        return new Path(sections, stations, source, target, distance);
+    public static Path of(List<PathEdge> edges, List<Station> stations, Station source, Station target, Distance distance) {
+        return new Path(edges, stations, source, target, distance);
     }
 
-    public List<Section> sections() {
+    public List<PathEdge> sections() {
         return sections;
     }
 
@@ -55,7 +54,7 @@ public class Path {
 
     public Money extraCharge() {
         return Money.of(sections.stream()
-                .map(it -> it.getLine().extraCharge())
+                .map(it -> it.line().extraCharge())
                 .max(Integer::compareTo)
                 .orElse(Money.MIN_VALUE));
     }

@@ -6,6 +6,7 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.SubwayFare;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathEdge;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.infrastructure.JGraphPathFinder;
 import nextstep.subway.station.domain.Station;
@@ -60,12 +61,11 @@ public class PathMockitoTest {
 
         List<Station> stations = Lists.newArrayList(강남역, 역삼역);
 
-
         when(lineRepository.findAll()).thenReturn(lines);
         when(stationRepository.findAll()).thenReturn(stations);
 
         when(pathFinder.getShortestPath(anyList(), anyList(), anyLong(), anyLong()))
-                .thenReturn(Path.of(line1.sections().getList(), stations,강남역, 역삼역, Distance.of(5)));
+                .thenReturn(Path.of(Lists.newArrayList(PathEdge.of(line1.sections().getList().get(0))), stations,강남역, 역삼역, Distance.of(5)));
 
         PathService pathService = new PathService(pathFinder, stationRepository, lineRepository);
 

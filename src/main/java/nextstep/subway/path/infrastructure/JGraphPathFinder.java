@@ -2,8 +2,8 @@ package nextstep.subway.path.infrastructure;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathEdge;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.exception.EdgeCreateException;
 import nextstep.subway.path.exception.PathBeginIsEndException;
@@ -35,39 +35,40 @@ public class JGraphPathFinder implements PathFinder {
         Station srcStation = getStation(stations, srcStationId);
         Station destStation = getStation(stations, destStationId);
 
-        WeightedMultigraph<Station, Section> graph = new WeightedMultigraph<>(Section.class);
-        DijkstraShortestPath<Station, Section> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        WeightedMultigraph<Station, PathEdge> graph = new WeightedMultigraph<>(PathEdge.class);
+        DijkstraShortestPath<Station, PathEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
         drawGraph(lines, stations, graph);
 
         try {
-            GraphPath<Station, Section> path = dijkstraShortestPath.getPath(srcStation, destStation);
+            GraphPath<Station, PathEdge> path = dijkstraShortestPath.getPath(srcStation, destStation);
             return Path.of(path.getEdgeList(), path.getVertexList(), srcStation, destStation, Distance.of((int) path.getWeight()));
         } catch (NullPointerException npe) {
             throw new PathNotFoundException();
         }
     }
 
-    private void drawGraph(List<Line> lines, List<Station> stations, WeightedMultigraph<Station, Section> graph) {
+    private void drawGraph(List<Line> lines, List<Station> stations, WeightedMultigraph<Station, PathEdge> graph) {
         drawVertex(stations, graph);
         checkVertexDrawn(graph);
         lines.forEach(line -> drawEdge(line, graph));
     }
 
-    private void checkVertexDrawn(WeightedMultigraph<Station, Section> graph) {
+    private void checkVertexDrawn(WeightedMultigraph<Station, PathEdge> graph) {
         if (graph.vertexSet().isEmpty()) {
             throw new EdgeCreateException();
         }
     }
 
-    private void drawEdge(Line line, WeightedMultigraph<Station, Section> graph) {
+    private void drawEdge(Line line, WeightedMultigraph<Station, PathEdge> graph) {
         line.getSections().forEach(section -> {
-            graph.addEdge(section.getUpStation(), section.getDownStation(), section);
-            graph.setEdgeWeight(section, section.getDistance().intValue());
+            PathEdge pathEdge = PathEdge.of(section);
+            graph.addEdge(pathEdge.sourceVertex(), pathEdge.targetVertex(), pathEdge);
+            graph.setEdgeWeight(pathEdge, pathEdge.weight());
         });
     }
 
-    private void drawVertex(List<Station> stations, WeightedMultigraph<Station, Section> graph) {
+    private void drawVertex(List<Station> stations, WeightedMultigraph<Station, PathEdge> graph) {
         stations.stream().forEach(graph::addVertex);
     }
 
