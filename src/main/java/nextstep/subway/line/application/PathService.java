@@ -1,10 +1,12 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.infrastructure.line.LineRepository;
 import nextstep.subway.line.domain.Path;
 import nextstep.subway.line.dto.path.PathResponse;
-import nextstep.subway.line.dto.path.PathResult;
+import nextstep.subway.line.domain.PathResult;
+import nextstep.subway.member.domain.Age;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -16,27 +18,34 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PathService {
 
+    private final FarePolicyHandler subwayFarePolicyHandler;
     private final LineRepository lineRepository;
     private final StationService stationService;
     private final PathSearch pathSearch;
 
-    public PathService(LineRepository lineRepository, StationService stationService,
-        PathSearch pathSearch) {
+    public PathService(FarePolicyHandler subwayFarePolicyHandler, LineRepository lineRepository,
+        StationService stationService, PathSearch pathSearch) {
+        this.subwayFarePolicyHandler = subwayFarePolicyHandler;
         this.lineRepository = lineRepository;
         this.stationService = stationService;
         this.pathSearch = pathSearch;
     }
 
     @Transactional(readOnly = true)
-    public PathResponse getShortestPath(Long source, Long target) {
+    public PathResponse getShortestPath(Long source, Long target, Age age) {
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
 
         Lines lines = new Lines(lineRepository.findAll());
-        Path path = lines.toPath(sourceStation, targetStation);
-        PathResult pathSearchResult = this.pathSearch.findShortestPath(path);
+        Path path = lines.toPath(sourceStation, targetStation, pathSearch);
+        PathResult pathSearchResult = path.getShortestPath();
 
-        return PathResponse.of(StationResponse.toList(pathSearchResult.getResult()),
-            pathSearchResult.getWeight());
+        Fare fare = new Fare(pathSearchResult, age);
+
+        return PathResponse.of(
+            StationResponse.toList(pathSearchResult.getResult()),
+            pathSearchResult.getWeight(),
+            subwayFarePolicyHandler.apply(fare)
+        );
     }
 }
