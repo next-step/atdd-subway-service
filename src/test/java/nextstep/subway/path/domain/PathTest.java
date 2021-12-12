@@ -18,15 +18,10 @@ import org.junit.jupiter.api.Test;
 
 class PathTest {
 
-    FarePolicyHandler subwayFarePolicyHandler;
-
-    private PathSearch pathSearch;
     private Lines lines;
 
     @BeforeEach
     void setUp() {
-        subwayFarePolicyHandler = new SubwayFarePolicyConfig().subwayFarePolicyHandler();
-        pathSearch = new PathSearchImpl();
         lines = new Lines(전체구간());
     }
 
@@ -44,17 +39,5 @@ class PathTest {
         // then
         assertThrows(InvalidParameterException.class, () -> lines.toPath(없는역, 교대));
         assertThrows(InvalidParameterException.class, () -> lines.toPath(교대, 없는역));
-    }
-
-    @Test
-    @DisplayName("경로 조회 노선 ")
-    void getShortestPath() {
-        // when
-        Path path = lines.toPath(강남, 남부터미널, pathSearch);
-        PathResult pathSearchResult = path.getShortestPath();
-
-        // then
-        assertThat(pathSearchResult.getResult()).extracting("name")
-            .containsExactly(강남.getName(), 교대.getName(), 남부터미널.getName());
     }
 }
