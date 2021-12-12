@@ -8,6 +8,8 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Component;
 
+import nextstep.subway.common.exception.SubwayErrorCode;
+import nextstep.subway.common.exception.SubwayException;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -19,6 +21,9 @@ public class PathFinder {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+        if(path == null) {
+            throw new SubwayException(SubwayErrorCode.NOT_CONNECTED_SOURCE_AND_TARGET);
+        }
         List<Station> stations = path.getVertexList();
 
         List<StationResponse> responses = StationResponses.from(stations)

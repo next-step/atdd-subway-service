@@ -8,8 +8,10 @@ import java.util.List;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.common.exception.SubwayException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
@@ -37,7 +39,7 @@ class PathFinderTest {
     void setUp() {
         신분당선 = new Line("신분당선", "red");
         이호선 = new Line("이호선", "green");
-        삼호선 = new Line("삼호선", "yellow");
+        삼호선 = new Line("삼호선", "orange");
 
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
@@ -52,6 +54,7 @@ class PathFinderTest {
         모든_구간 = Arrays.asList(강남_교대_구간, 강남_양재_구간, 교대_남부터미널_구간, 남부터미널_양재_구간);
     }
 
+    @DisplayName("최단 경로 찾기")
     @Test
     void findPath() {
         Sections sections = Sections.from(모든_구간);
@@ -63,5 +66,22 @@ class PathFinderTest {
         PathResponse actual = pathFinder.findPath(graph, 강남역, 남부터미널역);
 
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우 에러")
+    @Test
+    void findPath_errorWhenNotConnected() {
+        Station 정자역 = new Station("정자역");
+        Station 미금역 = new Station("미금역");
+        Line 분당선 = new Line("분당선", "yellow");
+        Section 정자_미금_구간 = new Section(분당선, 정자역, 미금역, 10);
+        Sections sections = Sections.from(모든_구간);
+        sections.addSection(정자_미금_구간);
+        Graph<Station, DefaultWeightedEdge> graph = sections.makeGraph();
+        PathFinder pathFinder = new PathFinder();
+
+        assertThatExceptionOfType(SubwayException.class)
+            .isThrownBy(() -> pathFinder.findPath(graph, 교대역, 정자역))
+            .withMessage("출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
 }
