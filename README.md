@@ -127,3 +127,11 @@ Feature: 지하철 구간 관련 기능
   - [x] PathFinder 도메인 테스트 작성
   - [x] 서비스 테스트 작성
   - [x] 서비스 레이어 구현
+
+### 2단계 미션 피드백 사항
+- [ ] MockitoExtensionTest 오타 수정
+- [ ] PathServiceTest @InjectMocks 사용으로 인해 setUp 메소드 불필요하므로 제거
+- [ ] PathFinder에 대해 외부라이브러리 의존성을 제거하기 위해 의존성 주입 전략을 세워 리팩터링
+- [ ] PathFinderTest default 접근제어자 수정
+- [ ] Section.setGraphEdge 네이밍 set -> add로 수정
+- [ ] 예외 처리 시, 유의미한 에러 메시지 작성
