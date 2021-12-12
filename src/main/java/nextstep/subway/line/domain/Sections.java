@@ -6,12 +6,15 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
   private static final int DELETABLE_SIZE = 2;
-  @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-  private final List<Section> sections = new ArrayList<>();
+  private static final int SECTION_FIRST_INDEX = 0;
+
+  @OneToMany(mappedBy = "line", cascade = {CascadeType.ALL}, orphanRemoval = true)
+  private List<Section> sections = new ArrayList<>();
 
   protected Sections() {
   }
@@ -38,18 +41,36 @@ public class Sections {
     removeAndUpdateSectionByStation(station);
   }
 
-  public Stations getOrderedStations() {
-    if (sections.isEmpty()) {
-      return new Stations(Collections.emptyList());
+  public List<Station> getOrderedStations() {
+    List<Section> orderedSections = getOrderedSections();
+    if (orderedSections.isEmpty()) {
+      return Collections.emptyList();
     }
 
-    List<Station> stations = new ArrayList<>(Arrays.asList(upEndPoint().getUpStation(), upEndPoint().getDownStation()));
-    while (!hasDownEndPointStation(stations)) {
-      stations.add(findNextLinkedStation(stations));
-    }
+    List<Station> stations = new ArrayList<>();
+    stations.add(orderedSections.get(SECTION_FIRST_INDEX).getUpStation());
+    stations.addAll(orderedSections.stream()
+            .map(Section::getDownStation)
+            .collect(Collectors.toList()));
 
-    return new Stations(stations);
+    return stations;
   }
+
+  public List<Section> getOrderedSections() {
+    if (sections.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    List<Section> sections = new ArrayList<>();
+    sections.add(upEndPoint());
+    while (!hasDownEndPointSection(sections)) {
+      sections.add(findNextLinkedSection(sections));
+    }
+
+    return sections;
+  }
+
+
 
   private void checkRemovableSections(Station station) {
     if (sections.size() < DELETABLE_SIZE) {
@@ -62,7 +83,7 @@ public class Sections {
 
   private boolean isEndPointStation(Station station) {
     return isUpEndPointStation(station)
-        || isDownEndPointStation(station);
+            || isDownEndPointStation(station);
   }
 
   private void removeEndPointSectionByStation(Station station) {
@@ -76,9 +97,9 @@ public class Sections {
 
   private void removeAndUpdateSectionByStation(Station station) {
     Section removeTargetSection = sections.stream()
-        .filter(section -> section.getUpStation().equals(station))
-        .findFirst()
-        .orElseThrow(IllegalStateException::new);
+            .filter(section -> section.getUpStation().equals(station))
+            .findFirst()
+            .orElseThrow(IllegalStateException::new);
     sections.remove(removeTargetSection);
     updateByRemoveTargetSection(station, removeTargetSection);
   }
@@ -94,15 +115,15 @@ public class Sections {
 
   private boolean hasMatchUpStation(Section section) {
     return sections.stream()
-        .map(Section::getUpStation)
-        .anyMatch(station -> station.equals(section.getUpStation()));
+            .map(Section::getUpStation)
+            .anyMatch(station -> station.equals(section.getUpStation()));
   }
 
   private void updateByRemoveTargetSection(Station station, Section removeTargetSection) {
     sections.stream()
-        .filter(section -> section.getDownStation().equals(station))
-        .findFirst()
-        .ifPresent(section -> section.updateDownStation(removeTargetSection.getDownStation(), removeTargetSection.getDistance()));
+            .filter(section -> section.getDownStation().equals(station))
+            .findFirst()
+            .ifPresent(section -> section.updateDownStation(removeTargetSection.getDownStation(), removeTargetSection.getDistance()));
   }
 
   private void checkAddSectionValidation(Section section) {
@@ -117,32 +138,36 @@ public class Sections {
 
   private void updateMatchedUpSideSection(Section newSection) {
     sections.stream()
-        .filter(section -> section.getUpStation().equals(newSection.getUpStation()))
-        .findFirst()
-        .ifPresent(section -> section.updateUpSideSection(newSection));
+            .filter(section -> section.getUpStation().equals(newSection.getUpStation()))
+            .findFirst()
+            .ifPresent(section -> section.updateUpSideSection(newSection));
   }
 
   private void updateMatchedDownSideSection(Section newSection) {
     sections.stream()
-        .filter(section -> section.getDownStation().equals(newSection.getDownStation()))
-        .findFirst()
-        .ifPresent(section -> section.updateDownSideSection(newSection));
+            .filter(section -> section.getDownStation().equals(newSection.getDownStation()))
+            .findFirst()
+            .ifPresent(section -> section.updateDownSideSection(newSection));
   }
 
   private boolean containSection(Section section) {
     return sections.stream()
-        .anyMatch(existSection -> existSection.isMatch(section));
+            .anyMatch(existSection -> existSection.isMatch(section));
   }
 
   private boolean containsStation(Section section) {
-    List<Station> stationList = new ArrayList<>(Arrays.asList(section.getUpStation(), section.getDownStation()));
-    return getOrderedStations().containsAny(stationList);
+    List<Station> orderedStations = getOrderedStations();
+    if (orderedStations.contains(section.getUpStation())) {
+      return true;
+    }
+
+    return orderedStations.contains(section.getDownStation());
   }
 
   private boolean isUpdateSection(Section section) {
     return !sections.isEmpty()
-        && !isUpEndPointStation(section.getDownStation())
-        && !isDownEndPointStation(section.getUpStation());
+            && !isUpEndPointStation(section.getDownStation())
+            && !isDownEndPointStation(section.getUpStation());
   }
 
   private boolean isDownEndPointStation(Station station) {
@@ -155,43 +180,42 @@ public class Sections {
 
   private Section upEndPoint() {
     return sections.stream()
-        .filter(this::isUpEndPoint)
-        .findAny()
-        .orElseThrow(IllegalStateException::new);
+            .filter(this::isUpEndPoint)
+            .findAny()
+            .orElseThrow(IllegalStateException::new);
   }
 
   private boolean isUpEndPoint(Section parentSection) {
     return sections.stream()
-        .map(Section::getDownStation)
-        .noneMatch(station -> station.equals(parentSection.getUpStation()));
+            .map(Section::getDownStation)
+            .noneMatch(station -> station.equals(parentSection.getUpStation()));
   }
 
   private Section downEndPoint() {
     return sections.stream()
-        .filter(this::isDownEndPoint)
-        .findAny()
-        .orElseThrow(IllegalStateException::new);
+            .filter(this::isDownEndPoint)
+            .findAny()
+            .orElseThrow(IllegalStateException::new);
   }
 
   private boolean isDownEndPoint(Section parentSection) {
     return sections.stream()
-        .map(Section::getUpStation)
-        .noneMatch(station -> station.equals(parentSection.getDownStation()));
+            .map(Section::getUpStation)
+            .noneMatch(station -> station.equals(parentSection.getDownStation()));
   }
 
-  private boolean hasDownEndPointStation(List<Station> stations) {
-    return stationsLastElement(stations).equals(downEndPoint().getDownStation());
+  private boolean hasDownEndPointSection(List<Section> sections) {
+    return sectionsLastElement(sections).equals(downEndPoint());
   }
 
-  private Station stationsLastElement(List<Station> stations) {
-    return stations.get(stations.size() - 1);
+  private Section sectionsLastElement(List<Section> sections) {
+    return sections.get(sections.size() - 1);
   }
 
-  private Station findNextLinkedStation(List<Station> stations) {
-    return sections.stream()
-        .filter(section -> section.getUpStation().equals(stationsLastElement(stations)))
-        .findAny()
-        .orElseThrow(IllegalArgumentException::new)
-        .getDownStation();
+  private Section findNextLinkedSection(List<Section> sections) {
+    return this.sections.stream()
+            .filter(section -> section.getUpStation().equals(sectionsLastElement(sections).getDownStation()))
+            .findAny()
+            .orElseThrow(IllegalArgumentException::new);
   }
 }
