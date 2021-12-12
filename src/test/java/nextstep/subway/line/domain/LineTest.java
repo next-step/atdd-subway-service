@@ -78,7 +78,7 @@ public class LineTest {
     public void addExtraCharge() throws Exception {
         //given
         int distance = Distance.MIN_DISTANCE;
-        int noCharge = ExtraCharge.NO_FARE;
+        int noCharge = Money.MIN_VALUE;
         int useCharge = 5_000;
 
         Line line = Line.of("1호선", "남색", 강남역, 광교역, distance, noCharge);

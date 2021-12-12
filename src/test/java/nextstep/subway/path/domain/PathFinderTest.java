@@ -66,7 +66,7 @@ class PathFinderTest {
         int DISTANCE_칠호선 = 7;
         int EXTRA_CHARGE_이호선 = 500;
         int EXTRA_CHARGE_경의중앙선 = 2_000;
-        int EXTRA_CHARGE_삼호선 = ExtraCharge.NO_FARE;
+        int EXTRA_CHARGE_삼호선 = Money.MIN_VALUE;
         int EXTRA_CHARGE_칠호선 = 1_500;
 
         사용자 = memberRepository.save(new Member("haedoang@gmail.com", "12", 33));

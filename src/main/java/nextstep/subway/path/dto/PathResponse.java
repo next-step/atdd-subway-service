@@ -4,10 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.subway.auth.domain.Stranger;
 import nextstep.subway.auth.domain.User;
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.ExtraCharge;
-import nextstep.subway.line.domain.SubwayFare;
-import nextstep.subway.line.domain.SubwayUser;
+import nextstep.subway.line.domain.*;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -31,16 +28,34 @@ public class PathResponse {
     private PathResponse(List<StationResponse> stations, Distance distance) {
         this.stations = new ArrayList<>(stations);
         this.distance = distance.intValue();
-        this.fare = SubwayFare.rateInquiry(distance);
+        this.fare = SubwayFare.rateInquiry(distance).intValue();
     }
 
-    private PathResponse(List<StationResponse> stations, Distance distance, User user, ExtraCharge extraCharge) {
+    private PathResponse(List<StationResponse> stations, Distance distance, User user, Money extraCharge) {
         this.stations = new ArrayList<>(stations);
         this.distance = distance.intValue();
-        this.fare = calculateFare(distance, user, extraCharge);
+        this.fare = calculateFare(distance, user, extraCharge).intValue();
     }
 
-    private int calculateFare(Distance distance, User user, ExtraCharge extraCharge) {
+//    private PathResponse(List<StationResponse> stations, Distance distance, User user, ExtraCharge extraCharge) {
+//        this.stations = new ArrayList<>(stations);
+//        this.distance = distance.intValue();
+//        this.fare = calculateFare(distance, user, extraCharge);
+//    }
+
+//    private int calculateFare(Distance distance, User user, ExtraCharge extraCharge) {
+//        if (user.isStranger()) {
+//            return SubwayFare.rateInquiry(distance, extraCharge);
+//        }
+//        return SubwayFare.rateInquiry(distance, SubwayUser.of(user.getAge()), extraCharge);
+//    }
+//    private int calculateFare(Distance distance, User user, Money extraCharge) {
+//        if (user.isStranger()) {
+//            return SubwayFare.rateInquiry(distance, extraCharge).intValue();
+//        }
+//        return SubwayFare.rateInquiry(distance, SubwayUser.of(user.getAge()), extraCharge).intValue();
+//    }
+    private Money calculateFare(Distance distance, User user, Money extraCharge) {
         if (user.isStranger()) {
             return SubwayFare.rateInquiry(distance, extraCharge);
         }

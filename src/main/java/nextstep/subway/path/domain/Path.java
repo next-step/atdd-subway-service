@@ -1,7 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.ExtraCharge;
+import nextstep.subway.line.domain.Money;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
@@ -53,10 +53,10 @@ public class Path {
         return target;
     }
 
-    public ExtraCharge extraCharge() {
-        return ExtraCharge.of(sections.stream()
+    public Money extraCharge() {
+        return Money.of(sections.stream()
                 .map(it -> it.getLine().extraCharge())
                 .max(Integer::compareTo)
-                .orElse(ExtraCharge.NO_FARE));
+                .orElse(Money.MIN_VALUE));
     }
 }

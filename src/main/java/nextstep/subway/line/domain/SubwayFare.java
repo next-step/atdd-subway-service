@@ -42,35 +42,34 @@ public enum SubwayFare {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public static int rateInquiry(Distance distance) {
-        return Arrays.stream(SubwayFare.values())
+    public static Money rateInquiry(Distance distance) {
+        int money = Arrays.stream(SubwayFare.values())
                 .mapToInt(it -> it.useExtraCharge ? it.calculateOverFare(distance) : BASE_RATE)
                 .sum();
+        return Money.of(money);
     }
 
-    public static int rateInquiry(Distance distance, ExtraCharge extraCharge) {
-        return rateInquiry(distance) + extraCharge.value();
+    public static Money rateInquiry(Distance distance, Money money) {
+        return money.plus(rateInquiry(distance));
     }
 
-    public static int rateInquiry(Distance distance, SubwayUser user, ExtraCharge extraCharge) {
+    public static Money rateInquiry(Distance distance, SubwayUser user, Money money) {
         if (!user.isPayUser()) {
-            return NO_CHARGE;
+            return Money.of(0);
         }
 
-        int fare = rateInquiry(distance);
-        return discountFare(fare, user) + extraCharge.value();
+        Money fare = rateInquiry(distance);
+        return money.plus(discountFare(fare, user));
     }
 
-
-    public static int discountFare(int fare, SubwayUser user) {
+    public static Money discountFare(Money money, SubwayUser user) {
         if (!user.isPayUser()) {
-            return NO_CHARGE;
+            return Money.of(0);
         }
-
         if (!user.isDiscountUser()) {
-            return fare;
+            return money;
         }
-        return (fare - user.getDeductibleAmount()) * (100 - user.getDiscountRate()) / 100;
+        return money.discount(user.getDeductibleAmount(), user.getDiscountRate());
     }
 
     public int toChargeDistance(Distance distance) {
