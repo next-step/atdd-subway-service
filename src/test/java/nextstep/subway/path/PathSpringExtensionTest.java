@@ -1,13 +1,10 @@
 package nextstep.subway.path;
 
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.SubwayFare;
+import nextstep.subway.auth.domain.Stranger;
+import nextstep.subway.line.domain.*;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathEdge;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.infrastructure.JGraphPathFinder;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -44,6 +41,9 @@ public class PathSpringExtensionTest {
     @MockBean
     private LineRepository lineRepository;
 
+    @MockBean
+    private Stranger 비로그인;
+
     @MockBean(name = "강남역")
     private Station 강남역;
 
@@ -72,17 +72,17 @@ public class PathSpringExtensionTest {
         when(lineRepository.findAll()).thenReturn(lines);
         when(stationRepository.findAll()).thenReturn(stations);
         when(pathFinder.getShortestPath(anyList(), anyList(), anyLong(), anyLong()))
-                .thenReturn(Path.of(Lists.newArrayList(PathEdge.of(line1.sections().getList().get(0))), stations,강남역, 역삼역, Distance.of(5)));
-
-        PathService pathService = new PathService(pathFinder, stationRepository, lineRepository);
+                .thenReturn(Path.of(Lists.newArrayList(PathEdge.of(line1.sections().getList().get(0))), stations, 강남역, 역삼역, Distance.of(5)));
+        when(비로그인.isStranger()).thenReturn(true);
+        SubwayFare fare = new SeoulMetroFare();
+        PathService pathService = new PathService(pathFinder, fare, stationRepository, lineRepository);
 
         //when
         Path path = pathService.getShortestPath(강남역.getId(), 역삼역.getId());
-        final PathResponse pathResponse = PathResponse.of(path);
 
         //then
-        assertThat(pathResponse.getStations()).hasSize(2);
-        assertThat(pathResponse.getDistance()).isEqualTo(5);
-        assertThat(pathResponse.getFare()).isEqualTo(SubwayFare.BASE_RATE);
+        assertThat(path.stations()).hasSize(2);
+        assertThat(path.distance()).isEqualTo(Distance.of(5));
+        assertThat(fare.rateInquiry(path, 비로그인)).isEqualTo(Money.of(SeoulMetroType.BASE_RATE));
     }
 }

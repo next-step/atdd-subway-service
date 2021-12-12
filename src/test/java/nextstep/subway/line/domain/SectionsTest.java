@@ -5,7 +5,6 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.infrastructure.JGraphPathFinder;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -36,6 +35,7 @@ public class SectionsTest {
     @Autowired
     private StationRepository stations;
 
+    SubwayFare subwayFare = new SeoulMetroFare();
     PathFinder pathFinder = new JGraphPathFinder();
 
     private final Station 강남역 = new Station("강남역");
@@ -88,6 +88,7 @@ public class SectionsTest {
         LoginMember youthMember = LoginMember.of(members.save(new Member("koko1945@gmail.com", "11", 19)));
         LoginMember adultMember = LoginMember.of(members.save(new Member("cometholic@gmail.com", "11", 33)));
 
+
         stations.saveAll(Arrays.asList(강남역, 마포역, 광교역));
         lines.save(Line.of("신분당선", "빨강", 강남역, 마포역, 거리_5, 추가요금_1500));
         lines.save(Line.of("2호선", "녹색", 마포역, 광교역, 거리_5, 추가요금_1000));
@@ -96,11 +97,9 @@ public class SectionsTest {
         final Path shortestPath = pathFinder.getShortestPath(lines.findLines(), stations.findAll(), 강남역.getId(), 광교역.getId());
 
         //then
-        assertThat(PathResponse.of(shortestPath, infantMember).getFare()).isEqualTo(0);
-        assertThat(PathResponse.of(shortestPath, childMember).getFare()).isEqualTo(1_950);
-        assertThat(PathResponse.of(shortestPath, youthMember).getFare()).isEqualTo(2_220);
-        assertThat(PathResponse.of(shortestPath, adultMember).getFare()).isEqualTo(2_750);
-
-
+        assertThat(subwayFare.rateInquiry(shortestPath, infantMember)).isEqualTo(Money.of(0));
+        assertThat(subwayFare.rateInquiry(shortestPath, childMember)).isEqualTo(Money.of(1_950));
+        assertThat(subwayFare.rateInquiry(shortestPath, youthMember)).isEqualTo(Money.of(2_220));
+        assertThat(subwayFare.rateInquiry(shortestPath, adultMember)).isEqualTo(Money.of(2_750));
     }
 }

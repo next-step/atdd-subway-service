@@ -1,7 +1,11 @@
 package nextstep.subway.path.domain;
 
+import lombok.NoArgsConstructor;
+import nextstep.subway.auth.domain.User;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Money;
+import nextstep.subway.line.domain.SubwayFare;
+import nextstep.subway.line.domain.SubwayUser;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
@@ -13,6 +17,7 @@ import java.util.List;
  * date : 2021-12-07
  * description :
  */
+@NoArgsConstructor
 public class Path {
     private List<PathEdge> sections;
     private List<Station> stations;
@@ -58,4 +63,5 @@ public class Path {
                 .max(Integer::compareTo)
                 .orElse(Money.MIN_VALUE));
     }
+
 }

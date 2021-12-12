@@ -1,10 +1,11 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.line.domain.*;
+import nextstep.subway.auth.domain.Stranger;
 import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.FavoriteRepository;
+import nextstep.subway.line.domain.*;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
-import nextstep.subway.member.exception.MemberNotFoundException;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.PathBeginIsEndException;
 import nextstep.subway.path.exception.PathNotFoundException;
@@ -38,9 +39,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * 뚝섬  [추가요금 500]                                                                                      신사   [추가요금_1000]
  * ↕(2)                                                                            	                        ↘(3)
  * 성수                                                                                                        잠원
- * ↕(2)  ## 8                                                                                                  ↘(3)   ## 12 + 40 => 52 (7개역)(추가요금 2,000원)
+ * ↕(2)  ## 8                                                                                                  ↘(3)   ## 12 + 40 => 52 (7개역)(추가요금 2,000원, 구간요금 2,150원 => 4,150원)
  * 건대입구  ←- (7) -→ 뚝섬유원지 ←- (7) -→ 청담 ←- (7) -→ 강남구청 ←- (7) -→ 학동 ←- (7) -→  논현 ←- (7) -→ 반포 ←- (7) -→ 고속터미널(end)  ## 49 + 8 = 57
- *                                           [추가요금 _1500]
+ * [추가요금 _1500]
  */
 @DataJpaTest
 class PathFinderTest {
@@ -48,6 +49,10 @@ class PathFinderTest {
     private Station 고속터미널_END;
     private Station 경로없는역;
     private Member 사용자;
+    private final int EXTRA_CHARGE_이호선 = 500;
+    private final int EXTRA_CHARGE_경의중앙선 = 2_000;
+    private final int EXTRA_CHARGE_삼호선 = Money.MIN_VALUE;
+    private final int EXTRA_CHARGE_칠호선 = 1_500;
 
     @Autowired
     private StationRepository stationRepository;
@@ -58,16 +63,16 @@ class PathFinderTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private FavoriteRepository favoriteRepository;
+
     @BeforeEach
     void setUp() {
         int DISTANCE_이호선 = 2;
         int DISTANCE_경의중앙선 = 20;
         int DISTANCE_삼호선 = 3;
         int DISTANCE_칠호선 = 7;
-        int EXTRA_CHARGE_이호선 = 500;
-        int EXTRA_CHARGE_경의중앙선 = 2_000;
-        int EXTRA_CHARGE_삼호선 = Money.MIN_VALUE;
-        int EXTRA_CHARGE_칠호선 = 1_500;
+
 
         사용자 = memberRepository.save(new Member("haedoang@gmail.com", "12", 33));
 
@@ -132,6 +137,7 @@ class PathFinderTest {
         List<Line> lines = lineRepository.findAll();
         List<Station> stations = stationRepository.findAll();
         JGraphPathFinder pathFinder = new JGraphPathFinder();
+        SubwayFare fare = new SeoulMetroFare();
 
         // when
         Path path = pathFinder.getShortestPath(lines, stations, 왕십리_START.getId(), 고속터미널_END.getId());
@@ -141,8 +147,8 @@ class PathFinderTest {
         assertThat(path.distance()).isEqualTo(Distance.of(52));
 
         // when
-        final PathResponse pathResponse = PathResponse.of(path);
-        assertThat(pathResponse.getFare()).isEqualTo(2_150);
+        final PathResponse pathResponse = PathResponse.of(path, fare.rateInquiry(path, new Stranger()));
+        assertThat(pathResponse.getFare()).isEqualTo(4_150);
     }
 
     @Test
@@ -199,12 +205,7 @@ class PathFinderTest {
         // when
         Path path = pathFinder.getShortestPath(lines, stations, 왕십리_START.getId(), 고속터미널_END.getId());
         Favorite favorite = Favorite.of(path);
-        //사용자.addFavorite(favorite);
-
-        Member findMember = memberRepository.findById(사용자.getId()).orElseThrow(MemberNotFoundException::new);
-
-        // then
-//        assertThat(findMember.getFavorites().getList()).hasSize(1);
-//        assertThat(findMember.getFavorites().findFavorite(favorite).getDistance()).isEqualTo(path.distance());
+        favoriteRepository.save(favorite);
+        assertThat(favorite.getId()).isNotNull();
     }
 }

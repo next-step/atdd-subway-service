@@ -6,7 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Money;
-import nextstep.subway.line.domain.SubwayFare;
+import nextstep.subway.line.domain.SeoulMetroType;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -148,7 +148,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void 지하철_이용_요금_응답됨(PathResponse pathResponse) {
-        Money money = SubwayFare.rateInquiry(Distance.of(pathResponse.getDistance())).plus(Money.of(신분당선_추가요금_1_200));
+        Money money = SeoulMetroType.rateInquiry(Distance.of(pathResponse.getDistance())).plus(Money.of(신분당선_추가요금_1_200));
         assertThat(pathResponse.getFare()).isEqualTo(money.intValue());
     }
 

@@ -5,6 +5,8 @@ import nextstep.subway.auth.domain.User;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.line.domain.Money;
+import nextstep.subway.line.domain.SubwayFare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -26,25 +28,27 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PathService {
-    private final PathFinder pathHandler;
+    private final PathFinder pathFinder;
+    private final SubwayFare subwayFare;
     private final StationRepository stationRepository;
     private final LineRepository lineRepository;
 
     public Path getShortestPath(Long srcStationId, Long destStationId) {
         List<Station> stations = stationRepository.findAll();
         List<Line> lines = lineRepository.findAll();
-        return pathHandler.getShortestPath(lines, stations, srcStationId, destStationId);
+        return pathFinder.getShortestPath(lines, stations, srcStationId, destStationId);
     }
 
     public PathResponse getShortestPath(Long srcStationId, Long destStationId, User user) {
         Path path = getShortestPath(srcStationId, destStationId);
-        return PathResponse.of(path, user);
+        Money money = subwayFare.rateInquiry(path, user);
+        return PathResponse.of(path, money);
     }
 
     public Path getShortestPath(FavoriteRequest request) {
         final List<Station> stations = stationRepository.findAll();
         final List<Line> lines = lineRepository.findAll();
-        return pathHandler.getShortestPath(lines, stations, request.getSource(), request.getTarget());
+        return pathFinder.getShortestPath(lines, stations, request.getSource(), request.getTarget());
     }
 
 }
