@@ -84,4 +84,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathAcceptanceTestHelper.최단_경로_조회_실패됨(response);
     }
 
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 최단 경로를 조회한다.")
+    @Test
+    void getPathWithNotConnectedSourceAndTarget() {
+        // given
+        StationResponse 정자역 = StationAcceptanceTestHelper.지하철역_등록되어_있음("정자역")
+            .as(StationResponse.class);
+        StationResponse 미금역 = StationAcceptanceTestHelper.지하철역_등록되어_있음("미금역")
+            .as(StationResponse.class);
+        LineAcceptanceTestHelper.지하철_노선_등록되어_있음("분당선", "bg-yellow-600", 정자역, 미금역, 8);
+
+        // when
+        ExtractableResponse<Response> response = PathAcceptanceTestHelper.최단_경로_조회_요청(교대역.getId(), 정자역.getId());
+
+        // then
+        PathAcceptanceTestHelper.최단_경로_조회_실패됨(response);
+    }
 }
