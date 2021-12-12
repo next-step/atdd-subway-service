@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 
 class LineTest {
 
-    @DisplayName("Station 가지고 오기")
+    @DisplayName("지하철 역 정보 가져오기")
     @Test
-    void getStationsTest() {
+    void 지하철_역_정보_가져오기() {
         // given
         Line 신분당선 = LineDummy.신분당선;
         지하철_노선에_역을_등록(신분당선);
@@ -37,6 +37,76 @@ class LineTest {
 
         // then
         지하철_노선에_역이_정렬됨(expectedStations, actualStations);
+    }
+
+    @DisplayName("지하철 노선 구간 추가하기")
+    @Test
+    void 지하철_노선_구간_추가하기() {
+        // given
+        Line 신분당선 = LineDummy.신분당선;
+
+        // when
+        신분당선.addToLineStation(StationDummy.강남역, StationDummy.광교역, 30);
+        신분당선.addToLineStation(StationDummy.강남역, StationDummy.양재역, 4);
+        신분당선.addToLineStation(StationDummy.미금역, StationDummy.광교역, 13);
+        신분당선.addToLineStation(StationDummy.정자역, StationDummy.미금역, 3);
+
+        // then
+        List<Station> expectedStations = 신분당선.getStations();
+        List<Station> actualStations = Arrays.asList(
+                StationDummy.강남역,
+                StationDummy.양재역,
+                StationDummy.정자역,
+                StationDummy.미금역,
+                StationDummy.광교역
+        );
+
+        지하철_노선에_역이_정렬됨(expectedStations, actualStations);
+    }
+
+    @DisplayName("지하철 노선 구간 추가하기 - 예외 발생: 이미 등록된 구간")
+    @Test
+    void 지하철_노선_구간_추가하기_이미_등록된_구간() {
+        // given
+        Line 신분당선 = LineDummy.신분당선;
+
+        // when
+        신분당선.addToLineStation(StationDummy.강남역, StationDummy.광교역, 30);
+
+        // then
+        Assertions.assertThatThrownBy(() -> {
+            신분당선.addToLineStation(StationDummy.강남역, StationDummy.광교역, 30);
+        }).isInstanceOf(RuntimeException.class).hasMessageContaining("이미 등록된 구간 입니다.");
+    }
+
+    @DisplayName("지하철 노선 구간 추가하기 - 예외 발생: 등록할 수 없는 구간")
+    @Test
+    void 지하철_노선_구간_추가하기_등록할_수_없는_구간() {
+        // given
+        Line 신분당선 = LineDummy.신분당선;
+
+        // when
+        신분당선.addToLineStation(StationDummy.강남역, StationDummy.광교역, 30);
+
+        // then
+        Assertions.assertThatThrownBy(() -> {
+            신분당선.addToLineStation(StationDummy.정자역, StationDummy.미금역, 10);
+        }).isInstanceOf(RuntimeException.class).hasMessageContaining("등록할 수 없는 구간 입니다.");
+    }
+
+    @DisplayName("지하철 노선 구간 추가하기 - 예외 발생: 기존에 등록되어 있는 구간 길이 초과")
+    @Test
+    void 지하철_노선_구간_추가하기_기존에_등록되어_있는_구간_길이_초과() {
+        // given
+        Line 신분당선 = LineDummy.신분당선;
+
+        // when
+        신분당선.addToLineStation(StationDummy.강남역, StationDummy.광교역, 10);
+
+        // then
+        Assertions.assertThatThrownBy(() -> {
+            신분당선.addToLineStation(StationDummy.강남역, StationDummy.양재역, 11);
+        }).isInstanceOf(RuntimeException.class).hasMessageContaining("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 
     void 지하철_노선에_역을_등록(Line line) {
