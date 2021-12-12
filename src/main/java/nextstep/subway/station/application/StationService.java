@@ -13,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class StationService {
+
+    private static final int SECTION_STATIONS_SIZE = 2;
+
     private final StationRepository stationRepository;
 
     public StationService(StationRepository stationRepository) {
@@ -39,7 +42,7 @@ public class StationService {
         final List<Station> stations = stationRepository.findAllById(
             Arrays.asList(upStationId, downStationId)
         );
-        if (stations.size() != 2) {
+        if (stations.size() != SECTION_STATIONS_SIZE) {
             throw new NoSuchElementException();
         }
         return stations;
