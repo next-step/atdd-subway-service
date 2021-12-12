@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.favorite.application.exception.InvalidFavoriteException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -30,6 +31,7 @@ public class Favorite extends BaseEntity {
     }
 
     public Favorite(Member member, Station source, Station target) {
+        validateSameStation(source, target);
         this.member = member;
         this.source = source;
         this.target = target;
@@ -37,6 +39,12 @@ public class Favorite extends BaseEntity {
 
     public static Favorite of(Member member, Station source, Station target) {
         return new Favorite(member, source, target);
+    }
+
+    private void validateSameStation(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new InvalidFavoriteException();
+        }
     }
 
     public Long getId() {
