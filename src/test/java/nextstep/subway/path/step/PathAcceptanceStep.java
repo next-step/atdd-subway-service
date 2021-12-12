@@ -28,9 +28,25 @@ public class PathAcceptanceStep {
             .given().log().all()
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .queryParams(query)
+            .when().get("/paths/anonymous")
+            .then().log().all().
+            extract();
+    }
+
+    public static ExtractableResponse<Response> 로그인_경로_조회(Long source, Long target, String token) {
+        Map<String, Long> query = new HashMap<>();
+        query.put("source", source);
+        query.put("target", target);
+        return RestAssured
+            .given().log().all()
+            .auth()
+            .oauth2(token)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .queryParams(query)
             .when().get("/paths")
             .then().log().all().
             extract();
+
     }
 
     public static void 최단경로_조회_됨(ExtractableResponse<Response> response, List<Long> expected) {
@@ -54,5 +70,14 @@ public class PathAcceptanceStep {
 
     public static void 최단경로_조회_길이_계산됨(PathResponse pathResponse, int distance) {
         assertThat(pathResponse.getDistance()).isEqualTo(distance);
+    }
+
+    public static void 최단경로_요금_계산됨(ExtractableResponse<Response> response, int expected) {
+        PathResponse line = response.as(PathResponse.class);
+        assertThat(line).extracting("fare").isEqualTo(expected);
+    }
+
+    public static void 최단경로_요금_계산됨(PathResponse response, int expected) {
+        assertThat(response).extracting("fare").isEqualTo(expected);
     }
 }
