@@ -17,19 +17,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 public class PathFinderTest {
-  Station 교대역;
-  Station 강남역;
-  Station 선릉역;
-  Station 선정릉역;
-  Station 고속터미널역;
-  Station 신논현역;
-  Station 양재역;
+  private Station 교대역;
+  private Station 강남역;
+  private Station 선릉역;
+  private Station 선정릉역;
+  private Station 고속터미널역;
+  private Station 신논현역;
+  private Station 양재역;
 
-  Line 이호선;
-  Line 삼호선;
-  Line 구호선;
-  Line 수인분당선;
-  Line 신분당선;
+  private Line 이호선;
+  private Line 삼호선;
+  private Line 구호선;
+  private Line 수인분당선;
+  private Line 신분당선;
 
   @BeforeEach
   void setUp() {
