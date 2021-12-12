@@ -35,30 +35,60 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         유효한_액세스_토큰_반환됨(response);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
+    @DisplayName("등록하지 않은 회원 정보로 로그인을 시도하면 로그인이 실패한다.")
     @Test
-    void myInfoWithBadBearerAuth() {
+    void myInfoWithBadBearerAuth1() {
         // given 회원 등록되어 있음
         String email = "email@email.com";
         String password = "password";
         int age = 20;
 
-        String wrongEmail = "testemail@email.com";
-        String wrongPassword = "secret";
+        String wrongEmail = "notmember@email.com";
+        String wrongPassword = "notmember";
 
         MemberAcceptanceTest.회원_등록되어_있음(email, password, age);
 
-        // when 잘못된 패스워드로 로그인 요청
-        ExtractableResponse<Response> response = 로그인_요청(email, wrongPassword);
+        // when 등록하지 않은 회원 정보로 로그인 요청
+        ExtractableResponse<Response> response = 로그인_요청(wrongEmail, wrongPassword);
 
         // then 로그인 실패됨
         로그인_실패됨(response);
+    }
+
+    @DisplayName("등록 정보와 다른 이메일로 로그인을 시도하면 로그인이 실패한다.")
+    @Test
+    void myInfoWithBadBearerAuth2() {
+        // given 회원 등록되어 있음
+        String email = "email@email.com";
+        String password = "password";
+        int age = 20;
+
+        MemberAcceptanceTest.회원_등록되어_있음(email, password, age);
 
         // when 잘못된 이메일로 로그인 요청
+        String wrongEmail = "testemail@email.com";
         ExtractableResponse<Response> response2 = 로그인_요청(wrongEmail, password);
 
         // then
         로그인_실패됨(response2);
+    }
+
+    @DisplayName("잘못된 비밀번호로 로그인을 시도하면 로그인이 실패한다.")
+    @Test
+    void myInfoWithBadBearerAuth3() {
+        // given 회원 등록되어 있음
+        String email = "email@email.com";
+        String password = "password";
+        int age = 20;
+
+        MemberAcceptanceTest.회원_등록되어_있음(email, password, age);
+
+        // when 잘못된 패스워드로 로그인 요청
+        String wrongPassword = "secret";
+        ExtractableResponse<Response> response = 로그인_요청(email, wrongPassword);
+
+        // then 로그인 실패됨
+        로그인_실패됨(response);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
