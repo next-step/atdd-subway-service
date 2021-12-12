@@ -1,10 +1,12 @@
 package nextstep.subway.fare;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Lines;
 
 public class FarePolicy {
 
     public static final int BASIC_FARE = 1250;
+    public static final int DEDUCTION_FARE = 350;
     public static final int OVER_FARE_BY_DISTANCE = 100;
     public static final int BASIC_DISTANCE = 10;
     public static final int TEN_KM = 10;
@@ -15,8 +17,9 @@ public class FarePolicy {
     private FarePolicy() {
     }
 
-    public static Integer getFare(Lines lines, Integer distance) {
-        return fareByDistance(distance) + additionalFareByLine(lines);
+    public static Integer getFare(Lines lines, Integer distance, LoginMember user) {
+        int fare = fareByDistance(distance) + additionalFareByLine(lines);
+        return (int) applyingDiscount(fare, user);
     }
 
     public static Integer fareByDistance(Integer distance) {
@@ -40,5 +43,13 @@ public class FarePolicy {
     private static int calculateOverFare(int distance, int distanceForOverFare) {
         return (int) ((Math.ceil((distance - 1) / distanceForOverFare) + 1)
             * OVER_FARE_BY_DISTANCE);
+    }
+
+    private static double applyingDiscount(int fare, LoginMember user) {
+        if (user.isGuest()) {
+            return fare;
+        }
+
+        return (fare - DEDUCTION_FARE) * (1 - FareDiscount.getDiscountRateByAge(user.getAge()));
     }
 }

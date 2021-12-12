@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -74,7 +75,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
         // when
-        PathResponse paths = pathService.findShortestPath(new PathRequest(1L, 2L));
+        PathResponse paths = pathService.findShortestPath(LoginMember.GUEST, new PathRequest(1L, 2L));
 
         // then
         assertThat(paths.getDistance()).isEqualTo(5);
@@ -90,7 +91,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
         // when
-        PathResponse paths = pathService.findShortestPath(new PathRequest(1L, 2L));
+        PathResponse paths = pathService.findShortestPath(LoginMember.GUEST, new PathRequest(1L, 2L));
 
         // then
         assertThat(paths.getDistance()).isEqualTo(12);
@@ -107,7 +108,7 @@ class PathServiceTest {
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> pathService.findShortestPath(new PathRequest(1L, 2L))
+                () -> pathService.findShortestPath(LoginMember.GUEST, new PathRequest(1L, 2L))
             )
             .withMessageContaining("id에 해당하는 역이 없습니다.");
     }
@@ -121,7 +122,7 @@ class PathServiceTest {
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> pathService.findShortestPath(new PathRequest(1L, 2L))
+                () -> pathService.findShortestPath(LoginMember.GUEST, new PathRequest(1L, 2L))
             )
             .withMessageContaining("id에 해당하는 역이 없습니다.");
     }
@@ -139,7 +140,7 @@ class PathServiceTest {
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> pathService.findShortestPath(new PathRequest(1L, 2L))
+                () -> pathService.findShortestPath(LoginMember.GUEST, new PathRequest(1L, 2L))
             )
             .withMessageContaining("출발역과 도착역이 이어진 경로가 없습니다.");
     }

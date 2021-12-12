@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import nextstep.graph.Graph;
 import nextstep.graph.GraphEdge;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.FarePolicy;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
@@ -26,7 +27,7 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(PathRequest request) {
+    public PathResponse findShortestPath(LoginMember user, PathRequest request) {
         Lines lines = Lines.of(lineRepository.findAll());
         Station source = findStationById(request.getSource());
         Station target = findStationById(request.getTarget());
@@ -36,8 +37,9 @@ public class PathService {
 
         int distance = (int) graph.getShortestPathWeight(source, target);
         List<Station> shortestPath = graph.getShortestPathList(source, target);
+
         return new PathResponse(StationResponse.of(shortestPath),
-            distance, FarePolicy.getFare(lines.getLinesInclude(shortestPath), distance));
+            distance, FarePolicy.getFare(lines.getLinesInclude(shortestPath), distance, user));
     }
 
     private Graph<Station> toGraphFrom(Lines lines) {

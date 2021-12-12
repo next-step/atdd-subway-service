@@ -3,6 +3,7 @@ package nextstep.subway.fare;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.Lists;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
@@ -84,7 +85,8 @@ class FarePolicyTest {
     @Test
     void 거리별_요금_노선별_추가_요금() {
         // when
-        Integer fare = FarePolicy.getFare(lines.getLinesInclude(Lists.newArrayList(강남역, 양재역)), 10);
+        Integer fare = FarePolicy.getFare(lines.getLinesInclude(Lists.newArrayList(강남역, 양재역)), 10,
+            LoginMember.GUEST);
 
         // then
         assertThat(fare).isEqualTo(2250);
@@ -94,10 +96,39 @@ class FarePolicyTest {
     @Test
     void 거리별_요금_노선별_추가_요금2() {
         // when
-        Integer fare = FarePolicy.getFare(lines.getLinesInclude(Lists.newArrayList(교대역, 강남역, 양재역)), 10);
+        Integer fare = FarePolicy.getFare(lines.getLinesInclude(Lists.newArrayList(교대역, 강남역, 양재역)),
+            10, LoginMember.GUEST);
 
         // then
         assertThat(fare).isEqualTo(2250);
+    }
+
+    @DisplayName("청소년인 경우 20% 할인")
+    @Test
+    void 거리별_요금_노선별_추가_요금_청소년_할인() {
+        // given
+        LoginMember user = new LoginMember(1L, "test@gmail.com", 13);
+
+        // when
+        Integer fare = FarePolicy.getFare(lines.getLinesInclude(Lists.newArrayList(강남역, 양재역)),
+            10, user);
+
+        // then
+        assertThat(fare).isEqualTo(1520);
+    }
+
+    @DisplayName("어린이인 경우 50% 할인")
+    @Test
+    void 거리별_요금_노선별_추가_요금_어린이_할인() {
+        // given
+        LoginMember user = new LoginMember(1L, "test@gmail.com", 6);
+
+        // when
+        Integer fare = FarePolicy.getFare(lines.getLinesInclude(Lists.newArrayList(강남역, 양재역)),
+            10, user);
+
+        // then
+        assertThat(fare).isEqualTo(950);
     }
 
 }

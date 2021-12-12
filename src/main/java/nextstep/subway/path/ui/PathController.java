@@ -1,5 +1,7 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -19,9 +21,11 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findShortestPath(PathRequest request) {
+    public ResponseEntity<PathResponse> findShortestPath(
+        @AuthenticationPrincipal LoginMember loginMember, PathRequest request) {
+
         request.validateIfSourceEqualTarget();
-        return ResponseEntity.ok(pathService.findShortestPath(request));
+        return ResponseEntity.ok(pathService.findShortestPath(loginMember, request));
     }
 
 }

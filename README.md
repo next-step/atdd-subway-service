@@ -58,7 +58,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [X] 인수테스트 작성
   - [X] 거리별 요즘 정책 구현
 - [X] 노선별 추가 요금 정책 추가
-- [ ] 로그인 사용자인 경우 연령별 할인 정책 추가
+- [X] 로그인 사용자인 경우 연령별 할인 정책 추가
 
 ## step3 요구사항
 - [X] 토큰 발급 기능 인수 테스트
