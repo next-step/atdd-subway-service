@@ -73,7 +73,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	}
 
 	private void 최단경로_조회_경로_포함됨(ExtractableResponse<Response> response,
-		List<StationResponse> expectedStations, int distance) {
+		List<StationResponse> expectedStations, int expectedDistance) {
 
 		PathResponse path = response.as(PathResponse.class);
 
@@ -86,7 +86,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.collect(Collectors.toList());
 
 		assertAll(
-			() -> assertThat(path.getDistance()).isEqualTo(distance),
+			() -> assertThat(path.getDistance()).isEqualTo(expectedDistance),
 			() -> assertThat(resultIds).containsAll(expectedIds)
 		);
 	}
