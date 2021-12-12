@@ -42,7 +42,7 @@ public class AgeDiscountPolicyTest extends PathFixtures {
 
             @Test
             @DisplayName("청소년은 운임에서 350원을 공제한 금액의 20% 할인")
-            void it_child_50_percent_rate_discount() {
+            void it_youth_20_percent_rate_discount() {
                 // when
                 Fare fare = 경로조회_됨(교대, 남부터미널, 15);
                 Money money = policy.getCalculateFare(fare, DEFAULT_FARE);
@@ -58,7 +58,7 @@ public class AgeDiscountPolicyTest extends PathFixtures {
 
             @Test
             @DisplayName("성인은 할인률이 없음")
-            void it_child_50_percent_rate_discount() {
+            void it_adult_none_discount() {
                 // when
                 Fare fare = 경로조회_됨(강남, 남부터미널, 20);
                 Money money = policy.getCalculateFare(fare, DEFAULT_FARE);

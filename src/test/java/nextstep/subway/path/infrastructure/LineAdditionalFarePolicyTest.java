@@ -42,7 +42,7 @@ public class LineAdditionalFarePolicyTest extends PathFixtures {
 
             @Test
             @DisplayName("가장 높은 노선의 추가요금이 반환됨")
-            void not_additional_fare() {
+            void max_additional_fare() {
                 // when
                 Fare fare = 경로조회_됨(강남, 남부터미널, 20);
                 Money money = policy.getCalculateFare(fare, Money.ZERO);
