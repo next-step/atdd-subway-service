@@ -63,9 +63,4 @@ public class MemberController {
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
-
-    @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity<LineResponse> handleInvalidTokenException(RuntimeException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
 }
