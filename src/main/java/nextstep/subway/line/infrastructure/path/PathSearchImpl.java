@@ -3,7 +3,7 @@ package nextstep.subway.line.infrastructure.path;
 
 import nextstep.subway.line.application.PathSearch;
 import nextstep.subway.line.domain.Path;
-import nextstep.subway.line.dto.path.PathResult;
+import nextstep.subway.line.domain.PathResult;
 import org.springframework.stereotype.Component;
 
 @Component
