@@ -53,6 +53,7 @@ class PathFinderTest {
 		//given
 		//when
 		Distance shortestPathDistance = pathFinder.findShortestPathDistance(선릉역, 강남역);
+		System.out.println(shortestPathDistance.value());
 		//then
 		assertThat(shortestPathDistance).isEqualTo(Distance.of(20));
 	}

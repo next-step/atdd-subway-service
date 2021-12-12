@@ -18,6 +18,9 @@ public class PathFinder {
 		graph = new SubwayGraph(SectionEdge.class);
 		stations.stream().forEach(station -> graph.addVertex(station));
 		sections.stream().forEach(section -> graph.addSectionEdge(section));
+		// sections.stream()
+		// 	.map(SectionEdge::new)
+		// 	.forEach(sectionEdge -> graph.addSectionEdge(sectionEdge));
 		return new PathFinder();
 	}
 

@@ -13,6 +13,8 @@ public class SubwayGraph extends WeightedMultigraph<Station, SectionEdge> {
 	}
 
 	public void addSectionEdge(Section section) {
-		super.setEdgeWeight(super.addEdge(section.getUpStation(), section.getDownStation()), section.getDistanceValue());
+		SectionEdge sectionEdge = new SectionEdge(section);
+		super.addEdge(section.getUpStation(), section.getDownStation(),sectionEdge);
+		super.setEdgeWeight(sectionEdge, section.getDistanceValue());
 	}
 }
