@@ -166,10 +166,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         요청_성공함(response, HttpStatus.NO_CONTENT);
     }
 
-    private Long 내_정보_등록되어_있음(String email, String password, int age) {
+    public static Long 내_정보_등록되어_있음(String email, String password, int age) {
         ExtractableResponse<Response> response = 회원_생성을_요청(email, password, age);
         MemberResponse memberResponse = response.as(MemberResponse.class);
         return memberResponse.getId();
+    }
+
+    public static String createBearerToken(String accessToken) {
+        return "bearer " + accessToken;
     }
 
     private ExtractableResponse<Response> 내_정보_조회_요청함(String accessToken) {
@@ -181,10 +185,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
         return response;
-    }
-
-    private String createBearerToken(String accessToken) {
-        return "bearer " + accessToken;
     }
 
     private ExtractableResponse<Response> 내_정보_수정_요청함(String accessToken, String newEmail, String newPassword, int newAge) {
