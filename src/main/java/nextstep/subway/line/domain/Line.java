@@ -23,7 +23,7 @@ public class Line extends BaseEntity {
 
     private String color;
 
-    private Integer additionalFare;
+    private Integer additionalFare = 0;
 
     @Embedded
     private Sections sections = Sections.empty();
