@@ -85,6 +85,11 @@ public class Section {
         return Arrays.asList(upStation, downStation);
     }
 
+    void removeLine() {
+        line.getSections().remove(this);
+        line = null;
+    }
+
     public Long getId() {
         return id;
     }

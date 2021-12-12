@@ -68,7 +68,7 @@ class LineTest {
         // when, then
         assertThatThrownBy(() -> 일호선.addSection(new Section(일호선, 인천역, 용산역, 5)))
             .isInstanceOf(BadRequestException.class)
-            .hasMessageContaining("이미 등록된 구간 입니다.");
+            .hasMessageContaining("상행역과 하행역이 이미 노선에 모두 등록되어 있습니다.");
     }
 
     @DisplayName("서로 연결이 불가능한 구간이 추가되려고 할 때 예외 발생")
@@ -81,7 +81,7 @@ class LineTest {
         // when, then
         assertThatThrownBy(() -> 일호선.addSection(new Section(일호선, 사당역, 강남역, 5)))
             .isInstanceOf(BadRequestException.class)
-            .hasMessageContaining("등록할 수 없는 구간 입니다.");
+            .hasMessageContaining("추가되는 구간은 기존의 구간과 연결 가능하여야 합니다.");
     }
 
     @Test
