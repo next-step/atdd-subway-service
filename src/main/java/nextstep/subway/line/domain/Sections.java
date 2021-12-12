@@ -173,4 +173,8 @@ public class Sections {
                 .map(Section::getDistance)
                 .collect(Collectors.toList());
     }
+
+    public List<Section> getSections() {
+        return sections;
+    }
 }
