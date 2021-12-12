@@ -171,3 +171,34 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         When 토큰으로 내 정보 삭제 요청
         Then 내 정보 삭제됨
     ```
+
+- 즐겨찾기
+    ```
+    Feature: 즐겨찾기 기능
+
+      Background 
+        Given 지하철역 등록되어 있음
+        And 지하철 노선 등록되어 있음
+        And 지하철 노선에 지하철역 등록되어 있음
+        And 회원 등록되어 있음
+    
+      Scenario: 즐겨찾기 관리 정상 기능
+        Given 로그인 되어있음
+        And 유효한 토큰 사용
+        When 즐겨찾기 생성을 요청
+        Then 즐겨찾기 생성됨
+        When 즐겨찾기 목록 조회 요청
+        Then 즐겨찾기 목록 조회됨
+        When 즐겨찾기 삭제 요청
+        Then 즐겨찾기 삭제됨
+
+      Scenario: 즐겨찾기 관리 정상 기능
+        Given 로그인 되어있지 않음
+        Or 유효하지 않은 토큰 사용
+        When 즐겨찾기 생성을 요청
+        Then 즐겨찾기 생성 실패됨
+        When 즐겨찾기 목록 조회 요청
+        Then 즐겨찾기 목록 조회 실패됨
+        When 즐겨찾기 삭제 요청
+        Then 즐겨찾기 삭제 실패됨
+    ```
