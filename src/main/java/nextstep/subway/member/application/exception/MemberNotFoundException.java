@@ -1,6 +1,8 @@
 package nextstep.subway.member.application.exception;
 
-public class MemberNotFoundException extends RuntimeException {
+import nextstep.subway.common.NotFoundException;
+
+public class MemberNotFoundException extends NotFoundException {
 
     public MemberNotFoundException() {
         super("회원을 찾을 수 없습니다.");
