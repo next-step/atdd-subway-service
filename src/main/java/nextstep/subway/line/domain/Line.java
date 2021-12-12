@@ -1,14 +1,16 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.BaseEntity;
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
+import java.util.*;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Objects;
+
+import org.jgrapht.graph.*;
+
+import nextstep.subway.*;
+import nextstep.subway.fare.*;
+import nextstep.subway.line.dto.*;
+import nextstep.subway.path.domain.*;
+import nextstep.subway.station.domain.*;
 
 @Entity
 public class Line extends BaseEntity {
@@ -24,6 +26,9 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    @Embedded
+    private Fare extraFare;
+
     public Line() {
     }
 
@@ -36,10 +41,23 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         sections.addSection(this, upStation, downStation, distance);
+        this.extraFare = Fare.from(0);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, Distance distance, Fare extraFare) {
+        this.name = name;
+        this.color = color;
+        sections.addSection(this, upStation, downStation, distance);
+        this.extraFare = extraFare;
     }
 
     public static Line of(String name, String color, Station upStation, Station downStation, Distance distance) {
-        return new Line(name, color, upStation, downStation, distance);
+        return new Line(name, color, upStation, downStation, distance, Fare.from(0));
+    }
+
+    public static Line of(String name, String color, Station upStation, Station downStation, Distance distance,
+        Fare extraFare) {
+        return new Line(name, color, upStation, downStation, distance, extraFare);
     }
 
     public static Line from(LineRequest lineRequest) {
@@ -68,6 +86,10 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public int getExtraFare() {
+        return extraFare.fare();
+    }
+
     public List<Station> stations() {
         return sections.stations();
     }
@@ -88,14 +110,17 @@ public class Line extends BaseEntity {
         return sections.sections();
     }
 
-    public void addVertexTo(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    public void addVertexTo(WeightedMultigraph<Station, WeightedEdgeWithLine> graph) {
         stations().forEach(graph::addVertex);
     }
 
-    public void setEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        sectionsList().forEach(section -> graph.setEdgeWeight(
-            graph.addEdge(section.getUpStation(), section.getDownStation()),
-            section.distance())
+    public void setEdgeWeight(WeightedMultigraph<Station, WeightedEdgeWithLine> graph) {
+        sectionsList().forEach(
+            section -> {
+                WeightedEdgeWithLine weightedEdgeWithLine = WeightedEdgeWithLine.from(this);
+                graph.addEdge(section.getUpStation(), section.getDownStation(), weightedEdgeWithLine);
+                graph.setEdgeWeight(weightedEdgeWithLine, section.distance());
+            }
         );
     }
 
@@ -105,7 +130,7 @@ public class Line extends BaseEntity {
             return true;
         if (!(o instanceof Line))
             return false;
-        Line line = (Line) o;
+        Line line = (Line)o;
         return Objects.equals(name, line.name) && Objects.equals(color, line.color);
     }
 

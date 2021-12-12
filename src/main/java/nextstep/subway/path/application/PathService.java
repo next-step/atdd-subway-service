@@ -1,18 +1,17 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.common.exception.NotFoundException;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.domain.DijkstraAlgorithm;
-import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.domain.PathFinder;
-import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
+import java.util.*;
+
+import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
+
+import nextstep.subway.common.exception.*;
+import nextstep.subway.line.domain.*;
+import nextstep.subway.path.domain.*;
+import nextstep.subway.station.domain.*;
 
 @Service
+@Transactional(readOnly = true)
 public class PathService {
     private static final String STATION = "역";
 
@@ -24,18 +23,26 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
-    @Transactional
     public Path shortestPath(long source, long target) {
-        Station startStation = findStation(source);
-        Station endStation = findStation(target);
+        List<Station> findResult = stationRepository.findAllByIdIn(Arrays.asList(source, target));
+
+        Station startStation = getStation(findResult, source);
+        Station endStation = getStation(findResult, target);
 
         List<Line> lines = lineRepository.findAll();
-        PathFinder pathFinder = PathFinder.from(lines, new DijkstraAlgorithm());
-        return pathFinder.shortestPath(startStation, endStation);
+        PathFinder pathFinder = DijkstraPathFinder.from(lines);
+        Path path = pathFinder.shortestPath(startStation, endStation);
+
+        return Path.of(path.getStations(),
+            path.getTotalDistance(),
+            path.getLines()
+        );
     }
 
-    private Station findStation(long id) {
-        return stationRepository.findById(id)
+    private Station getStation(List<Station> findResult, Long stationId) {
+        return findResult.stream()
+            .filter(station -> station.getId().equals(stationId))
+            .findFirst()
             .orElseThrow(() -> new NotFoundException(STATION));
     }
 }

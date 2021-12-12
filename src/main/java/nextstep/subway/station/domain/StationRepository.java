@@ -1,11 +1,12 @@
 package nextstep.subway.station.domain;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.*;
 
-import java.util.Collection;
-import java.util.List;
+import org.springframework.data.jpa.repository.*;
 
 public interface StationRepository extends JpaRepository<Station, Long> {
     @Override
     List<Station> findAll();
+
+    List<Station> findAllByIdIn(List<Long> ids);
 }

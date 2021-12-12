@@ -1,24 +1,27 @@
 package nextstep.subway.favorite;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.favorite.application.FavoriteService;
-import nextstep.subway.favorite.dto.*;
-import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import static nextstep.subway.member.MemberAcceptanceTest.*;
-import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
-import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.subway.station.StationAcceptanceTest.*;
+import static org.assertj.core.api.Assertions.*;
 
-public class FavoriteServiceTest extends AcceptanceTest {
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.*;
+
+import io.restassured.response.*;
+import nextstep.subway.*;
+import nextstep.subway.auth.domain.*;
+import nextstep.subway.common.exception.*;
+import nextstep.subway.favorite.application.*;
+import nextstep.subway.favorite.dto.*;
+import nextstep.subway.station.dto.*;
+
+public class FavoriteServiceTest extends BaseServiceTest {
     @Autowired
     FavoriteService favoriteService;
+
+    @Autowired
+    FavoriteReadService favoriteReadService;
+
     private StationResponse 강남역;
     private StationResponse 정자역;
     private FavoriteResponse favoriteResponse;
@@ -54,14 +57,22 @@ public class FavoriteServiceTest extends AcceptanceTest {
     @DisplayName("사용자 정보를 입력 받아 즐겨찾기 목록을 조회하면 즐겨찾기 콜렉션을 반환한다.")
     @Test
     void findFavoritesTest() {
-        assertThat(favoriteService.findFavorites(loginMember).size()).isEqualTo(1);
+        assertThat(favoriteReadService.findFavorites(loginMember).size()).isEqualTo(1);
     }
 
     @DisplayName("사용자 id를 입력 받아 즐겨찾기 제거 함수를 호출하면 즐겨 찾기 삭제한다.")
     @Test
     void deleteFavoriteTest() {
-        favoriteService.deleteFavorite(loginMember.getId());
-        assertThat(favoriteService.findFavorites(loginMember).size()).isEqualTo(0);
+        favoriteService.deleteFavorite(favoriteResponse.getId(), loginMember.getId());
+        assertThat(favoriteReadService.findFavorites(loginMember).size()).isEqualTo(0);
     }
 
+    @DisplayName("출발역과 도착역이 같은 즐겨찾기를 저장하려고 한다면, 예외를 던진다")
+    @Test
+    void exceptionTest() {
+        assertThatThrownBy(() -> favoriteService.saveFavorite(loginMember,
+            FavoriteRequest.of(강남역.getId(),
+                강남역.getId()))
+        ).isInstanceOf(CannotAddException.class);
+    }
 }

@@ -1,6 +1,6 @@
 package nextstep.subway.member.dto;
 
-import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.*;
 
 public class MemberRequest {
     private String email;
@@ -14,6 +14,10 @@ public class MemberRequest {
         this.email = email;
         this.password = password;
         this.age = age;
+    }
+
+    public static MemberRequest of(String email, String password, Integer age) {
+        return new MemberRequest(email, password, age);
     }
 
     public String getEmail() {

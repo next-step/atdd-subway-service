@@ -1,21 +1,23 @@
 package nextstep.subway.auth.ui;
 
-import nextstep.subway.auth.application.AuthService;
-import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
-import org.springframework.core.MethodParameter;
-import org.springframework.web.bind.support.WebDataBinderFactory;
-import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.method.support.ModelAndViewContainer;
+import javax.servlet.http.*;
 
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.core.*;
+import org.springframework.web.bind.support.*;
+import org.springframework.web.context.request.*;
+import org.springframework.web.method.support.*;
+
+import nextstep.subway.auth.application.*;
+import nextstep.subway.auth.domain.*;
+import nextstep.subway.auth.infrastructure.*;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private AuthService authService;
+    private final AuthService authService;
+    private final AuthReadService authReadService;
 
-    public AuthenticationPrincipalArgumentResolver(AuthService authService) {
+    public AuthenticationPrincipalArgumentResolver(AuthService authService, AuthReadService authReadService) {
         this.authService = authService;
+        this.authReadService = authReadService;
     }
 
     @Override
@@ -24,8 +26,9 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+        NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        return authService.findMemberByToken(credentials);
+        return authReadService.findMemberByToken(credentials);
     }
 }
