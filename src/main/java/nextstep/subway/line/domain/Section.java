@@ -78,7 +78,7 @@ public class Section {
     return upStation.equals(section.upStation) && downStation.equals(section.downStation);
   }
 
-  public void setGraphEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+  public void addGraphEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
     graph.setEdgeWeight(graph.addEdge(upStation, downStation), distance.getDistance());
   }
 

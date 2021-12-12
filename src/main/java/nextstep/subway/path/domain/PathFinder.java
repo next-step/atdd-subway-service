@@ -32,7 +32,7 @@ public class PathFinder {
 
   private static void addEdgeFromLine(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
     for (Section section : line.getSections()) {
-      section.setGraphEdge(graph);
+      section.addGraphEdge(graph);
     }
   }
 
