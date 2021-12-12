@@ -9,7 +9,6 @@ import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,11 +35,6 @@ public class PathServiceTest {
 
   @Mock
   private StationRepository stationRepository;
-
-  @BeforeEach
-  void setUp() {
-    pathService = new PathService(lineRepository, stationRepository);
-  }
 
   @DisplayName("출발역과 도착역의 최단경로를 조회한다.")
   @Test
