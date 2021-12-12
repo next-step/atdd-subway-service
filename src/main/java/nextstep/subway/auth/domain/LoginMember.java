@@ -25,12 +25,22 @@ public class LoginMember implements User {
         return id;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     @Override
     public Integer getAge() {
         return age;
+    }
+
+    @Override
+    public boolean isLoginMember() {
+        return true;
+    }
+
+    @Override
+    public boolean isStranger() {
+        return false;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

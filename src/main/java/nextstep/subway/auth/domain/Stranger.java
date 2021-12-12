@@ -28,4 +28,14 @@ public class Stranger implements User {
     public Integer getAge() {
         throw new AuthorizationException();
     }
+
+    @Override
+    public boolean isLoginMember() {
+        return false;
+    }
+
+    @Override
+    public boolean isStranger() {
+        return true;
+    }
 }

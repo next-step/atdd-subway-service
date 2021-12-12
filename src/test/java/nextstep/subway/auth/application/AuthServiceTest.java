@@ -32,6 +32,7 @@ public class AuthServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
+
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
@@ -62,7 +63,7 @@ public class AuthServiceTest {
         User stranger = authService.findMemberByToken(null);
         User member = authService.findMemberByToken("token");
 
-        assertThat(stranger).isInstanceOf(Stranger.class);
-        assertThat(member).isInstanceOf(LoginMember.class);
+        assertThat(stranger.isStranger()).isTrue();
+        assertThat(member.isLoginMember()).isTrue();
     }
 }
