@@ -104,7 +104,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> 로그인_요청(final String email, final String password) {
+    public static ExtractableResponse<Response> 로그인_요청(final String email, final String password) {
         String uri = "/login/token";
         TokenRequest tokenRequest = new TokenRequest(email, password);
 
