@@ -5,6 +5,7 @@ import nextstep.subway.line.domain.dummy.SectionDummy;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.dummy.StationDummy;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +14,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class LineTest {
+
+    @BeforeEach
+    void setUp() {
+        LineDummy.신분당선.getSections().clear();
+    }
 
     @DisplayName("지하철 역 정보 가져오기")
     @Test
@@ -107,6 +113,32 @@ class LineTest {
         Assertions.assertThatThrownBy(() -> {
             신분당선.addToLineStation(StationDummy.강남역, StationDummy.양재역, 11);
         }).isInstanceOf(RuntimeException.class).hasMessageContaining("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    }
+
+    @DisplayName("지하철 노선 구간 제거하기")
+    @Test
+    void 지하철_노선_구간_제거하기() {
+        // given
+        Line 신분당선 = LineDummy.신분당선;
+        지하철_노선에_역을_등록(신분당선);
+
+        // when
+        신분당선.removeLineStation(StationDummy.강남역);
+
+        // then
+        List<Station> expectedStations = 신분당선.getStations();
+        List<Station> actualStations = Arrays.asList(
+                StationDummy.양재역,
+                StationDummy.양재시민의숲역,
+                StationDummy.청계산입구역,
+                StationDummy.판교역,
+                StationDummy.정자역,
+                StationDummy.미금역,
+                StationDummy.동천역,
+                StationDummy.광교역
+        );
+
+        지하철_노선에_역이_정렬됨(expectedStations, actualStations);
     }
 
     void 지하철_노선에_역을_등록(Line line) {

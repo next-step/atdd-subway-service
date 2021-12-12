@@ -145,6 +145,29 @@ public class Line extends BaseEntity {
                 stations.stream().noneMatch(it -> it == downStation);
     }
 
+    public void removeLineStation(Station station) {
+        if (this.getSections().size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = this.getSections().stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = this.getSections().stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            this.getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> this.getSections().remove(it));
+        downLineStation.ifPresent(it -> this.getSections().remove(it));
+    }
+
     public Long getId() {
         return id;
     }
