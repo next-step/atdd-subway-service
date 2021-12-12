@@ -17,7 +17,7 @@ import org.springframework.transaction.reactive.TransactionalOperatorExtensionsK
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
-    @DisplayName("Bearer Auth")
+    @DisplayName("등록된 회원 정보와 이메일, 비밀번호가 일치하면 로그인이 성공한다.")
     @Test
     void myInfoWithBearerAuth() {
         // given 회원 등록되어 있음
