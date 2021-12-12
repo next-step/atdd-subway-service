@@ -63,10 +63,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         나의_정보를_수정_한다(token, "new@email.com", "dklfsaj", 2);
 
         // then
-        AuthAcceptanceTest.로그인을_요청한다(EMAIL, PASSWORD); // TODO : 수정 후 반영 결과 확인 방법
+        TokenResponse newToken = AuthAcceptanceTest.로그인을_요청한다("new@email.com", "dklfsaj").as(TokenResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 나의_정보를_삭제_한다(token);
+        ExtractableResponse<Response> response = 나의_정보를_삭제_한다(newToken);
 
         // then
         회원_삭제됨(response);

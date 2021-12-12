@@ -25,6 +25,7 @@ public class MemberService {
         return MemberResponse.of(findById(id));
     }
 
+    @Transactional
     public void updateMember(Long id, MemberRequest param) {
         Member member = findById(id);
         member.update(param.toMember());
