@@ -12,7 +12,5 @@ public interface User {
 
     Integer getAge();
 
-    boolean isLoginMember();
-
     boolean isStranger();
 }

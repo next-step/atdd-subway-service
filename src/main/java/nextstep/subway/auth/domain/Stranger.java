@@ -30,11 +30,6 @@ public class Stranger implements User {
     }
 
     @Override
-    public boolean isLoginMember() {
-        return false;
-    }
-
-    @Override
     public boolean isStranger() {
         return true;
     }

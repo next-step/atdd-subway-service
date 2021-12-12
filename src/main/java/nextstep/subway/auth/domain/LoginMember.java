@@ -31,11 +31,6 @@ public class LoginMember implements User {
     }
 
     @Override
-    public boolean isLoginMember() {
-        return true;
-    }
-
-    @Override
     public boolean isStranger() {
         return false;
     }
