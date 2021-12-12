@@ -2,13 +2,12 @@ package nextstep.subway.path.application;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.Collection;
 import java.util.List;
 import nextstep.graph.Graph;
 import nextstep.graph.GraphEdge;
 import nextstep.subway.fare.FarePolicy;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -28,7 +27,7 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(PathRequest request) {
-        List<Line> lines = lineRepository.findAll();
+        Lines lines = Lines.of(lineRepository.findAll());
         Station source = findStationById(request.getSource());
         Station target = findStationById(request.getTarget());
         validateIfExistStations(source, target);
@@ -36,29 +35,22 @@ public class PathService {
         Graph<Station> graph = toGraphFrom(lines);
 
         int distance = (int) graph.getShortestPathWeight(source, target);
-        return new PathResponse(StationResponse.of(graph.getShortestPathList(source, target)),
-            distance, FarePolicy.fareByDistance(distance));
+        List<Station> shortestPath = graph.getShortestPathList(source, target);
+        return new PathResponse(StationResponse.of(shortestPath),
+            distance, FarePolicy.getFare(lines.getLinesInclude(shortestPath), distance));
     }
 
-    private Graph<Station> toGraphFrom(List<Line> lines) {
-        List<Station> vertexes = getAllStationsIn(lines);
+    private Graph<Station> toGraphFrom(Lines lines) {
+        List<Station> vertexes = lines.getAllStations();
         List<GraphEdge<Station>> edges = getAllSectionsToEdges(lines);
 
         return new Graph<>(vertexes, edges);
     }
 
-    private List<GraphEdge<Station>> getAllSectionsToEdges(List<Line> lines) {
-        return lines.stream()
-            .flatMap(line -> line.getSections().getSections().stream())
+    private List<GraphEdge<Station>> getAllSectionsToEdges(Lines lines) {
+        return lines.getAllSections().stream()
             .map(section -> new GraphEdge<>(section.getUpStation(), section.getDownStation(),
                 section.getDistance()))
-            .collect(toList());
-    }
-
-    private List<Station> getAllStationsIn(List<Line> lines) {
-        return lines.stream()
-            .map(Line::getStations)
-            .flatMap(Collection::stream)
             .collect(toList());
     }
 

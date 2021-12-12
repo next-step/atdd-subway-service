@@ -1,5 +1,7 @@
 package nextstep.subway.fare;
 
+import nextstep.subway.line.domain.Lines;
+
 public class FarePolicy {
 
     public static final int BASIC_FARE = 1250;
@@ -13,6 +15,10 @@ public class FarePolicy {
     private FarePolicy() {
     }
 
+    public static Integer getFare(Lines lines, Integer distance) {
+        return fareByDistance(distance) + additionalFareByLine(lines);
+    }
+
     public static Integer fareByDistance(Integer distance) {
         if (distance <= TEN_KM) {
             return BASIC_FARE;
@@ -24,6 +30,11 @@ public class FarePolicy {
         }
 
         return BASIC_FARE + calculateOverFare(distance - BASIC_DISTANCE, FIVE_KM);
+    }
+
+    public static Integer additionalFareByLine(Lines lines) {
+        return lines.mostExpensiveLine()
+            .getAdditionalFare();
     }
 
     private static int calculateOverFare(int distance, int distanceForOverFare) {

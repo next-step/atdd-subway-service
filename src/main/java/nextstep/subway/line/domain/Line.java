@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -12,12 +13,17 @@ import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Line extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
+
     private String color;
+
+    private Integer additionalFare;
 
     @Embedded
     private Sections sections = Sections.empty();
@@ -36,13 +42,43 @@ public class Line extends BaseEntity {
         sections.add(Section.of(this, upStation, downStation, distance));
     }
 
+    public Line(String name, String color, Station upStation, Station downStation, int distance,
+        Integer additionalFare) {
+        this.name = name;
+        this.color = color;
+        sections.add(Section.of(this, upStation, downStation, distance));
+        this.additionalFare = additionalFare;
+    }
+
     public static Line from(String name, String color, Station upStation, Station downStation, int distance) {
         return new Line(name, color, upStation, downStation, distance);
+    }
+
+    public static Line from(String name, String color, Station upStation, Station downStation, int distance,
+        Integer additionalFare) {
+        return new Line(name, color, upStation, downStation, distance, additionalFare);
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Line line = (Line) o;
+        return Objects.equals(id, line.id) && Objects.equals(name, line.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 
     public void removeStation(Station station) {
@@ -51,6 +87,10 @@ public class Line extends BaseEntity {
 
     public void addSections(Section section) {
         sections.connect(section);
+    }
+
+    public boolean isContains(List<Station> stations) {
+        return getStations().containsAll(stations);
     }
 
     public List<Station> getStations() {
@@ -71,5 +111,20 @@ public class Line extends BaseEntity {
 
     public Sections getSections() {
         return sections;
+    }
+
+    public Integer getAdditionalFare() {
+        return additionalFare;
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", color='" + color + '\'' +
+            ", additionalFare=" + additionalFare +
+            ", sections=" + sections +
+            '}';
     }
 }
