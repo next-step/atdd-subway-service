@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.shortest;
 
 import java.util.List;
 

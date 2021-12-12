@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.shortest.ShortestPath;
 import nextstep.subway.path.exception.PathNotFoundException;
 import nextstep.subway.station.domain.Station;
 
