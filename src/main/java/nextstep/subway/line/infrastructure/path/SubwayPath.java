@@ -2,8 +2,8 @@ package nextstep.subway.line.infrastructure.path;
 
 import java.util.List;
 import java.util.Optional;
-import nextstep.subway.common.exception.ErrorCode;
 import nextstep.subway.common.exception.InvalidParameterException;
+import nextstep.subway.line.application.exception.PathErrorCode;
 import nextstep.subway.line.dto.path.PathResult;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -32,6 +32,6 @@ public class SubwayPath {
 
     private GraphPath<Station, SectionEdge> createPath(Station source, Station target) {
         return Optional.ofNullable(path.getPath(source, target))
-            .orElseThrow(() -> InvalidParameterException.of(ErrorCode.PATH_NOT_CONNECT));
+            .orElseThrow(() -> InvalidParameterException.of(PathErrorCode.PATH_NOT_CONNECT));
     }
 }

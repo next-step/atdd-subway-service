@@ -1,8 +1,8 @@
 package nextstep.subway.line.domain;
 
 import java.util.Objects;
-import nextstep.subway.common.exception.ErrorCode;
 import nextstep.subway.common.exception.InvalidParameterException;
+import nextstep.subway.line.application.exception.PathErrorCode;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
@@ -38,13 +38,13 @@ public class Path {
 
     private void validNotSame(Station source, Station target) {
         if (Objects.equals(source, target)) {
-            throw InvalidParameterException.of(ErrorCode.PATH_IN_OUT_SAME);
+            throw InvalidParameterException.of(PathErrorCode.PATH_IN_OUT_SAME);
         }
     }
 
     private void validContains(Sections sections, Station source, Station target) {
         if (!sections.isContainStation(source) || !sections.isContainStation(target)) {
-            throw InvalidParameterException.of(ErrorCode.PATH_IN_OUT_NOT_FOUND);
+            throw InvalidParameterException.of(PathErrorCode.PATH_IN_OUT_NOT_FOUND);
         }
     }
 }

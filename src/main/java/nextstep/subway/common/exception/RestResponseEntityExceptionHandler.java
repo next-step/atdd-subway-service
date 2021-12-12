@@ -23,6 +23,6 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     @ExceptionHandler(value = {DataIntegrityViolationException.class})
     protected ResponseEntity<ErrorResponse> handleLineNameDuplicateConflict() {
         return ResponseEntity.badRequest()
-            .body(ErrorResponse.of(ErrorCode.DATABASE_CONSTRAINT_VIOLATION));
+            .body(ErrorResponse.of(CommonErrorCode.DATABASE_CONSTRAINT_VIOLATION));
     }
 }
