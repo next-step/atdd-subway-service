@@ -13,13 +13,13 @@ public class Fare {
     }
 
     public static Fare from(Long distance) {
-        long overCharge = OverChargeRule.calculateByZone(distance);
+        long overCharge = DistanceChargeRule.calculateFare(distance);
 
         return new Fare(DEFAULT_FARE + overCharge);
     }
 
     public static Fare of(Long distance, List<Section> sections) {
-        long chargeByDistance = OverChargeRule.calculateByZone(distance);
+        long chargeByDistance = DistanceChargeRule.calculateFare(distance);
         long chargeByLine = getMaxLineSurCharge(sections);
 
         return new Fare(DEFAULT_FARE + chargeByDistance + chargeByLine);
@@ -34,5 +34,10 @@ public class Fare {
 
     public Long getFare() {
         return fare;
+    }
+
+    public Fare calculateByAgeFare(int age) {
+        long amount = AgeChargeRule.calculateFare(this.fare, age);
+        return new Fare(amount);
     }
 }

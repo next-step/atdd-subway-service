@@ -90,7 +90,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("다양한 최단 경로 및 요금을 조회한다. 성공 검증")
     @Test
     void successPaths() {
-        ExtractableResponse<Response> 최단_경로_기본요금 = 최단_경로_조회_요청(어른이, 교대역, 양재역);
+        ExtractableResponse<Response> 최단_경로_기본요금 = 최단_경로_조회_요청(교대역, 양재역);
 
         최단_경로_조회_됨(최단_경로_기본요금, Arrays.asList(교대역, 남부터미널역, 양재역), 5L, 1250L);
 
@@ -122,8 +122,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 어린이_기본요금 = 최단_경로_조회_요청(어린이, 교대역, 양재역);
 
        최단_경로_조회_됨(어린이_기본요금, Arrays.asList(교대역, 남부터미널역, 양재역), 5L, 450L);
-
-
 
     }
 
@@ -165,6 +163,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
+    private static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse sourceStation, StationResponse targetStation) {
+        PathRequest pathRequest = new PathRequest(sourceStation.getId(), targetStation.getId());
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={source}&target={target}", sourceStation.getId(), targetStation.getId())
+                .then().log().all()
+                .extract();
+
+    }
 
     private static ExtractableResponse<Response> 최단_경로_조회_요청(String 사용자, StationResponse sourceStation, StationResponse targetStation) {
         PathRequest pathRequest = new PathRequest(sourceStation.getId(), targetStation.getId());

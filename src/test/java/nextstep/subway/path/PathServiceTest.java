@@ -73,7 +73,7 @@ public class PathServiceTest {
         when(lineService.findLines()).thenReturn(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
         // when
-        PathResponse paths = pathService.findPaths(1L, 2L);
+        PathResponse paths = pathService.findPaths(1L, 2L, 0);
 
         // then
         assertThat(paths.getDistance()).isEqualTo(5);

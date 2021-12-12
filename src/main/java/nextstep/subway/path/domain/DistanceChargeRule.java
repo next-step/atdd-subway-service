@@ -1,9 +1,8 @@
 package nextstep.subway.path.domain;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 
-public enum OverChargeRule {
+public enum DistanceChargeRule {
 
     FROM_51KM_OVER(51L, Long.MAX_VALUE, 8L, 100, 50L),
     FROM_11KM_TO_50KM(11L, 50L, 5L, 100, 10L),
@@ -15,7 +14,7 @@ public enum OverChargeRule {
     private int forCharge;
     private long divisionStandard;
 
-    OverChargeRule(long firstStandard, long lastStandard, long perDistance, int forCharge, long divisionStandard) {
+    DistanceChargeRule(long firstStandard, long lastStandard, long perDistance, int forCharge, long divisionStandard) {
         this.firstStandard = firstStandard;
         this.lastStandard = lastStandard;
         this.perDistance = perDistance;
@@ -23,7 +22,7 @@ public enum OverChargeRule {
         this.divisionStandard = divisionStandard;
     }
 
-    public static OverChargeRule valueOf(long distance) {
+    public static DistanceChargeRule valueOf(long distance) {
         return Arrays.stream(values())
                 .filter(rule -> rule.isInclude(distance))
                 .findFirst()
@@ -34,38 +33,18 @@ public enum OverChargeRule {
         return this.firstStandard <= distance && this.lastStandard >= distance;
     }
 
-    public static long calculateByZone(Long distance) {
-        OverChargeRule rule = valueOf(distance);
+    public static long calculateFare(Long distance) {
+        DistanceChargeRule rule = valueOf(distance);
         if (rule.equals(FROM_51KM_OVER)) {
-            return calculateByZone(rule.divisionStandard) + fareFormula((double) distance, rule);
+            return calculateFare(rule.divisionStandard) + fareFormula(distance, rule);
         }
         if (rule.equals(FROM_11KM_TO_50KM)) {
-            return fareFormula((double) distance, rule);
+            return fareFormula(distance, rule);
         }
         return 0L;
     }
 
-    private static long fareFormula(double distance, OverChargeRule rule) {
-        return (long) (Math.ceil((distance - rule.divisionStandard) / rule.perDistance)) * rule.forCharge;
-    }
-
-    public long getFirstStandard() {
-        return firstStandard;
-    }
-
-    public long getLastStandard() {
-        return lastStandard;
-    }
-
-    public long getPerDistance() {
-        return perDistance;
-    }
-
-    public int getForCharge() {
-        return forCharge;
-    }
-
-    public long getDivisionStandard() {
-        return divisionStandard;
+    private static long fareFormula(long distance, DistanceChargeRule rule) {
+        return (long) (Math.ceil(((double) distance - rule.divisionStandard) / rule.perDistance)) * rule.forCharge;
     }
 }

@@ -6,6 +6,7 @@ public class LoginMember {
     private Integer age;
 
     public LoginMember() {
+        age = 0;
     }
 
     public LoginMember(Long id, String email, Integer age) {
