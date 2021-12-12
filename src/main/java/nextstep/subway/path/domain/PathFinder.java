@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -14,6 +15,11 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
+
+    private static final String SOURCE_TARGET_EQUAL_ERROR_MESSAGE = "출발역과 도착역이 같은 경우 최단 경로를 조회할 수 없습니다.";
+    private static final String SOURCE_TARGET_NOT_CONNECTED_ERROR_MESSAGE = "출발역과 도착역이 연결이 되어 있지 않은 경우 최단 경로를 조회할 수 없습니다.";
+    private static final String SOURCE_NOT_FOUND_ERROR_MESSAGE = "출발역이 존재하지 않을 경우 최단 경로를 조회할 수 없습니다.";
+    private static final String TARGET_NOT_FOUND_ERROR_MESSAGE = "도착역이 존재하지 않을 경우 최단 경로를 조회할 수 없습니다.";
 
     private final WeightedGraph<Station, DefaultEdge> graph;
 
@@ -49,8 +55,28 @@ public class PathFinder {
     }
 
     public Path findPath(final Station source, final Station target) {
+        validateFindPath(source, target);
         final DijkstraShortestPath dijkstraPath = new DijkstraShortestPath(graph);
         final GraphPath<Station, DefaultWeightedEdge> path = dijkstraPath.getPath(source, target);
+        validatePath(path);
         return new Path(path.getVertexList(), (int) path.getWeight());
+    }
+
+    private void validateFindPath(final Station source, final Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException(SOURCE_TARGET_EQUAL_ERROR_MESSAGE);
+        }
+        if (!graph.containsVertex(source)) {
+            throw new IllegalArgumentException(SOURCE_NOT_FOUND_ERROR_MESSAGE);
+        }
+        if (!graph.containsVertex(target)) {
+            throw new IllegalArgumentException(TARGET_NOT_FOUND_ERROR_MESSAGE);
+        }
+    }
+
+    private void validatePath(final GraphPath<Station, DefaultWeightedEdge> path) {
+        if (Objects.isNull(path)) {
+            throw new IllegalArgumentException(SOURCE_TARGET_NOT_CONNECTED_ERROR_MESSAGE);
+        }
     }
 }
