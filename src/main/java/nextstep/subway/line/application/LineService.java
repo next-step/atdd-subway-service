@@ -1,7 +1,7 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
-import nextstep.subway.common.LineNotFoundException;
+import nextstep.subway.line.exception.LineNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;

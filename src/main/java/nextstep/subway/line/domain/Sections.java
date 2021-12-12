@@ -7,9 +7,9 @@ import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import nextstep.subway.common.CannotSectionAddException;
-import nextstep.subway.common.DuplicateSectionException;
-import nextstep.subway.common.SectionNotRemovableException;
+import nextstep.subway.line.exception.CannotSectionAddException;
+import nextstep.subway.line.exception.DuplicateSectionException;
+import nextstep.subway.line.exception.SectionNotRemovableException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
