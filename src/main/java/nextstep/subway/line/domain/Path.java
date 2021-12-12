@@ -2,14 +2,26 @@ package nextstep.subway.line.domain;
 
 import java.util.Objects;
 import nextstep.subway.common.exception.InvalidParameterException;
+import nextstep.subway.line.application.PathSearch;
 import nextstep.subway.line.application.exception.PathErrorCode;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
 
+    private PathSearch pathSearch;
     private Sections sections;
     private Station source;
     private Station target;
+
+    public Path(Sections sections, Station source, Station target, PathSearch pathSearch) {
+        validNotSame(source, target);
+        validContains(sections, source, target);
+
+        this.sections = sections;
+        this.source = source;
+        this.target = target;
+        this.pathSearch = pathSearch;
+    }
 
     public Path(Sections sections, Station source, Station target) {
         validNotSame(source, target);
@@ -18,6 +30,11 @@ public class Path {
         this.sections = sections;
         this.source = source;
         this.target = target;
+    }
+
+    public static Path of(Sections sections, Station source, Station target,
+        PathSearch pathSearch) {
+        return new Path(sections, source, target, pathSearch);
     }
 
     public static Path of(Sections sections, Station source, Station target) {
@@ -46,5 +63,9 @@ public class Path {
         if (!sections.isContainStation(source) || !sections.isContainStation(target)) {
             throw InvalidParameterException.of(PathErrorCode.PATH_IN_OUT_NOT_FOUND);
         }
+    }
+
+    public PathResult getShortestPath() {
+        return this.pathSearch.findShortestPath(this);
     }
 }

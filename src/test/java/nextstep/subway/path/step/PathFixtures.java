@@ -3,6 +3,7 @@ package nextstep.subway.path.step;
 import java.util.Arrays;
 import java.util.List;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.fare.Money;
 import nextstep.subway.station.domain.Station;
 
 public class PathFixtures {
@@ -14,10 +15,12 @@ public class PathFixtures {
     public static Station 천호 = new Station(5L, "천호");
     public static Station 강동구청 = new Station(6L, "강동구청");
     public static Station 없는역 = new Station(7L, "없는역");
+    public static Money 이호선추가요금 = Money.wons(900);
+    public static Money 삼호선추가요금 = Money.wons(500);
 
     public static List<Line> 전체구간() {
-        Line 이호선 = new Line("이호선", "red");
-        Line 삼호선 = new Line("삼호선", "red");
+        Line 이호선 = new Line("이호선", "red", 이호선추가요금.getMoney().intValue());
+        Line 삼호선 = new Line("삼호선", "red", 삼호선추가요금.getMoney().intValue());
         Line 신분당선 = new Line("신분당선", "red");
         Line 팔호선 = new Line("팔호선", "red");
 

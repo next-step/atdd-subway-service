@@ -1,11 +1,10 @@
 package nextstep.subway.path.domain;
 
 import static nextstep.subway.path.step.PathFixtures.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.List;
 import nextstep.subway.common.exception.InvalidParameterException;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Path;
 import org.junit.jupiter.api.DisplayName;
@@ -32,5 +31,16 @@ class PathTest {
         // then
         assertThrows(InvalidParameterException.class, () -> lines.toPath(없는역, 교대));
         assertThrows(InvalidParameterException.class, () -> lines.toPath(교대, 없는역));
+    }
+
+
+    @Test
+    @DisplayName("경로 조회 노선 추가요금 책정")
+    void lineAdditionalFare() {
+        // when
+        Lines lines = new Lines(전체구간());
+        Path path = lines.toPath(강남, 남부터미널);
+
+        assertThat(path.getMaxLineAdditionalFare()).isEqualTo(이호선추가요금);
     }
 }
