@@ -60,6 +60,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
 
+    @DisplayName("두 역의 최단 거리 경로를 조회시 지하철 이용 요금도 함께 응답한다.")
+    @Test
+    void getPathsWithFare() {
+        // when
+        ExtractableResponse<Response> 조회_요청 = 최단_경로_조회_요청(강남역, 남부터미널역);
+
+        // then
+        최단_경로_응답됨(조회_요청);
+        최단_경로_조회됨(조회_요청, Arrays.asList(강남역, 양재역, 남부터미널역));
+        최단_경로_계산됨(조회_요청, 12);
+        최단_경로_요금_계산됨(조회_요청, 1250);
+    }
+
     @DisplayName("역과 역 사이의 최단 경로를 조회한다.")
     @Test
     void getPaths() {
@@ -108,6 +121,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_경로_응답_실패됨(조회_요청);
+    }
+
+    private void 최단_경로_요금_계산됨(ExtractableResponse<Response> response, int expectedFare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse).extracting("fare").isEqualTo(expectedFare);
     }
 
     private StationResponse 존재하지_않는_역_생성() {
