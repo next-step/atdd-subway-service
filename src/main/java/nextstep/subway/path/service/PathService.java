@@ -5,7 +5,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 
 import nextstep.subway.line.domain.Sections;
-import nextstep.subway.path.component.PathFinder;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.repository.SectionRepository;
@@ -16,14 +16,11 @@ import nextstep.subway.station.domain.Station;
 public class PathService {
     private final SectionRepository sectionRepository;
     private final StationService stationService;
-    private final PathFinder pathFinder;
 
     public PathService(SectionRepository sectionRepository,
-        StationService stationService,
-        PathFinder pathFinder) {
+        StationService stationService) {
         this.sectionRepository = sectionRepository;
         this.stationService = stationService;
-        this.pathFinder = pathFinder;
     }
 
     public PathResponse getPath(PathRequest pathRequest) {
@@ -32,6 +29,7 @@ public class PathService {
         Station source = stationService.findById(pathRequest.getSource());
         Station target = stationService.findById(pathRequest.getTarget());
 
-        return pathFinder.findPath(graph, source, target);
+        PathFinder pathFinder = new PathFinder(graph, source, target);
+        return pathFinder.findPath();
     }
 }

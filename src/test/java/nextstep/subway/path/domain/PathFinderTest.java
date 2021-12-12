@@ -1,4 +1,4 @@
-package nextstep.subway.path.component;
+package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -60,12 +60,23 @@ class PathFinderTest {
         Sections sections = Sections.from(모든_구간);
         StationResponses stationResponses = StationResponses.from(Arrays.asList(강남역, 양재역, 남부터미널역));
         PathResponse expected = new PathResponse(stationResponses.getResponses(), 9);
-        PathFinder pathFinder = new PathFinder();
         Graph<Station, DefaultWeightedEdge> graph = sections.makeGraph();
 
-        PathResponse actual = pathFinder.findPath(graph, 강남역, 남부터미널역);
+        PathFinder pathFinder = new PathFinder(graph, 강남역, 남부터미널역);
+        PathResponse actual = pathFinder.findPath();
 
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("시작점과 출발점이 동일할 때 에러")
+    @Test
+    void findPath_errorWhenSameSourceAndTarget() {
+        Sections sections = Sections.from(모든_구간);
+        Graph<Station, DefaultWeightedEdge> graph = sections.makeGraph();
+
+        assertThatExceptionOfType(SubwayException.class)
+            .isThrownBy(() -> new PathFinder(graph, 교대역, 교대역))
+            .withMessage("출발역과 도착역이 같습니다.");
     }
 
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우 에러")
@@ -78,10 +89,9 @@ class PathFinderTest {
         Sections sections = Sections.from(모든_구간);
         sections.addSection(정자_미금_구간);
         Graph<Station, DefaultWeightedEdge> graph = sections.makeGraph();
-        PathFinder pathFinder = new PathFinder();
 
         assertThatExceptionOfType(SubwayException.class)
-            .isThrownBy(() -> pathFinder.findPath(graph, 교대역, 정자역))
+            .isThrownBy(() -> new PathFinder(graph, 교대역, 정자역))
             .withMessage("출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
 }

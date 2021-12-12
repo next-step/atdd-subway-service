@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.component.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.repository.SectionRepository;
@@ -30,9 +29,6 @@ class PathServiceTest {
 
     @Mock
     private StationService stationService;
-
-    @Mock
-    private PathFinder pathFinder;
 
     private Line 신분당선;
     private Line 이호선;
@@ -72,7 +68,7 @@ class PathServiceTest {
     @Test
     void getPath() {
         //given
-        PathService pathService = new PathService(sectionRepository, stationService, pathFinder);
+        PathService pathService = new PathService(sectionRepository, stationService);
         PathRequest pathRequest = new PathRequest(1L, 4L);
         StationResponses stationResponses = StationResponses.from(Arrays.asList(강남역, 양재역, 남부터미널역));
         PathResponse expected = new PathResponse(stationResponses.getResponses(), 9);
@@ -80,7 +76,6 @@ class PathServiceTest {
         when(sectionRepository.findAll()).thenReturn(모든_구간);
         when(stationService.findById(1L)).thenReturn(강남역);
         when(stationService.findById(4L)).thenReturn(남부터미널역);
-        when(pathFinder.findPath(any(), any(), any())).thenReturn(expected);
 
         // when
         PathResponse response = pathService.getPath(pathRequest);

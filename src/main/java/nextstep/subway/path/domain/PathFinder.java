@@ -1,4 +1,4 @@
-package nextstep.subway.path.component;
+package nextstep.subway.path.domain;
 
 import java.util.List;
 
@@ -6,7 +6,6 @@ import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.springframework.stereotype.Component;
 
 import nextstep.subway.common.exception.SubwayErrorCode;
 import nextstep.subway.common.exception.SubwayException;
@@ -15,15 +14,39 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.station.dto.StationResponses;
 
-@Component
 public class PathFinder {
-    public PathResponse findPath(Graph<Station, DefaultWeightedEdge> graph, Station source, Station target) {
+    private final GraphPath<Station, DefaultWeightedEdge> path;
+
+    public PathFinder(Graph<Station, DefaultWeightedEdge> graph, Station source, Station target) {
+        this.path = makePath(graph, source, target);
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> makePath(Graph<Station, DefaultWeightedEdge> graph,
+        Station source,
+        Station target) {
+        validateSourceAndTargetDifferent(source, target);
+
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
-        if(path == null) {
+        validateSourceAndTargetConnected(path);
+
+        return path;
+    }
+
+    private void validateSourceAndTargetDifferent(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new SubwayException(SubwayErrorCode.SAME_SOURCE_AND_TARGET);
+        }
+    }
+
+    private void validateSourceAndTargetConnected(GraphPath<Station, DefaultWeightedEdge> path) {
+        if (path == null) {
             throw new SubwayException(SubwayErrorCode.NOT_CONNECTED_SOURCE_AND_TARGET);
         }
+    }
+
+    public PathResponse findPath() {
         List<Station> stations = path.getVertexList();
 
         List<StationResponse> responses = StationResponses.from(stations)
