@@ -13,32 +13,22 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.exception.PathNotFoundException;
 import nextstep.subway.station.domain.Station;
 
-public class Path {
+public class PathFinder {
 
 	private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-	private final List<Station> stations;
-	private final double distance;
-
-	private Path(List<Line> lines, Station source, Station target) {
-		validate(source, target);
+	private PathFinder(List<Line> lines) {
+		validateTofindShortest(lines);
 
 		this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 		lines.stream()
 			.flatMap(line -> line.getSections().stream())
 			.forEach(this::addSectionIntoGraph);
-
-		final GraphPath<Station, DefaultWeightedEdge> path = getPath(source, target);
-		if (null == path) {
-			throw new PathNotFoundException();
-		}
-		this.stations = path.getVertexList();
-		this.distance = path.getWeight();
 	}
 
-	private void validate(Station source, Station target) {
-		if (Objects.equals(source, target)) {
-			throw new IllegalArgumentException("경로의 출발역과 도착역은 서로 달라야 합니다.");
+	private void validateTofindShortest(List<Line> lines) {
+		if (null == lines) {
+			throw new IllegalArgumentException("노선 목록이 있어야 합니다.");
 		}
 	}
 
@@ -51,6 +41,22 @@ public class Path {
 		);
 	}
 
+	public ShortestPath findShortest(Station source, Station target) {
+		validateToFindShortest(source, target);
+
+		final GraphPath<Station, DefaultWeightedEdge> path = getPath(source, target);
+		if (null == path) {
+			throw new PathNotFoundException();
+		}
+		return ShortestPath.of(path.getVertexList(), path.getWeight());
+	}
+
+	private void validateToFindShortest(Station source, Station target) {
+		if (Objects.equals(source, target)) {
+			throw new IllegalArgumentException("경로의 출발역과 도착역은 서로 달라야 합니다.");
+		}
+	}
+
 	private GraphPath<Station, DefaultWeightedEdge> getPath(Station source, Station target) {
 		final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath =
 			new DijkstraShortestPath<>(graph);
@@ -61,15 +67,7 @@ public class Path {
 		}
 	}
 
-	public static Path of(List<Line> lines, Station source, Station target) {
-		return new Path(lines, source, target);
-	}
-
-	public List<Station> getStations() {
-		return stations;
-	}
-
-	public double getDistance() {
-		return distance;
+	public static PathFinder of(List<Line> lines) {
+		return new PathFinder(lines);
 	}
 }
