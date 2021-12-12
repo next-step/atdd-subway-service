@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.Map;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -13,22 +12,21 @@ import nextstep.subway.utils.RestTestApi;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.transaction.reactive.TransactionalOperatorExtensionsKt;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
+
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final int AGE = 20;
 
     @DisplayName("등록된 회원 정보와 이메일, 비밀번호가 일치하면 로그인이 성공한다.")
     @Test
     void myInfoWithBearerAuth() {
         // given 회원 등록되어 있음
-        String email = "email@email.com";
-        String password = "password";
-        int age = 20;
-
-        MemberAcceptanceTest.회원_등록되어_있음(email, password, age);
+        MemberAcceptanceTest.회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
         // when 로그인 요청
-        ExtractableResponse<Response> response = 로그인_요청(email, password);
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
 
         // then 로그인 됨
         로그인_됨(response);
@@ -39,16 +37,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBadBearerAuth1() {
         // given 회원 등록되어 있음
-        String email = "email@email.com";
-        String password = "password";
-        int age = 20;
-
-        String wrongEmail = "notmember@email.com";
-        String wrongPassword = "notmember";
-
-        MemberAcceptanceTest.회원_등록되어_있음(email, password, age);
+        MemberAcceptanceTest.회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
         // when 등록하지 않은 회원 정보로 로그인 요청
+        String wrongEmail = "notmember@email.com";
+        String wrongPassword = "notmember";
         ExtractableResponse<Response> response = 로그인_요청(wrongEmail, wrongPassword);
 
         // then 로그인 실패됨
@@ -59,15 +52,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBadBearerAuth2() {
         // given 회원 등록되어 있음
-        String email = "email@email.com";
-        String password = "password";
-        int age = 20;
-
-        MemberAcceptanceTest.회원_등록되어_있음(email, password, age);
+        MemberAcceptanceTest.회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
         // when 잘못된 이메일로 로그인 요청
         String wrongEmail = "testemail@email.com";
-        ExtractableResponse<Response> response2 = 로그인_요청(wrongEmail, password);
+        ExtractableResponse<Response> response2 = 로그인_요청(wrongEmail, PASSWORD);
 
         // then
         로그인_실패됨(response2);
@@ -77,15 +66,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBadBearerAuth3() {
         // given 회원 등록되어 있음
-        String email = "email@email.com";
-        String password = "password";
-        int age = 20;
-
-        MemberAcceptanceTest.회원_등록되어_있음(email, password, age);
+        MemberAcceptanceTest.회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
         // when 잘못된 패스워드로 로그인 요청
         String wrongPassword = "secret";
-        ExtractableResponse<Response> response = 로그인_요청(email, wrongPassword);
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, wrongPassword);
 
         // then 로그인 실패됨
         로그인_실패됨(response);
