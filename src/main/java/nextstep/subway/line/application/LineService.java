@@ -49,6 +49,11 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
+    public List<Line> findAll() {
+        return lineRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
     public LineResponse findLineById(final Long id) {
         final Line line = getLineById(id);
         return LineResponse.of(line);
