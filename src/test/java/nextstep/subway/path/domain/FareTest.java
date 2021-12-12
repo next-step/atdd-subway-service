@@ -27,15 +27,15 @@ public class FareTest {
     void faresByDistance() {
         Fare fare = Fare.from(11L);
 
-        assertThat(fare.getFare()).isEqualTo(1550L);
+        assertThat(fare.getFare()).isEqualTo(1350L);
 
         fare = Fare.from(23L);
 
-        assertThat(fare.getFare()).isEqualTo(1750L);
+        assertThat(fare.getFare()).isEqualTo(1550L);
 
-        fare = Fare.from(51L);
+        fare = Fare.from(66L);
 
-        assertThat(fare.getFare()).isEqualTo(1950L);
+        assertThat(fare.getFare()).isEqualTo(2250L);
     }
 
     @DisplayName("라인 추가요금 정책 검증")

@@ -4,10 +4,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -18,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,15 +41,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 수서역;
     private StationResponse 양재시민의숲;
 
+    private String 어른이;
+    private String 청소년;
+    private String 어린이;
+
     /**
      * 교대역 -- *2호선* 10 --- 강남역
      * |                        |
-     * *3호선*                   *신분당선*
+     * *3호선*                   *신분당선*(700원 추가요금냄)
      * 3                        10
      * |                        |
-     * 남부터미널역 -- *3호선* 2 -양재 -- *3호선* 15 -- 학여울역 -- *3호선* 50 -- 수서역
+     * 남부터미널역 -- *3호선* 2 -양재 -- *3호선* 10 -- 학여울역 -- *3호선* 51 -- 수서역
      *                          |
-     *                          *신분당선*
+     *                          *신분당선*(700원 추가요금냄)
      *                          4
      *                          |
      *                          양재시민의숲
@@ -70,42 +75,69 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 양재역, 학여울역, 15);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 학여울역, 수서역, 50);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 양재역, 학여울역, 10);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 학여울역, 수서역, 51);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 양재시민의숲, 4);
+
+        MemberAcceptanceTest.회원_생성을_요청("email@email.com", "password", 20);
+        MemberAcceptanceTest.회원_생성을_요청("youth@email.com", "password", 13);
+        MemberAcceptanceTest.회원_생성을_요청("child@email.com", "password", 8);
+        어른이 = MemberAcceptanceTest.로그인_토큰_가져오기(AuthAcceptanceTest.로그인_요청("email@email.com", "password"));
+        청소년 = MemberAcceptanceTest.로그인_토큰_가져오기(AuthAcceptanceTest.로그인_요청("youth@email.com", "password"));
+        어린이 = MemberAcceptanceTest.로그인_토큰_가져오기(AuthAcceptanceTest.로그인_요청("child@email.com", "password"));
     }
 
     @DisplayName("다양한 최단 경로 및 요금을 조회한다. 성공 검증")
     @Test
     void successPaths() {
-        ExtractableResponse<Response> 최단_경로_기본요금 = 최단_경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> 최단_경로_기본요금 = 최단_경로_조회_요청(어른이, 교대역, 양재역);
 
         최단_경로_조회_됨(최단_경로_기본요금, Arrays.asList(교대역, 남부터미널역, 양재역), 5L, 1250L);
 
-        ExtractableResponse<Response> 중간_경로_요금 = 최단_경로_조회_요청(교대역, 학여울역);
 
-        최단_경로_조회_됨(중간_경로_요금, Arrays.asList(교대역, 남부터미널역, 양재역, 학여울역), 20L, 1650L);
+        ExtractableResponse<Response> 중간_경로_요금 = 최단_경로_조회_요청(어른이, 교대역, 학여울역);
 
-        ExtractableResponse<Response> 최대_경로_요금 = 최단_경로_조회_요청(교대역, 수서역);
+        최단_경로_조회_됨(중간_경로_요금, Arrays.asList(교대역, 남부터미널역, 양재역, 학여울역), 15L, 1350L);
 
-        최단_경로_조회_됨(최대_경로_요금, Arrays.asList(교대역, 남부터미널역, 양재역, 학여울역, 수서역), 70L, 2150L);
 
-        ExtractableResponse<Response> 노선별_요금 = 최단_경로_조회_요청(교대역, 양재시민의숲);
+        ExtractableResponse<Response> 최대_경로_요금 = 최단_경로_조회_요청(어른이, 교대역, 수서역);
+
+        최단_경로_조회_됨(최대_경로_요금, Arrays.asList(교대역, 남부터미널역, 양재역, 학여울역, 수서역), 66L, 2250L);
+
+
+        ExtractableResponse<Response> 노선별_요금 = 최단_경로_조회_요청(어른이, 교대역, 양재시민의숲);
 
         최단_경로_조회_됨(노선별_요금, Arrays.asList(교대역, 남부터미널역, 양재역, 양재시민의숲), 9L, 1950L);
+    }
+
+    @DisplayName("청소년과 어린이 사용자 일때 요금을 조회 한다.")
+    @Test
+    void youthAndChild() {
+
+        ExtractableResponse<Response> 청소년_기본요금 = 최단_경로_조회_요청(청소년, 교대역, 양재역);
+
+        최단_경로_조회_됨(청소년_기본요금, Arrays.asList(교대역, 남부터미널역, 양재역), 5L, 720L);
+
+
+        ExtractableResponse<Response> 어린이_기본요금 = 최단_경로_조회_요청(어린이, 교대역, 양재역);
+
+       최단_경로_조회_됨(어린이_기본요금, Arrays.asList(교대역, 남부터미널역, 양재역), 5L, 450L);
+
+
+
     }
 
     @DisplayName("최단 경로를 조회한다. 실패 검증")
     @Test
     void failsPaths() {
-        ExtractableResponse<Response> 출발역과_도착역이_같음 = 최단_경로_조회_요청(교대역, 교대역);
+        ExtractableResponse<Response> 출발역과_도착역이_같음 = 최단_경로_조회_요청(어른이, 교대역, 교대역);
 
         최단_경로_조회_실패(출발역과_도착역이_같음);
 
         StationResponse 용마산역 = StationAcceptanceTest.지하철역_등록되어_있음("용마산역").as(StationResponse.class);
         StationResponse 중곡역 = StationAcceptanceTest.지하철역_등록되어_있음("중곡역").as(StationResponse.class);
         LineResponse 칠호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("칠호선", "bg-red-600", 용마산역.getId(), 중곡역.getId(), 5)).as(LineResponse.class);
-        ExtractableResponse<Response> 출발역과_도착역이_연결이_안되어있음 = 최단_경로_조회_요청(용마산역, 교대역);
+        ExtractableResponse<Response> 출발역과_도착역이_연결이_안되어있음 = 최단_경로_조회_요청(어른이, 용마산역, 교대역);
 
         최단_경로_조회_실패(출발역과_도착역이_연결이_안되어있음);
 
@@ -134,11 +166,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse sourceStation, StationResponse targetStation) {
+    private static ExtractableResponse<Response> 최단_경로_조회_요청(String 사용자, StationResponse sourceStation, StationResponse targetStation) {
         PathRequest pathRequest = new PathRequest(sourceStation.getId(), targetStation.getId());
 
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(사용자)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={source}&target={target}", sourceStation.getId(), targetStation.getId())
                 .then().log().all()

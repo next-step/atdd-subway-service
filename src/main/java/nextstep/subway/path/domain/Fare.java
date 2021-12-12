@@ -13,13 +13,13 @@ public class Fare {
     }
 
     public static Fare from(Long distance) {
-        long overCharge = OverChargeRule.calculateOverFare(distance);
+        long overCharge = OverChargeRule.calculateByZone(distance);
 
         return new Fare(DEFAULT_FARE + overCharge);
     }
 
     public static Fare of(Long distance, List<Section> sections) {
-        long chargeByDistance = OverChargeRule.calculateOverFare(distance);
+        long chargeByDistance = OverChargeRule.calculateByZone(distance);
         long chargeByLine = getMaxLineSurCharge(sections);
 
         return new Fare(DEFAULT_FARE + chargeByDistance + chargeByLine);
