@@ -26,7 +26,6 @@ public class LineRequest {
         this.surCharge = surCharge;
     }
 
-
     public String getName() {
         return name;
     }
@@ -45,6 +44,10 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public Long getSurCharge() {
+        return surCharge;
     }
 
     public Line toLine() {
