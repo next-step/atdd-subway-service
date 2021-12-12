@@ -1,8 +1,17 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.station.domain.Station;
+import java.util.Arrays;
+import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section {
@@ -34,6 +43,47 @@ public class Section {
         this.distance = distance;
     }
 
+    void divideBy(Section section) {
+        if (!isOverlapped(section)) {
+            throw new IllegalArgumentException("section must be overlapped to divide");
+        }
+        if (section.getDistance() >= distance) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        if (upStation.equals(section.getUpStation())) {
+            upStation = section.getDownStation();
+        }
+        if (downStation.equals(section.getDownStation())) {
+            downStation = section.getUpStation();
+        }
+        distance = distance - section.getDistance();
+    }
+
+    boolean isOverlapped(Section section) {
+        return upStation.equals(section.getUpStation()) || downStation.equals(section.getDownStation());
+    }
+
+    void connectWith(final Section section) {
+        if (!isNextSection(section) && !section.isNextSection(this)) {
+            throw new IllegalArgumentException("section cannot be connected");
+        }
+        if (isNextSection(section)) {
+            upStation = section.getUpStation();
+        }
+        if (section.isNextSection(this)) {
+            downStation = section.getDownStation();
+        }
+        distance = distance + section.getDistance();
+    }
+
+    boolean isNextSection(final Section section) {
+        return upStation.equals(section.downStation);
+    }
+
+    List<Station> getStations() {
+        return Arrays.asList(upStation, downStation);
+    }
+
     public Long getId() {
         return id;
     }
@@ -52,21 +102,5 @@ public class Section {
 
     public int getDistance() {
         return distance;
-    }
-
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
     }
 }
