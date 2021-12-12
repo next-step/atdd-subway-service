@@ -46,7 +46,7 @@ public class DistanceTest {
         Distance distance2 = new Distance(10);
 
         assertThatExceptionOfType(SubwayException.class)
-            .isThrownBy(() ->  distance.subtract(distance2))
+            .isThrownBy(() -> distance.subtract(distance2))
             .withMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 }
