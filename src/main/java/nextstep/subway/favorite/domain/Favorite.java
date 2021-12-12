@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -20,18 +21,23 @@ public class Favorite {
     @JoinColumn(name = "target")
     private Station target;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     protected Favorite() {
 
     }
 
-    private Favorite(Station source, Station target) {
+    private Favorite(Station source, Station target, Member member) {
         validateCorrectSourceAndTarget(source, target);
         this.source = source;
         this.target = target;
+        this.member = member;
     }
 
-    public static Favorite of(Station source, Station target) {
-        Favorite favorite = new Favorite(source, target);
+    public static Favorite of(Station source, Station target, Member member) {
+        Favorite favorite = new Favorite(source, target, member);
         return favorite;
     }
 
