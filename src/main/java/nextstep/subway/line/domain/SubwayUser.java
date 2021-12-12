@@ -17,13 +17,13 @@ public enum SubwayUser {
 
     ADULT(20, Integer.MAX_VALUE, true, false, 0, 0, "성인, 20 ~ xx세, 요금 부가 대상 o, 할인 대상x, 할인율 0%, 공제액 0");
 
-    private int minAge;
-    private int maxAge;
-    private boolean payUser;
-    private boolean discountUser;
-    private int discountRate;
-    private int deductibleAmount;
-    private String desc;
+    private final int minAge;
+    private final int maxAge;
+    private final boolean payUser;
+    private final boolean discountUser;
+    private final int discountRate;
+    private final int deductibleAmount;
+    private final String desc;
 
     SubwayUser(int minAge, int maxAge, boolean payUser, boolean discountUser, int discountRate, int deductibleAmount, String desc) {
         this.minAge = minAge;
@@ -44,22 +44,6 @@ public enum SubwayUser {
 
     public boolean includes(int age) {
         return minAge <= age && maxAge >= age;
-    }
-
-    public boolean isInfant() {
-        return this == INFANT;
-    }
-
-    public boolean isChild() {
-        return this == CHILD;
-    }
-
-    public boolean isYouth() {
-        return this == YOUTH;
-    }
-
-    public boolean isAdult() {
-        return this == ADULT;
     }
 
     public boolean isPayUser() {

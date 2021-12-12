@@ -37,24 +37,6 @@ public class PathResponse {
         this.fare = calculateFare(distance, user, extraCharge).intValue();
     }
 
-//    private PathResponse(List<StationResponse> stations, Distance distance, User user, ExtraCharge extraCharge) {
-//        this.stations = new ArrayList<>(stations);
-//        this.distance = distance.intValue();
-//        this.fare = calculateFare(distance, user, extraCharge);
-//    }
-
-//    private int calculateFare(Distance distance, User user, ExtraCharge extraCharge) {
-//        if (user.isStranger()) {
-//            return SubwayFare.rateInquiry(distance, extraCharge);
-//        }
-//        return SubwayFare.rateInquiry(distance, SubwayUser.of(user.getAge()), extraCharge);
-//    }
-//    private int calculateFare(Distance distance, User user, Money extraCharge) {
-//        if (user.isStranger()) {
-//            return SubwayFare.rateInquiry(distance, extraCharge).intValue();
-//        }
-//        return SubwayFare.rateInquiry(distance, SubwayUser.of(user.getAge()), extraCharge).intValue();
-//    }
     private Money calculateFare(Distance distance, User user, Money extraCharge) {
         if (user.isStranger()) {
             return SubwayFare.rateInquiry(distance, extraCharge);

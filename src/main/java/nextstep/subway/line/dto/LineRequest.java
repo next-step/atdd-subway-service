@@ -54,6 +54,10 @@ public class LineRequest {
         return distance;
     }
 
+    public int getExtraCharge() {
+        return extraCharge;
+    }
+
     public Line toLine(Station upStation, Station downStation) {
         return Line.of(name, color, upStation, downStation, distance, extraCharge);
     }

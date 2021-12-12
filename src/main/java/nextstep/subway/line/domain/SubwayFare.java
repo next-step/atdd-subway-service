@@ -46,6 +46,7 @@ public enum SubwayFare {
         int money = Arrays.stream(SubwayFare.values())
                 .mapToInt(it -> it.useExtraCharge ? it.calculateOverFare(distance) : BASE_RATE)
                 .sum();
+
         return Money.of(money);
     }
 
@@ -55,16 +56,15 @@ public enum SubwayFare {
 
     public static Money rateInquiry(Distance distance, SubwayUser user, Money money) {
         if (!user.isPayUser()) {
-            return Money.of(0);
+            return Money.of(Money.MIN_VALUE);
         }
-
         Money fare = rateInquiry(distance);
         return money.plus(discountFare(fare, user));
     }
 
     public static Money discountFare(Money money, SubwayUser user) {
         if (!user.isPayUser()) {
-            return Money.of(0);
+            return Money.of(Money.MIN_VALUE);
         }
         if (!user.isDiscountUser()) {
             return money;

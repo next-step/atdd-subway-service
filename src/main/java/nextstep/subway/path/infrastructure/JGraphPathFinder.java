@@ -69,7 +69,7 @@ public class JGraphPathFinder implements PathFinder {
     }
 
     private void drawVertex(List<Station> stations, WeightedMultigraph<Station, PathEdge> graph) {
-        stations.stream().forEach(graph::addVertex);
+        stations.forEach(graph::addVertex);
     }
 
     private Station getStation(List<Station> stations, Long srcStationId) {

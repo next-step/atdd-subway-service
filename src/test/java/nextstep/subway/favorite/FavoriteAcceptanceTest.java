@@ -55,8 +55,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        LineResponse 일호선 = 일호선_등록되어_있음();
-        LineResponse 이호선 = 이호선_등록되어_있음();
+        LineResponse 일호선 = 일호선_등록되어_있음_추가요금_1000();
+        LineResponse 이호선 = 이호선_등록되어_있음_추가요금_없음();
         출발지_ID = 일호선.getStations().get(0).getId();
         목적지_ID = 일호선.getStations().get(1).getId();
         연결되지_않은_목적지_ID = 이호선.getStations().get(1).getId();
@@ -182,22 +182,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private LineResponse 일호선_등록되어_있음() {
+    private LineResponse 일호선_등록되어_있음_추가요금_1000() {
         StationResponse 인천 = 지하철역_등록되어_있음("인천").as(StationResponse.class);
         StationResponse 소요산 = 지하철역_등록되어_있음("소요산").as(StationResponse.class);
 
         ExtractableResponse<Response> response = 지하철_노선_등록되어_있음(
-                new LineRequest("일호선", "남색", 인천.getId(), 소요산.getId(), 100));
+                new LineRequest("일호선", "남색", 인천.getId(), 소요산.getId(), 100, 1000));
 
         return response.jsonPath().getObject("", LineResponse.class);
     }
 
-    private LineResponse 이호선_등록되어_있음() {
+    private LineResponse 이호선_등록되어_있음_추가요금_없음() {
         StationResponse 건대입구 = 지하철역_등록되어_있음("건대입구").as(StationResponse.class);
         StationResponse 왕십리 = 지하철역_등록되어_있음("왕십리").as(StationResponse.class);
 
         ExtractableResponse<Response> response = 지하철_노선_등록되어_있음(
-                new LineRequest("이호선", "녹색", 건대입구.getId(), 왕십리.getId(), 100));
+                new LineRequest("이호선", "녹색", 건대입구.getId(), 왕십리.getId(), 100, 0));
 
         return response.jsonPath().getObject("", LineResponse.class);
     }

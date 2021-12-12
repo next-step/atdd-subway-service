@@ -48,6 +48,9 @@ public class Money {
         }
     }
 
+    public Money discount(int deductibleAmount, int discountRate) {
+        return Money.of((money.intValue() - deductibleAmount) * (100 - discountRate) / 100);
+    }
     public Money minus(Money target) {
         return Money.of(this.money.subtract(target.money));
     }
@@ -77,7 +80,7 @@ public class Money {
         return Objects.hash(money);
     }
 
-    public Money discount(int deductibleAmount, int discountRate) {
-        return Money.of((money.intValue() - deductibleAmount) * (100 - discountRate) / 100);
-    }
+
+
+
 }

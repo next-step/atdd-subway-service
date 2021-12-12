@@ -31,9 +31,9 @@ class SubwayUserTest {
         final SubwayUser adultUser = SubwayUser.of(adult.getAge());
 
         //then
-        assertThat(infantUser.isInfant()).isTrue();
-        assertThat(childUser.isChild()).isTrue();
-        assertThat(youthUser.isYouth()).isTrue();
-        assertThat(adultUser.isAdult()).isTrue();
+        assertThat(infantUser.isPayUser()).isFalse();
+        assertThat(childUser.isPayUser()).isTrue();
+        assertThat(youthUser.isPayUser()).isTrue();
+        assertThat(adultUser.isPayUser()).isTrue();
     }
 }
