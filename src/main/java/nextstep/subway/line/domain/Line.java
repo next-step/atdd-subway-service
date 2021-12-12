@@ -12,8 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Arrays;
-import java.util.NoSuchElementException;
 
 @Entity
 public class Line extends BaseEntity {
@@ -95,16 +93,16 @@ public class Line extends BaseEntity {
         validateDeleteStation(station);
 
         if (isFirstStation(station)) {
-            deleteFirstStation(station);
+            sections.deleteByUpStation(station);
             return;
         }
 
         if (isLastStation(station)) {
-            deleteLastStation(station);
+            sections.deleteByDownStation(station);
             return;
         }
 
-        deleteBetweenStation(station);
+        sections.deleteByBetweenStation(station);
     }
 
     private boolean isFirstStation(Station station) {
@@ -118,7 +116,7 @@ public class Line extends BaseEntity {
     }
 
     private Station findUpStation() {
-        Station station = getFirstSection().getUpStation();
+        Station station = sections.getFirstSection().getUpStation();
 
         while (sections.hasSectionByDownStation(station)) {
             Section nextSection = sections.getSectionByDownStation(station);
@@ -128,20 +126,13 @@ public class Line extends BaseEntity {
     }
 
     private Station findDownStation() {
-        Station station = getFirstSection().getDownStation();
+        Station station = sections.getFirstSection().getDownStation();
 
         while (sections.hasSectionByUpStation(station)) {
             Section nextSection = sections.getSectionByUpStation(station);
             station = nextSection.getDownStation();
         }
         return station;
-    }
-
-    private Section getFirstSection() {
-        if (sections.isEmpty()) {
-            throw new NoSuchElementException("구간 목록이 비어있습니다.");
-        }
-        return sections.getSections().get(0);
     }
 
     private void validateDeleteStation(Station station) {
@@ -151,32 +142,5 @@ public class Line extends BaseEntity {
         if (getStations().notContains(station)) {
             throw new NotAcceptableApiException(ErrorCode.NOT_REGISTERED_STATION_TO_LINE);
         }
-    }
-
-    private void deleteFirstStation(Station station) {
-        sections.getSections().stream()
-                .filter(section -> section.isEqualUpStation(station))
-                .findFirst()
-                .ifPresent(findSection -> sections.getSections().remove(findSection));
-    }
-
-    private void deleteLastStation(Station station) {
-        sections.getSections().stream()
-                .filter(section -> section.isEqualDownStation(station))
-                .findFirst()
-                .ifPresent(findSection -> sections.getSections().remove(findSection));
-    }
-
-    private void deleteBetweenStation(Station station) {
-        Section oldSection = sections.getSectionByDownStation(station);
-        Section nextOldSection = sections.getSectionByUpStation(station);
-
-        Station newUpStation = oldSection.getUpStation();
-        Station newDownStation = nextOldSection.getDownStation();
-        int newDistance = oldSection.getDistance() + nextOldSection.getDistance();
-        Section newSection = Section.of(this, newUpStation, newDownStation, newDistance);
-
-        sections.getSections().removeAll(Arrays.asList(oldSection, nextOldSection));
-        sections.add(newSection);
     }
 }

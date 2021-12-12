@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -59,6 +60,41 @@ public class Sections {
                 .filter(section -> section.isEqualDownStation(station))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException(String.format("하행역이 일치하는 구간이 없습니다. (downStationId: %d)", station.getId())));
+    }
+
+    public void deleteByUpStation(Station station) {
+        sections.stream()
+                .filter(section -> section.isEqualUpStation(station))
+                .findFirst()
+                .ifPresent(findSection -> sections.remove(findSection));
+    }
+
+    public void deleteByDownStation(Station station) {
+        sections.stream()
+                .filter(section -> section.isEqualDownStation(station))
+                .findFirst()
+                .ifPresent(findSection -> sections.remove(findSection));
+    }
+
+    public void deleteByBetweenStation(Station station) {
+        Section oldSection = getSectionByDownStation(station);
+        Section nextOldSection = getSectionByUpStation(station);
+        Line line = oldSection.getLine();
+
+        Station newUpStation = oldSection.getUpStation();
+        Station newDownStation = nextOldSection.getDownStation();
+        int newDistance = oldSection.getDistance() + nextOldSection.getDistance();
+        Section newSection = Section.of(line, newUpStation, newDownStation, newDistance);
+
+        sections.removeAll(Arrays.asList(oldSection, nextOldSection));
+        sections.add(newSection);
+    }
+
+    public Section getFirstSection() {
+        if (sections.isEmpty()) {
+            throw new NoSuchElementException("구간 목록이 비어있습니다.");
+        }
+        return sections.get(0);
     }
 
     private Stations getStations() {
