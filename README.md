@@ -168,12 +168,65 @@ Feature: 즐겨찾기를 관리한다.
 
 ### 4단계 - 요금 조회
 
-- [ ] 노선에 `추가요금` 필드 추가하기
-    - [ ] 노선 테스트 코드 리팩토링
-- [ ] 경로 조회 시 거리 기준 요금 정보 포함하기
-    - [ ] 노선별 추가 요금정책
-- [ ] 로그인 유저일 경우
-    - [ ] 연령별 할인 요금정책
+- [X] 노선에 `추가요금` 필드 추가하기
+    - [X] 노선 테스트 코드 리팩토링
+- [X] 경로 조회 시 거리 기준 요금 정보 포함하기
+    - [X] 노선별 추가 요금정책
+- [X] 로그인 유저일 경우
+    - [X] 연령별 할인 요금정책
+- 테스트 작성
+    - [X] 노선 추가 요금 테스트
+    - [X] 거리별 추가 요금 테스트
+    - [X] 연령별 할인 요금 테스트
+    - [X] 경로 조회 응답 요금 포함 테스트
+
+#### 요금 정책 구조
+
+```text
+- config
+    - SubwayFarePolicyConfig : 요금정책을 묶어주어 스프링 빈 생성
+- line
+    - application
+      - FarePolicyHandler  : 요금정책 관리 인터페이스(interface)
+    - domain
+      - fare
+        - policy
+          - BaseFarePolicy : 요금 계산 메소드를 가지는 기본 정책 인터페이스 (interface)
+          - LineAdditionalFarePolicy : 노선의 추가요금 반환 (abstract)
+          - DistanceFarePolicy  : 경로 거리별 추가 요금 적용 (abstract)
+          - AgeDiscountFarePolicy : 연령별 할인 요금 적용 (abstract)
+        - policycondition
+          - DistancePolicyCondition (interface) : 거리를 입력받아 요금 계산
+          - AgeDiscountFareCondition (interface)  : 나이를 입력받아 요금 계산 
+    - infrastructure
+      - policy
+        - DistancePolicy : 거리 요금 정책 조건 반환
+        - AgeDiscountPolicy : 연령별 요금 할인 정책 조건 반환
+        - FarePolicyHandlerImpl : 요금정책 목록으로 전체 조건 반영
+      - policycondition
+        - ChildDiscountCondition : 어린이 요금 정책 구현체
+        - YouthDiscountCondition : 청소년 요금 정책 구현체
+        - DefaultDistanceFareCondition : 기본 거리 요금정책 구현체
+        - DistanceFareFirstSectionCondition : 10~50KM 추가 요금정책 구현체
+        - DistanceFareSecondSectionCondition : 50KM 초과 추가 요금정책 구현체
+
+```
+
+- 거리 요금 정책 추가 로직 (ex)
+
+1. `infrastructure.policycondition.{추가DiscountCondition}` 을 추가
+2. `AgeDiscountPolicy` 의 `CONDITIONS` 변수에 할당
+
+- 새로운 정책 타입 추가 로직 (ex)
+
+1. `domain.fare.policy.{추가FarePolicy}` 을 새로운 정책 타입 추가
+    1. 다중 조건이 필요 없다면 해당 정책 `getCalculateFare`에서 수행
+2. 다중 조건이 있을 경우
+    1. `domain.fare.policycondition.{추가FareCondition}` 조건 규격 인터페이스 정의
+3. `infrastructure.policycondition.{추가Condition}` 다중 조건 추가
+4. `infrastructure.policy.{추가Policy}` "1번"에서 생성한 정책 구현체
+    1. 정책 조건 맵핑
+5. `SubwayFarePolicyConfig` 스프링 빈객체 등록
 
 #### 요금 정책
 
@@ -207,3 +260,8 @@ Feature: 지하철 경로 검색
     And 총 거리도 함께 응답함
     And ** 지하철 이용 요금도 함께 응답함 **
 ```
+
+#### 참고 자료
+
+[Junit 계층구조](https://johngrib.github.io/wiki/junit5-nested/)  
+[스프링 빈](https://cbw1030.tistory.com/54)
