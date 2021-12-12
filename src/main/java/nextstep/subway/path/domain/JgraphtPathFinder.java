@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.error.SubwayInternalException;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -16,7 +17,7 @@ import java.util.Objects;
 public class JgraphtPathFinder implements PathFinder {
 
     public Path findPath(List<Line> lines, Station sourceStation, Station targetStation) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = initGraph(lines);
+        WeightedMultigraph<Station, SectionEdge> graph = initGraph(lines);
         validationSameStation(sourceStation, targetStation);
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
@@ -26,12 +27,12 @@ public class JgraphtPathFinder implements PathFinder {
 
         List<Station> stationsPath = graphPath.getVertexList();
         Long distance = (long) dijkstraShortestPath.getPath(sourceStation, targetStation).getWeight();
-
-        return new Path(stationsPath, distance);
+        List<Section> sections = SectionEdge.toSections(graphPath.getEdgeList());
+        return new Path(stationsPath, sections, distance);
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> initGraph(List<Line> lines) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    private WeightedMultigraph<Station, SectionEdge> initGraph(List<Line> lines) {
+        WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph(SectionEdge.class);
         for (Line line : lines) {
             addVertex(graph, line);
             setEdgeWeight(graph, line);
@@ -39,18 +40,20 @@ public class JgraphtPathFinder implements PathFinder {
         return graph;
     }
 
-    private void setEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
-        line.getSections().stream().forEach(
+    private void setEdgeWeight(WeightedMultigraph<Station, SectionEdge> graph, Line line) {
+        line.getSections().stream()
+                .forEach(
                 section -> {
-                    graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+                    SectionEdge sectionEdge = SectionEdge.from(section);
+                    graph.addEdge(sectionEdge.getSource(), sectionEdge.getTarget(), sectionEdge);
+                    graph.setEdgeWeight(sectionEdge, sectionEdge.getWeight());
                 }
         );
     }
 
-    private void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
-        line.getSortedStations().stream().forEach(
-                station -> graph.addVertex(station)
-        );
+    private void addVertex(WeightedMultigraph<Station, SectionEdge> graph, Line line) {
+        line.getSortedStations().stream()
+                .forEach(graph::addVertex);
     }
 
     private void validationNotConnect(GraphPath graphPath) {
