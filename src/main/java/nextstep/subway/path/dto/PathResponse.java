@@ -1,13 +1,14 @@
 package nextstep.subway.path.dto;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Money;
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * packageName : nextstep.subway.path.dto
@@ -17,27 +18,19 @@ import java.util.stream.Collectors;
  * description :
  */
 @NoArgsConstructor
+@Getter
 public class PathResponse {
     private List<StationResponse> stations;
+    private int distance;
+    private int fare;
 
-    private PathResponse(List<StationResponse> stations) {
+    private PathResponse(List<StationResponse> stations, Distance distance, Money fare) {
         this.stations = new ArrayList<>(stations);
+        this.distance = distance.intValue();
+        this.fare = fare.intValue();
     }
 
-    public static PathResponse of(List<Station> stations) {
-        List<StationResponse> stationResponses =
-                stations.stream()
-                        .map(StationResponse::of)
-                        .collect(Collectors.toList());
-
-        return new PathResponse(stationResponses);
-    }
-
-    public static PathResponse of(Path path) {
-        return PathResponse.of(path.routes());
-    }
-
-    public List<StationResponse> getStations() {
-        return stations;
+    public static PathResponse of(Path path, Money money) {
+        return new PathResponse(StationResponse.ofList(path.stations()), path.distance(), money);
     }
 }

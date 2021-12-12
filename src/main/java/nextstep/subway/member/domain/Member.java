@@ -4,7 +4,10 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 public class Member extends BaseEntity {
@@ -17,9 +20,6 @@ public class Member extends BaseEntity {
     private String password;
 
     private Integer age;
-
-    @Embedded
-    private final Favorites favorites = new Favorites();
 
     protected Member() {
     }
@@ -42,14 +42,6 @@ public class Member extends BaseEntity {
         }
     }
 
-    public void addFavorite(Favorite favorite) {
-        favorites.add(favorite.by(this));
-    }
-
-    public void removeFavorite(Long favoriteId) {
-        favorites.remove(favoriteId);
-    }
-
     public Long getId() {
         return id;
     }
@@ -64,9 +56,5 @@ public class Member extends BaseEntity {
 
     public Integer getAge() {
         return age;
-    }
-
-    public Favorites getFavorites() {
-        return favorites;
     }
 }

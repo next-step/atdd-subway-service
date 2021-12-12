@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import lombok.NoArgsConstructor;
 import nextstep.subway.line.exception.section.SectionDuplicatedException;
 import nextstep.subway.line.exception.section.SectionNoStationException;
 import nextstep.subway.station.domain.Station;
@@ -24,12 +25,21 @@ import java.util.stream.Collectors;
  * description :
  */
 @Embeddable
+@NoArgsConstructor
 public class Sections {
     @Transient
     public static final int MIN_SECTION_COUNT = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
+
+    private Sections(List<Section> sections) {
+        this.sections = new ArrayList<>(sections);
+    }
+
+    public static Sections of(List<Section> sections) {
+        return new Sections(sections);
+    }
 
     public void add(Section section) {
         addValidate(section.getUpStation(), section.getDownStation());
@@ -114,7 +124,7 @@ public class Sections {
         return stations;
     }
 
-    private Station firstStation() {
+    public Station firstStation() {
         return sections.stream()
                 .filter(section -> !getDownStations().contains(section.getUpStation()))
                 .findFirst()
@@ -122,7 +132,7 @@ public class Sections {
                 .getUpStation();
     }
 
-    private Station lastStation() {
+    public Station lastStation() {
         return sections.stream()
                 .filter(section -> !getUpStations().contains(section.getDownStation()))
                 .findFirst()

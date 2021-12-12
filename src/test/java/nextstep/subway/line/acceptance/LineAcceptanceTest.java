@@ -34,8 +34,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        구신분당선 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 500);
+        구신분당선 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15, 0);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -46,6 +46,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성됨(response);
+        지하철_추가_요금_추가됨(response);
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
@@ -135,8 +136,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
-
         return 지하철_노선_목록_조회_요청(uri);
+    }
+
+    private void 지하철_추가_요금_추가됨(ExtractableResponse<Response> response) {
+        LineResponse result = response.jsonPath().getObject("", LineResponse.class);
+        assertThat(result.getExtraCharge()).isEqualTo(신분당선.getExtraCharge());
     }
 
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String uri) {

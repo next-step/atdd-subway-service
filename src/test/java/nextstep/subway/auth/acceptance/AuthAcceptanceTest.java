@@ -6,13 +6,11 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.MemberAcceptanceTest;
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -29,13 +27,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String LOGIN_TOKEN_URI = "/login/token";
     private static final String MEMBERS_ME_URI = "/members/me";
 
-    private String key;
-
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
-        key = MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE).header("Location").split("/")[2];
+        MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
     }
 
     @DisplayName("로그인 기능을 구현한다")
@@ -45,7 +41,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 로그인_요청함(등록된_사용자_로그인_요청);
 
         // then
-        String 토큰 = 로그인을_성공하면_토큰을_발급받는다(response);
+        로그인을_성공하면_토큰을_발급받는다(response);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")

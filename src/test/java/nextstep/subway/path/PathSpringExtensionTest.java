@@ -1,10 +1,13 @@
 package nextstep.subway.path;
 
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.auth.domain.Stranger;
+import nextstep.subway.line.domain.*;
+import nextstep.subway.path.infrastructure.SeoulMetroFare;
+import nextstep.subway.path.infrastructure.SeoulMetroType;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathEdge;
+import nextstep.subway.path.domain.SubwayFare;
 import nextstep.subway.path.infrastructure.JGraphPathFinder;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -41,6 +44,9 @@ public class PathSpringExtensionTest {
     @MockBean
     private LineRepository lineRepository;
 
+    @MockBean
+    private Stranger 비로그인;
+
     @MockBean(name = "강남역")
     private Station 강남역;
 
@@ -63,21 +69,23 @@ public class PathSpringExtensionTest {
     @DisplayName("경로 조회")
     public void findPath() {
         // given
-        List<Line> lines = Lists.newArrayList(
-                Line.of("1호선", "남색", 강남역, 역삼역, 5));
+        final Line line1 = Line.of("1호선", "남색", 강남역, 역삼역, 5);
+        List<Line> lines = Lists.newArrayList(line1);
         List<Station> stations = Lists.newArrayList(강남역, 역삼역);
         when(lineRepository.findAll()).thenReturn(lines);
         when(stationRepository.findAll()).thenReturn(stations);
         when(pathFinder.getShortestPath(anyList(), anyList(), anyLong(), anyLong()))
-                .thenReturn(Path.of(new Station("강남역"), new Station("역삼역"), stations, Distance.of(5)));
-
-        PathService pathService = new PathService(pathFinder, stationRepository, lineRepository);
+                .thenReturn(Path.of(Lists.newArrayList(PathEdge.of(line1.sections().getList().get(0))), stations, 강남역, 역삼역, Distance.of(5)));
+        when(비로그인.isStranger()).thenReturn(true);
+        SubwayFare fare = new SeoulMetroFare();
+        PathService pathService = new PathService(pathFinder, fare, stationRepository, lineRepository);
 
         //when
         Path path = pathService.getShortestPath(강남역.getId(), 역삼역.getId());
 
         //then
-        assertThat(path.routes()).hasSize(2);
+        assertThat(path.stations()).hasSize(2);
         assertThat(path.distance()).isEqualTo(Distance.of(5));
+        assertThat(fare.rateInquiry(path, 비로그인)).isEqualTo(Money.of(SeoulMetroType.BASE_RATE));
     }
 }

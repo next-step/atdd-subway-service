@@ -16,13 +16,7 @@ public class PathBeginIsEndException extends ServiceException {
     public static final HttpStatus status = HttpStatus.BAD_REQUEST;
     public static final String message = "출발지와 목적지가 같습니다.";
 
-    public PathBeginIsEndException(Long sourceId, Long targetId) {
-        super(status, new StringBuilder().append(message)
-                .append(" srcId: ")
-                .append(sourceId)
-                .append(" targetId: ")
-                .append(targetId)
-                .toString()
-        );
+    public PathBeginIsEndException() {
+        super(status, message);
     }
 }

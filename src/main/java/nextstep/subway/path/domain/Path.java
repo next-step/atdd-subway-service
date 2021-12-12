@@ -1,11 +1,11 @@
 package nextstep.subway.path.domain;
 
+import lombok.NoArgsConstructor;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Money;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.exception.StationDuplicatedException;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * packageName : nextstep.subway.path.domain
@@ -14,43 +14,51 @@ import java.util.Objects;
  * date : 2021-12-07
  * description :
  */
+@NoArgsConstructor
 public class Path {
-    private Station sourceStation;
-
-    private Station targetStation;
-
-    private List<Station> routes;
-
+    private List<PathEdge> sections;
+    private List<Station> stations;
+    private Station source;
+    private Station target;
     private Distance distance;
 
-    public Path(Station sourceStation, Station targetStation, List<Station> routes, Distance distance) {
-        if (Objects.equals(sourceStation, targetStation)) {
-            throw new StationDuplicatedException();
-        }
-
-        this.sourceStation = sourceStation;
-        this.targetStation = targetStation;
-        this.routes = routes;
+    public Path(List<PathEdge> sections, List<Station> stations, Station source, Station target, Distance distance) {
+        this.sections = sections;
+        this.stations = stations;
+        this.source = source;
+        this.target = target;
         this.distance = distance;
     }
 
-    public static Path of(Station sourceStation, Station targetStation, List<Station> stations, Distance distance) {
-        return new Path(sourceStation, targetStation, stations, distance);
+    public static Path of(List<PathEdge> edges, List<Station> stations, Station source, Station target, Distance distance) {
+        return new Path(edges, stations, source, target, distance);
     }
 
-    public Station source() {
-        return sourceStation;
-    }
-
-    public Station target() {
-        return targetStation;
-    }
-
-    public List<Station> routes() {
-        return routes;
+    public List<PathEdge> sections() {
+        return sections;
     }
 
     public Distance distance() {
         return distance;
     }
+
+    public List<Station> stations() {
+        return stations;
+    }
+
+    public Station source() {
+        return source;
+    }
+
+    public Station target() {
+        return target;
+    }
+
+    public Money extraCharge() {
+        return Money.of(sections.stream()
+                .map(it -> it.line().extraCharge())
+                .max(Integer::compareTo)
+                .orElse(Money.MIN_VALUE));
+    }
+
 }

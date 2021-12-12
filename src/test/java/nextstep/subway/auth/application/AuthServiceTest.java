@@ -1,5 +1,8 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.Stranger;
+import nextstep.subway.auth.domain.User;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
@@ -15,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +32,7 @@ public class AuthServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
+
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 

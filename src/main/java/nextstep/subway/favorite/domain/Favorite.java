@@ -1,13 +1,16 @@
-package nextstep.subway.member.domain;
+package nextstep.subway.favorite.domain;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.exception.PathBeginIsEndException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+
 import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
@@ -42,6 +45,9 @@ public class Favorite extends BaseEntity {
     private Member member;
 
     public Favorite(Station sourceStation, Station targetStation, Distance distance) {
+        if(Objects.equals(sourceStation, targetStation)) {
+            throw new PathBeginIsEndException();
+        }
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
         this.distance = distance;
@@ -58,14 +64,6 @@ public class Favorite extends BaseEntity {
     public Favorite by(Member member) {
         this.member = member;
         return this;
-    }
-
-    public boolean equals(Long id) {
-        return Objects.equals(this.id, id);
-    }
-
-    public boolean isDuplicate(Favorite target) {
-        return this.sourceStation.equals(target.sourceStation) && this.targetStation.equals(target.targetStation);
     }
 
     public Long getId() {

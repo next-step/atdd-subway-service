@@ -2,7 +2,7 @@ package nextstep.subway.auth.domain;
 
 import nextstep.subway.member.domain.Member;
 
-public class LoginMember {
+public class LoginMember implements User {
     private Long id;
     private String email;
     private Integer age;
@@ -20,15 +20,22 @@ public class LoginMember {
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
+    @Override
     public Integer getAge() {
         return age;
+    }
+
+    @Override
+    public boolean isStranger() {
+        return false;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

@@ -18,6 +18,9 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
+    private Money extraCharge = Money.of(Money.MIN_VALUE);
+
+    @Embedded
     private final Sections sections = new Sections();
 
     protected Line() {
@@ -34,6 +37,13 @@ public class Line extends BaseEntity {
         addSection(Section.of(this, upStation, downStation, Distance.of(distance)));
     }
 
+    private Line(String name, String color, Station upStation, Station downStation, int distance, int extraCharge) {
+        this.name = name;
+        this.color = color;
+        this.extraCharge = Money.of(extraCharge);
+        addSection(Section.of(this, upStation, downStation, Distance.of(distance)));
+    }
+
     public static Line of(String name, String color) {
         return new Line(name, color);
     }
@@ -42,9 +52,25 @@ public class Line extends BaseEntity {
         return new Line(name, color, upStation, downStation, distance);
     }
 
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance, int extraCharge) {
+        return new Line(name, color, upStation, downStation, distance, extraCharge);
+    }
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
+    }
+
+    public void removeStation(Long stationId) {
+        sections.remove(stationId);
+    }
+
+    public boolean useCharge() {
+        return extraCharge.exist();
     }
 
     public Long getId() {
@@ -59,6 +85,10 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public Sections sections() {
+        return sections;
+    }
+
     public List<Section> getSections() {
         return sections.getList();
     }
@@ -67,11 +97,7 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
-    public void addSection(Section section) {
-        sections.add(section);
-    }
-
-    public void removeStation(Long stationId) {
-        sections.remove(stationId);
+    public int extraCharge() {
+        return extraCharge.intValue();
     }
 }

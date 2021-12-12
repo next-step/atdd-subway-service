@@ -4,6 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Money;
+import nextstep.subway.path.infrastructure.SeoulMetroType;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -22,11 +25,11 @@ import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록�
 import static org.assertj.core.api.Assertions.assertThat;
 
 /***
- *
+ *               [추가요금_300]
  *   교대역   ↔(3) 남부터미널역  ↔(3) 매봉역
- *     ↕(2)                        ↕(3)
+ *     ↕(2)[추가요금_200]           ↕(3)
  *   강남역   ←---- (12) -----→  양재역  ←----- (12) -----→ 양재시민의숲역(START)
- *     ↕(2)
+ *     ↕(2)                [추가요금_1200]
  *   역삼역(DESTINATION)
  *
  *   목표 예상 경로 : (신분당선탑승) 양재시민의숲역(출발) -> 양재역 -> (3호선환승) 매봉역 -> 남부터미널역 -> 교대역 -> (2호선환승) -> 강남역 -> 역삼역 (도착)
@@ -38,8 +41,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private static final String BASE_URI = "paths";
 
     private static final int 신분당선_거리_12 = 12;
+    private static final int 신분당선_추가요금_1_200 = 1_200;
     private static final int 이호선_거리_2 = 2;
+    private static final int 이호선_추가요금_200 = 200;
     private static final int 삼호선_거리_3 = 3;
+    private static final int 삼호선_추가요금_300 = 300;
 
     private Long 존재하지않은역_ID = Long.MAX_VALUE;
     private Long 연결되지않은역_ID;
@@ -66,17 +72,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         //신분당선 강남역 - 양재역 - 양재시민의숲역 (각 구간의 거리 10)
         LineResponse 신분당선 =
-                지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 신분당선_거리_12)).as(LineResponse.class);
+                지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 신분당선_거리_12, 신분당선_추가요금_1_200)).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 양재시민의숲역, 신분당선_거리_12);
 
         //2호선 역삼역 - 강남역 - 교대역 (각 구간의 거리 2)
         LineResponse 이호선 =
-                지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-600", 역삼역.getId(), 강남역.getId(), 이호선_거리_2)).as(LineResponse.class);
+                지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-600", 역삼역.getId(), 강남역.getId(), 이호선_거리_2, 이호선_추가요금_200)).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(이호선, 강남역, 교대역, 이호선_거리_2);
 
         //3호선 매봉역 - 양재역 - 교대역  (각 구간의 거리 3)
         LineResponse 삼호선 =
-                지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-orange-600", 양재역.getId(), 매봉역.getId(), 삼호선_거리_3)).as(LineResponse.class);
+                지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-orange-600", 양재역.getId(), 매봉역.getId(), 삼호선_거리_3, 삼호선_추가요금_300)).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(삼호선, 매봉역, 남부터미널역, 삼호선_거리_3);
         지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 교대역, 삼호선_거리_3);
     }
@@ -84,15 +90,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("양재시민의숲역에서_역삼역까지의 거리를 구한다.")
     public void findShortPath() {
-        // given
-        int expect = 7;
+        //given
+        int expectDistance = 25;
 
         // when
         ExtractableResponse<Response> response = 최단거리_조회_요청함(양재시민의숲역_ID, 역삼역_ID);
 
         // then
         PathResponse pathResponse = 최단거리_조회_응답됨(response);
-        최단거리를_수동으로_검증(pathResponse, expect);
+        최단거리를_응답됨(pathResponse, expectDistance);
+        지하철_이용_요금_응답됨(pathResponse);
     }
 
     @Test
@@ -136,8 +143,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         경로_조회_실패됨_역없음(출발지_미존재_응답);
     }
 
-    private void 최단거리를_수동으로_검증(PathResponse pathResponse, int expect) {
-        assertThat(pathResponse.getStations()).hasSize(expect);
+    private void 최단거리를_응답됨(PathResponse pathResponse, int expect) {
+        assertThat(pathResponse.getDistance()).isEqualTo(expect);
+    }
+
+    private void 지하철_이용_요금_응답됨(PathResponse pathResponse) {
+        Money money = SeoulMetroType.rateInquiry(Distance.of(pathResponse.getDistance())).plus(Money.of(신분당선_추가요금_1_200));
+        assertThat(pathResponse.getFare()).isEqualTo(money.intValue());
     }
 
     private PathResponse 최단거리_조회_응답됨(ExtractableResponse<Response> response) {
