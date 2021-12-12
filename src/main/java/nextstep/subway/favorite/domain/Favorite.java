@@ -27,7 +27,7 @@ public class Favorite {
     private Station target;
 
 
-    public Favorite() {
+    protected Favorite() {
 
     }
 
@@ -36,6 +36,7 @@ public class Favorite {
         this.member = member;
         this.source = source;
         this.target = target;
+        member.addFavorite(this);
     }
 
     public static Favorite of(Member member, Station source, Station target) {
@@ -56,10 +57,6 @@ public class Favorite {
 
     public Station getTarget() {
         return target;
-    }
-
-    public boolean isSameMember(Member inputMember) {
-        return this.member.equals(inputMember);
     }
 
     private void validInputCheck(Member member, Station source, Station target) {

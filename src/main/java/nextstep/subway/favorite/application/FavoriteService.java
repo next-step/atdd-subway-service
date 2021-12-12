@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.InputDataErrorCode;
 import nextstep.subway.exception.InputDataErrorException;
 import nextstep.subway.favorite.domain.Favorite;
@@ -31,9 +32,8 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public Long save(Long loginMemberId, FavoriteRequest favoriteRequest) {
-        Member member = findMember(loginMemberId);
-
+    public Long save(LoginMember loginMember, FavoriteRequest favoriteRequest) {
+        Member member = findMember(loginMember.getId());
         Station source = stationRepository.findById(favoriteRequest.getSourceId())
                 .orElseThrow(() -> new InputDataErrorException(InputDataErrorCode.THERE_IS_NOT_SEARCHED_STATION));
 
@@ -50,11 +50,9 @@ public class FavoriteService {
     }
 
     @Transactional(readOnly = true)
-    public List<FavoriteResponse> findFavorites(Long loginMemberId) {
-        Member member = findMember(loginMemberId);
-        List<Favorite> allFavorites = favoriteRepository.findAll();
-        return allFavorites.stream()
-                .filter(it -> it.isSameMember(member))
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        Member member = findMember(loginMember.getId());
+        return member.getFavorites().stream()
                 .map(it -> FavoriteResponse.of(it))
                 .collect(Collectors.toList());
     }

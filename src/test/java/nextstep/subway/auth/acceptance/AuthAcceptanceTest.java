@@ -22,7 +22,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final int AGE_TEST_INFO = 12;
     private static final String INVALID_TOKEN = "wrong_token";
 
-    @DisplayName("Bearer Auth")
+    @DisplayName("로그인 성공 테스트 Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
         ExtractableResponse<Response> response = allowedMemberLogin(EMAIL_TEST_INFO, PASSWORD_TEST_INFO, AGE_TEST_INFO);
