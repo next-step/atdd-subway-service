@@ -11,6 +11,7 @@ import javax.persistence.Id;
 
 @Entity
 public class Member extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,6 +28,18 @@ public class Member extends BaseEntity {
         this.age = age;
     }
 
+    public void update(Member member) {
+        this.email = member.email;
+        this.password = member.password;
+        this.age = member.age;
+    }
+
+    public void checkPassword(String password) {
+        if (!StringUtils.equals(this.password, password)) {
+            throw new AuthorizationException("비밀번호가 일치하지 않습니다.");
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -41,17 +54,5 @@ public class Member extends BaseEntity {
 
     public Integer getAge() {
         return age;
-    }
-
-    public void update(Member member) {
-        this.email = member.email;
-        this.password = member.password;
-        this.age = member.age;
-    }
-
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
-        }
     }
 }
