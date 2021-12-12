@@ -1,7 +1,10 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.TestMember.*;
 import static nextstep.subway.station.StationAcceptanceTest.*;
 import static nextstep.subway.station.StationFixture.*;
 import static org.assertj.core.api.Assertions.*;
@@ -20,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
@@ -27,7 +31,7 @@ import nextstep.subway.station.dto.StationResponse;
 /**
  *  교대역 --------3-----------강남역 --6---역삼역 --5---선릉역 (2호선)
  *     --\                   |
- *        -5-                |
+ *        -2-                |
  *           남부터미널역       2
  *                --         |
  *                  \-2-     |
@@ -73,9 +77,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		중앙역 = 지하철역_등록되어_있음("중앙역").as(StationResponse.class);
 		한대앞역 = 지하철역_등록되어_있음("한대앞역").as(StationResponse.class);
 
-		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 2);
-		이호선 = 지하철_노선_등록되어_있음("2호선", "bg-green-600", 교대역, 강남역, 3);
-		삼호선 = 지하철_노선_등록되어_있음("3호선", "bg-orange-600", 교대역, 남부터미널역, 5);
+		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 2, 900);
+		이호선 = 지하철_노선_등록되어_있음("2호선", "bg-green-600", 교대역, 강남역, 3, 500);
+		삼호선 = 지하철_노선_등록되어_있음("3호선", "bg-orange-600", 교대역, 남부터미널역, 2);
 		사호선 = 지하철_노선_등록되어_있음("4호선", "bg-blue-600", 중앙역, 한대앞역, 2);
 
 		지하철_노선에_지하철역_등록되어_있음(신분당선, 양재역, 양재시민의숲역, 4);
@@ -84,14 +88,56 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		지하철_노선에_지하철역_등록되어_있음(삼호선, 남부터미널역, 양재역, 2);
 	}
 
-	@DisplayName("경로를 찾는다.")
+	@DisplayName("경로를 찾는다. (찾은 경로 중 노선들이 추가 요금 정책이 없는 경우)")
 	@Test
-	void findPath() {
+	void findPathWithoutExtraFare() {
+		// Scenario
+		ExtractableResponse<Response> 지하철_경로_조회_요청 = 지하철_경로_조회_요청(교대역, 양재역);
+		지하철_경로_조회됨(지하철_경로_조회_요청);
+		지하철_경로에_지하철역_순서_정렬됨(지하철_경로_조회_요청, Arrays.asList(교대역, 남부터미널역, 양재역));
+		지하철_경로에_거리가_조회됨(지하철_경로_조회_요청, 4);
+		지하철_경로에_요금이_조회됨(지하철_경로_조회_요청, 1250);
+	}
+
+	@DisplayName("경로를 찾는다. (찾은 경로 중 노선들이 추가 요금 정책이 있는 경우)")
+	@Test
+	void findPathWithExtraFare() {
 		// Scenario
 		ExtractableResponse<Response> 지하철_경로_조회_요청 = 지하철_경로_조회_요청(양재시민의숲역, 선릉역);
 		지하철_경로_조회됨(지하철_경로_조회_요청);
 		지하철_경로에_지하철역_순서_정렬됨(지하철_경로_조회_요청, Arrays.asList(양재시민의숲역, 양재역, 강남역, 역삼역, 선릉역));
 		지하철_경로에_거리가_조회됨(지하철_경로_조회_요청, 17);
+		지하철_경로에_요금이_조회됨(지하철_경로_조회_요청, 2350);
+	}
+
+	@DisplayName("경로를 찾는다. (연령별 요금할인을 받는 경우(청소년))")
+	@Test
+	void findPathWithTeenageDiscount() {
+		// Background
+		회원_등록되어_있음(루피);
+		TokenResponse token = 로그인_되어있음(루피).as(TokenResponse.class);
+
+		// Scenario
+		ExtractableResponse<Response> 지하철_경로_조회_요청 = 지하철_경로_조회_요청(token, 교대역, 양재역);
+		지하철_경로_조회됨(지하철_경로_조회_요청);
+		지하철_경로에_지하철역_순서_정렬됨(지하철_경로_조회_요청, Arrays.asList(교대역, 남부터미널역, 양재역));
+		지하철_경로에_거리가_조회됨(지하철_경로_조회_요청, 4);
+		지하철_경로에_요금이_조회됨(지하철_경로_조회_요청, (int)((1250 - 350) * (1 - 0.2)));
+	}
+
+	@DisplayName("경로를 찾는다. (연령별 요금할인을 받는 경우(어린이))")
+	@Test
+	void findPathWithChildDiscount() {
+		// Background
+		회원_등록되어_있음(노진구);
+		TokenResponse token = 로그인_되어있음(노진구).as(TokenResponse.class);
+
+		// Scenario
+		ExtractableResponse<Response> 지하철_경로_조회_요청 = 지하철_경로_조회_요청(token, 교대역, 양재역);
+		지하철_경로_조회됨(지하철_경로_조회_요청);
+		지하철_경로에_지하철역_순서_정렬됨(지하철_경로_조회_요청, Arrays.asList(교대역, 남부터미널역, 양재역));
+		지하철_경로에_거리가_조회됨(지하철_경로_조회_요청, 4);
+		지하철_경로에_요금이_조회됨(지하철_경로_조회_요청, (int)((1250 - 350) * (1 - 0.5)));
 	}
 
 	@DisplayName("출발역과 도착역이 같은 경우 경로를 찾을 수 없다.")
@@ -133,6 +179,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		return get("/paths", new HashMap<>(), queryParams);
 	}
 
+	public static ExtractableResponse<Response> 지하철_경로_조회_요청(
+		TokenResponse token,
+		StationResponse sourceStation,
+		StationResponse targetStation
+	) {
+		return 지하철_경로_조회_요청(token, sourceStation.getId(), targetStation.getId());
+	}
+
+	public static ExtractableResponse<Response> 지하철_경로_조회_요청(
+		TokenResponse token,
+		Long sourceStationId,
+		Long targetStationId
+	) {
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("source", sourceStationId);
+		queryParams.put("target", targetStationId);
+
+		return get("/paths", token.getAccessToken(), new HashMap<>(), queryParams);
+	}
+
 	private void 지하철_경로_조회됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
@@ -162,6 +228,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		int actualDistance = path.getDistance();
 
 		assertThat(actualDistance).isEqualTo(expectedDistance);
+	}
+
+	private void 지하철_경로에_요금이_조회됨(
+		ExtractableResponse<Response> response,
+		int expectedFare
+	) {
+		PathResponse path = response.as(PathResponse.class);
+		int actualFare = path.getFare();
+
+		assertThat(actualFare).isEqualTo(expectedFare);
 	}
 
 	private void 지하철_경로_조회_실패됨(ExtractableResponse<Response> response, HttpStatus expectedHttpStatus) {

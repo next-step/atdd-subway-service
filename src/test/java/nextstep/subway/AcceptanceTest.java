@@ -88,6 +88,22 @@ public class AcceptanceTest {
             .extract();
     }
 
+    protected static ExtractableResponse<Response> get(
+        String path,
+        String accessToken,
+        Map<String, ?> pathParams,
+        Map<String, ?> queryParams
+    ) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .queryParams(queryParams)
+            .when().get(path, pathParams)
+            .then().log().all()
+            .extract();
+    }
+
     protected static <T> ExtractableResponse<Response> put(
         String path,
         T body

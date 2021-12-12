@@ -21,7 +21,7 @@ class LineTest {
 		// given
 
 		// when
-		Line line = Line.of("신분당선", "red lighten-1", Section.of(강남역(), 광교역(), 20));
+		Line line = Line.of("신분당선", "red lighten-1", 900, Section.of(강남역(), 광교역(), 20));
 
 		// then
 		assertThat(line).isNotNull();

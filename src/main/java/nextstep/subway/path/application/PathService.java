@@ -1,16 +1,20 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.CanNotFindPathException;
+import nextstep.subway.path.domain.FareCalculator;
+import nextstep.subway.path.domain.MostExpensiveLineOverchargeFarePolicy;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.PerAgeMemberDiscountFarePolicy;
+import nextstep.subway.path.domain.PerOverchargeFareSectionDistanceBasedFarePolicy;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -28,14 +32,23 @@ public class PathService {
 	}
 
 	@Transactional(readOnly = true)
-	public PathResponse findPath(PathRequest request) {
+	public PathResponse findPath(PathRequest request, LoginMember loginMember) {
 		Station source = stationRepository.findById(request.getSource()).orElseThrow(CanNotFindPathException::new);
 		Station target = stationRepository.findById(request.getTarget()).orElseThrow(CanNotFindPathException::new);
 		List<Line> lines = lineRepository.findAll();
 
 		PathFinder pathFinder = PathFinder.of(lines);
 		Path path = pathFinder.find(source, target);
+		FareCalculator fareCalculator = getFareCalculator();
+		int fare = fareCalculator.calculate(path.getDistance(), path.getLines(), loginMember);
 
-		return PathResponse.of(path);
+		return PathResponse.of(path, fare);
+	}
+
+	private FareCalculator getFareCalculator() {
+		return new FareCalculator(
+			new PerOverchargeFareSectionDistanceBasedFarePolicy(),
+			new MostExpensiveLineOverchargeFarePolicy(),
+			new PerAgeMemberDiscountFarePolicy());
 	}
 }

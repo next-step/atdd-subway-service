@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.domain.CanNotFindPathException;
 import nextstep.subway.path.dto.PathRequest;
@@ -21,8 +23,11 @@ public class PathController {
 	}
 
 	@GetMapping
-	public ResponseEntity<PathResponse> findPath(PathRequest pathRequest) {
-		return ResponseEntity.ok(pathService.findPath(pathRequest));
+	public ResponseEntity<PathResponse> findPath(
+		@AuthenticationPrincipal LoginMember loginMember,
+		PathRequest pathRequest
+	) {
+		return ResponseEntity.ok(pathService.findPath(pathRequest, loginMember));
 	}
 
 	@ExceptionHandler(CanNotFindPathException.class)

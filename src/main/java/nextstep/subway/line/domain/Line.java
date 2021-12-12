@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +23,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    private int extraFare;
 
     @Embedded
     private Sections sections = new Sections();
@@ -30,33 +32,21 @@ public class Line extends BaseEntity {
 
     }
 
-    private Line(Long id, String name, String color, Section section) {
+    private Line(Long id, String name, String color, int extraFare, List<Section> sections) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
 
-        addSection(section);
+        sections.forEach(this::addSection);
     }
 
-    private Line(Long id, String name, String color, List<Section> sections) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-
-        this.sections = Sections.of(sections);
-        sections.forEach(s -> s.setLine(this));
+    public static Line of(String name, String color, int extraFare, Section section) {
+        return new Line(null, name, color, extraFare, Collections.singletonList(section));
     }
 
-    public static Line of(String name, String color, Section section) {
-        return new Line(null, name, color, section);
-    }
-
-    public static Line of(Long id, String name, String color, Section section) {
-        return new Line(id, name, color, section);
-    }
-
-    public static Line of(Long id, String name, String color, List<Section> sections) {
-        return new Line(id, name, color, sections);
+    public static Line of(Long id, String name, String color, int extraFare, List<Section> sections) {
+        return new Line(id, name, color, extraFare, sections);
     }
 
     public void addSection(Section section) {
@@ -83,6 +73,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public Sections getSections() {

@@ -4,14 +4,25 @@ public class LoginMember {
     private Long id;
     private String email;
     private Integer age;
+    private boolean isLogin;
 
-    public LoginMember() {
+    private LoginMember() {
+
     }
 
-    public LoginMember(Long id, String email, Integer age) {
-        this.id = id;
-        this.email = email;
-        this.age = age;
+    public static LoginMember notLoggedIn() {
+        LoginMember loginMember = new LoginMember();
+        loginMember.isLogin = false;
+        return loginMember;
+    }
+
+    public static LoginMember loggedIn(Long id, String email, Integer age) {
+        LoginMember loginMember = new LoginMember();
+        loginMember.id = id;
+        loginMember.email = email;
+        loginMember.age = age;
+        loginMember.isLogin = true;
+        return loginMember;
     }
 
     public Long getId() {
@@ -24,5 +35,9 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public boolean isLogin() {
+        return isLogin;
     }
 }
