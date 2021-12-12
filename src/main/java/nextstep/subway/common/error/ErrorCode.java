@@ -19,7 +19,16 @@ public enum ErrorCode {
 
     // auth
     AUTHORIZATION_FAILED(401, "A001", "인증이 실패 했습니다."),
-    INVALID_TOKEN(401, "A002", "유효하지 않은 토큰 입니다.");
+    INVALID_TOKEN(401, "A002", "유효하지 않은 토큰 입니다."),
+
+    // member
+    MEMBER_NOT_FOUND(500, "M001", "회원을 찾을 수 없습니다."),
+
+    // station
+    STATION_NOT_FOUND(500, "S001", "지하철역을 찾을 수 없습니다."),
+
+    // favorite
+    FAVORITE_NOT_FOUND(500, "F001", "즐겨찾기를 찾을 수 없습니다.");
 
     private final int status;
     private final String code;

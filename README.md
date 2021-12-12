@@ -76,4 +76,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [x] 잘못된 이메일로 로그인 시도
   - [x] 유효하지 않은 토큰으로 정보 요청 실패 케이스
 - [x] 인증 - 내 정보 조회 기능 완성하기
-- [ ] 인증 - 즐겨 찾기 기능 완성하기
+- [x] 인증 - 즐겨 찾기 기능 완성하기
