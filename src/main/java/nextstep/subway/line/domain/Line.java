@@ -70,6 +70,20 @@ public class Line extends BaseEntity {
         return Collections.unmodifiableList(sections.getStationsInOrder());
     }
 
+    public boolean isSameNameAndColor(Line line) {
+        return Objects.equals(this.color, line.color)
+            && Objects.equals(this.name, line.name);
+    }
+
+    public void removeStation(Station station) {
+        sections.remove(station);
+    }
+
+
+    public Money sumAdditionalFare(Money money) {
+        return money.plus(Money.wons(additionalFare));
+    }
+
     public Long getId() {
         return id;
     }
@@ -82,21 +96,12 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public boolean isSameNameAndColor(Line line) {
-        return Objects.equals(this.color, line.color)
-            && Objects.equals(this.name, line.name);
+    public Money getAdditionalFare() {
+        return Money.wons(additionalFare);
     }
-
-    public void removeStation(Station station) {
-        sections.remove(station);
-    }
-
 
     public List<Section> getSections() {
         return Collections.unmodifiableList(sections.getSections());
     }
 
-    public Money sumAdditionalFare(Money money) {
-        return money.plus(Money.wons(additionalFare));
-    }
 }

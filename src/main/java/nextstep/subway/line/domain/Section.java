@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.Arrays;
 import java.util.List;
+import nextstep.subway.line.domain.fare.Money;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -84,6 +85,10 @@ public class Section {
 
     public List<Station> getStations() {
         return Arrays.asList(upStation, downStation);
+    }
+
+    public Money getLineAdditionalFare() {
+        return line.getAdditionalFare();
     }
 
     private static class DummySection extends Section {

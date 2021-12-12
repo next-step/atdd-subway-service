@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.Objects;
 import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.line.application.exception.PathErrorCode;
+import nextstep.subway.line.domain.fare.Money;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
@@ -34,6 +35,10 @@ public class Path {
 
     public Station getTarget() {
         return target;
+    }
+
+    public Money getMaxLineAdditionalFare() {
+        return sections.getLineMaxFare();
     }
 
     private void validNotSame(Station source, Station target) {

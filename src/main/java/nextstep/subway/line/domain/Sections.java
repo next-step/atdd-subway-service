@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.line.application.exception.SectionErrorCode;
+import nextstep.subway.line.domain.fare.Money;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -161,5 +162,12 @@ public class Sections {
     public boolean isContainStation(Station station) {
         return !findSameUpStationSection(station).isDummy() || !findSameDownStationSection(
             station).isDummy();
+    }
+
+    public Money getLineMaxFare() {
+        return sections.stream()
+            .map(Section::getLineAdditionalFare)
+            .max(Money::compareTo)
+            .orElse(Money.ZERO);
     }
 }
