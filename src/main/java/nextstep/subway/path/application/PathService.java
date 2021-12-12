@@ -3,8 +3,8 @@ package nextstep.subway.path.application;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.exception.StationException;
+import nextstep.subway.path.domain.DijkstraPathFinder;
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -31,8 +31,8 @@ public class PathService {
         Station startStation = findStationById(source);
         Station endStation = findStationById(target);
         List<Line> lines = findLines();
-        PathFinder pathFinder = PathFinder.ofList(lines);
-        Path shortestPath = pathFinder.findShortestPath(startStation, endStation);
+        DijkstraPathFinder dijkstraPathFinder = DijkstraPathFinder.ofList(lines);
+        Path shortestPath = dijkstraPathFinder.findPath(startStation, endStation);
         return PathResponse.from(shortestPath);
     }
 
