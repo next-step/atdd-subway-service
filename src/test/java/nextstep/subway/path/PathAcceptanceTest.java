@@ -35,6 +35,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 학여울역;
+    private StationResponse 수서역;
 
     /**
      * 교대역 -- *2호선* 10 --- 강남역
@@ -42,7 +44,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * *3호선*                   *신분당선*
      * 3                        10
      * |                        |
-     * 남부터미널역 -- *3호선* 2 -양재
+     * 남부터미널역 -- *3호선* 2 -양재 -- *3호선* 15 -- 학여울역 -- *3호선* 50 -- 수서역
      */
     @BeforeEach
     public void setUp() {
@@ -52,20 +54,33 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        학여울역 = StationAcceptanceTest.지하철역_등록되어_있음("학여울역").as(StationResponse.class);
+        수서역 = StationAcceptanceTest.지하철역_등록되어_있음("수서역").as(StationResponse.class);
 
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 양재역, 학여울역, 15);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 학여울역, 수서역, 50);
     }
 
-    @DisplayName("최단 경로를 조회한다. 성공 검증")
+    @DisplayName("최단 경로 및 요금을 조회한다. 성공 검증")
     @Test
     void successPaths() {
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> 최단_경로_기본요금 = 최단_경로_조회_요청(교대역, 양재역);
 
-        최단_경로_조회_됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5L, new BigInteger("1250"));
+        최단_경로_조회_됨(최단_경로_기본요금, Arrays.asList(교대역, 남부터미널역, 양재역), 5L, new BigInteger("1250"));
+
+        ExtractableResponse<Response> 중간_경로_요금 = 최단_경로_조회_요청(교대역, 학여울역);
+
+        최단_경로_조회_됨(중간_경로_요금, Arrays.asList(교대역, 남부터미널역, 양재역, 학여울역), 20L, new BigInteger("1650"));
+
+        ExtractableResponse<Response> 최대_경로_요금 = 최단_경로_조회_요청(교대역, 수서역);
+
+        최단_경로_조회_됨(최대_경로_요금, Arrays.asList(교대역, 남부터미널역, 양재역, 학여울역, 수서역), 70L, new BigInteger("2150"));
+
     }
 
     @DisplayName("최단 경로를 조회한다. 실패 검증")
