@@ -25,7 +25,7 @@ public class PathController {
     private final PathService pathService;
 
     @GetMapping
-    public ResponseEntity<PathResponse> getShortestPath(@AuthenticationPrincipal User user,
+    public ResponseEntity<PathResponse> getShortestPath(@AuthenticationPrincipal(required = false) User user,
                                                         @RequestParam(name = "source") Long source,
                                                         @RequestParam(name = "target") Long target) {
         PathResponse path = pathService.getShortestPath(source, target, user);

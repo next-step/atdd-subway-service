@@ -2,7 +2,7 @@ package nextstep.subway.favorite.ui;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.domain.User;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -26,20 +26,20 @@ public class FavoriteController {
     private final FavoriteService favoriteService;
 
     @PostMapping
-    public ResponseEntity<FavoriteResponse> saveFavorite(@AuthenticationPrincipal User user, @RequestBody FavoriteRequest request) {
-        final FavoriteResponse favorite = favoriteService.addFavorite(user.getId(), request);
+    public ResponseEntity<FavoriteResponse> saveFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest request) {
+        final FavoriteResponse favorite = favoriteService.addFavorite(loginMember.getId(), request);
         return ResponseEntity.created(URI.create("/lines/" + favorite.getId())).body(favorite);
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoriteResponse>> findFavorites(@AuthenticationPrincipal User user) {
-        List<FavoriteResponse> responses = favoriteService.findFavorites(user.getId());
+    public ResponseEntity<List<FavoriteResponse>> findFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+        List<FavoriteResponse> responses = favoriteService.findFavorites(loginMember.getId());
         return ResponseEntity.ok().body(responses);
     }
 
     @DeleteMapping("{favoriteId}")
-    public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal User user, @PathVariable Long favoriteId) {
-        favoriteService.deleteFavorite(user.getId(), favoriteId);
+    public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long favoriteId) {
+        favoriteService.deleteFavorite(loginMember.getId(), favoriteId);
         return ResponseEntity.noContent().build();
     }
 }

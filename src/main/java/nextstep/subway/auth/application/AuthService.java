@@ -2,7 +2,6 @@ package nextstep.subway.auth.application;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.auth.domain.Stranger;
 import nextstep.subway.auth.domain.User;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -29,7 +28,7 @@ public class AuthService {
 
     public User findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return Stranger.getInstance();
+            throw new AuthorizationException("유효한 토큰이 아닙니다.");
         }
 
         String id = jwtTokenProvider.getPayload(credentials);

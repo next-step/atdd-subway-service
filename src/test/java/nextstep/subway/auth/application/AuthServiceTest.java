@@ -51,19 +51,4 @@ public class AuthServiceTest {
 
         assertThat(token.getAccessToken()).isNotBlank();
     }
-
-    @Test
-    @DisplayName("회원 비회원을 구분한다.")
-    void separateUser() {
-        when(jwtTokenProvider.validateToken(null)).thenReturn(false);
-        when(jwtTokenProvider.validateToken(anyString())).thenReturn(true);
-        when(jwtTokenProvider.getPayload(anyString())).thenReturn("1");
-        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
-
-        User stranger = authService.findMemberByToken(null);
-        User member = authService.findMemberByToken("token");
-
-        assertThat(stranger.isStranger()).isTrue();
-        assertThat(member.isLoginMember()).isTrue();
-    }
 }
