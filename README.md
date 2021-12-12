@@ -195,6 +195,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       Scenario: 즐겨찾기 관리 정상 기능
         Given 로그인 되어있지 않음
         Or 유효하지 않은 토큰 사용
+        Or 출발역과 도착역이 같음
         When 즐겨찾기 생성을 요청
         Then 즐겨찾기 생성 실패됨
         When 즐겨찾기 목록 조회 요청

@@ -81,10 +81,13 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("즐겨찾기 예외 발생")
     void exceptionScenario() {
-        TokenResponse token = new TokenResponse("invalidToken");
-        즐겨찾기_생성_실패됨(즐겨찾기_생성을_요청(token, 서초역, 역삼역));
+        TokenResponse invalidToken = new TokenResponse("invalidToken");
+        즐겨찾기_생성_실패됨(즐겨찾기_생성을_요청(invalidToken, 서초역, 역삼역), HttpStatus.UNAUTHORIZED.value());
 
-        즐겨찾기_목록_조회_실패됨(즐겨찾기_목록_조회_요청(token));
+        즐겨찾기_목록_조회_실패됨(즐겨찾기_목록_조회_요청(invalidToken));
+
+        TokenResponse token = 로그인_요청(email, password).as(TokenResponse.class);
+        즐겨찾기_생성_실패됨(즐겨찾기_생성을_요청(token, 서초역, 서초역), HttpStatus.BAD_REQUEST.value());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성을_요청(TokenResponse token, StationResponse departure, StationResponse arrival) {
@@ -120,8 +123,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private void 즐겨찾기_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    private void 즐겨찾기_생성_실패됨(ExtractableResponse<Response> response, int statusCode) {
+        assertThat(response.statusCode()).isEqualTo(statusCode);
     }
 
     private void 즐겨찾기_목록_조회_실패됨(ExtractableResponse<Response> response) {

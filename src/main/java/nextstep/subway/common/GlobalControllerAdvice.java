@@ -1,7 +1,5 @@
 package nextstep.subway.common;
 
-import nextstep.subway.line.application.exception.InvalidSectionException;
-import nextstep.subway.path.application.exception.InvalidPathException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,14 +23,8 @@ public class GlobalControllerAdvice {
         return ResponseEntity.status(apiError.getStatus()).body(apiError);
     }
 
-    @ExceptionHandler(InvalidSectionException.class)
-    public ResponseEntity<ApiError> handler(InvalidSectionException e) {
-        ApiError apiError = new ApiError(BAD_REQUEST, e.getLocalizedMessage(), e.getMessage());
-        return ResponseEntity.status(apiError.getStatus()).body(apiError);
-    }
-
-    @ExceptionHandler(InvalidPathException.class)
-    public ResponseEntity<ApiError> handler(InvalidPathException e) {
+    @ExceptionHandler(InvalidException.class)
+    public ResponseEntity<ApiError> handler(InvalidException e) {
         ApiError apiError = new ApiError(BAD_REQUEST, e.getLocalizedMessage(), e.getMessage());
         return ResponseEntity.status(apiError.getStatus()).body(apiError);
     }
