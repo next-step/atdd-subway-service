@@ -23,6 +23,9 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    @Embedded
+    private Fee fee = new Fee(0);
+
     protected Line() {
     }
 
@@ -35,6 +38,11 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         this.sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int fee) {
+        this(name, color, upStation, downStation, distance);
+        this.fee = new Fee(fee);
     }
 
     public void update(Line line) {
