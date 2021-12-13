@@ -85,21 +85,6 @@ public class Section {
         return new Section(this.line, this.upStation, otherSection.downStation, this.distance.plus(otherSection.distance));
     }
 
-    public List<Section> divide(Station upStation, Station downStation, Integer otherDistance) {
-
-        if(this.upStation == upStation) {
-            updateUpStation(downStation, otherDistance);
-            return Arrays.asList(new Section(this.line, upStation, downStation, otherDistance));
-        }
-
-        if(this.downStation == downStation) {
-            updateDownStation(upStation, otherDistance);
-            return Arrays.asList(new Section(this.line, upStation, downStation, otherDistance));
-        }
-
-        return Collections.emptyList();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

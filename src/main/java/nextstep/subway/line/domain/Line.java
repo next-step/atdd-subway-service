@@ -1,13 +1,10 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.exception.ExistedSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 @Entity
 public class Line extends BaseEntity {
@@ -24,7 +21,7 @@ public class Line extends BaseEntity {
     private Sections sections = new Sections();
 
     @Embedded
-    private Fee fee = new Fee(0);
+    private Fare fare = new Fare(0);
 
     protected Line() {
     }
@@ -42,7 +39,7 @@ public class Line extends BaseEntity {
 
     public Line(String name, String color, Station upStation, Station downStation, int distance, int fee) {
         this(name, color, upStation, downStation, distance);
-        this.fee = new Fee(fee);
+        this.fare = new Fare(fee);
     }
 
     public void update(Line line) {

@@ -3,11 +3,11 @@ package nextstep.subway.line.domain;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class Fee {
+public class Fare {
 
     private int value;
 
-    public Fee(final int value) {
+    public Fare(final int value) {
         this.value = value;
     }
 
