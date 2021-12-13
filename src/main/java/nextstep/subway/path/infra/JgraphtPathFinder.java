@@ -4,8 +4,8 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.DefaultOverFare;
-import nextstep.subway.path.domain.OverFare;
+import nextstep.subway.path.domain.overfare.DefaultOverFare;
+import nextstep.subway.path.domain.overfare.OverFare;
 import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -14,7 +14,6 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 

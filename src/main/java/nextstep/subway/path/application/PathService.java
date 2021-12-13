@@ -1,9 +1,9 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.domain.DefaultOverFare;
-import nextstep.subway.path.domain.OverFare;
+import nextstep.subway.path.domain.AgeDiscount;
 import nextstep.subway.path.infra.PathFinder;
 import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathResponse;
@@ -26,7 +26,7 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findShortestPath(long source, long target) {
+    public PathResponse findShortestPath(long source, long target, LoginMember loginMember) {
 
         Station sourceStation = stationService.findById(source);
         Station targetStation = stationService.findById(target);
@@ -34,6 +34,6 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
 
         ShortestPath shortestPath = pathFinder.findShortestPath(lines, sourceStation, targetStation);
-        return new PathResponse(shortestPath.findPaths(), shortestPath.findWeight(), shortestPath.findFare());
+        return new PathResponse(shortestPath.findPaths(), shortestPath.findWeight(), AgeDiscount.discount(loginMember.getAge(), shortestPath.findFare()));
     }
 }

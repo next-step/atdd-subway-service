@@ -1,11 +1,10 @@
 package nextstep.subway.path;
 
-import nextstep.subway.line.domain.Distance;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.application.PathService;
-import nextstep.subway.path.domain.DefaultOverFare;
-import nextstep.subway.path.domain.OverFare;
+import nextstep.subway.path.domain.overfare.DefaultOverFare;
 import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.infra.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -21,6 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
+import static nextstep.subway.member.MemberAcceptanceTest.AGE;
+import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
@@ -67,9 +68,10 @@ public class PathServiceTest {
         when(stationService.findById(sourceId)).thenReturn(강남역);
         when(stationService.findById(targetId)).thenReturn(남부터미널역);
         when(pathFinder.findShortestPath(anyList(), any(), any())).thenReturn(shortestPath);
+        LoginMember loginMember = new LoginMember(1L, EMAIL, AGE);
 
         //when
-        PathResponse paths = pathService.findShortestPath(sourceId, targetId);
+        PathResponse paths = pathService.findShortestPath(sourceId, targetId, loginMember);
 
         //then
         assertThat(paths.getDistance()).isEqualTo(12);

@@ -1,6 +1,4 @@
-package nextstep.subway.path.domain;
-
-import org.springframework.stereotype.Component;
+package nextstep.subway.path.domain.overfare;
 
 public class LowOverFare implements OverFare {
 

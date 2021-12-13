@@ -1,8 +1,9 @@
 package nextstep.subway.path;
 
-import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.*;
+import nextstep.subway.path.domain.overfare.DefaultOverFare;
+import nextstep.subway.path.domain.overfare.OverFare;
 import nextstep.subway.path.infra.JgraphtPathFinder;
 import nextstep.subway.path.infra.PathFinder;
 import nextstep.subway.station.domain.Station;
@@ -96,37 +97,5 @@ public class PathTest {
         //when
         PathFinder pathFinder = new JgraphtPathFinder();
         assertThatThrownBy(() -> pathFinder.findShortestPath(lines, 강남역, 남부터미널역)).isInstanceOf(IllegalStateException.class);
-    }
-
-    @DisplayName("거리 별 요금 추가(5km 마다 100원추가)")
-    @Test
-    void calculateOverFareByFiveKM() {
-
-        //given
-        OverFare defaultOverFare = new DefaultOverFare();
-
-        int expectedFare = 2150;
-
-        //when
-        int actualFare = defaultOverFare.calculate(50);
-
-        //then
-        assertThat(actualFare).isEqualTo(expectedFare);
-    }
-
-    @DisplayName("거리 별 요금 추가(8km 마다 100원추가)")
-    @Test
-    void calculateOverFareByEightKM() {
-
-        //given
-        OverFare defaultOverFare = new DefaultOverFare();
-
-        int expectedFare = 2350;
-
-        //when
-        int actualFare = defaultOverFare.calculate(70);
-
-        //then
-        assertThat(actualFare).isEqualTo(expectedFare);
     }
 }
