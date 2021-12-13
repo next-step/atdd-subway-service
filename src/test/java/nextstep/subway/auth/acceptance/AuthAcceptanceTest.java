@@ -8,9 +8,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.member.dto.MemberRequest;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +31,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	@Test
 	void myInfoWithBearerAuth() {
 		// when
-        ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
+		ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
 
 		// then
 		로그인_성공(response);
@@ -46,10 +44,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	@DisplayName("Bearer Auth 로그인 실패")
 	@Test
 	void myInfoWithBadBearerAuth() {
-        // when
-        ExtractableResponse<Response> response = 로그인_요청(EMAIL, "wrongPassword");
+		// when
+		ExtractableResponse<Response> response = 로그인_요청(EMAIL, "wrongPassword");
 
-        // then
+		// then
 		로그인_실패(response);
 	}
 
@@ -82,14 +80,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	}
 
 	public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
-        TokenRequest tokenRequest = new TokenRequest(email, password);
+		TokenRequest tokenRequest = new TokenRequest(email, password);
 
-        return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(tokenRequest)
-            .when().post("/login/token")
-            .then().log().all()
-            .extract();
-    }
+		return RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(tokenRequest)
+			.when().post("/login/token")
+			.then().log().all()
+			.extract();
+	}
 }

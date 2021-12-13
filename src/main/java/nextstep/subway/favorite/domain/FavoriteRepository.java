@@ -13,8 +13,8 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 	List<Favorite> findFavoriteByMember(Member member);
 
 	@Query("select f, source, target from Favorite f " +
-	"left outer join Station source on f.source.id=source.id "+
-	"left outer join Station target on f.target.id=target.id "+
-	"where f.member.id= :memberId")
+		"left outer join Station source on f.source.id=source.id " +
+		"left outer join Station target on f.target.id=target.id " +
+		"where f.member.id= :memberId")
 	List<Favorite> findWithStationsByMember(@Param("memberId") Long memberId);
 }

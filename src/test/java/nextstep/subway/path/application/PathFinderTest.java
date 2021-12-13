@@ -13,9 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
-import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.route.PathRoute;
 import nextstep.subway.station.domain.Station;
 
 class PathFinderTest extends AcceptanceTest {
@@ -58,10 +57,10 @@ class PathFinderTest extends AcceptanceTest {
 		삼호선.getSections().addSection(삼호선, 남부터미널역, 양재역, 2);
 
 		// when
-		Path bestPath = pathFinder.findShortestPath(Arrays.asList(신분당선,이호선,삼호선), 교대역, 양재역);
+		PathRoute bestPath = pathFinder.findShortestPath(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 양재역);
 
 		//then
 		assertThat(bestPath.getDistance()).isEqualTo(5);
-		assertThat(bestPath.getStationsRoute()).containsAnyElementsOf(Arrays.asList(교대역,남부터미널역,양재역));
+		assertThat(bestPath.getStationsRoute()).containsAnyElementsOf(Arrays.asList(교대역, 남부터미널역, 양재역));
 	}
 }

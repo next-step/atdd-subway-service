@@ -6,34 +6,37 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+	private MemberRepository memberRepository;
+	private JwtTokenProvider jwtTokenProvider;
 
-    public AuthService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
-        this.memberRepository = memberRepository;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+	private static final String ERORR_MESSAGE_ILLEGAL_ACCESS_TOKEN="인증 정보가 올바르지 않습니다.";
 
-    public TokenResponse login(TokenRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
-        member.checkPassword(request.getPassword());
+	public AuthService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
+		this.memberRepository = memberRepository;
+		this.jwtTokenProvider = jwtTokenProvider;
+	}
 
-        String token = jwtTokenProvider.createToken(request.getEmail());
-        return new TokenResponse(token);
-    }
+	public TokenResponse login(TokenRequest request) {
+		Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
+		member.checkPassword(request.getPassword());
 
-    public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
-        }
+		String token = jwtTokenProvider.createToken(request.getEmail());
+		return new TokenResponse(token);
+	}
 
-        String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
-    }
+	public LoginMember findMemberByToken(String credentials) {
+		if (!jwtTokenProvider.validateToken(credentials)) {
+			throw new AuthorizationException(ERORR_MESSAGE_ILLEGAL_ACCESS_TOKEN);
+		}
+
+		String email = jwtTokenProvider.getPayload(credentials);
+		Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+		return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+	}
 }

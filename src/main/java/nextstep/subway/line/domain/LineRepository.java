@@ -10,8 +10,8 @@ import nextstep.subway.station.domain.Station;
 
 public interface LineRepository extends JpaRepository<Line, Long> {
 
-	@Query("select l from Line l "+
-	"where l in (select distinct sec.line from Section sec "
+	@Query("select l from Line l " +
+		"where l in (select distinct sec.line from Section sec "
 		+ "where sec.upStation in :stations "
 		+ "or sec.downStation in :stations)")
 	List<Line> findAllExistStations(@Param("stations") List<Station> stations);

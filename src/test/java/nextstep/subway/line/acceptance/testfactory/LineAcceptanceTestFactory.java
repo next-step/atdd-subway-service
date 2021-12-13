@@ -21,8 +21,14 @@ public class LineAcceptanceTestFactory {
 		return 지하철_노선_생성_요청(params);
 	}
 
-	public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-		return 지하철_노선_생성_요청(new LineRequest(name,color,upStation.getId(),downStation.getId(),distance));
+	public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,
+		StationResponse downStation, int distance) {
+		return 지하철_노선_등록되어_있음(name, color, upStation, downStation, distance,0);
+	}
+
+	public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,
+		StationResponse downStation, int distance, int extraPrice) {
+		return 지하철_노선_생성_요청(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance,extraPrice));
 	}
 
 	public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
@@ -32,7 +38,7 @@ public class LineAcceptanceTestFactory {
 			.body(params)
 			.when().post("/lines")
 			.then().log().all().
-				extract();
+			extract();
 	}
 
 	public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
@@ -63,7 +69,8 @@ public class LineAcceptanceTestFactory {
 			.extract();
 	}
 
-	public static ExtractableResponse<Response> 지하철_노선_수정_요청(ExtractableResponse<Response> response, LineRequest params) {
+	public static ExtractableResponse<Response> 지하철_노선_수정_요청(ExtractableResponse<Response> response,
+		LineRequest params) {
 		String uri = response.header("Location");
 
 		return RestAssured
@@ -98,12 +105,14 @@ public class LineAcceptanceTestFactory {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
 
-	public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, ExtractableResponse<Response> createdResponse) {
+	public static void 지하철_노선_응답됨(ExtractableResponse<Response> response,
+		ExtractableResponse<Response> createdResponse) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 		assertThat(response.as(LineResponse.class)).isNotNull();
 	}
 
-	public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
+	public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response,
+		List<ExtractableResponse<Response>> createdResponses) {
 		List<Long> expectedLineIds = createdResponses.stream()
 			.map(it -> Long.parseLong(it.header("Location").split("/")[2]))
 			.collect(Collectors.toList());

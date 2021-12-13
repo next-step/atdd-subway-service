@@ -1,24 +1,23 @@
 package nextstep.subway.path.domain;
 
-import java.util.List;
-
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.path.domain.price.PathPrice;
+import nextstep.subway.path.domain.route.PathRoute;
 
 public class Path {
 
-	private int distance;
-	private List<Station> stations;
+	private PathRoute pathRoute;
+	private PathPrice pathPrice;
 
-	public Path(int distance, List<Station> stations) {
-		this.distance = distance;
-		this.stations = stations;
+	public Path(PathRoute pathRoute, PathPrice pathPrice) {
+		this.pathRoute = pathRoute;
+		this.pathPrice = pathPrice;
 	}
 
-	public int getDistance() {
-		return distance;
+	public PathRoute getPathRoute() {
+		return pathRoute;
 	}
 
-	public List<Station> getStationsRoute() {
-		return stations;
+	public int getPrice() {
+		return pathPrice.getPrice();
 	}
 }
