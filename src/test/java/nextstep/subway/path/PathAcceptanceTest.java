@@ -76,5 +76,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(paths.getStations().stream().map(StationResponse::getName)).containsExactly("강남역", "양재역", "남부터미널역");
         assertThat(paths.getDistance()).isEqualTo(12);
+        assertThat(paths.getFee()).isEqualTo(1250);
     }
 }

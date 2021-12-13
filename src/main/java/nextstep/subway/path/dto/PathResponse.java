@@ -15,6 +15,8 @@ public class PathResponse {
 
     private int distance;
 
+    private int fee;
+
     public PathResponse(List<Station> stations, Distance distance) {
         this.stations = stations.stream()
                 .map(StationResponse::of)
@@ -28,5 +30,9 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFee() {
+        return fee;
     }
 }
