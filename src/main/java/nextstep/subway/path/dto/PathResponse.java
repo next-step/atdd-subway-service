@@ -7,13 +7,15 @@ import nextstep.subway.station.dto.StationResponse;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 public class PathResponse {
 
     private List<StationResponse> stations;
 
     private int distance;
+
+    public PathResponse() {
+
+    }
 
     public PathResponse(ShortestPath path) {
         this.stations = StationResponse.ofList(path.findPaths());
