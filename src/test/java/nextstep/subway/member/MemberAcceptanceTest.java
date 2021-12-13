@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -113,5 +114,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
   public static void 회원_삭제됨(ExtractableResponse<Response> response) {
     assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+  }
+
+  public static void 회원_등록되어_있음(Member member) {
+    회원_생성을_요청(member.getEmail(), member.getPassword(), member.getAge());
   }
 }
