@@ -85,7 +85,11 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] 출발역과 도착역이 같은 경우 에러(Inside Out)
     - [X] 출발역과 도착역이 연결이 되어 있지 않은 경우 에러(Inside Out)
 
+#### 코드 리뷰
+- [ ] graph와 sections가 직접적으로 의존하지 않도록 변경?
 
 ## 참고
 - [JPA 사용시 @Embedded 주의 사항](https://jojoldu.tistory.com/559)
+- [A Better Way to Project Domain Entities into DTOs](https://buildplease.com/pages/repositories-dto/)
+- [Domain Store](http://www.corej2eepatterns.com/DomainStore.htm)
 
