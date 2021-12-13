@@ -67,3 +67,25 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] 역 목록 역할 클래스 추가
     - [X] 역 응답 목록 클래스 추가
 - [X] 공통 에러처리
+
+#### 코드리뷰
+- [X] `NoSuchElementException` 대신 용도에 맞는 새로운 Exception 생성
+
+## 2단계
+#### 기능 요구사항
+- [X] 최단 경로 조회 인수 테스트 만들기
+    - [X] 정상적으로 경로 조회 인수 테스트 생성 ((Outside In)
+    - [X] 출발역과 도착역이 같은 경우 인수 테스트 생성 (Inside Out)
+    - [X] 출발역과 도착역이 연결이 되어 있지 않은 경우 인수 테스트 생성 (Inside Out)
+    - [X] 존재하지 않은 출발역이나 도착역을 조회 할 경우 인수 테스트 생성 (Inside Out)
+- [X] 최단 경로 조회 기능 구현하기
+    - [X] 정상적으로 경로 조회 (Outside In)
+        - [X] PathService 코드 구현
+        - [X] PathFinder 코드 구현
+    - [X] 출발역과 도착역이 같은 경우 에러(Inside Out)
+    - [X] 출발역과 도착역이 연결이 되어 있지 않은 경우 에러(Inside Out)
+
+
+## 참고
+- [JPA 사용시 @Embedded 주의 사항](https://jojoldu.tistory.com/559)
+

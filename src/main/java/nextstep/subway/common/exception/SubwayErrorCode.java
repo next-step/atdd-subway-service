@@ -1,6 +1,8 @@
 package nextstep.subway.common.exception;
 
 public enum SubwayErrorCode {
+    NOT_CONNECTED_SOURCE_AND_TARGET("출발역과 도착역이 연결이 되어 있지 않습니다."),
+    SAME_SOURCE_AND_TARGET("출발역과 도착역이 같습니다."),
     ALREADY_REGISTERED_SECTION("이미 등록된 구간 입니다."),
     INVALID_LINE_SECTION("등록할 수 없는 구간 입니다."),
     CANNOT_DELETE_LAST_LINE("구간이 하나인 노선에서 마지막 구간을 제거할 수 없습니다."),

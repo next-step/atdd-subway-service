@@ -1,13 +1,12 @@
 package nextstep.subway.auth.application;
 
-import java.util.NoSuchElementException;
-
 import org.springframework.stereotype.Service;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.common.exception.SubwayNotFoundException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 
@@ -35,7 +34,7 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(SubwayNotFoundException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

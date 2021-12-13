@@ -1,10 +1,15 @@
 package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+import org.jgrapht.graph.builder.GraphBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -137,5 +142,29 @@ public class SectionsTest {
         assertThatExceptionOfType(SubwayException.class)
             .isThrownBy(() -> sections.removeStation(강남역))
             .withMessage("구간이 하나인 노선에서 마지막 구간을 제거할 수 없습니다.");
+    }
+
+    @DisplayName("graph 생성")
+    @Test
+    void makeGraph() {
+        Sections sections = Sections.from(
+            Arrays.asList(강남_양재_구간, 양재_판교_구간));
+
+        GraphBuilder<Station, DefaultWeightedEdge, WeightedMultigraph<Station, DefaultWeightedEdge>> graphBuilder =
+            new GraphBuilder<>(new WeightedMultigraph<>(DefaultWeightedEdge.class));
+        graphBuilder.addVertex(강남역);
+        graphBuilder.addVertex(양재역);
+        graphBuilder.addVertex(판교역);
+        graphBuilder.addEdge(강남역, 양재역, 8);
+        graphBuilder.addEdge(양재역, 판교역, 2);
+        Graph<Station, DefaultWeightedEdge> expected = graphBuilder.buildAsUnmodifiable();
+
+        Graph<Station, DefaultWeightedEdge> graph = sections.makeGraph();
+
+        assertAll(
+            () -> assertThat(graph.containsVertex(강남역)).isTrue(),
+            () -> assertThat(graph.containsVertex(양재역)).isTrue(),
+            () -> assertThat(graph.containsVertex(판교역)).isTrue()
+        );
     }
 }

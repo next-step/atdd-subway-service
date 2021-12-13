@@ -27,6 +27,10 @@ public class Distance {
         }
     }
 
+    public int getValue() {
+        return value;
+    }
+
     public Distance add(Distance distance) {
         return new Distance(this.value + distance.value);
     }

@@ -76,6 +76,10 @@ public class Section {
         return distance;
     }
 
+    public int getDistanceValue() {
+        return distance.getValue();
+    }
+
     public void updateUpStation(Station station, Distance newDistance) {
         this.distance = this.distance
             .subtract(newDistance);
