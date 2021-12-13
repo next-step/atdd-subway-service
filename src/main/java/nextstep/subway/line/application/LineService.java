@@ -12,10 +12,8 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import javax.persistence.EntityExistsException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,12 +32,13 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
 
-        Optional<Line> line = lineRepository.findByName(request.getName());
-        if(line.isPresent()) {
+        Line persistLine = lineRepository.findByName(request.getName());
+
+        if(Objects.nonNull(persistLine)) {
             throw new IllegalArgumentException("노선이 이미 등록되었습니다.");
         }
 
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         List<StationResponse> stations = persistLine.getStationsByOrder().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());

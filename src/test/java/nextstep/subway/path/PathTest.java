@@ -3,7 +3,7 @@ package nextstep.subway.path;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.infra.JgraphtPathFinder;
-import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.infra.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
@@ -45,13 +45,11 @@ public class PathTest {
 
         //when
         PathFinder pathFinder = new JgraphtPathFinder();
-        Path path = new Path(pathFinder);
-        List<Station> paths = path.findPaths(lines, 강남역, 남부터미널역);
-        Distance distance = path.findPathWeight(lines, 강남역, 남부터미널역);
+        ShortestPath shortestPath = pathFinder.findShortestPath(lines, 강남역, 남부터미널역);
 
         //then
-        assertThat(distance).isEqualTo(new Distance(12));
-        assertThat(paths.stream().map(Station::getName)).containsExactly("강남역", "교대역", "남부터미널역");
+        assertThat(shortestPath.findWeight()).isEqualTo(12);
+        assertThat(shortestPath.findPaths().stream().map(Station::getName)).containsExactly("강남역", "교대역", "남부터미널역");
     }
 
     @DisplayName("출발역과 도착역이 같을 때 최단경로 찾기")
@@ -74,10 +72,9 @@ public class PathTest {
 
         //when
         PathFinder pathFinder = new JgraphtPathFinder();
-        Path path = new Path(pathFinder);
 
         //then
-        assertThatThrownBy(() -> path.findPaths(lines, 강남역, 강남역)).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> pathFinder.findShortestPath(lines, 강남역, 강남역)).isInstanceOf(IllegalStateException.class);
     }
 
     @DisplayName("출발역과 도착역이 연결되지 않을 때 최단경로 찾기")
@@ -98,9 +95,7 @@ public class PathTest {
 
         //when
         PathFinder pathFinder = new JgraphtPathFinder();
-        Path path = new Path(pathFinder);
-
-        assertThatThrownBy(() -> path.findPaths(lines, 강남역, 남부터미널역)).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> pathFinder.findShortestPath(lines, 강남역, 남부터미널역)).isInstanceOf(IllegalStateException.class);
     }
 
 }
