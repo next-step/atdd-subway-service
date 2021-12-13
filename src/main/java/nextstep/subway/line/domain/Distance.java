@@ -2,7 +2,7 @@ package nextstep.subway.line.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import nextstep.subway.common.DistanceTooLongException;
+import nextstep.subway.line.exception.DistanceTooLongException;
 
 @Embeddable
 public class Distance {
@@ -22,7 +22,7 @@ public class Distance {
     }
 
     public static Distance of(double distance) {
-        return new Distance((int)distance);
+        return new Distance((int) distance);
     }
 
     public int getDistance() {

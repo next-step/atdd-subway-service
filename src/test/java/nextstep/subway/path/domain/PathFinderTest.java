@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.List;
-import nextstep.subway.common.IllegalStationException;
-import nextstep.subway.common.PathNotFoundException;
+import nextstep.subway.path.exception.InvalidPathStationException;
+import nextstep.subway.path.exception.PathNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +40,7 @@ class PathFinderTest {
     @Test
     void testFindPathSameStation() {
         assertThatThrownBy(() -> pathFinder.findShortestPath(강남역, 강남역))
-            .isInstanceOf(IllegalStationException.class);
+            .isInstanceOf(InvalidPathStationException.class);
     }
 
     @DisplayName("경로를 조회할 때 출발역과 도착역이 연결되어 있지 않은 경우 예외가 발생한다.")
