@@ -3,6 +3,7 @@ package nextstep.subway.path.infra;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -16,7 +17,7 @@ import java.util.Objects;
 import static java.util.stream.Collectors.toList;
 
 @Component
-public class JgraphtPathFinderStrategy implements PathFinderStrategy {
+public class JgraphtPathFinder implements PathFinder {
 
     private void validateLinkSourceAndTarget(GraphPath path) {
         if(Objects.isNull(path)) {
@@ -50,16 +51,32 @@ public class JgraphtPathFinderStrategy implements PathFinderStrategy {
         return path;
     }
 
+    private void validateCorrectSourceAndTarget(Station source, Station target) {
+        if(source == target) {
+            throw new IllegalStateException("출발역과 도착역이 같습니다.");
+        }
+    }
+
+
     @Override
     public List<Station> findStations(List<Line> lines, Station source, Station target) {
+        validateCorrectSourceAndTarget(source, target);
         GraphPath path = find(lines, source, target);
         return path.getVertexList();
     }
 
     @Override
     public Distance findDistance(List<Line> lines, Station source, Station target) {
+        validateCorrectSourceAndTarget(source, target);
         GraphPath path = find(lines, source, target);
         return new Distance((int)path.getWeight());
+    }
+
+    @Override
+    public ShortestPath findShortestPath(List<Line> lines, Station source, Station target) {
+        validateCorrectSourceAndTarget(source, target);
+        GraphPath path = find(lines, source, target);
+        return new ShortestPath(path.getVertexList(), (int)path.getWeight());
     }
 
 }

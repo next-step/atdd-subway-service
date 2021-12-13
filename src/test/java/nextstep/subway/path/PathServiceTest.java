@@ -4,7 +4,8 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.application.PathService;
-import nextstep.subway.path.infra.PathFinderStrategy;
+import nextstep.subway.path.domain.ShortestPath;
+import nextstep.subway.path.infra.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -34,7 +35,7 @@ public class PathServiceTest {
     private LineRepository lineRepository;
 
     @Mock
-    private PathFinderStrategy pathFinder;
+    private PathFinder pathFinder;
 
     @DisplayName("최단 경로 찾기 - 서비스 Layer")
     @Test
@@ -55,20 +56,20 @@ public class PathServiceTest {
         삼호선.addSection(남부터미널역, 양재역, 3);
 
         List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
+        ShortestPath shortestPath = new ShortestPath(Arrays.asList(강남역, 교대역, 남부터미널역), 12);
 
         PathService pathService = new PathService(lineRepository, stationService, pathFinder);
         when(lineRepository.findAll()).thenReturn(lines);
         when(stationService.findById(sourceId)).thenReturn(강남역);
         when(stationService.findById(targetId)).thenReturn(남부터미널역);
-        when(pathFinder.findStations(anyList(), any(), any())).thenReturn(Arrays.asList(강남역, 교대역, 남부터미널역));
-        when(pathFinder.findDistance(anyList(), any(), any())).thenReturn(new Distance(12));
+        when(pathFinder.findShortestPath(anyList(), any(), any())).thenReturn(shortestPath);
 
         //when
-        PathResponse shortestPath = pathService.findShortestPath(sourceId, targetId);
+        PathResponse paths = pathService.findShortestPath(sourceId, targetId);
 
         //then
-        assertThat(shortestPath.getDistance()).isEqualTo(12);
-        assertThat(shortestPath.getStations().stream().map(StationResponse::getName))
+        assertThat(paths.getDistance()).isEqualTo(12);
+        assertThat(paths.getStations().stream().map(StationResponse::getName))
                 .containsExactly("강남역", "교대역", "남부터미널역");
 
     }
