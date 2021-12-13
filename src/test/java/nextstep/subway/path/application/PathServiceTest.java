@@ -28,10 +28,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
     List<Line> lines = new ArrayList();
-    Station 강남역;
-    Station 교대역;
-    Station 양재역;
-    Station 남부터미널역;
+    private Station 강남역;
+    private Station 교대역;
+    private Station 양재역;
+    private Station 남부터미널역;
 
     @Mock
     private StationRepository stationRepository;
