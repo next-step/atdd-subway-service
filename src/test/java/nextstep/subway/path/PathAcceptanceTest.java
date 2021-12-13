@@ -66,6 +66,13 @@ class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회_거리_포함됨(최단_경로_조회_요청_응답, 12);
     }
 
+    @Test
+    void 최단_경로_조회_출발역과_도착역이_같은_경우_조회할_수_없다() {
+        ExtractableResponse<Response> 최단_경로_조회_요청_응답 = 최단_경로_조회_요청(강남역, 강남역);
+
+        최단_경로_조회_요청_실패됨(최단_경로_조회_요청_응답);
+    }
+
     private void 최단_경로_조회_경로_포함됨(ExtractableResponse<Response> response, List<StationResponse> expectedResponse) {
         PathResponse pathResponse = response.as(PathResponse.class);
 
@@ -95,5 +102,9 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     private void 최단_경로_조회_요청_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 최단_경로_조회_요청_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

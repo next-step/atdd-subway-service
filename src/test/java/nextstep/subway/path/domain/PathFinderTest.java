@@ -1,16 +1,19 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.BadRequestException;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.station.domain.Station;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
-@DisplayName("지하철 노선들 관련 기능")
-class LinesTest {
+@DisplayName("경로 조회 관련 기능")
+class PathFinderTest {
 
     private Station 강남역;
     private Station 양재역;
@@ -32,40 +35,34 @@ class LinesTest {
         신분당선 = Line.of("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = Line.of("이호선", "bg-red-600", 교대역, 강남역, 10);
         삼호선 = Line.of("삼호선", "bg-red-600", 교대역, 양재역, 5);
-
         삼호선.addSection(교대역, 남부터미널역, 3);
     }
 
     @Test
-    void 지하철_노선들_생성() {
-        // given - when
+    void 최단_경로_조회() {
+        // given
         Lines lines = Lines.from(Arrays.asList(신분당선, 이호선, 삼호선));
+        PathFinder pathFinder = PathFinder.from(lines);
+
+        // when
+        Path actual = pathFinder.findShortestPath(강남역, 남부터미널역);
 
         // then
-        Assertions.assertThat(lines).isNotNull();
+        Assertions.assertThat(actual.getStations()).hasSize(3);
+        Assertions.assertThat(actual.getDistance()).isEqualTo(12);
     }
 
     @Test
-    void 지하철_노선들의_역을_중복제거하여_전체_조회() {
+    void 최단_경로_조회_출발역과_도착역이_같은_경우_조회할_수_없다() {
         // given
         Lines lines = Lines.from(Arrays.asList(신분당선, 이호선, 삼호선));
+        PathFinder pathFinder = PathFinder.from(lines);
 
         // when
-        List<Station> actual = lines.getStations();
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> pathFinder.findShortestPath(강남역, 강남역);
 
         // then
-        Assertions.assertThat(actual).hasSize(4);
-    }
-
-    @Test
-    void 지하철_노선들의_구간을_전체_조회() {
-        // given
-        Lines lines = Lines.from(Arrays.asList(신분당선, 이호선, 삼호선));
-
-        // when
-        List<Section> actual = lines.getSections();
-
-        // then
-        Assertions.assertThat(actual).hasSize(4);
+        Assertions.assertThatExceptionOfType(BadRequestException.class)
+                .isThrownBy(throwingCallable);
     }
 }

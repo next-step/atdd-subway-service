@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -39,7 +40,14 @@ public class PathFinder {
     }
 
     public Path findShortestPath(Station sourceStation, Station targetStation) {
+        validateDuplicateStation(sourceStation, targetStation);
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         return Path.of(graphPath.getVertexList(), (int) graphPath.getWeight());
+    }
+
+    private void validateDuplicateStation(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new BadRequestException("출발역과 도착역이 같은 경우 최단 거리를 구할 수 없습니다.");
+        }
     }
 }
