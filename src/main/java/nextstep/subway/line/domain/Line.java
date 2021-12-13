@@ -4,7 +4,6 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,14 +11,21 @@ public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
+
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections = new Sections();
 
-    public Line() {
+    public Line() { }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this.name = name;
+        this.color = color;
+        addSection(upStation, downStation, distance);
     }
 
     public Line(String name, String color) {
@@ -27,15 +33,26 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
+    public List<Station> getStationsInOrder() {
+        return sections.getStationsInOrder();
+    }
+
+    public void addSection(Station upStation, Station downStation, int distance) {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+    public void removeSectionByStation(Station station) {
+        sections.removeSectionByStation(station);
+    }
+
+    public void update(String name, String color) {
+        this.name = name;
+        this.color = color;
+    }
+
+    public void update(Line newLine) {
+        this.name = newLine.getName();
+        this.color = newLine.getColor();
     }
 
     public Long getId() {
@@ -51,6 +68,6 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return sections.getSections();
     }
 }
