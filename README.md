@@ -100,7 +100,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [x] 유효하지 않은 토큰 인수 테스트 추가
 - [x] 내 정보 조회 기능 인수테스트 추가 (MemberAcceptanceTest - manageMyInfo)
 - [x] 내 정보 조회 기능 구현
-- [ ] 즐겨찾기 테스트 추가
+- [x] 즐겨찾기 인수 테스트 추가
 - [ ] 즐겨찾기 기능 구현
 
 

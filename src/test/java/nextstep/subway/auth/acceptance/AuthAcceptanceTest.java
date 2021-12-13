@@ -75,18 +75,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회_됨(회원_정보_조회);
     }
 
-    @DisplayName("잘못된 정보로 조회 실패")
+    @DisplayName("잘못된 정보로 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
-        /*        // Given
-        ExtractableResponse<Response> 로그인_실패_응답  = 로그인_요청(EMAIL, "wrongpw");
-        String 토큰 = 토큰_조회(로그인_실패_응답);
-        
         // When
-        ExtractableResponse<Response> 회원_정보_조회 = 회원_정보_조회_요청(토큰);
-        
+        ExtractableResponse<Response> 잘못된_이메일_로그인  = 로그인_요청("fail@email.com", PASSWORD);
+
         // Then
-        회원_정보_조회_실패(회원_정보_조회);*/
+        로그인_실패(잘못된_이메일_로그인);
     }
 
     @DisplayName("잘못된 토큰으로 내 정보 조회 실패")
