@@ -4,10 +4,10 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,20 +18,20 @@ import java.util.List;
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
-    private final MemberRepository memberRepository;
-    private final StationRepository stationRepository;
+    private final MemberService memberService;
+    private final StationService stationService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationRepository stationRepository) {
+    public FavoriteService(FavoriteRepository favoriteRepository, MemberService memberService, StationService stationService) {
         this.favoriteRepository = favoriteRepository;
-        this.memberRepository = memberRepository;
-        this.stationRepository = stationRepository;
+        this.memberService = memberService;
+        this.stationService = stationService;
     }
 
     public Long createFavorite(Long memberId, FavoriteRequest favoriteRequest) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Member member = memberService.findMemberById(memberId);
 
-        Station sourceStation = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출발역입니다."));
-        Station targetStation = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 도착역입니다."));
+        Station sourceStation = stationService.findStationById(favoriteRequest.getSource());
+        Station targetStation = stationService.findStationById(favoriteRequest.getTarget());
 
         Favorite favorite = Favorite.of(member, sourceStation, targetStation);
         Favorite saveFavorite = favoriteRepository.save(favorite);
@@ -41,7 +41,7 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Member member = memberService.findMemberById(memberId);
 
         List<Favorite> favorites = favoriteRepository.findByMember(member);
         return FavoriteResponse.ofList(favorites);
