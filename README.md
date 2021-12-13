@@ -96,7 +96,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - 인증 - 즐겨 찾기 기능 완성하기
 
 ## 구현목록
-- [ ] 로그인 기능 인수테스트 추가 (AuthAcceptanceTest)
+- [x] 로그인 기능 인수테스트 추가 (AuthAcceptanceTest)
     - [ ] 유효하지 않은 토큰 인수 테스트 추가
 - [ ] 내 정보 조회 기능 인수테스트 추가 (MemberAcceptanceTest - manageMyInfo)
 - [ ] 내 정보 조회 기능 구현
