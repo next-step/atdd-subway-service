@@ -86,10 +86,52 @@ Feature: 경로 관련 기능
         When 존재하지 않은 출발역이나 도착역의 경로 조회 요청  
         Then 최단_경로_조회_실패    
 
+## 인증 기능 구현
 
+Feature: 로그인 기능   
+    Scenario: 로그인을 시도한다.   
+        Given 회원 등록되어 있음   
+        When 로그인 요청   
+        Then 로그인 됨
+
+## 내 정보 기능 구현
+
+Feature: 회원 기능  
+    Background  
+        Given 회원 등록되어 있음  
+        And 로그인 요청되어 있음  
+    Scenario: 나의 정보 관리    
+        When 나의 정보를 조회 한다   
+        Then 회원 정보 조회됨  
+        When 출발역과 도착역이 같은 경로 조회 요청  
+        Then 최단 경로 조회 실패  
+        When 나의 정보를 수정 한다  
+        Then 로그인을_요청한다  
+        When 나의 정보를 삭제 한다  
+        Then 회원 삭제됨
+
+## 즐겨찾기 기능 구현
+
+Feature: 즐겨찾기를 관리한다.
+    Background
+        Given 지하철역 등록되어 있음
+        And 지하철 노선 등록되어 있음
+        And 지하철 노선에 지하철역 등록되어 있음
+        And 회원 등록되어 있음
+        And 로그인 되어있음
+    Scenario: 즐겨찾기를 관리
+        When 즐겨찾기 생성을 요청
+        Then 즐겨찾기 생성됨
+        When 즐겨찾기 목록 조회 요청
+        Then 즐겨찾기 목록 조회됨
+        When 즐겨찾기 삭제 요청
+        Then 즐겨찾기 삭제됨
 
 ## 할 일
 - [x] LineSectionAcceptanceTest 리팩터링
 - [x] LineService 리팩터링
 - [x] 최단 경로 조회 인수 테스트 만들기
 - [x] 최단 경로 조회 기능 구현하기
+- [x] 토큰 발급 기능 (로그인) 인수 테스트 만들기
+- [x] 인증 - 내 정보 조회 기능 완성하기
+- [x] 인증 - 즐겨 찾기 기능 완성하기

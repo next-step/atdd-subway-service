@@ -22,16 +22,20 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(NotFoundEntityException::new);
-        return MemberResponse.of(member);
+        return MemberResponse.of(findById(id));
     }
 
+    @Transactional
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(NotFoundEntityException::new);
+        Member member = findById(id);
         member.update(param.toMember());
     }
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id).orElseThrow(NotFoundEntityException::new);
     }
 }
