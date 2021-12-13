@@ -71,10 +71,10 @@ public class Section {
     }
 
     public boolean isUpStation(Station station) {
-        return upStation == station;
+        return upStation.equals(station);
     }
 
     public boolean isDownStation(Station station) {
-        return downStation == station;
+        return downStation.equals(station);
     }
 }

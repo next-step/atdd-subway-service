@@ -64,24 +64,13 @@ public class LineService {
         Station downStation = stationService.findStationById(request.getDownStationId());
         Section section = new Section(line, upStation, downStation, request.getDistance());
         Sections targetSections = line.getSections();
-
-        if (targetSections.alreadyAdded(section)) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (targetSections.stationsNotAdded(section)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
         targetSections.addLineStation(section);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
-        if (line.getSections().lessOrEqualThanOne()) {
-            throw new RuntimeException();
-        }
-        line.getSections().removeLineStation(station);
+        Sections targetSections = line.getSections();
+        targetSections.removeLineStation(station);
     }
 }
