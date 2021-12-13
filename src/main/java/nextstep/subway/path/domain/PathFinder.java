@@ -33,18 +33,22 @@ public class PathFinder {
 
     private static WeightedMultigraph<Station, DefaultWeightedEdge> initGraph(Lines lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        addVertex(lines, graph);
+        addEdgeAndWeight(lines, graph);
+        return graph;
+    }
+
+    private static void addEdgeAndWeight(Lines lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        List<Section> sections = lines.getSections();
+        sections.forEach(section -> {
+            DefaultWeightedEdge defaultWeightedEdge = graph.addEdge(section.getUpStation(), section.getDownStation());
+            graph.setEdgeWeight(defaultWeightedEdge, section.getDistance());
+        });
+    }
+
+    private static void addVertex(Lines lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         List<Station> stations = lines.getStations();
         stations.forEach(graph::addVertex);
-
-        List<Section> sections = lines.getSections();
-        sections.forEach(section ->
-                graph.setEdgeWeight(
-                        graph.addEdge(
-                                section.getUpStation(),
-                                section.getDownStation()),
-                        section.getDistance()
-                ));
-        return graph;
     }
 
     private void validateDuplicateStation(Station sourceStation, Station targetStation) {
