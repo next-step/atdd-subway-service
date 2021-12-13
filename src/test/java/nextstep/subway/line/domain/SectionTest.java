@@ -93,7 +93,7 @@ class SectionTest {
 
         // then
         assertThat(강남_양재_구간.getUpStation()).isEqualTo(판교역);
-        assertThat(강남_양재_구간.getDistance().getDistance()).isEqualTo(강남_양재_거리 - 양재_판교_거리);
+        assertThat(강남_양재_구간.getDistance()).isEqualTo(강남_양재_거리 - 양재_판교_거리);
     }
 
     @Test
@@ -136,7 +136,7 @@ class SectionTest {
 
         // then
         assertThat(강남_양재_구간.getDownStation()).isEqualTo(판교역);
-        assertThat(강남_양재_구간.getDistance().getDistance()).isEqualTo(강남_양재_거리 - 판교_양재_거리);
+        assertThat(강남_양재_구간.getDistance()).isEqualTo(강남_양재_거리 - 판교_양재_거리);
     }
 
     @Test

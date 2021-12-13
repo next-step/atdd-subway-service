@@ -64,13 +64,13 @@ public class PathFinder {
     }
 
     private static void settingEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
-        List<Section> sections = line.getSections().getSections();
+        List<Section> sections = line.getSections();
         for (Section section : sections) {
             graph.setEdgeWeight(
                     graph.addEdge(
                             section.getUpStation(),
                             section.getDownStation()),
-                    section.getDistance().getDistance());
+                    section.getDistance());
         }
     }
 }
