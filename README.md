@@ -99,7 +99,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### 2. 인증 - 내 정보 관리 기능 완성하기 인수 테스트
 - Feature: 내 정보 관리 기능
     - Background: 
-        - Given 로그인에 성공해 토큰을 가지고 있음
+      - Given 회원 등록되어 있음
+      - And 로그인에 성공해 토큰을 가지고 있음
+
     - Scenario: 내 정보를 관리
         - When 내 정보조회 요청
         - Then 내 정보조회 성공
