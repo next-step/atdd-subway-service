@@ -57,7 +57,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
 
-
+    @DisplayName("최단경로를 조회한다")
     @Test
     void 최단경로를_조회한다() {
 
