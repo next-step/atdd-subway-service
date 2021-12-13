@@ -52,12 +52,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("최단 경로 조회")
     void 최단_경로_조회() {
         // when
         PathResponse 교대역_양재역_경로 = 최단_경로_조회(교대역, 양재역).as(PathResponse.class);;
 
         // then
         거리가_5인_교대역_남부터미널역_양재역_경로_응답(교대역_양재역_경로);
+        총_거리_포함됨(교대역_양재역_경로);
+        지하철_이용_요금_포함(교대역_양재역_경로);
 
     }
 
@@ -85,6 +88,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 최단_경로_조회(StationResponse 출발역, StationResponse 도착역) {
         return get("/paths?source=" + 출발역.getId() + "&target=" + 도착역.getId());
+    }
+
+    private void 총_거리_포함됨(PathResponse 교대역_양재역_경로) {
+        assertThat(교대역_양재역_경로.getDistance()).isNotNull();
+    }
+
+    private void 지하철_이용_요금_포함(PathResponse 교대역_양재역_경로) {
+        assertThat(교대역_양재역_경로.getFare()).isNotNull();
     }
 
 }
