@@ -17,16 +17,16 @@ import nextstep.subway.station.dto.StationResponses;
 public class PathFinder {
     private final GraphPath<Station, DefaultWeightedEdge> path;
 
-    public PathFinder(Graph<Station, DefaultWeightedEdge> graph, Station source, Station target) {
+    public PathFinder(StationGraph graph, Station source, Station target) {
         this.path = makePath(graph, source, target);
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> makePath(Graph<Station, DefaultWeightedEdge> graph,
+    private GraphPath<Station, DefaultWeightedEdge> makePath(StationGraph graph,
         Station source,
         Station target) {
         validateSourceAndTargetDifferent(source, target);
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = graph.getDijkstraShortestPath();
 
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
         validateSourceAndTargetConnected(path);

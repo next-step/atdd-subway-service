@@ -1,11 +1,10 @@
 package nextstep.subway.path.service;
 
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.StationGraph;
+import nextstep.subway.path.dto.PathDtos;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.repository.SectionRepository;
@@ -24,8 +23,10 @@ public class PathService {
     }
 
     public PathResponse getPath(PathRequest pathRequest) {
-        Sections sections = Sections.from(sectionRepository.findAll());
-        Graph<Station, DefaultWeightedEdge> graph = sections.makeGraph();
+        // Sections sections = Sections.from(sectionRepository.findAll());
+        PathDtos pathDtos = PathDtos.from(sectionRepository.findAll());
+
+        StationGraph graph = new StationGraph(pathDtos);
         Station source = stationService.findById(pathRequest.getSource());
         Station target = stationService.findById(pathRequest.getTarget());
 

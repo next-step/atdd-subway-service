@@ -15,6 +15,7 @@ import nextstep.subway.common.exception.SubwayException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.dto.PathDtos;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponses;
@@ -57,10 +58,10 @@ class PathFinderTest {
     @DisplayName("최단 경로 찾기")
     @Test
     void findPath() {
-        Sections sections = Sections.from(모든_구간);
+        PathDtos paths = PathDtos.from(모든_구간);
         StationResponses stationResponses = StationResponses.from(Arrays.asList(강남역, 양재역, 남부터미널역));
         PathResponse expected = new PathResponse(stationResponses.getResponses(), 9);
-        Graph<Station, DefaultWeightedEdge> graph = sections.makeGraph();
+        StationGraph graph = new StationGraph(paths);
 
         PathFinder pathFinder = new PathFinder(graph, 강남역, 남부터미널역);
         PathResponse actual = pathFinder.findPath();
@@ -71,8 +72,8 @@ class PathFinderTest {
     @DisplayName("시작점과 출발점이 동일할 때 에러")
     @Test
     void findPath_errorWhenSameSourceAndTarget() {
-        Sections sections = Sections.from(모든_구간);
-        Graph<Station, DefaultWeightedEdge> graph = sections.makeGraph();
+        PathDtos paths = PathDtos.from(모든_구간);
+        StationGraph graph = new StationGraph(paths);
 
         assertThatExceptionOfType(SubwayException.class)
             .isThrownBy(() -> new PathFinder(graph, 교대역, 교대역))
@@ -86,9 +87,10 @@ class PathFinderTest {
         Station 미금역 = new Station("미금역");
         Line 분당선 = new Line("분당선", "yellow");
         Section 정자_미금_구간 = new Section(분당선, 정자역, 미금역, 10);
-        Sections sections = Sections.from(모든_구간);
-        sections.addSection(정자_미금_구간);
-        Graph<Station, DefaultWeightedEdge> graph = sections.makeGraph();
+        List<Section> sections = Arrays.asList(강남_교대_구간, 강남_양재_구간, 교대_남부터미널_구간, 남부터미널_양재_구간, 정자_미금_구간);
+
+        PathDtos paths = PathDtos.from(sections);
+        StationGraph graph = new StationGraph(paths);
 
         assertThatExceptionOfType(SubwayException.class)
             .isThrownBy(() -> new PathFinder(graph, 교대역, 정자역))
