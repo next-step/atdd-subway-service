@@ -19,11 +19,20 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    @Embedded
+    private Fare extraFare;
+
     public Line() {
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this(name,color);
+        sections.addSection(new Section(this, upStation, downStation, new Distance(distance)));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int extraFare) {
+        this(name, color, upStation, downStation, distance);
+        this.extraFare = new Fare(extraFare);
         sections.addSection(new Section(this, upStation, downStation, new Distance(distance)));
     }
 

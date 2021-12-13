@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -63,11 +64,13 @@ public class PathMockitoTest {
         List<StationResponse> stationResponses = stations.stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
+        LoginMember loginMember = new LoginMember(1L, "test@test.com", 12);
+
         //when
-        when(pathService.findPath(dangsanStation.getId(), sunyudoStation.getId()))
+        when(pathService.findPath(dangsanStation.getId(), sunyudoStation.getId(), loginMember))
                 .thenReturn(new PathResponse(stationResponses, new Distance(10)));
 
-        PathResponse pathResponse = pathService.findPath(dangsanStation.getId(), sunyudoStation.getId());
+        PathResponse pathResponse = pathService.findPath(dangsanStation.getId(), sunyudoStation.getId(), loginMember);
 
         List<StationResponse> stationBasket = pathResponse.getStations();
         //then

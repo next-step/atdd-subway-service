@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.exception.InputDataErrorCode;
 import nextstep.subway.exception.InputDataErrorException;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -44,15 +45,22 @@ public class Path {
                         .forEach(section -> makeSectionEdge(section)));
     }
 
-    private void makeSectionEdge(Section section) {
-        subwayGraph.addEdge(section, section.getUpStation(), section.getDownStation());
-    }
-
     public List<Station> findShortestPath(List<Line> lines) {
         addVertex(lines);
         addEdge(lines);
         checkValidateStation(lines);
         return findShortestVertexInPath();
+    }
+
+    public Fare calculateBigSectionFare() {
+        return subwayGraph.getAllEdges(source, target).stream()
+                .map(SectionEdge::getLineFare)
+                .max(Fare::compareTo)
+                .orElseThrow(() -> new InputDataErrorException(InputDataErrorCode.THERE_IS_NOT_SEARCHED_SECTION));
+    }
+
+    private void makeSectionEdge(Section section) {
+        subwayGraph.addEdge(section, section.getUpStation(), section.getDownStation());
     }
 
     private List<Station> findShortestVertexInPath() {

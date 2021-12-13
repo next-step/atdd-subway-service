@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -10,6 +11,12 @@ public class SectionEdge extends DefaultWeightedEdge {
     private final Station source;
     private final Station target;
     private final double weight;
+    private Fare lineFare;
+
+    public SectionEdge(Section section, Station source, Station target, int weight, Fare lineFare) {
+        this(section, source, target, weight);
+        this.lineFare = lineFare;
+    }
 
     public SectionEdge(Section section, Station source, Station target, int weight) {
         this.section = section;
@@ -39,5 +46,9 @@ public class SectionEdge extends DefaultWeightedEdge {
 
     public Section getSection() {
         return section;
+    }
+
+    public Fare getLineFare(){
+        return lineFare;
     }
 }
