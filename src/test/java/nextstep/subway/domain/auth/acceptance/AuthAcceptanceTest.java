@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("로그인 기능")
-class AuthAcceptanceTest extends AcceptanceTest {
+public class AuthAcceptanceTest extends AcceptanceTest {
 
     private String email = "hongji3354@gmail.com";
     private String password = "hongji3354";
@@ -46,7 +46,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         로그인_성공(로그인_요청_응답);
     }
 
-    private ExtractableResponse<Response> 로그인_요청(final String email, final String password) {
+    public ExtractableResponse<Response> 로그인_요청(final String email, final String password) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new TokenRequest(email, password))
