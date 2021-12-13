@@ -61,3 +61,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 * 토큰 인증
 * 내 정보 조회
 * 즐겨 찾기
+
+## 기능 목록(4단계)
+* 경로 조회 시 거리 기준 요금 정보 포함
+* 노선별 추가 요금 정책 추가
+* 연령별 할인 정책 추가
