@@ -27,7 +27,7 @@ public class ExceptionHandlerAdvice {
     }
 
     @ExceptionHandler(SubwayBadRequestException.class)
-    public ResponseEntity<ErrorResponse> handleSubwayBadRequestException(SubwayInternalException e) {
+    public ResponseEntity<ErrorResponse> handleSubwayBadRequestException(SubwayBadRequestException e) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         return new ResponseEntity(errorResponse, errorResponse.toHttpStatus());
     }

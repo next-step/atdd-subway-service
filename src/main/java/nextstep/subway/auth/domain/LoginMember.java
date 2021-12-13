@@ -5,14 +5,14 @@ public class LoginMember {
     private String email;
     private Integer age;
 
-    public LoginMember() {
-        age = 0;
-    }
-
     public LoginMember(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
+    }
+
+    public static LoginMember guest() {
+        return new LoginMember(null, null, 0);
     }
 
     public Long getId() {
@@ -26,4 +26,5 @@ public class LoginMember {
     public Integer getAge() {
         return age;
     }
+
 }

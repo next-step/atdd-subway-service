@@ -5,7 +5,8 @@ import nextstep.subway.line.domain.Section;
 import java.util.List;
 
 public class Fare {
-    private final static Long DEFAULT_FARE = 1250L;
+    private static final Long DEFAULT_FARE = 1250L;
+
     private final Long fare;
 
     private Fare(Long fare) {
