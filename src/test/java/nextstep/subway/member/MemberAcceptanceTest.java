@@ -2,7 +2,10 @@ package nextstep.subway.member;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.utils.RestApiFixture;
@@ -48,7 +51,38 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        final String accessToken = 회원_로그인_요청(EMAIL, PASSWORD);
 
+        final ExtractableResponse<Response> getResponse = 내회원정보_조회_요청(accessToken);
+        회원_정보_조회됨(getResponse, EMAIL, AGE);
+
+        final ExtractableResponse<Response> editResponse = 내회원정보_수정_요청(accessToken, EMAIL, PASSWORD, AGE);
+        회원_정보_수정됨(editResponse);
+
+        final ExtractableResponse<Response> deleteResponse = 내회원정보_삭제_요청(accessToken);
+        회원_삭제됨(deleteResponse);
+    }
+
+    private String 회원_로그인_요청(String email, String password) {
+        final ExtractableResponse<Response> response = AuthAcceptanceTest.로그인_요청(email, password);
+        return response.as(TokenResponse.class).getAccessToken();
+    }
+
+    public static ExtractableResponse<Response> 내회원정보_조회_요청(String accessToken) {
+        final RequestSpecification request = RestApiFixture.requestWithOAuth2(accessToken);
+        return RestApiFixture.response(request.get("/members/me"));
+    }
+
+    public static ExtractableResponse<Response> 내회원정보_수정_요청(String accessToken, String email, String password, int age) {
+        final MemberRequest memberRequest = new MemberRequest(email, password, age);
+        final RequestSpecification request = RestApiFixture.requestWithOAuth2(accessToken, memberRequest);
+        return RestApiFixture.response(request.put("/members/me"));
+    }
+
+    public static ExtractableResponse<Response> 내회원정보_삭제_요청(String accessToken) {
+        final RequestSpecification request = RestApiFixture.requestWithOAuth2(accessToken);
+        return RestApiFixture.response(request.delete("/members/me"));
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {

@@ -47,14 +47,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return MemberAcceptanceTest.회원_생성을_요청(email, password, age);
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         final TokenRequest tokenRequest = new TokenRequest(email, password);
         return RestApiFixture.post(tokenRequest, "/login/token");
     }
 
 	private ExtractableResponse<Response> 내회원정보_조회_요청(String accessToken) {
-		final RequestSpecification request = RestApiFixture.request().auth().oauth2(accessToken);
-		return RestApiFixture.response(request.get("/members/me"));
+		return MemberAcceptanceTest.내회원정보_조회_요청(accessToken);
 	}
 
     private void 로그인_됨(ExtractableResponse<Response> response) {
