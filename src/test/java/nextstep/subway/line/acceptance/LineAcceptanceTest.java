@@ -137,7 +137,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response) {
-        return 조회_요청(LINE_ROOT_PATH + response.getId());
+        return 조회_요청(LINE_ROOT_PATH + "/" + response.getId());
     }
 
     public static ExtractableResponse<Response> 지하철_노선_수정_요청(ExtractableResponse<Response> response, LineRequest params) {

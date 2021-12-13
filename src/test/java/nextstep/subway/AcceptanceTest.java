@@ -10,11 +10,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 
+import java.util.HashMap;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AcceptanceTest {
 
-    public static final String LINE_ROOT_PATH = "/lines/";
-    public static final String STATION_ROOT_PATH = "/stations/";
+    public static final String LINE_ROOT_PATH = "/lines";
+    public static final String STATION_ROOT_PATH = "/stations";
+    public static final String PATH_ROOT_PATH = "/paths";
 
     @LocalServerPort
     int port;
@@ -40,6 +43,14 @@ public class AcceptanceTest {
     public static ExtractableResponse<Response> 조회_요청(String path) {
         return RestAssured
                 .given().log().all()
+                .when().get(path)
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 조회_요청(String path, HashMap<String, ?> parametersMap) {
+        return RestAssured
+                .given().log().all()
+                .queryParams(parametersMap)
                 .when().get(path)
                 .then().log().all().extract();
     }

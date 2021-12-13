@@ -113,7 +113,11 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
-        return 생성_요청(LINE_ROOT_PATH + line.getId() + "/sections", sectionRequest);
+        return 생성_요청(LINE_ROOT_PATH + "/" + line.getId() + "/sections", sectionRequest);
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+        return 지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
     }
 
     public static void 지하철_노선에_지하철역_등록됨(ExtractableResponse<Response> response) {
@@ -138,7 +142,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
-        return 삭제_요청(LINE_ROOT_PATH + line.getId() + "/sections?stationId=" + station.getId());
+        return 삭제_요청(LINE_ROOT_PATH + "/" + line.getId() + "/sections?stationId=" + station.getId());
     }
 
     public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> response) {
