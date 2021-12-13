@@ -15,6 +15,8 @@ public class AuthService {
 	private MemberRepository memberRepository;
 	private JwtTokenProvider jwtTokenProvider;
 
+	private static final String ERORR_MESSAGE_ILLEGAL_ACCESS_TOKEN="인증 정보가 올바르지 않습니다.";
+
 	public AuthService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
 		this.memberRepository = memberRepository;
 		this.jwtTokenProvider = jwtTokenProvider;
@@ -30,7 +32,7 @@ public class AuthService {
 
 	public LoginMember findMemberByToken(String credentials) {
 		if (!jwtTokenProvider.validateToken(credentials)) {
-			return new LoginMember();
+			throw new AuthorizationException(ERORR_MESSAGE_ILLEGAL_ACCESS_TOKEN);
 		}
 
 		String email = jwtTokenProvider.getPayload(credentials);
