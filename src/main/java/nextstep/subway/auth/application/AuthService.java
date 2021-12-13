@@ -35,6 +35,6 @@ public class AuthService {
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new AuthorizationException("존재하지 않는 이메일입니다."));
-        return LoginMember.of(member.getId(), member.getEmail(), member.getAge());
+        return LoginMember.of(member);
     }
 }

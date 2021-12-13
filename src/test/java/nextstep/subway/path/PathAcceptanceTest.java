@@ -10,6 +10,9 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -18,8 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.favorite.FavoriteAcceptanceTest.로그인_되어_있음;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,6 +40,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private String 사용자;
 
     /**
      * 교대역    --- *2호선(42)* ---   강남역
@@ -58,15 +65,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 50);
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource(value = {"5:4450", "6:2050", "12:2050", "13:3280", "18:3280", "19:4450"}, delimiter = ':')
     @DisplayName("최단 경로를 조회한다.")
-    public void findShortestPath() throws Exception {
+    public void findShortestPath(int age, int expectPrice) throws Exception {
+        // given
+        내_정보_등록되어_있음(EMAIL, PASSWORD, age);
+
+        사용자 = 로그인_되어_있음(EMAIL, PASSWORD);
+
         // when
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역);
 
         // then
         최단_경로_조회_성공함(response);
-        최단_경로와_총_거리가_응답됨(response, 82, 4_450, 교대역.getName(), 강남역.getName(), 양재역.getName());
+        최단_경로와_총_거리가_응답됨(response, 82, expectPrice, 교대역.getName(), 강남역.getName(), 양재역.getName());
     }
 
     private void 최단_경로_조회_성공함(ExtractableResponse<Response> response) {
@@ -95,6 +108,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .queryParams(param)
+                .header(HttpHeaders.AUTHORIZATION, createBearerToken(사용자))
                 .when().get("/paths")
                 .then().log().all()
                 .extract();
