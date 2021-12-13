@@ -16,12 +16,19 @@ public class PathFinder {
 
     DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public PathFinder(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private PathFinder(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         this.dijkstraShortestPath = new DijkstraShortestPath<>(graph);
     }
 
     public static PathFinder from(Lines lines) {
         return new PathFinder(initGraph(lines));
+    }
+
+    public Path findShortestPath(Station sourceStation, Station targetStation) {
+        validateDuplicateStation(sourceStation, targetStation);
+        GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        validateNotConnectStation(graphPath);
+        return Path.of(graphPath.getVertexList(), (int) graphPath.getWeight());
     }
 
     private static WeightedMultigraph<Station, DefaultWeightedEdge> initGraph(Lines lines) {
@@ -38,13 +45,6 @@ public class PathFinder {
                         section.getDistance()
                 ));
         return graph;
-    }
-
-    public Path findShortestPath(Station sourceStation, Station targetStation) {
-        validateDuplicateStation(sourceStation, targetStation);
-        GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
-        validateNotConnectStation(graphPath);
-        return Path.of(graphPath.getVertexList(), (int) graphPath.getWeight());
     }
 
     private void validateDuplicateStation(Station sourceStation, Station targetStation) {
