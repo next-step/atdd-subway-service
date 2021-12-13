@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -53,6 +54,10 @@ public class Line extends BaseEntity {
 
     public List<Station> computeSortedStations() {
         return sections.computeSortedStations();
+    }
+
+    public Set<Station> extractAllStations() {
+        return sections.extractAllStations();
     }
 
     public Long getId() {

@@ -114,7 +114,7 @@ public class Sections {
         return nextSections;
     }
 
-    private Set<Station> extractAllStations() {
+    Set<Station> extractAllStations() {
         return sections.stream()
             .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
             .collect(Collectors.toSet());
