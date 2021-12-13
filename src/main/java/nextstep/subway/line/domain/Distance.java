@@ -55,7 +55,7 @@ public final class Distance {
             return false;
         }
         Distance other = (Distance) o;
-        return Objects.equals(distance, other.distance);
+        return distance.equals(other.distance);
     }
 
     @Override

@@ -15,6 +15,7 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @DisplayName("지하철 경로 찾기 테스트")
 public class PathFinderTest {
@@ -27,6 +28,7 @@ public class PathFinderTest {
     private final Station 서초역= new Station("서초역");
     private final Station 고속터미널= new Station("고속터미널");
     private final Station 반포역= new Station("반포역");
+    private final Station 청계산입구= new Station("청계산입구");
 
     Line 신분당선;
     Line 이호선;
@@ -40,56 +42,86 @@ public class PathFinderTest {
      *                        |
      *                     *3호선* 3
      *                        |
-     * 서초역  --- *2호선* 5--- 교대역  --- *2호선* 10 -----  강남역
+     * 서초역  --- *2호선* 10--- 교대역  --- *2호선* 15 -----  강남역
      *                        |                          |
-     *                      *3호선* 3                 *신분당선* 10
+     *                      *3호선* 10                 *신분당선* 10
      *                        |                          |
-     *                      남부터미널역  --- *3호선* 2 --- 양재
+     *                      남부터미널역  --- *3호선* 5 --- 양재
      *                                                  |
-     *                                               *신분당선* 4
+     *                                               *신분당선* 7
      *                                                  |
      *                                               양재시민의숲
+     *                                                  |
+     *                                               *신분당선* 22
+     *                                                  |
+     *                                               청계산입구
      */
     @BeforeEach
     void setUp() {
-        신분당선 = Line.of("신분당선", "red", 강남역, 양재역, 10);
-        신분당선.addLineStation(Section.create(양재역, 양재시민의숲, Distance.valueOf(4)));
+        신분당선 = Line.of("신분당선", "red", 강남역, 양재역, 10, 900);
+        신분당선.addLineStation(Section.create(양재역, 양재시민의숲, Distance.valueOf(7)));
+        신분당선.addLineStation(Section.create(양재시민의숲, 청계산입구, Distance.valueOf(22)));
 
-        이호선 = Line.of("이호선", "green", 교대역, 강남역, 10);
-        이호선.addLineStation(Section.create(서초역, 교대역, Distance.valueOf(5)));
+        이호선 = Line.of("이호선", "green", 교대역, 강남역, 15, 0);
+        이호선.addLineStation(Section.create(서초역, 교대역, Distance.valueOf(10)));
 
-        삼호선 = Line.of("삼호선", "orange", 교대역, 남부터미널역, 3);
-        삼호선.addLineStation(Section.create(남부터미널역, 양재역, Distance.valueOf(2)));
+        삼호선 = Line.of("삼호선", "orange", 교대역, 남부터미널역, 10, 200);
+        삼호선.addLineStation(Section.create(남부터미널역, 양재역, Distance.valueOf(5)));
         삼호선.addLineStation(Section.create(고속터미널, 교대역, Distance.valueOf(3)));
 
         칠호선 = Line.of("칠호선", "olive", 고속터미널, 반포역, 5);
+
+        ReflectionTestUtils.setField(신분당선, "id", 1L);
+        ReflectionTestUtils.setField(이호선, "id", 2L);
+        ReflectionTestUtils.setField(삼호선, "id", 3L);
+        ReflectionTestUtils.setField(칠호선, "id", 4L);
     }
 
 
     @Test
-    @DisplayName("교대역-양재역 지하철 최단 경로 조회")
+    @DisplayName("교대역-양재역 지하철 최단 경로, 요금 조회")
     void getShortestList_교대역_양재역() {
         PathFinder graph = PathFinder.create(stationGraph, Arrays.asList(신분당선, 이호선, 삼호선));
         Path shortestPath = graph.findShortestPath(교대역, 양재역);
 
         assertAll(() -> {
-            assertThat(shortestPath.getTotalDistance()).isEqualTo(5);
+            assertThat(shortestPath.getTotalDistance()).isEqualTo(15);
             assertThat(shortestPath.getStations())
                 .extracting(Station::getName).containsExactly("교대역", "남부터미널역", "양재역" );
+            assertThat(shortestPath.getTotalFare()).isEqualTo(1550);
         });
     }
 
     @Test
-    @DisplayName("서초역_양재시민의숲 지하철 최단 경로 조회")
+    @DisplayName("서초역_양재시민의숲 지하철 최단 경로, 요금 조회")
     void getShortestList_서초역_양재시민의숲() {
+
         PathFinder graph = PathFinder.create(stationGraph, Arrays.asList(신분당선, 이호선, 삼호선));
 
         Path shortestPath = graph.findShortestPath(서초역, 양재시민의숲);
 
+        System.out.println(shortestPath.getTotalFare());
+
         assertAll(() -> {
-            assertThat(shortestPath.getTotalDistance()).isEqualTo(14);
+            assertThat(shortestPath.getTotalDistance()).isEqualTo(32);
             assertThat(shortestPath.getStations()).extracting(Station::getName)
                 .containsExactly("서초역", "교대역", "남부터미널역", "양재역", "양재시민의숲" );
+            assertThat(shortestPath.getTotalFare()).isEqualTo(2650);
+        });
+    }
+
+    @Test
+    @DisplayName("서초역_청계산입구 지하철 최단 경로, 요금 조회")
+    void getShortestList_서초역_청계산입구() {
+        PathFinder graph = PathFinder.create(stationGraph, Arrays.asList(신분당선, 이호선, 삼호선));
+
+        Path shortestPath = graph.findShortestPath(서초역, 청계산입구);
+
+        assertAll(() -> {
+            assertThat(shortestPath.getTotalDistance()).isEqualTo(54);
+            assertThat(shortestPath.getStations()).extracting(Station::getName)
+                .containsExactly("서초역", "교대역", "남부터미널역", "양재역", "양재시민의숲", "청계산입구" );
+            assertThat(shortestPath.getTotalFare()).isEqualTo(3050);
         });
     }
 

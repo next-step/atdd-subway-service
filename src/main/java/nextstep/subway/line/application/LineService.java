@@ -28,11 +28,20 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+        System.out.println(request.hasSection());
+        if (request.hasSection()) {
+            return saveLineWithSection(request);
+        }
+
+        Line persistLine = lineRepository.save(request.toLine());
+        return LineResponse.of(persistLine);
+    }
+
+    private LineResponse saveLineWithSection(LineRequest request) {
         Station upStation = stationService.findStation(request.getUpStationId());
         Station downStation = stationService.findStation(request.getDownStationId());
 
         Line persistLine = lineRepository.save(request.toLine(upStation, downStation));
-
         return LineResponse.of(persistLine);
     }
 

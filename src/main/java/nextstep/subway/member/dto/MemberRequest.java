@@ -3,9 +3,9 @@ package nextstep.subway.member.dto;
 import nextstep.subway.member.domain.Member;
 
 public class MemberRequest {
-    final private String email;
-    final private String password;
-    final private Integer age;
+    private final String email;
+    private final String password;
+    private final Integer age;
 
     public MemberRequest(String email, String password, Integer age) {
         this.email = email;

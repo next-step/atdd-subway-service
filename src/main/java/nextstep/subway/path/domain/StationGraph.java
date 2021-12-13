@@ -8,7 +8,7 @@ public interface StationGraph {
 
     StationGraph createGraph(List<Line> lines);
 
-    boolean containsVertex(Station station);
+    boolean containsStation(Station station);
 
     Path getShortestPath(Station source, Station target);
 }

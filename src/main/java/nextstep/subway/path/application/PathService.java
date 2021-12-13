@@ -1,8 +1,10 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.AgeFarePolicy;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.StationGraph;
@@ -13,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class PathService {
 
     private final LineService lineService;
@@ -27,16 +29,22 @@ public class PathService {
         this.graph = graph;
     }
 
-    @Transactional(readOnly = true)
-    public PathResponse getShortestPaths(Long source, Long target) {
+    public PathResponse getShortestPaths(LoginMember loginMember, Long source, Long target) {
+        Path shortestPath = getShortestPath(source, target);
+        if (loginMember.isEmpty()) {
+            return PathResponse.of(shortestPath);
+        }
+
+        return PathResponse.of(shortestPath.applyAgePolicy(AgeFarePolicy.findByAge(loginMember.getAge())));
+    }
+
+    private Path getShortestPath(Long source, Long target) {
         Station sourceStation = stationService.findStation(source);
         Station targetStation = stationService.findStation(target);
         List<Line> lines = lineService.findLines();
 
         PathFinder pathFinder = PathFinder.create(graph, lines);
-        Path shortestPath = pathFinder.findShortestPath(sourceStation, targetStation);
-
-        return PathResponse.of(shortestPath);
+        return pathFinder.findShortestPath(sourceStation, targetStation);
     }
 
 }

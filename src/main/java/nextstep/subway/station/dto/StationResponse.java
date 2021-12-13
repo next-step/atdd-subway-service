@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 import nextstep.subway.station.domain.Station;
 
 public class StationResponse {
-    final private Long id;
-    final private String name;
-    final private LocalDateTime createdDate;
-    final private LocalDateTime modifiedDate;
+    private final Long id;
+    private final String name;
+    private final LocalDateTime createdDate;
+    private final LocalDateTime modifiedDate;
 
     public StationResponse(Long id, String name, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;

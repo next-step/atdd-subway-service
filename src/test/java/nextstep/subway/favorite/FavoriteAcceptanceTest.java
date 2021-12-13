@@ -81,17 +81,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // And: 지하철 노선 등록되어 있음
         // And: 지하철 노선에 지하철 역 등록되어 있음
         //신분당선 (강남-양재-양재시민의숲, 10-4)
-        LineRequest lineRequest_신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
+        LineRequest lineRequest_신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 900);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest_신분당선).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 양재시민의숲, 4);
 
         //2호선 (서초-교대-강남, 5-10)
-        LineRequest lineRequest_이호선 = new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10);
+        LineRequest lineRequest_이호선 = new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10, 0);
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest_이호선).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(이호선, 서초역, 교대역, 5);
 
         //3호선 (교대-남부터미널-양재, 3-2)
-        LineRequest lineRequest_삼호선 = new LineRequest("삼호선", "orange", 교대역.getId(), 남부터미널역.getId(), 3);
+        LineRequest lineRequest_삼호선 = new LineRequest("삼호선", "orange", 교대역.getId(), 남부터미널역.getId(), 3, 200);
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest_삼호선).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 양재역, 2);
 
