@@ -20,7 +20,8 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new AuthorizationException("등록된 이메일이 아닙니다"));
         member.checkPassword(request.getPassword());
 
         String token = jwtTokenProvider.createToken(request.getEmail());
@@ -29,11 +30,12 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new AuthorizationException("잘못된 토큰입니다");
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new AuthorizationException("등록된 이메일이 아닙니다"));
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }
