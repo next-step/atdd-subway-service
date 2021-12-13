@@ -32,7 +32,7 @@ public class ApiUtils {
     }
 
 
-    public static ExtractableResponse<Response> get(String url, String accessToken, Map<String, Objects> params) {
+    public static ExtractableResponse<Response> get(String url, String accessToken, Map<String, Object> params) {
 
         return authorization(accessToken)
                 .params(params)

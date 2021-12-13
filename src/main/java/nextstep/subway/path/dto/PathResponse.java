@@ -19,11 +19,6 @@ public class PathResponse {
 
     }
 
-    public PathResponse(ShortestPath path) {
-        this.stations = StationResponse.ofList(path.findPaths());
-        this.distance = path.findWeight();
-    }
-
     public PathResponse(List<Station> stations, int distance, int fare) {
         this.stations = StationResponse.ofList(stations);
         this.distance = distance;

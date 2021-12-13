@@ -19,6 +19,11 @@ public class LowOverFare implements OverFare {
         }
 
         int fare = (int) ((Math.ceil((fareDistance - 1) / 5) + 1) * 100);
+
+        if(distance - LOW_DISTANCE <= 0) {
+            return fare;
+        }
+
         return fare + overFare.calculate(distance - LOW_DISTANCE);
     }
 }

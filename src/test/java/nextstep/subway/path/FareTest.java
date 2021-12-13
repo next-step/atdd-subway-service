@@ -17,7 +17,7 @@ public class FareTest {
         //given
         OverFare defaultOverFare = new DefaultOverFare();
 
-        int expectedFare = 2150;
+        int expectedFare = 2050;
 
         //when
         int actualFare = defaultOverFare.calculate(50);

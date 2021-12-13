@@ -34,6 +34,7 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
 
         ShortestPath shortestPath = pathFinder.findShortestPath(lines, sourceStation, targetStation);
-        return new PathResponse(shortestPath.findPaths(), shortestPath.findWeight(), AgeDiscount.discount(loginMember.getAge(), shortestPath.findFare()));
+        int discount = AgeDiscount.discount(loginMember.getAge(), shortestPath.findFare());
+        return new PathResponse(shortestPath.findPaths(), shortestPath.findWeight(), discount);
     }
 }
