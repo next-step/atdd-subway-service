@@ -42,34 +42,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
-    @DisplayName("지하철 구간을 관리한다.")
-    @Test
-    void scenario() {
-        // when: 지하철 구간 등록 요청
-        ExtractableResponse<Response> addSectionResponse = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
-
-        // then: 지하철 구간 등록됨
-        지하철_노선에_지하철역_등록됨(addSectionResponse);
-
-        // when: 지하철 노선에 등록된 역 목록 조회 요청
-        ExtractableResponse<Response> afterAddStationsResponse = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-
-        // then: 등록한 지하철 구간이 반영된 역 목록이 조회됨
-        지하철_노선에_지하철역_순서_정렬됨(afterAddStationsResponse, Arrays.asList(강남역, 양재역, 광교역));
-
-        // when: 지하철 구간 삭제 요청
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
-
-        // then: 지하철 구간 삭제됨
-        지하철_노선에_지하철역_제외됨(removeResponse);
-
-        // when: 지하철 노선에 등록된 역 목록 조회 요청
-        ExtractableResponse<Response> afterRemoveStationsResponse = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-
-        // then: 삭제한 지하철 구간이 반영된 역 목록이 조회됨
-        지하철_노선에_지하철역_순서_정렬됨(afterRemoveStationsResponse, Arrays.asList(강남역, 광교역));
-    }
-
     @DisplayName("지하철 구간을 등록한다.")
     @Test
     void addLineSection() {
