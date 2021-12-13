@@ -6,6 +6,7 @@ import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -36,6 +37,7 @@ public class AuthServiceTest {
     }
 
     @Test
+    @DisplayName("Mock을 활용한 로그인 처리 테스트")
     void login() {
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
         when(jwtTokenProvider.createToken(anyString())).thenReturn("TOKEN");
@@ -44,4 +46,6 @@ public class AuthServiceTest {
 
         assertThat(token.getAccessToken()).isNotBlank();
     }
+
+
 }
