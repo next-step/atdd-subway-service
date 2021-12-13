@@ -135,3 +135,25 @@ Feature: 지하철 구간 관련 기능
 - [x] PathFinderTest default 접근제어자 수정
 - [x] Section.setGraphEdge 네이밍 set -> add로 수정
 - [x] 예외 처리 시, 유의미한 에러 메시지 작성
+
+## 3단계 - 인증을 통한 기능 구현
+- [ ] 토큰 발급 기능 (로그인) 인수 테스트 만들기
+- [ ] 인증 - 내 정보 조회 기능 완성하기
+- [ ] 인증 - 즐겨 찾기 기능 완성하기
+
+### 구현 명세
+- 토큰 발급 기능 (로그인) 인수 테스트 작성 및 구현
+  - [ ] 인수 테스트 작성
+  - [ ] 토큰 발급 테스트 작성
+  - [ ] email, password를 받는 요청DTO 작성
+  - [ ] Controller 작성
+  - [ ] accessToken을 반환하는 응답DTO 작성
+
+```gherkin
+Feature: 로그인 기능
+
+  Scenario: 로그인을 시도한다.
+    Given 회원 등록되어 있음
+    When 로그인 요청
+    Then 로그인 됨
+```
