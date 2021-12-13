@@ -61,7 +61,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	}
 
-	@DisplayName("두 지하철 역 사이의 최단거리 경로 조회(거리<=10km)")
+	@DisplayName("(비회원)두 지하철 역 사이의 최단거리 경로 조회(거리<=10km)")
 	@Test
 	void getShortestPath() {
 
@@ -81,7 +81,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(response.getPrice()).isEqualTo(1250);
 	}
 
-	@DisplayName("추가 요금있는 노선 이용시 가장 높은 금액만 과금 적용")
+	@DisplayName("(비회원)추가 요금있는 노선 이용시 가장 높은 금액만 과금 적용")
 	@Test
 	void getShortestPathWithLineExtraPrice() {
 
@@ -101,7 +101,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(response.getPrice()).isEqualTo(3450); // 1250(기본요금: 0~10km) + 200(추가요금:10km~20km) + 이호선 과금(2000원)
 	}
 
-	@DisplayName("두 지하철 역 사이의 최단거리 경로 조회(10km<거리<=50km)")
+	@DisplayName("(비회원)두 지하철 역 사이의 최단거리 경로 조회(10km<거리<=50km)")
 	@Test
 	void getShortestPath2() {
 
@@ -121,7 +121,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(response.getPrice()).isEqualTo(1350); // 1250(기본요금: 0~10km) + 100(추가요금:10km~11km)
 	}
 
-	@DisplayName("두 지하철 역 사이의 최단거리 경로 조회(50km<거리")
+	@DisplayName("(비회원)두 지하철 역 사이의 최단거리 경로 조회(50km<거리")
 	@Test
 	void getShortestPath3() {
 
@@ -141,7 +141,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(response.getPrice()).isEqualTo(2150); // 1250(기본요금: 0~10km) + 800(추가요금:10km~50km) + 100(50km~51km)
 	}
 
-	@DisplayName("청소년 요금 할인 적용")
+	/*
+	 첫번째 파라미터 720 = (1250원 - 350원)*0.8 [청소년은 350원 공제후 20% 할인]
+	 두번째 파라미터 1250 = (1250원) [19시 이상은 별도 할인 정책 없음)
+	 세번째 파라미터 450 = (1250-350)*0.5 [어린이는 350원 공제 후 50% 할인]
+	 */
+
+
+	@DisplayName("(회원)청소년 요금 할인 적용")
+
 	@CsvSource(value = {"email@email.com, password1, 13, 720", "email2@email.com, password1, 19, 1250",
 		"email3@email.com, password3, 6, 450"})
 	@ParameterizedTest
@@ -165,11 +173,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(response.getPrice()).isEqualTo(price);
 	}
 
-	private String 사용자_생성(String email, String password, int age) {
-		회원_생성을_요청(email, password, age);
-		TokenResponse tokenResponse = AuthAcceptanceTest.로그인_요청(email, password).as(TokenResponse.class);
-		return tokenResponse.getAccessToken();
-	}
+
 
 	@DisplayName("출발역과 도착역이 같은 경우")
 	@Test
@@ -256,5 +260,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	private void 최단거리_경로_조회_실패(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+	}
+
+	private String 사용자_생성(String email, String password, int age) {
+		회원_생성을_요청(email, password, age);
+		TokenResponse tokenResponse = AuthAcceptanceTest.로그인_요청(email, password).as(TokenResponse.class);
+		return tokenResponse.getAccessToken();
 	}
 }
