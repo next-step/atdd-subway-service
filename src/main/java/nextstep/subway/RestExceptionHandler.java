@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.common.EntityNotFoundException;
 import nextstep.subway.common.ErrorResponse;
 
@@ -30,6 +31,12 @@ public class RestExceptionHandler {
 	@ExceptionHandler
 	public ResponseEntity<ErrorResponse> handle(EntityNotFoundException e) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+			.body(ErrorResponse.of(e.getMessage()));
+	}
+
+	@ExceptionHandler(AuthorizationException.class)
+	public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException e) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 			.body(ErrorResponse.of(e.getMessage()));
 	}
 
