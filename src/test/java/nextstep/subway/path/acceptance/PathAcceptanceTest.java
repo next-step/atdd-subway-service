@@ -16,21 +16,20 @@ import java.util.List;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_구간_등록됨;
-import static nextstep.subway.station.StationAcceptanceTest.getStationNames;
-import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static nextstep.subway.station.StationAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 인수 테스트")
 class PathAcceptanceTest extends AcceptanceTest {
 
-    private StationResponse 강남;
-    private StationResponse 선릉;
-    private StationResponse 교대;
-    private StationResponse 남부터미널;
-    private StationResponse 양재;
-    private StationResponse 매봉;
-    private StationResponse 이수;
-    private StationResponse 사당;
+    private StationResponse 강남역;
+    private StationResponse 선릉역;
+    private StationResponse 교대역;
+    private StationResponse 남부터미널역;
+    private StationResponse 양재역;
+    private StationResponse 매봉역;
+    private StationResponse 이수역;
+    private StationResponse 사당역;
 
     /**
      * 2호선: 교대 - 강남 - 선릉
@@ -53,59 +52,59 @@ class PathAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        강남 = 지하철역_등록되어_있음("강남").as(StationResponse.class);
-        선릉 = 지하철역_등록되어_있음("선릉").as(StationResponse.class);
-        교대 = 지하철역_등록되어_있음("교대").as(StationResponse.class);
-        남부터미널 = 지하철역_등록되어_있음("남부터미널").as(StationResponse.class);
-        양재 = 지하철역_등록되어_있음("양재").as(StationResponse.class);
-        매봉 = 지하철역_등록되어_있음("매봉").as(StationResponse.class);
+        강남역 = 지하철역_생성_요청("강남역").as(StationResponse.class);
+        선릉역 = 지하철역_생성_요청("선릉역").as(StationResponse.class);
+        교대역 = 지하철역_생성_요청("교대역").as(StationResponse.class);
+        남부터미널역 = 지하철역_생성_요청("남부터미널역").as(StationResponse.class);
+        양재역 = 지하철역_생성_요청("양재역").as(StationResponse.class);
+        매봉역 = 지하철역_생성_요청("매봉역").as(StationResponse.class);
 
-        LineResponse 이호선 = 지하철_노선_등록되어_있음("이호선", "bg-green-600", 교대, 강남, 2);
-        지하철_구간_등록됨(이호선, 강남, 선릉, 2);
+        LineResponse 이호선 = 지하철_노선_등록되어_있음("이호선", "bg-green-600", 교대역, 강남역, 2);
+        지하철_구간_등록됨(이호선, 강남역, 선릉역, 2);
 
-        LineResponse 삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-orange-600", 교대, 남부터미널, 2);
-        지하철_구간_등록됨(삼호선, 남부터미널, 양재, 5);
-        지하철_구간_등록됨(삼호선, 양재, 매봉, 6);
+        LineResponse 삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-orange-600", 교대역, 남부터미널역, 2);
+        지하철_구간_등록됨(삼호선, 남부터미널역, 양재역, 5);
+        지하철_구간_등록됨(삼호선, 양재역, 매봉역, 6);
 
-        LineResponse 신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남, 양재, 8);
+        LineResponse 신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 8);
 
-        이수 = 지하철역_등록되어_있음("이수").as(StationResponse.class);
-        사당 = 지하철역_등록되어_있음("사당").as(StationResponse.class);
-        LineResponse 사호선 = 지하철_노선_등록되어_있음("사호선", "bg-sky-600", 이수, 사당, 3);
+        이수역 = 지하철역_생성_요청("이수역").as(StationResponse.class);
+        사당역 = 지하철역_생성_요청("사당역").as(StationResponse.class);
+        LineResponse 사호선 = 지하철_노선_등록되어_있음("사호선", "bg-sky-600", 이수역, 사당역, 3);
     }
 
     @Test
     @DisplayName("최단 경로 정상 기능")
     void normalScenario() {
-        ExtractableResponse<Response> response1 = 최단_경로_조회_요청(양재, 교대);
+        ExtractableResponse<Response> response1 = 최단_경로_조회_요청(양재역, 교대역);
         최단_경로_조회됨(response1);
-        최단_경로_구간_목록_일치됨(response1, Arrays.asList(양재, 남부터미널, 교대));
+        최단_경로_구간_목록_일치됨(response1, Arrays.asList(양재역, 남부터미널역, 교대역));
         최단_경로_거리_일치됨(response1, 7);
 
-        ExtractableResponse<Response> response2 = 최단_경로_조회_요청(매봉, 강남);
+        ExtractableResponse<Response> response2 = 최단_경로_조회_요청(매봉역, 강남역);
         최단_경로_조회됨(response2);
-        최단_경로_구간_목록_일치됨(response2, Arrays.asList(매봉, 양재, 강남));
+        최단_경로_구간_목록_일치됨(response2, Arrays.asList(매봉역, 양재역, 강남역));
         최단_경로_거리_일치됨(response2, 14);
 
-        ExtractableResponse<Response> response3 = 최단_경로_조회_요청(선릉, 매봉);
+        ExtractableResponse<Response> response3 = 최단_경로_조회_요청(선릉역, 매봉역);
         최단_경로_조회됨(response3);
-        최단_경로_구간_목록_일치됨(response3, Arrays.asList(선릉, 강남, 양재, 매봉));
+        최단_경로_구간_목록_일치됨(response3, Arrays.asList(선릉역, 강남역, 양재역, 매봉역));
         최단_경로_거리_일치됨(response3, 16);
     }
 
     @Test
     @DisplayName("최단 경로 예외 발생")
     void exceptionScenario() {
-        StationResponse 양재시민의숲 = 노선에_등록되지_않은_역("양재시민의숲");
-        최단_경로_조회_실패됨(최단_경로_조회_요청(양재시민의숲, 교대));
+        StationResponse 양재시민의숲 = 노선에_등록되지_않은_역("양재시민의숲역");
+        최단_경로_조회_실패됨(최단_경로_조회_요청(양재시민의숲, 교대역));
 
-        최단_경로_조회_실패됨(최단_경로_조회_요청(선릉, 선릉));
+        최단_경로_조회_실패됨(최단_경로_조회_요청(선릉역, 선릉역));
 
-        최단_경로_조회_실패됨(최단_경로_조회_요청(강남, 이수));
+        최단_경로_조회_실패됨(최단_경로_조회_요청(강남역, 이수역));
     }
 
     private StationResponse 노선에_등록되지_않은_역(String name) {
-        return 지하철역_등록되어_있음(name).as(StationResponse.class);
+        return 지하철역_생성_요청(name).as(StationResponse.class);
     }
 
     private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse target) {

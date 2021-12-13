@@ -1,6 +1,8 @@
 package nextstep.subway.line.application.exception;
 
-public class InvalidSectionException extends RuntimeException {
+import nextstep.subway.common.InvalidException;
+
+public class InvalidSectionException extends InvalidException {
 
     public static final InvalidSectionException SECTION_DUPLICATION = new InvalidSectionException("같은 상행역과 하행역으로 등록된 구간이 이미 존재합니다.");
     public static final InvalidSectionException NOT_CONNECTABLE = new InvalidSectionException("구간을 연결할 상행역 또는 하행역이 존재해야 합니다.");
@@ -12,6 +14,6 @@ public class InvalidSectionException extends RuntimeException {
     }
 
     public static InvalidSectionException shorterThanMinDistance(int minValue) {
-        return new InvalidSectionException("지하철 구간 사이의 거리는 최소 " + minValue + " 이상이어야 합니다.");
+        return new InvalidSectionException("지하철 구간 사이의 거리는 최소 " + minValue + "km 이상이어야 합니다.");
     }
 }

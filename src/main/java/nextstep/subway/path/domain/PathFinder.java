@@ -1,7 +1,6 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.jgrapht.JgraphtPathFinder;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
