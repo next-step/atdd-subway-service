@@ -65,4 +65,22 @@ class PathFinderTest {
         Assertions.assertThatExceptionOfType(BadRequestException.class)
                 .isThrownBy(throwingCallable);
     }
+
+    @Test
+    void 최단_경로_조회_출발역과_도착역이_연결되어있지_않은_경우_조회할_수_없다() {
+        // given
+        Station 동암역 = Station.from("동암역");
+        Station 송내역 = Station.from("송내역");
+        Line 일호선 = Line.of("일호선", "bg-red-600", 동암역, 송내역, 5);
+
+        Lines lines = Lines.from(Arrays.asList(신분당선, 이호선, 삼호선, 일호선));
+        PathFinder pathFinder = PathFinder.from(lines);
+
+        // when
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> pathFinder.findShortestPath(강남역, 동암역);
+
+        // then
+        Assertions.assertThatExceptionOfType(BadRequestException.class)
+                .isThrownBy(throwingCallable);
+    }
 }

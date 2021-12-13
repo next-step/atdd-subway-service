@@ -45,6 +45,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
+        // given
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
@@ -59,8 +60,10 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 최단_경로_조회() {
+        // when
         ExtractableResponse<Response> 최단_경로_조회_요청_응답 = 최단_경로_조회_요청(강남역, 남부터미널역);
 
+        // then
         최단_경로_조회_요청_응답됨(최단_경로_조회_요청_응답);
         최단_경로_조회_경로_포함됨(최단_경로_조회_요청_응답, Arrays.asList(강남역, 양재역, 남부터미널역));
         최단_경로_조회_거리_포함됨(최단_경로_조회_요청_응답, 12);
@@ -68,8 +71,24 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 최단_경로_조회_출발역과_도착역이_같은_경우_조회할_수_없다() {
+        // when
         ExtractableResponse<Response> 최단_경로_조회_요청_응답 = 최단_경로_조회_요청(강남역, 강남역);
 
+        // then
+        최단_경로_조회_요청_실패됨(최단_경로_조회_요청_응답);
+    }
+
+    @Test
+    void 최단_경로_조회_출발역과_도착역이_연결되어있지_않은_경우_조회할_수_없다() {
+        // given
+        StationResponse 동암역 = StationAcceptanceTest.지하철역_등록되어_있음("동암역").as(StationResponse.class);
+        StationResponse 송내역 = StationAcceptanceTest.지하철역_등록되어_있음("송내역").as(StationResponse.class);
+        LineAcceptanceTest.지하철_노선_등록되어_있음(LineRequest.of("일호선", "bg-red-600", 동암역.getId(), 송내역.getId(), 5)).as(LineResponse.class);
+
+        // when
+        ExtractableResponse<Response> 최단_경로_조회_요청_응답 = 최단_경로_조회_요청(강남역, 송내역);
+
+        // then
         최단_경로_조회_요청_실패됨(최단_경로_조회_요청_응답);
     }
 

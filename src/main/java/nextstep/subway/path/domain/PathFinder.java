@@ -10,6 +10,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PathFinder {
 
@@ -42,12 +43,19 @@ public class PathFinder {
     public Path findShortestPath(Station sourceStation, Station targetStation) {
         validateDuplicateStation(sourceStation, targetStation);
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        validateNotConnectStation(graphPath);
         return Path.of(graphPath.getVertexList(), (int) graphPath.getWeight());
     }
 
     private void validateDuplicateStation(Station sourceStation, Station targetStation) {
         if (sourceStation.equals(targetStation)) {
             throw new BadRequestException("출발역과 도착역이 같은 경우 최단 거리를 구할 수 없습니다.");
+        }
+    }
+
+    private void validateNotConnectStation(GraphPath<Station, DefaultWeightedEdge> graphPath) {
+        if (Objects.isNull(graphPath)) {
+            throw new BadRequestException("출발역과 도착역이 연결되어있지 않은 경우 조회할 수 없습니다.");
         }
     }
 }
