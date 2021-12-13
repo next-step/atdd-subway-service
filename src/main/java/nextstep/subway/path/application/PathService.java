@@ -19,7 +19,6 @@ public class PathService {
 
     private final PathFinder pathFinder;
 
-    @Autowired
     public PathService(StationRepository stationRepository, LineRepository lineRepository, PathFinder pathFinder) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
