@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Entity
@@ -95,11 +96,6 @@ public class Line extends BaseEntity {
             return;
         }
 
-        updateUpStation(stations, upStation, downStation, distance);
-        updateDownStation(stations, upStation, downStation, distance);
-    }
-
-    private void updateUpStation(List<Station> stations, Station upStation, Station downStation, int distance) {
         if (isUpStationExisted(stations, upStation)) {
             this.getSections().stream()
                     .filter(it -> it.getUpStation() == upStation)
@@ -108,9 +104,7 @@ public class Line extends BaseEntity {
 
             this.getSections().add(new Section(this, upStation, downStation, distance));
         }
-    }
 
-    private void updateDownStation(List<Station> stations, Station upStation, Station downStation, int distance) {
         if (isDownStationExisted(stations, downStation)) {
             this.getSections().stream()
                     .filter(it -> it.getDownStation() == downStation)
@@ -150,22 +144,33 @@ public class Line extends BaseEntity {
             throw new RuntimeException();
         }
 
-        Optional<Section> upLineStation = this.getSections().stream()
+        Section upLineStation = this.getSections().stream()
                 .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = this.getSections().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+                .findFirst()
+                .orElse(null);
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+        Section downLineStation = this.getSections().stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst()
+                .orElse(null);
+
+        if (Objects.nonNull(upLineStation) && Objects.nonNull(downLineStation)) {
+            Station newUpStation = downLineStation.getUpStation();
+            Station newDownStation = upLineStation.getDownStation();
+            int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
             this.getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
+
+
+            this.getSections().remove(downLineStation);
         }
 
-        upLineStation.ifPresent(it -> this.getSections().remove(it));
-        downLineStation.ifPresent(it -> this.getSections().remove(it));
+        if (Objects.nonNull(upLineStation)) {
+            this.getSections().remove(upLineStation);
+        }
+
+        if (Objects.nonNull(downLineStation)) {
+            this.getSections().remove(downLineStation);
+        }
     }
 
     public Long getId() {

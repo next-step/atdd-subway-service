@@ -24,8 +24,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 광교역;
+    private StationResponse 양재역;
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
+    private ExtractableResponse<Response> lineExtractableResponse1;
+    private ExtractableResponse<Response> lineExtractableResponse2;
+    private LineResponse 신분당선;
+    private LineResponse 구신분당선;
 
     @BeforeEach
     public void setUp() {
@@ -34,27 +39,56 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
+        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+
+        lineExtractableResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
+        lineExtractableResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
+
+        신분당선 = lineExtractableResponse1.as(LineResponse.class);
+        구신분당선 = lineExtractableResponse2.as(LineResponse.class);
+    }
+
+    @DisplayName("지하철 구간 관리 기능")
+    @Test
+    void manageLineFunction() {
+        // when
+        ExtractableResponse<Response> lineSectionExtractableResponse = 지하철_구간_등록_요청(신분당선, 강남역, 양재역, 2);
+
+        // then
+        지하철_구간_등록됨(lineSectionExtractableResponse);
+
+        // when
+        ExtractableResponse<Response> lineExtractableResponse = 지하철_노선에_등록된_역_목록_조회_요청(lineExtractableResponse1);
+
+        // then
+        등록한_지하철_구간이_반영된_역_목록이_조회됨(lineExtractableResponse, 강남역, 양재역);
+
+        // when
+        ExtractableResponse<Response> removeResponse = 지하철_구간_삭제요청(신분당선, 양재역);
+
+        // then
+        지하철_구간_삭제됨(removeResponse);
+
+        // when
+        ExtractableResponse<Response> removeStationLineExtractableResponse = 지하철_노선에_등록된_역_목록_조회_요청(lineExtractableResponse1);
+
+        // then
+        삭제한_지하철_구간이_반영된_역_목록이_조회됨(removeStationLineExtractableResponse, 양재역);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
-        // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
-
         // then
-        지하철_노선_생성됨(response);
+        지하철_노선_생성됨(lineExtractableResponse1);
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
     void createLineWithDuplicateName() {
-        // given
-        지하철_노선_등록되어_있음(lineRequest1);
-
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
 
@@ -65,40 +99,29 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
     void getLines() {
-        // given
-        ExtractableResponse<Response> createResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
-        ExtractableResponse<Response> createResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
-
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
 
         // then
         지하철_노선_목록_응답됨(response);
-        지하철_노선_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
+        지하철_노선_목록_포함됨(response, Arrays.asList(lineExtractableResponse1, lineExtractableResponse2));
     }
 
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     void getLine() {
-        // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_등록되어_있음(lineRequest1);
-
         // when
-        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청(createResponse);
+        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청(lineExtractableResponse1);
 
         // then
-        지하철_노선_응답됨(response, createResponse);
+        지하철_노선_응답됨(response, lineExtractableResponse1);
     }
 
     @DisplayName("지하철 노선을 수정한다.")
     @Test
     void updateLine() {
-        // given
-        String name = "신분당선";
-        ExtractableResponse<Response> createResponse = 지하철_노선_등록되어_있음(lineRequest1);
-
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(createResponse, lineRequest2);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(lineExtractableResponse2, lineRequest2);
 
         // then
         지하철_노선_수정됨(response);
@@ -107,11 +130,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선을 제거한다.")
     @Test
     void deleteLine() {
-        // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_등록되어_있음(lineRequest1);
-
         // when
-        ExtractableResponse<Response> response = 지하철_노선_제거_요청(createResponse);
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(lineExtractableResponse1);
 
         // then
         지하철_노선_삭제됨(response);
@@ -217,5 +237,35 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선에_등록된_역_목록_조회_요청(ExtractableResponse<Response> response) {
+        return 지하철_노선_목록_조회_요청(response);
+    }
+
+    public static ExtractableResponse<Response> 지하철_구간_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+        return LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
+    }
+
+    public static void 지하철_구간_등록됨(ExtractableResponse<Response> response) {
+        지하철_노선_목록_응답됨(response);
+    }
+
+    private void 삭제한_지하철_구간이_반영된_역_목록이_조회됨(ExtractableResponse<Response> response, StationResponse removedStation) {
+        assertThat(response.jsonPath().getList("stations", StationResponse.class)).doesNotContain(removedStation);
+    }
+
+    private void 지하철_구간_삭제됨(ExtractableResponse<Response> response) {
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_제외됨(response);
+
+    }
+
+    public static ExtractableResponse<Response> 지하철_구간_삭제요청(LineResponse line, StationResponse station) {
+        return LineSectionAcceptanceTest.지하철_노선에_지하철역_제외_요청(line, station);
+    }
+
+    public static void 등록한_지하철_구간이_반영된_역_목록이_조회됨(ExtractableResponse<Response> response, StationResponse upStation, StationResponse downStation) {
+        assertThat(response.jsonPath().getList("stations", StationResponse.class)).contains(upStation, downStation);
+
     }
 }

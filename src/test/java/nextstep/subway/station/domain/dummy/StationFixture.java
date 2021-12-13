@@ -2,7 +2,7 @@ package nextstep.subway.station.domain.dummy;
 
 import nextstep.subway.station.domain.Station;
 
-public class StationDummy {
+public class StationFixture {
     public static final Station 강남역 = new Station("강남역");
     public static final Station 양재역 = new Station("양재역");
     public static final Station 양재시민의숲역 = new Station("양재시민의숲역");
