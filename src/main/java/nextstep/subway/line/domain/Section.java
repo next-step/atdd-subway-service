@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.common.ErrorCode;
-import nextstep.subway.exception.NotAcceptableApiException;
+import nextstep.subway.exception.BadRequestApiException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -69,7 +69,7 @@ public class Section {
 
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new NotAcceptableApiException(ErrorCode.INVALID_SECTION_DISTANCE);
+            throw new BadRequestApiException(ErrorCode.INVALID_SECTION_DISTANCE);
         }
         this.upStation = station;
         this.distance -= newDistance;
@@ -77,7 +77,7 @@ public class Section {
 
     public void updateDownStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new NotAcceptableApiException(ErrorCode.INVALID_SECTION_DISTANCE);
+            throw new BadRequestApiException(ErrorCode.INVALID_SECTION_DISTANCE);
         }
         this.downStation = station;
         this.distance -= newDistance;

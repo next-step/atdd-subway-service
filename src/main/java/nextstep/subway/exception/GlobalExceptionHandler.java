@@ -11,20 +11,20 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     /**
+     * 400 에러
+     */
+    @ExceptionHandler(BadRequestApiException.class)
+    public ResponseEntity<ErrorResponse> badRequestApiExceptionHandler(BadRequestApiException e) {
+        ErrorCode errorCode = ErrorCode.valueOf(e.getMessage());
+        return new ResponseEntity<>(ErrorResponse.of(errorCode), HttpStatus.BAD_REQUEST);
+    }
+
+    /**
      * 404 에러
      */
     @ExceptionHandler(NotFoundApiException.class)
     public ResponseEntity<ErrorResponse> notFoundApiExceptionHandler(NotFoundApiException e) {
         ErrorCode errorCode = ErrorCode.valueOf(e.getMessage());
         return new ResponseEntity<>(ErrorResponse.of(errorCode), HttpStatus.NOT_FOUND);
-    }
-
-    /**
-     * 406 에러
-     */
-    @ExceptionHandler(NotAcceptableApiException.class)
-    public ResponseEntity<ErrorResponse> notAcceptableApiExceptionHandler(NotAcceptableApiException e) {
-        ErrorCode errorCode = ErrorCode.valueOf(e.getMessage());
-        return new ResponseEntity<>(ErrorResponse.of(errorCode), HttpStatus.NOT_ACCEPTABLE);
     }
 }

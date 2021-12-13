@@ -2,7 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.common.ErrorCode;
-import nextstep.subway.exception.NotAcceptableApiException;
+import nextstep.subway.exception.BadRequestApiException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
@@ -137,10 +137,10 @@ public class Line extends BaseEntity {
 
     private void validateDeleteStation(Station station) {
         if (!sections.hasDeletableSection()) {
-            throw new NotAcceptableApiException(ErrorCode.CAN_NOT_REMOVE_SECTION);
+            throw new BadRequestApiException(ErrorCode.CAN_NOT_REMOVE_SECTION);
         }
         if (getStations().notContains(station)) {
-            throw new NotAcceptableApiException(ErrorCode.NOT_REGISTERED_STATION_TO_LINE);
+            throw new BadRequestApiException(ErrorCode.NOT_REGISTERED_STATION_TO_LINE);
         }
     }
 }

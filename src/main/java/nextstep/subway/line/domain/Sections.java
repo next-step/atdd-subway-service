@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.common.ErrorCode;
-import nextstep.subway.exception.NotAcceptableApiException;
+import nextstep.subway.exception.BadRequestApiException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
@@ -112,10 +112,10 @@ public class Sections {
         boolean isDownStationExisted = stations.contains(downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new NotAcceptableApiException(ErrorCode.DUPLICATE_SECTION);
+            throw new BadRequestApiException(ErrorCode.DUPLICATE_SECTION);
         }
         if (stations.isNotEmpty() && stations.notContains(upStation) && stations.notContains(downStation)) {
-            throw new NotAcceptableApiException(ErrorCode.CAN_NOT_ADD_SECTION);
+            throw new BadRequestApiException(ErrorCode.CAN_NOT_ADD_SECTION);
         }
     }
 

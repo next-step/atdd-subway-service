@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.common.ErrorCode;
-import nextstep.subway.exception.NotAcceptableApiException;
+import nextstep.subway.exception.BadRequestApiException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -98,7 +98,7 @@ class LineTest {
     @Test
     void addSection_failure_duplicateSection() {
         // when & then
-        assertThatExceptionOfType(NotAcceptableApiException.class)
+        assertThatExceptionOfType(BadRequestApiException.class)
                 .isThrownBy(() -> 신분당선.addSection(강남역, 광교역, 5))
                 .withMessage(ErrorCode.DUPLICATE_SECTION.toString());
     }
@@ -107,7 +107,7 @@ class LineTest {
     @Test
     void addSection_failure_canNotAddSection() {
         // when & then
-        assertThatExceptionOfType(NotAcceptableApiException.class)
+        assertThatExceptionOfType(BadRequestApiException.class)
                 .isThrownBy(() -> 신분당선.addSection(용산역, 양재역, 5))
                 .withMessage(ErrorCode.CAN_NOT_ADD_SECTION.toString());
     }
@@ -116,7 +116,7 @@ class LineTest {
     @Test
     void addSection_failure_invalidSectionDistance() {
         // when & then
-        assertThatExceptionOfType(NotAcceptableApiException.class)
+        assertThatExceptionOfType(BadRequestApiException.class)
                 .isThrownBy(() -> 신분당선.addSection(강남역, 양재역, 강남역_광교역_거리))
                 .withMessage(ErrorCode.INVALID_SECTION_DISTANCE.toString());
     }
@@ -167,7 +167,7 @@ class LineTest {
     @Test
     void deleteSection_failure_canNotRemoveSection() {
         // when & then
-        assertThatExceptionOfType(NotAcceptableApiException.class)
+        assertThatExceptionOfType(BadRequestApiException.class)
                 .isThrownBy(() -> 신분당선.deleteSection(강남역))
                 .withMessage(ErrorCode.CAN_NOT_REMOVE_SECTION.toString());
     }
@@ -180,7 +180,7 @@ class LineTest {
         구간_목록.addSection(신규_구간);
 
         // when & then
-        assertThatExceptionOfType(NotAcceptableApiException.class)
+        assertThatExceptionOfType(BadRequestApiException.class)
                 .isThrownBy(() -> 신분당선.deleteSection(용산역))
                 .withMessage(ErrorCode.NOT_REGISTERED_STATION_TO_LINE.toString());
     }

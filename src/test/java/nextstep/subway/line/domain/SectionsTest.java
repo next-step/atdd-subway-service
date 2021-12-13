@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.common.ErrorCode;
-import nextstep.subway.exception.NotAcceptableApiException;
+import nextstep.subway.exception.BadRequestApiException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -83,7 +83,7 @@ class SectionsTest {
         Section 신규_구간 = Section.of(신분당선, 강남역, 광교역, 5);
 
         // when & then
-        assertThatExceptionOfType(NotAcceptableApiException.class)
+        assertThatExceptionOfType(BadRequestApiException.class)
                 .isThrownBy(() -> 구간_목록.addSection(신규_구간))
                 .withMessage(ErrorCode.DUPLICATE_SECTION.toString());
     }
@@ -95,7 +95,7 @@ class SectionsTest {
         Section 신규_구간 = Section.of(신분당선, 용산역, 양재역, 5);
 
         // when & then
-        assertThatExceptionOfType(NotAcceptableApiException.class)
+        assertThatExceptionOfType(BadRequestApiException.class)
                 .isThrownBy(() -> 구간_목록.addSection(신규_구간))
                 .withMessage(ErrorCode.CAN_NOT_ADD_SECTION.toString());
     }
@@ -107,7 +107,7 @@ class SectionsTest {
         Section 신규_구간 = Section.of(신분당선, 강남역, 양재역, 강남역_광교역_거리);
 
         // when & then
-        assertThatExceptionOfType(NotAcceptableApiException.class)
+        assertThatExceptionOfType(BadRequestApiException.class)
                 .isThrownBy(() -> 구간_목록.addSection(신규_구간))
                 .withMessage(ErrorCode.INVALID_SECTION_DISTANCE.toString());
     }

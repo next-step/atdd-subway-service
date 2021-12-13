@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.common.ErrorCode;
-import nextstep.subway.exception.NotAcceptableApiException;
+import nextstep.subway.exception.BadRequestApiException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +44,7 @@ class SectionTest {
     @Test
     void updateUpStation_failure() {
         // when & then
-        assertThatExceptionOfType(NotAcceptableApiException.class)
+        assertThatExceptionOfType(BadRequestApiException.class)
                 .isThrownBy(() -> 구간.updateUpStation(양재역, 강남역_광교역_거리))
                 .withMessage(ErrorCode.INVALID_SECTION_DISTANCE.toString());
     }
@@ -63,7 +63,7 @@ class SectionTest {
     @Test
     void updateDownStation_failure() {
         // when & then
-        assertThatExceptionOfType(NotAcceptableApiException.class)
+        assertThatExceptionOfType(BadRequestApiException.class)
                 .isThrownBy(() -> 구간.updateDownStation(양재역, 강남역_광교역_거리))
                 .withMessage(ErrorCode.INVALID_SECTION_DISTANCE.toString());
     }
