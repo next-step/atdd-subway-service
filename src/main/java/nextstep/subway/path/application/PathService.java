@@ -31,6 +31,7 @@ public class PathService {
 
         PathFinder pathFinder = new PathFinder(lines);
         Path path = pathFinder.shortestPath(source, target);
+        path.calculateFare(lines);
         return PathResponse.ofList(path);
     }
 }

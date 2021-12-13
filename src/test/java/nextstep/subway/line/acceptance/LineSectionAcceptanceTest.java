@@ -41,7 +41,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         정자역 = 지하철역_생성_요청("정자역").as(StationResponse.class);
         광교역 = 지하철역_생성_요청("광교역").as(StationResponse.class);
 
-        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 양재역.getId(), 정자역.getId(), 10);
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 0, 양재역.getId(), 정자역.getId(), 10);
         신분당선 = 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
     }
 
