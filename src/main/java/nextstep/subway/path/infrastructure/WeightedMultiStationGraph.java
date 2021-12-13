@@ -1,9 +1,8 @@
 package nextstep.subway.path.infrastructure;
 
-import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.exception.NotFoundException;
-import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.Path;
@@ -44,17 +43,18 @@ public class WeightedMultiStationGraph implements StationGraph {
         if (path == null) {
             throw new NotFoundException("접점이 없습니다.");
         }
-        return Path.fromAdditionalFare(path.getVertexList(), Double.valueOf(path.getWeight()).intValue(), getAdditionalFare(path));
+        return Path.fromIncludedLines(
+            path.getVertexList(),
+            Double.valueOf(path.getWeight()).intValue(),
+            getIncludedLines(path));
     }
 
-    private Fare getAdditionalFare(GraphPath<Station, SectionEdge> path) {
+    private List<Line> getIncludedLines(GraphPath<Station, SectionEdge> path) {
         List<SectionEdge> edgeList = path.getEdgeList();
         return edgeList.stream()
-            .map(it -> it.getAdditionalFare())
-            .sorted(Comparator.comparingInt(Fare::get).reversed())
+            .map(it -> it.getLine())
             .distinct()
-            .findFirst()
-            .orElse(Fare.valueOf(0));
+            .collect(Collectors.toList());
     }
 
     private void addVertex(List<Station> stations) {

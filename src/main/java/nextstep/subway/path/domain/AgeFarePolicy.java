@@ -27,7 +27,7 @@ public enum AgeFarePolicy {
         return Arrays.stream(policies)
             .filter(it -> it.min <= age && it.max >= age)
             .findFirst()
-            .orElseThrow(() -> new InvalidArgumentException("포함되는 정책이 없습니다."));
+            .orElseThrow(() -> new InvalidArgumentException("사용자의 나이 정보를 확인해주세요!!"));
     }
 
     public int discountedFare(Integer fare) {

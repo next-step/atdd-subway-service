@@ -34,6 +34,7 @@ public class PathService {
         if (loginMember.isEmpty()) {
             return PathResponse.of(shortestPath);
         }
+
         return PathResponse.of(shortestPath.applyAgePolicy(AgeFarePolicy.findByAge(loginMember.getAge())));
     }
 

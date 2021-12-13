@@ -15,6 +15,7 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @DisplayName("지하철 경로 찾기 테스트")
 public class PathFinderTest {
@@ -69,6 +70,11 @@ public class PathFinderTest {
         삼호선.addLineStation(Section.create(고속터미널, 교대역, Distance.valueOf(3)));
 
         칠호선 = Line.of("칠호선", "olive", 고속터미널, 반포역, 5);
+
+        ReflectionTestUtils.setField(신분당선, "id", 1L);
+        ReflectionTestUtils.setField(이호선, "id", 2L);
+        ReflectionTestUtils.setField(삼호선, "id", 3L);
+        ReflectionTestUtils.setField(칠호선, "id", 4L);
     }
 
 
@@ -89,9 +95,12 @@ public class PathFinderTest {
     @Test
     @DisplayName("서초역_양재시민의숲 지하철 최단 경로, 요금 조회")
     void getShortestList_서초역_양재시민의숲() {
+
         PathFinder graph = PathFinder.create(stationGraph, Arrays.asList(신분당선, 이호선, 삼호선));
 
         Path shortestPath = graph.findShortestPath(서초역, 양재시민의숲);
+
+        System.out.println(shortestPath.getTotalFare());
 
         assertAll(() -> {
             assertThat(shortestPath.getTotalDistance()).isEqualTo(32);

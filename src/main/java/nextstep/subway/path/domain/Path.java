@@ -1,7 +1,9 @@
 package nextstep.subway.path.domain;
 
+import java.util.Comparator;
 import java.util.List;
 import nextstep.subway.line.domain.Fare;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
 public final class Path {
@@ -16,13 +18,14 @@ public final class Path {
         this.totalFare = totalFare;
     }
 
-    public static Path of(List<Station> stations, Integer totalDistance, Fare totalFare) {
-        return new Path(stations, totalDistance, totalFare);
+    public static Path fromIncludedLines(List<Station> stations, Integer totalDistance, List<Line> includedLines) {
+        return new Path(stations, totalDistance,
+            Fare.valueOf(FarePolicy.calculateOverFare(totalDistance))
+                .plus(getAdditionalFare(includedLines)));
     }
 
-    public static Path fromAdditionalFare(List<Station> stations, Integer totalDistance, Fare additionalFare) {
-        return new Path(stations, totalDistance,
-            Fare.valueOf(FarePolicy.calculateOverFare(totalDistance)).plus(additionalFare));
+    public Path applyAgePolicy(AgeFarePolicy ageFarePolicy) {
+        return new Path(stations, totalDistance, totalFare.getAgeFare(ageFarePolicy));
     }
 
     public List<Station> getStations() {
@@ -37,7 +40,12 @@ public final class Path {
         return totalFare.get();
     }
 
-    public Path applyAgePolicy(AgeFarePolicy ageFarePolicy) {
-        return Path.of(stations, totalDistance, totalFare.getAgeFare(ageFarePolicy));
+    private static Fare getAdditionalFare(List<Line> includedLines) {
+        return includedLines.stream()
+            .map(it -> it.getAdditionalFare())
+            .sorted(Comparator.comparingInt(Fare::get).reversed())
+            .findFirst()
+            .orElse(Fare.valueOf(0));
     }
+
 }
