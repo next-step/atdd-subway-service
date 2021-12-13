@@ -23,7 +23,7 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberResponse findMember(Long id) {
+    public MemberResponse findMemberResponse(Long id) {
         return MemberResponse.of(findById(id));
     }
     
