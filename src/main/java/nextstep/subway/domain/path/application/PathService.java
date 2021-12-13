@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -29,10 +28,6 @@ public class PathService {
         PathFinder pathFinder = new PathFinder(lines);
         final Route shortestRoute = pathFinder.findShortestRoute(request.getSource(), request.getTarget());
 
-        List<PathFinderResponse.Station> shortestRouteResponse = shortestRoute.getStations().stream()
-                .map(PathFinderResponse.Station::of)
-                .collect(Collectors.toList());
-
-        return new PathFinderResponse(shortestRouteResponse, shortestRoute.getDistance());
+        return PathFinderResponse.of(shortestRoute);
     }
 }
