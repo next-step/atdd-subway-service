@@ -4,6 +4,7 @@ import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -35,11 +36,16 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public List<LineResponse> findLines() {
+    public List<LineResponse> findResponseLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Lines findLines() {
+        return Lines.from(lineRepository.findAll());
     }
 
     @Transactional(readOnly = true)

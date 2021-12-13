@@ -58,6 +58,10 @@ public class Section {
         return downStation;
     }
 
+    public int getDistance() {
+        return distance.value();
+    }
+
     public void changeUpStationToDownStationOf(Section section) {
         validateDistance(section);
         this.upStation = section.getDownStation();

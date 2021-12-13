@@ -1,29 +1,24 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 public class PathController {
 
-    public PathController() {
+    private final PathService pathService;
 
+    public PathController(PathService pathService) {
+        this.pathService = pathService;
     }
 
     @GetMapping(value = "/paths")
     public ResponseEntity<PathResponse> findPaths(PathRequest pathRequest) {
-        List<StationResponse> stations = new ArrayList<>();
-        stations.add(new StationResponse(1L, "강남역", null, null));
-        stations.add(new StationResponse(2L, "양재역", null, null));
-        stations.add(new StationResponse(4L, "남부터미널역", null, null));
-        PathResponse pathResponse = PathResponse.of(stations, 12L);
+        PathResponse pathResponse = pathService.findPath(pathRequest);
         return ResponseEntity.ok().body(pathResponse);
     }
 }

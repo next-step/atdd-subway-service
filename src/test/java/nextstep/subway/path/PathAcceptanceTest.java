@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("지하철 경로 조회")
-public class PathAcceptanceTest extends AcceptanceTest {
+class PathAcceptanceTest extends AcceptanceTest {
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -63,7 +63,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         최단_경로_조회_요청_응답됨(최단_경로_조회_요청_응답);
         최단_경로_조회_경로_포함됨(최단_경로_조회_요청_응답, Arrays.asList(강남역, 양재역, 남부터미널역));
-        최단_경로_조회_거리_포함됨(최단_경로_조회_요청_응답, 12L);
+        최단_경로_조회_거리_포함됨(최단_경로_조회_요청_응답, 12);
     }
 
     private void 최단_경로_조회_경로_포함됨(ExtractableResponse<Response> response, List<StationResponse> expectedResponse) {
@@ -78,11 +78,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
-
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
-    private void 최단_경로_조회_거리_포함됨(ExtractableResponse<Response> response, long expectedDistance) {
+    private void 최단_경로_조회_거리_포함됨(ExtractableResponse<Response> response, int expectedDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
     }
