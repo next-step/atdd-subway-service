@@ -28,6 +28,12 @@ public class Station extends BaseEntity {
         return name;
     }
 
+    public void validateNotSame(Station station) {
+        if (this.name.equals(station.getName())) {
+            throw new IllegalArgumentException("도착역과 출발역은 같을 수 없습니다.");
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -40,5 +46,13 @@ public class Station extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
