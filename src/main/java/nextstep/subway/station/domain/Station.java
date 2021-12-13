@@ -7,17 +7,22 @@ import java.util.Objects;
 
 @Entity
 public class Station extends BaseEntity {
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true)
     private String name;
 
-    public Station() {
+    protected Station() {
     }
 
     public Station(String name) {
+        this(null, name);
+    }
+
+    public Station(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
@@ -42,4 +47,9 @@ public class Station extends BaseEntity {
     public int hashCode() {
         return Objects.hash(id, name);
     }
+
+	public boolean equalsId(int source) {
+        return this.id == (long)source;
+	}
+
 }

@@ -19,9 +19,9 @@ class SectionsTest {
 
 	@BeforeEach
 	public void setUp() {
-		firstSection = new Section(1L, null, new Station("두정역"), new Station("천안역"), 15);
-		secondSection = new Section(2L, null, new Station("천안역"), new Station("봉명역"), 10);
-		thirdSection = new Section(3L, null, new Station("봉명역"), new Station("쌍용역"), 20);
+		firstSection = new Section(1L, null, new Station("두정역"), new Station("천안역"), Distance.of(15));
+		secondSection = new Section(2L, null, new Station("천안역"), new Station("봉명역"), Distance.of(10));
+		thirdSection = new Section(3L, null, new Station("봉명역"), new Station("쌍용역"), Distance.of(20));
 		sections = new Sections(thirdSection, secondSection, firstSection);
 	}
 
@@ -47,7 +47,7 @@ class SectionsTest {
 	public void addSectionMatchStartLocationTest() {
 		//given
 		// when
-		sections.addSection(new Section(null, new Station("봉명역"), new Station("아산역"), 10));
+		sections.addSection(new Section(null, new Station("봉명역"), new Station("아산역"), Distance.of(10)));
 		//then
 		assertThat(sections.getStations()).containsExactly(new Station("두정역"), new Station("천안역")
 			, new Station("봉명역"), new Station("아산역"), new Station("쌍용역"));
@@ -58,7 +58,7 @@ class SectionsTest {
 	public void addSectionMatchEndLocationTest() {
 		//given
 		// when
-		sections.addSection(new Section(null, new Station("아산역"), new Station("쌍용역"), 10));
+		sections.addSection(new Section(null, new Station("아산역"), new Station("쌍용역"), Distance.of(10)));
 		//then
 		assertThat(sections.getStations()).containsExactly(new Station("두정역"), new Station("천안역")
 			, new Station("봉명역"), new Station("아산역"), new Station("쌍용역"));
@@ -69,7 +69,7 @@ class SectionsTest {
 	public void addSectionStartLocationTest() {
 		//given
 		// when
-		sections.addSection(new Section(null, new Station("평택역"), new Station("두정역"), 10));
+		sections.addSection(new Section(null, new Station("평택역"), new Station("두정역"), Distance.of(10)));
 		//then
 		for (Station station : sections.getStations()) {
 			System.out.println(station.getName());
@@ -83,7 +83,7 @@ class SectionsTest {
 	public void addSectionEndLocationTest() {
 		//given
 		// when
-		sections.addSection(new Section(null, new Station("쌍용역"), new Station("아산역"), 10));
+		sections.addSection(new Section(null, new Station("쌍용역"), new Station("아산역"), Distance.of(10)));
 		//then
 		assertThat(sections.getStations()).containsExactly(new Station("두정역"), new Station("천안역")
 			, new Station("봉명역"), new Station("쌍용역"), new Station("아산역"));
@@ -92,21 +92,21 @@ class SectionsTest {
 	@Test
 	@DisplayName("전부 존재하는 역 구간 추가 실패")
 	public void addSectionExistedTest() {
-		assertThatThrownBy(() -> sections.addSection(new Section(null, new Station("두정역"), new Station("천안역"), 10)))
+		assertThatThrownBy(() -> sections.addSection(new Section(null, new Station("두정역"), new Station("천안역"), Distance.of(10))))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
 	@DisplayName("미 존재하는 역 구간 추가 실패")
 	public void addSectionNonMatchTest() {
-		assertThatThrownBy(() -> sections.addSection(new Section(null, new Station("강남"), new Station("판교"), 10)))
+		assertThatThrownBy(() -> sections.addSection(new Section(null, new Station("강남"), new Station("판교"), Distance.of(10))))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
 	@DisplayName("추가구간 길이가 더 긴경우 추가 실패")
 	public void addSectionLengthTest() {
-		assertThatThrownBy(() -> sections.addSection(new Section(null, new Station("봉명"), new Station("아산"), 100)))
+		assertThatThrownBy(() -> sections.addSection(new Section(null, new Station("봉명"), new Station("아산"), Distance.of(100))))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 

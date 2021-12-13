@@ -8,6 +8,8 @@ import javax.persistence.*;
 
 @Entity
 public class Section {
+	public static final Section DUMMY_SECTION = new Section();
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -24,12 +26,13 @@ public class Section {
 	@JoinColumn(name = "down_station_id")
 	private Station downStation;
 
-	private int distance;
+	@Embedded
+	private Distance distance;
 
 	protected Section() {
 	}
 
-	public Section(Long id, Line line, Station upStation, Station downStation, int distance) {
+	public Section(Long id, Line line, Station upStation, Station downStation, Distance distance) {
 		this.id = id;
 		this.line = line;
 		this.upStation = upStation;
@@ -37,7 +40,7 @@ public class Section {
 		this.distance = distance;
 	}
 
-	public Section(Line line, Station upStation, Station downStation, int distance) {
+	public Section(Line line, Station upStation, Station downStation, Distance distance) {
 		this(null, line, upStation, downStation, distance);
 	}
 
@@ -57,32 +60,48 @@ public class Section {
 		return downStation;
 	}
 
-	public int getDistance() {
+	public Distance getDistance() {
 		return distance;
 	}
 
+	public Long getUpStationId() {
+		return getUpStation().getId();
+	}
+
+	public Long getDownStationId() {
+		return getDownStation().getId();
+	}
+
+	public int getDistanceValue() {
+		return getDistance().value();
+	}
+
 	public void updateUpStation(Section section) {
-		if (this.distance <= section.getDistance()) {
+		if (distance.lessThan(section.distance)) {
 			throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
 		}
 		this.upStation = section.getDownStation();
-		this.distance -= section.getDistance();
+		this.distance = this.distance.decrease(section.distance);
 	}
 
 	public void updateDownStation(Section section) {
-		if (this.distance <= section.getDistance()) {
+		if (distance.lessThan(section.distance)) {
 			throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
 		}
 		this.downStation = section.getUpStation();
-		this.distance -= section.getDistance();
+		this.distance.decrease(section.distance);
 	}
 
-	public boolean equalsDownStation(Section section) {
-		return this.downStation.equals(section.getDownStation());
+	public boolean equalsDownStation(Station station) {
+		return this.downStation.equals(station);
 	}
 
-	public boolean equalsUpStation(Section section) {
-		return this.upStation.equals(section.getUpStation());
+	public boolean equalsUpStation(Station station) {
+		return this.upStation.equals(station);
+	}
+
+	public boolean isDummy() {
+		return this == DUMMY_SECTION;
 	}
 
 	@Override
@@ -99,4 +118,5 @@ public class Section {
 	public int hashCode() {
 		return Objects.hash(id);
 	}
+
 }

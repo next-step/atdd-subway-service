@@ -3,7 +3,6 @@ package nextstep.subway.line.domain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -25,8 +24,12 @@ public class Sections {
 
 	public Sections(Section... sections) {
 		for (Section section : sections) {
-			this.sections.add(section);
+			addSection(section);
 		}
+	}
+
+	public List<Section> getSections() {
+		return new ArrayList<>(sections);
 	}
 
 	public List<Station> getStations() {
@@ -54,14 +57,14 @@ public class Sections {
 
 	private Section getNextSection(Section currentSection) {
 		return sections.stream()
-			.filter(section -> section.getUpStation().equals(currentSection.getDownStation()))
+			.filter(section -> section.equalsUpStation(currentSection.getDownStation()))
 			.findFirst()
 			.orElse(currentSection);
 	}
 
 	private boolean isNextSection(Section currentSection) {
 		return sections.stream()
-			.anyMatch(section -> section.getUpStation().equals(currentSection.getDownStation()));
+			.anyMatch(section -> section.equalsUpStation(currentSection.getDownStation()));
 	}
 
 	private Section findFirstSection() {
@@ -69,7 +72,7 @@ public class Sections {
 		while (!isFirstSection(firstSection)) {
 			Section finalFistSection = firstSection;
 			firstSection = sections.stream()
-				.filter(section -> section.getDownStation().equals(finalFistSection.getUpStation()))
+				.filter(section -> section.equalsDownStation(finalFistSection.getUpStation()))
 				.findFirst()
 				.orElse(finalFistSection);
 		}
@@ -78,17 +81,17 @@ public class Sections {
 
 	private boolean isFirstSection(Section firstSection) {
 		return sections.stream()
-			.noneMatch(section -> section.getDownStation().equals(firstSection.getUpStation()));
+			.noneMatch(section -> section.equalsDownStation(firstSection.getUpStation()));
 	}
 
 	public void addSection(Section section) {
-		validateStationsExisted(section);
-		validateStationNonMatch(section);
-
 		if (getStations().isEmpty()) {
 			sections.add(section);
 			return;
 		}
+
+		validateStationsExisted(section);
+		validateStationNonMatch(section);
 
 		if (isUpStationExisted(section)) {
 			updateUpStation(section);
@@ -104,33 +107,35 @@ public class Sections {
 	}
 
 	private void updateDownStation(Section addSection) {
-		if (isUpdateDownStation(addSection)) {
-			sections.stream()
-				.filter(section -> section.equalsDownStation(addSection))
-				.findFirst()
-				.orElseThrow(() -> new IllegalArgumentException("구간이 존재하지 않습니다."))
-				.updateDownStation(addSection);
+		if (!isUpdatableDownStation(addSection)) {
+			return;
 		}
+		sections.stream()
+			.filter(section -> section.equalsDownStation(addSection.getDownStation()))
+			.findFirst()
+			.orElseThrow(() -> new IllegalArgumentException("구간이 존재하지 않습니다."))
+			.updateDownStation(addSection);
 	}
 
-	private boolean isUpdateDownStation(Section addSection) {
+	private boolean isUpdatableDownStation(Section addSection) {
 		return sections.stream()
-			.anyMatch(section -> section.getDownStation().equals(addSection.getDownStation()));
+			.anyMatch(section -> section.equalsDownStation(addSection.getDownStation()));
 	}
 
 	private void updateUpStation(Section addSection) {
-		if (isUpdateUpStation(addSection)) {
-			sections.stream()
-				.filter(section -> section.equalsUpStation(addSection))
-				.findFirst()
-				.orElseThrow(() -> new IllegalArgumentException("구간이 존재하지 않습니다."))
-				.updateUpStation(addSection);
+		if (!isUpdatableUpStation(addSection)) {
+			return;
 		}
+		sections.stream()
+			.filter(section -> section.equalsUpStation(addSection.getUpStation()))
+			.findFirst()
+			.orElseThrow(() -> new IllegalArgumentException("구간이 존재하지 않습니다."))
+			.updateUpStation(addSection);
 	}
 
-	private boolean isUpdateUpStation(Section addSection) {
+	private boolean isUpdatableUpStation(Section addSection) {
 		return sections.stream()
-			.anyMatch(section -> section.getUpStation().equals(addSection.getUpStation()));
+			.anyMatch(section -> section.equalsUpStation(addSection.getUpStation()));
 	}
 
 	private boolean isDownStationExisted(Section section) {
@@ -158,43 +163,52 @@ public class Sections {
 
 	public void remove(Line line, Station station) {
 		validateSectionsSize();
+
+		Section newUpSection = Section.DUMMY_SECTION;
+		Section newDownSection = Section.DUMMY_SECTION;
+		Distance newSectionDistance = Distance.DUMMY_DISTANCE;
+
 		List<Section> removeSections = findRemoveSections(station);
+
 		if (isMiddleStation(removeSections)) {
-			Station newUpStation = getNewUpStation(removeSections, station);
-			Station newDownStation = getNewDownStation(removeSections, station);
-			int newSectionDistance = getNewSectionDistance(removeSections);
-			sections.add(new Section(line, newUpStation, newDownStation, newSectionDistance));
+			newUpSection = getNewUpStation(removeSections, station);
+			newDownSection = getNewDownStation(removeSections, station);
+			newSectionDistance = getNewSectionDistance(removeSections);
 		}
+
+		if (!newUpSection.isDummy() && !newDownSection.isDummy() && !newSectionDistance.isDummy()) {
+			sections.add(new Section(line, newUpSection.getUpStation(), newDownSection.getDownStation(), newSectionDistance));
+		}
+
 		removeSections.stream()
 			.forEach(section -> sections.remove(section));
 	}
 
 	private List<Section> findRemoveSections(Station station) {
 		return sections.stream()
-			.filter(section -> section.getDownStation().equals(station) || section.getUpStation().equals(station))
+			.filter(section -> section.equalsDownStation(station) || section.equalsUpStation(station))
 			.collect(Collectors.toList());
 	}
 
-	private int getNewSectionDistance(List<Section> sections) {
+	private Distance getNewSectionDistance(List<Section> sections) {
 		return sections.stream()
-			.mapToInt(Section::getDistance)
-			.sum();
+			.map(Section::getDistance)
+			.reduce((d1, d2) -> d1.increase(d2))
+			.orElse(Distance.DUMMY_DISTANCE);
 	}
 
-	private Station getNewUpStation(List<Section> sections, Station station) {
+	private Section getNewUpStation(List<Section> sections, Station station) {
 		return sections.stream()
-			.filter(section -> section.getDownStation().equals(station))
+			.filter(section -> section.equalsDownStation(station))
 			.findFirst()
-			.orElseThrow(() -> new IllegalArgumentException("구간이 존재하지 않습니다."))
-			.getUpStation();
+			.orElse(Section.DUMMY_SECTION);
 	}
 
-	private Station getNewDownStation(List<Section> sections, Station station) {
+	private Section getNewDownStation(List<Section> sections, Station station) {
 		return sections.stream()
-			.filter(section -> section.getUpStation().equals(station))
+			.filter(section -> section.equalsUpStation(station))
 			.findFirst()
-			.orElseThrow(() -> new IllegalArgumentException("구간이 존재하지 않습니다."))
-			.getDownStation();
+			.orElse(Section.DUMMY_SECTION);
 	}
 
 	private boolean isMiddleStation(List<Section> sections) {
