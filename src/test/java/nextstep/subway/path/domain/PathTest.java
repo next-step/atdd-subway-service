@@ -23,11 +23,10 @@ class PathTest {
 
     @BeforeEach
     void setUp() {
-
-        강남역 = Station.from("강남역");
-        양재역 = Station.from("양재역");
-        교대역 = Station.from("교대역");
-        남부터미널역 = Station.from("남부터미널역");
+        강남역 = Station.of(1L, "강남역");
+        양재역 = Station.of(2L, "양재역");
+        교대역 = Station.of(3L, "교대역");
+        남부터미널역 = Station.of(4L,"남부터미널역");
 
         신분당선 = Line.of("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = Line.of("이호선", "bg-red-600", 교대역, 강남역, 10);

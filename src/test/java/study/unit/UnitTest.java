@@ -14,8 +14,8 @@ public class UnitTest {
         // given
         String newName = "구분당선";
 
-        Station upStation = Station.from("강남역");
-        Station downStation = Station.from("광교역");
+        Station upStation = Station.of(1L, "강남역");
+        Station downStation = Station.of(2L, "광교역");
         Line line = Line.of("신분당선", "RED", upStation, downStation, 10);
         Line newLine = Line.of(newName, "GREEN");
 

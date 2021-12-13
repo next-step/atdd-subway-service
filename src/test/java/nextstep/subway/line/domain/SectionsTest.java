@@ -25,10 +25,10 @@ class SectionsTest {
 
     @BeforeEach
     void setUp() {
-        강남역 = Station.from("강남역");
-        양재역 = Station.from("양재역");
-        양재시민의숲 = Station.from("양재시민의숲");
-        청계산입구 = Station.from("청계산입구");
+        강남역 = Station.of(1L, "강남역");
+        양재역 = Station.of(2L, "양재역");
+        양재시민의숲 = Station.of(3L, "양재시민의숲");
+        청계산입구 = Station.of(4L,"청계산입구");
 
         신분당선 = Line.of("신분당선", "red");
     }
@@ -57,7 +57,8 @@ class SectionsTest {
 
         // then
         Assertions.assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(throwingCallable);
+                .isThrownBy(throwingCallable)
+                .withMessage("종점역 정보가 입력되지 않았습니다.");
     }
 
     @Test
@@ -91,7 +92,8 @@ class SectionsTest {
 
         // then
         Assertions.assertThatExceptionOfType(BadRequestException.class)
-                .isThrownBy(throwingCallable);
+                .isThrownBy(throwingCallable)
+                .withMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 
     @Test
@@ -106,7 +108,8 @@ class SectionsTest {
 
         // then
         Assertions.assertThatExceptionOfType(BadRequestException.class)
-                .isThrownBy(throwingCallable);
+                .isThrownBy(throwingCallable)
+                .withMessage("이미 등록된 구간 입니다.");
     }
 
     @Test
@@ -121,7 +124,8 @@ class SectionsTest {
 
         // then
         Assertions.assertThatExceptionOfType(BadRequestException.class)
-                .isThrownBy(throwingCallable);
+                .isThrownBy(throwingCallable)
+                .withMessage("등록할 수 없는 구간 입니다.");
     }
 
     @Test
@@ -244,6 +248,7 @@ class SectionsTest {
 
         // then
         Assertions.assertThatExceptionOfType(BadRequestException.class)
-                .isThrownBy(throwingCallable);
+                .isThrownBy(throwingCallable)
+                .withMessage("구간을 제거할 수 없습니다.");
     }
 }

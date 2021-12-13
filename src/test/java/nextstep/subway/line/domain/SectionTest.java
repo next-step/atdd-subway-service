@@ -12,8 +12,8 @@ class SectionTest {
     @Test
     void 구간_생성() {
         // given
-        Station upStation = Station.from("강남역");
-        Station downStation = Station.from("양재역");
+        Station upStation = Station.of(1L, "강남역");
+        Station downStation = Station.of(2L, "양재역");
         Line line = Line.of("신분당선", "red");
 
         // when
@@ -26,8 +26,8 @@ class SectionTest {
     @Test
     void 상행역과_하행역이_같은_경우_구간_생성_불가() {
         // given
-        Station upStation = Station.from("강남역");
-        Station downStation = Station.from("강남역");
+        Station upStation = Station.of(1L, "강남역");
+        Station downStation = Station.of(1L, "강남역");
         Line line = Line.of("신분당선", "red");
 
         // when
@@ -35,7 +35,8 @@ class SectionTest {
 
         // then
         Assertions.assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(throwingCallable);
+                .isThrownBy(throwingCallable)
+                .withMessage("상행선과 하행선은 같을 수 없습니다.");
     }
 
 }

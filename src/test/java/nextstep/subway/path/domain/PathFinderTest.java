@@ -26,11 +26,10 @@ class PathFinderTest {
 
     @BeforeEach
     void setUp() {
-
-        강남역 = Station.from("강남역");
-        양재역 = Station.from("양재역");
-        교대역 = Station.from("교대역");
-        남부터미널역 = Station.from("남부터미널역");
+        강남역 = Station.of(1L, "강남역");
+        양재역 = Station.of(2L, "양재역");
+        교대역 = Station.of(3L, "교대역");
+        남부터미널역 = Station.of(4L,"남부터미널역");
 
         신분당선 = Line.of("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = Line.of("이호선", "bg-red-600", 교대역, 강남역, 10);
@@ -69,8 +68,8 @@ class PathFinderTest {
     @Test
     void 최단_경로_조회_출발역과_도착역이_연결되어있지_않은_경우_조회할_수_없다() {
         // given
-        Station 동암역 = Station.from("동암역");
-        Station 송내역 = Station.from("송내역");
+        Station 동암역 = Station.of(5L, "동암역");
+        Station 송내역 = Station.of(6L, "송내역");
         Line 일호선 = Line.of("일호선", "bg-red-600", 동암역, 송내역, 5);
 
         Lines lines = Lines.from(Arrays.asList(신분당선, 이호선, 삼호선, 일호선));

@@ -75,7 +75,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 최단_경로_조회_요청_응답 = 최단_경로_조회_요청(강남역, 강남역);
 
         // then
-        최단_경로_조회_요청_실패됨(최단_경로_조회_요청_응답);
+        최단_경로_조회_요청_실패됨(최단_경로_조회_요청_응답, "출발역과 도착역이 같은 경우 최단 거리를 구할 수 없습니다.");
     }
 
     @Test
@@ -89,7 +89,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 최단_경로_조회_요청_응답 = 최단_경로_조회_요청(강남역, 송내역);
 
         // then
-        최단_경로_조회_요청_실패됨(최단_경로_조회_요청_응답);
+        최단_경로_조회_요청_실패됨(최단_경로_조회_요청_응답, "출발역과 도착역이 연결되어있지 않은 경우 조회할 수 없습니다.");
     }
 
     private void 최단_경로_조회_경로_포함됨(ExtractableResponse<Response> response, List<StationResponse> expectedResponse) {
@@ -123,7 +123,8 @@ class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 최단_경로_조회_요청_실패됨(ExtractableResponse<Response> response) {
+    private void 최단_경로_조회_요청_실패됨(ExtractableResponse<Response> response, String errorMessage) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.response().body().asString()).isEqualTo(errorMessage);
     }
 }
