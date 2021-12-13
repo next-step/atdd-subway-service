@@ -42,6 +42,27 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
+        // given
+        Map<String, String> invalidPasswordParam = new HashMap<>();
+        invalidPasswordParam.put("email", "email@email.com");
+        invalidPasswordParam.put("password", "wrong");
+
+        // when
+        ExtractableResponse<Response> response = AuthAcceptanceTestHelper.로그인_요청(invalidPasswordParam);
+
+        // then
+        AuthAcceptanceTestHelper.로그인_요청_실패(response);
+
+        // given
+        Map<String, String> invalidEmailParam = new HashMap<>();
+        invalidEmailParam.put("email", "email2@email.com");
+        invalidEmailParam.put("password", "password");
+
+        // when
+        ExtractableResponse<Response> response2 = AuthAcceptanceTestHelper.로그인_요청(invalidEmailParam);
+
+        // then
+        AuthAcceptanceTestHelper.로그인_요청_실패(response2);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")

@@ -29,4 +29,8 @@ public class AuthAcceptanceTestHelper {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
+
+    public static void 로그인_요청_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }
