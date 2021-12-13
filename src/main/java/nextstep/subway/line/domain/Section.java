@@ -37,14 +37,42 @@ public class Section {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
-        this.line = line;
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
+        setLine(line);
+        setUpStation(upStation);
+        setDownStation(downStation);
+        setDistance(distance);
     }
 
     public static Section of(Line line, Station upStation, Station downStation, int distance) {
         return new Section(line, upStation, downStation, distance);
+    }
+
+    public void setLine(Line line) {
+        if (line == null) {
+            throw new IllegalArgumentException("line은 null일 수 없습니다.");
+        }
+        this.line = line;
+    }
+
+    public void setUpStation(Station upStation) {
+        if (upStation == null) {
+            throw new IllegalArgumentException("upStation은 null일 수 없습니다.");
+        }
+        this.upStation = upStation;
+    }
+
+    public void setDownStation(Station downStation) {
+        if (downStation == null) {
+            throw new IllegalArgumentException("downStation은 null일 수 없습니다.");
+        }
+        this.downStation = downStation;
+    }
+
+    public void setDistance(int distance) {
+        if (distance <= 0) {
+            throw new IllegalArgumentException("distance는 1이상이어야 합니다.");
+        }
+        this.distance = distance;
     }
 
     public Long getId() {
