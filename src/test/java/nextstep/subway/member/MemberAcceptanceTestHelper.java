@@ -2,12 +2,16 @@ package nextstep.subway.member;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Map;
+
+import org.assertj.core.api.Assertions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 
@@ -82,5 +86,19 @@ public class MemberAcceptanceTestHelper {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 내_정보_수정_요청(Map<String, String> params, TokenResponse tokenResponse) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .body(params)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().put("/members/me")
+            .then().log().all().extract();
+    }
+
+    public static void 내_정보_수정_성공(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }

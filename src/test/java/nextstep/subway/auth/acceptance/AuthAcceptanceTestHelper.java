@@ -2,6 +2,7 @@ package nextstep.subway.auth.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,14 @@ public class AuthAcceptanceTestHelper {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().post("/login/token")
             .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 로그인_되어_있음(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return 로그인_요청(params);
     }
 
     public static void 로그인_요청_성공(ExtractableResponse<Response> response) {

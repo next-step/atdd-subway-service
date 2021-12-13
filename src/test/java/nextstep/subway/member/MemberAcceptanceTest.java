@@ -1,11 +1,16 @@
 package nextstep.subway.member;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTestHelper;
+import nextstep.subway.auth.dto.TokenResponse;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -43,6 +48,29 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // when
+        ExtractableResponse<Response> createResponse = MemberAcceptanceTestHelper.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        // then
+        MemberAcceptanceTestHelper.회원_생성됨(createResponse);
 
+        // given
+        TokenResponse tokenResponse = AuthAcceptanceTestHelper.로그인_되어_있음(EMAIL, PASSWORD)
+            .as(TokenResponse.class);
+        Map<String, String> params = new HashMap<>();
+        params.put("email", NEW_EMAIL);
+        params.put("password", NEW_PASSWORD);
+        params.put("age", String.valueOf(NEW_AGE));
+
+        // when
+        ExtractableResponse<Response> response = MemberAcceptanceTestHelper.내_정보_수정_요청(params, tokenResponse);
+
+        // then
+        MemberAcceptanceTestHelper.내_정보_수정_성공(response);
+
+        // when
+        ExtractableResponse<Response> findResponse = MemberAcceptanceTestHelper.회원_정보_조회_요청(createResponse);
+
+        // then
+        MemberAcceptanceTestHelper.회원_정보_조회됨(findResponse, NEW_EMAIL, NEW_AGE);
     }
 }
