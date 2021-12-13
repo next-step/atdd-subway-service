@@ -28,7 +28,7 @@ public class FavoriteService {
         this.memberService = memberService;
     }
 
-    public FavoriteResponse createFavorite(Long memberId, FavoriteRequest favoriteRequest) {
+    public FavoriteResponse create(Long memberId, FavoriteRequest favoriteRequest) {
         Station sourceStation = stationService.findById(favoriteRequest.getSource());
         Station targetStation = stationService.findById(favoriteRequest.getTarget());
         Member member = memberService.findById(memberId);
@@ -36,14 +36,14 @@ public class FavoriteService {
     }
 
     @Transactional(readOnly = true)
-    public List<FavoriteResponse> findFavorites(Long memberId) {
+    public List<FavoriteResponse> find(Long memberId) {
         return favoriteRepository.findByMemberId(memberId)
                 .stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(Long id) {
+    public void delete(Long id) {
         favoriteRepository.deleteById(id);
     }
 }
