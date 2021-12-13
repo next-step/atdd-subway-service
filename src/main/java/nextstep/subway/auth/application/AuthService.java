@@ -32,14 +32,21 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public LoginMember findMemberByToken(String credentials, boolean loginRequired) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException(WRONG_TOKEN);
+            return findGuestMemberOrThrows(loginRequired);
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email)
             .orElseThrow(() -> new BadRequestException(NOT_FOUND_DATA));
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+    }
+
+    private LoginMember findGuestMemberOrThrows(boolean loginRequired) {
+        if (loginRequired) {
+            throw new AuthorizationException(WRONG_TOKEN);
+        }
+        return new LoginMember();
     }
 }

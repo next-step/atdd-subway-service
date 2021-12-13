@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.dto.PathFinderResponse;
 import nextstep.subway.station.domain.Station;
 
 class GraphPathFinderTest {
@@ -37,9 +37,9 @@ class GraphPathFinderTest {
         교대역 = new Station("교대역");
         남부터미널역 = new Station("당산역");
 
-        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = new Line("이호선", "bg-green-600", 교대역, 강남역, 10);
-        삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 양재역, 5);
+        신분당선 = new Line("신분당선", "bg-red-600", 10, 강남역, 양재역, 10);
+        이호선 = new Line("이호선", "bg-green-600", 0, 교대역, 강남역, 10);
+        삼호선 = new Line("삼호선", "bg-orange-600", 0, 교대역, 양재역, 5);
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, 3));
 
         sections = Stream.of(신분당선, 이호선, 삼호선)
@@ -53,12 +53,13 @@ class GraphPathFinderTest {
     @Test
     void findShortestTest() {
         // when
-        PathResponse findPath = pathFinder.getShortestPaths(sections, 강남역, 남부터미널역);
+        PathFinderResponse findPath = pathFinder.getShortestPaths(sections, 강남역, 남부터미널역);
 
         // then
         assertThat(findPath.getStations()).extracting("name")
             .containsExactly(강남역.getName(), 양재역.getName(), 남부터미널역.getName());
         assertEquals(12, findPath.getDistance());
+        assertEquals(10, findPath.getLineSurcharge());
     }
 
     @DisplayName("출발역과 도착역이 같은 경우 경로를 조회할 수 없다.")

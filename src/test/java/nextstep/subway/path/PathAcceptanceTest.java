@@ -1,6 +1,7 @@
 package nextstep.subway.path;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -31,6 +33,8 @@ class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private final int 기본요금 = 1250;
+    private final int 삼호선_추가요금 = 500;
 
     /**
      * 교대역    --- *2호선* --- 강남역
@@ -49,13 +53,16 @@ class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
-                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10))
+                new LineRequest("신분당선", "bg-red-600", 100,
+                    강남역.getId(), 양재역.getId(), 10))
             .as(LineResponse.class);
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
-                new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10))
+                new LineRequest("이호선", "bg-green-600", 300,
+                    교대역.getId(), 강남역.getId(), 10))
             .as(LineResponse.class);
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
-                new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 5))
+                new LineRequest("삼호선", "bg-orange-600", 삼호선_추가요금,
+                    교대역.getId(), 양재역.getId(), 5))
             .as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
@@ -73,6 +80,22 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_경로_목록_응답됨(response);
+    }
+
+    @DisplayName("최단 경로 중 추가요금이 있는 노선을 환승하여 이용 할 경우 가장 높은 추가 요금만 적용된다.")
+    @Test
+    void getShortestPathsMaxSurcharge() {
+        // when
+        Map<String, String> params = new HashMap<>();
+        params.put("source", 강남역.getId().toString());
+        params.put("target", 남부터미널역.getId().toString());
+        ExtractableResponse<Response> response = 최단_경로_목록_요청(
+            params);
+
+        // then
+        최단_경로_목록_응답됨(response);
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertEquals(기본요금 + 삼호선_추가요금, pathResponse.getFare());
     }
 
     private ExtractableResponse<Response> 최단_경로_목록_요청(Map<String, String> params) {
