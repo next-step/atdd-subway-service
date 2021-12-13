@@ -30,7 +30,8 @@ public class DataLoaderConfig implements CommandLineRunner {
 
         Line 신분당선 = Line.of("신분당선", "red lighten-1", 강남역, 양재역, 10);
         Line 이호선 = Line.of("2호선", "green lighten-1", 교대역, 강남역, 10);
-        Line 삼호선 = Line.of("3호선", "orange darken-1", 교대역, 양재역, 10);
+        Line 삼호선 = Line.of("3호선", "orange darken-1", 교대역, 양재역, 5);
+        삼호선.addSection(교대역, 남부터미널역, 3);
 
         lineRepository.saveAll(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
