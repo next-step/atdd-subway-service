@@ -103,11 +103,9 @@ public class PathTest {
     void calculateOverFareByFiveKM() {
 
         //given
-        OverFare highOverFare = new HighOverFare();
-        OverFare lowOverFare = new LowOverFare(highOverFare);
-        OverFare defaultOverFare = new DefaultOverFare(lowOverFare);
+        OverFare defaultOverFare = new DefaultOverFare();
 
-        int expectedFare = 2050;
+        int expectedFare = 2150;
 
         //when
         int actualFare = defaultOverFare.calculate(50);
@@ -121,9 +119,7 @@ public class PathTest {
     void calculateOverFareByEightKM() {
 
         //given
-        OverFare highOverFare = new HighOverFare();
-        OverFare lowOverFare = new LowOverFare(highOverFare);
-        OverFare defaultOverFare = new DefaultOverFare(lowOverFare);
+        OverFare defaultOverFare = new DefaultOverFare();
 
         int expectedFare = 2350;
 

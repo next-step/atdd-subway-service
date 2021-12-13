@@ -1,12 +1,14 @@
 package nextstep.subway.path.domain;
 
+import org.springframework.stereotype.Component;
+
 public class LowOverFare implements OverFare {
 
     private final int LOW_DISTANCE = 40;
     private OverFare overFare;
 
-    public LowOverFare(OverFare overFare) {
-        this.overFare = overFare;
+    public LowOverFare() {
+        this.overFare = new HighOverFare();
     }
 
     @Override

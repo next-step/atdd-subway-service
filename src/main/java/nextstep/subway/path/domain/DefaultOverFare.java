@@ -9,8 +9,8 @@ public class DefaultOverFare implements OverFare {
     private final int DEFAULT_DISTANCE = 10;
     private OverFare overFare;
 
-    public DefaultOverFare(OverFare overFare) {
-        this.overFare = overFare;
+    public DefaultOverFare() {
+        this.overFare = new LowOverFare();
     }
 
     @Override

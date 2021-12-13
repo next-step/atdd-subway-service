@@ -19,13 +19,11 @@ public class PathService {
     private final LineRepository lineRepository;
     private final StationService stationService;
     private final PathFinder pathFinder;
-    private final OverFare overFare;
 
-    public PathService(LineRepository lineRepository, StationService stationService, PathFinder pathFinder, DefaultOverFare overFare) {
+    public PathService(LineRepository lineRepository, StationService stationService, PathFinder pathFinder) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
         this.pathFinder = pathFinder;
-        this.overFare = overFare;
     }
 
     public PathResponse findShortestPath(long source, long target) {
@@ -36,6 +34,6 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
 
         ShortestPath shortestPath = pathFinder.findShortestPath(lines, sourceStation, targetStation);
-        return new PathResponse(shortestPath.findPaths(), shortestPath.findWeight(), overFare.calculate(shortestPath.findWeight()));
+        return new PathResponse(shortestPath.findPaths(), shortestPath.findWeight(), shortestPath.findFare());
     }
 }

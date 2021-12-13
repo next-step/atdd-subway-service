@@ -60,14 +60,13 @@ public class PathServiceTest {
         삼호선.addSection(남부터미널역, 양재역, 3);
 
         List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
-        ShortestPath shortestPath = new ShortestPath(Arrays.asList(강남역, 교대역, 남부터미널역), 12);
+        ShortestPath shortestPath = new ShortestPath(Arrays.asList(강남역, 교대역, 남부터미널역), 12, 1250);
 
-        PathService pathService = new PathService(lineRepository, stationService, pathFinder, overFare);
+        PathService pathService = new PathService(lineRepository, stationService, pathFinder);
         when(lineRepository.findAll()).thenReturn(lines);
         when(stationService.findById(sourceId)).thenReturn(강남역);
         when(stationService.findById(targetId)).thenReturn(남부터미널역);
         when(pathFinder.findShortestPath(anyList(), any(), any())).thenReturn(shortestPath);
-        when(overFare.calculate(anyInt())).thenReturn(1250);
 
         //when
         PathResponse paths = pathService.findShortestPath(sourceId, targetId);

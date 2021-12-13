@@ -1,8 +1,11 @@
 package nextstep.subway.path.infra;
 
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.DefaultOverFare;
+import nextstep.subway.path.domain.OverFare;
 import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -11,18 +14,40 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 @Component
 public class JgraphtPathFinder implements PathFinder {
 
+    OverFare overFare;
+
+    public JgraphtPathFinder() {
+        overFare = new DefaultOverFare();
+    }
+
     private void validateLinkSourceAndTarget(GraphPath path) {
         if(Objects.isNull(path)) {
             throw new IllegalStateException("출발역과 도착역이 연결되지 않았습니다.");
         }
+    }
+
+    private void validateCorrectSourceAndTarget(Station source, Station target) {
+        if(source == target) {
+            throw new IllegalStateException("출발역과 도착역이 같습니다.");
+        }
+    }
+
+    private int maxAddedFareByLine(List<Line> lines) {
+        return lines.stream()
+                .map(Line::getFare)
+                .max(comparing(Fare::getValue))
+                .map(Fare::getValue)
+                .orElse(0);
     }
 
     private DijkstraShortestPath createGraph(List<Line> lines) {
@@ -51,13 +76,6 @@ public class JgraphtPathFinder implements PathFinder {
         return path;
     }
 
-    private void validateCorrectSourceAndTarget(Station source, Station target) {
-        if(source == target) {
-            throw new IllegalStateException("출발역과 도착역이 같습니다.");
-        }
-    }
-
-
     @Override
     public List<Station> findStations(List<Line> lines, Station source, Station target) {
         validateCorrectSourceAndTarget(source, target);
@@ -73,10 +91,17 @@ public class JgraphtPathFinder implements PathFinder {
     }
 
     @Override
+    public int findFare(List<Line> lines, Station source, Station target) {
+        Distance distance = findDistance(lines, source, target);
+        int calculate = overFare.calculate(distance.getValue());
+        return maxAddedFareByLine(lines) + calculate;
+    }
+
+    @Override
     public ShortestPath findShortestPath(List<Line> lines, Station source, Station target) {
         validateCorrectSourceAndTarget(source, target);
         GraphPath path = find(lines, source, target);
-        return new ShortestPath(path.getVertexList(), (int)path.getWeight());
+        return new ShortestPath(path.getVertexList(), (int)path.getWeight(), findFare(lines, source, target));
     }
 
 }

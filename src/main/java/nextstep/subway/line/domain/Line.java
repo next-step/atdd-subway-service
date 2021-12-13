@@ -63,6 +63,10 @@ public class Line extends BaseEntity {
         return sections.list();
     }
 
+    public Fare getFare() {
+        return fare;
+    }
+
     private Station findDownStation(Station downStation) {
         return this.sections.findDownStation(downStation);
     }
