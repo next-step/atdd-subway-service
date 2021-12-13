@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -74,14 +75,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         params.put("age", AGE);
 
         //when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", String.format("Bearer %s", INVALID_TOKEN))
-                .params(params)
-                .when()
-                .get("/members/me")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = 내_정보_조회_요청(createResponse, INVALID_TOKEN, EMAIL, AGE);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -89,7 +83,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     
     public static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
 
-        //when
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()

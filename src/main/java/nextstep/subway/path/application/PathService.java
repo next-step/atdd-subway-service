@@ -17,12 +17,12 @@ public class PathService {
 
     private final LineRepository lineRepository;
     private final StationService stationService;
-    private final PathFinderStrategy pathFinder;
+    private final PathFinderStrategy pathFinderStrategy;
 
-    public PathService(LineRepository lineRepository, StationService stationService, PathFinderStrategy pathFinder) {
+    public PathService(LineRepository lineRepository, StationService stationService, PathFinderStrategy pathFinderStrategy) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
-        this.pathFinder = pathFinder;
+        this.pathFinderStrategy = pathFinderStrategy;
     }
 
     public PathResponse findShortestPath(long source, long target) {
@@ -32,7 +32,7 @@ public class PathService {
 
         List<Line> lines = lineRepository.findAll();
 
-        ShortestPath path = new ShortestPath(pathFinder);
+        ShortestPath path = new ShortestPath(pathFinderStrategy);
         List<Station> paths = path.findPaths(lines, sourceStation, targetStation);
         Distance distance = path.findPathWeight(lines, sourceStation, targetStation);
         return new PathResponse(paths, distance);
