@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -38,11 +36,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
 
     /**
-     * 교대역    --- *2호선(10)* ---   강남역
+     * 교대역    --- *2호선(50)* ---   강남역
      * |                        |
-     * *3호선*(3)                   *신분당선(10)*
+     * *3호선*(38)                   *신분당선(50)*
      * |                        |
-     * 남부터미널역  --- *3호선*(2) ---   양재
+     * 남부터미널역  --- *3호선*(60) ---   양재
      */
     @BeforeEach
     public void setUp() {
@@ -53,11 +51,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 50);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 50);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 98);
 
-        지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+        지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 38);
     }
 
     @Test
@@ -67,16 +65,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역);
 
         // then
-        최단_경로_조회_성공함(response, 5, 교대역.getName(), 남부터미널역.getName(), 양재역.getName());
+        최단_경로_조회_성공함(response);
+        최단_경로와_총_거리가_응답됨(response, 98, 2_650, 교대역.getName(), 남부터미널역.getName(), 양재역.getName());
     }
 
-    private void 최단_경로_조회_성공함(ExtractableResponse<Response> response, int distance, String... stationNames) {
+    private void 최단_경로_조회_성공함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-
-        최단_경로_조회_응답_데이터_확인됨(response, distance, stationNames);
     }
 
-    private void 최단_경로_조회_응답_데이터_확인됨(ExtractableResponse<Response> response, int distance, String[] stationNames) {
+    private void 최단_경로와_총_거리가_응답됨(ExtractableResponse<Response> response, int distance, int price, String... stationNames) {
         ShortestPathResponse shortestPathResponse = response.as(ShortestPathResponse.class);
         List<String> stations = shortestPathResponse.getStations()
                 .stream()
@@ -85,6 +82,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(stations).containsExactly(stationNames);
         assertThat(shortestPathResponse.getDistance()).isEqualTo(distance);
+        assertThat(shortestPathResponse.getPrice()).isEqualTo(price);
     }
 
     private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse sourceStation, StationResponse targetStation) {

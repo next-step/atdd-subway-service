@@ -8,17 +8,19 @@ public class ShortestPathResponse {
 
     private List<Station> stations;
     private int distance;
+    private int price;
 
     public ShortestPathResponse() {
     }
 
-    public ShortestPathResponse(List<Station> stations, int distance) {
+    public ShortestPathResponse(List<Station> stations, int distance, int price) {
         this.stations = stations;
         this.distance = distance;
+        this.price = price;
     }
 
-    public static ShortestPathResponse of(List<Station> stations, int shortestDistance) {
-        return new ShortestPathResponse(stations, shortestDistance);
+    public static ShortestPathResponse of(List<Station> stations, int shortestDistance, int price) {
+        return new ShortestPathResponse(stations, shortestDistance, price);
     }
 
     public List<Station> getStations() {
@@ -27,5 +29,9 @@ public class ShortestPathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getPrice() {
+        return price;
     }
 }

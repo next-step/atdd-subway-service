@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.PriceCalculator;
 import nextstep.subway.path.domain.ShortestPathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -31,8 +32,9 @@ public class PathService {
         PathFinder pathFinder = PathFinder.of(lines);
         List<Station> stations = pathFinder.findShortestPath(sourceStation, targetStation);
         int shortestDistance = pathFinder.findShortestDistance(sourceStation, targetStation);
+        int price = PriceCalculator.calculate(shortestDistance);
 
-        return ShortestPathResponse.of(stations, shortestDistance);
+        return ShortestPathResponse.of(stations, shortestDistance, price);
     }
 
     private Station findStation(Long sourceStationId) {
