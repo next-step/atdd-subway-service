@@ -7,8 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 
 class SectionTest {
 
@@ -147,5 +146,37 @@ class SectionTest {
 
         // then
         assertThat(첫번째_구간).isEqualTo(구간);
+    }
+
+    @DisplayName("구간 인스턴스 생성 실패 테스트 - line null")
+    @Test
+    void constructor_failure_line_null() {
+        // when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new Section(null, 강남역, 양재역, 5));
+    }
+
+    @DisplayName("구간 인스턴스 생성 실패 테스트 - upStation null")
+    @Test
+    void constructor_failure_upStation_null() {
+        // when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new Section(신분당선, null, 양재역, 5));
+    }
+
+    @DisplayName("Section 생성 실패 테스트 - downStation null")
+    @Test
+    void constructor_failure_downStation_null() {
+        // when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new Section(신분당선, 강남역, null, 5));
+    }
+
+    @DisplayName("구간 인스턴스 생성 실패 테스트 - distance <= 0")
+    @Test
+    void constructor_failure_distance() {
+        // when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new Section(신분당선, 강남역, 양재역, 0));
     }
 }
