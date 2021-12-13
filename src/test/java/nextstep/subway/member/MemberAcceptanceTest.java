@@ -49,6 +49,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // Given
+        ExtractableResponse<Response> 회원_생성_요청 = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        
+        // When
+        ExtractableResponse<Response> 회원_정보_조회  = 회원_정보_조회_요청(회원_생성_요청);
+
+        // Then
+        회원_정보_조회됨(회원_정보_조회, EMAIL, AGE);
 
     }
 
@@ -117,5 +125,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+    
     
 }

@@ -19,10 +19,7 @@ import nextstep.subway.member.MemberAcceptanceTest;
 public class AuthAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "jennie267@email.com";
     public static final String PASSWORD = "jenniepw";
-    public static final String NEW_EMAIL = "newjennie267@email.com";
-    public static final String NEW_PASSWORD = "newjenniepw";
     public static final int AGE = 20;
-    public static final int NEW_AGE = 21;
     
     @BeforeEach
     public void setUp() {
