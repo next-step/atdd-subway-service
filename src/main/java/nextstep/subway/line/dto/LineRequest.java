@@ -9,6 +9,7 @@ public class LineRequest {
     private Long upStationId;
     private Long downStationId;
     private int distance;
+    private int addPrice;
 
     public LineRequest() {
     }
@@ -21,12 +22,21 @@ public class LineRequest {
         this.distance = distance;
     }
 
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int addPrice) {
+        this.name = name;
+        this.color = color;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
+        this.addPrice = addPrice;
+    }
+
     public Line toLine() {
         return new Line(name, color);
     }
 
     public Line toLine(Station upStation, Station downStation) {
-        return Line.of(name, color, upStation, downStation, distance);
+        return Line.of(name, color, upStation, downStation, distance, addPrice);
     }
 
     public String getName() {
@@ -47,5 +57,9 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getAddPrice() {
+        return addPrice;
     }
 }

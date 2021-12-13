@@ -1,6 +1,10 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.station.domain.Station;
+
+import java.util.List;
 
 public class PriceCalculator {
 
@@ -11,6 +15,11 @@ public class PriceCalculator {
     private static final int LIMIT_FIVE_KM = 5;
     private static final int LIMIT_EIGHT_KM = 8;
 
+    public static int calculate(int distanceValue, Lines lines, List<Station> stations) {
+        int price = calculate(distanceValue);
+        int addPrice = lines.calculateAddPrice(stations);
+        return price + addPrice;
+    }
 
     public static int calculate(int distanceValue) {
         Distance distance = new Distance(distanceValue);

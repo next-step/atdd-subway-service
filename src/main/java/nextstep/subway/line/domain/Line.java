@@ -22,15 +22,27 @@ public class Line extends BaseEntity {
 
     private String color;
 
+    private int addPrice;
+
     @Embedded
     private Sections sections = new Sections();
 
     protected Line() {
     }
 
+    Line(int addPrice, Sections sections) {
+        this.addPrice = addPrice;
+        this.sections = sections;
+    }
+
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+    }
+
+    public Line(String name, String color, int addPrice) {
+        this(name, color);
+        this.addPrice = addPrice;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
@@ -45,6 +57,13 @@ public class Line extends BaseEntity {
 
     public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
         Line line = new Line(name, color);
+        Section section = Section.of(line, upStation, downStation, distance);
+        line.sections.addSection(section);
+        return line;
+    }
+
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance, int addPrice) {
+        Line line = new Line(name, color, addPrice);
         Section section = Section.of(line, upStation, downStation, distance);
         line.sections.addSection(section);
         return line;
@@ -67,6 +86,13 @@ public class Line extends BaseEntity {
         this.sections.remove(this, station);
     }
 
+    public int getAddPriceIfContains(List<Station> stations) {
+        if (sections.isContains(stations)) {
+            return this.addPrice;
+        }
+        return 0;
+    }
+
     public Long getId() {
         return id;
     }
@@ -79,7 +105,11 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public int getAddPrice() {
+        return addPrice;
+    }
+
     public List<Section> getSections() {
-        return this.sections.getSections();
+        return sections.getSections();
     }
 }

@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -21,9 +22,9 @@ public class PathFinder {
         this.dijkstraShortestPath = new DijkstraShortestPath(graph);
     }
 
-    public static PathFinder of(List<Line> lines) {
+    public static PathFinder of(Lines lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        for (Line line : lines) {
+        for (Line line : lines.getLines()) {
             addVertex(graph, line);
             settingEdgeWeight(graph, line);
         }

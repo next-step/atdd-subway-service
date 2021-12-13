@@ -65,6 +65,26 @@ public class Sections {
         remove(downLineStation, upLineStation);
     }
 
+    public boolean isContains(List<Station> stations) {
+        for (int i = 0; i < stations.size() - 1; i++) {
+            Station upStation = stations.get(i);
+            Station downStation = stations.get(i + 1);
+
+            if (containsSection(upStation, downStation)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean containsSection(Station upStation, Station downStation) {
+        return this.sections
+                .stream()
+                .filter(s -> s.equals(new Section(upStation, downStation)))
+                .findFirst()
+                .isPresent();
+    }
+
     private Station findAnyDownStation() {
         return this.sections.get(0).getDownStation();
     }

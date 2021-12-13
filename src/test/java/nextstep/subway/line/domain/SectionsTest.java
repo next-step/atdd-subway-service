@@ -235,4 +235,30 @@ class SectionsTest {
         List<Station> stations = sections.getStations();
         assertThat(stations).containsExactly(강남역, 판교역);
     }
+
+    @Test
+    @DisplayName("지하철역 경로 목록을 순회하며 구간에 포함되는지 여부를 반환한다.")
+    public void isContains() throws Exception {
+        // given
+        Line line = new Line("신분당선", "red");
+
+        Station 강남역 = new Station("강남역");
+        Station 양재역 = new Station("양재역");
+        Station 판교역 = new Station("판교역");
+
+        Section 강남_양재_구간 = new Section(line, 강남역, 양재역, 3);
+        Section 양재_판교_구간 = new Section(line, 양재역, 판교역, 7);
+        Sections sections = new Sections(new ArrayList<>(Arrays.asList(강남_양재_구간, 양재_판교_구간)));
+
+        List<Station> 양재_판교 = new ArrayList<>(Arrays.asList(양재역, 판교역));
+        List<Station> 강남_판교 = new ArrayList<>(Arrays.asList(강남역, 판교역));
+
+        // when
+        boolean 양재_판교_결과 = sections.isContains(양재_판교);
+        boolean 강남_판교_결과 = sections.isContains(강남_판교);
+
+        // then
+        assertThat(양재_판교_결과).isTrue();
+        assertThat(강남_판교_결과).isFalse();
+    }
 }
