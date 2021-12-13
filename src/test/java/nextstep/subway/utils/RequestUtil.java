@@ -1,5 +1,7 @@
 package nextstep.subway.utils;
 
+import java.util.Map;
+
 import org.springframework.http.MediaType;
 
 import io.restassured.RestAssured;
@@ -10,9 +12,11 @@ public class RequestUtil {
     private RequestUtil() {
     }
 
-    public static ExtractableResponse<Response> get(final String path, final Object... pathParams) {
+    public static ExtractableResponse<Response> get(
+        final String path, final Map<String, Object> queryParams, final Object... pathParams
+    ) {
         return RestAssured
-            .given().log().all()
+            .given().log().all().queryParams(queryParams)
             .when().get(path, pathParams)
             .then().log().all().extract();
     }
