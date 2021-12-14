@@ -73,7 +73,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then 최단 경로 조회 됨
         최단_경로_조회됨(response);
         최단_경로와_예상_경로_일치함(response, Arrays.asList(강남역, 교대역, 남부터미널역));
-        최단_경로의_예상_거리_일치함(response, 13);
+        최단_경로의_거리_조회됨(response, 13);
+        지하철_이용_요금_조회됨(response, 2_250);
     }
 
     @DisplayName("동일한 역으로 최단 경로를 조회 할 수 없다.")
@@ -129,9 +130,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }
 
-    static void 최단_경로의_예상_거리_일치함(ExtractableResponse<Response> response, int expectedDistance) {
+    static void 최단_경로의_거리_조회됨(ExtractableResponse<Response> response, int expectedDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
 
         assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
+    }
+
+    static void 지하철_이용_요금_조회됨(ExtractableResponse<Response> response, int expectedFare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+
+        assertThat(pathResponse.getFare()).isEqualTo(expectedFare);
     }
 }

@@ -9,6 +9,7 @@ public class PathResponse {
 
     private List<Station> stations;
     private int distance;
+    private int fare;
 
     public PathResponse() {
     }
@@ -28,5 +29,9 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }
