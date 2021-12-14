@@ -6,24 +6,27 @@ import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.line.domain.Money;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class SectionEdge extends DefaultWeightedEdge {
 
+    private final Money additionalFare;
     private final Station source;
     private final Station target;
     private final double weight;
 
-    private SectionEdge(Station source, Station target, Integer weight) {
+    private SectionEdge(Money additionalFare, Station source, Station target, Integer weight) {
+        this.additionalFare = additionalFare;
         this.source = source;
         this.target = target;
         this.weight = weight;
     }
 
     public static SectionEdge of(Section section) {
-        return new SectionEdge(section.getUpStation(), section.getDownStation(),
-            section.getDistance());
+        return new SectionEdge(section.getLineAdditionalFare(), section.getUpStation(),
+            section.getDownStation(), section.getDistance());
     }
 
     public static List<SectionEdge> toList(Sections sections) {
@@ -35,6 +38,10 @@ public class SectionEdge extends DefaultWeightedEdge {
 
     public List<Station> getVertexes() {
         return Arrays.asList(source, target);
+    }
+
+    public Money getAdditionalFare() {
+        return additionalFare;
     }
 
     @Override

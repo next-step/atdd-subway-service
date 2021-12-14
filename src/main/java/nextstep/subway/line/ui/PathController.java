@@ -1,8 +1,11 @@
 package nextstep.subway.line.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.PathService;
 import nextstep.subway.line.dto.path.PathRequest;
 import nextstep.subway.line.dto.path.PathResponse;
+import nextstep.subway.member.domain.Age;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +22,18 @@ public class PathController {
         this.pathService = pathService;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PathResponse> search(PathRequest pathRequest) {
+    @GetMapping(value = "anonymous", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PathResponse> anonymousSearch(PathRequest pathRequest) {
         return ResponseEntity.ok(
-            pathService.getShortestPath(pathRequest.getSource(), pathRequest.getTarget()));
+            pathService.getShortestPath(pathRequest.getSource(), pathRequest.getTarget(),
+                Age.DEFAULT_AGE));
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PathResponse> search(@AuthenticationPrincipal LoginMember loginMember,
+        PathRequest pathRequest) {
+        return ResponseEntity.ok(
+            pathService.getShortestPath(pathRequest.getSource(), pathRequest.getTarget(),
+                loginMember.getAge()));
     }
 }

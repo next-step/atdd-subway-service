@@ -18,12 +18,22 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
 
+    @Column
     private String color;
 
     @Embedded
     private final Sections sections = Sections.of();
 
+    @Column
+    private int additionalFare;
+
     public Line() {
+    }
+
+    public Line(String name, String color, int additionalFare) {
+        this.name = name;
+        this.color = color;
+        this.additionalFare = additionalFare;
     }
 
     public Line(String name, String color) {
@@ -34,6 +44,14 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        addSection(upStation, downStation, distance);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance,
+        int additionalFare) {
+        this.name = name;
+        this.color = color;
+        this.additionalFare = additionalFare;
         addSection(upStation, downStation, distance);
     }
 
@@ -51,6 +69,15 @@ public class Line extends BaseEntity {
         return Collections.unmodifiableList(sections.getStationsInOrder());
     }
 
+    public boolean isSameNameAndColor(Line line) {
+        return Objects.equals(this.color, line.color)
+            && Objects.equals(this.name, line.name);
+    }
+
+    public void removeStation(Station station) {
+        sections.remove(station);
+    }
+
     public Long getId() {
         return id;
     }
@@ -63,17 +90,12 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public boolean isSameNameAndColor(Line line) {
-        return Objects.equals(this.color, line.color)
-            && Objects.equals(this.name, line.name);
+    public Money getAdditionalFare() {
+        return Money.won(additionalFare);
     }
-
-    public void removeStation(Station station) {
-        sections.remove(station);
-    }
-
 
     public List<Section> getSections() {
         return Collections.unmodifiableList(sections.getSections());
     }
+
 }

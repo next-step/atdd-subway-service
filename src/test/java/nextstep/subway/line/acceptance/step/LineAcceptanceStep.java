@@ -19,8 +19,9 @@ public class LineAcceptanceStep {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String lineName, String color,
-        Long upStationId, Long downStationId, int distance) {
-        LineRequest params = new LineRequest(lineName, color, upStationId, downStationId, distance);
+        Long upStationId, Long downStationId, int distance, int additionalFare) {
+        LineRequest params = new LineRequest(lineName, color, upStationId, downStationId, distance,
+            additionalFare);
         return 지하철_노선_생성_요청(params);
     }
 

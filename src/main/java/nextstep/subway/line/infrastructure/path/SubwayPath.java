@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.line.application.exception.PathErrorCode;
-import nextstep.subway.line.dto.path.PathResult;
+import nextstep.subway.line.domain.PathResult;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -25,9 +25,10 @@ public class SubwayPath {
         GraphPath<Station, SectionEdge> graphPath = createPath(source, target);
 
         List<Station> result = graphPath.getVertexList();
+        List<SectionEdge> sectionEdges = graphPath.getEdgeList();
         int weight = (int) graphPath.getWeight();
 
-        return PathResult.of(result, weight);
+        return PathResult.of(result, sectionEdges, weight);
     }
 
     private GraphPath<Station, SectionEdge> createPath(Station source, Station target) {

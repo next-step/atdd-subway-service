@@ -165,3 +165,103 @@ Feature: 즐겨찾기를 관리한다.
     Then 즐겨찾기 삭제됨
 
 ```
+
+### 4단계 - 요금 조회
+
+- [X] 노선에 `추가요금` 필드 추가하기
+    - [X] 노선 테스트 코드 리팩토링
+- [X] 경로 조회 시 거리 기준 요금 정보 포함하기
+    - [X] 노선별 추가 요금정책
+- [X] 로그인 유저일 경우
+    - [X] 연령별 할인 요금정책
+- 테스트 작성
+    - [X] 노선 추가 요금 테스트
+    - [X] 거리별 추가 요금 테스트
+    - [X] 연령별 할인 요금 테스트
+    - [X] 경로 조회 응답 요금 포함 테스트
+
+#### 요금 정책 구조
+
+```text
+- config
+    - SubwayFarePolicyConfig : 요금정책을 묶어주어 스프링 빈 생성
+- line
+    - application
+      - FarePolicyHandler  : 요금정책 관리 인터페이스(interface)
+    - domain
+      - fare
+        - policy
+          - BaseFarePolicy : 요금 계산 메소드를 가지는 기본 정책 인터페이스 (interface)
+          - LineAdditionalFarePolicy : 노선의 추가요금 반환 (abstract)
+          - DistanceFarePolicy  : 경로 거리별 추가 요금 적용 (abstract)
+          - AgeDiscountFarePolicy : 연령별 할인 요금 적용 (abstract)
+        - policycondition
+          - DistancePolicyCondition (interface) : 거리를 입력받아 요금 계산
+          - AgeDiscountFareCondition (interface)  : 나이를 입력받아 요금 계산 
+    - infrastructure
+      - policy
+        - DistancePolicy : 거리 요금 정책 조건 반환
+        - AgeDiscountPolicy : 연령별 요금 할인 정책 조건 반환
+        - FarePolicyHandlerImpl : 요금정책 목록으로 전체 조건 반영
+      - policycondition
+        - ChildDiscountCondition : 어린이 요금 정책 구현체
+        - YouthDiscountCondition : 청소년 요금 정책 구현체
+        - DefaultDistanceFareCondition : 기본 거리 요금정책 구현체
+        - DistanceFareFirstSectionCondition : 10~50KM 추가 요금정책 구현체
+        - DistanceFareSecondSectionCondition : 50KM 초과 추가 요금정책 구현체
+
+```
+
+- 거리 요금 정책 추가 로직 (ex)
+
+1. `infrastructure.policycondition.{추가DiscountCondition}` 을 추가
+2. `AgeDiscountPolicy` 의 `CONDITIONS` 변수에 할당
+
+- 새로운 정책 타입 추가 로직 (ex)
+
+1. `domain.fare.policy.{추가FarePolicy}` 을 새로운 정책 타입 추가
+    1. 다중 조건이 필요 없다면 해당 정책 `getCalculateFare`에서 수행
+2. 다중 조건이 있을 경우
+    1. `domain.fare.policycondition.{추가FareCondition}` 조건 규격 인터페이스 정의
+3. `infrastructure.policycondition.{추가Condition}` 다중 조건 추가
+4. `infrastructure.policy.{추가Policy}` "1번"에서 생성한 정책 구현체
+    1. 정책 조건 맵핑
+5. `SubwayFarePolicyConfig` 스프링 빈객체 등록
+
+#### 요금 정책
+
+```text
+- 거리별 요금 정책
+  - 기본운임(10㎞ 이내) : 기본운임 1,250원
+  - 이용 거리초과 시 추가운임 부과
+  - 10km초과∼50km까지(5km마다 100원)
+  - 50km초과 시 (8km마다 100원)
+- 추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가
+  - ex) 900원 추가 요금이 있는 노선 8km 이용 시 1,250원 -> 2,150원
+  - ex) 900원 추가 요금이 있는 노선 12km 이용 시 1,350원 -> 2,250원
+- 경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용
+  - ex) 0원, 500원, 900원의 추가 요금이 있는 노선들을 경유하여 8km 이용 시 1,250원 -> 2,150원
+- 로그인 사용자의 경우 연령별 요금 할인 적용
+  - 청소년: 운임에서 350원을 공제한 금액의 20%할인
+  - 어린이: 운임에서 350원을 공제한 금액의 50%할인
+```
+
+#### 인수 조건 수정 시나리오
+
+```text
+Feature: 지하철 경로 검색
+
+  Scenario: 두 역의 최단 거리 경로를 조회
+    Given 지하철역이 등록되어있음
+    And 지하철 노선이 등록되어있음
+    And 지하철 노선에 지하철역이 등록되어있음
+    When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+    Then 최단 거리 경로를 응답
+    And 총 거리도 함께 응답함
+    And ** 지하철 이용 요금도 함께 응답함 **
+```
+
+#### 참고 자료
+
+[Junit 계층구조](https://johngrib.github.io/wiki/junit5-nested/)  
+[스프링 빈](https://cbw1030.tistory.com/54)

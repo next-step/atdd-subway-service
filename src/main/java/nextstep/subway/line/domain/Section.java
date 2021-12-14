@@ -86,6 +86,10 @@ public class Section {
         return Arrays.asList(upStation, downStation);
     }
 
+    public Money getLineAdditionalFare() {
+        return line.getAdditionalFare();
+    }
+
     private static class DummySection extends Section {
 
         @Override
