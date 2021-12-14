@@ -59,6 +59,10 @@ public class Favorite {
         return member;
     }
 
+    public boolean isMember(Member member) {
+        return this.member.equals(member);
+    }
+
     private void validateDuplicateStation(Station source, Station target) {
         if (source.equals(target)) {
             throw new BadRequestException("상행역과 하행역이 같으면 등록할 수 없습니다.");

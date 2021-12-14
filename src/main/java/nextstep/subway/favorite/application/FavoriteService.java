@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -42,5 +43,19 @@ public class FavoriteService {
         return favorites.stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Favorite findFavoriteById(Long favoriteId) {
+        return favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new BadRequestException("즐겨찾기가 삭제됐거나, 존재하지 않습니다."));
+    }
+
+    public void removeFavorite(Long memberId, Long favoriteId) {
+        Member member = memberService.findMemberById(memberId);
+        Favorite favorite = findFavoriteById(favoriteId);
+        if(favorite.isMember(member)) {
+            favoriteRepository.delete(favorite);
+        }
     }
 }

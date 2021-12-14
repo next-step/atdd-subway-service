@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.토큰_조회;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -63,16 +64,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(즐겨찾기_생성_요청_응답);
 
         // when
+        ExtractableResponse<Response> 즐겨찾기_생성_실패_요청_응답 = 즐겨찾기_실패_생성_요청(사용자, 강남역, 강남역);
+
+        // then
+        즐겨찾기_생성_실패됨(즐겨찾기_생성_실패_요청_응답, "상행역과 하행역이 같으면 등록할 수 없습니다.");
+
+        // when
         ExtractableResponse<Response> 즐겨찾기_목록_조회_요청_응답 = 즐겨찾기_목록_조회_요청(사용자);
 
         // then
         즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_요청_응답);
 
         // when
-        즐겨찾기_삭제_요청();
+        ExtractableResponse<Response> 즐겨찾기_삭제_요청_응답 = 즐겨찾기_삭제_요청(사용자, 즐겨찾기_생성_요청_응답);
 
         // then
-        즐겨찾기_삭제됨();
+        즐겨찾기_삭제됨(즐겨찾기_삭제_요청_응답);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, StationResponse source, StationResponse target) {
@@ -80,8 +87,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return 생성_요청(FAVORITE_ROOT_PATH, favoriteRequest, accessToken);
     }
 
+    private ExtractableResponse<Response> 즐겨찾기_실패_생성_요청(String accessToken, StationResponse source, StationResponse target) {
+        return 즐겨찾기_생성_요청(accessToken, source, target);
+    }
+
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private void 즐겨찾기_생성_실패됨(ExtractableResponse<Response> response, String errorMessage) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.response().body().asString()).isEqualTo(errorMessage);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
@@ -92,9 +108,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 즐겨찾기_삭제_요청() {
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, ExtractableResponse<Response> response) {
+        String uri = response.header("Location");
+        return 삭제_요청(uri, accessToken);
     }
 
-    public static void 즐겨찾기_삭제됨() {
+    public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
