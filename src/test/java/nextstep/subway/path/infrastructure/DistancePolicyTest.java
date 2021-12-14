@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Money;
 import nextstep.subway.line.domain.fare.policy.BaseFarePolicy;
-import nextstep.subway.line.infrastructure.fare.policy.DistancePolicy;
+import nextstep.subway.line.infrastructure.fare.policy.DistancePolicyCollection;
 import nextstep.subway.path.step.PathFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 @DisplayName("DistancePolicy 클래스")
 public class DistancePolicyTest extends PathFixtures {
 
-    private final BaseFarePolicy policy = new DistancePolicy();
+    private final BaseFarePolicy policy = new DistancePolicyCollection();
 
     @Nested
     @DisplayName("getCalculateFare 메소드는")
