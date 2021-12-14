@@ -5,7 +5,7 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.application.PathService;
-import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.JgraphtPathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -63,7 +62,7 @@ public class PathServiceTest {
         삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 양재역, 5);
 
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, 3));
-        pathService = new PathService(stationService,lineService,new PathFinder());
+        pathService = new PathService(stationService,lineService,new JgraphtPathFinder());
     }
 
     @DisplayName("가짜 객체를 사용하여 findPaths 검증")
@@ -74,7 +73,7 @@ public class PathServiceTest {
         when(lineService.findLines()).thenReturn(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
         // when
-        PathResponse paths = pathService.findPaths(1L, 2L);
+        PathResponse paths = pathService.findPaths(1L, 2L, 0);
 
         // then
         assertThat(paths.getDistance()).isEqualTo(5);

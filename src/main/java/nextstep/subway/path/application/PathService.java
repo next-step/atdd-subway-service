@@ -25,12 +25,13 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPaths(Long sourceId, Long targetId) {
+    public PathResponse findPaths(Long sourceId, Long targetId, int age) {
         Station sourceStation = stationService.findById(sourceId);
         Station targetStation = stationService.findById(targetId);
         List<Line> lines = lineService.findLines();
 
         Path path = pathFinder.findPath(lines, sourceStation, targetStation);
+        path.disCountByAge(age);
         return PathResponse.of(path);
     }
 }
