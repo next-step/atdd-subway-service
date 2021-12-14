@@ -1,9 +1,7 @@
 package nextstep.subway.path;
 
 import com.google.common.collect.Lists;
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.line.domain.*;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -32,18 +30,25 @@ public class PathServiceTest {
     @Test
     void findShortestPath() {
         // given
-        SectionRepository sectionRepository = mock(SectionRepository.class);
+        LineRepository lineRepository = mock(LineRepository.class);
         StationService stationService = mock(StationService.class);
 
         when(stationService.findStationById(1L)).thenReturn(Station.from("교대역"));
         when(stationService.findStationById(2L)).thenReturn(Station.from("양재역"));
-        when(sectionRepository.findAll())
+        when(lineRepository.findAll())
                 .thenReturn(Lists.newArrayList(
-                        Section.of(Station.from("교대역"), Station.from("강남역"), Distance.of(10)),
-                        Section.of(Station.from("강남역"), Station.from("양재역"), Distance.of(10)),
-                        Section.of(Station.from("교대역"), Station.from("남부터미널역"), Distance.of(5)),
-                        Section.of(Station.from("남부터미널역"), Station.from("양재역"), Distance.of(3))));
-        PathService pathService = new PathService(sectionRepository, stationService);
+                        Line.of("이호선", "blue", Sections.from(
+                                Section.of(Station.from("교대역"), Station.from("강남역"), Distance.of(10)))
+                        ),
+                        Line.of("삼호선", "blue", Sections.from(Lists.newArrayList(
+                                Section.of(Station.from("교대역"), Station.from("남부터미널역"), Distance.of(5)),
+                                Section.of(Station.from("남부터미널역"), Station.from("양재역"), Distance.of(3))))
+                        ),
+                        Line.of("신분당선", "blue", Sections.from(
+                                        Section.of(Station.from("강남역"), Station.from("양재역"), Distance.of(10)))
+                        )
+                ));
+        PathService pathService = new PathService(lineRepository, stationService);
 
         // when
         PathResponse responses = pathService.findShortestPath(1L, 2L);
