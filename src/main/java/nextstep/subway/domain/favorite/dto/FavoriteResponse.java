@@ -1,10 +1,15 @@
 package nextstep.subway.domain.favorite.dto;
 
+import nextstep.subway.domain.favorite.domain.Favorite;
+import nextstep.subway.domain.station.domain.Station;
+
+import java.time.LocalDateTime;
+
 public class FavoriteResponse {
 
     private Long id;
-    private Station source;
-    private Station target;
+    private FavoriteStation source;
+    private FavoriteStation target;
 
     public FavoriteResponse() {
     }
@@ -13,7 +18,7 @@ public class FavoriteResponse {
         this.id = id;
     }
 
-    public FavoriteResponse(Long id, Station source, Station target) {
+    public FavoriteResponse(Long id, FavoriteStation source, FavoriteStation target) {
         this.id = id;
         this.source = source;
         this.target = target;
@@ -23,24 +28,28 @@ public class FavoriteResponse {
         return id;
     }
 
-    public Station getSource() {
+    public FavoriteStation getSource() {
         return source;
     }
 
-    public Station getTarget() {
+    public FavoriteStation getTarget() {
         return target;
     }
 
-    public static class Station {
+    public static FavoriteResponse of(Favorite favorite) {
+        return new FavoriteResponse(favorite.getId(), FavoriteStation.of(favorite.getSource()), FavoriteStation.of(favorite.getTarget()));
+    }
+
+    public static class FavoriteStation {
         private Long id;
         private String name;
-        private String createdDate;
-        private String modifiedDate;
+        private LocalDateTime createdDate;
+        private LocalDateTime modifiedDate;
 
-        public Station() {
+        public FavoriteStation() {
         }
 
-        public Station(Long id, String name, String createdDate, String modifiedDate) {
+        public FavoriteStation(Long id, String name, LocalDateTime createdDate, LocalDateTime modifiedDate) {
             this.id = id;
             this.name = name;
             this.createdDate = createdDate;
@@ -55,12 +64,16 @@ public class FavoriteResponse {
             return name;
         }
 
-        public String getCreatedDate() {
+        public LocalDateTime getCreatedDate() {
             return createdDate;
         }
 
-        public String getModifiedDate() {
+        public LocalDateTime getModifiedDate() {
             return modifiedDate;
+        }
+
+        public static FavoriteStation of(Station station) {
+            return new FavoriteStation(station.getId(), station.getName(), station.getCreatedDate(), station.getModifiedDate());
         }
     }
 }
