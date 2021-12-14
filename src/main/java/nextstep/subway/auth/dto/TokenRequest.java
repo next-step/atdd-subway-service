@@ -7,9 +7,13 @@ public class TokenRequest {
     public TokenRequest() {
     }
 
-    public TokenRequest(String email, String password) {
+    private TokenRequest(final String email, final String password) {
         this.email = email;
         this.password = password;
+    }
+
+    public static TokenRequest of(final String email, final String password) {
+        return new TokenRequest(email, password);
     }
 
     public String getEmail() {
