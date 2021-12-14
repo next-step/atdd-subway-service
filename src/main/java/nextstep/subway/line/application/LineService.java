@@ -34,7 +34,11 @@ public class LineService {
         return LineResponse.of(persistLine, stations);
     }
 
-    public List<LineResponse> findLines() {
+    public List<Line> findLines() {
+        return lineRepository.findAll();
+    }
+
+    public List<LineResponse> findLineResponses() {
         List<Line> persistLines = lineRepository.findAll();
         return LineResponse.of(persistLines);
     }

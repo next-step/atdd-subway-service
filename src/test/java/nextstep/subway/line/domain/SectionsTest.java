@@ -18,7 +18,6 @@ public class SectionsTest {
 
     @BeforeEach
     public void setUp() {
-
         // given
         강남역 = new Station("강남역");
         광교역 = new Station("광교역");
