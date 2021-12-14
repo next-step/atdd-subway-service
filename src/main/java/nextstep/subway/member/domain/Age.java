@@ -4,7 +4,7 @@ public class Age {
 
     public static final Age DEFAULT_AGE = Age.of(AgeGroup.DEFAULT.getMinRangeAge());
 
-    private Integer age;
+    private final Integer age;
 
     private Age(Integer age) {
         this.age = age;
