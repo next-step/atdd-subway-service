@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.line.application.Distance;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;

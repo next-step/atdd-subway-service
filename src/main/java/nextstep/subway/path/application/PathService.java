@@ -14,10 +14,12 @@ import java.util.List;
 public class PathService {
   private final LineRepository lineRepository;
   private final StationRepository stationRepository;
+  private final PathFinder pathFinder;
 
-  public PathService(LineRepository lineRepository, StationRepository stationRepository) {
+  public PathService(LineRepository lineRepository, StationRepository stationRepository, PathFinder pathFinder) {
     this.lineRepository = lineRepository;
     this.stationRepository = stationRepository;
+    this.pathFinder = pathFinder;
   }
 
 
@@ -25,8 +27,7 @@ public class PathService {
     List<Line> lines = lineRepository.findAll();
     Station sourceStation = findStation(sourceStationId);
     Station targetStation = findStation(targetStationId);
-
-    PathFinder pathFinder = PathFinder.of(lines);
+    pathFinder.addGraphPropertiesFromLines(lines);
 
     return PathResponse.of(pathFinder.findShortestPath(sourceStation, targetStation),
             pathFinder.findShortestDistance(sourceStation, targetStation));

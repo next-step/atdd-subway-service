@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.application.Distance;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -78,7 +77,7 @@ public class Section {
     return upStation.equals(section.upStation) && downStation.equals(section.downStation);
   }
 
-  public void setGraphEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+  public void addGraphEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
     graph.setEdgeWeight(graph.addEdge(upStation, downStation), distance.getDistance());
   }
 

@@ -1,21 +1,27 @@
 package nextstep.subway.path;
 
-import nextstep.subway.line.application.Distance;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.domain.JgraphtPathFinder;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,10 +43,8 @@ public class PathServiceTest {
   @Mock
   private StationRepository stationRepository;
 
-  @BeforeEach
-  void setUp() {
-    pathService = new PathService(lineRepository, stationRepository);
-  }
+  @Spy
+  private PathFinder pathFinder = new JgraphtPathFinder(new WeightedMultigraph<>(DefaultWeightedEdge.class));
 
   @DisplayName("출발역과 도착역의 최단경로를 조회한다.")
   @Test

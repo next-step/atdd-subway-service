@@ -29,7 +29,7 @@ public class MockitoExtensionTest {
   @Test
   void findAllLines() {
     // given
-    when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line("mcok", "color")));
+    when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line("mock", "color")));
     LineService lineService = new LineService(lineRepository, stationService);
 
     // when

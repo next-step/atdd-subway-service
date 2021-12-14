@@ -1,10 +1,13 @@
 package nextstep.subway.path;
 
-import nextstep.subway.line.application.Distance;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.JgraphtPathFinder;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,19 +20,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 public class PathFinderTest {
-  Station 교대역;
-  Station 강남역;
-  Station 선릉역;
-  Station 선정릉역;
-  Station 고속터미널역;
-  Station 신논현역;
-  Station 양재역;
+  private final PathFinder pathFinder;
 
-  Line 이호선;
-  Line 삼호선;
-  Line 구호선;
-  Line 수인분당선;
-  Line 신분당선;
+  private Station 교대역;
+  private Station 강남역;
+  private Station 선릉역;
+  private Station 선정릉역;
+  private Station 고속터미널역;
+  private Station 신논현역;
+  private Station 양재역;
+
+  private Line 이호선;
+  private Line 삼호선;
+  private Line 구호선;
+  private Line 수인분당선;
+  private Line 신분당선;
+
+  public PathFinderTest() {
+    this.pathFinder = new JgraphtPathFinder(new WeightedMultigraph<>(DefaultWeightedEdge.class));
+  }
 
   @BeforeEach
   void setUp() {
@@ -56,10 +65,10 @@ public class PathFinderTest {
     구호선.addSection(Section.of(2L, 고속터미널역, 신논현역, Distance.of(10)));
 
     List<Line> 노선_목록 = new ArrayList<>(Arrays.asList(이호선, 삼호선, 구호선, 수인분당선));
-    PathFinder 경로_탐색기 = PathFinder.of(노선_목록);
+    pathFinder.addGraphPropertiesFromLines(노선_목록);
 
     // when
-    List<Station> 최단_경로 = 경로_탐색기.findShortestPath(강남역, 신논현역);
+    List<Station> 최단_경로 = pathFinder.findShortestPath(강남역, 신논현역);
 
     // then
     assertThat(최단_경로).containsExactly(강남역, 교대역, 고속터미널역, 신논현역);
@@ -70,10 +79,10 @@ public class PathFinderTest {
   void 동일한_출발역_도착역_예외() {
     // given
     List<Line> 노선_목록 = new ArrayList<>(Arrays.asList(이호선, 삼호선, 구호선, 수인분당선));
-    PathFinder 경로_탐색기 = PathFinder.of(노선_목록);
+    pathFinder.addGraphPropertiesFromLines(노선_목록);
 
     // when
-    Throwable thrown = catchThrowable(() -> 경로_탐색기.findShortestPath(강남역, 강남역));
+    Throwable thrown = catchThrowable(() -> pathFinder.findShortestPath(강남역, 강남역));
 
     // that
     assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
@@ -86,10 +95,10 @@ public class PathFinderTest {
     // given
     이호선.addSection(Section.of(2L, 교대역, 강남역, Distance.of(30)));
     List<Line> 노선_목록 = new ArrayList<>(Arrays.asList(이호선, 삼호선, 구호선, 수인분당선));
-    PathFinder 경로_탐색기 = PathFinder.of(노선_목록);
+    pathFinder.addGraphPropertiesFromLines(노선_목록);
 
     // when
-    Throwable thrown = catchThrowable(() -> 경로_탐색기.findShortestPath(강남역, 신논현역));
+    Throwable thrown = catchThrowable(() -> pathFinder.findShortestPath(강남역, 신논현역));
 
     // that
     assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
@@ -101,10 +110,10 @@ public class PathFinderTest {
   void 출발역_도착역_연결되지_않음_예외() {
     // given
     List<Line> 노선_목록 = new ArrayList<>(Arrays.asList(이호선, 삼호선, 구호선, 수인분당선, 신분당선));
-    PathFinder 경로_탐색기 = PathFinder.of(노선_목록);
+    pathFinder.addGraphPropertiesFromLines(노선_목록);
 
     // when
-    Throwable thrown = catchThrowable(() -> 경로_탐색기.findShortestPath(교대역, 양재역));
+    Throwable thrown = catchThrowable(() -> pathFinder.findShortestPath(교대역, 양재역));
 
     // that
     assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
