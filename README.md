@@ -17,6 +17,29 @@
 
 <br>
 
+## 1단계 요구사항
+* [ ] `LineSectionAcceptanceTest` 리팩터링
+* [ ] `LineService` 리팩터링
+### 요구사항 분리 
+* [ ] 노선 저장 `saveLine`
+  * 지하철역 조회 쿼리 분리
+  * 지하철 역 목록 기능 분리
+* [ ] 노선 목록
+  * 노선 목록 조회 쿼리 분리
+  * 지하철 역 목록 기능 분리
+* [ ] 지하철 목록 수정 기능
+  * 노선 정보 쿼리 공통으로 분리
+* [ ] 노선에 지하철역 추가
+  * 지하철역 조회 쿼리 분리 
+  * 유효성 체크 쿼리 분리
+  * 지하철역 추가 기능 분리
+* [ ] 노선에 지하철역 삭제
+  * 지하철역 조회 쿼리 분리
+  * 지하철역 삭제 기능 분리
+* [ ] 노선 구간 정보 기능 분리
+* [ ] 상행선 찾기 기능 분리
+
+
 ## 🚀 Getting Started
 
 ### Install
@@ -52,3 +75,7 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+
+
+
