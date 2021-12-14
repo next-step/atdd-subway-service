@@ -4,10 +4,13 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.ApiRequest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.assertj.core.api.ListAssert;
@@ -32,6 +35,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 이촌역;
     private StationResponse 삼각지역;
     private StationResponse 새로운역1;
+    private String email;
+    private String password;
+    private TokenResponse token;
 
     @BeforeEach
     public void setUp() {
@@ -44,12 +50,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼각지역 = StationAcceptanceTest.지하철역_등록되어_있음("삼각지역").as(StationResponse.class);
         새로운역1 = StationAcceptanceTest.지하철역_등록되어_있음("새로운역1").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
-        사호선 = 지하철_노선_등록되어_있음("사호선", "bg-red-600", 이촌역, 삼각지역, 5);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 900);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 0);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0);
+        사호선 = 지하철_노선_등록되어_있음("사호선", "bg-red-600", 이촌역, 삼각지역, 5, 500);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+
+        email = "test@emila.com";
+        password = "pass";
+        MemberAcceptanceTest.회원_생성되어있음(email, password, 8);
+        token = AuthAcceptanceTest.로그인을_요청한다(email, password).as(TokenResponse.class);
     }
 
     @DisplayName("지하철 경로를 조회한다.")
@@ -78,11 +89,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 지하철_경로를_지하철_출발역_도착역으로_경로_조회_요청(StationResponse source, StationResponse target) {
-        return ApiRequest.get("/paths?source=" + source.getId() + "&target=" + target.getId());
+        return ApiRequest.get("/paths?source=" + source.getId() + "&target=" + target.getId(), token.getAccessToken());
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        return LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance))
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int extraFee) {
+        return LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFee))
                 .as(LineResponse.class);
     }
 

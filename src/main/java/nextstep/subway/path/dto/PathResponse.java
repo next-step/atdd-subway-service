@@ -9,19 +9,29 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import java.util.List;
 
 public class PathResponse {
-    private List<StationResponse> stations;
-    private double weight;
+    private final List<StationResponse> stations;
+    private final int distance;
+    private final int fare;
 
-    public PathResponse(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
+    public PathResponse(GraphPath<Station, DefaultWeightedEdge> shortestPath, int totalFee) {
         this.stations = StationResponse.listOf(shortestPath.getVertexList());
-        this.weight = shortestPath.getWeight();
+        this.distance = (int) shortestPath.getWeight();
+        this.fare = totalFee;
+    }
+
+    public static PathResponse of(PathFinder pathFinder) {
+        return new PathResponse(pathFinder.findShortestPath(), pathFinder.getTotalFee());
     }
 
     public List<StationResponse> getStations() {
         return stations;
     }
 
-    public double getWeight() {
-        return weight;
+    public int getDistance() {
+        return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }
