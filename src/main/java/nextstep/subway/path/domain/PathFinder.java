@@ -46,7 +46,7 @@ public class PathFinder {
 		DijkstraShortestPath path = new DijkstraShortestPath(this.graph);
 		GraphPath graphPath = path.getPath(source, target);
 		validatePath(graphPath);
-		int distance = (int)path.getPathWeight(source, target);
+		int distance = (int)graphPath.getWeight();
 		return PathResponse.of(graphPath.getVertexList(), distance);
 	}
 
