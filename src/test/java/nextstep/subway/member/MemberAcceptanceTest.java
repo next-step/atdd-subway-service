@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.domain.Member;
@@ -113,7 +114,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
   }
 
   private void 내_정보_데이터_확인됨(ExtractableResponse<Response> findResponse) {
-    Member me = findResponse.as(Member.class);
+    LoginMember me = findResponse.as(LoginMember.class);
     assertAll(
             () -> assertThat(me.getEmail()).isEqualTo(EMAIL),
             () -> assertThat(me.getAge()).isEqualTo(AGE)
