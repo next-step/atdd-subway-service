@@ -28,7 +28,7 @@ public class FavoriteService {
     }
 
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
-        Member member = memberService.findMember(loginMember);
+        Member member = findMember(loginMember);
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
         Favorite favorite = favoriteRepository.save(new Favorite(source, target, member));
@@ -36,11 +36,15 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorite(LoginMember loginMember) {
-        Member member = memberService.findMember(loginMember);
+        Member member = findMember(loginMember);
         List<Favorite> favorites = favoriteRepository.findByMember(member);
 
         return favorites.stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    private Member findMember(LoginMember loginMember) {
+        return memberService.findMember(loginMember);
     }
 }
