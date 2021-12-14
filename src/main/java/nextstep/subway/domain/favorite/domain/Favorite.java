@@ -1,5 +1,6 @@
 package nextstep.subway.domain.favorite.domain;
 
+import nextstep.subway.domain.auth.application.AuthorizationException;
 import nextstep.subway.domain.member.domain.Member;
 import nextstep.subway.domain.station.domain.Station;
 
@@ -53,5 +54,11 @@ public class Favorite {
 
     public Member getMember() {
         return member;
+    }
+
+    public void checkOwner(Member member) {
+        if (!this.member.equals(member)) {
+            throw new AuthorizationException();
+        }
     }
 }

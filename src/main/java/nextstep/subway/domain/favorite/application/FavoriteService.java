@@ -9,6 +9,7 @@ import nextstep.subway.domain.member.application.MemberService;
 import nextstep.subway.domain.member.domain.Member;
 import nextstep.subway.domain.station.application.StationService;
 import nextstep.subway.domain.station.domain.Station;
+import nextstep.subway.global.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,5 +47,14 @@ public class FavoriteService {
 
     private Member findMember(LoginMember loginMember) {
         return memberService.findMember(loginMember);
+    }
+
+    public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+                .orElseThrow(EntityNotFoundException::new);
+
+        favorite.checkOwner(findMember(loginMember));
+
+        favoriteRepository.delete(favorite);
     }
 }
