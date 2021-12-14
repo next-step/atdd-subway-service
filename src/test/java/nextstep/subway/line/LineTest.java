@@ -63,16 +63,40 @@ public class LineTest {
 
     }
 
-    @DisplayName("노선에 역 추가")
+    @DisplayName("노선에 지하철역 추가")
     @Test
     void addLineStation() {
         // given
+        Station upStation = new Station(1L, "1번역");
+        Station downStation = new Station(2L, "2번역");
+        Station addStation = new Station(3L, "3번역");
+        Line line = new Line("경춘선", "red", upStation, downStation, 30);
+        line.addSection(upStation, addStation, 10);
+        List<Station> stations = line.getSortedStations();
 
         // when
+        boolean isContain = stations.contains(addStation);
 
         // then
-
+        assertThat(isContain).isTrue();
     }
+
+    @DisplayName("이미 등록된 구간 오류 확인")
+    @Test
+    void invalidAddLineSection() {
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> {
+                // given
+                Station upStation = new Station(1L, "1번역");
+                Station downStation = new Station(2L, "2번역");
+                Line line = new Line("경춘선", "red", upStation, downStation, 10);
+
+                // when
+                line.addSection(upStation, downStation, 10);
+            }).withMessageMatching("이미 등록된 구간 입니다.");
+    }
+
+
 
     @DisplayName("노선에 역 삭제")
     @Test

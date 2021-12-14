@@ -24,7 +24,7 @@ public class Section {
 
     private int distance;
 
-    protected Section() {
+    public Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
@@ -68,6 +68,22 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public void updateUpStationMinus(Section section) {
+        if (this.distance <= section.distance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.upStation = section.downStation;
+        this.distance -= section.distance;
+    }
+
+    public void updateDownStationMinus(Section section) {
+        if (this.distance <= section.distance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.downStation = section.upStation;
+        this.distance -= section.distance;
     }
 
     public boolean isEqualToUpStation(Station station) {
