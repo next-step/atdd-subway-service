@@ -87,12 +87,4 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract().as(TokenResponse.class);
     }
 
-    public static ExtractableResponse<Response> 내_정보를_조회(TokenResponse tokenResponse) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
-    }
 }
