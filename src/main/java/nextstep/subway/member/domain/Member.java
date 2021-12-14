@@ -1,13 +1,14 @@
 package nextstep.subway.member.domain;
 
-import nextstep.subway.BaseEntity;
-import nextstep.subway.auth.application.AuthorizationException;
-import org.apache.commons.lang3.StringUtils;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.apache.commons.lang3.StringUtils;
+
+import nextstep.subway.BaseEntity;
+import nextstep.subway.auth.application.AuthorizationException;
 
 @Entity
 public class Member extends BaseEntity {
@@ -51,7 +52,7 @@ public class Member extends BaseEntity {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("이메일 또는 패스워드가 일치하지 않습니다.");
         }
     }
 }
