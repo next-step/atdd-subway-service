@@ -18,6 +18,7 @@ public class AcceptanceTest {
     public static final String LINE_ROOT_PATH = "/lines";
     public static final String STATION_ROOT_PATH = "/stations";
     public static final String PATH_ROOT_PATH = "/paths";
+    public static final String FAVORITE_ROOT_PATH = "/favorites";
 
     @LocalServerPort
     int port;
