@@ -64,6 +64,42 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	}
 
+	/**
+	 * 교대역    --- *2호선* ---   강남역
+	 * |                        |
+	 * *3호선*                   *신분당선*
+	 * |                        |
+	 * 남부터미널역  --- *3호선* ---   양재
+	 */
+	@DisplayName("최단 경로 관리")
+	@Test
+	void scenario1() {
+		// When
+		ExtractableResponse<Response> response = 최단경로_조회_요청함(양재역, 교대역);
+
+		// Then
+		최단경로_조회_응답함(response);
+		최단경로_조회_경로_포함됨(response, Arrays.asList(양재역, 남부터미널역, 교대역), 5);
+
+		// When
+		ExtractableResponse<Response> response2 = 최단경로_조회_요청함(양재역, 양재역);
+
+		// Then
+		최단경로_조회_실패함(response2);
+
+		// When
+		ExtractableResponse<Response> response3 = 최단경로_조회_요청함(서울역, 옥수역);
+
+		// Then
+		최단경로_조회_실패함(response3);
+
+		// When
+		ExtractableResponse<Response> response4 = 최단경로_조회_요청함(서울역, 양재역);
+
+		// then
+		최단경로_조회_실패함(response4);
+	}
+
 	@DisplayName("최단 경로를 조회한다")
 	@Test
 	void findPath() {
