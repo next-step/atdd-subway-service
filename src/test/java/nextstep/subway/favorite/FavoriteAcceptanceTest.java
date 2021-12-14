@@ -89,5 +89,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         FavoriteAcceptanceTestHelper.즐겨찾기_목록_조회됨(getResponse);
         FavoriteAcceptanceTestHelper.즐겨찾기_목록_예상된_결과_조회됨(getResponse, expectedIds);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = FavoriteAcceptanceTestHelper.즐겨찾기_삭제_요청(token, createdId);
+
+        // then
+        FavoriteAcceptanceTestHelper.즐겨찾기_삭제됨(deleteResponse);
+
+        // given
+        expectedIds = Arrays.asList(createdId2);
+
+        // when
+        getResponse = FavoriteAcceptanceTestHelper.즐겨찾기_목록_조회_요청(token);
+
+        // then
+        FavoriteAcceptanceTestHelper.즐겨찾기_목록_조회됨(getResponse);
+        FavoriteAcceptanceTestHelper.즐겨찾기_목록_예상된_결과_조회됨(getResponse, expectedIds);
     }
 }

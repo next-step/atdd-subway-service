@@ -56,6 +56,21 @@ public class FavoriteAcceptanceTestHelper {
             .map(FavoriteResponse::getId)
             .collect(Collectors.toList());
 
+        assertThat(resultIds.size()).isEqualTo(expected.size());
         assertThat(resultIds).containsAll(expected);
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String token, long id) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(token)
+            .when()
+            .delete("/favorites/" + id)
+            .then().log().all()
+            .extract();
+    }
+
+    public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
