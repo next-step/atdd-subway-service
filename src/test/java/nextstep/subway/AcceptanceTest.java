@@ -72,9 +72,27 @@ public class AcceptanceTest {
                 .then().log().all().extract();
     }
 
+    public static <T> ExtractableResponse<Response> 수정_요청(String path, T requestBody, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .body(requestBody)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put(path)
+                .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 삭제_요청(String path) {
         return RestAssured
                 .given().log().all()
+                .when().delete(path)
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 삭제_요청(String path, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().delete(path)
                 .then().log().all().extract();
     }

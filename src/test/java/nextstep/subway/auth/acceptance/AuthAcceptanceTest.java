@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("토큰 발급 인수 테스트")
-class AuthAcceptanceTest extends AcceptanceTest {
+public class AuthAcceptanceTest extends AcceptanceTest {
 
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
@@ -36,7 +36,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         로그인_성공(로그인_요청_응답);
 
         String 회원_토큰 = 토큰_조회(로그인_요청_응답);
-        ExtractableResponse<Response> 토큰으로_회원_정보_조회_응답 = 토큰으로_회원_정보_조회(회원_토큰);
+        ExtractableResponse<Response> 토큰으로_회원_정보_조회_응답 = MemberAcceptanceTest.토큰으로_회원_정보_조회(회원_토큰);
 
         // then
         회원_정보_조회_응답됨(토큰으로_회원_정보_조회_응답);
@@ -76,10 +76,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = TokenRequest.of(email, password);
         return 생성_요청("/login/token", tokenRequest);
-    }
-
-    public static ExtractableResponse<Response> 토큰으로_회원_정보_조회(String 회원_토큰) {
-        return 조회_요청("/members/me", 회원_토큰);
     }
 
     public static void 회원_정보_조회_응답됨(ExtractableResponse<Response> response) {
