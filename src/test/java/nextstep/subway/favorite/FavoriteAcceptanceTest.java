@@ -73,11 +73,31 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // given
         ExtractableResponse<Response> 즐겨찾기_목록_조회_요청_응답 = 즐겨찾기_목록_조회_요청(사용자);
         // then
-        즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_요청_응답);
+        List<FavoriteResponse> 즐겨찾기_목록 = 즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_요청_응답);
+
+        // given
+        ExtractableResponse<Response> 즐겨찾기_삭제_요청_응답 = 즐겨찾기_삭제_요청(즐겨찾기_목록, 사용자);
+
+        // then
+        즐겨찾기_삭제됨(즐겨찾기_삭제_요청_응답);
 
     }
 
-    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> 즐겨찾기_목록_조회_요청_응답) {
+    private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(List<FavoriteResponse> 즐겨찾기_목록, String accessToken) {
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .pathParam("favoriteId", 즐겨찾기_목록.get(0).getId())
+                .when().delete("/favorites/{favoriteId}")
+                .then().log().all()
+                .extract();
+        return response;
+    }
+
+    private List<FavoriteResponse> 즐겨찾기_목록_조회됨(ExtractableResponse<Response> 즐겨찾기_목록_조회_요청_응답) {
         List<FavoriteResponse> favoriteResponse = 즐겨찾기_목록_조회_요청_응답.jsonPath().getList("$", FavoriteResponse.class);
 
         assertAll(() -> {
@@ -86,6 +106,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             assertThat(favoriteResponse.get(0).getSource().getId()).isEqualTo(교대역.getId());
             assertThat(favoriteResponse.get(0).getTarget().getId()).isEqualTo(양재역.getId());
         });
+
+        return favoriteResponse;
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
