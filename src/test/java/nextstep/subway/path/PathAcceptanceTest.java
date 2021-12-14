@@ -70,7 +70,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_응답됨(조회_요청);
         최단_경로_조회됨(조회_요청, Arrays.asList(강남역, 양재역, 남부터미널역));
         최단_경로_계산됨(조회_요청, 12);
-        최단_경로_요금_계산됨(조회_요청, 1250);
+        최단_경로_요금_계산됨(조회_요청, 2250);
     }
 
     @DisplayName("역과 역 사이의 최단 경로를 조회한다.")
