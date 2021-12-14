@@ -30,6 +30,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
   private static final String EMAIL ="devsigner9920@naver.com";
   private static final String PASSWORD = "password!";
   private static final int AGE = 27;
+  private static final String INVALID_DELETE_URI = "/favorites/99999";
   private TokenResponse 사용자_토큰;
 
   private StationResponse 교대역;
@@ -69,6 +70,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     즐겨찾기_생성됨(createResponse);
 
     // when
+    ExtractableResponse<Response> createDuplicateResponse = 즐겨찾기_생성_요청(교대역.getId(), 선정릉역.getId(), 사용자_토큰.getAccessToken());
+    // then
+    즐겨찾기_생성_중복_실패됨(createDuplicateResponse);
+
+    // when
     ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자_토큰.getAccessToken());
     // then
     즐겨찾기_목록_조회됨(findResponse);
@@ -79,6 +85,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(deleteLocation, 사용자_토큰.getAccessToken());
     // then
     즐겨찾기_삭제됨(deleteResponse);
+
+    // when
+    ExtractableResponse<Response> invalidDeleteResponse = 즐겨찾기_삭제_요청(INVALID_DELETE_URI, 사용자_토큰.getAccessToken());
+    // then
+    즐겨찾기_삭제_실패됨(invalidDeleteResponse);
+  }
+
+  private void 즐겨찾기_생성_중복_실패됨(ExtractableResponse<Response> createDuplicateResponse) {
+    assertAll(
+            () -> assertThat(createDuplicateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+            () -> assertThat(createDuplicateResponse.body().jsonPath().get("message").toString())
+                    .isEqualTo("동일한 출발역과 목적역이 설정된 즐겨찾기 항목이 있습니다.")
+    );
+  }
+
+  private void 즐겨찾기_삭제_실패됨(ExtractableResponse<Response> invalidDeleteResponse) {
+    assertAll(
+            () -> assertThat(invalidDeleteResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+            () -> assertThat(invalidDeleteResponse.body().jsonPath().get("message").toString())
+                    .isEqualTo("해당 즐겨찾기 항목은 삭제할 수 없습니다.")
+    );
   }
 
   private TokenResponse 로그인_됨(String email, String password) {
