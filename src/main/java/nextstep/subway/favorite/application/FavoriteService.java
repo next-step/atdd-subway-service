@@ -9,9 +9,8 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.exception.MemberNotFoundException;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.exception.StationNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,20 +20,20 @@ public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
     private final MemberRepository memberRepository;
-    private final StationRepository stationRepository;
+    private final StationService stationService;
 
     public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository,
-        StationRepository stationRepository) {
+        StationService stationService) {
         this.favoriteRepository = favoriteRepository;
         this.memberRepository = memberRepository;
-        this.stationRepository = stationRepository;
+        this.stationService = stationService;
     }
 
     public FavoriteResponse saveFavorite(LoginMember loginMember,
         FavoriteRequest favoriteRequest) {
         Member member = findByMemberId(loginMember.getId());
-        Station source = findByStationId(favoriteRequest.getSource());
-        Station target = findByStationId(favoriteRequest.getTarget());
+        Station source = stationService.findStationById(favoriteRequest.getSource());
+        Station target = stationService.findStationById(favoriteRequest.getTarget());
         Favorite persistFavorite = favoriteRepository.save(
             favoriteRequest.toFavorite(member, source, target));
         favoriteRepository.save(persistFavorite);
@@ -57,10 +56,5 @@ public class FavoriteService {
     public Member findByMemberId(final Long id) {
         return memberRepository.findById(id)
             .orElseThrow(MemberNotFoundException::new);
-    }
-
-    public Station findByStationId(final Long id) {
-        return stationRepository.findById(id)
-            .orElseThrow(StationNotFoundException::new);
     }
 }
