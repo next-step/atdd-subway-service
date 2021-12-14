@@ -63,14 +63,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(createResponse1);
 
         // when
-        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자, createResponse1);
+        ExtractableResponse<Response> findResponse1 = 즐겨찾기_목록_조회_요청(사용자, createResponse1);
         // then
-        즐겨찾기_조회됨(findResponse, 강남역, 양재역);
+        즐겨찾기_조회됨(findResponse1, 강남역, 양재역);
 
         // when
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(사용자, createResponse1);
         // then
         즐겨찾기_삭제됨(deleteResponse);
+        // when
+        ExtractableResponse<Response> findResponse2 = 즐겨찾기_목록_조회_요청(사용자, createResponse1);
+        // then
+        즐겨찾기_없음(findResponse2);
+    }
+
+    private void 즐겨찾기_없음(ExtractableResponse<Response> findResponse) {
     }
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> deleteResponse) {

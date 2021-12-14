@@ -12,7 +12,7 @@ public class Favorite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Member member;
 
     @OneToOne
@@ -44,5 +44,9 @@ public class Favorite extends BaseEntity {
 
     public Long getId() {
         return id;
+    }
+
+    public boolean isLoginMemberFavorite(Long loginMemberId) {
+        return getMember().getId() == loginMemberId;
     }
 }
