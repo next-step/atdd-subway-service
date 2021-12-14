@@ -1,9 +1,11 @@
 package nextstep.subway.favorite.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +13,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import nextstep.subway.favorite.domain.Favorite;
@@ -49,7 +50,7 @@ class FavoriteServiceTest {
         양재역 = new Station("양재역");
         교대역 = new Station("교대역");
         남부터미널역 = new Station("남부터미널역");
-        member = new Member("email@email.com", "password", 20);
+        member = new Member(1L, "email@email.com", "password", 20);
     }
 
     @DisplayName("즐겨찾기 생성")
@@ -59,11 +60,11 @@ class FavoriteServiceTest {
         FavoriteRequest favoriteRequest = new FavoriteRequest(1, 2);
         Favorite favorite = new Favorite(강남역, 양재역, member);
 
-        Mockito.when(stationService.findStationById(1L))
+        when(stationService.findStationById(1L))
             .thenReturn(강남역);
-        Mockito.when(stationService.findStationById(2L))
+        when(stationService.findStationById(2L))
             .thenReturn(양재역);
-        Mockito.when(favoriteRepository.save(Mockito.any()))
+        when(favoriteRepository.save(any()))
             .thenReturn(favorite);
 
         // when
@@ -84,7 +85,7 @@ class FavoriteServiceTest {
             .map(FavoriteResponse::from)
             .collect(Collectors.toList());
 
-        Mockito.when(favoriteRepository.findAllByMemberId(Mockito.anyLong()))
+        when(favoriteRepository.findAllByMemberId(anyLong()))
             .thenReturn(favorites);
 
         // when
@@ -92,5 +93,23 @@ class FavoriteServiceTest {
 
         // then
         assertThat(actual.getResponses()).containsAll(expected);
+    }
+
+    @Test
+    void deleteFavorite() {
+        // given
+        Favorite favorite = new Favorite(강남역, 양재역, member);
+        when(favoriteRepository.findById(anyLong()))
+            .thenReturn(Optional.of(favorite));
+
+        doNothing()
+            .when(favoriteRepository)
+            .deleteById(anyLong());
+
+        // when
+        favoriteService.deleteFavorite(member.getId(), 1L);
+
+        // then
+        verify(favoriteRepository).deleteById(1L);
     }
 }

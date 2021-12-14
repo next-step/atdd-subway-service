@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.common.exception.SubwayNotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -29,17 +30,26 @@ public class FavoriteService {
     }
 
     @Transactional
-    public Favorite saveFavorite(long id, FavoriteRequest favoriteRequest) {
+    public Favorite saveFavorite(long memberId, FavoriteRequest favoriteRequest) {
         Station source = stationService.findStationById(favoriteRequest.getSource());
         Station target = stationService.findStationById(favoriteRequest.getTarget());
-        Member member = memberService.findMemberById(id);
+        Member member = memberService.findMemberById(memberId);
 
         Favorite favorite = new Favorite(source, target, member);
         return favoriteRepository.save(favorite);
     }
 
-    public FavoriteResponses getFavorites(Long id) {
-        List<Favorite> favorites = favoriteRepository.findAllByMemberId(id);
+    public FavoriteResponses getFavorites(long memberId) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
         return FavoriteResponses.from(favorites);
+    }
+
+    @Transactional
+    public void deleteFavorite(long memberId, long favoriteId) {
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+            .orElseThrow(SubwayNotFoundException::new);
+
+        favorite.checkSameMember(memberId);
+        favoriteRepository.deleteById(favoriteId);
     }
 }

@@ -28,6 +28,13 @@ public class Member extends BaseEntity {
         this.age = age;
     }
 
+    public Member(Long id, String email, String password, Integer age) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.age = age;
+    }
+
     public Long getId() {
         return id;
     }
@@ -54,5 +61,9 @@ public class Member extends BaseEntity {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }
+    }
+
+    public boolean matchId(long memberId) {
+        return id != null && id == memberId;
     }
 }

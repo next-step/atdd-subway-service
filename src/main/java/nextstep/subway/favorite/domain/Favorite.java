@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -48,5 +49,11 @@ public class Favorite extends BaseEntity {
 
     public Member getMember() {
         return member;
+    }
+
+    public void checkSameMember(long memberId) {
+        if (!member.matchId(memberId)) {
+            throw new AuthorizationException();
+        }
     }
 }
