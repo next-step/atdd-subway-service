@@ -4,7 +4,6 @@ import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노�
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
@@ -15,11 +14,11 @@ import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.utils.RestAssuredUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 
 @DisplayName("지하철 경로 관련 기능")
@@ -75,13 +74,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 지하철_최단_경로_조회_요청(final PathRequest params) {
-        return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(params)
-            .when().get("/paths")
-            .then().log().all()
-            .extract();
+        return RestAssuredUtil.jsonGet(params, "/paths");
     }
 
     private void 지하철_최단_경로_응답됨(final ExtractableResponse<Response> response) {
