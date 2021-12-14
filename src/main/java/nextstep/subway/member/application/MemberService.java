@@ -24,14 +24,18 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(SubwayNotFoundException::new);
+        Member member = findMemberById(id);
         return MemberResponse.from(member);
     }
 
     @Transactional
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(SubwayNotFoundException::new);
+        Member member = findMemberById(id);
         member.update(param.toMember());
+    }
+
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id).orElseThrow(SubwayNotFoundException::new);
     }
 
     public void deleteMember(Long id) {
