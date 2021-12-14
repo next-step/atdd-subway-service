@@ -5,11 +5,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import nextstep.subway.line.domain.Money;
-import nextstep.subway.line.domain.fare.policycondition.AgeDiscountFareCondition;
+import nextstep.subway.line.domain.fare.policycondition.RateDiscountFareCondition;
 import nextstep.subway.member.domain.Age;
 import nextstep.subway.member.domain.AgeGroup;
 
-public enum AgeRatePolicyCondition implements AgeDiscountFareCondition {
+public enum AgeRatePolicyCondition implements RateDiscountFareCondition {
     TWENTY_RATE(BigDecimal.valueOf(0.2), Arrays.asList(AgeGroup.YOUTH)),
     FIFTY_RATE(BigDecimal.valueOf(0.5), Arrays.asList(AgeGroup.CHILD)),
     NONE(BigDecimal.valueOf(1), Collections.emptyList());

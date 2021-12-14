@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import nextstep.subway.line.domain.Money;
 import nextstep.subway.member.domain.Age;
 
-public interface AgeDiscountFareCondition {
+public interface RateDiscountFareCondition {
 
     int DEDUCTIBLE_AMOUNT = 350;
 
