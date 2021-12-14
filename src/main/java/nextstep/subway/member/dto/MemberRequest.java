@@ -1,14 +1,12 @@
 package nextstep.subway.member.dto;
 
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.station.dto.StationResponse;
 
 public class MemberRequest {
     private String email;
     private String password;
     private Integer age;
-
-    public MemberRequest() {
-    }
 
     public MemberRequest(String email, String password, Integer age) {
         this.email = email;
