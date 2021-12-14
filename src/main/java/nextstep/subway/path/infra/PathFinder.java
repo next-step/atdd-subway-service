@@ -13,5 +13,4 @@ public interface PathFinder {
     Distance findDistance(List<Line> lines, Station source, Station target);
     int findFare(List<Line> lines, Station source, Station target);
     ShortestPath findShortestPath(List<Line> lines, Station source, Station target);
-
 }

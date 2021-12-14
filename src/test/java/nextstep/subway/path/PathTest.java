@@ -5,6 +5,7 @@ import nextstep.subway.path.domain.*;
 import nextstep.subway.path.domain.overfare.DefaultOverFare;
 import nextstep.subway.path.domain.overfare.OverFare;
 import nextstep.subway.path.infra.JgraphtPathFinder;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.infra.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;

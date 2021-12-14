@@ -18,6 +18,11 @@ public class ShortestPath {
         this.fare = new Fare(fare);
     }
 
+    public ShortestPath(List<Station> stations, int distance) {
+        this.stations = stations;
+        this.distance = new Distance(distance);
+    }
+
     public List<Station> findPaths() {
         return this.stations;
     }

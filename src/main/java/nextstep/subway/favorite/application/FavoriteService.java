@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 
@@ -37,21 +38,24 @@ public class FavoriteService {
 
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
-        return favoriteRepository.save(Favorite.of(source, target, member));
+        return favoriteRepository.save(Favorite.of(source.getId(), target.getId(), member.getId()));
     }
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findAll(LoginMember loginMember) {
+        List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
 
-        Member member = memberService.findById(loginMember.getId());
+        List<Long> stationIds = favorites.stream()
+                .flatMap(f -> f.getStations().stream())
+                .distinct()
+                .collect(toList());
 
-        List<Favorite> favorites = favoriteRepository.findByMember(member);
-        return FavoriteResponse.ofList(favorites);
+        List<Station> stations = stationService.findByIds(stationIds);
+        return FavoriteResponse.ofList(favorites, stations);
     }
 
     @Transactional
     public void deleteFavorites(Long id, LoginMember loginMember) {
-        Member member = memberService.findById(loginMember.getId());
-        favoriteRepository.deleteByIdAndMember(id, member);
+        favoriteRepository.deleteByIdAndMemberId(id, loginMember.getId());
     }
 }
