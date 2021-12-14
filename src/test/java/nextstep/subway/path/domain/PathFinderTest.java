@@ -1,8 +1,11 @@
 package nextstep.subway.path.domain;
 
+import com.google.common.collect.Lists;
+import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.common.exception.PathDisconnectedException;
 import nextstep.subway.common.exception.PathSameException;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathResponse;
@@ -11,7 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -19,18 +22,21 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class PathFinderTest {
 
-    private static Station 교대역 = null;
-    private static Station 강남역 = null;
-    private static Station 남부터미널역 = null;
-    private static Station 양재역 = null;
-    private static Section 첫번째구간 = null;
-    private static Section 두번째구간 = null;
-    private static Section 세번째구간 = null;
-    private static Section 네번째구간 = null;
-    private static Sections 전구간 = null;
-    private static Station 사당역 = null;
-    private static Station 이수역 = null;
-    private static Section 다른구간 = null;
+    private Station 교대역 = null;
+    private Station 강남역 = null;
+    private Station 남부터미널역 = null;
+    private Station 양재역 = null;
+    private Sections 첫번째구간 = null;
+    private Sections 두번째구간 = null;
+    private Sections 세번째구간 = null;
+    private Station 사당역 = null;
+    private Station 이수역 = null;
+    private Sections 다른구간 = null;
+    private Line 이호선 = null;
+    private Line 삼호선 = null;
+    private Line 신분당선 = null;
+    private Line 다른노선 = null;
+    private List<Line> 전라인 = null;
 
     @BeforeEach
     void setUp() {
@@ -38,16 +44,26 @@ public class PathFinderTest {
         강남역 = Station.from("강남역");
         남부터미널역 = Station.from("남부터미널역");
         양재역 = Station.from("양재역");
-        첫번째구간 = Section.of(교대역, 강남역, Distance.of(10));
-        두번째구간 = Section.of(강남역, 양재역, Distance.of(10));
-        세번째구간 = Section.of(남부터미널역, 양재역, Distance.of(5));
-        네번째구간 = Section.of(교대역, 남부터미널역, Distance.of(3));
+        첫번째구간 = Sections.from(Section.of(교대역, 강남역, Distance.of(10)));
+        두번째구간 = Sections.from(Section.of(강남역, 양재역, Distance.of(10)));
+        세번째구간 = Sections.from(Lists.newArrayList(
+                Section.of(교대역, 남부터미널역, Distance.of(3)),
+                Section.of(남부터미널역, 양재역, Distance.of(5))
+        ));
+        이호선 = Line.of("이호선", "blue", 첫번째구간);
+        삼호선 = Line.of("이호선", "blue", 세번째구간);
+        신분당선 = Line.of("이호선", "blue", 두번째구간);
 
         사당역 = Station.from("사당역");
         이수역 = Station.from("이수역");
-        다른구간 = Section.of(사당역, 이수역, Distance.of(1));
+        다른구간 = Sections.from(Section.of(사당역, 이수역, Distance.of(1)));
+        다른노선 = Line.of("이호선", "blue", 다른구간);
 
-        전구간 = Sections.from(Arrays.asList(첫번째구간, 두번째구간, 세번째구간, 네번째구간, 다른구간));
+        전라인 = Lists.newArrayList(
+                이호선,
+                삼호선,
+                신분당선,
+                다른노선);
     }
 
     /**
@@ -61,8 +77,8 @@ public class PathFinderTest {
     @Test
     void pathFinder() {
         // when
-        PathFinder pathFinder = PathFinder.of(교대역, 양재역, 전구간.getSections());
-        PathResponse pathResponse = pathFinder.findShortestPath();
+        PathFinder pathFinder = PathFinder.from(전라인);
+        PathResponse pathResponse = pathFinder.findShortestPath(교대역, 양재역);
 
         // then
         assertAll(
@@ -75,10 +91,10 @@ public class PathFinderTest {
     @Test
     void pathFinder_예외1() {
         // when
-        PathFinder pathFinder = PathFinder.of(교대역, 교대역, 전구간.getSections());
+        PathFinder pathFinder = PathFinder.from(전라인);
 
         // then
-        assertThatThrownBy(() -> pathFinder.findShortestPath())
+        assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, 교대역))
                 .isInstanceOf(PathSameException.class)
                 .hasMessage("출발역과 도착역이 같은 경우 경로 조회 할 수 없습니다.");
     }
@@ -87,8 +103,8 @@ public class PathFinderTest {
     @Test
     void pathFinder_예외2() {
         // when
-        PathFinder pathFinder = PathFinder.of(교대역, 이수역, 전구간.getSections());
-        assertThatThrownBy(() -> pathFinder.findShortestPath())
+        PathFinder pathFinder = PathFinder.from(전라인);
+        assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, 이수역))
                 .isInstanceOf(PathDisconnectedException.class)
                 .hasMessage("요청한 경로는 연결되어 있지 않습니다.");
     }
@@ -97,9 +113,9 @@ public class PathFinderTest {
     @Test
     void pathFinder_예외3() {
         // when
-        PathFinder pathFinder = PathFinder.of(교대역, 이수역, 전구간.getSections());
-        assertThatThrownBy(() -> pathFinder.findShortestPath())
-                .isInstanceOf(PathDisconnectedException.class)
-                .hasMessage("요청한 경로는 연결되어 있지 않습니다.");
+        PathFinder pathFinder = PathFinder.from(전라인);
+        assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, Station.from("존재하지않는역")))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("해당 정보는 존재하지 않습니다.");
     }
 }
