@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -119,6 +120,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .queryParam("targetId", target.getId())
                 .when()
                 .get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 최단_경로_조회_요청(TokenResponse token, StationResponse source, StationResponse target) {
+        return RestAssured.given().log().params()
+                .queryParam("sourceId", source.getId())
+                .queryParam("targetId", target.getId())
+                .auth().oauth2(token.getAccessToken())
+                .when()
+                .get("/paths/login")
                 .then().log().all()
                 .extract();
     }

@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.PathFinder;
@@ -24,14 +25,14 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findPath(Long sourceId, Long targetId) {
+    public <T> PathResponse findPath(T member, Long sourceId, Long targetId) {
         List<Line> lines = lineRepository.findAll();
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
 
         PathFinder pathFinder = new PathFinder(lines);
         Path path = pathFinder.shortestPath(source, target);
-        path.calculateFare(lines);
+        path.calculateFare(member, lines);
         return PathResponse.ofList(path);
     }
 }

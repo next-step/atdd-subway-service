@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -67,7 +68,7 @@ class PathServiceTest {
         when(stationService.findById(양재.getId())).thenReturn(양재);
 
         // when
-        PathResponse path = pathService.findPath(교대.getId(), 양재.getId());
+        PathResponse path = pathService.findPath(20, 교대.getId(), 양재.getId());
 
         // then
         assertThat(path.getDistance()).isEqualTo(3);

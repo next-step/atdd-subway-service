@@ -1,8 +1,10 @@
 package nextstep.subway.path.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,8 +13,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_구간_등록됨;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_등록됨;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성_요청;
 import static nextstep.subway.path.acceptance.PathAcceptanceTest.*;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,6 +74,12 @@ public class PathFareAcceptanceTest extends AcceptanceTest {
 
         LineResponse 인천1 = 지하철_노선_등록되어_있음("인천1", "bg-light_blue-600", 500, 계양역, 귤현역, 10);
         지하철_구간_등록됨(인천1, 귤현역, 박촌역, 20);
+
+        회원_등록됨(회원_생성_요청("basic@gmail.com", "pa**@@rd", 19));
+        회원_등록됨(회원_생성_요청("youth@gmail.com", "pa**@@rd", 18));
+        회원_등록됨(회원_생성_요청("child@gmail.com", "pa**@@rd", 12));
+        회원_등록됨(회원_생성_요청("baby@gmail.com", "pa**@@rd", 5));
+        회원_등록됨(회원_생성_요청("elder@gmail.com", "pa**@@rd", 65));
     }
 
     @Test
@@ -78,19 +89,38 @@ public class PathFareAcceptanceTest extends AcceptanceTest {
         최단_경로_조회됨(response10km);
         최단_경로_구간_목록_일치됨(response10km, Arrays.asList(송정역, 김포공항역, 공항시장역));
         최단_경로_거리_일치됨(response10km, 10);
-        운임_요금_일치됨(response10km, 1250);
+        운임_요금_일치됨(response10km, 1250); // 1250원 (기본요금)
 
         ExtractableResponse<Response> response20km = 최단_경로_조회_요청(신방화역, 계양역);
         최단_경로_조회됨(response20km);
         최단_경로_구간_목록_일치됨(response20km, Arrays.asList(신방화역, 공항시장역, 김포공항역, 계양역));
         최단_경로_거리_일치됨(response20km, 20);
-        운임_요금_일치됨(response20km, 2350);
+        운임_요금_일치됨(response20km, 2350); // 2350원 (거리추가:200, 추가운임노선:900)
 
         ExtractableResponse<Response> response55km = 최단_경로_조회_요청(박촌역, 마곡나루역);
         최단_경로_조회됨(response55km);
         최단_경로_구간_목록_일치됨(response55km, Arrays.asList(박촌역, 귤현역, 계양역, 김포공항역, 마곡나루역));
         최단_경로_거리_일치됨(response55km, 55);
-        운임_요금_일치됨(response55km, 2750);
+        운임_요금_일치됨(response55km, 2750); // 2750원 (거리추가:600, 추가운임노선:900)
+    }
+
+    @Test
+    @DisplayName("할인 요금 정상 기능")
+    void normalDiscountFareScenario() {
+        TokenResponse basicToken = 로그인_요청("basic@gmail.com", "pa**@@rd").as(TokenResponse.class);
+        ExtractableResponse<Response> basic10km = 최단_경로_조회_요청(basicToken, 송정역, 공항시장역);
+        최단_경로_조회됨(basic10km);
+        운임_요금_일치됨(basic10km, 1250); // 1250원 (기본요금)
+
+        TokenResponse youthToken = 로그인_요청("youth@gmail.com", "pa**@@rd").as(TokenResponse.class);
+        ExtractableResponse<Response> youth10km = 최단_경로_조회_요청(youthToken, 송정역, 공항시장역);
+        최단_경로_조회됨(youth10km);
+        운임_요금_일치됨(youth10km, 720); // 720원 (기본요금, 공제:-350원, 할인:20%)
+
+        TokenResponse childToken = 로그인_요청("child@gmail.com", "pa**@@rd").as(TokenResponse.class);
+        ExtractableResponse<Response> chile10km = 최단_경로_조회_요청(childToken, 송정역, 공항시장역);
+        최단_경로_조회됨(chile10km);
+        운임_요금_일치됨(chile10km, 450); // 450원 (기본요금, 공제:-350원, 할인:50%)
     }
 
     public static void 운임_요금_일치됨(ExtractableResponse<Response> response, int excepted) {
