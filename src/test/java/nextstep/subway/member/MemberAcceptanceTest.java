@@ -54,23 +54,30 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         MemberAcceptanceTestHelper.회원_생성됨(createResponse);
 
         // given
-        TokenResponse tokenResponse = AuthAcceptanceTestHelper.로그인_되어_있음(EMAIL, PASSWORD)
-            .as(TokenResponse.class);
+        String accessToken = AuthAcceptanceTestHelper.로그인_되어_있음(EMAIL, PASSWORD)
+            .as(TokenResponse.class)
+            .getAccessToken();
         Map<String, String> params = new HashMap<>();
         params.put("email", NEW_EMAIL);
         params.put("password", NEW_PASSWORD);
         params.put("age", String.valueOf(NEW_AGE));
 
         // when
-        ExtractableResponse<Response> response = MemberAcceptanceTestHelper.내_정보_수정_요청(params, tokenResponse);
+        ExtractableResponse<Response> response = MemberAcceptanceTestHelper.내_정보_수정_요청(params, accessToken);
 
         // then
         MemberAcceptanceTestHelper.내_정보_수정_성공(response);
 
+        // given
+        accessToken = AuthAcceptanceTestHelper.로그인_되어_있음(NEW_EMAIL, NEW_PASSWORD)
+            .as(TokenResponse.class)
+            .getAccessToken();
+
         // when
-        ExtractableResponse<Response> findResponse = MemberAcceptanceTestHelper.회원_정보_조회_요청(createResponse);
+        ExtractableResponse<Response> findResponse = MemberAcceptanceTestHelper.내_정보_조회_요청(accessToken);
 
         // then
+        MemberAcceptanceTestHelper.내_정보_조회_성공(findResponse);
         MemberAcceptanceTestHelper.회원_정보_조회됨(findResponse, NEW_EMAIL, NEW_AGE);
     }
 }

@@ -1,6 +1,7 @@
 package nextstep.subway.member;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 
@@ -88,10 +90,10 @@ public class MemberAcceptanceTestHelper {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static ExtractableResponse<Response> 내_정보_수정_요청(Map<String, String> params, TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 내_정보_수정_요청(Map<String, String> params, String accessToken) {
         return RestAssured
             .given().log().all()
-            .auth().oauth2(tokenResponse.getAccessToken())
+            .auth().oauth2(accessToken)
             .body(params)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().put("/members/me")
@@ -99,6 +101,20 @@ public class MemberAcceptanceTestHelper {
     }
 
     public static void 내_정보_수정_성공(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/me")
+            .then().log().all().extract();
+    }
+
+    public static void 내_정보_조회_성공(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
 }
