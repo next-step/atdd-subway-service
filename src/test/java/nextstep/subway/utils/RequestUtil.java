@@ -65,6 +65,17 @@ public class RequestUtil {
             .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> postWithAccessToken(
+        final String path, final String accessToken, final Object bodyParam, final Object... pathParams
+    ) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .body(bodyParam).contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().post(path, pathParams)
+            .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> putWithAccessToken(
         final String path, final String accessToken, final Object bodyParam, final Object... pathParams
     ) {
