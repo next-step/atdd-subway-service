@@ -29,4 +29,7 @@ public class MemberRequest {
     public Member toMember() {
         return new Member(email, password, age);
     }
+
+    public MemberRequest() {
+    }
 }
