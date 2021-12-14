@@ -6,6 +6,7 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.exception.MemberNotFoundException;
@@ -19,19 +20,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final StationService stationService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository,
+    public FavoriteService(FavoriteRepository favoriteRepository, MemberService memberRepository,
         StationService stationService) {
         this.favoriteRepository = favoriteRepository;
-        this.memberRepository = memberRepository;
+        this.memberService = memberRepository;
         this.stationService = stationService;
     }
 
     public FavoriteResponse saveFavorite(LoginMember loginMember,
         FavoriteRequest favoriteRequest) {
-        Member member = findByMemberId(loginMember.getId());
+        Member member = memberService.findMemberById(loginMember.getId());
         Station source = stationService.findStationById(favoriteRequest.getSource());
         Station target = stationService.findStationById(favoriteRequest.getTarget());
         Favorite persistFavorite = favoriteRepository.save(
@@ -50,11 +51,5 @@ public class FavoriteService {
             .orElseThrow(FavoriteNotFoundException::new);
 
         favoriteRepository.delete(favorite);
-    }
-
-    @Transactional(readOnly = true)
-    public Member findByMemberId(final Long id) {
-        return memberRepository.findById(id)
-            .orElseThrow(MemberNotFoundException::new);
     }
 }
