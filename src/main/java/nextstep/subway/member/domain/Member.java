@@ -21,10 +21,14 @@ public class Member extends BaseEntity {
     protected Member() {
     }
 
-    public Member(final String email, final String password, final Integer age) {
+    private Member(final String email, final String password, final Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
+    }
+
+    public static Member of(final String email, final String password, final Integer age) {
+        return new Member(email, password, age);
     }
 
     public Long getId() {
