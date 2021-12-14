@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -41,11 +42,12 @@ public class PathFinder {
 	}
 
 	public PathResponse findPath(Station source, Station target) {
-		validateFindPath(source, target);
+		validateSourceAndTarget(source, target);
 		DijkstraShortestPath path = new DijkstraShortestPath(this.graph);
-		List<Station> shortestPath = path.getPath(source, target).getVertexList();
+		GraphPath graphPath = path.getPath(source, target);
+		validatePath(graphPath);
 		int distance = (int)path.getPathWeight(source, target);
-		return PathResponse.of(shortestPath, distance);
+		return PathResponse.of(graphPath.getVertexList(), distance);
 	}
 
 	private void addSection(Section section) {
@@ -56,15 +58,17 @@ public class PathFinder {
 			section.getDistance().toInt());
 	}
 
-	private void validateFindPath(Station source, Station target) {
+	private void validateSourceAndTarget(Station source, Station target) {
 		if (source.equals(target)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "출발역과 도착역이 같으면 안됩니다");
 		}
 		if (!sections.containStation(source) || !sections.containStation(target)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "존재하지 않는 출발역과 도착역을 조회할 경우 안된다");
 		}
-		DijkstraShortestPath path = new DijkstraShortestPath(this.graph);
-		if (Objects.isNull(path.getPath(source, target))) {
+	}
+
+	private void validatePath(GraphPath graphPath) {
+		if (Objects.isNull(graphPath)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "출발역과 도착역이 연결되어 있어야 한다");
 		}
 	}
