@@ -62,25 +62,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         params.put("target", String.valueOf(양재역.getId()));
 
         // when
-        ExtractableResponse<Response> createResponse = FavoriteAcceptanceTestHelper.즐겨찾기_생성_요청(token, params);
-        Long createdId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+        ExtractableResponse<Response> createResponse1 = FavoriteAcceptanceTestHelper.즐겨찾기_생성_요청(token, params);
 
         // then
-        FavoriteAcceptanceTestHelper.즐겨찾기_생성됨(createResponse);
+        FavoriteAcceptanceTestHelper.즐겨찾기_생성됨(createResponse1);
 
         //given
         params = new HashMap<>();
-        params.put("source", String.valueOf(강남역.getId()));
-        params.put("target", String.valueOf(양재역.getId()));
+        params.put("source", String.valueOf(양재역.getId()));
+        params.put("target", String.valueOf(교대역.getId()));
 
         // when
-        createResponse = FavoriteAcceptanceTestHelper.즐겨찾기_생성_요청(token, params);
-        Long createdId2 = Long.parseLong(createResponse.header("Location").split("/")[2]);
+        ExtractableResponse<Response> createResponse2 = FavoriteAcceptanceTestHelper.즐겨찾기_생성_요청(token, params);
 
         // then
-        FavoriteAcceptanceTestHelper.즐겨찾기_생성됨(createResponse);
+        FavoriteAcceptanceTestHelper.즐겨찾기_생성됨(createResponse2);
 
         // given
+        Long createdId = Long.parseLong(createResponse1.header("Location").split("/")[2]);
+        Long createdId2 = Long.parseLong(createResponse2.header("Location").split("/")[2]);
         List<Long> expectedIds = Arrays.asList(createdId, createdId2);
 
         // when
@@ -105,5 +105,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         FavoriteAcceptanceTestHelper.즐겨찾기_목록_조회됨(getResponse);
         FavoriteAcceptanceTestHelper.즐겨찾기_목록_예상된_결과_조회됨(getResponse, expectedIds);
+    }
+
+    @DisplayName("중복된 즐겨찾기 생성 시 실패한다.")
+    @Test
+    void duplicateCreateFavoriteError() {
+        //given
+        FavoriteAcceptanceTestHelper.즐겨찾기_생성되어_있음(token, 강남역, 양재역);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("source", String.valueOf(강남역.getId()));
+        params.put("target", String.valueOf(양재역.getId()));
+
+        // when
+        ExtractableResponse<Response> createResponse = FavoriteAcceptanceTestHelper.즐겨찾기_생성_요청(token, params);
+
+        // then
+        FavoriteAcceptanceTestHelper.즐겨찾기_생성_실패됨(createResponse);
     }
 }

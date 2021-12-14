@@ -2,6 +2,7 @@ package nextstep.subway.favorite;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,6 +14,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.station.dto.StationResponse;
 
 public class FavoriteAcceptanceTestHelper {
     private FavoriteAcceptanceTestHelper() {
@@ -29,9 +31,23 @@ public class FavoriteAcceptanceTestHelper {
             .extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_생성되어_있음(String token,
+        StationResponse source,
+        StationResponse target) {
+        Map<String, String> params = new HashMap<>();
+        params.put("source", String.valueOf(source.getId()));
+        params.put("target", String.valueOf(target.getId()));
+
+        return 즐겨찾기_생성_요청(token, params);
+    }
+
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    public static void 즐겨찾기_생성_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String token) {
