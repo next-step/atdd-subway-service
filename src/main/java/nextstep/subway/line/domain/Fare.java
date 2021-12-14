@@ -4,8 +4,8 @@ import nextstep.subway.member.domain.Age;
 
 public class Fare {
 
-    private PathResult pathResult;
-    private Age age;
+    private final PathResult pathResult;
+    private final Age age;
 
     public Fare(PathResult pathResult, Age age) {
         this.pathResult = pathResult;
