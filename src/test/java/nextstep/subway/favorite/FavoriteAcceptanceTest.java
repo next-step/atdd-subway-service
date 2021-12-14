@@ -123,4 +123,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         FavoriteAcceptanceTestHelper.즐겨찾기_생성_실패됨(createResponse);
     }
+
+    @DisplayName("존재하지 않는 즐겨찾기 삭제 시 실패한다.")
+    @Test
+    void deleteNotExistFavoriteFail() {
+        // when
+        ExtractableResponse<Response> deleteResponse = FavoriteAcceptanceTestHelper.즐겨찾기_삭제_요청(token, 1L);
+
+        // then
+        FavoriteAcceptanceTestHelper.삭제할_즐겨찾기_역이_존재하지_않음(deleteResponse);
+    }
 }
