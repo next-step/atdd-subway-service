@@ -5,7 +5,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.domain.favorite.domain.Favorite;
 import nextstep.subway.domain.favorite.dto.FavoriteRequest;
+import nextstep.subway.domain.favorite.dto.FavoriteResponse;
 import nextstep.subway.domain.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.domain.line.dto.LineRequest;
 import nextstep.subway.domain.line.dto.LineResponse;
@@ -19,7 +21,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 @DisplayName("즐겨찾기 관련 기능")
@@ -64,6 +69,32 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_생성_요청_응답 = 즐겨찾기_생성을_요청(사용자, 교대역, 양재역);
         // when
         즐겨찾기_생성됨(즐겨찾기_생성_요청_응답);
+
+        // given
+        ExtractableResponse<Response> 즐겨찾기_목록_조회_요청_응답 = 즐겨찾기_목록_조회_요청(사용자);
+        // then
+        즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_요청_응답);
+
+    }
+
+    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> 즐겨찾기_목록_조회_요청_응답) {
+        List<FavoriteResponse> favoriteResponse = 즐겨찾기_목록_조회_요청_응답.jsonPath().getList("$", FavoriteResponse.class);
+
+        assertAll(() -> {
+            assertThat(즐겨찾기_목록_조회_요청_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+            assertThat(favoriteResponse.size()).isOne();
+            assertThat(favoriteResponse.get(0).getSource().getId()).isEqualTo(교대역.getId());
+            assertThat(favoriteResponse.get(0).getTarget().getId()).isEqualTo(양재역.getId());
+        });
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
     }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
