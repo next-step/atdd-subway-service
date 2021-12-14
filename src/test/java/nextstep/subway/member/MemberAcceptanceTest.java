@@ -56,7 +56,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     // given
     회원_생성을_요청(EMAIL, PASSWORD, AGE);
     String 토큰 = 로그인됨(EMAIL, PASSWORD).getAccessToken();
-    System.out.println("토큰 = " + 토큰);
 
     // when
     ExtractableResponse<Response> findResponse = 내_정보_조회_요청(토큰);
