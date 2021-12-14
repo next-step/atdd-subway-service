@@ -16,6 +16,7 @@ import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.dto.FavoriteResponses;
 
 @RestController
 @RequestMapping("/favorites")
@@ -27,7 +28,7 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createFavorites(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal LoginMember loginMember,
         @RequestBody FavoriteRequest favoriteRequest) {
         Favorite favorite = favoriteService.saveFavorite(loginMember.getId(), favoriteRequest);
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId()))
@@ -36,7 +37,7 @@ public class FavoriteController {
 
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        // TODO
-        return ResponseEntity.ok(null);
+        FavoriteResponses favorites = favoriteService.getFavorites(loginMember.getId());
+        return ResponseEntity.ok(favorites.getResponses());
     }
 }

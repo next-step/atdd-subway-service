@@ -2,6 +2,10 @@ package nextstep.subway.favorite.application;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.dto.FavoriteResponses;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
@@ -31,6 +37,8 @@ class FavoriteServiceTest {
 
     private Station 강남역;
     private Station 양재역;
+    private Station 교대역;
+    private Station 남부터미널역;
     private Member member;
 
     @BeforeEach
@@ -39,13 +47,15 @@ class FavoriteServiceTest {
 
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
-
-        member = new Member();
+        교대역 = new Station("교대역");
+        남부터미널역 = new Station("남부터미널역");
+        member = new Member("email@email.com", "password", 20);
     }
 
     @DisplayName("즐겨찾기 생성")
     @Test
     void saveFavorite() {
+        // given
         FavoriteRequest favoriteRequest = new FavoriteRequest(1, 2);
         Favorite favorite = new Favorite(강남역, 양재역, member);
 
@@ -53,13 +63,34 @@ class FavoriteServiceTest {
             .thenReturn(강남역);
         Mockito.when(stationService.findStationById(2L))
             .thenReturn(양재역);
-        Mockito.when(memberService.findMemberById(Mockito.any()))
-            .thenReturn(member);
         Mockito.when(favoriteRepository.save(Mockito.any()))
             .thenReturn(favorite);
 
+        // when
         Favorite actual = favoriteService.saveFavorite(1L, favoriteRequest);
 
+        // then
         assertThat(actual).isSameAs(favorite);
+    }
+
+    @DisplayName("즐겨찾기 목록 조회")
+    @Test
+    void getFavorites() {
+        // given
+        Favorite favorite1 = new Favorite(강남역, 양재역, member);
+        Favorite favorite2 = new Favorite(교대역, 남부터미널역, member);
+        List<Favorite> favorites = Arrays.asList(favorite1, favorite2);
+        List<FavoriteResponse> expected = favorites.stream()
+            .map(FavoriteResponse::from)
+            .collect(Collectors.toList());
+
+        Mockito.when(favoriteRepository.findAllByMemberId(Mockito.anyLong()))
+            .thenReturn(favorites);
+
+        // when
+        FavoriteResponses actual = favoriteService.getFavorites(1L);
+
+        // then
+        assertThat(actual.getResponses()).containsAll(expected);
     }
 }
