@@ -8,9 +8,10 @@ import java.util.Objects;
 @Embeddable
 public class Distance {
 
-    private int distance;
+    private final int distance;
 
     protected Distance() {
+        distance = 0;
     }
 
     private Distance(int distance) {

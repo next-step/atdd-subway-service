@@ -40,7 +40,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 지하철역_생성_응답 = 지하철역_생성_요청(강남역);
 
         // then
-        지하철역_생성_실패됨(지하철역_생성_응답);
+        지하철역_생성_실패됨(지하철역_생성_응답, "이미 존재하는 역 이름입니다.");
     }
 
     @DisplayName("지하철역을 조회한다.")
@@ -94,8 +94,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response) {
+    public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response, String errorMessage) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.response().body().asString()).isEqualTo(errorMessage);
     }
 
     public static void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {

@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.BadRequestException;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
@@ -66,7 +67,8 @@ class DistanceTest {
         ThrowableAssert.ThrowingCallable throwingCallable = () -> distance.minus(otherDistance);
 
         // then
-        Assertions.assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(throwingCallable);
+        Assertions.assertThatExceptionOfType(BadRequestException.class)
+                .isThrownBy(throwingCallable)
+                .withMessage("구간의 거리는 1 이상으로 입력해주세요.");
     }
 }
