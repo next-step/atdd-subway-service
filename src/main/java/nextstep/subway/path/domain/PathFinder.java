@@ -20,25 +20,31 @@ import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
 
-	private final Sections sections;
-	private final WeightedMultigraph<Station, DefaultWeightedEdge> graph
-		= new WeightedMultigraph(DefaultWeightedEdge.class);
+	private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-	private PathFinder(Sections sections) {
-		sections.getSections().forEach(this::addSection);
-		this.sections = sections;
+	private PathFinder() {
+		this.graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+	}
+
+	public static PathFinder of(List<Section> sections) {
+		PathFinder pathFinder = new PathFinder();
+		sections.forEach(pathFinder::addSection);
+		return pathFinder;
 	}
 
 	public static PathFinder of(Sections sections) {
-		return new PathFinder(sections);
+		PathFinder pathFinder = new PathFinder();
+		sections.toList().forEach(pathFinder::addSection);
+		return pathFinder;
 	}
 
 	public static PathFinder ofLines(List<Line> lines) {
 		List<Section> sections = lines.stream()
 			.map(Line::getSections)
+			.map(Sections::toList)
 			.flatMap(Collection::stream)
 			.collect(Collectors.toList());
-		return new PathFinder(Sections.of(sections));
+		return PathFinder.of(sections);
 	}
 
 	public PathResponse findPath(Station source, Station target) {
@@ -62,7 +68,7 @@ public class PathFinder {
 		if (source.equals(target)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "출발역과 도착역이 같으면 안됩니다");
 		}
-		if (!sections.containStation(source) || !sections.containStation(target)) {
+		if (!graph.containsVertex(source) || !graph.containsVertex(target)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "존재하지 않는 출발역과 도착역을 조회할 경우 안된다");
 		}
 	}
