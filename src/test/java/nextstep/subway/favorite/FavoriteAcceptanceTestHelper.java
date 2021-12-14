@@ -90,7 +90,11 @@ public class FavoriteAcceptanceTestHelper {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static void 삭제할_즐겨찾기_역이_존재하지_않음(ExtractableResponse<Response> response) {
+    public static void 삭제할_즐겨찾기_존재하지_않음(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    public static void 즐겨찾기_삭제_권한이_없음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

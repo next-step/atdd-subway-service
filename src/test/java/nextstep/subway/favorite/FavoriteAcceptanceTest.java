@@ -124,13 +124,28 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         FavoriteAcceptanceTestHelper.즐겨찾기_생성_실패됨(createResponse);
     }
 
-    @DisplayName("존재하지 않는 즐겨찾기 삭제 시 실패한다.")
+    @DisplayName("존재하지 않는 즐겨찾기 삭제하여 실패한다.")
     @Test
     void deleteNotExistFavoriteFail() {
         // when
         ExtractableResponse<Response> deleteResponse = FavoriteAcceptanceTestHelper.즐겨찾기_삭제_요청(token, 1L);
 
         // then
-        FavoriteAcceptanceTestHelper.삭제할_즐겨찾기_역이_존재하지_않음(deleteResponse);
+        FavoriteAcceptanceTestHelper.삭제할_즐겨찾기_존재하지_않음(deleteResponse);
+    }
+
+    @DisplayName("권한이 없는 즐겨찾기 삭제하여 실패한다.")
+    @Test
+    void deleteNotAuthorizedFavoriteFail() {
+        //given
+        ExtractableResponse<Response> createResponse = FavoriteAcceptanceTestHelper.즐겨찾기_생성되어_있음(token, 강남역, 양재역);
+        Long createdId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = FavoriteAcceptanceTestHelper.즐겨찾기_삭제_요청("invalidToken",
+            createdId);
+
+        // then
+        FavoriteAcceptanceTestHelper.즐겨찾기_삭제_권한이_없음(deleteResponse);
     }
 }
