@@ -14,20 +14,20 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class StationService {
-    private StationRepository stationRepository;
+    private final StationRepository stationRepository;
 
-    public StationService(StationRepository stationRepository) {
+    public StationService(final StationRepository stationRepository) {
         this.stationRepository = stationRepository;
     }
 
     @Transactional
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station persistStation = stationRepository.save(stationRequest.toStation());
+    public StationResponse saveStation(final StationRequest stationRequest) {
+        final Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
     }
 
     public List<StationResponse> findAllStations() {
-        List<Station> stations = stationRepository.findAll();
+        final List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
                 .map(StationResponse::of)
@@ -35,11 +35,11 @@ public class StationService {
     }
 
     @Transactional
-    public void deleteStationById(Long id) {
+    public void deleteStationById(final Long id) {
         stationRepository.deleteById(id);
     }
 
-    public Station findStationById(Long id) {
+    public Station findStationById(final Long id) {
         return stationRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
     }

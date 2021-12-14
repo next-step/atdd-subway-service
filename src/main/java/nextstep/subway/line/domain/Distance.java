@@ -16,7 +16,7 @@ public class Distance {
     protected Distance() {
     }
 
-    private Distance(int distance) {
+    private Distance(final int distance) {
         this.distance = distance;
     }
 

@@ -16,18 +16,18 @@ public class StationResponse {
     public StationResponse() {
     }
 
-    public StationResponse(Long id, String name, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public StationResponse(final Long id, final String name, final LocalDateTime createdDate, final LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
     }
 
-    public static StationResponse of(Station station) {
+    public static StationResponse of(final Station station) {
         return new StationResponse(station.getId(), station.getName(), station.getCreatedDate(), station.getModifiedDate());
     }
 
-    public static List<StationResponse> of(List<Station> stations) {
+    public static List<StationResponse> of(final List<Station> stations) {
         return stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
