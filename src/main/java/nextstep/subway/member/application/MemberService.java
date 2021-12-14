@@ -4,11 +4,15 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.member.exception.NotExistMemberException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class MemberService {
+    public static final String MESSAGE_NOT_EXIST_MEMBER = "사용자가 없습니다";
     private MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
@@ -33,5 +37,9 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id).orElseThrow(() -> new NotExistMemberException(MESSAGE_NOT_EXIST_MEMBER));
     }
 }
