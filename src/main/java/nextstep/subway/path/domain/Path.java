@@ -52,15 +52,16 @@ public class Path {
         return findShortestVertexInPath();
     }
 
-    public Fare calculateBigSectionFare() {
-        return subwayGraph.getAllEdges(source, target).stream()
-                .map(SectionEdge::getLineFare)
+    public Fare calculateBigSectionFare(List<Section> sections) {
+        return sections.stream()
+                .map(it-> it.getLine().getExtraFare())
                 .max(Fare::compareTo)
                 .orElseThrow(() -> new InputDataErrorException(InputDataErrorCode.THERE_IS_NOT_SEARCHED_SECTION));
     }
 
     private void makeSectionEdge(Section section) {
-        subwayGraph.addEdge(section, section.getUpStation(), section.getDownStation());
+        Line line = section.getLine();
+        subwayGraph.addEdge(section, section.getUpStation(), section.getDownStation(), line.getExtraFare());
     }
 
     private List<Station> findShortestVertexInPath() {
@@ -101,7 +102,7 @@ public class Path {
         return new Distance(distanceSum);
     }
 
-    private List<Section> findSection(List<Line> lines, List<Station> shortestStations) {
+    public List<Section> findSection(List<Line> lines, List<Station> shortestStations) {
         List<Section> allSections = findAllSections(lines);
         List<Section> foundSections = new ArrayList<>();
         for (int i = 0; i < shortestStations.size() - 1; i++) {

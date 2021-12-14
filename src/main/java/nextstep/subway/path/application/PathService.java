@@ -3,10 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.InputDataErrorCode;
 import nextstep.subway.exception.InputDataErrorException;
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Fare;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.*;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.TicketGate;
 import nextstep.subway.path.dto.PathResponse;
@@ -41,7 +38,8 @@ public class PathService {
         Path path = new Path(sourceStation, targetStation);
         List<Station> shortestPath = path.findShortestPath(allLines);
         Distance totalDistance = path.findShortestPathDistance(allLines, shortestPath);
-        Fare bigSectionFare = path.calculateBigSectionFare();
+        List<Section> sections = path.findSection(allLines, shortestPath);
+        Fare bigSectionFare = path.calculateBigSectionFare(sections);
         Fare resultFare = TicketGate.calculateFare(bigSectionFare, totalDistance, loginMember);
 
         return PathResponse.of(shortestPath, totalDistance, resultFare);

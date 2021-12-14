@@ -51,4 +51,9 @@ public class PathResponse {
                 .collect(Collectors.toList());
         return stationResponses;
     }
+
+    public int getFare() {
+        return fare.getAmount();
+    }
+
 }

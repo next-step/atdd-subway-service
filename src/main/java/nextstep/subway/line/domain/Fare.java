@@ -70,6 +70,6 @@ public class Fare implements Comparable<Fare>{
 
     @Override
     public int compareTo(Fare o) {
-        return Integer.compare(this.amount, o.amount);
+        return Integer.compare(this.amount, o.getAmount());
     }
 }
