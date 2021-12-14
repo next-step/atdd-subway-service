@@ -20,6 +20,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인을_실행한다;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,17 +58,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void manageFavorites() {
         // when
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(사용자, 강남역, 양재역);
+        ExtractableResponse<Response> createResponse1 = 즐겨찾기_생성을_요청(사용자, 강남역, 양재역);
         // then
-        즐겨찾기_생성됨(createResponse);
+        즐겨찾기_생성됨(createResponse1);
 
         // when
-        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자, createResponse);
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자, createResponse1);
         // then
         즐겨찾기_조회됨(findResponse, 강남역, 양재역);
 
         // when
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(사용자, createResponse);
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(사용자, createResponse1);
         // then
         즐겨찾기_삭제됨(deleteResponse);
     }
@@ -75,9 +78,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_조회됨(ExtractableResponse<Response> findResponse, StationResponse sourceStation, StationResponse targetStation) {
-        FavoriteResponse favoriteResponse = findResponse.as(FavoriteResponse.class);
-        assertThat(favoriteResponse.getSourceStation()).isEqualTo(sourceStation);
-        assertThat(favoriteResponse.getTargetStation()).isEqualTo(targetStation);
+        List<FavoriteResponse> favoriteResponses = findResponse.jsonPath().getList(".", FavoriteResponse.class);
+        FavoriteResponse favoriteResponse1 = favoriteResponses.get(0);
+        assertThat(favoriteResponse1.getSourceStation().getName()).isEqualTo(sourceStation.getName());
+        assertThat(favoriteResponse1.getTargetStation().getName()).isEqualTo(targetStation.getName());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse 사용자, ExtractableResponse<Response> createResponse) {
@@ -91,13 +95,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(TokenResponse 사용자, ExtractableResponse<Response> createResponse) {
-        String uri = createResponse.header("Location");
 
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(사용자.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(uri)
+                .when().get("/favorites")
                 .then().log().all()
                 .extract();
     }

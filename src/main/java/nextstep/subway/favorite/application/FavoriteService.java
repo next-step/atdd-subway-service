@@ -31,8 +31,10 @@ public class FavoriteService {
         return FavoriteResponse.of(persistFavorite);
     }
 
-    public List<FavoriteResponse> findFavorites(Long id) {
-        return null;
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
+        List<Favorite> favorites = member.getFavorites();
+        return FavoriteResponse.from(favorites);
     }
 
     public void deleteFavorite(Long id, Long id1) {
