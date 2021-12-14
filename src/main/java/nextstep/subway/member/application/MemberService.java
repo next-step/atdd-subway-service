@@ -29,6 +29,12 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional(readOnly = true)
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(NotFoundException::new);
+    }
+
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(NotFoundException::new);

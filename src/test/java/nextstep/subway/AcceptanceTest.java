@@ -40,6 +40,16 @@ public class AcceptanceTest {
                 .then().log().all().extract();
     }
 
+    public static <T> ExtractableResponse<Response> 생성_요청(String path, T requestBody, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .body(requestBody)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post(path)
+                .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 조회_요청(String path) {
         return RestAssured
                 .given().log().all()

@@ -3,6 +3,7 @@ package nextstep.subway.favorite;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
@@ -10,9 +11,11 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.토큰_조회;
@@ -29,7 +32,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재시민의숲;
     private LineResponse 신분당선;
 
-    String 사용자;
+    private String 사용자;
 
     @BeforeEach
     public void setUp() {
@@ -54,10 +57,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_관리() {
         // when
-        즐겨찾기_생성_요청();
+        ExtractableResponse<Response> 즐겨찾기_생성_요청_응답 = 즐겨찾기_생성_요청(사용자, 강남역, 양재역);
 
         // then
-        즐겨찾기_생성됨();
+        즐겨찾기_생성됨(즐겨찾기_생성_요청_응답);
 
         // when
         즐겨찾기_목록_조회_요청();
@@ -72,10 +75,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨();
     }
 
-    public static void 즐겨찾기_생성_요청() {
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, StationResponse source, StationResponse target) {
+        FavoriteRequest favoriteRequest = FavoriteRequest.of(source.getId(), target.getId());
+        return 생성_요청("/favorites", favoriteRequest, accessToken);
     }
 
-    public static void 즐겨찾기_생성됨() {
+    public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     public static void 즐겨찾기_목록_조회_요청() {

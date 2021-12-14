@@ -35,7 +35,7 @@ public class PathResponse {
     private static List<StationResponse> toStationResponses(Path path) {
         return path.getStations()
                 .stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 }
