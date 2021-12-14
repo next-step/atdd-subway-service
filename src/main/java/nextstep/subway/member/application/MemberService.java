@@ -12,12 +12,13 @@ import nextstep.subway.member.dto.MemberResponse;
 @Service
 @Transactional(readOnly = true)
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
+    @Transactional
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.from(member);
@@ -38,6 +39,7 @@ public class MemberService {
         return memberRepository.findById(id).orElseThrow(SubwayNotFoundException::new);
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }

@@ -31,8 +31,8 @@ public class FavoriteService {
 
     @Transactional
     public Favorite saveFavorite(long memberId, FavoriteRequest favoriteRequest) {
-        Station source = stationService.findStationById(favoriteRequest.getSource());
-        Station target = stationService.findStationById(favoriteRequest.getTarget());
+        Station source = stationService.findById(favoriteRequest.getSource());
+        Station target = stationService.findById(favoriteRequest.getTarget());
         Member member = memberService.findMemberById(memberId);
 
         Favorite favorite = new Favorite(source, target, member);

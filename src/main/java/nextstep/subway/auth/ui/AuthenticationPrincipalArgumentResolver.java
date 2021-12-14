@@ -13,7 +13,7 @@ import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private AuthService authService;
+    private final AuthService authService;
 
     public AuthenticationPrincipalArgumentResolver(AuthService authService) {
         this.authService = authService;

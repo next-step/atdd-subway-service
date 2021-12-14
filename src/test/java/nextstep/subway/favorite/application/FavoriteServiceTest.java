@@ -60,9 +60,9 @@ class FavoriteServiceTest {
         FavoriteRequest favoriteRequest = new FavoriteRequest(1, 2);
         Favorite favorite = new Favorite(강남역, 양재역, member);
 
-        when(stationService.findStationById(1L))
+        when(stationService.findById(1L))
             .thenReturn(강남역);
-        when(stationService.findStationById(2L))
+        when(stationService.findById(2L))
             .thenReturn(양재역);
         when(favoriteRepository.save(any()))
             .thenReturn(favorite);
