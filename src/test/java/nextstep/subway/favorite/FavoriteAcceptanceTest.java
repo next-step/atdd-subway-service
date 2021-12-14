@@ -87,8 +87,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private void 즐겨찾기_조회됨(ExtractableResponse<Response> findResponse, StationResponse sourceStation, StationResponse targetStation) {
         List<FavoriteResponse> favoriteResponses = findResponse.jsonPath().getList(".", FavoriteResponse.class);
         FavoriteResponse favoriteResponse1 = favoriteResponses.get(0);
-        assertThat(favoriteResponse1.getSourceStation().getName()).isEqualTo(sourceStation.getName());
-        assertThat(favoriteResponse1.getTargetStation().getName()).isEqualTo(targetStation.getName());
+        assertThat(favoriteResponse1.getSourceStationName()).isEqualTo(sourceStation.getName());
+        assertThat(favoriteResponse1.getSourceStationName()).isEqualTo(targetStation.getName());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse 사용자, ExtractableResponse<Response> createResponse) {

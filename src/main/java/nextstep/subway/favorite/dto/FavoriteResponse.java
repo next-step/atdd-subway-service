@@ -41,4 +41,8 @@ public class FavoriteResponse {
 
     public FavoriteResponse() {
     }
+
+    public String getSourceStationName() {
+        return getSourceStation().getName();
+    }
 }

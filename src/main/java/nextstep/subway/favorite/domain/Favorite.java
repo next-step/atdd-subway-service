@@ -5,6 +5,7 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Favorite extends BaseEntity {
@@ -47,6 +48,6 @@ public class Favorite extends BaseEntity {
     }
 
     public boolean isLoginMemberFavorite(Long loginMemberId) {
-        return getMember().getId() == loginMemberId;
+        return Objects.equals(getMember().getId(), loginMemberId);
     }
 }
