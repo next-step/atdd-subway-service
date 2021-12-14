@@ -7,8 +7,10 @@ import nextstep.subway.domain.member.dto.MemberRequest;
 import nextstep.subway.domain.member.dto.MemberResponse;
 import nextstep.subway.global.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class MemberService {
     private MemberRepository memberRepository;
 
@@ -21,11 +23,13 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional(readOnly = true)
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         return MemberResponse.of(member);
     }
 
+    @Transactional(readOnly = true)
     public Member findMember(LoginMember loginMember) {
         return memberRepository.findById(loginMember.getId())
                 .orElseThrow(EntityNotFoundException::new);
