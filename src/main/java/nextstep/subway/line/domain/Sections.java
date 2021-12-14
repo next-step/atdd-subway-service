@@ -75,7 +75,7 @@ public class Sections {
 		validateUpdateSections(newSection);
 		List<Station> stations = this.getStations();
 		if (stations.isEmpty()) {
-			this.getSections().add(newSection);
+			this.sections.add(newSection);
 			return;
 		}
 		updateUpStationIfExists(stations, newSection);
@@ -87,11 +87,11 @@ public class Sections {
 		if (!isUpStationExisted) {
 			return;
 		}
-		this.getSections().stream()
+		this.sections.stream()
 			.filter(it -> it.getUpStation() == newSection.getUpStation())
 			.findFirst()
 			.ifPresent(it -> it.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
-		this.getSections().add(newSection);
+		this.sections.add(newSection);
 	}
 
 	private void updateDownStationIfExists(List<Station> stations, Section newSection) {
@@ -99,11 +99,11 @@ public class Sections {
 		if (!isDownStationExisted) {
 			return;
 		}
-		this.getSections().stream()
+		this.sections.stream()
 			.filter(it -> it.getDownStation() == newSection.getDownStation())
 			.findFirst()
 			.ifPresent(it -> it.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
-		this.getSections().add(newSection);
+		this.sections.add(newSection);
 	}
 
 	private void validateUpdateSections(Section newSection) {
@@ -136,6 +136,10 @@ public class Sections {
 		forwardSection.ifPresent(it -> line.getSections().remove(it));
 	}
 
+	private void remove(Section section) {
+		this.sections.remove(section);
+	}
+
 	private void validateRemoveStation() {
 		if (this.sections.size() <= MINIMUM) {
 			throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "구간이 {}개 이하일 때는 삭제가 안됩니다", MINIMUM);
@@ -153,8 +157,8 @@ public class Sections {
 			.filter(it -> it.getDownStation() == upStation)
 			.findFirst();
 	}
-
-	public List<Section> getSections() {
+	
+	public List<Section> toList() {
 		return this.sections;
 	}
 
