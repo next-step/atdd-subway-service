@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -64,7 +65,7 @@ class PathServiceTest {
         given(lineRepository.findAll()).willReturn(lines);
 
         // when
-        ShortestPathResponse result = pathService.findShortestPath(sourceStationId, targetStationId);
+        ShortestPathResponse result = pathService.findShortestPath(sourceStationId, targetStationId, new LoginMember(20));
 
         // then
         assertThat(result.getStations()).containsExactly(판교역, 양재역, 강남역);
@@ -81,7 +82,7 @@ class PathServiceTest {
         given(stationRepository.findById(sourceStationId)).willReturn(Optional.ofNullable(null));
 
         // when, then
-        assertThatThrownBy(() -> pathService.findShortestPath(sourceStationId, targetStationId))
+        assertThatThrownBy(() -> pathService.findShortestPath(sourceStationId, targetStationId, new LoginMember()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("존재하지 않는 지하철역입니다.");
     }

@@ -31,6 +31,10 @@ public class Distance {
         return new Distance(this.distance + distance.distance);
     }
 
+    public boolean isLessThanOrEqualTo(int distance) {
+        return this.distance <= distance;
+    }
+
     public int getDistance() {
         return distance;
     }

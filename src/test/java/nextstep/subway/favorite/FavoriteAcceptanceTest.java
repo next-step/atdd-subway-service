@@ -73,6 +73,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(response);
     }
 
+    public static String 로그인_되어_있음(String email, String password) {
+        ExtractableResponse<Response> 로그인_응답 = 로그인_요청함(email, password);
+        return 로그인_됨(로그인_응답);
+    }
+
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
@@ -122,10 +127,5 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
         return response;
-    }
-
-    private String 로그인_되어_있음(String email, String password) {
-        ExtractableResponse<Response> 로그인_응답 = 로그인_요청함(email, password);
-        return 로그인_됨(로그인_응답);
     }
 }
