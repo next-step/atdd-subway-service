@@ -62,7 +62,6 @@ public class Sections {
             findSameUpStation(upSection.getDownStation())
                 .ifPresent(downSection -> downSection.updateUpStationPlus(upSection));
             sections.remove(upSection);
-            return;
         });
     }
 
@@ -126,10 +125,6 @@ public class Sections {
         return stations;
     }
 
-    public List<Section> getSections() { //오류방지
-        return null;
-    }
-
     public List<Station> getSortedStations() {
         if (sections.isEmpty()) {
             return Collections.emptyList();
@@ -168,6 +163,7 @@ public class Sections {
         }
         return firstSection;
     }
+
     private List<Station> upStationsOfSections() {
         return sections.stream()
             .map(Section::getUpStation)
