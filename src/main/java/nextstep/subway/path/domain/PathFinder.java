@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 import nextstep.subway.exception.AppException;
 import nextstep.subway.exception.ErrorCode;
@@ -18,8 +20,11 @@ import nextstep.subway.station.domain.Station;
 public class PathFinder {
 
 	private final Sections sections;
+	private final WeightedMultigraph<Station, DefaultWeightedEdge> graph
+		= new WeightedMultigraph(DefaultWeightedEdge.class);
 
 	private PathFinder(Sections sections) {
+		sections.getSections().forEach(this::addSection);
 		this.sections = sections;
 	}
 
@@ -37,10 +42,18 @@ public class PathFinder {
 
 	public PathResponse findPath(Station source, Station target) {
 		validateFindPath(source, target);
-		DijkstraShortestPath path = new DijkstraShortestPath(this.sections.toGraph());
+		DijkstraShortestPath path = new DijkstraShortestPath(this.graph);
 		List<Station> shortestPath = path.getPath(source, target).getVertexList();
 		int distance = (int)path.getPathWeight(source, target);
 		return PathResponse.of(shortestPath, distance);
+	}
+
+	private void addSection(Section section) {
+		this.graph.addVertex(section.getUpStation());
+		this.graph.addVertex(section.getDownStation());
+		this.graph.setEdgeWeight(
+			graph.addEdge(section.getUpStation(), section.getDownStation()),
+			section.getDistance().toInt());
 	}
 
 	private void validateFindPath(Station source, Station target) {
@@ -50,7 +63,7 @@ public class PathFinder {
 		if (!sections.containStation(source) || !sections.containStation(target)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "존재하지 않는 출발역과 도착역을 조회할 경우 안된다");
 		}
-		DijkstraShortestPath path = new DijkstraShortestPath(this.sections.toGraph());
+		DijkstraShortestPath path = new DijkstraShortestPath(this.graph);
 		if (Objects.isNull(path.getPath(source, target))) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "출발역과 도착역이 연결되어 있어야 한다");
 		}

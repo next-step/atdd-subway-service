@@ -11,9 +11,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-
 import nextstep.subway.exception.AppException;
 import nextstep.subway.exception.ErrorCode;
 import nextstep.subway.station.domain.Station;
@@ -156,18 +153,6 @@ public class Sections {
 		return this.sections.stream()
 			.filter(it -> it.getDownStation() == upStation)
 			.findFirst();
-	}
-
-	public WeightedMultigraph<Station, DefaultWeightedEdge> toGraph() {
-		WeightedMultigraph<Station, DefaultWeightedEdge> graph
-			= new WeightedMultigraph(DefaultWeightedEdge.class);
-
-		this.sections.forEach(section -> graph.addVertex(section.getUpStation()));
-		this.sections.forEach(section -> graph.addVertex(section.getDownStation()));
-		this.sections.forEach(section -> graph.setEdgeWeight(
-			graph.addEdge(section.getUpStation(), section.getDownStation()),
-			section.getDistance().toInt()));
-		return graph;
 	}
 
 	public boolean containStation(Station station) {
