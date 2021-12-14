@@ -68,6 +68,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // when
+        ExtractableResponse<Response> response = MemberAcceptanceTestHelper.내_정보_조회_요청("invalidToken");
+
+        // then
+        AuthAcceptanceTestHelper.로그인_요청_실패(response);
     }
 
 }
