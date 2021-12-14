@@ -47,6 +47,11 @@ public class Line extends BaseEntity {
         Section section = new Section(this, upStation, downStation, distance);
         this.sections.add(section);
     }
+
+    public void removeLineStation(Station station) {
+        this.sections.remove(station);
+    }
+
     public List<Station> getSortedStations() {
         return sections.getSortedStations();
     }
@@ -66,4 +71,5 @@ public class Line extends BaseEntity {
     public List<Section> getSections() {
         return sections.getSections();
     }
+
 }

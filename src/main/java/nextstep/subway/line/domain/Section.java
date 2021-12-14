@@ -1,8 +1,14 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.station.domain.Station;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-import javax.persistence.*;
+import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section {
@@ -84,6 +90,16 @@ public class Section {
         }
         this.downStation = section.upStation;
         this.distance -= section.distance;
+    }
+
+    public void updateDownStationPlus(Section section) {
+        downStation = section.downStation;
+        distance += section.distance;
+    }
+
+    public void updateUpStationPlus(Section section) {
+        upStation = section.upStation;
+        distance += section.distance;
     }
 
     public boolean isEqualToUpStation(Station station) {

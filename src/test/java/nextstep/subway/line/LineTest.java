@@ -102,10 +102,19 @@ public class LineTest {
     @Test
     void removeLineStation() {
         // given
+        Station upStation = new Station(1L, "1번역");
+        Station downStation = new Station(2L, "2번역");
+        Station addStation = new Station(3L, "3번역");
+        Line line = new Line("경춘선", "red", upStation, downStation, 30);
+        line.addSection(upStation, addStation, 10);
+
+        line.removeLineStation(downStation);
+        List<Station> stations = line.getSortedStations();
 
         // when
+        boolean isContain = stations.contains(downStation);
 
         // then
-
+        assertThat(isContain).isFalse();
     }
 }
