@@ -189,7 +189,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public String 토큰_발급(String email, String password) {
+    public static String 토큰_발급(String email, String password) {
         AuthAcceptanceTest authAcceptanceTest = new AuthAcceptanceTest();
         final ExtractableResponse<Response> response = authAcceptanceTest.로그인_요청(email, password);
 
