@@ -7,16 +7,13 @@ public class MemberResponse {
     private String email;
     private Integer age;
 
-    public MemberResponse() {
-    }
-
-    public MemberResponse(Long id, String email, Integer age) {
+    private MemberResponse(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
     }
 
-    public static MemberResponse of(Member member) {
+    public static MemberResponse from(Member member) {
         return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
     }
 

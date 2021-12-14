@@ -20,12 +20,12 @@ public class MemberService {
 
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
-        return MemberResponse.of(member);
+        return MemberResponse.from(member);
     }
 
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(SubwayNotFoundException::new);
-        return MemberResponse.of(member);
+        return MemberResponse.from(member);
     }
 
     @Transactional
