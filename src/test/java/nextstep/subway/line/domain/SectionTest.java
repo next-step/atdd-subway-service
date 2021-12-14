@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.station.domain.Station;
 
 class SectionTest {
-    private Station 인천역 = new Station("인천역");
-    private Station 용산역 = new Station("용산역");
+    private Station 인천역 = new Station(1L, "인천역");
+    private Station 용산역 = new Station(2L, "용산역");
     private Line 일호선 = new Line("1호선", "indigo", 인천역, 용산역, 10);
     private Section 인천_용산역_구간 = new Section(일호선, 인천역, 용산역, 10);
 

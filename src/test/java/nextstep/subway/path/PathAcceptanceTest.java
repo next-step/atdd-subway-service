@@ -79,24 +79,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response = 최단_경로_조회_요청(남부터미널역, 강남역);
 
         // then
-        최단_경로_응답됨(response);
+        StatusCodeCheckUtil.ok(response);
+        최단_경로_응답됨(response, 남부터미널역, 양재역, 강남역);
+        최단_거리_응답됨(response, 12);
     }
 
-    private ExtractableResponse<Response> 최단_경로_조회_요청(final StationResponse 남부터미널역, final StationResponse 강남역) {
+    private ExtractableResponse<Response> 최단_경로_조회_요청(final StationResponse source, final StationResponse target) {
         final Map<String, Object> queryParams = new HashMap<>();
-        queryParams.put("source", 남부터미널역.getId());
-        queryParams.put("target", 강남역.getId());
+        queryParams.put("source", source.getId());
+        queryParams.put("target", target.getId());
 
         return RequestUtil.get("/paths", queryParams);
     }
 
-    private void 최단_경로_응답됨(final ExtractableResponse<Response> response) {
-        StatusCodeCheckUtil.ok(response);
-
+    private void 최단_경로_응답됨(final ExtractableResponse<Response> response, final StationResponse... expectedStations) {
         final List<StationResponse> stations = response.jsonPath().getList("stations", StationResponse.class);
-        assertThat(stations).containsExactly(남부터미널역, 양재역, 강남역);
+        assertThat(stations).containsExactly(expectedStations);
+    }
 
+    private void 최단_거리_응답됨(final ExtractableResponse<Response> response, final int expectedDistance) {
         final int distance = response.jsonPath().getObject("distance", Integer.class);
-        assertThat(distance).isEqualTo(12);
+        assertThat(distance).isEqualTo(expectedDistance);
     }
 }
