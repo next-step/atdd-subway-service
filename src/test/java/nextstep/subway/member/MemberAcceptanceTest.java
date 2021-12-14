@@ -66,7 +66,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = MemberAcceptanceTestHelper.내_정보_수정_요청(params, accessToken);
 
         // then
-        MemberAcceptanceTestHelper.내_정보_수정_성공(response);
+        MemberAcceptanceTestHelper.내_정보_수정됨(response);
 
         // given
         accessToken = AuthAcceptanceTestHelper.로그인_되어_있음(NEW_EMAIL, NEW_PASSWORD)
@@ -79,5 +79,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         MemberAcceptanceTestHelper.내_정보_조회_성공(findResponse);
         MemberAcceptanceTestHelper.회원_정보_조회됨(findResponse, NEW_EMAIL, NEW_AGE);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = MemberAcceptanceTestHelper.내_정보_삭제_요청(accessToken);
+
+        // then
+        MemberAcceptanceTestHelper.내_정보_삭제됨(deleteResponse);
     }
 }
