@@ -21,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인을_실행한다;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
@@ -78,6 +77,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_없음(ExtractableResponse<Response> findResponse) {
+        List<FavoriteResponse> favoriteResponses = findResponse.jsonPath().getList(".", FavoriteResponse.class);
+        assertThat(favoriteResponses.size()).isZero();
     }
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> deleteResponse) {
@@ -87,8 +88,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private void 즐겨찾기_조회됨(ExtractableResponse<Response> findResponse, StationResponse sourceStation, StationResponse targetStation) {
         List<FavoriteResponse> favoriteResponses = findResponse.jsonPath().getList(".", FavoriteResponse.class);
         FavoriteResponse favoriteResponse1 = favoriteResponses.get(0);
-        assertThat(favoriteResponse1.getSourceStationName()).isEqualTo(sourceStation.getName());
-        assertThat(favoriteResponse1.getSourceStationName()).isEqualTo(targetStation.getName());
+        assertThat(favoriteResponse1.returnSourceStationName()).isEqualTo(sourceStation.getName());
+        assertThat(favoriteResponse1.returnTargetStationName()).isEqualTo(targetStation.getName());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse 사용자, ExtractableResponse<Response> createResponse) {

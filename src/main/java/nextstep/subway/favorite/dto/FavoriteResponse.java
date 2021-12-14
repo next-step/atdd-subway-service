@@ -42,7 +42,11 @@ public class FavoriteResponse {
     public FavoriteResponse() {
     }
 
-    public String getSourceStationName() {
+    public String returnSourceStationName() {
         return getSourceStation().getName();
+    }
+
+    public String returnTargetStationName() {
+        return getTargetStation().getName();
     }
 }
