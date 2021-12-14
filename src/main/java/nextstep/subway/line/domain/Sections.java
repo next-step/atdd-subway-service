@@ -22,7 +22,7 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    void addSection(final Section section) {
+    void addSection(final Line line, final Section section) {
         if (!sections.isEmpty()) {
             validateAddable(section);
 
@@ -32,7 +32,7 @@ public class Sections {
                 .ifPresent(it -> it.divideBy(section));
         }
 
-        sections.add(section);
+        section.setLine(line);
     }
 
     void removeStation(final Station station) {
@@ -114,7 +114,7 @@ public class Sections {
         return nextSections;
     }
 
-    private Set<Station> extractAllStations() {
+    Set<Station> extractAllStations() {
         return sections.stream()
             .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
             .collect(Collectors.toSet());

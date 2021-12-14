@@ -59,15 +59,15 @@ public class LineService {
 
     public void addLineStation(final Long lineId, final SectionRequest request) {
         final Line line = getLineById(lineId);
-        final Station upStation = stationService.findStationById(request.getUpStationId());
-        final Station downStation = stationService.findStationById(request.getDownStationId());
+        final Station upStation = stationService.findById(request.getUpStationId());
+        final Station downStation = stationService.findById(request.getDownStationId());
 
         line.addSection(new Section(line, upStation, downStation, request.getDistance()));
     }
 
     public void removeLineStation(final Long lineId, final Long stationId) {
         final Line line = getLineById(lineId);
-        final Station targetStation = stationService.findStationById(stationId);
+        final Station targetStation = stationService.findById(stationId);
 
         line.removeStation(targetStation);
     }

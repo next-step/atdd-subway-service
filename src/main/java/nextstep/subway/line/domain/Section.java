@@ -109,4 +109,12 @@ public class Section {
     public int getDistance() {
         return distance;
     }
+
+    void setLine(final Line line) {
+        if (this.line != null) {
+            this.line.getSections().remove(this);
+        }
+        this.line = line;
+        line.getSections().add(this);
+    }
 }
