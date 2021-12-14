@@ -122,13 +122,14 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
           - When 지하철_최적_경로_요청
           - Then 지하철_최적_경로_목록_응답됨
           - Then 지하철_최적_경로_목록_포함됨
-            - Feature : 최단 경로 조회
+      - Feature : 최단 경로 조회 시 예외처리
         - [X] Scenario: 출발역과 도착역이 같을 경우 예외처리한다.
           - Given 지하철_역_생성_요청
           - Given 지하철_노선_생성_요청
           - Given 지하철_노선에_구간_등록_요청
           - When 지하철_최적_경로_요청
           - Then 지하철_최적_경로_목록_실패됨
+      - Feature : 최단 경로 조회 시 예외처리
         - [X] Scenario: 출발역과 도착역이 연결이 되어 있지 않은 경우 예외처리한다.
           - Given 지하철_역_생성_요청
           - Given 지하철_노선_생성_요청
@@ -136,9 +137,89 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
           - Given 다른_지하철_역_노선_구간_요청
           - When 지하철_최적_경로_요청
           - Then 지하철_최적_경로_목록_실패됨
+      - Feature : 최단 경로 조회 시 예외처리
         - [X] Scenario: 존재하지 않은 출발역이나 도착역을 조회 할 경우 예외처리한다.
           - Given 지하철_역_생성_요청
           - Given 지하철_노선_생성_요청
           - Given 지하철_노선에_구간_등록_요청
           - When 등록되지_않는_도착역_지하철_최적_경로_요청
           - Then 지하철_최적_경로_목록_실패됨
+
+## 3단계 - 인증을 통한 기능 구현
+- 지난 미션 피드백 진행
+  - [X] PathService 외부 라이브러리 결합 분리
+  - [X] CustomeException 생성
+  - [X] 불필요한 static 제거
+- 요구사항 
+  - 토큰 발급 기능 (로그인) 인수 테스트 만들기
+  - 인증 - 내 정보 조회 기능 완성하기
+  - 인증 - 즐겨 찾기 기능 완성하기
+- 진행 순서
+  - 토큰 발급 관련
+    - AuthAcceptanceTest 작성 
+      - [X] Feature: 로그인 기능 
+        - Scenario: 로그인을 시도한다. 
+          - Given 회원 등록되어 있음 
+          - When 로그인 요청 
+          - Then 로그인 됨
+      - [X] Feature: 로그인 실패
+        - Scenario: 등록되지 않은 회원으로 로그인 시도한다.
+          - Given 등록되어 있지 않은 회원
+          - When 로그인 요청
+          - Then 로그인 실패
+      - [X] Feature: 로그인 실패
+        - Scenario: 입력한 정보가 등록된 정보와 다르게 로그인 시도한다.
+          - Given 회원 등록되어 있음
+          - When 로그인 요청
+          - Then 로그인 실패
+      - [X] Feature: 유효하지 않은 토큰
+        - Scenario: 유효하지 않은 토큰으로 본인 정보 조회를 요청한다.
+          - Given 유효하지 않은 토큰 발급
+          - When 본인 정보 조회 요청
+          - Then 본인 정보 조회 실패
+    - AuthServiceTest 추가 작성
+      - [X] mockitoExtension을 활용하여 단위테스트 작성
+  - 사용자 관련
+    - MemberAcceptanceTest 작성
+      - [X] Feature: 나의 정보 관리
+        - Scenario: 로그인 후 토큰 정보를 활용하여 나의 정보를 관리한다.
+          - Given 회원 등록 요청
+          - And 회원 생성됨 
+          - And 로그인 요청
+          - And 로그인 되어 있음
+          - When 본인_정보_조회_요청
+          - Then 본인_정보_조회됨
+          - When 본인_정보_수정_요청
+          - Then 본인_정보_수정됨
+          - When 본인_삭제_요청
+          - Then 본인_삭제됨
+    - MemberRepository 작성 
+      - [X] 사용자 저장, 정보 수정, 조회, 삭제 기능 작성
+    - MemberTest 작성
+      - [X] 패스워드 다르게 입력 시 예외 처리 작성
+    - 인수테스트, 단위테스트 등으로 커버가 되어서 서비스테스트는 따로 작성하지 않았음
+  - 즐겨찾기 관련
+    - FavoriteAcceptanceTest 작성 
+      - [X] Feature: 즐겨찾기를 관리한다. 
+        - Background 
+          - Given 지하철역 등록되어 있음 
+          - And 지하철 노선 등록되어 있음 
+          - And 지하철 노선에 지하철역 등록되어 있음 
+          - And 회원 등록되어 있음 
+          - And 로그인 되어있음 
+        - Scenario: 즐겨찾기를 관리 
+          - When 즐겨찾기 생성을 요청 
+          - Then 즐겨찾기 생성됨 
+          - When 즐겨찾기 목록 조회 요청 
+          - Then 즐겨찾기 목록 조회됨 
+          - When 즐겨찾기 삭제 요청 
+          - Then 즐겨찾기 삭제됨
+    - FavoriteServiceTest 작성
+      - [X] mockitoExtension을 활용하여 단위테스트 작성
+    - FavoriteRepositoryTest 작성
+      - [X] 즐겨찾기 저장, 조회, 삭제 기능 작성
+    - Favorite 
+      - [X] Repository 생성
+      - [X] Request / Response 셍성
+      - [X] Controller 생성
+      - [X] Service 생성
