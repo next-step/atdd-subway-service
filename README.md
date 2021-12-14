@@ -96,7 +96,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       Scenario: 지하철 구간 예외 발생
         When 노선에 이미 등록되어 있는 역을 등록 요청
         Then 지하철 구간 등록 실패됨
-        When 지하철 노선에 등록되지 않은 역을 등록 요청
+        When 지하철 노선과 연결되지 않는 역을 등록 요청
         Then 지하철 구간 등록 실패됨
         When 지하철 노선에 등록된 역 목록 조회 요청
         Then 등록한 지하철 구간이 반영되지 않은 역 목록이 조회됨
