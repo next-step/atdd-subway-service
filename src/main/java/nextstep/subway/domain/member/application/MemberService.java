@@ -1,5 +1,6 @@
 package nextstep.subway.domain.member.application;
 
+import nextstep.subway.domain.auth.domain.LoginMember;
 import nextstep.subway.domain.member.domain.Member;
 import nextstep.subway.domain.member.domain.MemberRepository;
 import nextstep.subway.domain.member.dto.MemberRequest;
@@ -23,6 +24,11 @@ public class MemberService {
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         return MemberResponse.of(member);
+    }
+
+    public Member findMember(LoginMember loginMember) {
+        return memberRepository.findById(loginMember.getId())
+                .orElseThrow(EntityNotFoundException::new);
     }
 
     public MemberResponse updateMember(Long id, MemberRequest param) {
