@@ -22,7 +22,6 @@ public class TestStationFactory {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
 
-        // when
         return RestAssured.given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
