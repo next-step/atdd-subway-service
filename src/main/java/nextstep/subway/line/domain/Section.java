@@ -24,7 +24,7 @@ public class Section {
 
     private int distance;
 
-    public Section() {
+    protected Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
@@ -68,5 +68,13 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public boolean isEqualToUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean isEqualToDownStation(Station station) {
+        return downStation.equals(station);
     }
 }

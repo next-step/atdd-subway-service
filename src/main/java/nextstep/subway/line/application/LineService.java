@@ -1,5 +1,14 @@
 package nextstep.subway.line.application;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -9,14 +18,6 @@ import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -30,13 +31,17 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        List<StationResponse> stations = getStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+        List<Station> stations =
+            stationService.findByIdIn(Arrays.asList(request.getUpStationId(), request.getDownStationId()));
+
+        Station upStation = stationService.findEqualToStation(stations, request.getUpStationId());
+        Station downStation = stationService.findEqualToStation(stations, request.getDownStationId());
+
+        Line transientLine =
+            new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
+        Line persistLine = lineRepository.save(transientLine);
+
+        return LineResponse.of(persistLine);
     }
 
     public List<LineResponse> findLines() {
