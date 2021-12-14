@@ -96,8 +96,6 @@ public class LineTest {
             }).withMessageMatching("이미 등록된 구간 입니다.");
     }
 
-
-
     @DisplayName("노선에 역 삭제")
     @Test
     void removeLineStation() {
