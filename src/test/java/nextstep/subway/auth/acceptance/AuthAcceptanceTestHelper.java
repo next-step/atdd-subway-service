@@ -34,6 +34,12 @@ public class AuthAcceptanceTestHelper {
         return 로그인_요청(params);
     }
 
+    public static String 토큰으로_변환(ExtractableResponse<Response> response) {
+        return response
+            .as(TokenResponse.class)
+            .getAccessToken();
+    }
+
     public static void 로그인_요청_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(TokenResponse.class)).isNotNull();
