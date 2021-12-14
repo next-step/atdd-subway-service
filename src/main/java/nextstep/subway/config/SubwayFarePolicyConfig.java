@@ -4,8 +4,8 @@ import nextstep.subway.line.application.FarePolicyHandler;
 import nextstep.subway.line.domain.fare.policy.LineAdditionalFarePolicy;
 import nextstep.subway.line.infrastructure.fare.policy.FarePolicyHandlerImpl;
 import nextstep.subway.line.domain.fare.policy.BaseFarePolicy;
-import nextstep.subway.line.infrastructure.fare.policy.AgeDiscountPolicy;
-import nextstep.subway.line.infrastructure.fare.policy.DistancePolicy;
+import nextstep.subway.line.infrastructure.fare.policy.RateDiscountPolicyCollection;
+import nextstep.subway.line.infrastructure.fare.policy.DistancePolicyCollection;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,7 +17,7 @@ public class SubwayFarePolicyConfig {
         FarePolicyHandler subwayFarePolicyHandler = new FarePolicyHandlerImpl();
         subwayFarePolicyHandler.link(additionalFarePolicy());
         subwayFarePolicyHandler.link(distanceFarePolicy());
-        subwayFarePolicyHandler.link(ageDiscountPolicy());
+        subwayFarePolicyHandler.link(rateDiscountPolicy());
 
         return subwayFarePolicyHandler;
     }
@@ -29,11 +29,11 @@ public class SubwayFarePolicyConfig {
 
     @Bean
     public BaseFarePolicy distanceFarePolicy() {
-        return new DistancePolicy();
+        return new DistancePolicyCollection();
     }
 
     @Bean
-    public BaseFarePolicy ageDiscountPolicy() {
-        return new AgeDiscountPolicy();
+    public BaseFarePolicy rateDiscountPolicy() {
+        return new RateDiscountPolicyCollection();
     }
 }

@@ -8,7 +8,7 @@ import nextstep.subway.line.infrastructure.fare.policycondition.DefaultDistanceF
 import nextstep.subway.line.infrastructure.fare.policycondition.DistanceFareFirstSectionCondition;
 import nextstep.subway.line.infrastructure.fare.policycondition.DistanceFareSecondSectionCondition;
 
-public class DistancePolicy extends DistanceFarePolicy {
+public class DistancePolicyCollection extends DistanceFarePolicy {
 
     private static final List<DistancePolicyCondition> CONDITIONS = Arrays.asList(
         DefaultDistanceFareCondition.of(),

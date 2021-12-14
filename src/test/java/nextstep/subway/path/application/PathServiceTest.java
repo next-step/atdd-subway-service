@@ -12,8 +12,8 @@ import nextstep.subway.line.application.PathSearch;
 import nextstep.subway.line.application.PathService;
 import nextstep.subway.line.application.FarePolicyHandler;
 import nextstep.subway.line.domain.fare.policy.LineAdditionalFarePolicy;
-import nextstep.subway.line.infrastructure.fare.policy.AgeDiscountPolicy;
-import nextstep.subway.line.infrastructure.fare.policy.DistancePolicy;
+import nextstep.subway.line.infrastructure.fare.policy.RateDiscountPolicyCollection;
+import nextstep.subway.line.infrastructure.fare.policy.DistancePolicyCollection;
 import nextstep.subway.line.infrastructure.fare.policy.FarePolicyHandlerImpl;
 import nextstep.subway.line.infrastructure.line.LineRepository;
 import nextstep.subway.line.dto.path.PathResponse;
@@ -44,8 +44,8 @@ class PathServiceTest {
         // given
         FarePolicyHandler subwayFarePolicyHandler = new FarePolicyHandlerImpl();
         subwayFarePolicyHandler.link(new LineAdditionalFarePolicy());
-        subwayFarePolicyHandler.link(new DistancePolicy());
-        subwayFarePolicyHandler.link(new AgeDiscountPolicy());
+        subwayFarePolicyHandler.link(new DistancePolicyCollection());
+        subwayFarePolicyHandler.link(new RateDiscountPolicyCollection());
         PathSearch pathSearch = new PathSearchImpl();
         pathService = new PathService(subwayFarePolicyHandler, lineRepository, stationService,
             pathSearch);

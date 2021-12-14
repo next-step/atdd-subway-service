@@ -16,6 +16,13 @@ public enum AgeGroup {
         this.maxRangeAge = maxRangeAge;
     }
 
+    public static AgeGroup valueOf(Age age) {
+        return Arrays.stream(values())
+            .filter(ageGroup -> ageGroup.isMatch(age))
+            .findFirst()
+            .orElse(DEFAULT);
+    }
+
     public int getMinRangeAge() {
         return minRangeAge;
     }

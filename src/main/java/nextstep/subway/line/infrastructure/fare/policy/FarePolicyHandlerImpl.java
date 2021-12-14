@@ -13,7 +13,7 @@ public class FarePolicyHandlerImpl implements FarePolicyHandler {
 
     @Override
     public Money apply(Fare fare) {
-        Money result = Money.won(0);
+        Money result = Money.ZERO;
         for (BaseFarePolicy policy : policies) {
             result = policy.getCalculateFare(fare, result);
         }
