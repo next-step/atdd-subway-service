@@ -8,13 +8,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class FareTest {
+class OverFareTest {
 
     @DisplayName("10km 이하인 경우 기본 요금만 부과된다.")
     @ParameterizedTest
     @ValueSource(ints = {1, 6, 10})
     void test_10km_이하_요금(int distance) {
-        assertThat(Fare.of(Distance.of(distance)).getFare()).isEqualTo(Fare.BASE_FARE);
+        assertThat(Fare.of(Distance.of(distance)).getFare()).isEqualTo(Fare.BASE_FARE.getFare());
     }
 
     @DisplayName("11km 이상, 50km 이하면 기본요금 + 5km당 100원의 추가 요금이 부과된다.")
