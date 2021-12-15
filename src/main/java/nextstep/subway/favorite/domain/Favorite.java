@@ -21,22 +21,22 @@ public class Favorite {
   @JoinColumn(name = "source_station_id")
   private Station sourceStation;
 
-
   @ManyToOne
   @JoinColumn(name = "target_station_id")
   private Station targetStation;
 
-  protected Favorite() {}
-
-  public Favorite(Member member, Station sourceStation, Station targetStation) {
-    this(null, member, sourceStation, targetStation);
+  protected Favorite() {
   }
 
-  public Favorite(Long id, Member member, Station sourceStation, Station targetStation) {
+  private Favorite(Long id, Member member, Station sourceStation, Station targetStation) {
     this.id = id;
     this.member = member;
     this.sourceStation = sourceStation;
     this.targetStation = targetStation;
+  }
+
+  private Favorite(Member member, Station sourceStation, Station targetStation) {
+    this(null, member, sourceStation, targetStation);
   }
 
   public static Favorite of(Member member, Station sourceStation, Station targetStation) {

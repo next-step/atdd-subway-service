@@ -18,14 +18,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("로그인 시도")
 public class AuthAcceptanceTest extends AcceptanceTest {
-  private Member 로그인_시도_회원;
+  private Member 로그인_시도_성공_회원;
   private Member 로그인_시도_실패_회원;
 
   @Override
   @BeforeEach
   public void setUp() {
     super.setUp();
-    로그인_시도_회원 = new Member("devsigner9920@gmail.com", "password", 27);
+    로그인_시도_성공_회원 = new Member("devsigner9920@gmail.com", "password", 27);
     로그인_시도_실패_회원 = new Member("devsigner9920@gmail.com", "invalidPassword", 27);
   }
 
@@ -33,8 +33,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
   @Test
   void myInfoWithBearerAuth() {
     // given
-    회원_등록되어_있음(로그인_시도_회원);
-    TokenRequest request = new TokenRequest(로그인_시도_회원.getEmail(), 로그인_시도_회원.getPassword());
+    회원_등록되어_있음(로그인_시도_성공_회원);
+    TokenRequest request = new TokenRequest(로그인_시도_성공_회원.getEmail(), 로그인_시도_성공_회원.getPassword());
 
     // when
     ExtractableResponse<Response> response = 로그인_요청(request);
@@ -47,7 +47,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
   @Test
   void myInfoWithBadBearerAuth() {
     // given
-    회원_등록되어_있음(로그인_시도_회원);
+    회원_등록되어_있음(로그인_시도_성공_회원);
     TokenRequest request = new TokenRequest(로그인_시도_실패_회원.getEmail(), 로그인_시도_실패_회원.getPassword());
 
     // when
@@ -61,8 +61,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
   @Test
   void myInfoWithWrongBearerAuth() {
     // given
-    회원_등록되어_있음(로그인_시도_회원);
-    로그인되어_있음(로그인_시도_회원);
+    회원_등록되어_있음(로그인_시도_성공_회원);
+    로그인되어_있음(로그인_시도_성공_회원);
     String 유효하지_않은_토큰 = "invalidToken";
 
     // when

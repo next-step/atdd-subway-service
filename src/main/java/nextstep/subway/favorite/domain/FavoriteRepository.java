@@ -9,5 +9,4 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
   List<Favorite> findAllByMemberId(Long memberId);
   List<Favorite> findByMemberId(Long memberId);
   Optional<Favorite> findByIdAndMemberId(Long favoriteId, Long memberId);
-
 }
