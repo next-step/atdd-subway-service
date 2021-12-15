@@ -23,13 +23,6 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findShortestPath(@RequestParam("sourceId") Long sourceId,
-                                                         @RequestParam("targetId") Long targetId) {
-        PathResponse path = pathService.findPath(new NonLoginMember(), sourceId, targetId);
-        return ResponseEntity.ok(path);
-    }
-
-    @GetMapping(value = "/login")
     public ResponseEntity<PathResponse> findShortestPath(@AuthenticationPrincipal LoginMember loginMember,
                                                          @RequestParam("sourceId") Long sourceId,
                                                          @RequestParam("targetId") Long targetId) {

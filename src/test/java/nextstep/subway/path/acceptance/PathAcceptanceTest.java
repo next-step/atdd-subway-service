@@ -130,7 +130,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .queryParam("targetId", target.getId())
                 .auth().oauth2(token.getAccessToken())
                 .when()
-                .get("/paths/login")
+                .get("/paths")
                 .then().log().all()
                 .extract();
     }

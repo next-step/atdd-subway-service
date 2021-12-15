@@ -25,7 +25,7 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public <T> PathResponse findPath(T member, Long sourceId, Long targetId) {
+    public PathResponse findPath(LoginMember member, Long sourceId, Long targetId) {
         List<Line> lines = lineRepository.findAll();
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);

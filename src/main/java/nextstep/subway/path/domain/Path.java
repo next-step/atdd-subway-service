@@ -6,7 +6,6 @@ import nextstep.subway.path.domain.fare.Fare;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static nextstep.subway.path.application.exception.InvalidPathException.NOT_EXIST_STATION;
@@ -23,11 +22,11 @@ public class Path {
         this.distance = distance;
     }
 
-    public <T> void calculateFare(T member, List<Line> lines) {
+    public void calculateFare(LoginMember member, List<Line> lines) {
         this.fare = new Fare();
         this.fare = fare.extraFare(distance, getLineFare(lines));
-        if (member instanceof LoginMember) {
-            this.fare = fare.discount(((LoginMember) member).getAge());
+        if (member.isRequired()) {
+            this.fare = fare.discount(member.getAge());
         }
     }
 
