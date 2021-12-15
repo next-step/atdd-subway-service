@@ -16,7 +16,8 @@ public enum ErrorCode {
     , NOT_FOUND_STATION_ID("0301", "존재하지 않는 역ID 입니다.")
 
     // 경로 [04xx]
-    , INVALID_PATH("0401", "출발역과 도착역은 같을 수 없습니다.");
+    , INVALID_PATH("0401", "출발역과 도착역은 같을 수 없습니다.")
+    , UNCOUPLED_PATH("0402", "출발역과 도착역이 연결이 되어 있지 않습니다.");
 
     private final String code;
     private final String message;

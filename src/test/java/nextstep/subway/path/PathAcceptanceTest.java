@@ -90,13 +90,28 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("출발역과 도착역이 같은 경우 최단 경로 조회를 실패한다.")
     @Test
-    void invalidPathRequest() {
+    void invalidPath() {
         // given
         Long source = 강남역.getId();
         Long target = 강남역.getId();
 
         // when
         ExtractableResponse<Response> response = 최단_경로_조회(source, target);
+
+        // then
+        최단_경로_조회_실패됨(response);
+    }
+
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우 최단 경로 조회를 실패한다.")
+    @Test
+    void uncoupledPath() {
+        // given
+        StationResponse 야탑역 = 지하철역_등록되어_있음("야탑역");
+        StationResponse 서현역 = 지하철역_등록되어_있음("서현역");
+        지하철_노선_등록되어_있음("분당선", "bg-yellow-600", 야탑역, 서현역, 10);
+
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 야탑역.getId());
 
         // then
         최단_경로_조회_실패됨(response);
