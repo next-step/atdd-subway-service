@@ -17,23 +17,24 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-    private int extraFare;
+    @Embedded
+    private Money money;
     @Embedded
     private Sections sections = new Sections();
 
     public Line() {
     }
 
-    public Line(String name, String color, int extraFare) {
+    public Line(String name, String color, int money) {
         this.name = name;
         this.color = color;
-        this.extraFare = extraFare;
+        this.money = new Money(money);
     }
 
-    public Line(String name, String color, int extraFare, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, int money, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        this.extraFare = extraFare;
+        this.money = new Money(money);
         addSection(new Section(upStation, downStation, distance));
     }
 
@@ -90,7 +91,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public int getExtraFare() {
-        return extraFare;
+    public Money getMoney() {
+        return money;
     }
 }

@@ -1,17 +1,19 @@
 package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Money;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class LineResponse {
     private Long id;
     private String name;
     private String color;
-    private int extraFare;
+    private Money money;
     private List<StationResponse> stations;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
@@ -19,11 +21,11 @@ public class LineResponse {
     public LineResponse() {
     }
 
-    public LineResponse(Long id, String name, String color, int extraFare, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public LineResponse(Long id, String name, String color, Money money, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.extraFare = extraFare;
+        this.money = money;
         this.stations = stations;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
@@ -33,7 +35,7 @@ public class LineResponse {
         return new LineResponse(line.getId(),
                                 line.getName(),
                                 line.getColor(),
-                                line.getExtraFare(),
+                                line.getMoney(),
                                 line.getStations().stream()
                                     .map(StationResponse::of)
                                     .collect(Collectors.toList()),
@@ -59,8 +61,8 @@ public class LineResponse {
         return color;
     }
 
-    public int getExtraFare() {
-        return extraFare;
+    public int getMoney() {
+        return money.getMoney();
     }
 
     public List<StationResponse> getStations() {

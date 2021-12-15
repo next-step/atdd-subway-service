@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Money;
 import nextstep.subway.path.domain.fare.Fare;
 import nextstep.subway.station.domain.Station;
 
@@ -34,7 +35,8 @@ public class Path {
         List<Line> extraFareLines = lineOnPath(lines);
 
         return extraFareLines.stream()
-                .mapToInt(Line::getExtraFare)
+                .map(Line::getMoney)
+                .mapToInt(Money::getMoney)
                 .max()
                 .orElse(0);
     }

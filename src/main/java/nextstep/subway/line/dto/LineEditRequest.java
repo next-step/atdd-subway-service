@@ -5,23 +5,23 @@ import nextstep.subway.line.domain.Line;
 public class LineEditRequest {
     private String name;
     private String color;
-    private int extraFare;
+    private int money;
 
     public LineEditRequest() {
     }
 
-    public LineEditRequest(String name, String color, int extraFare) {
+    public LineEditRequest(String name, String color, int money) {
         this.name = name;
         this.color = color;
-        this.extraFare = extraFare;
+        this.money = money;
     }
 
-    public static LineEditRequest of(String name, String color, int extraFare) {
-        return new LineEditRequest(name, color, extraFare);
+    public static LineEditRequest of(String name, String color, int money) {
+        return new LineEditRequest(name, color, money);
     }
 
     public Line toLine() {
-        return new Line(name, color, extraFare);
+        return new Line(name, color, money);
     }
 
     public String getName() {
@@ -32,8 +32,8 @@ public class LineEditRequest {
         return color;
     }
 
-    public int getExtraFare() {
-        return extraFare;
+    public int getMoney() {
+        return money;
     }
 }
 

@@ -119,8 +119,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return response.header("Location");
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, int extraFare, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, extraFare, upStation.getId(), downStation.getId(), distance);
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, int money, StationResponse upStation, StationResponse downStation, int distance) {
+        LineRequest lineRequest = new LineRequest(name, color, money, upStation.getId(), downStation.getId(), distance);
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest);
         return response.as(LineResponse.class);
     }
