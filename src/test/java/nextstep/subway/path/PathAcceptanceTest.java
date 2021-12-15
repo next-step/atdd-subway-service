@@ -117,6 +117,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회_실패됨(response);
     }
 
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우 최단 경로 조회를 실패한다.")
+    @Test
+    void notFoundPath() {
+        // given
+        Long target = 100L;
+
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), target);
+
+        // then
+        최단_경로_조회_요청한_역_없음(response);
+    }
+
     private ExtractableResponse<Response> 최단_경로_조회(Long source, Long target) {
         Map<String, Long> queryParams = new HashMap<>();
         queryParams.put("source", source);
@@ -153,5 +166,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void 최단_경로_조회_요청한_역_없음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }
