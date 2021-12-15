@@ -8,7 +8,6 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -63,11 +62,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void shortestPath1() {
         // given
-        PathRequest pathRequest = new PathRequest(강남역.getId(), 교대역.getId());
+        Long source = 강남역.getId();
+        Long target = 교대역.getId();
         PathResponse pathResponse = PathResponse.of(Arrays.asList(강남역, 교대역), 10);
 
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회(pathRequest);
+        ExtractableResponse<Response> response = 최단_경로_조회(source, target);
 
         // then
         최단_경로_조회됨(response, pathResponse);
@@ -77,20 +77,35 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void shortestPath2() {
         // given
-        PathRequest pathRequest = new PathRequest(강남역.getId(), 남부터미널역.getId());
+        Long source = 강남역.getId();
+        Long target = 남부터미널역.getId();
         PathResponse pathResponse = PathResponse.of(Arrays.asList(강남역, 양재역, 남부터미널역), 12);
 
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회(pathRequest);
+        ExtractableResponse<Response> response = 최단_경로_조회(source, target);
 
         // then
         최단_경로_조회됨(response, pathResponse);
     }
 
-    private ExtractableResponse<Response> 최단_경로_조회(PathRequest pathRequest) {
+    @DisplayName("출발역과 도착역이 같은 경우 최단 경로 조회를 실패한다.")
+    @Test
+    void invalidPathRequest() {
+        // given
+        Long source = 강남역.getId();
+        Long target = 강남역.getId();
+
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회(source, target);
+
+        // then
+        최단_경로_조회_실패됨(response);
+    }
+
+    private ExtractableResponse<Response> 최단_경로_조회(Long source, Long target) {
         Map<String, Long> queryParams = new HashMap<>();
-        queryParams.put("source", pathRequest.getSource());
-        queryParams.put("target", pathRequest.getTarget());
+        queryParams.put("source", source);
+        queryParams.put("target", target);
 
         return RestAssured
                 .given().log().all()
@@ -119,5 +134,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
                 , () -> assertThat(response.as(PathResponse.class)).isEqualTo(expect)
         );
+    }
+
+    private void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

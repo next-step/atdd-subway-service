@@ -13,7 +13,10 @@ public enum ErrorCode {
     , INVALID_SECTION_DISTANCE("0204", "역과 역 사이의 거리보다 좁은 거리를 입력해주세요")
 
     // 역 [03xx]
-    , NOT_FOUND_STATION_ID("0301", "존재하지 않는 역ID 입니다.");
+    , NOT_FOUND_STATION_ID("0301", "존재하지 않는 역ID 입니다.")
+
+    // 경로 [04xx]
+    , INVALID_PATH("0401", "출발역과 도착역은 같을 수 없습니다.");
 
     private final String code;
     private final String message;
