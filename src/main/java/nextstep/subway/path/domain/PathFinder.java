@@ -1,12 +1,10 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.auth.domain.LoginMemberDiscountType;
 import nextstep.subway.common.exception.CyclePathException;
 import nextstep.subway.common.exception.NotFoundEntityException;
 import nextstep.subway.common.exception.UnconnectedStationException;
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.DistanceFeeType;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -41,10 +39,10 @@ public class PathFinder {
         int maxExtraFee = sections.stream().mapToInt(Section::getExtraFee).max().orElse(0);
         DistanceFeeType distanceFeeType = DistanceFeeType.getDistanceFeeType(distance);
         int distanceFee = DistanceFeeType.calculateOverFare(distance, distanceFeeType) + maxExtraFee;
-        LoginMemberDiscountType loginMemberDiscountType =
-                LoginMemberDiscountType.getLoginMemberDiscountType(loginMember.getAge());
+        DiscountAgeType discountAgeType =
+                DiscountAgeType.getDiscountAgeType(loginMember.getAge());
 
-        return LoginMemberDiscountType.calculateMemberDiscountPrice(distanceFee, loginMemberDiscountType);
+        return DiscountAgeType.getDiscountedPrice(distanceFee, discountAgeType);
     }
 
     private void validateSameStation(Station sourceStation, Station targetStation) {

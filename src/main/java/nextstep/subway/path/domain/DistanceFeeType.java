@@ -1,6 +1,4 @@
-package nextstep.subway.line.domain;
-
-import com.sun.org.apache.bcel.internal.generic.RETURN;
+package nextstep.subway.path.domain;
 
 public enum DistanceFeeType {
     NONE(0, 1.0),
