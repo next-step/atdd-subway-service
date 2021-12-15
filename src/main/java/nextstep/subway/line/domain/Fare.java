@@ -34,6 +34,10 @@ public class Fare {
         return new Fare(this.amount.subtract(amount.amount));
     }
 
+    public BigDecimal value() {
+        return amount;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

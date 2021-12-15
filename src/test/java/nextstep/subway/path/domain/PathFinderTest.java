@@ -48,7 +48,7 @@ class PathFinderTest {
 
         // then
         Assertions.assertThat(actual.getStations()).hasSize(3);
-        Assertions.assertThat(actual.getDistance()).isEqualTo(12);
+        Assertions.assertThat(actual.getDistance().value()).isEqualTo(12);
     }
 
     @Test

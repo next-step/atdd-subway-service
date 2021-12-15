@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -57,6 +58,7 @@ class PathServiceTest {
                 .extracting("name")
                 .containsExactlyElementsOf(Arrays.asList("강남역", "양재역", "양재시민의숲"));
         Assertions.assertThat(path.getDistance()).isEqualTo(12);
+        Assertions.assertThat(path.getFare()).isEqualTo(BigDecimal.valueOf(1250));
     }
 
     private void givenStation(long id, String name) {
