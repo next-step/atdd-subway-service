@@ -16,8 +16,8 @@ import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
-    public static final String ERROR_NONE_MATCHED_STATIONS = "등록할 수 없는 구간 입니다.";
-    public static final String ERROR_ALREADY_ADDED_SECTION = "이미 등록된 구간 입니다.";
+    private static final String ERROR_NONE_MATCHED_STATIONS = "등록할 수 없는 구간 입니다.";
+    private static final String ERROR_ALREADY_ADDED_SECTION = "이미 등록된 구간 입니다.";
     private static final String ERROR_CANNOT_DELETE = "더 이상 삭제할 수 없습니다.";
     private static final String ERROR_NOT_CONTAINS_STATION = "해당 역은 포함되어 있지 않습니다.";
     private static final int SECTIONS_MIN_SIZE = 1;
