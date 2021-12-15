@@ -27,11 +27,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	private static final Integer AGE = 33;
 
 	@BeforeEach
-	@Override
 	public void setUp() {
 		super.setUp();
-		MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+		회원_등록_되어있음();
 	}
+
 
 	@DisplayName("Bearer Auth")
 	@Test
@@ -76,13 +76,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		내_정보_조회_실패(response);
 	}
 
-	private void 로그인_성공(ExtractableResponse<Response> response) {
+	private ExtractableResponse<Response> 회원_등록_되어있음() {
+		return MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+	}
+
+	public static void 로그인_성공(ExtractableResponse<Response> response) {
 		TokenResponse tokenResponse = response.as(TokenResponse.class);
 		assertThat(tokenResponse).isNotNull();
 		assertThat(tokenResponse.getAccessToken()).isNotBlank();
 	}
 
-	private ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
+	public static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
 		return RestAssured.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(tokenRequest)
@@ -91,11 +95,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 			.extract();
 	}
 
-	private void 로그인_실패(ExtractableResponse<Response> response) {
+	public static void 로그인_실패(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
-	private ExtractableResponse<Response> 내_정보_조회_요청(String loginToken) {
+	public static ExtractableResponse<Response> 내_정보_조회_요청(String loginToken) {
 		return RestAssured.given().log().all()
 			.auth().oauth2(loginToken)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
@@ -104,7 +108,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 			.extract();
 	}
 
-	private void 내_정보_조회_실패(ExtractableResponse<Response> response) {
+	public static void 내_정보_조회_실패(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 
