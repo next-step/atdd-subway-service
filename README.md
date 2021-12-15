@@ -80,7 +80,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### 4단계 - 요금 조회
 - [x] 경로 조회 시 거리 기준 요금 정보 포함하기
-- [ ] 노선별 추가 요금 정책 추가
+- [x] 노선별 추가 요금 정책 추가
 - [ ] 연령별 할인 정책 추가
   - [ ] 청소년 (6세 이상 ~ 13세 미만)
   - [ ] 어린이 (13세 이상 ~ 19세 미만)

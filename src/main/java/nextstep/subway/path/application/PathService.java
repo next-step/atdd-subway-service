@@ -31,7 +31,7 @@ public class PathService {
         Station upStation = stationService.findStationById(sourceStationId);
         Station downStation = stationService.findStationById(targetStationId);
         Path path = pathFinder.findShortestPath(upStation, downStation);
-        Fare fare = Fare.of(path.getDistance());
+        Fare fare = Fare.of(path.getDistance(), path.additionalFare());
         return PathResponse.of(path, fare);
     }
 }

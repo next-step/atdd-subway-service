@@ -30,4 +30,12 @@ class FareTest {
     void test_51km이상_요금(int distance, int expectedFare) {
         assertThat(Fare.of(Distance.of(distance)).getFare()).isEqualTo(expectedFare);
     }
+
+    @DisplayName("별도의 추가 요금이 있는 경우, 함께 부과된다.")
+    @ParameterizedTest
+    @CsvSource(value = {"10:300:1550", "15:500:1850", "50:1000:3050"}, delimiter = ':')
+    void test_별도_추가_요금(int distance, int additionalFare, int expectedFare) {
+        assertThat(Fare.of(Distance.of(distance), additionalFare).getFare()).isEqualTo(
+            expectedFare);
+    }
 }

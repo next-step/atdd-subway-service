@@ -16,6 +16,13 @@ public class Fare {
         return new Fare(BASE_FARE + OverFarePolicy.calculateOverFare(distance.getDistance()));
     }
 
+    public static Fare of(final Distance distance, final int additionalFare) {
+        return new Fare(BASE_FARE
+            + OverFarePolicy.calculateOverFare(distance.getDistance())
+            + additionalFare
+        );
+    }
+
     public int getFare() {
         return fare;
     }
