@@ -11,6 +11,7 @@ import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.MemberAcceptanceTest;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.assertj.core.api.ListAssert;
@@ -19,7 +20,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 @DisplayName("지하철 경로 조회")
@@ -67,8 +71,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void searchPath() {
         LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        ExtractableResponse<Response> searchResponse = 지하철_경로를_지하철_출발역_도착역으로_경로_조회_요청(강남역, 남부터미널역);
-        최단_경로를_반영한_역들이_조회됨(searchResponse, 강남역, 양재역, 남부터미널역);
+
+        ExtractableResponse<Response> searchResponse = 지하철_경로를_지하철_출발역_도착역으로_경로_조회_요청_비로그인(강남역, 남부터미널역);
+        최단_경로를_반영한_역들_거리_요금이_조회됨(searchResponse, 12, 2250, 강남역, 양재역, 남부터미널역);
+
+        ExtractableResponse<Response> searchResponse2 = 지하철_경로를_지하철_출발역_도착역으로_경로_조회_요청_로그인(강남역, 남부터미널역);
+        최단_경로를_반영한_역들_거리_요금이_조회됨(searchResponse2, 12, 950, 강남역, 양재역, 남부터미널역);
 
         ExtractableResponse<Response> searchResponseSameStation = 지하철_경로를_지하철_출발역_도착역으로_경로_조회_요청(강남역, 강남역);
         최단_경로_조회_실패(searchResponseSameStation);
@@ -84,8 +92,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
-    private ListAssert<StationResponse> 최단_경로를_반영한_역들이_조회됨(ExtractableResponse<Response> searchResponse, StationResponse... stationResponses) {
-        return assertThat(searchResponse.jsonPath().getList("stations", StationResponse.class)).containsExactly(stationResponses);
+    private void 최단_경로를_반영한_역들_거리_요금이_조회됨(ExtractableResponse<Response> searchResponse, int distance, int fare, StationResponse... stationResponses) {
+        PathResponse pathResponse = searchResponse.as(PathResponse.class);
+        assertAll(
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(distance),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(fare),
+                () -> assertThat(pathResponse.getStations()).containsExactly(stationResponses)
+        );
+    }
+
+    private ExtractableResponse<Response> 지하철_경로를_지하철_출발역_도착역으로_경로_조회_요청_비로그인(StationResponse source, StationResponse target) {
+        return ApiRequest.get("/paths?source=" + source.getId() + "&target=" + target.getId());
+    }
+
+    private ExtractableResponse<Response> 지하철_경로를_지하철_출발역_도착역으로_경로_조회_요청_로그인(StationResponse source, StationResponse target) {
+        return ApiRequest.get("/paths?source=" + source.getId() + "&target=" + target.getId(), token.getAccessToken());
     }
 
     private ExtractableResponse<Response> 지하철_경로를_지하철_출발역_도착역으로_경로_조회_요청(StationResponse source, StationResponse target) {

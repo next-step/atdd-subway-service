@@ -28,6 +28,10 @@ public enum AgeDiscountType {
     }
 
     public static int getDiscountedPrice(int price, AgeDiscountType ageDiscountType) {
+        if (ageDiscountType == AgeDiscountType.NONE) {
+            return price;
+        }
+
         return (int) ((price - BASE_DISCOUNT_FEE) * (1.0 - ageDiscountType.discountPercentage));
     }
 }
