@@ -1,5 +1,6 @@
 package nextstep.subway.station.application;
 
+import nextstep.subway.error.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
@@ -35,11 +36,8 @@ public class StationService {
     stationRepository.deleteById(id);
   }
 
-  public Station findStationById(Long id) {
-    return stationRepository.findById(id).orElseThrow(RuntimeException::new);
-  }
-
   public Station findById(Long id) {
-    return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+    return stationRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("해당 지하철 역을 찾을 수 없습니다."));
   }
 }

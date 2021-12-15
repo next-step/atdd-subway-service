@@ -1,6 +1,6 @@
 package nextstep.subway.favorite.application;
 
-import nextstep.subway.ServiceException;
+import nextstep.subway.error.exception.BusinessException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -51,18 +51,18 @@ public class FavoriteService {
   @Transactional
   public void deleteFavorite(Long favoriteId, Long memberId) {
     Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, memberId)
-            .orElseThrow(() -> new ServiceException(HttpStatus.BAD_REQUEST, "해당 즐겨찾기 항목은 삭제할 수 없습니다."));
+            .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, "해당 즐겨찾기 항목은 삭제할 수 없습니다."));
     favoriteRepository.delete(favorite);
   }
 
   private Station findStation(Long stationId) {
     return stationRepository.findById(stationId)
-            .orElseThrow(() -> new ServiceException(HttpStatus.BAD_REQUEST, "등록되지 않은 지하철역을 즐겨찾기 추가할 수 없습니다."));
+            .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, "등록되지 않은 지하철역을 즐겨찾기 추가할 수 없습니다."));
   }
 
   private Member findMember(Long loginMemberId) {
     return memberRepository.findById(loginMemberId)
-            .orElseThrow(() -> new ServiceException(HttpStatus.BAD_REQUEST, "잘못된 접근 요청입니다."));
+            .orElseThrow(() -> new BusinessException(HttpStatus.BAD_REQUEST, "잘못된 접근 요청입니다."));
   }
 
   private void checkCreationDuplicate(Long loginMemberId, Station sourceStation, Station targetStation) {

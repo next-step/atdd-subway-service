@@ -1,6 +1,6 @@
 package nextstep.subway.favorite.domain;
 
-import nextstep.subway.ServiceException;
+import nextstep.subway.error.exception.BusinessException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.springframework.http.HttpStatus;
@@ -61,7 +61,7 @@ public class Favorite {
 
   public void checkDuplicate(Station sourceStation, Station targetStation) {
     if (this.sourceStation.equals(sourceStation) && this.targetStation.equals(targetStation)) {
-      throw new ServiceException(HttpStatus.BAD_REQUEST, "동일한 출발역과 목적역이 설정된 즐겨찾기 항목이 있습니다.");
+      throw new BusinessException(HttpStatus.BAD_REQUEST, "동일한 출발역과 목적역이 설정된 즐겨찾기 항목이 있습니다.");
     }
   }
 }

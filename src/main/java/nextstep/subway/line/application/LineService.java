@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.error.exception.NotFoundException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -72,19 +73,19 @@ public class LineService {
   @Transactional
   public void addLineStation(Long lineId, SectionRequest request) {
     Line line = findLineById(lineId);
-    Station upStation = stationService.findStationById(request.getUpStationId());
-    Station downStation = stationService.findStationById(request.getDownStationId());
+    Station upStation = stationService.findById(request.getUpStationId());
+    Station downStation = stationService.findById(request.getDownStationId());
     line.addSection(Section.of(upStation, downStation, Distance.of(request.getDistance())));
   }
 
   @Transactional
   public void removeLineStation(Long lineId, Long stationId) {
     Line line = findLineById(lineId);
-    Station station = stationService.findStationById(stationId);
+    Station station = stationService.findById(stationId);
     line.removeStation(station);
   }
 
   private Line findLine(Long id) {
-    return lineRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않은 지하철 역입니다."));
+    return lineRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않은 지하철 역입니다."));
   }
 }

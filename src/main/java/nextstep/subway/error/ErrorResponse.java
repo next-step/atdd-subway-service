@@ -1,4 +1,4 @@
-package nextstep.subway;
+package nextstep.subway.error;
 
 public class ErrorResponse {
   private final String message;

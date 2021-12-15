@@ -1,11 +1,11 @@
-package nextstep.subway;
+package nextstep.subway.error.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class ServiceException extends RuntimeException {
+public class BusinessException extends RuntimeException {
   private final HttpStatus status;
 
-  public ServiceException(HttpStatus status, String message) {
+  public BusinessException(HttpStatus status, String message) {
     super(message);
     this.status = status;
   }
