@@ -84,7 +84,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 - [ ] 최단 경로 조회 인수 테스트 만들기
 
-    - [ ] 출발역과 도착역의 최단 경로
+    - [x] 출발역과 도착역의 최단 경로
 
     - [ ] 출발역과 도착역이 같은 경우
 
@@ -94,7 +94,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 - [ ] 최단 경로 조회 기능 구현하기
 
-    - [ ] 출발역과 도착역의 최단 경로 조회
+    - [x] 출발역과 도착역의 최단 경로 조회
 
     - [ ] 출발역과 도착역이 같은 경우 예외 처리
 

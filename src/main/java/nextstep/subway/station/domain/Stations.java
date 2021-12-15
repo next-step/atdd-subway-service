@@ -8,7 +8,23 @@ import java.util.stream.Collectors;
 
 public class Stations {
 
-    private final List<Station> stations = new ArrayList<>();
+    private final List<Station> stations;
+
+    private Stations() {
+        this.stations = new ArrayList<>();
+    }
+
+    private Stations(List<Station> stations) {
+        this.stations = stations;
+    }
+
+    public static Stations of(List<Station> stations) {
+        return new Stations(stations);
+    }
+
+    public static Stations empty() {
+        return new Stations();
+    }
 
     public List<Station> getStations() {
         return stations;
