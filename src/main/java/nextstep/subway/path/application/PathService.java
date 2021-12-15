@@ -15,11 +15,11 @@ import java.util.List;
 @Transactional
 public class PathService {
     private final StationRepository stationRepository;
+
     private final LineRepository lineRepository;
 
     private final PathFinder pathFinder;
 
-    @Autowired
     public PathService(StationRepository stationRepository, LineRepository lineRepository, PathFinder pathFinder) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;

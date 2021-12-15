@@ -42,6 +42,7 @@ class JGraphTPathFinderTest {
         lines.add(삼호선);
     }
 
+    @DisplayName("최단거리 순서대로 역을 리턴한다1")
     @Test
     void findPath() {
         JGraphTPathFinder jGraphTPathFinder = new JGraphTPathFinder();
@@ -53,6 +54,7 @@ class JGraphTPathFinderTest {
                 .containsExactlyElementsOf(Arrays.asList("강남역", "양재역", "남부터미널역"));
     }
 
+    @DisplayName("최단거리 순서대로 역을 리턴한다2")
     @Test
     void findPath2() {
         JGraphTPathFinder jGraphTPathFinder = new JGraphTPathFinder();

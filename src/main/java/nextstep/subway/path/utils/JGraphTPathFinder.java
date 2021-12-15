@@ -22,13 +22,23 @@ public class JGraphTPathFinder implements PathFinder {
     @Override
     public PathResponse findPath(List<Line> lines, Long sourceId, Long targetId) {
         validateSameSourceTarget(sourceId, targetId);
+        DijkstraShortestPath dijkstraShortestPath = getDijkstraShortestPath(lines);
+        List<StationResponse> stations = getShortestPathStationResponses(lines, sourceId, targetId, dijkstraShortestPath);
+        int pathWeight = (int) dijkstraShortestPath.getPathWeight(String.valueOf(sourceId), String.valueOf(targetId));
+        return new PathResponse(stations, pathWeight);
+    }
+
+    private List<StationResponse> getShortestPathStationResponses(List<Line> lines, Long sourceId, Long targetId, DijkstraShortestPath dijkstraShortestPath) {
+        List<String> shortestPath = getShortestPath(String.valueOf(sourceId), String.valueOf(targetId), dijkstraShortestPath);
+        List<StationResponse> stations = getPathStationResponses(lines, shortestPath);
+        return stations;
+    }
+
+    private DijkstraShortestPath getDijkstraShortestPath(List<Line> lines) {
         WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         makeGraph(lines, graph);
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        List<String> shortestPath = getShortestPath(String.valueOf(sourceId), String.valueOf(targetId), dijkstraShortestPath);
-        List<StationResponse> stations = getPathStationResponses(lines, shortestPath);
-        int pathWeight = (int) dijkstraShortestPath.getPathWeight(String.valueOf(sourceId), String.valueOf(targetId));
-        return new PathResponse(stations, pathWeight);
+        return dijkstraShortestPath;
     }
 
     private List<String> getShortestPath(String source, String target, DijkstraShortestPath dijkstraShortestPath) {
