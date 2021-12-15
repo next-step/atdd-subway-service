@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Arrays;
 
 @Entity
 public class Section {
@@ -22,16 +23,21 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(final Line line, final Station upStation, final Station downStation, final Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section of(final Line line, final Station upStation, final Station downStation, final Distance distance) {
+        return new Section(line, upStation, downStation, distance);
     }
 
     public Long getId() {
@@ -50,23 +56,55 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public boolean connectable(final Section section) {
+        if (this.equals(section)) {
+            return false;
         }
-        this.upStation = station;
-        this.distance -= newDistance;
+
+        long matchCount = Arrays.asList(upStation, downStation)
+                .stream()
+                .filter(station -> this.hasMatchedStation(station, section))
+                .count();
+
+        return matchCount == 1;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
+    private boolean hasMatchedStation(final Station station, final Section section) {
+        return !(station.equals(section.getUpStation()) && station.equals(section.getDownStation()))
+                && (station.equals(section.getUpStation()) || station.equals(section.getDownStation()));
     }
+
+    public void substractDistance(final Section section) {
+        if (this.upStation.equals(section.getUpStation())) {
+            this.upStation = section.getDownStation();
+            this.distance = this.distance.subtract(section.getDistance());
+        }
+
+        if (this.downStation.equals(section.getDownStation())) {
+            this.downStation = section.getUpStation();
+            this.distance = this.distance.subtract(section.getDistance());
+        }
+    }
+
+    public boolean hasStation(final Station station) {
+        return this.hasUpStation(station) || this.hasDownStation(station);
+    }
+
+    public boolean hasUpStation(final Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean hasDownStation(final Station station) {
+        return this.downStation.equals(station);
+    }
+
+    public void merge(final Section mergeSection) {
+        this.downStation = mergeSection.getDownStation();
+        this.distance = this.distance.add(mergeSection.getDistance());
+    }
+
 }
