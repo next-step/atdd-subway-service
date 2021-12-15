@@ -22,6 +22,7 @@ public class Line extends BaseEntity {
     private Sections sections;
 
     public Line() {
+        sections = new Sections();
     }
 
     public Line(String name, String color) {
