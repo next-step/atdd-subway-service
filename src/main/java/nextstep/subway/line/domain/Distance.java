@@ -6,14 +6,18 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Distance {
     public static final String ERROR_INVALID_DISTANCE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
+    private static final String ERROR_MINUS_DISTANCE = "거리는 0보다 큰 값을 입력해주세요.";
     @Column
-    private int distance;
+    private final int distance;
 
     public Distance() {
-
+        this.distance = 0;
     }
 
     public Distance(int distance) {
+        if (isMinusOrZero(distance)) {
+            throw new IllegalArgumentException(ERROR_MINUS_DISTANCE);
+        }
         this.distance = distance;
     }
 
@@ -31,6 +35,10 @@ public class Distance {
 
     public Distance plus(Distance plusDistance) {
         return new Distance(this.distance + plusDistance.distance);
+    }
+
+    private boolean isMinusOrZero(int distance) {
+        return distance <= 0;
     }
 
     private boolean isSameOrFarther(Distance target) {

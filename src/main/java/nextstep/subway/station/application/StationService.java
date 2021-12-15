@@ -12,7 +12,7 @@ import nextstep.subway.station.dto.StationResponse;
 
 @Service
 public class StationService {
-    private StationRepository stationRepository;
+    private final StationRepository stationRepository;
 
     public StationService(StationRepository stationRepository) {
         this.stationRepository = stationRepository;
@@ -27,7 +27,7 @@ public class StationService {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-            .map(station -> StationResponse.of(station))
+            .map(StationResponse::of)
             .collect(Collectors.toList());
     }
 
@@ -37,22 +37,7 @@ public class StationService {
 
     public Station findStationById(Long id) {
         return stationRepository.findById(id)
-            .orElseThrow(RuntimeException::new);
+            .orElseThrow(IllegalArgumentException::new);
     }
 
-    public Station findById(Long id) {
-        return stationRepository.findById(id)
-            .orElseThrow(RuntimeException::new);
-    }
-
-    public List<Station> findByIdIn(List<Long> ids) {
-        return stationRepository.findByIdIn(ids);
-    }
-
-    public Station findEqualToStation(List<Station> stations, Long stationId) {
-        return stations.stream()
-            .filter(it -> it.isEqualId(stationId))
-            .findAny()
-            .orElseThrow(RuntimeException::new);
-    }
 }

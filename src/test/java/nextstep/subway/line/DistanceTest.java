@@ -65,4 +65,18 @@ public class DistanceTest {
         //then
         assertThat(count).isEqualTo(15);
     }
+
+    @DisplayName("거리 더하기 - 음수값 입력")
+    @Test
+    void invalidPlusNegativeNumber() {
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> {
+                //given
+                Distance distance = new Distance(10);
+                Distance plusDistance = new Distance(-5);
+
+                //when
+                distance.plus(plusDistance);
+            }).withMessageMatching("거리는 0보다 큰 값을 입력해주세요.");
+    }
 }

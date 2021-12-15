@@ -18,8 +18,8 @@ import nextstep.subway.station.domain.Station;
 @Service
 @Transactional
 public class LineService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
     public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
@@ -27,11 +27,8 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        List<Station> stations =
-            stationService.findByIdIn(Arrays.asList(request.getUpStationId(), request.getDownStationId()));
-
-        Station upStation = stationService.findEqualToStation(stations, request.getUpStationId());
-        Station downStation = stationService.findEqualToStation(stations, request.getDownStationId());
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
 
         Line transientLine =
             new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
@@ -69,11 +66,8 @@ public class LineService {
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
 
-        List<Station> stations
-            = stationService.findByIdIn(Arrays.asList(request.getUpStationId(), request.getDownStationId()));
-
-        Station upStation = stationService.findEqualToStation(stations, request.getUpStationId());
-        Station downStation = stationService.findEqualToStation(stations, request.getDownStationId());
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
 
         line.addSection(upStation, downStation, request.getDistance());
     }

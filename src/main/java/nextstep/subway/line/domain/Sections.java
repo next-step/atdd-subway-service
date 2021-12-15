@@ -1,11 +1,10 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,30 +38,63 @@ public class Sections {
     private void updateSection(Section section) {
         checkStationOfSection(section);
 
-        findSameUpStation(section.getUpStation()).ifPresent(it -> {
-            it.updateUpStationMinus(section);
+        if (updatedOfUpStationToMinus(section)) {
             return;
-        });
+        }
+        updatedOfDownStationToMinus(section);
+    }
 
-        findSameDownStation(section.getDownStation())
-            .ifPresent(it -> it.updateDownStationMinus(section));
+    private boolean updatedOfDownStationToMinus(Section section) {
+        Section foundSection = findSameDownStationOfSection(section.getDownStation());
+        if (!Objects.isNull(foundSection)) {
+            foundSection.updateDownStationMinus(section);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean updatedOfUpStationToMinus(Section section) {
+        Section foundSection = findSameUpStationOfSection(section.getUpStation());
+        if (!Objects.isNull(foundSection)) {
+            foundSection.updateUpStationMinus(section);
+            return true;
+        }
+        return false;
     }
 
     public void remove(Station station) {
         checkRemoveStation(station);
 
-        findSameUpStation(station).ifPresent(downSection -> {
-            findSameDownStation(downSection.getUpStation())
-                .ifPresent(upSection -> upSection.updateDownStationPlus(downSection));
-            sections.remove(downSection);
+        Section downStationOfSection = findSameUpStationOfSection(station);
+        if (!Objects.isNull(downStationOfSection)) {
+            updatedOfDownStationToPlus(downStationOfSection);
+            sections.remove(downStationOfSection);
             return;
-        });
+        }
 
-        findSameDownStation(station).ifPresent(upSection -> {
-            findSameUpStation(upSection.getDownStation())
-                .ifPresent(downSection -> downSection.updateUpStationPlus(upSection));
-            sections.remove(upSection);
-        });
+        Section upStationOfSection = findSameDownStationOfSection(station);
+        if (!Objects.isNull(upStationOfSection)) {
+            updatedOfUpStationToPlus(upStationOfSection);
+        }
+        sections.remove(upStationOfSection);
+    }
+
+    private boolean updatedOfUpStationToPlus(Section section) {
+        Section foundSection = findSameUpStationOfSection(section.getDownStation());
+        if (!Objects.isNull(foundSection)) {
+            foundSection.updateUpStationPlus(section);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean updatedOfDownStationToPlus(Section section) {
+        Section foundSection = findSameDownStationOfSection(section.getUpStation());
+        if (!Objects.isNull(foundSection)) {
+            foundSection.updateDownStationPlus(section);
+            return true;
+        }
+        return false;
     }
 
     private void checkRemoveStation(Station station) {
@@ -83,16 +115,18 @@ public class Sections {
         return sections.size() <= SECTIONS_MIN_SIZE;
     }
 
-    private Optional<Section> findSameDownStation(Station station) {
+    private Section findSameDownStationOfSection(Station station) {
         return sections.stream()
             .filter(it -> it.isEqualToDownStation(station))
-            .findAny();
+            .findAny()
+            .orElse(null);
     }
 
-    private Optional<Section> findSameUpStation(Station station) {
+    private Section findSameUpStationOfSection(Station station) {
         return sections.stream()
             .filter(it -> it.isEqualToUpStation(station))
-            .findAny();
+            .findAny()
+            .orElse(null);
     }
 
     private void checkStationOfSection(Section section) {
@@ -134,18 +168,15 @@ public class Sections {
 
     private List<Station> findAllStation() {
         Section firstSection = findFirstSection();
-        List<Station> stations = new ArrayList<>(
-            Arrays.asList(firstSection.getUpStation(), firstSection.getDownStation())
-        );
+        List<Station> stations = new ArrayList<>();
+        stations.add(firstSection.getUpStation());
+        stations.add(firstSection.getDownStation());
 
         List<Station> upStations = upStationsOfSections();
         Section lastSection = firstSection;
         while (upStations.contains(lastSection.getDownStation())) {
             Station finalDownStation = lastSection.getDownStation();
-            lastSection = sections.stream()
-                .filter(section -> section.isEqualToUpStation(finalDownStation))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+            lastSection = findEqualToUpStation(finalDownStation);
             stations.add(lastSection.getDownStation());
         }
         return stations;
@@ -156,12 +187,23 @@ public class Sections {
         Section firstSection = sections.get(0);
         while (downStations.contains(firstSection.getUpStation())) {
             Station finalUpStation = firstSection.getUpStation();
-            firstSection = sections.stream()
-                .filter(section -> section.isEqualToDownStation(finalUpStation))
-                .findFirst()
-                .orElseThrow(RuntimeException::new);
+            firstSection = findEqualToDownStation(finalUpStation);
         }
         return firstSection;
+    }
+
+    private Section findEqualToUpStation(Station finalDownStation) {
+        return sections.stream()
+            .filter(section -> section.isEqualToUpStation(finalDownStation))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
+    }
+
+    private Section findEqualToDownStation(Station finalUpStation) {
+        return sections.stream()
+            .filter(section -> section.isEqualToDownStation(finalUpStation))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
     }
 
     private List<Station> upStationsOfSections() {
