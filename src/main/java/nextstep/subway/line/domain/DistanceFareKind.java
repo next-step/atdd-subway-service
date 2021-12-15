@@ -44,7 +44,15 @@ public enum DistanceFareKind {
     }
 
     private static Fare calculateFare(int extraDistance, int standardDistance){
-        return new Fare(extraDistance / standardDistance * EXTRA_FARE);
+        return new Fare((divideStandardDistance(extraDistance , standardDistance)) * EXTRA_FARE);
+    }
+
+    private static int divideStandardDistance(int extraDistance, int standardDistance){
+        if(extraDistance / standardDistance < 1 ){
+            return 1;
+        }
+        return extraDistance / standardDistance;
+
     }
 
 }
