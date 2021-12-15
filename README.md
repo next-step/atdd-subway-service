@@ -60,3 +60,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - 도메인 로직 테스트 생성 : 도메인 테스트 생성, 비즈니스 로직을 도메인으로 옮기기
   - [x] 지하철 역 조회 로직 분리
   - [x] 지하철 구간 추가 로직 분리
+  - [x] 지하철 구간 삭제 로직 분리

@@ -38,4 +38,31 @@ class SectionsTest {
         assertThat(stationNames).containsExactly("사당역", "강남역", "삼성역");
     }
 
+    @DisplayName("지하철 구간 추가")
+    @Test
+    void addSection() {
+        Station 잠실역 = new Station("잠실역");
+        Section newSection = new Section(이호선, 삼성역, 잠실역, 3);
+
+        sections.addSection(newSection);
+
+        List<String> stationNames = sections.getStations()
+                .stream()
+                .map(Station::getName)
+                .collect(Collectors.toList());
+        assertThat(stationNames).containsExactly("사당역", "강남역", "삼성역","잠실역");
+    }
+
+    @DisplayName("지하철 구간 삭제")
+    @Test
+    void deleteSection() {
+        sections.removeSection(이호선, 강남역);
+
+        List<String> stationNames = sections.getStations()
+                .stream()
+                .map(Station::getName)
+                .collect(Collectors.toList());
+        assertThat(stationNames).containsExactly("사당역", "삼성역");
+    }
+
 }
