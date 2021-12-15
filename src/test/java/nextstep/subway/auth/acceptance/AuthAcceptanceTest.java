@@ -43,6 +43,24 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    void 유효하지않은_토큰으로_회원_정보_조회() {
+        // when
+        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(EMAIL, PASSWORD);
+        로그인_성공(로그인_요청_응답);
+
+        String 유효하지않은_회원_토큰 = "유효하지않은_회원_토큰";
+        ExtractableResponse<Response> 토큰으로_회원_정보_조회_응답 = MemberAcceptanceTest.토큰으로_회원_정보_조회(유효하지않은_회원_토큰);
+
+        // then
+        회원_정보_조회_실패됨(토큰으로_회원_정보_조회_응답, "유효하지않은 토큰입니다.");
+    }
+
+    private void 회원_정보_조회_실패됨(ExtractableResponse<Response> response, String errorMessage) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.response().body().asString()).isEqualTo(errorMessage);
+    }
+
+    @Test
     void 유효하지않은_이메일로_로그인_요청() {
         // when
         ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청("WRONG_EMAIL", PASSWORD);
@@ -59,6 +77,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         // then
         로그인_실패(로그인_요청_응답, "비밀번호가 맞지 않습니다.");
     }
+
 
     public static void 로그인_실패(ExtractableResponse<Response> response, String errorMessage) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
