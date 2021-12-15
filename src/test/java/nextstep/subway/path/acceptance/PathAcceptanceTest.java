@@ -3,6 +3,7 @@ package nextstep.subway.path.acceptance;
 import static nextstep.subway.common.ServiceApiFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,25 +55,38 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	}
 
 	// [outside->in] happy case 만 고려
+	@DisplayName("지하철 최단 경로를 조회한다.")
 	@Test
 	void findShortestPath() {
-		final ExtractableResponse<Response> response = getPaths(강남역_ID, 남부터미널역_ID);
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		final ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역_ID, 남부터미널역_ID);
+		최단_경로_응답_확인됨(response);
 
 		final PathResponse pathResponse = response.as(PathResponse.class);
-		final List<Long> actualStationIds = pathResponse.getStations()
-			.stream()
-			.map(StationResponse::getId)
-			.collect(Collectors.toList());
-		assertThat(actualStationIds).containsExactly(강남역_ID, 양재역_ID, 남부터미널역_ID);
-		assertThat(pathResponse.getDistance()).isEqualTo(12);
+		최단_경로_역_목록_확인됨(pathResponse, Arrays.asList(강남역_ID, 양재역_ID, 남부터미널역_ID));
+		최단_경로_거리_확인됨(pathResponse);
 	}
 
-	private ExtractableResponse<Response> getPaths(long source, long target) {
+	private ExtractableResponse<Response> 최단_경로_조회_요청(long source, long target) {
 		return RestApiFixture.response(RestApiFixture.request()
 			.queryParam("source", source)
 			.queryParam("target", target)
 			.get("/paths")
 		);
+	}
+
+	private void 최단_경로_응답_확인됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
+	private void 최단_경로_역_목록_확인됨(PathResponse pathResponse, List<Long> expect) {
+		final List<Long> actualStationIds = pathResponse.getStations()
+			.stream()
+			.map(StationResponse::getId)
+			.collect(Collectors.toList());
+		assertThat(actualStationIds).containsExactlyElementsOf(expect);
+	}
+
+	private void 최단_경로_거리_확인됨(PathResponse pathResponse) {
+		assertThat(pathResponse.getDistance()).isEqualTo(12);
 	}
 }

@@ -36,6 +36,14 @@ public class RestApiFixture {
 			.contentType(MediaType.APPLICATION_JSON_VALUE);
 	}
 
+	public static RequestSpecification requestWithOAuth2(String accessToken) {
+		return request().auth().oauth2(accessToken);
+	}
+
+	public static RequestSpecification requestWithOAuth2(String accessToken, Object body) {
+		return request(body).auth().oauth2(accessToken);
+	}
+
 	public static ExtractableResponse<Response> response(Response response) {
 		return response.then().log().all().extract();
 	}

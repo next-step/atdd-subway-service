@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -33,7 +33,8 @@ public class PathService {
 		final Station targetStation = getStation(stations, targetStationId);
 
 		final List<Line> lines = lineRepository.findAll();
-		return PathResponse.of(Path.of(lines, sourceStation, targetStation));
+		final PathFinder pathFinder = PathFinder.of(lines);
+		return PathResponse.of(pathFinder.findShortest(sourceStation, targetStation));
 	}
 
 	private void validateStationIds(Long sourceStationId, Long targetStationId) {
