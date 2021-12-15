@@ -176,6 +176,6 @@ Feature: 즐겨찾기를 관리한다.
 - [ ] 의도가 분명한 사용자 정의 예외 정의
 - [x] FavoriteService 트랜잭션 처리
 - [x] Favorite 코드 컨벤션
-- [ ] FavoriteResponse Station 엔티티 사용을 응답 전용 객체를 사용하도록 변경!!
-- [ ] ResponseEntity 리턴 값이 없더라도 Generic 명시해주기 `ResponseEntity<Void>`
+- [x] FavoriteResponse Station 엔티티 사용을 응답 전용 객체를 사용하도록 변경!!
+- [x] ResponseEntity 리턴 값이 없더라도 Generic 명시해주기 `ResponseEntity<Void>`
 - [ ] 기존 예외 처리 부분을 공통 예외처리 로직으로 처리하기

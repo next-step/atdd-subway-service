@@ -1,35 +1,35 @@
 package nextstep.subway.favorite.dto;
 
 import nextstep.subway.favorite.domain.Favorite;
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 
 public class FavoriteResponse {
   private Long id;
-  private Station source;
-  private Station target;
+  private StationResponse source;
+  private StationResponse target;
 
   public FavoriteResponse() {
   }
 
-  public FavoriteResponse(Long id, Station source, Station target) {
+  public FavoriteResponse(Long id, StationResponse source, StationResponse target) {
     this.id = id;
     this.source = source;
     this.target = target;
   }
 
   public static FavoriteResponse of(Favorite favorite) {
-    return new FavoriteResponse(favorite.getId(), favorite.getSourceStation(), favorite.getTargetStation());
+    return new FavoriteResponse(favorite.getId(), StationResponse.of(favorite.getSourceStation()), StationResponse.of(favorite.getTargetStation()));
   }
 
   public Long getId() {
     return id;
   }
 
-  public Station getSource() {
+  public StationResponse getSource() {
     return source;
   }
 
-  public Station getTarget() {
+  public StationResponse getTarget() {
     return target;
   }
 }
