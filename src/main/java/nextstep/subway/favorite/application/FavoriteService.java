@@ -44,7 +44,7 @@ public class FavoriteService {
     }
 
     public void delete(Long id, LoginMember loginMember) {
-        checkMyFavorite(id, loginMember);;
+        checkMyFavorite(id, loginMember);
         favoriteRepository.deleteById(id);
     }
     
