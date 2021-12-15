@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain.fare;
 
+import nextstep.subway.line.domain.Money;
+
 import java.util.Objects;
 
 public class Fare implements FareRule {

@@ -3,8 +3,8 @@ package nextstep.subway.path.application;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -32,7 +32,9 @@ public class PathService {
 
         PathFinder pathFinder = new PathFinder(lines);
         Path path = pathFinder.shortestPath(source, target);
-        path.calculateFare(member, lines);
+        List<Line> extraFareLines = pathFinder.lineOnPath(lines);
+
+        path.calculateFare(member, extraFareLines);
         return PathResponse.ofList(path);
     }
 }

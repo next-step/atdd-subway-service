@@ -14,6 +14,7 @@ import java.util.Set;
 public class JgraphtPathFinder {
 
     private final WeightedMultigraph<Station, SectionEdge> graph;
+    private List<SectionEdge> edges;
 
     public JgraphtPathFinder(List<Line> lines) {
         this.graph = new WeightedMultigraph<>(SectionEdge.class);
@@ -41,8 +42,8 @@ public class JgraphtPathFinder {
     public Path getPath(Station source, Station target) {
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
-
-        return new Path(path.getEdgeList(), path.getVertexList(), (int) path.getWeight());
+        this.edges = path.getEdgeList();
+        return new Path(path.getVertexList(), (int) path.getWeight());
     }
 
     public boolean isSameVertex(Station source, Station target) {
@@ -57,5 +58,9 @@ public class JgraphtPathFinder {
     public boolean isNotConnectable(Station source, Station target) {
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return Objects.isNull(dijkstraShortestPath.getPath(source, target));
+    }
+
+    public List<SectionEdge> getEdges() {
+        return edges;
     }
 }
