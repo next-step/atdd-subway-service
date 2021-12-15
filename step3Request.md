@@ -41,27 +41,26 @@ Then 토큰 검증에서 에러 발생해서 실패<br><br>
 
 ##### Feature: 내 정보 조회, 수정, 삭제 기능 구현
 
-Scenario: 내 정보를 조회한다. (성공)
+Scenario: 내 정보를 관리한다.(통합 시나리오_성공)
 Given 회원 등록 및 로그인 되어 있음<br>
 When 내 정보 조회 요청<br>
 Then 내 정보 조회 성공<br>
-
-Scenario: 내 정보를 조회한다. (실패)
-Given 2명의 회원 등록 및 로그인 되어 있음<br>
-When 다른 회원의 토큰으로 내 정보 조회 요청<br>
-Then 내 정보 조회 실패<br>
-
-Scenario: 내 정보를 수정한다. (성공)
-Given 회원 등록 및 로그인 되어 있음<br>
 When 내 정보 수정 요청<br>
 Then 내 정보 수정 성공<br>
-
-Scenario: 내 정보를 수정한다. (실패)
-Given 회원 등록 및 로그인 되어 있음<br>
-When 내 정보 수정 요청 과정에서 회원정보가 미존재<br>
-Then 내 정보 조회 실패<br>
-
-Scenario: 내 정보를 삭제한다. (성공)
-Given 회원 등록 및 로그인 되어 있음<br>
 When 내 정보 삭제 요청<br>
 Then 내 정보 삭제 성공<br>
+
+Scenario: 내 정보를 조회한다. (실패)
+Given 회원 등록 및 로그인 후 회원 삭제<br>
+When 내 정보 조회 요청 과정에서 회원정보가 미존재<br>
+Then 내 정보 조회 실패<br>
+
+Scenario: 내 정보를 수정한다. (실패)
+Given 회원 등록 및 로그인 후 회원 삭제<br>
+When 내 정보 수정 요청 과정에서 회원정보가 미존재<br>
+Then 내 정보 수정 실패<br>
+
+Scenario: 내 정보를 삭제한다. (실패)
+Given 회원 등록 및 로그인 후 회원 삭제<br>
+When 내 정보 삭제 요청 과정에서 회원정보가 미존재<br>
+Then 내 정보 수정 실패<br>
