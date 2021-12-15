@@ -1,10 +1,9 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.exception.InvalidPathStationException;
 import nextstep.subway.path.exception.PathNotFoundException;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -23,13 +22,11 @@ public class PathFinder {
         return new PathFinder(graph);
     }
 
-    public PathResponse findShortestPath(final Station sourceStation, final Station targetStation) {
+    public Path findShortestPath(final Station sourceStation, final Station targetStation) {
         validateDifferentStation(sourceStation, targetStation);
         validateContainsStation(sourceStation, targetStation);
 
-        return PathResponse.of(
-            Path.of(DijkstraShortestPath.findPathBetween(graph, sourceStation, targetStation))
-        );
+        return Path.of(DijkstraShortestPath.findPathBetween(graph, sourceStation, targetStation));
     }
 
     private void validateContainsStation(Station sourceStation, Station targetStation) {
@@ -44,7 +41,8 @@ public class PathFinder {
         }
     }
 
-    private static WeightedMultigraph<Station, DefaultWeightedEdge> buildGraph(final List<Line> lines) {
+    private static WeightedMultigraph<Station, DefaultWeightedEdge> buildGraph(
+        final List<Line> lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
             DefaultWeightedEdge.class);
 
