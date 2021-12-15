@@ -59,4 +59,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] 인수테스트 리팩토링 : 하나의 테스트로 통합
 - 도메인 로직 테스트 생성 : 도메인 테스트 생성, 비즈니스 로직을 도메인으로 옮기기
   - [x] 지하철 역 조회 로직 분리
-  - [ ] 지하철 구간 추가 로직 분리
+  - [x] 지하철 구간 추가 로직 분리
