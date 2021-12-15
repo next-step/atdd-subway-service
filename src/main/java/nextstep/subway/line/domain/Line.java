@@ -22,6 +22,9 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
+    private Fare extraFare;
+
+    @Embedded
     private Sections sections = new Sections();
 
     protected Line() {
@@ -32,9 +35,10 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    private Line(String name, String color, Station upStation, Station downStation, int distance) {
+    private Line(String name, String color, Station upStation, Station downStation, int distance, Fare extraFare) {
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         addSection(upStation, downStation, distance);
     }
 
@@ -43,7 +47,11 @@ public class Line extends BaseEntity {
     }
 
     public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
-        return new Line(name, color, upStation, downStation, distance);
+        return new Line(name, color, upStation, downStation, distance, Fare.from(0));
+    }
+
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance, int extraFare) {
+        return new Line(name, color, upStation, downStation, distance, Fare.from(extraFare));
     }
 
     public void update(Line line) {
@@ -77,6 +85,10 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         return sections.getOrderedStations();
+    }
+
+    public Fare getExtraFare() {
+        return extraFare;
     }
 
     @Override

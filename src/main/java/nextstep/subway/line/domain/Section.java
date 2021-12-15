@@ -30,16 +30,16 @@ public class Section {
     protected Section() {
     }
 
-    private Section(Line line, Station upStation, Station downStation, int distance) {
+    private Section(Line line, Station upStation, Station downStation, Distance distance) {
         validateDuplicate(upStation, downStation);
         this.line = Objects.requireNonNull(line, "노선의 정보가 입력되지 않았습니다.");
         this.upStation = Objects.requireNonNull(upStation, "종점역 정보가 입력되지 않았습니다.");
         this.downStation = Objects.requireNonNull(downStation, "종점역 정보가 입력되지 않았습니다.");
-        this.distance = Distance.from(distance);
+        this.distance = distance;
     }
 
     public static Section of(Line line, Station upStation, Station downStation, int distance) {
-        return new Section(line, upStation, downStation, distance);
+        return new Section(line, upStation, downStation, Distance.from(distance));
     }
 
     public Long getId() {
