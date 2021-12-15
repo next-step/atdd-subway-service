@@ -29,8 +29,13 @@ Given 회원 등록되어 있음<br>
 When 존재하지 않는 회원정보로 로그인 요청<br>
 Then 로그인 실패<br>
 
+Scenario: 로그인을 시도한다.(실패)<br>
+Given 회원 등록되어 있음<br>
+When 틀린 패스워드로 로그인 요청<br>
+Then 로그인 실패<br>
+
 Scenario: 비 유효한 토큰으로 조회 요청을 시도한다.<br>
-Given 임의의 토큰 생성<br>
+Given 임의의 토큰 문자열 생성<br>
 When 내 정보 조회 요청<br>
 Then 토큰 검증에서 에러 발생해서 실패<br><br>
 
