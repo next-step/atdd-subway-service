@@ -120,7 +120,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 나의_회원_정보_조회_요청(final String token) {
-        return RestAssuredUtil.auth(token, "/members/me");
+        return RestAssuredUtil.getWithAuth(token, "/members/me");
     }
 
     public static ExtractableResponse<Response> 나의_회원_정보_수정_요청(
