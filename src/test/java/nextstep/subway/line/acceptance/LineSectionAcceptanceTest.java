@@ -42,7 +42,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
-    @DisplayName("지하철 구간 관리")
+    @DisplayName("지하철 구간 관리 - 역을 등록하면 정렬된 순서로 조회가 가능하고, 역을 삭제하면 삭제된 역을 제외한 목록이 응답된다")
     @Test
     void manageLineSection() {
         // when

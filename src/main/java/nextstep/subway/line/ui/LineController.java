@@ -28,7 +28,7 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLines());
+        return ResponseEntity.ok(lineService.findLineResponses());
     }
 
     @GetMapping("/{id}")
@@ -61,7 +61,7 @@ public class LineController {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
+    public ResponseEntity handleDataIntegrityViolationException(DataIntegrityViolationException e) {
         return ResponseEntity.badRequest().build();
     }
 }

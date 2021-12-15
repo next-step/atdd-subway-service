@@ -2,14 +2,13 @@ package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import nextstep.subway.AcceptanceTest;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("지하철 노선 도메인 관련 기능")
-public class SectionsTest extends AcceptanceTest {
+public class SectionsTest {
 
     private Station 강남역;
     private Station 광교역;
@@ -19,8 +18,6 @@ public class SectionsTest extends AcceptanceTest {
 
     @BeforeEach
     public void setUp() {
-        super.setUp();
-
         // given
         강남역 = new Station("강남역");
         광교역 = new Station("광교역");
