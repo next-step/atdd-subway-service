@@ -29,6 +29,10 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public LoginMember findMemberByToken(String credentials) {
+        if (credentials == null) {
+            return LoginMember.GUEST;
+        }
+
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new InvalidTokenException();
         }

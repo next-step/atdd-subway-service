@@ -8,10 +8,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.domain.Station;
@@ -26,6 +29,9 @@ import org.springframework.http.HttpStatus;
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
 
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
+
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -35,11 +41,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
 
     /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
+     * 교대역    --- *2호선* ---   강남역 |                        | *3호선*                   *신분당선* |
+     * | 남부터미널역  --- *3호선* ---   양재
      */
     @BeforeEach
     public void setUp() {
@@ -69,6 +72,82 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findShortestPath() {
         // when 최단 경로 조회 요청
         ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역, 남부터미널역);
+
+        // then 최단 경로 조회 됨
+        최단_경로_조회됨(response);
+        최단_경로와_예상_경로_일치함(response, Arrays.asList(강남역, 교대역, 남부터미널역));
+        최단_경로의_거리_조회됨(response, 13);
+        지하철_이용_요금_조회됨(response, 2_250);
+    }
+
+    @DisplayName("영유아 사용자의 최단 경로와 요금을 조회한다.")
+    @Test
+    void infantMemberFindShortestPath() {
+        // given
+        MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, 5);
+        TokenResponse tokenResponse = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD)
+            .as(TokenResponse.class);
+        String accessToken = tokenResponse.getAccessToken();
+
+        // when 최단 경로 조회 요청
+        ExtractableResponse<Response> response = 로그인_사용자_최단_경로_조회_요청(accessToken, 강남역, 남부터미널역);
+
+        // then 최단 경로 조회 됨
+        최단_경로_조회됨(response);
+        최단_경로와_예상_경로_일치함(response, Arrays.asList(강남역, 교대역, 남부터미널역));
+        최단_경로의_거리_조회됨(response, 13);
+        지하철_이용_요금_조회됨(response, 0);
+    }
+
+    @DisplayName("어린이 사용자의 최단 경로와 요금을 조회한다.")
+    @Test
+    void childMemberFindShortestPath() {
+        // given
+        MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, 9);
+        TokenResponse tokenResponse = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD)
+            .as(TokenResponse.class);
+        String accessToken = tokenResponse.getAccessToken();
+
+        // when 최단 경로 조회 요청
+        ExtractableResponse<Response> response = 로그인_사용자_최단_경로_조회_요청(accessToken, 강남역, 남부터미널역);
+
+        // then 최단 경로 조회 됨
+        최단_경로_조회됨(response);
+        최단_경로와_예상_경로_일치함(response, Arrays.asList(강남역, 교대역, 남부터미널역));
+        최단_경로의_거리_조회됨(response, 13);
+        지하철_이용_요금_조회됨(response, 950);
+    }
+
+    @DisplayName("청소년 사용자의 최단 경로와 요금을 조회한다.")
+    @Test
+    void youthMemberFindShortestPath() {
+        // given
+        MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, 15);
+        TokenResponse tokenResponse = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD)
+            .as(TokenResponse.class);
+        String accessToken = tokenResponse.getAccessToken();
+
+        // when 최단 경로 조회 요청
+        ExtractableResponse<Response> response = 로그인_사용자_최단_경로_조회_요청(accessToken, 강남역, 남부터미널역);
+
+        // then 최단 경로 조회 됨
+        최단_경로_조회됨(response);
+        최단_경로와_예상_경로_일치함(response, Arrays.asList(강남역, 교대역, 남부터미널역));
+        최단_경로의_거리_조회됨(response, 13);
+        지하철_이용_요금_조회됨(response, 1_520);
+    }
+
+    @DisplayName("성인 사용자의 최단 경로와 요금을 조회한다.")
+    @Test
+    void adultMemberFindShortestPath() {
+        // given
+        MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, 20);
+        TokenResponse tokenResponse = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD)
+            .as(TokenResponse.class);
+        String accessToken = tokenResponse.getAccessToken();
+
+        // when 최단 경로 조회 요청
+        ExtractableResponse<Response> response = 로그인_사용자_최단_경로_조회_요청(accessToken, 강남역, 남부터미널역);
 
         // then 최단 경로 조회 됨
         최단_경로_조회됨(response);
@@ -140,5 +219,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse pathResponse = response.as(PathResponse.class);
 
         assertThat(pathResponse.getFare()).isEqualTo(expectedFare);
+    }
+
+    static ExtractableResponse<Response> 로그인_사용자_최단_경로_조회_요청(String accessToken,
+        StationResponse source,
+        StationResponse target) {
+        String uri = String.format("paths?source=%d&target=%d", source.getId(), target.getId());
+
+        return RestTestApi.get(uri, accessToken);
     }
 }

@@ -30,8 +30,8 @@ public class Fare {
             .add(additionalFare);
     }
 
-    public static Fare of(final Distance distance, final int additionalFare,
-        final LoginMember member) {
+    public static Fare of(final LoginMember member, final Distance distance, 
+        final int additionalFare) {
 
         AgeType ageType = AgeType.checkAgeType(member.getAge());
         AgeDiscountPolicy ageDiscountPolicy = createAgeDiscountPolicy(ageType);
