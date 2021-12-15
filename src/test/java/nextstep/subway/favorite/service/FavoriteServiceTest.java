@@ -1,7 +1,6 @@
 package nextstep.subway.favorite.service;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public class FavoriteServiceTest {
     void 다른_사용자가_즐겨찾기_삭제_불가() {
         List<Favorite> favorites = new ArrayList<Favorite>();
         favorites.add(Favorite.of(new Member(EMAIL, PASSWORD, AGE), Station.from("서초역"), Station.from("교대역")));
-        when(favoriteRepository.findByMemberId(anyLong())).thenReturn(favorites);
+        when(favoriteRepository.findByMemberId(1L)).thenReturn(favorites);
 
         // when, then
         assertThrows(IllegalArgumentException.class, ()->{
