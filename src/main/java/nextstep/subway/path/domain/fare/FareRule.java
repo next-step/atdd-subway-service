@@ -1,18 +1,9 @@
 package nextstep.subway.path.domain.fare;
 
-public abstract class FareRule {
-    protected static final int BASE_FARE = 1250;
-    private static final int EXTRA_FARE = 100;
+public interface FareRule {
 
-    private final DistancePolicy distancePolicy = new DistancePolicy();
-    private final DiscountPolicy discountPolicy = new DiscountPolicy();
+    Fare extraFare(int distance, int lineFare);
 
-    public int distanceFare(int distance) {
-        int overDistance = distancePolicy.getOverDistance(distance);
-        return BASE_FARE + (overDistance * EXTRA_FARE);
-    }
+    Fare discount(int age);
 
-    public int discountFare(int age, Fare fare) {
-        return discountPolicy.getDiscountFare(age, fare);
-    }
 }
