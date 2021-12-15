@@ -57,4 +57,8 @@ public class Favorite {
     public Station getTargetStation() {
         return targetStation;
     }
+    
+    public boolean isSameMember(Long memberId) {
+        return this.member.getId() == memberId;
+    }
 }

@@ -56,7 +56,7 @@ public class FavoriteService {
     private void checkMyFavorite(Long id, LoginMember loginMember) {
         List<Favorite> favorites = find(loginMember.getId());
         favorites.stream()
-            .filter(favorite -> favorite.getId() == id)
+            .filter(favorite -> favorite.isSameMember(loginMember.getId()))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("본인의 즐겨찾기만 삭제할 수 있습니다"));
     }
