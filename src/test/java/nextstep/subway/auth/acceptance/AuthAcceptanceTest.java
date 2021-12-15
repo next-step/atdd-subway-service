@@ -68,6 +68,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return 로그인_요청(tokenRequest);
     }
 
+    public static ExtractableResponse<Response> 로그인_되어_있음(
+        final String email,
+        final String password
+    ) {
+        final TokenRequest tokenRequest = new TokenRequest(email, password);
+        return 로그인_요청(tokenRequest);
+    }
+
     private static ExtractableResponse<Response> 로그인_요청(final TokenRequest tokenRequest) {
         return RestAssuredUtil.jsonPost(tokenRequest, "/login/token");
     }
