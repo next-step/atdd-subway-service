@@ -3,7 +3,6 @@ package nextstep.subway.map.domain;
 import nextstep.subway.common.ErrorCode;
 import nextstep.subway.exception.BadRequestApiException;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
@@ -19,17 +18,19 @@ public class Map {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-    private Map(Sections sections) {
-        for (Station station : sections.getStations().getStations()) {
-            graph.addVertex(station);
-        }
-        for (Section section : sections.getSections()) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+    private Map(List<Section> sections) {
+        for (Section section : sections) {
+            Station upStation = section.getUpStation();
+            Station downStation = section.getDownStation();
+
+            graph.addVertex(upStation);
+            graph.addVertex(downStation);
+            graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
         }
     }
 
     public static Map of(List<Section> sections) {
-        return new Map(Sections.of(sections));
+        return new Map(sections);
     }
 
     public PathResponse findShortestPath(Station source, Station target) {

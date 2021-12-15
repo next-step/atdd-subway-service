@@ -42,10 +42,6 @@ public class Sections {
         return sections.add(section);
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public boolean isEmpty() {
         return sections.isEmpty();
     }
@@ -113,7 +109,7 @@ public class Sections {
         return sections.get(0);
     }
 
-    public Stations getStations() {
+    private Stations getStations() {
         Stations stations = Stations.empty();
         for (Section section : sections) {
             stations.add(section.getUpStation());
