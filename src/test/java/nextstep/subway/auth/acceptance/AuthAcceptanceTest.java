@@ -1,5 +1,6 @@
 package nextstep.subway.auth.acceptance;
 
+import static nextstep.subway.member.MemberAcceptanceTest.나의_회원_정보_조회_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,11 +40,24 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
+        // when
+        final ExtractableResponse<Response> response = 로그인_요청(
+            TOKEN_REQUEST.getEmail(),
+            TOKEN_REQUEST.getPassword()
+        );
+
+        // then
+        로그인_실패(response);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // when
+        final ExtractableResponse<Response> response = 나의_회원_정보_조회_요청("invalid-token");
+
+        // then
+        토큰_인증_실패(response);
     }
 
     private static ExtractableResponse<Response> 로그인_요청(
@@ -60,5 +74,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private void 로그인_됨(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 로그인_실패(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private void 토큰_인증_실패(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

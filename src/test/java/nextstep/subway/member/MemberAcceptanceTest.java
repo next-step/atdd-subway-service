@@ -8,6 +8,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.utils.RestAssuredUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -63,23 +64,29 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().post("/members")
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(memberRequest)
+            .when().post("/members")
+            .then().log().all()
+            .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
+    public static ExtractableResponse<Response> 나의_회원_정보_조회_요청(final String token) {
+        return RestAssuredUtil.auth(token, "/members/me");
+    }
+
+    public static ExtractableResponse<Response> 회원_정보_조회_요청(
+        ExtractableResponse<Response> response
+    ) {
         String uri = response.header("Location");
 
         return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(uri)
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get(uri)
+            .then().log().all()
+            .extract();
     }
 
     public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
