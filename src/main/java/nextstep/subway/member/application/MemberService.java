@@ -1,5 +1,6 @@
 package nextstep.subway.member.application;
 
+import java.util.NoSuchElementException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -24,18 +25,26 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberResponse findMember(final Long id) {
-        final Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        return MemberResponse.of(member);
+        return MemberResponse.of(
+            findMemberById(id)
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public Member findMemberById(final Long id) {
+        return memberRepository.findById(id)
+            .orElseThrow(NoSuchElementException::new);
     }
 
     @Transactional
     public void updateMember(final Long id, final MemberRequest param) {
-        final Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        final Member member = findMemberById(id);
         member.update(param.toMember());
     }
 
     @Transactional
     public void deleteMember(final Long id) {
-        memberRepository.deleteById(id);
+        final Member member = findMemberById(id);
+        memberRepository.delete(member);
     }
 }

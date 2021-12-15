@@ -32,9 +32,7 @@ public class FavoriteController {
         @RequestBody final FavoriteRequest request
     ) {
         final FavoriteResponse favorite = favoriteService.save(loginMember, request);
-        // return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).body(favorite);
-        return ResponseEntity.created(URI.create("/favorites/1"))
-            .body(new FavoriteResponse(1L, null, null));
+        return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).body(favorite);
     }
 
     @GetMapping
