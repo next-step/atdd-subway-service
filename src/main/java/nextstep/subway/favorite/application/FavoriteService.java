@@ -44,7 +44,7 @@ public class FavoriteService {
     }
 
     public void delete(Long id, LoginMember loginMember) {
-        checkMyFavorite(id, loginMember);
+        checkMyFavorite(id, loginMember);;
         favoriteRepository.deleteById(id);
     }
     
@@ -53,11 +53,9 @@ public class FavoriteService {
         return favoriteRepository.findByMemberId(memberId);
     }
     
+    @Transactional(readOnly = true)
     private void checkMyFavorite(Long id, LoginMember loginMember) {
-        List<Favorite> favorites = find(loginMember.getId());
-        favorites.stream()
-            .filter(favorite -> favorite.isSameMember(loginMember.getId()))
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("본인의 즐겨찾기만 삭제할 수 있습니다"));
+        favoriteRepository.findByMemberIdAndId(loginMember.getId(), id)
+        .orElseThrow(() -> new IllegalArgumentException("본인의 즐겨찾기만 삭제할 수 있습니다"));
     }
 }
