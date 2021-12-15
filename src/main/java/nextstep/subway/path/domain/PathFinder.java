@@ -39,10 +39,10 @@ public class PathFinder {
         int maxExtraFee = sections.stream().mapToInt(Section::getExtraFee).max().orElse(0);
         DistanceFeeType distanceFeeType = DistanceFeeType.getDistanceFeeType(distance);
         int distanceFee = DistanceFeeType.calculateOverFare(distance, distanceFeeType) + maxExtraFee;
-        DiscountAgeType discountAgeType =
-                DiscountAgeType.getDiscountAgeType(loginMember.getAge());
+        AgeDiscountType ageDiscountType =
+                AgeDiscountType.getAgeDiscountType(loginMember.getAge());
 
-        return DiscountAgeType.getDiscountedPrice(distanceFee, discountAgeType);
+        return AgeDiscountType.getDiscountedPrice(distanceFee, ageDiscountType);
     }
 
     private void validateSameStation(Station sourceStation, Station targetStation) {

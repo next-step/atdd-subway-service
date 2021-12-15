@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-public enum DiscountAgeType {
+public enum AgeDiscountType {
     KID(13, 0.5),
     ADOLESCENT(19, 0.2),
     NONE(0, 0);
@@ -11,12 +11,12 @@ public enum DiscountAgeType {
     private final int discountAge;
     private final double discountPercentage;
 
-    DiscountAgeType(int discountAge, double discountPercentage) {
+    AgeDiscountType(int discountAge, double discountPercentage) {
         this.discountAge = discountAge;
         this.discountPercentage = discountPercentage;
     }
 
-    public static DiscountAgeType getDiscountAgeType(int age) {
+    public static AgeDiscountType getAgeDiscountType(int age) {
         if (age >= MINIMUM_DISCOUNT_AGE && age < KID.discountAge) {
             return KID;
         }
@@ -27,7 +27,7 @@ public enum DiscountAgeType {
         return NONE;
     }
 
-    public static int getDiscountedPrice(int price, DiscountAgeType discountAgeType) {
-        return (int) ((price - BASE_DISCOUNT_FEE) * (1.0 - discountAgeType.discountPercentage));
+    public static int getDiscountedPrice(int price, AgeDiscountType ageDiscountType) {
+        return (int) ((price - BASE_DISCOUNT_FEE) * (1.0 - ageDiscountType.discountPercentage));
     }
 }
