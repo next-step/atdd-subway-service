@@ -38,17 +38,17 @@ public class PathFinder {
         return graph;
     }
 
+    private static void addVertex(Lines lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        List<Station> stations = lines.getStations();
+        stations.forEach(graph::addVertex);
+    }
+
     private static void addEdgeAndWeight(Lines lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         List<Section> sections = lines.getSections();
         sections.forEach(section -> {
             DefaultWeightedEdge defaultWeightedEdge = graph.addEdge(section.getUpStation(), section.getDownStation());
             graph.setEdgeWeight(defaultWeightedEdge, section.getDistance());
         });
-    }
-
-    private static void addVertex(Lines lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        List<Station> stations = lines.getStations();
-        stations.forEach(graph::addVertex);
     }
 
     private void validateDuplicateStation(Station sourceStation, Station targetStation) {
