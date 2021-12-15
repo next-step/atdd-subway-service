@@ -174,7 +174,7 @@ Feature: 즐겨찾기를 관리한다.
 - [x] PathFinder @Component 삭제
 - [x] AuthAcceptanceTest 픽스처 수정 `로그인_시도_회원` -> `로그인_시도_성공_회원`
 - [ ] 의도가 분명한 사용자 정의 예외 정의
-- [ ] FavoriteService 트랜잭션 처리
+- [x] FavoriteService 트랜잭션 처리
 - [x] Favorite 코드 컨벤션
 - [ ] FavoriteResponse Station 엔티티 사용을 응답 전용 객체를 사용하도록 변경!!
 - [ ] ResponseEntity 리턴 값이 없더라도 Generic 명시해주기 `ResponseEntity<Void>`

@@ -11,15 +11,17 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
-  private FavoriteRepository favoriteRepository;
-  private MemberRepository memberRepository;
-  private StationRepository stationRepository;
+  private final FavoriteRepository favoriteRepository;
+  private final MemberRepository memberRepository;
+  private final StationRepository stationRepository;
 
   public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationRepository stationRepository) {
     this.favoriteRepository = favoriteRepository;
@@ -27,6 +29,7 @@ public class FavoriteService {
     this.stationRepository = stationRepository;
   }
 
+  @Transactional
   public FavoriteResponse createFavorite(Long loginMemberId, FavoriteRequest request) {
     Member member = findMember(loginMemberId);
     Station sourceStation = findStation(request.getSource());
@@ -45,6 +48,7 @@ public class FavoriteService {
             .collect(Collectors.toList());
   }
 
+  @Transactional
   public void deleteFavorite(Long favoriteId, Long memberId) {
     Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, memberId)
             .orElseThrow(() -> new ServiceException(HttpStatus.BAD_REQUEST, "해당 즐겨찾기 항목은 삭제할 수 없습니다."));
