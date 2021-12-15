@@ -25,6 +25,6 @@ public class PathService {
     }
 
     private SubwayPath convertSubWayPath(GraphPath path) {
-        return new SubwayPath(path);
+        return new SubwayPath(path.getVertexList(), (int) path.getWeight());
     }
 }

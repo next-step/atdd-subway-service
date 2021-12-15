@@ -22,10 +22,13 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MapServiceTest {
+    public static final long 교대역_id = 2L;
+    public static final long 양재역_id = 3L;
+
     @Mock
     private StationRepository stationRepository;
     @Mock
@@ -59,22 +62,21 @@ public class MapServiceTest {
     void findShortestPath() {
         //given
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
-        when(stationRepository.findById(2L)).thenReturn(Optional.of(교대역));
-        when(stationRepository.findById(3L)).thenReturn(Optional.of(양재역));
-
-        SubwayGraph subwayGraph = new SubwayGraph(DefaultWeightedEdge.class);
-        subwayGraph.addVertexWithStations(Arrays.asList(신분당선, 이호선, 삼호선));
-        subwayGraph.setEdgeWeightWithSections(Arrays.asList(신분당선, 이호선, 삼호선));
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(subwayGraph);
-        GraphPath graphPath = dijkstraShortestPath.getPath(교대역, 양재역);
-        when(pathService.findPath(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 양재역)).thenReturn(new SubwayPath(graphPath));
+        when(stationRepository.findById(교대역_id)).thenReturn(Optional.of(교대역));
+        when(stationRepository.findById(양재역_id)).thenReturn(Optional.of(양재역));
+        when(pathService.findPath(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 양재역))
+                .thenReturn(new SubwayPath(Arrays.asList(교대역, 남부터미널역, 양재역), 5));
 
         MapService mapService = new MapService(stationRepository, lineRepository, pathService);
 
         //when
-        PathResponse shortestPath = mapService.findShortestPath(2L, 3L);
+        PathResponse shortestPath = mapService.findShortestPath(교대역_id, 양재역_id);
 
         //then
+        verify(lineRepository, times(1)).findAll();
+        verify(stationRepository, times(1)).findById(교대역_id);
+        verify(stationRepository, times(1)).findById(양재역_id);
+        verify(pathService, times(1)).findPath(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 양재역);
         assertAll(
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(5),
                 () -> assertThat(shortestPath.getStations().get(0).getName()).isEqualTo("교대역"),
