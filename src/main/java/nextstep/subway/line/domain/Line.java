@@ -73,15 +73,16 @@ public class Line extends BaseEntity {
 
     private Station findUpStation() {
         Station downStation = this.getSections().get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.getSections().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+        Station finalDownStation = null;
+        while (!downStation.equals(finalDownStation)) {
+            finalDownStation = downStation;
+            final Station station = finalDownStation;
+            Section nextLineStation = this.getSections().stream()
+                    .filter(it -> it.getDownStation() == station)
+                    .findFirst()
+                    .orElse(null);
+
+            downStation = Objects.isNull(nextLineStation) ? finalDownStation : nextLineStation.getUpStation();
         }
 
         return downStation;
@@ -96,15 +97,21 @@ public class Line extends BaseEntity {
             return;
         }
 
+        updateUpStation(stations, upStation, downStation, distance);
+        updateDownStation(stations, upStation, downStation, distance);
+        this.getSections().add(new Section(this, upStation, downStation, distance));
+    }
+
+    private void updateUpStation(List<Station> stations, Station upStation, Station downStation, int distance) {
         if (isUpStationExisted(stations, upStation)) {
             this.getSections().stream()
                     .filter(it -> it.getUpStation() == upStation)
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(downStation, distance));
-
-            this.getSections().add(new Section(this, upStation, downStation, distance));
         }
+    }
 
+    private void updateDownStation(List<Station> stations, Station upStation, Station downStation, int distance) {
         if (isDownStationExisted(stations, downStation)) {
             this.getSections().stream()
                     .filter(it -> it.getDownStation() == downStation)
