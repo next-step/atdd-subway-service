@@ -49,4 +49,8 @@ public class LineRequest {
     public Line toLine() {
         return new Line(name, color);
     }
+
+    public int getExtraFare() {
+        return extraFare;
+    }
 }

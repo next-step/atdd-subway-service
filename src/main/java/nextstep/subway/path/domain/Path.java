@@ -132,8 +132,17 @@ public class Path {
     }
 
     private boolean isMatchSection(List<Station> shortestStations, int i, Section section) {
+        return hasSection(shortestStations, i, section) || hasReverseSection(shortestStations, i, section);
+    }
+
+    private boolean hasSection(List<Station> shortestStations, int i, Section section) {
         return section.getUpStation().getName().equals(shortestStations.get(i).getName())
                 && section.getDownStation().getName().equals(shortestStations.get(i + 1).getName());
+    }
+
+    private boolean hasReverseSection(List<Station> shortestStations, int i, Section section) {
+        return section.getUpStation().getName().equals(shortestStations.get(i+1).getName())
+                && section.getDownStation().getName().equals(shortestStations.get(i).getName());
     }
 
     private void checkValidationSourceAndTarget(Station source, Station target) {

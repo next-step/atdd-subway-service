@@ -35,8 +35,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 삼호선;
     private LineResponse 사호선;
     private LineResponse 구호선;
+    private LineResponse 십호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
+    private StationResponse 판교역;
+    private StationResponse 여주역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private StationResponse 당산역;
@@ -87,6 +90,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        판교역 = StationAcceptanceTest.지하철역_등록되어_있음("판교역").as(StationResponse.class);
+        여주역 = StationAcceptanceTest.지하철역_등록되어_있음("여주역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
         당산역 = StationAcceptanceTest.지하철역_등록되어_있음("당산역").as(StationResponse.class);
@@ -97,12 +102,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         오이도역 = StationAcceptanceTest.지하철역_등록되어_있음("오이도역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 300);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 0);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 30, 0);
-
-        구호선 = 지하철_노선_등록되어_있음("구호선", "bg-red-600", 당산역, 선유도역, 9, 0);
         일호선 = 지하철_노선_등록되어_있음("일호선", "red", 시청역, 용산역, 40, 0);
-        사호선 = 지하철_노선_등록되어_있음("사호선", "red", 노원역, 오이도역, 51, 0);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-700", 교대역, 강남역, 10, 0);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-800", 교대역, 양재역, 30, 0);
+        사호선 = 지하철_노선_등록되어_있음("사호선", "green", 노원역, 오이도역, 51, 0);
+        구호선 = 지하철_노선_등록되어_있음("구호선", "bg-red-900", 당산역, 선유도역, 9, 0);
+        십호선 = 지하철_노선_등록되어_있음("십호선", "bg-red-901", 판교역, 양재역, 9, 200);
+
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
 
@@ -214,6 +220,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
         기본요금나옴(pathResponse, INFANCY_FARE);
     }
 
+    @Test
+    @DisplayName("10KM이내 최단거리 성인 추가요금 라인일 경우_300원")
+    void shortestPathFareAdultBasicExtraFareSectionTest() {
+        ExtractableResponse<Response> response = 최단_거리_요청(강남역.getId(), 양재역.getId(), adultTokenResponse);
+        PathResponse pathResponse = response.as(PathResponse.class);
+        기본요금나옴(pathResponse, BASIC_FARE + 300);
+    }
+
+    @Test
+    @DisplayName("최단거리 성인 추가요금 2개 라인일 경우_300원")
+    void shortestPathFareAdultBasicExtraFareSectionWithTwoLineTest() {
+        ExtractableResponse<Response> response = 최단_거리_요청(강남역.getId(), 판교역.getId(), adultTokenResponse);
+        PathResponse pathResponse = response.as(PathResponse.class);
+        기본요금나옴(pathResponse, 1350 + 300);
+    }
 
     @Test
     @DisplayName("시작역과 종료역이 같을 때 에러처리")

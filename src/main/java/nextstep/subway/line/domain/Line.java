@@ -34,7 +34,6 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance, int extraFare) {
         this(name, color, upStation, downStation, distance);
         this.extraFare = Fare.of(extraFare);
-        sections.addSection(new Section(this, upStation, downStation, new Distance(distance)));
     }
 
     public Line(String name, String color) {

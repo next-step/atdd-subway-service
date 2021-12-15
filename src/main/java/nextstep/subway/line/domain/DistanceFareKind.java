@@ -52,7 +52,5 @@ public enum DistanceFareKind {
             return 1;
         }
         return extraDistance / standardDistance;
-
     }
-
 }
