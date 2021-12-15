@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -36,14 +37,27 @@ public class FavoriteService {
     }
 
     @Transactional(readOnly = true)
-    public List<FavoriteResponse> find(Long memberId) {
-        return favoriteRepository.findByMemberId(memberId)
-                .stream()
+    public List<FavoriteResponse> findResponse(Long memberId) {
+        return find(memberId).stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public void delete(Long id) {
+    public void delete(Long id, LoginMember loginMember) {
+        checkMyFavorite(id, loginMember);
         favoriteRepository.deleteById(id);
+    }
+    
+    @Transactional(readOnly = true)
+    private List<Favorite> find(Long memberId) {
+        return favoriteRepository.findByMemberId(memberId);
+    }
+    
+    private void checkMyFavorite(Long id, LoginMember loginMember) {
+        List<Favorite> favorites = find(loginMember.getId());
+        favorites.stream()
+            .filter(favorite -> favorite.getId() == id)
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("본인의 즐겨찾기만 삭제할 수 있습니다"));
     }
 }
