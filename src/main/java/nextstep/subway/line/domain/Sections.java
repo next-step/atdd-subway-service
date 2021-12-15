@@ -1,5 +1,8 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.exception.AlreadyAddSectionException;
+import nextstep.subway.line.exception.ExistsOnlyOneSectionInLineException;
+import nextstep.subway.line.exception.NotExistStationInLineException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -12,6 +15,7 @@ import java.util.Optional;
 
 @Embeddable
 public class Sections {
+    private static final Integer ONE = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -67,7 +71,7 @@ public class Sections {
 
     private void checkNotAddSection(Section newSection, List<Station> stations) {
         if (!stations.isEmpty() && notExistsStation(newSection, stations)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new NotExistStationInLineException("등록할 수 없는 구간 입니다.");
         }
     }
 
@@ -77,7 +81,7 @@ public class Sections {
 
     private void checkExistsSection(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new AlreadyAddSectionException("이미 등록된 구간 입니다.");
         }
     }
 
@@ -126,9 +130,7 @@ public class Sections {
     }
 
     public void removeSection(Line line, Station station) {
-        if (this.sections.size() <= 1) {
-            throw new RuntimeException();
-        }
+        existOnlyOneSection();
 
         Optional<Section> upLineStation = this.sections.stream()
                 .filter(it -> it.getUpStation() == station)
@@ -146,5 +148,11 @@ public class Sections {
 
         upLineStation.ifPresent(it -> this.sections.remove(it));
         downLineStation.ifPresent(it -> this.sections.remove(it));
+    }
+
+    private void existOnlyOneSection() {
+        if (this.sections.size() <= ONE) {
+            throw new ExistsOnlyOneSectionInLineException("구간이 두개 이상이어야 삭제가 가능합니다");
+        }
     }
 }
