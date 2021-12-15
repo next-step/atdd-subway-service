@@ -1,7 +1,10 @@
 package nextstep.subway.domain.path.dto;
 
+import nextstep.subway.domain.path.domain.Route;
+
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PathFinderResponse {
 
@@ -22,6 +25,13 @@ public class PathFinderResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public static PathFinderResponse of(Route route) {
+        List<Station> shortestRoute = route.getStations().stream()
+                .map(Station::of)
+                .collect(Collectors.toList());
+        return new PathFinderResponse(shortestRoute, route.getDistance());
     }
 
     public static class Station {

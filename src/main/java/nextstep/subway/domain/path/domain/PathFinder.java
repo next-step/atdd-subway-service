@@ -2,12 +2,10 @@ package nextstep.subway.domain.path.domain;
 
 import nextstep.subway.domain.line.domain.Distance;
 import nextstep.subway.domain.line.domain.Line;
-import nextstep.subway.domain.path.exception.NotConnectedStation;
 import nextstep.subway.domain.path.exception.SameDepartureAndArrivalStationException;
 import nextstep.subway.domain.path.exception.StationNotFoundException;
 import nextstep.subway.domain.station.domain.Station;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,15 +39,10 @@ public class PathFinder {
         final Station stationStart = getStation(stations, source);
         final Station stationEnd = getStation(stations, target);
 
-        final List<Long> vertex = getVertex(source, target, stationStart, stationEnd);
+        final List<Station> vertex = path.getVertex(stations, stationStart, stationEnd);
         final Distance distance = path.getWeight(stationStart, stationEnd);
 
-        return new Route(getShortestStations(stations, vertex), distance);
-    }
-
-    private List<Long> getVertex(final Long source, final Long target, final Station stationStart, final Station stationEnd) {
-        return path.getVertex(stationStart, stationEnd)
-                .orElseThrow(() -> new NotConnectedStation(String.format("departure : %d, arrival : %d", source, target)));
+        return new Route(vertex, distance);
     }
 
     private void existStationValidator(final List<Station> stations, final Long source, final Long target) {
@@ -57,7 +50,7 @@ public class PathFinder {
         getStation(stations, target);
     }
 
-    private Station getStation(final List<Station> stations, final Long stationId) {
+    public static Station getStation(final List<Station> stations, final Long stationId) {
         return stations.stream()
                 .filter(station -> station.getId().equals(stationId))
                 .findFirst()
@@ -68,14 +61,5 @@ public class PathFinder {
         if (source.equals(target)) {
             throw new SameDepartureAndArrivalStationException(String.format("departure : %d, arrival : %d", source, target));
         }
-    }
-
-    private List<Station> getShortestStations(final List<Station> stations, final List<Long> vertexList) {
-        final List<Station> result = new ArrayList<>();
-        for (Long stationId : vertexList) {
-            Station station = getStation(stations, stationId);
-            result.add(station);
-        }
-        return result;
     }
 }

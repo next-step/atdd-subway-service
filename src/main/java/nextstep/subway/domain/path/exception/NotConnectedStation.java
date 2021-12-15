@@ -8,4 +8,8 @@ public class NotConnectedStation extends BusinessException {
     public NotConnectedStation(final String message) {
         super(message, ErrorCode.NOT_CONNECTED_STATION);
     }
+
+    public NotConnectedStation() {
+        super(ErrorCode.NOT_CONNECTED_STATION);
+    }
 }

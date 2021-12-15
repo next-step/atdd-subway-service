@@ -80,3 +80,47 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - Scenario: 최단 경로 조회
     - When: 최단 경로 조회 요청
     - Then: 최단 경로 조회됨
+
+## 3단계 - 인증을 통한 기능 구현
+### 1. 토근 발급 기능 (로그인) 인수 테스트
+- Feature: 로그인 기능
+    - Scenario: 로그인을 시도한다.
+        - Given 회원 등록되어 있음
+        - When 로그인 요청
+        - Then 로그인 됨
+    - Scenario: 로그인을 시도하지만 실패한다.
+        - Give: 회원 등록되어 있음
+        - When 로그인 요청
+        - Then 로그인 실패
+    - Scenario: 유효하지 않은 토큰으로 내 정보 조회시 실패한다.
+        - Give 유효하지 않을 토큰이 있음
+        - When 내 정보조회 요청
+        - Then 내 정보조회 실패
+### 2. 인증 - 내 정보 관리 기능 완성하기 인수 테스트
+- Feature: 내 정보 관리 기능
+    - Background: 
+      - Given 회원 등록되어 있음
+      - And 로그인에 성공해 토큰을 가지고 있음
+
+    - Scenario: 내 정보를 관리
+        - When 내 정보조회 요청
+        - Then 내 정보조회 성공
+        - When 내 정보수정 요청
+        - Then 내 정보수정 성공
+        - When 내 정보삭제 요청
+        - Then 내 정보삭제 성공
+### 3. 인증 - 즐겨 찾기 기능 완성하기 인수 테스트
+- Feature: 즐겨찾기를 관리한다.
+    - Background:
+        - Given: 지하철역 등록되어 있음
+        - And 지하철 노선 등록되어 있음
+        - And 지하철 노선에 지하철역 등록되어 있음
+        - And 회원 등록되어 있음
+        - And 로그인 되어있음
+    - Scenario: 즐겨찾기를 관리
+        - When 즐겨찾기 생성을 요청
+        - Then 즐겨찾기 생성됨
+        - When 즐겨찾기 목록 조회 요청
+        - Then 즐겨찾기 목록 조회됨
+        - When 즐겨찾기 삭제 요청
+        - Then 즐겨찾기 삭제됨

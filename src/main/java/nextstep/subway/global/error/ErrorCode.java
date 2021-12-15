@@ -7,6 +7,8 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED(405, "C002", " Invalid Input Value"),
     ENTITY_NOT_FOUND(400, "C003", " Entity Not Found"),
     INTERNAL_SERVER_ERROR(500, "C004", "Server Error"),
+    NOT_AUTHORIZATION(401, "C005", "등록되지 않은 아이디이거나 아이디 또는 비밀번호를 잘못 입력했습니다"),
+    INVALID_TOKEN(401, "C006", "유효하지 않은 토큰입니다."),
 
     // Section
     DISTANCE_LESS_THAN_MINIMUM(400, "S001", "역과 역 사이의 거리는 최소 1 이상입니다."),

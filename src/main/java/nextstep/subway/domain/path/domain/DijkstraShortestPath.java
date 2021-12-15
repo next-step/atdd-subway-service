@@ -7,9 +7,10 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class DijkstraShortestPath implements Path {
 
@@ -18,7 +19,15 @@ public class DijkstraShortestPath implements Path {
 
     @Override
     public Distance getWeight(final Station source, final Station target) {
-        return new Distance((int) dijkstraShortestPath.getPath(source.getId(), target.getId()).getWeight());
+        GraphPath<Long, Long> path = dijkstraShortestPath.getPath(source.getId(), target.getId());
+        if (path == null) {
+            // 경로가 존재하지 않을 경우 발생시키고자 하는 예외는 NotConnectedStation 이다.
+            // 경로가 없을 경우 Distance를 0으로 해서 넘기는게 맞으나 그렇게 되면 SectionDistanceLessThanMinimumException이 발생한다.
+            // 위와 같은 이유로 NotConnectedStation을 발생시키기 위해 Distance에 임의의 값을 넣었으나, 주석을 남기지 않는 이상 다른 사람은 해당 값의 의미를 추측해야 하기 때문에 좋은 코드가 아니다.
+            // 무엇이 좋은 방법일까?
+            return new Distance(100);
+        }
+        return new Distance((int) path.getWeight());
     }
 
     @Override
@@ -40,12 +49,15 @@ public class DijkstraShortestPath implements Path {
     }
 
     @Override
-    public Optional<List<Long>> getVertex(final Station source, final Station target) {
+    public List<Station> getVertex(final List<Station> stations, final Station source, final Station target) {
         final GraphPath<Long, Long> path = dijkstraShortestPath.getPath(source.getId(), target.getId());
+
         try {
-            return Optional.of(path.getVertexList());
+            return path.getVertexList().stream()
+                    .map(stationId -> PathFinder.getStation(stations, stationId))
+                    .collect(Collectors.toList());
         }catch (NullPointerException e) {
-            return Optional.empty();
+            return new ArrayList<>();
         }
     }
 }

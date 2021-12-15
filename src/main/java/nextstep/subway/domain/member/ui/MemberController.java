@@ -1,5 +1,6 @@
 package nextstep.subway.domain.member.ui;
 
+import nextstep.subway.domain.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.domain.auth.domain.LoginMember;
 import nextstep.subway.domain.member.application.MemberService;
 import nextstep.subway.domain.member.dto.MemberRequest;
@@ -18,7 +19,7 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
@@ -42,19 +43,19 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(LoginMember loginMember) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(LoginMember loginMember, @RequestBody MemberRequest param) {
-        memberService.updateMember(loginMember.getId(), param);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+        final MemberResponse memberResponse = memberService.updateMember(loginMember.getId(), param);
+        return ResponseEntity.ok().body(memberResponse);
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(LoginMember loginMember) {
+    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }

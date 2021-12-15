@@ -2,7 +2,6 @@ package nextstep.subway.domain.path.domain;
 
 import nextstep.subway.domain.line.domain.Distance;
 import nextstep.subway.domain.line.domain.Line;
-import nextstep.subway.domain.path.dto.PathFinderRequest;
 import nextstep.subway.domain.path.exception.NotConnectedStation;
 import nextstep.subway.domain.path.exception.SameDepartureAndArrivalStationException;
 import nextstep.subway.domain.path.exception.StationNotFoundException;
@@ -19,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class PathFinderTest {
 
     @Test
-    @DisplayName("최단 경로 조회")
+    @DisplayName("출발역에서 도착역까지의 최단 경로를 조회한다.")
     void findPaths() {
         // given
         final Station 강남역 = new Station(1L, "강남역");
@@ -43,7 +42,7 @@ class PathFinderTest {
     }
 
     @Test
-    @DisplayName("출발역과 도착역이 동일")
+    @DisplayName("출발역과 도착역이 동일할 경우 최단 경로를 찾을 수 없다.")
     void sameDepartureAndArrivalStation() {
         // given
         final Station 강남역 = new Station(1L, "강남역");
@@ -57,7 +56,7 @@ class PathFinderTest {
     }
 
     @Test
-    @DisplayName("출발역과 도착역 미연결")
+    @DisplayName("출발역과 도착역이 미연결되어 있을 경우 최단 경로를 찾을 수 없다.")
     void stationNotConnected() {
         // given
         final Station 강남역 = new Station(1L, "강남역");
@@ -75,7 +74,7 @@ class PathFinderTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 역")
+    @DisplayName("출발역 또는 도착역이 존재하지 않을 경우 최단 경로를 찾을 수 없다.")
     void stationNotFound() {
         // given
         final Station 강남역 = new Station(1L, "강남역");
@@ -85,7 +84,6 @@ class PathFinderTest {
         final PathFinder pathFinder = new PathFinder(Arrays.asList( 이호선));
 
         // when
-        final PathFinderRequest pathFinderRequest = new PathFinderRequest(교대역.getId(), 100L);
         assertThrows(StationNotFoundException.class,
                 () -> pathFinder.findShortestRoute(교대역.getId(), 100L));
     }

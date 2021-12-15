@@ -1,5 +1,6 @@
 package nextstep.subway.domain.auth.application;
 
+import nextstep.subway.domain.auth.InvalidTokenException;
 import nextstep.subway.domain.auth.domain.LoginMember;
 import nextstep.subway.domain.auth.dto.TokenRequest;
 import nextstep.subway.domain.auth.dto.TokenResponse;
@@ -8,8 +9,10 @@ import nextstep.subway.domain.member.domain.Member;
 import nextstep.subway.domain.member.domain.MemberRepository;
 import nextstep.subway.global.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class AuthService {
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;
@@ -19,6 +22,7 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional(readOnly = true)
     public TokenResponse login(TokenRequest request) {
         Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
         member.checkPassword(request.getPassword());
@@ -27,9 +31,10 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
+    @Transactional(readOnly = true)
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new InvalidTokenException();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);

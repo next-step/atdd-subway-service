@@ -8,18 +8,15 @@ import nextstep.subway.domain.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.domain.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.domain.line.dto.LineRequest;
 import nextstep.subway.domain.line.dto.LineResponse;
-import nextstep.subway.domain.path.application.PathService;
 import nextstep.subway.domain.path.dto.PathFinderResponse;
 import nextstep.subway.domain.station.StationAcceptanceTest;
 import nextstep.subway.domain.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 @DisplayName("지하철 경로 조회")
-class PathAcceptanceTest extends AcceptanceTest {
+public class PathAcceptanceTest extends AcceptanceTest {
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -93,7 +90,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {
         return LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(lineResponse, upStation, downStation, distance);
     }
 
