@@ -8,8 +8,8 @@ public enum AgeType {
     YOUTH(13, 18),
     ADULT(19, Integer.MAX_VALUE);
 
-    private int ageMin;
-    private int ageMax;
+    private final int ageMin;
+    private final int ageMax;
 
     AgeType(int ageMin, int ageMax) {
         this.ageMin = ageMin;

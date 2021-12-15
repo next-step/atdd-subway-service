@@ -12,7 +12,6 @@ import nextstep.subway.path.domain.fare.policy.YouthDiscountPolicy;
 
 public class Fare {
 
-    public static final int ZERO = 0;
     static final Fare BASE_FARE = new Fare(1_250);
 
     private final int fare;
@@ -30,7 +29,7 @@ public class Fare {
             .add(additionalFare);
     }
 
-    public static Fare of(final LoginMember member, final Distance distance, 
+    public static Fare of(final LoginMember member, final Distance distance,
         final int additionalFare) {
 
         AgeType ageType = AgeType.checkAgeType(member.getAge());
