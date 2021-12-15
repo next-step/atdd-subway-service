@@ -125,10 +125,6 @@ public class Sections {
         return downStation;
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public void removeSection(Line line, Station station) {
         existOnlyOneSection();
 
