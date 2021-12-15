@@ -22,6 +22,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
+    public static final int TEENAGER_AGE = 18;
+    public static final int CHILD_AGE = 12;
     private static final String myInfoPath = "/members/me";
 
     @DisplayName("회원 정보를 관리한다.")

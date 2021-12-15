@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -29,6 +31,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 일호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
@@ -36,6 +39,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 서울역;
     private StationResponse 선바위역;
     private StationResponse 존재하지_않는_역;
+    private StationResponse 소요산역;
+    private StationResponse 신도림역;
+
 
     /**
      * 교대역    --- *2호선(10)* ---   강남역
@@ -52,10 +58,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_등록되어_있음("양재역");
         교대역 = 지하철역_등록되어_있음("교대역");
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
+        소요산역 = 지하철역_등록되어_있음("소요산역");
+        신도림역 = 지하철역_등록되어_있음("신도림역");
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 900);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 500);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 900);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0);
+        일호선 = 지하철_노선_등록되어_있음("일호선", "bg-red-600", 소요산역, 신도림역, 58, 0);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -71,6 +80,52 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회됨(조회_요청, Arrays.asList(강남역, 양재역, 남부터미널역));
         최단_경로_계산됨(조회_요청, 12);
         최단_경로_요금_계산됨(조회_요청, 2250);
+    }
+
+    @DisplayName("기본 운임 요금을 응답한다.")
+    @Test
+    void getFare() {
+        // when
+        ExtractableResponse<Response> 조회_요청 = 최단_경로_조회_요청(교대역, 남부터미널역);
+
+        // then
+        최단_경로_요금_계산됨(조회_요청, 1250);
+    }
+
+    @DisplayName("50km 초과 시 (8km 마다 100원) 요금을 응답한다.")
+    @Test
+    void getFare2() {
+        // when
+       ExtractableResponse<Response> 조회_요청 = 최단_경로_조회_요청(소요산역, 신도림역);
+
+        // then
+        최단_경로_요금_계산됨(조회_요청, 1450);
+    }
+
+    @DisplayName("청소년 요금을 응답한다.")
+    @Test
+    void getFare3() {
+        //given
+        회원_생성을_요청(EMAIL, PASSWORD, TEENAGER_AGE);
+        String 토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
+        // when
+        ExtractableResponse<Response> 조회_요청 = 내_최단_경로_조회_요청(교대역, 남부터미널역, 토큰);
+
+        // then
+        최단_경로_요금_계산됨(조회_요청, 720);
+    }
+
+    @DisplayName("어린이 요금을 응답한다.")
+    @Test
+    void getFare4() {
+        //given
+        회원_생성을_요청(EMAIL, PASSWORD, CHILD_AGE);
+        String 토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
+        // when
+        ExtractableResponse<Response> 조회_요청 = 내_최단_경로_조회_요청(교대역, 남부터미널역, 토큰);
+
+        // then
+        최단_경로_요금_계산됨(조회_요청, 450);
     }
 
     @DisplayName("역과 역 사이의 최단 경로를 조회한다.")
@@ -160,6 +215,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse upStation, StationResponse downStation) {
         return RestAssured
                 .given().log().all()
+                .param("source", upStation.getId())
+                .param("target", downStation.getId())
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 내_최단_경로_조회_요청(StationResponse upStation, StationResponse downStation, String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
                 .param("source", upStation.getId())
                 .param("target", downStation.getId())
                 .when().get("/paths")
