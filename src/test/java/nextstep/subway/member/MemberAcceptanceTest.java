@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("회원 정보 관련 테스트")
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";

@@ -28,17 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
-    private LineResponse 신분당선;
-    private LineResponse 이호선;
-    private LineResponse 삼호선;
-    private LineResponse 사호선;
-    private StationResponse 강남역;
-    private StationResponse 양재역;
-    private StationResponse 교대역;
-    private StationResponse 남부터미널역;
-    private StationResponse 이촌역;
-    private StationResponse 삼각지역;
-    private StationResponse 새로운역1;
+    private LineResponse 신분당선, 이호선, 삼호선, 사호선;
+    private StationResponse 강남역, 양재역, 교대역, 남부터미널역, 이촌역, 삼각지역, 새로운역1;
     private String email;
     private String password;
     private TokenResponse token;

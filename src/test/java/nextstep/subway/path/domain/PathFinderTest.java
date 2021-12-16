@@ -24,17 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("경로 조회 도메인 관련")
 class PathFinderTest {
-    private Line 신분당선;
-    private Line 이호선;
-    private Line 삼호선;
-    private Line 사호선;
-    private Station 강남역;
-    private Station 양재역;
-    private Station 교대역;
-    private Station 남부터미널역;
-    private Station 이촌역;
-    private Station 삼각지역;
-    private Station 새로운역1;
+    private Line 신분당선, 이호선, 삼호선, 사호선;
+    private Station 강남역, 양재역, 교대역, 남부터미널역, 이촌역, 삼각지역, 새로운역1;
     private List<Section> 구간들;
     private LoginMember 로그인멤버;
 
