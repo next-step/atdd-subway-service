@@ -97,32 +97,28 @@ public class Sections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
+                    .filter(section -> section.equalsUpStation(finalDownStation))
                     .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+            downStation = addDownStation(stations, nextLineStation);
         }
 
         return stations;
     }
 
     private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+        List<Station> upStations = new ArrayList<>();
+        List<Station> downStations = new ArrayList<>();
+        for (Section section : sections) {
+            upStations.add(section.getUpStation());
+            downStations.add(section.getDownStation());
         }
-
-        return downStation;
+        upStations.removeAll(downStations);
+        Station firstStation = upStations.get(0);
+        return sections.stream()
+                .filter(section -> section.getUpStation().equals(firstStation))
+                .findAny()
+                .get()
+                .getUpStation();
     }
 
     public void removeSection(Line line, Station station) {
@@ -150,6 +146,15 @@ public class Sections {
         if (this.sections.size() <= ONE) {
             throw new ExistsOnlyOneSectionInLineException("구간이 두개 이상이어야 삭제가 가능합니다");
         }
+    }
+
+    private Station addDownStation(List<Station> stations, Optional<Section> nextLineStation) {
+        if (!nextLineStation.isPresent()) {
+            return null;
+        }
+        Station downStation = nextLineStation.get().getDownStation();
+        stations.add(downStation);
+        return downStation;
     }
 
     public Distance getTotalDistance() {
