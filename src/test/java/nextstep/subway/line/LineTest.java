@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 public class LineTest {
@@ -22,14 +23,15 @@ public class LineTest {
 	public static final Station 역삼역 = new Station("역삼역");
 	public static final Station 강남역 = new Station("강남역");
 
-	// TODO: 3개 이상의 지하철역이 추가될 케이스를 addSection 구현 이후 추가하기
 	@Test
 	@DisplayName("지하철 역을 상행-하행 순으로 정렬하여 반환한다.")
 	void getStationsByOrder_success() {
 		Line line = new Line(신분당선, BG_RED_600, 삼성역, 선릉역, 5);
+		line.addSection(new Section(line, 역삼역, 강남역, 3));
+		line.addSection(new Section(line, 선릉역, 역삼역, 3));
 
 		List<Station> actual = line.getOrderedStations();
 
-		assertThat(Arrays.asList(삼성역, 선릉역)).isEqualTo(actual);
+		assertThat(Arrays.asList(삼성역, 선릉역, 역삼역, 강남역)).isEqualTo(actual);
 	}
 }
