@@ -77,7 +77,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ## 3단계 - 인증을 통한 기능 구현
 
 - 토큰 발급 기능 (로그인) 인수 테스트 만들기
-  - Bearer Auth 로그인 성공 인수 테스트
+  - [x] Bearer Auth 로그인 성공 인수 테스트
   - Bearer Auth 로그인 실패 인수 테스트
   - Bearer Auth 유효하지 않은 토큰 인수 테스트
   
