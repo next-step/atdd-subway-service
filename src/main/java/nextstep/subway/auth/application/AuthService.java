@@ -1,6 +1,7 @@
 package nextstep.subway.auth.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.Role;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
@@ -29,12 +30,12 @@ public class AuthService {
 
   public LoginMember findMemberByToken(String credentials) {
     if (!jwtTokenProvider.validateToken(credentials)) {
-      return new LoginMember();
+      return LoginMember.ofGuest();
     }
 
     String email = jwtTokenProvider.getPayload(credentials);
     Member member = memberRepository.findByEmail(email)
             .orElseThrow(() -> new AuthorizationException("인증 정보가 잘못되었거나 해당 사용자를 찾을 수 없습니다."));
-    return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+    return new LoginMember(member.getId(), member.getEmail(), member.getAge(), Role.USER);
   }
 }
