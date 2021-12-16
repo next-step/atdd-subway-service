@@ -1,15 +1,10 @@
 package nextstep.subway.path.domain.fare;
 
-import nextstep.subway.line.domain.Money;
-
 import java.util.Objects;
 
 public class Fare implements FareRule {
     private static final int BASE_FARE = 1250;
     private static final int EXTRA_FARE = 100;
-
-    private final DistancePolicy distancePolicy = new DistancePolicy();
-    private final DiscountPolicy discountPolicy = new DiscountPolicy();
 
     private final int fare;
 
@@ -23,14 +18,14 @@ public class Fare implements FareRule {
 
     @Override
     public Fare extraFare(int distance, int lineFare) {
-        int overDistance = distancePolicy.getOverDistance(distance);
+        int overDistance = ExtraDistance.getOverDistance(distance);
         int distanceFare = BASE_FARE + (overDistance * EXTRA_FARE);
         return new Fare(distanceFare + lineFare);
     }
 
     @Override
     public Fare discount(int age) {
-        int discountFare = discountPolicy.getDiscountFare(age, this);
+        int discountFare = DiscountAge.getDiscountFare(age, this);
         return new Fare(discountFare);
     }
 

@@ -8,15 +8,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DisplayName("거리 비례 요금 정책 기능")
-class DistancePolicyTest {
-
-    private final DistancePolicy distancePolicy = new DistancePolicy();
+class ExtraDistanceTest {
 
     @ParameterizedTest(name = "기본요금 거리: [{0}]=0")
     @ValueSource(ints = {1, 10})
     void getOverDistanceBasic(int distance) {
         // given when
-        int overDistance = distancePolicy.getOverDistance(distance);
+        int overDistance = ExtraDistance.getOverDistance(distance);
 
         // then
         assertThat(overDistance).isZero();
@@ -26,7 +24,7 @@ class DistancePolicyTest {
     @CsvSource(value = {"11, 1", "16, 2", "41, 7", "46, 8"})
     void getOverDistance10km(int distance, int excepted) {
         // given when
-        int overDistance = distancePolicy.getOverDistance(distance);
+        int overDistance = ExtraDistance.getOverDistance(distance);
 
         // then
         assertThat(overDistance).isEqualTo(excepted);
@@ -36,7 +34,7 @@ class DistancePolicyTest {
     @CsvSource(value = {"51, 6", "59, 7", "67, 8", "75, 9"})
     void getOverDistance50km(int distance, int excepted) {
         // given when
-        int overDistance = distancePolicy.getOverDistance(distance);
+        int overDistance = ExtraDistance.getOverDistance(distance);
 
         // then
         assertThat(overDistance).isEqualTo(excepted);

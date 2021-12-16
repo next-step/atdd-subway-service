@@ -22,11 +22,14 @@ public enum DiscountAge {
         this.deduction = deduction;
     }
 
-    public static DiscountAge findBy(int age) {
-        return Arrays.stream(values())
-                .filter(discountAge -> (age >= discountAge.minAge) && (age <= discountAge.maxAge))
+    public static int getDiscountFare(int age, Fare fare) {
+        DiscountAge discountAge = Arrays.stream(values())
+                .filter(it -> (age >= it.minAge) && (age <= it.maxAge))
                 .findFirst()
                 .orElse(BASIC);
+
+        float discountFare = (fare.getFare() - discountAge.getDeduction()) * discountAge.getRate();
+        return Math.round(discountFare);
     }
 
     public float getRate() {

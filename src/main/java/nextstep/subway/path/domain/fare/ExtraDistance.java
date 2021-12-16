@@ -19,11 +19,13 @@ public enum ExtraDistance {
         this.threshold = threshold;
     }
 
-    public static double getOverDistance(int distance) {
-        return Arrays.stream(values())
+    public static int getOverDistance(int distance) {
+        Double overDistance = Arrays.stream(values())
                 .filter(extra -> (distance > extra.minDistance) && (distance <= extra.maxDistance))
                 .findFirst()
                 .map(value -> (double) (distance - value.baseDistance) / value.threshold)
                 .orElse(0.0);
+
+        return (int) Math.ceil(overDistance);
     }
 }
