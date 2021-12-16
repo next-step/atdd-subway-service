@@ -7,6 +7,7 @@ public enum DistanceFeeType {
 
     public static final int BASE_FEE = 1250;
     public static final int EXTRA_FEE = 100;
+    public static final int MINIMUM_DISTANCE = 10;
     private final int maxDistance;
     private final double distance;
 
@@ -28,7 +29,13 @@ public enum DistanceFeeType {
     }
 
     public static int calculateOverFare(int distance, DistanceFeeType distanceFeeType) {
-        return (int) (BASE_FEE + ((Math.floor((distance - distanceFeeType.maxDistance - 1) / (distanceFeeType.distance)) + 1) * EXTRA_FEE));
+        if (distance <= MINIMUM_DISTANCE) {
+            return BASE_FEE;
+        }
+
+        return (int) (BASE_FEE +
+                ((Math.floor(((distance - MINIMUM_DISTANCE) - 1) / distanceFeeType.distance) + 1)
+                        * EXTRA_FEE));
     }
 
     public int getMaxDistance() {
