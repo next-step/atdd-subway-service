@@ -33,7 +33,8 @@ public class PathTest {
         Line firstLine = LineTestFixture.노선을_생성한다("1호선", "red", upStationFirstLine, downStationFirstLine, 10);
         firstLine.addStation(downStationFirstLine, addStationFirstLine, 5);
         PathFinder pathFinder = new PathFinder(firstLine);
-        assertThat(pathFinder.findPath(upStationFirstLine.getId(), addStationFirstLine.getId())).containsExactly(upStationFirstLine.getId(), downStationFirstLine.getId(), addStationFirstLine.getId());
+        pathFinder.findPath(upStationFirstLine.getId(), addStationFirstLine.getId());
+        assertThat(pathFinder.getStationIds()).containsExactly(upStationFirstLine.getId(), downStationFirstLine.getId(), addStationFirstLine.getId());
     }
 
 
@@ -62,8 +63,8 @@ public class PathTest {
         Line thirdLine = LineTestFixture.노선을_생성한다("3호선", "red", upStationThirdLine, downStationThirdLine, 20);
         List<Line> lines = Lists.newArrayList(firstLine, secondLine, thirdLine);
         PathFinder pathFinder = new PathFinder(lines);
-
-        assertThat(pathFinder.findPath(upStationSecondLine.getId(), downStationFirstLine.getId())).containsExactly(upStationSecondLine.getId(), upStationFirstLine.getId(), downStationFirstLine.getId());
+        pathFinder.findPath(upStationSecondLine.getId(), downStationFirstLine.getId());
+        assertThat(pathFinder.getStationIds()).containsExactly(upStationSecondLine.getId(), upStationFirstLine.getId(), downStationFirstLine.getId());
     }
 
 }
