@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class RestAdvice {
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> handleCustomeException(CustomException e) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(e.getHttpStatus(), e.getMessage());
         return new ResponseEntity<>(errorResponse, new HttpHeaders(), errorResponse.getStatus());
     }
 
