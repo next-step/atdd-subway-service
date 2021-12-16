@@ -51,8 +51,6 @@ class FavoriteServiceMockitoTest {
 	private static Member 사용자 = new Member(EMAIL, PASSWORD, AGE);
 	private static Favorite 두정_TO_봉명 = new Favorite(사용자, 두정역, 봉명역);
 
-	private static TokenResponse tokenResponse;
-
 	@Mock
 	private MemberService memberService;
 
@@ -61,10 +59,6 @@ class FavoriteServiceMockitoTest {
 
 	@Mock
 	private FavoriteRepository favoriteRepository;
-
-	@BeforeEach
-	public void setUp() {
-	}
 
 	@Test
 	@DisplayName("즐겨찾기 저장 테스트")
