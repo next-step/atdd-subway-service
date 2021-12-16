@@ -90,7 +90,7 @@ public class LineService {
 		}
 
 		if (stations.isEmpty()) {
-			line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+			line.addSection(new Section(line, upStation, downStation, request.getDistance()));
 			return;
 		}
 
@@ -100,14 +100,14 @@ public class LineService {
 				.findFirst()
 				.ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
 
-			line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+			line.addSection(new Section(line, upStation, downStation, request.getDistance()));
 		} else if (isDownStationExisted) {
 			line.getSections().stream()
 				.filter(it -> it.getDownStation() == downStation)
 				.findFirst()
 				.ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
 
-			line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+			line.addSection(new Section(line, upStation, downStation, request.getDistance()));
 		} else {
 			throw new RuntimeException();
 		}
@@ -131,11 +131,11 @@ public class LineService {
 			Station newUpStation = downLineStation.get().getUpStation();
 			Station newDownStation = upLineStation.get().getDownStation();
 			int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-			line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
+			line.addSection(new Section(line, newUpStation, newDownStation, newDistance));
 		}
 
-		upLineStation.ifPresent(it -> line.getSections().remove(it));
-		downLineStation.ifPresent(it -> line.getSections().remove(it));
+		upLineStation.ifPresent(line::removeSection);
+		downLineStation.ifPresent(line::removeSection);
 	}
 
 	public List<Station> getStations(Line line) {

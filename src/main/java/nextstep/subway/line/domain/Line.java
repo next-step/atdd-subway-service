@@ -5,13 +5,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
@@ -25,8 +24,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -60,11 +59,19 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return sections.get();
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
+    }
+
+    public void removeSection(Section section) {
+        sections.remove(section);
     }
 
     public List<Station> getOrderedStations() {
-        if (sections.isEmpty()) {
+        if (sections.get().isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -76,7 +83,7 @@ public class Line extends BaseEntity {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
+            Optional<Section> nextLineStation = sections.get().stream()
                 .filter(it -> it.getUpStation() == finalDownStation)
                 .findFirst();
             if (!nextLineStation.isPresent()) {
@@ -91,7 +98,7 @@ public class Line extends BaseEntity {
 
     // TODO: Sections 구현 이후 리팩토링
     private Station findUpStation(Line line) {
-        Station downStation = sections.get(0).getUpStation();
+        Station downStation = sections.get().get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = line.getSections().stream()
