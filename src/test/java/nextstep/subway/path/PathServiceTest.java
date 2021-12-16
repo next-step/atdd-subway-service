@@ -1,5 +1,7 @@
 package nextstep.subway.path;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.Role;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -20,8 +22,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +58,7 @@ public class PathServiceTest {
     Station 선정릉역 = new Station(4L, "선정릉역");
     Station 고속터미널역 = new Station(5L, "고속터미널역");
 
-    Line 이호선 = new Line(1L, "이호선", "green", Section.of(1L, 교대역, 선릉역, Distance.of(10)));
+    Line 이호선 = new Line(1L, "이호선", "green", Section.of(1L, 교대역, 선릉역, Distance.of(13)));
     Line 삼호선 = new Line(2L, "삼호선", "orange", Section.of(1L, 교대역, 고속터미널역, Distance.of(10)));
     Line 구호선 = new Line(3L, "구호선", "brown", Section.of(1L, 고속터미널역, 선정릉역, Distance.of(50)));
     Line 수인분당선 = new Line(4L, "수인분당선", "yellow", Section.of(1L, 선릉역, 선정릉역, Distance.of(10)));
@@ -70,9 +70,19 @@ public class PathServiceTest {
     given(lineRepository.findAll()).willReturn(노선_목록);
 
     // when
-    PathResponse response = pathService.findShortestPath(출발역_id, 도착역_id);
+    PathResponse response = pathService.findShortestPath(new LoginMember(2L, "test@gmail.com", 27, Role.USER), 출발역_id, 도착역_id);
 
     // then
+    최단_경로_확인됨(교대역, 선릉역, 선정릉역, response);
+    거리_요금_확인됨(23, 1550, response);
+  }
+
+  private void 거리_요금_확인됨(int distance, int fare, PathResponse response) {
+    assertThat(response.getDistance()).isEqualTo(distance);
+    assertThat(response.getTotalFare()).isEqualTo(fare);
+  }
+
+  private void 최단_경로_확인됨(Station 교대역, Station 선릉역, Station 선정릉역, PathResponse response) {
     assertThat(response.getStations().stream()
             .map(StationResponse::toStation)
             .collect(Collectors.toList())).containsExactly(교대역, 선릉역, 선정릉역);

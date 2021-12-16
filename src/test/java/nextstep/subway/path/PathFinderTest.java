@@ -69,9 +69,11 @@ public class PathFinderTest {
 
     // when
     List<Station> 최단_경로 = pathFinder.findShortestPath(강남역, 신논현역);
+    int 최단_거리 = pathFinder.findShortestDistance(강남역, 신논현역);
 
     // then
     assertThat(최단_경로).containsExactly(강남역, 교대역, 고속터미널역, 신논현역);
+    assertThat(최단_거리).isEqualTo(50);
   }
 
   @DisplayName("출발역과 도착역이 같은 경우")
