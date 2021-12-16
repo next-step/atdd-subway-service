@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain.shortest;
 
+import java.util.List;
+
 import org.jgrapht.GraphPath;
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
@@ -7,6 +9,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.exception.PathNotFoundException;
 import nextstep.subway.station.domain.Station;
 
@@ -14,15 +17,27 @@ public class DijkstraShortestPathFinder implements ShortestPathFinder {
 
 	private final WeightedGraph<Station, DefaultWeightedEdge> graph;
 
-	private DijkstraShortestPathFinder() {
+	private DijkstraShortestPathFinder(List<Line> lines) {
+		validate(lines);
+
 		this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+
+		lines.stream()
+			.flatMap(line -> line.getSections().stream())
+			.forEach(section -> addEdge(section.getUpStation(), section.getDownStation(), section.getDistance()));
 	}
 
-	public static DijkstraShortestPathFinder of() {
-		return new DijkstraShortestPathFinder();
+	private void validate(List<Line> lines) {
+		if (null == lines) {
+			throw new IllegalArgumentException("노선 목록이 있어야 합니다.");
+		}
 	}
 
-	public void addEdge(Station station1, Station station2, int weight) {
+	public static DijkstraShortestPathFinder of(List<Line> lines) {
+		return new DijkstraShortestPathFinder(lines);
+	}
+
+	private void addEdge(Station station1, Station station2, int weight) {
 		graph.addVertex(station1);
 		graph.addVertex(station2);
 		graph.setEdgeWeight(graph.addEdge(station1, station2), weight);
