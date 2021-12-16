@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -59,5 +60,9 @@ public class Line extends BaseEntity {
 
     public void removeLineStation(Station station) {
         this.sections.removeLineStation(this, station);
+    }
+
+    public Sections getSections() {
+        return this.sections;
     }
 }
