@@ -53,9 +53,9 @@ class SubwayMapTest {
                 , Section.of(삼호선, 남부터미널역, 양재역, 2)));
     }
 
-    @DisplayName("출발역과 도착역의 최단 경로 조회1")
+    @DisplayName("출발역과 도착역의 최단 경로 조회 - 직행")
     @Test
-    void findShortestPath1() {
+    void findShortestPath_straight() {
         // given
         Station source = 강남역;
         Station target = 교대역;
@@ -70,9 +70,9 @@ class SubwayMapTest {
         );
     }
 
-    @DisplayName("출발역과 도착역의 최단 경로 조회2")
+    @DisplayName("출발역과 도착역의 최단 경로 조회 - 환승")
     @Test
-    void findShortestPath2() {
+    void findShortestPath_transfer() {
         // given
         Station source = 강남역;
         Station target = 남부터미널역;

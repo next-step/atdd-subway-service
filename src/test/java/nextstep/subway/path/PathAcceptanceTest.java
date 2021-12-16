@@ -58,9 +58,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
 
-    @DisplayName("출발역과 도착역의 최단 경로 조회1")
+    @DisplayName("출발역과 도착역의 최단 경로 조회 - 직행")
     @Test
-    void shortestPath1() {
+    void shortestPath_straight() {
         // given
         Long source = 강남역.getId();
         Long target = 교대역.getId();
@@ -73,9 +73,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회됨(response, pathResponse);
     }
 
-    @DisplayName("출발역과 도착역의 최단 경로 조회2")
+    @DisplayName("출발역과 도착역의 최단 경로 조회 - 환승")
     @Test
-    void shortestPath2() {
+    void shortestPath_transfer() {
         // given
         Long source = 강남역.getId();
         Long target = 남부터미널역.getId();
