@@ -21,8 +21,4 @@ public class LoginMember {
     public String getEmail() {
         return email;
     }
-
-    public Integer getAge() {
-        return age;
-    }
 }
