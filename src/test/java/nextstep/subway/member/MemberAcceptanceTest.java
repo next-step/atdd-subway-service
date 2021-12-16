@@ -1,5 +1,6 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -75,7 +76,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 	private static ExtractableResponse<Response> 내_정보_삭제_요청(TokenResponse 토큰) {
 		return RestAssured
 			.given().log().all()
-			.header("Authorization", getAuthHeader(토큰))
+			.header(getAuthHeader(토큰))
 			.when().delete("/members/me")
 			.then().log().all()
 			.extract();
@@ -89,15 +90,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		return RestAssured
 			.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.header("Authorization", getAuthHeader(tokenResponse))
+			.auth().oauth2(tokenResponse.getAccessToken())
 			.body(memberRequest)
 			.when().put("/members/me")
 			.then().log().all()
 			.extract();
-	}
-
-	private static String getAuthHeader(TokenResponse tokenResponse) {
-		return "Bearer " + tokenResponse.getAccessToken();
 	}
 
 	public static void 내_정보_응답됨(ExtractableResponse<Response> response, String email) {
@@ -173,7 +170,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 	public static ExtractableResponse<Response> 내_정보_조회_요청(TokenResponse tokenResponse) {
 		return RestAssured
 			.given().log().all()
-			.header("Authorization", getAuthHeader(tokenResponse))
+			.auth().oauth2(tokenResponse.getAccessToken())
 			.when().get("/members/me")
 			.then().log().all()
 			.extract();

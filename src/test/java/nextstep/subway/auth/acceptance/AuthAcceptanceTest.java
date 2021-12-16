@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import io.restassured.RestAssured;
+import io.restassured.http.Header;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -34,7 +35,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	@Test
 	void scenario1() {
 		// when
-		ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
+		TokenResponse response = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
 		// then
 		로그인_응답됨(response);
@@ -108,8 +109,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 			.extract();
 	}
 
-	private static void 로그인_응답됨(ExtractableResponse<Response> response) {
-		TokenResponse tokenResponse = response.as(TokenResponse.class);
+	private static void 로그인_응답됨(TokenResponse tokenResponse) {
 		assertThat(tokenResponse.getAccessToken()).isNotNull();
 	}
 
@@ -119,6 +119,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 			.when().get("/members/me")
 			.then().log().all()
 			.extract();
+	}
+
+	public static Header getAuthHeader(TokenResponse tokenResponse) {
+		return new Header("Authorization", "Bearer " + tokenResponse.getAccessToken());
 	}
 
 }
