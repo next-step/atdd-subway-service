@@ -3,7 +3,9 @@ package nextstep.subway.line;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.station.domain.Station;
 
 public class SectionsTest {
 	@Test
@@ -38,5 +41,20 @@ public class SectionsTest {
 		sections.remove(section1);
 
 		assertThat(new Sections(Collections.singletonList(section2))).isEqualTo(sections);
+	}
+
+	@Test
+	@DisplayName("상행구간부터 하행구간 순서대로 지하철역 반환")
+	void getOrderedStations_success() {
+		Line line = new Line();
+		Sections sections = new Sections(new ArrayList<>());
+		Section section1 = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
+		Section section2 = new Section(line, LineTest.선릉역, LineTest.역삼역, 5);
+		sections.add(section2);
+		sections.add(section1);
+
+		List<Station> stations = sections.getOrderedStations();
+
+		assertThat(Arrays.asList(LineTest.삼성역, LineTest.선릉역, LineTest.역삼역)).isEqualTo(stations);
 	}
 }

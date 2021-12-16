@@ -3,10 +3,13 @@ package nextstep.subway.line.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+
+import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
@@ -22,6 +25,42 @@ public class Sections {
 
 	public void add(Section section) {
 		sections.add(section);
+	}
+
+	public List<Station> getOrderedStations() {
+		Station downStation = findUpStation();
+		List<Station> stations = new ArrayList<>();
+
+		while (downStation != null) {
+			stations.add(downStation);
+			Optional<Section> nextLineSection = findNextSection(downStation);
+			downStation = nextLineSection.map(Section::getDownStation).orElse(null);
+		}
+		return stations;
+	}
+
+	private Station findUpStation() {
+		Station searchStation = sections.get(0).getUpStation();
+		Station upStation = searchStation;
+
+		while (searchStation != null) {
+			upStation = searchStation;
+			Optional<Section> prevLineSection = findPrevSection(searchStation);
+			searchStation = prevLineSection.map(Section::getUpStation).orElse(null);
+		}
+		return upStation;
+	}
+
+	private Optional<Section> findNextSection(Station station) {
+		return sections.stream()
+			.filter(it -> it.getUpStation() == station)
+			.findFirst();
+	}
+
+	private Optional<Section> findPrevSection(Station station) {
+		return sections.stream()
+			.filter(it -> it.getDownStation() == station)
+			.findFirst();
 	}
 
 	@Override

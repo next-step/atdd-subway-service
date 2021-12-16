@@ -63,4 +63,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [x] Sections.add
   - [ ] Line.removeSection
   - [x] Sections.remove
-  - [ ] Sections.getOrderedStations
+  - [x] Sections.getOrderedStations
