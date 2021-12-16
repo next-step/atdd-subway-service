@@ -34,10 +34,10 @@ class PathFinderTest {
     @BeforeEach
     void setUp() {
         // given
-        강남역 = new Station("강남역");
-        양재역 = new Station("양재역");
-        교대역 = new Station("교대역");
-        남부터미널역 = new Station("남부터미널역");
+        강남역 = new Station(1L, "강남역");
+        양재역 = new Station(2L, "양재역");
+        교대역 = new Station(3L, "교대역");
+        남부터미널역 = new Station(4L, "남부터미널역");
 
         final Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, 10);
         final Line 이호선 = new Line("2호선", "green", 교대역, 강남역, 10);
@@ -71,8 +71,8 @@ class PathFinderTest {
     @Test
     void computeNotConnectedPath() {
         // given
-        final Station 송내역 = new Station("송내역");
-        final Station 의정부역 = new Station("의정부역");
+        final Station 송내역 = new Station(5L, "송내역");
+        final Station 의정부역 = new Station(6L, "의정부역");
         final Line 일호선 = new Line("1호선", "indigo", 송내역, 의정부역, 10);
         final ArrayList<Line> newLines = new ArrayList<>(lines);
         newLines.add(일호선);

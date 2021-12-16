@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.exception.NotFoundException;
 
@@ -30,6 +31,12 @@ public class WebControllerAdvice {
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public void handleNotFound(NotFoundException exception) {
+        log.error(exception.getMessage());
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public void handleUnauthorized(AuthorizationException exception) {
         log.error(exception.getMessage());
     }
 }
