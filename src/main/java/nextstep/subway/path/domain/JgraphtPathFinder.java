@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -43,7 +44,8 @@ public class JgraphtPathFinder {
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
         this.edges = path.getEdgeList();
-        return new Path(path.getVertexList(), (int) path.getWeight());
+        int weight = (int) path.getWeight();
+        return new Path(path.getVertexList(), new Distance(weight));
     }
 
     public boolean isSameVertex(Station source, Station target) {

@@ -124,6 +124,7 @@ public class PathFareAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 운임_요금_일치됨(ExtractableResponse<Response> response, int excepted) {
-        assertThat(response.jsonPath().getObject("fare", Integer.class)).isEqualTo(excepted);
+        assertThat(response.jsonPath().getObject("money", Integer.class))
+                .isEqualTo(excepted);
     }
 }

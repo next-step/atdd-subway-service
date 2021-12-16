@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain.fare;
 
+import nextstep.subway.line.domain.Money;
+
 import java.util.Arrays;
 
 public enum DiscountAge {
@@ -22,14 +24,11 @@ public enum DiscountAge {
         this.deduction = deduction;
     }
 
-    public static int getDiscountFare(int age, Fare fare) {
-        DiscountAge discountAge = Arrays.stream(values())
+    public static DiscountAge findBy(int age) {
+        return Arrays.stream(values())
                 .filter(it -> (age >= it.minAge) && (age <= it.maxAge))
                 .findFirst()
                 .orElse(BASIC);
-
-        float discountFare = (fare.getFare() - discountAge.getDeduction()) * discountAge.getRate();
-        return Math.round(discountFare);
     }
 
     public float getRate() {

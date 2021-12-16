@@ -12,7 +12,7 @@ class FareTest {
     @DisplayName("거리에 따른 추가요금을 계산한다.")
     void calculateDistanceFare() {
         Fare fare = new Fare();
-        assertThat(fare.getFare()).isEqualTo(1250); //+0
+        assertThat(fare.getMoney()).isEqualTo(1250); //+0
 
         assertThat(fare.extraFare(10, 0)).isEqualTo(new Fare(1250)); //+0
         assertThat(fare.extraFare(14, 0)).isEqualTo(new Fare(1350)); //+100
@@ -29,7 +29,7 @@ class FareTest {
     @DisplayName("노선에 따른 추가요금을 계산한다.")
     void calculateLineFare() {
         Fare fare = new Fare();
-        assertThat(fare.getFare()).isEqualTo(1250); //+0
+        assertThat(fare.getMoney()).isEqualTo(1250); //+0
 
         assertThat(fare.extraFare(10, 500)).isEqualTo(new Fare(1750)); //+500
         assertThat(fare.extraFare(10, 900)).isEqualTo(new Fare(2150)); //+900
@@ -42,7 +42,7 @@ class FareTest {
     @DisplayName("나이에 따른 할인요금을 계산한다.")
     void calculateAgeFare() {
         Fare fare = new Fare();
-        assertThat(fare.getFare()).isEqualTo(1250); //+0
+        assertThat(fare.getMoney()).isEqualTo(1250); //+0
 
         assertThat(fare.discount(5)).isEqualTo(new Fare(0)); //-1250
         assertThat(fare.discount(12)).isEqualTo(new Fare(450)); //-800
