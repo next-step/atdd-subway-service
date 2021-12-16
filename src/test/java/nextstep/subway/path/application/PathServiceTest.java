@@ -58,7 +58,7 @@ public class PathServiceTest {
         when(stationService.getStationById(pathRequest.getTarget())).thenReturn(양재역);
 
         // when
-        final PathResponse actual = pathService.findPath(pathRequest);
+        final PathResponse actual = pathService.findPath(null, pathRequest);
 
         // then
         final List<String> actualStationNames = actual.getStations()

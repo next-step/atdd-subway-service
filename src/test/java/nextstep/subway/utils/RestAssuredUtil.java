@@ -103,6 +103,20 @@ public class RestAssuredUtil {
         );
     }
 
+    public static ExtractableResponse<Response> getWithAuth(
+        final String token,
+        final Object params,
+        final String path
+    ) {
+        return logAndExtractResponse(
+            createAndLogTestSpecification()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().get(path)
+        );
+    }
+
     public static ExtractableResponse<Response> deleteWithAuth(
         final String token,
         final String path

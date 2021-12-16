@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Path;
@@ -23,7 +24,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(final PathRequest pathRequest) {
+    public PathResponse findPath(final LoginMember loginMember, final PathRequest pathRequest) {
         final List<Line> lines = lineService.findAll();
         final Path path = new PathFinder(lines).findPath(
             stationService.getStationById(pathRequest.getSource()),
