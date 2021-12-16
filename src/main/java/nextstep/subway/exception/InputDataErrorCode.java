@@ -13,7 +13,7 @@ public enum InputDataErrorCode {
     THERE_IS_NOT_SEARCHED_MEMBER("[ERROR] 검색된 회원이 없습니다."),
     THE_FEE_IS_LESS_THAN_ZERO("[ERROR] 요금은 0원 이상이어야합니다."),
     IT_IS_WRONG_AGE("[ERROR] 잘못된 나이를 입력하였습니다.(나이 제한 : 1~200)"),
-    IT_IS_WRONG_DISTANCE("[ERROR] 잘못된 거리를 입력하였습니다. (거리 제한 : 1~1000)");
+    IT_IS_WRONG_DISTANCE("[ERROR] 잘못된 거리를 입력하였습니다.");
     private String errorMessage;
 
     InputDataErrorCode(String errorMessage) {
