@@ -30,8 +30,8 @@ public class Sections {
 
     public void addSection(Section newSection) {
         List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == newSection.getUpStation());
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == newSection.getDownStation());
+        boolean isUpStationExisted = stations.stream().anyMatch(newSection::equalsUpStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(newSection::equalsDownStation);
 
         checkExistsSection(isUpStationExisted, isDownStationExisted);
         checkNotAddSection(newSection, stations);
