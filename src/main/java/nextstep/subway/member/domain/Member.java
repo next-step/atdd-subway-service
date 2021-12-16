@@ -1,5 +1,7 @@
 package nextstep.subway.member.domain;
 
+import java.util.Objects;
+
 import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.AuthorizationException;
 
@@ -36,10 +38,6 @@ public class Member extends BaseEntity {
 		return email;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
 	public Integer getAge() {
 		return age;
 	}
@@ -54,5 +52,21 @@ public class Member extends BaseEntity {
 		if (!StringUtils.equals(this.password, password)) {
 			throw new AuthorizationException("비밀번호가 일치하지 않습니다.");
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Member member = (Member)o;
+		return Objects.equals(id, member.id) && Objects.equals(email, member.email)
+			&& Objects.equals(password, member.password) && Objects.equals(age, member.age);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, email, password, age);
 	}
 }
