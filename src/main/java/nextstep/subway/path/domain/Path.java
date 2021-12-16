@@ -11,9 +11,9 @@ import java.util.List;
 public class Path {
 
     private static final int BASE_FARE = 1250;
-    private List<Station> stations;
-    private Distance distance;
-    private Fare fare;
+    private final List<Station> stations;
+    private final Distance distance;
+    private final Fare fare;
 
     private Path(List<Station> stations, Distance distance, Fare fare) {
         this.stations = stations;
@@ -23,7 +23,14 @@ public class Path {
 
     public static Path of(List<Station> stations, int distance, List<Section> sections) {
         Fare maxExtraFare = findMaxExtraFare(sections);
-        return new Path(stations, Distance.from(distance), Fare.from(BASE_FARE).plus(maxExtraFare));
+        Fare distanceExtraFare = calculatorExtraFareBy(distance);
+        return new Path(
+                stations,
+                Distance.from(distance),
+                Fare.from(BASE_FARE)
+                        .plus(maxExtraFare)
+                        .plus(distanceExtraFare)
+        );
     }
 
     public List<Station> getStations() {
@@ -46,5 +53,9 @@ public class Path {
                 .max(BigDecimal::compareTo)
                 .map(Fare::from)
                 .orElse(Fare.from(BigDecimal.ZERO));
+    }
+
+    private static Fare calculatorExtraFareBy(int distance) {
+        return DistanceFarePolicy.valueOf(distance);
     }
 }
