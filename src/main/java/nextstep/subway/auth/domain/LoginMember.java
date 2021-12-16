@@ -25,4 +25,8 @@ public class LoginMember {
     public Integer getAge() {
         return age;
     }
+
+    public boolean isDelete(Long favoriteId) {
+        return id.equals(favoriteId);
+    }
 }
