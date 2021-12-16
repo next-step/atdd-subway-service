@@ -43,7 +43,7 @@ public class FavoriteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<FavoriteResponse> deleteFavorite(
+    public ResponseEntity<Void> deleteFavorite(
         @AuthenticationPrincipal final LoginMember loginMember,
         @PathVariable final Long id
     ) {
