@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -18,8 +19,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_인증토큰_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -55,14 +61,30 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         즐겨찾기_생성됨(createResponse);
 
-        //    When 즐겨찾기 목록 조회 요청
-        //    Then 즐겨찾기 목록 조회됨
+        // when
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자토큰);
+        // then
+        즐겨찾기_목록_조회됨(findResponse);
+
         //    When 즐겨찾기 삭제 요청
         //    Then 즐겨찾기 삭제됨
     }
 
+    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> findResponse) {
+        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all().extract();
+    }
+
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> createResponse) {
-        Assertions.assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(String accessToken, StationResponse sourceStation, StationResponse targetStation) {

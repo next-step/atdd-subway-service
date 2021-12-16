@@ -28,4 +28,16 @@ public class Favorite {
     public Long getId() {
         return this.id;
     }
+
+    public Long getMemberId() {
+        return memberId;
+    }
+
+    public Long getSourceStationId() {
+        return sourceStationId;
+    }
+
+    public Long getTargetStationId() {
+        return targetStationId;
+    }
 }
