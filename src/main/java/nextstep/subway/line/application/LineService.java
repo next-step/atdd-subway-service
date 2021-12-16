@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.common.exception.Exceptions;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -28,6 +29,7 @@ public class LineService {
 
 	@Transactional
 	public LineResponse saveLine(LineRequest request) {
+		validateAlreadyExist(request);
 		Station upStation = stationService.findById(request.getUpStationId());
 		Station downStation = stationService.findById(request.getDownStationId());
 		Line persistLine = lineRepository.save(
@@ -43,7 +45,7 @@ public class LineService {
 	}
 
 	public Line findLineById(Long id) {
-		return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+		return lineRepository.findById(id).orElseThrow(Exceptions.LINE_NOT_EXIST::getException);
 	}
 
 	public LineResponse findLineResponseById(Long id) {
@@ -53,7 +55,7 @@ public class LineService {
 
 	@Transactional
 	public void updateLine(Long id, LineRequest lineUpdateRequest) {
-		Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+		Line persistLine = findLineById(id);
 		persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
 	}
 
@@ -75,5 +77,11 @@ public class LineService {
 		Line line = findLineById(lineId);
 		Station station = stationService.findStationById(stationId);
 		line.removeSection(station);
+	}
+
+	private void validateAlreadyExist(LineRequest request) {
+		if (lineRepository.existsByName(request.getName())) {
+			throw Exceptions.LINE_ALREADY_EXIST.getException();
+		}
 	}
 }

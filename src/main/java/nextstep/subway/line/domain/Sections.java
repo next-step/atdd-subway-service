@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import nextstep.subway.common.exception.Exceptions;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -42,12 +43,12 @@ public class Sections {
 			.anyMatch(station -> station.equals(other.getDownStation()));
 
 		if (isUpStationExisted && isDownStationExisted) {
-			throw new RuntimeException("이미 등록된 구간 입니다.");
+			throw Exceptions.ALREADY_EXIST_SECTION.getException();
 		}
 
 		if (!stations.isEmpty() && stations.stream().noneMatch(station -> station.equals(other.getUpStation())) &&
 			stations.stream().noneMatch(station -> station.equals(other.getDownStation()))) {
-			throw new RuntimeException("등록할 수 없는 구간 입니다.");
+			throw Exceptions.NO_CONNECTED_SECTION.getException();
 		}
 	}
 
@@ -131,7 +132,7 @@ public class Sections {
 
 	private void validateOnRemove() {
 		if (sections.size() <= 1) {
-			throw new RuntimeException("최소한 1개의 구간이 등록되어 있어야 합니다.");
+			throw Exceptions.SECTION_MUST_BE_EXIST.getException();
 		}
 	}
 
