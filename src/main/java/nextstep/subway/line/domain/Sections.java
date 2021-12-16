@@ -151,4 +151,10 @@ public class Sections {
             throw new ExistsOnlyOneSectionInLineException("구간이 두개 이상이어야 삭제가 가능합니다");
         }
     }
+
+    public Distance getTotalDistance() {
+        return sections.stream()
+                .map(Section::getDistance)
+                .reduce(new Distance(0), Distance::plus);
+    }
 }
