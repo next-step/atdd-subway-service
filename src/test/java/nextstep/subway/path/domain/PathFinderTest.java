@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.common.exception.SubwayException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathDtos;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -36,6 +33,8 @@ class PathFinderTest {
     private Section 남부터미널_양재_구간;
     private List<Section> 모든_구간;
 
+    private FarePolicy farePolicy;
+
     @BeforeEach
     void setUp() {
         신분당선 = new Line("신분당선", "red");
@@ -53,6 +52,7 @@ class PathFinderTest {
         남부터미널_양재_구간 = new Section(신분당선, 남부터미널역, 양재역, 4);
 
         모든_구간 = Arrays.asList(강남_교대_구간, 강남_양재_구간, 교대_남부터미널_구간, 남부터미널_양재_구간);
+        farePolicy = new BasicFarePolicy();
     }
 
     @DisplayName("최단 경로 찾기")
@@ -60,10 +60,10 @@ class PathFinderTest {
     void findPath() {
         PathDtos paths = PathDtos.from(모든_구간);
         StationResponses stationResponses = StationResponses.from(Arrays.asList(강남역, 양재역, 남부터미널역));
-        PathResponse expected = new PathResponse(stationResponses.getResponses(), 9);
+        PathResponse expected = new PathResponse(stationResponses.getResponses(), 9, 1250);
         StationGraph graph = new StationGraph(paths);
 
-        PathFinder pathFinder = new PathFinder(graph, 강남역, 남부터미널역);
+        PathFinder pathFinder = new PathFinder(graph, 강남역, 남부터미널역, farePolicy);
         PathResponse actual = pathFinder.findPath();
 
         assertThat(actual).isEqualTo(expected);
@@ -76,7 +76,7 @@ class PathFinderTest {
         StationGraph graph = new StationGraph(paths);
 
         assertThatExceptionOfType(SubwayException.class)
-            .isThrownBy(() -> new PathFinder(graph, 교대역, 교대역))
+            .isThrownBy(() -> new PathFinder(graph, 교대역, 교대역, farePolicy))
             .withMessage("출발역과 도착역이 같습니다.");
     }
 
@@ -93,7 +93,7 @@ class PathFinderTest {
         StationGraph graph = new StationGraph(paths);
 
         assertThatExceptionOfType(SubwayException.class)
-            .isThrownBy(() -> new PathFinder(graph, 교대역, 정자역))
+            .isThrownBy(() -> new PathFinder(graph, 교대역, 정자역, farePolicy))
             .withMessage("출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
 }

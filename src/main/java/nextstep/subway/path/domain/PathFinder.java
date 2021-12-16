@@ -2,13 +2,13 @@ package nextstep.subway.path.domain;
 
 import java.util.List;
 
-import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import nextstep.subway.common.exception.SubwayErrorCode;
 import nextstep.subway.common.exception.SubwayException;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -16,9 +16,11 @@ import nextstep.subway.station.dto.StationResponses;
 
 public class PathFinder {
     private final GraphPath<Station, DefaultWeightedEdge> path;
+    private final FarePolicy farePolicy;
 
-    public PathFinder(StationGraph graph, Station source, Station target) {
+    public PathFinder(StationGraph graph, Station source, Station target, FarePolicy farePolicy) {
         this.path = makePath(graph, source, target);
+        this.farePolicy = farePolicy;
     }
 
     private GraphPath<Station, DefaultWeightedEdge> makePath(StationGraph graph,
@@ -54,6 +56,8 @@ public class PathFinder {
 
         int distance = (int)path.getWeight();
 
-        return new PathResponse(responses, distance);
+        Fare fare = farePolicy.calculateFare(new Distance(distance));
+
+        return new PathResponse(responses, distance, fare.getFare());
     }
 }

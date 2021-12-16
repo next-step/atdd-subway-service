@@ -2,6 +2,8 @@ package nextstep.subway.path.service;
 
 import org.springframework.stereotype.Service;
 
+import nextstep.subway.path.domain.BasicFarePolicy;
+import nextstep.subway.path.domain.FarePolicy;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.StationGraph;
 import nextstep.subway.path.dto.PathDtos;
@@ -13,6 +15,7 @@ import nextstep.subway.station.domain.Station;
 
 @Service
 public class PathService {
+    private static final FarePolicy FARE_POLICY = new BasicFarePolicy();
     private final SectionRepository sectionRepository;
     private final StationService stationService;
 
@@ -30,7 +33,7 @@ public class PathService {
         Station source = stationService.findById(pathRequest.getSource());
         Station target = stationService.findById(pathRequest.getTarget());
 
-        PathFinder pathFinder = new PathFinder(graph, source, target);
+        PathFinder pathFinder = new PathFinder(graph, source, target, FARE_POLICY);
         return pathFinder.findPath();
     }
 }

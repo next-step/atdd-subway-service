@@ -62,7 +62,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void getPath() {
         // given
         List<StationResponse> stations = Arrays.asList(교대역, 남부터미널역, 양재역);
-        PathResponse pathResponse = new PathResponse(stations, 8);
+        PathResponse pathResponse = new PathResponse(stations, 8, 1250);
 
         // when
         ExtractableResponse<Response> response = PathAcceptanceTestHelper.최단_경로_조회_요청(교대역.getId(), 양재역.getId());
