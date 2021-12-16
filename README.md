@@ -89,7 +89,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - 즐겨찾기 기능 구현하기
   - [x] 즐겨찾기 생성 기능 인수테스트 작성
   - [x] 즐겨찾기 목록 조회 기능 인수테스트 작성
-  - 즐겨찾기 삭제 기능 인수테스트 작성
+  - [x] 즐겨찾기 삭제 기능 인수테스트 작성
   - 도메인 단위테스트 작성
   - 서비스 MockitoExtension 테스트 작성
   힌트 : 사용자 정보를 인수테스트 메서드의 첫번째 파라미터로 넘겨줄 수 있음

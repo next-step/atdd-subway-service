@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.HasNotPermissionException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -34,5 +35,13 @@ public class FavoriteService {
                         new StationResponse(stationRepository.findById(favorite.getSourceStationId()).orElseThrow(IllegalArgumentException::new)),
                         new StationResponse(stationRepository.findById(favorite.getTargetStationId()).orElseThrow(IllegalArgumentException::new)))
                 ).collect(Collectors.toList());
+    }
+
+    public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(IllegalArgumentException::new);
+        if(!favorite.isCreatedBy(loginMember.getId())) {
+            throw new HasNotPermissionException(loginMember.getId() + "는 삭제할 권한이 없습니다.");
+        }
+        favoriteRepository.delete(favorite);
     }
 }
