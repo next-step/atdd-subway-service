@@ -82,9 +82,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [x] Bearer Auth 유효하지 않은 토큰 인수 테스트
   
 - 내 정보 조회 기능
-  - managerMyInfo 메서드에 인수 테스트 추가
-    - 내 정보 조회, 수정, 삭제 기능을 /members/me 라는 URI 요청으로 동작하도록 검증
-    - 로그인 후 발급 받은 토큰을 포함해서 요청하기
+  - [x] managerMyInfo 메서드에 인수 테스트 추가
+    - [x] 내 정보 조회, 수정, 삭제 기능을 /members/me 라는 URI 요청으로 동작하도록 검증
+    - [x] 로그인 후 발급 받은 토큰을 포함해서 요청하기
   
 - 즐겨찾기 기능 구현하기
   - 즐겨찾기 생성 기능

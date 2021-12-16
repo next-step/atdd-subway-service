@@ -73,7 +73,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> 로그인_인증토큰_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_인증토큰_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
 
         ExtractableResponse<Response> response = RestAssured
