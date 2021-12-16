@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.util.Objects;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -13,6 +15,7 @@ import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section {
+    public static final Section DUMMY_SECTION = new Section();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -88,5 +91,26 @@ public class Section {
 
     public boolean isEqualToDownStation(Station station) {
         return downStation.equals(station);
+    }
+
+    public boolean isDummy() {
+        return this.equals(DUMMY_SECTION);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Section section = (Section)o;
+        return Objects.equals(id, section.id) && Objects.equals(line, section.line)
+            && Objects.equals(upStation, section.upStation) && Objects.equals(downStation,
+            section.downStation) && Objects.equals(distance, section.distance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, line, upStation, downStation, distance);
     }
 }

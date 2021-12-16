@@ -26,10 +26,6 @@ public class Station extends BaseEntity {
         this.name = name;
     }
 
-    public boolean isEqualId(Long stationId) {
-        return id.equals(stationId);
-    }
-
     public Station(String name) {
         this.name = name;
     }
