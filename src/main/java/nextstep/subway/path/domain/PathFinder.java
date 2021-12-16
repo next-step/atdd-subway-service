@@ -25,6 +25,10 @@ public class PathFinder {
     private int distance;
     private int totalFee;
 
+    public PathFinder(Station sourceStation, Station targetStation, List<Section> sections) {
+        this(sourceStation, targetStation, sections, new LoginMember());
+    }
+
     public PathFinder(Station sourceStation, Station targetStation, List<Section> sections, LoginMember loginMember) {
         validateSameStation(sourceStation, targetStation);
         this.sourceStation = sourceStation;
