@@ -14,11 +14,11 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 
-public class Map {
+public class SubwayMap {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-    private Map(List<Section> sections) {
+    private SubwayMap(List<Section> sections) {
         for (Section section : sections) {
             Station upStation = section.getUpStation();
             Station downStation = section.getDownStation();
@@ -29,8 +29,8 @@ public class Map {
         }
     }
 
-    public static Map of(List<Section> sections) {
-        return new Map(sections);
+    public static SubwayMap of(List<Section> sections) {
+        return new SubwayMap(sections);
     }
 
     public PathResponse findShortestPath(Station source, Station target) {

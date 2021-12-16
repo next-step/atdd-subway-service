@@ -1,7 +1,7 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.map.application.MapService;
-import nextstep.subway.map.domain.Map;
+import nextstep.subway.map.application.SubwayMapService;
+import nextstep.subway.map.domain.SubwayMap;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -12,18 +12,18 @@ import org.springframework.stereotype.Service;
 public class PathService {
 
     private final StationService stationService;
-    private final MapService mapService;
+    private final SubwayMapService subwayMapService;
 
-    public PathService(StationService stationService, MapService mapService) {
+    public PathService(StationService stationService, SubwayMapService subwayMapService) {
         this.stationService = stationService;
-        this.mapService = mapService;
+        this.subwayMapService = subwayMapService;
     }
 
     public PathResponse findShortestPath(PathRequest pathRequest) {
         Station source = stationService.findStationById(pathRequest.getSource());
         Station target = stationService.findStationById(pathRequest.getTarget());
 
-        Map map = mapService.getMap();
-        return map.findShortestPath(source, target);
+        SubwayMap subwayMap = subwayMapService.getMap();
+        return subwayMap.findShortestPath(source, target);
     }
 }

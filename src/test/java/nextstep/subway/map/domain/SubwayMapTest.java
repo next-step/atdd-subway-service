@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class MapTest {
+class SubwayMapTest {
 
     private Line 신분당선;
     private Line 이호선;
@@ -24,7 +24,7 @@ class MapTest {
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
-    private Map 지도;
+    private SubwayMap 지도;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -46,7 +46,7 @@ class MapTest {
 
         삼호선.addSection(교대역, 남부터미널역, 3);
 
-        지도 = Map.of(Arrays.asList(
+        지도 = SubwayMap.of(Arrays.asList(
                 Section.of(신분당선, 강남역, 양재역, 10)
                 , Section.of(이호선, 교대역, 강남역, 10)
                 , Section.of(삼호선, 교대역, 남부터미널역, 3)
