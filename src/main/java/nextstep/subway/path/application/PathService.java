@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
@@ -26,9 +27,9 @@ public class PathService {
         Station sourceStation = stationService.findStationById(pathRequest.getSource());
         Station targetStation = stationService.findStationById(pathRequest.getTarget());
 
-        PathFinder pathFinder = PathFinder.from(lineService.findLines());
-        Path path = pathFinder.findShortestPath(sourceStation, targetStation);
-
+        Lines lines = lineService.findLines();
+        PathFinder pathFinder = PathFinder.from(lines);
+        Path path = pathFinder.findShortestPath(lines, sourceStation, targetStation);
         return PathResponse.of(path);
     }
 }

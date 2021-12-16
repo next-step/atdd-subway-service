@@ -35,7 +35,7 @@ class PathServiceTest {
     private PathService pathService;
 
     @Test
-    void 최단_경로_조회() {
+    void 추가요금이_없고_노선이_하나일때_최단_경로_조회() {
         // given
         givenStation(1L, "강남역");
         givenStation(2L, "양재역");
@@ -59,6 +59,34 @@ class PathServiceTest {
                 .containsExactlyElementsOf(Arrays.asList("강남역", "양재역", "양재시민의숲"));
         Assertions.assertThat(path.getDistance()).isEqualTo(12);
         Assertions.assertThat(path.getFare()).isEqualTo(BigDecimal.valueOf(1250));
+    }
+
+    @Test
+    void 추가요금이_있고_노선이_하나일때_최단_경로_조회() {
+        // given
+        givenStation(1L, "강남역");
+        givenStation(2L, "양재역");
+        givenStation(3L, "양재시민의숲");
+
+        Station 강남역 = stationService.findStationById(1L);
+        Station 양재역 = stationService.findStationById(2L);
+        Station 양재시민의숲 = stationService.findStationById(3L);
+
+        int 신분당선_추가요금_900원 = 900;
+        Line line = Line.of("신분당선", "red", 강남역, 양재역, 10, 신분당선_추가요금_900원);
+        line.addSection(양재역, 양재시민의숲, 2);
+
+        given(lineService.findLines()).willReturn(Lines.from(Collections.singletonList(line)));
+
+        // when
+        PathResponse path = pathService.findPath(PathRequest.of(강남역.getId(), 양재시민의숲.getId()));
+
+        // then
+        Assertions.assertThat(path.getStations())
+                .extracting("name")
+                .containsExactlyElementsOf(Arrays.asList("강남역", "양재역", "양재시민의숲"));
+        Assertions.assertThat(path.getDistance()).isEqualTo(12);
+        Assertions.assertThat(path.getFare()).isEqualTo(BigDecimal.valueOf(2150));
     }
 
     private void givenStation(long id, String name) {

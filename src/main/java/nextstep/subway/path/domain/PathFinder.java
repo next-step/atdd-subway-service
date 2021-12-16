@@ -24,11 +24,11 @@ public class PathFinder {
         return new PathFinder(initGraph(lines));
     }
 
-    public Path findShortestPath(Station sourceStation, Station targetStation) {
+    public Path findShortestPath(Lines lines, Station sourceStation, Station targetStation) {
         validateDuplicateStation(sourceStation, targetStation);
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         validateNotConnectStation(graphPath);
-        return Path.of(graphPath.getVertexList(), (int) graphPath.getWeight());
+        return Path.of(graphPath.getVertexList(), (int) graphPath.getWeight(), lines.findSections(graphPath.getVertexList()));
     }
 
     private static WeightedMultigraph<Station, DefaultWeightedEdge> initGraph(Lines lines) {

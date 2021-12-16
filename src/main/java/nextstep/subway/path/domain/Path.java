@@ -2,8 +2,10 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Fare;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class Path {
@@ -19,8 +21,9 @@ public class Path {
         this.fare = fare;
     }
 
-    public static Path of(List<Station> stations, int distance) {
-        return new Path(stations, Distance.from(distance), Fare.from(BASE_FARE));
+    public static Path of(List<Station> stations, int distance, List<Section> sections) {
+        Fare maxExtraFare = findMaxExtraFare(sections);
+        return new Path(stations, Distance.from(distance), Fare.from(BASE_FARE).plus(maxExtraFare));
     }
 
     public List<Station> getStations() {
@@ -33,5 +36,15 @@ public class Path {
 
     public Fare getFare() {
         return fare;
+    }
+
+    private static Fare findMaxExtraFare(List<Section> shortestSections) {
+        return shortestSections.stream()
+                .map(section -> section.getLine()
+                        .getExtraFare()
+                        .value())
+                .max(BigDecimal::compareTo)
+                .map(Fare::from)
+                .orElse(Fare.from(BigDecimal.ZERO));
     }
 }

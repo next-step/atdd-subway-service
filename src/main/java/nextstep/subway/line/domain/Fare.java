@@ -26,6 +26,10 @@ public class Fare {
         return new Fare(BigDecimal.valueOf(amount));
     }
 
+    public static Fare from(BigDecimal amount) {
+        return new Fare(amount);
+    }
+
     public Fare plus(Fare amount) {
         return new Fare(this.amount.add(amount.amount));
     }

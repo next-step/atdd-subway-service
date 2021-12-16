@@ -4,7 +4,9 @@ import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 @Entity
 public class Section {
@@ -87,6 +89,20 @@ public class Section {
         return this.upStation == otherStation;
     }
 
+    public boolean isSameSection(List<Station> stations) {
+        if (stations.size() < 1) {
+            return false;
+        }
+        return IntStream.rangeClosed(1, stations.size() - 1)
+                .anyMatch(i -> isSameSection(stations, i));
+    }
+
+    private boolean isSameSection(List<Station> stations, int i) {
+        Station findUpStation = stations.get(i - 1);
+        Station findDownStation = stations.get(i);
+        return this.hasSameUpStation(findUpStation) && this.hasSameDownStation(findDownStation);
+    }
+
     private void validateDuplicate(Station upStation, Station downStation) {
         if (upStation.equals(downStation)) {
             throw new BadRequestException("상행선과 하행선은 같을 수 없습니다.");
@@ -110,5 +126,16 @@ public class Section {
     @Override
     public int hashCode() {
         return Objects.hash(getId());
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "id=" + id +
+                ", line=" + line +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
     }
 }
