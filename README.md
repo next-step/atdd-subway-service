@@ -116,8 +116,24 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - [X] 존재하지 않는 즐겨찾기 삭제 시 에러
         - [X] 권한이 없는 즐겨찾기 삭제 시 에러
 
+## 4단계
+#### 기능 요구사항
+- [ ] 경로 조회 시 거리 기준 요금 정보 포함하기
+    - [ ] 금액 계산 기능 추가
+        - [ ] 기본운임(10㎞ 이내) : 기본운임 1,250원
+        - [ ] 10km초과∼50km까지(5km마다 100원)
+        - [ ] 50km초과 시 (8km마다 100원)
+- [ ] 노선별 추가 요금 정책 추가
+    - [ ] 추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가
+    - [ ] 경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용
+ex) 0원, 500원, 900원의 추가 요금이 있는 노선들을 경유하여 8km 이용 시 1,250원 -> 2,150원
+- [ ] 연령별 할인 정책 추가
+    - [ ] 청소년(13세 이상 ~ 19세 미만) 운임에서 350원을 공제한 금액의 20%할인
+    - [ ] 어린이(6세 이상 ~ 13세 미만) 운임에서 350원을 공제한 금액의 50%할인
+
 ## 참고
 - [JPA 사용시 @Embedded 주의 사항](https://jojoldu.tistory.com/559)
 - [A Better Way to Project Domain Entities into DTOs](https://buildplease.com/pages/repositories-dto/)
 - [Domain Store](http://www.corej2eepatterns.com/DomainStore.htm)
-
+- [생성자 주입을 권장하는 이유](https://madplay.github.io/post/why-constructor-injection-is-better-than-field-injection)
+- [valiation](https://meetup.toast.com/posts/223)
