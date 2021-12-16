@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -34,12 +35,19 @@ public class FavoriteService {
 	}
 
 	public FavoriteResponse add(Long memberId, FavoriteRequest request) {
+		validateToAdd(request);
 		final Member member = findMember(memberId);
 		final List<Station> stations = findStations(request.getSource(), request.getTarget());
 		final Station source = getStation(stations, request.getSource());
 		final Station target = getStation(stations, request.getTarget());
 		final Favorite favorite = favoriteRepository.save(Favorite.of(member, source, target));
 		return FavoriteResponse.of(favorite);
+	}
+
+	private void validateToAdd(FavoriteRequest request) {
+		if (Objects.equals(request.getSource(), request.getTarget())) {
+			throw new IllegalArgumentException("출발역과 도착역의 식별자는 서로 달라야 합니다.");
+		}
 	}
 
 	@Transactional(readOnly = true)

@@ -1,8 +1,12 @@
 package nextstep.subway.favorite.domain;
 
+import java.util.Objects;
+
 import nextstep.subway.common.BaseEntity;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.exception.MemberNotFoundException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.exception.StationNotFoundException;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -35,9 +39,26 @@ public class Favorite extends BaseEntity {
 	}
 
 	protected Favorite(Member member, Station sourceStation, Station targetStation) {
+		validate(member, sourceStation, targetStation);
+
 		this.member = member;
 		this.sourceStation = sourceStation;
 		this.targetStation = targetStation;
+	}
+
+	private void validate(Member member, Station sourceStation, Station targetStation) {
+		if (null == member) {
+			throw new MemberNotFoundException();
+		}
+		if (null == sourceStation) {
+			throw new StationNotFoundException();
+		}
+		if (null == targetStation) {
+			throw new StationNotFoundException();
+		}
+		if (Objects.equals(sourceStation, targetStation)) {
+			throw new IllegalArgumentException("즐겨찾기의 출발역과 도착역은 서로 달라야 합니다.");
+		}
 	}
 
 	public static Favorite of(Member member, Station sourceStation, Station targetStation) {

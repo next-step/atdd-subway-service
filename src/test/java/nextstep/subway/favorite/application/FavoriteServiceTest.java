@@ -62,7 +62,18 @@ class FavoriteServiceTest {
 		assertThat(favoriteResponse.getTarget().getId()).isEqualTo(양재역.getId());
 	}
 
-	@DisplayName("존재하지 않는 회원이 즐겨찾기를 추가하는 경우 예외발생")
+	@DisplayName("출발역과 도착역이 동일한 즐겨찾기 추가시 예외발생")
+	@Test
+	void add_same_stationIds() {
+		final Member member = mockMember(1L);
+		final Station 신림역 = mockStation(1L);
+		assertThatExceptionOfType(IllegalArgumentException.class)
+			.isThrownBy(() -> favoriteService.add(
+				member.getId(), new FavoriteRequest(신림역.getId(), 신림역.getId())
+			));
+	}
+
+	@DisplayName("존재하지 않는 회원이 즐겨찾기 추가시 예외발생")
 	@Test
 	void add_not_found_member() {
 		final Station 서울역 = mockStation(1L);
