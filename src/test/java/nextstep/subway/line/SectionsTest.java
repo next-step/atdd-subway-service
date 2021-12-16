@@ -10,7 +10,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import nextstep.subway.common.exception.BadParameterException;
+import nextstep.subway.common.exception.InternalServerException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
@@ -53,7 +53,7 @@ public class SectionsTest {
 		sections.add(section);
 
 		assertThatThrownBy(() -> sections.add(section))
-			.isInstanceOf(BadParameterException.class)
+			.isInstanceOf(InternalServerException.class)
 			.hasMessage("이미 등록된 구간 입니다.");
 	}
 
@@ -68,7 +68,7 @@ public class SectionsTest {
 		sections.add(section);
 
 		assertThatThrownBy(() -> sections.add(noRelationSection))
-			.isInstanceOf(BadParameterException.class)
+			.isInstanceOf(InternalServerException.class)
 			.hasMessage("등록할 수 없는 구간 입니다.");
 	}
 
@@ -82,7 +82,7 @@ public class SectionsTest {
 		sections.add(section);
 
 		assertThatThrownBy(() -> sections.add(sectionTooFarDistance))
-			.isInstanceOf(BadParameterException.class)
+			.isInstanceOf(InternalServerException.class)
 			.hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
 	}
 
@@ -143,7 +143,7 @@ public class SectionsTest {
 		sections.add(section1);
 
 		assertThatThrownBy(() -> sections.removeByStation(LineTest.역삼역))
-			.isInstanceOf(BadParameterException.class)
+			.isInstanceOf(InternalServerException.class)
 			.hasMessage("최소한 1개의 구간이 등록되어 있어야 합니다.");
 	}
 
