@@ -3,24 +3,35 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class DijkstraShortestPath implements Path {
+public class DijkstraShortest implements PathStrategy {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-    private final org.jgrapht.alg.shortestpath.DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new org.jgrapht.alg.shortestpath.DijkstraShortestPath(graph);
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath(graph);
 
-    @Override
-    public double getWeight(final Station source, final Station target) {
-        return dijkstraShortestPath.getPath(source, target).getWeight();
+    public Path getShortestPath(final List<Line> lines, final Station source, final Station target) {
+        createEdge(lines);
+        createVertex(lines);
+        final List<Station> stations = getVertexes(source, target);
+        return Path.of(getWeight(source, target), stations);
     }
 
-    @Override
+    public Double getWeight(final Station source, final Station target) {
+        final GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
+        if (Objects.isNull(graphPath)) {
+            return Double.NaN;
+        }
+        return graphPath.getWeight();
+    }
+
     public void createEdge(final List<Line> lines) {
         lines.stream()
                 .map(Line::getStations)
@@ -29,7 +40,6 @@ public class DijkstraShortestPath implements Path {
                 .forEach(graph::addVertex);
     }
 
-    @Override
     public void createVertex(final List<Line> lines) {
         lines.stream()
                 .map(Line::getSectionList)
@@ -38,11 +48,10 @@ public class DijkstraShortestPath implements Path {
                         graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().getDistance()));
     }
 
-    @Override
     public List<Station> getVertexes(final Station source, final Station target) {
         final GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
         if(Objects.isNull(path)){
-            return null;
+            return Collections.emptyList();
         }
         return path.getVertexList();
     }
