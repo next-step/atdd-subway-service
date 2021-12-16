@@ -14,7 +14,7 @@ public class Favorite {
     private Long sourceStationId;
     private Long targetStationId;
 
-    protected Favorite() {
+    public Favorite() {
     }
 
     public Favorite(Long memberId, Long sourceStationId, Long targetStationId) {
