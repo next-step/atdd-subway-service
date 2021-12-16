@@ -4,6 +4,14 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
 public class LineTestFixture {
+    public final static Station upStationFirstLine = new Station("소사역");
+    public final static Station downStationFirstLine = new Station("온수역");
+    public final static Station addStationFirstLine = new Station("역곡역");
+    public final static Station upStationSecondLine = new Station("온수역");
+    public final static Station downStationSecondLine = new Station("대림역");
+    public final static Station upStationThirdLine = new Station("대림역");
+    public final static Station downStationThirdLine = new Station("소사역");
+
     public static Line 노선을_생성한다(String name, String color, Station upStation, Station downStation, int distance) {
         return new Line(name, color, upStation, downStation, distance);
     }
