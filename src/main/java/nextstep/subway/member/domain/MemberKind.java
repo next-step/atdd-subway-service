@@ -8,7 +8,7 @@ import nextstep.subway.path.domain.KindFarePolicy;
 import java.util.stream.Stream;
 
 public enum MemberKind {
-    INFANCY(1, 6, basicFare -> Fare.of(0)),
+    INFANCY(1, 6, basicFare -> Fare.createZeroFare()),
     CHILD(6, 13, basicFare -> basicFare.minus(Fare.of(350)).multiply(0.5f)),
     TEENAGER(13, 19, basicFare -> basicFare.minus(Fare.of(350)).multiply(0.8f)),
     ADULT(19, 200, basicFare -> basicFare);

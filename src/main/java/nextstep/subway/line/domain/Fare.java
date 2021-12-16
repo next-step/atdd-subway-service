@@ -8,13 +8,14 @@ import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
-public class Fare implements Comparable<Fare>{
+public class Fare implements Comparable<Fare> {
+    private static final int ZERO = 0;
 
     @Column
-    private int amount;
+    private final int amount;
 
     protected Fare() {
-        this.amount = 0;
+        this.amount = ZERO;
     }
 
     public Fare(int amount) {
@@ -35,15 +36,19 @@ public class Fare implements Comparable<Fare>{
     }
 
     public Fare multiply(float discountPercent) {
-        return Fare.of((int)(this.amount * discountPercent));
+        return Fare.of((int) (this.amount * discountPercent));
     }
 
     public int getAmount() {
         return amount;
     }
 
+    public static Fare createZeroFare(){
+        return new Fare(ZERO);
+    }
+
     private void checkValidateFee(int fee) {
-        if (fee < 0) {
+        if (fee < ZERO) {
             throw new InputDataErrorException(InputDataErrorCode.THE_FEE_IS_LESS_THAN_ZERO);
         }
     }

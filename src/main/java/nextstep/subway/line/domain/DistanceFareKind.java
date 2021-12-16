@@ -12,7 +12,7 @@ public enum DistanceFareKind {
         int extraDistance = distance - BASIC_DISTANCE_SECTION.endDistance;
         return BASIC_DISTANCE_SECTION.sumDistanceFare(BASIC_DISTANCE_SECTION.endDistance).sum(calculateFare(extraDistance, 5));
     }),
-    THIRD_DISTANCE_SECTION(50, 1000,distance -> {
+    THIRD_DISTANCE_SECTION(50, Integer.MAX_VALUE,distance -> {
         int extraDistance = distance - SECOND_DISTANCE_SECTION.endDistance;
         return SECOND_DISTANCE_SECTION.sumDistanceFare(SECOND_DISTANCE_SECTION.endDistance).sum(calculateFare(extraDistance, 8));
     });
