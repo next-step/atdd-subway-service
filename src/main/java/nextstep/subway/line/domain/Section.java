@@ -1,8 +1,15 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.station.domain.Station;
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-import javax.persistence.*;
+import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section {
@@ -22,7 +29,8 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
@@ -31,7 +39,7 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     public Long getId() {
@@ -50,23 +58,35 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    public void updateUpStationMinus(Section section) {
+        this.upStation = section.downStation;
+        this.distance.minus(section.distance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
+    public void updateDownStationMinus(Section section) {
+        this.downStation = section.upStation;
+        this.distance.minus(section.distance);
+    }
+
+    public void updateDownStationPlus(Section section) {
+        downStation = section.downStation;
+        distance.plus(section.distance);
+    }
+
+    public void updateUpStationPlus(Section section) {
+        upStation = section.upStation;
+        distance.plus(section.distance);
+    }
+
+    public boolean isEqualToUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean isEqualToDownStation(Station station) {
+        return downStation.equals(station);
     }
 }
