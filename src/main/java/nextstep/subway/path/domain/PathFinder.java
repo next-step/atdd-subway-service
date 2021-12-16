@@ -21,7 +21,7 @@ public class PathFinder {
     private List<Long> stationIds = new ArrayList<>();
 
     public PathFinder(Line line) {
-        this.lines = new Lines(Lists.newArrayList(line));
+        this(Lists.newArrayList(line));
     }
 
     public PathFinder(List<Line> lines) {
