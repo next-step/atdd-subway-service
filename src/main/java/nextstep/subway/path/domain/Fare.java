@@ -3,6 +3,8 @@ package nextstep.subway.path.domain;
 import java.util.Objects;
 
 public class Fare {
+    public static final Fare ZERO = new Fare(0);
+
     private final int fare;
 
     private Fare(int fare) {
@@ -15,6 +17,10 @@ public class Fare {
 
     public int getFare() {
         return fare;
+    }
+
+    public Fare add(Fare fare) {
+        return new Fare(this.fare + fare.fare);
     }
 
     @Override
@@ -32,5 +38,13 @@ public class Fare {
     @Override
     public int hashCode() {
         return Objects.hash(fare);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Fare{");
+        sb.append("fare=").append(fare);
+        sb.append('}');
+        return sb.toString();
     }
 }

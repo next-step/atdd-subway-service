@@ -8,7 +8,6 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 import nextstep.subway.common.exception.SubwayErrorCode;
 import nextstep.subway.common.exception.SubwayException;
-import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -56,7 +55,7 @@ public class PathFinder {
 
         int distance = (int)path.getWeight();
 
-        Fare fare = farePolicy.calculateFare(new Distance(distance));
+        Fare fare = farePolicy.calculateFare(distance);
 
         return new PathResponse(responses, distance, fare.getFare());
     }
