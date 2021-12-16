@@ -1,14 +1,20 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.BaseEntity;
-import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import nextstep.subway.BaseEntity;
+import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Line extends BaseEntity {
@@ -57,7 +63,7 @@ public class Line extends BaseEntity {
         return sections;
     }
 
-    public List<Station> getOrderedStations(Line line) {
+    public List<Station> getOrderedStations() {
         if (sections.isEmpty()) {
             return Collections.emptyList();
         }
@@ -65,12 +71,12 @@ public class Line extends BaseEntity {
 
         // TODO: Sections 구현 이후 Sections.getOrderedStations로 가져와서 리턴
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation(line);
+        Station downStation = findUpStation(this);
         stations.add(downStation);
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = line.getSections().stream()
+            Optional<Section> nextLineStation = sections.stream()
                 .filter(it -> it.getUpStation() == finalDownStation)
                 .findFirst();
             if (!nextLineStation.isPresent()) {

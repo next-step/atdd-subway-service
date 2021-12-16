@@ -14,9 +14,13 @@ import nextstep.subway.station.domain.Station;
 public class LineTest {
 
 	public static final String 신분당선 = "신분당선";
+	public static final String 구분당선 = "구분당선";
 	public static final String BG_RED_600 = "bg-red-600";
+	public static final String BG_BLUE_600 = "bg-blue-600";
 	public static final Station 삼성역 = new Station("삼성역");
 	public static final Station 선릉역 = new Station("선릉역");
+	public static final Station 역삼역 = new Station("역삼역");
+	public static final Station 강남역 = new Station("강남역");
 
 	// TODO: 3개 이상의 지하철역이 추가될 케이스를 addSection 구현 이후 추가하기
 	@Test
@@ -24,7 +28,7 @@ public class LineTest {
 	void getStationsByOrder_success() {
 		Line line = new Line(신분당선, BG_RED_600, 삼성역, 선릉역, 5);
 
-		List<Station> actual = line.getOrderedStations(line);
+		List<Station> actual = line.getOrderedStations();
 
 		assertThat(Arrays.asList(삼성역, 선릉역)).isEqualTo(actual);
 	}
