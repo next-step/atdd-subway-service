@@ -1,9 +1,12 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.fare.Fare;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -23,11 +26,13 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findShortestPath(final Long sourceStationId, final Long targetStationId) {
+    public PathResponse findShortestPath(final LoginMember loginMember, final Long sourceStationId, final Long targetStationId) {
         List<Line> lines = lineRepository.findAll();
         PathFinder pathFinder = PathFinder.of(lines);
         Station upStation = stationService.findStationById(sourceStationId);
         Station downStation = stationService.findStationById(targetStationId);
-        return pathFinder.findShortestPath(upStation, downStation);
+        Path path = pathFinder.findShortestPath(upStation, downStation);
+        Fare fare = Fare.of(loginMember, path.getDistance(), path.additionalFare());
+        return PathResponse.of(path, fare);
     }
 }

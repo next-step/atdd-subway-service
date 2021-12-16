@@ -5,9 +5,21 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 import nextstep.subway.line.exception.DistanceTooLongException;
+import nextstep.subway.line.exception.InvalidDistanceException;
 import org.junit.jupiter.api.Test;
 
 class DistanceTest {
+
+    @Test
+    void test_최소_거리_보다_짧으면_예외_발생() {
+        int wrongDistance = 0;
+        assertAll(
+            () -> assertThat(wrongDistance).isLessThan(Distance.MINIMUM),
+            () -> assertThatThrownBy(() -> Distance.of(wrongDistance))
+                .isInstanceOf(InvalidDistanceException.class)
+        );
+    }
+
     @Test
     void test_더_멀거나_같은_거리를_빼려고_하면_예외_발생() {
         Distance distance = Distance.of(3);

@@ -12,10 +12,11 @@ public enum ErrorCode {
     SECTION_NOT_REMOVABLE(500, "L003", "구간을 제거할 수 없습니다."),
     SECTION_CANNOT_ADD(500, "L004", "등록할 수 없는 구간 입니다."),
     SECTION_DUPLICATED(500, "L005", "이미 등록된 구간 입니다."),
+    INVALID_DISTANCE_VALUE(500, "L006", "유효하지 않은 거리 입니다."),
 
     // path
     PATH_NOT_FOUND(500, "P001", "경로를 찾을 수 없습니다."),
-    INVALID_PATH_STATION_VALUE(500, "S001", "경로를 찾기 위한 지하철 역 입력이 잘못되었습니다."),
+    INVALID_PATH_STATION_VALUE(500, "P002", "경로를 찾기 위한 지하철 역 입력이 잘못되었습니다."),
 
     // auth
     AUTHORIZATION_FAILED(401, "A001", "인증이 실패 했습니다."),

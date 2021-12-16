@@ -6,12 +6,10 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
-import nextstep.subway.member.exception.MemberNotFoundException;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.exception.StationNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,21 +18,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
-    private final MemberRepository memberRepository;
-    private final StationRepository stationRepository;
+    private final MemberService memberService;
+    private final StationService stationService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository,
-        StationRepository stationRepository) {
+    public FavoriteService(FavoriteRepository favoriteRepository, MemberService memberRepository,
+        StationService stationService) {
         this.favoriteRepository = favoriteRepository;
-        this.memberRepository = memberRepository;
-        this.stationRepository = stationRepository;
+        this.memberService = memberRepository;
+        this.stationService = stationService;
     }
 
     public FavoriteResponse saveFavorite(LoginMember loginMember,
         FavoriteRequest favoriteRequest) {
-        Member member = findByMemberId(loginMember.getId());
-        Station source = findByStationId(favoriteRequest.getSource());
-        Station target = findByStationId(favoriteRequest.getTarget());
+        Member member = memberService.findMemberById(loginMember.getId());
+        Station source = stationService.findStationById(favoriteRequest.getSource());
+        Station target = stationService.findStationById(favoriteRequest.getTarget());
         Favorite persistFavorite = favoriteRepository.save(
             favoriteRequest.toFavorite(member, source, target));
         favoriteRepository.save(persistFavorite);
@@ -51,16 +49,5 @@ public class FavoriteService {
             .orElseThrow(FavoriteNotFoundException::new);
 
         favoriteRepository.delete(favorite);
-    }
-
-    @Transactional(readOnly = true)
-    public Member findByMemberId(final Long id) {
-        return memberRepository.findById(id)
-            .orElseThrow(MemberNotFoundException::new);
-    }
-
-    public Station findByStationId(final Long id) {
-        return stationRepository.findById(id)
-            .orElseThrow(StationNotFoundException::new);
     }
 }

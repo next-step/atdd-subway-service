@@ -15,18 +15,20 @@ public class LineResponse {
     private List<StationResponse> stations;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
+    private int additionalFare;
 
     public LineResponse() {
     }
 
     public LineResponse(Long id, String name, String color, List<StationResponse> stations,
-        LocalDateTime createdDate, LocalDateTime modifiedDate) {
+        LocalDateTime createdDate, LocalDateTime modifiedDate, int additionalFare) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.stations = stations;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
+        this.additionalFare = additionalFare;
     }
 
     public static LineResponse of(Line line, List<Station> stations) {
@@ -35,7 +37,7 @@ public class LineResponse {
             .collect(Collectors.toList());
 
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stationResponses,
-            line.getCreatedDate(), line.getModifiedDate());
+            line.getCreatedDate(), line.getModifiedDate(), line.getAdditionalFare());
     }
 
     public static List<LineResponse> ofList(List<Line> lines) {
@@ -66,5 +68,9 @@ public class LineResponse {
 
     public LocalDateTime getModifiedDate() {
         return modifiedDate;
+    }
+
+    public int getAdditionalFare() {
+        return additionalFare;
     }
 }
