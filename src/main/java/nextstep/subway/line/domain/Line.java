@@ -5,7 +5,10 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -52,5 +55,48 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public List<Station> getOrderedStations(Line line) {
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+
+        // TODO: Sections 구현 이후 Sections.getOrderedStations로 가져와서 리턴
+        List<Station> stations = new ArrayList<>();
+        Station downStation = findUpStation(line);
+        stations.add(downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = line.getSections().stream()
+                .filter(it -> it.getUpStation() == finalDownStation)
+                .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getDownStation();
+            stations.add(downStation);
+        }
+
+        return stations;
+    }
+
+    // TODO: Sections 구현 이후 리팩토링
+    private Station findUpStation(Line line) {
+        Station downStation = sections.get(0).getUpStation();
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = line.getSections().stream()
+                .filter(it -> it.getDownStation() == finalDownStation)
+                .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getUpStation();
+        }
+
+        return downStation;
     }
 }
