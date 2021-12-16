@@ -59,7 +59,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [ ] 기존 테스트 삭제
 - LineService 리팩터링
   - [x] Line.getOrderedStations
-  - [ ] Lines.get
   - [ ] Line.addSection
   - [ ] Sections.add
   - [ ] Line.removeSection
