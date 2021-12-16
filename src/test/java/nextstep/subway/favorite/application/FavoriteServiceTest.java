@@ -1,7 +1,5 @@
 package nextstep.subway.favorite.application;
 
-import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -15,14 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 
@@ -45,27 +42,29 @@ class FavoriteServiceTest {
 
     @BeforeEach
     void setUp() {
-        favoriteService = new FavoriteService(memberService, stationService, favoriteRepository);
+        favoriteService = new FavoriteService(stationService, favoriteRepository);
     }
 
     @Test
     void saveFavorite() {
-        when(memberService.findMemberById(anyLong())).thenReturn(Member.of(EMAIL, PASSWORD, AGE));
+        final Member loginMember = Member.of(EMAIL, PASSWORD, AGE);
+        lenient().when(memberService.findMemberById(anyLong())).thenReturn(Member.of(EMAIL, PASSWORD, AGE));
         when(stationService.findStationById(anyLong())).thenReturn(Station.from("잠실역"));
         when(stationService.findStationById(anyLong())).thenReturn(Station.from("잠실새내역"));
-        when(favoriteRepository.save(any())).thenReturn(Favorite.of(Member.of(EMAIL, PASSWORD, AGE), Station.from("잠실역"), Station.from("잠실새내역")));
+        when(favoriteRepository.save(any())).thenReturn(Favorite.of(loginMember, Station.from("잠실역"), Station.from("잠실새내역")));
 
-        FavoriteResponse favoriteResponse  = favoriteService.saveFavorite(1L, FavoriteRequest.of(1L, 2L));
+        FavoriteResponse favoriteResponse  = favoriteService.saveFavorite(loginMember, FavoriteRequest.of(1L, 2L));
 
         assertThat(favoriteResponse).isNotNull();
     }
 
     @Test
     void findLineResponseById() {
-        when(memberService.findMemberById(anyLong())).thenReturn(Member.of(EMAIL, PASSWORD, AGE));
-        when(favoriteRepository.findByIdAndMember(anyLong(), any())).thenReturn(Favorite.of(Member.of(EMAIL, PASSWORD, AGE), Station.from("잠실역"), Station.from("잠실새내역")));
+        final Member loginMember = Member.of(EMAIL, PASSWORD, AGE);
+        lenient().when(memberService.findMemberById(anyLong())).thenReturn(loginMember);
+        when(favoriteRepository.findByIdAndMember(anyLong(), any())).thenReturn(Optional.of(Favorite.of(Member.of(EMAIL, PASSWORD, AGE), Station.from("잠실역"), Station.from("잠실새내역"))));
 
-        FavoriteResponse favoriteResponse = favoriteService.findLineResponseById(1L, 1L);
+        FavoriteResponse favoriteResponse = favoriteService.findLineResponseById(loginMember, 1L);
 
         assertThat(favoriteResponse).isNotNull();
     }
