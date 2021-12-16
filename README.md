@@ -223,3 +223,15 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       - [X] Request / Response 셍성
       - [X] Controller 생성
       - [X] Service 생성
+- 피드백 추가 진행
+  - [X] PathService 외부 라이브러리 결합 분리
+    - PathFinder : 전체 노선
+    - PathStrategy : 최단 노선 찾기
+    - DijkstraShortest : 외부 라이브러리를 이용한 최단 노선 찾기
+    - Path : 최단 노선 결과
+  - [X] CustomException 클래스 확장서 고려
+    - 추상클래스 변경
+    - HttpStatus를 각가의 CustomeException에서 입력받을 수 있도록 처리
+  - [X] Memeber와 Favorite의 강한 의존성 문제점 파악 및 개선
+    - memeber를 직접 생성이 아닌 전달받은 객체를 활용 처리
+  - [X] 그외 객체 이름 적절하게 수정, 컨벤션 수정
