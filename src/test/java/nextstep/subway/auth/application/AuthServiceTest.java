@@ -1,21 +1,22 @@
 package nextstep.subway.auth.application;
 
-import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
-import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.MemberRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceTest {
@@ -40,7 +41,7 @@ public class AuthServiceTest {
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
         when(jwtTokenProvider.createToken(anyString())).thenReturn("TOKEN");
 
-        TokenResponse token = authService.login(new TokenRequest(EMAIL, PASSWORD));
+        TokenResponse token = authService.login(TokenRequest.of(EMAIL, PASSWORD));
 
         assertThat(token.getAccessToken()).isNotBlank();
     }

@@ -1,7 +1,10 @@
 package nextstep.subway.auth.infrastructure;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
+
+import nextstep.subway.auth.application.AuthorizationException;
 
 public class AuthorizationExtractor {
     public static final String AUTHORIZATION = "Authorization";
@@ -23,6 +26,6 @@ public class AuthorizationExtractor {
             }
         }
 
-        return null;
+        throw new AuthorizationException("토큰이 없습니다");
     }
 }
