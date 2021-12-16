@@ -59,7 +59,7 @@ public class LineResponse {
     private static List<StationResponse> toStationResponses(Line line) {
         return line.getStations()
                 .stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 }

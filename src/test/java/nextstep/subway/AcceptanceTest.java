@@ -18,6 +18,7 @@ public class AcceptanceTest {
     public static final String LINE_ROOT_PATH = "/lines";
     public static final String STATION_ROOT_PATH = "/stations";
     public static final String PATH_ROOT_PATH = "/paths";
+    public static final String FAVORITE_ROOT_PATH = "/favorites";
 
     @LocalServerPort
     int port;
@@ -40,6 +41,16 @@ public class AcceptanceTest {
                 .then().log().all().extract();
     }
 
+    public static <T> ExtractableResponse<Response> 생성_요청(String path, T requestBody, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .body(requestBody)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post(path)
+                .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 조회_요청(String path) {
         return RestAssured
                 .given().log().all()
@@ -55,6 +66,14 @@ public class AcceptanceTest {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 조회_요청(String path, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get(path)
+                .then().log().all().extract();
+    }
+
     public static <T> ExtractableResponse<Response> 수정_요청(String path, T requestBody) {
         return RestAssured
                 .given().log().all()
@@ -64,9 +83,27 @@ public class AcceptanceTest {
                 .then().log().all().extract();
     }
 
+    public static <T> ExtractableResponse<Response> 수정_요청(String path, T requestBody, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .body(requestBody)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put(path)
+                .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 삭제_요청(String path) {
         return RestAssured
                 .given().log().all()
+                .when().delete(path)
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 삭제_요청(String path, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().delete(path)
                 .then().log().all().extract();
     }
