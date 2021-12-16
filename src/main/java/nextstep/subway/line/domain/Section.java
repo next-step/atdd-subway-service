@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import nextstep.subway.common.exception.Exceptions;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -31,7 +31,8 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     protected Section() {
     }
@@ -40,7 +41,7 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     public Long getId() {
@@ -60,23 +61,17 @@ public class Section {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.get();
     }
 
     public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw Exceptions.DISTANCE_TOO_FAR.getException();
-        }
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance.minus(newDistance);
     }
 
     public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw Exceptions.DISTANCE_TOO_FAR.getException();
-        }
         this.downStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance.minus(newDistance);
     }
 
     @Override
@@ -86,9 +81,9 @@ public class Section {
         if (o == null || getClass() != o.getClass())
             return false;
         Section section = (Section)o;
-        return distance == section.distance && Objects.equals(id, section.id) && Objects.equals(line,
-            section.line) && Objects.equals(upStation, section.upStation) && Objects.equals(downStation,
-            section.downStation);
+        return Objects.equals(id, section.id) && Objects.equals(line, section.line)
+            && Objects.equals(upStation, section.upStation) && Objects.equals(downStation,
+            section.downStation) && Objects.equals(distance, section.distance);
     }
 
     @Override
