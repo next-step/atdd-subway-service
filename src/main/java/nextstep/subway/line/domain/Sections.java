@@ -53,9 +53,9 @@ public class Sections {
 
 	private void updateConnectedSection(Section other) {
 		getUpLineSection(other.getUpStation())
-			.ifPresent(it -> it.updateUpStation(other.getDownStation(), other.getDistance()));
+			.ifPresent(section -> section.updateUpStation(other.getDownStation(), other.getDistance()));
 		getDownLineSection(other.getDownStation())
-			.ifPresent(it -> it.updateDownStation(other.getUpStation(), other.getDistance()));
+			.ifPresent(section -> section.updateDownStation(other.getUpStation(), other.getDistance()));
 	}
 
 	public List<Station> getOrderedStations() {
@@ -88,13 +88,13 @@ public class Sections {
 
 	private Optional<Section> findNextSection(Station station) {
 		return sections.stream()
-			.filter(it -> it.getUpStation() == station)
+			.filter(section -> section.getUpStation() == station)
 			.findFirst();
 	}
 
 	private Optional<Section> findPrevSection(Station station) {
 		return sections.stream()
-			.filter(it -> it.getDownStation() == station)
+			.filter(section -> section.getDownStation() == station)
 			.findFirst();
 	}
 
