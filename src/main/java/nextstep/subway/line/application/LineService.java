@@ -29,16 +29,11 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+
+        validateDuplicateLine(request.getName());
+
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-
-        boolean isExisted = lineRepository.findByName(request.getName())
-                .map(o -> Objects.nonNull(o.getId()))
-                .orElse(false);
-
-        if(isExisted) {
-            throw new IllegalArgumentException("노선이 이미 등록되었습니다.");
-        }
 
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         List<StationResponse> stations = persistLine.getStationsByOrder().stream()
@@ -83,5 +78,12 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeSection(station);
+    }
+
+    private void validateDuplicateLine(String name) {
+        lineRepository.findByName(name)
+                .ifPresent(l -> {
+                    throw new IllegalArgumentException("노선이 이미 등록되었습니다.");
+                });
     }
 }

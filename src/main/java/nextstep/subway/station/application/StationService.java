@@ -21,13 +21,7 @@ public class StationService {
 
     public StationResponse saveStation(StationRequest stationRequest) {
 
-        boolean isExisted = stationRepository.findByName(stationRequest.getName())
-                .map(o -> Objects.nonNull(o.getId()))
-                .orElse(false);
-
-        if(isExisted) {
-            throw new IllegalArgumentException("지하철역 이미 등록되었습니다.");
-        }
+        validateDuplicateStation(stationRequest.getName());
 
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
@@ -55,5 +49,12 @@ public class StationService {
 
     public List<Station> findByIds(List<Long> ids) {
         return stationRepository.findAllById(ids);
+    }
+
+    private void validateDuplicateStation(String name) {
+        stationRepository.findByName(name)
+                .ifPresent(s -> {
+                    throw new IllegalArgumentException("이미 지하철역이 등록되었습니다.");
+                });
     }
 }
