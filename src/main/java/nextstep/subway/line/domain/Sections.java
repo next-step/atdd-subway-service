@@ -48,13 +48,9 @@ public class Sections {
 	}
 
 	private void updateConnectedSection(Section other) {
-		sections.stream()
-			.filter(section -> section.getUpStation().equals(other.getUpStation()))
-			.findFirst()
+		getUpLineSection(other.getUpStation())
 			.ifPresent(it -> it.updateUpStation(other.getDownStation(), other.getDistance()));
-		sections.stream()
-			.filter(section -> section.getDownStation().equals(other.getDownStation()))
-			.findFirst()
+		getDownLineSection(other.getDownStation())
 			.ifPresent(it -> it.updateDownStation(other.getUpStation(), other.getDistance()));
 	}
 
@@ -98,6 +94,47 @@ public class Sections {
 			.findFirst();
 	}
 
+	public List<Section> get() {
+		return sections;
+	}
+
+	public void removeByStation(Station station) {
+		validateOnRemove();
+
+		Optional<Section> upLineSection = getUpLineSection(station);
+		Optional<Section> downLineSection = getDownLineSection(station);
+		if (upLineSection.isPresent() && downLineSection.isPresent()) {
+			addSectionOnExistTargetInside(upLineSection.get(), downLineSection.get());
+		}
+		upLineSection.ifPresent(section -> sections.remove(section));
+		downLineSection.ifPresent(section -> sections.remove(section));
+	}
+
+	private void addSectionOnExistTargetInside(Section upLineSection, Section downLineSection) {
+		Station newUpStation = downLineSection.getUpStation();
+		Station newDownStation = upLineSection.getDownStation();
+		int newDistance = upLineSection.getDistance() + downLineSection.getDistance();
+		sections.add(new Section(upLineSection.getLine(), newUpStation, newDownStation, newDistance));
+	}
+
+	private Optional<Section> getDownLineSection(Station station) {
+		return sections.stream()
+			.filter(section -> section.getDownStation().equals(station))
+			.findFirst();
+	}
+
+	private Optional<Section> getUpLineSection(Station station) {
+		return sections.stream()
+			.filter(section -> section.getUpStation().equals(station))
+			.findFirst();
+	}
+
+	private void validateOnRemove() {
+		if (sections.size() <= 1) {
+			throw new RuntimeException("최소한 1개의 구간이 등록되어 있어야 합니다.");
+		}
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -111,13 +148,5 @@ public class Sections {
 	@Override
 	public int hashCode() {
 		return Objects.hash(sections);
-	}
-
-	public List<Section> get() {
-		return sections;
-	}
-
-	public void remove(Section section) {
-		sections.remove(section);
 	}
 }

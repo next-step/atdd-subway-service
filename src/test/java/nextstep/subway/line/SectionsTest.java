@@ -86,8 +86,8 @@ public class SectionsTest {
 	}
 
 	@Test
-	@DisplayName("구간을 삭제한다.")
-	void remove_success() {
+	@DisplayName("상행 구간을 삭제한다.")
+	void remove_success1() {
 		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
 		Sections sections = new Sections(new ArrayList<>());
 		Section section1 = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
@@ -95,9 +95,55 @@ public class SectionsTest {
 		sections.add(section1);
 		sections.add(section2);
 
-		sections.remove(section1);
+		sections.removeByStation(LineTest.삼성역);
+		Sections expected = new Sections(Collections.singletonList(new Section(line, LineTest.선릉역, LineTest.역삼역, 5)));
 
-		assertThat(new Sections(Collections.singletonList(section2))).isEqualTo(sections);
+		assertThat(expected).isEqualTo(sections);
+	}
+
+	@Test
+	@DisplayName("중간 구간을 삭제한다.")
+	void remove_success2() {
+		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
+		Sections sections = new Sections(new ArrayList<>());
+		Section section1 = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
+		Section section2 = new Section(line, LineTest.선릉역, LineTest.역삼역, 5);
+		sections.add(section1);
+		sections.add(section2);
+
+		sections.removeByStation(LineTest.선릉역);
+		Sections expected = new Sections(Collections.singletonList(new Section(line, LineTest.삼성역, LineTest.역삼역, 10)));
+
+		assertThat(expected).isEqualTo(sections);
+	}
+
+	@Test
+	@DisplayName("하행 구간을 삭제한다.")
+	void remove_success3() {
+		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
+		Sections sections = new Sections(new ArrayList<>());
+		Section section1 = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
+		Section section2 = new Section(line, LineTest.선릉역, LineTest.역삼역, 5);
+		sections.add(section1);
+		sections.add(section2);
+
+		sections.removeByStation(LineTest.역삼역);
+		Sections expected = new Sections(Collections.singletonList(new Section(line, LineTest.삼성역, LineTest.선릉역, 5)));
+
+		assertThat(expected).isEqualTo(sections);
+	}
+
+	@Test
+	@DisplayName("1개의 구간을 가지고 있을때 삭제하면 예외")
+	void remove_onlyHasOneSection_exception() {
+		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
+		Sections sections = new Sections(new ArrayList<>());
+		Section section1 = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
+		sections.add(section1);
+
+		assertThatThrownBy(() -> sections.removeByStation(LineTest.역삼역))
+			.isInstanceOf(RuntimeException.class)
+			.hasMessage("최소한 1개의 구간이 등록되어 있어야 합니다.");
 	}
 
 	@Test
