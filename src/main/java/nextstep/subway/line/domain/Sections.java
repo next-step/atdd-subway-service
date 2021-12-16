@@ -53,18 +53,18 @@ public class Sections {
 
     private void addBackSection(Section newSection) {
         this.sections.stream()
-                .filter(it -> it.getDownStation() == newSection.getDownStation())
+                .filter(section -> section.equalsDownStation(newSection.getDownStation()))
                 .findFirst()
-                .ifPresent(it -> it.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
+                .ifPresent(section -> section.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
 
         this.sections.add(newSection);
     }
 
     private void addFrontSection(Section newSection) {
         this.sections.stream()
-                .filter(it -> it.getUpStation() == newSection.getUpStation())
+                .filter(section -> section.equalsUpStation(newSection.getUpStation()))
                 .findFirst()
-                .ifPresent(it -> it.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
+                .ifPresent(section -> section.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
 
         this.sections.add(newSection);
     }
@@ -76,7 +76,7 @@ public class Sections {
     }
 
     private boolean notExistsStation(Section newSection, List<Station> stations) {
-        return stations.stream().noneMatch(it -> it == newSection.getUpStation()) && stations.stream().noneMatch(it -> it == newSection.getDownStation());
+        return stations.stream().noneMatch(newSection::equalsUpStation) && stations.stream().noneMatch(newSection::equalsDownStation);
     }
 
     private void checkExistsSection(boolean isUpStationExisted, boolean isDownStationExisted) {
@@ -125,10 +125,10 @@ public class Sections {
         existOnlyOneSection();
 
         Optional<Section> upLineStation = this.sections.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(section -> section.equalsUpStation(station))
                 .findFirst();
         Optional<Section> downLineStation = this.sections.stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(section -> section.equalsDownStation(station))
                 .findFirst();
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
@@ -138,8 +138,8 @@ public class Sections {
             this.sections.add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 
-        upLineStation.ifPresent(it -> this.sections.remove(it));
-        downLineStation.ifPresent(it -> this.sections.remove(it));
+        upLineStation.ifPresent(section -> this.sections.remove(section));
+        downLineStation.ifPresent(section -> this.sections.remove(section));
     }
 
     private void existOnlyOneSection() {
