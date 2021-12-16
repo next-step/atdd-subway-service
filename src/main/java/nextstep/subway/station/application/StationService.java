@@ -54,7 +54,7 @@ public class StationService {
     private void validateDuplicateStation(String name) {
         stationRepository.findByName(name)
                 .ifPresent(s -> {
-                    throw new IllegalArgumentException("이미 지하철역이 등록되었습니다.");
+                    throw new IllegalArgumentException(s.getName() + "지하철역이 이미 등록되었습니다.");
                 });
     }
 }

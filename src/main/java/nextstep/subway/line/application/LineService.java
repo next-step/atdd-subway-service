@@ -83,7 +83,7 @@ public class LineService {
     private void validateDuplicateLine(String name) {
         lineRepository.findByName(name)
                 .ifPresent(l -> {
-                    throw new IllegalArgumentException("노선이 이미 등록되었습니다.");
+                    throw new IllegalArgumentException(l.getName() + "노선이 이미 등록되었습니다.");
                 });
     }
 }
