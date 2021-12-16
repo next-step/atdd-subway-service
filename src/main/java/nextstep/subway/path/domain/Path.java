@@ -7,17 +7,19 @@ import nextstep.subway.station.domain.Station;
 public class Path {
     private List<Station> stations;
     private int distance;
+    private int fare;
 
     private Path() {
     }
 
-    private Path(List<Station> stations, int distance) {
+    private Path(List<Station> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = fare;
     }
 
     public static Path of(List<Station> stations, int distance) {
-        return new Path(stations, distance);
+        return new Path(stations, distance, FareCalculator.calculator(distance));
     }
 
     public List<Station> getStations() {
@@ -26,5 +28,9 @@ public class Path {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }

@@ -110,7 +110,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - 연령별 할인 정책 추가
 
 ## 구현목록
-- [ ] 경로 조회 시 거리 기준 요금 정보 추가하기
+- [x] 경로 조회 시 거리 기준 요금 정보 추가하기
 - [ ] 노선별 추가 요금 정책 계산 기능 추가
     - [ ] 기본운임(10㎞ 이내) : 기본운임 1,250원
     - [ ] 10km초과∼50km까지(5km마다 100원)
