@@ -23,8 +23,39 @@ public class Sections {
 	protected Sections() {
 	}
 
-	public void add(Section section) {
-		sections.add(section);
+	public void add(Section other) {
+		if (!sections.isEmpty()) {
+			validate(other);
+			updateConnectedSection(other);
+		}
+		sections.add(other);
+	}
+
+	private void validate(Section other) {
+		List<Station> stations = getOrderedStations();
+		boolean isUpStationExisted = stations.stream().anyMatch(station -> station.equals(other.getUpStation()));
+		boolean isDownStationExisted = stations.stream()
+			.anyMatch(station -> station.equals(other.getDownStation()));
+
+		if (isUpStationExisted && isDownStationExisted) {
+			throw new RuntimeException("이미 등록된 구간 입니다.");
+		}
+
+		if (!stations.isEmpty() && stations.stream().noneMatch(station -> station.equals(other.getUpStation())) &&
+			stations.stream().noneMatch(station -> station.equals(other.getDownStation()))) {
+			throw new RuntimeException("등록할 수 없는 구간 입니다.");
+		}
+	}
+
+	private void updateConnectedSection(Section other) {
+		sections.stream()
+			.filter(section -> section.getUpStation().equals(other.getUpStation()))
+			.findFirst()
+			.ifPresent(it -> it.updateUpStation(other.getDownStation(), other.getDistance()));
+		sections.stream()
+			.filter(section -> section.getDownStation().equals(other.getDownStation()))
+			.findFirst()
+			.ifPresent(it -> it.updateDownStation(other.getUpStation(), other.getDistance()));
 	}
 
 	public List<Station> getOrderedStations() {
@@ -40,6 +71,10 @@ public class Sections {
 	}
 
 	private Station findUpStation() {
+		if (sections.size() == 0) {
+			return null;
+		}
+
 		Station searchStation = sections.get(0).getUpStation();
 		Station upStation = searchStation;
 

@@ -57,9 +57,7 @@ public class LineService {
 
 	public LineResponse findLineResponseById(Long id) {
 		Line persistLine = findLineById(id);
-		List<StationResponse> stations = getStations(persistLine).stream()
-			.map(it -> StationResponse.of(it))
-			.collect(Collectors.toList());
+		List<StationResponse> stations = mapStationResponse(persistLine);
 		return LineResponse.of(persistLine, stations);
 	}
 
@@ -76,41 +74,7 @@ public class LineService {
 		Line line = findLineById(lineId);
 		Station upStation = stationService.findStationById(request.getUpStationId());
 		Station downStation = stationService.findStationById(request.getDownStationId());
-		List<Station> stations = getStations(line);
-		boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-		boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
-
-		if (isUpStationExisted && isDownStationExisted) {
-			throw new RuntimeException("이미 등록된 구간 입니다.");
-		}
-
-		if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-			stations.stream().noneMatch(it -> it == downStation)) {
-			throw new RuntimeException("등록할 수 없는 구간 입니다.");
-		}
-
-		if (stations.isEmpty()) {
-			line.addSection(new Section(line, upStation, downStation, request.getDistance()));
-			return;
-		}
-
-		if (isUpStationExisted) {
-			line.getSections().stream()
-				.filter(it -> it.getUpStation() == upStation)
-				.findFirst()
-				.ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
-
-			line.addSection(new Section(line, upStation, downStation, request.getDistance()));
-		} else if (isDownStationExisted) {
-			line.getSections().stream()
-				.filter(it -> it.getDownStation() == downStation)
-				.findFirst()
-				.ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
-
-			line.addSection(new Section(line, upStation, downStation, request.getDistance()));
-		} else {
-			throw new RuntimeException();
-		}
+		line.addSection(new Section(line, upStation, downStation, request.getDistance()));
 	}
 
 	public void removeLineStation(Long lineId, Long stationId) {
@@ -127,15 +91,15 @@ public class LineService {
 			.filter(it -> it.getDownStation() == station)
 			.findFirst();
 
+		upLineStation.ifPresent(line::removeSection);
+		downLineStation.ifPresent(line::removeSection);
+
 		if (upLineStation.isPresent() && downLineStation.isPresent()) {
 			Station newUpStation = downLineStation.get().getUpStation();
 			Station newDownStation = upLineStation.get().getDownStation();
 			int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
 			line.addSection(new Section(line, newUpStation, newDownStation, newDistance));
 		}
-
-		upLineStation.ifPresent(line::removeSection);
-		downLineStation.ifPresent(line::removeSection);
 	}
 
 	public List<Station> getStations(Line line) {

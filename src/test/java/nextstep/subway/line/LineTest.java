@@ -26,9 +26,9 @@ public class LineTest {
 	@Test
 	@DisplayName("지하철 역을 상행-하행 순으로 정렬하여 반환한다.")
 	void getStationsByOrder_success() {
-		Line line = new Line(신분당선, BG_RED_600, 삼성역, 선릉역, 5);
+		Line line = new Line(신분당선, BG_RED_600, 선릉역, 역삼역, 5);
 		line.addSection(new Section(line, 역삼역, 강남역, 3));
-		line.addSection(new Section(line, 선릉역, 역삼역, 3));
+		line.addSection(new Section(line, 삼성역, 선릉역, 3));
 
 		List<Station> actual = line.getOrderedStations();
 

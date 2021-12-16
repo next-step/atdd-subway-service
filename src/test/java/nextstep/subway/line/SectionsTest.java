@@ -17,11 +17,25 @@ import nextstep.subway.station.domain.Station;
 
 public class SectionsTest {
 	@Test
-	@DisplayName("구간을 추가한다.")
-	void add_success() {
-		Line line = new Line();
-		Sections sections = new Sections(new ArrayList<>());
+	@DisplayName("구간이 있는 상태에서 구간을 추가한다.")
+	void add_success1() {
+		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
+		Section section1 = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
+		Section section2 = new Section(line, LineTest.선릉역, LineTest.역삼역, 5);
+		line.addSection(section1);
+		Sections sections = new Sections(new ArrayList<>(Collections.singletonList(section1)));
+
+		sections.add(section2);
+
+		assertThat(new Sections(Arrays.asList(section1, section2))).isEqualTo(sections);
+	}
+
+	@Test
+	@DisplayName("구간이 등록되지 않은 상태에서 구간을 추가한다.")
+	void add_success2() {
+		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
 		Section section = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
+		Sections sections = new Sections(new ArrayList<>());
 
 		sections.add(section);
 
@@ -29,9 +43,38 @@ public class SectionsTest {
 	}
 
 	@Test
+	@DisplayName("상행, 하행역이 동일한 구간을 추가하면 예외")
+	void add_sameUpDownStation_exception() {
+		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
+		Sections sections = new Sections(new ArrayList<>());
+		Section section = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
+
+		sections.add(section);
+
+		assertThatThrownBy(() -> sections.add(section))
+			.isInstanceOf(RuntimeException.class)
+			.hasMessage("이미 등록된 구간 입니다.");
+	}
+
+	@Test
+	@DisplayName("구간이 등록된 상태에서 구간 추가 시 등록되어있는 구간의 상행, 하행 지하철역에 하나라도 포함되어 있지 않으면 예외")
+	void add_hasNoUpDownStation_exception() {
+		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
+		Sections sections = new Sections(new ArrayList<>());
+		Section section = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
+		Section noRelationSection = new Section(line, LineTest.강남역, LineTest.역삼역, 5);
+
+		sections.add(section);
+
+		assertThatThrownBy(() -> sections.add(noRelationSection))
+			.isInstanceOf(RuntimeException.class)
+			.hasMessage("등록할 수 없는 구간 입니다.");
+	}
+
+	@Test
 	@DisplayName("구간을 삭제한다.")
 	void remove_success() {
-		Line line = new Line();
+		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
 		Sections sections = new Sections(new ArrayList<>());
 		Section section1 = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
 		Section section2 = new Section(line, LineTest.선릉역, LineTest.역삼역, 5);
@@ -46,7 +89,7 @@ public class SectionsTest {
 	@Test
 	@DisplayName("상행구간부터 하행구간 순서대로 지하철역 반환")
 	void getOrderedStations_success() {
-		Line line = new Line();
+		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
 		Sections sections = new Sections(new ArrayList<>());
 		Section section1 = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
 		Section section2 = new Section(line, LineTest.선릉역, LineTest.역삼역, 5);
