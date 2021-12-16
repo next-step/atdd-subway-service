@@ -22,7 +22,7 @@ public class FavoriteRequest {
     }
 
     private void validate(final Long source, final Long target) {
-        if(Objects.isNull(source) || Objects.isNull(target)) {
+        if (Objects.isNull(source) || Objects.isNull(target)) {
             throw new NoRequiredValueException();
         }
     }

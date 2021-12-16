@@ -37,7 +37,7 @@ public class Distance {
     }
 
     private static void validate(final int distance) {
-        if(distance <= INT_ZERO) {
+        if (distance <= INT_ZERO) {
             throw new RegisterDistanceException();
         }
     }
