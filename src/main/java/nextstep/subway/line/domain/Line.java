@@ -65,7 +65,7 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getOrderedStations() {
-        if (sections.get().isEmpty()) {
+        if (sections.isEmpty()) {
             return Collections.emptyList();
         }
 

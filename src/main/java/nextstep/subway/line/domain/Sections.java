@@ -31,6 +31,10 @@ public class Sections {
 		sections.add(other);
 	}
 
+	public boolean isEmpty() {
+		return sections.isEmpty();
+	}
+
 	private void validate(Section other) {
 		List<Station> stations = getOrderedStations();
 		boolean isUpStationExisted = stations.stream().anyMatch(station -> station.equals(other.getUpStation()));
@@ -92,10 +96,6 @@ public class Sections {
 		return sections.stream()
 			.filter(it -> it.getDownStation() == station)
 			.findFirst();
-	}
-
-	public List<Section> get() {
-		return sections;
 	}
 
 	public void removeByStation(Station station) {
