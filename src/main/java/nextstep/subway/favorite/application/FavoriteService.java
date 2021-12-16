@@ -21,6 +21,7 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.exception.StationNotFoundException;
 
 @Service
+@Transactional
 public class FavoriteService {
 
 	private final FavoriteRepository favoriteRepository;
