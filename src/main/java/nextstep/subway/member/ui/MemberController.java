@@ -13,14 +13,14 @@ import java.net.URI;
 @RestController
 @RequestMapping("/members")
 public class MemberController {
-  private MemberService memberService;
+  private final MemberService memberService;
 
   public MemberController(MemberService memberService) {
     this.memberService = memberService;
   }
 
   @PostMapping
-  public ResponseEntity createMember(@RequestBody MemberRequest request) {
+  public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
     MemberResponse member = memberService.createMember(request);
     return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
   }

@@ -1,14 +1,14 @@
-package nextstep.subway;
+package nextstep.subway.error;
 
 public class ErrorResponse {
   private final String message;
 
-  public ErrorResponse(String message) {
+  private ErrorResponse(String message) {
     this.message = message;
   }
 
   public static ErrorResponse of(String message) {
-    return new ErrorResponse( message);
+    return new ErrorResponse(message);
   }
 
   public String getMessage() {

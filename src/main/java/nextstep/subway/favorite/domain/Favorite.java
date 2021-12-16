@@ -1,6 +1,6 @@
 package nextstep.subway.favorite.domain;
 
-import nextstep.subway.ServiceException;
+import nextstep.subway.error.exception.BusinessException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.springframework.http.HttpStatus;
@@ -21,22 +21,22 @@ public class Favorite {
   @JoinColumn(name = "source_station_id")
   private Station sourceStation;
 
-
   @ManyToOne
   @JoinColumn(name = "target_station_id")
   private Station targetStation;
 
-  protected Favorite() {}
-
-  public Favorite(Member member, Station sourceStation, Station targetStation) {
-    this(null, member, sourceStation, targetStation);
+  protected Favorite() {
   }
 
-  public Favorite(Long id, Member member, Station sourceStation, Station targetStation) {
+  private Favorite(Long id, Member member, Station sourceStation, Station targetStation) {
     this.id = id;
     this.member = member;
     this.sourceStation = sourceStation;
     this.targetStation = targetStation;
+  }
+
+  private Favorite(Member member, Station sourceStation, Station targetStation) {
+    this(null, member, sourceStation, targetStation);
   }
 
   public static Favorite of(Member member, Station sourceStation, Station targetStation) {
@@ -61,7 +61,7 @@ public class Favorite {
 
   public void checkDuplicate(Station sourceStation, Station targetStation) {
     if (this.sourceStation.equals(sourceStation) && this.targetStation.equals(targetStation)) {
-      throw new ServiceException(HttpStatus.BAD_REQUEST, "동일한 출발역과 목적역이 설정된 즐겨찾기 항목이 있습니다.");
+      throw new BusinessException(HttpStatus.BAD_REQUEST, "동일한 출발역과 목적역이 설정된 즐겨찾기 항목이 있습니다.");
     }
   }
 }

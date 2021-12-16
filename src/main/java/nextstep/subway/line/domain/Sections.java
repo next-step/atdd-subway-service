@@ -70,7 +70,9 @@ public class Sections {
     return sections;
   }
 
-
+  public boolean containsAll(List<Station> stations) {
+    return getOrderedStations().containsAll(stations);
+  }
 
   private void checkRemovableSections(Station station) {
     if (sections.size() < DELETABLE_SIZE) {

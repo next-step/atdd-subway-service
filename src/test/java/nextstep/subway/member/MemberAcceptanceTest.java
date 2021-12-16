@@ -87,7 +87,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
   }
 
   private ExtractableResponse<Response> 내_정보_수정_요청(String token) {
-    MemberRequest memberRequest = new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+    MemberRequest memberRequest = new MemberRequest(EMAIL, NEW_PASSWORD, NEW_AGE);
     return RestAssured
             .given().log().all()
             .header(HttpHeaders.AUTHORIZATION, "bearer " + token)

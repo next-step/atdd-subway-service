@@ -1,7 +1,12 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.error.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.FareDiscountPolicy;
+import nextstep.subway.path.domain.FarePolicy;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -23,18 +28,27 @@ public class PathService {
   }
 
 
-  public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
-    List<Line> lines = lineRepository.findAll();
+  public PathResponse findShortestPath(LoginMember loginMember, Long sourceStationId, Long targetStationId) {
+    Lines lines = Lines.of(lineRepository.findAll());
     Station sourceStation = findStation(sourceStationId);
     Station targetStation = findStation(targetStationId);
-    pathFinder.addGraphPropertiesFromLines(lines);
+    pathFinder.addGraphPropertiesFromLines(lines.toList());
 
-    return PathResponse.of(pathFinder.findShortestPath(sourceStation, targetStation),
-            pathFinder.findShortestDistance(sourceStation, targetStation));
+    int totalDistance = pathFinder.findShortestDistance(sourceStation, targetStation);
+    List<Station> shortestPath = pathFinder.findShortestPath(sourceStation, targetStation);
+    int totalFare = FarePolicy.getTotalFare(totalDistance);
+
+    if (loginMember.isUser()) {
+      totalFare = FareDiscountPolicy.getDiscountFare(loginMember.getAge(), totalFare);
+    }
+
+    totalFare += lines.getMaxSurcharge(shortestPath);
+
+    return PathResponse.of(shortestPath, totalDistance, totalFare);
   }
 
   private Station findStation(Long id) {
     return stationRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않은 지하철역입니다."));
+            .orElseThrow(() -> new NotFoundException("존재하지 않은 지하철역입니다."));
   }
 }
