@@ -72,6 +72,20 @@ public class SectionsTest {
 	}
 
 	@Test
+	@DisplayName("추가하려는 구간의 길이가 기존에 존재하는 길이와 같거나 긴 경우 예외")
+	void add_insideSectionWithTooFarDistance_exception() {
+		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
+		Sections sections = new Sections(new ArrayList<>());
+		Section section = new Section(line, LineTest.삼성역, LineTest.역삼역, 10);
+		Section sectionTooFarDistance = new Section(line, LineTest.선릉역, LineTest.역삼역, 10);
+		sections.add(section);
+
+		assertThatThrownBy(() -> sections.add(sectionTooFarDistance))
+			.isInstanceOf(RuntimeException.class)
+			.hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+	}
+
+	@Test
 	@DisplayName("구간을 삭제한다.")
 	void remove_success() {
 		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
