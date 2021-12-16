@@ -11,7 +11,7 @@ import nextstep.subway.auth.dto.TokenResponse;
 
 @RestController
 public class AuthController {
-    private AuthService authService;
+    private final AuthService authService;
 
     public AuthController(AuthService authService) {
         this.authService = authService;
@@ -20,6 +20,7 @@ public class AuthController {
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest request) {
         TokenResponse token = authService.login(request);
-        return ResponseEntity.ok().body(token);
+        return ResponseEntity.ok()
+            .body(token);
     }
 }

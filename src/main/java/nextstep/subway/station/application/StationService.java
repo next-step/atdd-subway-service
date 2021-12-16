@@ -40,10 +40,6 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(SubwayNotFoundException::new);
-    }
-
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(SubwayNotFoundException::new);
     }
