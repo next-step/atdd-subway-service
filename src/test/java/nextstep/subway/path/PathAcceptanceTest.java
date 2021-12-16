@@ -73,7 +73,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 교대역_양재역_최단_경로_조회 = 경로_조회_요청(교대역, 양재역);
 
         // Then
-        경로_조회_됨(교대역_양재역_최단_경로_조회, Arrays.asList(교대역, 남부터미널역, 양재역), 50);
+        경로_조회_됨(교대역_양재역_최단_경로_조회, Arrays.asList(교대역, 남부터미널역, 양재역), 50, 2_050);
         
         
         // When
@@ -81,7 +81,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 삼호선_양재역_삭제후_최단_경로_조회 = 경로_조회_요청(교대역, 양재역);
         
         // Then
-        경로_조회_됨(삼호선_양재역_삭제후_최단_경로_조회, Arrays.asList(교대역, 강남역, 양재역), 80);
+        경로_조회_됨(삼호선_양재역_삭제후_최단_경로_조회, Arrays.asList(교대역, 강남역, 양재역), 80, 2_450);
         
         
         // Given
@@ -92,7 +92,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 신분당선_신규역_등록후_최단_경로_조회 = 경로_조회_요청(교대역, 양재역);
         
         // Then
-        경로_조회_됨(신분당선_신규역_등록후_최단_경로_조회, Arrays.asList(교대역, 강남역, 신규역, 양재역), 80);
+        경로_조회_됨(신분당선_신규역_등록후_최단_경로_조회, Arrays.asList(교대역, 강남역, 신규역, 양재역), 80, 2_450);
         
     }
     
@@ -104,7 +104,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 경로_조회_요청(교대역, 양재역);
 
         // Then
-        경로_조회_됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 50);
+        경로_조회_됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 50, 2_050);
         
     }
     
@@ -116,7 +116,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 삼호선_양재역_삭제후_최단_경로_조회 = 경로_조회_요청(교대역, 양재역);
         
         // Then
-        경로_조회_됨(삼호선_양재역_삭제후_최단_경로_조회, Arrays.asList(교대역, 강남역, 양재역), 80);
+        경로_조회_됨(삼호선_양재역_삭제후_최단_경로_조회, Arrays.asList(교대역, 강남역, 양재역), 80, 2_450);
         
     }
     
@@ -130,7 +130,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 삼호선_신규역_추가후_최단_경로_조회 = 경로_조회_요청(교대역, 양재역);
         
         // Then
-        경로_조회_됨(삼호선_신규역_추가후_최단_경로_조회, Arrays.asList(교대역, 남부터미널역, 신규역, 양재역), 50);
+        경로_조회_됨(삼호선_신규역_추가후_최단_경로_조회, Arrays.asList(교대역, 남부터미널역, 신규역, 양재역), 50, 2_050);
         
     }
     
@@ -145,12 +145,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 경로_조회_됨(ExtractableResponse<Response> response, List<StationResponse> stationResponses, int distance) {
+    public static void 경로_조회_됨(ExtractableResponse<Response> response, List<StationResponse> stationResponses, int distance, int fare) {
         PathResponse pathResponse = response.as(PathResponse.class);
         
         assertAll(
                 () -> assertThat(pathResponse.getStations()).containsExactlyElementsOf(stationResponses),
-                () -> assertThat(pathResponse.getDistance()).isEqualTo(distance)
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(distance),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(fare)
                 );
     }
     
