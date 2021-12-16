@@ -27,6 +27,11 @@ public class LinesTest {
   private Line 구호선;
   private Line 수인분당선;
 
+  private static int 이호선_요금 = 5000;
+  private static int 삼호선_요금 = 3000;
+  private static int 구호선_요금 = 4000;
+  private static int 수인분당선_요금 = 1000;
+
   @BeforeEach
   void setUp() {
     교대역 = new Station(1L, "교대역");
@@ -45,13 +50,16 @@ public class LinesTest {
   @DisplayName("노선 목록에 속한 지하철역들 기준으로 가장 높은 추가 요금을 가져온다.")
   @Test
   void 노선_중_가장_높은_추가_요금() {
-    이호선.addSurcharge(5000);
-    삼호선.addSurcharge(8000);
-    구호선.addSurcharge(7000);
-    수인분당선.addSurcharge(9000);
+    // given
+    이호선.addSurcharge(이호선_요금);
+    삼호선.addSurcharge(삼호선_요금);
+    구호선.addSurcharge(구호선_요금);
+    수인분당선.addSurcharge(수인분당선_요금);
 
+    // when
     Lines lines = Lines.of(Arrays.asList(이호선, 삼호선, 구호선, 수인분당선));
 
-    assertThat(lines.getMaxSurcharge(Arrays.asList(교대역, 선릉역, 선정릉역, 고속터미널역))).isEqualTo(8000);
+    // then
+    assertThat(lines.getMaxSurcharge(Arrays.asList(교대역, 선릉역, 선정릉역, 고속터미널역))).isEqualTo(이호선_요금);
   }
 }
