@@ -71,10 +71,46 @@ public class RestAssuredUtil {
         );
     }
 
-    public static ExtractableResponse<Response> delete(final String path, final Object... pathParams) {
+    public static ExtractableResponse<Response> delete(
+        final String path,
+        final Object... pathParams
+    ) {
         return logAndExtractResponse(
             createAndLogTestSpecification()
                 .when().delete(path, pathParams)
+        );
+    }
+
+    public static ExtractableResponse<Response> postWithAuth(
+        final String token,
+        final Object params,
+        final String path
+    ) {
+        return logAndExtractResponse(
+            createAndLogTestSpecification()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post(path)
+        );
+    }
+
+    public static ExtractableResponse<Response> getWithAuth(final String token, final String path) {
+        return logAndExtractResponse(
+            createAndLogTestSpecification()
+                .auth().oauth2(token)
+                .when().get(path)
+        );
+    }
+
+    public static ExtractableResponse<Response> deleteWithAuth(
+        final String token,
+        final String path
+    ) {
+        return logAndExtractResponse(
+            createAndLogTestSpecification()
+                .auth().oauth2(token)
+                .when().delete(path)
         );
     }
 
