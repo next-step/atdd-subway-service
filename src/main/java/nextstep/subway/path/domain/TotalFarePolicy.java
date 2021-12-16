@@ -4,8 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TotalFarePolicy implements FarePolicy {
-    private static final List<FarePolicy> farePolicies = Arrays.asList(new BasicFarePolicy(),
-        new TenToFiftyFarePolicy());
+    private static final List<FarePolicy> farePolicies = Arrays.asList(
+        new BasicFarePolicy(),
+        new TenToFiftyFarePolicy(),
+        new OverFiftyFarePolicy());
 
     @Override
     public Fare calculateFare(int distance) {
