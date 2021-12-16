@@ -1,5 +1,8 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path;
 
+import nextstep.subway.path.domain.FareDiscountPolicy;
+import nextstep.subway.path.domain.FarePolicy;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
@@ -18,7 +21,7 @@ class FareDiscountPolicyTest {
   @CsvFileSource(resources = "/csv/farePolicyTestData.csv", delimiter = ',', numLinesToSkip = 1)
   void 나이별_요금_할인_정책_검증(int distance, int actualFare, int actualYouthFare, int actualChildFare) {
     assertAll(
-            () -> assertThat(FareDiscountPolicy.getDiscountFare(ADULT_AGE, FarePolicy.getTotalFare(distance))).isEqualTo(actualFare),
+            () -> Assertions.assertThat(FareDiscountPolicy.getDiscountFare(ADULT_AGE, FarePolicy.getTotalFare(distance))).isEqualTo(actualFare),
             () -> assertThat(FareDiscountPolicy.getDiscountFare(YOUTH_AGE, FarePolicy.getTotalFare(distance))).isEqualTo(actualYouthFare),
             () -> assertThat(FareDiscountPolicy.getDiscountFare(CHILD_AGE, FarePolicy.getTotalFare(distance))).isEqualTo(actualChildFare)
     );

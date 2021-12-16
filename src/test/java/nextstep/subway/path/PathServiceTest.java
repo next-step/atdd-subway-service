@@ -65,6 +65,12 @@ public class PathServiceTest {
 
     List<Line> 노선_목록 = new ArrayList<>(Arrays.asList(이호선, 삼호선, 구호선, 수인분당선));
 
+    int 이호선_추가요금 = 5000;
+    int 수인분당선_추가요금 = 3000;
+
+    이호선.addSurcharge(이호선_추가요금);
+    수인분당선.addSurcharge(수인분당선_추가요금);
+
     given(stationRepository.findById(출발역_id)).willReturn(Optional.of(교대역));
     given(stationRepository.findById(도착역_id)).willReturn(Optional.of(선정릉역));
     given(lineRepository.findAll()).willReturn(노선_목록);
@@ -74,7 +80,7 @@ public class PathServiceTest {
 
     // then
     최단_경로_확인됨(교대역, 선릉역, 선정릉역, response);
-    거리_요금_확인됨(23, 1550, response);
+    거리_요금_확인됨(23, 1550 + 이호선_추가요금, response);
   }
 
   private void 거리_요금_확인됨(int distance, int fare, PathResponse response) {

@@ -4,6 +4,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.error.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.FareDiscountPolicy;
 import nextstep.subway.path.domain.FarePolicy;
 import nextstep.subway.path.domain.PathFinder;
@@ -28,21 +29,22 @@ public class PathService {
 
 
   public PathResponse findShortestPath(LoginMember loginMember, Long sourceStationId, Long targetStationId) {
-    List<Line> lines = lineRepository.findAll();
+    Lines lines = Lines.of(lineRepository.findAll());
     Station sourceStation = findStation(sourceStationId);
     Station targetStation = findStation(targetStationId);
-    pathFinder.addGraphPropertiesFromLines(lines);
+    pathFinder.addGraphPropertiesFromLines(lines.toList());
 
     int totalDistance = pathFinder.findShortestDistance(sourceStation, targetStation);
+    List<Station> shortestPath = pathFinder.findShortestPath(sourceStation, targetStation);
     int totalFare = FarePolicy.getTotalFare(totalDistance);
 
     if (loginMember.isUser()) {
       totalFare = FareDiscountPolicy.getDiscountFare(loginMember.getAge(), totalFare);
     }
 
-    return PathResponse.of(pathFinder.findShortestPath(sourceStation, targetStation),
-            totalDistance,
-            totalFare);
+    totalFare += lines.getMaxSurcharge(shortestPath);
+
+    return PathResponse.of(shortestPath, totalDistance, totalFare);
   }
 
   private Station findStation(Long id) {

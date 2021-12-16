@@ -1,5 +1,6 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path;
 
+import nextstep.subway.path.domain.FarePolicy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
