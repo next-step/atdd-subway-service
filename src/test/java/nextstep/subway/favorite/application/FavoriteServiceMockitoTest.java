@@ -46,9 +46,8 @@ class FavoriteServiceMockitoTest {
 	private static final Integer AGE = 33;
 
 	private static Station 두정역 = new Station(1L, "두정역");
-	private static Station 천안역 = new Station(2L, "천안역");
 	private static Station 봉명역 = new Station(3L, "봉명역");
-	private static Member 사용자 = new Member(EMAIL, PASSWORD, AGE);
+	private static Member 사용자 = new Member(1L,EMAIL, PASSWORD, AGE);
 	private static Favorite 두정_TO_봉명 = new Favorite(사용자, 두정역, 봉명역);
 
 	@Mock

@@ -30,7 +30,7 @@ public class favoriteController {
 	}
 
 	@PostMapping
-	public ResponseEntity createFavorite(@AuthenticationPrincipal LoginMember loginMember
+	public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal LoginMember loginMember
 										,@RequestBody FavoriteRequest favoriteRequest) {
 		Favorite saveFavorite = favoriteService.save(loginMember, favoriteRequest);
 		return ResponseEntity.created(URI.create("/favorites/" + saveFavorite.getId())).build();
@@ -43,7 +43,7 @@ public class favoriteController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity deleteFavorite(@AuthenticationPrincipal LoginMember loginMember
+	public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember
 										,@PathVariable("id") Long favoriteId) {
 		favoriteService.delete(loginMember, favoriteId);
 		return ResponseEntity.noContent().build();

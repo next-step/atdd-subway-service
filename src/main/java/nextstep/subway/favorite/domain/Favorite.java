@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -32,20 +33,19 @@ public class Favorite {
 	@JoinColumn(name = "target_id")
 	private Station target;
 
-
 	protected Favorite() {
 	}
 
 	public Favorite(Member member, Station source, Station target) {
 		this(null, member, source, target);
 	}
+
 	public Favorite(Long id, Member member, Station source, Station target) {
 		this.id = id;
 		this.member = member;
 		this.source = source;
 		this.target = target;
 	}
-
 
 	public Long getId() {
 		return id;
@@ -63,8 +63,12 @@ public class Favorite {
 		return target;
 	}
 
+	public boolean isOwner(LoginMember loginMember) {
+		return member.isEqual(loginMember);
+	}
+
 	@Override
-	public boolean equals(Object o) {;
+	public boolean equals(Object o) {
 		if (this == o)
 			return true;
 		if (o == null || getClass() != o.getClass())
@@ -78,4 +82,6 @@ public class Favorite {
 	public int hashCode() {
 		return Objects.hash(id, member, source, target);
 	}
+
+
 }

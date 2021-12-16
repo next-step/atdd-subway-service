@@ -3,6 +3,7 @@ package nextstep.subway.member.domain;
 import java.util.Objects;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.AuthorizationException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +26,11 @@ public class Member extends BaseEntity {
 	}
 
 	public Member(String email, String password, Integer age) {
+		this(null, email, password, age);
+	}
+
+	public Member(Long id, String email, String password, Integer age) {
+		this.id = id;
 		this.email = email;
 		this.password = password;
 		this.age = age;
@@ -54,6 +60,10 @@ public class Member extends BaseEntity {
 		}
 	}
 
+	public boolean isEqual(LoginMember loginMember) {
+		return this.id.equals(loginMember.getId());
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -70,3 +80,6 @@ public class Member extends BaseEntity {
 		return Objects.hash(id, email, password, age);
 	}
 }
+
+
+

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.AuthorizationException;
@@ -17,6 +18,7 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
 @Service
+@Transactional
 public class FavoriteService {
 	private final MemberService memberService;
 	private final StationService stationService;
@@ -44,12 +46,12 @@ public class FavoriteService {
 
 	public void delete(LoginMember loginMember, Long favoriteId) {
 		Favorite favorite = findFavoriteById(favoriteId);
-		validateAuthorization(loginMember, favoriteId);
+		validateAuthorization(loginMember, favorite);
 		favoriteRepository.delete(favorite);
 	}
 
-	private void validateAuthorization(LoginMember loginMember, Long favoriteId) {
-		if (!loginMember.isDelete(favoriteId)) {
+	private void validateAuthorization(LoginMember loginMember, Favorite favorite) {
+		if (!favorite.isOwner(loginMember)) {
 			throw new AuthorizationException("해당 즐겨찾기를 삭제 할 수 없습니다.");
 		}
 	}

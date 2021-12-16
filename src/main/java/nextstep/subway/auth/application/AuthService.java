@@ -36,6 +36,6 @@ public class AuthService {
 
 		String email = jwtTokenProvider.getPayload(credentials);
 		Member member = memberService.findByEmail(email);
-		return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+		return new LoginMember(member);
 	}
 }
