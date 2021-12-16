@@ -36,10 +36,6 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(Exceptions.STATION_NOT_EXIST::getException);
-    }
-
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(Exceptions.STATION_NOT_EXIST::getException);
     }
