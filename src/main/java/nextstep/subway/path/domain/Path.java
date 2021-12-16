@@ -21,8 +21,7 @@ public class Path {
     public void calculateFare(LoginMember member, List<Line> extraFareLines) {
         this.fare = new Fare();
         this.fare = fare.extraFare(distance, getLineFare(extraFareLines));
-
-        if (member.isRequired()) {
+        if (!member.isGuest()) {
             this.fare = fare.discount(member.getAge());
         }
     }

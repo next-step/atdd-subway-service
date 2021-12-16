@@ -4,17 +4,17 @@ public class LoginMember {
     private Long id;
     private String email;
     private Integer age;
-    private boolean required;
+    private boolean isGuest;
 
     public LoginMember() {
-        this.required = false;
+        this.isGuest = true;
     }
 
     public LoginMember(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
-        this.required = true;
+        this.isGuest = false;
     }
 
     public static LoginMember login(Long id, String email, Integer age) {
@@ -37,7 +37,7 @@ public class LoginMember {
         return age;
     }
 
-    public boolean isRequired() {
-        return required;
+    public boolean isGuest() {
+        return isGuest;
     }
 }

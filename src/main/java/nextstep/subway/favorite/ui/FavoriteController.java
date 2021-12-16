@@ -5,7 +5,6 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,19 +24,13 @@ public class FavoriteController {
     @PostMapping
     public ResponseEntity<FavoriteResponse> create(@AuthenticationPrincipal LoginMember loginMember,
                                                    @RequestBody FavoriteRequest request) {
-        if (loginMember.isRequired()) {
-            FavoriteResponse favorite = favoriteService.save(loginMember.getId(), request);
-            return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).body(favorite);
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        FavoriteResponse favorite = favoriteService.save(loginMember.getId(), request);
+        return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).body(favorite);
     }
 
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> findAll(@AuthenticationPrincipal LoginMember loginMember) {
-        if (loginMember.isRequired()) {
-            return ResponseEntity.ok().body(favoriteService.findAll(loginMember.getId()));
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.ok().body(favoriteService.findAll(loginMember.getId()));
     }
 
     @DeleteMapping(value = "/{favoriteId}")
