@@ -1,12 +1,24 @@
 package nextstep.subway.common;
 
-public class CustomException extends RuntimeException {
+import org.springframework.http.HttpStatus;
 
-    public CustomException() {
+public abstract class CustomException extends RuntimeException {
+    private HttpStatus status;
+
+    protected CustomException() {
         super();
     }
 
-    public CustomException(String message) {
+    protected CustomException(final HttpStatus status, final String message) {
         super(message);
+        this.status = status;
+    }
+
+    protected CustomException(final String message) {
+        super(message);
+    }
+
+    public HttpStatus getHttpStatus() {
+        return status;
     }
 }
