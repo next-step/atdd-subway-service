@@ -24,6 +24,10 @@ public class Sections {
 	protected Sections() {
 	}
 
+	public List<Section> get() {
+		return sections;
+	}
+
 	public void add(Section other) {
 		if (!sections.isEmpty()) {
 			validate(other);

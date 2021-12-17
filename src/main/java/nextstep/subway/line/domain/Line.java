@@ -58,6 +58,9 @@ public class Line extends BaseEntity {
 
     public void addSection(Section section) {
         sections.add(section);
+        if (section != null && section.getLine() == null) {
+            section.setLine(this);
+        }
     }
 
     public void removeSection(Station station) {
@@ -70,5 +73,9 @@ public class Line extends BaseEntity {
         }
 
         return sections.getOrderedStations();
+    }
+
+    public boolean containsSection(Section section) {
+        return sections.get().contains(section);
     }
 }
