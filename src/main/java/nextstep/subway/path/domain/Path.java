@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.exception.InputDataErrorCode;
 import nextstep.subway.exception.InputDataErrorException;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -44,15 +45,23 @@ public class Path {
                         .forEach(section -> makeSectionEdge(section)));
     }
 
-    private void makeSectionEdge(Section section) {
-        subwayGraph.addEdge(section, section.getUpStation(), section.getDownStation());
-    }
-
     public List<Station> findShortestPath(List<Line> lines) {
         addVertex(lines);
         addEdge(lines);
         checkValidateStation(lines);
         return findShortestVertexInPath();
+    }
+
+    public Fare calculateBigSectionFare(List<Section> sections) {
+        return sections.stream()
+                .map(it-> it.getLine().getExtraFare())
+                .max(Fare::compareTo)
+                .orElseThrow(() -> new InputDataErrorException(InputDataErrorCode.THERE_IS_NOT_SEARCHED_SECTION));
+    }
+
+    private void makeSectionEdge(Section section) {
+        Line line = section.getLine();
+        subwayGraph.addEdge(section, section.getUpStation(), section.getDownStation(), line.getExtraFare());
     }
 
     private List<Station> findShortestVertexInPath() {
@@ -93,7 +102,7 @@ public class Path {
         return new Distance(distanceSum);
     }
 
-    private List<Section> findSection(List<Line> lines, List<Station> shortestStations) {
+    public List<Section> findSection(List<Line> lines, List<Station> shortestStations) {
         List<Section> allSections = findAllSections(lines);
         List<Section> foundSections = new ArrayList<>();
         for (int i = 0; i < shortestStations.size() - 1; i++) {
@@ -123,8 +132,17 @@ public class Path {
     }
 
     private boolean isMatchSection(List<Station> shortestStations, int i, Section section) {
+        return hasSection(shortestStations, i, section) || hasReverseSection(shortestStations, i, section);
+    }
+
+    private boolean hasSection(List<Station> shortestStations, int i, Section section) {
         return section.getUpStation().getName().equals(shortestStations.get(i).getName())
                 && section.getDownStation().getName().equals(shortestStations.get(i + 1).getName());
+    }
+
+    private boolean hasReverseSection(List<Station> shortestStations, int i, Section section) {
+        return section.getUpStation().getName().equals(shortestStations.get(i+1).getName())
+                && section.getDownStation().getName().equals(shortestStations.get(i).getName());
     }
 
     private void checkValidationSourceAndTarget(Station source, Station target) {

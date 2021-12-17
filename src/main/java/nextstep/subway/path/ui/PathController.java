@@ -1,5 +1,7 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.InputDataErrorException;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
@@ -18,8 +20,8 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target) {
-        return ResponseEntity.ok(pathService.findPath(source, target));
+    public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target, @AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok(pathService.findPath(source, target, loginMember));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

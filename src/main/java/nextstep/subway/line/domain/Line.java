@@ -19,12 +19,21 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    @Embedded
+    private Fare extraFare;
+
     public Line() {
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this(name,color);
         sections.addSection(new Section(this, upStation, downStation, new Distance(distance)));
+        this.extraFare = Fare.createZeroFare();
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int extraFare) {
+        this(name, color, upStation, downStation, distance);
+        this.extraFare = Fare.of(extraFare);
     }
 
     public Line(String name, String color) {
@@ -65,4 +74,7 @@ public class Line extends BaseEntity {
         this.sections.removeStation(this, station);
     }
 
+    public Fare getExtraFare() {
+        return extraFare;
+    }
 }

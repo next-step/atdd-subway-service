@@ -1,10 +1,11 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.InputDataErrorCode;
 import nextstep.subway.exception.InputDataErrorException;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.*;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.TicketGate;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -26,7 +27,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(Long sourceId, Long targetId) {
+    public PathResponse findPath(Long sourceId, Long targetId, LoginMember loginMember) {
         Station sourceStation = stationRepository.findById(sourceId)
                 .orElseThrow(() -> new InputDataErrorException(InputDataErrorCode.THERE_IS_NOT_SEARCHED_STATION));
 
@@ -36,6 +37,11 @@ public class PathService {
         List<Line> allLines = lineRepository.findAll();
         Path path = new Path(sourceStation, targetStation);
         List<Station> shortestPath = path.findShortestPath(allLines);
-        return PathResponse.of(shortestPath, path.findShortestPathDistance(allLines, shortestPath));
+        Distance totalDistance = path.findShortestPathDistance(allLines, shortestPath);
+        List<Section> sections = path.findSection(allLines, shortestPath);
+        Fare bigSectionFare = path.calculateBigSectionFare(sections);
+        Fare resultFare = TicketGate.calculateFare(bigSectionFare, totalDistance, loginMember);
+
+        return PathResponse.of(shortestPath, totalDistance, resultFare);
     }
 }
