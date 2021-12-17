@@ -69,7 +69,7 @@ public class PathServiceTest {
         when(lineService.findLines()).thenReturn(Arrays.asList(이호선, 신분당선, 삼호선));
 
         // when
-        PathResponse response = pathService.findShortestPath(1L, 2L);
+        PathResponse response = pathService.findShortestPath(1L, 2L, 30);
         List<Station> stations = response.getStations()
                 .stream()
                 .map(stationResponse -> Station.from(stationResponse.getName()))

@@ -31,12 +31,12 @@ public class PathFinder {
         return new PathFinder(graph, lines);
     }
     
-    public Path findShortestPath(Station sourceStation, Station targetStation) {
+    public Path findShortestPath(Station sourceStation, Station targetStation, int age) {
         validationSameStation(sourceStation, targetStation);
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         validationConnectedStation(graphPath);
         
-        return Path.of(lines, graphPath.getVertexList(), (int) dijkstraShortestPath.getPathWeight(sourceStation, targetStation));
+        return Path.of(lines, graphPath.getVertexList(), (int) dijkstraShortestPath.getPathWeight(sourceStation, targetStation), age);
     }
 
     private static void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {

@@ -24,12 +24,12 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findShortestPath(Long sourceId, Long targetId) {
+    public PathResponse findShortestPath(Long sourceId, Long targetId, int age) {
         Station sourceStation = stationService.findById(sourceId);
         Station targetStation = stationService.findById(targetId);
         
         PathFinder pathFinder = PathFinder.of(Lines.of(lineService.findLines()));
-        Path path = pathFinder.findShortestPath(sourceStation, targetStation);
+        Path path = pathFinder.findShortestPath(sourceStation, targetStation, age);
         
         return PathResponse.of(path);
     }

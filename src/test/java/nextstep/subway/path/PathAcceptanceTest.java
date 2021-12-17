@@ -5,24 +5,25 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
 
@@ -36,6 +37,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 남부터미널역;
+    private String 토큰;
     
     /**
      * 교대역    --- *2호선 (30)* ------- 강남역
@@ -63,14 +65,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 양재역, 30);
         
-        
+        MemberAcceptanceTest.회원_생성을_요청("jennie267@email.com", "pwjennie", 30);
+
+        토큰 = AuthAcceptanceTest.토큰_조회(AuthAcceptanceTest.로그인_요청("jennie267@email.com", "pwjennie"));
     }
     
     @DisplayName("지하철 최단 경로 시나리오 통합 테스트")
     @Test
     void 지하철_최단_경로_통합_테스트() {
         // When
-        ExtractableResponse<Response> 교대역_양재역_최단_경로_조회 = 경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> 교대역_양재역_최단_경로_조회 = 경로_조회_요청(교대역, 양재역, 토큰);
 
         // Then
         경로_조회_됨(교대역_양재역_최단_경로_조회, Arrays.asList(교대역, 남부터미널역, 양재역), 50, 2_050);
@@ -78,7 +82,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         
         // When
         LineSectionAcceptanceTest.지하철_노선에_지하철역_제외_요청(삼호선, 양재역);
-        ExtractableResponse<Response> 삼호선_양재역_삭제후_최단_경로_조회 = 경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> 삼호선_양재역_삭제후_최단_경로_조회 = 경로_조회_요청(교대역, 양재역, 토큰);
         
         // Then
         경로_조회_됨(삼호선_양재역_삭제후_최단_경로_조회, Arrays.asList(교대역, 강남역, 양재역), 80, 2_450);
@@ -89,7 +93,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         
         // When
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 신규역, 15);
-        ExtractableResponse<Response> 신분당선_신규역_등록후_최단_경로_조회 = 경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> 신분당선_신규역_등록후_최단_경로_조회 = 경로_조회_요청(교대역, 양재역, 토큰);
         
         // Then
         경로_조회_됨(신분당선_신규역_등록후_최단_경로_조회, Arrays.asList(교대역, 강남역, 신규역, 양재역), 80, 2_450);
@@ -101,7 +105,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 지하철_최단_경로_조회() {
         // When
-        ExtractableResponse<Response> response = 경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> response = 경로_조회_요청(교대역, 양재역, 토큰);
 
         // Then
         경로_조회_됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 50, 2_050);
@@ -113,7 +117,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void 지하철역_제외_후_지하철_최단_경로_조회() {
         //When
         LineSectionAcceptanceTest.지하철_노선에_지하철역_제외_요청(삼호선, 양재역);
-        ExtractableResponse<Response> 삼호선_양재역_삭제후_최단_경로_조회 = 경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> 삼호선_양재역_삭제후_최단_경로_조회 = 경로_조회_요청(교대역, 양재역, 토큰);
         
         // Then
         경로_조회_됨(삼호선_양재역_삭제후_최단_경로_조회, Arrays.asList(교대역, 강남역, 양재역), 80, 2_450);
@@ -127,19 +131,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 신규역 = StationAcceptanceTest.지하철역_등록되어_있음("신규역").as(StationResponse.class);
         // When
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 신규역, 10);
-        ExtractableResponse<Response> 삼호선_신규역_추가후_최단_경로_조회 = 경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> 삼호선_신규역_추가후_최단_경로_조회 = 경로_조회_요청(교대역, 양재역, 토큰);
         
         // Then
         경로_조회_됨(삼호선_신규역_추가후_최단_경로_조회, Arrays.asList(교대역, 남부터미널역, 신규역, 양재역), 50, 2_050);
         
     }
     
-    public static ExtractableResponse<Response> 경로_조회_요청(StationResponse sourceStation, StationResponse targetStation) {
+    public static ExtractableResponse<Response> 경로_조회_요청(StationResponse sourceStation, StationResponse targetStation, String token) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .param("source", sourceStation.getId())
                 .param("target", targetStation.getId())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .when().get("/paths")
                 .then().log().all()
                 .extract();
