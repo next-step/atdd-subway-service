@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.line.domain.*;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -13,19 +14,19 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class PathService {
-    private final SectionRepository sectionRepository;
+    private final LineRepository lineRepository;
     private final StationService stationService;
 
-    public PathService(final SectionRepository sectionRepository, final StationService stationService) {
-        this.sectionRepository = sectionRepository;
+    public PathService(final LineRepository lineRepository, final StationService stationService) {
+        this.lineRepository = lineRepository;
         this.stationService = stationService;
     }
 
     public PathResponse findShortestPath(final Long source, final Long target) {
         final Station sourceStation = stationService.findStationById(source);
         final Station targetStation = stationService.findStationById(target);
-        final List<Section> sections = sectionRepository.findAll();
-        final PathFinder pathFinder = PathFinder.of(sourceStation, targetStation, sections);
-        return pathFinder.findShortestPath();
+        final List<Line> lines = lineRepository.findAll();
+        final PathFinder pathFinder = PathFinder.from(lines);
+        return pathFinder.findShortestPath(sourceStation, targetStation);
     }
 }

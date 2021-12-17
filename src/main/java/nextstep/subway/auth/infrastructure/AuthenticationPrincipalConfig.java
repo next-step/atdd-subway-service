@@ -12,12 +12,12 @@ import java.util.List;
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     private final AuthService authService;
 
-    public AuthenticationPrincipalConfig(AuthService authService) {
+    public AuthenticationPrincipalConfig(final AuthService authService) {
         this.authService = authService;
     }
 
     @Override
-    public void addArgumentResolvers(List argumentResolvers) {
+    public void addArgumentResolvers(final List argumentResolvers) {
         argumentResolvers.add(createAuthenticationPrincipalArgumentResolver());
     }
 

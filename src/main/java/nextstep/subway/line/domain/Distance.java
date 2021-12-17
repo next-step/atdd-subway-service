@@ -16,7 +16,7 @@ public class Distance {
     protected Distance() {
     }
 
-    private Distance(int distance) {
+    private Distance(final int distance) {
         this.distance = distance;
     }
 
@@ -37,7 +37,7 @@ public class Distance {
     }
 
     private static void validate(final int distance) {
-        if(distance <= INT_ZERO) {
+        if (distance <= INT_ZERO) {
             throw new RegisterDistanceException();
         }
     }

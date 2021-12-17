@@ -80,7 +80,7 @@ public class Sections {
     }
 
     private boolean addUpStation(final Section targetSection, final Section original) {
-        if(original.isUpStationEquals(targetSection)) {
+        if (original.isUpStationEquals(targetSection)) {
             addSectionOriginalIndex(targetSection, original);
             original.minusDistance(targetSection);
             original.changeUpStation(targetSection);
@@ -147,10 +147,10 @@ public class Sections {
     }
 
     private void validateDeleteSection() {
-        if(isOneSection()) {
+        if (isOneSection()) {
             throw new OneSectionDeleteException();
         }
-        if(isNoSection()) {
+        if (isNoSection()) {
             throw new NoSectionDeleteException();
         }
     }

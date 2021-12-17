@@ -8,7 +8,7 @@ public class LoginMember {
     public LoginMember() {
     }
 
-    public LoginMember(Long id, String email, Integer age) {
+    public LoginMember(final Long id, final String email, final Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
@@ -20,9 +20,5 @@ public class LoginMember {
 
     public String getEmail() {
         return email;
-    }
-
-    public Integer getAge() {
-        return age;
     }
 }

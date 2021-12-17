@@ -10,10 +10,14 @@ public class MemberRequest {
     public MemberRequest() {
     }
 
-    public MemberRequest(final String email, final String password, final Integer age) {
+    private MemberRequest(final String email, final String password, final Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
+    }
+
+    public static MemberRequest of(final String email, final String password, final Integer age) {
+        return new MemberRequest(email, password, age);
     }
 
     public String getEmail() {
@@ -29,6 +33,6 @@ public class MemberRequest {
     }
 
     public Member toMember() {
-        return new Member(email, password, age);
+        return Member.of(email, password, age);
     }
 }
