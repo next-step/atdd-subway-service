@@ -3,6 +3,8 @@ package nextstep.subway.path.domain;
 import java.util.Arrays;
 import java.util.List;
 
+import nextstep.subway.path.application.FarePolicy;
+
 public class TotalFarePolicy implements FarePolicy {
     private static final List<FarePolicy> farePolicies = Arrays.asList(
         new BasicFarePolicy(),

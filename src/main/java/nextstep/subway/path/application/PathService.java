@@ -1,8 +1,8 @@
-package nextstep.subway.path.service;
+package nextstep.subway.path.application;
 
 import org.springframework.stereotype.Service;
 
-import nextstep.subway.path.domain.FarePolicy;
+import nextstep.subway.path.domain.PathAssembler;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.StationGraph;
 import nextstep.subway.path.domain.TotalFarePolicy;
@@ -32,7 +32,7 @@ public class PathService {
         Station source = stationService.findById(pathRequest.getSource());
         Station target = stationService.findById(pathRequest.getTarget());
 
-        PathFinder pathFinder = new PathFinder(graph, source, target, FARE_POLICY);
-        return pathFinder.findPath();
+        PathFinder pathFinder = new PathFinder(graph, source, target);
+        return PathAssembler.writeResponse(pathFinder, FARE_POLICY);
     }
 }

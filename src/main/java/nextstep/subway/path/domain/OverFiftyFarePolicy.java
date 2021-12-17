@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.path.application.FarePolicy;
+
 public class OverFiftyFarePolicy implements FarePolicy {
     private static final int MIN_DISTANCE = 50;
     private static final int ADDITIONAL_FARE = 100;

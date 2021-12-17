@@ -10,7 +10,8 @@ public class PathResponse {
     private int distance;
     private int fare;
 
-    public PathResponse(){}
+    protected PathResponse() {
+    }
 
     public PathResponse(List<StationResponse> stations, int distance) {
         this(stations, distance, 0);

@@ -10,12 +10,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nextstep.subway.common.exception.SubwayException;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Stations;
+import nextstep.subway.path.application.FarePolicy;
 import nextstep.subway.path.dto.PathDtos;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponses;
 
 class PathFinderTest {
     private Line 신분당선;
@@ -57,16 +58,14 @@ class PathFinderTest {
 
     @DisplayName("최단 경로 찾기")
     @Test
-    void findPath() {
+    void pathFinder() {
         PathDtos paths = PathDtos.from(모든_구간);
-        StationResponses stationResponses = StationResponses.from(Arrays.asList(강남역, 양재역, 남부터미널역));
-        PathResponse expected = new PathResponse(stationResponses.getResponses(), 9, 1250);
         StationGraph graph = new StationGraph(paths);
 
-        PathFinder pathFinder = new PathFinder(graph, 강남역, 남부터미널역, farePolicy);
-        PathResponse actual = pathFinder.findPath();
+        PathFinder pathFinder = new PathFinder(graph, 강남역, 남부터미널역);
 
-        assertThat(actual).isEqualTo(expected);
+        assertThat(pathFinder.getStations()).isEqualTo(new Stations(Arrays.asList(강남역, 양재역, 남부터미널역)));
+        assertThat(pathFinder.getDistance()).isEqualTo(new Distance(9));
     }
 
     @DisplayName("시작점과 출발점이 동일할 때 에러")
@@ -76,7 +75,7 @@ class PathFinderTest {
         StationGraph graph = new StationGraph(paths);
 
         assertThatExceptionOfType(SubwayException.class)
-            .isThrownBy(() -> new PathFinder(graph, 교대역, 교대역, farePolicy))
+            .isThrownBy(() -> new PathFinder(graph, 교대역, 교대역))
             .withMessage("출발역과 도착역이 같습니다.");
     }
 
@@ -93,7 +92,7 @@ class PathFinderTest {
         StationGraph graph = new StationGraph(paths);
 
         assertThatExceptionOfType(SubwayException.class)
-            .isThrownBy(() -> new PathFinder(graph, 교대역, 정자역, farePolicy))
+            .isThrownBy(() -> new PathFinder(graph, 교대역, 정자역))
             .withMessage("출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
 }
