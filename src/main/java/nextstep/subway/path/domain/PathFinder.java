@@ -15,11 +15,9 @@ import nextstep.subway.station.domain.Station;
 public class PathFinder {
 
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
-    private final Lines lines;
 
-    private PathFinder(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Lines lines) {
+    private PathFinder(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         this.dijkstraShortestPath = new DijkstraShortestPath<Station, DefaultWeightedEdge>(graph);
-        this.lines = lines;
     }
 
     public static PathFinder of(Lines lines) {
@@ -28,15 +26,15 @@ public class PathFinder {
             addVertex(graph, line);
             setEdgeWeight(graph, line.getSections());
         });
-        return new PathFinder(graph, lines);
+        return new PathFinder(graph);
     }
     
-    public Path findShortestPath(Station sourceStation, Station targetStation, int age) {
+    public Path findShortestPath(Station sourceStation, Station targetStation) {
         validationSameStation(sourceStation, targetStation);
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         validationConnectedStation(graphPath);
         
-        return Path.of(lines, graphPath.getVertexList(), (int) dijkstraShortestPath.getPathWeight(sourceStation, targetStation), age);
+        return Path.of(graphPath.getVertexList(), (int) dijkstraShortestPath.getPathWeight(sourceStation, targetStation));
     }
 
     private static void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {

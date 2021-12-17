@@ -28,8 +28,10 @@ public class PathService {
         Station sourceStation = stationService.findById(sourceId);
         Station targetStation = stationService.findById(targetId);
         
-        PathFinder pathFinder = PathFinder.of(Lines.of(lineService.findLines()));
-        Path path = pathFinder.findShortestPath(sourceStation, targetStation, age);
+        Lines lines = Lines.of(lineService.findLines());
+        PathFinder pathFinder = PathFinder.of(lines);
+        Path path = pathFinder.findShortestPath(sourceStation, targetStation);
+        path.calculatorFare(lines, age);
         
         return PathResponse.of(path);
     }

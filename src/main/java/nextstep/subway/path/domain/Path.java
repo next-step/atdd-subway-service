@@ -22,6 +22,10 @@ public class Path {
     public static Path of(Lines lines, List<Station> stations, int distance, int age) {
         return new Path(stations, distance, FareCalculator.calculator(lines, stations, distance, age));
     }
+    
+    public static Path of(List<Station> stations, int distance) {
+        return new Path(stations, distance, 0);
+    }
 
     public List<Station> getStations() {
         return stations;
@@ -33,5 +37,9 @@ public class Path {
 
     public int getFare() {
         return fare;
+    }
+    
+    public void calculatorFare(Lines lines, int age) {
+        this.fare = FareCalculator.calculator(lines, stations, distance, age);
     }
 }
