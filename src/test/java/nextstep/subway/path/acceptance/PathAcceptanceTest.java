@@ -2,23 +2,17 @@ package nextstep.subway.path.acceptance;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTestHelper.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestHelper.*;
+import static nextstep.subway.path.acceptance.PathAcceptanceTestHelper.*;
 import static nextstep.subway.station.StationAcceptanceTest.*;
-import static org.assertj.core.api.Assertions.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 경로 조회")
@@ -109,35 +103,5 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회_실패됨(최단_경로_조회_응답);
     }
 
-    private ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceId, Long targetId) {
-        return RestAssured
-            .given().log().all()
-            .queryParam("source", sourceId)
-            .queryParam("target", targetId)
-            .when().get("/paths")
-            .then().log().all().extract();
-    }
-
-    private void 최단_경로_목록_일치됨(ExtractableResponse<Response> response, Long... stationIds) {
-        List<Long> returnIds = response.jsonPath()
-            .getList("stations", StationResponse.class)
-            .stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
-        assertThat(returnIds).containsExactly(stationIds);
-    }
-
-    private void 최단_경로_거리_일치됨(ExtractableResponse<Response> response, int distance) {
-        int resultDistance = response.jsonPath().getInt("distance");
-        assertThat(resultDistance).isEqualTo(distance);
-    }
-
-    private void 최단_경로_조회_응답됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    private void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
 }
 

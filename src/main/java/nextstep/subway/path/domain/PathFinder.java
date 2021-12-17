@@ -29,7 +29,6 @@ public class PathFinder {
     public Path findShortestPath(Station source, Station target) {
         checkStations(source, target);
 
-
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath graphPath = dijkstraShortestPath.getPath(source, target);
         if (isNotFoundPath(graphPath)) {
@@ -40,15 +39,15 @@ public class PathFinder {
     }
 
     private void checkStations(Station source, Station target) {
-        if(isEquals(source, target)){
+        if (isEquals(source, target)) {
             throw new IllegalArgumentException(ERROR_DUPLICATE_STATION);
         }
 
-        if(isNotFoundStation(source)){
+        if (isNotFoundStation(source)) {
             throw new IllegalArgumentException(ERROR_START_STATION_NOT_FOUND);
         }
 
-        if(isNotFoundStation(target)){
+        if (isNotFoundStation(target)) {
             throw new IllegalArgumentException(ERROR_END_STATION_NOT_FOUND);
         }
     }
