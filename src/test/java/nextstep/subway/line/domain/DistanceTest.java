@@ -1,12 +1,10 @@
-package nextstep.subway.line;
+package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import nextstep.subway.line.domain.Distance;
 
 @DataJpaTest
 public class DistanceTest {
