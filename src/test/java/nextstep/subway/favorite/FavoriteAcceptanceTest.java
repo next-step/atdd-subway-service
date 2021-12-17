@@ -37,6 +37,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	private StationResponse 교대역;
 	private StationResponse 남부터미널역;
 	private TokenResponse 토큰;
+	private TokenResponse 다른_유저_토큰;
 
 	@BeforeEach
 	public void setup() {
@@ -53,38 +54,59 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		String password = "chaeyun123";
 		MemberAcceptanceTest.회원_등록됨(email, password);
 		토큰 = AuthAcceptanceTest.로그인됨(email, password);
+
+		String email2 = "chaeyun2@github.com";
+		String password2 = "chaeyun123";
+		MemberAcceptanceTest.회원_등록됨(email2, password2);
+		다른_유저_토큰 = AuthAcceptanceTest.로그인됨(email2, password2);
 	}
 
 	@DisplayName("즐겨찾기를 관리")
 	@Test
 	void manageFavorite() {
-		// When 즐겨찾기 생성을 요청
+		// When
 		ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(토큰, 양재역, 교대역);
-		// Then 즐겨찾기 생성됨
+		// Then
 		즐겨찾기_생성됨(createResponse);
 
-		// When 즐겨찾기 목록 조회 요청
+		// When
 		ExtractableResponse<Response> foundResponse = 즐겨찾기_목록_조회_요청(토큰);
-		// Then 즐겨찾기 목록 조회됨
+		// Then
 		즐겨찾기_목록_조회됨(foundResponse, Collections.singletonList(createResponse));
 
-		// When 즐겨찾기 삭제 요청
+		// When
 		ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(토큰, createResponse);
-		// Then 즐겨찾기 삭제됨
+		// Then
 		즐겨찾기_삭제됨(deleteResponse);
+
+		// Given
+		ExtractableResponse<Response> createResponse2 = 즐거찾기_등록됨(토큰, 양재역, 교대역);
+		// When
+		ExtractableResponse<Response> deleteResponse2 = 즐겨찾기_삭제_요청(다른_유저_토큰, createResponse2);
+		// Then
+		즐겨찾기_삭제_실패함(deleteResponse2);
+	}
+
+	private static ExtractableResponse<Response> 즐거찾기_등록됨(TokenResponse token, StationResponse source,
+		StationResponse target) {
+		return 즐겨찾기_생성_요청(token, source, target);
+	}
+
+	private static void 즐겨찾기_삭제_실패함(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 
 	private void 즐겨찾기_삭제됨(ExtractableResponse<Response> deleteResponse) {
 		assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 	}
 
-	private static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse 토큰,
+	private static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse token,
 		ExtractableResponse<Response> createResponse) {
 
 		String uri = createResponse.header("Location");
 
 		return RestAssured.given().log().all().
-			auth().oauth2(토큰.getAccessToken())
+			auth().oauth2(token.getAccessToken())
 			.when().delete(uri)
 			.then().log().all().
 			extract();
