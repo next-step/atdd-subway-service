@@ -13,13 +13,13 @@ import nextstep.subway.path.domain.shortest.ShortestPath;
 import nextstep.subway.path.exception.PathNotFoundException;
 import nextstep.subway.station.domain.Station;
 
-public class PathFinderTest {
+public class PathTest {
 
 	@DisplayName("노선 목록이 없을 시 예외발생")
 	@Test
-	void pathFinder_not_found_lines() {
+	void path_not_found_lines() {
 		assertThatExceptionOfType(IllegalArgumentException.class)
-			.isThrownBy(() -> PathFinder.of(null));
+			.isThrownBy(() -> Path.of(null));
 	}
 
 	/**
@@ -42,8 +42,8 @@ public class PathFinderTest {
 		삼호선.addSection(양재역, 남부터미널역, 2);
 
 		final List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
-		final PathFinder pathFinder = PathFinder.of(lines);
-		final ShortestPath shortestPath = pathFinder.findShortest(강남역, 남부터미널역);
+		final Path path = Path.of(lines);
+		final ShortestPath shortestPath = path.findShortest(강남역, 남부터미널역);
 
 		assertThat(shortestPath.getStations()).containsExactly(강남역, 양재역, 남부터미널역);
 		assertThat(shortestPath.getDistance()).isEqualTo(12d);
@@ -60,10 +60,10 @@ public class PathFinderTest {
 			new Line("5호선", "violet", 여의도역, 신길역, 3),
 			new Line("8호선", "pink", 잠실역, 석촌역, 4)
 		);
-		final PathFinder pathFinder = PathFinder.of(lines);
+		final Path path = Path.of(lines);
 
 		assertThatExceptionOfType(PathNotFoundException.class)
-			.isThrownBy(() -> pathFinder.findShortest(여의도역, 잠실역));
+			.isThrownBy(() -> path.findShortest(여의도역, 잠실역));
 	}
 
 	@DisplayName("노선에 존재하지 않는 역으로 경로 생성시 예외발생")
@@ -74,11 +74,11 @@ public class PathFinderTest {
 		final List<Line> lines = Arrays.asList(
 			new Line("1호선", "navy", 서울역, 시청역, 3)
 		);
-		final PathFinder pathFinder = PathFinder.of(lines);
+		final Path path = Path.of(lines);
 
 		final Station 강남역 = new Station("강남역");
 		assertThatExceptionOfType(IllegalArgumentException.class)
-			.isThrownBy(() -> pathFinder.findShortest(강남역, 시청역));
+			.isThrownBy(() -> path.findShortest(강남역, 시청역));
 	}
 
 	@DisplayName("출발역과 도착역이 동일한 경로 생성시 예외발생")
@@ -89,9 +89,9 @@ public class PathFinderTest {
 		final List<Line> lines = Arrays.asList(
 			new Line("분당선", "yellow", 미금역, 정자역, 1)
 		);
-		final PathFinder pathFinder = PathFinder.of(lines);
+		final Path path = Path.of(lines);
 
 		assertThatExceptionOfType(IllegalArgumentException.class)
-			.isThrownBy(() -> pathFinder.findShortest(미금역, 미금역));
+			.isThrownBy(() -> path.findShortest(미금역, 미금역));
 	}
 }

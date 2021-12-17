@@ -9,11 +9,11 @@ import nextstep.subway.path.domain.shortest.ShortestPath;
 import nextstep.subway.path.domain.shortest.ShortestPathFinder;
 import nextstep.subway.station.domain.Station;
 
-public class PathFinder {
+public class Path {
 
 	private final ShortestPathFinder shortestPathFinder;
 
-	private PathFinder(List<Line> lines) {
+	private Path(List<Line> lines) {
 		this.shortestPathFinder = DijkstraShortestPathFinder.of(lines);
 	}
 
@@ -32,7 +32,7 @@ public class PathFinder {
 		}
 	}
 
-	public static PathFinder of(List<Line> lines) {
-		return new PathFinder(lines);
+	public static Path of(List<Line> lines) {
+		return new Path(lines);
 	}
 }
