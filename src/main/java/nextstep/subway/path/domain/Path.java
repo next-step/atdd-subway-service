@@ -20,7 +20,7 @@ public class Path {
     }
 
     public static Path of(Lines lines, List<Station> stations, int distance, int age) {
-        return new Path(stations, distance, FareCalculator.calculator(lines, stations, distance));
+        return new Path(stations, distance, FareCalculator.calculator(lines, stations, distance, age));
     }
 
     public List<Station> getStations() {
