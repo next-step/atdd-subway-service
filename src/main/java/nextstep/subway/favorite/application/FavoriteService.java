@@ -38,20 +38,13 @@ public class FavoriteService {
 
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
-        return favoriteRepository.save(Favorite.of(source.getId(), target.getId(), member.getId()));
+        return favoriteRepository.save(Favorite.of(source, target, member.getId()));
     }
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findAll(LoginMember loginMember) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
-
-        List<Long> stationIds = favorites.stream()
-                .flatMap(f -> f.getStations().stream())
-                .distinct()
-                .collect(toList());
-
-        List<Station> stations = stationService.findByIds(stationIds);
-        return FavoriteResponse.ofList(favorites, stations);
+        return FavoriteResponse.ofList(favorites);
     }
 
     @Transactional

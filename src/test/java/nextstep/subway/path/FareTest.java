@@ -1,5 +1,6 @@
 package nextstep.subway.path;
 
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.path.domain.AgeDiscount;
 import nextstep.subway.path.domain.overfare.DefaultOverFare;
 import nextstep.subway.path.domain.overfare.OverFare;
@@ -50,10 +51,10 @@ public class FareTest {
         int fare = 2150;
 
         //when
-        int discountFare = AgeDiscount.discount(19, fare);
+        Fare discountFare = AgeDiscount.discount(19, new Fare(fare));
 
         //then
-        assertThat(discountFare).isEqualTo(2150);
+        assertThat(discountFare.getValue()).isEqualTo(2150);
 
     }
 
@@ -65,10 +66,10 @@ public class FareTest {
         int fare = 2150;
 
         //when
-        int discountFare = AgeDiscount.discount(18, fare);
+        Fare discountFare = AgeDiscount.discount(18, new Fare(fare));
 
         //then
-        assertThat(discountFare).isEqualTo(1440);
+        assertThat(discountFare.getValue()).isEqualTo(1440);
 
     }
 
@@ -79,9 +80,9 @@ public class FareTest {
         int fare = 2150;
 
         //when
-        int discountFare = AgeDiscount.discount(12, fare);
+        Fare discountFare = AgeDiscount.discount(12, new Fare(fare));
 
         //then
-        assertThat(discountFare).isEqualTo(900);
+        assertThat(discountFare.getValue()).isEqualTo(900);
     }
 }

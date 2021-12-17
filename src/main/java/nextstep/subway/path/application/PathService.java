@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.AgeDiscount;
@@ -12,6 +13,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PathService {
@@ -34,7 +36,10 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
 
         ShortestPath shortestPath = pathFinder.findShortestPath(lines, sourceStation, targetStation);
-        int discount = AgeDiscount.discount(loginMember.getAge(), shortestPath.findFare());
-        return new PathResponse(shortestPath.findPaths(), shortestPath.findWeight(), discount);
+        Fare fare = shortestPath.findFare().plusLineUseFare(lines);
+        if (!loginMember.isEmpty()) {
+            fare = AgeDiscount.discount(loginMember.getAge(), fare);
+        }
+        return new PathResponse(shortestPath.findPaths(), shortestPath.findDistance(), fare);
     }
 }

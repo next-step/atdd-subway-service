@@ -12,26 +12,21 @@ public class ShortestPath {
     private Distance distance;
     private Fare fare;
 
-    public ShortestPath(List<Station> stations, int distance, int fare) {
-        this.stations = stations;
-        this.distance = new Distance(distance);
-        this.fare = new Fare(fare);
-    }
-
     public ShortestPath(List<Station> stations, int distance) {
         this.stations = stations;
         this.distance = new Distance(distance);
+        this.fare = Fare.overFareCalculate(this.distance);
     }
 
     public List<Station> findPaths() {
         return this.stations;
     }
 
-    public int findWeight() {
-        return this.distance.getValue();
+    public Distance findDistance() {
+        return this.distance;
     }
 
-    public int findFare() {
-        return this.fare.getValue();
+    public Fare findFare() {
+        return this.fare;
     }
 }

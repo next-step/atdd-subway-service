@@ -89,24 +89,34 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(paths.getStations().stream().map(StationResponse::getName)).containsExactly("강남역", "양재역", "남부터미널역");
         assertThat(paths.getDistance()).isEqualTo(12);
-        assertThat(paths.getFare()).isEqualTo(1350);
     }
 
-    @DisplayName("최단경로 찾기")
+    @DisplayName("두 역 사이의 최단경로 및 요금 조회")
     @Test
-    void getShortestPathUnAuth() {
+    void getShortestPathAndFareTest() {
 
         long source = 강남역.getId();
         long target = 남부터미널역.getId();
+
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+        ExtractableResponse<Response> loginResponse = AuthAcceptanceTest.로그인_요청(tokenRequest);
+        String accessToken = loginResponse.body().jsonPath().getString("accessToken");
 
         Map<String, Object> params = new HashMap<>();
         params.put("source", source);
         params.put("target", target);
 
         //when
-        ExtractableResponse<Response> pathsResponse = ApiUtils.get("/paths", null, params);
+        ExtractableResponse<Response> pathsResponse = ApiUtils.get("/paths", accessToken, params);
 
         //then
-        assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        PathResponse paths = pathsResponse.body().jsonPath().getObject(".", PathResponse.class);
+        assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(paths.getStations().stream().map(StationResponse::getName)).containsExactly("강남역", "양재역", "남부터미널역");
+        assertThat(paths.getDistance()).isEqualTo(12);
+        assertThat(paths.getFare()).isEqualTo(1350);
     }
 }

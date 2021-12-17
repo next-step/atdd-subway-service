@@ -61,7 +61,7 @@ public class PathServiceTest {
         삼호선.addSection(남부터미널역, 양재역, 3);
 
         List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
-        ShortestPath shortestPath = new ShortestPath(Arrays.asList(강남역, 교대역, 남부터미널역), 12, 1250);
+        ShortestPath shortestPath = new ShortestPath(Arrays.asList(강남역, 교대역, 남부터미널역), 12);
 
         PathService pathService = new PathService(lineRepository, stationService, pathFinder);
         when(lineRepository.findAll()).thenReturn(lines);
@@ -78,7 +78,7 @@ public class PathServiceTest {
         assertThat(paths.getStations().stream().map(StationResponse::getName))
                 .containsExactly("강남역", "교대역", "남부터미널역");
 
-        assertThat(paths.getFare()).isEqualTo(1250);
+        assertThat(paths.getFare()).isEqualTo(1350);
 
     }
 

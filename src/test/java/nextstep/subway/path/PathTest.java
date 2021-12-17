@@ -1,5 +1,6 @@
 package nextstep.subway.path;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.*;
 import nextstep.subway.path.domain.overfare.DefaultOverFare;
@@ -50,7 +51,7 @@ public class PathTest {
         ShortestPath shortestPath = pathFinder.findShortestPath(lines, 강남역, 남부터미널역);
 
         //then
-        assertThat(shortestPath.findWeight()).isEqualTo(12);
+        assertThat(shortestPath.findDistance()).isEqualTo(new Distance(12));
         assertThat(shortestPath.findPaths().stream().map(Station::getName)).containsExactly("강남역", "교대역", "남부터미널역");
     }
 

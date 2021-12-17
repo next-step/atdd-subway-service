@@ -11,6 +11,5 @@ import java.util.List;
 public interface PathFinder {
     List<Station> findStations(List<Line> lines, Station source, Station target);
     Distance findDistance(List<Line> lines, Station source, Station target);
-    int findFare(List<Line> lines, Station source, Station target);
     ShortestPath findShortestPath(List<Line> lines, Station source, Station target);
 }

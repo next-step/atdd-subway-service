@@ -16,11 +16,13 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "source")
-    private Long source;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "source")
+    private Station source;
 
-    @Column(name = "target")
-    private Long target;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "target")
+    private Station target;
 
     @Column(name = "member_id")
     private Long memberId;
@@ -29,19 +31,19 @@ public class Favorite {
 
     }
 
-    private Favorite(Long source, Long target, Long memberId) {
+    private Favorite(Station source, Station target, Long memberId) {
         validateCorrectSourceAndTarget(source, target);
         this.source = source;
         this.target = target;
         this.memberId = memberId;
     }
 
-    public static Favorite of(Long source, Long target, Long memberId) {
+    public static Favorite of(Station source, Station target, Long memberId) {
         Favorite favorite = new Favorite(source, target, memberId);
         return favorite;
     }
 
-    private void validateCorrectSourceAndTarget(Long source, Long target) {
+    private void validateCorrectSourceAndTarget(Station source, Station target) {
         if(source == target) {
             throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
         }
@@ -51,16 +53,16 @@ public class Favorite {
         return id;
     }
 
-    public Long getSource() {
+    public Station getSource() {
         return source;
     }
 
-    public Long getTarget() {
+    public Station getTarget() {
         return target;
     }
 
-    public List<Long> getStations() {
-        return Arrays.asList(source, target);
-    }
+//    public List<Long> getStations() {
+//        return Arrays.asList(source, target);
+//    }
 
 }

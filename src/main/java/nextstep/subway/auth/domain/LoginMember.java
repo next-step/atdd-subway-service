@@ -4,8 +4,13 @@ public class LoginMember {
     private Long id;
     private String email;
     private Integer age;
+    private boolean isEmpty;
 
     public LoginMember() {
+    }
+
+    public LoginMember(boolean isEmpty) {
+        this.isEmpty = isEmpty;
     }
 
     public LoginMember(Long id, String email, Integer age) {
@@ -24,5 +29,9 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public boolean isEmpty() {
+        return isEmpty;
     }
 }

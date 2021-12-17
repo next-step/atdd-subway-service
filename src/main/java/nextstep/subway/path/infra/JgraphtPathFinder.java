@@ -23,10 +23,7 @@ import static java.util.stream.Collectors.toList;
 @Component
 public class JgraphtPathFinder implements PathFinder {
 
-    OverFare overFare;
-
     public JgraphtPathFinder() {
-        overFare = new DefaultOverFare();
     }
 
     private void validateLinkSourceAndTarget(GraphPath path) {
@@ -39,14 +36,6 @@ public class JgraphtPathFinder implements PathFinder {
         if(source == target) {
             throw new IllegalStateException("출발역과 도착역이 같습니다.");
         }
-    }
-
-    private int maxAddedFareByLine(List<Line> lines) {
-        return lines.stream()
-                .map(Line::getFare)
-                .max(comparing(Fare::getValue))
-                .map(Fare::getValue)
-                .orElse(0);
     }
 
     private DijkstraShortestPath createGraph(List<Line> lines) {
@@ -90,17 +79,10 @@ public class JgraphtPathFinder implements PathFinder {
     }
 
     @Override
-    public int findFare(List<Line> lines, Station source, Station target) {
-        Distance distance = findDistance(lines, source, target);
-        int calculate = overFare.calculate(distance.getValue());
-        return maxAddedFareByLine(lines) + calculate;
-    }
-
-    @Override
     public ShortestPath findShortestPath(List<Line> lines, Station source, Station target) {
         validateCorrectSourceAndTarget(source, target);
         GraphPath path = find(lines, source, target);
-        return new ShortestPath(path.getVertexList(), (int)path.getWeight(), findFare(lines, source, target));
+        return new ShortestPath(path.getVertexList(), (int)path.getWeight());
     }
 
 }

@@ -104,6 +104,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(deleteResponse);
     }
 
+    @DisplayName("즐겨찾기 리스트 조회")
+    @Test
+    void favoritesTest() {
+        //즐겨찾기 생성 요청
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 강남역, 교대역);
+
+        //즐겨찾기 생성됨
+        즐겨찾기_생성됨(createResponse);
+
+        //즐겨찾기 목록 요청
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_요청(accessToken);
+
+        //즐겨찾기 목록 조회됨
+        즐겨찾기_목록_조회_응답됨(findResponse);
+        즐겨찾기_목록_조회_포함됨(findResponse, Arrays.asList(createResponse));
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, StationResponse upStation, StationResponse downStation) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(upStation.getId(), downStation.getId());
         return ApiUtils.post("/favorites", accessToken, favoriteRequest);
