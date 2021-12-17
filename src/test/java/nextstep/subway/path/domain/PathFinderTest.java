@@ -11,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.line.domain.Line;
@@ -86,5 +85,19 @@ class PathFinderTest {
         assertThatThrownBy(() -> PathFinder.computePath(newLines, 송내역, 강남역, 20))
             .isInstanceOf(BadRequestException.class)
             .hasMessageContaining("출발역과 도착역이 연결되어 있지 않습니다.");
+    }
+
+    @DisplayName("노선이 하나도 없을 때 경로를 검색할 경우 예외 발생")
+    @Test
+    void computePathWithNoLines() {
+        // given
+        final Station 송내역 = new Station(5L, "송내역");
+        final Station 의정부역 = new Station(6L, "의정부역");
+        final ArrayList<Line> newLines = new ArrayList<>();
+
+        // when, then
+        assertThatThrownBy(() -> PathFinder.computePath(newLines, 송내역, 강남역, 20))
+            .isInstanceOf(BadRequestException.class)
+            .hasMessageContaining("노선이 없을 때 경로를 조회할 수 없습니다.");
     }
 }

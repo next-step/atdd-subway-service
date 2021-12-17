@@ -22,10 +22,10 @@ public class PathFinder {
     private PathFinder() {
     }
 
-    public static PathResponse computePath(Collection<Line> lines, Station source, Station target, int memberAge) {
-        if (source.equals(target)) {
-            throw new BadRequestException("출발역과 도착역은 같을 수 없습니다.");
-        }
+    public static PathResponse computePath(
+        final Collection<Line> lines, final Station source, final Station target, final int memberAge
+    ) {
+        validate(lines, source, target);
         initializeGraph(lines);
         final GraphPath<Station, Section> graphPath = getGraphPath(source, target);
         final List<StationResponse> stations = getStationsOnPath(graphPath);
@@ -34,6 +34,15 @@ public class PathFinder {
         final int fare = FareCalculator.calculateFare(pathLines, distance, memberAge);
 
         return new PathResponse(stations, distance, fare);
+    }
+
+    private static void validate(final Collection<Line> lines, final Station source, final Station target) {
+        if (lines.isEmpty()) {
+            throw new BadRequestException("노선이 없을 때 경로를 조회할 수 없습니다.");
+        }
+        if (source.equals(target)) {
+            throw new BadRequestException("출발역과 도착역은 같을 수 없습니다.");
+        }
     }
 
     private static void initializeGraph(final Collection<Line> lines) {
