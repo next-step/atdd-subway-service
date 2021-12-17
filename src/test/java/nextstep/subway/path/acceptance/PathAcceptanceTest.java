@@ -113,21 +113,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return RestAssured
             .given().log().all()
             .queryParam("source", sourceId)
-            .queryParam("tartget", targetId)
+            .queryParam("target", targetId)
             .when().get("/paths")
             .then().log().all().extract();
     }
 
     private void 최단_경로_목록_일치됨(ExtractableResponse<Response> response, Long... stationIds) {
-        List<Long> returnIds = response.as(PathResponse.class)
-            .getStations().stream()
+        List<Long> returnIds = response.jsonPath()
+            .getList("stations", StationResponse.class)
+            .stream()
             .map(StationResponse::getId)
             .collect(Collectors.toList());
         assertThat(returnIds).containsExactly(stationIds);
     }
 
     private void 최단_경로_거리_일치됨(ExtractableResponse<Response> response, int distance) {
-        int resultDistance = response.as(PathResponse.class).getDistance();
+        int resultDistance = response.jsonPath().getInt("distance");
         assertThat(resultDistance).isEqualTo(distance);
     }
 
