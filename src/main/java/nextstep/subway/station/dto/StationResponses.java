@@ -1,9 +1,11 @@
 package nextstep.subway.station.dto;
 
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,10 +25,22 @@ public class StationResponses {
     public StationResponses(final Sections sections) {
         stationResponses = new ArrayList<>();
         sections.getSections()
+                .stream()
+                .sorted(Comparator.comparing(Section::getId).reversed())
                 .forEach(section -> {
-                    stationResponses.add(StationResponse.of(section.getUpStation()));
-                    stationResponses.add(StationResponse.of(section.getDownStation()));
+                    addIfAbsent(StationResponse.of(section.getUpStation()));
+                    addIfAbsent(StationResponse.of(section.getDownStation()));
                 });
+    }
+
+    private void addIfAbsent(final StationResponse response) {
+        boolean noneMatch = stationResponses
+                .stream()
+                .noneMatch(stationResponse -> stationResponse.getId().equals(response.getId()));
+
+        if (noneMatch) {
+            stationResponses.add(response);
+        }
     }
 
     public List<StationResponse> getStationResponses() {
