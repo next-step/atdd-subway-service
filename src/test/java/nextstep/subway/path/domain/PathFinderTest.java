@@ -78,31 +78,41 @@ public class PathFinderTest {
     @DisplayName("출발역과 도착역이 같은 경우")
     @Test
     void invalidSameStartEndPoint() {
-        // given
-
-        // when
-
-        // then
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> {
+                // when
+                Path path = pathFinder.findShortestPath(강남역, 강남역);
+            }).withMessageMatching("출발역과 도착역이 같습니다.");
     }
 
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
     @Test
-    void invalidNotFoundPath() {
-        // given
-
-        // when
-
-        // then
+    void invalidPathNotFound() {
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> {
+                // when
+                Path path = pathFinder.findShortestPath(강남역, 화곡역);
+            }).withMessageMatching("경로를 찾을 수 없습니다.");
     }
 
-    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
+    @DisplayName("존재하지 않은 출발역을 조회 할 경우")
     @Test
-    void invalidNotFoundStation() {
-        // given
+    void invalidStartStationNotFound() {
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> {
+                // when
+                Path path = pathFinder.findShortestPath(new Station(-1L, "없음"), 강남역);
+            }).withMessageMatching("출발역이 찾을 수 없습니다.");
+    }
 
-        // when
-
-        // then
+    @DisplayName("존재하지 않은 도착역을 조회 할 경우")
+    @Test
+    void invalidEndStationNotFound() {
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> {
+                // when
+                Path path = pathFinder.findShortestPath(강남역, new Station(-1L, "없음"));
+            }).withMessageMatching("도착역을 찾을 수 없습니다.");
     }
 
 }
