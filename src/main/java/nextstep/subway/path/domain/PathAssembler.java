@@ -4,6 +4,7 @@ import java.util.List;
 
 import nextstep.subway.line.domain.Stations;
 import nextstep.subway.path.application.FarePolicy;
+import nextstep.subway.path.domain.fare.Fare;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.station.dto.StationResponses;

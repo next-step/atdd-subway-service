@@ -14,7 +14,6 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Stations;
-import nextstep.subway.path.application.FarePolicy;
 import nextstep.subway.path.dto.PathDtos;
 import nextstep.subway.station.domain.Station;
 
@@ -34,8 +33,6 @@ class PathFinderTest {
     private Section 남부터미널_양재_구간;
     private List<Section> 모든_구간;
 
-    private FarePolicy farePolicy;
-
     @BeforeEach
     void setUp() {
         신분당선 = new Line("신분당선", "red");
@@ -53,7 +50,6 @@ class PathFinderTest {
         남부터미널_양재_구간 = new Section(신분당선, 남부터미널역, 양재역, 4);
 
         모든_구간 = Arrays.asList(강남_교대_구간, 강남_양재_구간, 교대_남부터미널_구간, 남부터미널_양재_구간);
-        farePolicy = new BasicFarePolicy();
     }
 
     @DisplayName("최단 경로 찾기")

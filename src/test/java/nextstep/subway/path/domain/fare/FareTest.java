@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.fare;
 
 import static org.assertj.core.api.Assertions.*;
 

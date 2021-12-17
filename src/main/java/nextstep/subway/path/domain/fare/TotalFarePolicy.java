@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.fare;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,8 +8,8 @@ import nextstep.subway.path.application.FarePolicy;
 public class TotalFarePolicy implements FarePolicy {
     private static final List<FarePolicy> farePolicies = Arrays.asList(
         new BasicFarePolicy(),
-        new TenToFiftyFarePolicy(),
-        new OverFiftyFarePolicy());
+        DistanceFarePolicy.TEN_TO_FIFTY,
+        DistanceFarePolicy.OVER_FIFTY);
 
     @Override
     public Fare calculateFare(int distance) {

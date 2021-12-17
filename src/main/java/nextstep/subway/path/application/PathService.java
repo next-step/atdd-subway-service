@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import nextstep.subway.path.domain.PathAssembler;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.StationGraph;
-import nextstep.subway.path.domain.TotalFarePolicy;
+import nextstep.subway.path.domain.fare.TotalFarePolicy;
 import nextstep.subway.path.dto.PathDtos;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
