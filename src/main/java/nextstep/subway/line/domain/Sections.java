@@ -188,4 +188,11 @@ public class Sections {
         }
     }
     
+    public boolean isInUpAndDownStations(List<Station> stations) {
+        if (stations.stream().filter(station -> getStations().contains(station)).count() >=2) {
+            return true;
+        }
+        return false;
+    }
+    
 }

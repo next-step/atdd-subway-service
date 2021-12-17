@@ -53,9 +53,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
         
-        LineRequest 이호선_요청 = new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 30);
-        LineRequest 신분당선_요청 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 50);
-        LineRequest 삼호선_요청 = new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 남부터미널역.getId(), 20);
+        LineRequest 이호선_요청 = new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 30, 300);
+        LineRequest 신분당선_요청 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 50, 500);
+        LineRequest 삼호선_요청 = new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 남부터미널역.getId(), 20, 700);
         
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(이호선_요청).as(LineResponse.class);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(신분당선_요청).as(LineResponse.class);

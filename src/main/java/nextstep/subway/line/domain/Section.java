@@ -88,6 +88,10 @@ public class Section {
         return isSameUpStation(station) || isSameDownStation(station);
     }
     
+    public boolean isSameStations(Station upStation, Station downStation) {
+        return isSameUpStation(upStation) && isSameDownStation(downStation);
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,6 +1,5 @@
 package nextstep.subway.path.domain;
 
-import java.util.List;
 import java.util.Objects;
 
 import org.jgrapht.GraphPath;
@@ -9,24 +8,27 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
 
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private final Lines lines;
 
-    private PathFinder(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private PathFinder(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Lines lines) {
         this.dijkstraShortestPath = new DijkstraShortestPath<Station, DefaultWeightedEdge>(graph);
+        this.lines = lines;
     }
 
-    public static PathFinder of(List<Line> lines) {
+    public static PathFinder of(Lines lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        lines.forEach(line -> {
+        lines.getLines().forEach(line -> {
             addVertex(graph, line);
             setEdgeWeight(graph, line.getSections());
         });
-        return new PathFinder(graph);
+        return new PathFinder(graph, lines);
     }
     
     public Path findShortestPath(Station sourceStation, Station targetStation) {
@@ -34,7 +36,7 @@ public class PathFinder {
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         validationConnectedStation(graphPath);
         
-        return Path.of(graphPath.getVertexList(), (int) dijkstraShortestPath.getPathWeight(sourceStation, targetStation));
+        return Path.of(lines, graphPath.getVertexList(), (int) dijkstraShortestPath.getPathWeight(sourceStation, targetStation));
     }
 
     private static void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {

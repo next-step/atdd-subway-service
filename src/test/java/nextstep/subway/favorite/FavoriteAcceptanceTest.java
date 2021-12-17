@@ -39,7 +39,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
 
-        LineRequest lineRequest = new LineRequest("이호선", "bg-green-600", 서초역.getId(), 교대역.getId(), 30);
+        LineRequest lineRequest = new LineRequest("이호선", "bg-green-600", 서초역.getId(), 교대역.getId(), 30, 300);
         LineResponse 이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 교대역, 강남역, 50);

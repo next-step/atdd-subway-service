@@ -54,9 +54,9 @@ public class PathServiceTest {
         양재역 = Station.from("양재역");
         남부터미널역 = Station.from("남부터미널역");
         
-        이호선 = Line.of("이호선", "bg-green-600", 교대역, 강남역, Distance.from(30));
-        신분당선 = Line.of("신분당선", "bg-red-600", 강남역, 양재역, Distance.from(50));
-        삼호선 = Line.of("삼호선", "bg-orange-600", 교대역, 남부터미널역, Distance.from(60));
+        이호선 = Line.of("이호선", "bg-green-600", 교대역, 강남역, Distance.from(30), 300);
+        신분당선 = Line.of("신분당선", "bg-red-600", 강남역, 양재역, Distance.from(50), 900);
+        삼호선 = Line.of("삼호선", "bg-orange-600", 교대역, 남부터미널역, Distance.from(60), 500);
 
         삼호선.addSection(Section.of(삼호선, 남부터미널역, 양재역, Distance.from(30)));
     }
@@ -78,7 +78,8 @@ public class PathServiceTest {
         // then
         assertAll(
                 () -> assertThat(stations).containsExactlyElementsOf(Arrays.asList(교대역, 강남역, 양재역)),
-                () -> assertThat(response.getDistance()).isEqualTo(80)
+                () -> assertThat(response.getDistance()).isEqualTo(80),
+                () -> assertThat(response.getFare()).isEqualTo(3350)    // 거리요금 2450 + 노선 추가요금 900
                 );
     }
 

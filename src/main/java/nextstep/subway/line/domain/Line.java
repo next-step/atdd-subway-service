@@ -2,7 +2,6 @@ package nextstep.subway.line.domain;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -27,6 +26,8 @@ public class Line extends BaseEntity {
 
     @Embedded
     private Sections sections = new Sections();
+    
+    private int surcharge = 0;
 
     protected Line() {
     }
@@ -36,9 +37,10 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    private Line(String name, String color, Station upStation, Station downStation, Distance distance) {
+    private Line(String name, String color, Station upStation, Station downStation, Distance distance, int surcharge) {
         this.name = name;
         this.color = color;
+        this.surcharge = surcharge;
         addSection(Section.of(this, upStation, downStation, distance));
     }
     
@@ -47,7 +49,11 @@ public class Line extends BaseEntity {
     }
     
     public static Line of(String name, String color, Station upStation, Station downStation, Distance distance) {
-        return new Line(name, color, upStation, downStation, distance);
+        return new Line(name, color, upStation, downStation, distance, 0);
+    }
+    
+    public static Line of(String name, String color, Station upStation, Station downStation, Distance distance, int surcharge) {
+        return new Line(name, color, upStation, downStation, distance, surcharge);
     }
     
     public Long getId() {
@@ -66,6 +72,10 @@ public class Line extends BaseEntity {
         return sections;
     }
 
+    public int getSurcharge() {
+        return surcharge;
+    }
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
@@ -81,6 +91,13 @@ public class Line extends BaseEntity {
     
     public List<Station> getStations() {
         return sections.getStations();
+    }
+    
+    public int getSurcharge(List<Station> stations) {
+        if (sections.isInUpAndDownStations(stations)) {
+            return this.surcharge;
+        }
+        return 0;
     }
     
 

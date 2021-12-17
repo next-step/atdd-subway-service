@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import java.util.List;
 
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
@@ -18,8 +19,8 @@ public class Path {
         this.fare = fare;
     }
 
-    public static Path of(List<Station> stations, int distance) {
-        return new Path(stations, distance, FareCalculator.calculator(distance));
+    public static Path of(Lines lines, List<Station> stations, int distance) {
+        return new Path(stations, distance, FareCalculator.calculator(lines, stations, distance));
     }
 
     public List<Station> getStations() {

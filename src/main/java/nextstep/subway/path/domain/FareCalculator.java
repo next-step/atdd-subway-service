@@ -1,5 +1,10 @@
 package nextstep.subway.path.domain;
 
+import java.util.List;
+
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.station.domain.Station;
+
 public class FareCalculator {
     private static final int DEFAULT_FARE = 1_250;
     private static final int EXTRA_FARE = 100;
@@ -24,6 +29,10 @@ public class FareCalculator {
         }
         
         return DEFAULT_FARE;
+    }
+    
+    public static int calculator(Lines lines, List<Station> stations, int distance) {
+        return calculator(distance) + lines.calculatorMaxSurcharge(stations);
     }
     
     private static int calculateOverFare(int distance, int overDistance) {
