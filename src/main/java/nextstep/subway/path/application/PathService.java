@@ -1,10 +1,13 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.exception.StationException;
 import nextstep.subway.path.domain.DijkstraPathFinder;
+import nextstep.subway.path.domain.FareCalculator;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -27,13 +30,14 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
-    public PathResponse findPaths(long source, long target) {
+    public PathResponse findPaths(LoginMember loginMember, long source, long target) {
         Station startStation = findStationById(source);
         Station endStation = findStationById(target);
         List<Line> lines = findLines();
-        DijkstraPathFinder dijkstraPathFinder = DijkstraPathFinder.ofList(lines);
-        Path shortestPath = dijkstraPathFinder.findPath(startStation, endStation);
-        return PathResponse.from(shortestPath);
+        PathFinder pathFinder = DijkstraPathFinder.ofList(lines);
+        Path shortestPath = pathFinder.findPath(startStation, endStation);
+        int fare = new FareCalculator(shortestPath, loginMember.getAge()).calculate();
+        return PathResponse.from(shortestPath, fare);
     }
 
     @Transactional(readOnly = true)

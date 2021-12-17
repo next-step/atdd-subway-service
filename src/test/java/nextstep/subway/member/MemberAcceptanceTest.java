@@ -22,6 +22,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
+    public static final int TEENAGER_AGE = 18;
+    public static final int CHILD_AGE = 12;
     private static final String myInfoPath = "/members/me";
 
     @DisplayName("회원 정보를 관리한다.")
@@ -65,10 +67,27 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         내정보_수정됨(updateResponse);
 
+        // given
+        String 변경된_토큰 = 로그인_되어_있음(NEW_EMAIL, NEW_PASSWORD);
         // when
-        ExtractableResponse<Response> deleteResponse = 내정보_삭제_요청(토큰);
+        ExtractableResponse<Response> deleteResponse = 내정보_삭제_요청(변경된_토큰);
         // then
         내정보_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("회원정보 수정 후 다시 조회하여 테스트한다.")
+    @Test
+    void updateInfo() {
+        //given
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+        회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        //when
+        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
+
+        // then
+        회원_정보_조회됨(findResponse, NEW_EMAIL, NEW_AGE);
     }
 
     private void 내정보_삭제됨(ExtractableResponse<Response> response) {
