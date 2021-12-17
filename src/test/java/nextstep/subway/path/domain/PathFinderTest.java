@@ -1,4 +1,4 @@
-package nextstep.subway.path.util;
+package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -9,6 +9,9 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.line.domain.Line;
@@ -39,30 +42,32 @@ class PathFinderTest {
         교대역 = new Station(3L, "교대역");
         남부터미널역 = new Station(4L, "남부터미널역");
 
-        final Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, 10);
-        final Line 이호선 = new Line("2호선", "green", 교대역, 강남역, 10);
-        final Line 삼호선 = new Line("3호선", "orange", 교대역, 양재역, 5);
+        final Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, 10, 300);
+        final Line 이호선 = new Line("2호선", "green", 교대역, 강남역, 10, 0);
+        final Line 삼호선 = new Line("3호선", "orange", 교대역, 양재역, 5, 500);
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, 3));
 
         lines = Arrays.asList(신분당선, 이호선, 삼호선);
     }
 
-    @Test
-    void computePath() {
+    @ParameterizedTest
+    @CsvSource(value = {"5:0", "12:750", "18:1200", "19:1850"}, delimiter = ':')
+    void computePath(int memberAge, int expectedFare) {
         // when
-        final PathResponse pathResponse = PathFinder.computePath(lines, 남부터미널역, 강남역);
+        final PathResponse pathResponse = PathFinder.computePath(lines, 남부터미널역, 강남역, memberAge);
 
         // then
         assertThat(pathResponse.getStations())
             .containsExactly(StationResponse.of(남부터미널역), StationResponse.of(양재역), StationResponse.of(강남역));
         assertThat(pathResponse.getDistance()).isEqualTo(12);
+        assertThat(pathResponse.getFare()).isEqualTo(expectedFare);
     }
 
     @DisplayName("출발역과 도착역이 같을 경우 예외 발생")
     @Test
     void computePathOnSameSourceAndTarget() {
         // when, then
-        assertThatThrownBy(() -> PathFinder.computePath(lines, 남부터미널역, 남부터미널역))
+        assertThatThrownBy(() -> PathFinder.computePath(lines, 남부터미널역, 남부터미널역, 20))
             .isInstanceOf(BadRequestException.class)
             .hasMessageContaining("출발역과 도착역은 같을 수 없습니다.");
     }
@@ -78,7 +83,7 @@ class PathFinderTest {
         newLines.add(일호선);
 
         // when, then
-        assertThatThrownBy(() -> PathFinder.computePath(newLines, 송내역, 강남역))
+        assertThatThrownBy(() -> PathFinder.computePath(newLines, 송내역, 강남역, 20))
             .isInstanceOf(BadRequestException.class)
             .hasMessageContaining("출발역과 도착역이 연결되어 있지 않습니다.");
     }
