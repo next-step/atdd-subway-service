@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.CyclePathException;
 import nextstep.subway.common.exception.NotFoundEntityException;
 import nextstep.subway.common.exception.UnconnectedStationException;
@@ -17,21 +18,45 @@ import java.util.List;
 import java.util.Set;
 
 public class PathFinder {
+    private GraphPath<Station, DefaultWeightedEdge> shortestPath;
     private Station sourceStation;
     private Station targetStation;
     private List<Section> sections;
+    private int distance;
+    private int totalFee;
 
     public PathFinder(Station sourceStation, Station targetStation, List<Section> sections) {
+        this(sourceStation, targetStation, sections, new LoginMember());
+    }
+
+    public PathFinder(Station sourceStation, Station targetStation, List<Section> sections, LoginMember loginMember) {
         validateSameStation(sourceStation, targetStation);
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
         this.sections = sections;
+        this.shortestPath = findShortestPath();
+        this.distance = (int) shortestPath.getWeight();
+        this.totalFee = calculateFee(distance, loginMember);
+    }
+
+    private int calculateFee(int distance, LoginMember loginMember) {
+        int maxExtraFee = sections.stream().mapToInt(Section::getExtraFee).max().orElse(0);
+        DistanceFeeType distanceFeeType = DistanceFeeType.getDistanceFeeType(distance);
+        int distanceFee = DistanceFeeType.calculateOverFare(distance, distanceFeeType) + maxExtraFee;
+        AgeDiscountType ageDiscountType =
+                AgeDiscountType.getAgeDiscountType(loginMember.getAge());
+
+        return AgeDiscountType.getDiscountedPrice(distanceFee, ageDiscountType);
     }
 
     private void validateSameStation(Station sourceStation, Station targetStation) {
         if (sourceStation.equals(targetStation)) {
             throw new CyclePathException();
         }
+    }
+
+    public int getTotalFee() {
+        return totalFee;
     }
 
     public Station getSourceStation() {

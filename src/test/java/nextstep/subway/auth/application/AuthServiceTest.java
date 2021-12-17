@@ -38,7 +38,7 @@ public class AuthServiceTest {
 
     @Test
     void login() {
-        when(memberRepository.findByEmailEmail(anyString())).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
+        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
         when(jwtTokenProvider.createToken(anyString())).thenReturn("TOKEN");
 
         TokenResponse token = authService.login(new TokenRequest(EMAIL, PASSWORD));
