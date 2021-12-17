@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -23,13 +24,12 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findBestPath(Long sourceId, Long targetId) {
+    public PathResponse findShortestPath(Long sourceId, Long targetId) {
         List<Line> lines = lineService.findAll();
-
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
         PathFinder pathFinder = new PathFinder(lines);
-
-        return null;
+        Path path = pathFinder.findShortestPath(source, target);
+        return PathResponse.of(path);
     }
 }
