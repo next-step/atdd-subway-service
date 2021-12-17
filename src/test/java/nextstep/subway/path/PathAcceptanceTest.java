@@ -52,7 +52,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	}
 
 	private void 최단_경로_맞는지_확인(ExtractableResponse<Response> response, List<StationResponse> expected) {
-		assertThat(response.jsonPath().getList(".stations", StationResponse.class)).isEqualTo(expected);
+		assertThat(response.jsonPath().getList("stations", StationResponse.class)).isEqualTo(expected);
 	}
 
 	private void 최단_경로_요청_성공(ExtractableResponse<Response> response) {
