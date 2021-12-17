@@ -56,12 +56,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithWrongBearerAuth() {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
-                .auth()
-                .oauth2("12345")
+                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmNAYWJjLmNvLmtyIiwiaWF0IjoxNjM5NzQ5Mzc4LCJleHAiOjE2MzkwNTI1Nzh9.dDYMw-dFBlY7Hs1bVzhRBYFjB56wPMaE-7OEh6Dboh8")
                 .contentType("application/json")
                 .when().get("/members/me")
                 .then().log().all().extract();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     public static ExtractableResponse<Response> 토큰_발급_요청(String email, String password, int age){
