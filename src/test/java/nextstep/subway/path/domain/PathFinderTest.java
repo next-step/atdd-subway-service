@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,10 +28,10 @@ public class PathFinderTest {
     /**                   (10)
      *     교대역    --- *2호선* ---   강남역
      *     |                        |
-     * (3) *3호선*                   *신분당선*  (10)
+     * (4) *3호선*                   *신분당선*  (10)
      *     |                        |
      *     남부터미널역  --- *3호선* ---   양재
-     *                      (2)
+     *                      (6)
      *
      *
      *     화곡역 --- *5호선* --- 우장산역
@@ -44,12 +46,12 @@ public class PathFinderTest {
         화곡역 = new Station(5L, "화곡역");
         우장산역 = new Station(6L, "우장산역");
 
-        신분당선 = new Line("신분당선", "red", 강남역, 양재역, 10);
-        이호선 = new Line("신분당선", "green", 교대역, 강남역, 10);
-        삼호선 = new Line("신분당선", "orange", 교대역, 양재역, 5);
-        오호선 = new Line("신분당선", "purple", 화곡역, 우장산역, 5);
+        신분당선 = new Line(1L, "신분당선", "red", 강남역, 양재역, 10);
+        이호선 = new Line(2L, "이호선", "green", 교대역, 강남역, 10);
+        삼호선 = new Line(3L, "삼호선", "orange", 교대역, 양재역, 10);
+        오호선 = new Line(4L, "오호선", "purple", 화곡역, 우장산역, 10);
 
-        삼호선.addSection(교대역, 남부터미널역, 3);
+        삼호선.addSection(교대역, 남부터미널역, 4);
 
         List<Line> 전체노선 = Arrays.asList(신분당선, 이호선, 삼호선, 오호선);
         pathFinder = new PathFinder(전체노선);
@@ -59,10 +61,18 @@ public class PathFinderTest {
     @Test
     void findBestPath() {
         // given
+        Path path = pathFinder.findShortestPath(강남역, 남부터미널역);
 
         // when
+        List<Station> stations = path.getStations();
+        Station source = stations.get(0);
+        Station target = stations.get(stations.size() - 1);
+        int distance = path.getDistance();
 
         // then
+        assertThat(source).isEqualTo(강남역);
+        assertThat(target).isEqualTo(남부터미널역);
+        assertThat(distance).isEqualTo(14);
     }
 
     @DisplayName("출발역과 도착역이 같은 경우")

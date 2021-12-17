@@ -67,22 +67,22 @@ public class Section {
 
     public void updateUpStationMinus(Section section) {
         this.upStation = section.downStation;
-        this.distance.minus(section.distance);
+        this.distance = this.distance.minus(section.distance);
     }
 
     public void updateDownStationMinus(Section section) {
         this.downStation = section.upStation;
-        this.distance.minus(section.distance);
+        this.distance = this.distance.minus(section.distance);
     }
 
     public void updateDownStationPlus(Section section) {
-        downStation = section.downStation;
-        distance.plus(section.distance);
+        this.downStation = section.downStation;
+        this.distance = this.distance.plus(section.distance);
     }
 
     public void updateUpStationPlus(Section section) {
-        upStation = section.upStation;
-        distance.plus(section.distance);
+        this.upStation = section.upStation;
+        this.distance = this.distance.plus(section.distance);
     }
 
     public boolean isEqualToUpStation(Station station) {
@@ -95,6 +95,10 @@ public class Section {
 
     public boolean isDummy() {
         return this.equals(DUMMY_SECTION);
+    }
+
+    public int distance() {
+        return distance.getDistance();
     }
 
     @Override
@@ -113,4 +117,5 @@ public class Section {
     public int hashCode() {
         return Objects.hash(id, line, upStation, downStation, distance);
     }
+
 }

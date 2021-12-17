@@ -149,7 +149,7 @@ public class Sections {
             && !stations.contains(section.getDownStation());
     }
 
-    private Set<Station> getStations() {
+    public Set<Station> getStations() {
         Set<Station> stations = new HashSet<>();
         sections.forEach(it -> {
             stations.add(it.getUpStation());
@@ -217,4 +217,7 @@ public class Sections {
             .collect(Collectors.toList());
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
 }
