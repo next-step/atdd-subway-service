@@ -6,7 +6,8 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.favorite.domain.FavoriteResponse;
+import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
@@ -21,18 +22,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
-    private LineResponse 신분당선;
-    private StationResponse 강남역;
-    private StationResponse 양재역;
-    private StationResponse 정자역;
-    private StationResponse 광교역;
+    private LineResponse 일호선;
+    private StationResponse 부천역;
+    private StationResponse 소사역;
+    private StationResponse 부평역;
+    private StationResponse 역곡역;
 
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
@@ -42,22 +41,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     public void setUp() {
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
-        정자역 = StationAcceptanceTest.지하철역_등록되어_있음("정자역").as(StationResponse.class);
-        광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
+        super.setUp();
+        부천역 = StationAcceptanceTest.지하철역_등록되어_있음("부천역").as(StationResponse.class);
+        소사역 = StationAcceptanceTest.지하철역_등록되어_있음("소사역").as(StationResponse.class);
+        부평역 = StationAcceptanceTest.지하철역_등록되어_있음("부평역").as(StationResponse.class);
+        역곡역 = StationAcceptanceTest.지하철역_등록되어_있음("역곡역").as(StationResponse.class);
 
-        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+        LineRequest lineRequest = new LineRequest("일호선", "bg-red-600", 부천역.getId(), 역곡역.getId(), 10);
+        일호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
         // when
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 강남역, 5);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 부천역, 소사역, 2);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 부평역, 부천역, 5);
 
         // then
-        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(일호선);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록됨(response);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(정자역, 강남역, 양재역, 광교역));
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(부평역, 부천역, 소사역, 역곡역));
 
         // when
         ExtractableResponse<Response> createResponse = MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
@@ -76,12 +76,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMember() {
         // when
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(token, 강남역, 양재역);
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(token, 부천역, 소사역);
         // then
         즐겨찾기_생성됨(createResponse);
 
         // when
-        ExtractableResponse<Response> createResponse2 = 즐겨찾기_생성을_요청(token, 정자역, 광교역);
+        ExtractableResponse<Response> createResponse2 = 즐겨찾기_생성을_요청(token, 부평역, 역곡역);
         // then
         즐겨찾기_생성됨(createResponse);
 
@@ -103,7 +103,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .header("Authorization", "Bearer " + token.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/favorites/{id}", favoriteId.toString())
+                .when().delete("/favorites/{id}", favoriteId)
                 .then().log().all().extract();
     }
 
@@ -127,14 +127,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 즐겨찾기_생성을_요청(TokenResponse token, StationResponse source, StationResponse target) {
         // when
-        Map<String, String> params = new HashMap<>();
-        params.put("source", source.getId().toString());
-        params.put("target", target.getId().toString());
+        FavoriteRequest request = new FavoriteRequest(source.getId(), target.getId());
 
         return RestAssured
                 .given().log().all()
                 .header("Authorization", "Bearer " + token.getAccessToken())
-                .body(params)
+                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/favorites")
                 .then().log().all().extract();
