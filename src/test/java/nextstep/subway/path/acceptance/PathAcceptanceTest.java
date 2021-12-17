@@ -64,6 +64,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		final PathResponse pathResponse = response.as(PathResponse.class);
 		최단_경로_역_목록_확인됨(pathResponse, Arrays.asList(강남역_ID, 양재역_ID, 남부터미널역_ID));
 		최단_경로_거리_확인됨(pathResponse, 12);
+		최단_경로_운임_확인됨(pathResponse, 1350);
 	}
 
 	private ExtractableResponse<Response> 최단_경로_조회_요청(long source, long target) {
@@ -89,5 +90,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private void 최단_경로_거리_확인됨(PathResponse pathResponse, double distance) {
 		assertThat(pathResponse.getDistance()).isEqualTo(distance);
 	}
+
+	private void 최단_경로_운임_확인됨(PathResponse pathResponse, int fare) {
+		assertThat(pathResponse.getFare()).isEqualTo(fare);
 	}
 }
