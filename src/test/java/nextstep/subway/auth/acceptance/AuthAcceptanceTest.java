@@ -35,13 +35,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(tokenResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         TokenResponse token = tokenResponse.jsonPath().getObject(".", TokenResponse.class);
 
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .header("Authorization", "Bearer " + token.getAccessToken())
-                .contentType("application/json")
-                .when().get("/members/me")
-                .then().log().all().extract();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        // when
+        ExtractableResponse<Response> findResponse = MemberAcceptanceTest.내_정보_조회_요청(token);
+        // then
+        MemberAcceptanceTest.회원_정보_조회됨(findResponse, email, age);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
