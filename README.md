@@ -67,6 +67,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ## 2단계 구현 목록
 - [x] 최단 경로 조회 인수 테스트 만들기
+- [x] 인수테스트 통과할 정도로만 구현
 - 최단 경로 조회 기능 구현하기
   - 유닛 테스트 작성
     - [ ] 성공

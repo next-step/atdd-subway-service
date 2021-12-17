@@ -78,4 +78,8 @@ public class Line extends BaseEntity {
     public boolean containsSection(Section section) {
         return sections.get().contains(section);
     }
+
+    public List<Section> getSections() {
+        return sections.get();
+    }
 }
