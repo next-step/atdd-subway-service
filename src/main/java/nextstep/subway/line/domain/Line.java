@@ -26,7 +26,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-    private final Sections sections = new Sections();
+    private final Sections sections = Sections.empty();
 
     public Line() {
     }
@@ -68,7 +68,7 @@ public class Line extends BaseEntity {
     }
 
     public Stations getStations() {
-        Stations stations = new Stations();
+        Stations stations = Stations.empty();
         if (sections.isEmpty()) {
             return stations;
         }

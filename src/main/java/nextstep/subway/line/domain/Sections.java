@@ -19,6 +19,21 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
+    protected Sections() {
+    }
+
+    private Sections(List<Section> sections) {
+        this.sections = sections;
+    }
+
+    public static Sections of(List<Section> sections) {
+        return new Sections(sections);
+    }
+
+    public static Sections empty() {
+        return new Sections();
+    }
+
     public boolean addSection(Section section) {
         if (!sections.isEmpty()) {
             validate(section);
@@ -95,7 +110,7 @@ public class Sections {
     }
 
     private Stations getStations() {
-        Stations stations = new Stations();
+        Stations stations = Stations.empty();
         for (Section section : sections) {
             stations.add(section.getUpStation());
             stations.add(section.getDownStation());
