@@ -31,7 +31,7 @@ class LineTest {
         양재시민의숲 = new Station(3L, "양재시민의숲");
         청계산입구 = new Station(4L, "청계산입구");
         판교 = new Station(5L, "판교");
-        line = new Line("신분당선", "bg-red-600");
+        line = new Line("신분당선", "bg-red-600", 0);
     }
 
     @DisplayName("종점역을 연장한 구간 추가한다.")
@@ -147,7 +147,7 @@ class LineTest {
     @DisplayName("노선에 속한 지하철 역이 없으면 빈 목록이 조회된다.")
     void emptyStations() {
         // given
-        Line line = new Line("신분당선", "bg-red-600");
+        Line line = new Line("신분당선", "bg-red-600", 0);
 
         // when
         List<Station> stations = line.getStations();

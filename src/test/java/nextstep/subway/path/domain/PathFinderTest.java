@@ -50,10 +50,10 @@ class PathFinderTest {
         이수 = new Station(7L, "이수");
         사당 = new Station(8L, "사당");
 
-        이호선 = new Line("이호선", "bg-green-600", 교대, 강남, 2);
+        이호선 = new Line("이호선", "bg-green-600", 0, 교대, 강남, 2);
         이호선.addSection(new Section(강남, 선릉, 3));
 
-        삼호선 = new Line("삼호선", "bg-orange-600", 교대, 남부터미널, 1);
+        삼호선 = new Line("삼호선", "bg-orange-600", 0, 교대, 남부터미널, 1);
         삼호선.addSection(new Section(남부터미널, 양재, 2));
         삼호선.addSection(new Section(양재, 매봉, 4));
 
@@ -66,7 +66,7 @@ class PathFinderTest {
     void shortestDistance() {
         // given
         // 양재 -> 강남 : (양재-6-강남) 6 / (양재-2-남부터미널-1-교대-2-강남) 5
-        Line 신분당선 = new Line("신분당선", "bg-red-600", 강남, 양재, 6);
+        Line 신분당선 = new Line("신분당선", "bg-red-600", 0, 강남, 양재, 6);
         dijkstraPath = new PathFinder(Arrays.asList(이호선, 삼호선, 신분당선));
 
         // when
@@ -83,7 +83,7 @@ class PathFinderTest {
     void sameShortestDistance() {
         // given
         // 양재 -> 강남 : (양재-5-강남) 5 / (양재-2-남부터미-1-교대-2-강남) 5
-        Line 신분당선 = new Line("신분당선", "bg-red-600", 강남, 양재, 5);
+        Line 신분당선 = new Line("신분당선", "bg-red-600", 0, 강남, 양재, 5);
         dijkstraPath = new PathFinder(Arrays.asList(이호선, 삼호선, 신분당선));
 
         // when
@@ -115,7 +115,7 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역이 연결되지 않은 경우 예외가 발생한다.")
     void validateNotConnectable() {
         // given
-        Line 사호선 = new Line("사호선", "bg-sky-600", 이수, 사당, 3);
+        Line 사호선 = new Line("사호선", "bg-sky-600", 0, 이수, 사당, 3);
         dijkstraPath = new PathFinder(Arrays.asList(이호선, 삼호선, 사호선));
 
         // when then

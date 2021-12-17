@@ -96,7 +96,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       Scenario: 지하철 구간 예외 발생
         When 노선에 이미 등록되어 있는 역을 등록 요청
         Then 지하철 구간 등록 실패됨
-        When 지하철 노선에 등록되지 않은 역을 등록 요청
+        When 지하철 노선과 연결되지 않는 역을 등록 요청
         Then 지하철 구간 등록 실패됨
         When 지하철 노선에 등록된 역 목록 조회 요청
         Then 등록한 지하철 구간이 반영되지 않은 역 목록이 조회됨
@@ -120,7 +120,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         And 출발역과 도착역이 같지 않음
         And 출발역과 도착역이 연결이 되어 있음
         When 최단 경로 조회 요청
-        Then 최단 경로 조회됨
+        Then 최단 경로 구간 목록 조회됨
+        And 총 거리 조회됨
+        And 지하철 이용 요금 조회됨
   
       Scenario: 최단 경로 조회 예외 발생
         Given 출발역이나 도착역이 등록되어 있지 않음
@@ -128,6 +130,27 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         Or 출발역과 도착역이 연결이 되어 있지 않음
         When 최단 경로 조회 요청
         Then 최단 경로 조회 실패됨
+  
+      Scenario: 지하철 요금 정상 기능
+        Given 최단 거리가 10km 초과하는 경로 생성
+        Or 최단 거리가 50km 초과하는 경로 생성
+        When 최단 경로 조회 요청
+        Then 최단 경로 구간 목록 조회됨
+        And 10km를 초과하는 거리 조회됨
+        And 지하철 추가 운임 요금 조회됨
+  
+        Given 추가 요금이 있는 노선 생성
+        When 최단 경로 조회 요청
+        Then 최단 경로 구간 목록 조회됨
+        And 총 거리 조회됨
+        And 지하철 추가 운임 요금 조회됨
+  
+        Given 청소년 사용자 로그인 됨
+        Or 어린이 사용자 로그인 됨
+        When 최단 경로 조회 요청
+        Then 최단 경로 구간 목록 조회됨
+        And 총 거리 조회됨
+        And 할인된 지하철 요금 조회됨
     ```
 
 - 로그인

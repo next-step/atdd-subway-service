@@ -18,19 +18,23 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
     @Embedded
+    private Money money;
+    @Embedded
     private Sections sections = new Sections();
 
     public Line() {
     }
 
-    public Line(String name, String color) {
+    public Line(String name, String color, int money) {
         this.name = name;
         this.color = color;
+        this.money = new Money(money);
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, int money, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        this.money = new Money(money);
         addSection(new Section(upStation, downStation, distance));
     }
 
@@ -70,6 +74,11 @@ public class Line extends BaseEntity {
         sections.remove(station);
     }
 
+    public boolean matchSection(Station source, Station target) {
+        return getSections().stream()
+                .anyMatch(section -> section.equalUpStation(source) && section.equalDownStation(target));
+    }
+
     public Long getId() {
         return id;
     }
@@ -80,5 +89,9 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public Money getMoney() {
+        return money;
     }
 }

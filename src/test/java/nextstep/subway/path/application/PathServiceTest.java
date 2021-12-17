@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -51,10 +52,10 @@ class PathServiceTest {
         남부터미널 = new Station(3L, "남부터미널");
         양재 = new Station(4L, "양재");
 
-        Line 이호선 = new Line("이호선", "bg-green-600", 교대, 강남, 2);
-        Line 삼호선 = new Line("삼호선", "bg-orange-600", 교대, 남부터미널, 1);
+        Line 이호선 = new Line("이호선", "bg-green-600", 0, 교대, 강남, 2);
+        Line 삼호선 = new Line("삼호선", "bg-orange-600", 0, 교대, 남부터미널, 1);
         삼호선.addSection(new Section(남부터미널, 양재, 2));
-        Line 신분당선 = new Line("신분당선", "bg-red-600", 강남, 양재, 4);
+        Line 신분당선 = new Line("신분당선", "bg-red-600", 0, 강남, 양재, 4);
 
         when(lineRepository.findAll()).thenReturn(Arrays.asList(이호선, 삼호선, 신분당선));
     }
@@ -67,7 +68,7 @@ class PathServiceTest {
         when(stationService.findById(양재.getId())).thenReturn(양재);
 
         // when
-        PathResponse path = pathService.findPath(교대.getId(), 양재.getId());
+        PathResponse path = pathService.findPath(new LoginMember(), 교대.getId(), 양재.getId());
 
         // then
         assertThat(path.getDistance()).isEqualTo(3);

@@ -52,7 +52,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         역삼역 = 지하철역_생성_요청("역삼역").as(StationResponse.class);
         선릉역 = 지하철역_생성_요청("선릉역").as(StationResponse.class);
 
-        LineRequest lineRequest = new LineRequest("이호선", "bg-green-600", 서초역.getId(), 교대역.getId(), 3);
+        LineRequest lineRequest = new LineRequest("이호선", "bg-green-600", 0, 서초역.getId(), 교대역.getId(), 3);
         이호선 = 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
         지하철_구간_등록됨(지하철_구간_등록_요청(이호선, 교대역, 강남역, 3));
         지하철_구간_등록됨(지하철_구간_등록_요청(이호선, 강남역, 역삼역, 3));

@@ -41,7 +41,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         정자역 = 지하철역_생성_요청("정자역").as(StationResponse.class);
         광교역 = 지하철역_생성_요청("광교역").as(StationResponse.class);
 
-        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 양재역.getId(), 정자역.getId(), 10);
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 0, 양재역.getId(), 정자역.getId(), 10);
         신분당선 = 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
     }
 
@@ -63,11 +63,15 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 구간 예외 발생")
     @Test
     void exceptionScenario() {
+        // 노선에 이미 등록되어 있는 역을 등록 요청
         지하철_노선에_지하철역_등록_실패됨(지하철_구간_등록_요청(신분당선, 양재역, 정자역, 3));
+
+        // 노선과 연결되지 않는 역을 등록 요청
         지하철_노선에_지하철역_등록_실패됨(지하철_구간_등록_요청(신분당선, 강남역, 판교역, 3));
 
         지하철_노선에_지하철역_정렬됨(지하철_노선_조회_요청(신분당선), Arrays.asList(양재역, 정자역));
 
+        // 등록된 지하철역이 두개일 때 지하철 구간 삭제 요청
         지하철_노선에_지하철역_제외_실패됨(지하철_노선에_지하철역_제외_요청(신분당선, 정자역));
 
         지하철_노선에_지하철역_정렬됨(지하철_노선_조회_요청(신분당선), Arrays.asList(양재역, 정자역));
