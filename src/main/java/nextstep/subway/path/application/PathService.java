@@ -24,6 +24,7 @@ public class PathService {
         this.stationService = stationService;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findShortestPath(Long sourceId, Long targetId) {
         List<Line> lines = lineService.findAll();
         Station source = stationService.findStationById(sourceId);
