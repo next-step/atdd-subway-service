@@ -16,20 +16,11 @@ public class FareCalculator {
     private static final int OVER_PER_DISTANCE_KM = 5;
     private static final int MAX_OVER_PER_DISTANCE_KM = 8;
     
-    private static final int AGE_DISCOUNT_FARE = 350;
-    private static final double CHILD_DISCOUNT_PERCENT = 0.5;
-    private static final double YOUTH_DISCOUNT_PERCENT = 0.8;
-    
-    private static final int CHILD_MIN_AGE = 6;
-    private static final int CHILD_MAX_AGE = 13;
-    private static final int YOUTH_MIN_AGE = CHILD_MAX_AGE;
-    private static final int YOUTH_MAX_AGE = 19;
-    
     private FareCalculator() {
     }
     
     public static int calculator(Lines lines, List<Station> stations, int distance, int age) {
-        return discountAgeFare(calculator(lines, stations, distance), age);
+        return AgeDiscountPolicy.discount(calculator(lines, stations, distance), age);
     }
     
     public static int calculator(Lines lines, List<Station> stations, int distance) {
@@ -51,15 +42,5 @@ public class FareCalculator {
     
     private static int calculateOverFare(int distance, int overDistance) {
         return (int) ((Math.ceil((distance - 1) / overDistance) + 1) * EXTRA_FARE);
-    }
-    
-    private static int discountAgeFare(int fare, int age) {
-        if (age >= CHILD_MIN_AGE && age < CHILD_MAX_AGE) {
-            return (int) ((fare - AGE_DISCOUNT_FARE) * CHILD_DISCOUNT_PERCENT);
-        }
-        if (age >= YOUTH_MIN_AGE && age < YOUTH_MAX_AGE) {
-            return (int) ((fare - AGE_DISCOUNT_FARE) * YOUTH_DISCOUNT_PERCENT);
-        }
-        return fare;
     }
 }
