@@ -2,11 +2,13 @@ package nextstep.subway.path.domain;
 
 public class FareCalculator {
     private static final int DEFAULT_FARE = 1_250;
+    private static final int EXTRA_FARE = 100;
+    
     private static final int FARE_RANGE_MIN = 10;
     private static final int FARE_RANGE_MAX = 50;
+    
     private static final int OVER_PER_DISTANCE_KM = 5;
     private static final int MAX_OVER_PER_DISTANCE_KM = 8;
-    private static final int EXTRA_FARE = 100;
     
     private FareCalculator() {
     }
