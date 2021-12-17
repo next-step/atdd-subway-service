@@ -52,8 +52,8 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public int getExtraFare() {
-        return extraFare.getValue();
+    public Fare getExtraFare() {
+        return extraFare;
     }
 
     public Sections getSections() {

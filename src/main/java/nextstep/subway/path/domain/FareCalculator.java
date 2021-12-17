@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.auth.domain.Age;
+import nextstep.subway.line.domain.Fare;
 
 public class FareCalculator {
     private final Path path;
@@ -11,17 +12,8 @@ public class FareCalculator {
     }
 
     public int calculate() {
-        int fare = DistanceFarePolicy.calculate(path.getDistance(), path.getExtraFare());
-        return discountApply(fare);
-    }
-
-    private int discountApply(int fare) {
-        if(age.isChild()) {
-            return new ChildDiscountPolicy().apply(fare);
-        }
-        if(age.isTeenager()) {
-            return new TeenagerDiscountPolicy().apply(fare);
-        }
-        return fare;
+        Fare fare = DistanceFarePolicy.calculate(path.getDistance(), path.getExtraFare());
+        fare = AgeFarePolicy.discount(age.getValue(), fare);
+        return fare.getValue();
     }
 }

@@ -7,6 +7,7 @@ import nextstep.subway.line.exception.StationException;
 import nextstep.subway.path.domain.DijkstraPathFinder;
 import nextstep.subway.path.domain.FareCalculator;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -33,8 +34,8 @@ public class PathService {
         Station startStation = findStationById(source);
         Station endStation = findStationById(target);
         List<Line> lines = findLines();
-        DijkstraPathFinder dijkstraPathFinder = DijkstraPathFinder.ofList(lines);
-        Path shortestPath = dijkstraPathFinder.findPath(startStation, endStation);
+        PathFinder pathFinder = DijkstraPathFinder.ofList(lines);
+        Path shortestPath = pathFinder.findPath(startStation, endStation);
         int fare = new FareCalculator(shortestPath, loginMember.getAge()).calculate();
         return PathResponse.from(shortestPath, fare);
     }

@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
@@ -32,10 +33,10 @@ public class Path {
         return sectionEdges;
     }
 
-    public Integer getExtraFare() {
+    public Fare getExtraFare() {
         return sectionEdges.stream()
                 .map(section -> section.getLine().getExtraFare())
-                .max(Integer::compareTo)
-                .orElse(요금_최소값);
+                .max(Fare::compareTo)
+                .orElse(Fare.of(요금_최소값));
     }
 }

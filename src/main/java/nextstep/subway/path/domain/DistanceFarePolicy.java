@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.line.exception.FareException;
+import nextstep.subway.line.domain.Fare;
 
 import java.util.Arrays;
 
@@ -22,13 +22,13 @@ public enum DistanceFarePolicy {
         this.distance = distance;
     }
 
-    public static int calculate(int distance, int extraFare) {
+    public static Fare calculate(int distance, Fare extraFare) {
         DistanceFarePolicy farePolicy = findPolicy(distance);
-
+        Fare fare = Fare.of(BASIC_FARE).plus(extraFare);
         if (farePolicy.equals(DistanceFarePolicy.BASIC)) {
-            return BASIC_FARE + extraFare;
+            return fare;
         }
-        return BASIC_FARE + farePolicy.calculateOverFare(distance) + extraFare;
+        return fare.plus(Fare.of(farePolicy.calculateOverFare(distance)));
     }
 
     private int calculateOverFare(int distance) {
@@ -37,8 +37,8 @@ public enum DistanceFarePolicy {
 
     private static DistanceFarePolicy findPolicy(int distance) {
         return Arrays.stream(values())
-                .filter(it -> it.min < distance && it.max >= distance)
+                .filter(distanceFarePolicy -> distanceFarePolicy.min < distance && distanceFarePolicy.max >= distance)
                 .findFirst()
-                .orElseThrow(() -> new FareException(POLICY_NOT_FOUND));
+                .orElse(BASIC);
     }
 }

@@ -4,6 +4,7 @@ import nextstep.subway.line.exception.FareException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.Objects;
 
 @Embeddable
 public class Fare {
@@ -35,7 +36,32 @@ public class Fare {
         return new Fare(value + fare.getValue());
     }
 
+    public Fare minus(Fare fare) {
+        return new Fare(value - fare.getValue());
+    }
+
+    public Fare multiply(double rate) {
+        return Fare.of((int) (this.value * rate));
+    }
+
     public int getValue() {
         return value;
+    }
+
+    public static int compareTo(Fare source, Fare target) {
+        return (source.getValue() < target.getValue()) ? -1 : ((source == target) ? 0 : 1);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Fare fare = (Fare) o;
+        return value == fare.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }
