@@ -24,7 +24,7 @@ public abstract class AcceptanceTest {
         databaseCleanup.execute();
     }
 
-    public ExtractableResponse<Response> get(String uri) {
+    public static ExtractableResponse<Response> get(String uri) {
         return RestAssured.given()
                 .log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -35,7 +35,7 @@ public abstract class AcceptanceTest {
                 .extract();
     }
 
-    public ExtractableResponse<Response> post(String uri, Object params) {
+    public static ExtractableResponse<Response> post(String uri, Object params) {
         return RestAssured.given()
                 .log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -47,7 +47,7 @@ public abstract class AcceptanceTest {
                 .extract();
     }
 
-    public ExtractableResponse<Response> put(String uri, Object params) {
+    public static ExtractableResponse<Response> put(String uri, Object params) {
         return RestAssured.given()
                 .log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -59,7 +59,7 @@ public abstract class AcceptanceTest {
                 .extract();
     }
 
-    public ExtractableResponse<Response> delete(String uri) {
+    public static ExtractableResponse<Response> delete(String uri) {
         return RestAssured.given()
                 .log().all()
                 .when()
