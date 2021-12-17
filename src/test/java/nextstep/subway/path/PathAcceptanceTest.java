@@ -18,6 +18,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.pathResponse.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 경로 조회")
