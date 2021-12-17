@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,10 @@ public class Sections {
     private final List<Section> sections = new ArrayList<>();
 
     protected Sections() {
+    }
+
+    public Sections(final Section... sections) {
+        this.sections.addAll(Arrays.asList(sections));
     }
 
     public List<Section> getSections() {
@@ -39,7 +44,7 @@ public class Sections {
     }
 
     private void adjustDistance(final Section addSection) {
-        this.sections.forEach(section -> section.substractDistance(addSection));
+        this.sections.forEach(section -> section.subtractDistance(addSection));
     }
 
     public void deleteStation(final Station station) {
