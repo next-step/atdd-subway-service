@@ -52,7 +52,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 토큰으로_회원_정보_조회_응답 = MemberAcceptanceTest.토큰으로_회원_정보_조회(유효하지않은_회원_토큰);
 
         // then
-        회원_정보_조회_실패됨(토큰으로_회원_정보_조회_응답, "유효하지않은 토큰입니다.");
+        회원_정보_조회_실패됨(토큰으로_회원_정보_조회_응답, "비로그인 상태입니다.");
     }
 
     private void 회원_정보_조회_실패됨(ExtractableResponse<Response> response, String errorMessage) {

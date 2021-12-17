@@ -74,6 +74,15 @@ public class AcceptanceTest {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 조회_요청(String path, HashMap<String, ?> parametersMap, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .queryParams(parametersMap)
+                .when().get(path)
+                .then().log().all().extract();
+    }
+
     public static <T> ExtractableResponse<Response> 수정_요청(String path, T requestBody) {
         return RestAssured
                 .given().log().all()

@@ -29,11 +29,11 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException("유효하지않은 토큰입니다.");
+            return LoginMember.fromGuest();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+        return LoginMember.of(member.getId(), member.getEmail(), member.getAge());
     }
 }

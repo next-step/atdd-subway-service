@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Section;
@@ -13,7 +14,7 @@ public class Path {
     private static final int BASE_FARE = 1250;
     private final List<Station> stations;
     private final Distance distance;
-    private final Fare fare;
+    private Fare fare;
 
     private Path(List<Station> stations, Distance distance, Fare fare) {
         this.stations = stations;
@@ -43,6 +44,14 @@ public class Path {
 
     public Fare getFare() {
         return fare;
+    }
+
+    public void calculateAgeDiscount(LoginMember loginMember) {
+        if (loginMember.isGuest()) {
+            return;
+        }
+
+        this.fare = AgeDiscountFarePolicy.valueOf(loginMember.getAge(), fare);
     }
 
     private static Fare findMaxExtraFare(List<Section> shortestSections) {

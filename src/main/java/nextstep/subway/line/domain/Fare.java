@@ -4,6 +4,7 @@ import nextstep.subway.exception.BadRequestException;
 
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 @Embeddable
@@ -26,6 +27,10 @@ public class Fare {
         return new Fare(BigDecimal.valueOf(amount));
     }
 
+    public static Fare from(double amount) {
+        return new Fare(BigDecimal.valueOf(amount));
+    }
+
     public static Fare from(BigDecimal amount) {
         return new Fare(amount);
     }
@@ -36,6 +41,14 @@ public class Fare {
 
     public Fare minus(Fare amount) {
         return new Fare(this.amount.subtract(amount.amount));
+    }
+
+    public Fare multiply(Fare amount) {
+        return new Fare(
+                this.amount
+                        .multiply(amount.amount)
+                        .setScale(0, RoundingMode.FLOOR)
+        );
     }
 
     public BigDecimal value() {
