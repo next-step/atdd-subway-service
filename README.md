@@ -66,5 +66,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [x] Sections.getOrderedStations
 
 ## 2단계 구현 목록
-- [ ] 최단 경로 조회 인수 테스트 만들기
-- [ ] 최단 경로 조회 기능 구현하기
+- [x] 최단 경로 조회 인수 테스트 만들기
+- 최단 경로 조회 기능 구현하기
+  - 유닛 테스트 작성
+    - [ ] 성공
+    - [ ] 출발역과 도착역이 같으면 예외
+    - [ ] 출발역과 도착역이 연결되어 있지 않은 경우 예외
+    - [ ] 존재하지 않는 출발역이나 도착역을 조회하는 경우 예외
