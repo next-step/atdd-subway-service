@@ -17,6 +17,9 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
 public class PathFinder {
+    static final String EMPTY_LINES_ERR_MSG = "노선이 없을 때 경로를 조회할 수 없습니다.";
+    static final String SAME_SOURCE_TARGET_ERR_MSG = "출발역과 도착역은 같을 수 없습니다.";
+    static final String NOT_CONNECTED_STATIONS_ERR_MSG = "출발역과 도착역이 연결되어 있지 않습니다.";
     private static WeightedMultigraph<Station, Section> graph;
 
     private PathFinder() {
@@ -38,10 +41,10 @@ public class PathFinder {
 
     private static void validate(final Collection<Line> lines, final Station source, final Station target) {
         if (lines.isEmpty()) {
-            throw new BadRequestException("노선이 없을 때 경로를 조회할 수 없습니다.");
+            throw new BadRequestException(EMPTY_LINES_ERR_MSG);
         }
         if (source.equals(target)) {
-            throw new BadRequestException("출발역과 도착역은 같을 수 없습니다.");
+            throw new BadRequestException(SAME_SOURCE_TARGET_ERR_MSG);
         }
     }
 
@@ -57,7 +60,7 @@ public class PathFinder {
         final GraphPath<Station, Section> graphPath =
             new DijkstraShortestPath<>(graph).getPath(source, target);
         if (graphPath == null) {
-            throw new BadRequestException("출발역과 도착역이 연결되어 있지 않습니다.");
+            throw new BadRequestException(NOT_CONNECTED_STATIONS_ERR_MSG);
         }
         return graphPath;
     }

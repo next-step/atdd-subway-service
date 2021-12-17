@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import static nextstep.subway.path.domain.PathFinder.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ class PathFinderTest {
         // when, then
         assertThatThrownBy(() -> PathFinder.computePath(lines, 남부터미널역, 남부터미널역, 20))
             .isInstanceOf(BadRequestException.class)
-            .hasMessageContaining("출발역과 도착역은 같을 수 없습니다.");
+            .hasMessageContaining(SAME_SOURCE_TARGET_ERR_MSG);
     }
 
     @DisplayName("출발역과 도착역이 연결되어있지 않은 경우 예외 발생")
@@ -84,7 +85,7 @@ class PathFinderTest {
         // when, then
         assertThatThrownBy(() -> PathFinder.computePath(newLines, 송내역, 강남역, 20))
             .isInstanceOf(BadRequestException.class)
-            .hasMessageContaining("출발역과 도착역이 연결되어 있지 않습니다.");
+            .hasMessageContaining(NOT_CONNECTED_STATIONS_ERR_MSG);
     }
 
     @DisplayName("노선이 하나도 없을 때 경로를 검색할 경우 예외 발생")
@@ -98,6 +99,6 @@ class PathFinderTest {
         // when, then
         assertThatThrownBy(() -> PathFinder.computePath(newLines, 송내역, 강남역, 20))
             .isInstanceOf(BadRequestException.class)
-            .hasMessageContaining("노선이 없을 때 경로를 조회할 수 없습니다.");
+            .hasMessageContaining(EMPTY_LINES_ERR_MSG);
     }
 }

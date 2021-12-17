@@ -18,6 +18,9 @@ import nextstep.subway.station.domain.Station;
 @Service
 @Transactional
 public class FavoriteService {
+    private static final String NOT_OWNED_FAVORITE_ERR_MSG = "즐겨찾기에 대한 권한이 없습니다.";
+    private static final String NOT_FOUND_FAVORITE_ERR_MSG = "즐겨찾기를 찾을 수 없습니다.";
+
     private FavoriteRepository favoriteRepository;
     private StationService stationService;
 
@@ -45,9 +48,9 @@ public class FavoriteService {
 
     public void deleteFavoriteById(final Long memberId, Long id) {
         final Favorite favorite = favoriteRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("즐겨찾기를 찾을 수 없습니다."));
+            .orElseThrow(() -> new NotFoundException(NOT_FOUND_FAVORITE_ERR_MSG));
         if (!favorite.isOwnedBy(memberId)) {
-            throw new BadRequestException("즐겨찾기에 대한 권한이 없습니다.");
+            throw new BadRequestException(NOT_OWNED_FAVORITE_ERR_MSG);
         }
 
         favoriteRepository.deleteById(id);

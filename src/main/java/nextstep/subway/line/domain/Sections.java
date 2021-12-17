@@ -17,6 +17,12 @@ import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
+    static final String NOT_CONNECTED_ERR_MSG = "추가되는 구간은 기존의 구간과 연결 가능하여야 합니다.";
+    static final String ALREADY_EXIST_ERR_MSG = "상행역과 하행역이 이미 노선에 모두 등록되어 있습니다.";
+    static final String LAST_SECTION_CANNOT_BE_REMOVED_ERR_MSG = "노선의 마지막 구간은 삭제할 수 없습니다.";
+    static final String NOT_FOUND_ERR_MSG = "노선에 등록되어 있지 않은 역은 삭제할 수 없습니다.";
+    private static final String NOT_FOUND_UP_EDGE_SECTION_ERR_MSG = "지하철 노선에 상행 종점 구간이 존재하지 않습니다.";
+
     private static final int MIN_SIZE = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
@@ -57,21 +63,21 @@ public class Sections {
             .collect(Collectors.toSet());
 
         if (matchedStations.isEmpty()) {
-            throw new BadRequestException("추가되는 구간은 기존의 구간과 연결 가능하여야 합니다.");
+            throw new BadRequestException(NOT_CONNECTED_ERR_MSG);
         }
         if (matchedStations.containsAll(sectionStations)) {
-            throw new BadRequestException("상행역과 하행역이 이미 노선에 모두 등록되어 있습니다.");
+            throw new BadRequestException(ALREADY_EXIST_ERR_MSG);
         }
     }
 
     private void validateDeletable(final Station station) {
         if (sections.size() == MIN_SIZE) {
-            throw new BadRequestException("노선의 마지막 구간은 삭제할 수 없습니다.");
+            throw new BadRequestException(LAST_SECTION_CANNOT_BE_REMOVED_ERR_MSG);
         }
 
         final Set<Station> allStations = extractAllStations();
         if (!allStations.contains(station)) {
-            throw new BadRequestException("노선에 등록되어 있지 않은 역은 삭제할 수 없습니다.");
+            throw new BadRequestException(NOT_FOUND_ERR_MSG);
         }
     }
 
@@ -96,7 +102,7 @@ public class Sections {
         return sections.stream()
             .filter(section -> !downStations.contains(section.getUpStation()))
             .findAny()
-            .orElseThrow(() -> new IllegalStateException("지하철 노선에 상행 종점 구간이 존재하지 않습니다."));
+            .orElseThrow(() -> new IllegalStateException(NOT_FOUND_UP_EDGE_SECTION_ERR_MSG));
     }
 
     private List<Section> computeNextSections(final Section previousSection) {
