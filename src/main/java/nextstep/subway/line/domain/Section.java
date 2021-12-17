@@ -78,7 +78,7 @@ public class Section {
                 && (station.equals(section.getUpStation()) || station.equals(section.getDownStation()));
     }
 
-    public void substractDistance(final Section section) {
+    public void subtractDistance(final Section section) {
         if (this.upStation.equals(section.getUpStation())) {
             this.upStation = section.getDownStation();
             this.distance = this.distance.subtract(section.getDistance());
