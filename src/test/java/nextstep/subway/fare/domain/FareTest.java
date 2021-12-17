@@ -24,8 +24,8 @@ class FareTest {
 	@DisplayName("추가운임(10km 초과 ~ 50km 이하)")
 	@Test
 	void calculate_extra() {
-		assertThat(Fare.calculate(10)).isEqualTo(1250);
-		assertThat(Fare.calculate(12)).isEqualTo(1250 + 100);
+		assertThat(Fare.calculate(15)).isEqualTo(1250 + 100);
+		assertThat(Fare.calculate(18)).isEqualTo(1250 + 200);
 		assertThat(Fare.calculate(50)).isEqualTo(1250 + 800);
 	}
 
