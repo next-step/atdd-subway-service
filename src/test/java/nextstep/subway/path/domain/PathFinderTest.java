@@ -23,7 +23,8 @@ class PathFinderTest {
     @Test
     void findPath() {
         // when
-        PathResponse pathResponse = PathFinder.findPath(Arrays.asList(신분당선, 이호선, 삼호선), 양재역, 강남역);
+        PathFinder pathFinder = new PathFinder(new DijkstraShortestPathCalculator());
+        PathResponse pathResponse = pathFinder.findPath(Arrays.asList(신분당선, 이호선, 삼호선), 양재역, 강남역);
 
         // Then
         Assertions.assertAll(
