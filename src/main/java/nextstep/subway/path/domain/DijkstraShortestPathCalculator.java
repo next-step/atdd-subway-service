@@ -1,7 +1,9 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -20,10 +22,15 @@ public class DijkstraShortestPathCalculator implements ShortestPathCalculator {
     }
 
     @Override
-    public Optional<GraphPath> calculatePath(List<Section> sections, Station sourceStation, Station targetStation) {
+    public PathResponse calculatePath(List<Section> sections, Station sourceStation, Station targetStation) {
         addVertexAndEdge(sections, graph);
         createDijkstraShortestPath();
-        return Optional.ofNullable(dijkstraShortestPath.getPath(sourceStation, targetStation));
+
+        Optional<GraphPath> optPath = Optional.ofNullable(dijkstraShortestPath.getPath(sourceStation, targetStation));
+
+        GraphPath path = optPath.orElseThrow(() -> new IllegalArgumentException("출발역과 도착역이 연결이 되어 있지 않습니다."));
+
+        return new PathResponse(getStationRespone(path.getVertexList()), (int)Math.round(path.getWeight()));
     }
 
     private void createDijkstraShortestPath() {
@@ -45,6 +52,12 @@ public class DijkstraShortestPathCalculator implements ShortestPathCalculator {
         return sections.stream()
                 .flatMap(Section::stations)
                 .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private List<StationResponse> getStationRespone(List<Station> stations) {
+        return stations.stream()
+                .map(station -> StationResponse.of(station))
                 .collect(Collectors.toList());
     }
 }
