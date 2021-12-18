@@ -7,6 +7,9 @@ import java.util.Arrays;
 
 @Entity
 public class Section {
+
+    private static final int MATCHED_STATION_COUNT = 1;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -70,7 +73,7 @@ public class Section {
                 .filter(station -> this.hasMatchedStation(station, section))
                 .count();
 
-        return matchCount == 1;
+        return matchCount == MATCHED_STATION_COUNT;
     }
 
     private boolean hasMatchedStation(final Station station, final Section section) {

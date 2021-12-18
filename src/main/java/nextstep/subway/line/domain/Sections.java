@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 @Embeddable
 public class Sections {
 
+    private static final int REQUIRE_CONNECTED_STATION_COUNT = 2;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
@@ -61,7 +63,7 @@ public class Sections {
                 .filter(section -> section.hasStation(deleteStation))
                 .collect(Collectors.toList());
 
-        if (connectedSections.size() != 2) {
+        if (connectedSections.size() != REQUIRE_CONNECTED_STATION_COUNT) {
             throw new IllegalArgumentException("삭제할 수 없는 역입니다.");
         }
 
