@@ -56,11 +56,11 @@ public class LineService {
 
     public void addLineStation(final Long lineId, final SectionRequest request) {
         Line line = findLineById(lineId);
-        Section section = this.getNewSection(line, request.getUpStationId(), request.getDownStationId(), new Distance(request.getDistance()));
+        Section section = this.createNewSection(line, request.getUpStationId(), request.getDownStationId(), new Distance(request.getDistance()));
         line.addSection(section);
     }
 
-    private Section getNewSection(final Line line,final Long upStationId, final Long downStationId, final Distance distance) {
+    private Section createNewSection(final Line line, final Long upStationId, final Long downStationId, final Distance distance) {
         Station upStation = stationService.findById(upStationId);
         Station downStation = stationService.findById(downStationId);
         return new Section(line, upStation, downStation, distance);
