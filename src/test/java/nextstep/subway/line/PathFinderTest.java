@@ -28,7 +28,7 @@ public class PathFinderTest {
 		Line 구분당선 = new Line(LineTest.구분당선, LineTest.BG_BLUE_600);
 		Section 삼성_선릉_구간 = new Section(신분당선, StationTest.삼성역, StationTest.선릉역, 5);
 		Section 선릉_역삼_구간 = new Section(신분당선, StationTest.선릉역, StationTest.역삼역, 7);
-		Section 역삼_강남_구간 = new Section(구분당선, StationTest.역삼역, StationTest.강남역, 5);
+		Section 역삼_강남_구간 = new Section(신분당선, StationTest.역삼역, StationTest.강남역, 5);
 		Section 삼성_강남_구간 = new Section(구분당선, StationTest.삼성역, StationTest.강남역, 4);
 		신분당선.addSection(삼성_선릉_구간);
 		신분당선.addSection(선릉_역삼_구간);
