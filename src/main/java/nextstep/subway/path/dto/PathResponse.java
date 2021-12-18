@@ -27,7 +27,11 @@ public class PathResponse {
             .stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
-        return new PathResponse(stationResponses, path.getDistance(), BigDecimal.ZERO);
+        return new PathResponse(
+            stationResponses,
+            path.getDistance(),
+            path.calculateFare().getFare()
+        );
     }
 
     public List<StationResponse> getStations() {

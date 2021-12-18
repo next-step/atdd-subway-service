@@ -14,6 +14,11 @@ public class Path {
         this.distance = distance;
     }
 
+    public Fare calculateFare() {
+        final Fare fare = Fare.of();
+        return fare.calculateOverFare(new FareDistance(distance));
+    }
+
     public List<Station> getStations() {
         return stations;
     }
