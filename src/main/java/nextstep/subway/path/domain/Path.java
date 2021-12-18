@@ -18,14 +18,14 @@ public class Path {
         this.distance = distance;
     }
 
-    public Fare calculateFare() {
+    public Fare calculateFare(final Integer age) {
         final Fare baseFare = Fare.of();
         final Fare overFareByDistance = baseFare.calculateOverFare(new FareDistance(distance));
         final Fare overFareByLine = lines.stream()
             .map(Line::getSurcharge)
             .max(Fare::compareTo)
             .orElse(baseFare);
-        final Fare total = overFareByDistance.add(overFareByLine);
+        final Fare total = overFareByDistance.add(overFareByLine).applyDiscount(age);
         return new Fare(BigDecimal.valueOf(total.getFare().longValue()));
     }
 
@@ -37,3 +37,4 @@ public class Path {
         return distance;
     }
 }
+

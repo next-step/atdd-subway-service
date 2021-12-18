@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -57,8 +58,10 @@ public class PathServiceTest {
         when(stationService.getStationById(pathRequest.getSource())).thenReturn(강남역);
         when(stationService.getStationById(pathRequest.getTarget())).thenReturn(양재역);
 
+        final LoginMember member = new LoginMember(1L, "email@email.com", 7);
+
         // when
-        final PathResponse actual = pathService.findPath(null, pathRequest);
+        final PathResponse actual = pathService.findPath(member, pathRequest);
 
         // then
         final List<String> actualStationNames = actual.getStations()

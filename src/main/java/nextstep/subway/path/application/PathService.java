@@ -4,6 +4,7 @@ import java.util.List;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
@@ -30,6 +31,7 @@ public class PathService {
             stationService.getStationById(pathRequest.getSource()),
             stationService.getStationById(pathRequest.getTarget())
         );
-        return PathResponse.of(path);
+        final Fare f = path.calculateFare(loginMember.getAge());
+        return PathResponse.of(path, f.getFare());
     }
 }

@@ -9,8 +9,11 @@ import javax.persistence.Embeddable;
 public class Fare implements Comparable<Fare> {
 
     private static final BigDecimal BASE_RATE = BigDecimal.valueOf(1_250L);
-
     private static final BigDecimal EXTRA_RATE = BigDecimal.valueOf(100L);
+    private static final BigDecimal BASE_DISCOUNT_AMOUNT = BigDecimal.valueOf(350L);
+    private static final BigDecimal BASE_DISCOUNT_RATE = BigDecimal.valueOf(1.0);
+    private static final BigDecimal TEENAGER_DISCOUNT_RATE = BigDecimal.valueOf(0.2);
+    private static final BigDecimal CHILDREN_DISCOUNT_RATE = BigDecimal.valueOf(0.5);
 
     @Column(name = "fare")
     private final BigDecimal fare;
@@ -31,6 +34,19 @@ public class Fare implements Comparable<Fare> {
         final BigDecimal extraUnit = BigDecimal.valueOf(distance.calculateDistanceUnit());
         final BigDecimal overFare = EXTRA_RATE.multiply(extraUnit);
         return new Fare(fare.add(overFare));
+    }
+
+    public Fare applyDiscount(final Integer age) {
+        BigDecimal discounted = fare;
+        if (age >= 13 && age < 19) {
+            final BigDecimal rate = BASE_DISCOUNT_RATE.subtract(TEENAGER_DISCOUNT_RATE);
+            discounted = fare.subtract(BASE_DISCOUNT_AMOUNT).multiply(rate);
+        }
+        if (age >= 6 && age < 13) {
+            final BigDecimal rate = BASE_DISCOUNT_RATE.subtract(CHILDREN_DISCOUNT_RATE);
+            discounted = fare.subtract(BASE_DISCOUNT_AMOUNT).multiply(rate);
+        }
+        return new Fare(BigDecimal.valueOf(discounted.longValue()));
     }
 
     public Fare add(final Fare o) {

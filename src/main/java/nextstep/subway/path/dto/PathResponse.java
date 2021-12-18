@@ -22,16 +22,12 @@ public class PathResponse {
         this.fare = fare;
     }
 
-    public static PathResponse of(final Path path) {
+    public static PathResponse of(final Path path, final BigDecimal fare) {
         final List<StationResponse> stationResponses = path.getStations()
             .stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
-        return new PathResponse(
-            stationResponses,
-            path.getDistance(),
-            path.calculateFare().getFare()
-        );
+        return new PathResponse(stationResponses, path.getDistance(), fare);
     }
 
     public List<StationResponse> getStations() {
