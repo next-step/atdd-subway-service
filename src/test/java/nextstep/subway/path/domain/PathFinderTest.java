@@ -82,7 +82,7 @@ public class PathFinderTest {
             .isThrownBy(() -> {
                 // when
                 Path path = pathFinder.findShortestPath(강남역, 강남역);
-            }).withMessageMatching("출발역과 도착역이 같습니다.");
+            }).withMessageMatching(PathFinder.ERROR_DUPLICATE_STATION);
     }
 
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
@@ -92,7 +92,7 @@ public class PathFinderTest {
             .isThrownBy(() -> {
                 // when
                 Path path = pathFinder.findShortestPath(강남역, 화곡역);
-            }).withMessageMatching("경로를 찾을 수 없습니다.");
+            }).withMessageMatching(PathFinder.ERROR_PATH_NOT_FOUND);
     }
 
     @DisplayName("존재하지 않은 출발역을 조회 할 경우")
@@ -102,7 +102,7 @@ public class PathFinderTest {
             .isThrownBy(() -> {
                 // when
                 Path path = pathFinder.findShortestPath(new Station(-1L, "없음"), 강남역);
-            }).withMessageMatching("출발역이 찾을 수 없습니다.");
+            }).withMessageMatching(PathFinder.ERROR_START_STATION_NOT_FOUND);
     }
 
     @DisplayName("존재하지 않은 도착역을 조회 할 경우")
@@ -112,7 +112,7 @@ public class PathFinderTest {
             .isThrownBy(() -> {
                 // when
                 Path path = pathFinder.findShortestPath(강남역, new Station(-1L, "없음"));
-            }).withMessageMatching("도착역을 찾을 수 없습니다.");
+            }).withMessageMatching(PathFinder.ERROR_END_STATION_NOT_FOUND);
     }
 
 }
