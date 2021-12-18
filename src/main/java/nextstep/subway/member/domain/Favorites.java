@@ -15,6 +15,10 @@ public class Favorites {
     protected Favorites() {
     }
 
+    public List<Favorite> getValue() {
+        return favorites;
+    }
+
     public void add(Favorite favorite) {
         favorites.add(favorite);
     }
