@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.common.exception.NoResultException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -47,7 +48,8 @@ public class LineService {
 
     @Transactional
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = lineRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("찾을 수 없는 노선입니다."));
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -77,7 +79,7 @@ public class LineService {
 
     private Line findLineById(final Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NoResultException("찾을 수 없는 노선입니다."));
     }
 
 }

@@ -1,5 +1,6 @@
 package nextstep.subway.member.application;
 
+import nextstep.subway.common.exception.NoResultException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -21,12 +22,14 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("찾을 수 없는 멤버입니다."));
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("찾을 수 없는 멤버입니다."));
         member.update(param.toMember());
     }
 

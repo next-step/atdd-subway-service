@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.common.exception.NoResultException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -75,7 +76,7 @@ public class Sections {
                 .stream()
                 .filter(section -> section.hasUpStation(station))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NoResultException("찾을 수 없는 구간입니다."));
     }
 
     private Section peekSectionWithDownStation(final List<Section> connectedSections, final Station station) {
@@ -83,7 +84,7 @@ public class Sections {
                 .stream()
                 .filter(section -> section.hasDownStation(station))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NoResultException("찾을 수 없는 구간입니다."));
     }
 
 }
