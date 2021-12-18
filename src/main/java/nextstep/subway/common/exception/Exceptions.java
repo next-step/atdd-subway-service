@@ -7,7 +7,8 @@ public enum Exceptions {
 	SECTION_MUST_BE_EXIST(new InternalServerException("최소한 1개의 구간이 등록되어 있어야 합니다.")),
 	LINE_NOT_EXIST(new ResourceNotFoundException("존재하지 않는 노선입니다.")),
 	LINE_ALREADY_EXIST(new ResourceAlreadyExistException("이미 존재하는 노선입니다.")),
-	STATION_NOT_EXIST(new ResourceNotFoundException("존재하지 않는 지하철 역입니다."))
+	STATION_NOT_EXIST(new ResourceNotFoundException("존재하지 않는 지하철 역입니다.")),
+	SOURCE_AND_TARGET_EQUAL(new BadParameterException("출발지와 도착지가 같아 경로를 찾을 수 없습니다."))
 	;
 
 	private final BaseException exception;

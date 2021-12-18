@@ -9,11 +9,14 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
+import nextstep.subway.common.exception.Exceptions;
 import nextstep.subway.station.domain.Station;
 
 @Component
 public class PathFinder {
 	public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target, List<Line> lines) {
+		validate(source, target);
+
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 		List<Section> sections = getSectionsDistinctFromLines(lines);
 		
@@ -26,6 +29,12 @@ public class PathFinder {
 
 		DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 		return dijkstraShortestPath.getPath(source, target);
+	}
+
+	private void validate(Station source, Station target) {
+		if (source.equals(target)) {
+			throw Exceptions.SOURCE_AND_TARGET_EQUAL.getException();
+		}
 	}
 
 	private List<Section> getSectionsDistinctFromLines(List<Line> lines) {
