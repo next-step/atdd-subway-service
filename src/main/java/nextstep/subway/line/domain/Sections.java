@@ -65,7 +65,7 @@ public class Sections {
 	}
 
 	public List<Station> getOrderedStations() {
-		Station downStation = findUpStation();
+		Station downStation = findUpStation().orElse(null);
 		List<Station> stations = new ArrayList<>();
 
 		while (downStation != null) {
@@ -76,9 +76,9 @@ public class Sections {
 		return stations;
 	}
 
-	private Station findUpStation() {
-		if (sections.size() == 0) {
-			return null;
+	private Optional<Station> findUpStation() {
+		if (sections.isEmpty()) {
+			return Optional.empty();
 		}
 
 		Station searchStation = sections.get(0).getUpStation();
@@ -89,7 +89,7 @@ public class Sections {
 			Optional<Section> prevLineSection = findPrevSection(searchStation);
 			searchStation = prevLineSection.map(Section::getUpStation).orElse(null);
 		}
-		return upStation;
+		return Optional.of(upStation);
 	}
 
 	private Optional<Section> findNextSection(Station station) {
