@@ -11,6 +11,7 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,7 +66,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_응답);
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(사용자, 1L); // FIXME
+        Long 즐겨찾기_ID = 신규_즐겨찾기_ID(즐겨찾기_생성_응답);
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(사용자, 즐겨찾기_ID);
         // then
         즐겨찾기_삭제됨(즐겨찾기_삭제_응답);
     }
@@ -101,7 +103,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        Assertions.assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(response.header("Location")).isNotBlank()
+        );
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
@@ -130,5 +135,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private Long 신규_즐겨찾기_ID(ExtractableResponse<Response> 즐겨찾기_생성_응답) {
+        String url = 즐겨찾기_생성_응답.header("Location");
+        String[] split = url.split("/favorites/");
+        String favoriteId = split[1];
+        return Long.parseLong(favoriteId);
     }
 }

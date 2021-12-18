@@ -39,7 +39,8 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    private Member findMemberById(Long id) {
+    @Transactional(readOnly = true)
+    public Member findMemberById(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundApiException(ErrorCode.NOT_FOUND_MEMBER_ID));
     }

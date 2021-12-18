@@ -22,7 +22,11 @@ public enum ErrorCode {
     // 회원 [05xx]
     , NOT_FOUND_MEMBER_ID("0501", "존재하지 않는 회원ID 입니다.")
     , INVALID_MEMBER_INFO("0502", "유효하지 않은 회원 정보입니다.")
-    , INVALID_TOKEN("0503", "유효하지 않은 토큰입니다.");
+    , INVALID_TOKEN("0503", "유효하지 않은 토큰입니다.")
+    , NO_PERMISSION("0504", "권한이 없습니다.")
+
+    // 즐겨찾기 [06xx]
+    , NOT_FOUND_FAVORITE_ID("0601", "존재하지 않는 즐겨찾기ID 입니다.");
 
     private final String code;
     private final String message;

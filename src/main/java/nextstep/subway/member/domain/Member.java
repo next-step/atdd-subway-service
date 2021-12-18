@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class Member extends BaseEntity {
@@ -53,6 +54,12 @@ public class Member extends BaseEntity {
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException(ErrorCode.INVALID_MEMBER_INFO);
+        }
+    }
+
+    public void checkId(Long id) {
+        if (!Objects.equals(this.id, id)) {
+            throw new AuthorizationException(ErrorCode.NO_PERMISSION);
         }
     }
 }
