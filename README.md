@@ -34,6 +34,25 @@
 
 <br>
 
+## Step2 - 경로 조회 기능
+### 구현 기능 명세
+- 토큰 발급 인수 테스크 (AuthAcceptanceTest)
+  - [x] 로그인 정상
+  - [x] 로그인 실패
+  - [x] 유효하지 않은 토큰
+  
+- 나의 정보 관리 테스트 (MemberAcceptanceTest)
+  - [x] 나의 정보 조회
+  - [x] 나의 정보 수정
+  - [x] 나의 정보 삭제
+  
+- 즐겨찾기 기능 구현 및 테스트 (FavoriteAcceptanceTest)
+  - [ ] 즐겨찾기 추가
+  - [ ] 즐겨찾기 조회
+  - [ ] 즐겨찾기 수정
+  - [ ] 즐겨찾기 삭제
+  
+
 ## 🚀 Getting Started
 
 ### Install
