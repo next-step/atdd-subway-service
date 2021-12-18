@@ -17,7 +17,10 @@ public enum ErrorCode {
 
     // 경로 [04xx]
     , INVALID_PATH("0401", "출발역과 도착역은 같을 수 없습니다.")
-    , UNCOUPLED_PATH("0402", "출발역과 도착역이 연결이 되어 있지 않습니다.");
+    , UNCOUPLED_PATH("0402", "출발역과 도착역이 연결이 되어 있지 않습니다.")
+
+    // 회원 [05xx]
+    , NOT_FOUND_MEMBER_ID("0501", "존재하지 않는 회원ID 입니다.");
 
     private final String code;
     private final String message;

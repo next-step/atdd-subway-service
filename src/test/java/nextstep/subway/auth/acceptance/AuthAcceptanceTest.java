@@ -63,7 +63,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         // TODO
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest params = new TokenRequest(email, password);
 
         return RestAssured
@@ -75,7 +75,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 로그인_성공(ExtractableResponse<Response> response) {
+    public static void 로그인_성공(ExtractableResponse<Response> response) {
         Assertions.assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
                 , () -> assertThat(response.jsonPath().getString("accessToken")).isNotEmpty()
@@ -85,5 +85,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private void 로그인_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static String 토큰_조회(String email, String password) {
+        ExtractableResponse<Response> response = 로그인_요청(email, password);
+        return response.jsonPath().getString("accessToken");
     }
 }

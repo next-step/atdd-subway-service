@@ -112,11 +112,11 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
     - [ ] Bearer Auth 유효하지 않은 토큰
 
-- [ ] 인증 - 내 정보 조회 기능 완성하기
+- [x] 인증 - 내 정보 조회 기능 완성하기
 
-    - [ ] 인수 테스트
+    - [x] 인수 테스트
 
-    - [ ] 토큰을 통한 인증
+    - [x] 토큰을 통한 인증
 
 - [ ] 인증 - 즐겨찾기 기능 완성하기
 
