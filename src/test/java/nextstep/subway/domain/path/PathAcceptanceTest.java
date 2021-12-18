@@ -68,15 +68,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
 
         // then
-        최단_경로_응답됨(response, Arrays.asList("교대역","남부터미널역","양재역"), 5);
+        최단_경로_응답됨(response, Arrays.asList("교대역","남부터미널역","양재역"), 5, 1250);
     }
 
-    private void 최단_경로_응답됨(final ExtractableResponse<Response> response, List<String> stations, int distance) {
+    private void 최단_경로_응답됨(final ExtractableResponse<Response> response, List<String> stations, int distance, int fare) {
         final PathFinderResponse pathFinderResponse = response.as(PathFinderResponse.class);
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
             assertThat(pathFinderResponse.getStations()).extracting("name").containsExactlyElementsOf(stations);
             assertThat(pathFinderResponse.getDistance()).isEqualTo(distance);
+            assertThat(pathFinderResponse.getFare()).isEqualTo(fare);
         });
     }
 

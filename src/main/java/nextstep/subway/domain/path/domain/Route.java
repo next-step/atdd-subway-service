@@ -9,8 +9,8 @@ import java.util.List;
 public class Route {
 
     private static final int PATH_NODE_MINIMUM_NUMBER = 2;
-    private List<Station> stations;
-    private Distance distance;
+    private final List<Station> stations;
+    private final Distance distance;
 
     public Route(final List<Station> stations, final Distance distance) {
         pathNodeMinimumNumberValidation(stations);
@@ -28,7 +28,7 @@ public class Route {
         return stations;
     }
 
-    public int getDistance() {
-        return distance.getDistance();
+    public Distance getDistance() {
+        return distance;
     }
 }

@@ -37,7 +37,7 @@ class PathFinderTest {
         // then
         assertAll(() -> {
             assertThat(shortestRoute.getStations()).extracting("name").containsExactly("교대역","남부터미널역","양재역");
-            assertThat(shortestRoute.getDistance()).isEqualTo(5);
+            assertThat(shortestRoute.getDistance().getDistance()).isEqualTo(5);
         });
     }
 
