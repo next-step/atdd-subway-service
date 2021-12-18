@@ -74,6 +74,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         나의_정보_수정_성공(나의_정보_수정_요청_응답);
 
+        accessToken = 토큰_발급(NEW_EMAIL, NEW_PASSWORD);
+
         // when
         final ExtractableResponse<Response> 나의_정보_삭제_요청_응답 = 나의_정보_삭제_요청();
         // then
