@@ -23,12 +23,12 @@ public class MemberService {
 	}
 
 	public MemberResponse findMember(Long id) {
-		Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+		Member member = getById(id);
 		return MemberResponse.of(member);
 	}
 
 	public void updateMember(Long id, MemberRequest param) {
-		Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+		Member member = getById(id);
 		member.update(param.toMember());
 	}
 
@@ -38,6 +38,6 @@ public class MemberService {
 
 	public Member getById(Long id) {
 		return memberRepository.findById(id)
-			.orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "member.id:{}", id));
+			.orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "회원 정보를 찾을 수 없습니다. member.id: {}", id));
 	}
 }

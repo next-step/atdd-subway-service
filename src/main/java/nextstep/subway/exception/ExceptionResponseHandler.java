@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import nextstep.subway.auth.application.AuthorizationException;
+
 @ControllerAdvice
 public class ExceptionResponseHandler extends ResponseEntityExceptionHandler {
 
@@ -25,6 +27,15 @@ public class ExceptionResponseHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<Object> handleRuntimeException(RuntimeException ex) {
 		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		ExceptionResponse response = new ExceptionResponse(
+			httpStatus, ex.getMessage(), EMPTY_DESCRIPTION, LocalDateTime.now());
+		return ResponseEntity.status(httpStatus)
+			.body(response);
+	}
+
+	@ExceptionHandler(AuthorizationException.class)
+	public ResponseEntity<Object> handleAuthorizationException(AuthorizationException ex) {
+		HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
 		ExceptionResponse response = new ExceptionResponse(
 			httpStatus, ex.getMessage(), EMPTY_DESCRIPTION, LocalDateTime.now());
 		return ResponseEntity.status(httpStatus)

@@ -40,8 +40,8 @@ public class FavoriteService {
 
 	public FavoriteResponse create(LoginMember loginMember, FavoriteRequest request) {
 		Member member = memberService.getById(loginMember.getId());
-		Station source = stationService.findById(request.getSource());
-		Station target = stationService.findById(request.getTarget());
+		Station source = stationService.findStationById(request.getSource());
+		Station target = stationService.findStationById(request.getTarget());
 
 		Favorite favorite = Favorite.of(member, source, target);
 		favorite = favoriteRepository.save(favorite);
