@@ -15,6 +15,7 @@ public class StationTest {
     public static Station 도곡역 = spy(new Station("도곡역"));
     public static Station 목동역 = spy(new Station("목동역"));
     public static Station 오목교역 = spy(new Station("오목교역"));
+    public static Station 선릉역 = spy(new Station("선릉역"));
 
     static {
         when(강남역.getId()).thenReturn(1L);
@@ -29,5 +30,6 @@ public class StationTest {
         when(도곡역.getId()).thenReturn(10L);
         when(목동역.getId()).thenReturn(11L);
         when(오목교역.getId()).thenReturn(12L);
+        when(선릉역.getId()).thenReturn(13L);
     }
 }
