@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
 public class LineService {
 
     private final LineRepository lineRepository;
@@ -27,6 +26,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(final LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -45,6 +45,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Transactional
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
@@ -54,6 +55,7 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(final Long lineId, final SectionRequest request) {
         Line line = findLineById(lineId);
         Section section = this.createNewSection(line, request.getUpStationId(), request.getDownStationId(), new Distance(request.getDistance()));
@@ -66,6 +68,7 @@ public class LineService {
         return new Section(line, upStation, downStation, distance);
     }
 
+    @Transactional
     public void removeLineStation(final Long lineId, final Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findById(stationId);
