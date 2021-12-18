@@ -53,6 +53,10 @@ public class Favorite extends BaseEntity {
 		return this.member.equals(other);
 	}
 
+	public boolean isSamePath(Station source, Station target) {
+		return this.source.equals(source) && this.target.equals(target);
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -85,4 +89,5 @@ public class Favorite extends BaseEntity {
 	public int hashCode() {
 		return id.hashCode();
 	}
+
 }

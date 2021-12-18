@@ -70,6 +70,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		즐겨찾기_생성됨(createResponse);
 
 		// When
+		ExtractableResponse<Response> createResponse2 = 즐겨찾기_생성_요청(토큰, 양재역, 교대역);
+		// Then
+		즐겨찾기_생성_실패함(createResponse2);
+
+		// When
 		ExtractableResponse<Response> foundResponse = 즐겨찾기_목록_조회_요청(토큰);
 		// Then
 		즐겨찾기_목록_조회됨(foundResponse, Collections.singletonList(createResponse));
@@ -80,11 +85,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		즐겨찾기_삭제됨(deleteResponse);
 
 		// Given
-		ExtractableResponse<Response> createResponse2 = 즐거찾기_등록됨(토큰, 양재역, 교대역);
+		ExtractableResponse<Response> createResponse3 = 즐거찾기_등록됨(토큰, 양재역, 교대역);
 		// When
-		ExtractableResponse<Response> deleteResponse2 = 즐겨찾기_삭제_요청(다른_유저_토큰, createResponse2);
+		ExtractableResponse<Response> deleteResponse2 = 즐겨찾기_삭제_요청(다른_유저_토큰, createResponse3);
 		// Then
 		즐겨찾기_삭제_실패함(deleteResponse2);
+
+	}
+
+	private void 즐겨찾기_생성_실패함(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 
 	private static ExtractableResponse<Response> 즐거찾기_등록됨(TokenResponse token, StationResponse source,

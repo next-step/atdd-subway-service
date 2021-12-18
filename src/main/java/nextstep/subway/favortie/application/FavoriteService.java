@@ -10,6 +10,7 @@ import nextstep.subway.exception.AppException;
 import nextstep.subway.exception.ErrorCode;
 import nextstep.subway.favortie.domain.Favorite;
 import nextstep.subway.favortie.domain.FavoriteRepository;
+import nextstep.subway.favortie.domain.Favorites;
 import nextstep.subway.favortie.dto.FavoriteRequest;
 import nextstep.subway.favortie.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
@@ -42,6 +43,11 @@ public class FavoriteService {
 		Member member = memberService.getById(loginMember.getId());
 		Station source = stationService.findStationById(request.getSource());
 		Station target = stationService.findStationById(request.getTarget());
+
+		Favorites favorites = Favorites.of(favoriteRepository.findByMember(member));
+		if (favorites.hasSamePath(member, source, target)) {
+			throw new AppException(ErrorCode.WRONG_INPUT, "이미 즐겨찾기된 경로입니다. source: {}, target: {}", source, target);
+		}
 
 		Favorite favorite = Favorite.of(member, source, target);
 		favorite = favoriteRepository.save(favorite);

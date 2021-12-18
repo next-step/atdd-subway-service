@@ -24,6 +24,19 @@ public class FavoriteTest {
 		assertThat(favorite).isEqualTo(expected);
 	}
 
+	@DisplayName("같은 경로인지 확인한다")
+	@Test
+	void createTest2() {
+		// given
+		Favorite favorite1 = Favorite.of(1L, MemberTest.존, StationTest.노포역, StationTest.다대포해수욕장역);
+
+		// when
+		boolean isSamePath = favorite1.isSamePath(StationTest.노포역, StationTest.다대포해수욕장역);
+
+		// then
+		assertThat(isSamePath).isTrue();
+	}
+
 	@DisplayName("즐겨찾기 맴버 체크 테스트")
 	@Test
 	void memberCheckTest() {
