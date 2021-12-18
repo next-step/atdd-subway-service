@@ -6,6 +6,7 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Line extends BaseEntity {
@@ -78,5 +79,22 @@ public class Line extends BaseEntity {
 
     public int getFare() {
         return fare.getFare();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Line)) {
+            return false;
+        }
+        Line line = (Line)o;
+        return Objects.equals(id, line.id) && Objects.equals(name, line.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }
