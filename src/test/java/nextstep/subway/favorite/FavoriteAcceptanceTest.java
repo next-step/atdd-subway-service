@@ -101,13 +101,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> createFavoriteResponse) {
-        Assertions.assertThat(createFavoriteResponse.statusCode()).isEqualTo(HttpStatus.CREATED);
+        Assertions.assertThat(createFavoriteResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> foundFavoriteRespons, StationResponse source, StationResponse target) {
         FavoritesResponse favoritesResponse = foundFavoriteRespons.body().as(FavoritesResponse.class);
         assertAll(
-                () -> assertThat(foundFavoriteRespons.statusCode()).isEqualTo(HttpStatus.OK),
+                () -> assertThat(foundFavoriteRespons.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(favoritesResponse.getFavoriteResponses().get(0).getSource()).isEqualTo(source),
                 () -> assertThat(favoritesResponse.getFavoriteResponses().get(0).getTarget()).isEqualTo(target)
         );
