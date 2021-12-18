@@ -11,13 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
-
 import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.station.domain.Station;
 
 @Entity
-public class Section extends DefaultWeightedEdge {
+public class Section {
     static final String TOO_BIG_DISTANCE_ERR_MSG = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
 
     @Id

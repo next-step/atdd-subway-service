@@ -20,7 +20,7 @@ public class PathFinder {
     static final String EMPTY_LINES_ERR_MSG = "노선이 없을 때 경로를 조회할 수 없습니다.";
     static final String SAME_SOURCE_TARGET_ERR_MSG = "출발역과 도착역은 같을 수 없습니다.";
     static final String NOT_CONNECTED_STATIONS_ERR_MSG = "출발역과 도착역이 연결되어 있지 않습니다.";
-    private static WeightedMultigraph<Station, Section> graph;
+    private static WeightedMultigraph<Station, WeightedSection> graph;
 
     private PathFinder() {
     }
@@ -30,7 +30,7 @@ public class PathFinder {
     ) {
         validate(lines, source, target);
         initializeGraph(lines);
-        final GraphPath<Station, Section> graphPath = getGraphPath(source, target);
+        final GraphPath<Station, WeightedSection> graphPath = getGraphPath(source, target);
 
         final List<StationResponse> stations = getStationsOnPath(graphPath);
         final Set<Line> pathLines = getLinesOnPath(graphPath);
@@ -52,15 +52,15 @@ public class PathFinder {
     }
 
     private static void initializeGraph(final Collection<Line> lines) {
-        graph = new WeightedMultigraph<>(Section.class);
+        graph = new WeightedMultigraph<>(WeightedSection.class);
         for (final Line line : lines) {
             setStationsAsVertex(line);
             setSectionsAsEdge(line);
         }
     }
 
-    private static GraphPath<Station, Section> getGraphPath(final Station source, final Station target) {
-        final GraphPath<Station, Section> graphPath =
+    private static GraphPath<Station, WeightedSection> getGraphPath(final Station source, final Station target) {
+        final GraphPath<Station, WeightedSection> graphPath =
             new DijkstraShortestPath<>(graph).getPath(source, target);
         if (graphPath == null) {
             throw new BadRequestException(NOT_CONNECTED_STATIONS_ERR_MSG);
@@ -68,15 +68,15 @@ public class PathFinder {
         return graphPath;
     }
 
-    private static List<StationResponse> getStationsOnPath(final GraphPath<Station, Section> graphPath) {
+    private static List<StationResponse> getStationsOnPath(final GraphPath<Station, WeightedSection> graphPath) {
         return graphPath.getVertexList().stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
     }
 
-    private static Set<Line> getLinesOnPath(final GraphPath<Station, Section> graphPath) {
+    private static Set<Line> getLinesOnPath(final GraphPath<Station, WeightedSection> graphPath) {
         return graphPath.getEdgeList().stream()
-            .map(Section::getLine)
+            .map(WeightedSection::getLine)
             .collect(Collectors.toSet());
     }
 
@@ -88,8 +88,9 @@ public class PathFinder {
 
     private static void setSectionsAsEdge(final Line line) {
         for (final Section section : line.getSections()) {
-            graph.addEdge(section.getUpStation(), section.getDownStation(), section);
-            graph.setEdgeWeight(section, section.getDistance());
+            final WeightedSection weightedSection = new WeightedSection(section);
+            graph.addEdge(section.getUpStation(), section.getDownStation(), weightedSection);
+            graph.setEdgeWeight(weightedSection, section.getDistance());
         }
     }
 }
