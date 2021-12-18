@@ -2,12 +2,9 @@ package nextstep.subway.path;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.*;
-import nextstep.subway.path.domain.overfare.DefaultOverFare;
-import nextstep.subway.path.domain.overfare.OverFare;
-import nextstep.subway.path.infra.JgraphtPathFinder;
+import nextstep.subway.path.domain.JgraphtPathFinder;
 import nextstep.subway.path.domain.ShortestPath;
-import nextstep.subway.path.infra.PathFinder;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

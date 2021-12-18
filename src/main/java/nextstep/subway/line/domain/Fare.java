@@ -4,6 +4,7 @@ import nextstep.subway.path.domain.overfare.DefaultOverFare;
 import nextstep.subway.path.domain.overfare.OverFare;
 
 import javax.persistence.Embeddable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +13,10 @@ import static java.util.Comparator.comparing;
 
 @Embeddable
 public class Fare {
+
+    public static BigInteger DEFAULT_DISCOUNT_PRICE = new BigInteger("350");
+    public static double DEFAULT_CHILD_RATE = 0.5;
+    public static double DEFAULT_YOUTH_RATE = 0.8;
 
     private BigInteger value;
 
@@ -34,6 +39,12 @@ public class Fare {
         return new Fare(overFare.calculate(distance.getValue()));
     }
 
+    private void validateNegativeFare(int value) {
+        if(value < 0) {
+            throw new IllegalArgumentException("0보다 작을 수 없습니다.");
+        }
+    }
+
     public BigInteger getValue() {
         return value;
     }
@@ -52,10 +63,14 @@ public class Fare {
         return new Fare(this.value.add(lineUseFare));
     }
 
-    private void validateNegativeFare(int value) {
-        if(value < 0) {
-            throw new IllegalArgumentException("0보다 작을 수 없습니다.");
-        }
+    public Fare minus(BigInteger subtractValue) {
+        BigInteger subtract = this.value.subtract(subtractValue);
+        return new Fare(subtract);
+    }
+
+    public Fare multiply(double multiplyValue) {
+        double multiply = this.value.longValue() * multiplyValue;
+        return new Fare((int) multiply);
     }
 
     @Override

@@ -6,7 +6,7 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.domain.overfare.DefaultOverFare;
 import nextstep.subway.path.domain.ShortestPath;
-import nextstep.subway.path.infra.PathFinder;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;

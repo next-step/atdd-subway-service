@@ -7,15 +7,19 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static nextstep.subway.line.domain.Fare.*;
+import static nextstep.subway.path.domain.AgeGeneration.CHILD_GENERATION;
+import static nextstep.subway.path.domain.AgeGeneration.YOUTH_GENERATION;
+
 public enum AgeDiscount {
 
-    CHILD(age -> age >= 0 && age < 13, fare -> BigInteger.valueOf((long)((fare.longValue() - 350L) * 0.5))),
-    YOUTH(age -> age > 13 && age < 19, fare -> BigInteger.valueOf((long)((fare.longValue() - 350L) * 0.8)));
+    CHILD(age -> age < CHILD_GENERATION.getAge(), fare -> fare.minus(DEFAULT_DISCOUNT_PRICE).multiply(DEFAULT_CHILD_RATE)),
+    YOUTH(age -> age > CHILD_GENERATION.getAge() && age < YOUTH_GENERATION.getAge(), fare -> fare.minus(DEFAULT_DISCOUNT_PRICE).multiply(DEFAULT_YOUTH_RATE));
 
     private Predicate<Integer> predicate;
-    private Function<BigInteger, BigInteger> function;
+    private Function<Fare, Fare> function;
 
-    AgeDiscount(Predicate<Integer> predicate, Function<BigInteger, BigInteger> function) {
+    AgeDiscount(Predicate<Integer> predicate, Function<Fare, Fare> function) {
         this.predicate = predicate;
         this.function = function;
     }
@@ -24,17 +28,15 @@ public enum AgeDiscount {
         return this.predicate.test(age);
     }
 
-    private BigInteger execute(BigInteger fare) {
+    private Fare execute(Fare fare) {
         return this.function.apply(fare);
     }
 
     public static Fare discount(int age, Fare fare) {
-        BigInteger value = fare.getValue();
         return Arrays.stream(values())
                 .filter(c -> c.condition(age))
-                .map(c -> c.execute(value))
+                .map(c -> c.execute(fare))
                 .findFirst()
-                .map(Fare::new)
                 .orElse(fare);
     }
 }

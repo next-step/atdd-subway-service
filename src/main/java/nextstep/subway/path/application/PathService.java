@@ -5,7 +5,7 @@ import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.AgeDiscount;
-import nextstep.subway.path.infra.PathFinder;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -13,7 +13,6 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class PathService {
