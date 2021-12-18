@@ -53,6 +53,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_정보_수정됨(updateResponse);
 
+        accessToken = 토큰_발급(NEW_EMAIL, NEW_PASSWORD);
+
         // when
         ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
         // then
