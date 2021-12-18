@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -21,14 +22,16 @@ public class PathFinder {
     private static final String TARGET_NOT_FOUND_ERROR_MESSAGE = "도착역이 존재하지 않을 경우 최단 경로를 조회할 수 없습니다.";
 
     private final WeightedGraph<Station, DefaultWeightedEdge> graph;
+    private final List<Line> lines;
 
     public PathFinder(final List<Line> lines) {
-        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        addVertices(lines);
-        addEdges(lines);
+        this.lines = new ArrayList<>(lines);
+        this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        addVertices();
+        addEdges();
     }
 
-    private void addVertices(final List<Line> lines) {
+    private void addVertices() {
         final List<Station> stations = lines.stream()
             .map(Line::getStationsInOrder)
             .flatMap(List::stream)
@@ -37,7 +40,7 @@ public class PathFinder {
         stations.forEach(graph::addVertex);
     }
 
-    private void addEdges(final List<Line> lines) {
+    private void addEdges() {
         final List<Section> sections = lines.stream()
             .map(Line::getSections)
             .map(Sections::getSections)
@@ -59,7 +62,7 @@ public class PathFinder {
             graph);
         final GraphPath<Station, DefaultWeightedEdge> path = dijkstraPath.getPath(source, target);
         validatePath(path);
-        return new Path(path.getVertexList(), (int) path.getWeight());
+        return new Path(lines, path.getVertexList(), (int) path.getWeight());
     }
 
     private void validateFindPath(final Station source, final Station target) {

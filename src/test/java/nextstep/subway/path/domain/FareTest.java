@@ -62,4 +62,38 @@ public class FareTest {
         final Fare expected = new Fare(BigDecimal.valueOf(1_350L));
         assertThat(overFare).isEqualTo(expected);
     }
+
+    @Test
+    void add() {
+        // given
+        final Fare anotherFare = new Fare(BigDecimal.valueOf(1_000L));
+
+        // when
+        final Fare addedFare = fare.add(anotherFare);
+
+        // then
+        final Fare expected = new Fare(BigDecimal.valueOf(2_250L));
+        assertThat(addedFare).isEqualTo(expected);
+    }
+
+    @Test
+    void compareTo() {
+        // given
+        final Fare lessFare = new Fare(BigDecimal.valueOf(1_000L));
+
+        // when
+        final int comparison = fare.compareTo(lessFare);
+
+        // then
+        assertThat(comparison).isEqualTo(1);
+    }
+
+    @Test
+    void x() {
+        final BigDecimal x = BigDecimal.valueOf(1_000L);
+        final BigDecimal y = BigDecimal.valueOf(2_000L);
+        final BigDecimal z = x.add(y);
+
+        System.out.println(z);
+    }
 }

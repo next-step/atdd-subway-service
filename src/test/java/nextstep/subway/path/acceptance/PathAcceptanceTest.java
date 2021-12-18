@@ -114,6 +114,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void 지하철_이용_요금_일치함(final PathResponse pathResponse) {
-        assertThat(pathResponse.getFare()).isEqualTo(BigDecimal.valueOf(1_250L));
+        assertThat(pathResponse.getFare()).isEqualTo(BigDecimal.valueOf(2_500L));
     }
 }

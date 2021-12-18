@@ -2,14 +2,22 @@ package nextstep.subway.path.domain;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
-public class Fare {
+@Embeddable
+public class Fare implements Comparable<Fare> {
 
     private static final BigDecimal BASE_RATE = BigDecimal.valueOf(1_250L);
 
     private static final BigDecimal EXTRA_RATE = BigDecimal.valueOf(100L);
 
+    @Column(name = "fare")
     private final BigDecimal fare;
+
+    protected Fare() {
+        this.fare = BASE_RATE;
+    }
 
     public Fare(final BigDecimal fare) {
         this.fare = fare;
@@ -23,6 +31,11 @@ public class Fare {
         final BigDecimal extraUnit = BigDecimal.valueOf(distance.calculateDistanceUnit());
         final BigDecimal overFare = EXTRA_RATE.multiply(extraUnit);
         return new Fare(fare.add(overFare));
+    }
+
+    public Fare add(final Fare o) {
+        final BigDecimal newFare = getFare().add(o.getFare());
+        return new Fare(newFare);
     }
 
     public BigDecimal getFare() {
@@ -44,5 +57,10 @@ public class Fare {
     @Override
     public int hashCode() {
         return Objects.hash(fare);
+    }
+
+    @Override
+    public int compareTo(final Fare o) {
+        return fare.compareTo(o.fare);
     }
 }
