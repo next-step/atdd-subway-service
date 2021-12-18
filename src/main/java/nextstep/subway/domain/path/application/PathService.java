@@ -28,7 +28,8 @@ public class PathService {
 
         PathFinder pathFinder = new PathFinder(lines);
         final Route shortestRoute = pathFinder.findShortestRoute(request.getSource(), request.getTarget());
+        final Fare fare = new Fare(shortestRoute.getDistance(), lines);
 
-        return PathFinderResponse.of(shortestRoute, new Fare(shortestRoute.getDistance()));
+        return PathFinderResponse.of(shortestRoute, fare);
     }
 }

@@ -1,12 +1,18 @@
 package nextstep.subway.domain.path.domain;
 
 import nextstep.subway.domain.line.domain.Distance;
+import nextstep.subway.domain.line.domain.Line;
+import nextstep.subway.domain.station.domain.Station;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 @DisplayName("요금 계산")
@@ -33,5 +39,18 @@ class FareTest {
         assertThatIllegalArgumentException().isThrownBy(() ->
             new Fare(1000)
         );
+    }
+
+    @Test
+    @DisplayName("노선별 추가 요금")
+    void a() {
+        final List<Line> lines = Arrays.asList(
+                new Line("신분당선", "bg-red-600", new Station("강남역"), new Station("양재역"), new Distance(10), 500),
+                new Line("2호선", "bg-green-400", new Station("교대역"), new Station("강남역"), new Distance(10), 900),
+                new Line("3호선", "bg-green-400", new Station("교대역"), new Station("양재역"), new Distance(5), 400));
+
+        final Fare fare = new Fare(new Distance(12), lines);
+
+        assertThat(fare).isEqualTo(new Fare(2250));
     }
 }

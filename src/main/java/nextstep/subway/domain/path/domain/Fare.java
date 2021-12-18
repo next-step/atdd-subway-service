@@ -1,7 +1,9 @@
 package nextstep.subway.domain.path.domain;
 
 import nextstep.subway.domain.line.domain.Distance;
+import nextstep.subway.domain.line.domain.Line;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Fare {
@@ -28,6 +30,15 @@ public class Fare {
         if (isExtraDistance(dt)) {
             this.amount += extraAmount(dt);
         }
+    }
+
+    public Fare(final Distance distance, List<Line> lines) {
+        this(distance);
+        final int lineMaxExtraFare = lines.stream()
+                .mapToInt(Line::getExtraFare)
+                .max()
+                .getAsInt();
+        this.amount += lineMaxExtraFare;
     }
 
     private boolean isExtraDistance(int distance) {
