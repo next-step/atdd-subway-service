@@ -65,5 +65,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ## 기능목록정리 - 경로조회기능
 
 - [x] 인수테스트 만들기
-- [ ] 기능 구현하기
+- [x] 컨트롤러 레이어 생성
+- [x] 서비스 레이어 생성
+- [ ] 최단경로찾기 도메인 레이어 구현 
 
