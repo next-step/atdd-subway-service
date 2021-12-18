@@ -50,6 +50,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // When
+        ExtractableResponse<Response> response = 나의_정보_조회_요청("token");
+
+        // Then
+        나의_정보_조회_요청_실패됨(response, "토큰 값이 맞지 않습니다.");
     }
 
     private ExtractableResponse<Response> 로그인_요청(String email, String password) {
@@ -71,5 +76,21 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private void 로그인_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private ExtractableResponse<Response> 나의_정보_조회_요청(String token) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    private void 나의_정보_조회_요청_실패됨(ExtractableResponse<Response> response, String expectedMessage) {
+        Assertions.assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
+                () -> assertThat(response.body().asString()).isEqualTo(expectedMessage)
+        );
     }
 }
