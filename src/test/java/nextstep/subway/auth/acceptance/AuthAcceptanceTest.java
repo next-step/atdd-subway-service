@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -24,7 +25,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setup() {
-        MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
     }
 
     @DisplayName("Bearer Auth")
@@ -51,13 +52,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithWrongBearerAuth() {
         // When
-        ExtractableResponse<Response> response = 나의_정보_조회_요청("token");
+        ExtractableResponse<Response> response = MemberAcceptanceTest.나의_정보_조회_요청("token");
 
         // Then
         나의_정보_조회_요청_실패됨(response, "토큰 값이 맞지 않습니다.");
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         return RestAssured
                 .given().log().all()
                 .body(new TokenRequest(email, password))
@@ -67,7 +68,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 로그인_성공(ExtractableResponse<Response> response) {
+    public static void 로그인_성공(ExtractableResponse<Response> response) {
         Assertions.assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.body().as(TokenResponse.class)).isNotNull()
@@ -76,15 +77,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private void 로그인_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    private ExtractableResponse<Response> 나의_정보_조회_요청(String token) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(token)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
     }
 
     private void 나의_정보_조회_요청_실패됨(ExtractableResponse<Response> response, String expectedMessage) {
