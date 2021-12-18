@@ -20,7 +20,7 @@ public class PathController extends ControllerExceptionHandler {
         this.pathService = pathService;
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<PathResponse> findShortestPath(@RequestParam Long source,
         @RequestParam Long target) {
         PathResponse pathResponse = pathService

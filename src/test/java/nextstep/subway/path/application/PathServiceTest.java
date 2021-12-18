@@ -7,7 +7,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.JgraphtPathFinder;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -28,7 +28,7 @@ public class PathServiceTest {
     private static final Long TEST_DEST_STATION_ID = 2L;
 
     @Mock
-    private PathFinder pathFinder;
+    private JgraphtPathFinder pathFinder;
 
     @Mock
     private StationService stationService;

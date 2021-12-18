@@ -10,17 +10,12 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class PathFinder {
+public class JgraphtPathFinder implements PathFinderInterface {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public PathFinder() {
-        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-    }
-
-    public PathFinder(List<Line> lines) {
+    public JgraphtPathFinder(List<Line> lines) {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
@@ -41,14 +36,17 @@ public class PathFinder {
         });
     }
 
+    @Override
     public boolean containsStation(Station station) {
         return graph.containsVertex(station);
     }
 
+    @Override
     public boolean stationsConnected(Station src, Station dest) {
         return !Objects.isNull(dijkstraShortestPath.getPath(src, dest));
     }
 
+    @Override
     public Path getShortestPath(Station src, Station dest) {
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(src, dest);
         return new Path(graphPath.getVertexList(), graphPath.getWeight());
