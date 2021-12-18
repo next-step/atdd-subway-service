@@ -2,7 +2,7 @@ package nextstep.subway.path.domain.shortest;
 
 import java.util.List;
 
-import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.fare.domain.DistanceFare;
 import nextstep.subway.station.domain.Station;
 
 public class ShortestPath {
@@ -28,6 +28,6 @@ public class ShortestPath {
 	}
 
 	public int getFare() {
-		return Fare.calculate(distance);
+		return DistanceFare.calculate(distance).getFare();
 	}
 }

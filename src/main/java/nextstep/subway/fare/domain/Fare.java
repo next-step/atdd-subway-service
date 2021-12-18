@@ -1,41 +1,50 @@
 package nextstep.subway.fare.domain;
 
+import java.util.Objects;
+
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class Fare {
 
-	private static final int BASIC_KRW = 1250;
+	private int fare;
 
-	private static final double BASIC_MAX_KM_INCLUSIVE = 10;
-
-	private static final double UNIT_KM_TO_CHARGE_EXTRA = 5;
-	private static final int EXTRA_KRW = 100;
-	private static final double EXTRA_MAX_KM_INCLUSIVE = 50;
-
-	private static final double UNIT_KM_TO_CHARGE_OVER_EXTRA = 8;
-	private static final int OVER_EXTRA_KRW = 100;
-
-	public static int calculate(double distanceKm) {
-		validate(distanceKm);
-		if (distanceKm <= BASIC_MAX_KM_INCLUSIVE) {
-			return BASIC_KRW;
-		} else if (distanceKm <= EXTRA_MAX_KM_INCLUSIVE) {
-			return BASIC_KRW + calculateExtraFare(distanceKm - BASIC_MAX_KM_INCLUSIVE);
-		}
-		return BASIC_KRW
-			+ calculateExtraFare(EXTRA_MAX_KM_INCLUSIVE - BASIC_MAX_KM_INCLUSIVE)
-			+ calculateOverExtraFare(distanceKm - EXTRA_MAX_KM_INCLUSIVE);
+	protected Fare() {
 	}
 
-	private static void validate(double distanceKm) {
-		if (distanceKm <= 0) {
-			throw new IllegalArgumentException("운임을 부과할 거리는 0km 보다 커야합니다.");
+	private Fare(int fare) {
+		validate(fare);
+		this.fare = fare;
+	}
+
+	private void validate(int fare) {
+		if (fare < 0) {
+			throw new IllegalArgumentException("운임료는 0원 이상이여야 합니다.");
 		}
 	}
 
-	private static int calculateExtraFare(double distanceKm) {
-		return (int) ((Math.floor((distanceKm - 1) / UNIT_KM_TO_CHARGE_EXTRA) + 1) * EXTRA_KRW);
+	public static Fare of(int fare) {
+		return new Fare(fare);
 	}
 
-	private static int calculateOverExtraFare(double distanceKm) {
-		return (int) ((Math.floor((distanceKm - 1) / UNIT_KM_TO_CHARGE_OVER_EXTRA) + 1) * OVER_EXTRA_KRW);
+	public int getFare() {
+		return fare;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof Fare)) {
+			return false;
+		}
+		Fare fare1 = (Fare)o;
+		return fare == fare1.fare;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(fare);
 	}
 }
