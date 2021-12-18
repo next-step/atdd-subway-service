@@ -19,7 +19,12 @@ public class PathFinder {
 
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 		List<Section> sections = getSectionsDistinctFromLines(lines);
-		
+
+		DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = makeGraphFromSections(graph, sections);
+		return dijkstraShortestPath.getPath(source, target);
+	}
+
+	private DijkstraShortestPath<Station, DefaultWeightedEdge> makeGraphFromSections(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
 		for (Section section : sections) {
 			graph.addVertex(section.getUpStation());
 			graph.addVertex(section.getDownStation());
@@ -27,8 +32,7 @@ public class PathFinder {
 				section.getDistance());
 		}
 
-		DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-		return dijkstraShortestPath.getPath(source, target);
+		return new DijkstraShortestPath<>(graph);
 	}
 
 	private void validate(Station source, Station target) {
