@@ -1,6 +1,7 @@
-package nextstep.subway.path.infra;
+package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.station.domain.Station;

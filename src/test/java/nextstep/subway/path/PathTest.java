@@ -2,9 +2,9 @@ package nextstep.subway.path;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.infra.JgraphtPathFinder;
+import nextstep.subway.path.domain.JgraphtPathFinder;
 import nextstep.subway.path.domain.ShortestPath;
-import nextstep.subway.path.infra.PathFinder;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,7 +48,7 @@ public class PathTest {
         ShortestPath shortestPath = pathFinder.findShortestPath(lines, 강남역, 남부터미널역);
 
         //then
-        assertThat(shortestPath.findWeight()).isEqualTo(12);
+        assertThat(shortestPath.findDistance()).isEqualTo(new Distance(12));
         assertThat(shortestPath.findPaths().stream().map(Station::getName)).containsExactly("강남역", "교대역", "남부터미널역");
     }
 
@@ -97,5 +97,4 @@ public class PathTest {
         PathFinder pathFinder = new JgraphtPathFinder();
         assertThatThrownBy(() -> pathFinder.findShortestPath(lines, 강남역, 남부터미널역)).isInstanceOf(IllegalStateException.class);
     }
-
 }

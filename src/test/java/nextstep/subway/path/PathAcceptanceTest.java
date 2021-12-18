@@ -4,6 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
@@ -11,12 +13,17 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.utils.ApiUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -63,18 +70,53 @@ public class PathAcceptanceTest extends AcceptanceTest {
         long source = 강남역.getId();
         long target = 남부터미널역.getId();
 
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+        ExtractableResponse<Response> loginResponse = AuthAcceptanceTest.로그인_요청(tokenRequest);
+        String accessToken = loginResponse.body().jsonPath().getString("accessToken");
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("source", source);
+        params.put("target", target);
+
         //when
-        ExtractableResponse<Response> pathsResponse = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .get(String.format("/paths?source=%d&target=%d", source, target))
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> pathsResponse = ApiUtils.get("/paths", accessToken, params);
 
         //then
         PathResponse paths = pathsResponse.body().jsonPath().getObject(".", PathResponse.class);
         assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(paths.getStations().stream().map(StationResponse::getName)).containsExactly("강남역", "양재역", "남부터미널역");
         assertThat(paths.getDistance()).isEqualTo(12);
+    }
+
+    @DisplayName("두 역 사이의 최단경로 및 요금 조회")
+    @Test
+    void getShortestPathAndFareTest() {
+
+        long source = 강남역.getId();
+        long target = 남부터미널역.getId();
+
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+        ExtractableResponse<Response> loginResponse = AuthAcceptanceTest.로그인_요청(tokenRequest);
+        String accessToken = loginResponse.body().jsonPath().getString("accessToken");
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("source", source);
+        params.put("target", target);
+
+        //when
+        ExtractableResponse<Response> pathsResponse = ApiUtils.get("/paths", accessToken, params);
+
+        //then
+        PathResponse paths = pathsResponse.body().jsonPath().getObject(".", PathResponse.class);
+        assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(paths.getStations().stream().map(StationResponse::getName)).containsExactly("강남역", "양재역", "남부터미널역");
+        assertThat(paths.getDistance()).isEqualTo(12);
+        assertThat(paths.getFare()).isEqualTo(1350);
     }
 }

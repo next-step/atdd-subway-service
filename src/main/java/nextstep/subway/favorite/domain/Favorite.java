@@ -2,8 +2,11 @@ package nextstep.subway.favorite.domain;
 
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
+import sun.rmi.runtime.Log;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Table(name = "favorite")
@@ -21,23 +24,22 @@ public class Favorite {
     @JoinColumn(name = "target")
     private Station target;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @Column(name = "member_id")
+    private Long memberId;
 
     protected Favorite() {
 
     }
 
-    private Favorite(Station source, Station target, Member member) {
+    private Favorite(Station source, Station target, Long memberId) {
         validateCorrectSourceAndTarget(source, target);
         this.source = source;
         this.target = target;
-        this.member = member;
+        this.memberId = memberId;
     }
 
-    public static Favorite of(Station source, Station target, Member member) {
-        Favorite favorite = new Favorite(source, target, member);
+    public static Favorite of(Station source, Station target, Long memberId) {
+        Favorite favorite = new Favorite(source, target, memberId);
         return favorite;
     }
 
@@ -58,4 +60,9 @@ public class Favorite {
     public Station getTarget() {
         return target;
     }
+
+//    public List<Long> getStations() {
+//        return Arrays.asList(source, target);
+//    }
+
 }

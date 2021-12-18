@@ -20,10 +20,9 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationRepository.findByName(stationRequest.getName());
-        if(Objects.nonNull(station)) {
-            throw new IllegalArgumentException("지하철역 이미 등록되었습니다.");
-        }
+
+        validateDuplicateStation(stationRequest.getName());
+
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
     }
@@ -46,5 +45,16 @@ public class StationService {
 
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+    }
+
+    public List<Station> findByIds(List<Long> ids) {
+        return stationRepository.findAllById(ids);
+    }
+
+    private void validateDuplicateStation(String name) {
+        stationRepository.findByName(name)
+                .ifPresent(s -> {
+                    throw new IllegalArgumentException(s.getName() + "지하철역이 이미 등록되었습니다.");
+                });
     }
 }
