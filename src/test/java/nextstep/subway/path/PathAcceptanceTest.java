@@ -122,13 +122,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private LineResponse 지하철_노선_등록되어_있음(String lineName, String color, StationResponse upStationResponse,
+    public static LineResponse 지하철_노선_등록되어_있음(String lineName, String color, StationResponse upStationResponse,
                                         StationResponse downStationResponse, int distance) {
         return LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(lineName, color, upStationResponse.getId(), downStationResponse.getId(), distance))
                 .body().as(LineResponse.class);
     }
 
-    private void 지하철_노선에_지하철역_등록되어_있음(LineResponse lineResponse, StationResponse upStationResponse, StationResponse downStationResponse, int distance) {
+    public static void 지하철_노선에_지하철역_등록되어_있음(LineResponse lineResponse, StationResponse upStationResponse, StationResponse downStationResponse, int distance) {
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(lineResponse, upStationResponse, downStationResponse, distance);
     }
 

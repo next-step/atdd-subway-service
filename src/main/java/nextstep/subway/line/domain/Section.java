@@ -57,15 +57,13 @@ public class Section {
     }
 
     public void updateUpStation(Station station, int newDistance) {
-        this.distance.validateGreaterThanNewDistance(newDistance);
         this.upStation = station;
-        this.distance = new Distance(this.distance.getValue() - newDistance);
+        this.distance = this.distance.minus(newDistance);
     }
 
     public void updateDownStation(Station station, int newDistance) {
-        this.distance.validateGreaterThanNewDistance(newDistance);
         this.downStation = station;
-        this.distance = new Distance(this.distance.getValue() - newDistance);
+        this.distance = this.distance.minus(newDistance);
     }
 
     public Stream<Station> stations() {
