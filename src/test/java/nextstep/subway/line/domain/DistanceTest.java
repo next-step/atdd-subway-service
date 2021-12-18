@@ -9,10 +9,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DistanceTest {
 
-    @DisplayName("거리는 0보다 커야 합니다")
+    @DisplayName("거리는 0이상이어야 합니다.")
     @Test
     void create() {
-        ThrowableAssert.ThrowingCallable throwingCallable = () -> new Distance(0);
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> new Distance(-1);
 
         assertThatThrownBy(throwingCallable)
                 .isInstanceOf(OutOfDistanceRangeException.class);
