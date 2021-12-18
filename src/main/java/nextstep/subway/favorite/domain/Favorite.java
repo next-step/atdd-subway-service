@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -24,28 +23,19 @@ public class Favorite extends BaseEntity {
     @ManyToOne
     private Station target;
 
-    @ManyToOne
-    private Member owner;
+    private Long ownerId;
 
     protected Favorite() {
     }
 
-    public Favorite(final Station source, final Station target, final Member owner) {
+    public Favorite(final Station source, final Station target, final Long ownerId) {
         this.source = source;
         this.target = target;
-        madeBy(owner);
-    }
-
-    public void madeBy(Member owner) {
-        if (this.owner != null) {
-            this.owner.getFavorites().remove(this);
-        }
-        this.owner = owner;
-        owner.getFavorites().add(this);
+        this.ownerId = ownerId;
     }
 
     public boolean isOwnedBy(final Long memberId) {
-        return memberId.equals(owner.getId());
+        return memberId.equals(ownerId);
     }
 
     public Long getId() {
@@ -58,10 +48,6 @@ public class Favorite extends BaseEntity {
 
     public Station getTarget() {
         return target;
-    }
-
-    public Member getOwner() {
-        return owner;
     }
 
     @Override
@@ -87,7 +73,7 @@ public class Favorite extends BaseEntity {
             "id=" + id +
             ", sourceId=" + source.getId() +
             ", targetId=" + target.getId() +
-            ", ownerId=" + owner.getId() +
+            ", ownerId=" + ownerId +
             '}';
     }
 }

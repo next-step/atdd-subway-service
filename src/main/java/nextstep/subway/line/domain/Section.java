@@ -16,6 +16,8 @@ import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section {
+    static final String TOO_BIG_DISTANCE_ERR_MSG = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -49,7 +51,7 @@ public class Section {
             throw new IllegalArgumentException("section must be overlapped to divide");
         }
         if (section.getDistance() >= distance) {
-            throw new BadRequestException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new BadRequestException(TOO_BIG_DISTANCE_ERR_MSG);
         }
         if (upStation.equals(section.getUpStation())) {
             upStation = section.getDownStation();

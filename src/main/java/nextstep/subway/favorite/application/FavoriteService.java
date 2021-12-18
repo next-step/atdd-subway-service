@@ -1,7 +1,5 @@
 package nextstep.subway.favorite.application;
 
-import static nextstep.subway.member.application.MemberService.*;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,56 +12,47 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
 @Service
 @Transactional
 public class FavoriteService {
+    private static final String NOT_OWNED_FAVORITE_ERR_MSG = "즐겨찾기에 대한 권한이 없습니다.";
+    private static final String NOT_FOUND_FAVORITE_ERR_MSG = "즐겨찾기를 찾을 수 없습니다.";
+
     private FavoriteRepository favoriteRepository;
-    private MemberRepository memberRepository;
     private StationService stationService;
 
-    public FavoriteService(final FavoriteRepository favoriteRepository, final MemberRepository memberRepository,
-        final StationService stationService
-    ) {
+    public FavoriteService(final FavoriteRepository favoriteRepository, final StationService stationService) {
         this.favoriteRepository = favoriteRepository;
-        this.memberRepository = memberRepository;
         this.stationService = stationService;
     }
 
     public FavoriteResponse saveFavorite(final Long memberId, final FavoriteRequest favoriteRequest) {
         final Station source = stationService.findById(favoriteRequest.getSource());
         final Station target = stationService.findById(favoriteRequest.getTarget());
-        final Member member = getMemberById(memberId);
 
-        final Favorite favorite = new Favorite(source, target, member);
+        final Favorite favorite = new Favorite(source, target, memberId);
         favoriteRepository.save(favorite);
 
         return FavoriteResponse.of(favorite);
     }
 
     public List<FavoriteResponse> findAllFavoritesByMemberId(final Long memberId) {
-        final Member member = getMemberById(memberId);
-
-        return member.getFavorites().stream()
+        final List<Favorite> favorites = favoriteRepository.findAllByOwnerId(memberId);
+        return favorites.stream()
             .map(FavoriteResponse::of)
             .collect(Collectors.toList());
     }
 
     public void deleteFavoriteById(final Long memberId, Long id) {
         final Favorite favorite = favoriteRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("즐겨찾기를 찾을 수 없습니다."));
+            .orElseThrow(() -> new NotFoundException(NOT_FOUND_FAVORITE_ERR_MSG));
         if (!favorite.isOwnedBy(memberId)) {
-            throw new BadRequestException("즐겨찾기에 대한 권한이 없습니다.");
+            throw new BadRequestException(NOT_OWNED_FAVORITE_ERR_MSG);
         }
 
         favoriteRepository.deleteById(id);
-    }
-
-    private Member getMemberById(final Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(NOT_FOUND_ERR_MSG));
     }
 }
