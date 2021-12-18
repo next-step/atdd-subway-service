@@ -161,4 +161,21 @@ public class SectionsTest {
 
 		assertThat(Arrays.asList(LineTest.삼성역, LineTest.선릉역, LineTest.역삼역)).isEqualTo(stations);
 	}
+
+	@Test
+	@DisplayName("구간들이 포함되는 노선들을 반환한다.")
+	void getLinesDistinct_success() {
+		Line 신분당선 = new Line(LineTest.신분당선, LineTest.BG_RED_600);
+		Line 구분당선 = new Line(LineTest.구분당선, LineTest.BG_BLUE_600);
+		Sections sections = new Sections(new ArrayList<>());
+		Section 삼성_선릉_구간 = new Section(신분당선, LineTest.삼성역, LineTest.선릉역, 5);
+		Section 선릉_역삼_구간 = new Section(신분당선, LineTest.선릉역, LineTest.역삼역, 5);
+		Section 역삼_강남_구간 = new Section(구분당선, LineTest.선릉역, LineTest.역삼역, 5);
+		신분당선.addSection(삼성_선릉_구간);
+		신분당선.addSection(선릉_역삼_구간);
+		구분당선.addSection(역삼_강남_구간);
+
+		assertThat(sections.getLinesDistinct().size()).isEqualTo(2);
+		assertThat(sections.getLinesDistinct()).contains(신분당선, 구분당선);
+	}
 }

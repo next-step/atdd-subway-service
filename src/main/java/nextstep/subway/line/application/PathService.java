@@ -14,6 +14,7 @@ import nextstep.subway.common.exception.Exceptions;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.FindPathRequest;
 import nextstep.subway.line.dto.FindPathResponse;
 import nextstep.subway.station.domain.Station;
@@ -32,13 +33,10 @@ public class PathService {
 	}
 
 	public FindPathResponse findShortestPath(FindPathRequest findPathRequest) {
-		List<Section> sections = sectionRepository.findAllByUpStationIdOrDownStationId(
-			findPathRequest.getSource(), findPathRequest.getTarget());
+		Sections sections = new Sections(sectionRepository.findAllByUpStationIdOrDownStationId(
+			findPathRequest.getSource(), findPathRequest.getTarget()));
 
-		List<Line> lines = sections.stream()
-			.map(Section::getLine)
-			.distinct()
-			.collect(Collectors.toList());
+		List<Line> lines = sections.getLinesDistinct();
 
 		Station sourceStation = findStationById(findPathRequest.getSource());
 		Station targetStation = findStationById(findPathRequest.getTarget());
@@ -49,7 +47,8 @@ public class PathService {
 			for (Section section : line.getSections()) {
 				graph.addVertex(section.getUpStation());
 				graph.addVertex(section.getDownStation());
-				graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+				graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
+					section.getDistance());
 			}
 		}
 
