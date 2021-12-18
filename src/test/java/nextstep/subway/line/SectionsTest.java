@@ -14,6 +14,7 @@ import nextstep.subway.common.exception.InternalServerException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.station.StationTest;
 import nextstep.subway.station.domain.Station;
 
 public class SectionsTest {
@@ -21,8 +22,8 @@ public class SectionsTest {
 	@DisplayName("구간이 있는 상태에서 구간을 추가한다.")
 	void add_success1() {
 		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
-		Section section1 = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
-		Section section2 = new Section(line, LineTest.선릉역, LineTest.역삼역, 5);
+		Section section1 = new Section(line, StationTest.삼성역, StationTest.선릉역, 5);
+		Section section2 = new Section(line, StationTest.선릉역, StationTest.역삼역, 5);
 		line.addSection(section1);
 		Sections sections = new Sections(new ArrayList<>(Collections.singletonList(section1)));
 
@@ -35,7 +36,7 @@ public class SectionsTest {
 	@DisplayName("구간이 등록되지 않은 상태에서 구간을 추가한다.")
 	void add_success2() {
 		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
-		Section section = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
+		Section section = new Section(line, StationTest.삼성역, StationTest.선릉역, 5);
 		Sections sections = new Sections(new ArrayList<>());
 
 		sections.add(section);
@@ -48,7 +49,7 @@ public class SectionsTest {
 	void add_sameUpDownStation_exception() {
 		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
 		Sections sections = new Sections(new ArrayList<>());
-		Section section = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
+		Section section = new Section(line, StationTest.삼성역, StationTest.선릉역, 5);
 
 		sections.add(section);
 
@@ -62,8 +63,8 @@ public class SectionsTest {
 	void add_hasNoUpDownStation_exception() {
 		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
 		Sections sections = new Sections(new ArrayList<>());
-		Section section = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
-		Section noRelationSection = new Section(line, LineTest.강남역, LineTest.역삼역, 5);
+		Section section = new Section(line, StationTest.삼성역, StationTest.선릉역, 5);
+		Section noRelationSection = new Section(line, StationTest.강남역, StationTest.역삼역, 5);
 
 		sections.add(section);
 
@@ -77,8 +78,8 @@ public class SectionsTest {
 	void add_insideSectionWithTooFarDistance_exception() {
 		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
 		Sections sections = new Sections(new ArrayList<>());
-		Section section = new Section(line, LineTest.삼성역, LineTest.역삼역, 10);
-		Section sectionTooFarDistance = new Section(line, LineTest.선릉역, LineTest.역삼역, 10);
+		Section section = new Section(line, StationTest.삼성역, StationTest.역삼역, 10);
+		Section sectionTooFarDistance = new Section(line, StationTest.선릉역, StationTest.역삼역, 10);
 		sections.add(section);
 
 		assertThatThrownBy(() -> sections.add(sectionTooFarDistance))
@@ -91,13 +92,13 @@ public class SectionsTest {
 	void remove_success1() {
 		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
 		Sections sections = new Sections(new ArrayList<>());
-		Section section1 = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
-		Section section2 = new Section(line, LineTest.선릉역, LineTest.역삼역, 5);
+		Section section1 = new Section(line, StationTest.삼성역, StationTest.선릉역, 5);
+		Section section2 = new Section(line, StationTest.선릉역, StationTest.역삼역, 5);
 		sections.add(section1);
 		sections.add(section2);
 
-		sections.removeByStation(LineTest.삼성역);
-		Sections expected = new Sections(Collections.singletonList(new Section(line, LineTest.선릉역, LineTest.역삼역, 5)));
+		sections.removeByStation(StationTest.삼성역);
+		Sections expected = new Sections(Collections.singletonList(new Section(line, StationTest.선릉역, StationTest.역삼역, 5)));
 
 		assertThat(expected).isEqualTo(sections);
 	}
@@ -107,13 +108,13 @@ public class SectionsTest {
 	void remove_success2() {
 		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
 		Sections sections = new Sections(new ArrayList<>());
-		Section section1 = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
-		Section section2 = new Section(line, LineTest.선릉역, LineTest.역삼역, 5);
+		Section section1 = new Section(line, StationTest.삼성역, StationTest.선릉역, 5);
+		Section section2 = new Section(line, StationTest.선릉역, StationTest.역삼역, 5);
 		sections.add(section1);
 		sections.add(section2);
 
-		sections.removeByStation(LineTest.선릉역);
-		Sections expected = new Sections(Collections.singletonList(new Section(line, LineTest.삼성역, LineTest.역삼역, 10)));
+		sections.removeByStation(StationTest.선릉역);
+		Sections expected = new Sections(Collections.singletonList(new Section(line, StationTest.삼성역, StationTest.역삼역, 10)));
 
 		assertThat(expected).isEqualTo(sections);
 	}
@@ -123,13 +124,13 @@ public class SectionsTest {
 	void remove_success3() {
 		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
 		Sections sections = new Sections(new ArrayList<>());
-		Section section1 = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
-		Section section2 = new Section(line, LineTest.선릉역, LineTest.역삼역, 5);
+		Section section1 = new Section(line, StationTest.삼성역, StationTest.선릉역, 5);
+		Section section2 = new Section(line, StationTest.선릉역, StationTest.역삼역, 5);
 		sections.add(section1);
 		sections.add(section2);
 
-		sections.removeByStation(LineTest.역삼역);
-		Sections expected = new Sections(Collections.singletonList(new Section(line, LineTest.삼성역, LineTest.선릉역, 5)));
+		sections.removeByStation(StationTest.역삼역);
+		Sections expected = new Sections(Collections.singletonList(new Section(line, StationTest.삼성역, StationTest.선릉역, 5)));
 
 		assertThat(expected).isEqualTo(sections);
 	}
@@ -139,10 +140,10 @@ public class SectionsTest {
 	void remove_onlyHasOneSection_exception() {
 		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
 		Sections sections = new Sections(new ArrayList<>());
-		Section section1 = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
+		Section section1 = new Section(line, StationTest.삼성역, StationTest.선릉역, 5);
 		sections.add(section1);
 
-		assertThatThrownBy(() -> sections.removeByStation(LineTest.역삼역))
+		assertThatThrownBy(() -> sections.removeByStation(StationTest.역삼역))
 			.isInstanceOf(InternalServerException.class)
 			.hasMessage("최소한 1개의 구간이 등록되어 있어야 합니다.");
 	}
@@ -152,14 +153,14 @@ public class SectionsTest {
 	void getOrderedStations_success() {
 		Line line = new Line(LineTest.신분당선, LineTest.BG_RED_600);
 		Sections sections = new Sections(new ArrayList<>());
-		Section section1 = new Section(line, LineTest.삼성역, LineTest.선릉역, 5);
-		Section section2 = new Section(line, LineTest.선릉역, LineTest.역삼역, 5);
+		Section section1 = new Section(line, StationTest.삼성역, StationTest.선릉역, 5);
+		Section section2 = new Section(line, StationTest.선릉역, StationTest.역삼역, 5);
 		sections.add(section2);
 		sections.add(section1);
 
 		List<Station> stations = sections.getOrderedStations();
 
-		assertThat(Arrays.asList(LineTest.삼성역, LineTest.선릉역, LineTest.역삼역)).isEqualTo(stations);
+		assertThat(Arrays.asList(StationTest.삼성역, StationTest.선릉역, StationTest.역삼역)).isEqualTo(stations);
 	}
 
 	@Test
@@ -168,9 +169,9 @@ public class SectionsTest {
 		Line 신분당선 = new Line(LineTest.신분당선, LineTest.BG_RED_600);
 		Line 구분당선 = new Line(LineTest.구분당선, LineTest.BG_BLUE_600);
 		Sections sections = new Sections(new ArrayList<>());
-		Section 삼성_선릉_구간 = new Section(신분당선, LineTest.삼성역, LineTest.선릉역, 5);
-		Section 선릉_역삼_구간 = new Section(신분당선, LineTest.선릉역, LineTest.역삼역, 5);
-		Section 역삼_강남_구간 = new Section(구분당선, LineTest.역삼역, LineTest.강남역, 5);
+		Section 삼성_선릉_구간 = new Section(신분당선, StationTest.삼성역, StationTest.선릉역, 5);
+		Section 선릉_역삼_구간 = new Section(신분당선, StationTest.선릉역, StationTest.역삼역, 5);
+		Section 역삼_강남_구간 = new Section(구분당선, StationTest.역삼역, StationTest.강남역, 5);
 		sections.add(삼성_선릉_구간);
 		sections.add(선릉_역삼_구간);
 		sections.add(역삼_강남_구간);
@@ -184,14 +185,14 @@ public class SectionsTest {
 	void contains_success() {
 		Line 신분당선 = new Line(LineTest.신분당선, LineTest.BG_RED_600);
 		Sections sections = new Sections(new ArrayList<>());
-		Section 삼성_선릉_구간 = new Section(신분당선, LineTest.삼성역, LineTest.선릉역, 5);
-		Section 선릉_역삼_구간 = new Section(신분당선, LineTest.선릉역, LineTest.역삼역, 5);
+		Section 삼성_선릉_구간 = new Section(신분당선, StationTest.삼성역, StationTest.선릉역, 5);
+		Section 선릉_역삼_구간 = new Section(신분당선, StationTest.선릉역, StationTest.역삼역, 5);
 		sections.add(삼성_선릉_구간);
 		sections.add(선릉_역삼_구간);
 
-		assertThat(sections.contains(LineTest.삼성역)).isTrue();
-		assertThat(sections.contains(LineTest.선릉역)).isTrue();
-		assertThat(sections.contains(LineTest.역삼역)).isTrue();
-		assertThat(sections.contains(LineTest.강남역)).isFalse();
+		assertThat(sections.contains(StationTest.삼성역)).isTrue();
+		assertThat(sections.contains(StationTest.선릉역)).isTrue();
+		assertThat(sections.contains(StationTest.역삼역)).isTrue();
+		assertThat(sections.contains(StationTest.강남역)).isFalse();
 	}
 }
