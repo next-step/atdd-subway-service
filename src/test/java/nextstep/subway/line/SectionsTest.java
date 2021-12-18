@@ -170,10 +170,10 @@ public class SectionsTest {
 		Sections sections = new Sections(new ArrayList<>());
 		Section 삼성_선릉_구간 = new Section(신분당선, LineTest.삼성역, LineTest.선릉역, 5);
 		Section 선릉_역삼_구간 = new Section(신분당선, LineTest.선릉역, LineTest.역삼역, 5);
-		Section 역삼_강남_구간 = new Section(구분당선, LineTest.선릉역, LineTest.역삼역, 5);
-		신분당선.addSection(삼성_선릉_구간);
-		신분당선.addSection(선릉_역삼_구간);
-		구분당선.addSection(역삼_강남_구간);
+		Section 역삼_강남_구간 = new Section(구분당선, LineTest.역삼역, LineTest.강남역, 5);
+		sections.add(삼성_선릉_구간);
+		sections.add(선릉_역삼_구간);
+		sections.add(역삼_강남_구간);
 
 		assertThat(sections.getLinesDistinct().size()).isEqualTo(2);
 		assertThat(sections.getLinesDistinct()).contains(신분당선, 구분당선);
