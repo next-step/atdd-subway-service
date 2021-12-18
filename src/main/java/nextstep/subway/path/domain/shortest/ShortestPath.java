@@ -3,6 +3,7 @@ package nextstep.subway.path.domain.shortest;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import nextstep.subway.fare.domain.DefaultFare;
 import nextstep.subway.fare.domain.DistanceFare;
 import nextstep.subway.fare.domain.LineFare;
 import nextstep.subway.line.domain.Line;
@@ -34,6 +35,7 @@ public class ShortestPath {
 
 	public int getFare() {
 		return IntStream.of(
+			DefaultFare.calculate().getFare(),
 			LineFare.calculate(lines).getFare(),
 			DistanceFare.calculate(distance).getFare()
 		).sum();

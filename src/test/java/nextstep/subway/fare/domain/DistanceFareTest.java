@@ -17,23 +17,23 @@ class DistanceFareTest {
 	@DisplayName("기본운임료(10km 이하)")
 	@Test
 	void calculate_basic() {
-		assertThat(DistanceFare.calculate(1)).isEqualTo(Fare.of(1250));
-		assertThat(DistanceFare.calculate(10)).isEqualTo(Fare.of(1250));
+		assertThat(DistanceFare.calculate(1)).isEqualTo(Fare.of(0));
+		assertThat(DistanceFare.calculate(10)).isEqualTo(Fare.of(0));
 	}
 
 	@DisplayName("추가운임료(10km 초과 ~ 50km 이하)")
 	@Test
 	void calculate_extra() {
-		assertThat(DistanceFare.calculate(15)).isEqualTo(Fare.of(1250 + 100));
-		assertThat(DistanceFare.calculate(18)).isEqualTo(Fare.of(1250 + 200));
-		assertThat(DistanceFare.calculate(50)).isEqualTo(Fare.of(1250 + 800));
+		assertThat(DistanceFare.calculate(15)).isEqualTo(Fare.of(100));
+		assertThat(DistanceFare.calculate(18)).isEqualTo(Fare.of(200));
+		assertThat(DistanceFare.calculate(50)).isEqualTo(Fare.of(800));
 	}
 
 	@DisplayName("추가운임료(50km 초과)")
 	@Test
 	void calculate_over_extra() {
-		assertThat(DistanceFare.calculate(58)).isEqualTo(Fare.of(1250 + 800 + 100));
-		assertThat(DistanceFare.calculate(60)).isEqualTo(Fare.of(1250 + 800 + 200));
-		assertThat(DistanceFare.calculate(90)).isEqualTo(Fare.of(1250 + 800 + 500));
+		assertThat(DistanceFare.calculate(58)).isEqualTo(Fare.of(800 + 100));
+		assertThat(DistanceFare.calculate(60)).isEqualTo(Fare.of(800 + 200));
+		assertThat(DistanceFare.calculate(90)).isEqualTo(Fare.of(800 + 500));
 	}
 }

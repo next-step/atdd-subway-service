@@ -2,9 +2,8 @@ package nextstep.subway.fare.domain;
 
 public class DistanceFare {
 
-	private static final int BASIC_KRW = 1250;
-
-	private static final double BASIC_MAX_KM_INCLUSIVE = 10;
+	private static final int BASE_KRW = 0;
+	private static final double BASE_MAX_KM_INCLUSIVE = 10;
 
 	private static final double UNIT_KM_TO_CHARGE_EXTRA = 5;
 	private static final int EXTRA_KRW = 100;
@@ -15,13 +14,13 @@ public class DistanceFare {
 
 	public static Fare calculate(double distanceKm) {
 		validate(distanceKm);
-		if (distanceKm <= BASIC_MAX_KM_INCLUSIVE) {
-			return Fare.of(BASIC_KRW);
+		if (distanceKm <= BASE_MAX_KM_INCLUSIVE) {
+			return Fare.of(BASE_KRW);
 		} else if (distanceKm <= EXTRA_MAX_KM_INCLUSIVE) {
-			return Fare.of(BASIC_KRW + calculateExtraFare(distanceKm - BASIC_MAX_KM_INCLUSIVE));
+			return Fare.of(BASE_KRW + calculateExtraFare(distanceKm - BASE_MAX_KM_INCLUSIVE));
 		}
-		return Fare.of(BASIC_KRW
-			+ calculateExtraFare(EXTRA_MAX_KM_INCLUSIVE - BASIC_MAX_KM_INCLUSIVE)
+		return Fare.of(BASE_KRW
+			+ calculateExtraFare(EXTRA_MAX_KM_INCLUSIVE - BASE_MAX_KM_INCLUSIVE)
 			+ calculateOverExtraFare(distanceKm - EXTRA_MAX_KM_INCLUSIVE)
 		);
 	}
