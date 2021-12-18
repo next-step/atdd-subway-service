@@ -50,9 +50,9 @@ class PathServiceTest {
 		final Station 양재역 = mockStation(2L);
 		final Station 교대역 = mockStation(3L);
 		final Station 남부터미널역 = mockStation(4L);
-		final Line 신분당선 = mockLine(Arrays.asList(mockSection(강남역, 양재역, 10)));
-		final Line 이호선 = mockLine(Arrays.asList(mockSection(강남역, 교대역, 10)));
-		final Line 삼호선 = mockLine(Arrays.asList(
+		final Line 신분당선 = mockLine(100, Arrays.asList(mockSection(강남역, 양재역, 10)));
+		final Line 이호선 = mockLine(200, Arrays.asList(mockSection(강남역, 교대역, 10)));
+		final Line 삼호선 = mockLine(300, Arrays.asList(
 			mockSection(양재역, 남부터미널역, 2),
 			mockSection(교대역, 남부터미널역, 3)
 		));
@@ -65,6 +65,7 @@ class PathServiceTest {
 			.map(StationResponse::getId).collect(Collectors.toList());
 		assertThat(actualStationIds).containsExactly(강남역.getId(), 양재역.getId(), 남부터미널역.getId());
 		assertThat(pathResponse.getDistance()).isEqualTo(12d);
+		assertThat(pathResponse.getFare()).isEqualTo(1250 + 100 + 300);
 	}
 
 	@DisplayName("출발역과 도착역이 동일한 경로 조회시 예외발생")
@@ -91,9 +92,11 @@ class PathServiceTest {
 		return station;
 	}
 
-	private Line mockLine(List<Section> sections) {
-		final Line line = mock(Line.class);
+	private Line mockLine(int fare, List<Section> sections) {
+		final Line line = mock(Line.class, withSettings().lenient());
+		given(line.getFare()).willReturn(fare);
 		given(line.getSections()).willReturn(sections);
+		line.getSections().forEach(section -> given(section.getLine()).willReturn(line));
 		return line;
 	}
 

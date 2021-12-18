@@ -35,8 +35,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = postStations("강남역").as(StationResponse.class);
         광교역 = postStations("광교역").as(StationResponse.class);
 
-        lineRequest1 = lineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        lineRequest2 = lineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        lineRequest1 = lineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 500);
+        lineRequest2 = lineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15, 300);
     }
 
     @DisplayName("지하철 노선을 생성한다.")

@@ -47,9 +47,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		교대역_ID = createStationId("교대역");
 		남부터미널역_ID = createStationId("남부터미널역");
 
-		신분당선_ID = createLineId("신분당선", "bg-red-600", 강남역_ID, 양재역_ID, 10);
-		이호선_ID = createLineId("이호선", "bg-red-600", 교대역_ID, 강남역_ID, 10);
-		삼호선_ID = createLineId("삼호선", "bg-red-600", 교대역_ID, 양재역_ID, 5);
+		신분당선_ID = createLineId("신분당선", "bg-red-600", 강남역_ID, 양재역_ID, 10, 500);
+		이호선_ID = createLineId("이호선", "bg-red-600", 교대역_ID, 강남역_ID, 10, 0);
+		삼호선_ID = createLineId("삼호선", "bg-red-600", 교대역_ID, 양재역_ID, 5, 200);
 
 		postSections(삼호선_ID, sectionRequest(교대역_ID, 남부터미널역_ID, 3));
 	}
@@ -64,7 +64,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		final PathResponse pathResponse = response.as(PathResponse.class);
 		최단_경로_역_목록_확인됨(pathResponse, Arrays.asList(강남역_ID, 양재역_ID, 남부터미널역_ID));
 		최단_경로_거리_확인됨(pathResponse, 12);
-		최단_경로_운임료_확인됨(pathResponse, 1350);
+		최단_경로_운임료_확인됨(pathResponse, 1250 + 100 + 500);
 	}
 
 	private ExtractableResponse<Response> 최단_경로_조회_요청(long source, long target) {

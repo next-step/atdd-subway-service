@@ -25,16 +25,7 @@ public class Line extends BaseEntity {
     @Embedded
     private Fare fare;
 
-    public Line() {
-    }
-
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
-
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this(name, color, upStation, downStation, distance, 0);
+    protected Line() {
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance, int fare) {

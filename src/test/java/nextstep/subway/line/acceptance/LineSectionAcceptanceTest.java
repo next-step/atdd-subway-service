@@ -35,7 +35,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         정자역 = postStations("정자역").as(StationResponse.class);
         광교역 = postStations("광교역").as(StationResponse.class);
 
-        신분당선 = postLines(lineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10))
+        신분당선 = postLines(lineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 500))
             .as(LineResponse.class);
     }
 
