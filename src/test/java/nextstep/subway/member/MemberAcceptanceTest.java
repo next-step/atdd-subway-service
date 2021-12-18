@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
+    public static final String MY_INFO_URL = "/members/me";
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final String NEW_EMAIL = "newemail@email.com";
@@ -103,7 +104,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .auth().oauth2(token)
             .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/members/me")
+            .when().get(MY_INFO_URL)
             .then().log().all()
             .extract();
     }
@@ -116,7 +117,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(memberRequest)
             .when()
-            .put("/members/me")
+            .put(MY_INFO_URL)
             .then().log().all()
             .extract();
     }
@@ -126,7 +127,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .given().log().all()
             .auth().oauth2(token)
             .when()
-            .delete("/members/me")
+            .delete(MY_INFO_URL)
             .then().log().all()
             .extract();
     }

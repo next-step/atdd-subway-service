@@ -3,6 +3,7 @@ package nextstep.subway.member.ui;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.common.exception.ControllerExceptionHandler;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
-public class MemberController {
+public class MemberController extends ControllerExceptionHandler {
     private MemberService memberService;
 
     public MemberController(MemberService memberService) {

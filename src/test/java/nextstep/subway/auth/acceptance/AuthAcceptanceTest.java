@@ -62,9 +62,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         토큰_검증_실패(response);
     }
 
-    private void 회원_등록되어_있음() {
-        ExtractableResponse<Response> response = 회원_생성을_요청(TEST_EMAIL, TEST_PWD, TEST_AGE);
+    public static void 회원_등록되어_있음(String email, String pwd, int age) {
+        ExtractableResponse<Response> response = 회원_생성을_요청(email, pwd, age);
         회원_생성됨(response);
+    }
+
+    public static void 회원_등록되어_있음() {
+        회원_등록되어_있음(TEST_EMAIL, TEST_PWD, TEST_AGE);
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String pwd) {
@@ -93,5 +97,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static void 토큰_검증_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isNotEqualTo(HttpStatus.OK.value());
+    }
+
+    public static String 로그인_되어있음(String email, String pwd) {
+        ExtractableResponse<Response> response = 로그인_요청(email, pwd);
+        return 로그인_됨(response);
     }
 }

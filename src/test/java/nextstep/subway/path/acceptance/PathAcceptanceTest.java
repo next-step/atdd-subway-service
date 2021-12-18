@@ -1,5 +1,7 @@
 package nextstep.subway.path.acceptance;
 
+import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -62,47 +64,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
 
-    private static LineResponse 지하철_노선_등록되어_있음(String name, String color,
-        StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest param = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
-        return LineAcceptanceTest.지하철_노선_등록되어_있음(param).as(LineResponse.class);
-    }
-
-    private static void 지하철_노선에_지하철역_등록되어_있음(LineResponse line,
-        StationResponse upStation, StationResponse downStation, int distance) {
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
-    }
-
-    public static ExtractableResponse<Response> 지하철_경로_조회_요청(Long srcStationId, Long destStationId) {
-        PathRequest param = new PathRequest(srcStationId, destStationId);
-        return 지하철_경로_조회_요청(param);
-    }
-    public static ExtractableResponse<Response> 지하철_경로_조회_요청(PathRequest params) {
-        return RestAssured
-            .given().log().all()
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .queryParams("source", params.getSrcStationId())
-            .queryParams("target", params.getDestStationId())
-            .when().get("/path")
-            .then().log().all().
-                extract();
-    }
-
-    private void 최단_경로_조회됨(ExtractableResponse<Response> response, StationResponse... expectedStations) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getPath())
-            .containsExactly(expectedStations);
-    }
-
-    private void 최단_경로_거리_일치함(ExtractableResponse<Response> response, double expectedWeights) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getPathWeight()).isEqualTo(expectedWeights);
-    }
-
-    private void 최단_경로_조회_실패함(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
     @DisplayName("출발역에서 도착역으로 가는 최단 경로를 조회한다")
     @Test
     public void findShortestPathTest() {
@@ -132,5 +93,36 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_경로_조회_실패함(response);
+    }
+
+    public static ExtractableResponse<Response> 지하철_경로_조회_요청(Long srcStationId, Long destStationId) {
+        PathRequest param = new PathRequest(srcStationId, destStationId);
+        return 지하철_경로_조회_요청(param);
+    }
+
+    public static ExtractableResponse<Response> 지하철_경로_조회_요청(PathRequest params) {
+        return RestAssured
+            .given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .queryParams("source", params.getSrcStationId())
+            .queryParams("target", params.getDestStationId())
+            .when().get("/path")
+            .then().log().all().
+                extract();
+    }
+
+    private void 최단_경로_조회됨(ExtractableResponse<Response> response, StationResponse... expectedStations) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getPath())
+            .containsExactly(expectedStations);
+    }
+
+    private void 최단_경로_거리_일치함(ExtractableResponse<Response> response, double expectedWeights) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getPathWeight()).isEqualTo(expectedWeights);
+    }
+
+    private void 최단_경로_조회_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

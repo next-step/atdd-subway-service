@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class PathService {
     private final LineService lineService;
     private final StationService stationService;
@@ -22,14 +23,12 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    @Transactional(readOnly = true)
     public PathResponse findShortestPath(PathRequest request) {
         List<Line> lines = lineService.findLines();
         PathFinder pathFinder = new PathFinder(lines);
         return findShortestPath(request, pathFinder);
     }
 
-    @Transactional(readOnly = true)
     public PathResponse findShortestPath(PathRequest request, PathFinder pathFinder) {
         Station srcStation = stationService.findById(request.getSrcStationId());
         Station destStation = stationService.findById(request.getDestStationId());
