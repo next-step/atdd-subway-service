@@ -32,7 +32,7 @@ public class Section {
     public Section() {
     }
 
-    public Section(final Line line, final Station upStation, final Station downStation, final Distance distance) {
+    private Section(final Line line, final Station upStation, final Station downStation, final Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;

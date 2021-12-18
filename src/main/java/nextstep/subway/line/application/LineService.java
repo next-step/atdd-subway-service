@@ -67,7 +67,7 @@ public class LineService {
     private Section createNewSection(final Line line, final Long upStationId, final Long downStationId, final Distance distance) {
         Station upStation = stationService.findById(upStationId);
         Station downStation = stationService.findById(downStationId);
-        return new Section(line, upStation, downStation, distance);
+        return Section.of(line, upStation, downStation, distance);
     }
 
     @Transactional
