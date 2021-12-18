@@ -5,12 +5,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import nextstep.subway.common.exception.BaseException;
+import nextstep.subway.common.exception.CustomExceptionBase;
 
 @RestControllerAdvice
 public class ControllerAdvice {
-	@ExceptionHandler(BaseException.class)
-	public ResponseEntity<String> errorHandler(BaseException e) {
+	@ExceptionHandler(CustomExceptionBase.class)
+	public ResponseEntity<String> errorHandler(CustomExceptionBase e) {
 		return new ResponseEntity<>(e.getMessage(), e.getStatus());
 	}
 

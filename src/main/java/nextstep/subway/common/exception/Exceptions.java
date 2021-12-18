@@ -13,13 +13,13 @@ public enum Exceptions {
 	SOURCE_OR_TARGET_NOT_EXIST(new BadParameterException("출발지 또는 도착지가 존재하지 않아 경로를 찾을 수 없습니다."))
 	;
 
-	private final BaseException exception;
+	private final CustomExceptionBase exception;
 
-	Exceptions(BaseException exception) {
+	Exceptions(CustomExceptionBase exception) {
 		this.exception = exception;
 	}
 
-	public BaseException getException() {
+	public CustomExceptionBase getException() {
 		return exception;
 	}
 }
