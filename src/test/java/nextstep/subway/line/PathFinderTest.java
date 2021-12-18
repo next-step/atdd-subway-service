@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,11 +22,18 @@ import nextstep.subway.station.StationTest;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinderTest {
+	private Line 신분당선;
+	private Line 구분당선;
+
+	@BeforeEach
+	void setUp() {
+		신분당선 = new Line(LineTest.신분당선, LineTest.BG_RED_600);
+		구분당선 = new Line(LineTest.구분당선, LineTest.BG_BLUE_600);
+	}
+
 	@Test
 	@DisplayName("최단 경로를 조회한다.")
 	void findShortestPath() {
-		Line 신분당선 = new Line(LineTest.신분당선, LineTest.BG_RED_600);
-		Line 구분당선 = new Line(LineTest.구분당선, LineTest.BG_BLUE_600);
 		Section 삼성_선릉_구간 = new Section(신분당선, StationTest.삼성역, StationTest.선릉역, 5);
 		Section 선릉_역삼_구간 = new Section(신분당선, StationTest.선릉역, StationTest.역삼역, 7);
 		Section 역삼_강남_구간 = new Section(신분당선, StationTest.역삼역, StationTest.강남역, 5);
