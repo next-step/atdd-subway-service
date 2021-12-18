@@ -20,7 +20,9 @@ public enum ErrorCode {
     , UNCOUPLED_PATH("0402", "출발역과 도착역이 연결이 되어 있지 않습니다.")
 
     // 회원 [05xx]
-    , NOT_FOUND_MEMBER_ID("0501", "존재하지 않는 회원ID 입니다.");
+    , NOT_FOUND_MEMBER_ID("0501", "존재하지 않는 회원ID 입니다.")
+    , INVALID_MEMBER_INFO("0502", "유효하지 않은 회원 정보입니다.")
+    , INVALID_TOKEN("0503", "유효하지 않은 토큰입니다.");
 
     private final String code;
     private final String message;
