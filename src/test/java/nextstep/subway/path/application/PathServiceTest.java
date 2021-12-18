@@ -15,6 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.application.FareService;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -29,6 +32,9 @@ class PathServiceTest {
 
 	@InjectMocks
 	private PathService pathService;
+
+	@Mock
+	private FareService fareService;
 
 	@Mock
 	private StationRepository stationRepository;
@@ -46,6 +52,7 @@ class PathServiceTest {
 	@DisplayName("지하철 경로 조회")
 	@Test
 	void findPath() {
+		final LoginMember 회원 = new LoginMember(1L, "member@email.com", 20);
 		final Station 강남역 = mockStation(1L);
 		final Station 양재역 = mockStation(2L);
 		final Station 교대역 = mockStation(3L);
@@ -58,30 +65,32 @@ class PathServiceTest {
 		));
 		given(stationRepository.findByIdIn(any())).willReturn(Arrays.asList(강남역, 남부터미널역));
 		given(lineRepository.findAll()).willReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+		given(fareService.calculate(any(), any())).willReturn(Fare.of(1650));
 
-		final PathResponse pathResponse = pathService.findPath(강남역.getId(), 남부터미널역.getId());
+		final PathResponse pathResponse = pathService.findPath(회원, 강남역.getId(), 남부터미널역.getId());
 
 		final List<Long> actualStationIds = pathResponse.getStations().stream()
 			.map(StationResponse::getId).collect(Collectors.toList());
 		assertThat(actualStationIds).containsExactly(강남역.getId(), 양재역.getId(), 남부터미널역.getId());
 		assertThat(pathResponse.getDistance()).isEqualTo(12d);
-		assertThat(pathResponse.getFare()).isEqualTo(1250 + 100 + 300);
 	}
 
 	@DisplayName("출발역과 도착역이 동일한 경로 조회시 예외발생")
 	@Test
 	void findPath_same_station_ids() {
+		final LoginMember 회원 = new LoginMember(1L, "member@email.com", 20);
 		final Station 강남역 = mockStation(1L);
 		assertThatExceptionOfType(IllegalArgumentException.class)
-			.isThrownBy(() -> pathService.findPath(강남역.getId(), 강남역.getId()));
+			.isThrownBy(() -> pathService.findPath(회원, 강남역.getId(), 강남역.getId()));
 	}
 
 	@DisplayName("존재하지 않는 역으로 경로 조회시 예외발생")
 	@Test
 	void findPath_not_found_station() {
+		final LoginMember 회원 = new LoginMember(1L, "member@email.com", 20);
 		given(stationRepository.findByIdIn(any())).willReturn(Collections.emptyList());
 		assertThatExceptionOfType(StationNotFoundException.class)
-			.isThrownBy(() -> pathService.findPath(1L, 2L));
+			.isThrownBy(() -> pathService.findPath(회원, 1L, 2L));
 	}
 
 	private Station mockStation(Long id) {

@@ -16,6 +16,9 @@ import org.springframework.http.HttpStatus;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.RestApiFixture;
@@ -30,6 +33,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private long 양재역_ID;
 	private long 교대역_ID;
 	private long 남부터미널역_ID;
+	private String 사용자;
 
 	/**
 	 * 교대역 ------- *2호선(10)* ------- 강남역
@@ -52,13 +56,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		삼호선_ID = createLineId("삼호선", "bg-red-600", 교대역_ID, 양재역_ID, 5, 200);
 
 		postSections(삼호선_ID, sectionRequest(교대역_ID, 남부터미널역_ID, 3));
+
+		final String email = "member@email.com";
+		final String password = "<secret>";
+		final int age = 20;
+		회원_등록됨(email, password, age);
+		사용자 = 로그인됨(email, password);
 	}
 
 	// [outside->in] happy case 만 고려
 	@DisplayName("지하철 최단 경로를 조회한다.")
 	@Test
 	void findShortestPath() {
-		final ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역_ID, 남부터미널역_ID);
+		final ExtractableResponse<Response> response = 최단_경로_조회_요청(사용자, 강남역_ID, 남부터미널역_ID);
 		최단_경로_응답_확인됨(response);
 
 		final PathResponse pathResponse = response.as(PathResponse.class);
@@ -67,8 +77,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		최단_경로_운임료_확인됨(pathResponse, 1250 + 100 + 500);
 	}
 
-	private ExtractableResponse<Response> 최단_경로_조회_요청(long source, long target) {
-		return RestApiFixture.response(RestApiFixture.request()
+	private ExtractableResponse<Response> 최단_경로_조회_요청(String accessToken, long source, long target) {
+		return RestApiFixture.response(RestApiFixture.requestWithOAuth2(accessToken)
 			.queryParam("source", source)
 			.queryParam("target", target)
 			.get("/paths")
@@ -93,5 +103,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	private void 최단_경로_운임료_확인됨(PathResponse pathResponse, int fare) {
 		assertThat(pathResponse.getFare()).isEqualTo(fare);
+	}
+
+	private void 회원_등록됨(String email, String password, int age) {
+		MemberAcceptanceTest.회원_생성을_요청(email, password, age);
+	}
+
+	private String 로그인됨(String email, String password) {
+		return AuthAcceptanceTest.로그인_요청(email, password)
+			.as(TokenResponse.class).getAccessToken();
 	}
 }

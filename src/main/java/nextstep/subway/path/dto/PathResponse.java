@@ -3,6 +3,7 @@ package nextstep.subway.path.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.path.domain.shortest.ShortestPath;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -20,11 +21,11 @@ public class PathResponse {
 		this.fare = fare;
 	}
 
-	public static PathResponse of(ShortestPath shortestPath) {
+	public static PathResponse of(ShortestPath shortestPath, Fare fare) {
 		final List<StationResponse> stationResponses = shortestPath.getStations().stream()
 			.map(StationResponse::of)
 			.collect(Collectors.toList());
-		return new PathResponse(stationResponses, shortestPath.getDistance(), shortestPath.getFare());
+		return new PathResponse(stationResponses, shortestPath.getDistance(), fare.getFare());
 	}
 
 	public List<StationResponse> getStations() {
