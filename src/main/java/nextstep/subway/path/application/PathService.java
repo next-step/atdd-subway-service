@@ -5,9 +5,11 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.SectionWeightedEdge;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +39,7 @@ public class PathService {
         PathFinder pathFinder = PathFinder.of(lines);
 
         // 최단경로 찾기
-        List<Station> stations = pathFinder.findShortestPath(source, target);
+        GraphPath<Station, SectionWeightedEdge> shortestPath = pathFinder.findShortestPath(source, target);
 
         // return pathResponse
         return null;

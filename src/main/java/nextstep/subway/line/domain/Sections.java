@@ -162,4 +162,8 @@ public class Sections {
                 .map(Section::getDistance)
                 .reduce(new Distance(0), Distance::plus);
     }
+
+    public List<Section> getSections() {
+        return sections;
+    }
 }

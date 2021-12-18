@@ -2,10 +2,13 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.line.exception.OutOfDistanceRangeException;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
+@Access(AccessType.FIELD)
 public class Distance {
     private static final int ZERO = 0;
     private int distance;
@@ -34,6 +37,10 @@ public class Distance {
 
     public boolean isShorter(Distance newDistance) {
         return this.distance <= newDistance.distance;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 
     @Override
