@@ -31,12 +31,15 @@ public class PathFinder {
         validate(lines, source, target);
         initializeGraph(lines);
         final GraphPath<Station, Section> graphPath = getGraphPath(source, target);
-        final List<StationResponse> stations = getStationsOnPath(graphPath);
-        final int distance = (int)graphPath.getWeight();
-        final Set<Line> pathLines = getLinesOnPath(graphPath);
-        final int fare = FareCalculator.calculateFare(pathLines, distance, memberAge);
 
-        return new PathResponse(stations, distance, fare);
+        final List<StationResponse> stations = getStationsOnPath(graphPath);
+        final Set<Line> pathLines = getLinesOnPath(graphPath);
+        final int distance = (int)graphPath.getWeight();
+
+        final int fare = FareCalculator.calculateFare(pathLines, distance);
+        final int discountedFare = AgeGroup.of(memberAge).applyDiscount(fare);
+
+        return new PathResponse(stations, distance, discountedFare);
     }
 
     private static void validate(final Collection<Line> lines, final Station source, final Station target) {

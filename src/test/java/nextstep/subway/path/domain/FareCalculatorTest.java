@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -27,14 +28,15 @@ class FareCalculatorTest {
         이호선 = new Line("2호선", "green", 교대역, 강남역, 10, 500);
     }
 
+    @DisplayName("거리와 노선별 추가요금이 적절히 적용된 요금이 반환되는지 테스트")
     @ParameterizedTest
-    @CsvSource(value = {"12:5:0", "11:12:750", "19:18:1280", "9:19:1750"}, delimiter = ':')
-    void calculateFare(int distance, int memberAge, int expectedFare) {
+    @CsvSource(value = {"11:1850", "9:1750"}, delimiter = ':')
+    void calculateFare(int distance, int expectedFare) {
         // given
         final List<Line> lines = Arrays.asList(신분당선, 이호선);
 
         // when
-        final int fare = FareCalculator.calculateFare(lines, distance, memberAge);
+        final int fare = FareCalculator.calculateFare(lines, distance);
 
         // then
         assertThat(fare).isEqualTo(expectedFare);

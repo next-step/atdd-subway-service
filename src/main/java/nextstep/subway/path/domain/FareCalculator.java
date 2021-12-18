@@ -12,31 +12,15 @@ public class FareCalculator {
     private static final int EXTRA_FARE_DISTANCE_CRITERIA = 10;
     private static final int EXTRA_FARE_UNIT_DISTANCE = 5;
     private static final int UNIT_EXTRA_FARE = 100;
-    private static final int DISCOUNT = 350;
-    private static final double CHILDREN_DISCOUNT_RATE = 0.5;
-    private static final double TEENAGER_DISCOUNT_RATE = 0.8;
-    private static final int BABY_MAX_AGE = 5;
-    private static final int CHILDREN_MAX_AGE = 12;
-    private static final int TEENAGER_MAX_AGE = 18;
 
     private FareCalculator() {
     }
 
-    static int calculateFare(Collection<Line> lines, int distance, int memberAge) {
-        if (memberAge <= BABY_MAX_AGE) {
-            return 0;
-        }
+    static int calculateFare(Collection<Line> lines, int distance) {
         final int distanceExtraFare = calculateDistanceExtraFare(distance);
         final int lineExtraFare = calculateLineExtraFare(lines);
-        final int fare = BASIC_FARE + distanceExtraFare + lineExtraFare;
 
-        if (memberAge <= CHILDREN_MAX_AGE) {
-            return (int)((fare - DISCOUNT) * CHILDREN_DISCOUNT_RATE);
-        }
-        if (memberAge <= TEENAGER_MAX_AGE) {
-            return (int)((fare - DISCOUNT) * TEENAGER_DISCOUNT_RATE);
-        }
-        return fare;
+        return BASIC_FARE + distanceExtraFare + lineExtraFare;
     }
 
     private static int calculateDistanceExtraFare(int distance) {
