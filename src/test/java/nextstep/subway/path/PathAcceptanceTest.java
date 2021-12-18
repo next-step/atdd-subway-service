@@ -66,13 +66,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         최단_거리_경로_응답_성공(response);
         적절한_경로를_응답(response, Arrays.asList(교대역, 남부터미널역, 양재역));
-        총_소요_거리를_응답(response);
+        총_소요_거리를_응답(response, 5);
 
     }
 
-    private void 총_소요_거리를_응답(ExtractableResponse<Response> response) {
+    private void 총_소요_거리를_응답(ExtractableResponse<Response> response, int totalDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getDistance()).isEqualTo(5);
+        assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
     }
 
     private void 적절한_경로를_응답(ExtractableResponse<Response> response, List<StationResponse> stations) {

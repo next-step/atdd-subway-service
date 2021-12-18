@@ -12,9 +12,9 @@ public class SubwayPath {
     public SubwayPath() {
     }
 
-    public SubwayPath(GraphPath path) {
-        stations = path.getVertexList();
-        distance = (int) path.getWeight();
+    public SubwayPath(List<Station> stations, int distance) {
+        this.stations = stations;
+        this.distance = distance;
     }
 
     public List<Station> getStations() {
