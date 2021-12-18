@@ -1,5 +1,6 @@
 package nextstep.subway.domain.path.domain;
 
+import nextstep.subway.domain.auth.domain.LoginMember;
 import nextstep.subway.domain.line.domain.Distance;
 import nextstep.subway.domain.line.domain.Line;
 
@@ -14,13 +15,12 @@ public class Fare {
     private static final int ONE_STEP_EXTRA_FARE_MAX_DISTANCE = 50;
     private static final float ONE_STEP_EXTRA_FARE_DISTANCE = 5f;
     private static final float TWO_STEP_EXTRA_FARE_DISTANCE = 8f;
+    private static final double TEENAGER_DISCOUNT_RATE = 0.2;
+    private static final double CHILDREN_DISCOUNT_RATE = 0.5;
 
     private int amount;
 
     public Fare(final int amount) {
-        if (amount < DEFAULT_AMOUNT) {
-            throw new IllegalArgumentException(String.format("요금은 %d 이상입니다.", DEFAULT_AMOUNT));
-        }
         this.amount = amount;
     }
 
@@ -39,6 +39,29 @@ public class Fare {
                 .max()
                 .getAsInt();
         this.amount += lineMaxExtraFare;
+    }
+
+    public Fare(final Distance distance, List<Line> lines, LoginMember loginMember) {
+        this(distance, lines);
+        if (isTeenager(loginMember)) {
+            this.amount = discountAmountByAge(TEENAGER_DISCOUNT_RATE);
+            return;
+        }
+        if (isChildren(loginMember)) {
+            this.amount = discountAmountByAge(CHILDREN_DISCOUNT_RATE);
+        }
+    }
+
+    private int discountAmountByAge(double discountRate) {
+        return (int) ((this.amount - 350) * (1-discountRate));
+    }
+
+    private boolean isChildren(final LoginMember loginMember) {
+        return loginMember.getAge() >= 6 && loginMember.getAge() < 13;
+    }
+
+    private boolean isTeenager(final LoginMember loginMember) {
+        return loginMember.getAge() >= 13 && loginMember.getAge() < 19;
     }
 
     private boolean isExtraDistance(int distance) {
