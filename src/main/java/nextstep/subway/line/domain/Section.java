@@ -74,23 +74,6 @@ public class Section {
         this.distance = this.distance.minus(newDistance);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        Section section = (Section)o;
-        return Objects.equals(id, section.id) && Objects.equals(line, section.line)
-            && Objects.equals(upStation, section.upStation) && Objects.equals(downStation,
-            section.downStation) && Objects.equals(distance, section.distance);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, line, upStation, downStation, distance);
-    }
-
     public void setLine(Line line) {
         this.line = line;
         if (line != null && line.containsSection(this)) {
@@ -100,5 +83,21 @@ public class Section {
 
     public boolean contains(Station station) {
         return upStation.equals(station) || downStation.equals(station);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Section section = (Section)o;
+        return Objects.equals(line, section.line) && Objects.equals(upStation, section.upStation)
+            && Objects.equals(downStation, section.downStation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(line, upStation, downStation);
     }
 }
