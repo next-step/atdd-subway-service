@@ -73,4 +73,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [x] 성공
     - [x] 출발역과 도착역이 같으면 예외
     - [x] 출발역과 도착역이 연결되어 있지 않은 경우 예외
-    - [ ] 존재하지 않는 출발역이나 도착역을 조회하는 경우 예외
+    - [x] 존재하지 않는 출발역이나 도착역을 조회하는 경우 예외

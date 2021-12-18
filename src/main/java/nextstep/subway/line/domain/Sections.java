@@ -141,6 +141,18 @@ public class Sections {
 		}
 	}
 
+	public List<Line> getLinesDistinct() {
+		return sections.stream()
+			.map(Section::getLine)
+			.distinct()
+			.collect(Collectors.toList());
+	}
+
+	public boolean contains(Station station) {
+		return sections.stream()
+			.anyMatch(section -> section.contains(station));
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -154,12 +166,5 @@ public class Sections {
 	@Override
 	public int hashCode() {
 		return Objects.hash(sections);
-	}
-
-	public List<Line> getLinesDistinct() {
-		return sections.stream()
-			.map(Section::getLine)
-			.distinct()
-			.collect(Collectors.toList());
 	}
 }

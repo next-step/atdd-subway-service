@@ -97,4 +97,8 @@ public class Section {
             line.addSection(this);
         }
     }
+
+    public boolean contains(Station station) {
+        return upStation.equals(station) || downStation.equals(station);
+    }
 }

@@ -16,12 +16,19 @@ import nextstep.subway.station.domain.Station;
 @Component
 public class PathFinder {
 	public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target, List<Line> lines) {
-		validate(source, target);
-
+		validateSourceAndTargetIsEqual(source, target);
 		List<Section> sections = getSectionsDistinctFromLines(lines);
+		validateSourceAndTargetIsExist(source, target, new Sections(sections));
+
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 		DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = makeGraphFromSections(graph, sections);
 		return getPath(source, target, dijkstraShortestPath);
+	}
+
+	private void validateSourceAndTargetIsEqual(Station source, Station target) {
+		if (source.equals(target)) {
+			throw Exceptions.SOURCE_AND_TARGET_EQUAL.getException();
+		}
 	}
 
 	private GraphPath<Station, DefaultWeightedEdge> getPath(Station source, Station target,
@@ -41,9 +48,9 @@ public class PathFinder {
 		return new DijkstraShortestPath<>(graph);
 	}
 
-	private void validate(Station source, Station target) {
-		if (source.equals(target)) {
-			throw Exceptions.SOURCE_AND_TARGET_EQUAL.getException();
+	private void validateSourceAndTargetIsExist(Station source, Station target, Sections sections) {
+		if (!sections.contains(source) || !sections.contains(target)) {
+			throw Exceptions.SOURCE_OR_TARGET_NOT_EXIST.getException();
 		}
 	}
 

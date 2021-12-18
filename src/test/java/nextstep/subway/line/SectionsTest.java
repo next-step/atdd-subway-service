@@ -178,4 +178,20 @@ public class SectionsTest {
 		assertThat(sections.getLinesDistinct().size()).isEqualTo(2);
 		assertThat(sections.getLinesDistinct()).contains(신분당선, 구분당선);
 	}
+
+	@Test
+	@DisplayName("구간들 안에 특정 지하철역이 있는지 여부를 반환한다.")
+	void contains_success() {
+		Line 신분당선 = new Line(LineTest.신분당선, LineTest.BG_RED_600);
+		Sections sections = new Sections(new ArrayList<>());
+		Section 삼성_선릉_구간 = new Section(신분당선, LineTest.삼성역, LineTest.선릉역, 5);
+		Section 선릉_역삼_구간 = new Section(신분당선, LineTest.선릉역, LineTest.역삼역, 5);
+		sections.add(삼성_선릉_구간);
+		sections.add(선릉_역삼_구간);
+
+		assertThat(sections.contains(LineTest.삼성역)).isTrue();
+		assertThat(sections.contains(LineTest.선릉역)).isTrue();
+		assertThat(sections.contains(LineTest.역삼역)).isTrue();
+		assertThat(sections.contains(LineTest.강남역)).isFalse();
+	}
 }
