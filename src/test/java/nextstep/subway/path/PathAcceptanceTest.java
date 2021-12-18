@@ -113,6 +113,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		PathResponse pathResponse = response.as(PathResponse.class);
 		assertThat(pathResponse.getStations()).containsExactly(교대역, 양재역, 강남역, 선릉역);
 		assertThat(pathResponse.getDistance()).isEqualTo(12);
+		assertThat(pathResponse.getSubwayFare()).isEqualTo(1350);
 	}
 
 	public static void 지하철_노선_경로_조회_성공(ExtractableResponse<Response> response) {

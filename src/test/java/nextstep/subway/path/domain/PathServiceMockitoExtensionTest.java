@@ -71,6 +71,7 @@ class PathServiceMockitoExtensionTest {
 		//then
 		assertThat(pathIds).containsExactly(1L, 4L, 2L, 3L);
 		assertThat(pathResponse.getDistance()).isEqualTo(12);
+		assertThat(pathResponse.getSubwayFare()).isEqualTo(1350);
 	}
 
 	@Test

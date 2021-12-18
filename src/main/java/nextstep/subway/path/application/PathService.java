@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +14,7 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.SubwayFare;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -39,7 +41,8 @@ public class PathService {
 		List<StationResponse> stationResponses
 			= extractStationResponses(pathFinder.findShortestPathVertexes(sourceStation, targetStation));
 		Distance distance = pathFinder.findShortestPathDistance(sourceStation, targetStation);
-		return PathResponse.of(stationResponses, distance);
+		SubwayFare subwayFare = SubwayFare.calculate(distance);
+		return PathResponse.of(stationResponses, distance, subwayFare);
 	}
 
 	private List<Section> findAllSections() {
