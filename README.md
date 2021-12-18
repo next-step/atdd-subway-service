@@ -68,5 +68,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] 컨트롤러 레이어 생성
 - [x] 서비스 레이어 생성
 - [x] 최단경로찾기 도메인 레이어 구현
-- [ ] 최단경로찾기 도메인 레이어 예외상황 구현
+- [x] 최단경로찾기 도메인 레이어 예외상황 구현
 
