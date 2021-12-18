@@ -34,4 +34,45 @@ public class LineTest {
 
 		assertThat(Arrays.asList(삼성역, 선릉역, 역삼역, 강남역)).isEqualTo(actual);
 	}
+
+	@Test
+	@DisplayName("구간을 추가하면 노선에 추가된다.")
+	void addSection_success() {
+		Line actual = new Line(신분당선, BG_RED_600);
+		actual.addSection(new Section(actual, 역삼역, 강남역, 3));
+		Line expected = new Line(신분당선, BG_RED_600, 역삼역, 강남역, 3);
+
+		assertThat(actual.getSections()).isEqualTo(expected.getSections());
+	}
+
+	@Test
+	@DisplayName("노선에 추가되지 않은 구간을 노선에 추가하면 해당 구간은 추가한 노선의 소유가 된다.")
+	void addSection_success2() {
+		Line actual = new Line(신분당선, BG_RED_600);
+		actual.addSection(new Section(null, 역삼역, 강남역, 3));
+		Line expected = new Line(신분당선, BG_RED_600, 역삼역, 강남역, 3);
+
+		assertThat(actual.getSections().get(0).getLine())
+			.isEqualTo(expected.getSections().get(0).getLine());
+	}
+
+	@Test
+	@DisplayName("null구간을 추가하면 노선에 추가되지 않는다.")
+	void addSection_notAddNull() {
+		Line actual = new Line(신분당선, BG_RED_600);
+		actual.addSection(null);
+		Line expected = new Line(신분당선, BG_RED_600);
+
+		assertThat(actual).isEqualTo(expected);
+	}
+
+	@Test
+	@DisplayName("이미 다른 노선에 포함된 구간을 추가하려고 하면 추가되지 않는다.")
+	void addSection_otherLineSection_failed() {
+		Line actual = new Line(신분당선, BG_RED_600);
+		actual.addSection(new Section(actual, 역삼역, 강남역, 3));
+		Line expected = new Line(신분당선, BG_RED_600, 역삼역, 강남역, 3);
+
+		assertThat(actual.getSections()).isEqualTo(expected.getSections());
+	}
 }

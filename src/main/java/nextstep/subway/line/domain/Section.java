@@ -75,10 +75,13 @@ public class Section {
     }
 
     public void setLine(Line line) {
-        this.line = line;
-        if (line != null && line.containsSection(this)) {
+        if (line == null) {
+            return;
+        }
+        if (!line.containsSection(this)) {
             line.addSection(this);
         }
+        this.line = line;
     }
 
     public boolean contains(Station station) {

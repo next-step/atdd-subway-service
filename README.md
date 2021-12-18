@@ -67,7 +67,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ## 2단계 구현 목록
 - [x] 커스텀 예외 fillinStackTrace 오버라이드
-- [ ] line.addSection의 유효성검사 수정
+- [x] line.addSection의 유효성검사 및 로직 순서 수정
 - [x] Section.Equals, HashCode가 비즈니스키를 사용하도록 수정
 - [x] Sections.findUpStation의 null 반환 수정
 - [x] 최단 경로 조회 인수 테스트 만들기
