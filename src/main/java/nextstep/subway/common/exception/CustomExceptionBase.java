@@ -13,4 +13,9 @@ public class CustomExceptionBase extends RuntimeException {
 	public HttpStatus getStatus() {
 		return status;
 	}
+
+	@Override
+	public synchronized Throwable fillInStackTrace() {
+		return this;
+	}
 }
