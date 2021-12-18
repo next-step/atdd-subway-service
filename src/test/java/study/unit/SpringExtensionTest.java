@@ -4,15 +4,12 @@ import com.google.common.collect.Lists;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.LineResponses;
 import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -32,9 +29,9 @@ public class SpringExtensionTest {
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when
-        List<LineResponse> responses = lineService.findLines();
+        LineResponses responses = lineService.findLines();
 
         // then
-        assertThat(responses).hasSize(1);
+        assertThat(responses.size()).isEqualTo(1);
     }
 }
