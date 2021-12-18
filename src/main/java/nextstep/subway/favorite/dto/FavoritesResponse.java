@@ -1,4 +1,4 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.dto;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.dto;
 
 public class FavoriteRequest {
     private Long source;
