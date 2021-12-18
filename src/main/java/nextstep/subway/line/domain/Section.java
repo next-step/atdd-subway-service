@@ -68,7 +68,7 @@ public class Section {
             throw new OutOfDistanceRangeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.upStation = station;
-        this.distance.minus(newDistance);
+        this.distance = distance.minus(newDistance);
     }
 
     public void updateDownStation(Station station, Distance newDistance) {
@@ -76,7 +76,7 @@ public class Section {
             throw new OutOfDistanceRangeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.downStation = station;
-        this.distance.minus(newDistance);
+        this.distance= distance.minus(newDistance);
     }
 
     public boolean equalsUpStation(Station station) {

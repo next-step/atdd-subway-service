@@ -42,9 +42,9 @@ class SectionsTest {
         assertThat(stationNames).containsExactly("사당역", "강남역", "삼성역");
     }
 
-    @DisplayName("지하철 구간 추가")
+    @DisplayName("지하철 구간에 종점역 추가")
     @Test
-    void addSection() {
+    void addStationOuterSection() {
         Station 잠실역 = new Station("잠실역");
         Section newSection = new Section(이호선, 삼성역, 잠실역, 3);
 
@@ -52,6 +52,18 @@ class SectionsTest {
 
         assertThat(getStationNames()).containsExactly("사당역", "강남역", "삼성역", "잠실역");
         assertThat(sections.getTotalDistance()).isEqualTo(new Distance(16));
+    }
+
+    @DisplayName("지하철 구간 내부에 지하철역 추가")
+    @Test
+    void addStationInnerSection() {
+        Station 역삼역 = new Station("역삼역");
+        Section newSection = new Section(이호선, 강남역, 역삼역, 1);
+
+        sections.addSection(newSection);
+
+        assertThat(getStationNames()).containsExactly("사당역", "강남역", "역삼역", "삼성역");
+        assertThat(sections.getTotalDistance()).isEqualTo(new Distance(13));
     }
 
     @DisplayName("이미 등록된 구간은 등록할 수 없다.")

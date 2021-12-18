@@ -28,20 +28,14 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse findShortestPath(Long startStationId, Long destinationStationId) {
-        // 모든 노선 조회
         List<Line> lines = lineService.findAllLines();
 
-        // 역조회
         Station source = stationService.findStationById(startStationId);
         Station target = stationService.findStationById(destinationStationId);
 
-        // 노선들로 그래프 만들기
         PathFinder pathFinder = PathFinder.of(lines);
 
-        // 최단경로 찾기
         GraphPath<Station, SectionWeightedEdge> shortestPath = pathFinder.findShortestPath(source, target);
-
-        // return pathResponse
-        return null;
+        return PathResponse.of(shortestPath);
     }
 }
