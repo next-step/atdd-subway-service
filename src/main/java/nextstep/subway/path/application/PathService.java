@@ -31,7 +31,7 @@ public class PathService {
             stationService.getStationById(pathRequest.getSource()),
             stationService.getStationById(pathRequest.getTarget())
         );
-        final Fare f = path.calculateFare(loginMember.getAge());
-        return PathResponse.of(path, f.getFare());
+        final Fare fare = path.calculateFare(loginMember);
+        return PathResponse.of(path, fare.getFare());
     }
 }

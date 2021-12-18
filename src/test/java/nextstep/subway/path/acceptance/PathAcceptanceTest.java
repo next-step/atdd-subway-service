@@ -41,7 +41,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
-    private String 토큰;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -64,11 +63,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
-
-        회원_등록되어_있음(TOKEN_REQUEST.getEmail(), TOKEN_REQUEST.getPassword(), 20);
-        토큰 = 로그인_되어_있음(TOKEN_REQUEST.getEmail(), TOKEN_REQUEST.getPassword())
-            .as(TokenResponse.class)
-            .getAccessToken();
     }
 
     @DisplayName("지하철 최단 경로를 조회한다.")
@@ -76,6 +70,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void getPath() {
         // given
         final PathRequest pathRequest = new PathRequest(강남역.getId(), 양재역.getId());
+        회원_등록되어_있음(TOKEN_REQUEST.getEmail(), TOKEN_REQUEST.getPassword(), 20);
+        final String 토큰 = 로그인_되어_있음(TOKEN_REQUEST.getEmail(), TOKEN_REQUEST.getPassword())
+            .as(TokenResponse.class)
+            .getAccessToken();
 
         // when
         ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(토큰, pathRequest);
@@ -87,7 +85,53 @@ public class PathAcceptanceTest extends AcceptanceTest {
             .getObject(".", PathResponse.class);
         지하철_최단_경로_일치함(pathResponse);
         지하철_최단_거리_일치함(pathResponse);
-        지하철_이용_요금_일치함(pathResponse);
+        지하철_이용_요금_일치함(pathResponse, BigDecimal.valueOf(2_500L));
+    }
+
+    @DisplayName("지하철 최단 경로 청소년 회원 요금 할인 적용을 확인한다.")
+    @Test
+    void getPath_discountTeenager() {
+        // given
+        final PathRequest pathRequest = new PathRequest(강남역.getId(), 양재역.getId());
+        회원_등록되어_있음(TOKEN_REQUEST.getEmail(), TOKEN_REQUEST.getPassword(), 13);
+        final String 토큰 = 로그인_되어_있음(TOKEN_REQUEST.getEmail(), TOKEN_REQUEST.getPassword())
+            .as(TokenResponse.class)
+            .getAccessToken();
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(토큰, pathRequest);
+
+        // then
+        지하철_최단_경로_응답됨(response);
+
+        final PathResponse pathResponse = response.jsonPath()
+            .getObject(".", PathResponse.class);
+        지하철_최단_경로_일치함(pathResponse);
+        지하철_최단_거리_일치함(pathResponse);
+        지하철_이용_요금_일치함(pathResponse, BigDecimal.valueOf(1_720L));
+    }
+
+    @DisplayName("지하철 최단 경로 어린이 회원 요금 할인 적용을 확인한다.")
+    @Test
+    void getPath_discountChildren() {
+        // given
+        final PathRequest pathRequest = new PathRequest(강남역.getId(), 양재역.getId());
+        회원_등록되어_있음(TOKEN_REQUEST.getEmail(), TOKEN_REQUEST.getPassword(), 6);
+        final String 토큰 = 로그인_되어_있음(TOKEN_REQUEST.getEmail(), TOKEN_REQUEST.getPassword())
+            .as(TokenResponse.class)
+            .getAccessToken();
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(토큰, pathRequest);
+
+        // then
+        지하철_최단_경로_응답됨(response);
+
+        final PathResponse pathResponse = response.jsonPath()
+            .getObject(".", PathResponse.class);
+        지하철_최단_경로_일치함(pathResponse);
+        지하철_최단_거리_일치함(pathResponse);
+        지하철_이용_요금_일치함(pathResponse, BigDecimal.valueOf(1_075L));
     }
 
     private ExtractableResponse<Response> 지하철_최단_경로_조회_요청(
@@ -113,7 +157,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getDistance()).isEqualTo(10);
     }
 
-    private void 지하철_이용_요금_일치함(final PathResponse pathResponse) {
-        assertThat(pathResponse.getFare()).isEqualTo(BigDecimal.valueOf(2_500L));
+    private void 지하철_이용_요금_일치함(final PathResponse pathResponse, final BigDecimal fare) {
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 }

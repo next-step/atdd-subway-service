@@ -51,7 +51,7 @@ public class Fare implements Comparable<Fare> {
 
     public Fare add(final Fare o) {
         final BigDecimal newFare = getFare().add(o.getFare());
-        return new Fare(newFare);
+        return new Fare(BigDecimal.valueOf(newFare.longValue()));
     }
 
     public BigDecimal getFare() {
