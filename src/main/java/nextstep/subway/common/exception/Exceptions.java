@@ -8,7 +8,8 @@ public enum Exceptions {
 	LINE_NOT_EXIST(new ResourceNotFoundException("존재하지 않는 노선입니다.")),
 	LINE_ALREADY_EXIST(new ResourceAlreadyExistException("이미 존재하는 노선입니다.")),
 	STATION_NOT_EXIST(new ResourceNotFoundException("존재하지 않는 지하철 역입니다.")),
-	SOURCE_AND_TARGET_EQUAL(new BadParameterException("출발지와 도착지가 같아 경로를 찾을 수 없습니다."))
+	SOURCE_AND_TARGET_EQUAL(new BadParameterException("출발지와 도착지가 같아 경로를 찾을 수 없습니다.")),
+	SOURCE_AND_TARGET_NOT_CONNECTED(new BadParameterException("출발지와 도착지가 연결되지 않아 경로를 찾을 수 없습니다."))
 	;
 
 	private final BaseException exception;

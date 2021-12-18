@@ -59,4 +59,22 @@ public class PathFinderTest {
 			.isInstanceOf(BadParameterException.class)
 			.hasMessage("출발지와 도착지가 같아 경로를 찾을 수 없습니다.");
 	}
+
+	@Test
+	@DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 예외")
+	void findShortestPath_notConnectedSourceAndDest_Exception() {
+		Line 신분당선 = new Line(LineTest.신분당선, LineTest.BG_RED_600);
+		Line 구분당선 = new Line(LineTest.구분당선, LineTest.BG_BLUE_600);
+		Section 삼성_선릉_구간 = new Section(신분당선, LineTest.삼성역, LineTest.선릉역, 5);
+		Section 역삼_강남_구간 = new Section(구분당선, LineTest.역삼역, LineTest.강남역, 4);
+		신분당선.addSection(삼성_선릉_구간);
+		구분당선.addSection(역삼_강남_구간);
+
+		PathFinder pathFinder = new PathFinder();
+
+		assertThatThrownBy(() -> pathFinder.findShortestPath(LineTest.삼성역, LineTest.역삼역,
+			Arrays.asList(신분당선, 구분당선)))
+			.isInstanceOf(BadParameterException.class)
+			.hasMessage("출발지와 도착지가 연결되지 않아 경로를 찾을 수 없습니다.");
+	}
 }
