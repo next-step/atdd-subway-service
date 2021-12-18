@@ -46,6 +46,12 @@ public class FavoriteService {
         return favoritesToFavoritesResponse(favorites);
     }
 
+    @Transactional
+    public void deleteFavorite(Long favoriteId) {
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
+        favoriteRepository.delete(favorite);
+    }
+
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(IllegalAccessError::new);
     }
