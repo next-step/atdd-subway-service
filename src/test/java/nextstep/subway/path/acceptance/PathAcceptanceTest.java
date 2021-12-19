@@ -10,7 +10,6 @@ import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import lombok.SneakyThrows;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;

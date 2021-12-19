@@ -44,7 +44,7 @@ public class FavoriteController extends ControllerExceptionHandler {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteFavorite(
+    public ResponseEntity<Void> deleteFavorite(
         @AuthenticationPrincipal final LoginMember loginMember,
         @PathVariable final Long id) {
         favoriteService.deleteFavorite(loginMember.getId(), id);
