@@ -19,20 +19,20 @@ class AgeFareTest {
 	@DisplayName("어린이 할인")
 	@Test
 	void calculate_kid() {
-		assertThat(AgeFare.calculate(6, Fare.of(1350))).isEqualTo(Fare.of(500));
-		assertThat(AgeFare.calculate(12, Fare.of(1000))).isEqualTo(Fare.of(325));
+		assertThat(AgeFare.calculate(6, Fare.of(1350)).getFare()).isEqualTo(500);
+		assertThat(AgeFare.calculate(12, Fare.of(1000)).getFare()).isEqualTo(325);
 	}
 
 	@DisplayName("청소년 할인")
 	@Test
 	void calculate_teenager() {
-		assertThat(AgeFare.calculate(13, Fare.of(1000))).isEqualTo(Fare.of(520));
-		assertThat(AgeFare.calculate(18, Fare.of(1350))).isEqualTo(Fare.of(800));
+		assertThat(AgeFare.calculate(13, Fare.of(1000)).getFare()).isEqualTo(520);
+		assertThat(AgeFare.calculate(18, Fare.of(1350)).getFare()).isEqualTo(800);
 	}
 
 	@DisplayName("일반 운임료")
 	@Test
 	void calculate_general() {
-		assertThat(AgeFare.calculate(19, Fare.of(1500))).isEqualTo(Fare.of(1500));
+		assertThat(AgeFare.calculate(19, Fare.of(1500)).getFare()).isEqualTo(1500);
 	}
 }
