@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import org.apache.commons.lang3.StringUtils;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.auth.exception.AuthorizationException;
 
 @Entity
 public class Member extends BaseEntity {
