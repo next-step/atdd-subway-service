@@ -11,14 +11,11 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class PathFinder {
     private final Lines lines;
-    private Distance distance;
-    private List<Long> stationIds = new ArrayList<>();
 
     public PathFinder(Line line) {
         this(Lists.newArrayList(line));
@@ -28,23 +25,23 @@ public class PathFinder {
         this.lines = new Lines(lines);
     }
 
-    public void findPath(Long source, Long target) {
-        WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    public Path findPath(Station source, Station target) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         List<Station> stations = lines.getStations();
         for (Station station : stations) {
-            graph.addVertex(station.getId());
+            graph.addVertex(station);
         }
 
         List<Section> sections = lines.getSections();
         for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation().getId(), section.getDownStation().getId()), section.getDistance());
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
         }
-        findShortestPath(source, target, graph);
+        return findShortestPath(source, target, graph);
     }
 
-    private void findShortestPath(Long source, Long target, WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
+    private Path findShortestPath(Station source, Station target, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath<Long, DefaultWeightedEdge> graphPath;
+        GraphPath<Station, DefaultWeightedEdge> graphPath;
         try {
             graphPath = dijkstraShortestPath.getPath(source, target);
         } catch (IllegalArgumentException e) {
@@ -56,16 +53,6 @@ public class PathFinder {
         }
 
         Double weight = graphPath.getWeight();
-
-        this.distance = new Distance(weight.intValue());
-        this.stationIds = graphPath.getVertexList();
-    }
-
-    public Distance getDistance() {
-        return distance;
-    }
-
-    public List<Long> getStationIds() {
-        return stationIds;
+        return new Path(graphPath.getVertexList(), new Distance(weight.intValue()));
     }
 }

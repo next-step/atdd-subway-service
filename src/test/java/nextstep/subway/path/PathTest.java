@@ -3,6 +3,7 @@ package nextstep.subway.path;
 import com.google.common.collect.Lists;
 import nextstep.subway.line.LineTestFixture;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,17 +14,15 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class PathTest {
-    private final Station upStationFirstLine = mock(Station.class);
-    private final Station downStationFirstLine = mock(Station.class);
-    private final Station addStationFirstLine = mock(Station.class);
-    private final Station upStationSecondLine = mock(Station.class);
-    private final Station downStationSecondLine = mock(Station.class);
-    private final Station upStationThirdLine = mock(Station.class);
-    private final Station downStationThirdLine = mock(Station.class);
+    private final Station upStationFirstLine = new Station("소사역");
+    private final Station downStationFirstLine = new Station("온수역");
+    private final Station addStationFirstLine = new Station("역곡역");
+    private final Station upStationSecondLine = new Station("부평역");
+    private final Station downStationSecondLine = new Station("소사역");
+    private final Station upStationThirdLine = new Station("부평역");
+    private final Station downStationThirdLine = new Station("인천역");
     private Line firstLine;
 
     @BeforeEach
@@ -35,13 +34,6 @@ public class PathTest {
          * |                        |
          * 3L  --- *1호선* ---      2L
          */
-        when(upStationFirstLine.getId()).thenReturn(1L);
-        when(downStationFirstLine.getId()).thenReturn(2L);
-        when(addStationFirstLine.getId()).thenReturn(3L);
-        when(upStationSecondLine.getId()).thenReturn(4L);
-        when(downStationSecondLine.getId()).thenReturn(1L);
-        when(upStationThirdLine.getId()).thenReturn(4L);
-        when(downStationThirdLine.getId()).thenReturn(3L);
 
         firstLine = LineTestFixture.노선을_생성한다("1호선", "red", upStationFirstLine, downStationFirstLine, 10);
 
@@ -52,8 +44,8 @@ public class PathTest {
     void findPathTestOneLine() {
         firstLine.addStation(downStationFirstLine, addStationFirstLine, 5);
         PathFinder pathFinder = new PathFinder(firstLine);
-        pathFinder.findPath(upStationFirstLine.getId(), addStationFirstLine.getId());
-        assertThat(pathFinder.getStationIds()).containsExactly(upStationFirstLine.getId(), downStationFirstLine.getId(), addStationFirstLine.getId());
+        Path path = pathFinder.findPath(upStationFirstLine, addStationFirstLine);
+        assertThat(path.getStations()).containsExactly(upStationFirstLine, downStationFirstLine, addStationFirstLine);
     }
 
 
@@ -65,15 +57,15 @@ public class PathTest {
         Line thirdLine = LineTestFixture.노선을_생성한다("3호선", "red", upStationThirdLine, downStationThirdLine, 20);
         List<Line> lines = Lists.newArrayList(firstLine, secondLine, thirdLine);
         PathFinder pathFinder = new PathFinder(lines);
-        pathFinder.findPath(upStationSecondLine.getId(), downStationFirstLine.getId());
-        assertThat(pathFinder.getStationIds()).containsExactly(upStationSecondLine.getId(), upStationFirstLine.getId(), downStationFirstLine.getId());
+        Path path = pathFinder.findPath(upStationSecondLine, downStationFirstLine);
+        assertThat(path.getStations()).containsExactly(upStationSecondLine, upStationFirstLine, downStationFirstLine);
     }
 
     @Test
     @DisplayName("출발역과 도착역이 같으면 실패한다.")
     void sameSourceAndTarget() {
         PathFinder pathFinder = new PathFinder(firstLine);
-        assertThatThrownBy(() -> pathFinder.findPath(upStationFirstLine.getId(), upStationFirstLine.getId()))
+        assertThatThrownBy(() -> pathFinder.findPath(upStationFirstLine, upStationFirstLine))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("역과 역 사이의 거리는 0보다 커야합니다");
     }
@@ -83,7 +75,7 @@ public class PathTest {
     void notConnectedStation() {
         Line thirdLine = LineTestFixture.노선을_생성한다("3호선", "red", upStationThirdLine, downStationThirdLine, 20);
         PathFinder pathFinder = new PathFinder(Lists.newArrayList(firstLine, thirdLine));
-        assertThatThrownBy(() -> pathFinder.findPath(upStationThirdLine.getId(), downStationFirstLine.getId()))
+        assertThatThrownBy(() -> pathFinder.findPath(upStationThirdLine, downStationFirstLine))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("경로를 찾을 수 없습니다");
     }
@@ -92,7 +84,7 @@ public class PathTest {
     @DisplayName("존재하지 않는 출발역이나 도착역을 조회하면 실패한다.")
     void notExistStaion() {
         PathFinder pathFinder = new PathFinder(firstLine);
-        assertThatThrownBy(() -> pathFinder.findPath(upStationThirdLine.getId(), downStationFirstLine.getId()))
+        assertThatThrownBy(() -> pathFinder.findPath(upStationThirdLine, downStationFirstLine))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발역 또는 도착역이 노선에 존재하지 않습니다");
     }

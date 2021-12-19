@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,10 +25,11 @@ public class PathService {
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineRepository.findAll();
         PathFinder pathFinder = new PathFinder(lines);
-        pathFinder.findPath(source, target);
-        Map<Long, Station> stationMap = stationRepository.findAllById(pathFinder.getStationIds()).stream()
-                .collect(Collectors.toMap(station -> station.getId(), Function.identity()));
-        return PathResponse.of(pathFinder.getDistance(), sortStationIds(pathFinder.getStationIds(), stationMap));
+        Station sourceStation = stationRepository.findById(source)
+                .orElseThrow(IllegalArgumentException::new);
+        Station targetStation = stationRepository.findById(target)
+                .orElseThrow(IllegalArgumentException::new);
+        return PathResponse.of(pathFinder.findPath(sourceStation, targetStation));
     }
 
     private List<Station> sortStationIds(List<Long> stationIds, Map<Long, Station> stationMap) {
