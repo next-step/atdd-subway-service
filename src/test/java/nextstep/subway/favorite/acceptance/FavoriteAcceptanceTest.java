@@ -84,6 +84,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(즐겨찾기_생성_응답);
     }
 
+    @DisplayName("즐겨찾기 중복생성 오류")
+    @Test
+    void invalidSaveFavorite() {
+        // when
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(사용자, 강남역, 남부터미널역);
+        ExtractableResponse<Response> 중복_즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(사용자, 강남역, 남부터미널역);
+
+        // then
+        즐겨찾기_생성_실패됨(중복_즐겨찾기_생성_응답);
+    }
+
+
+
     @DisplayName("즐겨찾기 목록 조회")
     @Test
     void findAllMemberFavorites() {

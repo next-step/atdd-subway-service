@@ -3,7 +3,9 @@ package nextstep.subway.favorite.ui;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +38,11 @@ public class FavoriteController {
     public ResponseEntity<List<FavoriteResponse>> findAllMemberFavorites(
         @AuthenticationPrincipal LoginMember loginMember) {
         return ResponseEntity.ok(favoriteService.findAllMemberFavorites(loginMember.getId()));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
+        return ResponseEntity.badRequest().build();
     }
 
 }
