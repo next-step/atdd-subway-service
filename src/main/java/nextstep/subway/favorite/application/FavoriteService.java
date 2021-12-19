@@ -1,5 +1,8 @@
 package nextstep.subway.favorite.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,5 +37,13 @@ public class FavoriteService {
         Favorite transientFavorite = new Favorite(member, sourceStation, targetStation);
         Favorite persistFavorite = favoriteRepository.save(transientFavorite);
         return FavoriteResponse.of(persistFavorite);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> findAllMemberFavorites(Long id) {
+        return favoriteRepository.findAllByMemberId(id)
+            .stream()
+            .map(FavoriteResponse::of)
+            .collect(Collectors.toList());
     }
 }

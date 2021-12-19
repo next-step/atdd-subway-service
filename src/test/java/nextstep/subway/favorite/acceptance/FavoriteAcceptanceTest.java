@@ -83,4 +83,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         즐겨찾기_생성됨(즐겨찾기_생성_응답);
     }
+
+    @DisplayName("즐겨찾기 목록 조회")
+    @Test
+    void findAllMemberFavorites() {
+        // given
+        즐겨찾기_생성_요청(사용자, 강남역, 남부터미널역);
+        즐겨찾기_생성_요청(사용자, 양재역, 교대역);
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_목록_조회_응답 = 즐겨찾기_목록_조회_요청(사용자);
+        // then
+        즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_응답);
+    }
 }
