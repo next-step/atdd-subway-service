@@ -74,11 +74,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(myInfoResponse.jsonPath().getObject("message", String.class)).isEqualTo("유효하지 않은 토큰입니다");
     }
 
-    private void 회원등록됨(MemberRequest 회원) {
+    private void 회원등록됨(MemberRequest member) {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(회원)
+                .body(member)
                 .when().post("/members")
                 .then().log().all()
                 .extract();
