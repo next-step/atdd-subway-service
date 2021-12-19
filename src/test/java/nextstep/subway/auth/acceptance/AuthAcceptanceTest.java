@@ -44,11 +44,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 			MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
 		MemberAcceptanceTest.회원_생성됨(memberCreateResponse);
 
-		ExtractableResponse<Response> loginResponse = 로그인_시도(MemberAcceptanceTest.EMAIL,
-			MemberAcceptanceTest.PASSWORD);
-		로그인_성공함(loginResponse);
-
-		ExtractableResponse<Response> response = MemberAcceptanceTest.내_정보_조회_요청함(loginResponse);
+		ExtractableResponse<Response> response = MemberAcceptanceTest.내_정보_조회_요청함("asdfsad");
 		정보_조회_요청_실패함(response);
 	}
 
@@ -69,11 +65,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		assertThat(response.jsonPath().getString("accessToken")).isNotEmpty();
 	}
 
-	public static  void 로그인_실패함(ExtractableResponse<Response> response) {
+	public static void 로그인_실패함(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
-	public static  void 정보_조회_요청_실패함(ExtractableResponse<Response> response) {
+	public static void 정보_조회_요청_실패함(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
 	}
 }

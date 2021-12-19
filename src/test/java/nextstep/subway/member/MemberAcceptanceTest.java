@@ -161,13 +161,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 	}
 
 	public static ExtractableResponse<Response> 내_정보_조회_요청함(ExtractableResponse<Response> accessTokenResponse) {
-		return RestAssured.given().log().all()
-			.auth().oauth2(accessTokenResponse.jsonPath().getString("accessToken"))
-			.when().log().all()
-			.get("/members/me")
-			.then().log().all()
-			.extract();
+        return 내_정보_조회_요청함(accessTokenResponse.jsonPath().getString("accessToken"));
 	}
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청함(String accessToken) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
+            .when().log().all()
+            .get("/members/me")
+            .then().log().all()
+            .extract();
+    }
 
 	private void 내_정보_조회_요청_성공함(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
