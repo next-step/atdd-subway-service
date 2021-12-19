@@ -82,8 +82,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         final PathResponse pathResponse = response.jsonPath()
             .getObject(".", PathResponse.class);
-        지하철_최단_경로_일치함(pathResponse);
-        지하철_최단_거리_일치함(pathResponse);
+        지하철_최단_경로_일치함(pathResponse, 강남역.getName(), 양재역.getName());
+        지하철_최단_거리_일치함(pathResponse, 10);
         지하철_이용_요금_일치함(pathResponse, 2_500);
     }
 
@@ -105,8 +105,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         final PathResponse pathResponse = response.jsonPath()
             .getObject(".", PathResponse.class);
-        지하철_최단_경로_일치함(pathResponse);
-        지하철_최단_거리_일치함(pathResponse);
+        지하철_최단_경로_일치함(pathResponse, 강남역.getName(), 양재역.getName());
+        지하철_최단_거리_일치함(pathResponse, 10);
         지하철_이용_요금_일치함(pathResponse, 1_720);
     }
 
@@ -128,9 +128,61 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         final PathResponse pathResponse = response.jsonPath()
             .getObject(".", PathResponse.class);
-        지하철_최단_경로_일치함(pathResponse);
-        지하철_최단_거리_일치함(pathResponse);
+        지하철_최단_경로_일치함(pathResponse, 강남역.getName(), 양재역.getName());
+        지하철_최단_거리_일치함(pathResponse, 10);
         지하철_이용_요금_일치함(pathResponse, 1_075);
+    }
+
+    @DisplayName("지하철 최단 경로 중 장거리 청소년 회원 요금 할인 적용을 확인한다.")
+    @Test
+    void getPath_longDistance_teenager() {
+        // given
+        final StationResponse 광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역")
+            .as(StationResponse.class);
+        지하철_노선에_지하철역_등록되어_있음(신분당선, 양재역, 광교역, 100);
+        final PathRequest pathRequest = new PathRequest(강남역.getId(), 광교역.getId());
+        회원_등록되어_있음(TOKEN_REQUEST.getEmail(), TOKEN_REQUEST.getPassword(), 13);
+        final String 토큰 = 로그인_되어_있음(TOKEN_REQUEST.getEmail(), TOKEN_REQUEST.getPassword())
+            .as(TokenResponse.class)
+            .getAccessToken();
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(토큰, pathRequest);
+
+        // then
+        지하철_최단_경로_응답됨(response);
+
+        final PathResponse pathResponse = response.jsonPath()
+            .getObject(".", PathResponse.class);
+        지하철_최단_경로_일치함(pathResponse, 강남역.getName(), 양재역.getName(), 광교역.getName());
+        지하철_최단_거리_일치함(pathResponse, 110);
+        지하철_이용_요금_일치함(pathResponse, 2_280);
+    }
+
+    @DisplayName("지하철 최단 경로 중 중거리 어린이 회원 요금 할인 적용을 확인한다.")
+    @Test
+    void getPath_midDistance_child() {
+        // given
+        final StationResponse 광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역")
+            .as(StationResponse.class);
+        지하철_노선에_지하철역_등록되어_있음(신분당선, 양재역, 광교역, 20);
+        final PathRequest pathRequest = new PathRequest(강남역.getId(), 광교역.getId());
+        회원_등록되어_있음(TOKEN_REQUEST.getEmail(), TOKEN_REQUEST.getPassword(), 6);
+        final String 토큰 = 로그인_되어_있음(TOKEN_REQUEST.getEmail(), TOKEN_REQUEST.getPassword())
+            .as(TokenResponse.class)
+            .getAccessToken();
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(토큰, pathRequest);
+
+        // then
+        지하철_최단_경로_응답됨(response);
+
+        final PathResponse pathResponse = response.jsonPath()
+            .getObject(".", PathResponse.class);
+        지하철_최단_경로_일치함(pathResponse, 강남역.getName(), 양재역.getName(), 광교역.getName());
+        지하철_최단_거리_일치함(pathResponse, 30);
+        지하철_이용_요금_일치함(pathResponse, 1_275);
     }
 
     private ExtractableResponse<Response> 지하철_최단_경로_조회_요청(
@@ -144,16 +196,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 지하철_최단_경로_일치함(final PathResponse pathResponse) {
+    private void 지하철_최단_경로_일치함(final PathResponse pathResponse, final String... stations) {
         final List<String> stationNames = pathResponse.getStations()
             .stream()
             .map(StationResponse::getName)
             .collect(Collectors.toList());
-        assertThat(stationNames).containsExactly(강남역.getName(), 양재역.getName());
+        assertThat(stationNames).containsExactly(stations);
     }
 
-    private void 지하철_최단_거리_일치함(final PathResponse pathResponse) {
-        assertThat(pathResponse.getDistance()).isEqualTo(10);
+    private void 지하철_최단_거리_일치함(final PathResponse pathResponse, final int distance) {
+        assertThat(pathResponse.getDistance()).isEqualTo(distance);
     }
 
     private void 지하철_이용_요금_일치함(final PathResponse pathResponse, final int fare) {
