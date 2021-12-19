@@ -1,6 +1,5 @@
 package nextstep.subway.path.domain;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -8,53 +7,52 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Fare implements Comparable<Fare> {
 
-    private static final BigDecimal BASE_RATE = BigDecimal.valueOf(1_250L);
-    private static final BigDecimal EXTRA_RATE = BigDecimal.valueOf(100L);
-    private static final BigDecimal BASE_DISCOUNT_AMOUNT = BigDecimal.valueOf(350L);
-    private static final BigDecimal BASE_DISCOUNT_RATE = BigDecimal.valueOf(1.0);
-    private static final BigDecimal TEENAGER_DISCOUNT_RATE = BigDecimal.valueOf(0.2);
-    private static final BigDecimal CHILDREN_DISCOUNT_RATE = BigDecimal.valueOf(0.5);
+    private static final int BASE_AMOUNT = 1_250;
+    private static final int EXTRA_AMOUNT = 100;
+    private static final int BASE_DISCOUNT_AMOUNT = 350;
+    private static final double BASE_DISCOUNT_RATE = 1.0;
+    private static final double TEENAGER_DISCOUNT_RATE = 0.2;
+    private static final double CHILDREN_DISCOUNT_RATE = 0.5;
 
     @Column(name = "fare")
-    private final BigDecimal fare;
+    private final int fare;
 
     protected Fare() {
-        this.fare = BASE_RATE;
+        this.fare = BASE_AMOUNT;
     }
 
-    public Fare(final BigDecimal fare) {
+    public Fare(final int fare) {
         this.fare = fare;
     }
 
     public static Fare of() {
-        return new Fare(BASE_RATE);
+        return new Fare(BASE_AMOUNT);
     }
 
     public Fare calculateOverFare(final FareDistance distance) {
-        final BigDecimal extraUnit = BigDecimal.valueOf(distance.calculateDistanceUnit());
-        final BigDecimal overFare = EXTRA_RATE.multiply(extraUnit);
-        return new Fare(fare.add(overFare));
+        final int extraUnit = distance.calculateDistanceUnit();
+        final int overFare = EXTRA_AMOUNT * extraUnit;
+        return new Fare(fare + overFare);
     }
 
     public Fare applyDiscount(final Integer age) {
-        BigDecimal discounted = fare;
+        int discounted = fare;
         if (age >= 13 && age < 19) {
-            final BigDecimal rate = BASE_DISCOUNT_RATE.subtract(TEENAGER_DISCOUNT_RATE);
-            discounted = fare.subtract(BASE_DISCOUNT_AMOUNT).multiply(rate);
+            final double rate = BASE_DISCOUNT_RATE - TEENAGER_DISCOUNT_RATE;
+            discounted = (int) ((fare - BASE_DISCOUNT_AMOUNT) * rate);
         }
         if (age >= 6 && age < 13) {
-            final BigDecimal rate = BASE_DISCOUNT_RATE.subtract(CHILDREN_DISCOUNT_RATE);
-            discounted = fare.subtract(BASE_DISCOUNT_AMOUNT).multiply(rate);
+            final double rate = BASE_DISCOUNT_RATE - CHILDREN_DISCOUNT_RATE;
+            discounted = (int) ((fare - BASE_DISCOUNT_AMOUNT) * rate);
         }
-        return new Fare(BigDecimal.valueOf(discounted.longValue()));
+        return new Fare(discounted);
     }
 
     public Fare add(final Fare o) {
-        final BigDecimal newFare = getFare().add(o.getFare());
-        return new Fare(BigDecimal.valueOf(newFare.longValue()));
+        return new Fare(getFare() + o.getFare());
     }
 
-    public BigDecimal getFare() {
+    public int getFare() {
         return fare;
     }
 
@@ -77,6 +75,6 @@ public class Fare implements Comparable<Fare> {
 
     @Override
     public int compareTo(final Fare o) {
-        return fare.compareTo(o.fare);
+        return Integer.compare(getFare(), o.getFare());
     }
 }

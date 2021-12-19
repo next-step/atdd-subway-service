@@ -8,7 +8,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
@@ -85,7 +84,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
             .getObject(".", PathResponse.class);
         지하철_최단_경로_일치함(pathResponse);
         지하철_최단_거리_일치함(pathResponse);
-        지하철_이용_요금_일치함(pathResponse, BigDecimal.valueOf(2_500L));
+        지하철_이용_요금_일치함(pathResponse, 2_500);
     }
 
     @DisplayName("지하철 최단 경로 청소년 회원 요금 할인 적용을 확인한다.")
@@ -108,7 +107,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
             .getObject(".", PathResponse.class);
         지하철_최단_경로_일치함(pathResponse);
         지하철_최단_거리_일치함(pathResponse);
-        지하철_이용_요금_일치함(pathResponse, BigDecimal.valueOf(1_720L));
+        지하철_이용_요금_일치함(pathResponse, 1_720);
     }
 
     @DisplayName("지하철 최단 경로 어린이 회원 요금 할인 적용을 확인한다.")
@@ -131,7 +130,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
             .getObject(".", PathResponse.class);
         지하철_최단_경로_일치함(pathResponse);
         지하철_최단_거리_일치함(pathResponse);
-        지하철_이용_요금_일치함(pathResponse, BigDecimal.valueOf(1_075L));
+        지하철_이용_요금_일치함(pathResponse, 1_075);
     }
 
     private ExtractableResponse<Response> 지하철_최단_경로_조회_요청(
@@ -157,7 +156,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getDistance()).isEqualTo(10);
     }
 
-    private void 지하철_이용_요금_일치함(final PathResponse pathResponse, final BigDecimal fare) {
+    private void 지하철_이용_요금_일치함(final PathResponse pathResponse, final int fare) {
         assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 }

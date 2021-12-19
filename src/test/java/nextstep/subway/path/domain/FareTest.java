@@ -2,7 +2,6 @@ package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -54,7 +53,7 @@ public class FareTest {
         final Fare overFare = fare.calculateOverFare(distance);
 
         // then
-        final Fare expected = new Fare(BigDecimal.valueOf(1_250L));
+        final Fare expected = new Fare(1_250);
         assertThat(overFare).isEqualTo(expected);
     }
 
@@ -67,7 +66,7 @@ public class FareTest {
         final Fare overFare = fare.calculateOverFare(distance);
 
         // then
-        final Fare expected = new Fare(BigDecimal.valueOf(1_450L));
+        final Fare expected = new Fare(1_450);
         assertThat(overFare).isEqualTo(expected);
     }
 
@@ -80,7 +79,7 @@ public class FareTest {
         final Fare overFare = fare.calculateOverFare(distance);
 
         // then
-        final Fare expected = new Fare(BigDecimal.valueOf(1_350L));
+        final Fare expected = new Fare(1_350);
         assertThat(overFare).isEqualTo(expected);
     }
 
@@ -91,7 +90,7 @@ public class FareTest {
         final Fare discounted = fare.applyDiscount(age);
 
         // then
-        final Fare expected = new Fare(BigDecimal.valueOf(720L));
+        final Fare expected = new Fare(720);
         assertThat(discounted).isEqualTo(expected);
     }
 
@@ -102,7 +101,7 @@ public class FareTest {
         final Fare discounted = fare.applyDiscount(age);
 
         // then
-        final Fare expected = new Fare(BigDecimal.valueOf(450L));
+        final Fare expected = new Fare(450);
         assertThat(discounted).isEqualTo(expected);
     }
 
@@ -113,27 +112,27 @@ public class FareTest {
         final Fare discounted = fare.applyDiscount(age);
 
         // then
-        final Fare expected = new Fare(BigDecimal.valueOf(1_250L));
+        final Fare expected = new Fare(1_250);
         assertThat(discounted).isEqualTo(expected);
     }
 
     @Test
     void add() {
         // given
-        final Fare anotherFare = new Fare(BigDecimal.valueOf(1_000L));
+        final Fare anotherFare = new Fare(1_000);
 
         // when
         final Fare addedFare = fare.add(anotherFare);
 
         // then
-        final Fare expected = new Fare(BigDecimal.valueOf(2_250L));
+        final Fare expected = new Fare(2_250);
         assertThat(addedFare).isEqualTo(expected);
     }
 
     @Test
     void compareTo() {
         // given
-        final Fare lessFare = new Fare(BigDecimal.valueOf(1_000L));
+        final Fare lessFare = new Fare(1_000);
 
         // when
         final int comparison = fare.compareTo(lessFare);
