@@ -59,7 +59,7 @@ public class SectionEdge extends DefaultWeightedEdge {
 			return false;
 		}
 		SectionEdge that = (SectionEdge)o;
-		return distance == that.distance && line == that.line && Objects.equals(sourceVertex,
+		return distance == that.distance && Objects.equals(line, that.line) && Objects.equals(sourceVertex,
 			that.sourceVertex) && Objects.equals(targetVertex, that.targetVertex);
 	}
 
