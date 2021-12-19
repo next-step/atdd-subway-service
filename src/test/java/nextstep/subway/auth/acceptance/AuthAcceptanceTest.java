@@ -47,7 +47,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회_요청(토큰);
 
         // then
-        내_정보_조회_됨(내_정보_조회_응답, EMAIL, PASSWORD);
+        내_정보_조회_됨(내_정보_조회_응답, EMAIL, AGE);
     }
 
     @DisplayName("등록되어 있지 않은 이메일 로그인 시도 (Bearer Auth 로그인 실패)")

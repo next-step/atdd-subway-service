@@ -1,8 +1,13 @@
 package nextstep.subway.favorite.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class FavoriteRequest {
-    private Long targetStationId;
+    @JsonProperty("source")
     private Long sourceStationId;
+
+    @JsonProperty("target")
+    private Long targetStationId;
 
     public FavoriteRequest() {
     }

@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -72,7 +71,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_응답);
 
         // given
-        Long 즐겨찾기_아이디 = 즐겨찾기_생성_응답.as(FavoriteResponse.class).getId();
+        Long 즐겨찾기_아이디 = Long.parseLong(즐겨찾기_생성_응답.header("Location").split("/")[2]);
         // when
         ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(사용자, 즐겨찾기_아이디);
         // then
@@ -117,10 +116,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void removeMemberFavorites() {
         // given
         ExtractableResponse<Response> 즐겨찾기_생성_요청 = 즐겨찾기_생성_요청(사용자, 양재역, 교대역);
+        Long 즐겨찾기_생성_아이디 = Long.parseLong(즐겨찾기_생성_요청.header("Location").split("/")[2]);
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_삭제_응답 =
-            즐겨찾기_삭제_요청(사용자, 즐겨찾기_생성_요청.as(FavoriteResponse.class).getId());
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(사용자, 즐겨찾기_생성_아이디);
 
         // then
         즐겨찾기_삭제됨(즐겨찾기_삭제_응답);

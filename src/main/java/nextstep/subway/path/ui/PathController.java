@@ -29,17 +29,17 @@ public class PathController {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ResponseEntity> handleIllegalArgsException(IllegalArgumentException e) {
+    public ResponseEntity<Void> handleIllegalArgsException(IllegalArgumentException e) {
         return ResponseEntity.badRequest().build();
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ResponseEntity> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+    public ResponseEntity<Void> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
         return ResponseEntity.badRequest().build();
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ResponseEntity> handleDefaultException(Exception e) {
+    public ResponseEntity<Void> handleDefaultException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }

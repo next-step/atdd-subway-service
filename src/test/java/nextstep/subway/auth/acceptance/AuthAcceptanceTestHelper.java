@@ -51,7 +51,7 @@ public class AuthAcceptanceTestHelper {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public static void 내_정보_조회_됨(ExtractableResponse<Response> response, String email, String age) {
+    public static void 내_정보_조회_됨(ExtractableResponse<Response> response, String email, Integer age) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         MemberResponse memberResponse = response.as(MemberResponse.class);
