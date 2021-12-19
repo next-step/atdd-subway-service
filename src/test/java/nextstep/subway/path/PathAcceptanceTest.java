@@ -73,8 +73,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse pathResponse = 지하철_경로_조회_요청(남부터미널역, 강남역).body().as(PathResponse.class);
         // Then 지하철 경로 조회됨
         지하철_경로_조회됨(pathResponse, Arrays.asList(남부터미널역, 양재역, 강남역));
-        // AND 지하철 경로 길이가 예상과 같음
+        // And 지하철 경로 길이가 예상과 같음
         지하철_경로_길이_같음(pathResponse, 12);
+        // And 지하철 요금이 예상과 같음
+        지하철_요금_조회됨(pathResponse, 1_450);
     }
 
     @DisplayName("출발역과 도착역 같은 경우")
@@ -137,5 +139,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
                 () -> assertThat(response.body().asString()).isEqualTo(expectedMessage)
         );
+    }
+
+    private void 지하철_요금_조회됨(PathResponse pathResponse, int expectedFare) {
+        assertThat(pathResponse.getFare()).isEqualTo(expectedFare);
     }
 }
