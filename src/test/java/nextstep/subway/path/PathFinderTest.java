@@ -3,6 +3,8 @@ package nextstep.subway.path;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jgrapht.GraphPath;
@@ -18,6 +20,7 @@ import nextstep.subway.common.exception.BadParameterException;
 import nextstep.subway.line.LineTest;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.StationTest;
 import nextstep.subway.station.domain.Station;
@@ -46,7 +49,13 @@ public class PathFinderTest {
 
 		PathFinder pathFinder = new PathFinder();
 		GraphPath<Station, DefaultWeightedEdge> graph = pathFinder.findShortestPath(
-			StationTest.삼성역, StationTest.역삼역, Arrays.asList(신분당선, 구분당선));
+			StationTest.삼성역,
+			StationTest.역삼역,
+			new Sections(Stream.of(신분당선.getSections(), 구분당선.getSections())
+				.flatMap(Collection::stream)
+				.collect(Collectors.toList()
+				))
+		);
 
 		assertThat(graph.getVertexList()).isEqualTo(Arrays.asList(StationTest.삼성역, StationTest.강남역, StationTest.역삼역));
 		assertThat(graph.getWeight()).isEqualTo(9);
@@ -69,7 +78,10 @@ public class PathFinderTest {
 		PathFinder pathFinder = new PathFinder();
 
 		assertThatThrownBy(() -> pathFinder.findShortestPath(
-			StationTest.삼성역, StationTest.삼성역, Arrays.asList(신분당선, 구분당선)))
+			StationTest.삼성역, StationTest.삼성역, new Sections(
+				Stream.of(신분당선.getSections(), 구분당선.getSections())
+					.flatMap(Collection::stream)
+					.collect(Collectors.toList()))))
 			.isInstanceOf(BadParameterException.class)
 			.hasMessage("출발지와 도착지가 같아 경로를 찾을 수 없습니다.");
 	}
@@ -87,7 +99,9 @@ public class PathFinderTest {
 		PathFinder pathFinder = new PathFinder();
 
 		assertThatThrownBy(() -> pathFinder.findShortestPath(StationTest.삼성역, StationTest.역삼역,
-			Arrays.asList(신분당선, 구분당선)))
+			new Sections(Stream.of(신분당선.getSections(), 구분당선.getSections())
+				.flatMap(Collection::stream)
+				.collect(Collectors.toList()))))
 			.isInstanceOf(BadParameterException.class)
 			.hasMessage("출발지와 도착지가 연결되지 않아 경로를 찾을 수 없습니다.");
 	}
@@ -106,7 +120,9 @@ public class PathFinderTest {
 		PathFinder pathFinder = new PathFinder();
 
 		assertThatThrownBy(() -> pathFinder.findShortestPath(source, target,
-			Arrays.asList(신분당선, 구분당선)))
+			new Sections(Stream.of(신분당선.getSections(), 구분당선.getSections())
+				.flatMap(Collection::stream)
+				.collect(Collectors.toList()))))
 			.isInstanceOf(BadParameterException.class)
 			.hasMessage("출발지 또는 도착지가 존재하지 않아 경로를 찾을 수 없습니다.");
 	}
