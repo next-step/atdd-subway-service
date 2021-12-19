@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,8 +42,15 @@ public class FavoriteController {
         return ResponseEntity.ok(favoriteService.findAllMemberFavorites(loginMember.getId()));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteMemberFavorite(@AuthenticationPrincipal LoginMember loginMember,
+        @PathVariable Long id) {
+        favoriteService.deleteMemberFavorite(loginMember.getId(), id);
+        return ResponseEntity.noContent().build();
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
+    public ResponseEntity<Void> handleIllegalArgsException(DataIntegrityViolationException e) {
         return ResponseEntity.badRequest().build();
     }
 

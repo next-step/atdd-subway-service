@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -35,7 +36,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-
         // given
         // 지하철역_등록되어_있음
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
@@ -65,12 +65,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(사용자, 강남역, 남부터미널역);
         // then
         즐겨찾기_생성됨(즐겨찾기_생성_응답);
+
         // when
         ExtractableResponse<Response> 즐겨찾기_목록_조회_응답 = 즐겨찾기_목록_조회_요청(사용자);
         // then
         즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_응답);
+
+        // given
+        Long 즐겨찾기_아이디 = 즐겨찾기_생성_응답.as(FavoriteResponse.class).getId();
         // when
-        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(사용자, 1L);
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(사용자, 즐겨찾기_아이디);
         // then
         즐겨찾기_삭제됨(즐겨찾기_삭제_응답);
     }
@@ -95,8 +99,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_실패됨(중복_즐겨찾기_생성_응답);
     }
 
-
-
     @DisplayName("즐겨찾기 목록 조회")
     @Test
     void findAllMemberFavorites() {
@@ -108,5 +110,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_목록_조회_응답 = 즐겨찾기_목록_조회_요청(사용자);
         // then
         즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_응답);
+    }
+
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void removeMemberFavorites() {
+        // given
+        ExtractableResponse<Response> 즐겨찾기_생성_요청 = 즐겨찾기_생성_요청(사용자, 양재역, 교대역);
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 =
+            즐겨찾기_삭제_요청(사용자, 즐겨찾기_생성_요청.as(FavoriteResponse.class).getId());
+
+        // then
+        즐겨찾기_삭제됨(즐겨찾기_삭제_응답);
     }
 }
