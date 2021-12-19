@@ -14,8 +14,7 @@ import nextstep.subway.member.dto.MemberResponse;
 
 public class MemberAcceptanceTestHelper {
 
-    public static String 로그인되어_있음(String email, String password, Integer age) {
-        회원_등록되어_있음(email, password, age);
+    public static String 로그인되어_있음(String email, String password) {
         return 토큰_정보(로그인_요청(email, password));
     }
 

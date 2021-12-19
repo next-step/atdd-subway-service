@@ -3,7 +3,7 @@ package nextstep.subway.path.acceptance;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestHelper.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestHelper.*;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestHelper.*;
-import static nextstep.subway.station.StationAcceptanceTest.*;
+import static nextstep.subway.station.StationAcceptanceTestHelper.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

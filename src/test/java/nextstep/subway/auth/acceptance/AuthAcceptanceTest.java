@@ -13,14 +13,16 @@ import nextstep.subway.AcceptanceTest;
 
 @DisplayName("인증 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
-    public static String EMAIL = "changchang743@gmail.com";
-    public static String PASSWORD = "1234";
-    public static int AGE = 29;
+    private static String EMAIL = "changchang743@gmail.com";
+    private static String PASSWORD = "1234";
+    private static int AGE = 29;
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
+
+        // given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
     }
 

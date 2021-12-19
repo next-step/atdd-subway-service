@@ -12,6 +12,7 @@ import nextstep.subway.member.domain.MemberRepository;
 @Service
 public class AuthService {
     public static final String INVALID_TOKEN = "인증정보가 유효하지 않습니다.";
+    private static final String ERROR_INVALID_EMAIL_OR_PASSWORD = "이메일 또는 비밀번호가 올바르지 않습니다.";
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -21,7 +22,7 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
+        Member member = findByEmail(request.getEmail());
         member.checkPassword(request.getPassword());
 
         String token = jwtTokenProvider.createToken(request.getEmail());
@@ -34,7 +35,12 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = findByEmail(email);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+    }
+
+    private Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+            .orElseThrow(() -> new AuthorizationException(ERROR_INVALID_EMAIL_OR_PASSWORD));
     }
 }
