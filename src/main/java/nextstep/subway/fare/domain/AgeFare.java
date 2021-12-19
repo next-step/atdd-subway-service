@@ -1,27 +1,33 @@
 package nextstep.subway.fare.domain;
 
+import java.util.Arrays;
+import java.util.function.Function;
+
 import nextstep.subway.fare.exception.FareNotFoundException;
 
-public class AgeFare {
+public enum AgeFare {
 
-	private static final int KID_MIN_AGE_INCLUSIVE = 6;
-	private static final int KID_MAX_AGE_EXCLUSIVE = 13;
-	private static final double KID_DISCOUNT_RATE = 0.5f;
+	DEFAULT(age -> false, 0.f),
+	KID(age -> (6 <= age && age < 13), 0.5f),
+	TEENAGER(age -> (13 <= age && age < 19), 0.2f);
 
-	private static final int TEENAGER_MIN_AGE_INCLUSIVE = 13;
-	private static final int TEENAGER_MAX_AGE_EXCLUSIVE = 19;
-	private static final double TEENAGER_DISCOUNT_RATE = 0.2f;
+	private Function<Integer, Boolean> condition;
+	private float discountRate;
+
+	AgeFare(Function<Integer, Boolean> condition, float discountRate) {
+		this.condition = condition;
+		this.discountRate = discountRate;
+	}
 
 	private static final int FIXED_DISCOUNT_KRW = 350;
 
 	public static Fare calculate(int age, Fare generalFare) {
 		validate(generalFare);
-		if (isKid(age)) {
-			return Fare.of(kid(generalFare.getFare()));
-		} else if (isTeenager(age)) {
-			return Fare.of(teenager(generalFare.getFare()));
+		final AgeFare ageFare = getAgeFare(age);
+		if (AgeFare.DEFAULT == ageFare) {
+			return generalFare;
 		}
-		return generalFare;
+		return Fare.of(calculate(generalFare.getFare(), ageFare.discountRate));
 	}
 
 	private static void validate(Fare fare) {
@@ -30,19 +36,14 @@ public class AgeFare {
 		}
 	}
 
-	private static int kid(int generalFareKRW) {
-		return (int) (Math.round((generalFareKRW - FIXED_DISCOUNT_KRW) * (1.f - KID_DISCOUNT_RATE)));
+	private static AgeFare getAgeFare(int age) {
+		return Arrays.stream(values())
+			.filter(ageFare -> ageFare.condition.apply(age))
+			.findAny()
+			.orElse(DEFAULT);
 	}
 
-	private static int teenager(int generalFareKRW) {
-		return (int) (Math.round((generalFareKRW - FIXED_DISCOUNT_KRW) * (1.f - TEENAGER_DISCOUNT_RATE)));
-	}
-
-	private static boolean isTeenager(int age) {
-		return TEENAGER_MIN_AGE_INCLUSIVE <= age && age < TEENAGER_MAX_AGE_EXCLUSIVE;
-	}
-
-	private static boolean isKid(int age) {
-		return KID_MIN_AGE_INCLUSIVE <= age && age < KID_MAX_AGE_EXCLUSIVE;
+	private static int calculate(int generalFareKRW, float discountRate) {
+		return (Math.round((generalFareKRW - FIXED_DISCOUNT_KRW) * (1.f - discountRate)));
 	}
 }
