@@ -168,7 +168,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 			.extract();
 	}
 
-	private TokenResponse 로그인_되어있음(String email, String password) {
+	public static TokenResponse 로그인_되어있음(String email, String password) {
 		return AuthAcceptanceTest.로그인_요청(new TokenRequest(email, password))
 			.as(TokenResponse.class);
 	}

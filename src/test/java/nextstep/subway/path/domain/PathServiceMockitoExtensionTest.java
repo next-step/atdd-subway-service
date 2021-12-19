@@ -7,11 +7,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -42,6 +44,8 @@ class PathServiceMockitoExtensionTest {
 	private static Section 이호선_추가구간 = new Section(null, 이호선, 교대역, 강남역, Distance.of(10));
 	private static Section 삼호선_추가구간 = new Section(null, 삼호선, 교대역, 양재역, Distance.of(1));
 
+	private static LoginMember 사용자 = new LoginMember(1L,"woowahan@naver.com",8);
+
 	static {
 		이호선.addSection(이호선_추가구간);
 		삼호선.addSection(삼호선_추가구간);
@@ -62,8 +66,9 @@ class PathServiceMockitoExtensionTest {
 		when(stationService.findById(1L)).thenReturn(교대역);
 		when(stationService.findById(3L)).thenReturn(선릉역);
 		PathService pathService = new PathService(stationService, lineService);
+
 		//when
-		PathResponse pathResponse = pathService.findPaths(1, 3);
+		PathResponse pathResponse = pathService.findPaths(new PathRequest(1, 3), 사용자);
 		List<Long> pathIds = pathResponse.getStations()
 			.stream()
 			.map(StationResponse::getId)
@@ -72,7 +77,7 @@ class PathServiceMockitoExtensionTest {
 		//then
 		assertThat(pathIds).containsExactly(1L, 4L, 2L, 3L);
 		assertThat(pathResponse.getDistance()).isEqualTo(12);
-		assertThat(pathResponse.getSubwayFare()).isEqualTo(2050);
+		assertThat(pathResponse.getSubwayFare()).isEqualTo(850);
 	}
 
 	@Test
@@ -82,7 +87,7 @@ class PathServiceMockitoExtensionTest {
 		PathService pathService = new PathService(stationService, lineService);
 
 		//when
-		assertThatThrownBy(() -> pathService.findPaths(3, 3))
+		assertThatThrownBy(() -> pathService.findPaths(new PathRequest(3, 3), 사용자))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessage("출발역과 도착역이 동일하면 안 됩니다.");
 	}
@@ -95,7 +100,7 @@ class PathServiceMockitoExtensionTest {
 		PathService pathService = new PathService(stationService, lineService);
 
 		//when
-		assertThatThrownBy(() -> pathService.findPaths(3, 7))
+		assertThatThrownBy(() -> pathService.findPaths(new PathRequest(3, 7), 사용자))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessage("출발역과 도착역 모두 존재해야 합니다.");
 	}
@@ -109,7 +114,7 @@ class PathServiceMockitoExtensionTest {
 		PathService pathService = new PathService(stationService, lineService);
 
 		//when
-		assertThatThrownBy(() -> pathService.findPaths(1, 6))
+		assertThatThrownBy(() -> pathService.findPaths(new PathRequest(1, 6), 사용자))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 

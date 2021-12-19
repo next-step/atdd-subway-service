@@ -7,6 +7,7 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 
@@ -16,6 +17,9 @@ public class SubwayFare {
 	public static final BigDecimal SUBWAY_BASE_FARE = new BigDecimal(1250);
 	private static final int SUBWAY_BASE_FARE_DISTANCE = 10;
 	private static final int DISTANCE_PER_BASE_OVER_FARE = 100;
+	private static final int DISCOUNT_BASE_FARE = 350;
+	private static final double DISCOUNT_YOUTH_RATE = 0.8;
+	private static final double DISCOUNT_CHILD_RATE = 0.5;
 
 	private final BigDecimal subwayFare;
 
@@ -71,5 +75,27 @@ public class SubwayFare {
 			.max()
 			.orElseThrow(() -> new IllegalArgumentException("최단경로 구간이 존재하지 않습니다."));
 		return this.add(new BigDecimal(maxOverFare));
+	}
+
+	public SubwayFare calculateDiscountFareByAge(LoginMember loginMember) {
+		if (loginMember.isChild()) {
+			return this.childDiscount();
+		}
+
+		if (loginMember.isYouth()) {
+			return this.youthDiscount();
+		}
+
+		return new SubwayFare(this.subwayFare);
+	}
+
+	private SubwayFare youthDiscount() {
+		return new SubwayFare(this.subwayFare.subtract(BigDecimal.valueOf(DISCOUNT_BASE_FARE))
+			.multiply(BigDecimal.valueOf(DISCOUNT_YOUTH_RATE)));
+	}
+
+	private SubwayFare childDiscount() {
+		return new SubwayFare(this.subwayFare.subtract(BigDecimal.valueOf(DISCOUNT_BASE_FARE))
+			.multiply(BigDecimal.valueOf(DISCOUNT_CHILD_RATE)));
 	}
 }
