@@ -7,6 +7,8 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Fare {
 
+	public static final int MIN_FARE_KRW_INCLUSIVE = 0;
+
 	private int fare;
 
 	protected Fare() {
@@ -18,7 +20,7 @@ public class Fare {
 	}
 
 	private void validate(int fare) {
-		if (fare < 0) {
+		if (fare < MIN_FARE_KRW_INCLUSIVE) {
 			throw new IllegalArgumentException("운임료는 0원 이상이여야 합니다.");
 		}
 	}
