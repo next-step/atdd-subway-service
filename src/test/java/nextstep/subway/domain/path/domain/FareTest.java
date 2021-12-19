@@ -1,6 +1,6 @@
 package nextstep.subway.domain.path.domain;
 
-import nextstep.subway.domain.auth.domain.LoginMember;
+import nextstep.subway.domain.auth.domain.LoginUser;
 import nextstep.subway.domain.line.domain.Distance;
 import nextstep.subway.domain.line.domain.Line;
 import nextstep.subway.domain.station.domain.Station;
@@ -55,7 +55,7 @@ class FareTest {
                 new Line("2호선", "bg-green-400", new Station("교대역"), new Station("강남역"), new Distance(10), 900),
                 new Line("3호선", "bg-green-400", new Station("교대역"), new Station("양재역"), new Distance(5), 400));
 
-        final Fare fare = new Fare(new Distance(12), lines, new LoginMember(age));
+        final Fare fare = new Fare(new Distance(12), lines, new LoginUser(age));
 
         assertThat(fare).isEqualTo(new Fare(expectFare));
     }

@@ -1,20 +1,20 @@
 package nextstep.subway.domain.auth.domain;
 
-public class LoginMember {
+public class User {
     private Long id;
     private String email;
     private Integer age;
 
-    public LoginMember() {
+    public User() {
     }
 
-    public LoginMember(Long id, String email, Integer age) {
+    public User(final Long id, final String email, final Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
     }
 
-    public LoginMember(final Integer age) {
+    public User(final Integer age) {
         this.age = age;
     }
 

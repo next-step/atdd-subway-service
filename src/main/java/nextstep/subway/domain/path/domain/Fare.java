@@ -1,6 +1,6 @@
 package nextstep.subway.domain.path.domain;
 
-import nextstep.subway.domain.auth.domain.LoginMember;
+import nextstep.subway.domain.auth.domain.User;
 import nextstep.subway.domain.line.domain.Distance;
 import nextstep.subway.domain.line.domain.Line;
 
@@ -41,13 +41,13 @@ public class Fare {
         this.amount += lineMaxExtraFare;
     }
 
-    public Fare(final Distance distance, List<Line> lines, LoginMember loginMember) {
+    public Fare(final Distance distance, List<Line> lines, User user) {
         this(distance, lines);
-        if (isTeenager(loginMember)) {
+        if (isTeenager(user)) {
             this.amount = discountAmountByAge(TEENAGER_DISCOUNT_RATE);
             return;
         }
-        if (isChildren(loginMember)) {
+        if (isChildren(user)) {
             this.amount = discountAmountByAge(CHILDREN_DISCOUNT_RATE);
         }
     }
@@ -56,12 +56,12 @@ public class Fare {
         return (int) ((this.amount - 350) * (1-discountRate));
     }
 
-    private boolean isChildren(final LoginMember loginMember) {
-        return loginMember.getAge() >= 6 && loginMember.getAge() < 13;
+    private boolean isChildren(final User user) {
+        return user.getAge() >= 6 && user.getAge() < 13;
     }
 
-    private boolean isTeenager(final LoginMember loginMember) {
-        return loginMember.getAge() >= 13 && loginMember.getAge() < 19;
+    private boolean isTeenager(final User user) {
+        return user.getAge() >= 13 && user.getAge() < 19;
     }
 
     private boolean isExtraDistance(int distance) {
