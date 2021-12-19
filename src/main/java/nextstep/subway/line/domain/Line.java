@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.common.exception.Exceptions;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -62,7 +63,7 @@ public class Line extends BaseEntity {
             return;
         }
         if (section.getLine() != null && !this.equals(section.getLine())) {
-            return;
+            throw Exceptions.SECTION_IS_NOT_ELIGIBLE.getException(section.toString());
         }
         sections.add(section);
         if (section.getLine() == null) {
