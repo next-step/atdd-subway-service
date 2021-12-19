@@ -56,7 +56,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> loginResponse = AuthAcceptanceTest.로그인_시도(EMAIL, PASSWORD);
 
 		내_정보_조회_테스트(loginResponse);
-		ExtractableResponse<Response> loginAfterUpdateResponse = 내_정보_수정_테스트(loginResponse, "newEmail@email.com", PASSWORD, AGE);
+		ExtractableResponse<Response> loginAfterUpdateResponse = 내_정보_수정_테스트(loginResponse, "newEmail@email.com",
+			PASSWORD, AGE);
 		내_정보_삭제_테스트(loginAfterUpdateResponse);
 	}
 
@@ -65,7 +66,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		내_정보_조회_요청_성공함(readMyInfoResponse);
 	}
 
-	private static ExtractableResponse<Response> 내_정보_수정_테스트(ExtractableResponse<Response> loginResponse, String newEmail, String newPassword,
+	private static ExtractableResponse<Response> 내_정보_수정_테스트(ExtractableResponse<Response> loginResponse,
+		String newEmail, String newPassword,
 		Integer newAge) {
 		MemberRequest memberRequest = new MemberRequest(newEmail, newPassword, newAge);
 		ExtractableResponse<Response> updateMyInfoResponse = 내_정보_수정_요청함(memberRequest, loginResponse);
@@ -93,6 +95,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 	private void 내_정보_삭제_올바른지_확인(ExtractableResponse<Response> loginResponse) {
 		ExtractableResponse<Response> response = 내_정보_조회_요청함(loginResponse);
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+	}
+
+	public static ExtractableResponse<Response> 회원_생성되어_있음(String email, String password, Integer age) {
+		return 회원_생성을_요청(email, password, age);
 	}
 
 	public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -161,17 +167,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 	}
 
 	public static ExtractableResponse<Response> 내_정보_조회_요청함(ExtractableResponse<Response> accessTokenResponse) {
-        return 내_정보_조회_요청함(accessTokenResponse.jsonPath().getString("accessToken"));
+		return 내_정보_조회_요청함(accessTokenResponse.jsonPath().getString("accessToken"));
 	}
 
-    public static ExtractableResponse<Response> 내_정보_조회_요청함(String accessToken) {
-        return RestAssured.given().log().all()
-            .auth().oauth2(accessToken)
-            .when().log().all()
-            .get("/members/me")
-            .then().log().all()
-            .extract();
-    }
+	public static ExtractableResponse<Response> 내_정보_조회_요청함(String accessToken) {
+		return RestAssured.given().log().all()
+			.auth().oauth2(accessToken)
+			.when().log().all()
+			.get("/members/me")
+			.then().log().all()
+			.extract();
+	}
 
 	private void 내_정보_조회_요청_성공함(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
