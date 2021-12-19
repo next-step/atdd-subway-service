@@ -15,7 +15,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+    private static final int ZERO = 0;
     private LineResponse 이호선;
     private StationResponse 강남역;
     private StationResponse 삼성역;
@@ -67,7 +67,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //    When 즐겨찾기 삭제 요청
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(토큰, 1);
         //    Then 즐겨찾기 삭제됨
-        즐겨찾기_삭제_확인(deleteResponse);
+        즐겨찾기_삭제_확인(ZERO, deleteResponse);
+
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(TokenResponse tokenResponse, Long source, Long target) {
@@ -111,8 +112,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(list.get(0).getTarget().getName()).isEqualTo(삼성역.getName());
     }
 
-    private void 즐겨찾기_삭제_확인(ExtractableResponse<Response> deleteResponse) {
+    private void 즐겨찾기_삭제_확인(int expectedSize, ExtractableResponse<Response> deleteResponse) {
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        ExtractableResponse<Response> findResponse = 즐겨찾기_조회_요청(토큰);
+        List<FavoriteResponse> list = findResponse.jsonPath().getList("", FavoriteResponse.class);
+        assertThat(list.size()).isEqualTo(expectedSize);
     }
 
 }

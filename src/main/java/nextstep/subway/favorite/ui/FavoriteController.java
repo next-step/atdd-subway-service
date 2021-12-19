@@ -6,14 +6,10 @@ import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -37,8 +33,9 @@ public class FavoriteController {
         return ResponseEntity.ok(favoriteResponses);
     }
 
-    @DeleteMapping("/favorites/{id}")
-    public ResponseEntity deleteFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
+    @DeleteMapping("/favorites/{favoriteId}")
+    public ResponseEntity deleteFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long favoriteId) {
+        favoriteService.deleteFavorite(favoriteId);
         return ResponseEntity.noContent().build();
     }
 }
