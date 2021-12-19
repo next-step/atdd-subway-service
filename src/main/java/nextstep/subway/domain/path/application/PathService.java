@@ -1,6 +1,5 @@
 package nextstep.subway.domain.path.application;
 
-import nextstep.subway.domain.auth.domain.AnonymousUser;
 import nextstep.subway.domain.auth.domain.User;
 import nextstep.subway.domain.line.application.LineService;
 import nextstep.subway.domain.line.domain.Line;
@@ -31,19 +30,6 @@ public class PathService {
         PathFinder pathFinder = new PathFinder(lines);
         final Route shortestRoute = pathFinder.findShortestRoute(request.getSource(), request.getTarget());
 
-        final Fare fare = getFare(user, lines, shortestRoute);
-
-        return PathFinderResponse.of(shortestRoute, fare);
-    }
-
-    private Fare getFare(final User user, final List<Line> lines, final Route shortestRoute) {
-        if (isNonLoginUser(user)) {
-            return new Fare(shortestRoute.getDistance(), lines);
-        }
-        return new Fare(shortestRoute.getDistance(), lines, user);
-    }
-
-    private boolean isNonLoginUser(final User user) {
-        return user instanceof AnonymousUser;
+        return PathFinderResponse.of(shortestRoute, Fare.calculate(shortestRoute.getDistance(), lines, user));
     }
 }

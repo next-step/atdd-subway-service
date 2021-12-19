@@ -1,5 +1,6 @@
 package nextstep.subway.domain.path.domain;
 
+import nextstep.subway.domain.auth.domain.AnonymousUser;
 import nextstep.subway.domain.auth.domain.LoginUser;
 import nextstep.subway.domain.line.domain.Distance;
 import nextstep.subway.domain.line.domain.Line;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,7 +23,7 @@ class FareTest {
     @Test
     @DisplayName("기본 운임")
     void baseFare() {
-        final Fare fare = new Fare(new Distance(10));
+        final Fare fare = Fare.calculate(new Distance(10), new ArrayList<>(), new AnonymousUser());
         Assertions.assertThat(fare).isEqualTo(new Fare(1250));
     }
 
@@ -29,7 +31,7 @@ class FareTest {
     @CsvSource(value = {"15:1350","50:2050", "58:2150", "106:2750"}, delimiter = ':')
     @DisplayName("이용거리 초과에 따른 추가 운임")
     void exceededDistance(int distance, int fareAmount) {
-        final Fare fare = new Fare(new Distance(distance));
+        final Fare fare = Fare.calculate(new Distance(distance), new ArrayList<>(), new AnonymousUser());
         Assertions.assertThat(fare).isEqualTo(new Fare(fareAmount));
     }
 
@@ -41,9 +43,17 @@ class FareTest {
                 new Line("2호선", "bg-green-400", new Station("교대역"), new Station("강남역"), new Distance(10), 900),
                 new Line("3호선", "bg-green-400", new Station("교대역"), new Station("양재역"), new Distance(5), 400));
 
-        final Fare fare = new Fare(new Distance(12), lines);
+        final Fare fare = Fare.calculate(new Distance(12), lines, new AnonymousUser());
 
         assertThat(fare).isEqualTo(new Fare(2250));
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"6:450","13:720", "19:1250"},delimiter = ':')
+    @DisplayName("노선별 추가 요금이 없는 연령별 할일")
+    void noNAdditionalFearForLineAndDiscountByAge(int age, int expectFare) {
+        final Fare fare = Fare.calculate(new Distance(10), new ArrayList<>(), new LoginUser(age));
+        assertThat(fare).isEqualTo(new Fare(expectFare));
     }
 
     @ParameterizedTest
@@ -55,8 +65,7 @@ class FareTest {
                 new Line("2호선", "bg-green-400", new Station("교대역"), new Station("강남역"), new Distance(10), 900),
                 new Line("3호선", "bg-green-400", new Station("교대역"), new Station("양재역"), new Distance(5), 400));
 
-        final Fare fare = new Fare(new Distance(12), lines, new LoginUser(age));
-
+        final Fare fare = Fare.calculate(new Distance(12), lines, new LoginUser(age));
         assertThat(fare).isEqualTo(new Fare(expectFare));
     }
 }
