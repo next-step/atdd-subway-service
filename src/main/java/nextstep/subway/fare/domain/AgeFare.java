@@ -11,8 +11,8 @@ public enum AgeFare {
 	KID(age -> (6 <= age && age < 13), 0.5f),
 	TEENAGER(age -> (13 <= age && age < 19), 0.2f);
 
-	private Function<Integer, Boolean> condition;
-	private float discountRate;
+	private final Function<Integer, Boolean> condition;
+	private final float discountRate;
 
 	AgeFare(Function<Integer, Boolean> condition, float discountRate) {
 		this.condition = condition;
