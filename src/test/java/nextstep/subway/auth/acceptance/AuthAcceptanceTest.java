@@ -122,7 +122,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(myInfoResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public ExtractableResponse<Response> 내_정보_조회_요청(String token) {
+    private ExtractableResponse<Response> 내_정보_조회_요청(String token) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)

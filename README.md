@@ -72,8 +72,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ## 기능목록정리 - 인증을 통한 기능 구현
 
-- [ ] 로그인 인수 테스트
-- [ ] 내 정보 조회 기능 인수 테스트 작성
-- [ ] 내 정보 조회 기능 구현
+- [x] 로그인 인수 테스트
+- [x] 내 정보 조회 기능 인수 테스트 작성
 - [ ] 즐겨찾기 기능 인수 테스트 구현
 - [ ] 즐겨찾기 기능 구현
