@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,9 +19,11 @@ import nextstep.subway.line.LineTest;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.FindShortestPathResult;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.StationTest;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 
 public class PathFinderTest {
 	private Line 신분당선;
@@ -48,7 +48,7 @@ public class PathFinderTest {
 		구분당선.addSection(삼성_강남_구간);
 
 		PathFinder pathFinder = new PathFinder();
-		GraphPath<Station, DefaultWeightedEdge> graph = pathFinder.findShortestPath(
+		FindShortestPathResult path = pathFinder.findShortestPath(
 			StationTest.삼성역,
 			StationTest.역삼역,
 			new Sections(Stream.of(신분당선.getSections(), 구분당선.getSections())
@@ -57,8 +57,12 @@ public class PathFinderTest {
 				))
 		);
 
-		assertThat(graph.getVertexList()).isEqualTo(Arrays.asList(StationTest.삼성역, StationTest.강남역, StationTest.역삼역));
-		assertThat(graph.getWeight()).isEqualTo(9);
+		assertThat(path.getStations()).isEqualTo(
+			Arrays.asList(
+				StationResponse.of(StationTest.삼성역), StationResponse.of(StationTest.강남역),
+				StationResponse.of(StationTest.역삼역)
+			));
+		assertThat(path.getDistance()).isEqualTo(9);
 	}
 
 	@Test

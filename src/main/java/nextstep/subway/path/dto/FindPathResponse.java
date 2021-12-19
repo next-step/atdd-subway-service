@@ -2,12 +2,8 @@ package nextstep.subway.path.dto;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.path.domain.FindShortestPathResult;
 import nextstep.subway.station.dto.StationResponse;
 
 public class FindPathResponse {
@@ -19,12 +15,9 @@ public class FindPathResponse {
 		this.distance = distance;
 	}
 
-	public static FindPathResponse of(GraphPath<Station, DefaultWeightedEdge> graph) {
-		List<StationResponse> path = graph.getVertexList()
-			.stream()
-			.map(StationResponse::of)
-			.collect(Collectors.toList());
-		int distance = (int)graph.getWeight();
+	public static FindPathResponse of(FindShortestPathResult findShortestPathResult) {
+		List<StationResponse> path = findShortestPathResult.getStations();
+		int distance = findShortestPathResult.getDistance();
 
 		return new FindPathResponse(path, distance);
 	}

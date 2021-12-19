@@ -1,7 +1,5 @@
 package nextstep.subway.path.application;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,9 +32,7 @@ public class PathService {
 		Station sourceStation = findStationById(findPathRequest.getSource());
 		Station targetStation = findStationById(findPathRequest.getTarget());
 
-		GraphPath<Station, DefaultWeightedEdge> graphPath = pathFinder.findShortestPath(sourceStation, targetStation,
-			sections);
-		return FindPathResponse.of(graphPath);
+		return FindPathResponse.of(pathFinder.findShortestPath(sourceStation, targetStation, sections));
 	}
 
 	private Station findStationById(Long id) {

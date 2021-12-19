@@ -16,12 +16,12 @@ import nextstep.subway.station.domain.Station;
 
 @Component
 public class PathFinder {
-	public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target, Sections sections) {
+	public FindShortestPathResult findShortestPath(Station source, Station target, Sections sections) {
 		validate(source, target, sections);
 
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 		DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = makeGraphFromSections(graph, sections.get());
-		return getPath(source, target, dijkstraShortestPath);
+		return new FindShortestPathResult(getPath(source, target, dijkstraShortestPath));
 	}
 
 	private void validate(Station source, Station target, Sections sections) {
