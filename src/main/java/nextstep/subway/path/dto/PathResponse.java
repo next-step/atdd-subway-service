@@ -12,7 +12,7 @@ public class PathResponse {
     public PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> path, double pathWeight) {
+    private PathResponse(List<StationResponse> path, double pathWeight) {
         this.path = path;
         this.pathWeight = pathWeight;
     }

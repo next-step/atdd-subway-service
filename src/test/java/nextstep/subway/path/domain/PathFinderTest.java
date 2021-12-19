@@ -46,7 +46,7 @@ public class PathFinderTest {
     @Test
     void checkContainsStation() {
         // given
-        PathFinder pathFinder = new PathFinder(Arrays.asList(
+        JgraphtPathFinder pathFinder = new JgraphtPathFinder(Arrays.asList(
             신분당선, 이호선
         ));
 
@@ -64,7 +64,7 @@ public class PathFinderTest {
     @Test
     void checkStationConnectedTest() {
         // given
-        PathFinder pathFinder = new PathFinder(Arrays.asList(
+        JgraphtPathFinder pathFinder = new JgraphtPathFinder(Arrays.asList(
             이호선, 삼호선
         ));
 
@@ -84,7 +84,7 @@ public class PathFinderTest {
     @Test
     void getShortestPathTest() {
         // given
-        PathFinder pathFinder = new PathFinder(Arrays.asList(
+        JgraphtPathFinder pathFinder = new JgraphtPathFinder(Arrays.asList(
             신분당선, 이호선, 삼호선, 사호선
         ));
 

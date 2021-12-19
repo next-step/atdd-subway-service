@@ -1,5 +1,6 @@
 package nextstep.subway.line.ui;
 
+import nextstep.subway.common.exception.ControllerExceptionHandler;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/lines")
-public class LineController {
+public class LineController extends ControllerExceptionHandler {
     private final LineService lineService;
 
     public LineController(final LineService lineService) {
@@ -60,8 +61,4 @@ public class LineController {
         return ResponseEntity.ok().build();
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity handleDataIntegrityViolationException(DataIntegrityViolationException e) {
-        return ResponseEntity.badRequest().build();
-    }
 }
