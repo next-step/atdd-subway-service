@@ -44,6 +44,23 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // given
+        String 토큰 = 로그인되어_있음(EMAIL, PASSWORD, AGE);
 
+        // when
+        ExtractableResponse<Response> 나의_정보_조회_응답 = 나의_정보_조회_요청(토큰);
+        // then
+        나의_정보_조회됨(나의_정보_조회_응답, EMAIL, AGE);
+
+        // when
+        ExtractableResponse<Response> 나의_정보_수정_응답 = 나의_정보_수정_요청(토큰, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        // then
+        나의_정보_수정됨(나의_정보_수정_응답);
+
+        // when
+        ExtractableResponse<Response> 나의_정보_삭제_응답 = 나의_정보_삭제_요청(토큰);
+        // then
+        나의_정보_삭제됨(나의_정보_삭제_응답);
     }
+
 }
