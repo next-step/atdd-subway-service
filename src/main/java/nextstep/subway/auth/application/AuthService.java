@@ -32,7 +32,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(final String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return LoginMember.GUEST;
+            throw new AuthorizationException();
         }
 
         final String email = jwtTokenProvider.getPayload(credentials);
