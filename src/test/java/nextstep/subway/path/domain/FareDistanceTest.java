@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class FareDistanceTest {
 
@@ -18,39 +20,42 @@ public class FareDistanceTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test
-    void calculateDistanceUnit_short() {
+    @ParameterizedTest
+    @CsvSource(value = {"0,0", "10,0"})
+    void calculateDistanceUnit_short(final int distance, final int expectedUnit) {
         // given
-        final FareDistance distance = new FareDistance(10);
+        final FareDistance fareDistance = new FareDistance(distance);
 
         // when
-        final int unit = distance.calculateDistanceUnit();
+        final int actualUnit = fareDistance.calculateDistanceUnit();
 
         // then
-        assertThat(unit).isEqualTo(0);
+        assertThat(actualUnit).isEqualTo(expectedUnit);
     }
 
-    @Test
-    void calculateDistanceUnit_mid() {
+    @ParameterizedTest
+    @CsvSource(value = {"11,0", "15,1", "50,8"})
+    void calculateDistanceUnit_mid(final int distance, final int expectedUnit) {
         // given
-        final FareDistance distance = new FareDistance(24);
+        final FareDistance fareDistance = new FareDistance(distance);
 
         // when
-        final int unit = distance.calculateDistanceUnit();
+        final int actualUnit = fareDistance.calculateDistanceUnit();
 
         // then
-        assertThat(unit).isEqualTo(2);
+        assertThat(actualUnit).isEqualTo(expectedUnit);
     }
 
-    @Test
-    void calculateDistanceUnit_long() {
+    @ParameterizedTest
+    @CsvSource(value = {"51,0", "58,1"})
+    void calculateDistanceUnit_long(final int distance, final int expectedUnit) {
         // given
-        final FareDistance distance = new FareDistance(64);
+        final FareDistance fareDistance = new FareDistance(distance);
 
         // when
-        final int unit = distance.calculateDistanceUnit();
+        final int actualUnit = fareDistance.calculateDistanceUnit();
 
         // then
-        assertThat(unit).isEqualTo(1);
+        assertThat(actualUnit).isEqualTo(expectedUnit);
     }
 }
