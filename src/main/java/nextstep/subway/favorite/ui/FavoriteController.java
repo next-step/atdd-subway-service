@@ -32,14 +32,8 @@ public class FavoriteController {
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity findFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        List<FavoriteResponse> favoriteResponses = Arrays.asList(
-                new FavoriteResponse(
-                        1L,
-                        new StationResponse(1L, "교대역", LocalDateTime.of(2021,12,19,1,1,1),LocalDateTime.of(2021,12,19,1,1,1)),
-                        new StationResponse(3L, "삼성역", LocalDateTime.of(2021,12,19,1,1,1),LocalDateTime.of(2021,12,19,1,1,1))
-                        )
-        );
+    public ResponseEntity findAllFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+        List<FavoriteResponse> favoriteResponses = favoriteService.findAllFavorites(loginMember.getId());
         return ResponseEntity.ok(favoriteResponses);
     }
 
