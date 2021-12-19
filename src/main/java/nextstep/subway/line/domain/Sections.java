@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,7 +45,7 @@ public class Sections {
 
     private boolean updatedOfDownStationToMinus(Section section) {
         Section foundSection = findSameDownStationOfSection(section.getDownStation());
-        if (!Objects.isNull(foundSection)) {
+        if (!foundSection.isDummy()) {
             foundSection.updateDownStationMinus(section);
             return true;
         }
@@ -55,7 +54,7 @@ public class Sections {
 
     private boolean updatedOfUpStationToMinus(Section section) {
         Section foundSection = findSameUpStationOfSection(section.getUpStation());
-        if (!Objects.isNull(foundSection)) {
+        if (!foundSection.isDummy()) {
             foundSection.updateUpStationMinus(section);
             return true;
         }
@@ -66,14 +65,14 @@ public class Sections {
         checkRemoveStation(station);
 
         Section downStationOfSection = findSameUpStationOfSection(station);
-        if (!Objects.isNull(downStationOfSection)) {
+        if (!downStationOfSection.isDummy()) {
             updatedOfDownStationToPlus(downStationOfSection);
             sections.remove(downStationOfSection);
             return;
         }
 
         Section upStationOfSection = findSameDownStationOfSection(station);
-        if (!Objects.isNull(upStationOfSection)) {
+        if (upStationOfSection.isDummy()) {
             updatedOfUpStationToPlus(upStationOfSection);
         }
         sections.remove(upStationOfSection);
@@ -81,7 +80,7 @@ public class Sections {
 
     private boolean updatedOfUpStationToPlus(Section section) {
         Section foundSection = findSameUpStationOfSection(section.getDownStation());
-        if (!Objects.isNull(foundSection)) {
+        if (!foundSection.isDummy()) {
             foundSection.updateUpStationPlus(section);
             return true;
         }
@@ -90,7 +89,7 @@ public class Sections {
 
     private boolean updatedOfDownStationToPlus(Section section) {
         Section foundSection = findSameDownStationOfSection(section.getUpStation());
-        if (!Objects.isNull(foundSection)) {
+        if (!foundSection.isDummy()) {
             foundSection.updateDownStationPlus(section);
             return true;
         }
@@ -119,14 +118,14 @@ public class Sections {
         return sections.stream()
             .filter(it -> it.isEqualToDownStation(station))
             .findAny()
-            .orElse(null);
+            .orElse(Section.DUMMY_SECTION);
     }
 
     private Section findSameUpStationOfSection(Station station) {
         return sections.stream()
             .filter(it -> it.isEqualToUpStation(station))
             .findAny()
-            .orElse(null);
+            .orElse(Section.DUMMY_SECTION);
     }
 
     private void checkStationOfSection(Section section) {
@@ -150,7 +149,7 @@ public class Sections {
             && !stations.contains(section.getDownStation());
     }
 
-    private Set<Station> getStations() {
+    public Set<Station> getStations() {
         Set<Station> stations = new HashSet<>();
         sections.forEach(it -> {
             stations.add(it.getUpStation());
@@ -218,4 +217,7 @@ public class Sections {
             .collect(Collectors.toList());
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
 }

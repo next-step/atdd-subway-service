@@ -1,6 +1,5 @@
 package nextstep.subway.line.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,13 +36,20 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
+        List<Line> persistLines = findAll();
         return persistLines.stream()
             .map(LineResponse::of)
             .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<Line> findAll() {
+        return lineRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id)
             .orElseThrow(IllegalArgumentException::new);

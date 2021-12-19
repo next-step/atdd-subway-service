@@ -13,8 +13,16 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.station.dto.StationResponse;
 
 public class LineAcceptanceTestHelper {
+
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color,
+        StationResponse upStationResponse, StationResponse downStationResponse, int distance) {
+        LineRequest lineRequest
+            = new LineRequest(name, color, upStationResponse.getId(), downStationResponse.getId(), distance);
+        return 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
+    }
 
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
         return 지하철_노선_생성_요청(params);
