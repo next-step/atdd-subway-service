@@ -17,6 +17,22 @@
 
 <br>
 
+## 3단계 요구사항
+* [ ] 토큰 발급 기능 (로그인) 인수 테스트 만들기
+  * `Feature` 로그인 기능
+    * `Scenario` 로그인을 시도한다.
+      * `Given` 회원 등록되어 있음
+      * `When` 로그인 요청
+      * `Then` 로그인 됨
+      * `When` 등록되어 있지 않은 이메일 로그인 요청
+      * `Then` 로그인 실패됨 (`AuthorizationException` 발생)
+      * `When` 잘못된 비밀번호로 로그인 요청
+      * `Then` 로그인 실패됨 (`AuthorizationException` 발생)
+      * `When` 잘못된 토큰으로 로그인 요청
+      * `Then` 로그인 실패됨 (`AuthorizationException` 발생)
+* [ ] 인증 - 내 정보 조회 기능 완성하기
+* [ ] 인증 - 즐겨 찾기 기능 완성하기
+
 ## 2단계 요구사항
 * [X] 최단 경로 조회 인수 테스트 만들기
   * 최단거리 조회 
