@@ -71,6 +71,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(deleteResponse);
     }
 
+    @DisplayName("즐겨찾기 등록에 출발역과 도착역이 같은경우")
+    @Test
+    void createFavoriteSameStation() {
+        // When 출발역과 도착역 같게 생성 요청
+        ExtractableResponse<Response> createFavoriteResponse = 즐겨찾기_생성_요청(강남역.getId(), 강남역.getId());
+        // Then 즐겨찾기 생성 실패됨
+        즐겨찾기_생성_실패됨(createFavoriteResponse, "즐겨찾기 등록에 출발역과 도착역이 같으면 안됩니다.");
+    }
+
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(Long sourceId, Long targetid) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
@@ -115,5 +124,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> deleteResponse) {
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 즐겨찾기_생성_실패됨(ExtractableResponse<Response> createFavoriteResponse, String expectedString) {
+        assertAll(
+                () -> assertThat(createFavoriteResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(createFavoriteResponse.body().asString()).isEqualTo(expectedString)
+        );
     }
 }
