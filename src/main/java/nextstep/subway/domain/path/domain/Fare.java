@@ -25,7 +25,7 @@ public class Fare {
         int fare = DEFAULT_AMOUNT;
         final int dt = distance.getDistance();
         if (isExtraDistance(dt)) {
-            fare += ExtraDistanceFare.extraAmount(dt);
+            fare += ExtraDistanceFare.calculateExtraDistanceFare(dt);
         }
         fare += LineFare.calculateLineFare(lines);
 

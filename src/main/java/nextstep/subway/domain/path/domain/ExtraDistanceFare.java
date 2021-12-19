@@ -10,11 +10,11 @@ public class ExtraDistanceFare {
     private ExtraDistanceFare() {
     }
 
-    public static int extraAmount(final int distance) {
-        int extraAmount = extraAmount(stepOneExcessDistance(distance), ONE_STEP_EXTRA_FARE_DISTANCE);
+    public static int calculateExtraDistanceFare(final int distance) {
+        int extraAmount = calculateExtraDistanceFare(stepOneExcessDistance(distance), ONE_STEP_EXTRA_FARE_DISTANCE);
 
         if (isStepTwoExcessDistance(distance)) {
-            extraAmount += extraAmount(stepTwoExcessDistance(distance), TWO_STEP_EXTRA_FARE_DISTANCE);
+            extraAmount += calculateExtraDistanceFare(stepTwoExcessDistance(distance), TWO_STEP_EXTRA_FARE_DISTANCE);
         }
 
         return extraAmount;
@@ -35,7 +35,7 @@ public class ExtraDistanceFare {
         return distance - ONE_STEP_EXTRA_FARE_MAX_DISTANCE;
     }
 
-    private static int extraAmount(int excessDistance, float stepByStepExtraFareDistance) {
+    private static int calculateExtraDistanceFare(int excessDistance, float stepByStepExtraFareDistance) {
         return (int) (Math.ceil(excessDistance / stepByStepExtraFareDistance)) * EXTRA_AMOUNT;
     }
 }
