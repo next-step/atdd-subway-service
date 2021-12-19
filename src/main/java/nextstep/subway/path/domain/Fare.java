@@ -35,13 +35,13 @@ public class Fare implements Comparable<Fare> {
         return new Fare(fare + overFare);
     }
 
-    public Fare applyDiscount(final Integer age) {
+    public Fare applyDiscount(final FareAge age) {
         int discounted = fare;
-        if (age >= 13 && age < 19) {
+        if (age.isTeenager()) {
             final double rate = BASE_DISCOUNT_RATE - TEENAGER_DISCOUNT_RATE;
             discounted = (int) ((fare - BASE_DISCOUNT_AMOUNT) * rate);
         }
-        if (age >= 6 && age < 13) {
+        if (age.isChild()) {
             final double rate = BASE_DISCOUNT_RATE - CHILDREN_DISCOUNT_RATE;
             discounted = (int) ((fare - BASE_DISCOUNT_AMOUNT) * rate);
         }

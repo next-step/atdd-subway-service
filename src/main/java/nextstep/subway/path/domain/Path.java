@@ -27,7 +27,7 @@ public class Path {
             .orElse(baseFare);
         final Fare total = overFareByDistance.add(overFareByLine);
         if (!loginMember.isGuest()) {
-            return total.applyDiscount(loginMember.getAge());
+            return total.applyDiscount(new FareAge(loginMember.getAge()));
         }
         return total;
     }

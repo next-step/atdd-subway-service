@@ -86,8 +86,11 @@ public class FareTest {
     @ParameterizedTest
     @ValueSource(ints = {13, 14, 15, 16, 17, 18})
     void applyDiscount_teenager(final Integer age) {
+        // given
+        final FareAge fareAge = new FareAge(age);
+
         // when
-        final Fare discounted = fare.applyDiscount(age);
+        final Fare discounted = fare.applyDiscount(fareAge);
 
         // then
         final Fare expected = new Fare(720);
@@ -97,8 +100,11 @@ public class FareTest {
     @ParameterizedTest
     @ValueSource(ints = {6, 7, 8, 9, 10, 11, 12})
     void applyDiscount_children(final Integer age) {
+        // given
+        final FareAge fareAge = new FareAge(age);
+
         // when
-        final Fare discounted = fare.applyDiscount(age);
+        final Fare discounted = fare.applyDiscount(fareAge);
 
         // then
         final Fare expected = new Fare(450);
@@ -108,8 +114,11 @@ public class FareTest {
     @ParameterizedTest
     @ValueSource(ints = {5, 19})
     void applyDiscount_notApplicable(final Integer age) {
+        // given
+        final FareAge fareAge = new FareAge(age);
+
         // when
-        final Fare discounted = fare.applyDiscount(age);
+        final Fare discounted = fare.applyDiscount(fareAge);
 
         // then
         final Fare expected = new Fare(1_250);
