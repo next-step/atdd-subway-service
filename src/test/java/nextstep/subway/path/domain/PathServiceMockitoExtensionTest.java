@@ -20,6 +20,7 @@ import nextstep.subway.station.dto.StationResponse;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,10 +34,10 @@ class PathServiceMockitoExtensionTest {
 	private static Station 도곡역 = new Station(5L, "도곡역");
 	private static Station 천안역 = new Station(6L, "천안역");
 
-	private static Line 이호선 = new Line("이호선", "green", 교대역, 선릉역, Distance.of(20));
-	private static Line 삼호선 = new Line("삼호선", "orange", 교대역, 도곡역, Distance.of(11));
-	private static Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, Distance.of(1));
-	private static Line 수인분당선 = new Line("수인분당선", "yellow", 선릉역, 도곡역, Distance.of(20));
+	private static Line 이호선 = new Line("이호선", "green", 교대역, 선릉역, Distance.of(20), SubwayFare.of(BigDecimal.valueOf(500)));
+	private static Line 삼호선 = new Line("삼호선", "orange", 교대역, 도곡역, Distance.of(11), SubwayFare.of(BigDecimal.valueOf(300)));
+	private static Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, Distance.of(1), SubwayFare.of(BigDecimal.valueOf(700)));
+	private static Line 수인분당선 = new Line("수인분당선", "yellow", 선릉역, 도곡역, Distance.of(20), SubwayFare.of(BigDecimal.ZERO));
 
 	private static Section 이호선_추가구간 = new Section(null, 이호선, 교대역, 강남역, Distance.of(10));
 	private static Section 삼호선_추가구간 = new Section(null, 삼호선, 교대역, 양재역, Distance.of(1));
@@ -71,7 +72,7 @@ class PathServiceMockitoExtensionTest {
 		//then
 		assertThat(pathIds).containsExactly(1L, 4L, 2L, 3L);
 		assertThat(pathResponse.getDistance()).isEqualTo(12);
-		assertThat(pathResponse.getSubwayFare()).isEqualTo(1350);
+		assertThat(pathResponse.getSubwayFare()).isEqualTo(2050);
 	}
 
 	@Test

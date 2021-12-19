@@ -29,4 +29,8 @@ public class PathFinder {
 		return Distance.of(new DijkstraShortestPath(graph).getPath(source, target).getWeight());
 	}
 
+	public List<SectionEdge> findShortestPathEdges(Station source, Station target) {
+		return new DijkstraShortestPath(graph).getPath(source, target).getEdgeList();
+	}
+
 }

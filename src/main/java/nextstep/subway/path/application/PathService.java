@@ -14,6 +14,7 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.path.domain.SubwayFare;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -35,13 +36,22 @@ public class PathService {
 	public PathResponse findPaths(int source, int target) {
 		validateStartStationEqualsEndStation(source, target);
 		validateNoneStation(source, target);
+
 		Station sourceStation = stationService.findById((long)source);
 		Station targetStation = stationService.findById((long)target);
-		PathFinder pathFinder = PathFinder.create(stationService.findAll(), findAllSections());
-		List<StationResponse> stationResponses
-			= extractStationResponses(pathFinder.findShortestPathVertexes(sourceStation, targetStation));
+
+		List<Section> allSections = findAllSections();
+		PathFinder pathFinder = PathFinder.create(stationService.findAll(), allSections);
+
+		List<StationResponse> stationResponses = extractStationResponses(pathFinder.findShortestPathVertexes(sourceStation, targetStation));
+
+		List<SectionEdge> shortestPathEdges = pathFinder.findShortestPathEdges(sourceStation, targetStation);
+
 		Distance distance = pathFinder.findShortestPathDistance(sourceStation, targetStation);
-		SubwayFare subwayFare = SubwayFare.calculate(distance);
+		SubwayFare subwayFare = SubwayFare.of(SubwayFare.SUBWAY_BASE_FARE)
+			.calculateLineOverFare(allSections, shortestPathEdges)
+			.calculateDistanceOverFare(distance);
+
 		return PathResponse.of(stationResponses, distance, subwayFare);
 	}
 
