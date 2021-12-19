@@ -1,7 +1,7 @@
 package nextstep.subway.path.utils;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.exception.IllegalPathException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -20,12 +20,12 @@ public class JGraphTPathFinder implements PathFinder {
     }
 
     @Override
-    public PathResponse findPath(List<Line> lines, Long sourceId, Long targetId) {
+    public Path findPath(List<Line> lines, Long sourceId, Long targetId) {
         validateSameSourceTarget(sourceId, targetId);
         DijkstraShortestPath dijkstraShortestPath = getDijkstraShortestPath(lines);
         List<StationResponse> stations = getShortestPathStationResponses(lines, sourceId, targetId, dijkstraShortestPath);
         int pathWeight = (int) dijkstraShortestPath.getPathWeight(String.valueOf(sourceId), String.valueOf(targetId));
-        return new PathResponse(stations, pathWeight);
+        return new Path(stations, pathWeight);
     }
 
     private List<StationResponse> getShortestPathStationResponses(List<Line> lines, Long sourceId, Long targetId, DijkstraShortestPath dijkstraShortestPath) {

@@ -4,6 +4,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.utils.FareCalculator;
 import nextstep.subway.path.utils.JGraphTPathFinder;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -61,7 +62,7 @@ class PathServiceTest {
     void findPathTest() {
         when(lineRepository.findAll()).thenReturn(lines);
 
-        PathService pathService = new PathService(stationRepository, lineRepository, new JGraphTPathFinder());
+        PathService pathService = new PathService(stationRepository, lineRepository, new JGraphTPathFinder(), new FareCalculator());
         PathResponse pathResponse = pathService.findPath(1L, 4L);
 
         assertThat(pathResponse.getDistance()).isEqualTo(12);

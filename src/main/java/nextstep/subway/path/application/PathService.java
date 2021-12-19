@@ -2,13 +2,15 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.utils.FareCalculator;
 import nextstep.subway.path.utils.PathFinder;
 import nextstep.subway.station.domain.StationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -20,14 +22,19 @@ public class PathService {
 
     private final PathFinder pathFinder;
 
-    public PathService(StationRepository stationRepository, LineRepository lineRepository, PathFinder pathFinder) {
+    private final FareCalculator fareCalculator;
+
+    public PathService(StationRepository stationRepository, LineRepository lineRepository, PathFinder pathFinder, FareCalculator fareCalculator) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
         this.pathFinder = pathFinder;
+        this.fareCalculator = fareCalculator;
     }
 
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineRepository.findAll();
-        return pathFinder.findPath(lines, source, target);
+        Path path = pathFinder.findPath(lines, source, target);
+        BigDecimal fare = fareCalculator.calculate(lines, path);
+        return PathResponse.from(path, fare);
     }
 }

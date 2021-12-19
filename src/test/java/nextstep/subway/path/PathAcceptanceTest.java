@@ -16,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -79,6 +80,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(stationNames).containsExactlyElementsOf(Arrays.asList("강남역", "양재역", "남부터미널역"));
         assertThat(pathResponse.getDistance()).isEqualTo(12);
+        assertThat(pathResponse.getFare()).isEqualTo(new BigDecimal(1_350));
     }
 
     private LineResponse 지하철_노선_등록되어_있음(String 신분당선, String color, StationResponse 강남역, StationResponse 양재역, int distance) {
