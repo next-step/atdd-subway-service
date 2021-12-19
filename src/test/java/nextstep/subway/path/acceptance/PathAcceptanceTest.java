@@ -33,7 +33,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private long 양재역_ID;
 	private long 교대역_ID;
 	private long 남부터미널역_ID;
-	private String 사용자;
+	private String 사용자_성인;
 
 	/**
 	 * 교대역 ------- *2호선(10)* ------- 강남역
@@ -61,20 +61,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		final String password = "<secret>";
 		final int age = 20;
 		회원_등록됨(email, password, age);
-		사용자 = 로그인됨(email, password);
+		사용자_성인 = 로그인됨(email, password);
 	}
 
 	// [outside->in] happy case 만 고려
 	@DisplayName("지하철 최단 경로를 조회한다.")
 	@Test
 	void findShortestPath() {
-		final ExtractableResponse<Response> response = 최단_경로_조회_요청(사용자, 강남역_ID, 남부터미널역_ID);
+		final ExtractableResponse<Response> response = 최단_경로_조회_요청(사용자_성인, 강남역_ID, 남부터미널역_ID);
 		최단_경로_응답_확인됨(response);
 
 		final PathResponse pathResponse = response.as(PathResponse.class);
 		최단_경로_역_목록_확인됨(pathResponse, Arrays.asList(강남역_ID, 양재역_ID, 남부터미널역_ID));
 		최단_경로_거리_확인됨(pathResponse, 12);
-		최단_경로_운임료_확인됨(pathResponse, 1250 + 100 + 500);
+		최단_경로_운임료_확인됨(pathResponse, 1650);
 	}
 
 	private ExtractableResponse<Response> 최단_경로_조회_요청(String accessToken, long source, long target) {
