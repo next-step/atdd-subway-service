@@ -1,5 +1,6 @@
 package nextstep.subway.exception;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.common.ErrorCode;
 import nextstep.subway.common.ErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> badRequestApiExceptionHandler(BadRequestApiException e) {
         ErrorCode errorCode = ErrorCode.valueOf(e.getMessage());
         return new ResponseEntity<>(ErrorResponse.of(errorCode), HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 401 에러
+     */
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<ErrorResponse> authorizationExceptionHandler(AuthorizationException e) {
+        ErrorCode errorCode = ErrorCode.valueOf(e.getMessage());
+        return new ResponseEntity<>(ErrorResponse.of(errorCode), HttpStatus.UNAUTHORIZED);
     }
 
     /**
