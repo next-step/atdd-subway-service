@@ -6,30 +6,43 @@ import nextstep.subway.line.domain.Fare;
 public class FarePolicy {
 
     private static final int BASE_FARE = 1250;
+    private final LoginMember loginMember;
+    private final Path path;
+    private Fare fare;
 
-    private FarePolicy() {
+    private FarePolicy(LoginMember loginMember, Path path) {
+        this.loginMember = loginMember;
+        this.path = path;
+        this.fare = Fare.from(BASE_FARE);
     }
 
-    public static Fare of(LoginMember loginMember, Path path) {
-        Fare maxExtraFare = path.getSections().getMaxExtraFare();
-        Fare distanceExtraFare = calculatorExtraFareBy(path.getDistance().value());
-        return calculateAgeDiscount(
-                loginMember,
-                Fare.from(BASE_FARE)
-                        .plus(maxExtraFare)
-                        .plus(distanceExtraFare)
-        );
+    public static FarePolicy of(LoginMember loginMember, Path path) {
+        return new FarePolicy(loginMember, path);
     }
 
-    private static Fare calculateAgeDiscount(LoginMember loginMember, Fare fare) {
-        if (loginMember.isGuest()) {
-            return fare;
+    public void calculateMaxExtraFare() {
+        this.fare = fare.plus(path.getSections().getMaxExtraFare());
+    }
+
+    public void calculatorExtraFareByDistance() {
+        this.fare = fare.plus(DistanceFarePolicy.valueOf(path.getDistance().value()));
+    }
+
+    public void calculateAgeDiscount() {
+        if (!loginMember.isGuest()) {
+            this.fare = AgeDiscountFarePolicy.valueOf(loginMember.getAge(), fare);
         }
-
-        return AgeDiscountFarePolicy.valueOf(loginMember.getAge(), fare);
     }
 
-    private static Fare calculatorExtraFareBy(int distance) {
-        return DistanceFarePolicy.valueOf(distance);
+    public LoginMember getLoginMember() {
+        return loginMember;
+    }
+
+    public Path getPath() {
+        return path;
+    }
+
+    public Fare getFare() {
+        return fare;
     }
 }
