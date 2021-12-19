@@ -13,22 +13,22 @@ import nextstep.subway.AcceptanceTest;
 
 @DisplayName("인증 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
-    public static String email = "changchang743@gmail.com";
-    public static String password = "1234";
-    public static int age = 29;
+    public static String EMAIL = "changchang743@gmail.com";
+    public static String PASSWORD = "1234";
+    public static int AGE = 29;
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
-        회원_등록되어_있음(email, password, age);
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
     }
 
     @DisplayName("로그인 성공 - 토큰 발급")
     @Test
     void loginAndGetToken() {
         // when
-        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(email, password);
+        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(EMAIL, PASSWORD);
 
         //then
         로그인_됨(로그인_응답);
@@ -38,14 +38,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBearerAuth() {
         // given
-        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(email, password);
+        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(EMAIL, PASSWORD);
         String 토큰 = 토큰_정보(로그인_응답);
 
         // when
         ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회_요청(토큰);
 
         // then
-        내_정보_조회_됨(내_정보_조회_응답, email, password);
+        내_정보_조회_됨(내_정보_조회_응답, EMAIL, PASSWORD);
     }
 
     @DisplayName("등록되어 있지 않은 이메일 로그인 시도 (Bearer Auth 로그인 실패)")
@@ -55,7 +55,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         String wrongEmail = "wrongEmail@gmail.com";
 
         // when
-        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(wrongEmail, password);
+        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(wrongEmail, PASSWORD);
 
         // then
         로그인_실패됨(로그인_응답);
@@ -68,7 +68,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         String wrongPassword = "wrongPassword";
 
         // when
-        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(email, wrongPassword);
+        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(EMAIL, wrongPassword);
 
         // then
         로그인_실패됨(로그인_응답);
