@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.FarePolicy;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
@@ -31,7 +32,6 @@ public class PathService {
         Lines lines = lineService.findLines();
         PathFinder pathFinder = PathFinder.from(lines);
         Path path = pathFinder.findShortestPath(lines, sourceStation, targetStation);
-        path.calculateAgeDiscount(loginMember);
-        return PathResponse.of(path);
+        return PathResponse.of(path, FarePolicy.of(loginMember, path));
     }
 }

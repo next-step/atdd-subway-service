@@ -6,6 +6,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +33,10 @@ public class Sections {
 
     static Sections of(Section... sections) {
         return new Sections(new ArrayList<>(Arrays.asList(sections)));
+    }
+
+    public static Sections of(List<Section> sections) {
+        return new Sections(sections);
     }
 
     public void add(Section section) {
@@ -94,6 +99,16 @@ public class Sections {
         }
 
         return makeOrderedStations(firstUpStation);
+    }
+
+    public Fare getMaxExtraFare() {
+        return sections.stream()
+                .map(section -> section.getLine()
+                        .getExtraFare()
+                        .value())
+                .max(BigDecimal::compareTo)
+                .map(Fare::from)
+                .orElse(Fare.from(BigDecimal.ZERO));
     }
 
     private void validateRemove() {
