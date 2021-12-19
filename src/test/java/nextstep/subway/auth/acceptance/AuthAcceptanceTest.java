@@ -48,11 +48,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 			MemberAcceptanceTest.PASSWORD);
 		로그인_성공함(loginResponse);
 
-		ExtractableResponse<Response> response = MemberAcceptanceTest.내_정보_조회_요청함();
+		ExtractableResponse<Response> response = MemberAcceptanceTest.내_정보_조회_요청함(loginResponse);
 		정보_조회_요청_실패함(response);
 	}
 
-	private ExtractableResponse<Response> 로그인_시도(String email, String password) {
+	public static ExtractableResponse<Response> 로그인_시도(String email, String password) {
 		LoginRequest loginRequest = new LoginRequest(email, password);
 		return RestAssured.given().log().all()
 			.when().log().all()
@@ -63,17 +63,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 			.extract();
 	}
 
-	private void 로그인_성공함(ExtractableResponse<Response> response) {
+	public static void 로그인_성공함(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 		assertThat(response.jsonPath().getString("accessToken")).isNotNull();
 		assertThat(response.jsonPath().getString("accessToken")).isNotEmpty();
 	}
 
-	private void 로그인_실패함(ExtractableResponse<Response> response) {
+	public static  void 로그인_실패함(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
-	private void 정보_조회_요청_실패함(ExtractableResponse<Response> response) {
+	public static  void 정보_조회_요청_실패함(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
 	}
 }
