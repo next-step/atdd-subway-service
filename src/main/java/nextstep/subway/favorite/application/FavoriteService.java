@@ -3,6 +3,7 @@ package nextstep.subway.favorite.application;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
+import nextstep.subway.favorite.domain.Favorites;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
@@ -43,7 +44,7 @@ public class FavoriteService {
 
     public List<FavoriteResponse> findFavorites(Long memberId) {
         Member member = memberService.findMemberById(memberId);
-        List<Favorite> favorites = member.getFavorites();
+        Favorites favorites = member.getFavorites();
         return FavoriteResponse.from(favorites);
     }
 
