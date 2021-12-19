@@ -25,12 +25,14 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(RuntimeException::new);
         member.update(param.toMember());
         memberRepository.save(member);
     }
@@ -40,6 +42,7 @@ public class MemberService {
     }
 
     public Member findMemberById(Long id) {
-        return memberRepository.findById(id).orElseThrow(() -> new NotExistMemberException(MESSAGE_NOT_EXIST_MEMBER));
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new NotExistMemberException(MESSAGE_NOT_EXIST_MEMBER));
     }
 }
