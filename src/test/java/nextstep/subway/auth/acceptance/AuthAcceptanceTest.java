@@ -18,40 +18,23 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
 	public static final String WRONG_EMAIL = "wrong@email.com";
 
-	@DisplayName("Bearer Auth")
+	@DisplayName("로그인을 시도한다.")
 	@Test
 	void myInfoWithBearerAuth() {
 		ExtractableResponse<Response> memberCreateResponse = MemberAcceptanceTest.회원_생성을_요청(MemberAcceptanceTest.EMAIL,
 			MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
 		MemberAcceptanceTest.회원_생성됨(memberCreateResponse);
 
-		LoginRequest loginRequest = new LoginRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
-		ExtractableResponse<Response> response = RestAssured.given().log().all()
-			.when().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(loginRequest)
-			.post("/login/token")
-			.then().log().all()
-			.extract();
-
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(response.jsonPath().getString("accessToken")).isNotNull();
-		assertThat(response.jsonPath().getString("accessToken")).isNotEmpty();
+		ExtractableResponse<Response> response = 로그인_시도(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
+		로그인_성공함(response);
 	}
 
 	@DisplayName("Bearer Auth 로그인 실패")
 	@Test
 	void myInfoWithBadBearerAuth() {
-		LoginRequest loginRequest = new LoginRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
-		ExtractableResponse<Response> response = RestAssured.given().log().all()
-			.when().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(loginRequest)
-			.post("/login/token")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> response = 로그인_시도(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
 
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+		로그인_실패함(response);
 	}
 
 	@DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -61,27 +44,36 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 			MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
 		MemberAcceptanceTest.회원_생성됨(memberCreateResponse);
 
-		LoginRequest loginRequest = new LoginRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
-		ExtractableResponse<Response> loginResponse = RestAssured.given().log().all()
+		ExtractableResponse<Response> loginResponse = 로그인_시도(MemberAcceptanceTest.EMAIL,
+			MemberAcceptanceTest.PASSWORD);
+		로그인_성공함(loginResponse);
+
+		ExtractableResponse<Response> response = MemberAcceptanceTest.내_정보_조회_요청함();
+		정보_조회_요청_실패함(response);
+	}
+
+	private ExtractableResponse<Response> 로그인_시도(String email, String password) {
+		LoginRequest loginRequest = new LoginRequest(email, password);
+		return RestAssured.given().log().all()
 			.when().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(loginRequest)
 			.post("/login/token")
 			.then().log().all()
 			.extract();
-
-		assertThat(loginResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(loginResponse.jsonPath().getString("accessToken")).isNotNull();
-		assertThat(loginResponse.jsonPath().getString("accessToken")).isNotEmpty();
-
-		ExtractableResponse<Response> response = RestAssured.given().log().all()
-			.when().log().all()
-			.body(loginRequest)
-			.get("/member/me")
-			.then().log().all()
-			.extract();
-
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
 	}
 
+	private void 로그인_성공함(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(response.jsonPath().getString("accessToken")).isNotNull();
+		assertThat(response.jsonPath().getString("accessToken")).isNotEmpty();
+	}
+
+	private void 로그인_실패함(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+	}
+
+	private void 정보_조회_요청_실패함(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+	}
 }
