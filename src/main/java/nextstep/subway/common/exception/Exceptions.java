@@ -22,4 +22,9 @@ public enum Exceptions {
 	public CustomExceptionBase getException() {
 		return exception;
 	}
+
+	public CustomExceptionBase getException(String additionalMsg) {
+		exception.withMsg(additionalMsg);
+		return exception;
+	}
 }

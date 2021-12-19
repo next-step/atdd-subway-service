@@ -26,11 +26,13 @@ public class PathFinder {
 
 	private void validate(Station source, Station target, Sections sections) {
 		if (source.equals(target)) {
-			throw Exceptions.SOURCE_AND_TARGET_EQUAL.getException();
+			String msg = "source: " + source + "\ntarget: " + target;
+			throw Exceptions.SOURCE_AND_TARGET_EQUAL.getException(msg);
 		}
 
 		if (!sections.contains(source) || !sections.contains(target)) {
-			throw Exceptions.SOURCE_OR_TARGET_NOT_EXIST.getException();
+			String msg = "source: " + source + "\ntarget: " + target;
+			throw Exceptions.SOURCE_OR_TARGET_NOT_EXIST.getException(msg);
 		}
 	}
 

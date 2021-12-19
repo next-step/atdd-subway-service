@@ -72,16 +72,19 @@ public class PathFinderTest {
 		Section 삼성_강남_구간 = new Section(구분당선, StationTest.삼성역, StationTest.강남역, 4);
 		신분당선.addSection(삼성_선릉_구간);
 		신분당선.addSection(선릉_역삼_구간);
-		신분당선.addSection(역삼_강남_구간);
+		구분당선.addSection(역삼_강남_구간);
 		구분당선.addSection(삼성_강남_구간);
 
 		PathFinder pathFinder = new PathFinder();
 
 		assertThatThrownBy(() -> pathFinder.findShortestPath(
-			StationTest.삼성역, StationTest.삼성역, new Sections(
+			StationTest.삼성역,
+			StationTest.삼성역,
+			new Sections(
 				Stream.of(신분당선.getSections(), 구분당선.getSections())
 					.flatMap(Collection::stream)
-					.collect(Collectors.toList()))))
+					.collect(Collectors.toList()
+					))))
 			.isInstanceOf(BadParameterException.class)
 			.hasMessage("출발지와 도착지가 같아 경로를 찾을 수 없습니다.");
 	}
