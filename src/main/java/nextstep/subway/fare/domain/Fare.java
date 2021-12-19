@@ -23,6 +23,10 @@ public class Fare {
 		}
 	}
 
+	public Fare plus(Fare fare) {
+		return Fare.of(this.fare + fare.getFare());
+	}
+
 	public static Fare of(int fare) {
 		return new Fare(fare);
 	}

@@ -16,14 +16,10 @@ import nextstep.subway.path.domain.shortest.ShortestPath;
 public class FareService {
 
 	public Fare calculate(LoginMember loginMember, ShortestPath shortestPath) {
-		final Fare generalFare = Fare.of(
-			Stream.of(
-				DefaultFare.calculate(),
-				LineFare.calculate(shortestPath.getLines()),
-				DistanceFare.calculate(shortestPath.getDistance()))
-			.mapToInt(Fare::getFare)
-			.sum()
-		);
+		final Fare generalFare = Stream.of(
+			LineFare.calculate(shortestPath.getLines()),
+			DistanceFare.calculate(shortestPath.getDistance())
+		).reduce(DefaultFare.calculate(), Fare::plus);
 		return AgeFare.calculate(loginMember.getAge(), generalFare);
 	}
 }
