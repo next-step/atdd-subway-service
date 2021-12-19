@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,9 +48,9 @@ class PathServiceTest {
         양재역 = new Station(3L, "양재역");
         남부터미널역 = new Station(4L, "남부터미널역");
 
-        Line 신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, 10);
-        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 10);
-        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 양재역, 5);
+        Line 신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, 10, new BigDecimal(0));
+        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 10, new BigDecimal(0));
+        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 양재역, 5, new BigDecimal(0));
         삼호선.addSection(new Section(교대역, 남부터미널역, 3));
 
         lines.add(신분당선);

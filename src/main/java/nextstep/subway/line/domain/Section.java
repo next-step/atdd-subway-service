@@ -3,6 +3,8 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Entity
@@ -83,5 +85,12 @@ public class Section {
 
     public void updateSameLineFromStation(Optional<Section> sameUpStation) {
         this.line = sameUpStation.get().line;
+    }
+
+    public List<Long> getStationIds() {
+        ArrayList<Long> stations = new ArrayList<>();
+        stations.add(getUpStation().getId());
+        stations.add(getDownStation().getId());
+        return stations;
     }
 }

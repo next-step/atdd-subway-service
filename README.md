@@ -81,5 +81,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [x] 10km초과∼50km까지(5km마다 100원)
     - [x] 50km초과 시 (8km마다 100원)
   - [x] 요금 조회에 대한 인수 테스트를 추가한다 
-- [ ] 노선별 추가 요금 정책 추가
+- [x] 노선별 추가 요금 정책 추가
+  - [x] 추가요금이 있는 노선을 이용할 경우 측정된 노선에 추가한다
+  - [x] 가장 높은 추가요금만 적용한다
 - [ ] 연령별 할인 정책 추가

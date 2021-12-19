@@ -4,6 +4,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -21,6 +22,8 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    private BigDecimal surcharge;
+
     public Line() {
     }
 
@@ -29,14 +32,15 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, BigDecimal surcharge) {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
+        this.surcharge = surcharge;
     }
 
-    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
-        return new Line(name, color, upStation, downStation, distance);
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance, BigDecimal surcharge) {
+        return new Line(name, color, upStation, downStation, distance, surcharge);
     }
 
     public void update(Line line) {
@@ -74,5 +78,9 @@ public class Line extends BaseEntity {
 
     public void removeLineStation(Station station) {
         this.sections.removeLineStation(station);
+    }
+
+    public BigDecimal getSurcharge() {
+        return surcharge;
     }
 }

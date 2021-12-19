@@ -31,8 +31,8 @@ class FareCalculatorTest {
     @Test
     void calculateTest() {
         // given
-        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 10);
-        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 남부터미널역, 2);
+        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 10, new BigDecimal(0));
+        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 남부터미널역, 2, new BigDecimal(0));
         lines.add(이호선);
         lines.add(삼호선);
 
@@ -52,8 +52,8 @@ class FareCalculatorTest {
     @Test
     void calculateTest2() {
         // given
-        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 10);
-        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 남부터미널역, 60);
+        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 10, new BigDecimal(0));
+        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 남부터미널역, 60, new BigDecimal(0));
         lines.add(이호선);
         lines.add(삼호선);
 
@@ -73,8 +73,8 @@ class FareCalculatorTest {
     @Test
     void calculateTest3() {
         // given
-        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 3);
-        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 남부터미널역, 2);
+        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 3, new BigDecimal(0));
+        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 남부터미널역, 2, new BigDecimal(0));
         lines.add(이호선);
         lines.add(삼호선);
 
@@ -88,5 +88,26 @@ class FareCalculatorTest {
 
         // then
         assertThat(fare).isEqualTo(new BigDecimal(1250));
+    }
+
+    @DisplayName("추가요금이 있는 경우를 테스트한다")
+    @Test
+    void surchargeTest() {
+        // given
+        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 3, new BigDecimal(900));
+        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 남부터미널역, 2, new BigDecimal(200));
+        lines.add(이호선);
+        lines.add(삼호선);
+
+        JGraphTPathFinder jGraphTPathFinder = new JGraphTPathFinder();
+        Path path = jGraphTPathFinder.findPath(lines, 강남역.getId(), 남부터미널역.getId());
+        assertThat(path.getDistance()).isEqualTo(5);
+        FareCalculator fareCalculator = new FareCalculator();
+
+        // when
+        BigDecimal fare = fareCalculator.calculate(lines, path);
+
+        // then
+        assertThat(fare).isEqualTo(new BigDecimal(2150));
     }
 }
