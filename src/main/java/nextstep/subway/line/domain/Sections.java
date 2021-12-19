@@ -108,7 +108,7 @@ public class Sections {
                         .value())
                 .max(BigDecimal::compareTo)
                 .map(Fare::from)
-                .orElse(Fare.from(BigDecimal.ZERO));
+                .orElseGet(() -> Fare.from(BigDecimal.ZERO));
     }
 
     private void validateRemove() {
