@@ -3,10 +3,12 @@ package nextstep.subway.path;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -34,6 +36,8 @@ class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
 
+    String 어른_회원_토큰;
+
     /**
      * 교대역    --- *2호선* ---   강남역
      * |                        |
@@ -56,12 +60,18 @@ class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(LineRequest.of("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+
+        MemberAcceptanceTest.회원_생성을_요청("email@gmail.com", "password", 19);
+        ExtractableResponse<Response> 로그인_요청_응답 = AuthAcceptanceTest.로그인_요청("email@gmail.com", "password");
+        AuthAcceptanceTest.로그인_성공(로그인_요청_응답);
+        어른_회원_토큰 = AuthAcceptanceTest.토큰_조회(로그인_요청_응답);
     }
 
     @Test
     void 최단_경로_조회() {
+
         // when
-        ExtractableResponse<Response> 최단_경로_조회_요청_응답 = 최단_경로_조회_요청(강남역, 남부터미널역);
+        ExtractableResponse<Response> 최단_경로_조회_요청_응답 = 최단_경로_조회_요청(강남역, 남부터미널역, 어른_회원_토큰);
 
         // then
         최단_경로_조회_요청_응답됨(최단_경로_조회_요청_응답);
@@ -72,7 +82,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 최단_경로_조회_출발역과_도착역이_같은_경우_조회할_수_없다() {
         // when
-        ExtractableResponse<Response> 최단_경로_조회_요청_응답 = 최단_경로_조회_요청(강남역, 강남역);
+        ExtractableResponse<Response> 최단_경로_조회_요청_응답 = 최단_경로_조회_요청(강남역, 강남역, 어른_회원_토큰);
 
         // then
         최단_경로_조회_요청_실패됨(최단_경로_조회_요청_응답, "출발역과 도착역이 같은 경우 최단 거리를 구할 수 없습니다.");
@@ -86,7 +96,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         LineAcceptanceTest.지하철_노선_등록되어_있음(LineRequest.of("일호선", "bg-red-600", 동암역.getId(), 송내역.getId(), 5)).as(LineResponse.class);
 
         // when
-        ExtractableResponse<Response> 최단_경로_조회_요청_응답 = 최단_경로_조회_요청(강남역, 송내역);
+        ExtractableResponse<Response> 최단_경로_조회_요청_응답 = 최단_경로_조회_요청(강남역, 송내역, 어른_회원_토큰);
 
         // then
         최단_경로_조회_요청_실패됨(최단_경로_조회_요청_응답, "출발역과 도착역이 연결되어있지 않은 경우 조회할 수 없습니다.");
@@ -112,11 +122,11 @@ class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
     }
 
-    private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse target) {
+    private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse target, String accessToken) {
         HashMap<String, Long> parametersMap = new HashMap<>();
         parametersMap.put("source", source.getId());
         parametersMap.put("target", target.getId());
-        return 조회_요청(PATH_ROOT_PATH, parametersMap);
+        return 조회_요청(PATH_ROOT_PATH, parametersMap, accessToken);
     }
 
     private void 최단_경로_조회_요청_응답됨(ExtractableResponse<Response> response) {

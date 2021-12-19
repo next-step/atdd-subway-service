@@ -1,8 +1,10 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.dto.StationResponse;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,18 +12,20 @@ public class PathResponse {
 
     private List<StationResponse> stations;
     private int distance;
+    private BigDecimal fare;
 
-    public PathResponse() {
+    private PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> stations, int distance) {
+    private PathResponse(List<StationResponse> stations, int distance, BigDecimal fare) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = fare;
     }
 
-    public static PathResponse of(Path path) {
+    public static PathResponse of(Path path, Fare fare) {
         List<StationResponse> stationResponses = toStationResponses(path);
-        return new PathResponse(stationResponses, path.getDistance());
+        return new PathResponse(stationResponses, path.getDistance().value(), fare.value());
     }
 
     public List<StationResponse> getStations() {
@@ -30,6 +34,10 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public BigDecimal getFare() {
+        return fare;
     }
 
     private static List<StationResponse> toStationResponses(Path path) {

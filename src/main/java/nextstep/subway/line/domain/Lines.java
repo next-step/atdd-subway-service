@@ -31,4 +31,10 @@ public class Lines {
                         .stream())
                 .collect(Collectors.toList());
     }
+
+    public List<Section> findSections(List<Station> stations) {
+        return getSections().stream()
+                .filter(section -> section.isSameSection(stations))
+                .collect(Collectors.toList());
+    }
 }

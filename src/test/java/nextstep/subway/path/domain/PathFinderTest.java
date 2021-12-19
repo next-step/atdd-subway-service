@@ -19,6 +19,8 @@ class PathFinderTest {
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
+    private Station 서초역;
+    private Station 매봉역;
 
     private Line 신분당선;
     private Line 이호선;
@@ -30,11 +32,15 @@ class PathFinderTest {
         양재역 = Station.of(2L, "양재역");
         교대역 = Station.of(3L, "교대역");
         남부터미널역 = Station.of(4L,"남부터미널역");
+        서초역 = Station.of(5L,"서초역");
+        매봉역 = Station.of(6L,"매봉역");
 
-        신분당선 = Line.of("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = Line.of("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = Line.of("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        신분당선 = Line.of("신분당선", "bg-red-600", 강남역, 양재역, 10, 3333);
+        이호선 = Line.of("이호선", "bg-red-600", 교대역, 강남역, 10, 2000);
+        이호선.addSection(서초역, 교대역, 10);
+        삼호선 = Line.of("삼호선", "bg-red-600", 남부터미널역, 양재역, 2, 3000);
         삼호선.addSection(교대역, 남부터미널역, 3);
+        삼호선.addSection(양재역, 매봉역, 10);
     }
 
     @Test
@@ -44,11 +50,11 @@ class PathFinderTest {
         PathFinder pathFinder = PathFinder.from(lines);
 
         // when
-        Path actual = pathFinder.findShortestPath(강남역, 남부터미널역);
+        Path actual = pathFinder.findShortestPath(lines, 서초역, 매봉역);
 
         // then
-        Assertions.assertThat(actual.getStations()).hasSize(3);
-        Assertions.assertThat(actual.getDistance()).isEqualTo(12);
+        Assertions.assertThat(actual.getStations()).hasSize(5);
+        Assertions.assertThat(actual.getDistance().value()).isEqualTo(25);
     }
 
     @Test
@@ -58,7 +64,7 @@ class PathFinderTest {
         PathFinder pathFinder = PathFinder.from(lines);
 
         // when
-        ThrowableAssert.ThrowingCallable throwingCallable = () -> pathFinder.findShortestPath(강남역, 강남역);
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> pathFinder.findShortestPath(lines, 강남역, 강남역);
 
         // then
         Assertions.assertThatExceptionOfType(BadRequestException.class)
@@ -76,7 +82,7 @@ class PathFinderTest {
         PathFinder pathFinder = PathFinder.from(lines);
 
         // when
-        ThrowableAssert.ThrowingCallable throwingCallable = () -> pathFinder.findShortestPath(강남역, 동암역);
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> pathFinder.findShortestPath(lines, 강남역, 동암역);
 
         // then
         Assertions.assertThatExceptionOfType(BadRequestException.class)

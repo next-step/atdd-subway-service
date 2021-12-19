@@ -24,11 +24,11 @@ public class PathFinder {
         return new PathFinder(initGraph(lines));
     }
 
-    public Path findShortestPath(Station sourceStation, Station targetStation) {
+    public Path findShortestPath(Lines lines, Station sourceStation, Station targetStation) {
         validateDuplicateStation(sourceStation, targetStation);
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         validateNotConnectStation(graphPath);
-        return Path.of(graphPath.getVertexList(), (int) graphPath.getWeight());
+        return Path.of(graphPath.getVertexList(), (int) graphPath.getWeight(), lines.findSections(graphPath.getVertexList()));
     }
 
     private static WeightedMultigraph<Station, DefaultWeightedEdge> initGraph(Lines lines) {
@@ -38,17 +38,17 @@ public class PathFinder {
         return graph;
     }
 
+    private static void addVertex(Lines lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        List<Station> stations = lines.getStations();
+        stations.forEach(graph::addVertex);
+    }
+
     private static void addEdgeAndWeight(Lines lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         List<Section> sections = lines.getSections();
         sections.forEach(section -> {
             DefaultWeightedEdge defaultWeightedEdge = graph.addEdge(section.getUpStation(), section.getDownStation());
             graph.setEdgeWeight(defaultWeightedEdge, section.getDistance());
         });
-    }
-
-    private static void addVertex(Lines lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        List<Station> stations = lines.getStations();
-        stations.forEach(graph::addVertex);
     }
 
     private void validateDuplicateStation(Station sourceStation, Station targetStation) {
