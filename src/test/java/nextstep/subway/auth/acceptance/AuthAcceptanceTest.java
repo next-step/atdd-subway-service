@@ -47,7 +47,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
-        // 회원 등록 되어 있음
         MemberRequest memberRequest = new MemberRequest("pobi@woo.com", "123", 20);
 
         ExtractableResponse<Response> response = 로그인_요청(memberRequest);
