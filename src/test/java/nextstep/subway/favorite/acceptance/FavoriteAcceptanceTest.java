@@ -74,4 +74,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         즐겨찾기_삭제됨(즐겨찾기_삭제_응답);
     }
+
+    @DisplayName("즐겨찾기 생성")
+    @Test
+    void saveFavorite() {
+        // when
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(사용자, 강남역, 남부터미널역);
+        // then
+        즐겨찾기_생성됨(즐겨찾기_생성_응답);
+    }
 }

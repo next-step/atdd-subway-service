@@ -15,7 +15,7 @@ public class FavoriteAcceptanceTestHelper {
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String token,
         StationResponse source, StationResponse target) {
 
-        FavoriteRequest favoriteRequest = new FavoriteRequest(source, target);
+        FavoriteRequest favoriteRequest = new FavoriteRequest(source.getId(), target.getId());
         return RestAssured
             .given().log().all()
             .auth().oauth2(token)
