@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public class MemberService {
     public static final String MESSAGE_NOT_EXIST_MEMBER = "사용자가 없습니다";
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;

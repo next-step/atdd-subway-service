@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 public class FavoriteController {
-    private FavoriteService favoriteService;
+    private final FavoriteService favoriteService;
 
     @PostMapping("/favorites")
     public ResponseEntity createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest request) {

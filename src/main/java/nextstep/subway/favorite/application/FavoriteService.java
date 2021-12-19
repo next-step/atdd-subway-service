@@ -19,11 +19,17 @@ import java.util.Optional;
 
 @Service
 public class FavoriteService {
-    private MemberService memberService;
+    private final MemberService memberService;
 
-    private StationService stationService;
+    private final StationService stationService;
 
-    private FavoriteRepository favoriteRepository;
+    private final FavoriteRepository favoriteRepository;
+
+    public FavoriteService(MemberService memberService, StationService stationService, FavoriteRepository favoriteRepository) {
+        this.memberService = memberService;
+        this.stationService = stationService;
+        this.favoriteRepository = favoriteRepository;
+    }
 
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = memberService.findMemberById(loginMember.getId());
@@ -45,11 +51,5 @@ public class FavoriteService {
         if (favorite.isPresent() && favorite.get().isLoginMemberFavorite(loginMemberId)) {
             favoriteRepository.deleteById(id);
         }
-    }
-
-    public FavoriteService(MemberService memberService, StationService stationService, FavoriteRepository favoriteRepository) {
-        this.memberService = memberService;
-        this.stationService = stationService;
-        this.favoriteRepository = favoriteRepository;
     }
 }
