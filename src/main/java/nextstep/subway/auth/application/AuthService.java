@@ -3,6 +3,7 @@ package nextstep.subway.auth.application;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.exception.InValidTokenException;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
@@ -29,7 +30,8 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            //return new LoginMember();
+            throw new InValidTokenException("유효하지 않은 토큰입니다");
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
