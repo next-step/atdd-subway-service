@@ -11,8 +11,8 @@ import java.util.List;
 public class PathFinder {
     private final ShortestPathCalculator shortestPathCalculator;
 
-    public PathFinder(ShortestPathCalculator dijkstraShortestPathCalculator) {
-        shortestPathCalculator = dijkstraShortestPathCalculator;
+    public PathFinder(ShortestPathCalculator shortestPathCalculator) {
+        this.shortestPathCalculator = shortestPathCalculator;
     }
 
     public PathResponse findPath(List<Line> lines, Station sourceStation, Station targetStation) {
