@@ -80,6 +80,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_실패됨(createFavoriteResponse, "즐겨찾기 등록에 출발역과 도착역이 같으면 안됩니다.");
     }
 
+    @DisplayName("즐겨찾기 삭제 권한이 없을경우")
+    @Test
+    void deleteNotAuthenticUser() {
+        // Given 즐겨찾기 생성
+        ExtractableResponse<Response> createFavoriteResponse = 즐겨찾기_생성_요청(강남역.getId(), 남부터미널역.getId());
+        // And 새로운 회원 생성
+        MemberAcceptanceTest.회원_생성을_요청("newEmail@email.com", password, age);
+        // And 새로운 회원 로그인
+        token = 로그인_요청("newEmail@email.com", password).body().as(TokenResponse.class).getAccessToken();
+        // When 이전의 회원이 생성한 즐겨찾기를 새로운 회원이 삭제
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createFavoriteResponse);
+        // Then 즐겨찾기 삭제 실패됨
+        즐겨찾기_관련_권한없음(deleteResponse, "삭제할 권한이 없습니다.");
+    }
+
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(Long sourceId, Long targetid) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
@@ -130,6 +145,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(createFavoriteResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
                 () -> assertThat(createFavoriteResponse.body().asString()).isEqualTo(expectedString)
+        );
+    }
+
+    private void 즐겨찾기_관련_권한없음(ExtractableResponse<Response> deleteResponse, String expectedString) {
+        assertAll(
+                () -> assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
+                () -> assertThat(deleteResponse.body().asString()).isEqualTo(expectedString)
         );
     }
 }
