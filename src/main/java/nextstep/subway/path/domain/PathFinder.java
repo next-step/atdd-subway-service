@@ -1,4 +1,4 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +11,9 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
 import nextstep.subway.common.exception.Exceptions;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 
 @Component

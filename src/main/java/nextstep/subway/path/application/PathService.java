@@ -1,4 +1,4 @@
-package nextstep.subway.line.application;
+package nextstep.subway.path.application;
 
 import java.util.List;
 
@@ -9,11 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.common.exception.Exceptions;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.PathFinder;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.domain.Sections;
-import nextstep.subway.line.dto.FindPathRequest;
-import nextstep.subway.line.dto.FindPathResponse;
+import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.dto.FindPathRequest;
+import nextstep.subway.path.dto.FindPathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 

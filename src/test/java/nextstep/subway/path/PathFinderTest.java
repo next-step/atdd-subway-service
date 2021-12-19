@@ -1,4 +1,4 @@
-package nextstep.subway.line;
+package nextstep.subway.path;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -15,9 +15,10 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import nextstep.subway.common.exception.BadParameterException;
+import nextstep.subway.line.LineTest;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.PathFinder;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.StationTest;
 import nextstep.subway.station.domain.Station;
 

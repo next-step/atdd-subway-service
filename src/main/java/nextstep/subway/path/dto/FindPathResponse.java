@@ -1,4 +1,4 @@
-package nextstep.subway.line.dto;
+package nextstep.subway.path.dto;
 
 import java.util.List;
 import java.util.Objects;

@@ -1,13 +1,13 @@
-package nextstep.subway.line.ui;
+package nextstep.subway.path.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import nextstep.subway.line.application.PathService;
-import nextstep.subway.line.dto.FindPathRequest;
-import nextstep.subway.line.dto.FindPathResponse;
+import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.dto.FindPathRequest;
+import nextstep.subway.path.dto.FindPathResponse;
 
 @RequestMapping("/paths")
 @RestController
