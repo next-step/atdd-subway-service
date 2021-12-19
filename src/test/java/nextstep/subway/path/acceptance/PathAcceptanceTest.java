@@ -74,7 +74,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		final PathResponse pathResponse = response.as(PathResponse.class);
 		최단_경로_역_목록_확인됨(pathResponse, Arrays.asList(강남역_ID, 양재역_ID, 남부터미널역_ID));
 		최단_경로_거리_확인됨(pathResponse, 12);
-		최단_경로_운임료_확인됨(pathResponse, 1650);
+		최단_경로_운임료_확인됨(pathResponse, 1850); // default(1250) + line(500) + distance(100)
 	}
 
 	private ExtractableResponse<Response> 최단_경로_조회_요청(String accessToken, long source, long target) {
