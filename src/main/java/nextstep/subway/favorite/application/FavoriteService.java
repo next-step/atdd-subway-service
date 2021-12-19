@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -48,8 +50,9 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void deleteFavorite(Long favoriteId) {
-        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(() -> new EntityNotFoundException("즐겨찾기를 찾을 수 없습니다."));
+    public void deleteFavorite(Long favoriteId, LoginMember loginMember) {
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, loginMember.getId())
+                .orElseThrow(() -> new AuthorizationException("삭제할 권한이 없습니다."));
         favoriteRepository.delete(favorite);
     }
 
