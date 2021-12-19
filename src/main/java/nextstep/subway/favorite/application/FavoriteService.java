@@ -32,6 +32,7 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse createFavorite(Long memberId, FavoriteRequest favoriteRequest) {
+        validateFavorite(favoriteRequest);
         Member member = findMemberById(memberId);
         Station sourceStation = findStationById(favoriteRequest.getSource());
         Station targetStation = findStationById(favoriteRequest.getTarget());
@@ -49,6 +50,12 @@ public class FavoriteService {
     public void deleteFavorite(Long favoriteId) {
         Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
         favoriteRepository.delete(favorite);
+    }
+
+    private void validateFavorite(FavoriteRequest favoriteRequest) {
+        if (favoriteRequest.getSource().equals(favoriteRequest.getTarget())) {
+            throw new IllegalArgumentException("즐겨찾기 등록에 출발역과 도착역이 같으면 안됩니다.");
+        }
     }
 
     private Member findMemberById(Long memberId) {
