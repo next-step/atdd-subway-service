@@ -74,7 +74,8 @@ public class PathTest {
     void sameSourceAndTarget() {
         PathFinder pathFinder = new PathFinder(firstLine);
         assertThatThrownBy(() -> pathFinder.findPath(upStationFirstLine.getId(), upStationFirstLine.getId()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("역과 역 사이의 거리는 0보다 커야합니다");
     }
 
     @Test
@@ -83,7 +84,8 @@ public class PathTest {
         Line thirdLine = LineTestFixture.노선을_생성한다("3호선", "red", upStationThirdLine, downStationThirdLine, 20);
         PathFinder pathFinder = new PathFinder(Lists.newArrayList(firstLine, thirdLine));
         assertThatThrownBy(() -> pathFinder.findPath(upStationThirdLine.getId(), downStationFirstLine.getId()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("경로를 찾을 수 없습니다");
     }
 
     @Test
@@ -91,6 +93,7 @@ public class PathTest {
     void notExistStaion() {
         PathFinder pathFinder = new PathFinder(firstLine);
         assertThatThrownBy(() -> pathFinder.findPath(upStationThirdLine.getId(), downStationFirstLine.getId()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("출발역 또는 도착역이 노선에 존재하지 않습니다");
     }
 }

@@ -15,18 +15,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class PathService {
-    private LineRepository lineRepository;
-    private StationRepository stationRepository;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
 
     public PathService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findPath(int source, int target) {
+    public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineRepository.findAll();
         PathFinder pathFinder = new PathFinder(lines);
-        pathFinder.findPath(Long.valueOf(source), Long.valueOf(target));
+        pathFinder.findPath(source, target);
         Map<Long, Station> stationMap = stationRepository.findAllById(pathFinder.getStationIds()).stream()
                 .collect(Collectors.toMap(station -> station.getId(), Function.identity()));
         return PathResponse.of(pathFinder.getDistance(), sortStationIds(pathFinder.getStationIds(), stationMap));
