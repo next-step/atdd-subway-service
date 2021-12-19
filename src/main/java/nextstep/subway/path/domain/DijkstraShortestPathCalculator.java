@@ -43,7 +43,7 @@ public class DijkstraShortestPathCalculator implements ShortestPathCalculator {
             graph.addVertex(station);
         }
         for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistanceValue());
         }
     }
 
