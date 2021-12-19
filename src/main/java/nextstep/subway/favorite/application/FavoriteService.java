@@ -13,6 +13,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,7 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavorite(Long favoriteId) {
-        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(() -> new EntityNotFoundException("즐겨찾기를 찾을 수 없습니다."));
         favoriteRepository.delete(favorite);
     }
 
@@ -59,11 +60,11 @@ public class FavoriteService {
     }
 
     private Member findMemberById(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(IllegalAccessError::new);
+        return memberRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
     }
 
     private Station findStationById(Long stationId) {
-        return stationRepository.findById(stationId).orElseThrow(IllegalAccessError::new);
+        return stationRepository.findById(stationId).orElseThrow(() -> new EntityNotFoundException("역을 찾을 수 없습니다."));
     }
 
     private FavoriteResponse favoriteToResponse(Favorite favorite) {
