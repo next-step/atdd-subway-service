@@ -19,6 +19,7 @@ import java.util.Optional;
 
 @Service
 public class FavoriteService {
+    public static final String MESSAGE_NO_FAVORITE = "해당 ID의 즐겨찾기가 없습니다";
     private final MemberService memberService;
 
     private final StationService stationService;
@@ -47,8 +48,8 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(Long loginMemberId, Long id) {
-        Optional<Favorite> favorite = favoriteRepository.findById(id);
-        if (favorite.isPresent() && favorite.get().isLoginMemberFavorite(loginMemberId)) {
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(MESSAGE_NO_FAVORITE));
+        if (favorite.isLoginMemberFavorite(loginMemberId)) {
             favoriteRepository.deleteById(id);
         }
     }
