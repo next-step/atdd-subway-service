@@ -23,7 +23,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        ExtractableResponse<Response> createResponse = MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
     }
 
     @DisplayName("로그인을 성공한다 ")
