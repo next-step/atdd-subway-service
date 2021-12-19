@@ -16,10 +16,32 @@ public class FareCalculator {
     public static final int BASE_FARE = 1_250;
     public static final int THRESHOLD_SECOND = 50;
     public static final int THRESHOLD_FIRST = 10;
+    public static final int CHILD_THRESHOLD = 6;
+    public static final int YOUTH_THRESHOLD = 13;
+    public static final int ADULT_THRESHOLD = 19;
+    public static final int DISCOUNT_BASE = 350;
+    public static final double CHILD_DISCOUNT_PERCENTAGE = 0.5;
+    public static final double YOUTH_DISCOUNT_PERCENTAGE = 0.8;
 
-    public BigDecimal calculate(List<Line> lines, Path path) {
+    public BigDecimal calculate(List<Line> lines, Path path, Integer age) {
         int distance = path.getDistance();
-        return new BigDecimal(BASE_FARE + calculateOverFare(distance)).add(addSurcharge(lines, path));
+        BigDecimal fare = new BigDecimal(BASE_FARE + calculateOverFare(distance)).add(addSurcharge(lines, path));
+        return ageDiscount(fare, age);
+    }
+
+    private BigDecimal ageDiscount(BigDecimal fare, Integer age) {
+        if (age == null) {
+            return fare;
+        }
+        if (age >= CHILD_THRESHOLD && age < YOUTH_THRESHOLD) {
+            return fare.subtract(BigDecimal.valueOf(DISCOUNT_BASE))
+                    .multiply(BigDecimal.valueOf(CHILD_DISCOUNT_PERCENTAGE));
+        }
+        if (age >= YOUTH_THRESHOLD && age < ADULT_THRESHOLD) {
+            return fare.subtract(BigDecimal.valueOf(DISCOUNT_BASE))
+                    .multiply(BigDecimal.valueOf(YOUTH_DISCOUNT_PERCENTAGE));
+        }
+        return fare;
     }
 
     private BigDecimal addSurcharge(List<Line> lines, Path path) {

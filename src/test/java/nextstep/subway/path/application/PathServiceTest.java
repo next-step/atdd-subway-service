@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -64,7 +65,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(lines);
 
         PathService pathService = new PathService(stationRepository, lineRepository, new JGraphTPathFinder(), new FareCalculator());
-        PathResponse pathResponse = pathService.findPath(1L, 4L);
+        PathResponse pathResponse = pathService.findPath(new LoginMember(), 1L, 4L);
 
         assertThat(pathResponse.getDistance()).isEqualTo(12);
         assertThat(pathResponse.getStations().stream()

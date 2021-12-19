@@ -80,7 +80,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(stationNames).containsExactlyElementsOf(Arrays.asList("강남역", "양재역", "남부터미널역"));
         assertThat(pathResponse.getDistance()).isEqualTo(12);
-        assertThat(pathResponse.getFare()).isEqualByComparingTo(new BigDecimal(1_350));
+        assertThat(pathResponse.getFare()).isEqualByComparingTo(new BigDecimal(1350));
     }
 
     private LineResponse 지하철_노선_등록되어_있음(String 신분당선, String color, StationResponse 강남역, StationResponse 양재역, int distance) {

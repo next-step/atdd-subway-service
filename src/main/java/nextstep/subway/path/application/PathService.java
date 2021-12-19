@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.Path;
@@ -31,10 +32,10 @@ public class PathService {
         this.fareCalculator = fareCalculator;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
         List<Line> lines = lineRepository.findAll();
         Path path = pathFinder.findPath(lines, source, target);
-        BigDecimal fare = fareCalculator.calculate(lines, path);
+        BigDecimal fare = fareCalculator.calculate(lines, path, loginMember.getAge());
         return PathResponse.from(path, fare);
     }
 }

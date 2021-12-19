@@ -42,10 +42,10 @@ class FareCalculatorTest {
         FareCalculator fareCalculator = new FareCalculator();
 
         // when
-        BigDecimal fare = fareCalculator.calculate(lines, path);
+        BigDecimal fare = fareCalculator.calculate(lines, path, 20);
 
         // then
-        assertThat(fare).isEqualTo(new BigDecimal(1350));
+        assertThat(fare).isEqualTo(new BigDecimal(1_350));
     }
 
     @DisplayName("70km인 경우 요금을 테스트한다")
@@ -63,10 +63,10 @@ class FareCalculatorTest {
         FareCalculator fareCalculator = new FareCalculator();
 
         // when
-        BigDecimal fare = fareCalculator.calculate(lines, path);
+        BigDecimal fare = fareCalculator.calculate(lines, path, 20);
 
         // then
-        assertThat(fare).isEqualTo(new BigDecimal(2350));
+        assertThat(fare).isEqualTo(new BigDecimal(2_350));
     }
 
     @DisplayName("5km인 경우 요금을 테스트한다")
@@ -84,10 +84,10 @@ class FareCalculatorTest {
         FareCalculator fareCalculator = new FareCalculator();
 
         // when
-        BigDecimal fare = fareCalculator.calculate(lines, path);
+        BigDecimal fare = fareCalculator.calculate(lines, path, 20);
 
         // then
-        assertThat(fare).isEqualTo(new BigDecimal(1250));
+        assertThat(fare).isEqualTo(new BigDecimal(1_250));
     }
 
     @DisplayName("추가요금이 있는 경우를 테스트한다")
@@ -105,9 +105,51 @@ class FareCalculatorTest {
         FareCalculator fareCalculator = new FareCalculator();
 
         // when
-        BigDecimal fare = fareCalculator.calculate(lines, path);
+        BigDecimal fare = fareCalculator.calculate(lines, path, 20);
 
         // then
-        assertThat(fare).isEqualTo(new BigDecimal(2150));
+        assertThat(fare).isEqualTo(new BigDecimal(2_150));
+    }
+
+    @DisplayName("10살인 경우에 대해 할인을 적용한다")
+    @Test
+    void ageDiscountTest() {
+        // given
+        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 3, new BigDecimal(900));
+        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 남부터미널역, 2, new BigDecimal(200));
+        lines.add(이호선);
+        lines.add(삼호선);
+
+        JGraphTPathFinder jGraphTPathFinder = new JGraphTPathFinder();
+        Path path = jGraphTPathFinder.findPath(lines, 강남역.getId(), 남부터미널역.getId());
+        assertThat(path.getDistance()).isEqualTo(5);
+        FareCalculator fareCalculator = new FareCalculator();
+
+        // when
+        BigDecimal fare = fareCalculator.calculate(lines, path, 10);
+
+        // then
+        assertThat(fare).isEqualByComparingTo(new BigDecimal(900));
+    }
+
+    @DisplayName("15살인 경우에 대해 할인을 적용한다")
+    @Test
+    void ageDiscountTest2() {
+        // given
+        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 3, new BigDecimal(900));
+        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 남부터미널역, 2, new BigDecimal(200));
+        lines.add(이호선);
+        lines.add(삼호선);
+
+        JGraphTPathFinder jGraphTPathFinder = new JGraphTPathFinder();
+        Path path = jGraphTPathFinder.findPath(lines, 강남역.getId(), 남부터미널역.getId());
+        assertThat(path.getDistance()).isEqualTo(5);
+        FareCalculator fareCalculator = new FareCalculator();
+
+        // when
+        BigDecimal fare = fareCalculator.calculate(lines, path, 15);
+
+        // then
+        assertThat(fare).isEqualByComparingTo(new BigDecimal(1_440));
     }
 }
