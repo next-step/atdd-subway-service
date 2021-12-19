@@ -177,7 +177,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.extract();
 	}
 
-	private void 지하철_노선에_지하철역_등록되어_있음(LineResponse line, StationResponse station1,
+	public void 지하철_노선에_지하철역_등록되어_있음(LineResponse line, StationResponse station1,
 		StationResponse station2, int distance) {
 		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(line, station1, station2, distance);
 	}
