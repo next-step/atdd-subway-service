@@ -73,7 +73,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(myInfoResponse.jsonPath().getObject("message", String.class)).isEqualTo("유효하지 않은 토큰입니다");
     }
 
-    private void 회원등록됨(MemberRequest member) {
+    public static void 회원등록됨(MemberRequest member) {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -83,18 +83,23 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
+    public static TokenResponse 로그인_되어있음(MemberRequest memberRequest) {
+        ExtractableResponse<Response> response = 로그인_요청(memberRequest);
+        로그인_성공(response);
+        return 토큰_생성됨(response);
+    }
 
-    private TokenResponse 토큰_생성됨(ExtractableResponse<Response> response) {
+    public static TokenResponse 토큰_생성됨(ExtractableResponse<Response> response) {
         TokenResponse tokenResponse = response.as(TokenResponse.class);
         assertThat(tokenResponse).isNotNull();
         return tokenResponse;
     }
 
-    private void 로그인_성공(ExtractableResponse<Response> response) {
+    public static void 로그인_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> 로그인_요청(MemberRequest memberRequest) {
+    public static ExtractableResponse<Response> 로그인_요청(MemberRequest memberRequest) {
         Map<String, String> params = new HashMap<>();
         params.put("email", memberRequest.getEmail());
         params.put("password", memberRequest.getPassword());
@@ -130,5 +135,4 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
-
 }
