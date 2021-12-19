@@ -11,6 +11,11 @@ import javax.persistence.Id;
 
 @Entity
 public class Member extends BaseEntity {
+    private static final int CHILDREN_DOWN_AGE_LIMIT = 6;
+    private static final int CHILDREN_UP_AGE_LIMIT = 13;
+    private static final int YOUTH_DOWN_AGE_LIMIT = 13;
+    private static final int YOUTH_UP_AGE_LIMIT = 19;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -53,5 +58,13 @@ public class Member extends BaseEntity {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }
+    }
+
+    public boolean isOfChildAge() {
+        return age >= CHILDREN_DOWN_AGE_LIMIT && age < CHILDREN_UP_AGE_LIMIT;
+    }
+
+    public boolean isOfYouthAge() {
+        return age >= YOUTH_DOWN_AGE_LIMIT && age < YOUTH_UP_AGE_LIMIT;
     }
 }

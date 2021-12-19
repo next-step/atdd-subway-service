@@ -123,6 +123,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return 지하철_노선_등록되어_있음(param).as(LineResponse.class);
     }
 
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color,
+        StationResponse upStation, StationResponse downStation, int distance, int extraFare) {
+        LineRequest param = new LineRequest(name, color,
+            upStation.getId(), downStation.getId(), distance, extraFare);
+        return 지하철_노선_등록되어_있음(param).as(LineResponse.class);
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
         return 지하철_노선_생성_요청(params);
     }

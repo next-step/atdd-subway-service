@@ -1,8 +1,13 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.path.domain.Fare;
+import nextstep.subway.path.domain.FareCalculator;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.JgraphtPathFinder;
 import nextstep.subway.path.domain.PathFinderInterface;
@@ -18,19 +23,24 @@ import org.springframework.transaction.annotation.Transactional;
 public class PathService {
     private final LineService lineService;
     private final StationService stationService;
+    private final MemberRepository memberRepository;
 
-    public PathService(LineService lineService, StationService stationService) {
+    public PathService(LineService lineService, StationService stationService, MemberRepository memberRepository) {
         this.lineService = lineService;
         this.stationService = stationService;
+        this.memberRepository = memberRepository;
     }
 
-    public PathResponse findShortestPath(PathRequest request) {
+    public PathResponse findShortestPath(PathRequest request, Long memberId) {
         List<Line> lines = lineService.findLines();
         PathFinderInterface pathFinder = new JgraphtPathFinder(lines);
-        return findShortestPath(request, pathFinder);
+        Path path = findShortestPath(request, pathFinder);
+        Fare fare = FareCalculator.calculateFare(path, findMemberById(memberId));
+        return PathResponse.of(path, fare);
     }
 
-    public PathResponse findShortestPath(PathRequest request, PathFinderInterface pathFinder) {
+    public Path findShortestPath(PathRequest request,
+        PathFinderInterface pathFinder) {
         Station srcStation = stationService.findById(request.getSrcStationId());
         Station destStation = stationService.findById(request.getDestStationId());
 
@@ -46,7 +56,12 @@ public class PathService {
             throw new RuntimeException("출발역과 도착역이 연결이 되어 있지 않습니다.");
         }
         
-        Path path = pathFinder.getShortestPath(srcStation, destStation);
-        return PathResponse.of(path);
+        return pathFinder.getShortestPath(srcStation, destStation);
+    }
+
+    @Transactional(readOnly = true)
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+            .orElseThrow(AuthorizationException::new);
     }
 }
