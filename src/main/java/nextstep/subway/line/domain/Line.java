@@ -21,25 +21,34 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = Sections.empty();
 
+    @Embedded
+    private Fare extraFare;
+
     protected Line() {
     }
 
-    private Line(final String name, final String color, final Sections sections) {
+    public Line(final Long id, final String name, final String color, final Sections sections, final Fare extraFare) {
+        this.id = id;
         this.name = name;
         this.color = color;
         this.sections = sections;
+        this.extraFare = extraFare;
     }
 
-    private Line(final String name, final String color) {
-        this(name, color, Sections.empty());
+    private Line(final String name, final String color, final Sections sections, final Fare extraFare) {
+        this(null, name, color, sections, extraFare);
     }
 
-    public static Line of(final String name, final String color, final Sections sections) {
-        return new Line(name, color, sections);
+    private Line(final String name, final String color, final Fare extraFare) {
+        this(name, color, Sections.empty(), extraFare);
     }
 
-    public static Line of(final String name, final String color) {
-        return new Line(name, color);
+    public static Line of(final String name, final String color, final Sections sections, final Fare extraFare) {
+        return new Line(name, color, sections, extraFare);
+    }
+
+    public static Line of(final String name, final String color, final Fare extraFare) {
+        return new Line(name, color, extraFare);
     }
 
     public void update(final Line line) {
@@ -81,6 +90,10 @@ public class Line extends BaseEntity {
 
     public void removeSectionByStationId(final Station station) {
         this.sections.merge(station);
+    }
+
+    public Fare getExtraFare() {
+        return extraFare;
     }
 
     @Override
