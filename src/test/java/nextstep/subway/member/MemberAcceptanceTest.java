@@ -54,13 +54,18 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
         final String accessToken = 회원_로그인_요청(EMAIL, PASSWORD);
 
-        final ExtractableResponse<Response> getResponse = 내회원정보_조회_요청(accessToken);
-        회원_정보_조회됨(getResponse, EMAIL, AGE);
+        final ExtractableResponse<Response> getResponse1 = 내회원정보_조회_요청(accessToken);
+        회원_정보_조회됨(getResponse1, EMAIL, AGE);
 
-        final ExtractableResponse<Response> editResponse = 내회원정보_수정_요청(accessToken, EMAIL, PASSWORD, AGE);
+        final ExtractableResponse<Response> editResponse = 내회원정보_수정_요청(accessToken, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
         회원_정보_수정됨(editResponse);
 
-        final ExtractableResponse<Response> deleteResponse = 내회원정보_삭제_요청(accessToken);
+        final String newAccessToken = 회원_로그인_요청(NEW_EMAIL, NEW_PASSWORD);
+
+        final ExtractableResponse<Response> getResponse2 = 내회원정보_조회_요청(newAccessToken);
+        회원_정보_조회됨(getResponse2, NEW_EMAIL, NEW_AGE);
+
+        final ExtractableResponse<Response> deleteResponse = 내회원정보_삭제_요청(newAccessToken);
         회원_삭제됨(deleteResponse);
     }
 
@@ -111,7 +116,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
-        MemberResponse memberResponse = response.as(MemberResponse.class);
+        final MemberResponse memberResponse = response.as(MemberResponse.class);
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(email);
         assertThat(memberResponse.getAge()).isEqualTo(age);

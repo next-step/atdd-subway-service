@@ -44,7 +44,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 		강남역 = 지하철역_등록됨("강남역");
 		판교역 = 지하철역_등록됨("판교역");
-		final LineResponse 신분당선 = 지하철노선_등록됨("신분당선", "red", 강남역.getId(), 판교역.getId(), 4);
+		final LineResponse 신분당선 = 지하철노선_등록됨("신분당선", "red", 강남역.getId(), 판교역.getId(), 4, 100);
 		광교역 = 지하철역_등록됨("광교역");
 		지하철구간_등록됨(신분당선, 판교역, 광교역, 5);
 
@@ -119,10 +119,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	}
 
 	private LineResponse 지하철노선_등록됨(
-		String name, String color, Long upStationId, Long downStationId, int distance
+		String name, String color, Long upStationId, Long downStationId, int distance, int fare
 	) {
 		return LineAcceptanceTest.지하철_노선_생성_요청(
-			lineRequest(name, color, upStationId, downStationId, distance)
+			lineRequest(name, color, upStationId, downStationId, distance, fare)
 		).as(LineResponse.class);
 	}
 

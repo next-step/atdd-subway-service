@@ -15,6 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.application.FareService;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -29,6 +32,9 @@ class PathServiceTest {
 
 	@InjectMocks
 	private PathService pathService;
+
+	@Mock
+	private FareService fareService;
 
 	@Mock
 	private StationRepository stationRepository;
@@ -46,20 +52,22 @@ class PathServiceTest {
 	@DisplayName("지하철 경로 조회")
 	@Test
 	void findPath() {
+		final LoginMember 회원 = new LoginMember(1L, "member@email.com", 20);
 		final Station 강남역 = mockStation(1L);
 		final Station 양재역 = mockStation(2L);
 		final Station 교대역 = mockStation(3L);
 		final Station 남부터미널역 = mockStation(4L);
-		final Line 신분당선 = mockLine(Arrays.asList(mockSection(강남역, 양재역, 10)));
-		final Line 이호선 = mockLine(Arrays.asList(mockSection(강남역, 교대역, 10)));
-		final Line 삼호선 = mockLine(Arrays.asList(
+		final Line 신분당선 = mockLine(100, Arrays.asList(mockSection(강남역, 양재역, 10)));
+		final Line 이호선 = mockLine(200, Arrays.asList(mockSection(강남역, 교대역, 10)));
+		final Line 삼호선 = mockLine(300, Arrays.asList(
 			mockSection(양재역, 남부터미널역, 2),
 			mockSection(교대역, 남부터미널역, 3)
 		));
 		given(stationRepository.findByIdIn(any())).willReturn(Arrays.asList(강남역, 남부터미널역));
 		given(lineRepository.findAll()).willReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+		given(fareService.calculate(any(), any())).willReturn(Fare.of(1650));
 
-		final PathResponse pathResponse = pathService.findPath(강남역.getId(), 남부터미널역.getId());
+		final PathResponse pathResponse = pathService.findPath(회원, 강남역.getId(), 남부터미널역.getId());
 
 		final List<Long> actualStationIds = pathResponse.getStations().stream()
 			.map(StationResponse::getId).collect(Collectors.toList());
@@ -70,17 +78,19 @@ class PathServiceTest {
 	@DisplayName("출발역과 도착역이 동일한 경로 조회시 예외발생")
 	@Test
 	void findPath_same_station_ids() {
+		final LoginMember 회원 = new LoginMember(1L, "member@email.com", 20);
 		final Station 강남역 = mockStation(1L);
 		assertThatExceptionOfType(IllegalArgumentException.class)
-			.isThrownBy(() -> pathService.findPath(강남역.getId(), 강남역.getId()));
+			.isThrownBy(() -> pathService.findPath(회원, 강남역.getId(), 강남역.getId()));
 	}
 
 	@DisplayName("존재하지 않는 역으로 경로 조회시 예외발생")
 	@Test
 	void findPath_not_found_station() {
+		final LoginMember 회원 = new LoginMember(1L, "member@email.com", 20);
 		given(stationRepository.findByIdIn(any())).willReturn(Collections.emptyList());
 		assertThatExceptionOfType(StationNotFoundException.class)
-			.isThrownBy(() -> pathService.findPath(1L, 2L));
+			.isThrownBy(() -> pathService.findPath(회원, 1L, 2L));
 	}
 
 	private Station mockStation(Long id) {
@@ -91,9 +101,11 @@ class PathServiceTest {
 		return station;
 	}
 
-	private Line mockLine(List<Section> sections) {
-		final Line line = mock(Line.class);
+	private Line mockLine(int fare, List<Section> sections) {
+		final Line line = mock(Line.class, withSettings().lenient());
+		given(line.getFare()).willReturn(fare);
 		given(line.getSections()).willReturn(sections);
+		line.getSections().forEach(section -> given(section.getLine()).willReturn(line));
 		return line;
 	}
 

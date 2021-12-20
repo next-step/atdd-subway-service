@@ -1,7 +1,5 @@
 package nextstep.subway.common;
 
-import static nextstep.subway.common.ServiceApiFixture.*;
-
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.line.dto.LineRequest;
@@ -25,8 +23,9 @@ public class ServiceApiFixture {
 		return RestApiFixture.delete("/lines/{lineId}/sections?stationId={stationId}", lineId, stationId);
 	}
 
-	public static LineRequest lineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
-		return new LineRequest(name, color, upStationId, downStationId, distance);
+	public static LineRequest lineRequest(String name, String color, Long upStationId, Long downStationId, int distance,
+		int fare) {
+		return new LineRequest(name, color, upStationId, downStationId, distance, fare);
 	}
 
 	public static ExtractableResponse<Response> postLines(LineRequest lineRequest) {
@@ -37,8 +36,9 @@ public class ServiceApiFixture {
 		return RestApiFixture.post(new StationRequest(name), "/stations");
 	}
 
-	public static long createLineId(String name, String color, Long upStationId, Long downStationId, int distance) {
-		return postLines(lineRequest(name, color, upStationId, downStationId, distance))
+	public static long createLineId(String name, String color, Long upStationId, Long downStationId, int distance,
+		int fare) {
+		return postLines(lineRequest(name, color, upStationId, downStationId, distance, fare))
 			.as(LineResponse.class).getId();
 	}
 

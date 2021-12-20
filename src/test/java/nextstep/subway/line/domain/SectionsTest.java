@@ -13,7 +13,7 @@ class SectionsTest {
 	private final Station 양재역 = new Station("양재역");
 	private final Station 판교역 = new Station("판교역");
 	private final Station 광교역 = new Station("광교역");
-	private final Line 신분당선 = new Line("신분당선", "red");
+	private final Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, 10, 500);
 
 	@DisplayName("구간추가/상행종착")
 	@Test

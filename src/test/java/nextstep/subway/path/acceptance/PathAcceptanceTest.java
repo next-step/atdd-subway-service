@@ -16,6 +16,9 @@ import org.springframework.http.HttpStatus;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.RestApiFixture;
@@ -30,6 +33,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private long 양재역_ID;
 	private long 교대역_ID;
 	private long 남부터미널역_ID;
+	private String 사용자_성인;
 
 	/**
 	 * 교대역 ------- *2호선(10)* ------- 강남역
@@ -47,27 +51,34 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		교대역_ID = createStationId("교대역");
 		남부터미널역_ID = createStationId("남부터미널역");
 
-		신분당선_ID = createLineId("신분당선", "bg-red-600", 강남역_ID, 양재역_ID, 10);
-		이호선_ID = createLineId("이호선", "bg-red-600", 교대역_ID, 강남역_ID, 10);
-		삼호선_ID = createLineId("삼호선", "bg-red-600", 교대역_ID, 양재역_ID, 5);
+		신분당선_ID = createLineId("신분당선", "bg-red-600", 강남역_ID, 양재역_ID, 10, 500);
+		이호선_ID = createLineId("이호선", "bg-red-600", 교대역_ID, 강남역_ID, 10, 0);
+		삼호선_ID = createLineId("삼호선", "bg-red-600", 교대역_ID, 양재역_ID, 5, 200);
 
 		postSections(삼호선_ID, sectionRequest(교대역_ID, 남부터미널역_ID, 3));
+
+		final String email = "member@email.com";
+		final String password = "<secret>";
+		final int age = 20;
+		회원_등록됨(email, password, age);
+		사용자_성인 = 로그인됨(email, password);
 	}
 
 	// [outside->in] happy case 만 고려
 	@DisplayName("지하철 최단 경로를 조회한다.")
 	@Test
 	void findShortestPath() {
-		final ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역_ID, 남부터미널역_ID);
+		final ExtractableResponse<Response> response = 최단_경로_조회_요청(사용자_성인, 강남역_ID, 남부터미널역_ID);
 		최단_경로_응답_확인됨(response);
 
 		final PathResponse pathResponse = response.as(PathResponse.class);
 		최단_경로_역_목록_확인됨(pathResponse, Arrays.asList(강남역_ID, 양재역_ID, 남부터미널역_ID));
-		최단_경로_거리_확인됨(pathResponse);
+		최단_경로_거리_확인됨(pathResponse, 12);
+		최단_경로_운임료_확인됨(pathResponse, 1850); // default(1250) + line(500) + distance(100)
 	}
 
-	private ExtractableResponse<Response> 최단_경로_조회_요청(long source, long target) {
-		return RestApiFixture.response(RestApiFixture.request()
+	private ExtractableResponse<Response> 최단_경로_조회_요청(String accessToken, long source, long target) {
+		return RestApiFixture.response(RestApiFixture.requestWithOAuth2(accessToken)
 			.queryParam("source", source)
 			.queryParam("target", target)
 			.get("/paths")
@@ -86,7 +97,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(actualStationIds).containsExactlyElementsOf(expect);
 	}
 
-	private void 최단_경로_거리_확인됨(PathResponse pathResponse) {
-		assertThat(pathResponse.getDistance()).isEqualTo(12);
+	private void 최단_경로_거리_확인됨(PathResponse pathResponse, double distance) {
+		assertThat(pathResponse.getDistance()).isEqualTo(distance);
+	}
+
+	private void 최단_경로_운임료_확인됨(PathResponse pathResponse, int fare) {
+		assertThat(pathResponse.getFare()).isEqualTo(fare);
+	}
+
+	private void 회원_등록됨(String email, String password, int age) {
+		MemberAcceptanceTest.회원_생성을_요청(email, password, age);
+	}
+
+	private String 로그인됨(String email, String password) {
+		return AuthAcceptanceTest.로그인_요청(email, password)
+			.as(TokenResponse.class).getAccessToken();
 	}
 }
