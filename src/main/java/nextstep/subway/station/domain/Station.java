@@ -16,12 +16,17 @@ public class Station extends BaseEntity {
     protected Station() {
     }
 
-    private Station(final String name) {
+    private Station(final Long id, final String name) {
+        this.id = id;
         this.name = name;
     }
 
     public static Station from(final String name) {
-        return new Station(name);
+        return new Station(null, name);
+    }
+
+    public static Station from(final Long id, final String name) {
+        return new Station(id, name);
     }
 
     public Long getId() {
