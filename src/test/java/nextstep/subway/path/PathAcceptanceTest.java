@@ -76,7 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // And 지하철 경로 길이가 예상과 같음
         지하철_경로_길이_같음(pathResponse, 47);
         // And 지하철 요금이 예상과 같음
-        지하철_요금_조회됨(pathResponse, 1_950);
+        지하철_요금_조회됨(pathResponse, 2_050);
     }
 
     @DisplayName("출발역과 도착역 같은 경우")
