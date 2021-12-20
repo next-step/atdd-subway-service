@@ -86,11 +86,11 @@ public class PathServiceTest {
         PathRequest request = new PathRequest(TEST_SRC_STATION_ID, TEST_DEST_STATION_ID);
 
         // when
-        PathResponse pathResponse = pathService.findShortestPath(request, pathFinder);
+        Path path = pathService.findShortestPath(request, pathFinder);
 
         // then
-        assertThat(pathResponse.getPath()).isNotEmpty();
-        assertThat(pathResponse.getPathWeight()).isNotNull();
+        assertThat(path.getPath()).isNotEmpty();
+        assertThat(path.getDistance()).isNotNull();
     }
 
     @DisplayName("출발역과 도착역이 동일하면 예외 발생한다.")

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
 
     private final MemberRepository memberRepository;
@@ -38,7 +39,6 @@ public class FavoriteService {
         return FavoriteResponse.of(savedFavorite);
     }
 
-    @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavoritesByMemberId(Long memberId) {
         List<Favorite> Favorites = favoriteRepository
             .findByMemberId(findMemberById(memberId).getId());
@@ -51,13 +51,11 @@ public class FavoriteService {
         favoriteRepository.deleteById(id);
     }
 
-    @Transactional(readOnly = true)
     public Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
             .orElseThrow(AuthorizationException::new);
     }
 
-    @Transactional(readOnly = true)
     public void validateRemovable(Long memberId, Long favoriteId) {
         findFavoritesByMemberId(findMemberById(memberId).getId())
             .stream()

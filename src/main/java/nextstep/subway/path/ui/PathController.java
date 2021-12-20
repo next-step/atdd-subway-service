@@ -1,5 +1,7 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.ControllerExceptionHandler;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
@@ -21,10 +23,13 @@ public class PathController extends ControllerExceptionHandler {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findShortestPath(@RequestParam Long source,
-        @RequestParam Long target) {
+    public ResponseEntity<PathResponse> findShortestPath(
+        @AuthenticationPrincipal final LoginMember loginMember,
+        @RequestParam final Long source,
+        @RequestParam final Long target) {
+
         PathResponse pathResponse = pathService
-            .findShortestPath(new PathRequest(source, target));
+            .findShortestPath(new PathRequest(source, target), loginMember.getId());
         return ResponseEntity.ok().body(pathResponse);
     }
 
