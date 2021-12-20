@@ -3,11 +3,17 @@ package nextstep.subway.path.domain.fare;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class Fare {
+import javax.persistence.Embeddable;
+
+@Embeddable
+public class Fare implements Comparable<Fare> {
     public static final Fare ZERO = new Fare(0);
     public static final Fare BASE = new Fare(1250);
 
-    private final int fare;
+    private int fare;
+
+    protected Fare() {
+    }
 
     private Fare(int fare) {
         this.fare = fare;
@@ -60,5 +66,10 @@ public class Fare {
         sb.append("fare=").append(fare);
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public int compareTo(Fare o) {
+        return Integer.compare(this.fare, o.fare);
     }
 }

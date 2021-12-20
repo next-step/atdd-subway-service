@@ -10,6 +10,7 @@ import javax.persistence.OneToMany;
 
 import nextstep.subway.common.exception.SubwayErrorCode;
 import nextstep.subway.common.exception.SubwayException;
+import nextstep.subway.path.domain.fare.Fare;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable

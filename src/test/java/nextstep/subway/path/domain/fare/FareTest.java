@@ -32,4 +32,11 @@ class FareTest {
 
         assertThat(fare.multiply(BigDecimal.valueOf(0.5))).isEqualTo(Fare.from(5));
     }
+
+    @DisplayName("요금 비교")
+    @Test
+    void compareTo() {
+        Fare fare = Fare.from(10);
+        assertThat(fare.compareTo(Fare.from(9))).isEqualTo(1);
+    }
 }

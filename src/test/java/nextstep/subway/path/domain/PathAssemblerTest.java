@@ -51,7 +51,7 @@ class PathAssemblerTest {
             .getResponses();
         PathResponse pathResponse = new PathResponse(stationResponses, 10, 1250);
 
-        PathResponse actual = PathAssembler.writeResponse(loginMember, pathFinder);
+        PathResponse actual = PathAssembler.writeResponse(loginMember, pathFinder, sections);
 
         assertThat(actual)
             .isEqualTo(pathResponse);

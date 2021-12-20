@@ -13,6 +13,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.path.domain.fare.Fare;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
@@ -54,7 +55,7 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
 
-        Section section = new Section(line, upStation, downStation, request.getDistance());
+        Section section = new Section(line, upStation, downStation, request.getDistance(), Fare.from(1));
         line.addStation(section);
     }
 

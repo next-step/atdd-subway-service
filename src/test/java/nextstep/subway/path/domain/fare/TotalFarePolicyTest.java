@@ -14,9 +14,9 @@ class TotalFarePolicyTest {
     @ParameterizedTest
     @CsvSource(value = {"9,1250", "10,1250", "11,1350", "50, 2050", "51,2150", "57,2150"})
     void calculateFareWhenDistanceChanged(int distance, int fare) {
-        FarePolicy<Integer> distanceFairPolicy = FarePolicyFactory.createDistanceFairPolicy();
-        FarePolicy<Fare> ageFairPolicy = FarePolicyFactory.createAgeFairPolicy(LoginMember.NOT_LOGIN);
-        TotalFarePolicy totalFarePolicy = new TotalFarePolicy(distanceFairPolicy, ageFairPolicy);
+        FarePolicy<Integer> distancePolicy = FarePolicyFactory.createDistanceFarePolicy();
+        FarePolicy<Fare> agePolicy = FarePolicyFactory.createAgeFarePolicy(LoginMember.NOT_LOGIN);
+        TotalFarePolicy totalFarePolicy = new TotalFarePolicy(distancePolicy, agePolicy);
 
         assertThat(totalFarePolicy.calculateFare(distance)).isEqualTo(Fare.from(fare));
     }
@@ -25,9 +25,9 @@ class TotalFarePolicyTest {
     @ParameterizedTest
     @CsvSource(value = {"6, 450", "12, 450", "13,720", "18, 720", "19, 1250"})
     void calculateFareWhenAgeChanged(int age, int fare) {
-        FarePolicy<Integer> distanceFairPolicy = FarePolicyFactory.createDistanceFairPolicy();
+        FarePolicy<Integer> distanceFairPolicy = FarePolicyFactory.createDistanceFarePolicy();
         LoginMember loginMember = new LoginMember(1L, "email@email.com", age);
-        FarePolicy<Fare> ageFairPolicy = FarePolicyFactory.createAgeFairPolicy(loginMember);
+        FarePolicy<Fare> ageFairPolicy = FarePolicyFactory.createAgeFarePolicy(loginMember);
         TotalFarePolicy totalFarePolicy = new TotalFarePolicy(distanceFairPolicy, ageFairPolicy);
 
         assertThat(totalFarePolicy.calculateFare(10)).isEqualTo(Fare.from(fare));

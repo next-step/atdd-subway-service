@@ -30,6 +30,6 @@ public enum AgeFarePolicy implements FarePolicy<Fare> {
             .filter(ageFarePolicy -> ageFarePolicy.minAge <= age && age <= ageFarePolicy.maxAge)
             .map(ageFarePolicy -> (FarePolicy<Fare>)ageFarePolicy)
             .findAny()
-            .orElse((fare) -> fare);
+            .orElse(fare -> fare);
     }
 }
