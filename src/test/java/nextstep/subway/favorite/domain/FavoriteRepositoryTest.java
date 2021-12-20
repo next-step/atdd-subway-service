@@ -37,8 +37,8 @@ class FavoriteRepositoryTest {
         final Station source = stationRepository.save(Station.from("잠실역"));
         final Station target = stationRepository.save(Station.from("강변역"));
         final Section section = Section.of(source, target, Distance.of(10));
-        lineRepository.save(Line.of("이호선", "blue", Sections.from(Arrays.asList(section))));
-        final Favorite actual = Favorite.of(member, source, target);
+        lineRepository.save(Line.of("이호선", "blue", Sections.from(Arrays.asList(section)), Fare.from(900)));
+        final Favorite actual = Favorite.of(member.getId(), source.getId(), target.getId());
 
         // when
         final Favorite expected = favoriteRepository.save(actual);
@@ -57,8 +57,8 @@ class FavoriteRepositoryTest {
         final Station source = stationRepository.save(Station.from("잠실역"));
         final Station target = stationRepository.save(Station.from("강변역"));
         final Section section = Section.of(source, target, Distance.of(10));
-        lineRepository.save(Line.of("이호선", "blue", Sections.from(Arrays.asList(section))));
-        final Favorite actual = favoriteRepository.save(Favorite.of(member, source, target));
+        lineRepository.save(Line.of("이호선", "blue", Sections.from(Arrays.asList(section)), Fare.from(900)));
+        final Favorite actual = favoriteRepository.save(Favorite.of(member.getId(), source.getId(), target.getId()));
 
         // when
         final Favorite expected = favoriteRepository.findById(actual.getId()).get();
@@ -77,8 +77,8 @@ class FavoriteRepositoryTest {
         final Station source = stationRepository.save(Station.from("잠실역"));
         final Station target = stationRepository.save(Station.from("강변역"));
         final Section section = Section.of(source, target, Distance.of(10));
-        lineRepository.save(Line.of("이호선", "blue", Sections.from(Arrays.asList(section))));
-        final Favorite actual = favoriteRepository.save(Favorite.of(member, source, target));
+        lineRepository.save(Line.of("이호선", "blue", Sections.from(Arrays.asList(section)), Fare.from(900)));
+        final Favorite actual = favoriteRepository.save(Favorite.of(member.getId(), source.getId(), target.getId()));
         final Long favoriteId = actual.getId();
 
         // when
