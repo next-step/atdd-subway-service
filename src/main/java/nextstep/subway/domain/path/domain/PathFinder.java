@@ -2,10 +2,12 @@ package nextstep.subway.domain.path.domain;
 
 import nextstep.subway.domain.line.domain.Distance;
 import nextstep.subway.domain.line.domain.Line;
+import nextstep.subway.domain.line.domain.Section;
 import nextstep.subway.domain.path.exception.SameDepartureAndArrivalStationException;
 import nextstep.subway.domain.path.exception.StationNotFoundException;
 import nextstep.subway.domain.station.domain.Station;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +45,33 @@ public class PathFinder {
         final Distance distance = path.getWeight(stationStart, stationEnd);
 
         return new Route(vertex, distance);
+    }
+
+    public List<Line> findShortestLine(List<Line> lines, Route route) {
+        return findShortestSection(lines, route.getStations()).stream()
+                .map(Section::getLine)
+                .collect(Collectors.toList());
+    }
+
+    private List<Section> findShortestSection(List<Line> lines, List<Station> stations) {
+        List<Section> sections = new ArrayList<>();
+
+        for (int i=0; i<stations.size() - 1; i++) {
+            Station upStation = stations.get(i);
+            Station downStation = stations.get(i+1);
+
+            sections.add(findSection(lines, upStation, downStation));
+        }
+        return sections;
+    }
+
+    private Section findSection(List<Line> lines, Station upStation, Station downStation) {
+        return lines.stream()
+                .map(Line::getSections)
+                .flatMap(Collection::stream)
+                .filter(section -> section.getUpStation().equals(upStation) && section.getDownStation().equals(downStation))
+                .findFirst()
+                .get();
     }
 
     private void existStationValidator(final List<Station> stations, final Long source, final Long target) {

@@ -10,9 +10,6 @@ public class LineFare {
     }
 
     public static int calculateLineFare(List<Line> lines) {
-        if (lines.isEmpty()) {
-            return 0;
-        }
         return lines.stream()
                 .mapToInt(Line::getExtraFare)
                 .max()
