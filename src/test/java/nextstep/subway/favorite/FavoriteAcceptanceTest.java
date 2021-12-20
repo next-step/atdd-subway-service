@@ -13,7 +13,6 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteCreateRequest;
-import nextstep.subway.favorite.dto.FavoriteReadRequest;
 import nextstep.subway.line.LineTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
@@ -83,16 +82,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	}
 
 	private void 즐겨찾기_목록_갯수_검증(ExtractableResponse<Response> response, long listSize) {
-		assertThat(response.jsonPath().getList(".", FavoriteReadRequest.class).size()).isEqualTo(listSize);
+		assertThat(response.jsonPath().getList(".").size()).isEqualTo(listSize);
 	}
 
 	private ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> loginResponse,
 		ExtractableResponse<Response> favoriteCreateResponse) {
-		long favoriteId = Long.parseLong(favoriteCreateResponse.header("Location"));
+		String urlFavoriteCreated = favoriteCreateResponse.header("Location");
 		return RestAssured.given().log().all()
 			.auth().oauth2(loginResponse.jsonPath().getString("accessToken"))
 			.when().log().all()
-			.delete("/favorites/" + favoriteId)
+			.delete(urlFavoriteCreated)
 			.then().log().all()
 			.extract();
 	}

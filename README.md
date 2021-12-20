@@ -86,4 +86,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [x] 구현
 - 인증 - 즐겨 찾기 기능 완성하기
   - [x] 인수 테스트 추가
-  - [ ] 구현
+  - [x] 구현

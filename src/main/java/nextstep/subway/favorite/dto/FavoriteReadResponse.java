@@ -8,6 +8,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public class FavoriteReadResponse {
 	private List<FavoriteResponse> favoriteResponses = new ArrayList<>();
 
+	public FavoriteReadResponse() {
+	}
+
 	public FavoriteReadResponse(List<FavoriteResponse> favoriteResponses) {
 		this.favoriteResponses = favoriteResponses;
 	}
