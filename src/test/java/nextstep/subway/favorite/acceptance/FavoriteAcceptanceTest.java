@@ -13,6 +13,8 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
@@ -38,7 +40,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final Integer AGE = 10;
-
     private StationResponse 잠실역 = null;
     private StationResponse 잠실나루역 = null;
     private LineResponse 이호선 = null;
@@ -52,7 +53,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         잠실역 = TestStationFactory.지하철_역_생성_요청("잠실역").as(StationResponse.class);
         잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
         이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실역.getId()
-                , 잠실나루역.getId(), 10)).as(LineResponse.class);
+                , 잠실나루역.getId(), 10, new BigDecimal(900))).as(LineResponse.class);
         잠실새내역 = TestStationFactory.지하철_역_생성_요청("잠실새내역").as(StationResponse.class);
         TestSectionFactory.지하철_노선에_구간_등록_요청(이호선, 잠실새내역, 잠실역, 10);
         TestMemberFactory.회원_등록_요청(EMAIL, PASSWORD, AGE);
