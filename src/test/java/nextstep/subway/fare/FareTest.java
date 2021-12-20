@@ -11,8 +11,8 @@ public class FareTest {
     @Test
     void calculateFare() {
         assertAll(
-                () -> assertThat(FarePolicy.calculateDistanceOverFare(58)).isEqualTo(2_150),
-                () -> assertThat(FarePolicy.calculateDistanceOverFare(45)).isEqualTo(1_950)
+                () -> assertThat(FarePolicy.calculateDistanceOverFare(58)).isEqualTo(900),
+                () -> assertThat(FarePolicy.calculateDistanceOverFare(45)).isEqualTo(700)
         );
     }
 }
