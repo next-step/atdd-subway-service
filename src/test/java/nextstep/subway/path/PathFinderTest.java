@@ -66,6 +66,48 @@ public class PathFinderTest {
 	}
 
 	@Test
+	@DisplayName("최단 경로를 조회한다2")
+	void findShortestPath2() {
+		Station 가로지르는역1 = new Station("가로지르는역1");
+		Station 가로지르는역2 = new Station("가로지르는역2");
+		Station 가로지르는역3 = new Station("가로지르는역3");
+		Section 삼성_선릉_구간 = new Section(신분당선, StationTest.삼성역, StationTest.선릉역, 5);
+		Section 선릉_역삼_구간 = new Section(신분당선, StationTest.선릉역, StationTest.역삼역, 7);
+		Section 역삼_강남_구간 = new Section(신분당선, StationTest.역삼역, StationTest.강남역, 5);
+		Section 삼성_강남_구간 = new Section(구분당선, StationTest.삼성역, StationTest.강남역, 4);
+		Section 가로지르는역1_삼성_구간 = new Section(구분당선, 가로지르는역1, StationTest.삼성역, 1);
+		Section 가로지르는역1_가로지르는역2_구간 = new Section(구분당선, 가로지르는역2, 가로지르는역1, 1);
+		Section 가로지르는역2_가로지르는역3_구간 = new Section(구분당선, 가로지르는역3, 가로지르는역2, 1);
+		Section 역삼_가로지르는역3_구간 = new Section(구분당선, StationTest.역삼역, 가로지르는역3, 1);
+		신분당선.addSection(삼성_선릉_구간);
+		신분당선.addSection(선릉_역삼_구간);
+		신분당선.addSection(역삼_강남_구간);
+		구분당선.addSection(가로지르는역1_삼성_구간);
+		구분당선.addSection(가로지르는역1_가로지르는역2_구간);
+		구분당선.addSection(가로지르는역2_가로지르는역3_구간);
+		구분당선.addSection(역삼_가로지르는역3_구간);
+		구분당선.addSection(삼성_강남_구간);
+
+		PathFinder pathFinder = new PathFinder();
+		FindShortestPathResult path = pathFinder.findShortestPath(
+			StationTest.삼성역,
+			StationTest.역삼역,
+			new Sections(Stream.of(신분당선.getSections(), 구분당선.getSections())
+				.flatMap(Collection::stream)
+				.collect(Collectors.toList()
+				))
+		);
+
+		assertThat(path.getStations()).isEqualTo(
+			Arrays.asList(
+				StationResponse.of(StationTest.삼성역), StationResponse.of(가로지르는역1),
+				StationResponse.of(가로지르는역2), StationResponse.of(가로지르는역3),
+				StationResponse.of(StationTest.역삼역)
+			));
+		assertThat(path.getDistance()).isEqualTo(4);
+	}
+
+	@Test
 	@DisplayName("최단 경로 조회시 출발역과 도착역이 같으면 예외")
 	void findShortestPath_sourceAndTargetEqual_Exception() {
 		Line 신분당선 = new Line(LineTest.신분당선, LineTest.BG_RED_600);
