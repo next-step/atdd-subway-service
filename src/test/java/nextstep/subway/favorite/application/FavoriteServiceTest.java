@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -47,11 +48,11 @@ class FavoriteServiceTest {
 
     @Test
     void saveFavorite() {
-        final Member loginMember = Member.of(EMAIL, PASSWORD, AGE);
+        final LoginMember loginMember = LoginMember.of(EMAIL, AGE);
         lenient().when(memberService.findMemberById(anyLong())).thenReturn(Member.of(EMAIL, PASSWORD, AGE));
         when(stationService.findStationById(anyLong())).thenReturn(Station.from("잠실역"));
         when(stationService.findStationById(anyLong())).thenReturn(Station.from("잠실새내역"));
-        when(favoriteRepository.save(any())).thenReturn(Favorite.of(loginMember, Station.from("잠실역"), Station.from("잠실새내역")));
+        when(favoriteRepository.save(any())).thenReturn(Favorite.of(loginMember.getId(), Station.from("잠실역").getId(), Station.from("잠실새내역").getId()));
 
         FavoriteResponse favoriteResponse  = favoriteService.saveFavorite(loginMember, FavoriteRequest.of(1L, 2L));
 
@@ -60,10 +61,11 @@ class FavoriteServiceTest {
 
     @Test
     void findLineResponseById() {
-        final Member loginMember = Member.of(EMAIL, PASSWORD, AGE);
-        lenient().when(memberService.findMemberById(anyLong())).thenReturn(loginMember);
-        when(favoriteRepository.findByIdAndMember(anyLong(), any())).thenReturn(Optional.of(Favorite.of(Member.of(EMAIL, PASSWORD, AGE), Station.from("잠실역"), Station.from("잠실새내역"))));
-
+        final LoginMember loginMember = LoginMember.of(EMAIL, AGE);
+        lenient().when(memberService.findMemberById(anyLong())).thenReturn(Member.of(EMAIL, PASSWORD, AGE));
+        when(favoriteRepository.findByIdAndMemberId(anyLong(), any())).thenReturn(Optional.of(Favorite.of(loginMember.getId(), Station.from(1L, "잠실역").getId(), Station.from(2L, "잠실새내역").getId())));
+        when(stationService.findStationById(anyLong())).thenReturn(Station.from(1L, "잠실역"));
+        when(stationService.findStationById(anyLong())).thenReturn(Station.from(2L, "잠실새내역"));
         FavoriteResponse favoriteResponse = favoriteService.findLineResponseById(loginMember, 1L);
 
         assertThat(favoriteResponse).isNotNull();
