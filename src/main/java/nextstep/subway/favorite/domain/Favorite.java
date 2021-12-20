@@ -17,14 +17,15 @@ public class Favorite {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@JoinColumn(name = "source_station_id")
+	@JoinColumn(name = "source_station_id", nullable = false)
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private Station source;
 
-	@JoinColumn(name = "target_station_id")
+	@JoinColumn(name = "target_station_id", nullable = false)
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private Station target;
 
+	@JoinColumn(name = "member_id", nullable = false)
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private Member member;
 
