@@ -1,23 +1,33 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.common.exception.PathDisconnectedException;
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Fare;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
 public class Path {
-    private double distance;
-
     private List<Station> stations;
-    private Path(final double distance, final List<Station> stations) {
+    private Distance distance;
+    private Sections sections;
+
+    private Path(final Distance distance, final Sections sections, final List<Station> stations) {
         validateConnectedStations(stations);
         this.distance = distance;
         this.stations = stations;
+        this.sections = sections;
     }
 
-    public static Path of(final double weight, final List<Station> stations) {
-        return new Path(weight, stations);
+    public Path(final Distance distance) {
+        this.distance = distance;
+    }
+
+    public static Path of(final int weight, List<Section> sections, final List<Station> stations) {
+        return new Path(Distance.of(weight), Sections.from(sections), stations);
     }
 
     private void validateConnectedStations(final List<Station> stations) {
@@ -26,11 +36,19 @@ public class Path {
         }
     }
 
-    public double getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
+    public Fare mergeFare(final Fare distance) {
+        return distance.plus(getMaxExtraFare());
+    }
+
+    public Fare getMaxExtraFare() {
+        return this.sections.getMaxExtraFare();
+    }
+
     public List<Station> getStations() {
-        return stations;
+        return this.stations;
     }
 }
