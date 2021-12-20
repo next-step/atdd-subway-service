@@ -51,6 +51,34 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		최단_경로_맞는지_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역));
 	}
 
+	@Test
+	@DisplayName("최단 경로를 조회한다2")
+	void findPath2() {
+		강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
+		양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
+		교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
+
+		StationResponse 가로지르는역1 = StationAcceptanceTest.지하철역_등록되어_있음("가로지르는역1").as(StationResponse.class);
+		StationResponse 가로지르는역2 = StationAcceptanceTest.지하철역_등록되어_있음("가로지르는역2").as(StationResponse.class);
+		StationResponse 가로지르는역3 = StationAcceptanceTest.지하철역_등록되어_있음("가로지르는역3").as(StationResponse.class);
+
+		남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
+		이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
+		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 남부터미널역, 5);
+		LineResponse 십육호선 = 지하철_노선_등록되어_있음("십육호선", "bg-red-600", 교대역, 가로지르는역1, 1);
+
+		지하철_노선에_지하철역_등록되어_있음(삼호선, 남부터미널역, 양재역, 1);
+		지하철_노선에_지하철역_등록되어_있음(십육호선, 가로지르는역1, 가로지르는역2, 1);
+		지하철_노선에_지하철역_등록되어_있음(십육호선, 가로지르는역2, 가로지르는역3, 1);
+		지하철_노선에_지하철역_등록되어_있음(십육호선, 가로지르는역3, 양재역, 1);
+
+		ExtractableResponse<Response> response = 최단_경로_요청(교대역, 양재역);
+
+		최단_경로_요청_성공(response);
+		최단_경로_맞는지_확인(response, Arrays.asList(교대역, 가로지르는역1, 가로지르는역2, 가로지르는역3, 양재역 ));
+	}
+
 	private void 최단_경로_맞는지_확인(ExtractableResponse<Response> response, List<StationResponse> expected) {
 		assertThat(response.jsonPath().getList("stations", StationResponse.class)).isEqualTo(expected);
 	}
