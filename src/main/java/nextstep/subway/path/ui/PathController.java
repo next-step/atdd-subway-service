@@ -1,5 +1,7 @@
 package nextstep.subway.path.ui;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +24,7 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> getPath(@AuthenticationPrincipal LoginMember loginMember,
-        PathRequest pathRequest) {
+        @Valid PathRequest pathRequest) {
         PathResponse response = pathService.getPath(loginMember, pathRequest);
         return ResponseEntity.ok(response);
     }
