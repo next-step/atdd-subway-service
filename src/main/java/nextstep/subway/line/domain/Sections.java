@@ -110,4 +110,8 @@ public class Sections {
             throw new IllegalArgumentException("구간이 1개만 남아있어 삭제할 수 없습니다.");
         }
     }
+
+    public List<Section> getSections() {
+        return this.sections;
+    }
 }
