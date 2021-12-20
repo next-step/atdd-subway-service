@@ -4,6 +4,8 @@ import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nextstep.subway.auth.exception.AuthorizationExtractorException;
+
 public class AuthorizationExtractor {
     private static final String ERROR_INVALID_REQUEST = "요청정보가 올바르지 않습니다.";
     public static final String AUTHORIZATION = "Authorization";
@@ -25,6 +27,6 @@ public class AuthorizationExtractor {
             }
         }
 
-        throw new RuntimeException(ERROR_INVALID_REQUEST);
+        throw new AuthorizationExtractorException(ERROR_INVALID_REQUEST);
     }
 }
