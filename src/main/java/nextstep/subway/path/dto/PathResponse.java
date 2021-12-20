@@ -26,14 +26,7 @@ public class PathResponse {
 			.collect(Collectors.toList());
 		return new PathResponse(stationResponses, distance, fare);
 	}
-
-	// TODO: 제거 필요
-	public static PathResponse of(List<Station> stations, int distance) {
-		List<StationResponse> stationResponses = stations.stream().map(StationResponse::of)
-			.collect(Collectors.toList());
-		return new PathResponse(stationResponses, distance, 0);
-	}
-
+	
 	public List<StationResponse> getStations() {
 		return stations;
 	}

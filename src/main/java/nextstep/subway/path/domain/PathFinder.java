@@ -53,7 +53,8 @@ public class PathFinder {
 		GraphPath graphPath = path.getPath(source, target);
 		validatePath(graphPath);
 		int distance = (int)graphPath.getWeight();
-		return PathResponse.of(graphPath.getVertexList(), distance);
+		int fare = FareCalculator.calculate(distance);
+		return PathResponse.of(graphPath.getVertexList(), distance, fare);
 	}
 
 	private void addSection(Section section) {
