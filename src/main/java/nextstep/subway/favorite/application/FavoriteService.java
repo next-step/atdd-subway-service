@@ -3,6 +3,7 @@ package nextstep.subway.favorite.application;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
+import nextstep.subway.favorite.domain.Favorites;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
@@ -19,11 +20,18 @@ import java.util.Optional;
 
 @Service
 public class FavoriteService {
-    private MemberService memberService;
+    public static final String MESSAGE_NO_FAVORITE = "해당 ID의 즐겨찾기가 없습니다";
+    private final MemberService memberService;
 
-    private StationService stationService;
+    private final StationService stationService;
 
-    private FavoriteRepository favoriteRepository;
+    private final FavoriteRepository favoriteRepository;
+
+    public FavoriteService(MemberService memberService, StationService stationService, FavoriteRepository favoriteRepository) {
+        this.memberService = memberService;
+        this.stationService = stationService;
+        this.favoriteRepository = favoriteRepository;
+    }
 
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = memberService.findMemberById(loginMember.getId());
@@ -36,20 +44,14 @@ public class FavoriteService {
 
     public List<FavoriteResponse> findFavorites(Long memberId) {
         Member member = memberService.findMemberById(memberId);
-        List<Favorite> favorites = member.getFavorites();
+        Favorites favorites = member.getFavorites();
         return FavoriteResponse.from(favorites);
     }
 
     public void deleteFavorite(Long loginMemberId, Long id) {
-        Optional<Favorite> favorite = favoriteRepository.findById(id);
-        if (favorite.isPresent() && favorite.get().isLoginMemberFavorite(loginMemberId)) {
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(MESSAGE_NO_FAVORITE));
+        if (favorite.isLoginMemberFavorite(loginMemberId)) {
             favoriteRepository.deleteById(id);
         }
-    }
-
-    public FavoriteService(MemberService memberService, StationService stationService, FavoriteRepository favoriteRepository) {
-        this.memberService = memberService;
-        this.stationService = stationService;
-        this.favoriteRepository = favoriteRepository;
     }
 }

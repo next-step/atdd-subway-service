@@ -2,22 +2,26 @@ package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.Line;
 
+import java.math.BigDecimal;
+
 public class LineRequest {
     private String name;
     private String color;
     private Long upStationId;
     private Long downStationId;
     private int distance;
+    private BigDecimal surcharge;
 
     public LineRequest() {
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, BigDecimal surcharge) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.surcharge = surcharge;
     }
 
     public String getName() {
@@ -42,5 +46,9 @@ public class LineRequest {
 
     public Line toLine() {
         return new Line(name, color);
+    }
+
+    public BigDecimal getSurcharge() {
+        return surcharge;
     }
 }

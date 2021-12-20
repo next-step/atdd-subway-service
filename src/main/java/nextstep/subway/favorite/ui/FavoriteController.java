@@ -15,10 +15,10 @@ import java.util.List;
 
 @RestController
 public class FavoriteController {
-    private FavoriteService favoriteService;
+    private final FavoriteService favoriteService;
 
     @PostMapping("/favorites")
-    public ResponseEntity createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest request) {
+    public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest request) {
         FavoriteResponse favorite = favoriteService.createFavorite(loginMember, request);
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
     }

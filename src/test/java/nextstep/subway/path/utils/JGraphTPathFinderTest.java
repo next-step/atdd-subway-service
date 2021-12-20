@@ -2,6 +2,7 @@ package nextstep.subway.path.utils;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.IllegalPathException;
 import nextstep.subway.station.domain.Station;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,9 +34,9 @@ class JGraphTPathFinderTest {
         양재역 = new Station(3L, "양재역");
         남부터미널역 = new Station(4L, "남부터미널역");
 
-        Line 신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, 10);
-        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 10);
-        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 양재역, 5);
+        Line 신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, 10, new BigDecimal(0));
+        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 10, new BigDecimal(0));
+        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 양재역, 5, new BigDecimal(0));
         삼호선.addSection(new Section(교대역, 남부터미널역, 3));
 
         lines.add(신분당선);
@@ -46,9 +48,9 @@ class JGraphTPathFinderTest {
     @Test
     void findPath() {
         JGraphTPathFinder jGraphTPathFinder = new JGraphTPathFinder();
-        PathResponse pathResponse = jGraphTPathFinder.findPath(lines, 강남역.getId(), 남부터미널역.getId());
-        assertThat(pathResponse.getDistance()).isEqualTo(12);
-        assertThat(pathResponse.getStations().stream()
+        Path path = jGraphTPathFinder.findPath(lines, 강남역.getId(), 남부터미널역.getId());
+        assertThat(path.getDistance()).isEqualTo(12);
+        assertThat(path.getStationResponses().stream()
                 .map(StationResponse::getName)
                 .collect(Collectors.toList()))
                 .containsExactlyElementsOf(Arrays.asList("강남역", "양재역", "남부터미널역"));
@@ -58,9 +60,9 @@ class JGraphTPathFinderTest {
     @Test
     void findPath2() {
         JGraphTPathFinder jGraphTPathFinder = new JGraphTPathFinder();
-        PathResponse pathResponse = jGraphTPathFinder.findPath(lines, 교대역.getId(), 양재역.getId());
-        assertThat(pathResponse.getDistance()).isEqualTo(5);
-        assertThat(pathResponse.getStations().stream()
+        Path path = jGraphTPathFinder.findPath(lines, 교대역.getId(), 양재역.getId());
+        assertThat(path.getDistance()).isEqualTo(5);
+        assertThat(path.getStationResponses().stream()
                 .map(StationResponse::getName)
                 .collect(Collectors.toList()))
                 .containsExactlyElementsOf(Arrays.asList("교대역", "남부터미널역", "양재역"));
