@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.common.exception.Exceptions;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -57,8 +59,14 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Section section) {
+        if (section == null) {
+            return;
+        }
+        if (section.getLine() != null && !this.equals(section.getLine())) {
+            throw Exceptions.SECTION_IS_NOT_ELIGIBLE.getException(section.toString());
+        }
         sections.add(section);
-        if (section != null && section.getLine() == null) {
+        if (section.getLine() == null) {
             section.setLine(this);
         }
     }
@@ -77,5 +85,24 @@ public class Line extends BaseEntity {
 
     public boolean containsSection(Section section) {
         return sections.get().contains(section);
+    }
+
+    public List<Section> getSections() {
+        return sections.get();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Line line = (Line)o;
+        return Objects.equals(name, line.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

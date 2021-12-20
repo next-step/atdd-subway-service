@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -64,7 +65,7 @@ public class Sections {
 	}
 
 	public List<Station> getOrderedStations() {
-		Station downStation = findUpStation();
+		Station downStation = findUpStation().orElse(null);
 		List<Station> stations = new ArrayList<>();
 
 		while (downStation != null) {
@@ -75,9 +76,9 @@ public class Sections {
 		return stations;
 	}
 
-	private Station findUpStation() {
-		if (sections.size() == 0) {
-			return null;
+	private Optional<Station> findUpStation() {
+		if (sections.isEmpty()) {
+			return Optional.empty();
 		}
 
 		Station searchStation = sections.get(0).getUpStation();
@@ -88,7 +89,7 @@ public class Sections {
 			Optional<Section> prevLineSection = findPrevSection(searchStation);
 			searchStation = prevLineSection.map(Section::getUpStation).orElse(null);
 		}
-		return upStation;
+		return Optional.of(upStation);
 	}
 
 	private Optional<Section> findNextSection(Station station) {
@@ -138,6 +139,18 @@ public class Sections {
 		if (sections.size() <= 1) {
 			throw Exceptions.SECTION_MUST_BE_EXIST.getException();
 		}
+	}
+
+	public List<Line> getLinesDistinct() {
+		return sections.stream()
+			.map(Section::getLine)
+			.distinct()
+			.collect(Collectors.toList());
+	}
+
+	public boolean contains(Station station) {
+		return sections.stream()
+			.anyMatch(section -> section.contains(station));
 	}
 
 	@Override

@@ -64,3 +64,17 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [x] Line.removeSection
   - [x] Sections.remove
   - [x] Sections.getOrderedStations
+
+## 2단계 구현 목록
+- [x] 커스텀 예외 fillinStackTrace 오버라이드
+- [x] line.addSection의 유효성검사 및 로직 순서 수정
+- [x] Section.Equals, HashCode가 비즈니스키를 사용하도록 수정
+- [x] Sections.findUpStation의 null 반환 수정
+- [x] 최단 경로 조회 인수 테스트 만들기
+- [x] 인수테스트 통과할 정도로만 구현
+- 최단 경로 조회 기능 구현하기
+  - 유닛 테스트 작성 (도메인으로 넣으면서 리팩토링)
+    - [x] 성공
+    - [x] 출발역과 도착역이 같으면 예외
+    - [x] 출발역과 도착역이 연결되어 있지 않은 경우 예외
+    - [x] 존재하지 않는 출발역이나 도착역을 조회하는 경우 예외
