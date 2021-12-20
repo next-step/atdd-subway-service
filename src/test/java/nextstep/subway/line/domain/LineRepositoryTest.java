@@ -95,11 +95,11 @@ class LineRepositoryTest {
     }
 
     private Line 노선_등록(String name, String color) {
-        return Line.of(name, color);
+        return Line.of(name, color, Fare.from(900));
     }
 
     private Line 노선_등록_저장(String name, String color) {
-        return lineRepository.save(Line.of(name, color));
+        return lineRepository.save(Line.of(name, color, Fare.from(900)));
     }
 
     private void 노선_삭제(Line actual) {

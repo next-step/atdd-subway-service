@@ -2,12 +2,11 @@ package study.unit;
 
 import com.google.common.collect.Lists;
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +28,7 @@ class SpringExtensionTest {
     @Test
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(Line.of("name", "color")));
+        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(Line.of("name", "color", Fare.from(900))));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when
