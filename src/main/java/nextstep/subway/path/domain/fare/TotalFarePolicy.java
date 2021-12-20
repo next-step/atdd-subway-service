@@ -1,20 +1,17 @@
 package nextstep.subway.path.domain.fare;
 
-import java.util.Arrays;
-import java.util.List;
+public class TotalFarePolicy implements FarePolicy<Integer> {
+    private final FarePolicy<Integer> distancePolicy;
+    private final FarePolicy<Fare> agePolicy;
 
-import nextstep.subway.path.application.FarePolicy;
-
-public class TotalFarePolicy implements FarePolicy {
-    private static final List<FarePolicy> farePolicies = Arrays.asList(
-        new BasicFarePolicy(),
-        DistanceFarePolicy.TEN_TO_FIFTY,
-        DistanceFarePolicy.OVER_FIFTY);
+    public TotalFarePolicy(FarePolicy<Integer> distancePolicy, FarePolicy<Fare> agePolicy) {
+        this.distancePolicy = distancePolicy;
+        this.agePolicy = agePolicy;
+    }
 
     @Override
-    public Fare calculateFare(int distance) {
-        return farePolicies.stream()
-            .map(farePolicy -> farePolicy.calculateFare(distance))
-            .reduce(Fare.ZERO, (Fare::add));
+    public Fare calculateFare(Integer distance) {
+        Fare fare = distancePolicy.calculateFare(distance);
+        return agePolicy.calculateFare(fare);
     }
 }

@@ -1,8 +1,6 @@
 package nextstep.subway.path.domain.fare;
 
-import nextstep.subway.path.application.FarePolicy;
-
-public enum DistanceFarePolicy implements FarePolicy {
+public enum DistanceFarePolicy implements FarePolicy<Integer> {
     TEN_TO_FIFTY(10, 50, 100, 5),
     OVER_FIFTY(50, Integer.MAX_VALUE, 100, 8);
 
@@ -22,7 +20,7 @@ public enum DistanceFarePolicy implements FarePolicy {
     }
 
     @Override
-    public Fare calculateFare(int distance) {
+    public Fare calculateFare(Integer distance) {
         if (distance <= minDistance) {
             return Fare.ZERO;
         }

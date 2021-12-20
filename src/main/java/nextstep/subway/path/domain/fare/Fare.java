@@ -1,9 +1,11 @@
 package nextstep.subway.path.domain.fare;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Fare {
     public static final Fare ZERO = new Fare(0);
+    public static final Fare BASE = new Fare(1250);
 
     private final int fare;
 
@@ -21,6 +23,18 @@ public class Fare {
 
     public Fare add(Fare fare) {
         return new Fare(this.fare + fare.fare);
+    }
+
+    public Fare minus(Fare fare) {
+        return new Fare(this.fare - fare.fare);
+    }
+
+    public Fare multiply(BigDecimal percent) {
+        int newFare = BigDecimal.valueOf(fare)
+            .multiply(percent)
+            .intValue();
+
+        return new Fare(newFare);
     }
 
     @Override

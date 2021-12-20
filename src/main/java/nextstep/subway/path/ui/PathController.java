@@ -1,10 +1,13 @@
 package nextstep.subway.path.ui;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -19,8 +22,9 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> getPath(PathRequest pathRequest) {
-        PathResponse response = pathService.getPath(pathRequest);
+    public ResponseEntity<PathResponse> getPath(@AuthenticationPrincipal LoginMember loginMember,
+        PathRequest pathRequest) {
+        PathResponse response = pathService.getPath(loginMember, pathRequest);
         return ResponseEntity.ok(response);
     }
 }
