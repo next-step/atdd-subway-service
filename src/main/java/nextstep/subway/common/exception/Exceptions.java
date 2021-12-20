@@ -24,6 +24,7 @@ public enum Exceptions {
 	}
 
 	public CustomExceptionBase getException() {
+		exception.withMsg("");
 		return exception;
 	}
 
