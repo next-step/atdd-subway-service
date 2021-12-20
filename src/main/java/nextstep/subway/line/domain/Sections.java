@@ -113,12 +113,7 @@ public class Sections {
             downStations.add(section.getDownStation());
         }
         upStations.removeAll(downStations);
-        Station firstStation = upStations.get(0);
-        return sections.stream()
-                .filter(section -> section.getUpStation().equals(firstStation))
-                .findAny()
-                .get()
-                .getUpStation();
+        return upStations.get(0);
     }
 
     public void removeSection(Line line, Station station) {

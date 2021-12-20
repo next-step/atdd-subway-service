@@ -70,3 +70,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] 최단경로찾기 도메인 레이어 구현
 - [x] 최단경로찾기 도메인 레이어 예외상황 구현
 
+## 기능목록정리 - 인증을 통한 기능 구현
+
+- [x] 로그인 인수 테스트
+- [x] 내 정보 조회 기능 인수 테스트 작성
+- [x] 즐겨찾기 기능 인수 테스트 구현
+- [x] 즐겨찾기 기능 구현
