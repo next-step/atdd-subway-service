@@ -10,19 +10,28 @@ public class PathResponse {
 
 	private List<StationResponse> stations;
 	private int distance;
+	private int fare;
 
 	public PathResponse() {
 	}
 
-	public PathResponse(List<StationResponse> stations, int distance) {
+	public PathResponse(List<StationResponse> stations, int distance, int fare) {
 		this.stations = stations;
 		this.distance = distance;
+		this.fare = fare;
 	}
 
+	public static PathResponse of(List<Station> stations, int distance, int fare) {
+		List<StationResponse> stationResponses = stations.stream().map(StationResponse::of)
+			.collect(Collectors.toList());
+		return new PathResponse(stationResponses, distance, fare);
+	}
+
+	// TODO: 제거 필요
 	public static PathResponse of(List<Station> stations, int distance) {
 		List<StationResponse> stationResponses = stations.stream().map(StationResponse::of)
 			.collect(Collectors.toList());
-		return new PathResponse(stationResponses, distance);
+		return new PathResponse(stationResponses, distance, 0);
 	}
 
 	public List<StationResponse> getStations() {
@@ -31,5 +40,9 @@ public class PathResponse {
 
 	public int getDistance() {
 		return distance;
+	}
+
+	public int getFare() {
+		return fare;
 	}
 }

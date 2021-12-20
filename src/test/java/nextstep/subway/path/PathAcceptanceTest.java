@@ -1,7 +1,6 @@
 package nextstep.subway.path;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -79,7 +78,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		// Then
 		최단경로_조회_응답함(response);
-		최단경로_조회_경로_포함됨(response, Arrays.asList(양재역, 남부터미널역, 교대역), 5);
+		최단경로_조회_경로_포함됨(response, Arrays.asList(양재역, 남부터미널역, 교대역));
+		최단경로_조회_최단거리_포함됨(response, 5);
+		최단경로_조회_이용요금_포함됨(response, 10_000);
 
 		// When
 		ExtractableResponse<Response> response2 = 최단경로_조회_요청함(양재역, 양재역);
@@ -108,7 +109,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		// then
 		최단경로_조회_응답함(response);
-		최단경로_조회_경로_포함됨(response, Arrays.asList(양재역, 남부터미널역, 교대역), 5);
+		최단경로_조회_경로_포함됨(response, Arrays.asList(양재역, 남부터미널역, 교대역));
+		최단경로_조회_최단거리_포함됨(response, 5);
 	}
 
 	@DisplayName("최단경로 조회 시, 출발역과 도착역이 같으면 안됨")
@@ -146,7 +148,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	}
 
 	private void 최단경로_조회_경로_포함됨(ExtractableResponse<Response> response,
-		List<StationResponse> expectedStations, int expectedDistance) {
+		List<StationResponse> expectedStations) {
 
 		PathResponse path = response.as(PathResponse.class);
 
@@ -158,10 +160,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.map(StationResponse::getId)
 			.collect(Collectors.toList());
 
-		assertAll(
-			() -> assertThat(path.getDistance()).isEqualTo(expectedDistance),
-			() -> assertThat(resultIds).containsAll(expectedIds)
-		);
+		assertThat(resultIds).containsAll(expectedIds);
+	}
+
+	private static void 최단경로_조회_이용요금_포함됨(ExtractableResponse<Response> response, int expectedFare) {
+		PathResponse path = response.as(PathResponse.class);
+		assertThat(path.getFare()).isEqualTo(expectedFare);
+	}
+
+	private static void 최단경로_조회_최단거리_포함됨(ExtractableResponse<Response> response, int expectedDistance) {
+		PathResponse path = response.as(PathResponse.class);
+		assertThat(path.getDistance()).isEqualTo(expectedDistance);
 	}
 
 	private void 최단경로_조회_응답함(ExtractableResponse<Response> response) {
