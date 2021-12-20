@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.fare.FarePolicy;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.DijkstraShortestPathCalculator;
@@ -26,7 +27,9 @@ public class PathService {
         Station sourceStation = findStationById(sourceId);
         Station targetStation = findStationById(targetId);
         PathFinder pathFinder = new PathFinder(new DijkstraShortestPathCalculator());
-        return pathFinder.findPath(lines, sourceStation, targetStation);
+        PathResponse pathResponse = pathFinder.findPath(lines, sourceStation, targetStation);
+        pathResponse.addOverFare(FarePolicy.calculateDistanceOverFare(pathResponse.getDistance()));
+        return pathResponse;
     }
 
     public Station findStationById(Long id) {

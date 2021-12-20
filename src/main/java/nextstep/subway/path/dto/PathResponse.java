@@ -19,12 +19,6 @@ public class PathResponse {
         this.distance = distance;
     }
 
-    public PathResponse(List<StationResponse> stations, int distance, int fare) {
-        this.stations = stations;
-        this.distance = distance;
-        this.fare = fare;
-    }
-
     public List<StationResponse> getStations() {
         return stations;
     }
@@ -35,5 +29,9 @@ public class PathResponse {
 
     public int getFare() {
         return fare;
+    }
+
+    public void addOverFare(int overFare) {
+        this.fare += overFare;
     }
 }
