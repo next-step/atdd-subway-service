@@ -3,7 +3,7 @@ package nextstep.subway.auth.dto;
 public class TokenResponse {
     private String accessToken;
 
-    public TokenResponse() {
+    protected TokenResponse() {
     }
 
     public TokenResponse(String accessToken) {

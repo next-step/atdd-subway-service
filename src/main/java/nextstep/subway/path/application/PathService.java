@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.PathAssembler;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.StationGraph;

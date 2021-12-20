@@ -37,10 +37,12 @@ public class FavoriteResponse {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof FavoriteResponse))
+        }
+        if (!(o instanceof FavoriteResponse)) {
             return false;
+        }
         FavoriteResponse that = (FavoriteResponse)o;
         return Objects.equals(id, that.id) &&
             Objects.equals(source, that.source) &&

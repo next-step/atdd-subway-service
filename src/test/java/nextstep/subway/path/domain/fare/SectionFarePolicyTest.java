@@ -1,7 +1,6 @@
 package nextstep.subway.path.domain.fare;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.SectionMaxFare;
 import nextstep.subway.station.domain.Station;
 
 class SectionFarePolicyTest {

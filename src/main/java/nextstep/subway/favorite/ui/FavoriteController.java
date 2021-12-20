@@ -40,7 +40,8 @@ public class FavoriteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoriteResponse>> getFavorites(@Valid @AuthenticationPrincipal LoginMember loginMember) {
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(
+        @Valid @AuthenticationPrincipal LoginMember loginMember) {
         FavoriteResponses favorites = favoriteService.getFavorites(loginMember.getId());
         return ResponseEntity.ok(favorites.getResponses());
     }

@@ -10,7 +10,6 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import nextstep.subway.auth.application.AuthorizationException;
 
 @Component
 public class JwtTokenProvider {
