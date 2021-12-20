@@ -5,7 +5,7 @@ public class SubwayFareCalculator {
     private static final int DEFAULT_DISTANCE = 10;
     private static final int MAX_LIMIT_DISTANCE = 50;
 
-    private static final int DEFAULT_FARE = 1_250;
+    public static final int DEFAULT_FARE = 1_250;
     private static final int EXTRA_FARE = 100;
 
     private static final int FIVE_KM = 5;

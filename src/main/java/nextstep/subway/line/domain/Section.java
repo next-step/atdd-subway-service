@@ -118,4 +118,9 @@ public class Section {
     public boolean isEqualDownStation(Station station) {
         return downStation.equals(station);
     }
+
+    public boolean isExist(Station upStation, Station downStation) {
+        return (isEqualUpStation(upStation) && isEqualDownStation(downStation))
+                || (isEqualUpStation(downStation) && isEqualDownStation(upStation));
+    }
 }

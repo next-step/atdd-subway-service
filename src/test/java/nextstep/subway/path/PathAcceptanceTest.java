@@ -21,11 +21,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.map.domain.SubwayFareCalculator.DEFAULT_FARE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
+
+    private int 신분당선_추가요금 = 1_000;
+    private int 이호선_추가요금 = 5_00;
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -33,10 +37,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
+    private StationResponse 삼성역;
     private StationResponse 남부터미널역;
 
     /**
-     * 교대역    --- *2호선* ---   강남역
+     * 교대역    --- *2호선* ---   강남역 --- *2호선* --- 삼성역
      * |                        |
      * *3호선*                   *신분당선*
      * |                        |
@@ -49,12 +54,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_등록되어_있음("강남역");
         양재역 = 지하철역_등록되어_있음("양재역");
         교대역 = 지하철역_등록되어_있음("교대역");
+        삼성역 = 지하철역_등록되어_있음("삼성역");
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 신분당선_추가요금);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 이호선_추가요금);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
 
+        지하철_노선에_지하철역_등록되어_있음(이호선, 강남역, 삼성역, 5);
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
 
@@ -62,9 +69,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void shortestPath_straight() {
         // given
-        Long source = 강남역.getId();
-        Long target = 교대역.getId();
-        PathResponse pathResponse = PathResponse.of(Arrays.asList(강남역, 교대역), 10);
+        Long source = 양재역.getId();
+        Long target = 남부터미널역.getId();
+        PathResponse pathResponse = PathResponse.of(Arrays.asList(양재역, 남부터미널역), 2, DEFAULT_FARE);
 
         // when
         ExtractableResponse<Response> response = 최단_경로_조회(source, target);
@@ -73,13 +80,43 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회됨(response, pathResponse);
     }
 
-    @DisplayName("출발역과 도착역의 최단 경로 조회 - 환승")
+    @DisplayName("출발역과 도착역의 최단 경로 조회 - 직행(추가요금)")
     @Test
-    void shortestPath_transfer() {
+    void shortestPath_straight_extraFare() {
+        // given
+        Long source = 강남역.getId();
+        Long target = 양재역.getId();
+        PathResponse pathResponse = PathResponse.of(Arrays.asList(강남역, 양재역), 10, DEFAULT_FARE + 신분당선_추가요금);
+
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회(source, target);
+
+        // then
+        최단_경로_조회됨(response, pathResponse);
+    }
+
+    @DisplayName("출발역과 도착역의 최단 경로 조회 - 환승(추가요금)")
+    @Test
+    void shortestPath_transfer_extraFare() {
         // given
         Long source = 강남역.getId();
         Long target = 남부터미널역.getId();
-        PathResponse pathResponse = PathResponse.of(Arrays.asList(강남역, 양재역, 남부터미널역), 12);
+        PathResponse pathResponse = PathResponse.of(Arrays.asList(강남역, 양재역, 남부터미널역), 12, DEFAULT_FARE + 100 + 신분당선_추가요금);
+
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회(source, target);
+
+        // then
+        최단_경로_조회됨(response, pathResponse);
+    }
+
+    @DisplayName("출발역과 도착역의 최단 경로 조회 - 환승(가장 높은 금액의 추가요금)")
+    @Test
+    void shortestPath_transfer_highestExtraFare() {
+        // given
+        Long source = 양재역.getId();
+        Long target = 삼성역.getId();
+        PathResponse pathResponse = PathResponse.of(Arrays.asList(양재역, 강남역, 삼성역), 15, DEFAULT_FARE + 100 + 신분당선_추가요금);
 
         // when
         ExtractableResponse<Response> response = 최단_경로_조회(source, target);
@@ -150,6 +187,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
         LineRequest params = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+        return LineAcceptanceTest.지하철_노선_생성_요청(params).as(LineResponse.class);
+    }
+
+    private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int extraFare) {
+        LineRequest params = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
         return LineAcceptanceTest.지하철_노선_생성_요청(params).as(LineResponse.class);
     }
 

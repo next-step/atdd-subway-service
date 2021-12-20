@@ -142,7 +142,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
         > 지하철 운임은 거리비례제로 책정됩니다. (실제 이동한 경로가 아닌 최단거리 기준으로 계산)
 
-- [ ] 노선별 추가 요금 정책 추가
+- [x] 노선별 추가 요금 정책 추가
 
     * 노선에 추가 요금 필드를 추가
 

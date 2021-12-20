@@ -2,7 +2,9 @@ package nextstep.subway.map.domain;
 
 import nextstep.subway.common.ErrorCode;
 import nextstep.subway.exception.BadRequestApiException;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
@@ -17,8 +19,11 @@ import java.util.List;
 public class SubwayMap {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private final Sections sections;
 
     private SubwayMap(List<Section> sections) {
+        this.sections = Sections.of(sections);
+
         for (Section section : sections) {
             Station upStation = section.getUpStation();
             Station downStation = section.getDownStation();
@@ -39,8 +44,11 @@ public class SubwayMap {
             throw new BadRequestApiException(ErrorCode.UNCOUPLED_PATH);
         }
 
+        Lines lines = sections.getLines(path.getVertexList());
         Stations stations = Stations.of(path.getVertexList());
         int distance = (int) path.getWeight();
-        return PathResponse.of(stations.toResponse(), distance);
+        int fare = SubwayFareCalculator.calculate(distance) + lines.getHighestExtraFare();
+
+        return PathResponse.of(stations.toResponse(), distance, fare);
     }
 }
