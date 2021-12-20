@@ -43,4 +43,8 @@ public class User {
     public Integer getAge() {
         return age;
     }
+
+    public boolean isLoginUser() {
+        return this instanceof LoginUser;
+    }
 }

@@ -1,6 +1,5 @@
 package nextstep.subway.domain.path.domain;
 
-import nextstep.subway.domain.auth.domain.LoginUser;
 import nextstep.subway.domain.auth.domain.User;
 import nextstep.subway.domain.line.domain.Distance;
 import nextstep.subway.domain.line.domain.Line;
@@ -29,7 +28,7 @@ public class Fare {
         }
         fare += LineFare.calculateLineFare(lines);
 
-        if (isLoginUser(user)) {
+        if (user.isLoginUser()) {
             fare = AgeFare.calculateAgeFare(fare, user);
         }
 
@@ -44,9 +43,7 @@ public class Fare {
         return amount;
     }
 
-    private static boolean isLoginUser(final User user) {
-        return user instanceof LoginUser;
-    }
+
 
     @Override
     public boolean equals(final Object o) {
