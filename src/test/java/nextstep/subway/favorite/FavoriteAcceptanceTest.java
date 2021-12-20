@@ -7,10 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.favorite.dto.FavoriteCreateRequest;
 import nextstep.subway.favorite.dto.FavoriteReadRequest;
 import nextstep.subway.line.LineTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
@@ -52,8 +54,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 	private ExtractableResponse<Response> 즐겨찾기_생성_요청(ExtractableResponse<Response> loginResponse, Long sourceStationId,
 		Long targetStationId) {
+		FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(sourceStationId, targetStationId);
 		return RestAssured.given().log().all()
 			.auth().oauth2(loginResponse.jsonPath().getString("accessToken"))
+			.contentType(ContentType.JSON)
+			.body(favoriteCreateRequest)
 			.when().log().all()
 			.post("/favorites")
 			.then().log().all()
