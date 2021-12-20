@@ -2,7 +2,7 @@ package nextstep.subway.line.acceptance;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTestHelper.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestHelper.*;
-import static nextstep.subway.station.StationAcceptanceTest.*;
+import static nextstep.subway.station.StationAcceptanceTestHelper.*;
 
 import java.util.Arrays;
 

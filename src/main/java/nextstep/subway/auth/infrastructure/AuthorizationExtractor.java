@@ -1,9 +1,13 @@
 package nextstep.subway.auth.infrastructure;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
+import javax.servlet.http.HttpServletRequest;
+
+import nextstep.subway.auth.exception.AuthorizationExtractorException;
+
 public class AuthorizationExtractor {
+    private static final String ERROR_INVALID_REQUEST = "요청정보가 올바르지 않습니다.";
     public static final String AUTHORIZATION = "Authorization";
     public static String BEARER_TYPE = "Bearer";
     public static final String ACCESS_TOKEN_TYPE = AuthorizationExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";
@@ -23,6 +27,6 @@ public class AuthorizationExtractor {
             }
         }
 
-        return null;
+        throw new AuthorizationExtractorException(ERROR_INVALID_REQUEST);
     }
 }

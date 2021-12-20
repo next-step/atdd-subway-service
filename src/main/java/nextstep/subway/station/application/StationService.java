@@ -9,9 +9,11 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.exception.StationNotFoundException;
 
 @Service
 public class StationService {
+    public static final String ERROR_STATION_NOT_FOUND = "지하철역이 존재하지 않습니다.";
     private final StationRepository stationRepository;
 
     public StationService(StationRepository stationRepository) {
@@ -37,7 +39,7 @@ public class StationService {
 
     public Station findStationById(Long id) {
         return stationRepository.findById(id)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new StationNotFoundException(ERROR_STATION_NOT_FOUND));
     }
 
 }
