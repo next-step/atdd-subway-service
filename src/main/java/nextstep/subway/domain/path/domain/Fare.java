@@ -10,7 +10,6 @@ import java.util.Objects;
 public class Fare {
 
     public static final int DEFAULT_AMOUNT = 1250;
-    public static final int DEFAULT_AMOUNT_DISTANCE = 10;
     private int amount;
 
     protected Fare() {
@@ -22,28 +21,17 @@ public class Fare {
 
     public static Fare calculate(final Distance distance, List<Line> lines, User user) {
         int fare = DEFAULT_AMOUNT;
-        final int dt = distance.getDistance();
-        if (isExtraDistance(dt)) {
-            fare += ExtraDistanceFare.calculateExtraDistanceFare(dt);
-        }
-        fare += LineFare.calculateLineFare(lines);
 
-        if (user.isLoginUser()) {
-            fare = AgeFare.calculateAgeFare(fare, user);
-        }
+        fare += ExtraDistanceFare.calculateExtraDistanceFare(distance.getDistance());
+        fare += LineFare.calculateLineFare(lines);
+        fare = AgeFare.calculateAgeFare(fare, user);
 
         return new Fare(fare);
-    }
-
-    private static boolean isExtraDistance(int distance) {
-        return distance > DEFAULT_AMOUNT_DISTANCE;
     }
 
     public int getAmount() {
         return amount;
     }
-
-
 
     @Override
     public boolean equals(final Object o) {
