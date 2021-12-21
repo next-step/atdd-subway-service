@@ -13,6 +13,12 @@ public class SectionEdge extends DefaultWeightedEdge {
 	private final Station target;
 	private final double weight;
 
+	public SectionEdge(Station source, Station target, double weight) {
+		this.source = source;
+		this.target = target;
+		this.weight = weight;
+	}
+
 	public SectionEdge(Section section) {
 		this.source = section.getUpStation();
 		this.target = section.getDownStation();

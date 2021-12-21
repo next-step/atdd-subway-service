@@ -36,12 +36,8 @@ public class LoginMember {
 		return age;
 	}
 
-	public boolean isChild() {
-		return this.age >= 6 && this.age < 13;
-	}
-
-	public boolean isYouth() {
-		return this.age >= 13 && this.age < 19;
+	public boolean checkAge(int minAge, int maxAge) {
+		return age >= minAge && age < maxAge;
 	}
 
 	@Override
@@ -59,4 +55,6 @@ public class LoginMember {
 	public int hashCode() {
 		return Objects.hash(id, email, age);
 	}
+
+
 }

@@ -1,7 +1,9 @@
 package nextstep.subway.path.domain;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -15,11 +17,6 @@ import nextstep.subway.line.domain.Section;
 @Access(AccessType.FIELD)
 public class SubwayFare {
 	public static final BigDecimal SUBWAY_BASE_FARE = new BigDecimal(1250);
-	private static final int SUBWAY_BASE_FARE_DISTANCE = 10;
-	private static final int DISTANCE_PER_BASE_OVER_FARE = 100;
-	private static final int DISCOUNT_BASE_FARE = 350;
-	private static final double DISCOUNT_YOUTH_RATE = 0.8;
-	private static final double DISCOUNT_CHILD_RATE = 0.5;
 
 	private final BigDecimal subwayFare;
 
@@ -40,32 +37,20 @@ public class SubwayFare {
 	}
 
 	public SubwayFare calculateDistanceOverFare(Distance distance) {
-		if (distance.lessThanOrEqual(Distance.of(SUBWAY_BASE_FARE_DISTANCE))) {
-			return this.add(BigDecimal.ZERO);
-		}
-
-		Distance overDistance = distance.decrease(Distance.of(SUBWAY_BASE_FARE_DISTANCE));
-
-		if (distance.lessThanOrEqual(Distance.of(50))) {
-			return this.add(calculateOverFareTenToFifty(overDistance));
-		}
-
-		return this.add(calculateOverFareMoreThenFifty(overDistance));
+		SubwayFare calculatedOverFare = Arrays.stream(OverFare.values())
+			.filter(overFare -> overFare.checkGrade(distance))
+			.findFirst()
+			.orElseThrow(() -> new IllegalArgumentException("거리 값은 0이상이어야 합니다."))
+			.calculate(distance);
+		return this.add(calculatedOverFare);
 	}
 
 	private SubwayFare add(BigDecimal overFare) {
 		return new SubwayFare(this.subwayFare.add(overFare));
 	}
 
-	private BigDecimal calculateOverFareTenToFifty(Distance overDistance) {
-		return BigDecimal.valueOf(Math.ceil(overDistance.divide(5)) * DISTANCE_PER_BASE_OVER_FARE);
-	}
-
-	private BigDecimal calculateOverFareMoreThenFifty(Distance overDistance) {
-		Distance tenToFiftyDistance = Distance.of(40);
-		Distance moreThenFiftyDistance = overDistance.decrease(tenToFiftyDistance);
-		return BigDecimal.valueOf(Math.ceil(moreThenFiftyDistance.divide(8)) * DISTANCE_PER_BASE_OVER_FARE)
-			.add(calculateOverFareTenToFifty(tenToFiftyDistance));
+	private SubwayFare add(SubwayFare overFare) {
+		return new SubwayFare(this.subwayFare.add(overFare.subwayFare));
 	}
 
 	public SubwayFare calculateLineOverFare(List<Section> allSections, List<SectionEdge> pathEdges) {
@@ -78,24 +63,29 @@ public class SubwayFare {
 	}
 
 	public SubwayFare calculateDiscountFareByAge(LoginMember loginMember) {
-		if (loginMember.isChild()) {
-			return this.childDiscount();
-		}
-
-		if (loginMember.isYouth()) {
-			return this.youthDiscount();
-		}
-
-		return new SubwayFare(this.subwayFare);
+		return Arrays.stream(Discount.values())
+			.filter(discount -> discount.checkGrade(loginMember))
+			.findFirst()
+			.orElseThrow(() -> new IllegalArgumentException("나이는 0보다 커야합니다."))
+			.discount(this);
 	}
 
-	private SubwayFare youthDiscount() {
-		return new SubwayFare(this.subwayFare.subtract(BigDecimal.valueOf(DISCOUNT_BASE_FARE))
-			.multiply(BigDecimal.valueOf(DISCOUNT_YOUTH_RATE)));
+	public BigDecimal subtract(SubwayFare subwayFare) {
+		return this.subwayFare.subtract(subwayFare.subwayFare);
 	}
 
-	private SubwayFare childDiscount() {
-		return new SubwayFare(this.subwayFare.subtract(BigDecimal.valueOf(DISCOUNT_BASE_FARE))
-			.multiply(BigDecimal.valueOf(DISCOUNT_CHILD_RATE)));
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		SubwayFare that = (SubwayFare)o;
+		return Objects.equals(subwayFare, that.subwayFare);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(subwayFare);
 	}
 }

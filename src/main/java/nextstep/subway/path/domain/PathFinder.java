@@ -33,4 +33,16 @@ public class PathFinder {
 		return new DijkstraShortestPath(graph).getPath(source, target).getEdgeList();
 	}
 
+	public List<Station> findShortestPathVertexes(SectionEdge pathFinderParam) {
+		return new DijkstraShortestPath(graph).getPath(pathFinderParam.getSource(), pathFinderParam.getTarget()).getVertexList();
+	}
+
+	public Distance findShortestPathDistance(SectionEdge pathFinderParam) {
+		return Distance.of(new DijkstraShortestPath(graph).getPath(pathFinderParam.getSource(), pathFinderParam.getTarget()).getWeight());
+	}
+
+	public List<SectionEdge> findShortestPathEdges(SectionEdge pathFinderParam) {
+		return new DijkstraShortestPath(graph).getPath(pathFinderParam.getSource(), pathFinderParam.getTarget()).getEdgeList();
+	}
+
 }

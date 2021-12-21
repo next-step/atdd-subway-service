@@ -19,8 +19,11 @@ public class PathResponse {
 		this.subwayFare = subwayFare;
 	}
 
-	public static PathResponse of(List<StationResponse> stationResponses, Distance distance, SubwayFare subwayFare) {
-		return new PathResponse(stationResponses, distance.value(), subwayFare.value());
+	public static PathResponse of(PathFinderResponse pathFinderResponse) {
+		return new PathResponse(
+			pathFinderResponse.getStationResponses(),
+			pathFinderResponse.getDistance().value(),
+			pathFinderResponse.getSubwayFare().value());
 	}
 
 	public int getDistance() {

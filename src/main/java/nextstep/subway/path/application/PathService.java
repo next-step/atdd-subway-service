@@ -16,6 +16,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.path.domain.SubwayFare;
+import nextstep.subway.path.dto.PathFinderResponse;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -37,20 +38,28 @@ public class PathService {
 	public PathResponse findPaths(PathRequest pathRequest, LoginMember loginMember) {
 		validateStartStationEqualsEndStation(pathRequest);
 		validateNoneStation(pathRequest);
+
 		Station sourceStation = stationService.findById((long)pathRequest.getSourceId());
 		Station targetStation = stationService.findById((long)pathRequest.getTargetId());
+
+		SectionEdge pathFinderParam = new SectionEdge(sourceStation, targetStation, 0);
+		PathFinderResponse pathFinderResponse = createPathFinderResponse(pathFinderParam, loginMember);
+		return PathResponse.of(pathFinderResponse);
+	}
+
+	private PathFinderResponse createPathFinderResponse(SectionEdge pathFinderParam, LoginMember loginMember) {
 		List<Section> allSections = findAllSections();
 		PathFinder pathFinder = PathFinder.create(stationService.findAll(), allSections);
-		List<StationResponse> stationResponses = extractStationResponses(pathFinder.findShortestPathVertexes(sourceStation, targetStation));
-		List<SectionEdge> shortestPathEdges = pathFinder.findShortestPathEdges(sourceStation, targetStation);
-		Distance distance = pathFinder.findShortestPathDistance(sourceStation, targetStation);
+		List<StationResponse> stationResponses = extractStationResponses(pathFinder.findShortestPathVertexes(pathFinderParam));
+		List<SectionEdge> shortestPathEdges = pathFinder.findShortestPathEdges(pathFinderParam);
+		Distance distance = pathFinder.findShortestPathDistance(pathFinderParam);
 		SubwayFare subwayFare = SubwayFare.of(SubwayFare.SUBWAY_BASE_FARE)
 			.calculateLineOverFare(allSections, shortestPathEdges)
 			.calculateDistanceOverFare(distance)
 			.calculateDiscountFareByAge(loginMember);
-		return PathResponse.of(stationResponses, distance, subwayFare);
-	}
+		return new PathFinderResponse(stationResponses, shortestPathEdges, distance, subwayFare);
 
+	}
 
 	private List<Section> findAllSections() {
 		List<Section> allSections = new ArrayList<>();
