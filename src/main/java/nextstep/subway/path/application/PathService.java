@@ -18,7 +18,7 @@ import java.util.List;
 public class PathService {
     private final LineRepository lineRepository;
     private final StationService stationService;
-    private final PathStrategy pathStrategy = new DijkstraShortest();
+    private final PathFinder pathFinder = new PathFinder();
 
     public PathService(final LineRepository lineRepository, final StationService stationService) {
         this.lineRepository = lineRepository;
@@ -29,7 +29,8 @@ public class PathService {
         final Station sourceStation = stationService.findStationById(source);
         final Station targetStation = stationService.findStationById(target);
         final List<Line> lines = lineRepository.findAll();
-        final Path path = pathStrategy.getShortestPath(lines, sourceStation, targetStation);
+        pathFinder.setPathStrategy(new DijkstraPathFinder());
+        final Path path = pathFinder.findShortestPath(lines, sourceStation, targetStation);
         final Fare distanceFare = PathFareDistance.of(path);
         final Fare ageFare = PathFareAge.of(loginMember);
         return PathResponse.of(path, distanceFare.plus(ageFare));
