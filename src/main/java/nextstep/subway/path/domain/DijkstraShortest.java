@@ -32,14 +32,14 @@ public class DijkstraShortest implements PathStrategy {
         return Path.of(getWeight(graphPath).intValue(), sections, stations);
     }
 
-    public Double getWeight(final GraphPath<Station, DefaultWeightedEdge> graphPath) {
+    private Double getWeight(final GraphPath<Station, DefaultWeightedEdge> graphPath) {
         if (Objects.isNull(graphPath)) {
             return Double.NaN;
         }
         return graphPath.getWeight();
     }
 
-    public void createEdge(final List<Line> lines) {
+    private void createEdge(final List<Line> lines) {
         lines.stream()
                 .map(Line::getStations)
                 .flatMap(Collection::stream)
@@ -47,7 +47,7 @@ public class DijkstraShortest implements PathStrategy {
                 .forEach(graph::addVertex);
     }
 
-    public void createVertex(final List<Line> lines) {
+    private void createVertex(final List<Line> lines) {
         lines.stream()
                 .map(Line::getSectionList)
                 .flatMap(Collection::stream)
@@ -55,7 +55,7 @@ public class DijkstraShortest implements PathStrategy {
                         graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().getValue()));
     }
 
-    public List<Station> getVertexes(final Station source, final Station target) {
+    private List<Station> getVertexes(final Station source, final Station target) {
         final GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
         if(Objects.isNull(path)){
             return Collections.emptyList();
@@ -80,7 +80,7 @@ public class DijkstraShortest implements PathStrategy {
         }
     }
 
-    public List<Section> findSections(final List<Line> lines, final List<Station> stations) {
+    private List<Section> findSections(final List<Line> lines, final List<Station> stations) {
         List<Section> sections = lines.stream()
                 .flatMap(line -> line.getSectionList()
                         .stream())
