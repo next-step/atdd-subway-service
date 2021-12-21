@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     private final String email = "abc@abc.co.kr";
@@ -60,7 +59,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public static ExtractableResponse<Response> 토큰_발급_요청(String email, String password, int age){
+    public static ExtractableResponse<Response> 토큰_발급_요청(String email, String password, int age) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
 
         ExtractableResponse<Response> response = RestAssured
