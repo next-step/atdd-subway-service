@@ -82,5 +82,33 @@ public class PathServiceTest {
                 () -> assertThat(response.getFare()).isEqualTo(3350)    // 거리요금 2450 + 노선 추가요금 900
                 );
     }
+    
+    @Test
+    @DisplayName("요금 계산시 같은 구간일때 최저 길이에 따른 라인의 추가요금이 붙는지 확인한다")
+    void 같은_구간_다른_라인_요금() {
+        // given
+        Station 을지로4가역 = Station.from("을지로4가역");
+        Station 동대문역사문화공원역 = Station.from("동대문역사문화공원역");
+        Line 이호선 = Line.of("이호선", "bg-green-600", 을지로4가역, 동대문역사문화공원역, Distance.from(30), 3000);
+        Line 오호선 = Line.of("오호선", "bg-purple-600", 을지로4가역, 동대문역사문화공원역, Distance.from(50), 5000);
+
+        when(stationService.findById(any())).thenReturn(을지로4가역, 동대문역사문화공원역);
+        when(lineService.findLines()).thenReturn(Arrays.asList(이호선, 오호선));
+        
+        
+        // when
+        PathResponse response = pathService.findShortestPath(1L, 2L, 30);
+        List<Station> stations = response.getStations()
+                .stream()
+                .map(stationResponse -> Station.from(stationResponse.getName()))
+                .collect(Collectors.toList());
+        
+        // then
+        assertAll(
+                () -> assertThat(stations).containsExactlyElementsOf(Arrays.asList(을지로4가역, 동대문역사문화공원역)),
+                () -> assertThat(response.getDistance()).isEqualTo(30),
+                () -> assertThat(response.getFare()).isEqualTo(4650)    // 거리요금 1650 + 노선 추가요금 3000
+                );
+    }
 
 }
