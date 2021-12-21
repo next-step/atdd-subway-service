@@ -1,5 +1,6 @@
 package nextstep.subway.map.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
@@ -61,7 +62,7 @@ class SubwayMapTest {
         Station target = 교대역;
 
         // when
-        PathResponse shortestPath = 지도.findShortestPath(source, target);
+        PathResponse shortestPath = 지도.findShortestPath(source, target, LoginMember.GUEST);
 
         // then
         assertAll(
@@ -78,7 +79,7 @@ class SubwayMapTest {
         Station target = 남부터미널역;
 
         // when
-        PathResponse shortestPath = 지도.findShortestPath(source, target);
+        PathResponse shortestPath = 지도.findShortestPath(source, target, LoginMember.GUEST);
 
         // then
         assertAll(

@@ -7,12 +7,14 @@ import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.common.ErrorCode;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
@@ -28,6 +30,10 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
+        if (StringUtils.isEmpty(credentials)) {
+            return LoginMember.GUEST;
+        }
+
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException(ErrorCode.INVALID_TOKEN);
         }

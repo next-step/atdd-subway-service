@@ -109,6 +109,22 @@ public class Sections {
         return sections.get(0);
     }
 
+    public Lines getLines(List<Station> stations) {
+        Lines lines = Lines.empty();
+        for (int i = 0; i < stations.size() - 1; i++) {
+            Station upStation = stations.get(i);
+            Station downStation = stations.get(i + 1);
+
+            Line line = sections.stream()
+                    .filter(section -> section.isExist(upStation, downStation))
+                    .findFirst()
+                    .map(Section::getLine)
+                    .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NOT_FOUND_SECTION.getMessage()));
+            lines.add(line);
+        }
+        return lines;
+    }
+
     private Stations getStations() {
         Stations stations = Stations.empty();
         for (Section section : sections) {

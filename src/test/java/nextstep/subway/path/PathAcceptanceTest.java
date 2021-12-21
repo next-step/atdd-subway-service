@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.fare.domain.Discount;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
@@ -21,11 +22,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
+import static nextstep.subway.fare.domain.SubwayFareCalculator.DEFAULT_FARE;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
+
+    private static final int 신분당선_추가요금 = 1_000;
+    private static final int 이호선_추가요금 = 5_00;
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -33,10 +40,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
+    private StationResponse 삼성역;
     private StationResponse 남부터미널역;
 
     /**
-     * 교대역    --- *2호선* ---   강남역
+     * 교대역    --- *2호선* ---   강남역 --- *2호선* --- 삼성역
      * |                        |
      * *3호선*                   *신분당선*
      * |                        |
@@ -49,12 +57,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_등록되어_있음("강남역");
         양재역 = 지하철역_등록되어_있음("양재역");
         교대역 = 지하철역_등록되어_있음("교대역");
+        삼성역 = 지하철역_등록되어_있음("삼성역");
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 신분당선_추가요금);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 이호선_추가요금);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
 
+        지하철_노선에_지하철역_등록되어_있음(이호선, 강남역, 삼성역, 5);
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
 
@@ -62,27 +72,57 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void shortestPath_straight() {
         // given
-        Long source = 강남역.getId();
-        Long target = 교대역.getId();
-        PathResponse pathResponse = PathResponse.of(Arrays.asList(강남역, 교대역), 10);
+        Long source = 양재역.getId();
+        Long target = 남부터미널역.getId();
+        PathResponse pathResponse = PathResponse.of(Arrays.asList(양재역, 남부터미널역), 2, DEFAULT_FARE);
 
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회(source, target);
+        ExtractableResponse<Response> response = 비_로그인_사용자_최단_경로_조회(source, target);
 
         // then
         최단_경로_조회됨(response, pathResponse);
     }
 
-    @DisplayName("출발역과 도착역의 최단 경로 조회 - 환승")
+    @DisplayName("출발역과 도착역의 최단 경로 조회 - 직행(추가요금)")
     @Test
-    void shortestPath_transfer() {
+    void shortestPath_straight_extraFare() {
+        // given
+        Long source = 강남역.getId();
+        Long target = 양재역.getId();
+        PathResponse pathResponse = PathResponse.of(Arrays.asList(강남역, 양재역), 10, DEFAULT_FARE + 신분당선_추가요금);
+
+        // when
+        ExtractableResponse<Response> response = 비_로그인_사용자_최단_경로_조회(source, target);
+
+        // then
+        최단_경로_조회됨(response, pathResponse);
+    }
+
+    @DisplayName("출발역과 도착역의 최단 경로 조회 - 환승(추가요금)")
+    @Test
+    void shortestPath_transfer_extraFare() {
         // given
         Long source = 강남역.getId();
         Long target = 남부터미널역.getId();
-        PathResponse pathResponse = PathResponse.of(Arrays.asList(강남역, 양재역, 남부터미널역), 12);
+        PathResponse pathResponse = PathResponse.of(Arrays.asList(강남역, 양재역, 남부터미널역), 12, DEFAULT_FARE + 100 + 신분당선_추가요금);
 
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회(source, target);
+        ExtractableResponse<Response> response = 비_로그인_사용자_최단_경로_조회(source, target);
+
+        // then
+        최단_경로_조회됨(response, pathResponse);
+    }
+
+    @DisplayName("출발역과 도착역의 최단 경로 조회 - 환승(가장 높은 금액의 추가요금)")
+    @Test
+    void shortestPath_transfer_highestExtraFare() {
+        // given
+        Long source = 양재역.getId();
+        Long target = 삼성역.getId();
+        PathResponse pathResponse = PathResponse.of(Arrays.asList(양재역, 강남역, 삼성역), 15, DEFAULT_FARE + 100 + 신분당선_추가요금);
+
+        // when
+        ExtractableResponse<Response> response = 비_로그인_사용자_최단_경로_조회(source, target);
 
         // then
         최단_경로_조회됨(response, pathResponse);
@@ -96,7 +136,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         Long target = 강남역.getId();
 
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회(source, target);
+        ExtractableResponse<Response> response = 비_로그인_사용자_최단_경로_조회(source, target);
 
         // then
         최단_경로_조회_실패됨(response);
@@ -111,7 +151,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선_등록되어_있음("분당선", "bg-yellow-600", 야탑역, 서현역, 10);
 
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 야탑역.getId());
+        ExtractableResponse<Response> response = 비_로그인_사용자_최단_경로_조회(강남역.getId(), 야탑역.getId());
 
         // then
         최단_경로_조회_실패됨(response);
@@ -124,13 +164,84 @@ public class PathAcceptanceTest extends AcceptanceTest {
         Long target = 100L;
 
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), target);
+        ExtractableResponse<Response> response = 비_로그인_사용자_최단_경로_조회(강남역.getId(), target);
 
         // then
         최단_경로_조회_요청한_역_없음(response);
     }
 
-    private ExtractableResponse<Response> 최단_경로_조회(Long source, Long target) {
+    @DisplayName("비 로그인 사용자의 요금을 확인한다.")
+    @Test
+    void discountFare_nonLogin() {
+        // given
+        Long source = 양재역.getId();
+        Long target = 남부터미널역.getId();
+        PathResponse pathResponse = PathResponse.of(Arrays.asList(양재역, 남부터미널역), 2, DEFAULT_FARE);
+
+        // when
+        ExtractableResponse<Response> response = 비_로그인_사용자_최단_경로_조회(source, target);
+
+        // then
+        최단_경로_조회됨(response, pathResponse);
+    }
+
+    @DisplayName("성인 사용자의 요금을 확인한다.")
+    @Test
+    void discountFare_adult() {
+        // given
+        Long source = 양재역.getId();
+        Long target = 남부터미널역.getId();
+        PathResponse pathResponse = PathResponse.of(Arrays.asList(양재역, 남부터미널역), 2, DEFAULT_FARE);
+
+        회원_등록되어_있음(EMAIL, PASSWORD, 19);
+        String 성인_사용자 = 로그인_되어있음(EMAIL, PASSWORD);
+
+        // when
+        ExtractableResponse<Response> response = 로그인_사용자_최단_경로_조회(source, target, 성인_사용자);
+
+        // then
+        최단_경로_조회됨(response, pathResponse);
+    }
+
+    @DisplayName("청소년 사용자의 요금을 확인한다.")
+    @Test
+    void discountFare_youth() {
+        // given
+        Long source = 양재역.getId();
+        Long target = 남부터미널역.getId();
+        int discountFare = (int) ((DEFAULT_FARE - Discount.YOUTH.getAmount()) * Discount.YOUTH.getPercent());
+        PathResponse pathResponse = PathResponse.of(Arrays.asList(양재역, 남부터미널역), 2, discountFare);
+
+        회원_등록되어_있음(EMAIL, PASSWORD, 13);
+        String 청소년_사용자 = 로그인_되어있음(EMAIL, PASSWORD);
+
+        // when
+        ExtractableResponse<Response> response = 로그인_사용자_최단_경로_조회(source, target, 청소년_사용자);
+
+        // then
+        최단_경로_조회됨(response, pathResponse);
+    }
+
+    @DisplayName("어린이 사용자의 요금을 확인한다.")
+    @Test
+    void discountFare_child() {
+        // given
+        Long source = 양재역.getId();
+        Long target = 남부터미널역.getId();
+        int discountFare = (int) ((DEFAULT_FARE - Discount.CHILD.getAmount()) * Discount.CHILD.getPercent());
+        PathResponse pathResponse = PathResponse.of(Arrays.asList(양재역, 남부터미널역), 2, discountFare);
+
+        회원_등록되어_있음(EMAIL, PASSWORD, 6);
+        String 어린이_사용자 = 로그인_되어있음(EMAIL, PASSWORD);
+
+        // when
+        ExtractableResponse<Response> response = 로그인_사용자_최단_경로_조회(source, target, 어린이_사용자);
+
+        // then
+        최단_경로_조회됨(response, pathResponse);
+    }
+
+    private ExtractableResponse<Response> 비_로그인_사용자_최단_경로_조회(Long source, Long target) {
         Map<String, Long> queryParams = new HashMap<>();
         queryParams.put("source", source);
         queryParams.put("target", target);
@@ -144,12 +255,32 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    private ExtractableResponse<Response> 로그인_사용자_최단_경로_조회(Long source, Long target, String accessToken) {
+        Map<String, Long> queryParams = new HashMap<>();
+        queryParams.put("source", source);
+        queryParams.put("target", target);
+
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(accessToken)
+                .queryParams(queryParams)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
     private StationResponse 지하철역_등록되어_있음(String name) {
         return StationAcceptanceTest.지하철역_등록되어_있음(name).as(StationResponse.class);
     }
 
     private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
         LineRequest params = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+        return LineAcceptanceTest.지하철_노선_생성_요청(params).as(LineResponse.class);
+    }
+
+    private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int extraFare) {
+        LineRequest params = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
         return LineAcceptanceTest.지하철_노선_생성_요청(params).as(LineResponse.class);
     }
 
@@ -170,5 +301,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 최단_경로_조회_요청한_역_없음(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    private String 로그인_되어있음(String email, String password) {
+        return 토큰_조회(email, password);
     }
 }

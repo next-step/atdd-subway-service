@@ -11,6 +11,7 @@ public enum ErrorCode {
     , CAN_NOT_ADD_SECTION("0202", "등록할 수 없는 구간 입니다.")
     , CAN_NOT_REMOVE_SECTION("0203", "삭제할 수 있는 구간이 없습니다.")
     , INVALID_SECTION_DISTANCE("0204", "역과 역 사이의 거리보다 좁은 거리를 입력해주세요")
+    , NOT_FOUND_SECTION("0205", "일치하는 구간이 없습니다.")
 
     // 역 [03xx]
     , NOT_FOUND_STATION_ID("0301", "존재하지 않는 역ID 입니다.")
