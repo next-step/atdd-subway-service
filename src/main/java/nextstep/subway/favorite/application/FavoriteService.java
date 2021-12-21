@@ -33,8 +33,7 @@ public class FavoriteService {
     }
 
     public FavoriteResponse findLineResponseById(final LoginMember loginMember, final Long id) {
-        validateAuth(loginMember, id);
-        final Favorite favorite = favoriteRepository.findByIdMemberId(id, loginMember.getId())
+        final Favorite favorite = favoriteRepository.findByIdAndMemberId(id, loginMember.getId())
                 .orElseThrow(NotFoundException::new);
         final Station source = stationService.findStationById(favorite.getSourceStationId());
         final Station target = stationService.findStationById(favorite.getTargetStationId());
@@ -48,7 +47,7 @@ public class FavoriteService {
     }
 
     private void validateAuth(final LoginMember loginMember, final Long id) {
-        if (id.equals(loginMember.getId())) {
+        if (!id.equals(loginMember.getId())) {
             throw new PermissionException();
         }
     }
