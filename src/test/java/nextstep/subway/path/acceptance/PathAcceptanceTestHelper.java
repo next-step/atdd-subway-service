@@ -43,4 +43,9 @@ public class PathAcceptanceTestHelper {
     public static void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
+
+    public static void 최단_경로_요금_일치됨(ExtractableResponse<Response> response, int fare) {
+        int resultFare = response.jsonPath().getInt("fare");
+        assertThat(resultFare).isEqualTo(fare);
+    }
 }

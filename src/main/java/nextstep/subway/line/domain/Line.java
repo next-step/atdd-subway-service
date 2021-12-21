@@ -24,6 +24,9 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    @Column
+    private int fare;
+
     public Line() {
     }
 
