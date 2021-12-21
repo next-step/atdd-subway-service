@@ -37,8 +37,8 @@ public class Fare {
         return new Fare(this.fare.subtract(deduction.fare));
     }
 
-    public Fare multiply(final Fare childDiscountPercent) {
-        final BigDecimal amount = this.fare.multiply(childDiscountPercent.fare);
+    public Fare multiply(final Fare discountFare) {
+        final BigDecimal amount = this.fare.multiply(discountFare.fare);
         return new Fare(amount.stripTrailingZeros());
     }
 
