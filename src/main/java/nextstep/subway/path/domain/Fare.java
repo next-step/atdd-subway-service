@@ -6,8 +6,14 @@ public class Fare {
     private static final int DEFAULT_FARE = 1250;
     private int fare;
 
+    public Fare() {}
+
     public Fare(int fare) {
         this.fare = fare;
+    }
+
+    public static Fare getTotalFare(int calculateOverFare) {
+        return new Fare(DEFAULT_FARE + calculateOverFare);
     }
 
     public int getFare() {
