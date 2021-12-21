@@ -166,9 +166,8 @@ public class Sections {
 
     public Fare getMaxExtraFare() {
         return sections.stream()
-                .map(section -> section.getLine()
-                        .getExtraFare()
-                        .value())
+                .map(Section::getLine)
+                .map(Line::extraFare)
                 .max(BigDecimal::compareTo)
                 .map(fare -> Fare.from(new BigDecimal(fare.toString())))
                 .orElseGet(() -> Fare.from(new BigDecimal("0")));

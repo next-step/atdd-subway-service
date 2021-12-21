@@ -4,6 +4,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -92,8 +93,8 @@ public class Line extends BaseEntity {
         this.sections.merge(station);
     }
 
-    public Fare getExtraFare() {
-        return extraFare;
+    public BigDecimal extraFare() {
+        return extraFare.value();
     }
 
     @Override
