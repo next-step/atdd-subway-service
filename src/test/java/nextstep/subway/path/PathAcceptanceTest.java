@@ -19,8 +19,6 @@ import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
-    private LineResponse 신분당선;
-    private LineResponse 이호선;
     private LineResponse 삼호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
@@ -47,10 +45,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = StationAcceptanceTestHelper.지하철역_등록되어_있음("남부터미널역")
             .as(StationResponse.class);
 
-        신분당선 = LineAcceptanceTestHelper.지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 7)
-            .as(LineResponse.class);
-        이호선 = LineAcceptanceTestHelper.지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 2)
-            .as(LineResponse.class);
         삼호선 = LineAcceptanceTestHelper.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 8)
             .as(LineResponse.class);
 
@@ -62,7 +56,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void getPath() {
         // given
         List<StationResponse> stations = Arrays.asList(교대역, 남부터미널역, 양재역);
-        PathResponse pathResponse = new PathResponse(stations, 8);
+        PathResponse pathResponse = new PathResponse(stations, 8, 1250);
 
         // when
         ExtractableResponse<Response> response = PathAcceptanceTestHelper.최단_경로_조회_요청(교대역.getId(), 양재역.getId());

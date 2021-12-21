@@ -5,20 +5,17 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nextstep.subway.common.exception.SubwayException;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Sections;
+import nextstep.subway.line.domain.Stations;
 import nextstep.subway.path.dto.PathDtos;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponses;
 
 class PathFinderTest {
     private Line 신분당선;
@@ -57,16 +54,14 @@ class PathFinderTest {
 
     @DisplayName("최단 경로 찾기")
     @Test
-    void findPath() {
+    void pathFinder() {
         PathDtos paths = PathDtos.from(모든_구간);
-        StationResponses stationResponses = StationResponses.from(Arrays.asList(강남역, 양재역, 남부터미널역));
-        PathResponse expected = new PathResponse(stationResponses.getResponses(), 9);
         StationGraph graph = new StationGraph(paths);
 
         PathFinder pathFinder = new PathFinder(graph, 강남역, 남부터미널역);
-        PathResponse actual = pathFinder.findPath();
 
-        assertThat(actual).isEqualTo(expected);
+        assertThat(pathFinder.getStations()).isEqualTo(new Stations(Arrays.asList(강남역, 양재역, 남부터미널역)));
+        assertThat(pathFinder.getDistance()).isEqualTo(new Distance(9));
     }
 
     @DisplayName("시작점과 출발점이 동일할 때 에러")

@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import nextstep.subway.path.domain.fare.Fare;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -34,18 +35,30 @@ public class Section {
     @Embedded
     private Distance distance;
 
+    @Embedded
+    private Fare fare = Fare.from(0);
+
     protected Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
-        this(line, upStation, downStation, new Distance(distance));
+        this(line, upStation, downStation, new Distance(distance), Fare.from(0));
     }
 
-    private Section(Line line, Station upStation, Station downStation, Distance distance) {
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
+        this(line, upStation, downStation, distance, Fare.from(0));
+    }
+
+    public Section(Line line, Station upStation, Station downStation, int distance, Fare fare) {
+        this(line, upStation, downStation, new Distance(distance), fare);
+    }
+
+    private Section(Line line, Station upStation, Station downStation, Distance distance, Fare fare) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+        this.fare = fare;
     }
 
     public static Section combine(Section upLineStation, Section downLineStation) {
@@ -76,8 +89,8 @@ public class Section {
         return distance;
     }
 
-    public int getDistanceValue() {
-        return distance.getValue();
+    public Fare getFare() {
+        return fare;
     }
 
     public void updateUpStation(Station station, Distance newDistance) {

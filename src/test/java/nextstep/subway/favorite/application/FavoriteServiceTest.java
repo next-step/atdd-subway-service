@@ -95,6 +95,7 @@ class FavoriteServiceTest {
         assertThat(actual.getResponses()).containsAll(expected);
     }
 
+    @DisplayName("즐겨찾기 삭제")
     @Test
     void deleteFavorite() {
         // given
