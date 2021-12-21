@@ -15,7 +15,7 @@ public class PathFinder {
     public static final String ERROR_START_STATION_NOT_FOUND = "출발역이 찾을 수 없습니다.";
     public static final String ERROR_END_STATION_NOT_FOUND = "도착역을 찾을 수 없습니다.";
 
-    private SubwayGraph subwayGraph;
+    private final SubwayGraph subwayGraph;
 
     public PathFinder(List<Line> lines) {
         this.subwayGraph = new SubwayGraph(lines);
@@ -25,6 +25,7 @@ public class PathFinder {
         checkStations(source, target);
 
         GraphPath<Station, SectionEdge> graphPath = DijkstraShortestPath.findPathBetween(subwayGraph, source, target);
+
         if (isNotFoundPath(graphPath)) {
             throw new IllegalArgumentException(ERROR_PATH_NOT_FOUND);
         }
