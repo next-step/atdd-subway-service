@@ -81,4 +81,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 - [x] 인수테스트 수정 (응답에 요금 정보 포함)
 - [ ] 거리별 요금 정책 추가
+- [ ] 노선별 요금 정책 추가
 - [ ] 연령별 할인 정책 추가
