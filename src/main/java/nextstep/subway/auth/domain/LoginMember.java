@@ -13,6 +13,10 @@ public class LoginMember {
         this.email = email;
         this.age = age;
     }
+    
+    public static LoginMember guest() {
+        return new LoginMember(null, null, 0);
+    }
 
     public Long getId() {
         return id;
