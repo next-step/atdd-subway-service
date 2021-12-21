@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 public class Fare {
@@ -27,6 +29,11 @@ public class Fare {
 
     public Fare plusDefaultFare() {
         return new Fare(this.fare + DEFAULT_FARE);
+    }
+
+    public Fare deduct(int deductFare, int teenagerDiscountRate) {
+        BigDecimal rate = BigDecimal.valueOf(100 - teenagerDiscountRate).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        return new Fare(BigDecimal.valueOf(this.fare - deductFare).multiply(rate).intValue());
     }
 
     @Override

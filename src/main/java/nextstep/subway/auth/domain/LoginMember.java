@@ -25,4 +25,12 @@ public class LoginMember {
     public Integer getAge() {
         return age;
     }
+
+    public boolean isTeenager() {
+        return 13 <= age && age < 19;
+    }
+
+    public boolean isKid() {
+        return 6 <= age && age < 13;
+    }
 }

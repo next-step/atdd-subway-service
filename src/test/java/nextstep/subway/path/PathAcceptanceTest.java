@@ -4,9 +4,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -33,6 +36,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private MemberRequest 회원;
+    private TokenResponse tokenResponse;
 
     @BeforeEach
     public void setUp() {
@@ -48,6 +53,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 1000));
 
         지하철_노선에_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+
+        회원 = new MemberRequest("jdragon@woo.com", "12345", 15);
+        AuthAcceptanceTest.회원등록됨(회원);
+        ExtractableResponse<Response> response = AuthAcceptanceTest.로그인_요청(회원);
+        AuthAcceptanceTest.로그인_성공(response);
+        tokenResponse = AuthAcceptanceTest.토큰_생성됨(response);
     }
 
     /**
@@ -72,7 +83,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
         assertThat(pathResponse.getStationIds()).containsExactlyElementsOf(지하철역_아이디_조회(stations));
-        assertThat(pathResponse.getFare()).isEqualTo(Fare.plusFareFromDefaultFare(삼호선.getAdditionalFare()));
+        assertThat(pathResponse.getFare()).isEqualTo((Fare.plusFareFromDefaultFare(삼호선.getAdditionalFare())).deduct(350, 20)  );
     }
 
     private List<Long> 지하철역_아이디_조회(StationResponse... stations) {
@@ -84,6 +95,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 최단경로_조회_요청(StationResponse source, StationResponse target) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .param("source", source.getId())
                 .param("target", target.getId())
                 .when().get("/paths")
