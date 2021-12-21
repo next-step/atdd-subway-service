@@ -1,5 +1,6 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.SectionWeightedEdge;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 public class PathResponse {
     private List<StationResponse> stations;
     private double distance;
+    private Fare fare;
 
     public PathResponse(List<StationResponse> stations, double distance) {
         this.stations = stations;
@@ -68,5 +70,9 @@ public class PathResponse {
 
     public double getDistance() {
         return distance;
+    }
+
+    public Fare getFare() {
+        return fare;
     }
 }
