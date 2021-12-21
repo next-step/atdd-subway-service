@@ -2,6 +2,7 @@ package nextstep.subway.favorite;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -35,10 +36,30 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	private static final String 강남역_이름 = "강남역";
 	private LineResponse 신분당선;
 
+	@BeforeEach
+	public void setUp() {
+		super.setUp();
+
+		삼성역 = StationAcceptanceTest.지하철역_등록되어_있음(삼성역_이름).as(StationResponse.class);
+		선릉역 = StationAcceptanceTest.지하철역_등록되어_있음(선릉역_이름).as(StationResponse.class);
+		역삼역 = StationAcceptanceTest.지하철역_등록되어_있음(역삼역_이름).as(StationResponse.class);
+		강남역 = StationAcceptanceTest.지하철역_등록되어_있음(강남역_이름).as(StationResponse.class);
+		LineRequest 삼성_선릉_구간 = new LineRequest(신분당선_이름, LineTest.BG_RED_600, 삼성역.getId(), 선릉역.getId(), 5);
+
+		신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(삼성_선릉_구간).as(LineResponse.class);
+
+		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(신분당선, 선릉역, 역삼역, 5);
+		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(신분당선, 역삼역, 강남역, 5);
+		MemberAcceptanceTest.회원_생성되어_있음(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD,
+			MemberAcceptanceTest.AGE);
+	}
+
 	@Test
 	@DisplayName("즐겨찾기를 관리한다.")
 	void manageFavorites() {
-		ExtractableResponse<Response> loginResponse = manageFavorites_background();
+		ExtractableResponse<Response> loginResponse = AuthAcceptanceTest.로그인_시도(
+			MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
+		AuthAcceptanceTest.로그인_성공함(loginResponse);
 
 		ExtractableResponse<Response> favoriteCreateResponse = 즐겨찾기_생성_요청(loginResponse, 삼성역.getId(), 선릉역.getId());
 		즐겨찾기_생성됨(favoriteCreateResponse);
@@ -98,24 +119,5 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 	private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-	}
-
-	private ExtractableResponse<Response> manageFavorites_background() {
-		삼성역 = StationAcceptanceTest.지하철역_등록되어_있음(삼성역_이름).as(StationResponse.class);
-		선릉역 = StationAcceptanceTest.지하철역_등록되어_있음(선릉역_이름).as(StationResponse.class);
-		역삼역 = StationAcceptanceTest.지하철역_등록되어_있음(역삼역_이름).as(StationResponse.class);
-		강남역 = StationAcceptanceTest.지하철역_등록되어_있음(강남역_이름).as(StationResponse.class);
-		LineRequest 삼성_선릉_구간 = new LineRequest(신분당선_이름, LineTest.BG_RED_600, 삼성역.getId(), 선릉역.getId(), 5);
-
-		신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(삼성_선릉_구간).as(LineResponse.class);
-
-		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(신분당선, 선릉역, 역삼역, 5);
-		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(신분당선, 역삼역, 강남역, 5);
-		MemberAcceptanceTest.회원_생성되어_있음(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD,
-			MemberAcceptanceTest.AGE);
-		ExtractableResponse<Response> loginResponse = AuthAcceptanceTest.로그인_시도(
-			MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
-		AuthAcceptanceTest.로그인_성공함(loginResponse);
-		return loginResponse;
 	}
 }
