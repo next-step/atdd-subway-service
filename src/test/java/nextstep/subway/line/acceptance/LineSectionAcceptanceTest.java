@@ -24,7 +24,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         StationResponse 잠실역 = TestStationFactory.지하철_역_생성_요청("잠실역").as(StationResponse.class);
         StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
         LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실역.getId()
-                , 잠실나루역.getId(), 10, new BigDecimal(900))).as(LineResponse.class);
+                , 잠실나루역.getId(), 10, 900)).as(LineResponse.class);
         StationResponse 잠실새내역 = TestStationFactory.지하철_역_생성_요청("잠실새내역").as(StationResponse.class);
 
         // when
@@ -49,7 +49,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         StationResponse 잠실역 = TestStationFactory.지하철_역_생성_요청("잠실역").as(StationResponse.class);
         StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
         LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실역.getId()
-                , 잠실나루역.getId(), 10, new BigDecimal(900))).as(LineResponse.class);
+                , 잠실나루역.getId(), 10, 900)).as(LineResponse.class);
         StationResponse 강변역 = TestStationFactory.지하철_역_생성_요청("강변역").as(StationResponse.class);
 
         // when
@@ -73,7 +73,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         StationResponse 잠실새내역 = TestStationFactory.지하철_역_생성_요청("잠실새내역").as(StationResponse.class);
         StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
         LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실새내역.getId()
-                , 잠실나루역.getId(), 10, new BigDecimal(900))).as(LineResponse.class);
+                , 잠실나루역.getId(), 10, 900)).as(LineResponse.class);
         StationResponse 잠실역 = TestStationFactory.지하철_역_생성_요청("잠실역").as(StationResponse.class);
 
         // when
@@ -97,7 +97,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         StationResponse 잠실새내역 = TestStationFactory.지하철_역_생성_요청("잠실새내역").as(StationResponse.class);
         StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
         LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실새내역.getId()
-                , 잠실나루역.getId(), 10, new BigDecimal(900))).as(LineResponse.class);
+                , 잠실나루역.getId(), 10, 900)).as(LineResponse.class);
         StationResponse 잠실역 = TestStationFactory.지하철_역_생성_요청("잠실역").as(StationResponse.class);
 
         // when
@@ -114,7 +114,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         StationResponse 잠실새내역 = TestStationFactory.지하철_역_생성_요청("잠실새내역").as(StationResponse.class);
         StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
         LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실새내역.getId()
-                , 잠실나루역.getId(), 10, new BigDecimal(900))).as(LineResponse.class);
+                , 잠실나루역.getId(), 10, 900)).as(LineResponse.class);
 
         // when
         ExtractableResponse<Response> response = TestSectionFactory.지하철_노선에_구간_등록_요청(이호선, 잠실새내역, 잠실나루역, 10);
@@ -130,7 +130,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         StationResponse 잠실새내역 = TestStationFactory.지하철_역_생성_요청("잠실새내역").as(StationResponse.class);
         StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
         LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실새내역.getId()
-                , 잠실나루역.getId(), 10, new BigDecimal(900))).as(LineResponse.class);
+                , 잠실나루역.getId(), 10, 900)).as(LineResponse.class);
 
         // when
         StationResponse 강변역 = TestStationFactory.지하철_역_생성_요청("강변역").as(StationResponse.class);
@@ -148,7 +148,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         StationResponse 잠실역 = TestStationFactory.지하철_역_생성_요청("잠실역").as(StationResponse.class);
         StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
         LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실역.getId()
-                , 잠실나루역.getId(), 5, new BigDecimal(900))).as(LineResponse.class);
+                , 잠실나루역.getId(), 5, 900)).as(LineResponse.class);
         StationResponse 강변역 = TestStationFactory.지하철_역_생성_요청("강변역").as(StationResponse.class);
 
         // when
@@ -178,7 +178,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         StationResponse 잠실역 = TestStationFactory.지하철_역_생성_요청("잠실역").as(StationResponse.class);
         StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
         LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실역.getId()
-                , 잠실나루역.getId(), 5, new BigDecimal(900))).as(LineResponse.class);
+                , 잠실나루역.getId(), 5, 900)).as(LineResponse.class);
 
         // when
         ExtractableResponse<Response> removeResponse = TestSectionFactory.지하철_노선_구간_삭제_요청(이호선, 잠실나루역);
@@ -194,12 +194,12 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         StationResponse 잠실역 = TestStationFactory.지하철_역_생성_요청("잠실역").as(StationResponse.class);
         StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
         LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실역.getId()
-                , 잠실나루역.getId(), 5, new BigDecimal(900))).as(LineResponse.class);
+                , 잠실나루역.getId(), 5, 900)).as(LineResponse.class);
         // 다른 노선
         StationResponse 몽촌토성역 = TestStationFactory.지하철_역_생성_요청("몽촌토성역").as(StationResponse.class);
         StationResponse 강동구청역 = TestStationFactory.지하철_역_생성_요청("강동구청역").as(StationResponse.class);
         LineResponse 팔호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("8호선", "bg-green-600", 몽촌토성역.getId()
-                , 강동구청역.getId(), 5, new BigDecimal(900))).as(LineResponse.class);
+                , 강동구청역.getId(), 5, 900)).as(LineResponse.class);
 
         // when
         ExtractableResponse<Response> removeResponse = TestSectionFactory.지하철_노선_구간_삭제_요청(이호선, 몽촌토성역);

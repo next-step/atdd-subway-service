@@ -33,9 +33,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 양재역 = TestStationFactory.지하철_역_생성_요청("양재역").as(StationResponse.class);
         StationResponse 교대역 = TestStationFactory.지하철_역_생성_요청("교대역").as(StationResponse.class);
         StationResponse 남부터미널역 = TestStationFactory.지하철_역_생성_요청("남부터미널역").as(StationResponse.class);
-        LineResponse 신분당선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 20, new BigDecimal(100))).as(LineResponse.class);
-        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 30, new BigDecimal(200))).as(LineResponse.class);
-        LineResponse 삼호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("삼호선", "bg-red-600", 남부터미널역.getId(), 양재역.getId(), 10, new BigDecimal(300))).as(LineResponse.class);
+        LineResponse 신분당선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 20,100)).as(LineResponse.class);
+        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 30, 200)).as(LineResponse.class);
+        LineResponse 삼호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("삼호선", "bg-red-600", 남부터미널역.getId(), 양재역.getId(), 10, 300)).as(LineResponse.class);
         TestSectionFactory.지하철_노선에_구간_등록_요청(삼호선, 교대역, 남부터미널역, 10);
 
         // when
@@ -64,9 +64,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 양재역 = TestStationFactory.지하철_역_생성_요청("양재역").as(StationResponse.class);
         StationResponse 교대역 = TestStationFactory.지하철_역_생성_요청("교대역").as(StationResponse.class);
         StationResponse 남부터미널역 = TestStationFactory.지하철_역_생성_요청("남부터미널역").as(StationResponse.class);
-        LineResponse 신분당선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 20, new BigDecimal(100))).as(LineResponse.class);
-        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 30, new BigDecimal(200))).as(LineResponse.class);
-        LineResponse 삼호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("삼호선", "bg-red-600", 남부터미널역.getId(), 양재역.getId(), 10, new BigDecimal(300))).as(LineResponse.class);
+        LineResponse 신분당선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 20, 100)).as(LineResponse.class);
+        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 30, 200)).as(LineResponse.class);
+        LineResponse 삼호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("삼호선", "bg-red-600", 남부터미널역.getId(), 양재역.getId(), 10, 300)).as(LineResponse.class);
         TestSectionFactory.지하철_노선에_구간_등록_요청(삼호선, 교대역, 남부터미널역, 10);
 
         // when
@@ -85,9 +85,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 양재역 = TestStationFactory.지하철_역_생성_요청("양재역").as(StationResponse.class);
         StationResponse 교대역 = TestStationFactory.지하철_역_생성_요청("교대역").as(StationResponse.class);
         StationResponse 남부터미널역 = TestStationFactory.지하철_역_생성_요청("남부터미널역").as(StationResponse.class);
-        LineResponse 신분당선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 20, new BigDecimal(100))).as(LineResponse.class);
-        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 30, new BigDecimal(200))).as(LineResponse.class);
-        LineResponse 삼호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("삼호선", "bg-red-600", 남부터미널역.getId(), 양재역.getId(), 10, new BigDecimal(300))).as(LineResponse.class);
+        LineResponse 신분당선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 20, 100)).as(LineResponse.class);
+        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 30, 200)).as(LineResponse.class);
+        LineResponse 삼호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("삼호선", "bg-red-600", 남부터미널역.getId(), 양재역.getId(), 10, 300)).as(LineResponse.class);
         TestSectionFactory.지하철_노선에_구간_등록_요청(삼호선, 교대역, 남부터미널역, 10);
 
         // when
@@ -105,14 +105,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 양재역 = TestStationFactory.지하철_역_생성_요청("양재역").as(StationResponse.class);
         StationResponse 교대역 = TestStationFactory.지하철_역_생성_요청("교대역").as(StationResponse.class);
         StationResponse 남부터미널역 = TestStationFactory.지하철_역_생성_요청("남부터미널역").as(StationResponse.class);
-        LineResponse 신분당선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 20, new BigDecimal(100))).as(LineResponse.class);
-        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 30, new BigDecimal(200))).as(LineResponse.class);
-        LineResponse 삼호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("삼호선", "bg-red-600", 남부터미널역.getId(), 양재역.getId(), 10, new BigDecimal(300))).as(LineResponse.class);
+        LineResponse 신분당선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 20, 100)).as(LineResponse.class);
+        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 30, 200)).as(LineResponse.class);
+        LineResponse 삼호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("삼호선", "bg-red-600", 남부터미널역.getId(), 양재역.getId(), 10, 300)).as(LineResponse.class);
         TestSectionFactory.지하철_노선에_구간_등록_요청(삼호선, 교대역, 남부터미널역, 10);
 
         StationResponse 부평역 = TestStationFactory.지하철_역_생성_요청("부평역").as(StationResponse.class);
         StationResponse 송내역 = TestStationFactory.지하철_역_생성_요청("송내역").as(StationResponse.class);
-        LineResponse 일호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("일호선", "bg-red-600", 부평역.getId(), 송내역.getId(), 10, new BigDecimal(900))).as(LineResponse.class);
+        LineResponse 일호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("일호선", "bg-red-600", 부평역.getId(), 송내역.getId(), 10, 900)).as(LineResponse.class);
         TestSectionFactory.지하철_노선에_구간_등록_요청(일호선, 부평역, 송내역, 3);
 
         // when
@@ -130,9 +130,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 양재역 = TestStationFactory.지하철_역_생성_요청("양재역").as(StationResponse.class);
         StationResponse 교대역 = TestStationFactory.지하철_역_생성_요청("교대역").as(StationResponse.class);
         StationResponse 남부터미널역 = TestStationFactory.지하철_역_생성_요청("남부터미널역").as(StationResponse.class);
-        LineResponse 신분당선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 20, new BigDecimal(100))).as(LineResponse.class);
-        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 30, new BigDecimal(200))).as(LineResponse.class);
-        LineResponse 삼호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("삼호선", "bg-red-600", 남부터미널역.getId(), 양재역.getId(), 10, new BigDecimal(300))).as(LineResponse.class);
+        LineResponse 신분당선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 20,100)).as(LineResponse.class);
+        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 30, 200)).as(LineResponse.class);
+        LineResponse 삼호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("삼호선", "bg-red-600", 남부터미널역.getId(), 양재역.getId(), 10, 300)).as(LineResponse.class);
         TestSectionFactory.지하철_노선에_구간_등록_요청(삼호선, 교대역, 남부터미널역, 10);
 
         // when

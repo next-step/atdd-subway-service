@@ -22,8 +22,8 @@ public class LineRequest {
         this.extraFare = extraFare;
     }
 
-    public static LineRequest of(final String name, final String color, final Long upStationId, final Long downStationId, final int distance, final BigDecimal extraFare) {
-        return new LineRequest(name, color, upStationId, downStationId, distance, extraFare);
+    public static LineRequest of(final String name, final String color, final Long upStationId, final Long downStationId, final int distance, final int extraFare) {
+        return new LineRequest(name, color, upStationId, downStationId, distance, new BigDecimal(extraFare));
     }
 
     public String getName() {

@@ -57,10 +57,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         잠실역 = TestStationFactory.지하철_역_생성_요청("잠실역").as(StationResponse.class);
         잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
         이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실역.getId()
-                , 잠실나루역.getId(), 10, new BigDecimal(900))).as(LineResponse.class);
+                , 잠실나루역.getId(), 10, 900)).as(LineResponse.class);
         잠실새내역 = TestStationFactory.지하철_역_생성_요청("잠실새내역").as(StationResponse.class);
         TestSectionFactory.지하철_노선에_구간_등록_요청(이호선, 잠실새내역, 잠실역, 10);
-        TestMemberFactory.회원_등록_요청(EMAIL, PASSWORD, AGE);
+        이회원 = TestMemberFactory.회원_등록_요청(EMAIL, PASSWORD, AGE).as(MemberResponse.class);
         토큰 = TestLoginFactory.로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
 
         // when
@@ -79,7 +79,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         TestMemberFactory.회원_등록_요청(NEWEMAIL, NEWPASSWORD, NEWAGE);
         뉴토큰 = TestLoginFactory.로그인_요청(NEWEMAIL, NEWPASSWORD).as(TokenResponse.class).getAccessToken();
         // when
-        ExtractableResponse<Response> newTokenDeleteResponse = TestFavoriteFactory.즐겨찾기_삭제_요청(뉴토큰, 즐겨찾기.getId());
+        ExtractableResponse<Response> newTokenDeleteResponse = TestFavoriteFactory.즐겨찾기_삭제_요청(뉴토큰, 이회원.getId());
         // then
         TestFavoriteFactory.즐겨찾기_삭제_실패됨(newTokenDeleteResponse);
 
