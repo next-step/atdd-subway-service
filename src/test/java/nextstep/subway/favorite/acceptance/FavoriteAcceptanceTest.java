@@ -54,7 +54,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		봉명역 = 지하철역_등록_되어있음("봉명역");
 
 		// And 지하철 노선 등록되어 있음
-		LineResponse 일호선 = 지하철_노선_등록_되어있음(new LineRequest("일호선", "blue", 두정역.getId(), 봉명역.getId(), 30));
+		LineResponse 일호선 = 지하철_노선_등록_되어있음(new LineRequest("일호선", "blue", 두정역.getId(), 봉명역.getId(), 30, 900));
 
 		// And 지하철 노선에 지하철역 등록되어 있음
 		지하철_노선에_지하철역_등록_되어있음(일호선);

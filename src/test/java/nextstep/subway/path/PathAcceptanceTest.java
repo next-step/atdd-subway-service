@@ -6,10 +6,13 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -29,6 +32,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private static StationResponse 도곡역;
 	private static StationResponse 천안역;
 
+	private static TokenResponse 사용자;
+	public static final String EMAIL = "email@email.com";
+	public static final String PASSWORD = "password";
+	public static final int AGE = 13;
+
 	@BeforeEach
 	public void setUp() {
 		super.setUp();
@@ -40,16 +48,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		천안역 = StationAcceptanceTest.지하철역_등록되어_있음("천안역").as(StationResponse.class);
 
 		LineResponse 이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
-			new LineRequest("이호선", "green", 교대역.getId(), 선릉역.getId(), 20)).as(LineResponse.class);
+			new LineRequest("이호선", "green", 교대역.getId(), 선릉역.getId(), 20, 300)).as(LineResponse.class);
 		LineResponse 삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
-			new LineRequest("삼호선", "orange", 교대역.getId(), 도곡역.getId(), 11)).as(LineResponse.class);
+			new LineRequest("삼호선", "orange", 교대역.getId(), 도곡역.getId(), 11, 400)).as(LineResponse.class);
 		LineResponse 신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
-			new LineRequest("신분당선", "red", 강남역.getId(), 양재역.getId(), 1)).as(LineResponse.class);
+			new LineRequest("신분당선", "red", 강남역.getId(), 양재역.getId(), 1, 500)).as(LineResponse.class);
 		LineResponse 수인분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
-			new LineRequest("수인분당선", "yellow", 선릉역.getId(), 도곡역.getId(), 10)).as(LineResponse.class);
+			new LineRequest("수인분당선", "yellow", 선릉역.getId(), 도곡역.getId(), 10, 0)).as(LineResponse.class);
 
 		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 교대역, 강남역, 10);
 		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 양재역, 1);
+
+		MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+		사용자 = MemberAcceptanceTest.로그인_되어있음(EMAIL, PASSWORD);
 
 		/**
 		 * 교대역 - *2호선* - 강남역 --- 선릉역
@@ -63,9 +74,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	@Test
 	@DisplayName("지하철 노선 경로 조회 성공")
 	public void findPathSuccessTest() {
-		//given
 		//when
-		ExtractableResponse<Response> response = 지하철_노선_경로_조회_요청("/paths?source=1&target=3");
+		ExtractableResponse<Response> response = 지하철_노선_경로_조회_요청(new PathRequest(1, 3), 사용자);
 
 		//then
 		지하철_노선_경로_조회_성공(response);
@@ -77,7 +87,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	public void findPathFailStartEqualsEndTest() {
 		//given
 		//when
-		ExtractableResponse<Response> response = 지하철_노선_경로_조회_요청("/paths?source=1&target=1");
+		ExtractableResponse<Response> response = 지하철_노선_경로_조회_요청(new PathRequest(3, 3), 사용자);
 
 		//then
 		지하철_노선_경로_조회_실패(response);
@@ -88,7 +98,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	public void findPathFailNoneStationsTest() {
 		//given
 		//when
-		ExtractableResponse<Response> response = 지하철_노선_경로_조회_요청("/paths?source=1&target=8");
+		ExtractableResponse<Response> response = 지하철_노선_경로_조회_요청(new PathRequest(1, 7), 사용자);
 
 		//then
 		지하철_노선_경로_조회_실패(response);
@@ -99,7 +109,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	public void findPathFailNoneSectionsTest() {
 		//given
 		//when
-		ExtractableResponse<Response> response = 지하철_노선_경로_조회_요청("/paths?source=1&target=6");
+		ExtractableResponse<Response> response = 지하철_노선_경로_조회_요청(new PathRequest(1, 6), 사용자);
 
 		//then
 		지하철_노선_경로_조회_실패(response);
@@ -113,17 +123,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		PathResponse pathResponse = response.as(PathResponse.class);
 		assertThat(pathResponse.getStations()).containsExactly(교대역, 양재역, 강남역, 선릉역);
 		assertThat(pathResponse.getDistance()).isEqualTo(12);
+		assertThat(pathResponse.getSubwayFare()).isEqualTo(1200);
 	}
 
 	public static void 지하철_노선_경로_조회_성공(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
 
-	public static ExtractableResponse<Response> 지하철_노선_경로_조회_요청(String uri) {
+	public static ExtractableResponse<Response> 지하철_노선_경로_조회_요청(PathRequest pathRequest, TokenResponse tokenResponse) {
 		return RestAssured
 			.given().log().all()
+			.auth().oauth2(tokenResponse.getAccessToken())
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.when().get(uri)
+			.body(pathRequest)
+			.when().get("/paths")
 			.then().log().all()
 			.extract();
 	}

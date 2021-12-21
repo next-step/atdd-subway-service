@@ -2,6 +2,7 @@ package study.unit;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.SubwayFare;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ public class UnitTest {
 
         Station upStation = new Station("강남역");
         Station downStation = new Station("광교역");
-        Line line = new Line("신분당선", "RED", upStation, downStation, Distance.of(10));
+        Line line = new Line("신분당선", "RED", upStation, downStation, Distance.of(10), SubwayFare.of(SubwayFare.SUBWAY_BASE_FARE));
         Line newLine = new Line(newName, "GREEN");
 
         // when

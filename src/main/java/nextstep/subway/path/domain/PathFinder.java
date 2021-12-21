@@ -18,9 +18,6 @@ public class PathFinder {
 		graph = new SubwayGraph(SectionEdge.class);
 		stations.stream().forEach(station -> graph.addVertex(station));
 		sections.stream().forEach(section -> graph.addSectionEdge(section));
-		// sections.stream()
-		// 	.map(SectionEdge::new)
-		// 	.forEach(sectionEdge -> graph.addSectionEdge(sectionEdge));
 		return new PathFinder();
 	}
 
@@ -30,6 +27,22 @@ public class PathFinder {
 
 	public Distance findShortestPathDistance(Station source, Station target) {
 		return Distance.of(new DijkstraShortestPath(graph).getPath(source, target).getWeight());
+	}
+
+	public List<SectionEdge> findShortestPathEdges(Station source, Station target) {
+		return new DijkstraShortestPath(graph).getPath(source, target).getEdgeList();
+	}
+
+	public List<Station> findShortestPathVertexes(SectionEdge pathFinderParam) {
+		return new DijkstraShortestPath(graph).getPath(pathFinderParam.getSource(), pathFinderParam.getTarget()).getVertexList();
+	}
+
+	public Distance findShortestPathDistance(SectionEdge pathFinderParam) {
+		return Distance.of(new DijkstraShortestPath(graph).getPath(pathFinderParam.getSource(), pathFinderParam.getTarget()).getWeight());
+	}
+
+	public List<SectionEdge> findShortestPathEdges(SectionEdge pathFinderParam) {
+		return new DijkstraShortestPath(graph).getPath(pathFinderParam.getSource(), pathFinderParam.getTarget()).getEdgeList();
 	}
 
 }

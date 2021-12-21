@@ -33,6 +33,14 @@ public class Distance {
 		return this.distance < distance.distance;
 	}
 
+	public boolean lessThanOrEqual(Distance distance) {
+		return this.distance <= distance.distance;
+	}
+
+	public boolean greaterThan(Distance distance) {
+		return this.distance > distance.distance;
+	}
+
 	public Distance decrease(Distance distance) {
 		return new Distance(this.distance - distance.distance);
 	}
@@ -49,6 +57,10 @@ public class Distance {
 		return this == DUMMY_DISTANCE;
 	}
 
+	public double divide(double divideValue) {
+		return this.distance / divideValue;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -63,5 +75,6 @@ public class Distance {
 	public int hashCode() {
 		return Objects.hash(distance);
 	}
+
 
 }

@@ -63,4 +63,15 @@ class DistanceTest {
 		assertThat(increaseDistance).isEqualTo(Distance.of(35));
 	}
 
+	@Test
+	@DisplayName("거리 더 큰지 비교 테스트")
+	public void distanceGreaterThanSuccessTest() {
+		//given
+		//when
+		Distance distance = Distance.of(21);
+		Distance otherDistance = Distance.of(20);
+		//then
+		assertThat(distance.greaterThan(otherDistance)).isTrue();
+	}
+
 }

@@ -1,9 +1,11 @@
 ## 인수테스트 기반 TDD
-### [1단계 요구사항 정리](https://github.com/codingknowjam/atdd-subway-service/tree/step3/step1Request.md)
+### [1단계 요구사항 정리](https://github.com/codingknowjam/atdd-subway-service/tree/step4/step1Request.md)
 
-### [2단계 요구사항 정리](https://github.com/codingknowjam/atdd-subway-service/tree/step3/step2Request.md)
+### [2단계 요구사항 정리](https://github.com/codingknowjam/atdd-subway-service/tree/step4/step2Request.md)
 
-### [3단계 요구사항 정리](https://github.com/codingknowjam/atdd-subway-service/tree/step3/step3Request.md)
+### [3단계 요구사항 정리](https://github.com/codingknowjam/atdd-subway-service/tree/step4/step3Request.md)
+
+### [4단계 요구사항 정리](https://github.com/codingknowjam/atdd-subway-service/tree/step4/step4Request.md)
 
 ---
 <br>

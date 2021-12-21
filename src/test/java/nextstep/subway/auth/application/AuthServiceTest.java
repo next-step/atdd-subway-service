@@ -1,11 +1,13 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -13,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -44,4 +47,20 @@ public class AuthServiceTest {
 
         assertThat(token.getAccessToken()).isNotBlank();
     }
+
+    @Test
+    @DisplayName("토큰으로 로그인 여부 확인(로그인 상태) 테스트")
+    public void findMemberByTokenTest() {
+    	//given
+        when(jwtTokenProvider.validateToken("token")).thenReturn(true);
+        when(jwtTokenProvider.getPayload("token")).thenReturn(EMAIL);
+        when(memberService.findByEmail(anyString())).thenReturn(new Member(1L, EMAIL, PASSWORD, AGE));
+
+        //when
+        LoginMember loginMember = authService.findMemberByToken("token");
+
+        //then
+        assertThat(loginMember).isEqualTo(new LoginMember(1L, EMAIL, AGE));
+    }
+
 }

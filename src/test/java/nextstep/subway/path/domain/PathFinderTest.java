@@ -58,4 +58,15 @@ class PathFinderTest {
 		assertThat(shortestPathDistance).isEqualTo(Distance.of(20));
 	}
 
+	@Test
+	@DisplayName("PathFinder 최단경로 구간 가져오기")
+	public void PathFinderFindShortestPathEdgesTest() {
+		//given
+		//when
+		List<SectionEdge> shortestPathVertexes = pathFinder.findShortestPathEdges(선릉역, 강남역);
+		//then
+		assertThat(shortestPathVertexes).containsExactly(new SectionEdge(두번째_구간), new SectionEdge(첫번째_구간));
+	}
+
 }
+
