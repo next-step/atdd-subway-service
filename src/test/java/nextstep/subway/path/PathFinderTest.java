@@ -66,7 +66,7 @@ public class PathFinderTest {
 	}
 
 	@Test
-	@DisplayName("최단 경로를 조회한다2")
+	@DisplayName("인접 구간이 최단 경로가 아닌 경우 최단 경로를 조회한다")
 	void findShortestPath2() {
 		Station 가로지르는역1 = new Station("가로지르는역1");
 		Station 가로지르는역2 = new Station("가로지르는역2");
