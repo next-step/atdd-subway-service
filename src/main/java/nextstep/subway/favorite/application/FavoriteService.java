@@ -49,7 +49,7 @@ public class FavoriteService {
 
 	@Transactional
 	public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
-		Favorite favorite = favoriteRepository.findByIdAndMember_Id(favoriteId, loginMember.getId())
+		Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, loginMember.getId())
 			.orElseThrow(Exceptions.FAVORITE_NOT_FOUND::getException);
 		favoriteRepository.delete(favorite);
 	}
