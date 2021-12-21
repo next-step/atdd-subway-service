@@ -1,4 +1,4 @@
-package nextstep.subway.map.domain;
+package nextstep.subway.fare.domain;
 
 public class SubwayFareCalculator {
 

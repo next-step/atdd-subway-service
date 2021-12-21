@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.ErrorCode;
 import nextstep.subway.exception.BadRequestApiException;
 import nextstep.subway.exception.NotFoundApiException;
@@ -44,11 +45,10 @@ class PathServiceTest {
         // given
         PathRequest pathRequest = new PathRequest(SOURCE, TARGET);
 
-        when(stationService.findStationById(SOURCE))
-                .thenThrow(new NotFoundApiException(ErrorCode.NOT_FOUND_STATION_ID));
+        when(stationService.findStationById(SOURCE)).thenThrow(new NotFoundApiException(ErrorCode.NOT_FOUND_STATION_ID));
 
         // when & then
-        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
+        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest, LoginMember.GUEST))
                 .hasMessage(ErrorCode.NOT_FOUND_STATION_ID.toString());
     }
 
@@ -59,11 +59,10 @@ class PathServiceTest {
         PathRequest pathRequest = new PathRequest(SOURCE, TARGET);
 
         when(subwayMapService.getMap()).thenReturn(mock(SubwayMap.class));
-        when(subwayMapService.getMap().findShortestPath(any(), any()))
-                .thenThrow(new BadRequestApiException(ErrorCode.UNCOUPLED_PATH));
+        when(subwayMapService.getMap().findShortestPath(any(), any(), any())).thenThrow(new BadRequestApiException(ErrorCode.UNCOUPLED_PATH));
 
         // when & then
-        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
+        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest, LoginMember.GUEST))
                 .hasMessage(ErrorCode.UNCOUPLED_PATH.toString());
     }
 }

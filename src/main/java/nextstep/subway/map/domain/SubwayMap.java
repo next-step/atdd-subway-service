@@ -1,7 +1,11 @@
 package nextstep.subway.map.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.ErrorCode;
 import nextstep.subway.exception.BadRequestApiException;
+import nextstep.subway.fare.domain.DiscountPolicy;
+import nextstep.subway.fare.domain.SubwayFare;
+import nextstep.subway.fare.domain.SubwayFareCalculator;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
@@ -38,7 +42,7 @@ public class SubwayMap {
         return new SubwayMap(sections);
     }
 
-    public PathResponse findShortestPath(Station source, Station target) {
+    public PathResponse findShortestPath(Station source, Station target, LoginMember loginMember) {
         GraphPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph).getPath(source, target);
         if (ObjectUtils.isEmpty(path)) {
             throw new BadRequestApiException(ErrorCode.UNCOUPLED_PATH);
@@ -49,6 +53,8 @@ public class SubwayMap {
         int distance = (int) path.getWeight();
         int fare = SubwayFareCalculator.calculate(distance) + lines.getHighestExtraFare();
 
-        return PathResponse.of(stations.toResponse(), distance, fare);
+        DiscountPolicy discountPolicy = DiscountPolicy.of(loginMember.getAge());
+        SubwayFare subwayFare = SubwayFare.of(fare, discountPolicy);
+        return PathResponse.of(stations.toResponse(), distance, subwayFare.calculateDiscountFare());
     }
 }
