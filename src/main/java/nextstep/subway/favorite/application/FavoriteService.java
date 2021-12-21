@@ -34,7 +34,7 @@ public class FavoriteService {
 
     public FavoriteResponse findLineResponseById(final LoginMember loginMember, final Long id) {
         validateAuth(loginMember, id);
-        final Favorite favorite = favoriteRepository.findByMemberId(loginMember.getId())
+        final Favorite favorite = favoriteRepository.findByIdMemberId(id, loginMember.getId())
                 .orElseThrow(NotFoundException::new);
         final Station source = stationService.findStationById(favorite.getSourceStationId());
         final Station target = stationService.findStationById(favorite.getTargetStationId());
