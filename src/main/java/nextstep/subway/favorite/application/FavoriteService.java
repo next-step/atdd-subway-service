@@ -2,6 +2,7 @@ package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.NotFoundException;
+import nextstep.subway.common.exception.PermissionException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -32,7 +33,8 @@ public class FavoriteService {
     }
 
     public FavoriteResponse findLineResponseById(final LoginMember loginMember, final Long id) {
-        final Favorite favorite = favoriteRepository.findByIdAndMemberId(id, loginMember.getId())
+        validateAuth(loginMember, id);
+        final Favorite favorite = favoriteRepository.findByMemberId(loginMember.getId())
                 .orElseThrow(NotFoundException::new);
         final Station source = stationService.findStationById(favorite.getSourceStationId());
         final Station target = stationService.findStationById(favorite.getTargetStationId());
@@ -41,6 +43,13 @@ public class FavoriteService {
 
     @Transactional
     public void deleteLineById(final LoginMember loginMember, final Long id) {
-        favoriteRepository.deleteByIdAndMemberId(id, loginMember.getId());
+        validateAuth(loginMember, id);
+        favoriteRepository.deleteByMemberId(loginMember.getId());
+    }
+
+    private void validateAuth(final LoginMember loginMember, final Long id) {
+        if (id.equals(loginMember.getId())) {
+            throw new PermissionException();
+        }
     }
 }
