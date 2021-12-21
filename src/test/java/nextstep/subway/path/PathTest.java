@@ -2,6 +2,7 @@ package nextstep.subway.path;
 
 import com.google.common.collect.Lists;
 import nextstep.subway.line.LineTestFixture;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
@@ -10,10 +11,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 
 public class PathTest {
     private final Station upStationFirstLine = new Station("소사역");
@@ -87,5 +90,12 @@ public class PathTest {
         assertThatThrownBy(() -> pathFinder.findPath(upStationThirdLine, downStationFirstLine))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발역 또는 도착역이 노선에 존재하지 않습니다");
+    }
+
+    @Test
+    void stationsSize() {
+        assertThatThrownBy(() -> new Path(Arrays.asList(mock(Station.class)), new Distance(10)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("경로의 station 갯수는 2개 이상이어야 합니다");
     }
 }
