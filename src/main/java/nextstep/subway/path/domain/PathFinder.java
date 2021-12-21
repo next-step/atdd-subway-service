@@ -12,6 +12,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import nextstep.subway.exception.AppException;
 import nextstep.subway.exception.ErrorCode;
+import nextstep.subway.fare.domain.FareSurchargePolicy;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
@@ -53,7 +54,7 @@ public class PathFinder {
 		GraphPath graphPath = path.getPath(source, target);
 		validatePath(graphPath);
 		int distance = (int)graphPath.getWeight();
-		int fare = FareCalculator.calculate(distance);
+		int fare = FareSurchargePolicy.getFare(distance);
 		return PathResponse.of(graphPath.getVertexList(), distance, fare);
 	}
 
