@@ -93,14 +93,6 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
     
-    public int getSurcharge(List<Station> stations) {
-        if (sections.isInUpAndDownStations(stations)) {
-            return this.surcharge;
-        }
-        return 0;
-    }
-    
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

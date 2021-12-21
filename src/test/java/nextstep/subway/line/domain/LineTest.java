@@ -66,29 +66,5 @@ public class LineTest {
                 () -> assertThat(line.hashCode() == comparedLine.hashCode()).isEqualTo(expected)
                 );
     }
-    
-    @Test
-    @DisplayName("추가 금액 확인")
-    void 추가_금액_확인() {
-        // given
-        Station upStation = Station.from("강남역");
-        Station downStation = Station.from("교대역");
-        Line line = Line.of("이호선", "초록색", upStation, downStation, Distance.from(15), 300);
-        
-        // when, then
-        assertThat(line.getSurcharge(Arrays.asList(upStation, downStation))).isEqualTo(300);
-    }
-    
-    @Test
-    @DisplayName("경로 미포함시 추가 금액 없음")
-    void 경로_미포함_라인_추가_금액_없음() {
-        // given
-        Station upStation = Station.from("강남역");
-        Station downStation = Station.from("교대역");
-        Line line = Line.of("이호선", "초록색", upStation, downStation, Distance.from(15), 300);
-        
-        // when, then
-        assertThat(line.getSurcharge(Arrays.asList(Station.from("서초역"), upStation))).isEqualTo(0);
-    }
 
 }

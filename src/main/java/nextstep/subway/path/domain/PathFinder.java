@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import org.jgrapht.GraphPath;
@@ -10,6 +11,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 public class PathFinder {
 
@@ -28,8 +30,9 @@ public class PathFinder {
         return new PathFinder(graph);
     }
     
-    public Path findShortestPath(Station sourceStation, Station targetStation) {
+    public Path findShortestPath(Stations stations, Station sourceStation, Station targetStation) {
         validationSameStation(sourceStation, targetStation);
+        validationInStations(stations, sourceStation, targetStation);
         GraphPath<Station, SectionEdge> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         validationConnectedStation(graphPath);
         
@@ -58,6 +61,12 @@ public class PathFinder {
     private void validationConnectedStation(GraphPath<Station, SectionEdge> graphPath) {
         if (Objects.isNull(graphPath)) {
             throw new IllegalArgumentException("출발역과 도착역이 연결되어있지 않습니다");
+        }
+    }
+    
+    private void validationInStations(Stations stations, Station sourceStation, Station targetStation) {
+        if (!stations.isInStations(Arrays.asList(sourceStation, targetStation))) {
+            throw new IllegalArgumentException("출발역과 도착역이 경로에 없습니다");
         }
     }
 

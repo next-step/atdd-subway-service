@@ -3,6 +3,8 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -24,8 +26,9 @@ public class SectionsTest {
         Section section1 = Section.of(line, upStation1, downStation1, Distance.from(15));
         Section section2 = Section.of(line, upStation2, downStation2, Distance.from(20));
         
+        
         // when
-        Sections sections = Sections.from(section1, section2);
+        Sections sections = Sections.from(Arrays.asList(section1, section2));
         
         // then
         assertThat(sections.count()).isEqualTo(2);

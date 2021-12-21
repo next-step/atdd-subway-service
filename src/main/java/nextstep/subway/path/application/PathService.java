@@ -29,8 +29,9 @@ public class PathService {
         Station sourceStation = stationService.findById(sourceId);
         Station targetStation = stationService.findById(targetId);
         
-        PathFinder pathFinder = PathFinder.of(Lines.of(lineService.findLines()));
-        Path path = pathFinder.findShortestPath(sourceStation, targetStation);
+        Lines lines = Lines.of(lineService.findLines());
+        PathFinder pathFinder = PathFinder.of(lines);
+        Path path = pathFinder.findShortestPath(lines.getAllStations(), sourceStation, targetStation);
         Fare fare = Fare.of(path.getDistance(), path.getSurcharge(), age);
         
         return PathResponse.of(path, fare);
