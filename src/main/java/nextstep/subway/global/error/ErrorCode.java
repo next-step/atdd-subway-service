@@ -9,6 +9,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(500, "C004", "Server Error"),
     NOT_AUTHORIZATION(401, "C005", "등록되지 않은 아이디이거나 아이디 또는 비밀번호를 잘못 입력했습니다"),
     INVALID_TOKEN(401, "C006", "유효하지 않은 토큰입니다."),
+    ANONYMOUS_USER(400, "C007", "로그인 되지 않은 유저입니다."),
 
     // Section
     DISTANCE_LESS_THAN_MINIMUM(400, "S001", "역과 역 사이의 거리는 최소 1 이상입니다."),
@@ -24,7 +25,7 @@ public enum ErrorCode {
 
     private final String code;
     private final String message;
-    private int status;
+    private final int status;
 
     ErrorCode(final int status, final String code, final String message) {
         this.status = status;

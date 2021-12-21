@@ -1,50 +1,38 @@
 package nextstep.subway.domain.auth.domain;
 
-public class User {
+public abstract class User {
 
-    private static final int TEENAGER_MINIMUM_AGE = 13;
-    private static final int TEENAGER_MAXIMUM_AGE = 18;
-    private static final int CHILDREN_MINIMUM_AGE = 6;
-    private static final int CHILDREN_MAXIMUM_AGE = 12;
+    protected static final int TEENAGER_MINIMUM_AGE = 13;
+    protected static final int TEENAGER_MAXIMUM_AGE = 18;
+    protected static final int CHILDREN_MINIMUM_AGE = 6;
+    protected static final int CHILDREN_MAXIMUM_AGE = 12;
 
-    private Long id;
-    private String email;
-    private Integer age;
+    protected Long id;
+    protected String email;
+    protected Integer age;
 
-    public User() {
+    protected User() {
     }
 
-    public User(final Long id, final String email, final Integer age) {
+    protected User(final Integer age) {
+        this.age = age;
+    }
+
+    protected User(final Long id, final String email, final Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
     }
 
-    public boolean isChildren() {
-        return this.age >= CHILDREN_MINIMUM_AGE && this.age <= CHILDREN_MAXIMUM_AGE;
-    }
+    public abstract boolean isChildren();
 
-    public boolean isTeenager() {
-        return this.age >= TEENAGER_MINIMUM_AGE && this.age <= TEENAGER_MAXIMUM_AGE;
-    }
+    public abstract boolean isTeenager();
 
-    public User(final Integer age) {
-        this.age = age;
-    }
+    public abstract Long getId();
 
-    public Long getId() {
-        return id;
-    }
+    public abstract String getEmail();
 
-    public String getEmail() {
-        return email;
-    }
+    public abstract Integer getAge();
 
-    public Integer getAge() {
-        return age;
-    }
-
-    public boolean isLoginUser() {
-        return this instanceof LoginUser;
-    }
+    public abstract boolean isLoginUser();
 }
