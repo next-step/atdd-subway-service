@@ -60,7 +60,7 @@ class FareTest {
 
     @ParameterizedTest
     @CsvSource(value = {"6:450","13:720", "19:1250"},delimiter = ':')
-    @DisplayName("노선별 추가 요금이 없는 연령별 할일")
+    @DisplayName("노선별 추가 요금이 없는 연령별 할인")
     void noNAdditionalFearForLineAndDiscountByAge(int age, int expectFare) {
         final List<Line> lines = Arrays.asList(
                 new Line("신분당선", "bg-red-600", new Station("강남역"), new Station("양재역"), new Distance(10), 0),

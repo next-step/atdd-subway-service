@@ -12,13 +12,13 @@ public class AgeFare {
     }
 
     public static int calculateAgeFare(int fare, User user) {
+        if (!user.isLoginUser() || !(user.isTeenager() || user.isChildren())) {
+            return fare;
+        }
         if (user.isTeenager()) {
             return discountAmountByAge(fare, TEENAGER_DISCOUNT_RATE);
         }
-        if (user.isChildren()) {
-            return discountAmountByAge(fare, CHILDREN_DISCOUNT_RATE);
-        }
-        return fare;
+        return discountAmountByAge(fare, CHILDREN_DISCOUNT_RATE);
     }
 
     private static int discountAmountByAge(int fare, double discountRate) {
