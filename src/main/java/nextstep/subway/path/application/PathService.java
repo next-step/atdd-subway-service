@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -28,12 +29,11 @@ public class PathService {
         Station sourceStation = stationService.findById(sourceId);
         Station targetStation = stationService.findById(targetId);
         
-        Lines lines = Lines.of(lineService.findLines());
-        PathFinder pathFinder = PathFinder.of(lines);
+        PathFinder pathFinder = PathFinder.of(Lines.of(lineService.findLines()));
         Path path = pathFinder.findShortestPath(sourceStation, targetStation);
-        path.calculatorFare(lines, age);
+        Fare fare = Fare.of(path.getDistance(), path.getSurcharge(), age);
         
-        return PathResponse.of(path);
+        return PathResponse.of(path, fare);
     }
 
 }

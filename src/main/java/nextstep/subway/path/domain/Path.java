@@ -2,31 +2,37 @@ package nextstep.subway.path.domain;
 
 import java.util.List;
 
-import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
     private List<Station> stations;
     private int distance;
-    private int fare;
+    private int surcharge;
 
     private Path() {
     }
 
-    private Path(List<Station> stations, int distance, int fare) {
+    private Path(List<Station> stations, int distance, int surcharge) {
         this.stations = stations;
         this.distance = distance;
-        this.fare = fare;
+        this.surcharge = surcharge;
     }
 
-    public static Path of(Lines lines, List<Station> stations, int distance, int age) {
-        return new Path(stations, distance, FareCalculator.calculator(lines, stations, distance, age));
+    public static Path of(List<Station> stations, List<SectionEdge> sectionEdges, int distance) {
+        return new Path(stations, distance, calculatorMaxSurcharge(sectionEdges));
     }
     
-    public static Path of(List<Station> stations, int distance) {
-        return new Path(stations, distance, 0);
+    private static int calculatorMaxSurcharge(List<SectionEdge> sectionEdges) {
+        return sectionEdges.stream()
+                .map(SectionEdge::getSection)
+                .map(Section::getLine)
+                .mapToInt(Line::getSurcharge)
+                .max()
+                .orElse(0);
     }
-
+    
     public List<Station> getStations() {
         return stations;
     }
@@ -35,11 +41,8 @@ public class Path {
         return distance;
     }
 
-    public int getFare() {
-        return fare;
+    public int getSurcharge() {
+        return surcharge;
     }
     
-    public void calculatorFare(Lines lines, int age) {
-        this.fare = FareCalculator.calculator(lines, stations, distance, age);
-    }
 }
