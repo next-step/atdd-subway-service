@@ -63,7 +63,7 @@ class FavoriteServiceTest {
     void findLineResponseById() {
         final LoginMember loginMember = LoginMember.of(EMAIL, AGE);
         lenient().when(memberService.findMemberById(anyLong())).thenReturn(Member.of(EMAIL, PASSWORD, AGE));
-        when(favoriteRepository.findByIdAndMemberId(anyLong(), any())).thenReturn(Optional.of(Favorite.of(loginMember.getId(), Station.from(1L, "잠실역").getId(), Station.from(2L, "잠실새내역").getId())));
+        when(favoriteRepository.findByIdMemberId(anyLong(), anyLong())).thenReturn(Optional.of(Favorite.of(loginMember.getId(), Station.from(1L, "잠실역").getId(), Station.from(2L, "잠실새내역").getId())));
         when(stationService.findStationById(anyLong())).thenReturn(Station.from(1L, "잠실역"));
         when(stationService.findStationById(anyLong())).thenReturn(Station.from(2L, "잠실새내역"));
         FavoriteResponse favoriteResponse = favoriteService.findLineResponseById(loginMember, 1L);
