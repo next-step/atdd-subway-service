@@ -34,7 +34,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private StationResponse 남부터미널역;
 
 	@Test
-	@DisplayName("인접 구간이 최단 경로가 아닌 경우 최단 경로를 조회한다")
+	@DisplayName("최단 경로를 조회한다")
 	void findPath() {
 		강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
 		양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
@@ -52,7 +52,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	}
 
 	@Test
-	@DisplayName("최단 경로를 조회한다2")
+	@DisplayName("인접 구간이 최단 경로가 아닌 경우 최단 경로를 조회한다")
 	void findPath2() {
 		강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
 		양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
