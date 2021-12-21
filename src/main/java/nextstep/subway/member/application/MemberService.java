@@ -22,7 +22,7 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponse createMember(MemberRequest request) {
+    public MemberResponse saveMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
     }
