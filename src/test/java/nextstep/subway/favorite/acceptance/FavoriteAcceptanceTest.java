@@ -40,12 +40,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final Integer AGE = 10;
+    private static final String NEWEMAIL = "newemail@email.com";
+    private static final String NEWPASSWORD = "newpassword";
+    private static final Integer NEWAGE = 20;
     private StationResponse 잠실역 = null;
     private StationResponse 잠실나루역 = null;
     private LineResponse 이호선 = null;
     private StationResponse 잠실새내역 = null;
     private MemberResponse 이회원 = null;
     private String 토큰 = null;
+    private String 뉴토큰 = null;
 
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
@@ -70,6 +74,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> findResponse = TestFavoriteFactory.즐겨찾기_목록_조회_요청(토큰, 즐겨찾기.getId());
         // then
         TestFavoriteFactory.즐겨찾기_목록_조회_요청됨(findResponse);
+
+        //given
+        TestMemberFactory.회원_등록_요청(NEWEMAIL, NEWPASSWORD, NEWAGE);
+        뉴토큰 = TestLoginFactory.로그인_요청(NEWEMAIL, NEWPASSWORD).as(TokenResponse.class).getAccessToken();
+        // when
+        ExtractableResponse<Response> newTokenDeleteResponse = TestFavoriteFactory.즐겨찾기_삭제_요청(뉴토큰, 즐겨찾기.getId());
+        // then
+        TestFavoriteFactory.즐겨찾기_삭제_실패됨(newTokenDeleteResponse);
 
         // when
         ExtractableResponse<Response> deleteResponse = TestFavoriteFactory.즐겨찾기_삭제_요청(토큰, 즐겨찾기.getId());
