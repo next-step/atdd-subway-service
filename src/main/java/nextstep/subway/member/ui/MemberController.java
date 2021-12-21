@@ -22,7 +22,7 @@ public class MemberController {
     @PostMapping("")
     public ResponseEntity<MemberResponse> createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
-        return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
+        return ResponseEntity.created(URI.create("/members/" + member.getId())).body(member);
     }
 
     @GetMapping("{id}")
