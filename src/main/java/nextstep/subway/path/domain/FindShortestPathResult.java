@@ -11,8 +11,9 @@ import nextstep.subway.station.dto.StationResponse;
 public class FindShortestPathResult {
 	public static final int MINIMUM_PATH_FINDING_RESULT_STATION_COUNT = 2;
 	public static final int MINIMUM_PATH_FINDING_RESULT_DISTANCE = 1;
-	List<StationResponse> stationResponses;
-	int distance;
+
+	private final List<StationResponse> stationResponses;
+	private final int distance;
 
 	public FindShortestPathResult(List<Station> stations, int distance) {
 		validate(stations, distance);
