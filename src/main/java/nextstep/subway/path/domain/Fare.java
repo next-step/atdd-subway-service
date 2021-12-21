@@ -31,8 +31,8 @@ public class Fare {
         return new Fare(this.fare + DEFAULT_FARE);
     }
 
-    public Fare deduct(int deductFare, int teenagerDiscountRate) {
-        BigDecimal rate = BigDecimal.valueOf(100 - teenagerDiscountRate).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+    public Fare deduct(int deductFare, DiscountPolicy discountPolicy) {
+        BigDecimal rate = BigDecimal.valueOf(100 - discountPolicy.getRate()).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
         return new Fare(BigDecimal.valueOf(this.fare - deductFare).multiply(rate).intValue());
     }
 

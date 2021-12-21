@@ -6,6 +6,7 @@ public class DistanceFareCalculator {
     private static final int EIGHT_KM = 8;
     private static final int TEN = 10;
     private static final int FIFTY = 50;
+    private static final int ZERO = 0;
 
     public static Fare calculateByDistance(double totalDistance) {
         if (moreTenLessFiftyDistance(totalDistance)) {
@@ -16,7 +17,7 @@ public class DistanceFareCalculator {
             return new Fare(calculateOverFare(FIFTY - TEN, FIVE_KM) + calculateOverFare(totalDistance - FIFTY, EIGHT_KM));
         }
 
-        return new Fare(0);
+        return new Fare(ZERO);
     }
 
     private static boolean moreFiftyDistance(double totalDistance) {
