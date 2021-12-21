@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class DijkstraShortestTest {
+public class DijkstraPathFinderTest {
 
     private Station 교대역 = null;
     private Station 강남역 = null;
@@ -87,7 +87,7 @@ public class DijkstraShortestTest {
     @Test
     void pathFinder() {
         // when
-        DijkstraShortest dijkstraShortest = new DijkstraShortest();
+        DijkstraPathFinder dijkstraShortest = new DijkstraPathFinder();
         Path path = dijkstraShortest.getShortestPath(전라인, 교대역, 양재역);
 
         // then
@@ -102,7 +102,7 @@ public class DijkstraShortestTest {
     @Test
     void pathFinder_예외1() {
         // when
-        DijkstraShortest dijkstraShortest = new DijkstraShortest();
+        DijkstraPathFinder dijkstraShortest = new DijkstraPathFinder();
 
         // then
         assertThatThrownBy(() -> dijkstraShortest.getShortestPath(전라인, 교대역, 교대역))
@@ -114,7 +114,7 @@ public class DijkstraShortestTest {
     @Test
     void pathFinder_예외2() {
         // when
-        DijkstraShortest dijkstraShortest = new DijkstraShortest();
+        DijkstraPathFinder dijkstraShortest = new DijkstraPathFinder();
         assertThatThrownBy(() -> dijkstraShortest.getShortestPath(전라인, 교대역, 이수역))
                 .isInstanceOf(PathDisconnectedException.class)
                 .hasMessage("요청한 경로는 연결되어 있지 않습니다.");
@@ -124,8 +124,8 @@ public class DijkstraShortestTest {
     @Test
     void pathFinder_예외3() {
         // when
-        DijkstraShortest dijkstraShortest = new DijkstraShortest();
-        assertThatThrownBy(() -> dijkstraShortest.getShortestPath(전라인, 교대역, Station.from("존재하지않는역")))
+        DijkstraPathFinder dijkstraPathFinder = new DijkstraPathFinder();
+        assertThatThrownBy(() -> dijkstraPathFinder.getShortestPath(전라인, 교대역, Station.from("존재하지않는역")))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("해당 정보는 존재하지 않습니다.");
     }
