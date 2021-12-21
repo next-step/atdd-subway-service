@@ -4,11 +4,13 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.Arrays;
+import java.util.List;
 
 @Entity
 public class Section {
 
     private static final int MATCHED_STATION_COUNT = 1;
+    private static final int VALID_CONNECTED_STATIONS = 2;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -108,6 +110,15 @@ public class Section {
     public void merge(final Section mergeSection) {
         this.downStation = mergeSection.getDownStation();
         this.distance = this.distance.add(mergeSection.getDistance());
+    }
+
+    public int getDistanceOfSection(final List<Station> stations) {
+        long foundCount = stations
+                .stream()
+                .filter(station -> station.equals(this.getUpStation()) || station.equals(this.getDownStation()))
+                .count();
+
+        return foundCount == VALID_CONNECTED_STATIONS ? this.getDistance().getDistance() : 0;
     }
 
 }
