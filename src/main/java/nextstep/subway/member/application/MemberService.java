@@ -3,6 +3,7 @@ package nextstep.subway.member.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -25,6 +26,14 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberResponse findMemberResponse(Long id) {
         return MemberResponse.of(findById(id));
+    }
+    
+    @Transactional(readOnly = true)
+    public MemberResponse findMemberResponse(LoginMember loginMember) {
+        if (loginMember.isGuest()) {
+            throw new IllegalArgumentException("계정이 없습니다.");
+        }
+        return findMemberResponse(loginMember.getId());
     }
     
     @Transactional(readOnly = true)
