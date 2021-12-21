@@ -11,9 +11,18 @@ import java.util.List;
 public class PathInfoService {
     public PathInfo calculatePathInfo(List<Line> lines, Station source, Station target) {
         GraphPath<Station, SectionWeightedEdge> shortestPath = PathFinder.of(lines).findShortestPath(source, target);
-        Fare totalFare = FareCalculator.calculate(shortestPath.getWeight());
+        Fare additionalFare = calculateAdditionalFare(shortestPath);
 
+        return PathInfo.of(shortestPath, totalFare(additionalFare));
+    }
 
-        return PathInfo.of(shortestPath, totalFare);
+    private Fare calculateAdditionalFare(GraphPath<Station, SectionWeightedEdge> shortestPath) {
+        Fare additionalFareByDistance = DistanceFareCalculator.calculateByDistance(shortestPath.getWeight());
+        Fare additionalFareByLine = LineFareCalculator.calculateByLine(shortestPath.getEdgeList());
+        return additionalFareByDistance.plus(additionalFareByLine);
+    }
+
+    private Fare totalFare(Fare additionalFare) {
+        return additionalFare.plusDefaultFare();
     }
 }

@@ -45,7 +45,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10));
         이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 5));
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5));
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 1000));
 
         지하철_노선에_구간_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -64,7 +64,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단경로_조회_요청(교대역, 양재역);
 
         // 교대 , 남부터미널, 양재, distance = 5
-        최단경로_조회_성공(5, response, 교대역,남부터미널역,양재역);
+        최단경로_조회_성공(5, response, 교대역, 남부터미널역, 양재역);
     }
 
     private void 최단경로_조회_성공(int totalDistance, ExtractableResponse<Response> response, StationResponse... stations) {
@@ -72,7 +72,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
         assertThat(pathResponse.getStationIds()).containsExactlyElementsOf(지하철역_아이디_조회(stations));
-        assertThat(pathResponse.getFare()).isEqualTo(Fare.getDefaultFare());
+        assertThat(pathResponse.getFare()).isEqualTo(Fare.plusFareFromDefaultFare(삼호선.getAdditionalFare()));
     }
 
     private List<Long> 지하철역_아이디_조회(StationResponse... stations) {

@@ -6,22 +6,27 @@ public class Fare {
     private static final int DEFAULT_FARE = 1250;
     private int fare;
 
-    public Fare() {}
+    public Fare() {
+    }
 
     public Fare(int fare) {
         this.fare = fare;
-    }
-
-    public static Fare getTotalFare(int calculateOverFare) {
-        return new Fare(DEFAULT_FARE + calculateOverFare);
     }
 
     public int getFare() {
         return fare;
     }
 
-    public static Fare getDefaultFare() {
-        return new Fare(DEFAULT_FARE);
+    public static Fare plusFareFromDefaultFare(int additionalFare) {
+        return new Fare(DEFAULT_FARE + additionalFare);
+    }
+
+    public Fare plus(Fare otherFare) {
+        return new Fare(this.fare + otherFare.getFare());
+    }
+
+    public Fare plusDefaultFare() {
+        return new Fare(this.fare + DEFAULT_FARE);
     }
 
     @Override
