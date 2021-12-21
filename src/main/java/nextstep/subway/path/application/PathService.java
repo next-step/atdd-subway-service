@@ -18,12 +18,11 @@ import java.util.List;
 public class PathService {
     private final LineRepository lineRepository;
     private final StationService stationService;
-    private final PathStrategy pathStrategy;
+    private final PathStrategy pathStrategy = new DijkstraShortest();
 
     public PathService(final LineRepository lineRepository, final StationService stationService) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
-        this.pathStrategy = new DijkstraShortest();
     }
 
     public PathResponse findShortestPath(final LoginMember loginMember, final Long source, final Long target) {
