@@ -44,7 +44,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 			MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
 		MemberAcceptanceTest.회원_생성됨(memberCreateResponse);
 
-		ExtractableResponse<Response> response = MemberAcceptanceTest.내_정보_조회_요청함("asdfsad");
+		ExtractableResponse<Response> response = MemberAcceptanceTest.내_정보_조회_요청함("INVALID_TOKEN");
 		정보_조회_요청_실패함(response);
 	}
 
