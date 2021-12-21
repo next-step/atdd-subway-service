@@ -76,3 +76,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] 내 정보 조회 기능 인수 테스트 작성
 - [x] 즐겨찾기 기능 인수 테스트 구현
 - [x] 즐겨찾기 기능 구현
+
+## 기능목록정리 - 요금 조회
+
+- [ ] 인수테스트 수정 (응답에 요금 정보 포함)
+- [ ] 거리별 요금 정책 추가
+- [ ] 연령별 할인 정책 추가
