@@ -21,6 +21,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final int AGE = 20;
+    private static final int KIDS_AGE = 17;
+    private static final int CHILD_AGE = 10;
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -160,7 +162,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathsAndDiscountFare_Child() {
         // given
-        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        회원_등록되어_있음(EMAIL, PASSWORD, CHILD_AGE);
         String 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
 
         // when
@@ -178,7 +180,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathsAndDiscountFare_Kids() {
         // given
-        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        회원_등록되어_있음(EMAIL, PASSWORD, KIDS_AGE);
         String 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
 
         // when
