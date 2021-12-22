@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.Member;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -29,7 +30,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findShortestPath(LoginMember loginMember, Long startStationId, Long destinationStationId) {
+    public PathResponse findShortestPath(Member loginMember, Long startStationId, Long destinationStationId) {
         List<Line> lines = lineService.findAllLines();
 
         Station source = stationService.findStationById(startStationId);

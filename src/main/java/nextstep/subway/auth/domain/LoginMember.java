@@ -1,6 +1,6 @@
 package nextstep.subway.auth.domain;
 
-public class LoginMember {
+public class LoginMember implements Member {
     private Long id;
     private String email;
     private Integer age;
@@ -26,11 +26,20 @@ public class LoginMember {
         return age;
     }
 
-    public boolean isTeenager() {
-        return 13 <= age && age < 19;
+    public AgeGroup getAgeGroup() {
+        if (13 <= age && age < 19) {
+            return AgeGroup.TEENAGER;
+        }
+
+        if (6 <= age && age < 13) {
+            return AgeGroup.KID;
+        }
+
+        return AgeGroup.NORMAL;
     }
 
-    public boolean isKid() {
-        return 6 <= age && age < 13;
+    @Override
+    public boolean isLoginMember() {
+        return true;
     }
 }

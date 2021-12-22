@@ -1,5 +1,6 @@
 package nextstep.subway.member.application;
 
+import nextstep.subway.auth.domain.NonLoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -38,4 +39,6 @@ public class MemberService {
     public Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow( () -> new NotFoundMemberException("회원이 존재하지 않습니다"));
     }
+
+
 }
