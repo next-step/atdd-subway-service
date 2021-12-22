@@ -61,7 +61,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         PathResponse 강남역_남부터미널역 = 강남역_남부터미널역_경로.as(PathResponse.class);
-        경로_확인(강남역_남부터미널역, 12, 강남역, 교대역, 남부터미널역);
+        경로_확인(강남역_남부터미널역, 12, 강남역, 양재역, 남부터미널역);
     }
 
     private void 지하철_노선에_지하철역_등록되어_있음(LineResponse lineResponse, StationResponse upStationResponse, StationResponse downStation, int distance) {

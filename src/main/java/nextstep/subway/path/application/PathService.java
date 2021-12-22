@@ -59,8 +59,11 @@ public class PathService {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = createGraphFromLines(lines);
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
-        return Optional.ofNullable(dijkstraShortestPath.getPath(sourceStation, targetStation))
-                .orElseThrow(() -> new IllegalArgumentException("출발역과 도착역이 이어진 경로가 없습니다."));
+        try {
+            return dijkstraShortestPath.getPath(sourceStation, targetStation);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("출발역과 도착역이 이어진 경로가 없습니다.");
+        }
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> createGraphFromLines(List<Line> lines) {
