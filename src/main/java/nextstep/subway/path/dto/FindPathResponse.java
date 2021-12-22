@@ -2,6 +2,7 @@ package nextstep.subway.path.dto;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import nextstep.subway.path.domain.FindShortestPathResult;
 import nextstep.subway.station.dto.StationResponse;
@@ -16,7 +17,10 @@ public class FindPathResponse {
 	}
 
 	public static FindPathResponse of(FindShortestPathResult findShortestPathResult) {
-		List<StationResponse> path = findShortestPathResult.getStations();
+		List<StationResponse> path = findShortestPathResult.getStations()
+			.stream()
+			.map(StationResponse::of)
+			.collect(Collectors.toList());
 		int distance = findShortestPathResult.getDistance();
 
 		return new FindPathResponse(path, distance);

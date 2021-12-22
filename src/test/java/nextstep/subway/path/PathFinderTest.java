@@ -23,7 +23,6 @@ import nextstep.subway.path.domain.FindShortestPathResult;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.StationTest;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 public class PathFinderTest {
 	private Line 신분당선;
@@ -59,8 +58,7 @@ public class PathFinderTest {
 
 		assertThat(path.getStations()).isEqualTo(
 			Arrays.asList(
-				StationResponse.of(StationTest.삼성역), StationResponse.of(StationTest.강남역),
-				StationResponse.of(StationTest.역삼역)
+				StationTest.삼성역, StationTest.강남역, StationTest.역삼역
 			));
 		assertThat(path.getDistance()).isEqualTo(9);
 	}
@@ -100,9 +98,7 @@ public class PathFinderTest {
 
 		assertThat(path.getStations()).isEqualTo(
 			Arrays.asList(
-				StationResponse.of(StationTest.삼성역), StationResponse.of(가로지르는역1),
-				StationResponse.of(가로지르는역2), StationResponse.of(가로지르는역3),
-				StationResponse.of(StationTest.역삼역)
+				StationTest.삼성역, 가로지르는역1, 가로지르는역2, 가로지르는역3, StationTest.역삼역
 			));
 		assertThat(path.getDistance()).isEqualTo(4);
 	}

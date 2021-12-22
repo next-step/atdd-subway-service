@@ -2,25 +2,20 @@ package nextstep.subway.path.domain;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import nextstep.subway.common.exception.InternalServerException;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 public class FindShortestPathResult {
 	public static final int MINIMUM_PATH_FINDING_RESULT_STATION_COUNT = 2;
 	public static final int MINIMUM_PATH_FINDING_RESULT_DISTANCE = 1;
 
-	private final List<StationResponse> stationResponses;
+	private final List<Station> stations;
 	private final int distance;
 
 	public FindShortestPathResult(List<Station> stations, int distance) {
 		validate(stations, distance);
-		this.stationResponses = stations
-			.stream()
-			.map(StationResponse::of)
-			.collect(Collectors.toList());
+		this.stations = stations;
 		this.distance = distance;
 	}
 
@@ -34,8 +29,8 @@ public class FindShortestPathResult {
 		}
 	}
 
-	public List<StationResponse> getStations() {
-		return stationResponses;
+	public List<Station> getStations() {
+		return stations;
 	}
 
 	public int getDistance() {
@@ -49,11 +44,11 @@ public class FindShortestPathResult {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		FindShortestPathResult that = (FindShortestPathResult)o;
-		return distance == that.distance && Objects.equals(stationResponses, that.stationResponses);
+		return distance == that.distance && Objects.equals(stations, that.stations);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(stationResponses, distance);
+		return Objects.hash(stations, distance);
 	}
 }
