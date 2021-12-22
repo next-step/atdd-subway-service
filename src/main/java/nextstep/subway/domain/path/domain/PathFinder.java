@@ -34,7 +34,7 @@ public class PathFinder {
         path.createEdge(lines);
     }
 
-    public Route findShortestRoute(Long source, Long target) {
+    public Route findShortestRoute(Long source, Long target, List<Line> lines) {
         existStationValidator(stations, source, target);
         sameDepartureAndArrivalStationValidator(source, target);
 
@@ -43,14 +43,9 @@ public class PathFinder {
 
         final List<Station> vertex = path.getVertex(stations, stationStart, stationEnd);
         final Distance distance = path.getWeight(stationStart, stationEnd);
+        List<Section> shortestSection = findShortestSection(lines, vertex);
 
-        return new Route(vertex, distance);
-    }
-
-    public List<Line> findShortestLine(List<Line> lines, Route route) {
-        return findShortestSection(lines, route.getStations()).stream()
-                .map(Section::getLine)
-                .collect(Collectors.toList());
+        return new Route(vertex, shortestSection, distance);
     }
 
     private List<Section> findShortestSection(List<Line> lines, List<Station> stations) {

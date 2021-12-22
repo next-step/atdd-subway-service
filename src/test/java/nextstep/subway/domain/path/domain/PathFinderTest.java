@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -29,10 +30,11 @@ class PathFinderTest {
         final Line 이호선 = new Line("이호선", "bg-green-400", 교대역, 강남역, new Distance(10));
         final Line 삼호선 = new Line("삼호선", "bg-orange-200", 교대역, 양재역, new Distance(5));
         삼호선.addSection(교대역, 남부터미널역, new Distance(3));
+        List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
 
         // when
-        final PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
-        final Route shortestRoute = pathFinder.findShortestRoute(교대역.getId(), 양재역.getId());
+        final PathFinder pathFinder = new PathFinder(lines);
+        final Route shortestRoute = pathFinder.findShortestRoute(교대역.getId(), 양재역.getId(), lines);
 
         // then
         assertAll(() -> {
@@ -52,7 +54,7 @@ class PathFinderTest {
         // when
         final PathFinder pathFinder = new PathFinder(Arrays.asList(이호선));
         assertThrows(SameDepartureAndArrivalStationException.class,
-                () -> pathFinder.findShortestRoute(교대역.getId(), 교대역.getId()));
+                () -> pathFinder.findShortestRoute(교대역.getId(), 교대역.getId(), Arrays.asList(이호선)));
     }
 
     @Test
@@ -70,7 +72,7 @@ class PathFinderTest {
 
         // when
         assertThrows(NotConnectedStation.class,
-                () -> pathFinder.findShortestRoute(교대역.getId(), 동작역.getId()));
+                () -> pathFinder.findShortestRoute(교대역.getId(), 동작역.getId(), Arrays.asList(이호선,구호선)));
     }
 
     @Test
@@ -85,6 +87,6 @@ class PathFinderTest {
 
         // when
         assertThrows(StationNotFoundException.class,
-                () -> pathFinder.findShortestRoute(교대역.getId(), 100L));
+                () -> pathFinder.findShortestRoute(교대역.getId(), 1000L, Arrays.asList(이호선)));
     }
 }
