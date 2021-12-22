@@ -23,7 +23,7 @@ public enum DiscountPolicy {
             .orElse(ADULT);
     }
 
-    public double reduce(int fare) {
+    public double reduce(double fare) {
         return fare * rate;
     }
 

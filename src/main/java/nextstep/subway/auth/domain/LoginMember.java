@@ -53,4 +53,5 @@ public class LoginMember {
     public int hashCode() {
         return Objects.hash(id, email, age);
     }
+
 }
