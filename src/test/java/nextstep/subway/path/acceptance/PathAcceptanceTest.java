@@ -91,7 +91,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_경로_조회_응답됨(최단_경로_조회_응답);
-        최단_경로_거리_일치됨(최단_경로_조회_응답, 12);
+        최단_경로_거리_일치됨(최단_경로_조회_응답, 7);
         최단_경로_목록_일치됨(최단_경로_조회_응답, 강남역.getId(), 양재역.getId(), 남부터미널역.getId());
     }
 
@@ -113,14 +113,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathsAddFare_TenToFifty() {
         // when
-        // v 남부터미널역 > 양재역 > 매봉역 : 22
+        // v 남부터미널역 > 양재역 > 매봉역 : 22, 1850
         ExtractableResponse<Response> 최단_경로_조회_응답 = 최단_경로_조회_요청(남부터미널역.getId(), 매봉역.getId());
 
         // then
         최단_경로_조회_응답됨(최단_경로_조회_응답);
-        최단_경로_거리_일치됨(최단_경로_조회_응답, 12);
+        최단_경로_거리_일치됨(최단_경로_조회_응답, 22);
         최단_경로_목록_일치됨(최단_경로_조회_응답, 남부터미널역.getId(), 양재역.getId(), 매봉역.getId());
-        최단_경로_요금_일치됨(최단_경로_조회_응답, 1450);
+        최단_경로_요금_일치됨(최단_경로_조회_응답, 1850);
     }
 
 
@@ -133,9 +133,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_경로_조회_응답됨(최단_경로_조회_응답);
-        최단_경로_거리_일치됨(최단_경로_조회_응답, 12);
+        최단_경로_거리_일치됨(최단_경로_조회_응답, 60);
         최단_경로_목록_일치됨(최단_경로_조회_응답, 교대역.getId(), 강남역.getId(), 역삼역.getId());
-        최단_경로_요금_일치됨(최단_경로_조회_응답, 2150);
+        최단_경로_요금_일치됨(최단_경로_조회_응답, 3150);
+    }
+
+    @DisplayName("지하철 최단 경로 조회 - 노선 부과 요금")
+    @Test
+    void findPathsAddFare_LineAddFare() {
+        // when
+        // v 교대역 > 강남역 > 역삼역 : 60
+        ExtractableResponse<Response> 최단_경로_조회_응답 = 최단_경로_조회_요청(역삼역.getId(), 남부터미널역.getId());
+
+        // then
+        최단_경로_조회_응답됨(최단_경로_조회_응답);
+        최단_경로_거리_일치됨(최단_경로_조회_응답, 57);
+        최단_경로_목록_일치됨(최단_경로_조회_응답, 역삼역.getId(), 강남역.getId(), 양재역.getId(), 남부터미널역.getId());
+        최단_경로_요금_일치됨(최단_경로_조회_응답, 3050);
     }
 
 
@@ -146,8 +160,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 최단_경로_조회_응답 = 최단_경로_조회_요청(강남역.getId(), 강남역.getId());
 
         // then
-        최단_경로_조회_응답됨(최단_경로_조회_응답);
-        최단_경로_거리_일치됨(최단_경로_조회_응답, 12);
         최단_경로_조회_실패됨(최단_경로_조회_응답);
     }
 
