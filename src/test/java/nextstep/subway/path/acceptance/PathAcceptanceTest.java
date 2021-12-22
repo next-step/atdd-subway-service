@@ -2,6 +2,7 @@ package nextstep.subway.path.acceptance;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTestHelper.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestHelper.*;
+import static nextstep.subway.member.MemberAcceptanceTestHelper.*;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestHelper.*;
 import static nextstep.subway.station.StationAcceptanceTestHelper.*;
 
@@ -17,6 +18,10 @@ import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final int AGE = 20;
+
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -123,7 +128,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_요금_일치됨(최단_경로_조회_응답, 1850);
     }
 
-
     @DisplayName("지하철 최단 경로 조회 - 거리 50km 초과")
     @Test
     void findPathsAddFare_MoreThanFifty() {
@@ -152,6 +156,41 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_요금_일치됨(최단_경로_조회_응답, 3050);
     }
 
+    @DisplayName("지하철 최단 경로 조회 - 로그인 회원 어린이 할인 50% ")
+    @Test
+    void findPathsAndDiscountFare_Child() {
+        // given
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        String 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+
+        // when
+        // v 교대역 > 강남역 > 역삼역 : 60
+        ExtractableResponse<Response> 최단_경로_조회_응답 = 최단_경로_조회_요청(사용자, 역삼역.getId(), 남부터미널역.getId());
+
+        // then
+        최단_경로_조회_응답됨(최단_경로_조회_응답);
+        최단_경로_거리_일치됨(최단_경로_조회_응답, 57);
+        최단_경로_목록_일치됨(최단_경로_조회_응답, 역삼역.getId(), 강남역.getId(), 양재역.getId(), 남부터미널역.getId());
+        최단_경로_요금_일치됨(최단_경로_조회_응답, 1525);
+    }
+
+    @DisplayName("지하철 최단 경로 조회 - 로그인 회원 청소년 할인 30%")
+    @Test
+    void findPathsAndDiscountFare_Kids() {
+        // given
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        String 사용자 = 로그인되어_있음(EMAIL, PASSWORD);
+
+        // when
+        // v 교대역 > 강남역 > 역삼역 : 60
+        ExtractableResponse<Response> 최단_경로_조회_응답 = 최단_경로_조회_요청(사용자, 역삼역.getId(), 남부터미널역.getId());
+
+        // then
+        최단_경로_조회_응답됨(최단_경로_조회_응답);
+        최단_경로_거리_일치됨(최단_경로_조회_응답, 57);
+        최단_경로_목록_일치됨(최단_경로_조회_응답, 역삼역.getId(), 강남역.getId(), 양재역.getId(), 남부터미널역.getId());
+        최단_경로_요금_일치됨(최단_경로_조회_응답, 2135);
+    }
 
     @DisplayName("출발역과 도착역이 같은 경우")
     @Test

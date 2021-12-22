@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -13,6 +14,18 @@ import io.restassured.response.Response;
 import nextstep.subway.station.dto.StationResponse;
 
 public class PathAcceptanceTestHelper {
+
+    public static ExtractableResponse<Response> 최단_경로_조회_요청(String token, Long sourceId, Long targetId) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(token)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .queryParam("source", sourceId)
+            .queryParam("target", targetId)
+            .when().get("/paths")
+            .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceId, Long targetId) {
         return RestAssured
             .given().log().all()
