@@ -74,4 +74,9 @@ public class Line extends BaseEntity {
     public int getExtraFare() {
         return extraFare;
     }
+
+    public void changeExtraFare(int extraFare) {
+        this.extraFare = extraFare;
+    }
+
 }
