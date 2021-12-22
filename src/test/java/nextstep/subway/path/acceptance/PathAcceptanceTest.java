@@ -1,4 +1,4 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
 
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
@@ -9,6 +9,7 @@ import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 
 @DisplayName("지하철 경로 조회")
@@ -43,6 +44,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "orange", 교대역, 양재역, 5);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+    }
+
+    @DisplayName("경로 조회 기능")
+    @Test
+    void managePathFunction() {
+        // when
+        // 경로 조회
+
+        // then
+        // 확인
     }
 
     private void 지하철_노선에_지하철역_등록되어_있음(LineResponse lineResponse, StationResponse upStationResponse, StationResponse downStation, int distance) {
