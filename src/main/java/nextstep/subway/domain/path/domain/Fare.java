@@ -1,10 +1,7 @@
 package nextstep.subway.domain.path.domain;
 
 import nextstep.subway.domain.auth.domain.User;
-import nextstep.subway.domain.line.domain.Distance;
-import nextstep.subway.domain.line.domain.Line;
 
-import java.util.List;
 import java.util.Objects;
 
 public class Fare {
@@ -19,11 +16,11 @@ public class Fare {
         this.amount = amount;
     }
 
-    public static Fare calculate(final Distance distance, List<Line> lines, User user) {
+    public static Fare calculate(final Route route, User user) {
         int fare = DEFAULT_AMOUNT;
 
-        fare += ExtraDistanceFare.calculateExtraDistanceFare(distance.getDistance());
-        fare += LineFare.calculateLineFare(lines);
+        fare += ExtraDistanceFare.calculateExtraDistanceFare(route.getDistance().getDistance());
+        fare += LineFare.calculateLineFare(route.getSections());
         fare = AgeFare.calculateAgeFare(fare, user);
 
         return new Fare(fare);
