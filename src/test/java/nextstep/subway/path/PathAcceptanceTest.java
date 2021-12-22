@@ -33,13 +33,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 수서역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
-     * |                        |
+     * |                            |
      * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
+     * |                            |
+     * 남부터미널역  --- *3호선* --- 양재역  --- *3호선* ---  수서역
      */
     @BeforeEach
     public void setUp() {
@@ -49,33 +50,42 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        수서역 = StationAcceptanceTest.지하철역_등록되어_있음("수서역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 15)).as(LineResponse.class);
 
-        지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+        지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 10);
+        지하철_노선에_지하철역_등록되어_있음(삼호선, 양재역, 수서역, 40);
     }
 
     @DisplayName("두 역의 최단 거리 경로를 조회한다.")
     @Test
     void shortestPath() {
         // when
-        ExtractableResponse<Response> response = 거리_경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> response1 = 최단_거리_경로_조회_요청(교대역, 남부터미널역);
 
         // then
-        최단_거리_경로_응답_성공(response);
-        적절한_경로를_응답(response, Arrays.asList(교대역, 남부터미널역, 양재역));
-        총_소요_거리를_응답(response, 5);
+        최단_거리_경로_응답_성공(response1);
+        최단_경로와_총_소요_거리와_적절한_요금을_응답(response1, Arrays.asList(교대역, 남부터미널역), 10, 1250);
 
+        // when
+        ExtractableResponse<Response> response2 = 최단_거리_경로_조회_요청(교대역, 양재역);
+
+        // then
+        최단_거리_경로_응답_성공(response2);
+        최단_경로와_총_소요_거리와_적절한_요금을_응답(response2, Arrays.asList(교대역, 남부터미널역, 양재역), 15, 1350);
+
+        // when
+        ExtractableResponse<Response> response3 = 최단_거리_경로_조회_요청(교대역, 수서역);
+
+        // then
+        최단_거리_경로_응답_성공(response3);
+        최단_경로와_총_소요_거리와_적절한_요금을_응답(response3, Arrays.asList(교대역, 남부터미널역, 양재역, 수서역), 55, 2050);
     }
 
-    private void 총_소요_거리를_응답(ExtractableResponse<Response> response, int totalDistance) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
-    }
-
-    private void 적절한_경로를_응답(ExtractableResponse<Response> response, List<StationResponse> stations) {
+    private void 최단_경로와_총_소요_거리와_적절한_요금을_응답(ExtractableResponse<Response> response, List<StationResponse> stations, int totalDistance, int fare) {
         PathResponse pathResponse = response.as(PathResponse.class);
         List<Long> resultIds = pathResponse.getStations().stream()
                 .map(it -> it.getId())
@@ -84,13 +94,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
         assertThat(resultIds).isEqualTo(expectedIds);
+        assertThat(pathResponse.getDistance()).isEqualTo(totalDistance);
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 
     private void 최단_거리_경로_응답_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> 거리_경로_조회_요청(StationResponse upStation, StationResponse downStation) {
+    private ExtractableResponse<Response> 최단_거리_경로_조회_요청(StationResponse upStation, StationResponse downStation) {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

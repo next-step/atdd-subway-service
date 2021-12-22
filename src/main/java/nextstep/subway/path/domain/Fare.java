@@ -1,0 +1,20 @@
+package nextstep.subway.path.domain;
+
+public class Fare {
+    public static final int DEFAULT_FARE = 1250;
+
+    private final int fare;
+
+    private Fare(int fare) {
+        this.fare = fare;
+    }
+
+    public static Fare of(int distance) {
+        int chargeByDistance = DistanceChargeRule.calculateChargeByDistance(distance);
+        return new Fare(DEFAULT_FARE + chargeByDistance);
+    }
+
+    public int getFare() {
+        return fare;
+    }
+}

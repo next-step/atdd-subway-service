@@ -8,6 +8,7 @@ import java.util.List;
 public class SubwayPath {
     private List<Station> stations;
     private int distance;
+    private Fare fare;
 
     public SubwayPath() {
     }
@@ -15,6 +16,7 @@ public class SubwayPath {
     public SubwayPath(List<Station> stations, int distance) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = fare.of(distance);
     }
 
     public List<Station> getStations() {
@@ -23,5 +25,9 @@ public class SubwayPath {
 
     public int getDistance() {
         return distance;
+    }
+
+    public Fare getFare() {
+        return fare;
     }
 }
