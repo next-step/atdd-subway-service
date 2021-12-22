@@ -1,6 +1,6 @@
 package nextstep.subway.domain.path.dto;
 
-import nextstep.subway.domain.path.domain.Fare;
+import nextstep.subway.domain.path.domain.Amount;
 import nextstep.subway.domain.path.domain.Route;
 
 import java.time.LocalDateTime;
@@ -34,11 +34,11 @@ public class PathFinderResponse {
         return fare;
     }
 
-    public static PathFinderResponse of(Route route, final Fare fare) {
+    public static PathFinderResponse of(Route route, final Amount amount) {
         List<Station> shortestRoute = route.getStations().stream()
                 .map(Station::of)
                 .collect(Collectors.toList());
-        return new PathFinderResponse(shortestRoute, route.getDistance().getDistance(), fare.getAmount());
+        return new PathFinderResponse(shortestRoute, route.getDistance().getDistance(), amount.getAmount());
     }
 
     public static class Station {

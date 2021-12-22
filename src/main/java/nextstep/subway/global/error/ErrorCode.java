@@ -21,7 +21,12 @@ public enum ErrorCode {
     // Path
     SAME_DEPARTURE_AND_ARRIVAL_STATION(400, "P001", "출발역과 도착역이 동일합니다."),
     NOT_CONNECTED_STATION(400, "P002", "출발역과 도착역이 연결되어 있지 않습니다."),
-    STATION_NOT_FOUND(400, "P003", "출발역 또는 도착역이 존재하지 않습니다");
+    STATION_NOT_FOUND(400, "P003", "출발역 또는 도착역이 존재하지 않습니다"),
+
+    // Amount
+    AMOUNT_NEGATIVE_QUANTITY(400, "A001", "가격은 음수(-)가 될 수 없습니다."),
+    ADDITIONAL_AMOUNT_NEGATIVE_QUANTITY(400, "A002", "추가 가격은 음수(-)가 될 수 없습니다."),
+    DISCOUNT_AMOUNT_POSITIVE_QUANTITY(400, "A003", "할인 가격은 양수(-)가 될 수 없습니다.");
 
     private final String code;
     private final String message;

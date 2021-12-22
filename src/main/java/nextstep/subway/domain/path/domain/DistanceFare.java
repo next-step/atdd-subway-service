@@ -1,27 +1,54 @@
 package nextstep.subway.domain.path.domain;
 
-public class ExtraDistanceFare {
+import nextstep.subway.domain.line.domain.Line;
+import nextstep.subway.domain.line.domain.Section;
 
+public class DistanceFare {
+
+    private static final int DEFAULT_AMOUNT = 1250;
     private static final int EXTRA_AMOUNT = 100;
     public static final int DEFAULT_AMOUNT_DISTANCE = 10;
     private static final int ONE_STEP_EXTRA_FARE_MAX_DISTANCE = 50;
     private static final float ONE_STEP_EXTRA_FARE_DISTANCE = 5f;
     private static final float TWO_STEP_EXTRA_FARE_DISTANCE = 8f;
+    private Route route;
 
-    private ExtraDistanceFare() {
+    DistanceFare() {
     }
 
-    public static int calculateExtraDistanceFare(final int distance) {
+    DistanceFare(Route route) {
+        this.route = route;
+    }
+
+    public Amount calculateAmount() {
+        int distance = route.getDistance().getDistance();
+
         if (isExtraDistance(distance)) {
-            int extraAmount = calculateExtraDistanceFare(stepOneExcessDistance(distance), ONE_STEP_EXTRA_FARE_DISTANCE);
-
-            if (isStepTwoExcessDistance(distance)) {
-                extraAmount += calculateExtraDistanceFare(stepTwoExcessDistance(distance), TWO_STEP_EXTRA_FARE_DISTANCE);
-            }
-
-            return extraAmount;
+            return new Amount(getExtraAmount(distance)).plus(lineFareCalculateAmount());
         }
-        return 0;
+
+        return new Amount(DEFAULT_AMOUNT);
+    }
+
+    private int getExtraAmount(int distance) {
+        int extraAmount = calculateExtraDistanceFare(stepOneExcessDistance(distance), ONE_STEP_EXTRA_FARE_DISTANCE);
+
+        if (isStepTwoExcessDistance(distance)) {
+            extraAmount += calculateExtraDistanceFare(stepTwoExcessDistance(distance), TWO_STEP_EXTRA_FARE_DISTANCE);
+        }
+
+        extraAmount += DEFAULT_AMOUNT;
+        return extraAmount;
+    }
+
+    private Amount lineFareCalculateAmount() {
+        int lineFare = route.getSections().stream()
+                .map(Section::getLine)
+                .mapToInt(Line::getExtraFare)
+                .max()
+                .getAsInt();
+
+        return new Amount(lineFare);
     }
 
     private static int stepOneExcessDistance(final int distance) {

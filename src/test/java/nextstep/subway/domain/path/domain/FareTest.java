@@ -54,10 +54,11 @@ class FareTest {
         final Route shortestRoute = pathFinder.findShortestRoute(교대역.getId(), 양재역.getId(), lines);
 
         // when
-        final Fare fare = Fare.calculate(shortestRoute, new AnonymousUser());
+        Fare fare = Fare.create(shortestRoute, new AnonymousUser());
+        Amount amount = fare.calculateAmount();
 
         // then
-        assertThat(fare).isEqualTo(new Fare(1250));
+        assertThat(amount).isEqualTo(new Amount(1250));
     }
 
     @ParameterizedTest
@@ -71,9 +72,10 @@ class FareTest {
         Mockito.when(spyShortestRoute.getDistance()).thenReturn(new Distance(distance));
 
         // when
-        final Fare fare = Fare.calculate(spyShortestRoute, new AnonymousUser());
+        Fare fare = Fare.create(spyShortestRoute, new AnonymousUser());
+        Amount amount = fare.calculateAmount();
 
-        assertThat(fare).isEqualTo(new Fare(fareAmount));
+        assertThat(amount).isEqualTo(new Amount(fareAmount));
     }
 
     @Test
@@ -89,16 +91,17 @@ class FareTest {
         Mockito.when(spyShortestRoute.getDistance()).thenReturn(new Distance(12));
 
         // when
-        final Fare fare = Fare.calculate(spyShortestRoute, new AnonymousUser());
+        Fare fare = Fare.create(spyShortestRoute, new AnonymousUser());
+        Amount amount = fare.calculateAmount();
 
         // then
-        assertThat(fare).isEqualTo(new Fare(1750));
+        assertThat(amount).isEqualTo(new Amount(1750));
     }
 
     @ParameterizedTest
     @CsvSource(value = {"6:450","13:720", "19:1250"},delimiter = ':')
     @DisplayName("노선별 추가 요금이 없는 연령별 할인")
-    void noNAdditionalFearForLineAndDiscountByAge(int age, int expectFare) {
+    void nonAdditionalFearForLineAndDiscountByAge(int age, int expectFare) {
         // given
         final PathFinder pathFinder = new PathFinder(lines);
         final Route shortestRoute = pathFinder.findShortestRoute(교대역.getId(), 양재역.getId(), lines);
@@ -106,9 +109,10 @@ class FareTest {
         Mockito.when(spyShortestRoute.getDistance()).thenReturn(new Distance(10));
 
         // when
-        final Fare fare = Fare.calculate(spyShortestRoute, new LoginUser(age));
+        Fare fare = Fare.create(spyShortestRoute, new LoginUser(age));
+        Amount amount = fare.calculateAmount();
 
-        assertThat(fare).isEqualTo(new Fare(expectFare));
+        assertThat(amount).isEqualTo(new Amount(expectFare));
     }
 
     @ParameterizedTest
@@ -125,8 +129,9 @@ class FareTest {
         Mockito.when(spyShortestRoute.getDistance()).thenReturn(new Distance(12));
 
         // when
-        final Fare fare = Fare.calculate(spyShortestRoute, new LoginUser(age));
+        Fare fare = Fare.create(spyShortestRoute, new LoginUser(age));
+        Amount amount = fare.calculateAmount();
 
-        assertThat(fare).isEqualTo(new Fare(expectFare));
+        assertThat(amount).isEqualTo(new Amount(expectFare));
     }
 }

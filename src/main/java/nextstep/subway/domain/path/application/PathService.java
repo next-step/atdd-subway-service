@@ -29,7 +29,8 @@ public class PathService {
 
         PathFinder pathFinder = new PathFinder(lines);
         Route shortestRoute = pathFinder.findShortestRoute(request.getSource(), request.getTarget(), lines);
+        Fare fare = Fare.create(shortestRoute, user);
 
-        return PathFinderResponse.of(shortestRoute, Fare.calculate(shortestRoute, user));
+        return PathFinderResponse.of(shortestRoute, fare.calculateAmount());
     }
 }

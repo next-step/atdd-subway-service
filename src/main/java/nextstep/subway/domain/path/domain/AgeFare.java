@@ -7,21 +7,31 @@ public class AgeFare {
     private static final double TEENAGER_DISCOUNT_RATE = 0.2;
     private static final double CHILDREN_DISCOUNT_RATE = 0.5;
     private static final int DEFAULT_DISCOUNT_FARE = 350;
+    private static final int AMOUNT_ZERO = 0;
+    private User user;
 
-    private AgeFare() {
+    AgeFare() {
     }
 
-    public static int calculateAgeFare(int fare, User user) {
-        if (!user.isLoginUser() || !(user.isTeenager() || user.isChildren())) {
-            return fare;
+    AgeFare(User user) {
+        this.user = user;
+    }
+
+    public Amount calculateDiscount(Amount amount) {
+        if (!user.isLoginUser() || isAdult()) {
+            return new Amount(AMOUNT_ZERO);
         }
         if (user.isTeenager()) {
-            return discountAmountByAge(fare, TEENAGER_DISCOUNT_RATE);
+            return new Amount(discountAmountByAge(amount, TEENAGER_DISCOUNT_RATE));
         }
-        return discountAmountByAge(fare, CHILDREN_DISCOUNT_RATE);
+        return new Amount(discountAmountByAge(amount, CHILDREN_DISCOUNT_RATE));
     }
 
-    private static int discountAmountByAge(int fare, double discountRate) {
-        return (int) ((fare - DEFAULT_DISCOUNT_FARE) * (1-discountRate));
+    private boolean isAdult() {
+        return !(user.isTeenager() || user.isChildren());
+    }
+
+    private int discountAmountByAge(Amount amount, double discountRate) {
+        return (int) (amount.getAmount() - ((amount.getAmount() - DEFAULT_DISCOUNT_FARE) * (1-discountRate)));
     }
 }
