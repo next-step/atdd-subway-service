@@ -37,4 +37,14 @@ public class FareCalculator {
     private static int calculateOverFare(int distance, int standard) {
         return (int)((Math.ceil((distance - 1) / standard) + 1) * ADD_FARE);
     }
+
+    public static Fare discountFare(int fare, int age) {
+        DiscountPolicy discountPolicy = DiscountPolicy.of(age);
+        int discountFare = (int)discountPolicy.reduce(fare);
+        return new Fare(discountFare);
+    }
+
+    private static double calculateDiscountFare(int fare, double discount) {
+        return fare * discount;
+    }
 }
