@@ -5,7 +5,7 @@ public class FareCalculator {
     }
     
     public static int calculator(int distance, int surcharge, int age) {
-        return AgeDiscountPolicy.discount(DistanceFarePolicy.calculator(distance) + surcharge, age);
+        return AgeDiscountPolicy.discount(DistanceFareCalculator.calculator(distance) + surcharge, age);
     }
 
 }
