@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Lines;
-import nextstep.subway.path.domain.Fare;
+import nextstep.subway.path.domain.FareCalculator;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -32,7 +32,7 @@ public class PathService {
         Lines lines = Lines.of(lineService.findLines());
         PathFinder pathFinder = PathFinder.of(lines);
         Path path = pathFinder.findShortestPath(lines.getAllStations(), sourceStation, targetStation);
-        Fare fare = Fare.of(path.getDistance(), path.getSurcharge(), age);
+        int fare = FareCalculator.calculator(path.getDistance(), path.getSurcharge(), age);
         
         return PathResponse.of(path, fare);
     }
