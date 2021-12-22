@@ -19,4 +19,12 @@ public class PathRequest {
     public long getTarget() {
         return target;
     }
+
+    public void setSource(long source) {
+        this.source = source;
+    }
+
+    public void setTarget(long target) {
+        this.target = target;
+    }
 }

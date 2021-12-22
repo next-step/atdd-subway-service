@@ -7,6 +7,7 @@ import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -35,7 +37,11 @@ public class PathService {
         validateSourceAndTargetStation(sourceStation, targetStation);
 
         GraphPath<Station, DefaultWeightedEdge> graph = findShortestPath(lines, sourceStation, targetStation);
-        return null;
+        List<StationResponse> paths = graph.getVertexList().stream()
+                .map(i -> new StationResponse(i.getId(), i.getName(), i.getCreatedDate(), i.getModifiedDate()))
+                .collect(Collectors.toList());
+
+        return new PathResponse(paths, (int) graph.getWeight());
     }
 
     private void validateSourceAndTargetStation(Station source, Station target) {

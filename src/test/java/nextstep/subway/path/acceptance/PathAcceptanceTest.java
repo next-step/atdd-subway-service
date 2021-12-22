@@ -1,15 +1,22 @@
 package nextstep.subway.path.acceptance;
 
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("지하철 경로 조회")
@@ -50,10 +57,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void managePathFunction() {
         // when
-        // 경로 조회
+        ExtractableResponse<Response> 강남역_남부터미널역_경로 = 경로_조회(강남역, 남부터미널역);
 
         // then
-        // 확인
+        PathResponse 강남역_남부터미널역 = 강남역_남부터미널역_경로.as(PathResponse.class);
+        경로_확인(강남역_남부터미널역, 12, 강남역, 교대역, 남부터미널역);
     }
 
     private void 지하철_노선에_지하철역_등록되어_있음(LineResponse lineResponse, StationResponse upStationResponse, StationResponse downStation, int distance) {
@@ -65,5 +73,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
+    public static ExtractableResponse<Response> 경로_조회(StationResponse sourceStation, StationResponse targetStation) {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source=" + sourceStation.getId() + "&target=" + targetStation.getId())
+                .then().log().all()
+                .extract();
+    }
 
+    public static void 경로_확인(PathResponse pathResponse, int expectDistance, StationResponse... expectStations) {
+        assertThat(pathResponse.getDistance()).isEqualTo(expectDistance);
+        assertThat(pathResponse.getStations()).containsExactly(expectStations);
+    }
 }
