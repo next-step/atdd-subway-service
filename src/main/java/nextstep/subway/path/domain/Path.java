@@ -8,12 +8,12 @@ public class Path {
 
     private final List<Station> stations;
     private final int distance;
-    private final int fare;
+    private final int lineFare;
 
     public Path(List<Station> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
-        this.fare = fare;
+        this.lineFare = fare;
     }
 
     public List<Station> getStations() {
@@ -24,7 +24,7 @@ public class Path {
         return distance;
     }
 
-    public int getFare() {
-        return fare;
+    public int getLineFare() {
+        return lineFare;
     }
 }
