@@ -14,4 +14,8 @@ public class Fare {
     public int getFare() {
         return fare;
     }
+
+    public Fare addFare(int fare) {
+        return new Fare(this.fare + fare);
+    }
 }

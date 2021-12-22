@@ -15,9 +15,11 @@ public class PathFinder {
     public static final String ERROR_START_STATION_NOT_FOUND = "출발역이 찾을 수 없습니다.";
     public static final String ERROR_END_STATION_NOT_FOUND = "도착역을 찾을 수 없습니다.";
 
+    private final List<Line> lines;
     private final SubwayGraph subwayGraph;
 
     public PathFinder(List<Line> lines) {
+        this.lines = lines;
         this.subwayGraph = new SubwayGraph(lines);
     }
 
@@ -30,7 +32,23 @@ public class PathFinder {
             throw new IllegalArgumentException(ERROR_PATH_NOT_FOUND);
         }
 
-        return new Path(graphPath.getVertexList(), (int)graphPath.getWeight());
+        return new Path(graphPath.getVertexList(), (int)graphPath.getWeight(),
+            getHighestFareAmongLines(graphPath.getEdgeList()));
+    }
+
+    private int getHighestFareAmongLines(List<SectionEdge> sectionEdges) {
+        return sectionEdges.stream()
+            .map(sectionEdge -> getLinesFare(sectionEdge.getUpStation(), sectionEdge.getDownStation()))
+            .max(Integer::compareTo)
+            .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private int getLinesFare(Station upStation, Station downStation) {
+        return lines.stream()
+            .filter(line -> line.isContainsUpStationAndDownStation(upStation, downStation))
+            .map(Line::getFare)
+            .max(Integer::compareTo)
+            .orElseThrow(IllegalArgumentException::new);
     }
 
     private void checkStations(Station source, Station target) {

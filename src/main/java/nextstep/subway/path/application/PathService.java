@@ -31,11 +31,12 @@ public class PathService {
         List<Line> lines = lineService.findAll();
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
+
         PathFinder pathFinder = new PathFinder(lines);
         Path path = pathFinder.findShortestPath(source, target);
 
-        // 요금 책정
         Fare fare = FareCalculator.calculateFare(path.getDistance());
+        fare = fare.addFare(path.getFare());
 
         return PathResponse.of(path, fare);
     }

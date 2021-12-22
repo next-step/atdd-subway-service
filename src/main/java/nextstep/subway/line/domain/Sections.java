@@ -220,4 +220,9 @@ public class Sections {
     public List<Section> getSections() {
         return sections;
     }
+
+    public boolean isContainsUpStationAndDownStation(Station upStation, Station downStation) {
+        return sections.stream()
+            .anyMatch(section -> section.isEqualToUpStation(upStation) && section.isEqualToDownStation(downStation));
+    }
 }

@@ -75,6 +75,10 @@ public class Line extends BaseEntity {
         return sections.getSortedStations();
     }
 
+    public boolean isContainsUpStationAndDownStation(Station upStation, Station downStation) {
+        return this.sections.isContainsUpStationAndDownStation(upStation, downStation);
+    }
+
     public Long getId() {
         return id;
     }
@@ -90,4 +94,8 @@ public class Line extends BaseEntity {
     public Sections getSections() {
         return sections;
     }
+    public int getFare() {
+        return fare;
+    }
+
 }
