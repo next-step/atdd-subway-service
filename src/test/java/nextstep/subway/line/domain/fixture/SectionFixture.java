@@ -1,9 +1,10 @@
-package nextstep.subway.line.domain.dummy;
+package nextstep.subway.line.domain.fixture;
 
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.station.domain.dummy.StationFixture;
+import nextstep.subway.station.domain.fixture.StationFixture;
 
 public class SectionFixture {
+    // 신분당선
     public static final Section 강남역_양재역 = new Section(LineFixture.신분당선, StationFixture.강남역, StationFixture.양재역, 2);
     public static final Section 양재역_양재시민의숲역 = new Section(LineFixture.신분당선, StationFixture.양재역, StationFixture.양재시민의숲역, 4);
     public static final Section 양재시민의숲역_청계산입구역 = new Section(LineFixture.신분당선, StationFixture.양재시민의숲역, StationFixture.청계산입구역, 4);

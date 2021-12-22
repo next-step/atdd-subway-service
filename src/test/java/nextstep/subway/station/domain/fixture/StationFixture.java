@@ -1,4 +1,4 @@
-package nextstep.subway.station.domain.dummy;
+package nextstep.subway.station.domain.fixture;
 
 import nextstep.subway.station.domain.Station;
 
@@ -12,4 +12,9 @@ public class StationFixture {
     public static final Station 미금역 = new Station("미금역");
     public static final Station 동천역 = new Station("동천역");
     public static final Station 광교역 = new Station("광교역");
+
+    public static final Station 교대역 = new Station("교대역");
+    public static final Station 남부터미널역 = new Station("남부터미널역");
+
+
 }
