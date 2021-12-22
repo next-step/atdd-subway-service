@@ -1,11 +1,11 @@
 package nextstep.subway.path.domain;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public enum DistanceFarePolicy {
-    BASE_RANGE(0, 10, 0), 
-    FIRST_RANGE(11, 50, 5), 
-    SECOND_RANGE(51, Integer.MAX_VALUE, 8);
+    FIRST_RANGE(10, 50, 5), 
+    SECOND_RANGE(50, Integer.MAX_VALUE, 8);
 
     private static final int DEFAULT_FARE = 1_250;
     private static final int EXTRA_FARE = 100;
@@ -21,32 +21,38 @@ public enum DistanceFarePolicy {
     }
     
     public static int calculator(int distance) {
-        DistanceFarePolicy policy = judgePolicyGroup(distance);
-        if (policy == FIRST_RANGE) {
-            return DEFAULT_FARE + calculateOverFare(distance - BASE_RANGE.distanceRangeMax, policy.overPerDistance);
+        Optional<DistanceFarePolicy> distancePolicy = judgePolicyGroup(distance);
+        int fare = DEFAULT_FARE;
+        if (!distancePolicy.isPresent()) {
+            return fare;
         }
-        if (policy == SECOND_RANGE) {
-            int firstRangeFare = calculateOverFare(FIRST_RANGE.distanceRangeMax - BASE_RANGE.distanceRangeMax, FIRST_RANGE.overPerDistance);
-            int secondRangeFare = calculateOverFare(distance - FIRST_RANGE.distanceRangeMax, policy.overPerDistance);
-            return DEFAULT_FARE + firstRangeFare + secondRangeFare;
+        for (int i = 0; i <= distancePolicy.get().ordinal(); i++) {
+            DistanceFarePolicy policy = values()[i];
+            fare += getCalculateFare(policy, distance);
         }
-        
-        return DEFAULT_FARE;
+        return fare;
     }
     
-    private static DistanceFarePolicy judgePolicyGroup(int distance) {
+    private static Optional<DistanceFarePolicy> judgePolicyGroup(int distance) {
         return Arrays.stream(values())
                 .filter(policy -> policy.judgeDistanceRange(distance))
-                .findFirst()
-                .orElse(BASE_RANGE);
+                .findFirst();
     }
     
     private boolean judgeDistanceRange(int distance) {
-        return distance >= this.distanceRangeMin && distance <= this.distanceRangeMax;
+        return distance > this.distanceRangeMin && distance <= this.distanceRangeMax;
     }
     
     private static int calculateOverFare(int distance, int overDistance) {
         return (int) ((Math.ceil((distance - 1) / overDistance) + 1) * EXTRA_FARE);
     }
+    
+    private static int getCalculateFare(DistanceFarePolicy policy, int distance) {
+        if (policy.distanceRangeMax >= distance) {
+            return calculateOverFare(distance - policy.distanceRangeMin, policy.overPerDistance);
+        }
+        return calculateOverFare(policy.distanceRangeMax - policy.distanceRangeMin, policy.overPerDistance);
+    }
+    
 
 }
