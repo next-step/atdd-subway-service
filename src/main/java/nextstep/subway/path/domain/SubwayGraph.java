@@ -8,17 +8,21 @@ import org.jgrapht.graph.WeightedMultigraph;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SubwayGraph extends WeightedMultigraph<Station, DefaultWeightedEdge> {
+public class SubwayGraph extends WeightedMultigraph<Station, SubwayEdge> {
 
-    public SubwayGraph(Class<DefaultWeightedEdge> defaultWeightedEdgeClass) {
-        super(defaultWeightedEdgeClass);
+    public SubwayGraph(Class<SubwayEdge> subwayEdge) {
+        super(subwayEdge);
     }
 
     public void setEdgeWeightWithSections(List<Line> lines) {
         lines.stream()
                 .flatMap(it -> it.getSections().stream())
                 .collect(Collectors.toList())
-                .forEach(section -> this.setEdgeWeight(this.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
+                .forEach(section -> {
+                    SubwayEdge subwayEdge = SubwayEdge.of(section);
+                    this.addEdge(subwayEdge.getUpStation(), subwayEdge.getDownStation(), subwayEdge);
+                    this.setEdgeWeight(subwayEdge, subwayEdge.getDistance());
+                });
     }
 
     public void addVertexWithStations(List<Line> lines) {

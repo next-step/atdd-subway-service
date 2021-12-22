@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.SubwayGraph;
 import nextstep.subway.path.domain.SubwayPath;
 import nextstep.subway.path.dto.PathResponse;
@@ -57,7 +58,7 @@ public class MapServiceTest {
         삼호선.addLineSection(교대역, 남부터미널역, 3);
     }
 
-    @DisplayName("최단 경로와 최단 거리 찾기")
+    @DisplayName("최단 경로와 최단 거리와 운임 요금 구하기")
     @Test
     void findShortestPath() {
         //given
@@ -65,7 +66,9 @@ public class MapServiceTest {
         when(stationRepository.findById(교대역_id)).thenReturn(Optional.of(교대역));
         when(stationRepository.findById(양재역_id)).thenReturn(Optional.of(양재역));
         when(pathService.findPath(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 양재역))
-                .thenReturn(new SubwayPath(Arrays.asList(교대역, 남부터미널역, 양재역), 5));
+                .thenReturn(new SubwayPath(Arrays.asList(교대역, 남부터미널역, 양재역),
+                        Arrays.asList(new Section(삼호선, 교대역, 남부터미널역, 3),
+                                      new Section(삼호선, 남부터미널역, 양재역, 2)), 5));
 
         MapService mapService = new MapService(stationRepository, lineRepository, pathService);
 
@@ -81,7 +84,8 @@ public class MapServiceTest {
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(5),
                 () -> assertThat(shortestPath.getStations().get(0).getName()).isEqualTo("교대역"),
                 () -> assertThat(shortestPath.getStations().get(1).getName()).isEqualTo("남부터미널역"),
-                () -> assertThat(shortestPath.getStations().get(2).getName()).isEqualTo("양재역")
+                () -> assertThat(shortestPath.getStations().get(2).getName()).isEqualTo("양재역"),
+                () -> assertThat(shortestPath.getFare()).isEqualTo(1250)
         );
     }
 }

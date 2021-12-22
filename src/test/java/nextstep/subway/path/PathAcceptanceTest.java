@@ -34,13 +34,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private StationResponse 수서역;
+    private StationResponse 판교역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
      * |                            |
-     * *3호선*                   *신분당선*
+     * *3호선*                   *신분당선*(추가 운임비 : 800원)
      * |                            |
      * 남부터미널역  --- *3호선* --- 양재역  --- *3호선* ---  수서역
+     *                              |
+     *                          *신분당선*(추가 운임비 : 800원)
+     *                              |
+     *                            판교역
      */
     @BeforeEach
     public void setUp() {
@@ -51,16 +56,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
         수서역 = StationAcceptanceTest.지하철역_등록되어_있음("수서역").as(StationResponse.class);
+        판교역 = StationAcceptanceTest.지하철역_등록되어_있음("판교역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 800)).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 15)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 10);
         지하철_노선에_지하철역_등록되어_있음(삼호선, 양재역, 수서역, 40);
+        지하철_노선에_지하철역_등록되어_있음(신분당선, 양재역, 판교역, 20);
     }
 
-    @DisplayName("두 역의 최단 거리 경로를 조회한다.")
+    @DisplayName("여러가지 최단 거리 경로 조회하면서 최단 경로와 요금 응답 성공을 검증")
     @Test
     void shortestPath() {
         // when
@@ -83,6 +90,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         최단_거리_경로_응답_성공(response3);
         최단_경로와_총_소요_거리와_적절한_요금을_응답(response3, Arrays.asList(교대역, 남부터미널역, 양재역, 수서역), 55, 2050);
+
+        ExtractableResponse<Response> response4 = 최단_거리_경로_조회_요청(교대역, 판교역);
+
+        // then
+        최단_거리_경로_응답_성공(response4);
+        최단_경로와_총_소요_거리와_적절한_요금을_응답(response4, Arrays.asList(교대역, 남부터미널역, 양재역, 판교역), 35, 2550);
     }
 
     private void 최단_경로와_총_소요_거리와_적절한_요금을_응답(ExtractableResponse<Response> response, List<StationResponse> stations, int totalDistance, int fare) {
