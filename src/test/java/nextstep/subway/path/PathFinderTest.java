@@ -23,7 +23,6 @@ import nextstep.subway.path.domain.FindShortestPathResult;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.StationTest;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 public class PathFinderTest {
 	private Line 신분당선;
@@ -59,10 +58,49 @@ public class PathFinderTest {
 
 		assertThat(path.getStations()).isEqualTo(
 			Arrays.asList(
-				StationResponse.of(StationTest.삼성역), StationResponse.of(StationTest.강남역),
-				StationResponse.of(StationTest.역삼역)
+				StationTest.삼성역, StationTest.강남역, StationTest.역삼역
 			));
 		assertThat(path.getDistance()).isEqualTo(9);
+	}
+
+	@Test
+	@DisplayName("인접 구간이 최단 경로가 아닌 경우 최단 경로를 조회한다")
+	void findShortestPath2() {
+		Station 가로지르는역1 = new Station("가로지르는역1");
+		Station 가로지르는역2 = new Station("가로지르는역2");
+		Station 가로지르는역3 = new Station("가로지르는역3");
+		Section 삼성_선릉_구간 = new Section(신분당선, StationTest.삼성역, StationTest.선릉역, 5);
+		Section 선릉_역삼_구간 = new Section(신분당선, StationTest.선릉역, StationTest.역삼역, 7);
+		Section 역삼_강남_구간 = new Section(신분당선, StationTest.역삼역, StationTest.강남역, 5);
+		Section 삼성_강남_구간 = new Section(구분당선, StationTest.삼성역, StationTest.강남역, 4);
+		Section 가로지르는역1_삼성_구간 = new Section(구분당선, 가로지르는역1, StationTest.삼성역, 1);
+		Section 가로지르는역1_가로지르는역2_구간 = new Section(구분당선, 가로지르는역2, 가로지르는역1, 1);
+		Section 가로지르는역2_가로지르는역3_구간 = new Section(구분당선, 가로지르는역3, 가로지르는역2, 1);
+		Section 역삼_가로지르는역3_구간 = new Section(구분당선, StationTest.역삼역, 가로지르는역3, 1);
+		신분당선.addSection(삼성_선릉_구간);
+		신분당선.addSection(선릉_역삼_구간);
+		신분당선.addSection(역삼_강남_구간);
+		구분당선.addSection(가로지르는역1_삼성_구간);
+		구분당선.addSection(가로지르는역1_가로지르는역2_구간);
+		구분당선.addSection(가로지르는역2_가로지르는역3_구간);
+		구분당선.addSection(역삼_가로지르는역3_구간);
+		구분당선.addSection(삼성_강남_구간);
+
+		PathFinder pathFinder = new PathFinder();
+		FindShortestPathResult path = pathFinder.findShortestPath(
+			StationTest.삼성역,
+			StationTest.역삼역,
+			new Sections(Stream.of(신분당선.getSections(), 구분당선.getSections())
+				.flatMap(Collection::stream)
+				.collect(Collectors.toList()
+				))
+		);
+
+		assertThat(path.getStations()).isEqualTo(
+			Arrays.asList(
+				StationTest.삼성역, 가로지르는역1, 가로지르는역2, 가로지르는역3, StationTest.역삼역
+			));
+		assertThat(path.getDistance()).isEqualTo(4);
 	}
 
 	@Test

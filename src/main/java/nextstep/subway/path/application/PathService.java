@@ -27,8 +27,7 @@ public class PathService {
 	}
 
 	public FindPathResponse findShortestPath(FindPathRequest findPathRequest) {
-		Sections sections = new Sections(sectionRepository.findDistinctBySection(findPathRequest.getSource(),
-			findPathRequest.getTarget()));
+		Sections sections = new Sections(sectionRepository.findAll());
 		Station sourceStation = findStationById(findPathRequest.getSource());
 		Station targetStation = findStationById(findPathRequest.getTarget());
 

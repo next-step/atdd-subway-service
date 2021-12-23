@@ -1,0 +1,27 @@
+package nextstep.subway.favorite.dto;
+
+public class FavoriteCreateRequest {
+	private Long source;
+	private Long target;
+
+	public FavoriteCreateRequest(Long source, Long target) {
+		this.source = source;
+		this.target = target;
+	}
+
+	public Long getSource() {
+		return source;
+	}
+
+	public void setSource(Long source) {
+		this.source = source;
+	}
+
+	public Long getTarget() {
+		return target;
+	}
+
+	public void setTarget(Long target) {
+		this.target = target;
+	}
+}

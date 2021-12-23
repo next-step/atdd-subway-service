@@ -20,8 +20,11 @@ public class PathFinder {
 		validate(source, target, sections);
 
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-		DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = makeGraphFromSections(graph, sections.get());
-		return new FindShortestPathResult(getPath(source, target, dijkstraShortestPath));
+		DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = makeGraphFromSections(graph,
+			sections.get());
+		GraphPath<Station, DefaultWeightedEdge> graphPath = getPath(source, target, dijkstraShortestPath);
+
+		return new FindShortestPathResult(graphPath.getVertexList(), (int)graphPath.getWeight());
 	}
 
 	private void validate(Station source, Station target, Sections sections) {
@@ -42,7 +45,8 @@ public class PathFinder {
 		return Optional.ofNullable(path).orElseThrow(Exceptions.SOURCE_AND_TARGET_NOT_CONNECTED::getException);
 	}
 
-	private DijkstraShortestPath<Station, DefaultWeightedEdge> makeGraphFromSections(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
+	private DijkstraShortestPath<Station, DefaultWeightedEdge> makeGraphFromSections(
+		WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
 		for (Section section : sections) {
 			graph.addVertex(section.getUpStation());
 			graph.addVertex(section.getDownStation());
