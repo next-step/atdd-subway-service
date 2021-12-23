@@ -1,5 +1,6 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.util.ArrayList;
@@ -33,5 +34,9 @@ public class PathResponse {
 
     public void addOverFare(int overFare) {
         this.fare += overFare;
+    }
+
+    public void discountFare(int discountedFare) {
+        this.fare = discountedFare;
     }
 }
