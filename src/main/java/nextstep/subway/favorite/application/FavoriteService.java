@@ -29,24 +29,30 @@ public class FavoriteService {
     }
 
     public FavoriteResponse saveFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
-        Member member = memberRepository.findById(loginMember.getId())
-                .orElseThrow(IllegalArgumentException::new);
+        Member member = findMember(loginMember);
         Station source = stationService.findStationById(favoriteRequest.getSource());
         Station target = stationService.findStationById(favoriteRequest.getTarget());
         Favorite favorite = favoriteRepository.save(new Favorite(member, source, target));
+        member.addFavorite(favorite);
         return FavoriteResponse.of(favorite);
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        return memberRepository.findById(loginMember.getId())
-                .orElseThrow(IllegalArgumentException::new)
+        return findMember(loginMember)
                 .getFavorites()
                 .stream()
                 .map(favorite -> FavoriteResponse.of(favorite))
                 .collect(Collectors.toList());
     }
 
-    public void removeFavorite(Long favoriteId) {
-        favoriteRepository.deleteById(favoriteId);
+    public void removeFavorite(LoginMember loginMember, Long favoriteId) {
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new IllegalArgumentException("즐겨찾기가 존재하지 않습니다. ID : " + favoriteId));
+        findMember(loginMember).removeFavorite(favorite);
+    }
+
+    public Member findMember(LoginMember loginMember) {
+        return memberRepository.findById(loginMember.getId())
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

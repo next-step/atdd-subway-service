@@ -93,6 +93,7 @@ public class PathTest {
     }
 
     @Test
+    @DisplayName("경로의 station 갯수가 2개 미만이면 실패한다.")
     void stationsSize() {
         assertThatThrownBy(() -> new Path(Arrays.asList(mock(Station.class)), new Distance(10)))
                 .isInstanceOf(IllegalArgumentException.class)

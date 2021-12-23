@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Path {
+    public static final int MIN_SIZE_OF_STATION = 2;
     private final Distance distance;
     private List<Station> stations = new ArrayList<>();
 
@@ -17,8 +18,8 @@ public class Path {
     }
 
     private void validateStations(List<Station> stations) {
-        if (stations.size() < 2) {
-            throw new IllegalArgumentException("경로의 station 갯수는 2개 이상이어야 합니다.");
+        if (stations.size() < MIN_SIZE_OF_STATION) {
+            throw new IllegalArgumentException("경로의 station 갯수는 " + MIN_SIZE_OF_STATION + "개 이상이어야 합니다.");
         }
     }
 

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Member extends BaseEntity {
@@ -49,6 +50,10 @@ public class Member extends BaseEntity {
         return this.favorites;
     }
 
+    public void addFavorite(Favorite favorite) {
+        this.favorites.add(favorite);
+    }
+
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;
@@ -61,5 +66,27 @@ public class Member extends BaseEntity {
         }
     }
 
+    private Favorite findFavorite(Favorite favorite) {
+        return this.favorites.stream()
+                .filter(f -> f.equals(favorite))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("즐겨찾기에 대한 권한이 없습니다. 즐겨찾기 ID : " + favorite.getId()));
+    }
 
+    public void removeFavorite(Favorite favorite) {
+        this.favorites.remove(findFavorite(favorite));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Member member = (Member) o;
+        return Objects.equals(id, member.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
