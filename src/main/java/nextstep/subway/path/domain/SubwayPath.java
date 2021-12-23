@@ -30,4 +30,8 @@ public class SubwayPath {
     public Fare getFare() {
         return fare;
     }
+
+    public void discountByAge(int age) {
+        this.fare = this.fare.calculateByAge(age);
+    }
 }

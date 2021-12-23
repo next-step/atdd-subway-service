@@ -49,7 +49,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private void 토큰_유효하지_않음(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     private ExtractableResponse<Response> 유효_토큰_확인(String token) {

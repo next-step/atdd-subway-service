@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -73,7 +74,7 @@ public class MapServiceTest {
         MapService mapService = new MapService(stationRepository, lineRepository, pathService);
 
         //when
-        PathResponse shortestPath = mapService.findShortestPath(교대역_id, 양재역_id);
+        PathResponse shortestPath = mapService.findShortestPath(new LoginMember(1L, "a@email.com", 10), 교대역_id, 양재역_id);
 
         //then
         verify(lineRepository, times(1)).findAll();
@@ -85,7 +86,7 @@ public class MapServiceTest {
                 () -> assertThat(shortestPath.getStations().get(0).getName()).isEqualTo("교대역"),
                 () -> assertThat(shortestPath.getStations().get(1).getName()).isEqualTo("남부터미널역"),
                 () -> assertThat(shortestPath.getStations().get(2).getName()).isEqualTo("양재역"),
-                () -> assertThat(shortestPath.getFare()).isEqualTo(1250)
+                () -> assertThat(shortestPath.getFare()).isEqualTo(450)
         );
     }
 }

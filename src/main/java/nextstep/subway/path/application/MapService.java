@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -25,11 +26,12 @@ public class MapService {
         this.pathService = pathService;
     }
 
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(LoginMember loginMember, Long source, Long target) {
         List<Line> lines = lineRepository.findAll();
         Station sourceStation = stationRepository.findById(source).orElseThrow(() -> new NotFoundException("출발역이 존재하지 않습니다. Id : " + source));
         Station targetStation = stationRepository.findById(target).orElseThrow(() -> new NotFoundException("도착역이 존재하지 않습니다. Id : " + target));
         SubwayPath path = pathService.findPath(lines, sourceStation, targetStation);
+        path.discountByAge(loginMember.getAge());
         return PathResponseAssembler.assemble(path);
     }
 }

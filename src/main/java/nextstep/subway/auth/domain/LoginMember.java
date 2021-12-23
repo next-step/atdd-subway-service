@@ -14,6 +14,10 @@ public class LoginMember {
         this.age = age;
     }
 
+    public static LoginMember guest() {
+        return new LoginMember(null, "guest", 0);
+    }
+
     public Long getId() {
         return id;
     }

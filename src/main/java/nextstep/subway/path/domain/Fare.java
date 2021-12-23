@@ -34,4 +34,9 @@ public class Fare {
     public int getFare() {
         return fare;
     }
+
+    public Fare calculateByAge(int age) {
+        int fare = AgeChargeRule.calculateChargeByAge(this.fare, age);
+        return new Fare(fare);
+    }
 }
