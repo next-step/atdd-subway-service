@@ -1,7 +1,5 @@
 package nextstep.subway.fare;
 
-import nextstep.subway.member.domain.Member;
-
 import java.util.Arrays;
 
 public enum DiscountAgeFarePolicy {
