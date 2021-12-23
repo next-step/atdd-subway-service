@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 
@@ -19,8 +21,8 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findShortestPath(@RequestParam Long source, @RequestParam Long target) {
-        return ResponseEntity.ok(pathService.findShortestPath(source, target));
+    public ResponseEntity<PathResponse> findShortestPath(@RequestParam Long source, @RequestParam Long target, @AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok(pathService.findShortestPath(source, target, loginMember.getAge()));
     }
 
 }

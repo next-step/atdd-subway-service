@@ -1,11 +1,11 @@
 package nextstep.subway.path.application;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.FareCalculator;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -25,14 +25,16 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findShortestPath(Long sourceId, Long targetId) {
+    public PathResponse findShortestPath(Long sourceId, Long targetId, int age) {
         Station sourceStation = stationService.findById(sourceId);
         Station targetStation = stationService.findById(targetId);
         
-        PathFinder pathFinder = PathFinder.of(lineService.findLines());
-        Path path = pathFinder.findShortestPath(sourceStation, targetStation);
+        Lines lines = Lines.of(lineService.findLines());
+        PathFinder pathFinder = PathFinder.of(lines);
+        Path path = pathFinder.findShortestPath(lines.getAllStations(), sourceStation, targetStation);
+        int fare = FareCalculator.calculator(path.getDistance(), path.getSurcharge(), age);
         
-        return PathResponse.of(path);
+        return PathResponse.of(path, fare);
     }
 
 }

@@ -26,10 +26,8 @@ public class Sections {
         this.sections = sections;
     }
     
-    public static Sections from(Section...sections) {
-        return new Sections(Stream
-                .of(sections)
-                .collect(Collectors.toList()));
+    public static Sections from(List<Section> sections) {
+        return new Sections(sections);
     }
     
     public List<Section> getSections() {
@@ -187,5 +185,6 @@ public class Sections {
             sections.removeIf(section -> section.equals(edgeSection.get()));
         }
     }
+
     
 }
