@@ -10,12 +10,12 @@ public enum DistancePolicy {
 
     private final int start;
     private final int end;
-    private final int addFare;
+    private final int standardDistance;
 
-    DistancePolicy(int start, int end, int addFare) {
+    DistancePolicy(int start, int end, int standardDistance) {
         this.start = start;
         this.end = end;
-        this.addFare = addFare;
+        this.standardDistance = standardDistance;
     }
 
     public static int getOverFare(int distance) {
@@ -41,7 +41,7 @@ public enum DistancePolicy {
     }
 
     private int calculateOverFare(int distance) {
-        return (int)((Math.ceil((conversionTo(distance) - 1) / addFare) + 1) * STANDARD_FARE);
+        return (int)((Math.ceil((conversionTo(distance) - 1) / standardDistance) + 1) * STANDARD_FARE);
     }
 
 }
