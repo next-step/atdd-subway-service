@@ -1,7 +1,9 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -47,7 +49,7 @@ class PathServiceTest {
         when(stationRepository.findById(강남역.getId())).thenReturn(java.util.Optional.of(강남역));
 
         // When
-        PathResponse pathResponse = pathService.findPath(2L, 3L);
+        PathResponse pathResponse = pathService.findPath(2L, 3L, new LoginMember());
 
         // Then
         Assertions.assertAll(
