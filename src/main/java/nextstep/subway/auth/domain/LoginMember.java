@@ -3,7 +3,7 @@ package nextstep.subway.auth.domain;
 import java.util.Objects;
 
 public class LoginMember {
-    private static final LoginMember DUMMY_LOGIN_MEMBER = new LoginMember();
+    private static final LoginMember GUEST_LOGIN_MEMBER = new LoginMember();
 
     private Long id;
     private String email;
@@ -23,7 +23,7 @@ public class LoginMember {
     }
 
     public boolean isNotDummy() {
-        return !this.equals(DUMMY_LOGIN_MEMBER);
+        return !this.equals(GUEST_LOGIN_MEMBER);
     }
 
     public Long getId() {
