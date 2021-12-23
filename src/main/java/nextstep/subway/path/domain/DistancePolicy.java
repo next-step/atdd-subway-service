@@ -4,7 +4,7 @@ import java.util.stream.Stream;
 
 public enum DistancePolicy {
     TEN_TO_FIFTY(10, 50, 5),
-    MAX_OVER(50, 2147483647, 8);
+    MAX_OVER(50, Integer.MAX_VALUE, 8);
 
     private static final int STANDARD_FARE = 100;
 
