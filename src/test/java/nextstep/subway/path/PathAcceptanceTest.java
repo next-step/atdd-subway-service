@@ -58,10 +58,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         서초역 = StationAcceptanceTest.지하철역_등록되어_있음("서초역").as(StationResponse.class);
         대전역 = new StationResponse(10L, "대전역", LocalDateTime.now(),LocalDateTime.now());
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 50);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 40);
-        사호선 = 지하철_노선_등록되어_있음("사호선", "bg-red-600", 사당역, 서초역, 30);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 500);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 50, 0);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 40, 0);
+        사호선 = 지하철_노선_등록되어_있음("사호선", "bg-red-600", 사당역, 서초역, 30, 0);
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
 
@@ -76,7 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // And 지하철 경로 길이가 예상과 같음
         지하철_경로_길이_같음(pathResponse, 47);
         // And 지하철 요금이 예상과 같음
-        지하철_요금_조회됨(pathResponse, 2_050);
+        지하철_요금_조회됨(pathResponse, 2_550);
     }
 
     @DisplayName("출발역과 도착역 같은 경우")
@@ -125,8 +125,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String lineName, String color, StationResponse upStationResponse,
-                                        StationResponse downStationResponse, int distance) {
-        return LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(lineName, color, upStationResponse.getId(), downStationResponse.getId(), distance))
+                                        StationResponse downStationResponse, int distance, int overFare) {
+        return LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(lineName, color, upStationResponse.getId(), downStationResponse.getId(), distance, overFare))
                 .body().as(LineResponse.class);
     }
 
