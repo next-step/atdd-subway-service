@@ -3,7 +3,9 @@ package nextstep.subway.path;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
@@ -15,12 +17,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 
@@ -65,25 +70,32 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
 
-
     @DisplayName("경로 조회")
     @Test
     void findPath() {
         // When 지하철 경로 조회 요청
-        PathResponse pathResponse = 지하철_경로_조회_요청(남부터미널역, 강남역).body().as(PathResponse.class);
+        PathResponse pathResponse = 지하철_경로_조회_요청(남부터미널역, 강남역, null).body().as(PathResponse.class);
         // Then 지하철 경로 조회됨
         지하철_경로_조회됨(pathResponse, Arrays.asList(남부터미널역, 양재역, 강남역));
         // And 지하철 경로 길이가 예상과 같음
         지하철_경로_길이_같음(pathResponse, 47);
         // And 지하철 요금이 예상과 같음
         지하철_요금_조회됨(pathResponse, 2_550);
+        // When 회원 생성
+        회원_생성을_요청("eamil@email.com", "password", 18);
+        // And 로그인 요청
+        String token = 로그인_요청("eamil@email.com", "password").body().as(TokenResponse.class).getAccessToken();
+        // And 지하철 경로 조회 요청
+        PathResponse pathResponseWithLogin = 지하철_경로_조회_요청(남부터미널역, 강남역, token).body().as(PathResponse.class);
+        // Then 지하철 요금이 예상과 같음
+        지하철_요금_조회됨(pathResponseWithLogin, 1_760);
     }
 
     @DisplayName("출발역과 도착역 같은 경우")
     @Test
     void findPathSourceEqualsTarget() {
         // When 지하철 경로 조회 요청
-        ExtractableResponse<Response> response = 지하철_경로_조회_요청(남부터미널역, 남부터미널역);
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(남부터미널역, 남부터미널역, null);
         // Then 에러가 발생함
         잘못된_요청_응답됨(response, "출발역과 도착역이 같습니다.");
     }
@@ -92,7 +104,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathSourceNotConnectedTarget() {
         // When 지하철 경로 조회 요청
-        ExtractableResponse<Response> response = 지하철_경로_조회_요청(남부터미널역, 사당역);
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(남부터미널역, 사당역, null);
         // Then 에러가 발생함
         잘못된_요청_응답됨(response, "출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
@@ -101,7 +113,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathNotExistSourceOrTarget() {
         // When 지하철 경로 조회 요청
-        ExtractableResponse<Response> response = 지하철_경로_조회_요청(남부터미널역, 대전역);
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(남부터미널역, 대전역, null);
         // Then 에러가 발생함
         잘못된_요청_응답됨(response, "Station을 조회할 수 없습니다.");
     }
@@ -116,9 +128,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         }
     }
 
-    private ExtractableResponse<Response> 지하철_경로_조회_요청(StationResponse 남부터미널역, StationResponse 강남역) {
-        return RestAssured
-                .given().log().all()
+    private ExtractableResponse<Response> 지하철_경로_조회_요청(StationResponse 남부터미널역, StationResponse 강남역, String token) {
+        RequestSpecification requestSpecification = RestAssured
+                .given().log().all();
+
+        if (token != null) {
+            requestSpecification = requestSpecification.auth().oauth2(token)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE);
+        }
+
+        return requestSpecification
                 .when().get("/paths?source={sourceId}&target={targetId}", 남부터미널역.getId(), 강남역.getId())
                 .then().log().all()
                 .extract();
