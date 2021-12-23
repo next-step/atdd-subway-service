@@ -15,4 +15,15 @@ public class FareTest {
                 () -> assertThat(FarePolicy.calculateDistanceOverFare(45)).isEqualTo(700)
         );
     }
+
+    @DisplayName("연령별 요금 계산")
+    @Test
+    void discountFare() {
+        assertAll(
+                () -> assertThat(FarePolicy.calculateDiscountAgeFare(13, 1_250)).isEqualTo(720),
+                () -> assertThat(FarePolicy.calculateDiscountAgeFare(12, 1_250)).isEqualTo(450),
+                () -> assertThat(FarePolicy.calculateDiscountAgeFare(null, 1_250)).isEqualTo(1_250),
+                () -> assertThat(FarePolicy.calculateDiscountAgeFare(20, 1_250)).isEqualTo(1_250)
+        );
+    }
 }
