@@ -1,6 +1,6 @@
 package nextstep.subway.domain.member.application;
 
-import nextstep.subway.domain.auth.domain.LoginMember;
+import nextstep.subway.domain.auth.domain.User;
 import nextstep.subway.domain.member.domain.Member;
 import nextstep.subway.domain.member.domain.MemberRepository;
 import nextstep.subway.domain.member.dto.MemberRequest;
@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -30,8 +30,8 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public Member findMember(LoginMember loginMember) {
-        return memberRepository.findById(loginMember.getId())
+    public Member findMember(User user) {
+        return memberRepository.findById(user.getId())
                 .orElseThrow(EntityNotFoundException::new);
     }
 

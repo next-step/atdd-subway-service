@@ -9,6 +9,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(500, "C004", "Server Error"),
     NOT_AUTHORIZATION(401, "C005", "등록되지 않은 아이디이거나 아이디 또는 비밀번호를 잘못 입력했습니다"),
     INVALID_TOKEN(401, "C006", "유효하지 않은 토큰입니다."),
+    ANONYMOUS_USER(400, "C007", "로그인 되지 않은 유저입니다."),
 
     // Section
     DISTANCE_LESS_THAN_MINIMUM(400, "S001", "역과 역 사이의 거리는 최소 1 이상입니다."),
@@ -20,11 +21,16 @@ public enum ErrorCode {
     // Path
     SAME_DEPARTURE_AND_ARRIVAL_STATION(400, "P001", "출발역과 도착역이 동일합니다."),
     NOT_CONNECTED_STATION(400, "P002", "출발역과 도착역이 연결되어 있지 않습니다."),
-    STATION_NOT_FOUND(400, "P003", "출발역 또는 도착역이 존재하지 않습니다");
+    STATION_NOT_FOUND(400, "P003", "출발역 또는 도착역이 존재하지 않습니다"),
+
+    // Amount
+    AMOUNT_NEGATIVE_QUANTITY(400, "A001", "가격은 음수(-)가 될 수 없습니다."),
+    ADDITIONAL_AMOUNT_NEGATIVE_QUANTITY(400, "A002", "추가 가격은 음수(-)가 될 수 없습니다."),
+    DISCOUNT_AMOUNT_POSITIVE_QUANTITY(400, "A003", "할인 가격은 양수(-)가 될 수 없습니다.");
 
     private final String code;
     private final String message;
-    private int status;
+    private final int status;
 
     ErrorCode(final int status, final String code, final String message) {
         this.status = status;

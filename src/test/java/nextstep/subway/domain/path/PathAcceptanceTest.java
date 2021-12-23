@@ -8,6 +8,7 @@ import nextstep.subway.domain.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.domain.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.domain.line.dto.LineRequest;
 import nextstep.subway.domain.line.dto.LineResponse;
+import nextstep.subway.domain.member.MemberAcceptanceTest;
 import nextstep.subway.domain.path.dto.PathFinderResponse;
 import nextstep.subway.domain.station.StationAcceptanceTest;
 import nextstep.subway.domain.station.dto.StationResponse;
@@ -34,6 +35,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private String accessToken;
 
 
     /**
@@ -48,7 +50,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-
+        final String email = "hongji3354@gmail.com";
+        final String password = "hongji3354";
+        MemberAcceptanceTest.회원_생성을_요청(email,password,20);
+        accessToken = MemberAcceptanceTest.토큰_발급(email, password);
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
@@ -68,20 +73,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
 
         // then
-        최단_경로_응답됨(response, Arrays.asList("교대역","남부터미널역","양재역"), 5);
+        최단_경로_응답됨(response, Arrays.asList("교대역","남부터미널역","양재역"), 5, 1250);
     }
 
-    private void 최단_경로_응답됨(final ExtractableResponse<Response> response, List<String> stations, int distance) {
+    private void 최단_경로_응답됨(final ExtractableResponse<Response> response, List<String> stations, int distance, int fare) {
         final PathFinderResponse pathFinderResponse = response.as(PathFinderResponse.class);
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
             assertThat(pathFinderResponse.getStations()).extracting("name").containsExactlyElementsOf(stations);
             assertThat(pathFinderResponse.getDistance()).isEqualTo(distance);
+            assertThat(pathFinderResponse.getFare()).isEqualTo(fare);
         });
     }
 
     private ExtractableResponse<Response> 최단_경로_조회_요청(Long source, Long target) {
         return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .queryParam("source", source)
                 .queryParam("target", target)

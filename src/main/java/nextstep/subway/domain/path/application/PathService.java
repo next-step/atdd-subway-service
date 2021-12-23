@@ -1,7 +1,9 @@
 package nextstep.subway.domain.path.application;
 
+import nextstep.subway.domain.auth.domain.User;
 import nextstep.subway.domain.line.application.LineService;
 import nextstep.subway.domain.line.domain.Line;
+import nextstep.subway.domain.path.domain.Fare;
 import nextstep.subway.domain.path.domain.PathFinder;
 import nextstep.subway.domain.path.domain.Route;
 import nextstep.subway.domain.path.dto.PathFinderRequest;
@@ -22,12 +24,13 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathFinderResponse findPaths(PathFinderRequest request) {
+    public PathFinderResponse findPaths(PathFinderRequest request, User user) {
         final List<Line> lines = lineService.findAll();
 
         PathFinder pathFinder = new PathFinder(lines);
-        final Route shortestRoute = pathFinder.findShortestRoute(request.getSource(), request.getTarget());
+        Route shortestRoute = pathFinder.findShortestRoute(request.getSource(), request.getTarget(), lines);
+        Fare fare = Fare.create(shortestRoute, user);
 
-        return PathFinderResponse.of(shortestRoute);
+        return PathFinderResponse.of(shortestRoute, fare.calculateAmount());
     }
 }

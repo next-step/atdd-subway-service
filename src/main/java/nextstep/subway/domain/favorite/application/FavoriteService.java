@@ -1,6 +1,6 @@
 package nextstep.subway.domain.favorite.application;
 
-import nextstep.subway.domain.auth.domain.LoginMember;
+import nextstep.subway.domain.auth.domain.User;
 import nextstep.subway.domain.favorite.domain.Favorite;
 import nextstep.subway.domain.favorite.domain.FavoriteRepository;
 import nextstep.subway.domain.favorite.dto.FavoriteRequest;
@@ -30,8 +30,8 @@ public class FavoriteService {
         this.memberService = memberService;
     }
 
-    public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
-        Member member = findMember(loginMember);
+    public FavoriteResponse createFavorite(User user, FavoriteRequest request) {
+        Member member = findMember(user);
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
         Favorite favorite = favoriteRepository.save(new Favorite(source, target, member));
@@ -39,8 +39,8 @@ public class FavoriteService {
     }
 
     @Transactional(readOnly = true)
-    public List<FavoriteResponse> findFavorite(LoginMember loginMember) {
-        Member member = findMember(loginMember);
+    public List<FavoriteResponse> findFavorite(User user) {
+        Member member = findMember(user);
         List<Favorite> favorites = favoriteRepository.findByMember(member);
 
         return favorites.stream()
@@ -48,15 +48,15 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    private Member findMember(LoginMember loginMember) {
-        return memberService.findMember(loginMember);
+    private Member findMember(User user) {
+        return memberService.findMember(user);
     }
 
-    public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
+    public void deleteFavorite(User user, Long favoriteId) {
         Favorite favorite = favoriteRepository.findById(favoriteId)
                 .orElseThrow(EntityNotFoundException::new);
 
-        favorite.checkOwner(findMember(loginMember));
+        favorite.checkOwner(findMember(user));
 
         favoriteRepository.delete(favorite);
     }

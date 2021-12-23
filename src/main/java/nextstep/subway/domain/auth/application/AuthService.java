@@ -1,7 +1,8 @@
 package nextstep.subway.domain.auth.application;
 
 import nextstep.subway.domain.auth.InvalidTokenException;
-import nextstep.subway.domain.auth.domain.LoginMember;
+import nextstep.subway.domain.auth.domain.LoginUser;
+import nextstep.subway.domain.auth.domain.User;
 import nextstep.subway.domain.auth.dto.TokenRequest;
 import nextstep.subway.domain.auth.dto.TokenResponse;
 import nextstep.subway.domain.auth.infrastructure.JwtTokenProvider;
@@ -14,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class AuthService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
@@ -32,13 +33,13 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public LoginMember findMemberByToken(String credentials) {
+    public User findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new InvalidTokenException();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+        return new LoginUser(member.getId(), member.getEmail(), member.getAge());
     }
 }

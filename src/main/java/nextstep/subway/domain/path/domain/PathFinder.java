@@ -2,10 +2,12 @@ package nextstep.subway.domain.path.domain;
 
 import nextstep.subway.domain.line.domain.Distance;
 import nextstep.subway.domain.line.domain.Line;
+import nextstep.subway.domain.line.domain.Section;
 import nextstep.subway.domain.path.exception.SameDepartureAndArrivalStationException;
 import nextstep.subway.domain.path.exception.StationNotFoundException;
 import nextstep.subway.domain.station.domain.Station;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +34,7 @@ public class PathFinder {
         path.createEdge(lines);
     }
 
-    public Route findShortestRoute(Long source, Long target) {
+    public Route findShortestRoute(Long source, Long target, List<Line> lines) {
         existStationValidator(stations, source, target);
         sameDepartureAndArrivalStationValidator(source, target);
 
@@ -41,8 +43,30 @@ public class PathFinder {
 
         final List<Station> vertex = path.getVertex(stations, stationStart, stationEnd);
         final Distance distance = path.getWeight(stationStart, stationEnd);
+        List<Section> shortestSection = findShortestSection(lines, vertex);
 
-        return new Route(vertex, distance);
+        return new Route(vertex, shortestSection, distance);
+    }
+
+    private List<Section> findShortestSection(List<Line> lines, List<Station> stations) {
+        List<Section> sections = new ArrayList<>();
+
+        for (int i=0; i<stations.size() - 1; i++) {
+            Station upStation = stations.get(i);
+            Station downStation = stations.get(i+1);
+
+            sections.add(findSection(lines, upStation, downStation));
+        }
+        return sections;
+    }
+
+    private Section findSection(List<Line> lines, Station upStation, Station downStation) {
+        return lines.stream()
+                .map(Line::getSections)
+                .flatMap(Collection::stream)
+                .filter(section -> section.getUpStation().equals(upStation) && section.getDownStation().equals(downStation))
+                .findFirst()
+                .get();
     }
 
     private void existStationValidator(final List<Station> stations, final Long source, final Long target) {
