@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.common.exception.NoResultException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
 public class LineService {
 
     private final LineRepository lineRepository;
@@ -27,6 +27,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(final LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -45,8 +46,10 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Transactional
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = lineRepository.findById(id)
+                .orElseThrow(() -> new NoResultException("찾을 수 없는 노선입니다."));
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -54,18 +57,20 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(final Long lineId, final SectionRequest request) {
         Line line = findLineById(lineId);
-        Section section = this.getNewSection(line, request.getUpStationId(), request.getDownStationId(), new Distance(request.getDistance()));
+        Section section = this.createNewSection(line, request.getUpStationId(), request.getDownStationId(), Distance.of(request.getDistance()));
         line.addSection(section);
     }
 
-    private Section getNewSection(final Line line,final Long upStationId, final Long downStationId, final Distance distance) {
+    private Section createNewSection(final Line line, final Long upStationId, final Long downStationId, final Distance distance) {
         Station upStation = stationService.findById(upStationId);
         Station downStation = stationService.findById(downStationId);
-        return new Section(line, upStation, downStation, distance);
+        return Section.of(line, upStation, downStation, distance);
     }
 
+    @Transactional
     public void removeLineStation(final Long lineId, final Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findById(stationId);
@@ -74,7 +79,7 @@ public class LineService {
 
     private Line findLineById(final Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NoResultException("찾을 수 없는 노선입니다."));
     }
 
 }

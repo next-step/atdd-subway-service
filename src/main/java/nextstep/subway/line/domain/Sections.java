@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.common.exception.NoResultException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -12,6 +13,8 @@ import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
+
+    private static final int REQUIRE_CONNECTED_STATION_COUNT = 2;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
@@ -61,7 +64,7 @@ public class Sections {
                 .filter(section -> section.hasStation(deleteStation))
                 .collect(Collectors.toList());
 
-        if (connectedSections.size() != 2) {
+        if (connectedSections.size() != REQUIRE_CONNECTED_STATION_COUNT) {
             throw new IllegalArgumentException("삭제할 수 없는 역입니다.");
         }
 
@@ -73,7 +76,7 @@ public class Sections {
                 .stream()
                 .filter(section -> section.hasUpStation(station))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NoResultException("찾을 수 없는 구간입니다."));
     }
 
     private Section peekSectionWithDownStation(final List<Section> connectedSections, final Station station) {
@@ -81,7 +84,7 @@ public class Sections {
                 .stream()
                 .filter(section -> section.hasDownStation(station))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NoResultException("찾을 수 없는 구간입니다."));
     }
 
 }

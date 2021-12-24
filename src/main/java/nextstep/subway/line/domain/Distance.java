@@ -14,7 +14,7 @@ public class Distance {
     public Distance() {
     }
 
-    public Distance(final int distance) {
+    private Distance(final int distance) {
         validate(distance);
         this.distance = distance;
     }

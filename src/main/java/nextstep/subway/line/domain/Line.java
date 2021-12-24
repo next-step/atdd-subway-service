@@ -5,6 +5,8 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Line extends BaseEntity {
@@ -65,6 +67,19 @@ public class Line extends BaseEntity {
 
     public void deleteStation(final Station station) {
         this.sections.deleteStation(station);
+    }
+
+    public List<Station> getStations() {
+        List<Station> stations = new ArrayList<>();
+
+        this.sections.getSections()
+                .stream()
+                .forEach(section -> {
+                    stations.add(section.getUpStation());
+                    stations.add(section.getDownStation());
+                });
+
+        return stations;
     }
 
 }
