@@ -55,9 +55,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		서울역 = StationAcceptanceTest.지하철역_등록되어_있음("서울역").as(StationResponse.class);
 		옥수역 = StationAcceptanceTest.지하철역_등록되어_있음("옥수역").as(StationResponse.class);
 
-		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-		이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 900);
+		이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 900);
+		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 900);
 
 		지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
 
@@ -192,8 +192,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	}
 
 	private LineResponse 지하철_노선_등록되어_있음(String lineName, String lineColor, StationResponse station1,
-		StationResponse station2, int distance) {
-		LineRequest lineRequest = new LineRequest(lineName, lineColor, station1.getId(), station2.getId(), distance);
+		StationResponse station2, int distance, int fare) {
+		LineRequest lineRequest = new LineRequest(lineName, lineColor, station1.getId(), station2.getId(), distance,
+			fare);
 		return LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 	}
 

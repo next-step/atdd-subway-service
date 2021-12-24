@@ -11,17 +11,17 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
-@DisplayName("노선 테스트")
+@DisplayName("노선 도메인 테스트")
 public class LineTest {
 
-	@DisplayName("노선 생성한다")
+	@DisplayName("노선을 생성한다")
 	@Test
 	void createTest() {
 		// given
-		Line expected = Line.of(1L, "1호선", "red", SECTION_1.getUpStation(), SECTION_1.getDownStation(), 10);
+		Line expected = Line.of(1L, "1호선", "red", SECTION_1.getUpStation(), SECTION_1.getDownStation(), 10, 900);
 
 		// when
-		Line line = Line.of(1L, "1호선", "red", SECTION_1.getUpStation(), SECTION_1.getDownStation(), 10);
+		Line line = Line.of(1L, "1호선", "red", SECTION_1.getUpStation(), SECTION_1.getDownStation(), 10, 900);
 
 		// then
 		assertThat(line).isEqualTo(expected);
@@ -32,7 +32,7 @@ public class LineTest {
 	@Test
 	void getStationsTest() {
 		// given
-		Line line = Line.of(1L, "1호선", "red", SECTION_1.getUpStation(), SECTION_1.getDownStation(), 10);
+		Line line = Line.of(1L, "1호선", "red", SECTION_1.getUpStation(), SECTION_1.getDownStation(), 10, 1000);
 
 		// when
 		List<Station> stations = line.getStations();
