@@ -1,10 +1,12 @@
 package nextstep.subway.fare.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.line.domain.Distance;
+import nextstep.subway.path.domain.Path;
 
 public class Fare {
-    public static int getFare(Distance distance, LoginMember loginMember) {
-        return (int) (FareByDistance.getFare(distance) * (1 - DiscountRateByAge.getDiscountRate(loginMember)));
+    public static int getFare(Path path, LoginMember loginMember) {
+        return (int) ((FareByDistance.getFare(path.getDistance())
+                + path.getMaxOverFareOfLine())
+                * (1 - DiscountRateByAge.getDiscountRate(loginMember)));
     }
 }

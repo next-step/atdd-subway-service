@@ -31,7 +31,7 @@ public class PathService {
         Station targetStation = stationRepository.findById(target)
                 .orElseThrow(() -> new IllegalArgumentException("도착역이 존재하지 않습니다. Station ID : " + target));
         Path path = pathFinder.findPath(sourceStation, targetStation);
-        int fare = Fare.getFare(path.getDistance(), loginMember);
+        int fare = Fare.getFare(path, loginMember);
         return PathResponse.of(path, fare);
     }
 }

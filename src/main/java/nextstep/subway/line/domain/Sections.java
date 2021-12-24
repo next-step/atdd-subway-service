@@ -11,9 +11,17 @@ import java.util.stream.Collectors;
 @Embeddable
 public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private final List<Section> sections = new ArrayList<>();
+    private List<Section> sections = new ArrayList<>();
 
     public Sections() {
+    }
+
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+    }
+
+    public List<Section> getSections() {
+        return this.sections;
     }
 
     public List<Station> getStations() {
@@ -111,8 +119,11 @@ public class Sections {
         }
     }
 
-    public List<Section> getSections() {
-        return this.sections;
+    public int getMaxOverFareOfLine() {
+        return sections.stream()
+                .mapToInt(section -> section.getLine().getOverFare())
+                .max()
+                .orElse(0);
     }
 
 }

@@ -55,6 +55,10 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public int getOverFare() {
+        return overFare;
+    }
+
     public List<Station> getStations() {
         return this.sections.getStations();
     }

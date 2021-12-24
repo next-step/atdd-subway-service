@@ -1,18 +1,15 @@
 package nextstep.subway.path.domain;
 
 import com.google.common.collect.Lists;
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Lines;
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.*;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class PathFinder {
     private final Lines lines;
@@ -26,7 +23,7 @@ public class PathFinder {
     }
 
     public Path findPath(Station source, Station target) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph(SectionEdge.class);
         List<Station> stations = lines.getStations();
         for (Station station : stations) {
             graph.addVertex(station);
@@ -34,14 +31,16 @@ public class PathFinder {
 
         List<Section> sections = lines.getSections();
         for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+            SectionEdge sectionEdge = graph.addEdge(section.getUpStation(), section.getDownStation());
+            sectionEdge.setSection(section);
+            graph.setEdgeWeight(sectionEdge, section.getDistance());
         }
         return findShortestPath(source, target, graph);
     }
 
-    private Path findShortestPath(Station source, Station target, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private Path findShortestPath(Station source, Station target, WeightedMultigraph<Station, SectionEdge> graph) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath<Station, DefaultWeightedEdge> graphPath;
+        GraphPath<Station, SectionEdge> graphPath;
         try {
             graphPath = dijkstraShortestPath.getPath(source, target);
         } catch (IllegalArgumentException e) {
@@ -53,6 +52,10 @@ public class PathFinder {
         }
 
         Double weight = graphPath.getWeight();
-        return new Path(graphPath.getVertexList(), new Distance(weight.intValue()));
+        Sections sections = new Sections(graphPath.getEdgeList()
+                .stream()
+                .map(sectionEdge -> sectionEdge.getSection())
+                .collect(Collectors.toList()));
+        return new Path(graphPath.getVertexList(), new Distance(weight.intValue()), sections);
     }
 }

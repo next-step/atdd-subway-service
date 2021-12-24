@@ -38,7 +38,7 @@ public class PathTest {
          * 3L  --- *1호선* ---      2L
          */
 
-        firstLine = LineTestFixture.노선을_생성한다("1호선", "red", upStationFirstLine, downStationFirstLine, 10);
+        firstLine = LineTestFixture.노선을_생성한다("1호선", "red", upStationFirstLine, downStationFirstLine, 10, 100);
 
     }
 
@@ -49,6 +49,7 @@ public class PathTest {
         PathFinder pathFinder = new PathFinder(firstLine);
         Path path = pathFinder.findPath(upStationFirstLine, addStationFirstLine);
         assertThat(path.getStations()).containsExactly(upStationFirstLine, downStationFirstLine, addStationFirstLine);
+        assertThat(path.getMaxOverFareOfLine()).isEqualTo(100);
     }
 
 
@@ -56,12 +57,13 @@ public class PathTest {
     @DisplayName("노선이 여러개일때 지하철 최단 경로를 조회한다.")
     void findPathTestManyLine() {
         firstLine.addStation(downStationFirstLine, addStationFirstLine, 50);
-        Line secondLine = LineTestFixture.노선을_생성한다("2호선", "red", upStationSecondLine, downStationSecondLine, 100);
-        Line thirdLine = LineTestFixture.노선을_생성한다("3호선", "red", upStationThirdLine, downStationThirdLine, 200);
+        Line secondLine = LineTestFixture.노선을_생성한다("2호선", "red", upStationSecondLine, downStationSecondLine, 10, 200);
+        Line thirdLine = LineTestFixture.노선을_생성한다("3호선", "red", upStationThirdLine, downStationThirdLine, 20, 300);
         List<Line> lines = Lists.newArrayList(firstLine, secondLine, thirdLine);
         PathFinder pathFinder = new PathFinder(lines);
         Path path = pathFinder.findPath(upStationSecondLine, downStationFirstLine);
         assertThat(path.getStations()).containsExactly(upStationSecondLine, upStationFirstLine, downStationFirstLine);
+        assertThat(path.getMaxOverFareOfLine()).isEqualTo(200);
     }
 
     @Test
@@ -76,7 +78,7 @@ public class PathTest {
     @Test
     @DisplayName("출발역과 도착역이 연결되어 있지 않으면 실패한다.")
     void notConnectedStation() {
-        Line thirdLine = LineTestFixture.노선을_생성한다("3호선", "red", upStationThirdLine, downStationThirdLine, 20);
+        Line thirdLine = LineTestFixture.노선을_생성한다("3호선", "red", upStationThirdLine, downStationThirdLine, 20, 300);
         PathFinder pathFinder = new PathFinder(Lists.newArrayList(firstLine, thirdLine));
         assertThatThrownBy(() -> pathFinder.findPath(upStationThirdLine, downStationFirstLine))
                 .isInstanceOf(IllegalArgumentException.class)

@@ -3,6 +3,7 @@ package nextstep.subway.fare;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.path.domain.Path;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -16,6 +17,10 @@ public class FareTest {
     void getFare(int age, int distance, int fare) {
         LoginMember adult = mock(LoginMember.class);
         when(adult.getAge()).thenReturn(age);
-        assertThat(Fare.getFare(new Distance(distance), adult)).isEqualTo(fare);
+        Path path = mock(Path.class);
+        when(path.getDistance()).thenReturn(new Distance(distance));
+        when(path.getMaxOverFareOfLine()).thenReturn(0);
+
+        assertThat(Fare.getFare(path, adult)).isEqualTo(fare);
     }
 }
