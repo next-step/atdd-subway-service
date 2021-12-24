@@ -1,9 +1,9 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.domain.FareByDistance;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -31,7 +31,7 @@ public class PathService {
         Station targetStation = stationRepository.findById(target)
                 .orElseThrow(() -> new IllegalArgumentException("도착역이 존재하지 않습니다. Station ID : " + target));
         Path path = pathFinder.findPath(sourceStation, targetStation);
-        int charge = FareByDistance.getFare(path.getDistance());
-        return PathResponse.of(path, charge);
+        int fare = Fare.getFare(path.getDistance(), loginMember);
+        return PathResponse.of(path, fare);
     }
 }

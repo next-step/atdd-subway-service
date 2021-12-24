@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import nextstep.subway.line.LineTestFixture;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.FareByDistance;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
@@ -62,7 +61,6 @@ public class PathTest {
         List<Line> lines = Lists.newArrayList(firstLine, secondLine, thirdLine);
         PathFinder pathFinder = new PathFinder(lines);
         Path path = pathFinder.findPath(upStationSecondLine, downStationFirstLine);
-        int fare = FareByDistance.getFare(path.getDistance());
         assertThat(path.getStations()).containsExactly(upStationSecondLine, upStationFirstLine, downStationFirstLine);
     }
 
