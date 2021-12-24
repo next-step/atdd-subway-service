@@ -17,13 +17,14 @@ public class PathTest {
     void init() {
         // given
         int distance = 0;
+        int fare = 100;
         List<Station> stations = new ArrayList<>();
         stations.add(new Station(1L, "화곡역"));
         stations.add(new Station(2L, "까치산역"));
         stations.add(new Station(3L, "목동역"));
 
         // when
-        Path path = new Path(stations, distance);
+        Path path = new Path(stations, distance, fare);
 
         // then
         assertThat(path).isNotNull();

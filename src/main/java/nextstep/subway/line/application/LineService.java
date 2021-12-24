@@ -30,7 +30,7 @@ public class LineService {
         Station downStation = stationService.findStationById(request.getDownStationId());
 
         Line transientLine =
-            new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
+            new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(), request.getFare());
         Line persistLine = lineRepository.save(transientLine);
 
         return LineResponse.of(persistLine);

@@ -24,6 +24,13 @@ public class LineAcceptanceTestHelper {
         return 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
     }
 
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color,
+        StationResponse upStationResponse, StationResponse downStationResponse, int distance, int fare) {
+        LineRequest lineRequest
+            = new LineRequest(name, color, upStationResponse.getId(), downStationResponse.getId(), distance, fare);
+        return 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
         return 지하철_노선_생성_요청(params);
     }

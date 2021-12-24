@@ -24,6 +24,9 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    @Column
+    private int fare;
+
     public Line() {
     }
 
@@ -35,6 +38,14 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        this.fare = 0;
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int fare) {
+        this.name = name;
+        this.color = color;
+        this.fare = fare;
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
@@ -42,6 +53,7 @@ public class Line extends BaseEntity {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.fare = 0;
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
@@ -63,6 +75,10 @@ public class Line extends BaseEntity {
         return sections.getSortedStations();
     }
 
+    public boolean isContainsUpStationAndDownStation(Station upStation, Station downStation) {
+        return this.sections.isContainsUpStationAndDownStation(upStation, downStation);
+    }
+
     public Long getId() {
         return id;
     }
@@ -78,4 +94,8 @@ public class Line extends BaseEntity {
     public Sections getSections() {
         return sections;
     }
+    public int getFare() {
+        return fare;
+    }
+
 }

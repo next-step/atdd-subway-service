@@ -5,8 +5,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.Fare;
+import nextstep.subway.path.domain.FareCalculator;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -25,12 +28,21 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findShortestPath(Long sourceId, Long targetId) {
+    public PathResponse findShortestPath(LoginMember loginMember, Long sourceId, Long targetId) {
         List<Line> lines = lineService.findAll();
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
+
         PathFinder pathFinder = new PathFinder(lines);
         Path path = pathFinder.findShortestPath(source, target);
-        return PathResponse.of(path);
+
+        Fare fare = FareCalculator.calculateFare(path.getDistance());
+        fare = fare.addFare(path.getLineFare());
+
+        if(loginMember.isNotDummy()){
+            fare = FareCalculator.discountFare(fare.getFare(), loginMember.getAge());
+        }
+
+        return PathResponse.of(path, fare);
     }
 }
