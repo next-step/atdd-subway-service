@@ -25,9 +25,6 @@ public class FavoriteTest {
         Station source2 = mock(Station.class);
         Station target2 = mock(Station.class);
         Favorite favorite2 = new Favorite(member, source2, target2);
-
-        member.addFavorite(favorite1);
-        member.addFavorite(favorite2);
     }
 
     @Test
@@ -43,7 +40,6 @@ public class FavoriteTest {
         Station sourceAdd = mock(Station.class);
         Station targetAdd = mock(Station.class);
         Favorite favoriteAdd = new Favorite(member, sourceAdd, targetAdd);
-        member.addFavorite(favoriteAdd);
         assertThat(member.getFavorites()).hasSize(3);
     }
 
@@ -62,7 +58,6 @@ public class FavoriteTest {
         Station sourceOfNotMine = mock(Station.class);
         Station targetOfNotMine = mock(Station.class);
         Favorite favoriteOfNotMine = new Favorite(memberOfNotMine, sourceOfNotMine, targetOfNotMine);
-        memberOfNotMine.addFavorite(favoriteOfNotMine);
 
         assertThatThrownBy(() -> member.removeFavorite(favoriteOfNotMine))
                 .isInstanceOf(IllegalArgumentException.class)

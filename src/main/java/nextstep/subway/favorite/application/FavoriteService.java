@@ -37,7 +37,6 @@ public class FavoriteService {
         Station target = stationService.findStationById(favoriteRequest.getTarget());
         pathService.findPath(loginMember, favoriteRequest.getSource(), favoriteRequest.getTarget());
         Favorite favorite = favoriteRepository.save(new Favorite(member, source, target));
-        member.addFavorite(favorite);
         return FavoriteResponse.of(favorite);
     }
 

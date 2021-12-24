@@ -51,7 +51,9 @@ public class Member extends BaseEntity {
     }
 
     public void addFavorite(Favorite favorite) {
-        this.favorites.add(favorite);
+        if (!this.favorites.contains(favorite)) {
+            this.favorites.add(favorite);
+        }
     }
 
     public void update(Member member) {
