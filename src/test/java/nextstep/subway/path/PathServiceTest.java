@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.*;
 import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathStrategy;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -37,6 +39,7 @@ public class PathServiceTest {
         final LoginMember loginMember = new LoginMember(1L, "test@gmail.com", 20);
         LineRepository lineRepository = mock(LineRepository.class);
         StationService stationService = mock(StationService.class);
+        PathStrategy pathStrategy = mock(PathStrategy.class);
 
         final Station 교대역 = Station.from(1L, "교대역");
         final Station 양재역 = Station.from(2L, "양재역");
@@ -57,12 +60,15 @@ public class PathServiceTest {
         final List<Station> stations = Lists.newArrayList(
                 교대역, 남부터미널역, 양재역);
 
+        final Path path = Path.of(20, sections, stations);
+
         when(stationService.findStationById(1L)).thenReturn(교대역);
         when(stationService.findStationById(2L)).thenReturn(양재역);
         when(lineRepository.findAll())
                 .thenReturn(Lists.newArrayList(이호선, 삼호선, 신분당선));
+        when(pathStrategy.getShortestPath(Lists.newArrayList(이호선, 삼호선, 신분당선), 교대역, 양재역)).thenReturn(path);
 
-        PathService pathService = new PathService(lineRepository, stationService);
+        PathService pathService = new PathService(lineRepository, stationService, pathStrategy);
 
         // when
         PathResponse responses = pathService.findShortestPath(loginMember, 교대역.getId(), 양재역.getId());
