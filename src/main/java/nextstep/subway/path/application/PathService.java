@@ -9,8 +9,6 @@ import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -26,15 +24,9 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
         PathFinder pathFinder = new PathFinder(lines);
         Station sourceStation = stationRepository.findById(source)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("출발역이 존재하지 않습니다. Station ID : " + source));
         Station targetStation = stationRepository.findById(target)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("도착역이 존재하지 않습니다. Station ID : " + target));
         return PathResponse.of(pathFinder.findPath(sourceStation, targetStation));
-    }
-
-    private List<Station> sortStationIds(List<Long> stationIds, Map<Long, Station> stationMap) {
-        return stationIds.stream()
-                .map(s -> stationMap.get(s))
-                .collect(Collectors.toList());
     }
 }

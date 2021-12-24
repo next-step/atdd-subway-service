@@ -97,4 +97,5 @@ public class Section implements Comparable<Section> {
     public int hashCode() {
         return Objects.hash(id, line, upStation, downStation, distance);
     }
+
 }
