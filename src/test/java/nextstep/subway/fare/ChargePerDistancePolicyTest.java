@@ -7,16 +7,16 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import nextstep.subway.fare.domain.FareSurchargePolicy;
+import nextstep.subway.fare.domain.ChargePerDistance;
 
-public class FareSurchargePolicyTest {
+public class ChargePerDistancePolicyTest {
 
 	@ValueSource(ints = {0, 5, 8, 10})
 	@DisplayName("10km 이하 경로 시, 기본 운임 적용")
 	@ParameterizedTest
 	void calculate(int distance) {
 
-		int fare = FareSurchargePolicy.getFare(distance);
+		int fare = ChargePerDistance.getFare(distance);
 
 		assertThat(fare).isEqualTo(1250);
 	}
@@ -26,7 +26,7 @@ public class FareSurchargePolicyTest {
 	@ParameterizedTest
 	void calculate2(int distance, int expectedFare) {
 
-		int fare = FareSurchargePolicy.getFare(distance);
+		int fare = ChargePerDistance.getFare(distance);
 
 		assertThat(fare).isEqualTo(expectedFare);
 	}
@@ -36,7 +36,7 @@ public class FareSurchargePolicyTest {
 	@ParameterizedTest
 	void calculate3(int distance, int expectedFare) {
 
-		int fare = FareSurchargePolicy.getFare(distance);
+		int fare = ChargePerDistance.getFare(distance);
 
 		assertThat(fare).isEqualTo(expectedFare);
 	}

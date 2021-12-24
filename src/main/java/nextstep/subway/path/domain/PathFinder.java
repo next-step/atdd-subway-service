@@ -12,7 +12,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import nextstep.subway.exception.AppException;
 import nextstep.subway.exception.ErrorCode;
-import nextstep.subway.fare.domain.FareSurchargePolicy;
+import nextstep.subway.fare.domain.ChargePerDistance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
@@ -24,7 +24,7 @@ public class PathFinder {
 	private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
 	private PathFinder() {
-		this.graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+		this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 	}
 
 	public static PathFinder of(List<Section> sections) {
@@ -50,11 +50,11 @@ public class PathFinder {
 
 	public PathResponse findPath(Station source, Station target) {
 		validateSourceAndTarget(source, target);
-		DijkstraShortestPath path = new DijkstraShortestPath(this.graph);
-		GraphPath graphPath = path.getPath(source, target);
+		DijkstraShortestPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(this.graph);
+		GraphPath<Station, DefaultWeightedEdge> graphPath = path.getPath(source, target);
 		validatePath(graphPath);
 		int distance = (int)graphPath.getWeight();
-		int fare = FareSurchargePolicy.getFare(distance);
+		int fare = ChargePerDistance.getFare(distance);
 		return PathResponse.of(graphPath.getVertexList(), distance, fare);
 	}
 
@@ -75,7 +75,7 @@ public class PathFinder {
 		}
 	}
 
-	private void validatePath(GraphPath graphPath) {
+	private void validatePath(GraphPath<Station, DefaultWeightedEdge> graphPath) {
 		if (Objects.isNull(graphPath)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "출발역과 도착역이 연결되어 있어야 한다");
 		}

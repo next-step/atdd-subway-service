@@ -1,27 +1,27 @@
 package nextstep.subway.fare.domain;
 
-public enum FareSurchargePolicy {
+public enum ChargePerDistance {
 
-	FIRST_SURCHARGE_POLICY(11, 50, 5, 100),
-	SECOND_SURCHARGE_POLICY(51, Integer.MAX_VALUE, 8, 100);
+	FIRST_CHARGE_POLICY(11, 50, 5, 100),
+	SECOND_CHARGE_POLICY(51, Integer.MAX_VALUE, 8, 100);
 
 	private static final int BASE_FARE = 1_250;
 
 	private final int minimumKm;
 	private final int maxKm;
 	private final int everyKm;
-	private final int surchargeFee;
+	private final int surcharge;
 
-	FareSurchargePolicy(int minKm, int maxKm, int everyKm, int surchargeFee) {
+	ChargePerDistance(int minKm, int maxKm, int everyKm, int surcharge) {
 		this.minimumKm = minKm;
 		this.maxKm = maxKm;
 		this.everyKm = everyKm;
-		this.surchargeFee = surchargeFee;
+		this.surcharge = surcharge;
 	}
 
 	public static int getFare(int distance) {
 		int fare = BASE_FARE;
-		for (FareSurchargePolicy policy : FareSurchargePolicy.values()) {
+		for (ChargePerDistance policy : ChargePerDistance.values()) {
 			fare += policy.getEachFare(distance);
 		}
 		return fare;
@@ -38,6 +38,6 @@ public enum FareSurchargePolicy {
 	}
 
 	private int calculateOverFare(int distance) {
-		return (int)((Math.ceil((distance - 1) / this.everyKm) + 1) * this.surchargeFee);
+		return (((distance - 1) / this.everyKm) + 1) * this.surcharge;
 	}
 }
