@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import nextstep.subway.line.LineTestFixture;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.FareByDistance;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
@@ -55,12 +56,13 @@ public class PathTest {
     @Test
     @DisplayName("노선이 여러개일때 지하철 최단 경로를 조회한다.")
     void findPathTestManyLine() {
-        firstLine.addStation(downStationFirstLine, addStationFirstLine, 5);
-        Line secondLine = LineTestFixture.노선을_생성한다("2호선", "red", upStationSecondLine, downStationSecondLine, 10);
-        Line thirdLine = LineTestFixture.노선을_생성한다("3호선", "red", upStationThirdLine, downStationThirdLine, 20);
+        firstLine.addStation(downStationFirstLine, addStationFirstLine, 50);
+        Line secondLine = LineTestFixture.노선을_생성한다("2호선", "red", upStationSecondLine, downStationSecondLine, 100);
+        Line thirdLine = LineTestFixture.노선을_생성한다("3호선", "red", upStationThirdLine, downStationThirdLine, 200);
         List<Line> lines = Lists.newArrayList(firstLine, secondLine, thirdLine);
         PathFinder pathFinder = new PathFinder(lines);
         Path path = pathFinder.findPath(upStationSecondLine, downStationFirstLine);
+        int fare = FareByDistance.getFare(path.getDistance());
         assertThat(path.getStations()).containsExactly(upStationSecondLine, upStationFirstLine, downStationFirstLine);
     }
 
