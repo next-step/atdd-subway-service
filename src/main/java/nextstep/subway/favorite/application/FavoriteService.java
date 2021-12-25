@@ -39,7 +39,7 @@ public class FavoriteService {
 
     private void isValidRequest(FavoriteRequest favoriteRequest) {
         if (favoriteRequest.isSameSourceAndTarget()) {
-            throw new SameStartEndStationException("출발역과 도착역이 같습니다");
+            throw new SameStartEndStationException();
         }
     }
 

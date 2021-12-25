@@ -49,7 +49,7 @@ public class PathFinder {
 
     private void isSameSourceAndTarget(Station source, Station target) {
         if (source.equals(target)) {
-            throw new SameStartEndStationException("출발역과 도착역이 달라야 합니다.");
+            throw new SameStartEndStationException();
         }
     }
 
