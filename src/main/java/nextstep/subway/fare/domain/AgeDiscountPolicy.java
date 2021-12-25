@@ -22,9 +22,9 @@ public enum AgeDiscountPolicy {
 		this.percent = percent;
 	}
 
-	public static int discountByAge(int fare, Age age) {
+	public static Fare discountByAge(Fare fare, Age age) {
 		AgeDiscountPolicy policy = findPolicyByAge(age);
-		return (int)((100 - policy.percent) / 100D * fare);
+		return fare.discountByPercent(policy.percent);
 	}
 
 	private static AgeDiscountPolicy findPolicyByAge(Age age) {

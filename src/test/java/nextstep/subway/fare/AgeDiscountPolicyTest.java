@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import nextstep.subway.fare.domain.AgeDiscountPolicy;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.member.domain.Age;
 
 @DisplayName("나이별 할인 정책 도메인 테스트")
@@ -17,9 +18,9 @@ public class AgeDiscountPolicyTest {
 	@ParameterizedTest
 	void discountAgeTest(int age, int fare, int expected) {
 		// when
-		int result = AgeDiscountPolicy.discountByAge(fare, Age.of(age));
+		Fare result = AgeDiscountPolicy.discountByAge(Fare.of(fare), Age.of(age));
 
 		// then
-		assertThat(result).isEqualTo(expected);
+		assertThat(result).isEqualTo(Fare.of(expected));
 	}
 }

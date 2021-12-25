@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.StationTest;
 import nextstep.subway.station.domain.Station;
@@ -54,10 +55,10 @@ public class LineTest {
 		Line line = Line.of(1L, "1호선", "red", SECTION_1.getUpStation(), SECTION_1.getDownStation(), 10, 900);
 
 		// when
-		int result = line.getFare();
+		Fare result = line.getFare();
 
 		// then
-		assertThat(result).isEqualTo(900);
+		assertThat(result).isEqualTo(Fare.of(900));
 	}
 
 	@DisplayName("역들 중 하나라도 포함되어 있는 구간이 있는지 체크한다")

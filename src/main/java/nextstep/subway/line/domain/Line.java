@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -20,7 +21,8 @@ public class Line extends BaseEntity {
 	@Column(unique = true)
 	private String name;
 	private String color;
-	private int fare;
+	@Embedded
+	private Fare fare;
 
 	@Embedded
 	private Sections sections = Sections.of();
@@ -32,7 +34,7 @@ public class Line extends BaseEntity {
 		this.id = id;
 		this.name = name;
 		this.color = color;
-		this.fare = fare;
+		this.fare = Fare.of(fare);
 	}
 
 	public static Line of(String name, String color, Station upStation, Station downStation, int distance, int fare) {
@@ -79,7 +81,7 @@ public class Line extends BaseEntity {
 	}
 
 	public int compareByFare(Line other) {
-		return this.fare - other.fare;
+		return this.fare.compareTo(other.fare);
 	}
 
 	public List<Station> getStations() {
@@ -102,7 +104,7 @@ public class Line extends BaseEntity {
 		return this.sections;
 	}
 
-	public int getFare() {
+	public Fare getFare() {
 		return this.fare;
 	}
 

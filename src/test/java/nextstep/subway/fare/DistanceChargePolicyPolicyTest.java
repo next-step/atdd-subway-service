@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import nextstep.subway.fare.domain.DistanceChargePolicy;
+import nextstep.subway.fare.domain.Fare;
 
 public class DistanceChargePolicyPolicyTest {
 
@@ -16,9 +17,9 @@ public class DistanceChargePolicyPolicyTest {
 	@ParameterizedTest
 	void calculate(int distance) {
 
-		int fare = DistanceChargePolicy.getFare(distance);
+		Fare fare = DistanceChargePolicy.getFare(distance);
 
-		assertThat(fare).isZero();
+		assertThat(fare.isZero()).isTrue();
 	}
 
 	@CsvSource(value = {"11,100", "15,100", "16,200", "20, 200", "21,300", "26,400", "50,800"})
@@ -26,9 +27,9 @@ public class DistanceChargePolicyPolicyTest {
 	@ParameterizedTest
 	void calculate2(int distance, int expectedFare) {
 
-		int fare = DistanceChargePolicy.getFare(distance);
+		Fare fare = DistanceChargePolicy.getFare(distance);
 
-		assertThat(fare).isEqualTo(expectedFare);
+		assertThat(fare).isEqualTo(Fare.of(expectedFare));
 	}
 
 	@CsvSource(value = {"51,900", "58,900", "59,1000", "66,1000", "67,1100"})
@@ -36,9 +37,9 @@ public class DistanceChargePolicyPolicyTest {
 	@ParameterizedTest
 	void calculate3(int distance, int expectedFare) {
 
-		int fare = DistanceChargePolicy.getFare(distance);
+		Fare fare = DistanceChargePolicy.getFare(distance);
 
-		assertThat(fare).isEqualTo(expectedFare);
+		assertThat(fare).isEqualTo(Fare.of(expectedFare));
 	}
 
 }

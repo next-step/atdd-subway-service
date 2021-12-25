@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import nextstep.subway.exception.AppException;
 import nextstep.subway.exception.ErrorCode;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 
 public class Lines {
@@ -26,7 +27,7 @@ public class Lines {
 		return new Lines(new ArrayList<>());
 	}
 
-	public int findMostExpensiveLineFare(List<Station> stations) {
+	public Fare findMostExpensiveLineFare(List<Station> stations) {
 		Set<Line> filteredLines = findLinesByStations(stations);
 		Line line = findMostExpensiveLine(filteredLines);
 		return line.getFare();

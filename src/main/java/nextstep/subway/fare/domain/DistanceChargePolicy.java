@@ -17,22 +17,22 @@ public enum DistanceChargePolicy {
 		this.surcharge = surcharge;
 	}
 
-	public static int getFare(int distance) {
-		int fare = 0;
+	public static Fare getFare(int distance) {
+		Fare fare = Fare.of();
 		for (DistanceChargePolicy policy : DistanceChargePolicy.values()) {
-			fare += policy.getEachFare(distance);
+			fare = fare.add(policy.calculateFare(distance));
 		}
 		return fare;
 	}
 
-	private int getEachFare(int distance) {
+	private Fare calculateFare(int distance) {
 		if (distance < this.minimumKm) {
-			return 0;
+			return Fare.of();
 		}
 		if (distance > this.maxKm) {
 			distance = this.maxKm;
 		}
-		return calculateOverFare(distance - (this.minimumKm - 1));
+		return Fare.of(calculateOverFare(distance - (this.minimumKm - 1)));
 	}
 
 	private int calculateOverFare(int distance) {

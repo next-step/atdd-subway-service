@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
@@ -43,9 +44,9 @@ public class LinesTest {
 		List<Station> stations = Arrays.asList(StationTest.수영역, StationTest.서면역, StationTest.노포역);
 
 		// when
-		int result = lines.findMostExpensiveLineFare(stations);
+		Fare result = lines.findMostExpensiveLineFare(stations);
 
 		// then
-		assertThat(result).isEqualTo(1000);
+		assertThat(result).isEqualTo(Fare.of(1000));
 	}
 }
