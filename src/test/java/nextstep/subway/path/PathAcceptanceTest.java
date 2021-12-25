@@ -23,8 +23,7 @@ import java.util.stream.Collectors;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_인증토큰_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.member.MemberAcceptanceTest.*;
-import static nextstep.subway.member.MemberAcceptanceTest.MY_PASSWORD;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_등록되어있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -146,6 +145,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 최단_거리_경로_조회_요청(StationResponse upStation, StationResponse downStation) {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
+                .body("false")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={sourceId}&target={targetId}", upStation.getId(), downStation.getId())
                 .then().log().all().extract();
