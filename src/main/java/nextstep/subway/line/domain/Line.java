@@ -11,6 +11,7 @@ import javax.persistence.Id;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Entity
 public class Line extends BaseEntity {
@@ -74,6 +75,16 @@ public class Line extends BaseEntity {
 		this.color = line.getColor();
 	}
 
+	public boolean containsAnyStation(List<Station> otherStationList) {
+		Stations stations = Stations.of(this.getStations());
+		Stations otherStations = Stations.of(otherStationList);
+		return stations.containsAnyStation(otherStations);
+	}
+
+	public int compareByFare(Line other) {
+		return this.fare - other.fare;
+	}
+
 	public List<Station> getStations() {
 		return this.sections.getStations();
 	}
@@ -92,6 +103,10 @@ public class Line extends BaseEntity {
 
 	public Sections getSections() {
 		return this.sections;
+	}
+
+	public int getFare() {
+		return this.fare;
 	}
 
 	@Override

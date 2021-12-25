@@ -27,8 +27,8 @@ public class PathService {
 		Station source = stationService.findStationById(sourceId);
 		Station target = stationService.findStationById(targetId);
 		List<Line> lines = lineService.findAll();
-		PathFinder pathFinder = PathFinder.ofLines(lines);
+		PathFinder pathFinder = PathFinder.of(lines);
 		return pathFinder.findPath(source, target);
 	}
-	
+
 }

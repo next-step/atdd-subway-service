@@ -56,8 +56,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		옥수역 = StationAcceptanceTest.지하철역_등록되어_있음("옥수역").as(StationResponse.class);
 
 		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 900);
-		이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 900);
-		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 900);
+		이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 1000);
+		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 1100);
 
 		지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
 
@@ -80,7 +80,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		최단경로_조회_응답함(response);
 		최단경로_조회_경로_포함됨(response, Arrays.asList(양재역, 남부터미널역, 교대역));
 		최단경로_조회_최단거리_포함됨(response, 5);
-		최단경로_조회_이용요금_포함됨(response, 10_000);
+		최단경로_조회_이용요금_포함됨(response, 2_350);
 
 		// When
 		ExtractableResponse<Response> response2 = 최단경로_조회_요청함(양재역, 양재역);
