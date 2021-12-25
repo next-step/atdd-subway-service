@@ -1,5 +1,7 @@
 package nextstep.subway.fare.domain;
 
+import nextstep.subway.line.domain.Distance;
+
 public enum DistanceChargePolicy {
 
 	FIRST_CHARGE_POLICY(11, 50, 5, 100),
@@ -17,7 +19,7 @@ public enum DistanceChargePolicy {
 		this.surcharge = surcharge;
 	}
 
-	public static Fare getFare(int distance) {
+	public static Fare getFare(Distance distance) {
 		Fare fare = Fare.of();
 		for (DistanceChargePolicy policy : DistanceChargePolicy.values()) {
 			fare = fare.add(policy.calculateFare(distance));
@@ -25,17 +27,19 @@ public enum DistanceChargePolicy {
 		return fare;
 	}
 
-	private Fare calculateFare(int distance) {
-		if (distance < this.minimumKm) {
-			return Fare.of();
+	private Fare calculateFare(Distance distance) {
+		if (distance.isLessThan(this.minimumKm)) {
+			return Fare.zero();
 		}
-		if (distance > this.maxKm) {
-			distance = this.maxKm;
+		if (distance.isGreaterThan(this.maxKm)) {
+			distance = Distance.of(this.maxKm);
 		}
-		return Fare.of(calculateOverFare(distance - (this.minimumKm - 1)));
+		Distance overDistance = distance.getOverDistance(this.minimumKm);
+		return Fare.of(calculateOverFare(overDistance));
 	}
 
-	private int calculateOverFare(int distance) {
-		return (((distance - 1) / this.everyKm) + 1) * this.surcharge;
+	private int calculateOverFare(Distance distance) {
+		int distanceNumber = distance.toInt();
+		return (((distanceNumber - 1) / this.everyKm) + 1) * this.surcharge;
 	}
 }

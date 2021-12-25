@@ -24,6 +24,10 @@ public class Fare {
 		return new Fare();
 	}
 
+	public static Fare zero() {
+		return new Fare(0);
+	}
+
 	public static Fare of(int fareNumber) {
 		return new Fare(fareNumber);
 	}
@@ -52,6 +56,13 @@ public class Fare {
 
 	public Fare discountByPercent(int percentage) {
 		return Fare.of((int)((100 - percentage) / 100D * fare));
+	}
+
+	@Override
+	public String toString() {
+		return "Fare{" +
+			"fare=" + fare +
+			'}';
 	}
 
 	@Override

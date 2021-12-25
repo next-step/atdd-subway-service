@@ -14,6 +14,7 @@ import nextstep.subway.exception.ErrorCode;
 import nextstep.subway.fare.domain.AgeDiscountPolicy;
 import nextstep.subway.fare.domain.DistanceChargePolicy;
 import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
@@ -40,13 +41,13 @@ public class PathFinder {
 
 	public PathResponse findPath(Station source, Station target, LoginMember member) {
 		GraphPath<Station, DefaultWeightedEdge> graphPath = getGraphPath(source, target);
-		int distance = (int)graphPath.getWeight();
+		Distance distance = Distance.of(graphPath.getWeight());
 		List<Station> stations = graphPath.getVertexList();
 		Fare fare = calculateFare(distance, stations, member);
 		return PathResponse.of(stations, distance, fare);
 	}
 
-	private Fare calculateFare(int distance, List<Station> stations, LoginMember member) {
+	private Fare calculateFare(Distance distance, List<Station> stations, LoginMember member) {
 		Fare fare = BASE_FARE;
 		fare = fare.add(DistanceChargePolicy.getFare(distance));
 		fare = fare.add(this.lines.findMostExpensiveLineFare(stations));
