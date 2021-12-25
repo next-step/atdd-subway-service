@@ -7,36 +7,36 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import nextstep.subway.fare.domain.ChargePerDistance;
+import nextstep.subway.fare.domain.DistanceChargePolicy;
 
-public class ChargePerDistancePolicyTest {
+public class DistanceChargePolicyPolicyTest {
 
 	@ValueSource(ints = {0, 5, 8, 10})
 	@DisplayName("10km 이하 경로 시, 기본 운임 적용")
 	@ParameterizedTest
 	void calculate(int distance) {
 
-		int fare = ChargePerDistance.getFare(distance);
+		int fare = DistanceChargePolicy.getFare(distance);
 
-		assertThat(fare).isEqualTo(1250);
+		assertThat(fare).isZero();
 	}
 
-	@CsvSource(value = {"11,1350", "15,1350", "16,1450", "20, 1450", "21,1550", "50,2050"})
+	@CsvSource(value = {"11,100", "15,100", "16,200", "20, 200", "21,300", "26,400", "50,800"})
 	@DisplayName("10km 초과 ~ 50km 이하, 5km 까지마다 100원 추가 운임 적용")
 	@ParameterizedTest
 	void calculate2(int distance, int expectedFare) {
 
-		int fare = ChargePerDistance.getFare(distance);
+		int fare = DistanceChargePolicy.getFare(distance);
 
 		assertThat(fare).isEqualTo(expectedFare);
 	}
 
-	@CsvSource(value = {"51,2150", "58,2150", "66,2250", "67,2350"})
+	@CsvSource(value = {"51,900", "58,900", "59,1000", "66,1000", "67,1100"})
 	@DisplayName("50km 초과 시, 8km 까지마다 100원 추가 운임 적용")
 	@ParameterizedTest
 	void calculate3(int distance, int expectedFare) {
 
-		int fare = ChargePerDistance.getFare(distance);
+		int fare = DistanceChargePolicy.getFare(distance);
 
 		assertThat(fare).isEqualTo(expectedFare);
 	}

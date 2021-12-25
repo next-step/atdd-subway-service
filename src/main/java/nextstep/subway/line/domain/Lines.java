@@ -34,7 +34,7 @@ public class Lines {
 
 	private Set<Line> findLinesByStations(List<Station> stations) {
 		return lines.stream()
-			.filter(line -> line.containsAnyStation(stations))
+			.filter(line -> line.containsAnySection(stations))
 			.collect(Collectors.toSet());
 	}
 

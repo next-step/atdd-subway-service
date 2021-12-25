@@ -158,6 +158,11 @@ public class Sections {
 			.findFirst();
 	}
 	
+	public boolean containsAnySection(List<Station> stationList) {
+		return this.sections.stream()
+			.anyMatch(section -> section.isContainsAny(stationList));
+	}
+
 	public List<Section> toList() {
 		return this.sections;
 	}

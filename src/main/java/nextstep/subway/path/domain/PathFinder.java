@@ -8,9 +8,11 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.AppException;
 import nextstep.subway.exception.ErrorCode;
-import nextstep.subway.fare.domain.ChargePerDistance;
+import nextstep.subway.fare.domain.AgeDiscountPolicy;
+import nextstep.subway.fare.domain.DistanceChargePolicy;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
@@ -18,6 +20,8 @@ import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
+
+	private static final int BASE_FARE = 1_250;
 
 	private final Lines lines;
 
@@ -30,16 +34,34 @@ public class PathFinder {
 	}
 
 	public PathResponse findPath(Station source, Station target) {
+		return findPath(source, target, new LoginMember());
+	}
+
+	public PathResponse findPath(Station source, Station target, LoginMember member) {
+		GraphPath<Station, DefaultWeightedEdge> graphPath = getGraphPath(source, target);
+		int distance = (int)graphPath.getWeight();
+		List<Station> stations = graphPath.getVertexList();
+		int fare = calculateFare(distance, stations, member);
+		return PathResponse.of(stations, distance, fare);
+	}
+
+	private int calculateFare(int distance, List<Station> stations, LoginMember member) {
+		int fare = BASE_FARE;
+		fare += DistanceChargePolicy.getFare(distance);
+		fare += this.lines.findMostExpensiveLineFare(stations);
+		if (member.isNull()) {
+			return fare;
+		}
+		return AgeDiscountPolicy.discountByAge(fare, member.getAge());
+	}
+
+	private GraphPath<Station, DefaultWeightedEdge> getGraphPath(Station source, Station target) {
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph = getGraph(this.lines.getSections());
 		validateSourceAndTarget(graph, source, target);
 		DijkstraShortestPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph);
 		GraphPath<Station, DefaultWeightedEdge> graphPath = path.getPath(source, target);
 		validatePath(graphPath);
-		int distance = (int)graphPath.getWeight();
-		int fare = ChargePerDistance.getFare(distance);
-		List<Station> stations = graphPath.getVertexList();
-		fare += this.lines.findMostExpensiveLineFare(stations);
-		return PathResponse.of(stations, distance, fare);
+		return graphPath;
 	}
 
 	private WeightedMultigraph<Station, DefaultWeightedEdge> getGraph(List<Section> sections) {

@@ -11,7 +11,6 @@ import javax.persistence.Id;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.Stations;
 
 @Entity
 public class Line extends BaseEntity {
@@ -75,10 +74,8 @@ public class Line extends BaseEntity {
 		this.color = line.getColor();
 	}
 
-	public boolean containsAnyStation(List<Station> otherStationList) {
-		Stations stations = Stations.of(this.getStations());
-		Stations otherStations = Stations.of(otherStationList);
-		return stations.containsAnyStation(otherStations);
+	public boolean containsAnySection(List<Station> stationList) {
+		return this.sections.containsAnySection(stationList);
 	}
 
 	public int compareByFare(Line other) {

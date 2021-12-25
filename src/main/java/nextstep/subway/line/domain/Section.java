@@ -1,7 +1,9 @@
 package nextstep.subway.line.domain;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -79,6 +81,22 @@ public class Section {
 	public static Section combine(Section forward, Section backward) {
 		Distance newDistance = forward.getDistance().plus(backward.getDistance());
 		return Section.of(forward.line, forward.upStation, backward.downStation, newDistance);
+	}
+
+	public boolean isContainsAny(List<Station> stationList) {
+		Map<Station, Station> stationMap = new HashMap<>();
+		for (int i = 0; i < stationList.size() - 1; i++) {
+			stationMap.put(stationList.get(i), stationList.get(i + 1));
+		}
+		return stationMap.entrySet().stream().anyMatch(entry ->
+			isContainAll(entry.getKey(), entry.getValue()));
+	}
+
+	private boolean isContainAll(Station station1, Station station2) {
+		if (upStation.equals(station1) && downStation.equals(station2)) {
+			return true;
+		}
+		return upStation.equals(station2) && downStation.equals(station1);
 	}
 
 	public List<Station> getStations() {

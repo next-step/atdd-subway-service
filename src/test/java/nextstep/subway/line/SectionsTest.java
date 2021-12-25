@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.station.StationTest;
 import nextstep.subway.station.domain.Station;
 
 @DisplayName("구간들 기능")
@@ -153,6 +154,57 @@ public class SectionsTest {
 		// then
 		assertThat(sections.getStations())
 			.containsExactly(노포역, 서면역, 부산진역, 다대포해수욕장역, 새하행종점);
+	}
+
+	@DisplayName("역들 중에 구간이 포함되어 있는지 체크한다1")
+	@Test
+	void containsAnySectionTest1() {
+		// given
+		Section 노포_서면 = Section.of(1L, StationTest.노포역, StationTest.서면역, 2);
+		Sections 일호선_구역들 = Sections.of(Collections.singletonList(노포_서면));
+		List<Station> stations = Arrays.asList(StationTest.수영역, StationTest.서면역, StationTest.노포역);
+
+		// when
+		boolean result = 일호선_구역들.containsAnySection(stations);
+
+		// then
+		assertThat(result).isTrue();
+
+	}
+
+	@DisplayName("역들 중에 구간이 포함되어 있는지 체크한다2")
+	@Test
+	void containsAnySectionTest2() {
+		// given
+		Section 서면_수영 = Section.of(1L, StationTest.서면역, StationTest.수영역, 3);
+		Sections 이호선_구역들 = Sections.of(Collections.singletonList(서면_수영));
+
+		List<Station> stations = Arrays.asList(StationTest.수영역, StationTest.서면역, StationTest.노포역);
+
+		// when
+		boolean result = 이호선_구역들.containsAnySection(stations);
+
+		// then
+		assertThat(result).isTrue();
+
+	}
+
+	@DisplayName("역들 중에 구간이 포함되어 있는지 체크한다3")
+	@Test
+	void containsAnySectionTest3() {
+		// given
+		Section 노포_부산진역 = Section.of(1L, StationTest.노포역, StationTest.부산진역, 4);
+		Section 부산진역_서면역 = Section.of(1L, StationTest.부산진역, StationTest.서면역, 3);
+		Sections 삼호선_구역들 = Sections.of(Arrays.asList(노포_부산진역, 부산진역_서면역));
+
+		List<Station> stations = Arrays.asList(StationTest.수영역, StationTest.서면역, StationTest.노포역);
+
+		// when
+		boolean result = 삼호선_구역들.containsAnySection(stations);
+
+		// then
+		assertThat(result).isFalse();
+
 	}
 
 }

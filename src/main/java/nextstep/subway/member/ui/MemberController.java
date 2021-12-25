@@ -1,6 +1,7 @@
 package nextstep.subway.member.ui;
 
 import java.net.URI;
+import java.util.Objects;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.AppException;
+import nextstep.subway.exception.ErrorCode;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -51,6 +54,9 @@ public class MemberController {
 
 	@GetMapping("/members/me")
 	public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+		if (Objects.isNull(loginMember)) {
+			throw new AppException(ErrorCode.UNAUTHORIZED, "인증 정보가 없습니다");
+		}
 		MemberResponse member = memberService.findMember(loginMember.getId());
 		return ResponseEntity.ok().body(member);
 	}

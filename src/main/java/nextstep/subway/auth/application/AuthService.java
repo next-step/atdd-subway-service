@@ -30,14 +30,22 @@ public class AuthService {
 		return new TokenResponse(token);
 	}
 
-	public LoginMember findMemberByToken(String credentials) {
+	public LoginMember findMemberByToken(String credentials, boolean required) {
 		if (!jwtTokenProvider.validateToken(credentials)) {
-			throw new AppException(ErrorCode.UNAUTHORIZED, "인증에 실패했습니다. credential: {}", credentials);
+			return ifNotRequiredEmptyMember(required, credentials);
 		}
 
 		String email = jwtTokenProvider.getPayload(credentials);
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new AppException(ErrorCode.UNAUTHORIZED, "잘못된 토큰 정보입니다"));
-		return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+		return member.toLoginMember();
+	}
+
+	private LoginMember ifNotRequiredEmptyMember(boolean required, String credentials) {
+		if (!required) {
+			return new LoginMember();
+		}
+		throw new AppException(ErrorCode.UNAUTHORIZED, "인증에 실패했습니다. credential: {}", credentials);
+
 	}
 }

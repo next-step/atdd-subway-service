@@ -60,17 +60,17 @@ public class LineTest {
 		assertThat(result).isEqualTo(900);
 	}
 
-	@DisplayName("역들이 주어지면, 역들 중 하나라도 포함되어 있는지 체크한다")
+	@DisplayName("역들 중 하나라도 포함되어 있는 구간이 있는지 체크한다")
 	@Test
-	void containsAnyStationTest() {
+	void containsAnySectionTest() {
 		// given
 		List<Station> stations = new ArrayList<>();
+		stations.add(StationTest.서면역);
 		stations.add(StationTest.노포역);
-		stations.add(StationTest.수영역);
 		Line line = Line.of(1L, "1호선", "red", StationTest.노포역, StationTest.서면역, 5, 900);
 
 		// when
-		boolean result = line.containsAnyStation(stations);
+		boolean result = line.containsAnySection(stations);
 
 		// then
 		assertThat(result).isTrue();
