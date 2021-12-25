@@ -69,12 +69,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private void 유효하지_않은_토큰_내_정보_조회(ExtractableResponse<Response> myInfoResponse) {
-        assertThat(myInfoResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        MemberResponse memberResponse = myInfoResponse.as(MemberResponse.class);
-        assertThat(memberResponse.getEmail()).isNull();
-        assertThat(memberResponse.getAge()).isNull();
-        assertThat(memberResponse.getId()).isNull();
-        //assertThat(myInfoResponse.jsonPath().getObject("message", String.class)).isEqualTo("유효하지 않은 토큰입니다");
+        assertThat(myInfoResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+//        MemberResponse memberResponse = myInfoResponse.as(MemberResponse.class);
+//        assertThat(memberResponse.getEmail()).isNull();
+//        assertThat(memberResponse.getAge()).isNull();
+//        assertThat(memberResponse.getId()).isNull();
+        assertThat(myInfoResponse.jsonPath().getObject("message", String.class)).isEqualTo("유효하지 않은 토큰입니다");
     }
 
     public static void 회원등록됨(MemberRequest member) {

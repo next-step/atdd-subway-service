@@ -31,8 +31,8 @@ public class AuthService {
 
     public nextstep.subway.auth.domain.Member findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            //throw new InValidTokenException("유효하지 않은 토큰입니다");
-            return new NonLoginMember();
+            throw new InValidTokenException("유효하지 않은 토큰입니다");
+            //return new NonLoginMember();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
