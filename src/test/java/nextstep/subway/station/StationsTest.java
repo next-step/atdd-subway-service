@@ -37,13 +37,11 @@ public class StationsTest {
 		stationList.add(StationTest.수영역);
 		Stations stations = Stations.of(stationList);
 
-		Stations others = Stations.of(Arrays.asList(StationTest.다대포해수욕장역, StationTest.노포역));
-
 		// when
-		boolean result = stations.containsAnyStation(others);
+		boolean result = stations.containsAll(StationTest.다대포해수욕장역, StationTest.노포역);
 
 		// then
-		assertThat(result).isTrue();
+		assertThat(result).isFalse();
 	}
 
 }

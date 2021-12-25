@@ -3,8 +3,7 @@ package nextstep.subway.line;
 import static nextstep.subway.line.SectionTest.*;
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.StationTest;
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @DisplayName("노선 도메인 테스트")
 public class LineTest {
@@ -42,10 +41,10 @@ public class LineTest {
 		Line line = Line.of(1L, "1호선", "red", SECTION_1.getUpStation(), SECTION_1.getDownStation(), 10, 1000);
 
 		// when
-		List<Station> stations = line.getStations();
+		Stations stations = line.getStations();
 
 		// then
-		assertThat(stations).containsExactly(SECTION_1.getUpStation(), SECTION_1.getDownStation());
+		assertThat(stations.containsAll(SECTION_1.getUpStation(), SECTION_1.getDownStation())).isTrue();
 	}
 
 	@DisplayName("노선 요금을 조회한다")
@@ -65,9 +64,7 @@ public class LineTest {
 	@Test
 	void containsAnySectionTest() {
 		// given
-		List<Station> stations = new ArrayList<>();
-		stations.add(StationTest.서면역);
-		stations.add(StationTest.노포역);
+		Stations stations = Stations.of(Arrays.asList(StationTest.서면역, StationTest.노포역));
 		Line line = Line.of(1L, "1호선", "red", StationTest.노포역, StationTest.서면역, 5, 900);
 
 		// when

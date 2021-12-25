@@ -20,6 +20,7 @@ import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 public class PathFinder {
 
@@ -43,14 +44,14 @@ public class PathFinder {
 		GraphPath<Station, DefaultWeightedEdge> graphPath = getGraphPath(source, target);
 		Distance distance = Distance.of(graphPath.getWeight());
 		List<Station> stations = graphPath.getVertexList();
-		Fare fare = calculateFare(distance, stations, member);
+		Fare fare = calculateFare(distance, Stations.of(stations), member);
 		return PathResponse.of(stations, distance, fare);
 	}
 
-	private Fare calculateFare(Distance distance, List<Station> stations, LoginMember member) {
+	private Fare calculateFare(Distance distance, Stations stations, LoginMember member) {
 		Fare fare = BASE_FARE;
 		fare = fare.add(DistanceChargePolicy.getFare(distance));
-		fare = fare.add(this.lines.findMostExpensiveLineFare(stations));
+		fare = fare.add(lines.findMostExpensiveLineFare(stations));
 		if (member.isNull()) {
 			return fare;
 		}

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.StationTest;
+import nextstep.subway.station.domain.Stations;
 
 public class SectionTest {
 
@@ -79,9 +80,10 @@ public class SectionTest {
 	void isContainStationsTest() {
 		// given
 		Section section = Section.of(1L, StationTest.노포역, StationTest.서면역, 3);
+		Stations stations = Stations.of(Arrays.asList(StationTest.서면역, StationTest.노포역));
 
 		// when
-		boolean result = section.isContainsAny(Arrays.asList(StationTest.서면역, StationTest.노포역));
+		boolean result = section.isContainsAny(stations);
 
 		// then
 		assertThat(result).isTrue();

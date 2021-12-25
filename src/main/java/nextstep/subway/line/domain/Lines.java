@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import nextstep.subway.exception.AppException;
 import nextstep.subway.exception.ErrorCode;
 import nextstep.subway.fare.domain.Fare;
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 public class Lines {
 
@@ -27,13 +27,13 @@ public class Lines {
 		return new Lines(new ArrayList<>());
 	}
 
-	public Fare findMostExpensiveLineFare(List<Station> stations) {
+	public Fare findMostExpensiveLineFare(Stations stations) {
 		Set<Line> filteredLines = findLinesByStations(stations);
 		Line line = findMostExpensiveLine(filteredLines);
 		return line.getFare();
 	}
 
-	private Set<Line> findLinesByStations(List<Station> stations) {
+	private Set<Line> findLinesByStations(Stations stations) {
 		return lines.stream()
 			.filter(line -> line.containsAnySection(stations))
 			.collect(Collectors.toSet());

@@ -3,7 +3,6 @@ package nextstep.subway.line;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.StationTest;
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @DisplayName("노선들 도메인 테스트")
 public class LinesTest {
@@ -41,7 +40,7 @@ public class LinesTest {
 		삼호선.addStation(Section.of(10L, StationTest.노포역, StationTest.다대포해수욕장역, 3));
 		Lines lines = Lines.of(Arrays.asList(일호선, 이호선, 삼호선));
 
-		List<Station> stations = Arrays.asList(StationTest.수영역, StationTest.서면역, StationTest.노포역);
+		Stations stations = Stations.of(Arrays.asList(StationTest.수영역, StationTest.서면역, StationTest.노포역));
 
 		// when
 		Fare result = lines.findMostExpensiveLineFare(stations);

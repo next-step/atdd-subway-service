@@ -1,9 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -17,6 +15,7 @@ import javax.persistence.ManyToOne;
 import nextstep.subway.exception.AppException;
 import nextstep.subway.exception.ErrorCode;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Entity
 public class Section {
@@ -83,20 +82,8 @@ public class Section {
 		return Section.of(forward.line, forward.upStation, backward.downStation, newDistance);
 	}
 
-	public boolean isContainsAny(List<Station> stationList) {
-		Map<Station, Station> stationMap = new HashMap<>();
-		for (int i = 0; i < stationList.size() - 1; i++) {
-			stationMap.put(stationList.get(i), stationList.get(i + 1));
-		}
-		return stationMap.entrySet().stream().anyMatch(entry ->
-			isContainAll(entry.getKey(), entry.getValue()));
-	}
-
-	private boolean isContainAll(Station station1, Station station2) {
-		if (upStation.equals(station1) && downStation.equals(station2)) {
-			return true;
-		}
-		return upStation.equals(station2) && downStation.equals(station1);
+	public boolean isContainsAny(Stations stations) {
+		return stations.containsAll(upStation, downStation);
 	}
 
 	public List<Station> getStations() {

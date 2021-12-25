@@ -1,7 +1,5 @@
 package nextstep.subway.line.domain;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -12,6 +10,7 @@ import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Entity
 public class Line extends BaseEntity {
@@ -76,15 +75,15 @@ public class Line extends BaseEntity {
 		this.color = line.getColor();
 	}
 
-	public boolean containsAnySection(List<Station> stationList) {
-		return this.sections.containsAnySection(stationList);
+	public boolean containsAnySection(Stations stations) {
+		return this.sections.containsAnySection(stations);
 	}
 
 	public int compareByFare(Line other) {
 		return this.fare.compareTo(other.fare);
 	}
 
-	public List<Station> getStations() {
+	public Stations getStations() {
 		return this.sections.getStations();
 	}
 
