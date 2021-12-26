@@ -38,7 +38,7 @@ public class SubwayGraphTest {
     @Test
     void addVertexWithStations() {
         //when
-        SubwayGraph subwayGraph = new SubwayGraph(DefaultWeightedEdge.class);
+        SubwayGraph subwayGraph = new SubwayGraph(SubwayEdge.class);
         subwayGraph.addVertexWithStations(Arrays.asList(신분당선, 이호선, 삼호선));
 
         //then
@@ -54,7 +54,7 @@ public class SubwayGraphTest {
     @Test
     void setEdgeWeightWithSections() {
         //when
-        SubwayGraph subwayGraph = new SubwayGraph(DefaultWeightedEdge.class);
+        SubwayGraph subwayGraph = new SubwayGraph(SubwayEdge.class);
         subwayGraph.addVertexWithStations(Arrays.asList(신분당선, 이호선, 삼호선));
         subwayGraph.setEdgeWeightWithSections(Arrays.asList(신분당선, 이호선, 삼호선));
 
