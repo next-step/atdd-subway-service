@@ -37,6 +37,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 이호선;
     private LineResponse 삼호선;
     private LineResponse 사호선;
+    private LineResponse 오호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
@@ -44,6 +45,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 대전역;
     private StationResponse 사당역;
     private StationResponse 서초역;
+    private StationResponse 신길역;
+    private StationResponse 여의도역;
     private Member 어린이;
     private Member 청소년;
 
@@ -64,12 +67,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
         사당역 = StationAcceptanceTest.지하철역_등록되어_있음("사당역").as(StationResponse.class);
         서초역 = StationAcceptanceTest.지하철역_등록되어_있음("서초역").as(StationResponse.class);
+        신길역 = StationAcceptanceTest.지하철역_등록되어_있음("신길역").as(StationResponse.class);
+        여의도역 = StationAcceptanceTest.지하철역_등록되어_있음("여의도역").as(StationResponse.class);
         대전역 = new StationResponse(10L, "대전역", LocalDateTime.now(),LocalDateTime.now());
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 500);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 50, 0);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 40, 0);
         사호선 = 지하철_노선_등록되어_있음("사호선", "bg-red-600", 사당역, 서초역, 30, 0);
+        오호선 = 지하철_노선_등록되어_있음("오호선", "bg-red-600", 신길역, 여의도역, 30, 0);
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
         지하철_노선에_지하철역_등록되어_있음(사호선, 강남역, 사당역, 20);
 
@@ -113,7 +119,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathSourceNotConnectedTarget() {
         // When 지하철 경로 조회 요청
-        ExtractableResponse<Response> response = 지하철_경로_조회_요청(남부터미널역, 사당역, null);
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(남부터미널역, 신길, null);
         // Then 에러가 발생함
         잘못된_요청_응답됨(response, "출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
