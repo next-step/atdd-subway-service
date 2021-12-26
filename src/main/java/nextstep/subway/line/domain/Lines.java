@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class Lines {
 
-    List<Line> lines = new ArrayList<>();
+    private List<Line> lines = new ArrayList<>();
 
     public Lines() {
     }
