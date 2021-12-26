@@ -122,23 +122,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	 * |                        |
 	 * 남부터미널역  --- *3호선* ---   양재
 	 */
-	@DisplayName("최단 경로 요금 관리")
+	@DisplayName("로그인에 따른 요금 관리")
 	@Test
 	void scenario2() {
 
 		// when
-		ExtractableResponse<Response> 성인_경로_조회응답 = 최단경로_조회_요청함(성인, 양재역, 교대역);
+		ExtractableResponse<Response> 비로그인_경로_조회응답 = 최단경로_조회_요청함(비로그인, 양재역, 교대역);
 
 		// then
-		최단경로_조회_응답함(성인_경로_조회응답);
-		최단경로_조회_이용요금_포함됨(성인_경로_조회응답, 2_250);
+		최단경로_조회_응답함(비로그인_경로_조회응답);
+		최단경로_조회_이용요금_포함됨(비로그인_경로_조회응답, 2250);
 
-		// when
-		ExtractableResponse<Response> 청소년_경로_조회응답 = 최단경로_조회_요청함(청소년, 양재역, 교대역);
-
-		// then
-		최단경로_조회_응답함(청소년_경로_조회응답);
-		최단경로_조회_이용요금_포함됨(청소년_경로_조회응답, 1_800);
+		// given
+		TokenResponse 어린이 = 회원_생성_및_로그인됨(12);
 
 		// when
 		ExtractableResponse<Response> 어린이_경로_조회응답 = 최단경로_조회_요청함(어린이, 양재역, 교대역);
@@ -147,31 +143,50 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		최단경로_조회_응답함(어린이_경로_조회응답);
 		최단경로_조회_이용요금_포함됨(어린이_경로_조회응답, 1125);
 
+	}
+
+	@DisplayName("성인 요금을 조회한다")
+	@Test
+	void getFareByAge1() {
+		// when
+		ExtractableResponse<Response> 성인_경로_조회응답 = 최단경로_조회_요청함(성인, 양재역, 교대역);
+
+		// then
+		최단경로_조회_응답함(성인_경로_조회응답);
+		최단경로_조회_이용요금_포함됨(성인_경로_조회응답, 2_250);
+	}
+
+	@DisplayName("청소년 요금을 조회한다")
+	@Test
+	void getFareByAge2() {
+		// when
+		ExtractableResponse<Response> 청소년_경로_조회응답 = 최단경로_조회_요청함(청소년, 양재역, 교대역);
+
+		// then
+		최단경로_조회_응답함(청소년_경로_조회응답);
+		최단경로_조회_이용요금_포함됨(청소년_경로_조회응답, 1_800);
+	}
+
+	@DisplayName("어린이 요금을 조회한다")
+	@Test
+	void getFareByAge3() {
+		// when
+		ExtractableResponse<Response> 어린이_경로_조회응답 = 최단경로_조회_요청함(어린이, 양재역, 교대역);
+
+		// then
+		최단경로_조회_응답함(어린이_경로_조회응답);
+		최단경로_조회_이용요금_포함됨(어린이_경로_조회응답, 1125);
+	}
+
+	@DisplayName("비로그인 요금을 조회한다")
+	@Test
+	void getFare() {
 		// when
 		ExtractableResponse<Response> 비로그인_경로_조회응답 = 최단경로_조회_요청함(비로그인, 양재역, 교대역);
 
 		// then
 		최단경로_조회_응답함(비로그인_경로_조회응답);
 		최단경로_조회_이용요금_포함됨(비로그인_경로_조회응답, 2_250);
-
-	}
-
-	public static ExtractableResponse<Response> 최단경로_조회_요청함(TokenResponse token, StationResponse source,
-		StationResponse target) {
-		return RestAssured
-			.given().log().all()
-			.auth().oauth2(token.getAccessToken())
-			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.when().get("/paths?source={source}&target={target}", source.getId(), target.getId())
-			.then().log().all()
-			.extract();
-	}
-
-	public static TokenResponse 회원_생성_및_로그인됨(int age) {
-		String email = UUID.randomUUID() + "@email.com";
-		String password = "PASSWORD";
-		MemberAcceptanceTest.회원_생성을_요청(email, password, age);
-		return AuthAcceptanceTest.로그인됨(email, password);
 	}
 
 	@DisplayName("최단 경로를 조회한다")
@@ -269,6 +284,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		LineRequest lineRequest = new LineRequest(lineName, lineColor, station1.getId(), station2.getId(), distance,
 			fare);
 		return LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+	}
+
+	public static ExtractableResponse<Response> 최단경로_조회_요청함(TokenResponse token, StationResponse source,
+		StationResponse target) {
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(token.getAccessToken())
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/paths?source={source}&target={target}", source.getId(), target.getId())
+			.then().log().all()
+			.extract();
+	}
+
+	public static TokenResponse 회원_생성_및_로그인됨(int age) {
+		String email = UUID.randomUUID() + "@email.com";
+		String password = "PASSWORD";
+		MemberAcceptanceTest.회원_생성을_요청(email, password, age);
+		return AuthAcceptanceTest.로그인됨(email, password);
 	}
 
 }
