@@ -7,18 +7,18 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import nextstep.subway.fare.domain.DistanceChargePolicy;
+import nextstep.subway.fare.domain.DistanceChargeCalculator;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 
-public class DistanceChargePolicyPolicyTest {
+public class DistanceChargeCalculatorTest {
 
 	@ValueSource(ints = {1, 5, 8, 10})
 	@DisplayName("10km 이하 경로 시, 기본 운임 적용")
 	@ParameterizedTest
 	void calculate(int distance) {
 
-		Fare fare = DistanceChargePolicy.getFare(Distance.of(distance));
+		Fare fare = DistanceChargeCalculator.getFare(Distance.of(distance));
 
 		assertThat(fare.isZero()).isTrue();
 	}
@@ -28,7 +28,7 @@ public class DistanceChargePolicyPolicyTest {
 	@ParameterizedTest
 	void calculate2(int distance, int expectedFare) {
 
-		Fare fare = DistanceChargePolicy.getFare(Distance.of(distance));
+		Fare fare = DistanceChargeCalculator.getFare(Distance.of(distance));
 
 		assertThat(fare).isEqualTo(Fare.of(expectedFare));
 	}
@@ -38,7 +38,7 @@ public class DistanceChargePolicyPolicyTest {
 	@ParameterizedTest
 	void calculate3(int distance, int expectedFare) {
 
-		Fare fare = DistanceChargePolicy.getFare(Distance.of(distance));
+		Fare fare = DistanceChargeCalculator.getFare(Distance.of(distance));
 
 		assertThat(fare).isEqualTo(Fare.of(expectedFare));
 	}

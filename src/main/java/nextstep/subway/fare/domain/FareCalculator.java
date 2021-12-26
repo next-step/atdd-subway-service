@@ -17,7 +17,7 @@ public class FareCalculator {
 		LoginMember member) {
 		Lines lines = sections.getLines(stations);
 		Fare fare = BASE_FARE
-			.add(DistanceChargePolicy.getFare(distance))
+			.add(DistanceChargeCalculator.getFare(distance))
 			.add(lines.findMostExpensiveLineFare());
 		if (member.isNull()) {
 			return fare;
