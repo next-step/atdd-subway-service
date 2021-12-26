@@ -1,6 +1,5 @@
 package nextstep.subway.path.domain;
 
-import java.util.List;
 import java.util.Objects;
 
 import org.jgrapht.GraphPath;
@@ -11,11 +10,9 @@ import org.jgrapht.graph.WeightedMultigraph;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.AppException;
 import nextstep.subway.exception.ErrorCode;
-import nextstep.subway.fare.domain.AgeDiscountPolicy;
-import nextstep.subway.fare.domain.DistanceChargePolicy;
 import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathResponse;
@@ -23,8 +20,6 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
 public class PathFinder {
-
-	private static final Fare BASE_FARE = Fare.of(1_250);
 
 	private final Sections sections;
 	private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
@@ -45,20 +40,9 @@ public class PathFinder {
 	public PathResponse findPath(Station source, Station target, LoginMember member) {
 		GraphPath<Station, DefaultWeightedEdge> graphPath = getGraphPath(source, target);
 		Distance distance = Distance.of(graphPath.getWeight());
-		List<Station> stations = graphPath.getVertexList();
-		Fare fare = calculateFare(distance, Stations.of(stations), member);
+		Stations stations = Stations.of(graphPath.getVertexList());
+		Fare fare = FareCalculator.calculateFare(distance, sections, stations, member);
 		return PathResponse.of(stations, distance, fare);
-	}
-
-	private Fare calculateFare(Distance distance, Stations stations, LoginMember member) {
-		Lines lines = sections.getLines(stations);
-		Fare fare = BASE_FARE;
-		fare = fare.add(DistanceChargePolicy.getFare(distance));
-		fare = fare.add(lines.findMostExpensiveLineFare());
-		if (member.isNull()) {
-			return fare;
-		}
-		return AgeDiscountPolicy.discountByAge(fare, member.getAge());
 	}
 
 	private GraphPath<Station, DefaultWeightedEdge> getGraphPath(Station source, Station target) {

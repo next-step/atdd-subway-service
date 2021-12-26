@@ -5,9 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import nextstep.subway.station.dto.StationResponse;
 
 public class Stations {
 
@@ -47,12 +44,6 @@ public class Stations {
 
 	public boolean isExists(Station station) {
 		return stations.stream().anyMatch(it -> it.equals(station));
-	}
-
-	public List<StationResponse> toStationResponse() {
-		return this.stations.stream()
-			.map(StationResponse::of)
-			.collect(Collectors.toList());
 	}
 
 	public boolean isEqualSize(int size) {
