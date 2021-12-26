@@ -4,6 +4,7 @@ import nextstep.subway.station.domain.Station;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Lines {
@@ -24,12 +25,11 @@ public class Lines {
                 .collect(Collectors.toList());
     }
 
-    public List<Station> stations() {
+    public Set<Station> stations() {
         return lines
                 .stream()
                 .flatMap(line -> line.getStations().stream())
-                .distinct()
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
 }
