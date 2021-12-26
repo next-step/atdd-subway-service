@@ -23,7 +23,7 @@ public class PathFinder {
         validateSourceEqualsTarget(sourceStation, targetStation);
         List<Section> sections = findSections(lines);
         PathResponse pathResponse = shortestPathCalculator.calculatePath(sections, sourceStation, targetStation);
-        pathResponse.addOverFare(findContainLines(sections, pathResponse.getStations()));
+        pathResponse.calculateExtraFare(findContainLines(sections, pathResponse.getStations()));
         return pathResponse;
     }
 

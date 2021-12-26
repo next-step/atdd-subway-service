@@ -30,8 +30,8 @@ public class PathService {
         Station targetStation = findStationById(targetId);
         PathFinder pathFinder = new PathFinder(new DijkstraShortestPathCalculator());
         PathResponse pathResponse = pathFinder.findPath(lines, sourceStation, targetStation);
-        pathResponse.addOverFare(FarePolicy.calculateDistanceOverFare(pathResponse.getDistance()));
-        pathResponse.discountFare(FarePolicy.calculateDiscountAgeFare(loginMember.getAge(), pathResponse.getFare()));
+        pathResponse.calculateExtraFare(FarePolicy.calculateDistanceOverFare(pathResponse.getDistance()));
+        pathResponse.calculateDiscount(FarePolicy.calculateDiscountAgeFare(loginMember.getAge(), pathResponse.getFare()));
         return pathResponse;
     }
 

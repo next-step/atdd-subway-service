@@ -1,9 +1,11 @@
 package nextstep.subway.fare;
 
 public enum DistanceFarePolicy {
+    DEFAULT_SECTION_DISTANCE(0, 10, 1, 0),
     FIRST_SECTION_DISTANCE(10, 50,5, 100),
     SECOND_SECTION_DISTANCE(50, Integer.MAX_VALUE,8, 100);
 
+    private static final int BASE_FARE = 1_250;
     private int from;
     private int limit;
     private int perDistance;
@@ -17,7 +19,7 @@ public enum DistanceFarePolicy {
     }
 
     public static int calculateOverFare(int distance) {
-        int overFare = 0;
+        int overFare = BASE_FARE;
         for (DistanceFarePolicy farePolicy : DistanceFarePolicy.values()) {
             overFare += calculateFarePerDistance(distance, farePolicy);
         }

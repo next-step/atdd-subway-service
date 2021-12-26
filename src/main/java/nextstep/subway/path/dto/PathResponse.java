@@ -1,16 +1,14 @@
 package nextstep.subway.path.dto;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PathResponse {
-    private static final int BASE_FARE = 1_250;
     private List<StationResponse> stations = new ArrayList<>();
     private int distance;
-    private int fare = BASE_FARE;
+    private int fare;
 
     protected PathResponse() {
     }
@@ -32,11 +30,11 @@ public class PathResponse {
         return fare;
     }
 
-    public void addOverFare(int overFare) {
-        this.fare += overFare;
+    public void calculateExtraFare(int extraFare) {
+        fare += extraFare;
     }
 
-    public void discountFare(int discountedFare) {
-        this.fare = discountedFare;
+    public void calculateDiscount(int discountedFare) {
+        fare = discountedFare;
     }
 }
