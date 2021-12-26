@@ -15,9 +15,9 @@ import nextstep.subway.fare.domain.AgeDiscountPolicy;
 import nextstep.subway.fare.domain.DistanceChargePolicy;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
@@ -26,14 +26,16 @@ public class PathFinder {
 
 	private static final Fare BASE_FARE = Fare.of(1_250);
 
-	private final Lines lines;
+	private final Sections sections;
+	private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-	private PathFinder(Lines lines) {
-		this.lines = lines;
+	private PathFinder(Sections sections) {
+		this.sections = sections;
+		this.graph = getGraph(sections);
 	}
 
-	public static PathFinder of(List<Line> lines) {
-		return new PathFinder(Lines.of(lines));
+	public static PathFinder of(Sections sections) {
+		return new PathFinder(sections);
 	}
 
 	public PathResponse findPath(Station source, Station target) {
@@ -49,9 +51,10 @@ public class PathFinder {
 	}
 
 	private Fare calculateFare(Distance distance, Stations stations, LoginMember member) {
+		Lines lines = sections.getLines(stations);
 		Fare fare = BASE_FARE;
 		fare = fare.add(DistanceChargePolicy.getFare(distance));
-		fare = fare.add(lines.findMostExpensiveLineFare(stations));
+		fare = fare.add(lines.findMostExpensiveLineFare());
 		if (member.isNull()) {
 			return fare;
 		}
@@ -59,7 +62,6 @@ public class PathFinder {
 	}
 
 	private GraphPath<Station, DefaultWeightedEdge> getGraphPath(Station source, Station target) {
-		WeightedMultigraph<Station, DefaultWeightedEdge> graph = getGraph(this.lines.getSections());
 		validateSourceAndTarget(graph, source, target);
 		DijkstraShortestPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph);
 		GraphPath<Station, DefaultWeightedEdge> graphPath = path.getPath(source, target);
@@ -67,13 +69,13 @@ public class PathFinder {
 		return graphPath;
 	}
 
-	private WeightedMultigraph<Station, DefaultWeightedEdge> getGraph(List<Section> sections) {
+	private static WeightedMultigraph<Station, DefaultWeightedEdge> getGraph(Sections sections) {
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-		sections.forEach(section -> addSection(graph, section));
+		sections.toList().forEach(section -> addSection(graph, section));
 		return graph;
 	}
 
-	private void addSection(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Section section) {
+	private static void addSection(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Section section) {
 		graph.addVertex(section.getUpStation());
 		graph.addVertex(section.getDownStation());
 		graph.setEdgeWeight(

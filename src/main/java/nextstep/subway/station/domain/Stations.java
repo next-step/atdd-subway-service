@@ -25,7 +25,7 @@ public class Stations {
 		return new Stations(new ArrayList<>());
 	}
 
-	public boolean containsAll(Station station1, Station station2) {
+	public boolean containsAny(Station station1, Station station2) {
 		Map<Station, Station> stationMap = this.toMap();
 		if (stationMap.containsKey(station1) && stationMap.get(station1).equals(station2)) {
 			return true;

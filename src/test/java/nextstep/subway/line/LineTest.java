@@ -3,8 +3,6 @@ package nextstep.subway.line;
 import static nextstep.subway.line.SectionTest.*;
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +42,7 @@ public class LineTest {
 		Stations stations = line.getStations();
 
 		// then
-		assertThat(stations.containsAll(SECTION_1.getUpStation(), SECTION_1.getDownStation())).isTrue();
+		assertThat(stations.containsAny(SECTION_1.getUpStation(), SECTION_1.getDownStation())).isTrue();
 	}
 
 	@DisplayName("노선 요금을 조회한다")
@@ -60,17 +58,4 @@ public class LineTest {
 		assertThat(result).isEqualTo(Fare.of(900));
 	}
 
-	@DisplayName("역들 중 하나라도 포함되어 있는 구간이 있는지 체크한다")
-	@Test
-	void containsAnySectionTest() {
-		// given
-		Stations stations = Stations.of(Arrays.asList(StationTest.서면역, StationTest.노포역));
-		Line line = Line.of(1L, "1호선", "red", StationTest.노포역, StationTest.서면역, 5, 900);
-
-		// when
-		boolean result = line.containsAnySection(stations);
-
-		// then
-		assertThat(result).isTrue();
-	}
 }

@@ -10,9 +10,7 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.StationTest;
-import nextstep.subway.station.domain.Stations;
 
 @DisplayName("노선들 도메인 테스트")
 public class LinesTest {
@@ -37,15 +35,12 @@ public class LinesTest {
 		Line 일호선 = Line.of(1L, "일호선", "red", StationTest.노포역, StationTest.서면역, 2, 900);
 		Line 이호선 = Line.of(2L, "이호선", "blue", StationTest.서면역, StationTest.수영역, 3, 1000);
 		Line 삼호선 = Line.of(3L, "삼호선", "green", StationTest.노포역, StationTest.수영역, 10, 2000);
-		삼호선.addStation(Section.of(10L, StationTest.노포역, StationTest.다대포해수욕장역, 3));
 		Lines lines = Lines.of(Arrays.asList(일호선, 이호선, 삼호선));
 
-		Stations stations = Stations.of(Arrays.asList(StationTest.수영역, StationTest.서면역, StationTest.노포역));
-
 		// when
-		Fare result = lines.findMostExpensiveLineFare(stations);
+		Fare result = lines.findMostExpensiveLineFare();
 
 		// then
-		assertThat(result).isEqualTo(Fare.of(1000));
+		assertThat(result).isEqualTo(Fare.of(2000));
 	}
 }

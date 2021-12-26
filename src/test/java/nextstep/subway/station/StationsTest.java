@@ -38,7 +38,7 @@ public class StationsTest {
 		Stations stations = Stations.of(stationList);
 
 		// when
-		boolean result = stations.containsAll(StationTest.다대포해수욕장역, StationTest.노포역);
+		boolean result = stations.containsAny(StationTest.다대포해수욕장역, StationTest.노포역);
 
 		// then
 		assertThat(result).isFalse();

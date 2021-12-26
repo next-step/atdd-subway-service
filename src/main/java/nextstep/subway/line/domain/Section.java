@@ -53,6 +53,10 @@ public class Section {
 		return new Section(id, line, upStation, downStation, distance);
 	}
 
+	public static Section of(Long id, Line line, Station upStation, Station downStation, int distance) {
+		return new Section(id, line, upStation, downStation, Distance.of(distance));
+	}
+
 	public static Section of(Long id, Station upStation, Station downStation, int distance) {
 		return new Section(id, null, upStation, downStation, Distance.of(distance));
 	}
@@ -83,7 +87,7 @@ public class Section {
 	}
 
 	public boolean isContainsAny(Stations stations) {
-		return stations.containsAll(upStation, downStation);
+		return stations.containsAny(upStation, downStation);
 	}
 
 	public List<Station> getStations() {

@@ -2,14 +2,13 @@ package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import nextstep.subway.exception.AppException;
 import nextstep.subway.exception.ErrorCode;
 import nextstep.subway.fare.domain.Fare;
-import nextstep.subway.station.domain.Stations;
 
 public class Lines {
 
@@ -27,22 +26,11 @@ public class Lines {
 		return new Lines(new ArrayList<>());
 	}
 
-	public Fare findMostExpensiveLineFare(Stations stations) {
-		Set<Line> filteredLines = findLinesByStations(stations);
-		Line line = findMostExpensiveLine(filteredLines);
-		return line.getFare();
-	}
-
-	private Set<Line> findLinesByStations(Stations stations) {
-		return lines.stream()
-			.filter(line -> line.containsAnySection(stations))
-			.collect(Collectors.toSet());
-	}
-
-	private Line findMostExpensiveLine(Collection<Line> filteredLines) {
-		return filteredLines.stream()
+	public Fare findMostExpensiveLineFare() {
+		Line line = lines.stream()
 			.max(Line::compareByFare)
 			.orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "가장 비싼 노선을 찾을 수 없습니다"));
+		return line.getFare();
 	}
 
 	public List<Section> getSections() {
@@ -51,6 +39,10 @@ public class Lines {
 			.map(Sections::toList)
 			.flatMap(Collection::stream)
 			.collect(Collectors.toList());
+	}
+
+	public List<Line> toList() {
+		return Collections.unmodifiableList(this.lines);
 	}
 
 	@Override

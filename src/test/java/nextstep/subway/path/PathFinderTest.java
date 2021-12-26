@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 
 import nextstep.subway.exception.AppException;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationTest;
@@ -20,24 +22,32 @@ import nextstep.subway.station.dto.StationResponse;
 
 public class PathFinderTest {
 
-	Line 일호선;
-	Line 이호선;
-	Line 삼호선;
-	Line 사호선;
+	Section 노포역_서면역;
+	Section 서면역_다대포역;
+	Section 노포역_범내골역;
+	Section 범내골역_다대포역;
+	Sections sections;
 	PathFinder pathFinder;
 
 	@BeforeEach
 	public void setup() {
-		일호선 = Line.of(1L, "1호선", "red", StationTest.노포역, StationTest.서면역, 10, 900);
-		이호선 = Line.of(2L, "2호선", "blue", StationTest.서면역, StationTest.다대포해수욕장역, 10, 1000);
-		삼호선 = Line.of(3L, "3호선", "green", StationTest.노포역, StationTest.범내골역, 3, 1100);
-		사호선 = Line.of(3L, "4호선", "yellow", StationTest.범내골역, StationTest.다대포해수욕장역, 2, 1200);
-		pathFinder = PathFinder.of(Arrays.asList(일호선, 이호선, 삼호선, 사호선));
+		Line 일호선 = Line.of(1L, "1호선", "red", 900);
+		노포역_서면역 = Section.of(1L, 일호선, StationTest.노포역, StationTest.서면역, 10);
+
+		Line 이호선 = Line.of(2L, "2호선", "red", 1000);
+		서면역_다대포역 = Section.of(2L, 이호선, StationTest.서면역, StationTest.다대포해수욕장역, 10);
+
+		Line 삼호선 = Line.of(3L, "3호선", "red", 1100);
+		노포역_범내골역 = Section.of(3L, 삼호선, StationTest.노포역, StationTest.범내골역, 3);
+		범내골역_다대포역 = Section.of(4L, 삼호선, StationTest.범내골역, StationTest.다대포해수욕장역, 2);
+
+		sections = Sections.of(Arrays.asList(노포역_서면역, 서면역_다대포역, 노포역_범내골역, 범내골역_다대포역));
+		pathFinder = PathFinder.of(sections);
 	}
 
 	@DisplayName("경로를 찾는다")
 	@Test
-	void findPathTest() {
+	void findPath() {
 		// when
 		PathResponse pathResponse = pathFinder.findPath(StationTest.다대포해수욕장역, StationTest.노포역);
 
@@ -68,7 +78,7 @@ public class PathFinderTest {
 
 	@DisplayName("출발역과 도착역이 같으면 안된다")
 	@Test
-	void findPathTest2() {
+	void findPath2() {
 		// when, then
 		assertThatThrownBy(() -> pathFinder.findPath(StationTest.노포역, StationTest.노포역))
 			.isInstanceOf(AppException.class);
@@ -76,9 +86,13 @@ public class PathFinderTest {
 
 	@DisplayName("출발역과 도착역이 연결되지 않으면 안된다")
 	@Test
-	void findPathTest3() {
+	void findPath3() {
 		// given
-		PathFinder pathFinder1 = PathFinder.of(Arrays.asList(일호선, 사호선));
+		Section section1 = Section.of(1L, StationTest.노포역, StationTest.서면역, 10);
+		Section section2 = Section.of(2L, StationTest.범내골역, StationTest.다대포해수욕장역, 10);
+
+		sections = Sections.of(Arrays.asList(section1, section2));
+		PathFinder pathFinder1 = PathFinder.of(sections);
 
 		// when, then
 		assertThatThrownBy(() -> pathFinder1.findPath(StationTest.노포역, StationTest.다대포해수욕장역))
@@ -110,4 +124,5 @@ public class PathFinderTest {
 			.collect(Collectors.toList());
 		assertThat(results).containsAll(expected);
 	}
+
 }

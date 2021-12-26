@@ -75,10 +75,6 @@ public class Line extends BaseEntity {
 		this.color = line.getColor();
 	}
 
-	public boolean containsAnySection(Stations stations) {
-		return this.sections.containsAnySection(stations);
-	}
-
 	public int compareByFare(Line other) {
 		return this.fare.compareTo(other.fare);
 	}

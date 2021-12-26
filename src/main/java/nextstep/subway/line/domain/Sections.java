@@ -155,9 +155,16 @@ public class Sections {
 			.findFirst();
 	}
 
-	public boolean containsAnySection(Stations stations) {
-		return this.sections.stream()
-			.anyMatch(section -> section.isContainsAny(stations));
+	public Lines getLines(Stations stations) {
+		List<Line> lines = this.sections.stream()
+			.filter(section -> section.isContainsAny(stations))
+			.map(Section::getLine)
+			.collect(Collectors.toList());
+		return Lines.of(lines);
+	}
+
+	public void addAll(Sections other) {
+		sections.addAll(other.sections);
 	}
 
 	public List<Section> toList() {
