@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("지하철 경로 조회")
-public class PathAcceptanceTest extends AcceptanceTest {
+public class RouteAcceptanceTest extends AcceptanceTest {
 
     private LineResponse 신분당선;
     private LineResponse 이호선;

@@ -15,6 +15,7 @@ public class StationFixture {
 
     public static final Station 교대역 = new Station("교대역");
     public static final Station 남부터미널역 = new Station("남부터미널역");
-
-
+    public static final Station 매봉역 = new Station("매봉역");
+    public static final Station 도곡역 = new Station("도곡역");
+    public static final Station 대치역 = new Station("대치역");
 }

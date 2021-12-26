@@ -46,6 +46,9 @@ public class PathServiceTest {
 
     @BeforeEach
     public void setUp() {
+        LineFixture.신분당선.getSections().clear();
+        LineFixture.삼호선.getSections().clear();
+
         강남역 = StationFixture.강남역;
         양재역 = StationFixture.양재역;
         교대역 = StationFixture.교대역;
