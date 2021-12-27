@@ -83,14 +83,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역이 동일할 경우 오류발생")
     public void 출발역과_도착역이_동일할_경우_오류발생() {
         ExtractableResponse<Response> response = 최단_거리_요청(교대역.getId(), 교대역.getId());
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     @DisplayName("존재하지 않는 역으로 조회할 경우 오류발생")
     public void 존재하지_않는_역으로_조회할_경우_오류발생() {
         ExtractableResponse<Response> response = 최단_거리_요청(0L, 교대역.getId());
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private ExtractableResponse<Response> 최단_거리_요청(Long sourceId, Long targetId) {
