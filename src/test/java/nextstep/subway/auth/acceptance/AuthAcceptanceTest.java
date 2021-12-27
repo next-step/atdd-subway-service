@@ -53,7 +53,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return post("/login/token", tokenRequest);
     }
 
-    private void 로그인_됨(final ExtractableResponse<Response> response) {
+    private static void 로그인_됨(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
