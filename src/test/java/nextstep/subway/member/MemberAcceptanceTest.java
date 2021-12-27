@@ -1,6 +1,5 @@
 package nextstep.subway.member;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -11,9 +10,7 @@ import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -96,29 +93,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 내정보_조회_요청(final String accessToken) {
-        return RestAssured.given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "bearer " + accessToken)
-                .when()
-                .get("/members/me")
-                .then()
-                .log().all()
-                .extract();
+        return get("/members/me", accessToken);
     }
 
     public static ExtractableResponse<Response> 내정보_수정_요청(final String accessToken, final String email, final String password, final Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
-        return RestAssured.given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "bearer " + accessToken)
-                .body(memberRequest)
-                .when()
-                .put("/members/me")
-                .then()
-                .log().all()
-                .extract();
+        return put("/members/me", memberRequest, accessToken);
     }
 
     public static ExtractableResponse<Response> 회원_삭제_요청(final ExtractableResponse<Response> response) {
