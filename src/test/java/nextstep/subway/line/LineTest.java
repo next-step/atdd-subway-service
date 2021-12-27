@@ -3,25 +3,29 @@ package nextstep.subway.line;
 import static nextstep.subway.line.SectionTest.*;
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.List;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.StationTest;
+import nextstep.subway.station.domain.Stations;
 
-@DisplayName("노선 테스트")
+@DisplayName("노선 도메인 테스트")
 public class LineTest {
 
-	@DisplayName("노선 생성한다")
+	public static Line 일호선 = Line.of(1L, "1호선", "red", StationTest.노포역, StationTest.서면역, 10, 900);
+	public static Line 이호선 = Line.of(2L, "2호선", "yellow", StationTest.전포역, StationTest.서면역, 1, 100);
+	public static Line 삼호선 = Line.of(2L, "3호선", "yellow", StationTest.해운대역, StationTest.수영역, 1, 1100);
+
+	@DisplayName("노선을 생성한다")
 	@Test
 	void createTest() {
 		// given
-		Line expected = Line.of(1L, "1호선", "red", SECTION_1.getUpStation(), SECTION_1.getDownStation(), 10);
+		Line expected = Line.of(1L, "1호선", "red", SECTION_1.getUpStation(), SECTION_1.getDownStation(), 10, 900);
 
 		// when
-		Line line = Line.of(1L, "1호선", "red", SECTION_1.getUpStation(), SECTION_1.getDownStation(), 10);
+		Line line = Line.of(1L, "1호선", "red", SECTION_1.getUpStation(), SECTION_1.getDownStation(), 10, 900);
 
 		// then
 		assertThat(line).isEqualTo(expected);
@@ -32,12 +36,26 @@ public class LineTest {
 	@Test
 	void getStationsTest() {
 		// given
-		Line line = Line.of(1L, "1호선", "red", SECTION_1.getUpStation(), SECTION_1.getDownStation(), 10);
+		Line line = Line.of(1L, "1호선", "red", SECTION_1.getUpStation(), SECTION_1.getDownStation(), 10, 1000);
 
 		// when
-		List<Station> stations = line.getStations();
+		Stations stations = line.getStations();
 
 		// then
-		assertThat(stations).containsExactly(SECTION_1.getUpStation(), SECTION_1.getDownStation());
+		assertThat(stations.containsAny(SECTION_1.getUpStation(), SECTION_1.getDownStation())).isTrue();
 	}
+
+	@DisplayName("노선 요금을 조회한다")
+	@Test
+	void getFareTest() {
+		// given
+		Line line = Line.of(1L, "1호선", "red", SECTION_1.getUpStation(), SECTION_1.getDownStation(), 10, 900);
+
+		// when
+		Fare result = line.getFare();
+
+		// then
+		assertThat(result).isEqualTo(Fare.of(900));
+	}
+
 }

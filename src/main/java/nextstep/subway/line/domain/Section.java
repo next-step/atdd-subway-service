@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import nextstep.subway.exception.AppException;
 import nextstep.subway.exception.ErrorCode;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Entity
 public class Section {
@@ -52,6 +53,10 @@ public class Section {
 		return new Section(id, line, upStation, downStation, distance);
 	}
 
+	public static Section of(Long id, Line line, Station upStation, Station downStation, int distance) {
+		return new Section(id, line, upStation, downStation, Distance.of(distance));
+	}
+
 	public static Section of(Long id, Station upStation, Station downStation, int distance) {
 		return new Section(id, null, upStation, downStation, Distance.of(distance));
 	}
@@ -79,6 +84,10 @@ public class Section {
 	public static Section combine(Section forward, Section backward) {
 		Distance newDistance = forward.getDistance().plus(backward.getDistance());
 		return Section.of(forward.line, forward.upStation, backward.downStation, newDistance);
+	}
+
+	public boolean isContainsAny(Stations stations) {
+		return stations.containsAny(upStation, downStation);
 	}
 
 	public List<Station> getStations() {

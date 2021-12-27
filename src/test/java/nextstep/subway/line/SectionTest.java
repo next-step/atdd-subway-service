@@ -3,12 +3,15 @@ package nextstep.subway.line;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.StationTest;
+import nextstep.subway.station.domain.Stations;
 
 public class SectionTest {
 
@@ -70,6 +73,20 @@ public class SectionTest {
 			() -> assertThat(section.getUpStation()).isEqualTo(StationTest.노포역),
 			() -> assertThat(section.getDownStation()).isEqualTo(StationTest.범내골역)
 		);
+	}
+
+	@Test
+	@DisplayName("방향 관계 없이, 두 역을 포함하는지 체크한다")
+	void isContainStationsTest() {
+		// given
+		Section section = Section.of(1L, StationTest.노포역, StationTest.서면역, 3);
+		Stations stations = Stations.of(Arrays.asList(StationTest.서면역, StationTest.노포역));
+
+		// when
+		boolean result = section.isContainsAny(stations);
+
+		// then
+		assertThat(result).isTrue();
 	}
 
 }

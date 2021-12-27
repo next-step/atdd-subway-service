@@ -8,6 +8,7 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.exception.AppException;
 import nextstep.subway.exception.ErrorCode;
+import nextstep.subway.member.domain.Email;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 
@@ -22,7 +23,7 @@ public class AuthService {
 	}
 
 	public TokenResponse login(TokenRequest request) {
-		Member member = memberRepository.findByEmail(request.getEmail())
+		Member member = memberRepository.findByEmail(Email.of(request.getEmail()))
 			.orElseThrow(() -> new AppException(ErrorCode.UNAUTHORIZED, "잘못된 토큰 정보입니다"));
 		member.checkPassword(request.getPassword());
 
@@ -30,14 +31,22 @@ public class AuthService {
 		return new TokenResponse(token);
 	}
 
-	public LoginMember findMemberByToken(String credentials) {
+	public LoginMember findMemberByToken(String credentials, boolean required) {
 		if (!jwtTokenProvider.validateToken(credentials)) {
-			throw new AppException(ErrorCode.UNAUTHORIZED, "인증에 실패했습니다. credential: {}", credentials);
+			return ifNotRequiredEmptyMember(required, credentials);
 		}
 
 		String email = jwtTokenProvider.getPayload(credentials);
-		Member member = memberRepository.findByEmail(email)
+		Member member = memberRepository.findByEmail(Email.of(email))
 			.orElseThrow(() -> new AppException(ErrorCode.UNAUTHORIZED, "잘못된 토큰 정보입니다"));
-		return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+		return member.toLoginMember();
+	}
+
+	private LoginMember ifNotRequiredEmptyMember(boolean required, String credentials) {
+		if (!required) {
+			return new LoginMember();
+		}
+		throw new AppException(ErrorCode.UNAUTHORIZED, "인증에 실패했습니다. credential: {}", credentials);
+
 	}
 }

@@ -12,9 +12,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.station.StationTest;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @DisplayName("구간들 기능")
 public class SectionsTest {
@@ -53,10 +56,10 @@ public class SectionsTest {
 		Sections sections = Sections.of(Collections.singletonList(SectionTest.SECTION_1));
 
 		// when
-		List<Station> stations = sections.getStations();
+		Stations stations = sections.getStations();
 
 		// then
-		assertThat(stations.size()).isEqualTo(2);
+		assertThat(stations.isEqualSize(2)).isTrue();
 	}
 
 	@Test
@@ -70,10 +73,10 @@ public class SectionsTest {
 		Sections sections = Sections.of(Arrays.asList(section1, section2, section3));
 
 		// when
-		List<Station> stations = sections.getStations();
+		Stations stations = sections.getStations();
 
 		// then
-		assertThat(stations).containsExactly(노포역, 서면역, 부산진역, 다대포해수욕장역);
+		assertThat(stations.toList()).containsExactly(노포역, 서면역, 부산진역, 다대포해수욕장역);
 	}
 
 	@Test
@@ -91,7 +94,7 @@ public class SectionsTest {
 
 		// then
 		assertAll(
-			() -> assertThat(sections.getStations()).containsExactly(노포역, 서면역, 범내골역, 부산진역, 다대포해수욕장역),
+			() -> assertThat(sections.getStations().toList()).containsExactly(노포역, 서면역, 범내골역, 부산진역, 다대포해수욕장역),
 			() -> assertThat(section2.getDistance()).isEqualTo(Distance.of(4))
 		);
 	}
@@ -111,7 +114,7 @@ public class SectionsTest {
 
 		// then
 		assertAll(
-			() -> assertThat(sections.getStations())
+			() -> assertThat(sections.getStations().toList())
 				.containsExactly(노포역, 범내골역, 서면역, 부산진역, 다대포해수욕장역),
 			() -> assertThat(section1.getDistance()).isEqualTo(Distance.of(9))
 		);
@@ -132,7 +135,7 @@ public class SectionsTest {
 		sections.addStation(section4);
 
 		// then
-		assertThat(sections.getStations())
+		assertThat(sections.getStations().toList())
 			.containsExactly(새상행종점, 노포역, 서면역, 부산진역, 다대포해수욕장역);
 	}
 
@@ -151,8 +154,24 @@ public class SectionsTest {
 		sections.addStation(section4);
 
 		// then
-		assertThat(sections.getStations())
+		assertThat(sections.getStations().toList())
 			.containsExactly(노포역, 서면역, 부산진역, 다대포해수욕장역, 새하행종점);
+	}
+
+	@DisplayName("역들에 해당되는 노선을 탐색한다")
+	@Test
+	void getLinesTest() {
+		// given
+		List<Station> stationList = Arrays.asList(StationTest.노포역, StationTest.서면역, StationTest.전포역);
+		Sections sections = LineTest.일호선.getSections();
+		Sections sections2 = LineTest.이호선.getSections();
+		sections.addAll(sections2);
+
+		// when
+		Lines lines = sections.getLines(Stations.of(stationList));
+
+		// then
+		assertThat(lines.toList()).containsExactly(LineTest.일호선, LineTest.이호선);
 	}
 
 }

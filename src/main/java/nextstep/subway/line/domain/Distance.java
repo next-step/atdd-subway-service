@@ -24,10 +24,30 @@ public class Distance {
 		return new Distance(distance);
 	}
 
+	public static Distance of(double distance) {
+		return new Distance((int)distance);
+	}
+
 	private static void validate(int distance) {
 		if (distance < MINIMUM) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "Distance 는 {}보다 커야합니다", MINIMUM);
 		}
+	}
+
+	public boolean isLessThan(int distance) {
+		return this.distance < distance;
+	}
+
+	public boolean isGreaterThan(int distance) {
+		return this.distance > distance;
+	}
+
+	public Distance getOverDistance(int minimumKm) {
+		return Distance.of(this.distance - (minimumKm - 1));
+	}
+
+	public Distance minus(int distance) {
+		return Distance.of(this.distance - distance);
 	}
 
 	public Distance minus(Distance other) {

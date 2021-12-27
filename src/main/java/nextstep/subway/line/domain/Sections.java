@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import nextstep.subway.exception.AppException;
 import nextstep.subway.exception.ErrorCode;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Embeddable
 public class Sections {
@@ -41,9 +42,9 @@ public class Sections {
 		this.sections.add(newSection);
 	}
 
-	public List<Station> getStations() {
+	public Stations getStations() {
 		if (this.sections.isEmpty()) {
-			return new ArrayList<>();
+			return Stations.of();
 		}
 		Map<Station, Station> stations = this.sections.stream()
 			.collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
@@ -51,7 +52,7 @@ public class Sections {
 		return sortStations(firstStation, stations);
 	}
 
-	private List<Station> sortStations(Station firstStation, Map<Station, Station> stations) {
+	private Stations sortStations(Station firstStation, Map<Station, Station> stations) {
 		List<Station> orderedStations = new ArrayList<>();
 		orderedStations.add(firstStation);
 		Station station = firstStation;
@@ -60,7 +61,7 @@ public class Sections {
 			orderedStations.add(downStation);
 			station = downStation;
 		}
-		return orderedStations;
+		return Stations.of(orderedStations);
 	}
 
 	private Station findFirstStation(Map<Station, Station> stations) {
@@ -73,7 +74,7 @@ public class Sections {
 
 	public void addStation(Section newSection) {
 		validateUpdateSections(newSection);
-		List<Station> stations = this.getStations();
+		Stations stations = this.getStations();
 		if (stations.isEmpty()) {
 			this.sections.add(newSection);
 			return;
@@ -82,8 +83,8 @@ public class Sections {
 		updateDownStationIfExists(stations, newSection);
 	}
 
-	private void updateUpStationIfExists(List<Station> stations, Section newSection) {
-		boolean isUpStationExisted = isStationExisted(stations, newSection.getUpStation());
+	private void updateUpStationIfExists(Stations stations, Section newSection) {
+		boolean isUpStationExisted = stations.isExists(newSection.getUpStation());
 		if (!isUpStationExisted) {
 			return;
 		}
@@ -94,8 +95,8 @@ public class Sections {
 		this.sections.add(newSection);
 	}
 
-	private void updateDownStationIfExists(List<Station> stations, Section newSection) {
-		boolean isDownStationExisted = isStationExisted(stations, newSection.getDownStation());
+	private void updateDownStationIfExists(Stations stations, Section newSection) {
+		boolean isDownStationExisted = stations.isExists(newSection.getDownStation());
 		if (!isDownStationExisted) {
 			return;
 		}
@@ -107,9 +108,9 @@ public class Sections {
 	}
 
 	private void validateUpdateSections(Section newSection) {
-		List<Station> stations = this.getStations();
-		boolean isUpStationExisted = isStationExisted(stations, newSection.getUpStation());
-		boolean isDownStationExisted = isStationExisted(stations, newSection.getDownStation());
+		Stations stations = this.getStations();
+		boolean isUpStationExisted = stations.isExists(newSection.getUpStation());
+		boolean isDownStationExisted = stations.isExists(newSection.getDownStation());
 
 		if (isUpStationExisted && isDownStationExisted) {
 			throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "이미 등록된 구간 입니다.");
@@ -118,10 +119,6 @@ public class Sections {
 		if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
 			throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR, "등록할 수 없는 구간 입니다.");
 		}
-	}
-
-	private boolean isStationExisted(List<Station> stations, Station station) {
-		return stations.stream().anyMatch(it -> it.equals(station));
 	}
 
 	public void removeStation(Station station, Line line) {
@@ -157,7 +154,19 @@ public class Sections {
 			.filter(it -> it.getDownStation() == upStation)
 			.findFirst();
 	}
-	
+
+	public Lines getLines(Stations stations) {
+		List<Line> lines = this.sections.stream()
+			.filter(section -> section.isContainsAny(stations))
+			.map(Section::getLine)
+			.collect(Collectors.toList());
+		return Lines.of(lines);
+	}
+
+	public void addAll(Sections other) {
+		sections.addAll(other.sections);
+	}
+
 	public List<Section> toList() {
 		return this.sections;
 	}

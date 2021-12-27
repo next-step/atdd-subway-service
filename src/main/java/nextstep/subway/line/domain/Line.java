@@ -1,7 +1,5 @@
 package nextstep.subway.line.domain;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -10,7 +8,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Entity
 public class Line extends BaseEntity {
@@ -20,6 +20,8 @@ public class Line extends BaseEntity {
 	@Column(unique = true)
 	private String name;
 	private String color;
+	@Embedded
+	private Fare fare;
 
 	@Embedded
 	private Sections sections = Sections.of();
@@ -27,31 +29,33 @@ public class Line extends BaseEntity {
 	protected Line() {
 	}
 
-	private Line(Long id, String name, String color) {
+	private Line(Long id, String name, String color, int fare) {
 		this.id = id;
 		this.name = name;
 		this.color = color;
+		this.fare = Fare.of(fare);
 	}
 
-	public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
-		Line line = new Line(null, name, color);
+	public static Line of(String name, String color, Station upStation, Station downStation, int distance, int fare) {
+		Line line = new Line(null, name, color, fare);
 		line.sections.add(Section.of(line, upStation, downStation, Distance.of(distance)));
 		return line;
 	}
 
-	public static Line of(Long id, String name, String color, Station upStation, Station downStation, int distance) {
-		Line line = new Line(id, name, color);
+	public static Line of(Long id, String name, String color, Station upStation, Station downStation, int distance,
+		int fare) {
+		Line line = new Line(id, name, color, fare);
 		Section section = Section.of(line, upStation, downStation, Distance.of(distance));
 		line.addSection(section);
 		return line;
 	}
 
-	public static Line of(String name, String color) {
-		return new Line(null, name, color);
+	public static Line of(String name, String color, int fare) {
+		return new Line(null, name, color, fare);
 	}
 
-	public static Line of(Long id, String name, String color) {
-		return new Line(id, name, color);
+	public static Line of(Long id, String name, String color, int fare) {
+		return new Line(id, name, color, fare);
 	}
 
 	public void addSection(Section section) {
@@ -71,7 +75,11 @@ public class Line extends BaseEntity {
 		this.color = line.getColor();
 	}
 
-	public List<Station> getStations() {
+	public int compareByFare(Line other) {
+		return this.fare.compareTo(other.fare);
+	}
+
+	public Stations getStations() {
 		return this.sections.getStations();
 	}
 
@@ -89,6 +97,10 @@ public class Line extends BaseEntity {
 
 	public Sections getSections() {
 		return this.sections;
+	}
+
+	public Fare getFare() {
+		return this.fare;
 	}
 
 	@Override
