@@ -8,7 +8,6 @@ import nextstep.subway.common.exception.NoResultException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -21,7 +20,8 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new AuthorizationException("일치하는 정보가 없습니다."));
         member.checkPassword(request.getPassword());
 
         String token = jwtTokenProvider.createToken(request.getEmail());
@@ -30,12 +30,13 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new AuthorizationException("잘못된 회원정보입니다.");
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new NoResultException("찾을 수 없는 멤버입니다."));
+                .orElseThrow(() -> new NoResultException("찾을 수 없는 회원입니다."));
+
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }
