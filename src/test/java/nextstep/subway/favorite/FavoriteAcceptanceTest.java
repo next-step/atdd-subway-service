@@ -45,8 +45,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
         // And 지하철 노선 등록되어 있음
-        이호선 = PathAcceptanceTest.지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = PathAcceptanceTest.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        이호선 = PathAcceptanceTest.지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 0);
+        삼호선 = PathAcceptanceTest.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0);
         // And 지하철 노선에 지하철역 등록되어 있음
         PathAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
         // And 회원 등록되어 있음
@@ -69,6 +69,30 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createFavoriteResponse);
         // Then 즐겨찾기 삭제됨
         즐겨찾기_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("즐겨찾기 등록에 출발역과 도착역이 같은경우")
+    @Test
+    void createFavoriteSameStation() {
+        // When 출발역과 도착역 같게 생성 요청
+        ExtractableResponse<Response> createFavoriteResponse = 즐겨찾기_생성_요청(강남역.getId(), 강남역.getId());
+        // Then 즐겨찾기 생성 실패됨
+        즐겨찾기_생성_실패됨(createFavoriteResponse, "즐겨찾기 등록에 출발역과 도착역이 같으면 안됩니다.");
+    }
+
+    @DisplayName("즐겨찾기 삭제 권한이 없을경우")
+    @Test
+    void deleteNotAuthenticUser() {
+        // Given 즐겨찾기 생성
+        ExtractableResponse<Response> createFavoriteResponse = 즐겨찾기_생성_요청(강남역.getId(), 남부터미널역.getId());
+        // And 새로운 회원 생성
+        MemberAcceptanceTest.회원_생성을_요청("newEmail@email.com", password, age);
+        // And 새로운 회원 로그인
+        token = 로그인_요청("newEmail@email.com", password).body().as(TokenResponse.class).getAccessToken();
+        // When 이전의 회원이 생성한 즐겨찾기를 새로운 회원이 삭제
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createFavoriteResponse);
+        // Then 즐겨찾기 삭제 실패됨
+        즐겨찾기_관련_권한없음(deleteResponse, "삭제할 권한이 없습니다.");
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(Long sourceId, Long targetid) {
@@ -115,5 +139,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> deleteResponse) {
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 즐겨찾기_생성_실패됨(ExtractableResponse<Response> createFavoriteResponse, String expectedString) {
+        assertAll(
+                () -> assertThat(createFavoriteResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(createFavoriteResponse.body().asString()).isEqualTo(expectedString)
+        );
+    }
+
+    private void 즐겨찾기_관련_권한없음(ExtractableResponse<Response> deleteResponse, String expectedString) {
+        assertAll(
+                () -> assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value()),
+                () -> assertThat(deleteResponse.body().asString()).isEqualTo(expectedString)
+        );
     }
 }

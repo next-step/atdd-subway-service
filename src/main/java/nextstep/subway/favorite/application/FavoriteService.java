@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -13,6 +15,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,11 +35,11 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse createFavorite(Long memberId, FavoriteRequest favoriteRequest) {
+        validateFavorite(favoriteRequest);
         Member member = findMemberById(memberId);
         Station sourceStation = findStationById(favoriteRequest.getSource());
         Station targetStation = findStationById(favoriteRequest.getTarget());
-        Favorite favorite1 = new Favorite(sourceStation, targetStation, member);
-        Favorite favorite = favoriteRepository.save(favorite1);
+        Favorite favorite = favoriteRepository.save(new Favorite(sourceStation, targetStation, member));
         return favoriteToResponse(favorite);
     }
 
@@ -47,17 +50,24 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void deleteFavorite(Long favoriteId) {
-        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
+    public void deleteFavorite(Long favoriteId, LoginMember loginMember) {
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, loginMember.getId())
+                .orElseThrow(() -> new AuthorizationException("삭제할 권한이 없습니다."));
         favoriteRepository.delete(favorite);
     }
 
+    private void validateFavorite(FavoriteRequest favoriteRequest) {
+        if (favoriteRequest.getSource().equals(favoriteRequest.getTarget())) {
+            throw new IllegalArgumentException("즐겨찾기 등록에 출발역과 도착역이 같으면 안됩니다.");
+        }
+    }
+
     private Member findMemberById(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(IllegalAccessError::new);
+        return memberRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
     }
 
     private Station findStationById(Long stationId) {
-        return stationRepository.findById(stationId).orElseThrow(IllegalAccessError::new);
+        return stationRepository.findById(stationId).orElseThrow(() -> new EntityNotFoundException("역을 찾을 수 없습니다."));
     }
 
     private FavoriteResponse favoriteToResponse(Favorite favorite) {

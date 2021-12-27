@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.EntityNotFoundException;
+
 @RestControllerAdvice
 public class CustomExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
@@ -27,5 +29,10 @@ public class CustomExceptionHandler {
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity handleAuthorizationException(AuthorizationException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity handleEntityNotFoundException(EntityNotFoundException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

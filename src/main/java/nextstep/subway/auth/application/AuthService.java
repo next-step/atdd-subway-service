@@ -28,6 +28,9 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
+        if (credentials == null) {
+            return new LoginMember();
+        }
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException("토큰 값이 맞지 않습니다.");
         }

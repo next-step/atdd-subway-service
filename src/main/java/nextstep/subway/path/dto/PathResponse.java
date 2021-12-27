@@ -8,6 +8,7 @@ import java.util.List;
 public class PathResponse {
     private List<StationResponse> stations = new ArrayList<>();
     private int distance;
+    private int fare;
 
     protected PathResponse() {
     }
@@ -23,5 +24,17 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
+    }
+
+    public void calculateExtraFare(int extraFare) {
+        fare += extraFare;
+    }
+
+    public void calculateDiscount(int discountedFare) {
+        fare = discountedFare;
     }
 }

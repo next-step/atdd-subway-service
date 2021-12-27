@@ -26,9 +26,8 @@ public class DijkstraShortestPathCalculator implements ShortestPathCalculator {
         addVertexAndEdge(sections, graph);
         createDijkstraShortestPath();
 
-        Optional<GraphPath> optPath = Optional.ofNullable(dijkstraShortestPath.getPath(sourceStation, targetStation));
-
-        GraphPath path = optPath.orElseThrow(() -> new IllegalArgumentException("출발역과 도착역이 연결이 되어 있지 않습니다."));
+        GraphPath path = Optional.ofNullable(dijkstraShortestPath.getPath(sourceStation, targetStation))
+                .orElseThrow(() -> new IllegalArgumentException("출발역과 도착역이 연결이 되어 있지 않습니다."));
 
         return new PathResponse(getStationRespone(path.getVertexList()), (int)Math.round(path.getWeight()));
     }
@@ -44,7 +43,7 @@ public class DijkstraShortestPathCalculator implements ShortestPathCalculator {
             graph.addVertex(station);
         }
         for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistanceValue());
         }
     }
 
