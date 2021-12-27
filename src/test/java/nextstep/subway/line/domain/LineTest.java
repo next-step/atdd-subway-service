@@ -1,9 +1,9 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.domain.dummy.LineFixture;
-import nextstep.subway.line.domain.dummy.SectionFixture;
+import nextstep.subway.line.domain.fixture.LineFixture;
+import nextstep.subway.line.domain.fixture.SectionFixture;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.dummy.StationFixture;
+import nextstep.subway.station.domain.fixture.StationFixture;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
