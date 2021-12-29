@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.common.exception.NoResultException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -55,8 +56,16 @@ public class FavoriteService {
                 .orElseThrow(() -> new NoResultException("존재하지 않는 사용자입니다."));
     }
 
-    public void deleteFavorite(Long id) {
+    @Transactional
+    public void deleteFavorite(Long memberId, Long id) {
+        validate(memberId, id);
         favoriteRepository.deleteById(id);
+    }
+
+    private void validate(Long memberId, Long id) {
+        if (!favoriteRepository.existsByMember_IdAndId(memberId, id)) {
+            throw new AuthorizationException("본인의 즐겨찾기만 삭제할 수 있습니다.");
+        }
     }
 
 }

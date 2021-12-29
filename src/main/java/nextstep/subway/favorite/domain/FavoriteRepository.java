@@ -9,5 +9,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
     List<Favorite> findByMember(Member member);
 
+    boolean existsByMember_IdAndId(Long memberId, Long id);
+
 }
 
