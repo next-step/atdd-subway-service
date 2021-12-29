@@ -15,22 +15,22 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity handleDataIntegrityViolationException(DataIntegrityViolationException e) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body("중복된 데이터를 저장할 수 없습니다.");
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(InvalidDataException.class)
     public ResponseEntity handleInvalidDataException(InvalidDataException e) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(NoResultException.class)
     public ResponseEntity handleNoResultException(NoResultException e) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
 }
