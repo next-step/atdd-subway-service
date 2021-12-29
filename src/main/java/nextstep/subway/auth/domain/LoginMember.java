@@ -3,7 +3,7 @@ package nextstep.subway.auth.domain;
 public class LoginMember {
     private Long id;
     private String email;
-    private Integer age = 100;
+    private Integer age;
 
     public LoginMember() {
     }
@@ -22,7 +22,7 @@ public class LoginMember {
         return email;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 }

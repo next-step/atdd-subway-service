@@ -12,8 +12,8 @@ public enum FareByDistance {
     int startDistance;
     int endDistance;
     int fareDistanceUnit;
-    static int DEFAULT_FARE = 1250;
-    static int ADD_PER_DISTANCE_FARE = 100;
+    static SubwayFare DEFAULT_FARE = new SubwayFare(1250);
+    static SubwayFare ADD_PER_DISTANCE_FARE = new SubwayFare(100);
 
     FareByDistance(int startDistance, int endDistance, int fareDistanceUnit) {
         this.startDistance = startDistance;
@@ -21,18 +21,18 @@ public enum FareByDistance {
         this.fareDistanceUnit = fareDistanceUnit;
     }
 
-    public static int getFare(Distance distance) {
+    public SubwayFare getFare(Distance distance) {
         return getFareByDistance(distance.getDistance());
     }
 
-    private static int getFareByDistance(int distance) {
+    private SubwayFare getFareByDistance(int distance) {
         return Arrays.stream(FareByDistance.values())
                 .filter(fare -> distance > fare.startDistance)
                 .map(fare -> calculateFare(distance, FareByDistance.valueOf(fare.name())))
-                .reduce(0, (a, b) -> a + b);
+                .reduce(new SubwayFare(0), (a, b) -> a.plus(b));
     }
 
-    private static int calculateFare(int distance, FareByDistance fare) {
+    private SubwayFare calculateFare(int distance, FareByDistance fare) {
         if (FareByDistance.SHORT.equals(fare)) {
             return DEFAULT_FARE;
         }
@@ -40,9 +40,15 @@ public enum FareByDistance {
         if (distance > FareByDistance.valueOf(fare.name()).endDistance) {
             distance = FareByDistance.valueOf(fare.name()).endDistance;
         }
-        return (int) ((Math.ceil((distance - FareByDistance.valueOf(fare.name()).startDistance - 1)
-                / FareByDistance.valueOf(fare.name()).fareDistanceUnit) + 1)
-                * ADD_PER_DISTANCE_FARE);
+        return new SubwayFare((int) (Math.ceil((distance - FareByDistance.valueOf(fare.name()).startDistance - 1)
+                / FareByDistance.valueOf(fare.name()).fareDistanceUnit) + 1))
+                .multiple(ADD_PER_DISTANCE_FARE);
     }
 
+    public static FareByDistance of(Distance distance) {
+        return Arrays.stream(FareByDistance.values())
+                .filter(fare -> distance.getDistance() > fare.startDistance)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("거리가 올바르지 않습니다."));
+    }
 }

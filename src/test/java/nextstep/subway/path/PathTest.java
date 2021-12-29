@@ -1,6 +1,7 @@
 package nextstep.subway.path;
 
 import com.google.common.collect.Lists;
+import nextstep.subway.fare.domain.SubwayFare;
 import nextstep.subway.line.LineTestFixture;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
@@ -49,7 +50,7 @@ public class PathTest {
         PathFinder pathFinder = new PathFinder(firstLine);
         Path path = pathFinder.findPath(upStationFirstLine, addStationFirstLine);
         assertThat(path.getStations()).containsExactly(upStationFirstLine, downStationFirstLine, addStationFirstLine);
-        assertThat(path.getMaxOverFareOfLine()).isEqualTo(100);
+        assertThat(path.getMaxOverFareOfLine()).isEqualTo(new SubwayFare(100));
     }
 
 
@@ -63,7 +64,7 @@ public class PathTest {
         PathFinder pathFinder = new PathFinder(lines);
         Path path = pathFinder.findPath(upStationSecondLine, downStationFirstLine);
         assertThat(path.getStations()).containsExactly(upStationSecondLine, upStationFirstLine, downStationFirstLine);
-        assertThat(path.getMaxOverFareOfLine()).isEqualTo(200);
+        assertThat(path.getMaxOverFareOfLine()).isEqualTo(new SubwayFare(200));
     }
 
     @Test

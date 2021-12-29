@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.fare.domain.SubwayFare;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -119,11 +120,11 @@ public class Sections {
         }
     }
 
-    public int getMaxOverFareOfLine() {
-        return sections.stream()
+    public SubwayFare getMaxOverFareOfLine() {
+        return new SubwayFare(sections.stream()
                 .mapToInt(section -> section.getLine().getOverFare())
                 .max()
-                .orElse(0);
+                .orElse(0));
     }
 
 }

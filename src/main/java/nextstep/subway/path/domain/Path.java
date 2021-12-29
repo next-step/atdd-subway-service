@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.fare.domain.SubwayFare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
@@ -38,7 +39,7 @@ public class Path {
         return stations;
     }
 
-    public int getMaxOverFareOfLine() {
+    public SubwayFare getMaxOverFareOfLine() {
         return this.sections.getMaxOverFareOfLine();
     }
 }
