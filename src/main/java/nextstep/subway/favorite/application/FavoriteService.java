@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.common.exception.NoResultException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -38,7 +39,7 @@ public class FavoriteService {
 
     private Station findStationById(Long stationId) {
         return stationRepository.findById(stationId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출발역입니다."));
+                .orElseThrow(() -> new NoResultException("존재하지 않는 출발역입니다."));
     }
 
     @Transactional(readOnly = true)
@@ -51,7 +52,7 @@ public class FavoriteService {
 
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new NoResultException("존재하지 않는 사용자입니다."));
     }
 
     public void deleteFavorite(Long id) {
