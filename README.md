@@ -292,3 +292,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - [X] 경로조회 인수 테스트 수정 반영
       - [X] 서비스 테스트
         - [X] 경로조회 서비스 테스트 수정 반영
+- 미션 피드백 진행
+  - 외부 라이브러리를 사용한 최단거리 구하는 클래스 @Component 사용
+    - 싱글톤으로 사용되기 때문에 클래스내 변수 공유되기 때문에 파라미터를 사용해서 유지
