@@ -7,6 +7,7 @@ import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.path.application.PathService;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -21,19 +22,21 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final MemberRepository memberRepository;
     private final StationService stationService;
+    private final PathService pathService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationService stationService) {
+    public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationService stationService, PathService pathService) {
         this.favoriteRepository = favoriteRepository;
         this.memberRepository = memberRepository;
         this.stationService = stationService;
+        this.pathService = pathService;
     }
 
     public FavoriteResponse saveFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
         Member member = findMember(loginMember);
         Station source = stationService.findStationById(favoriteRequest.getSource());
         Station target = stationService.findStationById(favoriteRequest.getTarget());
+        pathService.findPath(loginMember, favoriteRequest.getSource(), favoriteRequest.getTarget());
         Favorite favorite = favoriteRepository.save(new Favorite(member, source, target));
-        member.addFavorite(favorite);
         return FavoriteResponse.of(favorite);
     }
 

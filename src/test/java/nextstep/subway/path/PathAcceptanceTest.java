@@ -4,10 +4,13 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -31,6 +34,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역; //2
     private StationResponse 교대역; //3
     private StationResponse 남부터미널역; //4
+
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
+    public static final int AGE = 20;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -58,6 +65,41 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 경로를 조회한다.")
     void getPath() {
         // when
+        ExtractableResponse<Response> createResponse = MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        // then
+        MemberAcceptanceTest.회원_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> authResponse = AuthAcceptanceTest.토큰_발급_요청(EMAIL, PASSWORD, AGE);
+        // then
+        assertThat(authResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        TokenResponse token = authResponse.jsonPath().getObject(".", TokenResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header("Authorization", "Bearer " + token.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={source}&target={target}", 교대역.getId(), 양재역.getId())
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath()
+                .getObject(".", PathResponse.class)
+                .getStations().stream()
+                .map(station -> station.getId())
+                .collect(Collectors.toList()))
+                .containsExactly(교대역.getId(), 남부터미널역.getId(), 양재역.getId());
+        assertThat(response.jsonPath().getInt("fare")).isNotNull();
+    }
+
+
+    @Test
+    @DisplayName("로그인하지 않은 사용자가 지하철 경로를 조회한다.")
+    void getPathOfAnonymous() {
+        // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -68,10 +110,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath()
-                    .getObject(".", PathResponse.class)
-                    .getStations().stream()
-                    .map(station -> station.getId())
-                    .collect(Collectors.toList()))
+                .getObject(".", PathResponse.class)
+                .getStations().stream()
+                .map(station -> station.getId())
+                .collect(Collectors.toList()))
                 .containsExactly(교대역.getId(), 남부터미널역.getId(), 양재역.getId());
+        assertThat(response.jsonPath().getInt("fare")).isNotNull();
     }
 }

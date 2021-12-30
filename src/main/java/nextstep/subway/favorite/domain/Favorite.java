@@ -32,6 +32,7 @@ public class Favorite extends BaseEntity {
         this.member = member;
         this.source = source;
         this.target = target;
+        member.addFavorite(this);
     }
 
     public Long getId() {

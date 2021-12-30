@@ -16,10 +16,10 @@ public class LinesTest {
 
     @BeforeEach
     void setUp() {
-        firstLine = LineTestFixture.노선을_생성한다("1호선", "red", LineTestFixture.upStationFirstLine, LineTestFixture.downStationFirstLine, 10);
+        firstLine = LineTestFixture.노선을_생성한다("1호선", "red", LineTestFixture.upStationFirstLine, LineTestFixture.downStationFirstLine, 10, 100);
         firstLine.addStation(LineTestFixture.upStationFirstLine, LineTestFixture.addStationFirstLine, 5);
-        secondLine = LineTestFixture.노선을_생성한다("2호선", "red", LineTestFixture.upStationSecondLine, LineTestFixture.downStationSecondLine, 20);
-        thirdLine = LineTestFixture.노선을_생성한다("3호선", "red", LineTestFixture.upStationThirdLine, LineTestFixture.downStationThirdLine, 15);
+        secondLine = LineTestFixture.노선을_생성한다("2호선", "red", LineTestFixture.upStationSecondLine, LineTestFixture.downStationSecondLine, 20, 200);
+        thirdLine = LineTestFixture.노선을_생성한다("3호선", "red", LineTestFixture.upStationThirdLine, LineTestFixture.downStationThirdLine, 15, 300);
     }
 
     @Test
