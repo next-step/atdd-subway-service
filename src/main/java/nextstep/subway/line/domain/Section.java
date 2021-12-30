@@ -3,7 +3,9 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 @Entity
 public class Section {
@@ -29,15 +31,20 @@ public class Section {
     protected Section() {
     }
 
-    private Section(final Line line, final Station upStation, final Station downStation, final Distance distance) {
+    public Section(final Long id, final Line line, final Station upStation, final Station downStation, final Distance distance) {
+        this.id = id;
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
+    private Section(final Line line, final Station upStation, final Station downStation, final Distance distance) {
+        this(null, line, upStation, downStation, distance);
+    }
+
     private Section(final Station upStation, final Station downStation, final Distance distance) {
-        this(null, upStation, downStation, distance);
+        this(null, null, upStation, downStation, distance);
     }
 
     public static Section of(final Line line, final Station upStation, final Station downStation, final Distance distance) {
@@ -111,6 +118,20 @@ public class Section {
 
     public void minusDistance(final Section targetSection) {
         this.distance = this.distance.minus(targetSection.distance);
+    }
+
+    public boolean isSameSection(List<Station> stations) {
+        if (stations.size() < 1) {
+            return false;
+        }
+        return IntStream.rangeClosed(1, stations.size() - 1)
+                .anyMatch(i -> isSameSection(stations, i));
+    }
+
+    private boolean isSameSection(List<Station> stations, int i) {
+        Station findUpStation = stations.get(i - 1);
+        Station findDownStation = stations.get(i);
+        return this.isUpStationEquals(findUpStation) && this.isDownStationEquals(findDownStation);
     }
 
     @Override

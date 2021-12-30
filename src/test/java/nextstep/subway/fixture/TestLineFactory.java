@@ -8,6 +8,7 @@ import nextstep.subway.line.dto.LineResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -19,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class TestLineFactory {
 
-    public static final LineRequest LINE_REQUEST = LineRequest.of("신분당선", "bg-red-600", 1L, 2L, 10);
-    public static final LineRequest ANOTHER_LINE_REQUEST = LineRequest.of("bg-red-600", "2호선", 3L, 4L, 10);
+    public static final LineRequest LINE_REQUEST = LineRequest.of("신분당선", "bg-red-600", 1L, 2L, 10, 900);
+    public static final LineRequest ANOTHER_LINE_REQUEST = LineRequest.of("bg-red-600", "2호선", 3L, 4L, 10, 900);
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(final LineRequest lineRequest) {
         return RestAssured.given().log().all()

@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -161,6 +162,15 @@ public class Sections {
 
     private boolean isNoSection() {
         return this.sections.size() == INT_ZERO;
+    }
+
+    public Fare getMaxExtraFare() {
+        return sections.stream()
+                .map(Section::getLine)
+                .map(Line::extraFare)
+                .max(BigDecimal::compareTo)
+                .map(fare -> Fare.from(new BigDecimal(fare.toString())))
+                .orElseGet(() -> Fare.from(new BigDecimal("0")));
     }
 
 }

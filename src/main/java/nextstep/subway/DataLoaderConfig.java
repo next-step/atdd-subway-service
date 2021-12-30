@@ -30,9 +30,9 @@ public class DataLoaderConfig implements CommandLineRunner {
         Section 두번째구간 = Section.of(교대역, 강남역, Distance.of(10));
         Section 세번째구간 = Section.of(교대역, 양재역, Distance.of(10));
 
-        Line 신분당선 = Line.of("신분당선", "red lighten-1", Sections.from(첫번째구간));
-        Line 이호선 = Line.of("2호선", "green lighten-1", Sections.from(두번째구간));
-        Line 삼호선 = Line.of("3호선", "orange darken-1", Sections.from(세번째구간));
+        Line 신분당선 = Line.of("신분당선", "red lighten-1", Sections.from(첫번째구간), Fare.from(1250));
+        Line 이호선 = Line.of("2호선", "green lighten-1", Sections.from(두번째구간), Fare.from(1250));
+        Line 삼호선 = Line.of("3호선", "orange darken-1", Sections.from(세번째구간), Fare.from(1250));
 
         lineRepository.saveAll(Lists.newArrayList(신분당선, 이호선, 삼호선));
 

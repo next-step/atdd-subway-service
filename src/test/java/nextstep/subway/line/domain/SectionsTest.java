@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,13 +25,13 @@ class SectionsTest {
 
     @BeforeEach
     void setUp() {
+        이호선 = Line.of("2호선", "green", Sections.from(구간목록), Fare.from(900));
         거리5 = Distance.of(5);
         거리10 = Distance.of(10);
         잠실역 = Station.from("잠실역");
         강변역 = Station.from("강변역");
         첫번째구간 = Section.of(이호선, 잠실역, 강변역, 거리10);
         구간목록.add(첫번째구간);
-        이호선 = Line.of("2호선", "green", Sections.from(구간목록));
     }
 
     @DisplayName("상행역을 추가한다.")
@@ -157,12 +158,20 @@ class SectionsTest {
     @Test
     void mergeSection_예외2() {
         final List<Section> 다른목록 = new ArrayList<>();
-        final Line 다른이호선 = Line.of("8호선", "pink", Sections.from(다른목록));
+        final Line 다른이호선 = Line.of("8호선", "pink", Sections.from(다른목록), Fare.from(900));
 
         final Sections sections = Sections.from(다른이호선.getSectionList());
 
         assertThatThrownBy(() -> sections.merge(잠실역))
                 .isInstanceOf(NoSectionDeleteException.class)
                 .hasMessage("등록된 구간이 없어서 삭제할 수 없습니다.");
+    }
+
+    @DisplayName("추가요금이 제일 높은 구간을 조회한다.")
+    @Test
+    void getMaxExtraFare() {
+        final Sections sections = Sections.from(구간목록);
+        final Fare actual = sections.getMaxExtraFare();
+        assertThat(actual).isEqualTo(Fare.from(new BigDecimal("900")));
     }
 }

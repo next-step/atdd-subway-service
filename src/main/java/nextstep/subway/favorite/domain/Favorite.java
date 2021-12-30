@@ -2,10 +2,11 @@ package nextstep.subway.favorite.domain;
 
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.member.domain.Member;
-import nextstep.subway.station.domain.Station;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
@@ -13,45 +14,37 @@ public class Favorite extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private Member member;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "source_id")
-    private Station source;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "target_id")
-    private Station target;
+    private Long memberId;
+    private Long targetStationId;
+    private Long sourceStationId;
 
     protected Favorite() {
     }
 
-    private Favorite(final Member member, final Station source, final Station target) {
-        this.member = member;
-        this.source = source;
-        this.target = target;
+    private Favorite(final Long memberId, final Long sourceStationId, final Long targetStationId) {
+        this.memberId = memberId;
+        this.sourceStationId = sourceStationId;
+        this.targetStationId = targetStationId;
     }
 
-    public static Favorite of(final Member member, final Station source, final Station target) {
-        return new Favorite(member, source, target);
+    public static Favorite of(final Long memberId, final Long sourceStationId, final Long targetStationId) {
+        return new Favorite(memberId, sourceStationId, targetStationId);
     }
 
     public Long getId() {
         return id;
     }
 
-    public Member getMember() {
-        return member;
+    public Long getMemberId() {
+        return memberId;
     }
 
-    public Station getSource() {
-        return this.source;
+    public Long getTargetStationId() {
+        return targetStationId;
     }
 
-    public Station getTarget() {
-        return this.target;
+    public Long getSourceStationId() {
+        return sourceStationId;
     }
 
     @Override

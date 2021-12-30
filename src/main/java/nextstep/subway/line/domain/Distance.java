@@ -8,8 +8,6 @@ import java.util.Objects;
 
 @Embeddable
 public class Distance {
-    private static final int INT_ZERO = 0;
-
     @Column
     private int distance;
 
@@ -21,7 +19,6 @@ public class Distance {
     }
 
     public static Distance of(final int distance) {
-        validate(distance);
         return new Distance(distance);
     }
 
@@ -36,17 +33,11 @@ public class Distance {
         return Distance.of(this.distance + targetDistance.distance);
     }
 
-    private static void validate(final int distance) {
-        if (distance <= INT_ZERO) {
-            throw new RegisterDistanceException();
-        }
-    }
-
     private boolean isLessThanOrEqualTo(final Distance targetDistance) {
         return this.distance <= targetDistance.distance;
     }
 
-    public int getDistance() {
+    public int getValue() {
         return distance;
     }
 
