@@ -165,7 +165,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.asString()).isEqualTo("중복된 데이터를 저장할 수 없습니다.")
+        );
     }
 
     public static void 지하철_노선_목록_응답됨(ExtractableResponse<Response> response) {
