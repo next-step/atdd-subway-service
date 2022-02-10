@@ -17,12 +17,37 @@ public class Sections {
         CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
+    public Sections() {
+    }
+
     public Sections(List<Section> sections) {
         this.sections = sections;
     }
 
     public void addSection(Section section) {
+        checkSection(section);
+        sections.stream()
+            .forEach(s -> s.addInnerSection(section));
         this.sections.add(section);
+    }
+
+    private void checkSection(Section section) {
+        checkSectionDuplicate(section);
+        checkStationExist(section);
+    }
+
+    private void checkSectionDuplicate(Section section) {
+        sections.stream()
+            .forEach(s -> s.checkSectionDuplicate(section));
+    }
+
+    private void checkStationExist(Section section) {
+        List<Station> stations = getStations();
+        if (!stations.contains(section.getUpStation()) &&
+            !stations.contains(section.getDownStation())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
     }
 
     public List<Station> getStations() {

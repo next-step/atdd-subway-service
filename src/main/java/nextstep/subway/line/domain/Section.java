@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 @Entity
 public class Section {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -52,6 +53,29 @@ public class Section {
 
     public int getDistance() {
         return distance;
+    }
+
+    public void checkSectionDuplicate(Section section) {
+        if (hasEqualUpStation(section) && hasEqualDownStation(section)) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    public boolean hasEqualUpStation(Section section) {
+        return this.upStation.equals(section.getUpStation());
+    }
+
+    public boolean hasEqualDownStation(Section section) {
+        return this.downStation.equals(section.getDownStation());
+    }
+
+    public void addInnerSection(Section section) {
+        if (hasEqualUpStation(section)) {
+            updateDownStation(section.getDownStation(), section.getDistance());
+        }
+        if (hasEqualDownStation(section)) {
+            updateUpStation(section.getUpStation(), section.getDistance());
+        }
     }
 
     public void updateUpStation(Station station, int newDistance) {
