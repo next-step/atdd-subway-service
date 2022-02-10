@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -51,30 +52,32 @@ public class Sections {
 
     public void removeStation(Station station) {
         checkStationRemovable(station);
-        Optional<Section> upwardSection = upwardSection(station);
-        Optional<Section> downwardSection = downwardSection(station);
-        if (upwardSection.isPresent() && downwardSection.isPresent()) {
-            upwardSection.get().merge(downwardSection.get());
+        if (upwardSection(station).isPresent() && downwardSection(station).isPresent()) {
+            upwardSection(station).get().merge(downwardSection(station).get());
         }
-        upwardSection.ifPresent(it -> sections.remove(it));
-        downwardSection.ifPresent(it -> sections.remove(it));
+        this.sections = sections.stream()
+            .filter(section -> !section.hasStation(station))
+            .collect(Collectors.toList());
     }
 
     private void checkStationRemovable(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new RuntimeException("노선은 두개의 역을 포함한 구간이 하나 이상 존재해야 합니다.");
+        }
+        if (!upwardSection(station).isPresent() && !downwardSection(station).isPresent()) {
+            throw new RuntimeException("노선에 역이 포함되지 않습니다.");
         }
     }
 
     private Optional<Section> upwardSection(Station station) {
         return sections.stream()
-            .filter(section -> section.isUpStation(station))
+            .filter(section -> section.isDownStation(station))
             .findFirst();
     }
 
     private Optional<Section> downwardSection(Station station) {
         return sections.stream()
-            .filter(section -> section.isDownStation(station))
+            .filter(section -> section.isUpStation(station))
             .findFirst();
     }
 
@@ -125,5 +128,7 @@ public class Sections {
         return nextLineStation.map(Section::getDownStation).orElse(null);
     }
 
-
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
+    }
 }

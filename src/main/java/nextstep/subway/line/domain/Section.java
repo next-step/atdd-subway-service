@@ -71,10 +71,10 @@ public class Section {
 
     public void addInnerSection(Section section) {
         if (hasEqualUpStation(section)) {
-            updateDownStation(section.getDownStation(), section.getDistance());
+            updateUpStation(section.getDownStation(), section.getDistance());
         }
         if (hasEqualDownStation(section)) {
-            updateUpStation(section.getUpStation(), section.getDistance());
+            updateDownStation(section.getUpStation(), section.getDistance());
         }
     }
 
@@ -106,6 +106,10 @@ public class Section {
     public void merge(Section section) {
         this.downStation = section.getDownStation();
         this.distance += section.getDistance();
+    }
+
+    public boolean hasStation(Station station) {
+        return this.upStation.equals(station) || this.downStation.equals(station);
     }
 
 }
