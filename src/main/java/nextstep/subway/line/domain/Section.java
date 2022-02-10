@@ -61,11 +61,11 @@ public class Section {
         }
     }
 
-    public boolean hasEqualUpStation(Section section) {
+    private boolean hasEqualUpStation(Section section) {
         return this.upStation.equals(section.getUpStation());
     }
 
-    public boolean hasEqualDownStation(Section section) {
+    private boolean hasEqualDownStation(Section section) {
         return this.downStation.equals(section.getDownStation());
     }
 
@@ -93,4 +93,19 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+
+    public boolean isUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean isDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
+
+    public void merge(Section section) {
+        this.downStation = section.getDownStation();
+        this.distance += section.getDistance();
+    }
+
 }

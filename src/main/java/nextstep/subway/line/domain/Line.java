@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
@@ -30,7 +31,8 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.addSection(new Section(this, upStation, downStation, distance));
+        this.sections = new Sections(
+            Arrays.asList(new Section(this, upStation, downStation, distance)));
     }
 
     public void update(Line line) {
@@ -44,6 +46,10 @@ public class Line extends BaseEntity {
 
     public void addStation(Station upStation, Station downStation, int distance) {
         sections.addSection(new Section(this, upStation, downStation, distance));
+    }
+
+    public void removeStation(Station station) {
+        sections.removeStation(station);
     }
 
     public Long getId() {

@@ -47,8 +47,37 @@ public class Sections {
             !stations.contains(section.getDownStation())) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
-
     }
+
+    public void removeStation(Station station) {
+        checkStationRemovable(station);
+        Optional<Section> upwardSection = upwardSection(station);
+        Optional<Section> downwardSection = downwardSection(station);
+        if (upwardSection.isPresent() && downwardSection.isPresent()) {
+            upwardSection.get().merge(downwardSection.get());
+        }
+        upwardSection.ifPresent(it -> sections.remove(it));
+        downwardSection.ifPresent(it -> sections.remove(it));
+    }
+
+    private void checkStationRemovable(Station station) {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+    }
+
+    private Optional<Section> upwardSection(Station station) {
+        return sections.stream()
+            .filter(section -> section.isUpStation(station))
+            .findFirst();
+    }
+
+    private Optional<Section> downwardSection(Station station) {
+        return sections.stream()
+            .filter(section -> section.isDownStation(station))
+            .findFirst();
+    }
+
 
     public List<Station> getStations() {
         if (this.sections.isEmpty()) {
