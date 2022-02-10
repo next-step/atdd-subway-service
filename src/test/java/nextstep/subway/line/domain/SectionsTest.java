@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,27 +16,33 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SectionsTest {
 
-    public static final Sections SECTIONS = new Sections(
-        new ArrayList<>(Arrays.asList(SectionTest.SECTION_2, SectionTest.SECTION_1)));
-
     private static final String SECTION_DISTANCE_EXCEEDED_EXCEPTION = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
     private static final String SECTION_ALREADY_EXIST_IN_THE_LINE_EXCEPTION = "이미 등록된 구간 입니다.";
     private static final String STATIONS_NOT_EXIST_IN_THE_LINE_EXCEPTION = "등록할 수 없는 구간 입니다.";
     private static final String SECTION_NOT_FOUND_EXCEPTION = "노선에 역이 포함되지 않습니다.";
     private static final String SECTION_EMPTY_EXCEPTION = "노선은 두개의 역을 포함한 구간이 하나 이상 존재해야 합니다.";
 
+    private Sections sections;
+
+    @BeforeEach
+    void setUp() {
+        Section firstSection = new Section(LineTest.LINE_2, StationTest.STATION_2, StationTest.STATION_4, 6);
+        Section secondSection = new Section(LineTest.LINE_2, StationTest.STATION_4, StationTest.STATION_3, 10);
+        sections = new Sections(
+            new ArrayList<>(Arrays.asList(firstSection, secondSection)));
+    }
 
     @DisplayName("구간을 생성한다.")
     @Test
     void create_sections() {
-        assertThat(SECTIONS.getSections().contains(SectionTest.SECTION_2));
-        assertThat(SECTIONS.getSections().contains(SectionTest.SECTION_1));
+        assertThat(sections.getSections().contains(SectionTest.SECTION_2));
+        assertThat(sections.getSections().contains(SectionTest.SECTION_1));
     }
 
     @DisplayName("순서대로 정렬된 역 목록을 조회한다.")
     @Test
     void get_ordered_station() {
-        List<Station> orderedStation = SECTIONS.getStations();
+        List<Station> orderedStation = sections.getStations();
         assertThat(orderedStation.get(0)).isEqualTo(SectionTest.SECTION_1.getUpStation());
         assertThat(orderedStation.get(1)).isEqualTo(SectionTest.SECTION_2.getUpStation());
         assertThat(orderedStation.get(2)).isEqualTo(SectionTest.SECTION_2.getDownStation());
@@ -51,13 +58,13 @@ class SectionsTest {
         Section section = new Section(LineTest.LINE_2, StationTest.STATION_4, StationTest.STATION_1, distance);
 
         //when
-        SECTIONS.addSection(section);
-        List<Station> stations = SECTIONS.getStations();
+        sections.addSection(section);
+        List<Station> stations = sections.getStations();
 
         //then
-        assertThat(SECTIONS.getSections().size()).isEqualTo(3);
+        assertThat(sections.getSections().size()).isEqualTo(3);
         assertThat(stations.get(2)).isEqualTo(StationTest.STATION_1);
-        assertThat(SECTIONS.getSections().stream()
+        assertThat(sections.getSections().stream()
             .filter(s -> s.getUpStation().equals(StationTest.STATION_1)).findFirst().get()
             .getDistance())
             .isEqualTo(originalDistance - distance);
@@ -70,11 +77,11 @@ class SectionsTest {
         Section section = new Section(LineTest.LINE_2, StationTest.STATION_1, StationTest.STATION_2, 10);
 
         //when
-        SECTIONS.addSection(section);
+        sections.addSection(section);
 
         //then
-        assertThat(SECTIONS.getSections().size()).isEqualTo(3);
-        assertThat(SECTIONS.getStations().get(0)).isEqualTo(StationTest.STATION_1);
+        assertThat(sections.getSections().size()).isEqualTo(3);
+        assertThat(sections.getStations().get(0)).isEqualTo(StationTest.STATION_1);
     }
 
     @DisplayName("하행 종점을 추가한다.")
@@ -84,11 +91,11 @@ class SectionsTest {
         Section section = new Section(LineTest.LINE_2, StationTest.STATION_3, StationTest.STATION_1, 10);
 
         //when
-        SECTIONS.addSection(section);
+        sections.addSection(section);
 
         //then
-        assertThat(SECTIONS.getSections().size()).isEqualTo(3);
-        assertThat(SECTIONS.getStations().get(3)).isEqualTo(StationTest.STATION_1);
+        assertThat(sections.getSections().size()).isEqualTo(3);
+        assertThat(sections.getStations().get(3)).isEqualTo(StationTest.STATION_1);
     }
 
     @DisplayName("노선에 이미 존재하는 구간은 동일 노선에 추가할 수 없다.")
@@ -98,7 +105,7 @@ class SectionsTest {
         Section section = new Section(LineTest.LINE_2, StationTest.STATION_2, StationTest.STATION_4, 2);
 
         //when
-        assertThatThrownBy(() -> SECTIONS.addSection(section))
+        assertThatThrownBy(() -> sections.addSection(section))
             .isInstanceOf(RuntimeException.class)
             .hasMessage(SECTION_ALREADY_EXIST_IN_THE_LINE_EXCEPTION);
 
@@ -112,7 +119,7 @@ class SectionsTest {
         Section section = new Section(LineTest.LINE_2, StationTest.STATION_4, StationTest.STATION_1, 12);
 
         //when
-        assertThatThrownBy(() -> SECTIONS.addSection(section))
+        assertThatThrownBy(() -> sections.addSection(section))
             .isInstanceOf(RuntimeException.class)
             .hasMessage(SECTION_DISTANCE_EXCEEDED_EXCEPTION);
 
@@ -123,10 +130,10 @@ class SectionsTest {
     @Test
     void add_section_with_stations_not_in_the_line_is_invalid() {
         //given
-        Section section = new Section(LineTest.LINE_2, StationTest.STATION_1, StationTest.STATION_5, 12);
+        Section section = new Section(LineTest.LINE_2, StationTest.STATION_1, StationTest.STATION_5, 4);
 
         //when
-        assertThatThrownBy(() -> SECTIONS.addSection(section))
+        assertThatThrownBy(() -> sections.addSection(section))
             .isInstanceOf(RuntimeException.class)
             .hasMessageContaining(STATIONS_NOT_EXIST_IN_THE_LINE_EXCEPTION);
 
@@ -136,14 +143,16 @@ class SectionsTest {
     @Test
     void delete_inner_station() {
         //given
-        int expectedDistance = SectionTest.SECTION_1.getDistance() + SectionTest.SECTION_2.getDistance();
+        int expectedDistance = 16;
 
         //when
-        SECTIONS.removeStation(StationTest.STATION_4);
-        Section section = SECTIONS.getSections().get(0);
+        sections.removeStation(StationTest.STATION_4);
+        Section section = sections.getSections().get(0);
 
         //then
-        assertThat(SECTIONS.getSections().size()).isEqualTo(1);
+        assertThat(sections.getSections().size()).isEqualTo(1);
+        System.out.println(section.getUpStation().getName());
+        System.out.println(section.getDownStation().getName());
         assertThat(section.getUpStation()).isEqualTo(SectionTest.SECTION_1.getUpStation());
         assertThat(section.getDownStation()).isEqualTo(SectionTest.SECTION_2.getDownStation());
         assertThat(section.getDistance()).isEqualTo(expectedDistance);
@@ -157,11 +166,11 @@ class SectionsTest {
         Station expectedFirstStation = StationTest.STATION_4;
 
         //when
-        SECTIONS.removeStation(StationTest.STATION_2);
-        Station firstStation = SECTIONS.getStations().get(0);
+        sections.removeStation(StationTest.STATION_2);
+        Station firstStation = sections.getStations().get(0);
 
         //then
-        assertThat(SECTIONS.getSections().size()).isEqualTo(1);
+        assertThat(sections.getSections().size()).isEqualTo(1);
         assertThat(firstStation).isEqualTo(expectedFirstStation);
     }
 
@@ -172,18 +181,18 @@ class SectionsTest {
         Station expectedLastStation = StationTest.STATION_4;
 
         //when
-        SECTIONS.removeStation(StationTest.STATION_3);
-        Station lastStation = SECTIONS.getStations().get(SECTIONS.getStations().size() - 1);
+        sections.removeStation(StationTest.STATION_3);
+        Station lastStation = sections.getStations().get(sections.getStations().size() - 1);
 
         //then
-        assertThat(SECTIONS.getSections().size()).isEqualTo(1);
+        assertThat(sections.getSections().size()).isEqualTo(1);
         assertThat(lastStation).isEqualTo(expectedLastStation);
     }
 
     @DisplayName("노선안에 존재하지 않는 역은 삭제할 수 없다.")
     @Test
     void delete_station_not_in_the_line_is_invalid() {
-        assertThatThrownBy(() -> SECTIONS.removeStation(StationTest.STATION_5))
+        assertThatThrownBy(() -> sections.removeStation(StationTest.STATION_5))
             .isInstanceOf(RuntimeException.class)
             .hasMessage(SECTION_NOT_FOUND_EXCEPTION);
     }

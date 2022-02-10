@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -14,15 +13,14 @@ import nextstep.subway.station.domain.Station;
 @Embeddable
 public class Sections {
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST,
-        CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
     public Sections() {
     }
 
     public Sections(List<Section> sections) {
-        this.sections = sections;
+        sections.forEach(section -> this.sections.add(section));
     }
 
     public void addSection(Section section) {
@@ -55,9 +53,9 @@ public class Sections {
         if (upwardSection(station).isPresent() && downwardSection(station).isPresent()) {
             upwardSection(station).get().merge(downwardSection(station).get());
         }
-        this.sections = sections.stream()
-            .filter(section -> !section.hasStation(station))
-            .collect(Collectors.toList());
+
+        upwardSection(station).ifPresent(it -> sections.remove(it));
+        downwardSection(station).ifPresent(it -> sections.remove(it));
     }
 
     private void checkStationRemovable(Station station) {
