@@ -1,7 +1,6 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
-import java.util.Set;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -42,14 +41,21 @@ public class Path {
 
     public PathResult getShortestPath(Station start, Station destination) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        checkPathExists(dijkstraShortestPath, start, destination);
         return PathResult.of(dijkstraShortestPath, start, destination);
     }
 
-    public boolean containsVertex(Station station){
+    private void checkPathExists(DijkstraShortestPath dijkstraShortestPath, Station start, Station destination) {
+        if (dijkstraShortestPath.getPath(start, destination) == null){
+            throw new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
+        }
+    }
+
+    public boolean containsVertex(Station station) {
         return graph.containsVertex(station);
     }
 
-    public boolean containsEdge(Station start, Station end){
+    public boolean containsEdge(Station start, Station end) {
         return graph.containsEdge(start, end);
     }
 }

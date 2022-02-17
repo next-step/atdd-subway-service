@@ -8,11 +8,11 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 public class PathResult {
 
     private List<Station> stations;
-    private double distance;
+    private int distance;
 
     private PathResult(List<Station> stations, double distance) {
         this.stations = stations;
-        this.distance = distance;
+        this.distance = (int) distance;
     }
 
     public static PathResult of(DijkstraShortestPath dijkstraShortestPath, Station start, Station destination) {
@@ -24,7 +24,7 @@ public class PathResult {
         return Collections.unmodifiableList(stations);
     }
 
-    public double getDistance() {
+    public int getDistance() {
         return distance;
     }
 }
