@@ -44,4 +44,12 @@ public class Path {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         return PathResult.of(dijkstraShortestPath, start, destination);
     }
+
+    public boolean containsVertex(Station station){
+        return graph.containsVertex(station);
+    }
+
+    public boolean containsEdge(Station start, Station end){
+        return graph.containsEdge(start, end);
+    }
 }
