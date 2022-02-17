@@ -40,13 +40,20 @@ public class Path {
     }
 
     public PathResult getShortestPath(Station start, Station destination) {
+        checkVertexExists(start, destination);
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         checkPathExists(dijkstraShortestPath, start, destination);
         return PathResult.of(dijkstraShortestPath, start, destination);
     }
 
+    private void checkVertexExists(Station start, Station destination) {
+        if (!containsVertex(start) || !containsVertex(destination)) {
+            throw new IllegalArgumentException("존재하는 노선안에 해당 역이 존재하지 않습니다.");
+        }
+    }
+
     private void checkPathExists(DijkstraShortestPath dijkstraShortestPath, Station start, Station destination) {
-        if (dijkstraShortestPath.getPath(start, destination) == null){
+        if (dijkstraShortestPath.getPath(start, destination) == null) {
             throw new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
     }

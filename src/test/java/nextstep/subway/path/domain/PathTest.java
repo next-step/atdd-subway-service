@@ -7,12 +7,17 @@ import nextstep.subway.station.domain.StationTest;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 public class PathTest {
+
+    private static final String NOT_CONNECT_EXCEPTION = "출발역과 도착역이 연결되어 있지 않습니다.";
+    private static final String STATION_NOT_EXIST_IN_THE_LINES_EXCEPTION = "존재하는 노선안에 해당 역이 존재하지 않습니다.";
 
     private Line 이호선;
     private Line 일호선;
@@ -38,6 +43,7 @@ public class PathTest {
         assertThat(shortestPath.size()).isEqualTo(3);
     }
 
+    @DisplayName("경로 정보를 담은 path를 생성한다.")
     @Test
     void create_path() {
         //given
@@ -52,6 +58,7 @@ public class PathTest {
         assertThat(path.containsEdge(StationTest.STATION_3, StationTest.STATION_5)).isTrue();
     }
 
+    @DisplayName("경로를 이용하여 최단 경로를 찾는다.")
     @Test
     void find_shortest_path() {
         //given
@@ -65,6 +72,30 @@ public class PathTest {
         //then
         assertThat(pathResult.getDistance()).isEqualTo(expected);
         assertThat(pathResult.getStations()).isEqualTo(Arrays.asList(StationTest.STATION_4, StationTest.STATION_5));
+    }
+
+
+    @DisplayName("출발역과 도착역이 모든 노선안에 존재하지 않습니다.")
+    @Test
+    void station_not_exist_in_the_lines() {
+        setUp();
+        Path path = Path.of(Arrays.asList(이호선, 일호선));
+
+        assertThatThrownBy(() -> path.getShortestPath(StationTest.STATION_1, StationTest.STATION_5))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(STATION_NOT_EXIST_IN_THE_LINES_EXCEPTION);
+    }
+
+    @DisplayName("출발역에서 도착역으로 향하는 경로를 찾지 못한 경우 예외를 발생시킨다.")
+    @Test
+    void cannot_find_shortest_path() {
+        setUp();
+        Line 삼호선 = new Line("삼호선", "blue", StationTest.STATION_1, StationTest.STATION_2, 8);
+        Path path = Path.of(Arrays.asList(이호선, 일호선, 삼호선));
+
+        assertThatThrownBy(() -> path.getShortestPath(StationTest.STATION_1, StationTest.STATION_5))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(NOT_CONNECT_EXCEPTION);
     }
 
 }

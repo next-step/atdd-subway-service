@@ -28,12 +28,12 @@ public class PathService {
     public PathResponse findShortestPath(Long source, Long target) {
         Station start = station(source);
         Station end = station(target);
-        checkStations(start, end);
+        checkStationsDuplicated(start, end);
         PathResult result = path().getShortestPath(start, end);
         return PathResponse.of(stationResponses(result.getStations()), result.getDistance());
     }
 
-    private void checkStations(Station start, Station end) {
+    private void checkStationsDuplicated(Station start, Station end) {
         if (start.equals(end)) {
             throw new IllegalArgumentException("출발역과 도착역이 같아 경로를 찾을 수 없습니다.");
         }
