@@ -19,7 +19,8 @@ import org.springframework.http.MediaType;
 public class AuthAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
-    void memberSetUp() {
+    public void setUp() {
+        super.setUp();
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(createResponse);
     }
