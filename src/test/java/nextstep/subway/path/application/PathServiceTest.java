@@ -18,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,8 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Transactional
 class PathServiceTest {
-
-    private static final String SAME_STATIONS_EXCEPTION = "출발역과 도착역이 같아 경로를 찾을 수 없습니다.";
 
     @MockBean
     private LineRepository lineRepository;
@@ -65,18 +62,6 @@ class PathServiceTest {
         assertThat(response.getDistance()).isEqualTo(2);
         assertThat(response.getStations().contains(StationTest.STATION_4));
         assertThat(response.getStations().contains(StationTest.STATION_5));
-    }
-
-    @DisplayName("출발역과 도착역이 같으면 최단 경로를 조회할 수 없다.")
-    @Test
-    public void find_shortest_path_with_same_stations_is_invalid() {
-        setUp();
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(일호선, 이호선));
-        when(stationRepository.findById(anyLong())).thenReturn(java.util.Optional.of(StationTest.STATION_4));
-
-        assertThatThrownBy(() -> pathService.findShortestPath(1L, 6L))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(SAME_STATIONS_EXCEPTION);
     }
 
 

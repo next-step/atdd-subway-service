@@ -18,6 +18,7 @@ public class PathTest {
 
     private static final String NOT_CONNECT_EXCEPTION = "출발역과 도착역이 연결되어 있지 않습니다.";
     private static final String STATION_NOT_EXIST_IN_THE_LINES_EXCEPTION = "존재하는 노선안에 해당 역이 존재하지 않습니다.";
+    private static final String SAME_STATIONS_EXCEPTION = "출발역과 도착역이 같아 경로를 찾을 수 없습니다.";
 
     private Line 이호선;
     private Line 일호선;
@@ -74,8 +75,19 @@ public class PathTest {
         assertThat(pathResult.getStations()).isEqualTo(Arrays.asList(StationTest.STATION_4, StationTest.STATION_5));
     }
 
+    @DisplayName("출발역과 도착역이 같으면 최단경로를 조회할 수 없다.")
+    @Test
+    public void find_shortest_path_with_same_stations_is_invalid() {
+        setUp();
+        Path path = Path.of(Arrays.asList(이호선, 일호선));
 
-    @DisplayName("출발역과 도착역이 모든 노선안에 존재하지 않습니다.")
+        assertThatThrownBy(() -> path.getShortestPath(StationTest.STATION_4, StationTest.STATION_4))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(SAME_STATIONS_EXCEPTION);
+    }
+
+
+    @DisplayName("출발역과 도착역이 모든 노선안에 존재하지 않으면 최단경로를 조회할 수 없다.")
     @Test
     void station_not_exist_in_the_lines() {
         setUp();
