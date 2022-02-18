@@ -2,6 +2,7 @@ package nextstep.subway.favorite.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -28,12 +29,12 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public FavoriteResponse createFavorite(Long id, FavoriteRequest request) {
-        Member member = member(id);
+    public FavoriteResponse createFavorite(Long id, FavoriteRequest request) { Member member = member(id);
         Station source = station(request.getSource());
         Station target = station(request.getTarget());
         Favorite favorite = favoriteRepository.save(request.toFavorite(member, source, target));
-        return FavoriteResponse.of(favorite, StationResponse.of(source), StationResponse.of(target));
+        return FavoriteResponse
+            .of(favorite, StationResponse.of(source), StationResponse.of(target));
     }
 
     private Member member(Long id) {
@@ -55,7 +56,9 @@ public class FavoriteService {
             .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(Long loginMemberId, Long id) {
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
+        favorite.checkAuthority(loginMemberId);
+        favoriteRepository.delete(favorite);
     }
 }

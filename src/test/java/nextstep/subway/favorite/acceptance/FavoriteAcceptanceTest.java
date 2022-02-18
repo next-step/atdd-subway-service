@@ -1,4 +1,4 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.acceptance;
 
 import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
@@ -104,12 +104,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, StationResponse source,
-        StationResponse target) {
+    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, StationResponse source, StationResponse target) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         FavoriteResponse favorite = response.jsonPath().getList(".", FavoriteResponse.class).get(0);
-        assertThat(favorite.getSource()).isEqualTo(source);
-        assertThat(favorite.getTarget()).isEqualTo(target);
+        checkStationResponseEquals(favorite.getSource(), source);
+        checkStationResponseEquals(favorite.getTarget(), target);
+    }
+
+    private void checkStationResponseEquals(StationResponse response, StationResponse expected) {
+        assertThat(response.getId()).isEqualTo(expected.getId());
+        assertThat(response.getName()).isEqualTo(expected.getName());
+        assertThat(response.getCreatedDate()).isEqualTo(expected.getCreatedDate());
+        assertThat(response.getModifiedDate()).isEqualTo(expected.getModifiedDate());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_삭제_요청(Long id) {
