@@ -71,23 +71,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private ExtractableResponse<Response> 회원_토큰_요청(String email, String password) {
+    public static ExtractableResponse<Response> 회원_토큰_요청(String email, String password) {
         TokenRequest request = new TokenRequest(email, password);
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(request)
             .when().post("/login/token")
-            .then().log().all()
-            .extract();
-    }
-
-    private ExtractableResponse<Response> 내_정보_조회_요청(String token) {
-        return RestAssured
-            .given().log().all()
-            .header("Authorization", "Bearer " + token)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/members/me")
             .then().log().all()
             .extract();
     }
