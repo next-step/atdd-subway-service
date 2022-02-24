@@ -29,7 +29,7 @@ public class PathService {
         Station start = station(source);
         Station end = station(target);
         PathResult result = path().getShortestPath(start, end);
-        return PathResponse.of(stationResponses(result.getStations()), result.getDistance());
+        return PathResponse.of(stationResponses(result.getStations()), result.getDistance(), result.getFare());
     }
 
     private Path path() {
