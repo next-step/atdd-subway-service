@@ -4,15 +4,18 @@ import java.util.List;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class Path {
 
     private WeightedMultigraph<Station, SectionEdge> graph;
+    private DijkstraShortestPath shortestPath;
 
     public Path() {
         graph = new WeightedMultigraph(SectionEdge.class);
+        shortestPath = new DijkstraShortestPath(graph);
     }
 
     public static Path of(List<Line> lines) {
@@ -36,15 +39,17 @@ public class Path {
     }
 
     private void addEdge(Section section) {
-        graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+        SectionEdge sectionEdge = graph.addEdge(section.getUpStation(), section.getDownStation());
+        sectionEdge.setSection(section);
+        graph.setEdgeWeight(sectionEdge, section.getDistance());
     }
 
     public PathResult getShortestPath(Station start, Station destination) {
         checkVertexValidity(start, destination);
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        checkPathExists(dijkstraShortestPath, start, destination);
-        return PathResult.of(dijkstraShortestPath.getPath(start, destination).getVertexList(),
-            dijkstraShortestPath.getPathWeight(start, destination));
+        checkPathExists(start, destination);
+        return PathResult.of(getVertexes(start, destination),
+            getDistance(start, destination),
+            fare(start, destination));
     }
 
     private void checkVertexValidity(Station start, Station destination) {
@@ -56,8 +61,8 @@ public class Path {
         }
     }
 
-    private void checkPathExists(DijkstraShortestPath dijkstraShortestPath, Station start, Station destination) {
-        if (dijkstraShortestPath.getPath(start, destination) == null) {
+    private void checkPathExists(Station start, Station destination) {
+        if (shortestPath.getPath(start, destination) == null) {
             throw new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
     }
@@ -69,4 +74,26 @@ public class Path {
     public boolean containsEdge(Station start, Station end) {
         return graph.containsEdge(start, end);
     }
+
+    private List<Station> getVertexes(Station start, Station destination) {
+        return shortestPath.getPath(start, destination).getVertexList();
+    }
+
+    private int getDistance(Station start, Station destination) {
+        return (int) shortestPath.getPathWeight(start, destination);
+    }
+
+    private Fare fare(Station start, Station destination) {
+        return Fare.of(getDistance(start, destination),
+            getAdditionalFare(start, destination));
+    }
+
+    private int getAdditionalFare(Station start, Station destination) {
+        GraphPath<Station, SectionEdge> graphPath = shortestPath.getPath(start, destination);
+        return graphPath.getEdgeList().stream()
+            .map(SectionEdge::getAdditionalFare)
+            .max(Integer::compareTo)
+            .orElse(0);
+    }
+
 }

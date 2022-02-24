@@ -12,10 +12,15 @@ public class Fare {
         fare = BASIC_FARE;
     }
 
-    public static Fare of(int distance) {
+    public static Fare of(int distance, int additionalFare) {
         Fare fare = new Fare();
-        fare.calculateDistanceFare(distance);
+        fare.calculateFare(distance, additionalFare);
         return fare;
+    }
+
+    private void calculateFare(int distance, int additionalFare) {
+        calculateDistanceFare(distance);
+        addAdditionalFare(additionalFare);
     }
 
     private void calculateDistanceFare(int distance) {
@@ -23,6 +28,10 @@ public class Fare {
             DistanceFare distanceFare = DistanceFare.of(distance);
             fare += distanceFare.calculateOverFare(distance);
         }
+    }
+
+    private void addAdditionalFare(int additionalFare) {
+        fare += additionalFare;
     }
 
     public int getFare() {

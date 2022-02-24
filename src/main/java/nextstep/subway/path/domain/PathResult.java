@@ -16,8 +16,7 @@ public class PathResult {
         this.fare = fare;
     }
 
-    public static PathResult of(List<Station> stations, double distance) {
-        Fare fare = Fare.of((int) distance);
+    public static PathResult of(List<Station> stations, double distance, Fare fare) {
         return new PathResult(stations, (int) distance, fare.getFare());
     }
 

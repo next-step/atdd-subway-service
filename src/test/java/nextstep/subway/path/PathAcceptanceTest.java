@@ -48,9 +48,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 100);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 700);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 1400);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -67,12 +67,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getInt("distance")).isEqualTo(5);
-        assertThat(response.jsonPath().getInt("fare")).isEqualTo(1250);
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(2650);
     }
 
     private LineResponse 지하철_노선_등록되어_있음(String line, String color, StationResponse startStation,
-        StationResponse endStation, int distance) {
-        LineRequest request = new LineRequest(line, color, startStation.getId(), endStation.getId(), distance);
+        StationResponse endStation, int distance, int additionalFare) {
+        LineRequest request = new LineRequest(line, color, startStation.getId(), endStation.getId(), distance, additionalFare);
         return LineAcceptanceTest.지하철_노선_등록되어_있음(request).as(LineResponse.class);
     }
 
