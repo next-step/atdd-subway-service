@@ -2,7 +2,9 @@ package nextstep.subway.path.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.AgeFareDiscount;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathResult;
 import nextstep.subway.path.dto.PathResponse;
@@ -19,17 +21,17 @@ public class PathService {
     private StationRepository stationRepository;
     private LineRepository lineRepository;
 
-    public PathService(StationRepository stationRepository,
-        LineRepository lineRepository) {
+    public PathService(StationRepository stationRepository, LineRepository lineRepository) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
     }
 
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(LoginMember loginMember, Long source, Long target) {
         Station start = station(source);
         Station end = station(target);
         PathResult result = path().getShortestPath(start, end);
-        return PathResponse.of(stationResponses(result.getStations()), result.getDistance(), result.getFare());
+        int discountedFare = AgeFareDiscount.getAgeDiscountedFare(loginMember.getAge(), result.getFare());
+        return PathResponse.of(stationResponses(result.getStations()), result.getDistance(), discountedFare);
     }
 
     private Path path() {

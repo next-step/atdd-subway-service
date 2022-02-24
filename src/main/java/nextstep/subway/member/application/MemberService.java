@@ -1,5 +1,6 @@
 package nextstep.subway.member.application;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
+
     private MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
@@ -21,16 +23,25 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
+        checkAuth(id);
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
+        checkAuth(id);
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
     }
 
     public void deleteMember(Long id) {
+        checkAuth(id);
         memberRepository.deleteById(id);
+    }
+
+    public void checkAuth(Long id) {
+        if (id == null) {
+            throw new AuthorizationException();
+        }
     }
 }

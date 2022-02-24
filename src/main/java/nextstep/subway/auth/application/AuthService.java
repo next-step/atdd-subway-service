@@ -30,6 +30,10 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
+        if (credentials == null) {
+            return new LoginMember();
+        }
+
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException(INVALID_TOKEN);
         }
