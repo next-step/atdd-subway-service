@@ -67,6 +67,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getInt("distance")).isEqualTo(5);
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(1250);
     }
 
     private LineResponse 지하철_노선_등록되어_있음(String line, String color, StationResponse startStation,
