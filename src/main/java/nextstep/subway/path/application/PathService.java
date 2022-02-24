@@ -8,8 +8,8 @@ import nextstep.subway.path.domain.AgeFareDiscount;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathResult;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,17 +18,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class PathService {
 
-    private StationRepository stationRepository;
+    private StationService stationService;
     private LineRepository lineRepository;
 
-    public PathService(StationRepository stationRepository, LineRepository lineRepository) {
-        this.stationRepository = stationRepository;
+    public PathService(StationService stationService, LineRepository lineRepository) {
+        this.stationService = stationService;
         this.lineRepository = lineRepository;
     }
 
     public PathResponse findShortestPath(LoginMember loginMember, Long source, Long target) {
-        Station start = station(source);
-        Station end = station(target);
+        Station start = stationService.findById(source);
+        Station end = stationService.findById(target);
         PathResult result = path().getShortestPath(start, end);
         int discountedFare = AgeFareDiscount.getAgeDiscountedFare(loginMember.getAge(), result.getFare());
         return PathResponse.of(stationResponses(result.getStations()), result.getDistance(), discountedFare);
@@ -38,10 +38,6 @@ public class PathService {
         return Path.of(lineRepository.findAll());
     }
 
-    private Station station(Long id) {
-        return stationRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("지하철 역이 존재하지 않습니다."));
-    }
 
     private List<StationResponse> stationResponses(List<Station> stations) {
         return stations.stream()

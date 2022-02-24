@@ -51,9 +51,7 @@ public class Favorite {
     }
 
     public void checkAuthority(Long loginMemberId) {
-        if (!member.getId().equals(loginMemberId)) {
-            throw new AuthorizationException("해당 동작에 대한 권한이 존재하지 않습니다.");
-        }
+        member.checkAuthority(loginMemberId);
     }
 
     public Long getId() {

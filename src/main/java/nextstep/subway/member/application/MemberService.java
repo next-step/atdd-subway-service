@@ -24,13 +24,13 @@ public class MemberService {
 
     public MemberResponse findMember(Long id) {
         checkAuth(id);
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findMemberById(id);
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
         checkAuth(id);
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findMemberById(id);
         member.update(param.toMember());
     }
 
@@ -43,5 +43,9 @@ public class MemberService {
         if (id == null) {
             throw new AuthorizationException();
         }
+    }
+
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 }
