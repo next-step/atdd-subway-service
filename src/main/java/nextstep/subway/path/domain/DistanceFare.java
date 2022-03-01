@@ -36,7 +36,7 @@ public enum DistanceFare {
     }
 
     public int calculateOverFare(int overDistance) {
-        if (overDistance == 0) {
+        if (overDistance <= 0) {
             return 0;
         }
         return ((overDistance - 1) / overFareDistance + 1) * overFarePrice;
