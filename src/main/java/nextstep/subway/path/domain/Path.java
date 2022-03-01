@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -44,12 +45,12 @@ public class Path {
         graph.setEdgeWeight(sectionEdge, section.getDistance());
     }
 
-    public PathResult getShortestPath(Station start, Station destination) {
+    public PathResult getShortestPath(LoginMember loginMember, Station start, Station destination) {
         checkVertexValidity(start, destination);
         checkPathExists(start, destination);
         return PathResult.of(getVertexes(start, destination),
             getDistance(start, destination),
-            fare(start, destination));
+            fare(start, destination, loginMember));
     }
 
     private void checkVertexValidity(Station start, Station destination) {
@@ -83,9 +84,10 @@ public class Path {
         return (int) shortestPath.getPathWeight(start, destination);
     }
 
-    private Fare fare(Station start, Station destination) {
+    private Fare fare(Station start, Station destination, LoginMember loginMember) {
         return Fare.of(getDistance(start, destination),
-            getAdditionalFare(start, destination));
+            getAdditionalFare(start, destination),
+            loginMember);
     }
 
     private int getAdditionalFare(Station start, Station destination) {

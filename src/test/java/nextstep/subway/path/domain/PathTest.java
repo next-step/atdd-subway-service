@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import java.util.Arrays;
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.StationTest;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -68,7 +69,7 @@ public class PathTest {
         Path path = Path.of(Arrays.asList(이호선, 일호선));
 
         //when
-        PathResult pathResult = path.getShortestPath(StationTest.STATION_4, StationTest.STATION_5);
+        PathResult pathResult = path.getShortestPath(new LoginMember(), StationTest.STATION_4, StationTest.STATION_5);
 
         //then
         assertThat(pathResult.getDistance()).isEqualTo(expected);
@@ -81,7 +82,7 @@ public class PathTest {
         setUp();
         Path path = Path.of(Arrays.asList(이호선, 일호선));
 
-        assertThatThrownBy(() -> path.getShortestPath(StationTest.STATION_4, StationTest.STATION_4))
+        assertThatThrownBy(() -> path.getShortestPath(new LoginMember(), StationTest.STATION_4, StationTest.STATION_4))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage(SAME_STATIONS_EXCEPTION);
     }
@@ -93,7 +94,7 @@ public class PathTest {
         setUp();
         Path path = Path.of(Arrays.asList(이호선, 일호선));
 
-        assertThatThrownBy(() -> path.getShortestPath(StationTest.STATION_1, StationTest.STATION_5))
+        assertThatThrownBy(() -> path.getShortestPath(new LoginMember(), StationTest.STATION_1, StationTest.STATION_5))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage(STATION_NOT_EXIST_IN_THE_LINES_EXCEPTION);
     }
@@ -105,7 +106,7 @@ public class PathTest {
         Line 삼호선 = new Line("삼호선", "blue", StationTest.STATION_1, StationTest.STATION_2, 8);
         Path path = Path.of(Arrays.asList(이호선, 일호선, 삼호선));
 
-        assertThatThrownBy(() -> path.getShortestPath(StationTest.STATION_1, StationTest.STATION_5))
+        assertThatThrownBy(() -> path.getShortestPath(new LoginMember(), StationTest.STATION_1, StationTest.STATION_5))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage(NOT_CONNECT_EXCEPTION);
     }

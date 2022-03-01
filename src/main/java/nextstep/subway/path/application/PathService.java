@@ -29,9 +29,8 @@ public class PathService {
     public PathResponse findShortestPath(LoginMember loginMember, Long source, Long target) {
         Station start = stationService.findById(source);
         Station end = stationService.findById(target);
-        PathResult result = path().getShortestPath(start, end);
-        int discountedFare = AgeFareDiscount.getAgeDiscountedFare(loginMember.getAge(), result.getFare());
-        return PathResponse.of(stationResponses(result.getStations()), result.getDistance(), discountedFare);
+        PathResult result = path().getShortestPath(loginMember, start, end);
+        return PathResponse.of(stationResponses(result.getStations()), result.getDistance(), result.getFare());
     }
 
     private Path path() {

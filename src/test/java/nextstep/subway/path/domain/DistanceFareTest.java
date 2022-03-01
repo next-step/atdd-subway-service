@@ -11,8 +11,8 @@ class DistanceFareTest {
     @Test
     void calculate_over_fare() {
         int distance = 60;
-        DistanceFare distanceFare = DistanceFare.of(distance);
-        assertThat(distanceFare.calculateOverFare(distance)).isEqualTo(700);
+        int overFare = DistanceFare.getOverFare(distance);
+        assertThat(overFare).isEqualTo(1000);
     }
 
 }
