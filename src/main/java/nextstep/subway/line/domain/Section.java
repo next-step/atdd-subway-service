@@ -112,4 +112,8 @@ public class Section {
         return this.upStation.equals(station) || this.downStation.equals(station);
     }
 
+    public int getAdditionalFare(){
+        return line.getAdditionalFare();
+    }
+
 }

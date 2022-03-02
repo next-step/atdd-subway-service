@@ -6,11 +6,8 @@ import nextstep.subway.station.domain.Station;
 
 public class FavoriteRequest {
 
-    private Long source;
-    private Long target;
-
-    public FavoriteRequest() {
-    }
+    private final Long source;
+    private final Long target;
 
     public FavoriteRequest(Long source, Long target) {
         this.source = source;

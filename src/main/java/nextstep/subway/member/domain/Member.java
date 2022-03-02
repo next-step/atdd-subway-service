@@ -64,4 +64,11 @@ public class Member extends BaseEntity {
             throw new AuthorizationException(INVALID_PASSWORD);
         }
     }
+
+    public void checkAuthority(Long loginMemberId) {
+        if (!id.equals(loginMemberId)) {
+            throw new AuthorizationException("해당 동작에 대한 권한이 존재하지 않습니다.");
+        }
+    }
+
 }

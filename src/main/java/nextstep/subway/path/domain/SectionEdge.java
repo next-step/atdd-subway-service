@@ -11,7 +11,16 @@ public class SectionEdge extends DefaultWeightedEdge {
         super();
     }
 
+    public void setSection(Section section) {
+        this.section = section;
+    }
+
     public Section getSection() {
         return section;
     }
+
+    public int getAdditionalFare(){
+        return section.getAdditionalFare();
+    }
+
 }
