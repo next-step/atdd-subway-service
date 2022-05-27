@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -51,17 +52,24 @@ public class Sections {
     }
 
     private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findFirstOneByFilter(it -> it.matchesDownStation(finalDownStation));
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
+        Set<Station> upStations = findUpStationOfSection();
+        Set<Station> downStations = findDownStationOfSection();
+        return upStations.stream()
+                         .filter(upStation -> !downStations.contains(upStation))
+                         .findFirst()
+                         .orElseThrow(IllegalArgumentException::new);
+    }
 
-        return downStation;
+    private Set<Station> findUpStationOfSection() {
+        return sections.stream()
+                       .map(Section::getUpStation)
+                       .collect(Collectors.toSet());
+    }
+
+    private Set<Station> findDownStationOfSection() {
+        return sections.stream()
+                       .map(Section::getDownStation)
+                       .collect(Collectors.toSet());
     }
 
     private Optional<Section> findFirstOneByFilter(Predicate<Section> filter) {
