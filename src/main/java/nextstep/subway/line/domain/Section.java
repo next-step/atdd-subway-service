@@ -4,6 +4,8 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
+import static java.util.Objects.requireNonNull;
+
 @Entity
 public class Section {
     @Id
@@ -68,5 +70,15 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public boolean matchesUpStation(Station station) {
+        requireNonNull(station, "station");
+        return this.upStation.equals(station);
+    }
+
+    public boolean matchesDownStation(Station station) {
+        requireNonNull(station, "station");
+        return this.downStation.equals(station);
     }
 }
