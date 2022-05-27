@@ -5,10 +5,8 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
@@ -32,7 +30,7 @@ public class Sections {
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
@@ -41,9 +39,7 @@ public class Sections {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = findFirstOneByFilter(it -> it.matchesUpStation(finalDownStation));
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -58,9 +54,7 @@ public class Sections {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = findFirstOneByFilter(it -> it.matchesDownStation(finalDownStation));
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -68,5 +62,11 @@ public class Sections {
         }
 
         return downStation;
+    }
+
+    private Optional<Section> findFirstOneByFilter(Predicate<Section> filter) {
+        return sections.stream()
+                       .filter(filter)
+                       .findFirst();
     }
 }

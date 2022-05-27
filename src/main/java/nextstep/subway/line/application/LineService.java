@@ -95,14 +95,14 @@ public class LineService {
 
         if (isUpStationExisted) {
             line.getSections().stream()
-                    .filter(it -> it.getUpStation() == upStation)
+                    .filter(it -> it.matchesUpStation(upStation))
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
 
             line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
         } else if (isDownStationExisted) {
             line.getSections().stream()
-                    .filter(it -> it.getDownStation() == downStation)
+                    .filter(it -> it.matchesDownStation(downStation))
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
 
@@ -120,10 +120,10 @@ public class LineService {
         }
 
         Optional<Section> upLineStation = line.getSections().stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(it -> it.matchesUpStation(station))
                 .findFirst();
         Optional<Section> downLineStation = line.getSections().stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(it -> it.matchesDownStation(station))
                 .findFirst();
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
