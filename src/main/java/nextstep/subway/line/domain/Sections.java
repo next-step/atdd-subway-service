@@ -33,21 +33,19 @@ public class Sections {
         if (sections.isEmpty()) {
             return Collections.emptyList();
         }
+        return getStationInOrder();
+    }
 
+    private List<Station> getStationInOrder() {
+        Map<Station, Station> map = sections.stream()
+                                            .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findFirstOneByFilter(it -> it.matchesUpStation(finalDownStation));
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        Station station = findUpStation();
+        while (map.get(station) != null) {
+            stations.add(station);
+            station = map.get(station);
         }
-
+        stations.add(station);
         return stations;
     }
 
