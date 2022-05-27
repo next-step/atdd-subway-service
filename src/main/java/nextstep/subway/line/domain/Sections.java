@@ -6,7 +6,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -68,11 +67,5 @@ public class Sections {
         return sections.stream()
                        .map(Section::getDownStation)
                        .collect(Collectors.toSet());
-    }
-
-    private Optional<Section> findFirstOneByFilter(Predicate<Section> filter) {
-        return sections.stream()
-                       .filter(filter)
-                       .findFirst();
     }
 }
