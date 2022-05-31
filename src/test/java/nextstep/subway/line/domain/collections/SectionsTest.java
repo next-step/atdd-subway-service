@@ -2,11 +2,9 @@ package nextstep.subway.line.domain.collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,8 +21,6 @@ class SectionsTest {
     private StationRepository stationRepository;
     @Autowired
     private LineRepository lineRepository;
-    @Autowired
-    private SectionRepository sectionRepository;
 
     private Line 신분당선;
     private Station 강남;
@@ -37,10 +33,10 @@ class SectionsTest {
         판교 = new Station("판교");
         정자 = new Station("정자");
         신분당선 = new Line("신분당선", "bg-redd-100", 판교, 정자, 10);
-        lineRepository.save(신분당선);
         stationRepository.save(강남);
         Section section = new Section(신분당선, 강남, 판교, 10);
-        sectionRepository.save(section);
+        신분당선.addSection(section);
+        lineRepository.save(신분당선);
     }
 
     @DisplayName("요청 노선의 최상단 출발 지하철역을 찾는다.")

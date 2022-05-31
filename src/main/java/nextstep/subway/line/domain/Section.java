@@ -69,4 +69,8 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+    public void setLine(Line line) {
+        this.line = line;
+    }
 }
