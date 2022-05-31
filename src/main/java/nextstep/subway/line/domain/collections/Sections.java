@@ -2,6 +2,7 @@ package nextstep.subway.line.domain.collections;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -35,7 +36,22 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        return null;
+        List<Station> stations = new ArrayList<>();
+        Station downStation = findDepartStation();
+        stations.add(downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = sections.stream()
+                    .filter(it -> it.getUpStation() == finalDownStation)
+                    .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getDownStation();
+            stations.add(downStation);
+        }
+        return stations;
     }
 
     public void addSection(Section section) {
