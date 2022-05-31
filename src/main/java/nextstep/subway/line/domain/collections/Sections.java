@@ -2,7 +2,6 @@ package nextstep.subway.line.domain.collections;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -33,6 +32,10 @@ public class Sections {
 
     private boolean isExistUpSection(Station departStation) {
         return sections.stream().anyMatch(section -> section.getDownStation().equals(departStation));
+    }
+
+    public List<Station> getStations() {
+        return null;
     }
 
     public void addSection(Section section) {
