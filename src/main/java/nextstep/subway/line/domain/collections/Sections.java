@@ -2,7 +2,6 @@ package nextstep.subway.line.domain.collections;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -16,13 +15,13 @@ public class Sections {
     private List<Section> sections = new ArrayList<>();
 
     public Station findDepartStation() {
-        Section section = sections.stream().findFirst().orElseThrow(RuntimeException::new);
-        Station departStation = section.getUpStation();
+        Section notOrderFirstSection = sections.stream().findFirst().orElseThrow(RuntimeException::new);
+        Station departStation = notOrderFirstSection.getUpStation();
 
         while (isExistUpSection(departStation)) {
             final Station finalDepartStation = departStation;
             Section nextUpSection = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDepartStation)
+                    .filter(section -> section.getDownStation().equals(finalDepartStation))
                     .findFirst()
                     .orElseThrow(RuntimeException::new);
             departStation = nextUpSection.getUpStation();
@@ -36,22 +35,29 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findDepartStation();
-        stations.add(downStation);
+        Station departStation = findDepartStation();
+        return sortStationsBySection(departStation);
+    }
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+    private List<Station> sortStationsBySection(Station upStation) {
+        List<Station> stations = new ArrayList<>();
+        stations.add(upStation);
+
+        while (isExistDownStation(upStation)) {
+            final Station finalUpStation = upStation;
+            Section nextDownSection = sections.stream()
+                    .filter(section -> section.getUpStation().equals(finalUpStation))
+                    .findFirst()
+                    .orElseThrow(RuntimeException::new);
+            upStation = nextDownSection.getDownStation();
+            stations.add(upStation);
         }
+
         return stations;
+    }
+
+    private boolean isExistDownStation(Station upSection) {
+        return sections.stream().anyMatch(section -> section.getUpStation().equals(upSection));
     }
 
     public void addSection(Section section) {
