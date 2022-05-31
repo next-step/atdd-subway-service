@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.domain.collections.Sections;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -18,6 +19,9 @@ public class Line extends BaseEntity {
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
+
+    @Embedded
+    private Sections newSections = new Sections();
 
     public Line() {
     }
