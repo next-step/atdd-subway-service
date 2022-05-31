@@ -17,19 +17,22 @@ public class Sections {
 
     public Station findDepartStation() {
         Section section = sections.stream().findFirst().orElseThrow(RuntimeException::new);
-        Station downStation = section.getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+        Station departStation = section.getUpStation();
+
+        while (isExistUpSection(departStation)) {
+            final Station finalDepartStation = departStation;
+            Section nextUpSection = sections.stream()
+                    .filter(it -> it.getDownStation() == finalDepartStation)
+                    .findFirst()
+                    .orElseThrow(RuntimeException::new);
+            departStation = nextUpSection.getUpStation();
         }
 
-        return downStation;
+        return departStation;
+    }
+
+    private boolean isExistUpSection(Station departStation) {
+        return sections.stream().anyMatch(section -> section.getDownStation().equals(departStation));
     }
 
     public void addSection(Section section) {
