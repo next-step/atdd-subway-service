@@ -101,7 +101,9 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
      *   Scenario: 지하철 구간을 관리
      *     When 이미 등록 되어있는 구간을 동록 요청하면
      *     Then 구간 등록에 실패한다.
-     *     When 노선에 등록되지 않은 역에 대한 구간을 등록하면
+     *     When 노선에 등록되지 않은 역들에 대한 구간을 등록하면
+     *     Then 구간 등록에 실패한다.
+     *     When 추가할 구간이 기존 구간보다 긴 경우
      *     Then 구간 등록에 실패한다.
      *     When 노선에 등록된 지하철역이 두개일 때 한 역을 제외하면
      *     Then 구간 제외에 실패한다.
@@ -109,22 +111,28 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선을 관리한다.(오류)")
     @Test
     void featureSection_error(){
-        // when
+        //when
         ExtractableResponse<Response> createResponse1 = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 광교역, 3);
 
-        // then
+        //then
         지하철_노선에_지하철역_등록_실패됨(createResponse1);
 
-        // when
+        //when
         ExtractableResponse<Response> createResponse2 = 지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 양재역, 3);
 
-        // then
+        //then
         지하철_노선에_지하철역_등록_실패됨(createResponse2);
 
-        // when
+        //when
+        ExtractableResponse<Response> createResponse3 = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 정자역, 30);
+
+        //then
+        지하철_노선에_지하철역_등록_실패됨(createResponse3);
+
+        //when
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
 
-        // then
+        //then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
 
     }
