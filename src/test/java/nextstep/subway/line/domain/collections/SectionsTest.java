@@ -67,9 +67,9 @@ class SectionsTest {
         assertThat(departStation).isEqualTo(강남);
     }
 
-    @DisplayName("노선에 대한 신규 구간을 추가한다.")
+    @DisplayName("노선에 대한 신규 구간을 추가한다.(기존 구간은 업데이트)")
     @Test
-    void createNewSection(){
+    void addNewSection(){
         //given
         Station 양재 = new Station("양재");
         Station 신논현 = new Station("신논현");
@@ -78,9 +78,9 @@ class SectionsTest {
         Sections sections = 신분당선.getNewSections();
 
         //when
-        sections.createNewSection(신분당선, 강남, 양재, 3);
-        sections.createNewSection(신분당선, 신논현, 강남, 10);
-        sections.createNewSection(신분당선, 정자, 광교, 20);
+        sections.addNewSection(신분당선, 강남, 양재, 3);
+        sections.addNewSection(신분당선, 신논현, 강남, 10);
+        sections.addNewSection(신분당선, 정자, 광교, 20);
         List<Station> stations = sections.getStations();
 
         //then

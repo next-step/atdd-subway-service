@@ -65,42 +65,65 @@ public class Sections {
         sections.add(section);
     }
 
-    public void createNewSection(Line line, Station upStation, Station downStation, int distance) {
-        List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+    public void addNewSection(Line line, Station upStation, Station downStation, int distance) {
+        sections.add(createNewSection(line, upStation, downStation, distance));
+    }
 
+    private Section createNewSection(Line line, Station upStation, Station downStation, int distance) {
+        if (sections.isEmpty()) {
+            return new Section(line, upStation, downStation, distance);
+        }
+        
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = isStationExisted(upStation, stations);
+        boolean isDownStationExisted = isStationExisted(downStation, stations);
+
+        validateCreateSection(isUpStationExisted, isDownStationExisted);
+
+        if (isUpStationExisted) {
+            updateExistingSectionByUpStation(upStation, downStation, distance);
+        }
+        if (isDownStationExisted) {
+            updateExistingSectionByDownStation(upStation, downStation, distance);
+        }
+
+        return new Section(line, upStation, downStation, distance);
+    }
+
+    private void updateExistingSectionByDownStation(Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(section -> section.getDownStation().equals(downStation))
+                .findFirst()
+                .ifPresent(section -> section.updateDownStation(upStation, distance));
+    }
+
+    private void updateExistingSectionByUpStation(Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(section -> section.getUpStation().equals(upStation))
+                .findFirst()
+                .ifPresent(section -> section.updateUpStation(downStation, distance));
+    }
+
+    private boolean isStationExisted(Station station, List<Station> stations) {
+        return stations.stream().anyMatch(it -> it.equals(station));
+    }
+
+    private void validateCreateSection(boolean isUpStationExisted, boolean isDownStationExisted) {
+        validateAlreadyExisted(isUpStationExisted, isDownStationExisted);
+        validateNotFound(isUpStationExisted,isDownStationExisted);
+
+    }
+
+    private void validateAlreadyExisted(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
+    }
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
+    private void validateNotFound(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (!isUpStationExisted && !isDownStationExisted) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
-
-        if (stations.isEmpty()) {
-            sections.add(new Section(line, upStation, downStation, distance));
-            return;
-        }
-
-        if (isUpStationExisted) {
-            sections.stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, distance));
-
-            sections.add(new Section(line, upStation, downStation, distance));
-        } else if (isDownStationExisted) {
-            sections.stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, distance));
-
-            sections.add(new Section(line, upStation, downStation, distance));
-        } else {
-            throw new RuntimeException();
-        }
-
     }
+
 }
