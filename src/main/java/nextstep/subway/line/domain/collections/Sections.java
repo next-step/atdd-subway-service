@@ -108,6 +108,10 @@ public class Sections {
         return stations.stream().anyMatch(it -> it.equals(station));
     }
 
+    public void removeSection(Station station) {
+
+    }
+
     private void validateCreateSection(boolean isUpStationExisted, boolean isDownStationExisted) {
         validateAlreadyExisted(isUpStationExisted, isDownStationExisted);
         validateNotFound(isUpStationExisted,isDownStationExisted);

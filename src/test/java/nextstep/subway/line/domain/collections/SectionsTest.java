@@ -24,17 +24,16 @@ class SectionsTest {
     @Autowired
     private LineRepository lineRepository;
 
-    private Line 신분당선;
-    private Station 강남;
-    private Station 판교;
-    private Station 정자;
+    private final Station 강남 = new Station("강남");
+    private final Station 판교 = new Station("판교");
+    private final Station 정자 = new Station("정자");
+    private final Station 양재 = new Station("양재");
+    private final Station 신논현 = new Station("신논현");
+    private final Station 광교 = new Station("광교");
+    private final Line 신분당선 = new Line("신분당선", "bg-redd-100", 판교, 정자, 10);
 
     @BeforeEach
     void setUp() {
-        강남 = new Station("강남");
-        판교 = new Station("판교");
-        정자 = new Station("정자");
-        신분당선 = new Line("신분당선", "bg-redd-100", 판교, 정자, 10);
         stationRepository.save(강남);
         Section section = new Section(신분당선, 강남, 판교, 10);
         신분당선.addSection(section);
@@ -71,9 +70,6 @@ class SectionsTest {
     @Test
     void addNewSection(){
         //given
-        Station 양재 = new Station("양재");
-        Station 신논현 = new Station("신논현");
-        Station 광교 = new Station("광교");
         stationRepository.saveAll(Arrays.asList(양재, 신논현, 광교));
         Sections sections = 신분당선.getNewSections();
 
@@ -85,5 +81,25 @@ class SectionsTest {
 
         //then
         assertThat(stations).containsExactly(신논현, 강남, 양재, 판교, 정자, 광교);
+    }
+
+    @DisplayName("노선에 대한 구간을 삭제한다.(기존 구간은 업데이트)")
+    @Test
+    void removeSection(){
+        //given
+        stationRepository.saveAll(Arrays.asList(양재, 신논현, 광교));
+        Sections sections = 신분당선.getNewSections();
+        sections.addNewSection(신분당선, 강남, 양재, 3);
+        sections.addNewSection(신분당선, 신논현, 강남, 10);
+        sections.addNewSection(신분당선, 정자, 광교, 20);
+
+        //when
+        sections.removeSection(강남);
+        sections.removeSection(신논현);
+        sections.removeSection(광교);
+        List<Station> stations = sections.getStations();
+
+        //then
+        assertThat(stations).containsExactly(양재, 판교, 정자);
     }
 }
