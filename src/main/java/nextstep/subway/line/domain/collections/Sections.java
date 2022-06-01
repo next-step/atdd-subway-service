@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
@@ -62,5 +63,9 @@ public class Sections {
 
     public void addSection(Section section) {
         sections.add(section);
+    }
+
+    public void createNewSection(Line line, Station upStation, Station downStation, long distance) {
+
     }
 }

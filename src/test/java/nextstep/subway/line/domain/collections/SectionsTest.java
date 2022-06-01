@@ -2,6 +2,7 @@ package nextstep.subway.line.domain.collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
 import java.util.List;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -64,5 +65,25 @@ class SectionsTest {
 
         //then
         assertThat(departStation).isEqualTo(강남);
+    }
+
+    @DisplayName("노선에 대한 신규 구간을 추가한다.")
+    @Test
+    void createNewSection(){
+        //given
+        Station 양재 = new Station("양재");
+        Station 신논현 = new Station("신논현");
+        Station 광교 = new Station("광교");
+        stationRepository.saveAll(Arrays.asList(양재, 신논현, 광교));
+        Sections sections = 신분당선.getNewSections();
+
+        //when
+        sections.createNewSection(신분당선, 강남, 양재, 3);
+        sections.createNewSection(신분당선, 신논현, 강남, 10);
+        sections.createNewSection(신분당선, 정자, 광교, 20);
+        List<Station> stations = sections.getStations();
+
+        //then
+        assertThat(stations).containsExactly(신논현, 강남, 양재, 판교, 정자, 광교);
     }
 }
