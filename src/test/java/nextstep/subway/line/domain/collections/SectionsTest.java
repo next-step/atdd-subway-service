@@ -94,9 +94,9 @@ class SectionsTest {
         sections.addNewSection(신분당선, 정자, 광교, 20);
 
         //when
-        sections.removeSection(강남);
-        sections.removeSection(신논현);
-        sections.removeSection(광교);
+        sections.removeSection(신분당선, 강남);
+        sections.removeSection(신분당선, 신논현);
+        sections.removeSection(신분당선, 광교);
         List<Station> stations = sections.getStations();
 
         //then
