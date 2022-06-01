@@ -13,6 +13,8 @@ import nextstep.subway.station.domain.Station;
 @Embeddable
 public class Sections {
 
+    private static final int CANT_REMOVE_SECTION_SIZE = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -110,26 +112,35 @@ public class Sections {
     }
 
     public void removeSection(Line line, Station station) {
-        if (sections.size() <= 1) {
-            throw new RuntimeException();
-        }
+        validateRemoveSection();
 
         Optional<Section> upLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(section -> section.getUpStation().equals(station))
                 .findFirst();
+
         Optional<Section> downLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(section -> section.getDownStation().equals(station))
                 .findFirst();
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+            betweenCaseLinkSection(line, upLineStation.get(), downLineStation.get());
         }
 
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+        upLineStation.ifPresent(section -> sections.remove(section));
+        downLineStation.ifPresent(section -> sections.remove(section));
+    }
+
+    private void betweenCaseLinkSection(Line line, Section upLineStation, Section downLineStation) {
+        Station newUpStation = downLineStation.getUpStation();
+        Station newDownStation = upLineStation.getDownStation();
+        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+        sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+    }
+
+    private void validateRemoveSection() {
+        if (sections.size() == CANT_REMOVE_SECTION_SIZE) {
+            throw new RuntimeException("구간을 삭제할 수 없습니다.");
+        }
     }
 
     private void validateCreateSection(boolean isUpStationExisted, boolean isDownStationExisted) {
