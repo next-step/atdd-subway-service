@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.exception.SectionCreateException;
 import nextstep.subway.line.exception.SectionRemoveException;
 import nextstep.subway.station.domain.Station;
 
@@ -148,13 +149,13 @@ public class Sections {
 
     private void validateAlreadyExisted(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new SectionCreateException("[ERROR] 이미 등록된 구간 입니다.");
         }
     }
 
     private void validateNotFound(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (!isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new SectionCreateException("[ERROR] 등록할 수 없는 구간 입니다.");
         }
     }
 
