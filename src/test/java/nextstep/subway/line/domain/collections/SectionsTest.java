@@ -107,25 +107,24 @@ class SectionsTest {
 
     @DisplayName("없는 구간는 삭제할 수 없다.")
     @Test
-    void removeSection_not_exist(){
+    void removeSection_not_exist() {
         //given
         Sections sections = 신분당선.getSections();
-        sections.removeSection(신분당선, 양재);
 
         //when then
-        assertThatThrownBy(()->sections.removeSection(신분당선, 양재))
+        assertThatThrownBy(() -> sections.removeSection(신분당선, 양재))
                 .isInstanceOf(SectionRemoveException.class);
     }
 
     @DisplayName("구간이 하나인 경우 삭제할 수 없다.")
     @Test
-    void removeSection_only_one_section(){
+    void removeSection_only_one_section() {
         //given
         Sections sections = 신분당선.getSections();
         sections.removeSection(신분당선, 강남);
 
         //when then
-        assertThatThrownBy(()->sections.removeSection(신분당선, 강남))
+        assertThatThrownBy(() -> sections.removeSection(신분당선, 강남))
                 .isInstanceOf(SectionRemoveException.class);
     }
 }

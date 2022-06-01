@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.exception.SectionRemoveException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -112,7 +113,7 @@ public class Sections {
     }
 
     public void removeSection(Line line, Station station) {
-        validateRemoveSection();
+        validateCantRemoveSection();
 
         Optional<Section> upLineStation = sections.stream()
                 .filter(section -> section.getUpStation().equals(station))
@@ -121,6 +122,8 @@ public class Sections {
         Optional<Section> downLineStation = sections.stream()
                 .filter(section -> section.getDownStation().equals(station))
                 .findFirst();
+
+        validateNotFoundRemoveSection(upLineStation.isPresent(), downLineStation.isPresent());
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             betweenCaseLinkSection(line, upLineStation.get(), downLineStation.get());
@@ -135,12 +138,6 @@ public class Sections {
         Station newDownStation = upLineStation.getDownStation();
         int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
         sections.add(new Section(line, newUpStation, newDownStation, newDistance));
-    }
-
-    private void validateRemoveSection() {
-        if (sections.size() == CANT_REMOVE_SECTION_SIZE) {
-            throw new RuntimeException("구간을 삭제할 수 없습니다.");
-        }
     }
 
     private void validateCreateSection(boolean isUpStationExisted, boolean isDownStationExisted) {
@@ -158,6 +155,18 @@ public class Sections {
     private void validateNotFound(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (!isUpStationExisted && !isDownStationExisted) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void validateCantRemoveSection() {
+        if (sections.size() == CANT_REMOVE_SECTION_SIZE) {
+            throw new SectionRemoveException("[ERROR] 구간을 삭제할 수 없습니다.");
+        }
+    }
+
+    private void validateNotFoundRemoveSection(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new SectionRemoveException("[ERROR] 삭제할 구간이 존재하지 않습니다.");
         }
     }
 
