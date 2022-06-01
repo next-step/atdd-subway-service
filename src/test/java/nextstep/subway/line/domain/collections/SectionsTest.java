@@ -1,12 +1,14 @@
 package nextstep.subway.line.domain.collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.List;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.exception.SectionRemoveException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -101,5 +103,29 @@ class SectionsTest {
 
         //then
         assertThat(stations).containsExactly(양재, 판교, 정자);
+    }
+
+    @DisplayName("없는 구간는 삭제할 수 없다.")
+    @Test
+    void removeSection_not_exist(){
+        //given
+        Sections sections = 신분당선.getSections();
+        sections.removeSection(신분당선, 양재);
+
+        //when then
+        assertThatThrownBy(()->sections.removeSection(신분당선, 양재))
+                .isInstanceOf(SectionRemoveException.class);
+    }
+
+    @DisplayName("구간이 하나인 경우 삭제할 수 없다.")
+    @Test
+    void removeSection_only_one_section(){
+        //given
+        Sections sections = 신분당선.getSections();
+        sections.removeSection(신분당선, 강남);
+
+        //when then
+        assertThatThrownBy(()->sections.removeSection(신분당선, 강남))
+                .isInstanceOf(SectionRemoveException.class);
     }
 }
