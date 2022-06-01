@@ -2,13 +2,16 @@ package nextstep.subway.line.domain.collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 import java.util.List;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.exception.SectionCreateException;
 import nextstep.subway.line.exception.SectionRemoveException;
+import nextstep.subway.line.exception.SectionUpdateException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -84,6 +87,44 @@ class SectionsTest {
         //then
         assertThat(stations).containsExactly(신논현, 강남, 양재, 판교, 정자, 광교);
     }
+
+    @DisplayName("이미 등록된 구간은 추가할 수 없다.")
+    @Test
+    void addNewSection_exist(){
+        //given
+        Sections sections = 신분당선.getSections();
+
+        //when then
+        assertThatThrownBy(() -> sections.addNewSection(신분당선, 강남, 판교, 3))
+                .isInstanceOf(SectionCreateException.class);
+    }
+
+    @DisplayName("추가하는 구간의 지하철역들이 모두 노선에 없는 경우 추가할 수 없다.")
+    @Test
+    void addNewSection_not_exist(){
+        //given
+        Sections sections = 신분당선.getSections();
+
+        //when then
+        assertThatThrownBy(() -> sections.addNewSection(신분당선, 신논현, 광교, 3))
+                .isInstanceOf(SectionCreateException.class);
+    }
+
+    @DisplayName("구간의 길이가 기존 구간보다 길거나 같은 경우 구간을 추가할 수 없다.")
+    @Test
+    void addNewSection_too_long(){
+        //given
+        Sections sections = 신분당선.getSections();
+
+        //when then
+        assertAll(
+                () -> assertThatThrownBy(() -> sections.addNewSection(신분당선, 강남, 양재, 20))
+                        .isInstanceOf(SectionUpdateException.class),
+                () -> assertThatThrownBy(() -> sections.addNewSection(신분당선, 강남, 양재, 10))
+                        .isInstanceOf(SectionUpdateException.class)
+        );
+    }
+
 
     @DisplayName("노선에 대한 구간을 삭제한다.(기존 구간은 업데이트)")
     @Test
