@@ -44,7 +44,7 @@ class SectionsTest {
     @Test
     void findStations(){
         //given
-        Sections sections = 신분당선.getNewSections();
+        Sections sections = 신분당선.getSections();
 
         //when
         List<Station> stations= sections.getStations();
@@ -57,7 +57,7 @@ class SectionsTest {
     @Test
     void findDepartStation() {
         //given
-        Sections sections = 신분당선.getNewSections();
+        Sections sections = 신분당선.getSections();
 
         //when
         Station departStation = sections.findDepartStation();
@@ -71,7 +71,7 @@ class SectionsTest {
     void addNewSection(){
         //given
         stationRepository.saveAll(Arrays.asList(양재, 신논현, 광교));
-        Sections sections = 신분당선.getNewSections();
+        Sections sections = 신분당선.getSections();
 
         //when
         sections.addNewSection(신분당선, 강남, 양재, 3);
@@ -88,7 +88,7 @@ class SectionsTest {
     void removeSection(){
         //given
         stationRepository.saveAll(Arrays.asList(양재, 신논현, 광교));
-        Sections sections = 신분당선.getNewSections();
+        Sections sections = 신분당선.getSections();
         sections.addNewSection(신분당선, 강남, 양재, 3);
         sections.addNewSection(신분당선, 신논현, 강남, 10);
         sections.addNewSection(신분당선, 정자, 광교, 20);
