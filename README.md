@@ -58,6 +58,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### 1단계 - 인수테스트 기반 리팩터링
  1. LineService 리팩터링
     - [] 도메인으로 옮길 비즈니스 로직을 확인하고 옮기기
+      - [] Line 도메인 리팩토링
+      - [] Section 도메인 리팩토링
+      - [] Station 도메인 리팩토링
+      - [] LineService에서 도메인으로 옮겨올 비즈니스 로직 리팩토링
     - [] 옮겨진 비즈니스 로직을 확인하는 도메인 테스트 코드 작성
 
  2. LineSectionAcceptanceTest 리팩터링
