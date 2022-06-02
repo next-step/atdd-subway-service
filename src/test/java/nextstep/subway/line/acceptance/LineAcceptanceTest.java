@@ -1,23 +1,5 @@
 package nextstep.subway.line.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static nextstep.subway.line.acceptance.LineAcceptanceTestMethod.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestMethod.지하철_노선_목록_응답됨;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestMethod.지하철_노선_목록_조회_요청;
@@ -30,7 +12,17 @@ import static nextstep.subway.line.acceptance.LineAcceptanceTestMethod.지하철
 import static nextstep.subway.line.acceptance.LineAcceptanceTestMethod.지하철_노선_수정됨;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestMethod.지하철_노선_응답됨;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestMethod.지하철_노선_제거_요청;
-import static org.assertj.core.api.Assertions.assertThat;
+
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import java.util.Arrays;
+import nextstep.subway.AcceptanceTest;
+import nextstep.subway.line.dto.LineRequest;
+import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.dto.StationResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 @DisplayName("지하철 노선 관련 기능")
 class LineAcceptanceTest extends AcceptanceTest {
