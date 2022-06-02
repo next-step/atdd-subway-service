@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 
 public class LineAcceptanceTestMethod extends AcceptanceTest{
 
+    private static final String DOT = ".";
     private static final String LINE_PATH = "/lines";
     private static final String LINE_PATH_WITH_LINE_ID_FORMAT = "/lines/%s";
 
@@ -73,7 +74,7 @@ public class LineAcceptanceTestMethod extends AcceptanceTest{
             .map(AcceptanceTest::parseIdFromLocationHeader)
             .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
+        List<Long> resultLineIds = response.jsonPath().getList(DOT, LineResponse.class).stream()
             .map(LineResponse::getId)
             .collect(Collectors.toList());
 

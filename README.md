@@ -61,7 +61,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [] 옮겨진 비즈니스 로직을 확인하는 도메인 테스트 코드 작성
 
  2. LineSectionAcceptanceTest 리팩터링
-    - [] AcceptanceTest 리팩토링 : 공통적으로 사용될 수 있는 부분 추출
+    - [X] AcceptanceTest 리팩토링 : 공통적으로 사용될 수 있는 부분 추출
       - [X] LineAcceptanceTest 기준 리팩토링 진행
-      - [] LineSectionAcceptTest 기준 리팩토링 진행
-    - [] 테스트코드와 테스트에서 사용되는 메소드 분리
+      - [X] LineSectionAcceptTest 기준 리팩토링 진행
+    - [X] 테스트코드와 테스트에서 사용되는 메소드 분리
