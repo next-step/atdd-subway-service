@@ -92,7 +92,7 @@ public class LineService {
         }
 
         if (stations.isEmpty()) {
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+            line.getSections().add(Section.of(line, upStation, downStation, request.getDistance()));
             return;
         }
 
@@ -102,14 +102,14 @@ public class LineService {
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(downStation, Distance.from(request.getDistance())));
 
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+            line.getSections().add(Section.of(line, upStation, downStation, request.getDistance()));
         } else if (isDownStationExisted) {
             line.getSections().stream()
                     .filter(it -> it.getDownStation() == downStation)
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(upStation, Distance.from(request.getDistance())));
 
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+            line.getSections().add(Section.of(line, upStation, downStation, request.getDistance()));
         } else {
             throw new RuntimeException();
         }
@@ -133,7 +133,7 @@ public class LineService {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
             int newDistance = upLineStation.get().getDistanceValue() + downLineStation.get().getDistanceValue();
-            line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
+            line.getSections().add(Section.of(line, newUpStation, newDownStation, newDistance));
         }
 
         upLineStation.ifPresent(it -> line.getSections().remove(it));
