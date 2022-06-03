@@ -60,7 +60,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [] 도메인으로 옮길 비즈니스 로직을 확인하고 옮기기
       - [X] Line 도메인 리팩토링
       - [X] Section 도메인 리팩토링
-      - [] Station 도메인 리팩토링
+      - [X] Station 도메인 리팩토링
       - [] LineService에서 도메인으로 옮겨올 비즈니스 로직 리팩토링
     - [] 옮겨진 비즈니스 로직을 확인하는 도메인 테스트 코드 작성
 
@@ -69,3 +69,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       - [X] LineAcceptanceTest 기준 리팩토링 진행
       - [X] LineSectionAcceptTest 기준 리팩토링 진행
     - [X] 테스트코드와 테스트에서 사용되는 메소드 분리
+    - [ ] 리팩터링에 대한 인수테스트 코드 개발
