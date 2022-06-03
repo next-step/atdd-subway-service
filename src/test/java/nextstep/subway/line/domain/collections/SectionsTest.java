@@ -58,19 +58,6 @@ class SectionsTest {
         assertThat(stations).containsExactly(강남,판교,정자);
     }
 
-    @DisplayName("요청 노선의 최상단 출발 지하철역을 찾는다.")
-    @Test
-    void findDepartStation() {
-        //given
-        Sections sections = 신분당선.getSections();
-
-        //when
-        Station departStation = sections.findDepartStation();
-
-        //then
-        assertThat(departStation).isEqualTo(강남);
-    }
-
     @DisplayName("노선에 대한 신규 구간을 추가한다.(기존 구간은 업데이트)")
     @Test
     void addNewSection(){

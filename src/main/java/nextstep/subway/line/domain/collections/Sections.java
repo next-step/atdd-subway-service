@@ -20,7 +20,7 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    public Station findDepartStation() {
+    private Station findDepartStation() {
         Section notOrderFirstSection = sections.stream().findFirst().orElseThrow(RuntimeException::new);
         Station departStation = notOrderFirstSection.getUpStation();
 
