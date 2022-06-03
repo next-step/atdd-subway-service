@@ -23,10 +23,10 @@ class SectionsTest {
     @BeforeEach
     void setUp() {
         신분당선 = Line.of("신분당선", "RED");
-        강남역 = new Station("강남역");
-        판교역 = new Station("판교역");
-        정자역 = new Station("정자역");
-        광교역 = new Station("광교역");
+        강남역 = Station.from("강남역");
+        판교역 = Station.from("판교역");
+        정자역 = Station.from("정자역");
+        광교역 = Station.from("광교역");
         강남역_판교역_구간 = Section.of(신분당선, 강남역, 판교역, DISTANCE);
         정자역_광교역_구간 = Section.of(신분당선, 정자역, 광교역, DISTANCE);
     }
