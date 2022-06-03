@@ -38,10 +38,6 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
@@ -49,7 +45,7 @@ public class LineService {
 
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = findLineById(id);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -70,5 +66,10 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeSection(station);
+    }
+
+    private Line findLineById(Long id) {
+        return lineRepository.findById(id)
+                .orElseThrow(()->new IllegalArgumentException("[ERROR] 해당하는 노선이 존재하지 않습니다."));
     }
 }
