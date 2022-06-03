@@ -110,7 +110,7 @@ public class Sections {
     }
 
     private boolean isStationExisted(Station station, List<Station> stations) {
-        return stations.stream().anyMatch(it -> it.equals(station));
+        return stations.stream().anyMatch(stationn -> stationn.equals(station));
     }
 
     public void removeSection(Line line, Station station) {
