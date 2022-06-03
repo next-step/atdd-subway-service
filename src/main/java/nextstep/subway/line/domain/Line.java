@@ -12,25 +12,36 @@ public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String name;
+    private LineName name;
     private String color;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    public Line() {
+    protected Line() {
     }
 
-    public Line(String name, String color) {
-        this.name = name;
+    private Line(String name, String color) {
+        this.name = LineName.from(name);
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
+    private Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this.name = LineName.from(name);
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public static Line of(String name, String color) {
+        return new Line(name, color);
+    }
+
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
+        return new Line(name, color, upStation, downStation, distance);
+    }
+
+    public static Line createEmpty() {
+        return new Line();
     }
 
     public void update(Line line) {
@@ -42,8 +53,8 @@ public class Line extends BaseEntity {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public LineName getName() {
+        return this.name;
     }
 
     public String getColor() {
