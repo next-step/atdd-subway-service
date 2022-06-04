@@ -1,9 +1,17 @@
 package nextstep.subway.line.domain;
 
-import java.util.Objects;
-import nextstep.subway.station.domain.Station;
+import static nextstep.subway.line.enums.LineExceptionType.NEED_NARROW_DISTANCE_THAN_SECTION;
 
-import javax.persistence.*;
+import java.util.Objects;
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section {
@@ -94,7 +102,7 @@ public class Section {
 
     public void updateUpStation(Station station, Distance distance) {
         if (this.distance.isLessThanOrEqualsTo(distance)) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException(NEED_NARROW_DISTANCE_THAN_SECTION.getMessage());
         }
         this.upStation = station;
         this.distance.minus(distance);
@@ -102,7 +110,7 @@ public class Section {
 
     public void updateDownStation(Station station, Distance newDistance) {
         if (this.distance.isLessThanOrEqualsTo(newDistance)) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException(NEED_NARROW_DISTANCE_THAN_SECTION.getMessage());
         }
         this.downStation = station;
         this.distance.minus(newDistance);
