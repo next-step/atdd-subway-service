@@ -42,7 +42,18 @@ public class Section {
         this.distance = Distance.from(distance);
     }
 
+    private Section(Line line, Station upStation, Station downStation, Distance distance) {
+        this.line = line;
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
+    }
+
     public static Section of(Line line, Station upStation, Station downStation, int distance) {
+        return new Section(line, upStation, downStation, distance);
+    }
+
+    public static Section of(Line line, Station upStation, Station downStation, Distance distance) {
         return new Section(line, upStation, downStation, distance);
     }
 
@@ -74,16 +85,16 @@ public class Section {
         return distance.getValue();
     }
 
-    public void updateUpStation(Station station, Distance newDistance) {
-        if (newDistance.isGraterThanOrEquals(this.distance)) {
+    public void updateUpStation(Station station, Distance distance) {
+        if (this.distance.isLessThanOrEqualsTo(distance)) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.upStation = station;
-        this.distance.minus(newDistance);
+        this.distance.minus(distance);
     }
 
     public void updateDownStation(Station station, Distance newDistance) {
-        if (newDistance.isGraterThanOrEquals(this.distance)) {
+        if (newDistance.isLessThanOrEqualsTo(this.distance)) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.downStation = station;
@@ -116,5 +127,9 @@ public class Section {
 
     public boolean isEqualsUpStation(Station station) {
         return this.upStation.equals(station);
+    }
+
+    public boolean isEqualsDownStation(Station station) {
+        return this.downStation.equals(station);
     }
 }

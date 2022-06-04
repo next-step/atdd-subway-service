@@ -1,7 +1,8 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.enums.LineExceptionType.NOT_FOUND_SECTION;
-import static nextstep.subway.line.enums.LineExceptionType.NOT_FOUND_UP_STATION_BY_SECTION;
+import static nextstep.subway.line.enums.LineExceptionType.CANNOT_REMOVE_STATION_IS_NOT_EXIST;
+import static nextstep.subway.line.enums.LineExceptionType.CANNOT_REMOVE_STATION_WHEN_ONLY_ONE_SECTIONS;
+import static nextstep.subway.line.enums.LineExceptionType.NOT_EXIST_FIRST_SECTION;
 
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
@@ -35,6 +36,130 @@ public class Sections {
         return new Sections(Lists.newArrayList());
     }
 
+    public void add(Section section) {
+        adjustSections(section);
+        this.sections.add(section);
+    }
+
+    public List<Section> getSections() {
+        return this.sections;
+    }
+
+    public List<Station> getStations() {
+        if (this.sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return getSortedStations();
+    }
+
+    public boolean containStationBySection(Section section) {
+        return this.isExistStation(section.getUpStation())
+            && this.isExistStation(section.getDownStation());
+    }
+
+    public boolean isEmpty() {
+        return this.sections.isEmpty();
+    }
+
+    public boolean containUpDownStation(Section section) {
+        return !this.isExistStation(section.getUpStation())
+            && !this.isExistStation(section.getDownStation());
+    }
+
+    public void removeStation(Station station) {
+        validateHasOnlyOneSectionWhenRemoveStation();
+        validateNotIncludeStation(station);
+
+        Optional<Section> upLineSection = findSectionByUpStation(station);
+        Optional<Section> downLineSection = findSectionByDownStation(station);
+
+        if (upLineSection.isPresent() && downLineSection.isPresent()) {
+            addMiddleSection(upLineSection.get(), downLineSection.get());
+        }
+
+        upLineSection.ifPresent(this::remove);
+        downLineSection.ifPresent(this::remove);
+    }
+
+    private void addMiddleSection(Section upLineSection, Section downLineSection) {
+        Station newUpStation = downLineSection.getUpStation();
+        Station newDownStation = upLineSection.getDownStation();
+        Distance newDistance = Distance.merge(upLineSection.getDistance(), downLineSection.getDistance());
+
+        sections.add(Section.of(downLineSection.getLine(), newUpStation, newDownStation, newDistance));
+    }
+
+    private void remove(Section section) {
+        this.sections.remove(section);
+    }
+
+    private void validateHasOnlyOneSectionWhenRemoveStation() {
+        if (this.getSections().size() <= 1) {
+            throw new IllegalStateException(CANNOT_REMOVE_STATION_WHEN_ONLY_ONE_SECTIONS.getMessage());
+        }
+    }
+
+    private void validateNotIncludeStation(Station station) {
+        if (!isExistStation(station)) {
+            throw new IllegalStateException(CANNOT_REMOVE_STATION_IS_NOT_EXIST.getMessage());
+        }
+    }
+
+    private boolean isExistStation(Station station) {
+        return this.getStations().contains(station);
+    }
+
+    private Optional<Section> findSectionByUpStation(Station station) {
+        return StreamUtils.filterAndFindFirst(this.sections,
+            section -> section.isEqualsUpStation(station));
+    }
+
+    private Optional<Section> findSectionByDownStation(Station station) {
+        return StreamUtils.filterAndFindFirst(this.sections,
+            section -> section.isEqualsDownStation(station));
+    }
+
+    private List<Station> getSortedStations() {
+        List<Station> stations = Lists.newArrayList();
+        stations.add(this.findFirstSection().getUpStation());
+        for (int i = 0; i < sections.size(); i++) {
+            Optional<Section> sectionByUpStation = findSectionByUpStation(stations.get(i));
+            sectionByUpStation.map(Section::getDownStation)
+                .ifPresent(stations::add);
+        }
+        return stations;
+    }
+
+    private Section findFirstSection() {
+        List<Station> downStations = findDownStations();
+        return StreamUtils.filterAndFindFirst(sections, section -> !downStations.contains(section.getUpStation()))
+            .orElseThrow(() -> new IllegalStateException(NOT_EXIST_FIRST_SECTION.getMessage()));
+    }
+
+    private List<Station> findDownStations() {
+        return StreamUtils.mapToList(this.sections, Section::getDownStation);
+    }
+
+    private void adjustSections(Section section) {
+        adjustUpStation(section);
+        adjustDownStation(section);
+    }
+
+    private void adjustUpStation(Section section) {
+        if (isExistStation(section.getUpStation())) {
+            StreamUtils.filterAndFindFirst(this.sections, it -> it.getUpStation().equals(section.getUpStation()))
+                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+        }
+    }
+
+    private void adjustDownStation(Section section) {
+        if (isExistStation(section.getDownStation())) {
+            StreamUtils.filterAndFindFirst(this.sections, it -> it.getDownStation().equals(section.getDownStation()))
+                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -52,79 +177,4 @@ public class Sections {
         return Objects.hash(sections);
     }
 
-    public void add(Section section) {
-        this.sections.add(section);
-    }
-
-    public List<Section> getSections() {
-        return this.sections;
-    }
-
-    public List<Station> findSortedStations() {
-        List<Station> sortedStations = Lists.newArrayList();
-        sortedStations.add(findFirstSection().getUpStation());
-
-        for (int i = 0; i < this.sections.size(); i++) {
-            Station station = this.findSectionByUpStation(sortedStations.get(i))
-                .map(Section::getDownStation)
-                .orElseThrow(() -> new IllegalStateException(NOT_FOUND_UP_STATION_BY_SECTION.getMessage()));
-
-            sortedStations.add(station);
-        }
-        return sortedStations;
-    }
-
-    public Station findUpStation() {
-        Station downStation = this.sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-
-            Optional<Section> nextLineStation = StreamUtils.filterAndFindFirst(this.sections,
-                it -> it.getDownStation() == finalDownStation);
-
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
-    }
-
-    public List<Station> getStations() {
-        if (this.sections.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<Station> stations = Lists.newArrayList();
-        Station downStation = this.findUpStation();
-        stations.add(this.findUpStation());
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = StreamUtils.filterAndFindFirst(this.sections, it -> it.getUpStation().equals(finalDownStation));
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
-    }
-
-    private Optional<Section> findSectionByUpStation(Station station) {
-        return StreamUtils.filterAndFindFirst(this.sections,
-            section -> section.isEqualsUpStation(station));
-    }
-
-    private Section findFirstSection() {
-        List<Station> downStations = this.findDownStations();
-        return StreamUtils.filterAndFindFirst(this.sections, section -> !downStations.contains(section.getUpStation()))
-            .orElseThrow(() -> new IllegalStateException(NOT_FOUND_SECTION.getMessage()));
-    }
-
-    private List<Station> findDownStations() {
-        return StreamUtils.mapToList(this.sections, Section::getDownStation);
-    }
 }

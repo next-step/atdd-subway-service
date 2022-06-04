@@ -20,7 +20,15 @@ public class Distance {
         return new Distance(distance);
     }
 
-    public boolean isGraterThanOrEquals(Distance distance) {
+    public static Distance merge(Distance firstDistance, Distance secondDistance) {
+        return Distance.from(firstDistance.distance + secondDistance.distance);
+    }
+
+    public boolean isLessThanOrEqualsTo(Distance distance) {
+        return this.distance <= distance.distance;
+    }
+
+    public boolean isGreaterThanOrEqualTo(Distance distance) {
         return this.distance >= distance.distance;
     }
 
