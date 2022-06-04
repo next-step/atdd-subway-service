@@ -69,4 +69,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       - [X] LineAcceptanceTest 기준 리팩토링 진행
       - [X] LineSectionAcceptTest 기준 리팩토링 진행
     - [X] 테스트코드와 테스트에서 사용되는 메소드 분리
-    - [ ] 리팩터링에 대한 인수테스트 코드 개발
+    - [ ] 통합 인수테스트 작성 및 패스
