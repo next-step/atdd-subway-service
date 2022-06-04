@@ -113,4 +113,42 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         // then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
+
+    /**
+     * 지하철 구간을 관리
+     * When. 지하철 구간 등록 요청
+     * Then. 지하철 구간 등록됨.
+     *
+     * When. 지하철 노선에 등록된 역 목록 조회 요청
+     * Then. 등록된 지하철 구간이 반영된 역 목록이 조회됨
+     *
+     * When. 지하철 구간 삭제 요청
+     * Then. 지하철 구간이 삭제됨.
+     *
+     * When. 지하철 노선에 등록된 역 목록 조회 요청
+     * Then. 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+     */
+    @DisplayName("지하철 구간 관리에 대한 통합 인수테스트 - 등록/조회/삭제")
+    @Test
+    void lineSectionManageTest() {
+        // when
+        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+
+        // then
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
+        지하철_노선에_지하철역_등록됨(response);
+
+        // when & then
+        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 양재역, 광교역));
+
+        // when
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+
+        // then
+        지하철_노선에_지하철역_제외됨(removeResponse);
+
+        // when & then
+        ExtractableResponse<Response> finalResponse = 지하철_노선_조회_요청(신분당선);
+        지하철_노선에_지하철역_순서_정렬됨(finalResponse, Arrays.asList(강남역, 광교역));
+    }
 }

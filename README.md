@@ -69,4 +69,13 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       - [X] LineAcceptanceTest 기준 리팩토링 진행
       - [X] LineSectionAcceptTest 기준 리팩토링 진행
     - [X] 테스트코드와 테스트에서 사용되는 메소드 분리
-    - [ ] 통합 인수테스트 작성 및 패스
+    - [X] 통합 인수테스트 작성 및 패스
+      - 지하철 구간을 관리
+        * When. 지하철 구간 등록 요청
+        * Then. 지하철 구간 등록됨.
+        * When. 지하철 노선에 등록된 역 목록 조회 요청
+        * Then. 등록된 지하철 구간이 반영된 역 목록이 조회됨
+        * When. 지하철 구간 삭제 요청
+        * Then. 지하철 구간이 삭제됨.
+        * When. 지하철 노선에 등록된 역 목록 조회 요청
+        * Then. 삭제한 지하철 구간이 반영된 역 목록이 조회됨
