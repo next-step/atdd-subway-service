@@ -116,6 +116,18 @@ public class Section {
         this.distance.minus(newDistance);
     }
 
+    public void registerLine(Line line) {
+        this.line = line;
+    }
+
+    public boolean isEqualsUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean isEqualsDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -134,17 +146,5 @@ public class Section {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getLine(), getUpStation(), getDownStation(), getDistance());
-    }
-
-    public void registerLine(Line line) {
-        this.line = line;
-    }
-
-    public boolean isEqualsUpStation(Station station) {
-        return this.upStation.equals(station);
-    }
-
-    public boolean isEqualsDownStation(Station station) {
-        return this.downStation.equals(station);
     }
 }
