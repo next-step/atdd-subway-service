@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import static nextstep.subway.line.enums.LineExceptionType.DISTANCE_IS_MUST_BE_GREATER_THAN_1;
 
+import java.util.Objects;
 import javax.persistence.Embeddable;
 
 @Embeddable
@@ -48,5 +49,22 @@ public class Distance {
         if (distance < 1) {
             throw new IllegalArgumentException(DISTANCE_IS_MUST_BE_GREATER_THAN_1.getMessage());
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Distance distance1 = (Distance) o;
+        return distance == distance1.distance;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(distance);
     }
 }

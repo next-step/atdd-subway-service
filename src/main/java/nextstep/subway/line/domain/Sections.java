@@ -37,7 +37,10 @@ public class Sections {
     }
 
     public void add(Section section) {
-        adjustSections(section);
+        if (!this.isEmpty() && !this.isEndOfStation(section)){
+            adjustSections(section);
+        }
+
         this.sections.add(section);
     }
 
@@ -80,6 +83,10 @@ public class Sections {
 
         upLineSection.ifPresent(this::remove);
         downLineSection.ifPresent(this::remove);
+    }
+
+    public Optional<Section> findSectionById(Long sectionId) {
+        return StreamUtils.filterAndFindFirst(this.sections, section -> section.getId().equals(sectionId));
     }
 
     private void addMiddleSection(Section upLineSection, Section downLineSection) {
@@ -137,8 +144,18 @@ public class Sections {
             .orElseThrow(() -> new IllegalStateException(NOT_EXIST_FIRST_SECTION.getMessage()));
     }
 
+    private Section findLastSection() {
+        List<Station> upStations = findUpStations();
+        return StreamUtils.filterAndFindFirst(sections, section -> !upStations.contains(section.getDownStation()))
+            .orElseThrow(() -> new IllegalStateException(NOT_EXIST_FIRST_SECTION.getMessage()));
+    }
+
     private List<Station> findDownStations() {
         return StreamUtils.mapToList(this.sections, Section::getDownStation);
+    }
+
+    private List<Station> findUpStations() {
+        return StreamUtils.mapToList(this.sections, Section::getUpStation);
     }
 
     private void adjustSections(Section section) {
@@ -160,6 +177,14 @@ public class Sections {
         }
     }
 
+    private boolean isEndOfStation(Section section) {
+        Section firstSection = this.findFirstSection();
+        Section lastSection = this.findLastSection();
+
+        return firstSection.isEqualsUpStation(section.getDownStation())
+            || lastSection.isEqualsDownStation(section.getUpStation());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -176,5 +201,4 @@ public class Sections {
     public int hashCode() {
         return Objects.hash(sections);
     }
-
 }
