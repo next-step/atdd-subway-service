@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -69,13 +70,71 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Section section) {
-        this.sections.add(section);
+        List<Station> stations = this.getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it.equals(section.getUpStation()));
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
+            stations.stream().noneMatch(it -> it == section.getDownStation())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (stations.isEmpty()) {
+            this.sections.add(section);
+            section.registerLine(this);
+            return;
+        }
+
+        if (isUpStationExisted) {
+            this.getSections().stream()
+                .filter(it -> it.getUpStation().equals(section.getUpStation()))
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+
+            this.sections.add(section);
+            section.registerLine(this);
+        } else if (isDownStationExisted) {
+            this.getSections().stream()
+                .filter(it -> it.getDownStation().equals(section.getDownStation()))
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+
+            this.sections.add(section);
+            section.registerLine(this);
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    public void removeSection(Station station) {
+        if (this.getSections().size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = this.getSections().stream()
+            .filter(it -> it.getUpStation().equals(station))
+            .findFirst();
+        Optional<Section> downLineStation = this.getSections().stream()
+            .filter(it -> it.getDownStation().equals(station))
+            .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistanceValue() + downLineStation.get().getDistanceValue();
+
+            this.sections.add(Section.of(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> getSections().remove(it));
+        downLineStation.ifPresent(it -> getSections().remove(it));
     }
 
     public List<Station> getStations() {
         return this.sections.getStations();
-    }
-    public LineStation findLineStation() {
-        return LineStation.from(this.sections.getStations());
     }
 }

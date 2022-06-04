@@ -102,7 +102,7 @@ public class Sections {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = StreamUtils.filterAndFindFirst(this.sections, it -> it.getUpStation() == finalDownStation);
+            Optional<Section> nextLineStation = StreamUtils.filterAndFindFirst(this.sections, it -> it.getUpStation().equals(finalDownStation));
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -127,5 +127,4 @@ public class Sections {
     private List<Station> findDownStations() {
         return StreamUtils.mapToList(this.sections, Section::getDownStation);
     }
-
 }
