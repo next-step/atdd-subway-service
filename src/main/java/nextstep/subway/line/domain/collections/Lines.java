@@ -19,14 +19,20 @@ public class Lines {
     }
 
     public PathResponse findShortestPath(Station source, Station target) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap = makeSubwayMap();
+        validateEqualStation(source, target);
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(subwayMap);
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(source, target);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = getShortestPath(source, target);
         List<Station> routes = shortestPath.getVertexList();
         int distance = (int) shortestPath.getWeight();
 
         return PathResponse.of(routes, distance);
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> getShortestPath(Station source, Station target) {
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(makeSubwayMap());
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(source, target);
+        validatePath(shortestPath);
+        return shortestPath;
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> makeSubwayMap() {
@@ -50,6 +56,18 @@ public class Lines {
     private void addVertexByStations(WeightedMultigraph<Station, DefaultWeightedEdge> map, List<Station> stations) {
         for (Station station : stations) {
             map.addVertex(station);
+        }
+    }
+
+    private void validatePath(GraphPath<Station, DefaultWeightedEdge> path) {
+        if (path == null) {
+            throw new IllegalStateException("[ERROR] 최단경로를 찾을 수 없습니다.");
+        }
+    }
+
+    private void validateEqualStation(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("[ERROR] 출발역과 도착역은 동일할 수 없습니다.");
         }
     }
 }
