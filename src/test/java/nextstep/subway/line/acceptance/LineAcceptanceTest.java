@@ -156,7 +156,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> new_지하철_노선_목록_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
-        return 지하철_노선_목록_조회_요청("/new/" + uri);
+        return 지하철_노선_목록_조회_요청(uri + "/new");
     }
 
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String uri) {
