@@ -84,6 +84,10 @@ public class Section {
         this.distance -= section.distance;
     }
 
+    public Integer mergeDistance(Section section) {
+        return distance + section.distance;
+    }
+
     @Override
     public String toString() {
         return "Section{" +
