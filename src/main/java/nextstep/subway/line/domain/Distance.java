@@ -29,10 +29,6 @@ public class Distance {
         return this.distance <= distance.distance;
     }
 
-    public boolean isGreaterThanOrEqualTo(Distance distance) {
-        return this.distance >= distance.distance;
-    }
-
     public void minus(Distance distance) {
         this.distance -= distance.distance;
     }
