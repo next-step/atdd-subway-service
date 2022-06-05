@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.exception.CannotRegisterException;
 import nextstep.subway.exception.ExceptionType;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
@@ -15,11 +16,58 @@ import nextstep.subway.station.domain.Station;
 @Embeddable
 public class Sections {
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST,
+        CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> items = new ArrayList<>();
 
     public void add(Section section) {
+        if (items.isEmpty()) {
+            this.items.add(section);
+            return;
+        }
+
+        List<Station> stations = getOrderedStations();
+        boolean isUpStationExisted = isContainsStation(section.getUpStation(), stations);
+        boolean isDownStationExisted = isContainsStation(section.getDownStation(), stations);
+        validateSection(isUpStationExisted, isDownStationExisted);
+
+        if (isUpStationExisted) {
+            relocateSectionsByUpStation(section);
+        }
+
+        if (isDownStationExisted) {
+            relocateSectionsByDownStation(section);
+        }
+
         this.items.add(section);
+    }
+
+    private boolean isContainsStation(Station station, List<Station> stations) {
+        return stations.contains(station);
+    }
+
+    private void validateSection(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new CannotRegisterException(ExceptionType.IS_EXIST_BOTH_STATIONS);
+        }
+
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new CannotRegisterException(ExceptionType.CAN_NOT_REGISTER_SECTION);
+        }
+    }
+
+    private void relocateSectionsByUpStation(Section section) {
+        items.stream()
+            .filter(it -> it.isEqualsUpStation(section.getUpStation()))
+            .findFirst()
+            .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+    }
+
+    private void relocateSectionsByDownStation(Section section) {
+        items.stream()
+            .filter(it -> it.isEqualsDownStation(section.getDownStation()))
+            .findFirst()
+            .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
     }
 
     public List<Section> getItems() {
@@ -37,14 +85,18 @@ public class Sections {
         stations.add(section.getUpStation());
         stations.add(section.getDownStation());
 
+        findNextSections(stations, section);
+        return stations;
+    }
+
+    private void findNextSections(List<Station> stations, Section section) {
         Optional<Section> optionalNextSection = findNextSection(section);
+
         while (optionalNextSection.isPresent()) {
             Section nextSection = optionalNextSection.get();
             stations.add(nextSection.getDownStation());
             optionalNextSection = findNextSection(nextSection);
         }
-
-        return stations;
     }
 
     private Optional<Section> findNextSection(Section section) {

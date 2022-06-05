@@ -8,6 +8,7 @@ import java.util.List;
 
 @Entity
 public class Line extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,6 +36,11 @@ public class Line extends BaseEntity {
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+    }
+
+    public void registerSection(Station upStation, Station downStation, int distance) {
+        Section section = new Section(this, upStation, downStation, distance);
+        this.sections.add(section);
     }
 
     public Long getId() {
