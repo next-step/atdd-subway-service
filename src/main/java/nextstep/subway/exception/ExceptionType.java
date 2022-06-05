@@ -9,7 +9,7 @@ public enum ExceptionType {
     IS_EMPTY_LINE_COLOR("지하철 노선 색상이 없습니다."),
     IS_EMPTY_LINE_DISTANCE("노선사이의 거리가 없습니다."),
     IS_ADD_BETWEEN_STATION("역 사이에만 노선을 추가 할 수 있습니다."),
-    INVALID_LINE_ID("잘못된 노선 ID 입니다."),
+    NOT_FOUND_LINE("노선을 찾을 수 없습니다."),
     INVALID_STATION_ID("잘못된 지하철역 ID 입니다."),
     NOT_FOUND_LINE_STATION("해당 노선의 역을 찾을 수 없습니다."),
     CAN_NOT_DELETE_LINE_STATION("해당 노선의 지하철역을 삭제할 수 없습니다.");
