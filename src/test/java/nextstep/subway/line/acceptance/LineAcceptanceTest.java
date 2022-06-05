@@ -90,11 +90,23 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_응답됨(response, createResponse);
     }
 
+    @DisplayName("지하철 노선을 조회한다.")
+    @Test
+    void newGetLine() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철_노선_등록되어_있음(lineRequest1);
+
+        // when
+        ExtractableResponse<Response> response = new_지하철_노선_목록_조회_요청(createResponse);
+
+        // then
+        지하철_노선_응답됨(response, createResponse);
+    }
+
     @DisplayName("지하철 노선을 수정한다.")
     @Test
     void updateLine() {
         // given
-        String name = "신분당선";
         ExtractableResponse<Response> createResponse = 지하철_노선_등록되어_있음(lineRequest1);
 
         // when
@@ -139,6 +151,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         String uri = response.header("Location");
 
         return 지하철_노선_목록_조회_요청(uri);
+    }
+
+    public static ExtractableResponse<Response> new_지하철_노선_목록_조회_요청(ExtractableResponse<Response> response) {
+        String uri = response.header("Location");
+
+        return 지하철_노선_목록_조회_요청("/new/" + uri);
     }
 
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String uri) {

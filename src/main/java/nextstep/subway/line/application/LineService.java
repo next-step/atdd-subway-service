@@ -57,6 +57,14 @@ public class LineService {
         return LineResponse.of(persistLine, stations);
     }
 
+    public LineResponse newFindLineResponseById(Long id) {
+        Line persistLine = findLineById(id);
+        List<StationResponse> stations = getStations(persistLine).stream()
+            .map(it -> StationResponse.of(it))
+            .collect(Collectors.toList());
+        return LineResponse.of(persistLine, stations);
+    }
+
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
