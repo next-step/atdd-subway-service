@@ -57,6 +57,11 @@ public class LineService {
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    public void newUpdateLine(Long id, LineRequest lineUpdateRequest) {
+        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    }
+
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }

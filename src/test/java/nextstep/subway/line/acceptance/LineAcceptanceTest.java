@@ -103,6 +103,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_수정됨(response);
     }
 
+    @DisplayName("지하철 노선을 수정한다.")
+    @Test
+    void newUpdateLine() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철_노선_등록되어_있음(lineRequest1);
+
+        // when
+        ExtractableResponse<Response> response = new_지하철_노선_수정_요청(createResponse, lineRequest2);
+
+        // then
+        지하철_노선_수정됨(response);
+    }
+
     @DisplayName("지하철 노선을 제거한다.")
     @Test
     void deleteLine() {
@@ -168,6 +181,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .when().put(uri)
                 .then().log().all()
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> new_지하철_노선_수정_요청(ExtractableResponse<Response> response, LineRequest params) {
+        String uri = response.header("Location");
+
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().put(uri + "/new")
+            .then().log().all()
+            .extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(ExtractableResponse<Response> response) {
