@@ -5,10 +5,9 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Embeddable
 public class Sections {
@@ -21,6 +20,7 @@ public class Sections {
 
     public void add(Section section) {
         if (!sections.isEmpty()) {
+            addValidate(section);
             updateSection(section);
         }
         sections.add(section);
@@ -50,6 +50,10 @@ public class Sections {
         return stations;
     }
 
+    public int getTotalDistance() {
+        return sections.stream().mapToInt(section -> section.getDistance()).sum();
+    }
+
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
@@ -64,18 +68,6 @@ public class Sections {
         }
 
         return downStation;
-    }
-
-    private void updateSection(Section newSection) {
-        sections.stream()
-                .filter(section -> section.getUpStation().equals(newSection.getUpStation()))
-                .findFirst()
-                .ifPresent(section -> section.updateUpStation(newSection));
-
-        sections.stream()
-                .filter(it -> it.getDownStation().equals(newSection.getDownStation()))
-                .findFirst()
-                .ifPresent(section -> section.updateDownStation(newSection));
     }
 
     public void remove(Line line, Station station) {
@@ -99,11 +91,30 @@ public class Sections {
 
         upLineStation.ifPresent(it -> sections.remove(it));
         downLineStation.ifPresent(it -> sections.remove(it));
-
     }
 
-    public int getTotalDistance() {
-        return sections.stream().mapToInt(section -> section.getDistance()).sum();
+    private void addValidate(Section section) {
+        Set<Station> stations = sections.stream()
+                .flatMap(o -> Stream.of(o.getUpStation(), o.getDownStation()))
+                .collect(Collectors.toSet());
+        if (stations.contains(section.getUpStation()) && stations.contains(section.getDownStation())) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+        if (!stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void updateSection(Section newSection) {
+        sections.stream()
+                .filter(section -> section.getUpStation().equals(newSection.getUpStation()))
+                .findFirst()
+                .ifPresent(section -> section.updateUpStation(newSection));
+
+        sections.stream()
+                .filter(it -> it.getDownStation().equals(newSection.getDownStation()))
+                .findFirst()
+                .ifPresent(section -> section.updateDownStation(newSection));
     }
 }
 
