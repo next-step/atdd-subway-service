@@ -5,10 +5,9 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Embeddable
 public class Sections {
@@ -21,8 +20,7 @@ public class Sections {
 
     public void add(Section section) {
         if (!sections.isEmpty()) {
-//            addValidate(section);
-//            updateSection(section);
+            updateSection(section);
         }
         sections.add(section);
     }
@@ -66,4 +64,22 @@ public class Sections {
 
         return downStation;
     }
+
+    private void updateSection(Section newSection) {
+        sections.stream()
+                .filter(section -> section.getUpStation().equals(newSection.getUpStation()))
+                .findFirst()
+                .ifPresent(section -> section.updateUpStation(newSection));
+
+        sections.stream()
+                .filter(it -> it.getDownStation().equals(newSection.getDownStation()))
+                .findFirst()
+                .ifPresent(section -> section.updateDownStation(newSection));
+    }
+
+    public int getTotalDistance() {
+        return sections.stream().mapToInt(section -> section.getDistance()).sum();
+    }
 }
+
+
