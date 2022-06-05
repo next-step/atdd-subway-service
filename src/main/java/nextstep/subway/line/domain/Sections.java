@@ -26,6 +26,10 @@ public class Sections {
         sections.add(section);
     }
 
+    public int getTotalDistance() {
+        return sections.stream().mapToInt(section -> section.getDistance()).sum();
+    }
+
     public List<Station> getStations() {
         if (sections.isEmpty()) {
             return Arrays.asList();
@@ -50,29 +54,9 @@ public class Sections {
         return stations;
     }
 
-    public int getTotalDistance() {
-        return sections.stream().mapToInt(section -> section.getDistance()).sum();
-    }
-
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
-    }
-
     public void remove(Line line, Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new RuntimeException("구간을 삭제 할수 없습니다.");
         }
 
         Optional<Section> upLineStation = sections.stream()
@@ -91,6 +75,22 @@ public class Sections {
 
         upLineStation.ifPresent(it -> sections.remove(it));
         downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private Station findUpStation() {
+        Station downStation = sections.get(0).getUpStation();
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = sections.stream()
+                    .filter(it -> it.getDownStation() == finalDownStation)
+                    .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getUpStation();
+        }
+
+        return downStation;
     }
 
     private void addValidate(Section section) {
