@@ -77,6 +77,21 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
     }
 
+    @DisplayName("지하철 노선 목록을 조회한다.")
+    @Test
+    void newGetLines() {
+        // given
+        ExtractableResponse<Response> createResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
+        ExtractableResponse<Response> createResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
+
+        // when
+        ExtractableResponse<Response> response = new_지하철_노선_목록_조회_요청();
+
+        // then
+        지하철_노선_목록_응답됨(response);
+        지하철_노선_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
+    }
+
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     void getLine() {
@@ -133,6 +148,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
         return 지하철_노선_목록_조회_요청("/lines");
+    }
+
+    public static ExtractableResponse<Response> new_지하철_노선_목록_조회_요청() {
+        return 지하철_노선_목록_조회_요청("/lines/new");
     }
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(ExtractableResponse<Response> response) {
