@@ -49,16 +49,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성됨(response);
     }
 
-    @DisplayName("지하철 노선을 생성한다.")
-    @Test
-    void newCreateLine() {
-        // when
-        ExtractableResponse<Response> response = new_지하철_노선_생성_요청(lineRequest1);
-
-        // then
-        지하철_노선_생성됨(response);
-    }
-
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
     void createLineWithDuplicateName() {
@@ -139,16 +129,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .when().post("/lines")
                 .then().log().all().
                         extract();
-    }
-
-    public static ExtractableResponse<Response> new_지하철_노선_생성_요청(LineRequest params) {
-        return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(params)
-            .when().post("/lines/new")
-            .then().log().all().
-            extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
