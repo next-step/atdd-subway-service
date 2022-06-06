@@ -14,7 +14,7 @@ public class StationResponse {
         this.createdAt = createdAt;
     }
 
-    public static StationResponse of(Station station) {
+    public static StationResponse from(Station station) {
         return new StationResponse(station.getId(), station.getName(), station.getCreatedDate());
     }
 
