@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("단위 테스트")
-public class UnitTest {
+class UnitTest {
     @Test
     void update() {
         // given

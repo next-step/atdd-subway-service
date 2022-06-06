@@ -17,7 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 @DisplayName("단위 테스트 - SpringExtension을 활용한 가짜 협력 객체 사용")
 @ExtendWith(org.springframework.test.context.junit.jupiter.SpringExtension.class)
-public class SpringExtensionTest {
+class SpringExtensionTest {
     @MockBean
     private LineRepository lineRepository;
     @MockBean
