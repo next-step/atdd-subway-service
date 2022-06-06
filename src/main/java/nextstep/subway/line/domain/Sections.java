@@ -22,40 +22,32 @@ public class Sections {
     public void add(Section section) {
         requireNonNull(section, "section");
         List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+        if (!stations.isEmpty()) {
+            boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
+            boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
 
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            if (isUpStationExisted && isDownStationExisted) {
+                throw new RuntimeException("이미 등록된 구간 입니다.");
+            }
+
+            if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
+                    stations.stream().noneMatch(it -> it == section.getDownStation())) {
+                throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            }
+            if (isUpStationExisted) {
+                sections.stream()
+                        .filter(it -> it.matchesUpStation(section.getUpStation()))
+                        .findFirst()
+                        .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+            }
+            if (isDownStationExisted) {
+                sections.stream()
+                        .filter(it -> it.matchesDownStation(section.getDownStation()))
+                        .findFirst()
+                        .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+            }
         }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
-                stations.stream().noneMatch(it -> it == section.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
-            sections.add(section);
-            return;
-        }
-
-        if (isUpStationExisted) {
-            sections.stream()
-                    .filter(it -> it.matchesUpStation(section.getUpStation()))
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
-            sections.add(section);
-        } else if (isDownStationExisted) {
-            sections.stream()
-                    .filter(it -> it.matchesDownStation(section.getDownStation()))
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-
-            sections.add(section);
-        } else {
-            throw new RuntimeException();
-        }
+        sections.add(section);
     }
 
     public List<Section> get() {
