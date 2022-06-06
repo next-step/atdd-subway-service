@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
     public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
@@ -74,47 +74,6 @@ public class LineService {
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
-        Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
-        List<Station> stations = getStations(line);
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-            return;
-        }
-
-        if (isUpStationExisted) {
-            line.getSections().stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
-
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-        } else if (isDownStationExisted) {
-            line.getSections().stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
-
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-        } else {
-            throw new RuntimeException();
-        }
-    }
-
-    public void newAddLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
