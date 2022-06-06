@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("단위 테스트 - SpringExtension을 활용한 가짜 협력 객체 사용")
 @ExtendWith(org.springframework.test.context.junit.jupiter.SpringExtension.class)
-public class SpringExtensionTest {
+class SpringExtensionTest {
 
     Line 지하철노선 = new Line("노선","파란색");
 

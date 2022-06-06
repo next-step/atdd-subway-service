@@ -17,7 +17,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @DisplayName("단위 테스트 - mockito를 활용한 가짜 협력 객체 사용")
-public class MockitoTest {
+class MockitoTest {
 
     Line 지하철노선 = new Line("노선","파란색");
 

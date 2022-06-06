@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
-public class LineTest {
+class LineTest {
 
     Line 이호선;
     Station 강변역 = new Station("강변역");
@@ -21,7 +21,6 @@ public class LineTest {
     @Test
     void 노선에_속한_지하철역을_조회한다(){
         List<Station> stationList = 이호선.getStations();
-        assertThat(stationList).hasSize(2);
-        assertThat(stationList).containsExactly(강변역,당산역);
+        assertThat(stationList).hasSize(2).containsExactly(강변역,당산역);
     }
 }
