@@ -114,6 +114,42 @@ public class LineService {
         }
     }
 
+    public void newAddLineStation(Long lineId, SectionRequest request) {
+        Line line = findLineById(lineId);
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
+        List<Station> stations = getStations(line);
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (stations.isEmpty()) {
+            line.addSection(new Section(line, upStation, downStation, request.getDistance()));
+            return;
+        }
+
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException();
+        }
+
+        if (isUpStationExisted) {
+            line.updateSectionOfUpStation(upStation, downStation, request.getDistance());
+            line.addSection(new Section(line, upStation, downStation, request.getDistance()));
+        }
+
+        if (isDownStationExisted) {
+            line.updateSectionOfDownStation(upStation, downStation, request.getDistance());
+            line.addSection(new Section(line, upStation, downStation, request.getDistance()));
+        }
+    }
+
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);

@@ -38,6 +38,24 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
+    public void addSection(Section section) {
+        sections.add(section);
+    }
+
+    public void updateSectionOfUpStation(Station upStation, Station downStation, int distance) {
+        this.sections.stream()
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
+    }
+
+    public void updateSectionOfDownStation(Station upStation, Station downStation, int distance) {
+        this.sections.stream()
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
+    }
+
     public Long getId() {
         return id;
     }
