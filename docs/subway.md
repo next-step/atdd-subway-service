@@ -23,6 +23,8 @@
  
 
 ### 인수테스트 통합
-  - [ ] LineSectionAcceptanceTest 리팩토링
+  - [X] LineSectionAcceptanceTest 통합
+    - [X] 성공 시나리오 통합
+    - [X] 실패 시나리오 통합
 
 ---
