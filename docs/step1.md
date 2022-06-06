@@ -45,9 +45,9 @@ Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
 ## 리팩토링 목록
 ### 인수 테스트
 - [ ] LineAcceptanceTest
-  - [ ] Assured method 분리
+  - [x] Assured method 분리
 - [ ] LineSectionAcceptanceTest
-  - [ ] Assured method 분리
+  - [x] Assured method 분리
 
 ### 도메인
 - [ ] 원시값 포장
