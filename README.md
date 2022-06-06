@@ -60,3 +60,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - 1단계 (인수 테스트 기반 리팩터링)
   - LineService의 비즈니스 로직을 도메인으로 옮기기
   - 인수 테스트 통합
+
+- 2단계 (경로 조회 기능)
+  - 최단 경로 조회 인수 테스트 만들기
+  - 최단 경로 조회 기능 구현하기
