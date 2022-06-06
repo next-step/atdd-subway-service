@@ -12,7 +12,9 @@ public enum ExceptionType {
     NOT_FOUND_LINE("노선을 찾을 수 없습니다."),
     INVALID_STATION_ID("잘못된 지하철역 ID 입니다."),
     NOT_FOUND_LINE_STATION("해당 노선의 역을 찾을 수 없습니다."),
-    CAN_NOT_DELETE_LINE_STATION("해당 노선의 지하철역을 삭제할 수 없습니다.");
+    CAN_NOT_DELETE_LINE_STATION("해당 노선의 지하철역을 삭제할 수 없습니다."),
+    IS_NOT_NULL_LINE_NAME("노선의 이름은 필수값입니다."),
+    IS_NOT_NULL_LINE_COLOR("노선의 색상은 필수값입니다.");
 
     private final String message;
 
