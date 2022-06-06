@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import java.util.Optional;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
@@ -58,11 +59,17 @@ public class Line extends BaseEntity {
 
     }
 
+    public Sections getSections() {
+        return sections;
+    }
+
     public void addSection(Section section) {
         sections.addSection(section);
     }
 
-    public Sections getSections() {
-        return sections;
+
+
+    public void deleteStation(Station station) {
+        sections.deleteStation(this,station);
     }
 }
