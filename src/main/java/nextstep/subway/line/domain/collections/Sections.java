@@ -11,6 +11,8 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.exception.SectionCreateException;
 import nextstep.subway.line.exception.SectionRemoveException;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 @Embeddable
 public class Sections {
@@ -110,7 +112,7 @@ public class Sections {
     }
 
     private boolean isStationExisted(Station station, List<Station> stations) {
-        return stations.stream().anyMatch(stationn -> stationn.equals(station));
+        return stations.contains(station);
     }
 
     public void removeSection(Line line, Station station) {
@@ -171,4 +173,15 @@ public class Sections {
         }
     }
 
+    public void addVertexByStations(WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap) {
+        for (Station station : getStations()){
+            subwayMap.addVertex(station);
+        }
+    }
+
+    public void addEdgeBySections(WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap) {
+        for (Section section : sections){
+            subwayMap.setEdgeWeight(subwayMap.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+        }
+    }
 }
