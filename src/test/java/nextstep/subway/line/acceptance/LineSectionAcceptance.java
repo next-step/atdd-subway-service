@@ -55,6 +55,14 @@ public class LineSectionAcceptance {
             .extract();
     }
 
+    public static ExtractableResponse<Response> new_지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
+        return RestAssured
+            .given().log().all()
+            .when().delete("/lines/{lineId}/sections/new?stationId={stationId}", line.getId(), station.getId())
+            .then().log().all()
+            .extract();
+    }
+
     public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
