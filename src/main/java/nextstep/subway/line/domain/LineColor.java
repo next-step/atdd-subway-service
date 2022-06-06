@@ -24,6 +24,10 @@ public class LineColor {
         return new LineColor(color);
     }
 
+    public String getValue() {
+        return this.color;
+    }
+
     private static void validateLineColor(String color) {
         if (StringUtils.isEmpty(color)) {
             throw new IllegalArgumentException(CANNOT_EMPTY_LINE_COLOR.getMessage());

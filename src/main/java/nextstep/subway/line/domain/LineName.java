@@ -23,6 +23,10 @@ public class LineName {
         validateLineName(name);
         return new LineName(name);
     }
+    
+    public String getValue() {
+        return this.name;
+    }
 
     private static void validateLineName(String name) {
         if (StringUtils.isEmpty(name)) {

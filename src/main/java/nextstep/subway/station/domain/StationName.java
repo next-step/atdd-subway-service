@@ -28,6 +28,10 @@ public class StationName {
         return this.name;
     }
 
+    public String getValue() {
+        return this.name;
+    }
+
     private static void validateStateName(String name) {
         if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException(INVALID_EMPTY_OR_NULL_STATION_NAME);
