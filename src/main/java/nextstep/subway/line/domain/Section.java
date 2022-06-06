@@ -24,7 +24,13 @@ public class Section {
 
     private int distance;
 
-    public Section() {
+    protected Section() {
+    }
+
+    public Section(Station upStation, Station downStation, int distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
@@ -34,12 +40,20 @@ public class Section {
         this.distance = distance;
     }
 
+    public static Section of(Station upStation, Station downStation, Integer distance) {
+        return new Section(upStation, downStation, distance);
+    }
+
     public Long getId() {
         return id;
     }
 
     public Line getLine() {
         return line;
+    }
+
+    public void setLine(Line line) {
+        this.line = line;
     }
 
     public Station getUpStation() {
@@ -54,19 +68,30 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public void updateUpStation(Section section) {
+        if (this.distance <= section.distance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.upStation = station;
-        this.distance -= newDistance;
+        this.upStation = section.getDownStation();
+        this.distance -= section.distance;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public void updateDownStation(Section section) {
+        if (this.distance <= section.distance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+        this.downStation = section.getUpStation();
+        this.distance -= section.distance;
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "id=" + id +
+                ", line=" + line +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
     }
 }
