@@ -39,6 +39,10 @@ public class LineService {
         return LineResponse.of(persistLine, stations);
     }
 
+    public LineResponse newSaveLine(LineRequest lineRequest) {
+        return null;
+    }
+
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -179,4 +183,6 @@ public class LineService {
 
         return downStation;
     }
+
+
 }
