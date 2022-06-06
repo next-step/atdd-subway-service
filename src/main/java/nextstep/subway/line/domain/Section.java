@@ -51,10 +51,6 @@ public class Section {
         return downStation;
     }
 
-    public int getDistanceValue() {
-        return distance.getValue();
-    }
-
     public Distance getDistance() {
         return distance;
     }
