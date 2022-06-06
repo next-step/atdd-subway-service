@@ -28,6 +28,10 @@ public class Station extends BaseEntity {
         return name;
     }
 
+    public boolean match(Station station) {
+        return this.equals(station);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
