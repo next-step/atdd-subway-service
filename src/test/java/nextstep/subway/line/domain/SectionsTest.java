@@ -39,6 +39,4 @@ class SectionsTest {
                 () -> assertThat(stations.get(stations.size() - 1)).isEqualTo(downStation)
         );
     }
-
-
 }

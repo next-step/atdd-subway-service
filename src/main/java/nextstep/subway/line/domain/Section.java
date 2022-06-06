@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Section {
@@ -25,6 +26,12 @@ public class Section {
     private int distance;
 
     public Section() {
+    }
+
+    public Section(Station upStation, Station downStation, int distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
@@ -54,6 +61,13 @@ public class Section {
         return distance;
     }
 
+    public void addLine(Line line) {
+        if (Objects.nonNull(this.line)) {
+            return;
+        }
+        this.line = line;
+    }
+
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
@@ -68,5 +82,13 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public boolean isSameDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
+
+    public boolean isSameUpStation(Station station) {
+        return this.upStation.equals(station);
     }
 }
