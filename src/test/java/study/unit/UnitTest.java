@@ -19,13 +19,15 @@ public class UnitTest {
                 .build();
         Station downStation = Station.builder("광교역")
                 .build();
-        Line line = new Line("신분당선", "RED", upStation, downStation, Distance.valueOf(10));
-        Line newLine = new Line(newName, "GREEN");
+        Line line = Line.builder("신분당선", "RED", upStation, downStation, Distance.valueOf(10))
+                .build();
+        Line newLine = Line.builder(newName, "GREEN", upStation, downStation, Distance.valueOf(10))
+                .build();
 
         // when
         line.update(newLine);
 
         // then
-        assertThat(line.getName()).isEqualTo(newName);
+        assertThat(line.name()).isEqualTo(newName);
     }
 }
