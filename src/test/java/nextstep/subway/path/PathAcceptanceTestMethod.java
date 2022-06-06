@@ -7,7 +7,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.StreamUtils;
@@ -23,7 +22,7 @@ public class PathAcceptanceTestMethod extends AcceptanceTest {
 
     public static void 지하철_최단경로_조회됨(ExtractableResponse<Response> response,
                                     List<StationResponse> expectedStations,
-                                    Distance distance) {
+                                    int distance) {
 
         PathResponse pathResponse = response.as(PathResponse.class);
         List<Long> actualStationIds = StreamUtils.mapToList(pathResponse.getStations(),
@@ -33,7 +32,7 @@ public class PathAcceptanceTestMethod extends AcceptanceTest {
 
         assertAll(
                 () -> assertThat(actualStationIds).containsExactlyElementsOf(expectedStationIds),
-                () -> assertThat(Distance.from(pathResponse.getDistance())).isEqualTo(distance)
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(distance)
         );
     }
 

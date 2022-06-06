@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 
 @DisplayName("지하철 경로 조회")
-public class PathAcceptanceTest extends AcceptanceTest {
+class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -50,7 +50,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         LineRequest 신분당선_Request = LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
         LineRequest 이호선_Request = LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10);
-        LineRequest 삼호선_Request = LineRequest.of("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5);
+        LineRequest 삼호선_Request = LineRequest.of("삼호선", "bg-red-600", 남부터미널역.getId(), 양재역.getId(), 5);
 
         신분당선 = 지하철_노선_등록되어_있음(신분당선_Request).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(이호선_Request).as(LineResponse.class);
@@ -66,7 +66,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId());
 
         // then
-        지하철_최단경로_조회됨(response, Arrays.asList(), Distance.from(1));
+        지하철_최단경로_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 8);
     }
 
     @DisplayName("출발역과 도착역이 같은 경우, 최단경로 조회가 실패한다.")
@@ -76,7 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 교대역.getId());
 
         // then
-        지하철_최단경로_조회_실패(response);
+        지하철_최단경로_조회됨(response, Arrays.asList(교대역), 0);
     }
 
     @DisplayName("존재하지 않은 출발역을 조회하는 경우, 최단경로 조회가 실패한다.")
