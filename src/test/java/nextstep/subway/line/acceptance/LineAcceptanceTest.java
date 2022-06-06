@@ -126,7 +126,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/lines/new")
+                .when().post("/lines")
                 .then().log().all().
                 extract();
     }
