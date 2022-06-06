@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.exception.CannotDeleteException;
 import nextstep.subway.exception.CannotRegisterException;
 import nextstep.subway.exception.ExceptionType;
 import nextstep.subway.exception.NotFoundException;
@@ -128,5 +129,52 @@ public class Sections {
     private boolean isNoneMatchedDownStation(List<Section> sections, Station upStation) {
         return sections.stream()
             .noneMatch(section -> section.isEqualsDownStation(upStation));
+    }
+
+    public void removeStation(Station station) {
+        validateRemovable();
+
+        Optional<Section> upLineStation = upStationConnectedSection(station);
+        Optional<Section> downLineStation = downStationConnectedSection(station);
+
+        sectionRelocate(upLineStation, downLineStation);
+        upLineStation.ifPresent(it -> items.remove(it));
+        downLineStation.ifPresent(it -> items.remove(it));
+    }
+
+    private Optional<Section> upStationConnectedSection(Station station) {
+        return items.stream()
+            .filter(it -> it.isEqualsUpStation(station))
+            .findFirst();
+    }
+
+    private Optional<Section> downStationConnectedSection(Station station) {
+        return items.stream()
+            .filter(it -> it.isEqualsDownStation(station))
+            .findFirst();
+    }
+
+    private void sectionRelocate(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        validateExistsStation(upLineStation, downLineStation);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            Line line = downLineStation.get().getLine();
+            items.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+    }
+
+    private void validateRemovable() {
+        if (items.size() <= 1) {
+            throw new CannotDeleteException(ExceptionType.CAN_NOT_DELETE_LINE_STATION);
+        }
+    }
+
+    private void validateExistsStation(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        if (!upLineStation.isPresent() && !downLineStation.isPresent()) {
+            throw new CannotDeleteException(ExceptionType.NOT_FOUND_LINE_STATION);
+        }
     }
 }
