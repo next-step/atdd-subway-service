@@ -18,8 +18,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private final List<Section> sections = new ArrayList<>();
+    @Embedded
+    private final Sections sections = new Sections();
 
     protected Line() {
     }
@@ -101,7 +101,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> sections() {
+    public Sections sections() {
         return sections;
     }
 }

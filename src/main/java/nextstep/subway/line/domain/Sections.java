@@ -21,9 +21,17 @@ public class Sections {
         return new Sections(sections);
     }
 
+    public void add(Section section) {
+        sections.add(section);
+    }
+
     public Distance distance() {
         return Distance.valueOf(sections.stream()
                 .mapToInt(section -> section.distance().distance())
                 .reduce(0, Integer::sum));
+    }
+
+    public List<Section> sections() {
+        return sections;
     }
 }
