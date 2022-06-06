@@ -33,6 +33,15 @@ public class Distance {
         return distance <= MIN;
     }
 
+    public void minus(Distance distance) {
+        this.distance = Math.subtractExact(this.distance, distance.distance());
+        validateDistance(this.distance);
+    }
+
+    public void plus(Distance distance) {
+        this.distance = Math.addExact(this.distance, distance.distance());
+    }
+
     public int distance() {
         return distance;
     }
