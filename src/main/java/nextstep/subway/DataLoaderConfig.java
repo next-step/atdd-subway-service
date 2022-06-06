@@ -33,9 +33,12 @@ public class DataLoaderConfig implements CommandLineRunner {
         Station 남부터미널역 = Station.builder("남부터미널역")
                 .build();
 
-        Line 신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, Distance.valueOf(10));
-        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, Distance.valueOf(10));
-        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 양재역, Distance.valueOf(10));
+        Line 신분당선 = Line.builder("신분당선", "red lighten-1", 강남역, 양재역, Distance.valueOf(10))
+                .build();
+        Line 이호선 = Line.builder("2호선", "green lighten-1", 교대역, 강남역, Distance.valueOf(10))
+                .build();
+        Line 삼호선 = Line.builder("3호선", "orange darken-1", 교대역, 양재역, Distance.valueOf(10))
+                .build();
 
         lineRepository.saveAll(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
