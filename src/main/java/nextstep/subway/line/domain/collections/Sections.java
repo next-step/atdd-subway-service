@@ -173,10 +173,6 @@ public class Sections {
         }
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public void addVertexByStations(WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap) {
         for (Station station : getStations()){
             subwayMap.addVertex(station);
