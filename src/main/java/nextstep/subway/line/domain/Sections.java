@@ -23,31 +23,54 @@ public class Sections {
         requireNonNull(section, "section");
         List<Station> stations = getStations();
         if (!stations.isEmpty()) {
-            boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
-            boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
-
-            if (isUpStationExisted && isDownStationExisted) {
-                throw new RuntimeException("이미 등록된 구간 입니다.");
-            }
-
-            if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
-                    stations.stream().noneMatch(it -> it == section.getDownStation())) {
-                throw new RuntimeException("등록할 수 없는 구간 입니다.");
-            }
-            if (isUpStationExisted) {
-                sections.stream()
-                        .filter(it -> it.matchesUpStation(section.getUpStation()))
-                        .findFirst()
-                        .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-            }
-            if (isDownStationExisted) {
-                sections.stream()
-                        .filter(it -> it.matchesDownStation(section.getDownStation()))
-                        .findFirst()
-                        .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-            }
+            relocate(section, stations);
         }
         sections.add(section);
+    }
+
+    private void relocate(Section section, List<Station> stations) {
+        boolean isUpStationExisted = stations.stream().anyMatch(section::matchesUpStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(section::matchesDownStation);
+        validateExists(isUpStationExisted, isDownStationExisted);
+        validateNoneMatch(section, stations);
+        if (isUpStationExisted) {
+            relocateForUpStation(section);
+        }
+        if (isDownStationExisted) {
+            relocateForDownStation(section);
+        }
+    }
+
+    private void validateNoneMatch(Section section, List<Station> stations) {
+        if (noneMatch(section, stations)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void validateExists(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private boolean noneMatch(Section section, List<Station> stations) {
+        return !stations.isEmpty() &&
+                stations.stream().noneMatch(section::matchesUpStation) &&
+                stations.stream().noneMatch(section::matchesDownStation);
+    }
+
+    private void relocateForDownStation(Section section) {
+        sections.stream()
+                .filter(it -> it.matchesDownStation(section.getDownStation()))
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+    }
+
+    private void relocateForUpStation(Section section) {
+        sections.stream()
+                .filter(it -> it.matchesUpStation(section.getUpStation()))
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
     }
 
     public List<Section> get() {
