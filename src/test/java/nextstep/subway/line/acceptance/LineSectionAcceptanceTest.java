@@ -16,7 +16,6 @@ import org.junit.jupiter.api.TestFactory;
 
 import java.util.Arrays;
 
-import static nextstep.subway.line.acceptance.LineSectionAcceptance.new_지하철_노선에_지하철역_제외_요청;
 import static nextstep.subway.line.acceptance.LineSectionAcceptance.지하철_노선에_지하철역_등록_실패됨;
 import static nextstep.subway.line.acceptance.LineSectionAcceptance.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.line.acceptance.LineSectionAcceptance.지하철_노선에_지하철역_등록됨;
@@ -101,19 +100,22 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
-    @Test
-    void removeLineSection1() {
-        // given
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-        지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 2);
-
-        // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
-
-        // then
-        지하철_노선에_지하철역_제외됨(removeResponse);
-        ExtractableResponse<Response> response = LineAcceptance.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 정자역, 광교역));
+    @TestFactory
+    Stream<DynamicTest> removeLineSection1() {
+        return Stream.of(
+            dynamicTest("지하철역 제외를 위해 지하철역들을 등록한다", () -> {
+                지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
+                지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 2);
+            }),
+            dynamicTest("지하쳘역을 해당 노선에서 제외시키면 정상적으로 제외가 된다", () -> {
+                ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+                지하철_노선에_지하철역_제외됨(removeResponse);
+            }),
+            dynamicTest("노선을 조회하면 제외한 지하철역이 제외되어 조회된다", () -> {
+                ExtractableResponse<Response> response = LineAcceptance.지하철_노선_조회_요청(신분당선);
+                지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 정자역, 광교역));
+            })
+        );
     }
 
     @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
@@ -121,32 +123,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     void removeLineSection2() {
         // when
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
-
-        // then
-        지하철_노선에_지하철역_제외_실패됨(removeResponse);
-    }
-
-    @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
-    @Test
-    void newRemoveLineSection1() {
-        // given
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-        지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 2);
-
-        // when
-        ExtractableResponse<Response> removeResponse = new_지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
-
-        // then
-        지하철_노선에_지하철역_제외됨(removeResponse);
-        ExtractableResponse<Response> response = LineAcceptance.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 정자역, 광교역));
-    }
-
-    @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
-    @Test
-    void newRemoveLineSection2() {
-        // when
-        ExtractableResponse<Response> removeResponse = new_지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
 
         // then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
