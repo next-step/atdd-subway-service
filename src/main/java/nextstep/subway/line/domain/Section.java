@@ -1,7 +1,5 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.exception.BadRequestException;
-import nextstep.subway.exception.ExceptionType;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -24,7 +22,8 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
@@ -33,7 +32,7 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     public Long getId() {
@@ -52,24 +51,22 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public int getDistanceValue() {
+        return distance.getValue();
+    }
+
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new BadRequestException(ExceptionType.IS_NOT_OVER_ORIGIN_DISTANCE);
-        }
+    public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance.minus(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new BadRequestException(ExceptionType.IS_NOT_OVER_ORIGIN_DISTANCE);
-        }
+    public void updateDownStation(Station station, Distance newDistance) {
         this.downStation = station;
-        this.distance -= newDistance;
+        this.distance.minus(newDistance);
     }
 
     public boolean isEqualsUpStation(Station station) {

@@ -62,7 +62,7 @@ class SectionTest {
         Station 신도림역 = new Station("신도림");
 
         // when
-        section.updateUpStation(신도림역, 5);
+        section.updateUpStation(신도림역, new Distance(5));
 
         // then
         assertAll(
@@ -84,7 +84,7 @@ class SectionTest {
         Station 신도림역 = new Station("신도림");
 
         // when
-        section.updateDownStation(신도림역, 5);
+        section.updateDownStation(신도림역, new Distance(5));
 
         // then
         assertAll(

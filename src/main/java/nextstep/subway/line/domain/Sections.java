@@ -158,11 +158,12 @@ public class Sections {
         validateExistsStation(upLineStation, downLineStation);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            Section initUpLineStation = upLineStation.get();
+            Section initDownLineStation = downLineStation.get();
+
+            Distance newDistance =  initUpLineStation.getDistance().plus(initDownLineStation.getDistance());
             Line line = downLineStation.get().getLine();
-            items.add(new Section(line, newUpStation, newDownStation, newDistance));
+            items.add(new Section(line, initUpLineStation.getUpStation(), initDownLineStation.getDownStation(), newDistance.getValue()));
         }
     }
 
