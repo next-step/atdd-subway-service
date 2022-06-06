@@ -163,7 +163,7 @@ public class Sections {
 
             Distance newDistance =  initUpLineStation.getDistance().plus(initDownLineStation.getDistance());
             Line line = downLineStation.get().getLine();
-            items.add(new Section(line, initUpLineStation.getUpStation(), initDownLineStation.getDownStation(), newDistance.getValue()));
+            items.add(new Section(line, initDownLineStation.getUpStation(), initUpLineStation.getDownStation(), newDistance.getValue()));
         }
     }
 
