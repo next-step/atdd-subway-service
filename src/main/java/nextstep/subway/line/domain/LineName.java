@@ -10,7 +10,7 @@ import nextstep.subway.utils.StringUtils;
 @Embeddable
 public class LineName {
 
-    @Column(unique = true)
+    @Column(name = "name", unique = true)
     private String name;
 
     protected LineName() {}

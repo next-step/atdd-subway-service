@@ -3,11 +3,13 @@ package nextstep.subway.line.domain;
 import static nextstep.subway.line.enums.LineExceptionType.DISTANCE_IS_MUST_BE_GREATER_THAN_1;
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class Distance {
 
+    @Column(name = "distance")
     private int distance;
 
     protected Distance() {}
