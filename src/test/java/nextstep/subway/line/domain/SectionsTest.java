@@ -79,7 +79,7 @@ class SectionsTest {
         // then
         assertAll(
             () -> assertThat(result).containsExactly(대림역, 신도림역, 신대방역),
-            () -> assertThat(구간.getDistance()).isEqualTo(5),
+            () -> assertThat(구간.getDistance()).isEqualTo(new Distance(5)),
             () -> assertThat(구간.getUpStation()).isEqualTo(new_구간.getDownStation())
         );
     }
@@ -133,7 +133,7 @@ class SectionsTest {
         // then
         assertAll(
             () -> assertThat(sections.getItems()).hasSize(1),
-            () -> assertThat(구간_2.getDistance()).isEqualTo(5),
+            () -> assertThat(구간_2.getDistance()).isEqualTo(new Distance(5)),
             () -> assertThat(구간_2.getUpStation()).isEqualTo(신도림역),
             () -> assertThat(구간_2.getDownStation()).isEqualTo(대림역)
         );
@@ -153,7 +153,7 @@ class SectionsTest {
         Section section = sections.getItems().get(0);
         assertAll(
             () -> assertThat(sections.getItems()).hasSize(1),
-            () -> assertThat(section.getDistance()).isEqualTo(15),
+            () -> assertThat(section.getDistance()).isEqualTo(new Distance(15)),
             () -> assertThat(section.getUpStation()).isEqualTo(신도림역),
             () -> assertThat(section.getDownStation()).isEqualTo(신대방역)
         );

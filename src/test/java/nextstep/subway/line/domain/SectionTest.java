@@ -68,7 +68,7 @@ class SectionTest {
         assertAll(
             () -> assertThat(section.getUpStation()).isEqualTo(신도림역),
             () -> assertThat(section.getDownStation()).isEqualTo(대림역),
-            () -> assertThat(section.getDistance()).isEqualTo(5)
+            () -> assertThat(section.getDistance()).isEqualTo(new Distance(5))
         );
     }
 
@@ -90,7 +90,7 @@ class SectionTest {
         assertAll(
             () -> assertThat(section.getUpStation()).isEqualTo(문래역),
             () -> assertThat(section.getDownStation()).isEqualTo(신도림역),
-            () -> assertThat(section.getDistance()).isEqualTo(5)
+            () -> assertThat(section.getDistance()).isEqualTo(new Distance(5))
         );
     }
 }
