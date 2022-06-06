@@ -54,4 +54,18 @@ class SectionsTest {
             sections.add(section)
         ).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void 기존_구간과_겹치는_역이_하나도_없으면_등록할_수_없다() {
+        // given
+        Station upStation = new Station("미금역");
+        Station downStation = new Station("동천역");
+
+        Section section = new Section(upStation, downStation, 10);
+
+        // when & then
+        assertThatThrownBy(() ->
+                sections.add(section)
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
 }
