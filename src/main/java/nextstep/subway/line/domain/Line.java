@@ -17,21 +17,24 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private final List<Section> sections = new ArrayList<>();
+    @Embedded
+    private final Sections sections;
 
     public Line() {
+        this.sections = new Sections();
     }
 
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+        this.sections = new Sections();
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        this.sections = new Sections();
+        this.sections.addSection(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
@@ -40,41 +43,31 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Section section) {
-        sections.add(section);
+        sections.addSection(section);
     }
 
     public void removeSection(Section section) {
-        sections.remove(section);
+        sections.removeSection(section);
     }
 
     public void updateSectionOfUpStation(Station upStation, Station downStation, int distance) {
-        this.sections.stream()
-                .filter(it -> it.getUpStation() == upStation)
-                .findFirst()
-                .ifPresent(it -> it.updateUpStation(downStation, distance));
+        sections.updateSectionOfUpStation(upStation, downStation, distance);
     }
 
     public void updateSectionOfDownStation(Station upStation, Station downStation, int distance) {
-        this.sections.stream()
-                .filter(it -> it.getDownStation() == downStation)
-                .findFirst()
-                .ifPresent(it -> it.updateDownStation(upStation, distance));
+        sections.updateSectionOfDownStation(upStation, downStation, distance);
     }
 
     public int sectionsSize() {
-        return sections.size();
+        return sections.sectionsSize();
     }
 
     public Optional<Section> findSectionByUpStation(Station station) {
-        return sections.stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
+        return sections.findSectionByUpStation(station);
     }
 
     public Optional<Section> findSectionByDownStation(Station station) {
-        return sections.stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+        return sections.findSectionByDownStation(station);
     }
 
     public void reRegisterSection(Section upSection, Section downSection) {
@@ -96,7 +89,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
+    public Sections getSections() {
         return sections;
     }
 }

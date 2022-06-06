@@ -131,9 +131,7 @@ public class LineService {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = line.getSections().stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = line.getSections().findSectionByUpStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -145,12 +143,10 @@ public class LineService {
     }
 
     private Station findUpStation(Line line) {
-        Station downStation = line.getSections().get(0).getUpStation();
+        Station downStation = line.getSections().getSections().get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = line.getSections().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = line.getSections().findSectionByDownStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
