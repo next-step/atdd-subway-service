@@ -82,6 +82,10 @@ public class Line extends BaseEntity {
         return this.sections.getStations();
     }
 
+    public Sections getSections() {
+        return this.sections;
+    }
+
     private void validateDoesntExistSection(Section section) {
         if (this.sections.isEmpty()) {
             return;
