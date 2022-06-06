@@ -11,6 +11,7 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.StreamUtils;
+import org.springframework.http.HttpStatus;
 
 public class PathAcceptanceTestMethod extends AcceptanceTest {
 
@@ -34,5 +35,9 @@ public class PathAcceptanceTestMethod extends AcceptanceTest {
                 () -> assertThat(actualStationIds).containsExactlyElementsOf(expectedStationIds),
                 () -> assertThat(Distance.from(pathResponse.getDistance())).isEqualTo(distance)
         );
+    }
+
+    public static void 지하철_최단경로_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

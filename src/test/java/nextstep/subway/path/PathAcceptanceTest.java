@@ -2,6 +2,7 @@ package nextstep.subway.path;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTestMethod.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestMethod.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.path.PathAcceptanceTestMethod.지하철_최단경로_조회_실패;
 import static nextstep.subway.path.PathAcceptanceTestMethod.지하철_최단경로_조회_요청;
 import static nextstep.subway.path.PathAcceptanceTestMethod.지하철_최단경로_조회됨;
 import static nextstep.subway.station.StationAcceptanceTest.*;
@@ -66,5 +67,41 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_최단경로_조회됨(response, Arrays.asList(), Distance.from(1));
+    }
+
+    @DisplayName("출발역과 도착역이 같은 경우, 최단경로 조회가 실패한다.")
+    @Test
+    void exceptionFindShortPath01() {
+        // when
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 교대역.getId());
+
+        // then
+        지하철_최단경로_조회_실패(response);
+    }
+
+    @DisplayName("존재하지 않은 출발역을 조회하는 경우, 최단경로 조회가 실패한다.")
+    @Test
+    void exceptionFindShortPath02() {
+        // given
+        StationResponse 수서역 = 지하철역_등록되어_있음("수서역").as(StationResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(수서역.getId(), 교대역.getId());
+
+        // then
+        지하철_최단경로_조회_실패(response);
+    }
+
+    @DisplayName("존재하지 않은 도착역을 조회하는 경우, 최단경로 조회가 실패한다.")
+    @Test
+    void exceptionFindShortPath03() {
+        // given
+        StationResponse 수서역 = 지하철역_등록되어_있음("수서역").as(StationResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 수서역.getId());
+
+        // then
+        지하철_최단경로_조회_실패(response);
     }
 }
