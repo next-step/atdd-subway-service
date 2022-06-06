@@ -55,7 +55,7 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
+    void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
             throw new CannotAddSectionException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
@@ -63,7 +63,7 @@ public class Section {
         this.distance -= newDistance;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
+    void updateDownStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
             throw new CannotAddSectionException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }

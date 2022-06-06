@@ -120,7 +120,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(sectionRequest)
-                .when().post("/lines/{lineId}/sections/new", line.getId())
+                .when().post("/lines/{lineId}/sections", line.getId())
                 .then().log().all()
                 .extract();
     }
