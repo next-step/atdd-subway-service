@@ -43,7 +43,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = 새로운_지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
 
         // then
         지하철_노선_생성됨(response);
@@ -56,7 +56,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_등록되어_있음(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 새로운_지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -118,10 +118,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
-        return 새로운_지하철_노선_생성_요청(params);
+        return 지하철_노선_생성_요청(params);
     }
 
-    public static ExtractableResponse<Response> 새로운_지하철_노선_생성_요청(LineRequest params) {
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

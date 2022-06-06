@@ -46,7 +46,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSection() {
         // when
-        새로운_지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
 
         // then
         ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
@@ -58,8 +58,8 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSection2() {
         // when
-        새로운_지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-        새로운_지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 강남역, 5);
+        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
+        지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 강남역, 5);
 
         // then
         ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
@@ -71,7 +71,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSectionWithSameStation() {
         // when
-        ExtractableResponse<Response> response = 새로운_지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 광교역, 3);
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 광교역, 3);
 
         // then
         지하철_노선에_지하철역_등록_실패됨(response);
@@ -81,7 +81,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSectionWithNoStation() {
         // when
-        ExtractableResponse<Response> response = 새로운_지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 양재역, 3);
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 양재역, 3);
 
         // then
         지하철_노선에_지하철역_등록_실패됨(response);
@@ -91,11 +91,11 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void removeLineSection1() {
         // given
-        새로운_지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-        새로운_지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 2);
+        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
+        지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 2);
 
         // when
-        ExtractableResponse<Response> removeResponse = 새로운_지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
 
         // then
         지하철_노선에_지하철역_제외됨(removeResponse);
@@ -107,13 +107,13 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void removeLineSection2() {
         // when
-        ExtractableResponse<Response> removeResponse = 새로운_지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
 
         // then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
-    public static ExtractableResponse<Response> 새로운_지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
         return RestAssured
@@ -146,7 +146,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }
 
-    public static ExtractableResponse<Response> 새로운_지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
         return RestAssured
                 .given().log().all()
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
