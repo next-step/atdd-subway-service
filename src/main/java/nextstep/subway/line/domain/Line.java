@@ -6,6 +6,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -17,7 +18,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    private final List<Section> sections = new ArrayList<>();
 
     public Line() {
     }
@@ -42,6 +43,10 @@ public class Line extends BaseEntity {
         sections.add(section);
     }
 
+    public void removeSection(Section section) {
+        sections.remove(section);
+    }
+
     public void updateSectionOfUpStation(Station upStation, Station downStation, int distance) {
         this.sections.stream()
                 .filter(it -> it.getUpStation() == upStation)
@@ -54,6 +59,29 @@ public class Line extends BaseEntity {
                 .filter(it -> it.getDownStation() == downStation)
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
+    }
+
+    public int sectionsSize() {
+        return sections.size();
+    }
+
+    public Optional<Section> findSectionByUpStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+    }
+
+    public Optional<Section> findSectionByDownStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+    }
+
+    public void reRegisterSection(Section upSection, Section downSection) {
+        Station reUpStation = downSection.getUpStation();
+        Station reDownStation = upSection.getDownStation();
+        int reDistance = upSection.getDistance() + downSection.getDistance();
+        addSection(new Section(this, reUpStation, reDownStation, reDistance));
     }
 
     public Long getId() {

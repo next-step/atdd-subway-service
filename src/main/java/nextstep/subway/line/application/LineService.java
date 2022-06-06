@@ -125,6 +125,25 @@ public class LineService {
         downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
 
+    public void newRemoveLineStation(Long lineId, Long stationId) {
+        Line line = findLineById(lineId);
+        Station station = stationService.findStationById(stationId);
+
+        if (line.sectionsSize() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upSection = line.findSectionByUpStation(station);
+        Optional<Section> downSection = line.findSectionByDownStation(station);
+
+        if (upSection.isPresent() && downSection.isPresent()) {
+            line.reRegisterSection(upSection.get(), downSection.get());
+        }
+
+        upSection.ifPresent(line::removeSection);
+        downSection.ifPresent(line::removeSection);
+    }
+
 
     public List<Station> getStations(Line line) {
         if (line.getSections().isEmpty()) {
