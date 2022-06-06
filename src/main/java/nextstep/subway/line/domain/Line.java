@@ -42,10 +42,6 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
-    public void addSection(Section section) {
-        sections.addSection(section);
-    }
-
     public void removeSection(Section section) {
         sections.removeSection(section);
     }
@@ -62,19 +58,65 @@ public class Line extends BaseEntity {
         return sections.sectionsSize();
     }
 
-    public Optional<Section> findSectionByUpStation(Station station) {
-        return sections.findSectionByUpStation(station);
+    public List<Station> findStations() {
+        return sections.findStations();
     }
 
-    public Optional<Section> findSectionByDownStation(Station station) {
-        return sections.findSectionByDownStation(station);
+    public void addSection(Station upStation, Station downStation, int distance) {
+        List<Station> stations = sections.findStations();
+
+        if (stations.isEmpty()) {
+            sections.addSection(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+
+        validateStations(isUpStationExisted, isDownStationExisted);
+
+        if (isUpStationExisted) {
+            updateSectionOfUpStation(upStation, downStation, distance);
+            sections.addSection(new Section(this, upStation, downStation, distance));
+        }
+
+        if (isDownStationExisted) {
+            updateSectionOfDownStation(upStation, downStation, distance);
+            sections.addSection(new Section(this, upStation, downStation, distance));
+        }
     }
 
-    public void reRegisterSection(Section upSection, Section downSection) {
+    private void validateStations(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    public void removeSectionByStation(Station station) {
+        if (sectionsSize() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upSection = sections.findSectionByUpStation(station);
+        Optional<Section> downSection = sections.findSectionByDownStation(station);
+
+        if (upSection.isPresent() && downSection.isPresent()) {
+            reRegisterSection(upSection.get(), downSection.get());
+        }
+
+        upSection.ifPresent(this::removeSection);
+        downSection.ifPresent(this::removeSection);
+    }
+
+    private void reRegisterSection(Section upSection, Section downSection) {
         Station reUpStation = downSection.getUpStation();
         Station reDownStation = upSection.getDownStation();
         int reDistance = upSection.getDistance() + downSection.getDistance();
-        addSection(new Section(this, reUpStation, reDownStation, reDistance));
+        sections.addSection(new Section(this, reUpStation, reDownStation, reDistance));
     }
 
     public Long getId() {
