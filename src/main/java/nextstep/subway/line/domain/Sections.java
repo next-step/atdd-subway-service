@@ -23,18 +23,18 @@ public class Sections {
         sections.remove(section);
     }
 
-    public void updateSectionOfUpStation(Station upStation, Station downStation, int distance) {
+    public void updateUpStationOfSection(Station findStation, Station changeStation, int distance) {
         this.sections.stream()
-                .filter(it -> it.getUpStation() == upStation)
+                .filter(it -> it.getUpStation() == findStation)
                 .findFirst()
-                .ifPresent(it -> it.updateUpStation(downStation, distance));
+                .ifPresent(it -> it.updateUpStation(changeStation, distance));
     }
 
-    public void updateSectionOfDownStation(Station upStation, Station downStation, int distance) {
+    public void updateDownStationOfSection(Station findStation, Station changeStation, int distance) {
         this.sections.stream()
-                .filter(it -> it.getDownStation() == downStation)
+                .filter(it -> it.getDownStation() == changeStation)
                 .findFirst()
-                .ifPresent(it -> it.updateDownStation(upStation, distance));
+                .ifPresent(it -> it.updateDownStation(findStation, distance));
     }
 
     public int sectionsSize() {
@@ -53,12 +53,8 @@ public class Sections {
                 .findFirst();
     }
 
-    public boolean isEmpty() {
-        return sections.isEmpty();
-    }
-
     public List<Station> findStations() {
-        if (isEmpty()) {
+        if (sections.isEmpty()) {
             return Collections.emptyList();
         }
 
