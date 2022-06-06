@@ -23,6 +23,9 @@
  
 
 ### 인수테스트 통합
+  - [X] LineAcceptanceTest 통합
+    - [X] 성공 시나리오 통합
+    - [X] 실패 시나리오 통합
   - [X] LineSectionAcceptanceTest 통합
     - [X] 성공 시나리오 통합
     - [X] 실패 시나리오 통합

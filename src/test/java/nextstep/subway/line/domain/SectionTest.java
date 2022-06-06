@@ -91,6 +91,7 @@ class SectionTest {
             assertThat(stationList).hasSize(2).containsExactly(강변역,신림역);
         }
 
+        @Test
         void 구간삭제실패_구간제거시_노선유지불가(){
             이호선_구간.deleteStation(이호선,강변역);
             assertThatThrownBy(()->이호선_구간.deleteStation(이호선,당산역)).isInstanceOf(CannotDeleteSectionException.class);
