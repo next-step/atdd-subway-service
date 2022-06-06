@@ -2,7 +2,6 @@ package nextstep.subway.line.domain.collections;
 
 import java.util.List;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -40,23 +39,11 @@ public class Lines {
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         for (Line line : lines) {
-            addVertexByStations(subwayMap, line.getStations());
-            addEdgeBySections(subwayMap, line.getSections());
+            line.addVertexByStations(subwayMap);
+            line.addEdgeBySections(subwayMap);
         }
 
         return subwayMap;
-    }
-
-    private void addEdgeBySections(WeightedMultigraph<Station, DefaultWeightedEdge> map, Sections sections) {
-        for (Section section : sections.getSections()) {
-            map.setEdgeWeight(map.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
-        }
-    }
-
-    private void addVertexByStations(WeightedMultigraph<Station, DefaultWeightedEdge> map, List<Station> stations) {
-        for (Station station : stations) {
-            map.addVertex(station);
-        }
     }
 
     private void validatePath(GraphPath<Station, DefaultWeightedEdge> path) {
