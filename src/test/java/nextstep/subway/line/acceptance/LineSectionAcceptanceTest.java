@@ -149,7 +149,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 새로운_지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
         return RestAssured
                 .given().log().all()
-                .when().delete("/lines/{lineId}/sections/new?stationId={stationId}", line.getId(), station.getId())
+                .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
                 .then().log().all()
                 .extract();
     }

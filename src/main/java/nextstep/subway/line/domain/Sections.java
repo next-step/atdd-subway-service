@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.CascadeType;
@@ -18,10 +19,6 @@ public class Sections {
 
     protected Sections() {
 
-    }
-
-    List<Section> getSectionList() {
-        return sectionList;
     }
 
     List<Station> getStations() {

@@ -2,7 +2,6 @@
 ## 1단계
   - 인수테스트 기반 리팩토링
     - LineService 리팩토링
-    - LineSectionAcceptanceTest 리팩토링
   - 인수테스트 통합
     - API를 검증하기 보다는 시나리오, 흐름을 검증하는 테스트로 리팩토링
 
@@ -20,9 +19,10 @@
     - [X] 구간 추가 기능 코드 중복 제거
     - [X] 구간 삭제 기능 리팩토링 준비
     - [X] 구간 삭제 기능 리팩토링 완료
-    - [ ] 구간 삭제 기능 코드 중복 제거
-  - [ ] LineSectionAcceptanceTest 리팩토링
+    - [X] 구간 삭제 기능 코드 중복 제거
+ 
 
 ### 인수테스트 통합
+  - [ ] LineSectionAcceptanceTest 리팩토링
 
 ---
