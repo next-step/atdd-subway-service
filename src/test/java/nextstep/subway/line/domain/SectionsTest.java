@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SectionsTest {
@@ -38,5 +39,19 @@ class SectionsTest {
                 () -> assertThat(stations.get(0)).isEqualTo(upStation),
                 () -> assertThat(stations.get(stations.size() - 1)).isEqualTo(downStation)
         );
+    }
+
+    @Test
+    void 이미_등록된_구간은_등록할_수_없다() {
+        // given
+        Station upStation = new Station("강남역");
+        Station downStation = new Station("판교역");
+
+        Section section = new Section(upStation, downStation, 10);
+
+        // when & then
+        assertThatThrownBy(() ->
+            sections.add(section)
+        ).isInstanceOf(IllegalArgumentException.class);
     }
 }
