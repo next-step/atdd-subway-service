@@ -2,7 +2,6 @@ package nextstep.subway.line.domain.collections;
 
 import java.util.List;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -17,14 +16,9 @@ public class Lines {
         this.lines = lines;
     }
 
-    public PathResponse findShortestPath(Station source, Station target) {
+    public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target) {
         validateEqualStation(source, target);
-
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = getShortestPath(source, target);
-        List<Station> routes = shortestPath.getVertexList();
-        int distance = (int) shortestPath.getWeight();
-
-        return PathResponse.of(routes, distance);
+        return getShortestPath(source, target);
     }
 
     private GraphPath<Station, DefaultWeightedEdge> getShortestPath(Station source, Station target) {

@@ -11,6 +11,8 @@ import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.StationResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,13 +59,13 @@ class LinesTest {
 
         //when
         Lines lines = new Lines(lineRepository.findAll());
-        PathResponse pathResponse = lines.findShortestPath(독산, 신림);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = lines.findShortestPath(독산, 신림);
+        List<Station> routes = shortestPath.getVertexList();
 
         //then
-        List<String> pathStationNames = pathResponse.getStations().stream().map(StationResponse::getName)
-                .collect(Collectors.toList());
+        List<String> pathStationNames = routes.stream().map(Station::getName).collect(Collectors.toList());
         assertThat(pathStationNames).containsExactly("독산","가산디지털단지","남구로","신풍","신림");
-        assertThat(pathResponse.getDistance()).isEqualTo(25);
+        assertThat((int) shortestPath.getWeight()).isEqualTo(25);
     }
 
 
