@@ -3,6 +3,7 @@ package nextstep.subway.line.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.dto.StationsResponse;
 
 public class LineResponse {
     private Long id;

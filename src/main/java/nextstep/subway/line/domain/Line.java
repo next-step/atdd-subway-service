@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import nextstep.subway.BaseEntity;
@@ -8,9 +7,8 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
-import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.dto.StationsResponse;
 
 @Entity
 public class Line extends BaseEntity {
@@ -24,8 +22,8 @@ public class Line extends BaseEntity {
     @Column
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections = new Sections();
 
     protected Line() {
     }
@@ -47,58 +45,23 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-        if (this.getSections().isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findFirstUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findUpSection(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-        return stations;
-    }
-
-    private Station findFirstUpStation() {
-        Station downStation = this.getSections().get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findDownSection(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
+        return this.sections.getStations();
     }
 
     public Optional<Section> findUpSection(Station station) {
-        return this.getSections().stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
+        return this.sections.findUpSection(station);
     }
 
     public Optional<Section> findDownSection(Station station) {
-        return this.getSections().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+        return this.sections.findDownSection(station);
     }
 
-    public LineResponse toLineResponse(List<StationResponse> stations) {
-        return new LineResponse(this.id, this.name, this.color, stations, this.getCreatedDate(), this.getModifiedDate());
+    public LineResponse toLineResponse(StationsResponse stations) {
+        return new LineResponse(this.id, this.name, this.color, stations.getStations(), this.getCreatedDate(), this.getModifiedDate());
     }
 
-    public List<Section> getSections() {
-        return sections;
+    public Sections getSections() {
+        return this.sections;
     }
 
     @Override
