@@ -39,7 +39,7 @@ class SectionsTest {
     @Test
     void getStations() {
         Station newStation = new Station("신규역");
-        sections.addStation(new Section(line, newStation, upStation, 5));
+        sections.add(new Section(line, newStation, upStation, 5));
         assertThat(sections.getStations()).containsExactly(newStation, upStation, downStation);
     }
 
@@ -47,7 +47,7 @@ class SectionsTest {
     @Test
     void addStation() {
         Station newStation = new Station("신규역");
-        sections.addStation(new Section(line, newStation, downStation, 5));
+        sections.add(new Section(line, newStation, downStation, 5));
         assertThat(sections.getStations()).containsExactly(upStation, newStation, downStation);
     }
 
@@ -55,7 +55,7 @@ class SectionsTest {
     @Test
     void removeStation() {
         Station newStation = new Station("신규역");
-        sections.addStation(new Section(line, newStation, upStation, 5));
+        sections.add(new Section(line, newStation, upStation, 5));
         sections.remove(upStation);
         assertThat(sections.getStations()).containsExactly(newStation, downStation);
     }
@@ -65,15 +65,15 @@ class SectionsTest {
     void addStation2() {
         Station newStation1 = new Station("신규역1");
         Station newStation2 = new Station("신규역2");
-        sections.addStation(new Section(line, upStation, newStation1, 2));
-        sections.addStation(new Section(line, newStation2, upStation, 5));
+        sections.add(new Section(line, upStation, newStation1, 2));
+        sections.add(new Section(line, newStation2, upStation, 5));
         assertThat(sections.getStations()).containsExactly(newStation2, upStation, newStation1, downStation);
     }
 
     @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
     @Test
     void addStationWithSameStation() {
-        assertThatThrownBy(() -> sections.addStation(new Section(line, upStation, downStation, 2)))
+        assertThatThrownBy(() -> sections.add(new Section(line, upStation, downStation, 2)))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -82,7 +82,7 @@ class SectionsTest {
     void addStationWithNoStation() {
         Station newStation1 = new Station("신규역1");
         Station newStation2 = new Station("신규역2");
-        assertThatThrownBy(() -> sections.addStation(new Section(line, newStation1, newStation2, 2)))
+        assertThatThrownBy(() -> sections.add(new Section(line, newStation1, newStation2, 2)))
                 .isInstanceOf(RuntimeException.class);
     }
 
