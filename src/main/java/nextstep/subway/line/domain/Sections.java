@@ -41,15 +41,15 @@ public class Sections {
         }
     }
 
-    private void validateNoneMatch(Section section, List<Station> stations) {
-        if (noneMatch(section, stations)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-    }
-
     private void validateExists(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private void validateNoneMatch(Section section, List<Station> stations) {
+        if (noneMatch(section, stations)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
     }
 
