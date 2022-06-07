@@ -119,8 +119,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [X] MemberAcceptanceTest 내 정보 조회 인수테스트에 조회, 수정, 삭제 기능에 대한 인수테스트 작성하기
 
 3. 인증 - 즐겨찾기 기능 완성하기
-  - [ ] 인증을 포함하여 즐겨찾기 인수 테스트 작성하기
-    - [ ] 즐겨찾기 생성
+  - 인증을 포함하여 즐겨찾기 인수 테스트 작성하기
+    - [X] 즐겨찾기 생성
     - [ ] 즐겨찾기 목록 조회
     - [ ] 즐겨찾기 삭제
+  - [ ] 즐겨찾기 도메인 기능 개발 
 

@@ -48,11 +48,23 @@ public class AcceptanceTest {
 
     public static <T> ExtractableResponse<Response> post(String path, T requestBody) {
         return RestAssured.given().log().all()
-            .body(requestBody)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post(path)
-            .then().log().all()
-            .extract();
+                .body(requestBody)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post(path)
+                .then().log().all()
+                .extract();
+    }
+
+    public static <T> ExtractableResponse<Response> postWithAuth(String path,
+                                                                 TokenResponse tokenResponse,
+                                                                 T requestBody) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .body(requestBody)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post(path)
+                .then().log().all()
+                .extract();
     }
 
     public static <T> ExtractableResponse<Response> put(String path, T requestBody) {
