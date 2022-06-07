@@ -27,9 +27,9 @@ public class DijkstraPathFinder implements PathFinder{
     }
 
     @Override
-    public ShortPath findShortPath(Station sourceStation, Station targetStation) {
+    public Path findShortPath(Station sourceStation, Station targetStation) {
         GraphPath<Station, DefaultWeightedEdge> path = this.dijkstraShortestPath.getPath(sourceStation, targetStation);
-        return ShortPath.of(path.getVertexList(), (int) path.getWeight());
+        return Path.of(path.getVertexList(), (int) path.getWeight());
     }
 
     private static WeightedMultigraph<Station, DefaultWeightedEdge> createWeightedMultiGraphByLines(List<Line> lines) {
