@@ -30,10 +30,6 @@ public class Distance {
         this.distance -= other.distance;
     }
 
-    public void plus(Distance other) {
-        this.distance += other.distance;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

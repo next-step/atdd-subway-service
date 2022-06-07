@@ -143,10 +143,7 @@ public class Sections {
     private Section mergeSection(Line line, Section upLineStation, Section downLineStation) {
         Station newUpStation = downLineStation.getUpStation();
         Station newDownStation = upLineStation.getDownStation();
-
-        Distance newDistance = new Distance(0);
-        newDistance.plus(upLineStation.getDistance());
-        newDistance.plus(downLineStation.getDistance());
-        return new Section(line, newUpStation, newDownStation, newDistance);
+        Distance sumDistance = Distance.sum(upLineStation.getDistance(), downLineStation.getDistance());
+        return new Section(line, newUpStation, newDownStation, sumDistance);
     }
 }

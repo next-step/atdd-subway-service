@@ -32,17 +32,6 @@ class DistanceTest {
         .hasMessageContaining("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 
-    @DisplayName("다른 Distance로 더한다.")
-    @Test
-    void successfulPlus() {
-        Distance distance = new Distance(10);
-        Distance other = new Distance(5);
-
-        distance.plus(other);
-
-        assertThat(distance).isEqualTo(new Distance(15));
-    }
-
     @DisplayName("Distance와 다른 Distance를 합친다.")
     @Test
     void sum() {
