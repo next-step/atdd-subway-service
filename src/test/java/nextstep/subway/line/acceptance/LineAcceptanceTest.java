@@ -51,6 +51,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
     }
 
+/**
+ * Feature: 지하철 노선 생성기능
+  *  Background
+      *  Given 강남역, 광교역 정거장 및 두 역을 포함한 신분당선, 구신분당선 노선 생성 request 선언
+  *   when 신분당선 생성 요청을 보내면
+  *   then 정상 생성된다 (201 상태코드와 /lines/{신분당선ID} Location이 Header에 설정된다)
+*/
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
@@ -61,6 +68,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성됨(response);
     }
 
+/**
+ * Feature: 지하철 노선 중복 생성 불가 기
+ *  Background
+     *  Given 강남역, 광교역 정거장 및 두 역을 포함한 신분당선, 구신분당선 노선 생성 request 선언
+ *   given 신분당선 생성 요청
+ *   when 다시 신분당선 생성 요청을 보낼시
+ *   then 생성이 실패한다(400 상태코드가 반환된다)
+ */
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
     void createLineWithDuplicateName() {
@@ -74,6 +89,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성_실패됨(response);
     }
 
+/**
+ * Feature: 지하철 노선 목록 조회 기능
+ *  Background
+    *  Given 강남역, 광교역 정거장 및 두 역을 포함한 신분당선, 구신분당선 노선 생성 request 선언
+ *   given 신분당선, 구신분당선 생성 요청
+ *   when 지하철 노선 목록 조회 요청시
+ *   then 정상적으로 조회가 된다.(상태코드가 200이 반환되고, 각 Line의 정보가 반환된다)
+ */
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
     void getLines() {
@@ -89,6 +112,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
     }
 
+/**
+ * Feature: 지하철 노선 조회 기능
+ *  Background
+    *  Given 강남역, 광교역 정거장 및 두 역을 포함한 신분당선, 구신분당선 노선 생성 request 선언
+ *   given 신분당선 생성 요청
+ *   when 지하철 노선 목록 조회 요청시
+ *   then 정상적으로 조회가 된다.(상태코드가 200이 반환되고, 해당 라인의 정보가 반환된다.)
+ */
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     void getLine() {
@@ -102,6 +133,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_응답됨(response, createResponse);
     }
 
+/**
+ * Feature: 지하철 노선 수정 기능
+ *  Background
+    *  Given 강남역, 광교역 정거장 및 두 역을 포함한 신분당선, 구신분당선 노선 생성 request 선언
+ *   given 신분당선 생성 요청
+ *   when 신분당선을 구신분당선으로 변경시
+ *   then 정상적으로 수정된다. (상태코드가 200이 반환된다)
+ */
     @DisplayName("지하철 노선을 수정한다.")
     @Test
     void updateLine() {
@@ -116,6 +155,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_수정됨(response);
     }
 
+/**
+ * Feature: 지하철 노선 삭제 기능
+ *  Background
+    *  Given 강남역, 광교역 정거장 및 두 역을 포함한 신분당선, 구신분당선 노선 생성 request 선언
+ *   given 신분당선 생성 요청
+ *   when 신분당선 삭제 요청시
+ *   then 정상적으로 삭제가 된다.(상태코드가 204가 반환된다.)
+ */
     @DisplayName("지하철 노선을 제거한다.")
     @Test
     void deleteLine() {
@@ -128,8 +175,4 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // then
         지하철_노선_삭제됨(response);
     }
-
-
-
-
 }
