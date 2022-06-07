@@ -13,10 +13,11 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class AuthAcceptanceTest extends AcceptanceTest {
 
@@ -24,14 +25,10 @@ class AuthAcceptanceTest extends AcceptanceTest {
     private static final String 손성현_PASSWORD = "1111";
     private static final int 손성현_AGE = 35;
 
-    private MemberResponse 손성현;
-
-
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-        손성현 = 회원_생성을_요청(손성현_EMAIL, 손성현_PASSWORD, 손성현_AGE).as(MemberResponse.class);
+        회원_생성을_요청(손성현_EMAIL, 손성현_PASSWORD, 손성현_AGE);
     }
 
     /**
@@ -74,10 +71,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
      * Then. 토큰 인증에 실패한다.
      */
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
-    @Test
-    void myInfoWithWrongBearerAuth() {
+    @ParameterizedTest
+    @ValueSource(strings = {"1", "aa", "bbb", "asdofina", "!@#!@#!@#"})
+    void myInfoWithWrongBearerAuth(String accessToken) {
         // given
-        TokenResponse tokenResponse = new TokenResponse("1");
+        TokenResponse tokenResponse = new TokenResponse(accessToken);
 
         // when
         ExtractableResponse<Response> response = 회원_정보_조회_요청_토큰이용(new MemberRequest(손성현_EMAIL, 손성현_PASSWORD, 손성현_AGE), tokenResponse);
