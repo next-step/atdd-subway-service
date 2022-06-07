@@ -36,6 +36,6 @@
 ## 1단계 
   - [X] LineResponse 정적팩토리메서드 리팩토링
   - [X] Line 생성을 위한 빌더 작성
-  - [ ] Sections 내부 콜렉션 필드명 변경
-  - [ ] Sections.addMergedSection 리팩토링
+  - [X] Sections 내부 콜렉션 필드명 변경
+  - [X] Sections.addMergedSection 리팩토링
   - [ ] Section equals hashcode 재정의 후 객체 비교를 위한 getter 호출 제거
