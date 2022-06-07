@@ -98,4 +98,20 @@ class SectionsTest {
         // then
         assertThat(sections.getElements()).hasSize(3);
     }
+
+    @Test
+    void 하나_남은_구간은_삭제할_수_없다() {
+        // given
+        Sections sections = new Sections();
+
+        Station upStation = new Station("강남역");
+        Station downStation = new Station("판교역");
+
+        sections.add(new Section(upStation, downStation, 10));
+
+        // when & then
+        assertThatThrownBy(() ->
+            sections.remove(new Station("강남역"))
+        ).isInstanceOf(IllegalStateException.class);
+    }
 }
