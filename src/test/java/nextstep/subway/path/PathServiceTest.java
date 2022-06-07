@@ -91,14 +91,11 @@ class PathServiceTest {
             .thenReturn(신대방역);
 
         // when
-        PathResponse pathResponse = pathService.findShortestPath(1L, 3L);
+        PathResponse pathResponse = pathService.findShortestPath(1L, 10L);
 
         // then
-        assertAll(
-            () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
-            () -> assertThat(toNames(pathResponse.getStations())).containsExactly("대림", "구로디지털단지",
-                "신대방")
-        );
+        assertThat(pathResponse.getDistance()).isEqualTo(10);
+        assertThat(toNames(pathResponse.getStations())).containsExactly("대림", "구로디지털단지", "신대방");
     }
 
     @DisplayName("환승역이 있는 경우 최단경로를 조회하면 정상적으로 조회되어야 한다")

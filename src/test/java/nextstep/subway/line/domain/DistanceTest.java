@@ -31,10 +31,10 @@ class DistanceTest {
         Distance newDistance = new Distance(5);
 
         // when
-        distance.plus(newDistance);
+        Distance result = distance.plus(newDistance);
 
         // then
-        assertEquals(distance.getValue(), 10);
+        assertEquals(result.getValue(), 10);
     }
 
     @DisplayName("길이를 차감하면 정상적으로 차감되어야 한다")
