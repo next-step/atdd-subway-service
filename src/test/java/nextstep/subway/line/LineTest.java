@@ -44,4 +44,13 @@ class LineTest {
         line.addStation(newStation, downStation, 5);
         assertThat(line.getStations()).containsExactly(upStation, newStation, downStation);
     }
+
+    @DisplayName("구간을 삭제한다")
+    @Test
+    void removeStation() {
+        Station newStation = new Station("신규역");
+        line.addStation(newStation, upStation, 5);
+        line.removeStation(upStation);
+        assertThat(line.getStations()).containsExactly(newStation, downStation);
+    }
 }
