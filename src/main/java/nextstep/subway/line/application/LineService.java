@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Line.Builder;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
@@ -11,7 +12,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,11 +27,11 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(
-                new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        return LineResponse.of(persistLine);
+        Builder builder = new Builder(request.getName(), request.getColor())
+                .upStation(stationService.findById(request.getUpStationId()))
+                .downStation(stationService.findById(request.getDownStationId()))
+                .distance(request.getDistance());
+        return LineResponse.of(lineRepository.save(builder.build()));
     }
 
     public List<LineResponse> findLines() {

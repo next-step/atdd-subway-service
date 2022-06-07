@@ -7,6 +7,7 @@ import java.util.List;
 import nextstep.subway.line.domain.exception.CannotAddSectionException;
 import nextstep.subway.line.domain.exception.CannotDeleteSectionException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.utils.LineFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ class SectionTest {
     class 구간추가{
         @BeforeEach
         void setUp(){
-            이호선 = new Line("이호선","초록색",강변역,당산역,100);
+            이호선 = LineFactory.create("이호선","초록색",강변역,당산역,100);
             이호선_구간 = 이호선.getSections();
         }
 
@@ -67,7 +68,7 @@ class SectionTest {
     class 구간삭제{
         @BeforeEach
         void setUp(){
-            이호선 = new Line("이호선","초록색",강변역,당산역,100);
+            이호선 = LineFactory.create("이호선","초록색",강변역,당산역,100);
             이호선.addSection(new Section(이호선,강변역,신림역,10));
             이호선_구간 = 이호선.getSections();
         }

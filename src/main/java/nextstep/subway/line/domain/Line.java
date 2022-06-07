@@ -30,7 +30,7 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    private Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
         sections.addFirstSection(new Section(this, upStation, downStation, distance));
@@ -67,5 +67,37 @@ public class Line extends BaseEntity {
 
     public void deleteStation(Station station) {
         sections.deleteStation(this, station);
+    }
+
+    public static class Builder{
+        private String name;
+        private String color;
+        private Station upStation;
+        private Station downStation;
+        private int distance;
+
+        public Builder(String name, String color){
+            this.name = name;
+            this.color = color;
+        }
+
+        public Builder upStation(Station station){
+            this.upStation = station;
+            return this;
+        }
+
+        public Builder downStation(Station station){
+            this.downStation = station;
+            return this;
+        }
+
+        public Builder distance(int distance){
+            this.distance = distance;
+            return this;
+        }
+
+        public Line build(){
+            return new Line(name,color,upStation,downStation,distance);
+        }
     }
 }

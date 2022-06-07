@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.List;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.utils.LineFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,7 @@ class LineTest {
 
     @BeforeEach
     void setUp(){
-        이호선 = new Line("이호선","초록색",강변역,당산역,100);
+        이호선 = LineFactory.create("이호선","초록색",강변역,당산역,100);
     }
 
     @Test
