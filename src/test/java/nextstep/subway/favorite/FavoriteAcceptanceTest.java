@@ -3,6 +3,8 @@ package nextstep.subway.favorite;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.로그인_요청;
 import static nextstep.subway.favorite.FavoriteAcceptanceTestMethod.즐겨찾기_생성_요청;
 import static nextstep.subway.favorite.FavoriteAcceptanceTestMethod.즐겨찾기_생성됨;
+import static nextstep.subway.favorite.FavoriteAcceptanceTestMethod.즐겨찾기_조회_요청;
+import static nextstep.subway.favorite.FavoriteAcceptanceTestMethod.즐겨찾기_조회됨;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestMethod.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestMethod.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.member.MemberAcceptanceTestMethod.회원_등록됨;
@@ -10,6 +12,7 @@ import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록�
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -63,6 +66,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         토큰 = 로그인_요청(TokenRequest.of(EMAIL, PASSWORD)).as(TokenResponse.class);
     }
 
+    /**
+     * Gvien. 즐겨찾기 요청정보 생성
+     * When. 즐겨찾기 생성
+     * Then. 즐겨찾기 생성 완료
+     */
     @DisplayName("즐겨찾기를 생성한다.")
     @Test
     void createFavorite() {
@@ -76,12 +84,23 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(response);
     }
 
+    /**
+     * Gvien. 즐겨찾기 정보 등록
+     * When. 즐겨찾기 조회
+     * Then. 등록된 즐겨찾기 조회 완료
+     */
     @DisplayName("즐겨찾기 목록을 조회한다.")
     @Test
     void showFavorite() {
         // given
+        ExtractableResponse<Response> createResponse1 = 즐겨찾기_생성_요청(토큰, FavoriteRequest.of(교대역.getId(), 양재역.getId()));
+        ExtractableResponse<Response> createResponse2 = 즐겨찾기_생성_요청(토큰, FavoriteRequest.of(교대역.getId(), 남부터미널역.getId()));
+
         // when
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(토큰);
+
         // then
+        즐겨찾기_조회됨(response, Arrays.asList(createResponse1, createResponse2));
     }
 
     @DisplayName("즐겨찾기를 삭제한다.")
