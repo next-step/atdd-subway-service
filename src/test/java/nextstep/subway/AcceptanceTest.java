@@ -57,19 +57,40 @@ public class AcceptanceTest {
 
     public static <T> ExtractableResponse<Response> put(String path, T requestBody) {
         return RestAssured.given().log().all()
-            .body(requestBody)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().put(path)
-            .then().log().all()
-            .extract();
+                .body(requestBody)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put(path)
+                .then().log().all()
+                .extract();
+    }
+
+    public static <T> ExtractableResponse<Response> putWithAuth(String path,
+                                                                TokenResponse tokenResponse,
+                                                                T requestBody) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .body(requestBody)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put(path)
+                .then().log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> delete(String path) {
         return RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().delete(path)
-            .then().log().all()
-            .extract();
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(path)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> deleteWithAuth(String path, TokenResponse tokenResponse) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(path)
+                .then().log().all()
+                .extract();
     }
 
     public static Long parseIdFromLocationHeader(ExtractableResponse<Response> response) {

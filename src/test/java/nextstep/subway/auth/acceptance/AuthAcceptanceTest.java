@@ -5,15 +5,14 @@ import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.로그인
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.로그인_요청;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.토큰_인증_성공;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.토큰_인증_실패;
+import static nextstep.subway.member.MemberAcceptanceTestMethod.로그인한_회원_정보_요청;
 import static nextstep.subway.member.MemberAcceptanceTestMethod.회원_생성을_요청;
-import static nextstep.subway.member.MemberAcceptanceTestMethod.회원_정보_조회_요청_토큰이용;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.member.dto.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -79,7 +78,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = new TokenResponse(accessToken);
 
         // when
-        ExtractableResponse<Response> response = 회원_정보_조회_요청_토큰이용(new MemberRequest(손성현_EMAIL, 손성현_PASSWORD, 손성현_AGE), tokenResponse);
+        ExtractableResponse<Response> response = 로그인한_회원_정보_요청(tokenResponse);
 
         // then
         토큰_인증_실패(response);
@@ -96,7 +95,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = 로그인_요청(TokenRequest.of(손성현_EMAIL, 손성현_PASSWORD)).as(TokenResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 회원_정보_조회_요청_토큰이용(new MemberRequest(손성현_EMAIL, 손성현_PASSWORD, 손성현_AGE), tokenResponse);
+        ExtractableResponse<Response> response = 로그인한_회원_정보_요청(tokenResponse);
 
         // then
         토큰_인증_성공(response);
