@@ -9,7 +9,8 @@ import java.util.*;
 
 @Embeddable
 public class Sections {
-    private final static List<Station> CACHE = new ArrayList<>();
+    private static final int LAST_SECTION = 1;
+    private static final List<Station> CACHE = new ArrayList<>();
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> elements = new ArrayList<>();
@@ -72,21 +73,27 @@ public class Sections {
     }
 
     public void remove(Station station) {
-        if (elements.size() <= 1) {
-            throw new RuntimeException();
-        }
+        validateRemoval();
 
         Optional<Section> upSection = findUpSection(station);
         Optional<Section> downSection = findDownSection(station);
 
         if (upSection.isPresent() && downSection.isPresent()) {
-            Section section = upSection.get();
-            section.reLocateDownStation(downSection.get());
-            elements.add(section);
+            reLocateStation(upSection.get(), downSection.get());
         }
 
         upSection.ifPresent(elements::remove);
         downSection.ifPresent(elements::remove);
+    }
+
+    private void validateRemoval() {
+        if (isOneSectionLeft()) {
+            throw new IllegalStateException("하나 남은 구간은 삭제할 수 없습니다.");
+        }
+    }
+
+    private boolean isOneSectionLeft() {
+        return elements.size() <= LAST_SECTION;
     }
 
     private Optional<Section> findUpSection(Station station) {
@@ -99,5 +106,9 @@ public class Sections {
         return elements.stream()
                 .filter(section -> section.isSameUpStation(station))
                 .findFirst();
+    }
+
+    private void reLocateStation(Section upSection, Section downSection) {
+        upSection.reLocateDownStation(downSection);
     }
 }
