@@ -41,9 +41,14 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<Line> findAll() {
+        return lineRepository.findAll();
+    }
+
     public Line findLineById(Long id) {
         return lineRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_FOUND_LINE));
+            .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_FOUND_LINE.getMessage(id)));
     }
 
     @Transactional(readOnly = true)
@@ -62,13 +67,13 @@ public class LineService {
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Station upStation = stationService.findById(request.getUpStationId());
+        Station downStation = stationService.findById(request.getDownStationId());
         line.registerSection(upStation, downStation, request.getDistance());
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
-        line.removeStation(stationService.findStationById(stationId));
+        line.removeStation(stationService.findById(stationId));
     }
 }

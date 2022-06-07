@@ -35,6 +35,24 @@ public class Section {
         this.distance = new Distance(distance);
     }
 
+    public void updateUpStation(Station station, Distance newDistance) {
+        this.upStation = station;
+        this.distance = distance.minus(newDistance);
+    }
+
+    public void updateDownStation(Station station, Distance newDistance) {
+        this.downStation = station;
+        this.distance = distance.minus(newDistance);
+    }
+
+    public boolean isEqualsUpStation(Station station) {
+        return upStation == station;
+    }
+
+    public boolean isEqualsDownStation(Station station) {
+        return downStation == station;
+    }
+
     public Long getId() {
         return id;
     }
@@ -55,21 +73,7 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, Distance newDistance) {
-        this.upStation = station;
-        this.distance = distance.minus(newDistance);
-    }
-
-    public void updateDownStation(Station station, Distance newDistance) {
-        this.downStation = station;
-        this.distance = distance.minus(newDistance);
-    }
-
-    public boolean isEqualsUpStation(Station station) {
-        return upStation == station;
-    }
-
-    public boolean isEqualsDownStation(Station station) {
-        return downStation == station;
+    public int getDistanceValue() {
+        return distance.getValue();
     }
 }
