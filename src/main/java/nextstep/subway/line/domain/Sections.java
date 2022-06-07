@@ -17,7 +17,14 @@ public class Sections {
     public void add(Section section) {
         validateAddition(section);
 
+        repairSection(section);
         elements.add(section);
+    }
+
+    private void repairSection(Section section) {
+        for (Section element : elements) {
+            element.repair(section);
+        }
     }
 
     private void validateAddition(Section section) {
@@ -26,34 +33,31 @@ public class Sections {
         }
 
         List<Station> stations = getStations();
-        validateDuplicate(stations, section.getUpStation(), section.getDownStation());
-        validateNoneMatch(stations, section.getUpStation(), section.getDownStation());
+        boolean isUpStationExisted = stations.stream().anyMatch(station -> station.match(section.getUpStation()));
+        boolean isDownStationExisted = stations.stream().anyMatch(station -> station.match(section.getDownStation()));
+
+        validateDuplicate(isUpStationExisted, isDownStationExisted);
+        validateNoneMatch(isUpStationExisted, isDownStationExisted);
     }
 
-    private void validateDuplicate(List<Station> stations, Station upStation, Station downStation) {
-        boolean isUpStationExisted = stations.stream().anyMatch(station -> station.match(upStation));
-        boolean isDownStationExisted = stations.stream().anyMatch(station -> station.match(downStation));
-
+    private void validateDuplicate(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
             throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
     }
 
-    private void validateNoneMatch(List<Station> stations, Station upStation, Station downStation) {
-        if (stations.isEmpty()) {
+    private void validateNoneMatch(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (elements.isEmpty()) {
             return;
         }
 
-        boolean isUpStationNotExisted = stations.stream().noneMatch(station -> station.match(upStation));
-        boolean isDownStationNotExisted = stations.stream().noneMatch(station -> station.match(downStation));
-
-        if (isUpStationNotExisted && isDownStationNotExisted) {
+        if (!isUpStationExisted && !isDownStationExisted) {
             throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
     }
 
     public List<Section> getElements() {
-        return Collections.unmodifiableList(elements);
+        return elements;
     }
 
     public List<Station> getStations() {

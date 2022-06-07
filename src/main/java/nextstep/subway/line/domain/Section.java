@@ -91,4 +91,22 @@ public class Section {
     public boolean isSameUpStation(Station station) {
         return this.upStation.equals(station);
     }
+
+    public void repair(Section section) {
+        if (Objects.isNull(section)) {
+            return;
+        }
+        repairStation(section);
+    }
+
+    public void repairStation(Section section) {
+        if (isSameUpStation(section.upStation)) {
+            updateUpStation(section.downStation, section.distance);
+            return;
+        }
+
+        if (isSameDownStation(section.downStation)) {
+            updateDownStation(section.upStation, section.distance);
+        }
+    }
 }
