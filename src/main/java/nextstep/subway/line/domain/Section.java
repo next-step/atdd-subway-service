@@ -41,6 +41,13 @@ public class Section {
         this.distance = distance;
     }
 
+    public static Section merge(Line line, Section sectionWithUpStation, Section sectionWithDownStation) {
+        Station newUpStation = sectionWithDownStation.getUpStation();
+        Station newDownStation = sectionWithUpStation.getDownStation();
+        Distance sumDistance = Distance.sum(sectionWithUpStation.getDistance(), sectionWithDownStation.getDistance());
+        return new Section(line, newUpStation, newDownStation, sumDistance);
+    }
+
     public Long getId() {
         return id;
     }

@@ -28,13 +28,20 @@ public class LineResponse {
     }
 
     private List<StationResponse> toStationReponse(Line line) {
-        return line.getStations().stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
+        return line.getStations()
+                   .stream()
+                   .map(it -> StationResponse.of(it))
+                   .collect(Collectors.toList());
     }
 
     public static LineResponse of(Line line) {
         return new LineResponse(line);
+    }
+
+    public static List<LineResponse> of(List<Line> lines) {
+        return lines.stream()
+                    .map(LineResponse::of)
+                    .collect(Collectors.toList());
     }
 
     public Long getId() {

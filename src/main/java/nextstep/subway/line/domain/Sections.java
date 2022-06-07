@@ -13,6 +13,7 @@ import static java.util.Objects.requireNonNull;
 @Embeddable
 public class Sections {
 
+    public static final int MINIMUM_SIZE = 1;
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -21,7 +22,7 @@ public class Sections {
 
     public void add(Section section) {
         requireNonNull(section, "section");
-        List<Station> stations = getStations();
+        List<Station> stations = getStationInOrder();
         if (!stations.isEmpty()) {
             relocate(section, stations);
         }
@@ -43,13 +44,13 @@ public class Sections {
 
     private void validateExists(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new AlreadyRegisteredSectionException();
         }
     }
 
     private void validateNoneMatch(Section section, List<Station> stations) {
         if (noneMatch(section, stations)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new CannotRegisterSectionException();
         }
     }
 
@@ -82,17 +83,21 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        if (sections.isEmpty()) {
-            return Collections.emptyList();
-        }
         return getStationInOrder();
     }
 
     private List<Station> getStationInOrder() {
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
+        }
         Map<Station, Station> map = sections.stream()
                                             .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
-        List<Station> stations = new ArrayList<>();
         Station station = findUpStation();
+        return getStationInOrder(map, station);
+    }
+
+    private List<Station> getStationInOrder(Map<Station, Station> map, Station station) {
+        List<Station> stations = new ArrayList<>();
         while (map.get(station) != null) {
             stations.add(station);
             station = map.get(station);
@@ -124,25 +129,18 @@ public class Sections {
 
     public void removeStation(Line line, Station station) {
         validateSectionSize();
-        Optional<Section> upLineStation = findOneMatchedUpStation(station);
-        Optional<Section> downLineStation = findOneMatchedDownStation(station);
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            sections.add(mergeSection(line, upLineStation.get(), downLineStation.get()));
+        Optional<Section> sectionWithUpStation = findOneMatchedUpStation(station);
+        Optional<Section> sectionWithDownStation = findOneMatchedDownStation(station);
+        if (sectionWithUpStation.isPresent() && sectionWithDownStation.isPresent()) {
+            sections.add(Section.merge(line, sectionWithUpStation.get(), sectionWithDownStation.get()));
         }
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+        sectionWithUpStation.ifPresent(it -> sections.remove(it));
+        sectionWithDownStation.ifPresent(it -> sections.remove(it));
     }
 
     private void validateSectionSize() {
-        if (sections.size() <= 1) {
-            throw new RuntimeException("더 이상 역을 제거할 수 없습니다.");
+        if (sections.size() <= MINIMUM_SIZE) {
+            throw new InvalidSectionSizeException();
         }
-    }
-
-    private Section mergeSection(Line line, Section upLineStation, Section downLineStation) {
-        Station newUpStation = downLineStation.getUpStation();
-        Station newDownStation = upLineStation.getDownStation();
-        Distance sumDistance = Distance.sum(upLineStation.getDistance(), downLineStation.getDistance());
-        return new Section(line, newUpStation, newDownStation, sumDistance);
     }
 }
