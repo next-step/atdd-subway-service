@@ -10,7 +10,7 @@ import nextstep.subway.utils.StringUtils;
 @Embeddable
 public class LineColor {
 
-    @Column
+    @Column(name = "color")
     private String color;
 
     protected LineColor() {}
@@ -22,6 +22,10 @@ public class LineColor {
     public static LineColor from(String color) {
         validateLineColor(color);
         return new LineColor(color);
+    }
+
+    public String getValue() {
+        return this.color;
     }
 
     private static void validateLineColor(String color) {

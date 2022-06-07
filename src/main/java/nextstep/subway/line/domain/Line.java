@@ -4,6 +4,7 @@ import static nextstep.subway.line.enums.LineExceptionType.ALREADY_ADDED_SECTION
 import static nextstep.subway.line.enums.LineExceptionType.CANNOT_ADDED_SECTION;
 
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -46,10 +47,6 @@ public class Line extends BaseEntity {
         return new Line(name, color, upStation, downStation, distance);
     }
 
-    public static Line createEmpty() {
-        return new Line();
-    }
-
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
@@ -80,6 +77,10 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         return this.sections.getStations();
+    }
+
+    public Sections getSections() {
+        return this.sections;
     }
 
     private void validateDoesntExistSection(Section section) {

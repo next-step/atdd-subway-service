@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class StreamUtils {
 
@@ -13,12 +14,12 @@ public class StreamUtils {
 
     public static <T, R> List<R> mapToList(List<T> collections,  Function<T, R> function) {
         return collections.stream()
-            .map(function)
-            .collect(Collectors.toList());
+                .map(function)
+                .collect(Collectors.toList());
     }
 
     public static <T> Optional<T> filterAndFindFirst(Collection<T> collections,
-        Predicate<T> predicate) {
+                                                     Predicate<T> predicate) {
         return collections.stream().filter(predicate).findFirst();
     }
 }

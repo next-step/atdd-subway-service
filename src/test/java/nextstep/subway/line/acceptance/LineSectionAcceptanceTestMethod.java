@@ -28,6 +28,9 @@ public class LineSectionAcceptanceTestMethod extends AcceptanceTest {
         return delete(String.format(LINE_SECTION_PATH_WITH_LINE_ID_PATH_VALUE_AND_STATION_ID_PARAM_FORMAT, line.getId(), station.getId()));
     }
 
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(Long lineId, SectionRequest sectionRequest) {
+        return post(String.format(LINE_SECTION_PATH_WITH_LINE_ID_PATH_VALUE_FORMAT, lineId), sectionRequest);
+    }
 
     public static void 지하철_노선에_지하철역_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());

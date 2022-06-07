@@ -1,25 +1,22 @@
 package nextstep.subway.line.dto;
 
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineColor;
-import nextstep.subway.line.domain.LineName;
-import nextstep.subway.station.dto.StationResponse;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.station.dto.StationResponse;
 
 public class LineResponse {
     private Long id;
-    private LineName name;
-    private LineColor color;
+    private String name;
+    private String color;
     private List<StationResponse> stations;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
-    public LineResponse() {
+    private LineResponse() {
     }
 
-    public LineResponse(Long id, LineName name, LineColor color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    private LineResponse(Long id, String name, String color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -29,18 +26,18 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line, List<StationResponse> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
+        return new LineResponse(line.getId(), line.getName().getValue(), line.getColor().getValue(), stations, line.getCreatedDate(), line.getModifiedDate());
     }
 
     public Long getId() {
         return id;
     }
 
-    public LineName getName() {
+    public String getName() {
         return name;
     }
 
-    public LineColor getColor() {
+    public String getColor() {
         return color;
     }
 

@@ -10,7 +10,7 @@ public class StationName {
 
     private static final String INVALID_EMPTY_OR_NULL_STATION_NAME = "지하철 역 명이 비어있습니다.";
 
-    @Column(unique = true)
+    @Column(name = "name", unique = true)
     private String name;
 
     protected StationName() {}
@@ -25,6 +25,10 @@ public class StationName {
     }
 
     public String getName() {
+        return this.name;
+    }
+
+    public String getValue() {
         return this.name;
     }
 
