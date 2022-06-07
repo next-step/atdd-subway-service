@@ -31,4 +31,19 @@ class SectionTest {
         // then
         assertThat(section.getDistance()).isEqualTo(7);
     }
+
+    @Test
+    void 삭제된_역을_제외한_두_구간의_역을_합친다() {
+        // given
+        Station upStation = new Station("판교역");
+        Station downStation = new Station("정자역");
+
+        Section downSection = new Section(upStation, downStation, 3);
+
+        // when
+        section.reLocateDownStation(downSection);
+
+        // then
+        assertThat(section.getDistance()).isEqualTo(13);
+    }
 }
