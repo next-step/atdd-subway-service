@@ -85,16 +85,6 @@ public class LineService {
 
         line.addSection(new Section(upStation, downStation, request.getDistance()));
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-            return;
-        }
-
         if (isUpStationExisted) {
             line.getSections().stream()
                     .filter(it -> it.getUpStation() == upStation)
