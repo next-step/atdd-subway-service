@@ -44,7 +44,7 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id).orElseThrow(() -> new NotExistException("해당 노선은 존재하지 않습니다."));
     }
 
 
@@ -56,7 +56,7 @@ public class LineService {
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id)
                 .orElseThrow(() -> new NotExistException("해당 노선은 존재하지 않습니다."));
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(lineUpdateRequest.toLine());
     }
 
     public void deleteLineById(Long id) {
@@ -67,6 +67,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
+
         List<Station> stations = line.getStations();
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
@@ -113,7 +114,7 @@ public class LineService {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            int newDistance = upLineStation.get().getDistance().get() + downLineStation.get().getDistance().get();
             line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 
