@@ -4,6 +4,7 @@ import static nextstep.subway.line.enums.LineExceptionType.ALREADY_ADDED_SECTION
 import static nextstep.subway.line.enums.LineExceptionType.CANNOT_ADDED_SECTION;
 
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -61,6 +62,14 @@ public class Line extends BaseEntity {
 
     public LineName getName() {
         return this.name;
+    }
+
+    public String getNameValue() {
+        return Objects.isNull(this.getName()) ? "" : this.getName().getValue();
+    }
+
+    public String getColorValue() {
+        return Objects.isNull(this.getColor()) ? "" : this.getColor().getValue();
     }
 
     public LineColor getColor() {

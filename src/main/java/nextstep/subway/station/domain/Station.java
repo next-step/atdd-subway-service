@@ -41,6 +41,10 @@ public class Station extends BaseEntity {
         return name;
     }
 
+    public String getNameValue() {
+        return Objects.isNull(this.getName()) ? "" : this.getName().getValue();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
