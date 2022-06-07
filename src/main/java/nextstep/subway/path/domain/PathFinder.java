@@ -1,4 +1,4 @@
-package nextstep.subway.path.finder;
+package nextstep.subway.path.domain;
 
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
