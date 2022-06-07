@@ -10,6 +10,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.DijkstraPathFinder;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.ShortPath;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -56,7 +57,8 @@ class PathFinderTest {
         PathFinder dijkstraPathFinder = DijkstraPathFinder.from(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
         // when
-        PathResponse pathResponse = dijkstraPathFinder.findShortPath(교대역, 양재역);
+        ShortPath shortPath = dijkstraPathFinder.findShortPath(교대역, 양재역);
+        PathResponse pathResponse = shortPath.convertPathResponse();
 
         // then
         List<Station> expectedStations = Lists.newArrayList(교대역, 남부터미널역, 양재역);
@@ -108,7 +110,8 @@ class PathFinderTest {
         PathFinder pathFinder = DijkstraPathFinder.from(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
         // when
-        PathResponse pathResponse = pathFinder.findShortPath(교대역, 교대역);
+        ShortPath shortPath = pathFinder.findShortPath(교대역, 교대역);
+        PathResponse pathResponse = shortPath.convertPathResponse();
 
         // then
         List<StationResponse> expectedStations = Lists.newArrayList(StationResponse.of(교대역));

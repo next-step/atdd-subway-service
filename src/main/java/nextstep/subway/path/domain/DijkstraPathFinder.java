@@ -6,9 +6,7 @@ import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.StreamUtils;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -29,10 +27,9 @@ public class DijkstraPathFinder implements PathFinder{
     }
 
     @Override
-    public PathResponse findShortPath(Station sourceStation, Station targetStation) {
+    public ShortPath findShortPath(Station sourceStation, Station targetStation) {
         GraphPath<Station, DefaultWeightedEdge> path = this.dijkstraShortestPath.getPath(sourceStation, targetStation);
-        List<StationResponse> stationResponses = StreamUtils.mapToList(path.getVertexList(), StationResponse::of);
-        return PathResponse.of(stationResponses, (int) path.getWeight());
+        return ShortPath.of(path.getVertexList(), (int) path.getWeight());
     }
 
     private static WeightedMultigraph<Station, DefaultWeightedEdge> createWeightedMultiGraphByLines(List<Line> lines) {
