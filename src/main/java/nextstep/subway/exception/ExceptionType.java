@@ -1,5 +1,7 @@
 package nextstep.subway.exception;
 
+import java.util.Objects;
+
 public enum ExceptionType {
     IS_NOT_OVER_ORIGIN_DISTANCE("등록할 구간이 기존 구간보다 길거나 같을 수 없습니다."),
     IS_EXIST_BOTH_STATIONS("이미 등록된 구간 입니다."),
@@ -23,6 +25,14 @@ public enum ExceptionType {
     }
 
     public String getMessage() {
+        return message;
+    }
+
+    public String getMessage(Long id) {
+        if (Objects.nonNull(id)) {
+            return message + " [" + id + "]";
+        }
+
         return message;
     }
 }
