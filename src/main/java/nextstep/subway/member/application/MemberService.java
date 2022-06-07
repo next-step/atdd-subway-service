@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class MemberService {
+
+    private static final String NOT_FOUND_MEMBER_BY_ID = "회원 정보를 찾을 수 없습니다. (id=%s)";
+
     private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
@@ -36,5 +39,10 @@ public class MemberService {
     @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format(NOT_FOUND_MEMBER_BY_ID, id)));
     }
 }

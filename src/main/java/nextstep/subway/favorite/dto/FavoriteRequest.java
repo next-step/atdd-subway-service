@@ -1,6 +1,5 @@
 package nextstep.subway.favorite.dto;
 
-import nextstep.subway.favorite.domain.Favorite;
 
 public class FavoriteRequest {
 
@@ -18,7 +17,11 @@ public class FavoriteRequest {
         return new FavoriteRequest(source, target);
     }
 
-    public Favorite toFavorite() {
-        return new Favorite();
+    public Long getSource() {
+        return this.source;
+    }
+
+    public Long getTarget() {
+        return this.target;
     }
 }
