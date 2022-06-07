@@ -23,6 +23,6 @@ public class UnitTest {
         line.update(newLine);
 
         // then
-        assertThat(line.getName()).isEqualTo(newName);
+        assertThat(line).isEqualTo(newLine);
     }
 }
