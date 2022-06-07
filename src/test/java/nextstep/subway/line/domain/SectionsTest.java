@@ -83,4 +83,19 @@ class SectionsTest {
         // then
         assertThat(sections.getElements()).hasSize(3);
     }
+
+    @Test
+    void 기존_구간_사이에_새로운_구간을_등록한다() {
+        // given
+        Station upStation = new Station("강남역");
+        Station downStation = new Station("청계산입구역");
+
+        Section section = new Section(upStation, downStation, 5);
+
+        // when
+        sections.add(section);
+
+        // then
+        assertThat(sections.getElements()).hasSize(3);
+    }
 }
