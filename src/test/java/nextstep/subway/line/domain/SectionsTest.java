@@ -4,11 +4,15 @@ import static nextstep.subway.line.domain.DomainFixtureFactory.createSection;
 import static nextstep.subway.line.domain.DomainFixtureFactory.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.exception.ImpossibleDeleteException;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -125,5 +129,77 @@ class SectionsTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> sections.addSection(newSection))
                 .withMessage("등록할 수 없는 구간 입니다.");
+    }
+
+    @DisplayName("종점(상행)을 제거하면 구간을 제거하고 다음으로 오던 역이 종점이 된다.")
+    @Test
+    void deleteSectionFirst() {
+        Station 양재역 = createStation(1L, "양재역");
+        Station 판교역 = createStation(2L, "판교역");
+        Station 양재시민의숲역 = createStation(3L, "양재시민의숲역");
+        Sections sections = Sections.valueOf(Lists.newArrayList(
+                createSection(Line.createEmpty(), 판교역, 양재시민의숲역,
+                        Distance.valueOf(10))));
+        Section newSection = createSection(Line.createEmpty(), 양재역, 판교역,
+                Distance.valueOf(5));
+        sections.addSection(newSection);
+
+        sections.deleteSection(양재시민의숲역);
+        assertAll(
+                () -> assertThat(sections.orderedStations()).containsExactly(양재역, 판교역),
+                () -> assertThat(sections.distance().distance()).isEqualTo(5)
+        );
+    }
+
+    @DisplayName("중간역을 제거하면 중간역이 제거되고 재배치가 된다.")
+    @Test
+    void deleteSectionInSide() {
+        Station 양재역 = createStation(1L, "양재역");
+        Station 판교역 = createStation(2L, "판교역");
+        Station 양재시민의숲역 = createStation(3L, "양재시민의숲역");
+        Sections sections = Sections.valueOf(Lists.newArrayList(
+                createSection(Line.createEmpty(), 판교역, 양재시민의숲역,
+                        Distance.valueOf(10))));
+        Section newSection = createSection(Line.createEmpty(), 양재역, 판교역,
+                Distance.valueOf(5));
+        sections.addSection(newSection);
+
+        sections.deleteSection(판교역);
+        assertAll(
+                () -> assertThat(sections.orderedStations()).containsExactly(양재역, 양재시민의숲역),
+                () -> assertThat(sections.distance().distance()).isEqualTo(15)
+        );
+    }
+
+    @DisplayName("구간들에 없는 역을 제거하면 구간 제거에 실패한다.")
+    @Test
+    void deleteSectionNotAdded() {
+        Station 양재역 = createStation(1L, "양재역");
+        Station 판교역 = createStation(2L, "판교역");
+        Station 양재시민의숲역 = createStation(3L, "양재시민의숲역");
+        Station 미정역 = createStation(4L, "미정역");
+        Sections sections = Sections.valueOf(Lists.newArrayList(
+                createSection(Line.createEmpty(), 판교역, 양재시민의숲역,
+                        Distance.valueOf(10))));
+        Section newSection = createSection(Line.createEmpty(), 양재역, 판교역,
+                Distance.valueOf(5));
+        sections.addSection(newSection);
+
+        assertThatThrownBy(() -> sections.deleteSection(미정역))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("일치하는 상행역이 없습니다.");
+    }
+
+    @DisplayName("구간이 하나인 구간들에서 마지막 구간을 제거하면 구간 제거에 실패한다.")
+    @Test
+    void deleteSectionLeftAlone() {
+        Station 양재역 = createStation(1L, "양재역");
+        Station 판교역 = createStation(2L, "판교역");
+        Sections sections = Sections.valueOf(Lists.newArrayList(
+                createSection(Line.createEmpty(), 양재역, 판교역,
+                        Distance.valueOf(10))));
+        assertThatThrownBy(() -> sections.deleteSection(판교역))
+                .isInstanceOf(ImpossibleDeleteException.class)
+                .hasMessage("제거 가능한 구간이 없습니다.");
     }
 }

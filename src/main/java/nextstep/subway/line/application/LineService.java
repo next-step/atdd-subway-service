@@ -73,28 +73,8 @@ public class LineService {
     @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
-        Station station = findStationById(stationId);
-        if (line.sections().sections().size() <= 1) {
-            throw new RuntimeException();
-        }
-
-        Optional<Section> upLineStation = line.sections().sections().stream()
-                .filter(it -> it.upStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = line.sections().sections().stream()
-                .filter(it -> it.downStation() == station)
-                .findFirst();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().upStation();
-            Station newDownStation = upLineStation.get().downStation();
-            int newDistance = upLineStation.get().distance().distance() + downLineStation.get().distance().distance();
-            line.sections().add(Section.builder(line, newUpStation, newDownStation, Distance.valueOf(newDistance))
-                    .build());
-        }
-
-        upLineStation.ifPresent(it -> line.sections().sections().remove(it));
-        downLineStation.ifPresent(it -> line.sections().sections().remove(it));
+        line.deleteSection(findStationById(stationId));
+        lineRepository.save(line);
     }
 
     private Line findLineById(Long id) {

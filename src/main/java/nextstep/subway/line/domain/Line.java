@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.Objects;
+import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -31,7 +32,7 @@ public class Line extends BaseEntity {
         this.id = lineBuilder.id;
         this.name = lineBuilder.name;
         this.color = lineBuilder.color;
-        sections.add(Section.builder(this, lineBuilder.upStation, lineBuilder.downStation, lineBuilder.distance)
+        sections.addSection(Section.builder(this, lineBuilder.upStation, lineBuilder.downStation, lineBuilder.distance)
                 .build());
     }
 
@@ -95,6 +96,10 @@ public class Line extends BaseEntity {
 
     public void addSection(Section newSection) {
         sections.addSection(newSection);
+    }
+
+    public void deleteSection(Station station) {
+        sections.deleteSection(station);
     }
 
     public Long id() {
