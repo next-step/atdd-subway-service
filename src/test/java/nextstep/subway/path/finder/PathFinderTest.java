@@ -58,7 +58,7 @@ class PathFinderTest {
 
         // when
         Path path = dijkstraPathFinder.findShortPath(교대역, 양재역);
-        PathResponse pathResponse = path.convertPathResponse();
+        PathResponse pathResponse = PathResponse.from(path);
 
         // then
         List<Station> expectedStations = Lists.newArrayList(교대역, 남부터미널역, 양재역);
@@ -111,7 +111,7 @@ class PathFinderTest {
 
         // when
         Path path = pathFinder.findShortPath(교대역, 교대역);
-        PathResponse pathResponse = path.convertPathResponse();
+        PathResponse pathResponse = PathResponse.from(path);
 
         // then
         List<StationResponse> expectedStations = Lists.newArrayList(StationResponse.of(교대역));

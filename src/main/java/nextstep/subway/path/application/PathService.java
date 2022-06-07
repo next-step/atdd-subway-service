@@ -31,6 +31,6 @@ public class PathService {
 
         PathFinder pathFinder = DijkstraPathFinder.from(lines);
         Path path = pathFinder.findShortPath(source, target);
-        return path.convertPathResponse();
+        return PathResponse.from(path);
     }
 }
