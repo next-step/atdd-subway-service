@@ -123,6 +123,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] 즐겨찾기 생성
       - Mockito를 이용한 Service Layer 테스트코드 작성
     - [X] 즐겨찾기 목록 조회
-    - [ ] 즐겨찾기 삭제
+    - [X] 즐겨찾기 삭제
   - [X] 즐겨찾기 도메인 기능 개발 
 

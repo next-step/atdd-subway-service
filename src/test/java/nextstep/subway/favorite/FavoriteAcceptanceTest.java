@@ -1,6 +1,8 @@
 package nextstep.subway.favorite;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.로그인_요청;
+import static nextstep.subway.favorite.FavoriteAcceptanceTestMethod.즐겨찾기_삭제_요청;
+import static nextstep.subway.favorite.FavoriteAcceptanceTestMethod.즐겨찾기_삭제됨;
 import static nextstep.subway.favorite.FavoriteAcceptanceTestMethod.즐겨찾기_생성_요청;
 import static nextstep.subway.favorite.FavoriteAcceptanceTestMethod.즐겨찾기_생성됨;
 import static nextstep.subway.favorite.FavoriteAcceptanceTestMethod.즐겨찾기_조회_요청;
@@ -103,11 +105,21 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_조회됨(response, Arrays.asList(createResponse1, createResponse2));
     }
 
+    /**
+     * Gvien. 즐겨찾기 정보 등록
+     * When. 즐겨찾기 삭제
+     * Then. 등록한 즐겨찾기 정보가 삭제된다.
+     */
     @DisplayName("즐겨찾기를 삭제한다.")
     @Test
     void removeFavorite() {
         // given
+        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성_요청(토큰, FavoriteRequest.of(교대역.getId(), 양재역.getId()));
+
         // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(토큰, createdResponse);
+
         // then
+        즐겨찾기_삭제됨(response);
     }
 }

@@ -26,6 +26,11 @@ public class FavoriteAcceptanceTestMethod extends AcceptanceTest {
         return getWithAuth(FAVORITE_PATH, tokenResponse);
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse tokenResponse,
+                                                           ExtractableResponse<Response> response) {
+        return deleteWithAuth(AcceptanceTest.parseURIFromLocationHeader(response), tokenResponse);
+    }
+
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -43,5 +48,9 @@ public class FavoriteAcceptanceTestMethod extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(resultFavoriteIds).containsAll(expectedFavoriteIds);
+    }
+
+    public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
