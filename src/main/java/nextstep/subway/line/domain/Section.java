@@ -1,11 +1,18 @@
 package nextstep.subway.line.domain;
 
 import java.util.Objects;
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
 
 @Entity
 public class Section extends BaseEntity {
@@ -82,6 +89,7 @@ public class Section extends BaseEntity {
                 throw new NotFoundException("하행역 정보가 없습니다.");
             }
         }
+
         private void validateDistanceNotNull(Distance distance) {
             if (Objects.isNull(distance)) {
                 throw new NotFoundException("구간 거리 정보가 없습니다.");
@@ -149,7 +157,7 @@ public class Section extends BaseEntity {
 
     private void validateLongerThan(Distance newDistance) {
         if (!isLongerThan(newDistance)) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
     }
 
