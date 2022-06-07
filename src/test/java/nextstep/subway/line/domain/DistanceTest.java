@@ -45,10 +45,10 @@ class DistanceTest {
         Distance newDistance = new Distance(5);
 
         // when
-        distance.minus(newDistance);
+        Distance result = distance.minus(newDistance);
 
         // then
-        assertEquals(distance.getValue(), 5);
+        assertEquals(result.getValue(), 5);
     }
 
     @DisplayName("길이를 차감하는데 차감하려는 수가 기존 길이보다 크거나 같으면 예외가 발생한다")

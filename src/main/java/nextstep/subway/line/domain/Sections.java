@@ -71,7 +71,7 @@ public class Sections {
     }
 
     public List<Section> getItems() {
-        return items;
+        return new ArrayList<>(items);
     }
 
     public List<Station> getOrderedStations() {
