@@ -7,6 +7,7 @@ import static nextstep.subway.line.domain.DomainFixtureFactory.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -113,10 +114,33 @@ class LineServiceTest {
         Station 더새로운지하철역 = createStation(3L, "더새로운지하철역");
         Line 신분당선 = createLine(1L, "신분당선", "bg-red-600", 지하철역, 새로운지하철역, Distance.valueOf(10));
         SectionRequest sectionRequest = createSectionRequest(지하철역.id(), 더새로운지하철역.id(), 5);
+
         when(lineRepository.findById(신분당선.id())).thenReturn(Optional.of(신분당선));
         when(stationService.findById(sectionRequest.getUpStationId())).thenReturn(지하철역);
         when(stationService.findById(sectionRequest.getDownStationId())).thenReturn(더새로운지하철역);
         lineService.addLineStation(신분당선.id(), sectionRequest);
+
         verify(lineRepository).save(신분당선);
+    }
+
+    @DisplayName("노선에서 역(구간) 제거 테스트")
+    @Test
+    void removeLineStation() {
+        Station 지하철역 = createStation(1L, "지하철역");
+        Station 새로운지하철역 = createStation(2L, "새로운지하철역");
+        Station 더새로운지하철역 = createStation(3L, "더새로운지하철역");
+        Line 신분당선 = createLine(1L, "신분당선", "bg-red-600", 지하철역, 새로운지하철역, Distance.valueOf(10));
+        SectionRequest sectionRequest = createSectionRequest(지하철역.id(), 더새로운지하철역.id(), 5);
+
+        when(lineRepository.findById(신분당선.id())).thenReturn(Optional.of(신분당선));
+        when(stationService.findById(sectionRequest.getUpStationId())).thenReturn(지하철역);
+        when(stationService.findById(sectionRequest.getDownStationId())).thenReturn(더새로운지하철역);
+        lineService.addLineStation(신분당선.id(), sectionRequest);
+
+        when(lineRepository.findById(신분당선.id())).thenReturn(Optional.of(신분당선));
+        when(stationService.findById(새로운지하철역.id())).thenReturn(새로운지하철역);
+        lineService.removeLineStation(신분당선.id(), 새로운지하철역.id());
+
+        verify(lineRepository, times(2)).save(신분당선);
     }
 }
