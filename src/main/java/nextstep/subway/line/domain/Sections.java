@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -59,22 +60,26 @@ public class Sections {
                 stations.stream().noneMatch(section::matchesDownStation);
     }
 
-    private void relocateForDownStation(Section section) {
-        sections.stream()
-                .filter(it -> it.matchesDownStation(section.getDownStation()))
-                .findFirst()
-                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+    private void relocateForDownStation(Section other) {
+        findOneMatchedDownStation(other.getDownStation())
+            .ifPresent(it -> it.updateDownStation(other.getUpStation(), other.getDistance()));
     }
 
-    private void relocateForUpStation(Section section) {
-        sections.stream()
-                .filter(it -> it.matchesUpStation(section.getUpStation()))
-                .findFirst()
-                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+    private Optional<Section> findOneMatchedDownStation(Station downStation) {
+        return sections.stream()
+                       .filter(it -> it.matchesDownStation(downStation))
+                       .findFirst();
     }
 
-    public List<Section> get() {
-        return sections;
+    private void relocateForUpStation(Section other) {
+        findOneMatchedUpStation(other.getUpStation())
+            .ifPresent(it -> it.updateUpStation(other.getDownStation(), other.getDistance()));
+    }
+
+    private Optional<Section> findOneMatchedUpStation(Station upStation) {
+        return sections.stream()
+                       .filter(it -> it.matchesUpStation(upStation))
+                       .findFirst();
     }
 
     public List<Station> getStations() {
@@ -119,28 +124,29 @@ public class Sections {
     }
 
     public void removeStation(Line line, Station station) {
+        validateSectionSize();
+        Optional<Section> upLineStation = findOneMatchedUpStation(station);
+        Optional<Section> downLineStation = findOneMatchedDownStation(station);
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            sections.add(mergeSection(line, upLineStation.get(), downLineStation.get()));
+        }
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private void validateSectionSize() {
         if (sections.size() <= 1) {
             throw new RuntimeException("더 이상 역을 제거할 수 없습니다.");
         }
+    }
 
-        Optional<Section> upLineStation = sections.stream()
-                .filter(it -> it.matchesUpStation(station))
-                .findFirst();
-        Optional<Section> downLineStation = sections.stream()
-                .filter(it -> it.matchesDownStation(station))
-                .findFirst();
+    private Section mergeSection(Line line, Section upLineStation, Section downLineStation) {
+        Station newUpStation = downLineStation.getUpStation();
+        Station newDownStation = upLineStation.getDownStation();
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-
-            Distance newDistance = new Distance(0);
-            newDistance.plus(upLineStation.get().getDistance());
-            newDistance.plus(downLineStation.get().getDistance());
-            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+        Distance newDistance = new Distance(0);
+        newDistance.plus(upLineStation.getDistance());
+        newDistance.plus(downLineStation.getDistance());
+        return new Section(line, newUpStation, newDownStation, newDistance);
     }
 }
