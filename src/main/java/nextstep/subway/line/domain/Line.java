@@ -72,11 +72,11 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
-    public void addVertexByStations(WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap) {
+    public void makeVertexByStationsTo(WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap) {
         sections.addVertexByStations(subwayMap);
     }
 
-    public void addEdgeBySections(WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap) {
+    public void makedgeBySectionsTo(WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap) {
         sections.addEdgeBySections(subwayMap);
     }
 }
