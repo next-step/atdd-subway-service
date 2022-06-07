@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.util.Collections;
+import java.util.Optional;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
@@ -87,6 +89,88 @@ public class Line extends BaseEntity {
     public void update(Line line) {
         this.name = line.name();
         this.color = line.color();
+    }
+
+    public void addSection(Section newSection) {
+
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(station -> station == newSection.upStation());
+        boolean isDownStationExisted = stations.stream().anyMatch(station -> station == newSection.downStation());
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == newSection.upStation()) &&
+                stations.stream().noneMatch(it -> it == newSection.downStation())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (stations.isEmpty()) {
+            this.sections().add(Section.builder(this, newSection.upStation(), newSection.downStation(), newSection.distance())
+                    .build());
+            return;
+        }
+
+        if (isUpStationExisted) {
+            this.sections().sections().stream()
+                    .filter(section -> section.upStation() == newSection.upStation())
+                    .findFirst()
+                    .ifPresent(section -> section.updateUpStation(newSection.downStation(), newSection.distance()));
+
+            this.sections().add(Section.builder(this, newSection.upStation(), newSection.downStation(), newSection.distance())
+                    .build());
+        } else if (isDownStationExisted) {
+            this.sections().sections().stream()
+                    .filter(section -> section.downStation() == newSection.downStation())
+                    .findFirst()
+                    .ifPresent(section -> section.updateDownStation(newSection.upStation(), newSection.distance()));
+
+            this.sections().add(Section.builder(this, newSection.upStation(), newSection.downStation(), newSection.distance())
+                    .build());
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    public List<Station> getStations() {
+        if (this.sections().sections().isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Station> stations = new ArrayList<>();
+        Station downStation = findUpStation();
+        stations.add(downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = this.sections().sections().stream()
+                    .filter(section -> section.upStation() == finalDownStation)
+                    .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().downStation();
+            stations.add(downStation);
+        }
+
+        return stations;
+    }
+
+    private Station findUpStation() {
+        Station downStation = this.sections().sections().get(0).upStation();
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = this.sections().sections().stream()
+                    .filter(section -> section.downStation() == finalDownStation)
+                    .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().upStation();
+        }
+
+        return downStation;
     }
 
     public Long id() {

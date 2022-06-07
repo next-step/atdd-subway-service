@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -30,8 +31,8 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = findStationById(request.getUpStationId());
+        Station downStation = findStationById(request.getDownStationId());
         Line persistLine = lineRepository.save(Line.builder(request.getName(), request.getColor(), upStation, downStation, Distance.valueOf(request.getDistance()))
                 .build());
         List<StationResponse> stations = getStations(persistLine).stream()
@@ -52,10 +53,6 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
@@ -67,8 +64,8 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        Station upStation = stationService.findById(lineUpdateRequest.getUpStationId());
-        Station downStation = stationService.findById(lineUpdateRequest.getDownStationId());
+        Station upStation = findStationById(lineUpdateRequest.getUpStationId());
+        Station downStation = findStationById(lineUpdateRequest.getDownStationId());
         persistLine.update(Line.builder(lineUpdateRequest.getName(), lineUpdateRequest.getColor(),  upStation, downStation, Distance.valueOf(lineUpdateRequest.getDistance()))
                 .build());
     }
@@ -79,51 +76,13 @@ public class LineService {
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
-        List<Station> stations = getStations(line);
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
-            line.sections().add(Section.builder(line, upStation, downStation, Distance.valueOf(request.getDistance()))
-                    .build());
-            return;
-        }
-
-        if (isUpStationExisted) {
-            line.sections().sections().stream()
-                    .filter(it -> it.upStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, Distance.valueOf(request.getDistance())));
-
-            line.sections().add(Section.builder(line, upStation, downStation, Distance.valueOf(request.getDistance()))
-                    .build());
-        } else if (isDownStationExisted) {
-            line.sections().sections().stream()
-                    .filter(it -> it.downStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, Distance.valueOf(request.getDistance())));
-
-            line.sections().add(Section.builder(line, upStation, downStation, Distance.valueOf(request.getDistance()))
-                    .build());
-        } else {
-            throw new RuntimeException();
-        }
+        line.addSection(request.toSection(line, findStationById(request.getUpStationId()), findStationById(request.getDownStationId())));
+        lineRepository.save(line);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
+        Station station = findStationById(stationId);
         if (line.sections().sections().size() <= 1) {
             throw new RuntimeException();
         }
@@ -147,6 +106,13 @@ public class LineService {
         downLineStation.ifPresent(it -> line.sections().sections().remove(it));
     }
 
+    public Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(() -> new NotFoundException("등록된 노선이 없습니다."));
+    }
+
+    private Station findStationById(long id) {
+        return stationService.findById(id);
+    }
 
     public List<Station> getStations(Line line) {
         if (line.sections().sections().isEmpty()) {
