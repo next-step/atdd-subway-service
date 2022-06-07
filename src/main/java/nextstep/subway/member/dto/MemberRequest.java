@@ -31,4 +31,8 @@ public class MemberRequest {
     public Member toMember() {
         return new Member(email, password, age);
     }
+
+    public String toQueryString() {
+        return "?email=" + this.email + "&password=" + this.password + "&age=" + this.age;
+    }
 }
