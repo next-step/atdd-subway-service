@@ -47,10 +47,6 @@ public class Line extends BaseEntity {
         return new Line(name, color, upStation, downStation, distance);
     }
 
-    public static Line createEmpty() {
-        return new Line();
-    }
-
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
@@ -62,14 +58,6 @@ public class Line extends BaseEntity {
 
     public LineName getName() {
         return this.name;
-    }
-
-    public String getNameValue() {
-        return Objects.isNull(this.getName()) ? "" : this.getName().getValue();
-    }
-
-    public String getColorValue() {
-        return Objects.isNull(this.getColor()) ? "" : this.getColor().getValue();
     }
 
     public LineColor getColor() {

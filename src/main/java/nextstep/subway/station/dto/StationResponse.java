@@ -20,7 +20,7 @@ public class StationResponse {
     }
 
     public static StationResponse of(Station station) {
-        return new StationResponse(station.getId(), station.getNameValue(), station.getCreatedDate(), station.getModifiedDate());
+        return new StationResponse(station.getId(), station.getName().getValue(), station.getCreatedDate(), station.getModifiedDate());
     }
 
     public Long getId() {
