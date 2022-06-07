@@ -1,6 +1,8 @@
 package nextstep.subway.line.domain;
 
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.domain.Station;
@@ -42,6 +44,53 @@ public class Line extends BaseEntity {
     public void update(Line line) {
         this.name = line.name;
         this.color = line.color;
+    }
+
+    public List<Station> getStations() {
+        if (this.getSections().isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Station> stations = new ArrayList<>();
+        Station downStation = findFirstUpStation();
+        stations.add(downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = findUpSection(finalDownStation);
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getDownStation();
+            stations.add(downStation);
+        }
+        return stations;
+    }
+
+    private Station findFirstUpStation() {
+        Station downStation = this.getSections().get(0).getUpStation();
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = findDownSection(finalDownStation);
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getUpStation();
+        }
+
+        return downStation;
+    }
+
+    public Optional<Section> findUpSection(Station station) {
+        return this.getSections().stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+    }
+
+    public Optional<Section> findDownSection(Station station) {
+        return this.getSections().stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
     }
 
     public LineResponse toLineResponse(List<StationResponse> stations) {

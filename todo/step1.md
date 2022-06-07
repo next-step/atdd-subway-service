@@ -45,8 +45,8 @@ Feature: 지하철 구간 관련 기능
 ### 📚 Todo List 📚
 - [x] LineService, LineSectionAcceptanceTest 리팩토링 요소 찾기
 - [ ] LineService 개선사항
-  - [ ] getStations 도메인으로 로직 이동
-  - [ ] findUpStation 도메인으로 로직 이동
+  - [x] getStations 도메인으로 로직 이동
+  - [x] findUpStation 도메인으로 로직 이동
   - [ ] removeLineStation 내부로직(upLineStation, downLineStation) 개선
   - [ ] addLineStation 내부로직 개선
   - [ ] findLines, findLineResponseById, saveLine stream 부분 개선
