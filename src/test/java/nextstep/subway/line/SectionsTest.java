@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("구간 일급컬렉션 단위테스트")
 class SectionsTest {
     Station upStation;
     Station downStation;
