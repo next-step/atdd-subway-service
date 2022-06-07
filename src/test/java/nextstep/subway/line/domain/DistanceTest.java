@@ -42,4 +42,13 @@ class DistanceTest {
 
         assertThat(distance).isEqualTo(new Distance(15));
     }
+
+    @DisplayName("Distance와 다른 Distance를 합친다.")
+    @Test
+    void sum() {
+        Distance distance = new Distance(10);
+        Distance other = new Distance(5);
+
+        assertThat(Distance.sum(distance, other)).isEqualTo(new Distance(15));
+    }
 }

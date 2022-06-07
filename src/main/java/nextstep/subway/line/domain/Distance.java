@@ -3,6 +3,8 @@ package nextstep.subway.line.domain;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 @Embeddable
 public class Distance {
 
@@ -13,6 +15,12 @@ public class Distance {
     }
 
     protected Distance() {
+    }
+
+    public static Distance sum(Distance d1, Distance d2) {
+        requireNonNull(d1, "d1");
+        requireNonNull(d2, "d2");
+        return new Distance(d1.distance + d2.distance);
     }
 
     public void minus(Distance other) {
