@@ -68,4 +68,19 @@ class SectionsTest {
                 sections.add(section)
         ).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void 새로운_하행_구간을_등록한다() {
+        // given
+        Station upStation = new Station("정자역");
+        Station downStation = new Station("광교역");
+
+        Section section = new Section(upStation, downStation, 10);
+
+        // when
+        sections.add(section);
+
+        // then
+        assertThat(sections.getElements()).hasSize(3);
+    }
 }
