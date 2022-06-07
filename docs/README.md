@@ -1,8 +1,8 @@
 # 인수 테스트 기반 TDD
 ## STEP 1. 인수 테스트 기반 리팩터링
 ### 요구사항
-- [] LineService 리팩터링
-- [] LineSectionAcceptanceTest 리팩터링
+- [x] LineService 리팩터링
+- [x] LineSectionAcceptanceTest 리팩터링
 
 ### 요구사항 설명
 #### 인수 테스트 기반 리팩터링
@@ -37,18 +37,18 @@ And 지하철 노선에 지하철역 등록되어 있음
 
 Scenario: 지하철 구간을 관리
 
-- [] Scenario: 지하철 구간 등록
+- [x] Scenario: 지하철 구간 등록
 When 지하철 구간 등록 요청
 Then 지하철 구간 등록됨
 
-- [] Scenario: 지하철 노선에 구간 등록이 반영된 역 목록 조회
+- [x] Scenario: 지하철 노선에 구간 등록이 반영된 역 목록 조회
 When 지하철 노선에 등록된 역 목록 조회 요청
 Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
 
-- [] Scenario: 지하철 구간 삭제
+- [x] Scenario: 지하철 구간 삭제
 When 지하철 구간 삭제 요청
 Then 지하철 구간 삭제됨
 
-- [] Scenario: 지하철 노선에 구간 삭제가 반영된 역 목록 조회
+- [x] Scenario: 지하철 노선에 구간 삭제가 반영된 역 목록 조회
 When 지하철 노선에 등록된 역 목록 조회 요청
 Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
