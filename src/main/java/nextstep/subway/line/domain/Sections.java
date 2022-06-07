@@ -31,27 +31,8 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        if (sections.isEmpty()) {
-            return Arrays.asList();
-        }
-
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
+        Station departStation = findUpStation();
+        return sortedStations(departStation);
     }
 
     public void remove(Line line, Station station) {
@@ -78,19 +59,44 @@ public class Sections {
     }
 
     private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+        Section notOrderFirstSection = sections.stream().findFirst().orElseThrow(RuntimeException::new);
+        Station departStation = notOrderFirstSection.getUpStation();
+
+        while (isExistUpSection(departStation)) {
+            final Station finalDepartStation = departStation;
+            Section nextUpSection = sections.stream()
+                    .filter(section -> section.getDownStation().equals(finalDepartStation))
+                    .findFirst()
+                    .orElseThrow(RuntimeException::new);
+            departStation = nextUpSection.getUpStation();
         }
 
-        return downStation;
+        return departStation;
+    }
+
+    private List<Station> sortedStations(Station upStation) {
+        List<Station> stations = new ArrayList<>();
+        stations.add(upStation);
+
+        while (isExistDownStation(upStation)) {
+            final Station finalUpStation = upStation;
+            Section nextDownSection = sections.stream()
+                    .filter(section -> section.getUpStation().equals(finalUpStation))
+                    .findFirst()
+                    .orElseThrow(RuntimeException::new);
+            upStation = nextDownSection.getDownStation();
+            stations.add(upStation);
+        }
+
+        return stations;
+    }
+
+    private boolean isExistUpSection(Station departStation) {
+        return sections.stream().anyMatch(section -> section.getDownStation().equals(departStation));
+    }
+
+    private boolean isExistDownStation(Station upSection) {
+        return sections.stream().anyMatch(section -> section.getUpStation().equals(upSection));
     }
 
     private void addValidate(Section section) {
