@@ -60,13 +60,13 @@ public class Sections {
 
     private Optional<Section> findPrevSection(Section currentSection) {
         return sectionCollection.stream()
-                .filter(section -> section.getDownStation() == currentSection.getUpStation())
+                .filter(section -> section.isPrevOf(currentSection))
                 .findFirst();
     }
 
     private Optional<Section> findNextSection(Section currentSection) {
         return sectionCollection.stream()
-                .filter(section -> section.getUpStation() == currentSection.getDownStation())
+                .filter(section -> section.isNextOf(currentSection))
                 .findFirst();
     }
 

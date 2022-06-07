@@ -50,6 +50,14 @@ public class Section {
         return new Section(firstSection.line, firstSection.upStation, secondSection.downStation, firstSection.distance + secondSection.distance);
     }
 
+    public boolean isPrevOf(Section another){
+        return this.downStation == another.upStation;
+    }
+
+    public boolean isNextOf(Section another){
+        return this.upStation == another.downStation;
+    }
+
     public Long getId() {
         return id;
     }

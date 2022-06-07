@@ -38,4 +38,4 @@
   - [X] Line 생성을 위한 빌더 작성
   - [X] Sections 내부 콜렉션 필드명 변경
   - [X] Sections.addMergedSection 리팩토링
-  - [ ] Section equals hashcode 재정의 후 객체 비교를 위한 getter 호출 제거
+  - [X] Section 간 비교를 위한 메서드 추가, 객체 비교를 위한 기존 getter 호출 제거
