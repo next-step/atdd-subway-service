@@ -28,4 +28,16 @@ class LineTest {
         // then
         assertThat(stations).hasSize(2);
     }
+
+    @Test
+    void 삭제할_역이_포함된_구간을_삭제한다() {
+        // given
+        Station station = new Station("강남역");
+
+        // when
+        line.removeSection(station);
+
+        // then
+        assertThat(line.getSections()).isEmpty();
+    }
 }
