@@ -5,6 +5,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Path {
 
@@ -20,7 +21,8 @@ public class Path {
     public PathResult findShortest(List<Line> lines, Station source, Station target) {
         this.createGraph(lines);
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        return new PathResult(dijkstraShortestPath.getPath(source, target));
+        return new PathResult(Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
+                .orElseThrow(() -> new RuntimeException("출발역과 도착역이 연결되어 있지 않음")));
     }
 
     private void createGraph(List<Line> lines) {

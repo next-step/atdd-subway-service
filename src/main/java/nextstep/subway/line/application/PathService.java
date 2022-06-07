@@ -31,6 +31,10 @@ public class PathService {
         Station targetStation = stationRepository.findById(targetId)
                 .orElseThrow(() -> new RuntimeException("도착역이 존재하지 않습니다."));
 
+        if(sourceStation.equals(targetStation)) {
+            throw new RuntimeException("출발역과 도착역이 같습니다.");
+        }
+
         PathResult result = Path.of().findShortest(lines, sourceStation, targetStation);
 
         return PathResponse.of(result.getStations(), result.getDistance());
