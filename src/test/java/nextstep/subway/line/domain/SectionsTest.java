@@ -39,7 +39,7 @@ class SectionsTest {
         List<String> stationNames = sections.orderedStations().stream()
                 .map(Station::name)
                 .collect(Collectors.toList());
-        assertThat(stationNames).containsOnly("양재역", "판교역", "양재시민의숲역");
+        assertThat(stationNames).containsExactly("양재역", "판교역", "양재시민의숲역");
     }
 
     @DisplayName("구간들 사이에 새로운 구간 등록 테스트 (하행역 일치)")
@@ -54,7 +54,7 @@ class SectionsTest {
         List<String> stationNames = sections.orderedStations().stream()
                 .map(Station::name)
                 .collect(Collectors.toList());
-        assertThat(stationNames).containsOnly("양재역", "판교역", "양재시민의숲역");
+        assertThat(stationNames).containsExactly("양재역", "판교역", "양재시민의숲역");
     }
 
     @DisplayName("구간들에 하행 종점에 구간 추가")
@@ -69,7 +69,7 @@ class SectionsTest {
         List<String> stationNames = sections.orderedStations().stream()
                 .map(Station::name)
                 .collect(Collectors.toList());
-        assertThat(stationNames).containsOnly("양재역", "판교역", "양재시민의숲역");
+        assertThat(stationNames).containsExactly("양재역", "판교역", "양재시민의숲역");
     }
 
     @DisplayName("구간들에 상행 종점에 구간 추가")
@@ -84,7 +84,7 @@ class SectionsTest {
         List<String> stationNames = sections.orderedStations().stream()
                 .map(Station::name)
                 .collect(Collectors.toList());
-        assertThat(stationNames).containsOnly("양재역", "판교역", "양재시민의숲역");
+        assertThat(stationNames).containsExactly("양재역", "판교역", "양재시민의숲역");
     }
 
     @DisplayName("구간들에 있는 구간 사이에 구간 길이가 같거나 큰 구간 추가하면 예외 발생")
