@@ -52,3 +52,28 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+---
+- step1
+  - LineSectionAcceptanceTest Refactoring
+    - given, when, then 정의
+    - helper method 분리
+    - helper method static import
+  - LineServce Refactoring
+    - 리팩토링할 기능 및 방법
+      - line 저장하기 / line 정보들 LineResponse로 찾기 / 순서대로 line에 포함된 station list받아오기 
+        - 순서대로 line에 포함된 station list 받아오는 로직을 Line Domain에서 처리후 반환
+      - 구간추가하기
+        - Section : DownStation / UpStation 각 기준으로 섹션 분리 기능 구현 
+        - Line 
+          - 해당하는 Section 추출 및 Section.update 호출 
+          - 가장 앞 / 뒤 Station에 대한 추가일때 line 정보 update 
+      - 구간제거하기
+        - Line
+          - 가장 앞 / 뒤 Station에 대한 삭제일때 Line 정보 update 
+          - 삭제할 Station 앞 / 뒤 Section 합치는 기능 구현 
+        - Section
+          - 각 Section 합치는 기능 구현 
+        
+
+      
