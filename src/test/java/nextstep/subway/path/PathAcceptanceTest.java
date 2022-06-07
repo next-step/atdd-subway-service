@@ -31,11 +31,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
 
     /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                         |
-     * *3호선*                   *신분당선*
-     * |                         |
-     * 남부터미널역 --- *3호선* --- 양재
+     *    (*3호선*)
+     *      교대역    --- 10 ------  강남역 (*2호선*)
+     *       |                      |
+     *       3                      10
+     *       |                      |
+     *     남부터미널역 ---  2 ------  양재 (*3호선*)
+     *                          (*신분당선*)
      */
     @BeforeEach
     public void setUp() {
@@ -63,7 +65,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
 
         // Then 최단 경로 조회됨
-        최단_경로_조회_조회됨(response, 0);
+        최단_경로_조회_조회됨(response, 5);
     }
 
     public static ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceId, Long targetId) {

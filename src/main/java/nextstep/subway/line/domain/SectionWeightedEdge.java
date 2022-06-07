@@ -14,7 +14,6 @@ public class SectionWeightedEdge extends DefaultWeightedEdge {
         return new SectionWeightedEdge(section);
     }
 
-
     public Station getUpStation() {
         return section.getUpStation();
     }
