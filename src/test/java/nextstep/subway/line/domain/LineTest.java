@@ -32,7 +32,7 @@ class LineTest {
         assertThat(stations).containsExactly(양재시민의숲역, 정자역);
     }
 
-    @DisplayName("상행역이 포함된 구간에 새로운 구간을 추가하여 정렬된 역을 확인한다")
+    @DisplayName("상행역이 포함된 구간에 새로운 구간을 추가하고 정렬된 역을 확인한다")
     @Test
     void addSectionWithRelocateUpStation() {
         Station 판교역 = new Station("판교역");
@@ -42,7 +42,7 @@ class LineTest {
         assertThat(stations).containsExactly(양재시민의숲역, 판교역, 정자역);
     }
 
-    @DisplayName("하행역이 포함된 구간에 새로운 구간을 추가하여 정렬된 역을 확인한다")
+    @DisplayName("하행역이 포함된 구간에 새로운 구간을 추가하고 정렬된 역을 확인한다")
     @Test
     void addSectionWithRelocateDownStation() {
         Station 광교역 = new Station("광교역");
@@ -63,7 +63,7 @@ class LineTest {
         .hasMessageContaining("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 
-    @DisplayName("상하행 어디에도 포함되지 않는 구간을 추가하려 하면 예외가 발생한다")
+    @DisplayName("상하행 어디에도 포함되지 않는 구간을 추가하려하면 예외가 발생한다")
     @Test
     void addSectionWithNonMatch() {
         Station 광교역 = new Station("광교역");
@@ -82,5 +82,26 @@ class LineTest {
             신분당선.addSection(정자역, 양재시민의숲역, 5);
         }).isInstanceOf(RuntimeException.class)
         .hasMessageContaining("이미 등록된 구간 입니다.");
+    }
+
+    @DisplayName("역 제거시 구간이 1개 이하면 예외가 발생한다")
+    @Test
+    void removeStationWithInvalidSectionSize() {
+        assertThatThrownBy(() -> {
+            신분당선.removeStation(양재시민의숲역);
+        }).isInstanceOf(RuntimeException.class)
+        .hasMessageContaining("더 이상 역을 제거할 수 없습니다.");
+    }
+
+    @DisplayName("역을 제거하고 정렬된 역을 확인한다")
+    @Test
+    void removeStation() {
+        Station 판교역 = new Station("판교역");
+        신분당선.addSection(양재시민의숲역, 판교역, 5);
+
+        신분당선.removeStation(판교역);
+
+        List<Station> stations = 신분당선.getStations();
+        assertThat(stations).containsExactly(양재시민의숲역, 정자역);
     }
 }
