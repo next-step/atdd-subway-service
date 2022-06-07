@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
@@ -43,7 +44,12 @@ public class DijkstraPathFinder implements PathFinder{
 
     private static void addWeight(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         List<Sections> sections = StreamUtils.mapToList(lines, Line::getSections);
-        List<Section> allSections = StreamUtils.flatMapToList(sections, Sections::getSections, Collection::stream);
+        List<Section> allSections = sections.stream()
+                .map(Sections::getSections)
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
+
         allSections.forEach(section -> graph.setEdgeWeight(
                 graph.addEdge(section.getUpStation(), section.getDownStation()),
                 section.getDistance().getValue())
@@ -51,7 +57,11 @@ public class DijkstraPathFinder implements PathFinder{
     }
 
     private static void addVertexes(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        List<Station> stations = StreamUtils.flatMapToList(lines, Line::getStations, Collection::stream);
+        List<Station> stations = lines.stream()
+                .map(Line::getStations)
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
         stations.forEach(graph::addVertex);
     }
 }

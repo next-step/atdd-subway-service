@@ -22,14 +22,4 @@ public class StreamUtils {
                                                      Predicate<T> predicate) {
         return collections.stream().filter(predicate).findFirst();
     }
-
-    public static <T, R> List<R> flatMapToList(Collection<T> collections,
-                                               Function<T, Collection<R>> mapFunction,
-                                               Function<Collection<R>, Stream<R>> flatMapFunction) {
-        return collections.stream()
-                .map(mapFunction)
-                .flatMap(flatMapFunction)
-                .distinct()
-                .collect(Collectors.toList());
-    }
 }
