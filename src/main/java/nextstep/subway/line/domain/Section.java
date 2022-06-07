@@ -77,12 +77,4 @@ public class Section {
     public boolean matchDownStation(Station station) {
         return downStation == station;
     }
-
-    public boolean matchUpToUpStation(Section section) {
-        return this.upStation == section.upStation;
-    }
-
-    public boolean matchDownToDownStation(Section section) {
-        return this.downStation == section.downStation;
-    }
 }

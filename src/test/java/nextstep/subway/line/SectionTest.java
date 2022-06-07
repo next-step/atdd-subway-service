@@ -70,20 +70,4 @@ class SectionTest {
     void matchDownStation() {
         assertThat(section.matchDownStation(downStation)).isTrue();
     }
-
-    @DisplayName("상행선과 상행선을 비교한다")
-    @Test
-    void matchUpToUpStation() {
-        Station newStation = new Station("신규역");
-        Section newSection = new Section(line, upStation, newStation, 5);
-        assertThat(section.matchUpToUpStation(newSection)).isTrue();
-    }
-
-    @DisplayName("하행선과 하행선을 비교한다")
-    @Test
-    void matchDownToDownStation() {
-        Station newStation = new Station("신규역");
-        Section newSection = new Section(line, newStation, downStation, 5);
-        assertThat(section.matchDownToDownStation(newSection)).isTrue();
-    }
 }
