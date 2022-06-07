@@ -117,4 +117,30 @@ public class Sections {
                        .map(Section::getDownStation)
                        .collect(Collectors.toSet());
     }
+
+    public void removeStation(Line line, Station station) {
+        if (sections.size() <= 1) {
+            throw new RuntimeException("더 이상 역을 제거할 수 없습니다.");
+        }
+
+        Optional<Section> upLineStation = sections.stream()
+                .filter(it -> it.matchesUpStation(station))
+                .findFirst();
+        Optional<Section> downLineStation = sections.stream()
+                .filter(it -> it.matchesDownStation(station))
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+
+            Distance newDistance = new Distance(0);
+            newDistance.plus(upLineStation.get().getDistance());
+            newDistance.plus(downLineStation.get().getDistance());
+            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+    }
 }
