@@ -29,11 +29,19 @@ class LineTest {
         assertThat(line.findUpStation()).isEqualTo(newStation);
     }
 
-    @DisplayName("노선의 역을 순서대로 찾는다")
+    @DisplayName("구간을 등록하고 노선의 역을 순서대로 찾는다")
     @Test
     void getStations() {
         Station newStation = new Station("신규역");
-        line.getSections().add(new Section(line, newStation, upStation, 5));
+        line.addStation(newStation, upStation, 5);
         assertThat(line.getStations()).containsExactly(newStation, upStation, downStation);
+    }
+
+    @DisplayName("신규역을 상행선과 하행선 사이에 추가한다")
+    @Test
+    void addStation() {
+        Station newStation = new Station("신규역");
+        line.addStation(newStation, downStation, 5);
+        assertThat(line.getStations()).containsExactly(upStation, newStation, downStation);
     }
 }
