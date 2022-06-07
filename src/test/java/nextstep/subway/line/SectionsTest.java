@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SectionsTest {
     Station upStation;
@@ -56,5 +57,38 @@ class SectionsTest {
         sections.addStation(new Section(line, newStation, upStation, 5));
         sections.remove(upStation);
         assertThat(sections.getStations()).containsExactly(newStation, downStation);
+    }
+
+    @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
+    @Test
+    void addStation2() {
+        Station newStation1 = new Station("신규역1");
+        Station newStation2 = new Station("신규역2");
+        sections.addStation(new Section(line, upStation, newStation1, 2));
+        sections.addStation(new Section(line, newStation2, upStation, 5));
+        assertThat(sections.getStations()).containsExactly(newStation2, upStation, newStation1, downStation);
+    }
+
+    @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
+    @Test
+    void addStationWithSameStation() {
+        assertThatThrownBy(() -> sections.addStation(new Section(line, upStation, downStation, 2)))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
+    @Test
+    void addStationWithNoStation() {
+        Station newStation1 = new Station("신규역1");
+        Station newStation2 = new Station("신규역2");
+        assertThatThrownBy(() -> sections.addStation(new Section(line, newStation1, newStation2, 2)))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
+    @Test
+    void removeStation2() {
+        assertThatThrownBy(() -> sections.remove(upStation))
+                .isInstanceOf(RuntimeException.class);
     }
 }
