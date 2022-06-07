@@ -96,7 +96,6 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         // given
-        String name = "신분당선";
         ExtractableResponse<Response> createResponse = 지하철_노선_등록되어_있음(lineRequest1);
 
         // when

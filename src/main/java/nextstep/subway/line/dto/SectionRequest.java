@@ -6,9 +6,9 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 public class SectionRequest {
-    private Long upStationId;
-    private Long downStationId;
-    private int distance;
+    private final Long upStationId;
+    private final Long downStationId;
+    private final int distance;
 
     public SectionRequest(Long upStationId, Long downStationId, int distance) {
         this.upStationId = upStationId;
