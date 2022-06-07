@@ -70,4 +70,34 @@ public class Sections {
 
         return stations.getElements();
     }
+
+    public void remove(Station station) {
+        if (elements.size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upSection = findUpSection(station);
+        Optional<Section> downSection = findDownSection(station);
+
+        if (upSection.isPresent() && downSection.isPresent()) {
+            Section section = upSection.get();
+            section.reLocateDownStation(downSection.get());
+            elements.add(section);
+        }
+
+        upSection.ifPresent(elements::remove);
+        downSection.ifPresent(elements::remove);
+    }
+
+    private Optional<Section> findUpSection(Station station) {
+        return elements.stream()
+                .filter(section -> section.isSameDownStation(station))
+                .findFirst();
+    }
+
+    private Optional<Section> findDownSection(Station station) {
+        return elements.stream()
+                .filter(section -> section.isSameUpStation(station))
+                .findFirst();
+    }
 }

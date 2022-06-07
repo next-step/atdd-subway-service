@@ -109,4 +109,9 @@ public class Section {
             updateDownStation(section.upStation, section.distance);
         }
     }
+
+    public void reLocateDownStation(Section downSection) {
+        downStation = downSection.downStation;
+        distance += downSection.distance;
+    }
 }
