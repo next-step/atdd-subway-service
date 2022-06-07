@@ -118,16 +118,33 @@ public class Section extends BaseEntity {
         return distance;
     }
 
-    public void updateUpStation(Station station, Distance newDistance) {
-        validateLongerThan(newDistance);
-        this.upStation = station;
-        this.distance.minus(newDistance);
+    public void update(Section newSection) {
+        if (isEqualsUpStation(newSection)) {
+            updateUpStation(newSection);
+        }
+        if (isEqualsDownStation(newSection)) {
+            updateDownStation(newSection);
+        }
     }
 
-    public void updateDownStation(Station station, Distance newDistance) {
-        validateLongerThan(newDistance);
-        this.downStation = station;
-        this.distance.minus(newDistance);
+    private boolean isEqualsUpStation(Section newSection) {
+        return this.upStation().equals(newSection.upStation());
+    }
+
+    private void updateUpStation(Section newSection) {
+        validateLongerThan(newSection.distance());
+        distance.minus(newSection.distance);
+        this.upStation = newSection.downStation();
+    }
+
+    private boolean isEqualsDownStation(Section newSection) {
+        return this.downStation().equals(newSection.downStation());
+    }
+
+    private void updateDownStation(Section newSection) {
+        validateLongerThan(newSection.distance());
+        distance.minus(newSection.distance);
+        this.downStation = newSection.upStation();
     }
 
     private void validateLongerThan(Distance newDistance) {
