@@ -1,6 +1,9 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import nextstep.subway.exception.BadRequestException;
+import nextstep.subway.exception.CannotFindPathException;
+import nextstep.subway.exception.ExceptionType;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -8,6 +11,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.http.HttpStatus;
 
 public class PathFinder {
     private static final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
@@ -34,7 +38,27 @@ public class PathFinder {
     }
 
     public GraphPath<Station, DefaultWeightedEdge> findPath(Station source, Station target) {
+        validateEdge(source, target);
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        return dijkstraShortestPath.getPath(source, target);
+
+        try {
+            GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
+            validatePath(graphPath);
+            return graphPath;
+        } catch (IllegalArgumentException e) {
+            throw new CannotFindPathException(ExceptionType.NOT_FOUND_STATION);
+        }
+    }
+
+    private void validateEdge(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new BadRequestException(ExceptionType.CAN_NOT_SAME_STATION);
+        }
+    }
+
+    private void validatePath(GraphPath<Station, DefaultWeightedEdge> graphPath) {
+        if (graphPath == null) {
+            throw new CannotFindPathException(HttpStatus.UNPROCESSABLE_ENTITY, ExceptionType.IS_NOT_CONNECTED_STATION);
+        }
     }
 }
