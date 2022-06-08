@@ -130,5 +130,25 @@ public class LineTest extends DomainTest {
         역_목록_순서_체크(역_목록, Arrays.asList("선정릉역", "정자역"));
     }
 
+    /**
+     * background
+        * given Line에 정자역 ~ 강남역 을 저장하고
+     * given 강남역 ~ 선정릉역을 추가 line에 추가한 뒤
+     * when 정자역 삭제시
+     * then 정상 삭제가 되고 순서가 정상적으로 출력된다.
+     */
+    @Test
+    public void 노선_시작역_삭제하기() {
+        //given
+        Station 선정릉역 = 지하철역_저장하기("선정릉역");
+        신분당선.addStation(선정릉역, 강남역, 3);
+
+        //when
+        신분당선.removeStation(정자역);
+        List<Station> 역_목록 = 신분당선.getStations();
+
+        //then
+        역_목록_순서_체크(역_목록, Arrays.asList("선정릉역", "강남역"));
+    }
 
 }
