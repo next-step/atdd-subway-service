@@ -98,6 +98,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
                 //then
                 즐겨찾기_생성됨(response);
+
             }),
 
             DynamicTest.dynamicTest("즐겨찾기 목록을 조회한다.",()->{

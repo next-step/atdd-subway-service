@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.List;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -20,6 +21,8 @@ class FavoriteTest {
     
     private Station 강남 = new Station("강남");
     private Station 교대 = new Station("교대");
+    private Station 신도림 = new Station("신도림");
+    private Station 잠실 = new Station("잠실");
     private Member 사용자 = new Member("test@unit.com","1234",15);
 
     @Autowired
@@ -32,7 +35,7 @@ class FavoriteTest {
     @BeforeEach
     void setUp(){
         memberRepository.save(사용자);
-        stationRepository.saveAll(Arrays.asList(강남, 교대));
+        stationRepository.saveAll(Arrays.asList(강남, 교대, 신도림, 잠실));
     }
     
     @DisplayName("즐겨찾기를 생성한다.")
@@ -49,6 +52,27 @@ class FavoriteTest {
                 ()-> assertThat(favorite.getSource()).isEqualTo(강남),
                 ()-> assertThat(favorite.getTarget()).isEqualTo(교대),
                 ()-> assertThat(favorite.getMember()).isEqualTo(사용자)
+        );
+    } 
+    
+    @DisplayName("즐겨찾기 목록을 조회한다.")
+    @Test
+    void findAll(){
+        //given
+        favoriteRepository.saveAll(Arrays.asList(new Favorite(강남, 교대, 사용자), new Favorite(신도림, 잠실, 사용자)));
+
+        //when
+        List<Favorite> favorites = favoriteRepository.findAllByMember(사용자);
+
+        //then
+        assertAll(
+                ()-> assertThat(favorites.get(0).getSource()).isEqualTo(강남),
+                ()-> assertThat(favorites.get(0).getTarget()).isEqualTo(교대),
+                ()-> assertThat(favorites.get(0).getMember()).isEqualTo(사용자),
+
+                ()-> assertThat(favorites.get(1).getSource()).isEqualTo(신도림),
+                ()-> assertThat(favorites.get(1).getTarget()).isEqualTo(잠실),
+                ()-> assertThat(favorites.get(1).getMember()).isEqualTo(사용자)
         );
     }
 }
