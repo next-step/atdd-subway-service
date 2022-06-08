@@ -4,6 +4,8 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
+import static java.util.Objects.requireNonNull;
+
 @Entity
 public class Section {
     @Id
@@ -22,16 +24,28 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
+        this(line, upStation, downStation, new Distance(distance));
+    }
+
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section merge(Line line, Section sectionWithUpStation, Section sectionWithDownStation) {
+        Station newUpStation = sectionWithDownStation.getUpStation();
+        Station newDownStation = sectionWithUpStation.getDownStation();
+        Distance sumDistance = Distance.sum(sectionWithUpStation.getDistance(), sectionWithDownStation.getDistance());
+        return new Section(line, newUpStation, newDownStation, sumDistance);
     }
 
     public Long getId() {
@@ -50,23 +64,27 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+    public void updateUpStation(Station station, Distance newDistance) {
+        distance.minus(newDistance);
         this.upStation = station;
-        this.distance -= newDistance;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+    public void updateDownStation(Station station, Distance newDistance) {
+        distance.minus(newDistance);
         this.downStation = station;
-        this.distance -= newDistance;
+    }
+
+    public boolean matchesUpStation(Station station) {
+        requireNonNull(station, "station");
+        return this.upStation.equals(station);
+    }
+
+    public boolean matchesDownStation(Station station) {
+        requireNonNull(station, "station");
+        return this.downStation.equals(station);
     }
 }
