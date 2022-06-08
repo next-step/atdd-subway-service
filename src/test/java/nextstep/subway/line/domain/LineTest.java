@@ -70,4 +70,42 @@ public class LineTest extends DomainTest {
         //then
         역_목록_순서_체크(역_목록, Arrays.asList("강남역", "양재역", "정자역"));
     }
+
+    /**
+     * background
+        * given Line에 정자역 ~ 강남역 을 저장하고
+     * when 광교역 ~ 정자역을 추가하고 목록 조회시
+     * then 순서대로 출력이된다.
+     */
+    @Test
+    public void 노선에_역_추가하기_노선의_시작() {
+        //given
+        Station 광교역 = 지하철역_저장하기("광교역");
+
+        //when
+        신분당선.addStation(정자역, 광교역, 3);
+        List<Station> 역_목록 = 신분당선.getStations();
+
+        //then
+        역_목록_순서_체크(역_목록, Arrays.asList("강남역", "정자역", "광교역"));
+    }
+
+    /**
+     * background
+        * given Line에 정자역 ~ 강남역 을 저장하고
+     * when 강남역 ~ 선정릉역을 추가하고 목록 조회시
+     * then 순서대로 출력이된다.
+     */
+    @Test
+    public void 노선에_역_추가하기_노선의_끝() {
+        //given
+        Station 선정릉역 = 지하철역_저장하기("선정릉역");
+
+        //when
+        신분당선.addStation(선정릉역, 강남역, 3);
+        List<Station> 역_목록 = 신분당선.getStations();
+
+        //then
+        역_목록_순서_체크(역_목록, Arrays.asList("선정릉역","강남역", "정자역"));
+    }
 }
