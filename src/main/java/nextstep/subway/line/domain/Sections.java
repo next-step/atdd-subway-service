@@ -16,25 +16,60 @@ public class Sections {
     }
 
     public void addSection(Section section) {
-        sections.add(section);
+        if (this.isEmptyByStation()) {
+            sections.add(section);
+            return;
+        }
+
+        validateSections(section);
+
+        boolean isUpStationExisted = matchStation(section.getUpStation());
+        boolean isDownStationExisted = matchStation(section.getDownStation());
+
+        validateStations(isUpStationExisted, isDownStationExisted);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            sections.add(section);
+            return;
+        }
+
+        if (isUpStationExisted) {
+            updateUpStationOfSection(section);
+            sections.add(section);
+        }
+
+        if (isDownStationExisted) {
+            updateDownStationOfSection(section);
+            sections.add(section);
+        }
+    }
+
+    private void validateSections(Section section) {
+        this.sections.forEach(it -> it.validate(section));
+    }
+
+    private void validateStations(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
     }
 
     public void removeSection(Section section) {
         sections.remove(section);
     }
 
-    public void updateUpStationOfSection(Station findStation, Station changeStation, int distance) {
+    public void updateUpStationOfSection(Section section) {
         this.sections.stream()
-                .filter(it -> it.getUpStation() == findStation)
+                .filter(it -> it.getUpStation() == section.getUpStation())
                 .findFirst()
-                .ifPresent(it -> it.updateUpStation(changeStation, distance));
+                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
     }
 
-    public void updateDownStationOfSection(Station findStation, Station changeStation, int distance) {
+    public void updateDownStationOfSection(Section section) {
         this.sections.stream()
-                .filter(it -> it.getDownStation() == changeStation)
+                .filter(it -> it.getDownStation() == section.getDownStation())
                 .findFirst()
-                .ifPresent(it -> it.updateDownStation(findStation, distance));
+                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
     }
 
     public int sectionsSize() {
@@ -87,5 +122,13 @@ public class Sections {
         }
 
         return downStation;
+    }
+
+    public boolean matchStation(Station station) {
+        return findStations().stream().anyMatch(it -> it == station);
+    }
+
+    public boolean isEmptyByStation() {
+        return findStations().isEmpty();
     }
 }

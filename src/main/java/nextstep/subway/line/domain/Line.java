@@ -43,14 +43,6 @@ public class Line extends BaseEntity {
         sections.removeSection(section);
     }
 
-    public void updateSectionOfUpStation(Station upStation, Station downStation, int distance) {
-        sections.updateUpStationOfSection(upStation, downStation, distance);
-    }
-
-    public void updateSectionOfDownStation(Station upStation, Station downStation, int distance) {
-        sections.updateDownStationOfSection(upStation, downStation, distance);
-    }
-
     public int sectionsSize() {
         return sections.sectionsSize();
     }
@@ -60,37 +52,7 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
-        List<Station> stations = sections.findStations();
-
-        if (stations.isEmpty()) {
-            sections.addSection(new Section(this, upStation, downStation, distance));
-            return;
-        }
-
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
-
-        validateStations(isUpStationExisted, isDownStationExisted);
-
-        if (isUpStationExisted) {
-            updateSectionOfUpStation(upStation, downStation, distance);
-            sections.addSection(new Section(this, upStation, downStation, distance));
-        }
-
-        if (isDownStationExisted) {
-            updateSectionOfDownStation(upStation, downStation, distance);
-            sections.addSection(new Section(this, upStation, downStation, distance));
-        }
-    }
-
-    private void validateStations(boolean isUpStationExisted, boolean isDownStationExisted) {
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
+        sections.addSection(new Section(this, upStation, downStation, distance));
     }
 
     public void removeSectionByStation(Station station) {

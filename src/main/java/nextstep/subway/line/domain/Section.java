@@ -69,4 +69,12 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+    public void validate(Section section) {
+        if (this.equals(section)) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+
 }
