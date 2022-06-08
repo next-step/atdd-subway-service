@@ -70,6 +70,7 @@ public class Line extends BaseEntity {
 
         return stations;
     }
+
     private Station findUpStation() {
         Station downStation = this.sections.get(0).getUpStation();
         while (downStation != null) {
@@ -84,6 +85,77 @@ public class Line extends BaseEntity {
         }
 
         return downStation;
+    }
+
+    public void addStation(Station upStation, Station downStation, int distance) {
+        List<Station> stations = getStations();
+        Section appendSection = new Section(this, upStation, downStation, distance);
+        if (stations.isEmpty()) {
+            sections.add(appendSection);
+            return;
+        }
+
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+
+        validateDuplicateSection(isUpStationExisted, isDownStationExisted);
+        validateNoBaseStation(stations, isUpStationExisted, isDownStationExisted);
+
+        if (isUpStationExisted) {
+            insertSection(appendSection, upStation, true);
+            return;
+        }
+        if (isDownStationExisted) {
+            insertSection(appendSection, downStation, false);
+            return;
+        }
+
+    }
+
+    private void insertSection(Section appendSection, Station baseStation, boolean baseIsUp) {
+        Section baseSection = getBaseSection(baseStation, baseIsUp)
+            .orElseThrow(RuntimeException::new);
+
+        baseSection.add(appendSection, baseIsUp);
+
+        sections.add(appendSection);
+    }
+
+    private Optional<Section> getBaseSection(Station baseStation, boolean baseIsUp) {
+        for (Section section : sections) {
+            if (baseIsUp) {
+                if (section.getUpStation().equals(baseStation)) {
+                    return Optional.of(section);
+                }
+                if (section.getDownStation().equals(baseStation)) {
+                    return Optional.of(section);
+                }
+            }
+
+            if (!baseIsUp) {
+                if (section.getDownStation().equals(baseStation)) {
+                    return Optional.of(section);
+                }
+                if (section.getUpStation().equals(baseStation)) {
+                    return Optional.of(section);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    private void validateNoBaseStation(List<Station> stations, boolean isUpStationExisted,
+        boolean isDownStationExisted) {
+        if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void validateDuplicateSection(boolean isUpStationExisted,
+        boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
     }
 
     public Long getId() {
