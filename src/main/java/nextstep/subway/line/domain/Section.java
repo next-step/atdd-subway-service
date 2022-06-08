@@ -87,4 +87,8 @@ public class Section {
         requireNonNull(station, "station");
         return this.downStation.equals(station);
     }
+
+    public int getDistanceValue() {
+        return this.distance.get();
+    }
 }
