@@ -36,7 +36,7 @@ public class LineTest extends DomainTest {
     /**
      * background
         * given Line에 정자역 ~ 강남역 을 저장하고
-     * when 양재역 ~ 정자역을 추가하고 목록 조회시
+     * when 양재역 ~ 강남역을 추가하고 목록 조회시
      * then 순서대로 출력이된다.
      */
     @Test
@@ -46,6 +46,25 @@ public class LineTest extends DomainTest {
 
         //when
         신분당선.addStation(강남역, 양재역, 3);
+        List<Station> 역_목록 = 신분당선.getStations();
+
+        //then
+        역_목록_순서_체크(역_목록, Arrays.asList("강남역", "양재역", "정자역"));
+    }
+
+    /**
+     * background
+        * given Line에 정자역 ~ 강남역 을 저장하고
+     * when 정자역 ~ 양재역을 추가하고 목록 조회시
+     * then 순서대로 출력이된다.
+     */
+    @Test
+    public void 노선에_역_추가하기_전방() {
+        //given
+        Station 양재역 = 지하철역_저장하기("양재역");
+
+        //when
+        신분당선.addStation(양재역, 정자역, 3);
         List<Station> 역_목록 = 신분당선.getStations();
 
         //then
