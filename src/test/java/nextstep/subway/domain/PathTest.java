@@ -44,7 +44,7 @@ public class PathTest {
     @DisplayName("교대역 -> 양재역 최단 경로 길이는 5이다.")
     @Test
     void findShortest() {
-        PathResult result = Path.of().findShortest(Arrays.asList(이호선, 신분당선, 삼호선), 교대역, 양재역);
+        PathResult result = Path.of(Arrays.asList(이호선, 신분당선, 삼호선)).findShortest(교대역, 양재역);
         assertThat(result.getStations().size()).isEqualTo(3);
         assertThat(result.getDistance()).isEqualTo(5);
     }

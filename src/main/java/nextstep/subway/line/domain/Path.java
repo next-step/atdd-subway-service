@@ -11,15 +11,15 @@ public class Path {
 
     final private WeightedMultigraph<Station, SectionWeightedEdge> graph = new WeightedMultigraph(SectionWeightedEdge.class);
 
-    protected Path() {
-    }
-
-    static public Path of() {
-        return new Path();
-    }
-
-    public PathResult findShortest(List<Line> lines, Station source, Station target) {
+    protected Path(List<Line> lines) {
         this.createGraph(lines);
+    }
+
+    static public Path of(List<Line> lines) {
+        return new Path(lines);
+    }
+
+    public PathResult findShortest(Station source, Station target) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         return new PathResult(Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
                 .orElseThrow(() -> new RuntimeException("출발역과 도착역이 연결되어 있지 않음")));
