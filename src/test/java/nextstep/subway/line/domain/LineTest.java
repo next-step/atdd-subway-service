@@ -101,7 +101,7 @@ class LineTest {
         // then
         assertThat(노선의_지하철_이름(line)).containsExactly(광교역.getName(), 광교중앙역.getName(), 성복역.getName());
         Arrays.asList(new Section(line, 광교역, 광교중앙역, 10), new Section(line, 광교중앙역, 성복역, 20))
-                .forEach(compareSection -> checkSections(line.getSections(), compareSection));
+                .forEach(compareSection -> checkSections(line.getSections().getSections(), compareSection));
     }
 
     @DisplayName("구간이 1개 이하인 노선의 구간을 삭제하면 예외가 발생해야 한다")
@@ -132,7 +132,8 @@ class LineTest {
     }
 
     private List<String> 노선의_지하철_이름(Line line) {
-        return line.getStations()
+        return line.getSections()
+                .getStations()
                 .stream()
                 .map(Station::getName)
                 .collect(Collectors.toList());

@@ -18,12 +18,14 @@ public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
+
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private final Sections sections = new Sections();
 
     public Line() {
     }
@@ -36,7 +38,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        sections.addSection(this, upStation, downStation, distance);
     }
 
     public void update(Line line) {
@@ -44,56 +46,12 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
-    public List<Station> getStations() {
-        if (this.sections.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return getFromToLastStations(findUpStation());
-    }
-
     public void addStation(Station upStation, Station downStation, int distance) {
-        checkPossibleAddSection(upStation, downStation);
-
-        boolean isUpStationExisted = isContainStationInSections(upStation);
-        boolean isDownStationExisted = isContainStationInSections(downStation);
-
-        if (isAddNewSection()) {
-            addSection(upStation, downStation, distance);
-            return;
-        }
-
-        if (isUpStationExisted) {
-            addSectionByUpToDown(upStation, downStation, distance);
-
-            addSection(upStation, downStation, distance);
-            return;
-        }
-        if (isDownStationExisted) {
-            addSectionByMiddleToDown(upStation, downStation, distance);
-
-            addSection(upStation, downStation, distance);
-            return;
-        }
-
-        throw new RuntimeException();
+        this.sections.addStation(this, upStation, downStation, distance);
     }
 
     public void removeStation(Station station) {
-        if (this.sections.size() <= 1) {
-            throw new RuntimeException();
-        }
-
-        Section upSection = findSectionByPredicateAndRemove(section -> section.getUpStation() == station);
-        Section downSection = findSectionByPredicateAndRemove(section -> section.getDownStation() == station);
-
-        if (upSection != null && downSection != null) {
-            Station newUpStation = downSection.getUpStation();
-            Station newDownStation = upSection.getDownStation();
-            int newDistance = upSection.getDistance() + downSection.getDistance();
-
-            addSection(newUpStation, newDownStation, newDistance);
-        }
+        this.sections.removeStation(this, station);
     }
 
     public Long getId() {
@@ -108,129 +66,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
+    public Sections getSections() {
         return sections;
-    }
-
-    private Station findUpStation() {
-        Station downStation = this.getSections().get(0).getUpStation();
-
-        return findStationByPredicateWithExecuteAction(
-                downStation,
-                null,
-                (section, station) -> section.getDownStation() == station,
-                Section::getUpStation
-        );
-    }
-
-    private List<Station> getFromToLastStations(Station startStation) {
-        List<Station> stations = new ArrayList<>();
-        stations.add(startStation);
-
-        findStationByPredicateWithExecuteAction(
-                startStation,
-                stations::add,
-                (section, station) -> section.getUpStation() == station,
-                Section::getDownStation
-        );
-
-        return stations;
-    }
-
-    private Station findStationByPredicateWithExecuteAction(
-            Station firstStation, Consumer<Station> action,
-            BiPredicate<Section, Station> findNextFilter,
-            Function<Section, Station> findNextTarget
-    ) {
-        boolean isEnd = false;
-        Station downStation = firstStation;
-
-        while (!isEnd) {
-            Station finalDownStation = downStation;
-            Section nextSection = this.getSections().stream()
-                    .filter(it -> findNextFilter.test(it, finalDownStation))
-                    .findFirst()
-                    .orElse(null);
-
-            isEnd = (nextSection == null);
-            downStation = findNextStationAndAfterProcessing(downStation, nextSection, action, findNextTarget);
-        }
-
-        return downStation;
-    }
-
-    private Station findNextStationAndAfterProcessing (
-            Station beforeProcessingStation, Section nextSection,
-            Consumer<Station> action, Function<Section, Station> findNextTarget
-    ) {
-        if (nextSection == null) {
-            return beforeProcessingStation;
-        }
-
-        Station downStation = findNextTarget.apply(nextSection);
-
-        if (action != null) {
-            action.accept(downStation);
-        }
-
-        return downStation;
-    }
-
-    private void checkPossibleAddSection(Station upStation, Station downStation) {
-        boolean isUpStationExisted = isContainStationInSections(upStation);
-        boolean isDownStationExisted = isContainStationInSections(downStation);
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (isImpossibleAddSection(upStation, downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-    }
-
-    private boolean isContainStationInSections(Station station) {
-        return this.getStations()
-                .stream()
-                .anyMatch(it -> it == station);
-    }
-
-    private boolean isImpossibleAddSection(Station upStation, Station downStation) {
-        return !this.getStations().isEmpty() &&
-                this.getStations().stream().noneMatch(it -> it == upStation) &&
-                this.getStations().stream().noneMatch(it -> it == downStation);
-    }
-
-    private boolean isAddNewSection() {
-        return this.getStations()
-                .isEmpty();
-    }
-
-    private void addSection(Station upStation, Station downStation, int distance) {
-        this.sections.add(new Section(this, upStation, downStation, distance));
-    }
-
-    private void addSectionByUpToDown(Station upStation, Station downStation, int distance) {
-        this.sections.stream()
-                .filter(it -> it.getUpStation() == upStation)
-                .findFirst()
-                .ifPresent(it -> it.updateUpStation(downStation, distance));
-    }
-
-    private void addSectionByMiddleToDown(Station upStation, Station downStation, int distance) {
-        this.sections.stream()
-                .filter(it -> it.getDownStation() == downStation)
-                .findFirst()
-                .ifPresent(it -> it.updateDownStation(upStation, distance));
-    }
-
-    private Section findSectionByPredicateAndRemove(Predicate<Section> predicate) {
-        Optional<Section> section = this.sections.stream()
-                .filter(predicate)
-                .findFirst();
-
-        section.ifPresent(it -> this.sections.remove(it));
-
-        return section.orElse(null);
     }
 }
