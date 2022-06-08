@@ -1,9 +1,12 @@
 package nextstep.subway.line.domain;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import java.util.Arrays;
 import java.util.List;
 import nextstep.subway.DomainTest;
 import nextstep.subway.station.domain.Station;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -170,5 +173,34 @@ public class LineTest extends DomainTest {
 
         //then
         역_목록_순서_체크(역_목록, Arrays.asList("강남역", "정자역"));
+    }
+
+    /**
+     * background
+        * given Line에 정자역 ~ 강남역 을 저장하고
+     * given 강남역 ~ 선정릉역을 추가 line에 추가한 뒤
+     * when 동탄역 삭제시
+     * then 삭제가 불가능하다.
+     */
+    @Test
+    public void 노선_없는역_삭제하기_에러발생 (){
+        //given
+        Station 선정릉역 = 지하철역_저장하기("선정릉역");
+        Station 동탄역 = 지하철역_저장하기("동탄역");
+        신분당선.addStation(선정릉역, 강남역, 3);
+
+        //when
+        assertThatThrownBy(() -> 신분당선.removeStation(동탄역)).isInstanceOf(RuntimeException.class);
+    }
+
+    /**
+     * background
+     * given Line에 정자역 ~ 강남역 을 저장하고
+     * when 정자역 삭제시
+     * then 삭제가 불가능하다.
+     */
+    @Test
+    public void 노선_단일구간_삭제하기_에러발생 (){
+        assertThatThrownBy(() -> 신분당선.removeStation(강남역)).isInstanceOf(RuntimeException.class);
     }
 }
