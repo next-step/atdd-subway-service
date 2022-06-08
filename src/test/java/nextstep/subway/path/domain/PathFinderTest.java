@@ -21,6 +21,7 @@ class PathFinderTest {
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
+    private Station 연결되지않는역;
 
     private PathFinder pathFinder;
 
@@ -39,6 +40,7 @@ class PathFinderTest {
         양재역 = new Station("양재역");
         교대역 = new Station("교대역");
         남부터미널역 = new Station("남부터미널역");
+        연결되지않는역 = new Station("연결되지않는역");
 
         신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10);
@@ -54,7 +56,7 @@ class PathFinderTest {
         Path path = pathFinder.findShortestPath(교대역, 양재역);
 
         assertThat(path.getStations()).containsExactly(교대역, 남부터미널역, 양재역);
-        assertThat(path.getDistance()).isEqualTo(5);
+        assertThat(path.getDistance()).isEqualTo(8);
     }
 
     @DisplayName("출발지와 목적지가 같은 최단 경로를 조회한다.")
@@ -70,8 +72,8 @@ class PathFinderTest {
     @Test
     void findShortestPathWithNoConnectStation() {
         assertThatThrownBy(() -> {
-            pathFinder.findShortestPath(강남역, 남부터미널역);
+            pathFinder.findShortestPath(강남역, 연결되지않는역);
         }).isInstanceOf(InvalidPathFindException.class)
-        .hasMessageContaining("목적지가 출발지와 같은 호선이 아닙니다.");
+        .hasMessageContaining("목적지가 출발지와 연결되어 있지 않습니다.");
     }
 }
