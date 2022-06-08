@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Entity
 public class Line extends BaseEntity {
@@ -45,23 +48,7 @@ public class Line extends BaseEntity {
             return Collections.emptyList();
         }
 
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
+        return getFromToLastStations(findUpStation());
     }
 
     public void addStation(Station upStation, Station downStation, int distance) {
@@ -143,15 +130,63 @@ public class Line extends BaseEntity {
 
     private Station findUpStation() {
         Station downStation = this.getSections().get(0).getUpStation();
-        while (downStation != null) {
+
+        return findStationByPredicateWithExecuteAction(
+                downStation,
+                null,
+                (section, station) -> section.getDownStation() == station,
+                Section::getUpStation
+        );
+    }
+
+    private List<Station> getFromToLastStations(Station startStation) {
+        List<Station> stations = new ArrayList<>();
+        stations.add(startStation);
+
+        findStationByPredicateWithExecuteAction(
+                startStation,
+                stations::add,
+                (section, station) -> section.getUpStation() == station,
+                Section::getDownStation
+        );
+
+        return stations;
+    }
+
+    private Station findStationByPredicateWithExecuteAction(
+            Station firstStation, Consumer<Station> action,
+            BiPredicate<Section, Station> findNextFilter,
+            Function<Section, Station> findNextTarget
+    ) {
+        boolean isEnd = false;
+        Station downStation = firstStation;
+
+        while (!isEnd) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.getSections().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+            Section nextSection = this.getSections().stream()
+                    .filter(it -> findNextFilter.test(it, finalDownStation))
+                    .findFirst()
+                    .orElse(null);
+
+            isEnd = (nextSection == null);
+            downStation = findNextStationAndAfterProcessing(downStation, nextSection, action, findNextTarget);
+        }
+
+        return downStation;
+    }
+
+    private Station findNextStationAndAfterProcessing (
+            Station beforeProcessingStation, Section nextSection,
+            Consumer<Station> action, Function<Section, Station> findNextTarget
+    ) {
+        if (nextSection == null) {
+            return beforeProcessingStation;
+        }
+
+        Station downStation = findNextTarget.apply(nextSection);
+
+        if (action != null) {
+            action.accept(downStation);
         }
 
         return downStation;
