@@ -19,45 +19,34 @@ public class Sections {
         sections = new ArrayList<>();
     }
 
+    public void initSection(Section section) {
+        this.sections.add(section);
+    }
+
     public void addSection(Section section) {
         validateSection(section);
         this.sections.forEach(it -> it.update(section));
         this.sections.add(section);
     }
 
-    private void validateSection(Section section) {
-        Station upStation = section.upStation();
-        Station downStation = section.downStation();
+    public void deleteSection(Station station) {
+        validateSize();
+        Optional<Section> upLineStation = findUpSection(station);
+        Optional<Section> downLineStation = findDownSection(station);
 
-        if (hasAlreadyStations(upStation, downStation)) {
-            throw new AlreadyExistException("이미 등록된 구간 입니다.");
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Section downLineSection = downLineStation.get();
+            Section upLineSection = upLineStation.get();
+            Distance newDistance = downLineSection.getDistance().add(upLineSection.getDistance());
+            this.sections.add(new Section(upLineSection.getLine(), downLineSection.upStation(),
+                    upLineSection.downStation(), newDistance));
         }
-
-        if (hasNothingStations(upStation, downStation)) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
-        }
-    }
-
-    private boolean hasAlreadyStations(Station upStation, Station downStation) {
-        return isUpStationExisted(upStation) && isDownStationExisted(downStation);
-    }
-
-    private boolean hasNothingStations(Station upStation, Station downStation) {
-        return !isUpStationExisted(upStation) && !isDownStationExisted(downStation);
-    }
-
-    private boolean isUpStationExisted(Station station) {
-        return getStations().stream()
-                .anyMatch(it -> it == station);
-    }
-
-    private boolean isDownStationExisted(Station station) {
-        return getStations().stream()
-                .anyMatch(it -> it == station);
+        upLineStation.ifPresent(sections::remove);
+        downLineStation.ifPresent(sections::remove);
     }
 
     public List<Station> getStations() {
-        if (this.sections.isEmpty()) {
+        if (isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -75,6 +64,31 @@ public class Sections {
             stations.add(downStation);
         }
         return stations;
+    }
+
+    private void validateSection(Section section) {
+        Station upStation = section.upStation();
+        Station downStation = section.downStation();
+
+        if (hasAlreadyStations(upStation, downStation)) {
+            throw new AlreadyExistException("이미 등록된 구간 입니다.");
+        }
+        if (hasNothingStations(upStation, downStation)) {
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private boolean hasAlreadyStations(Station upStation, Station downStation) {
+        return isStationExisted(upStation) && isStationExisted(downStation);
+    }
+
+    private boolean hasNothingStations(Station upStation, Station downStation) {
+        return !isStationExisted(upStation) && !isStationExisted(downStation);
+    }
+
+    private boolean isStationExisted(Station station) {
+        return getStations().stream()
+                .anyMatch(it -> it == station);
     }
 
     private Station findFirstUpStation() {
@@ -102,44 +116,13 @@ public class Sections {
                 .findFirst();
     }
 
-    public List<Section> getSections() {
-        return this.sections;
-    }
-
     public boolean isEmpty() {
         return this.sections.isEmpty();
     }
 
-    public int size() {
-        return this.sections.size();
-    }
-
-    public void remove(Section section) {
-        this.sections.remove(section);
-    }
-
-    public void init(Section section) {
-        this.sections.add(section);
-    }
-
-    public void deleteSection(Station station) {
-        validateSize();
-        Optional<Section> upLineStation = findUpSection(station);
-        Optional<Section> downLineStation = findDownSection(station);
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().upStation();
-            Station newDownStation = upLineStation.get().downStation();
-            Distance newDistance = upLineStation.get().getDistance().add(downLineStation.get().getDistance());
-            this.sections.add(new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance));
-        }
-        upLineStation.ifPresent(it -> this.sections.remove(it));
-        downLineStation.ifPresent(it -> this.sections.remove(it));
-    }
-
     private void validateSize() {
         if (this.sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException("노선의 구간이 존재하지 않거나 유일한 구간입니다.");
         }
     }
 }

@@ -36,7 +36,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, Distance distance) {
         this.name = name;
         this.color = color;
-        sections.init(new Section(this, upStation, downStation, distance));
+        sections.initSection(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
@@ -48,21 +48,21 @@ public class Line extends BaseEntity {
         return this.sections.getStations();
     }
 
-    public Optional<Section> findUpSection(Station station) {
-        return this.sections.findUpSection(station);
+    public void addSection(Section section) {
+        if (this.sections.isEmpty()) {
+            this.sections.initSection(section);
+            return;
+        }
+        this.sections.addSection(section);
     }
 
-    public Optional<Section> findDownSection(Station station) {
-        return this.sections.findDownSection(station);
+    public void deleteSection(Station station) {
+        this.sections.deleteSection(station);
     }
 
     public LineResponse toLineResponse(StationsResponse stations) {
         return new LineResponse(this.id, this.name, this.color, stations.getStations(), this.getCreatedDate(),
                 this.getModifiedDate());
-    }
-
-    public Sections getSections() {
-        return this.sections;
     }
 
     @Override
@@ -81,17 +81,5 @@ public class Line extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, color);
-    }
-
-    public void addSection(Section section) {
-        if (this.sections.isEmpty()) {
-            this.sections.init(section);
-            return;
-        }
-        this.sections.addSection(section);
-    }
-
-    public void deleteSection(Station station) {
-        this.sections.deleteSection(station);
     }
 }
