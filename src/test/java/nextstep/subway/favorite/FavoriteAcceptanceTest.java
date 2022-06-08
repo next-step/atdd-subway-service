@@ -167,8 +167,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
         assertAll(
                 ()-> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                ()-> assertThat(response.jsonPath().getString("source.name")).isEqualTo("사당역"),
-                ()-> assertThat(response.jsonPath().getString("target.name")).isEqualTo("잠실역")
+                ()-> assertThat(response.jsonPath().getString("source.name")).isEqualTo("[사당역]"),
+                ()-> assertThat(response.jsonPath().getString("target.name")).isEqualTo("[잠실역]")
         );
     }
 
