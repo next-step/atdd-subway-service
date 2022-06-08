@@ -17,8 +17,8 @@
 
 ## 🚀 1단계 - 인수 테스트 기반 리팩터링
 ### 요구사항
-- [ ] LineService 리팩터링
-- [ ] LineSectionAcceptanceTest 리팩터링
+- [x] LineService 리팩터링
+- [x] LineSectionAcceptanceTest 리팩터링
 ### 요구사항 설명
 #### 인수 테스트 기반 리팩터링
 - LineService의 비즈니스 로직을 도메인으로 옮기기
