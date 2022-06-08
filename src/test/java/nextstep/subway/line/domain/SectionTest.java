@@ -90,4 +90,42 @@ public class SectionTest {
             () -> assertThat(합친_구간).extracting("distance").isEqualTo(3 + 4)
         );
     }
+
+    @Test
+    public void 섹션합치기_섹션과_빈섹션() {
+        //given
+        Station 첫번째역 = new Station("첫번째역");
+        Station 두번째역 = new Station("두번째역");
+        Section 앞_구간 = new Section(null, 두번째역, 첫번째역, 3);
+        Section 뒤_구간 = Section.emptyOf(null);
+
+        //when
+        Section 합친_구간 = Section.mergeOf(앞_구간, 뒤_구간);
+
+        //then
+        assertAll(
+            () -> assertThat(합친_구간).extracting("downStation").isEqualTo(첫번째역),
+            () -> assertThat(합친_구간).extracting("upStation").isEqualTo(null),
+            () -> assertThat(합친_구간).extracting("distance").isEqualTo(3)
+        );
+    }
+
+    @Test
+    public void 섹션합치기_빈섹션과_섹션() {
+        //given
+        Station 첫번째역 = new Station("첫번째역");
+        Station 두번째역 = new Station("두번째역");
+        Section 뒤_구간 = new Section(null, 두번째역, 첫번째역, 3);
+        Section 앞_구간 = Section.emptyOf(null);
+
+        //when
+        Section 합친_구간 = Section.mergeOf(앞_구간, 뒤_구간);
+
+        //then
+        assertAll(
+            () -> assertThat(합친_구간).extracting("downStation").isEqualTo(null),
+            () -> assertThat(합친_구간).extracting("upStation").isEqualTo(두번째역),
+            () -> assertThat(합친_구간).extracting("distance").isEqualTo(3)
+        );
+    }
 }
