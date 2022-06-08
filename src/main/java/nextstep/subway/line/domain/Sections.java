@@ -31,6 +31,9 @@ public class Sections {
     }
 
     public List<Station> getStations() {
+        if (sections.isEmpty()) {
+            return Arrays.asList();
+        }
         Station departStation = findUpStation();
         return sortedStations(departStation);
     }
