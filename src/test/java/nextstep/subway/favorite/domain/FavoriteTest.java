@@ -75,4 +75,23 @@ class FavoriteTest {
                 ()-> assertThat(favorites.get(1).getMember()).isEqualTo(사용자)
         );
     }
+
+    @DisplayName("즐겨찾기를 삭제한다.")
+    @Test
+    void delete(){
+        //given
+        Favorite save1 = favoriteRepository.save(new Favorite(강남, 교대, 사용자));
+        Favorite save2 = favoriteRepository.save(new Favorite(신도림, 잠실, 사용자));
+
+        //when
+        favoriteRepository.deleteById(save1.getId());
+
+        //then
+        List<Favorite> favorites = favoriteRepository.findAllByMember(사용자);
+        assertAll(
+                ()-> assertThat(favorites.get(0).getSource()).isEqualTo(신도림),
+                ()-> assertThat(favorites.get(0).getTarget()).isEqualTo(잠실),
+                ()-> assertThat(favorites.get(0).getMember()).isEqualTo(사용자)
+        );
+    }
 }
