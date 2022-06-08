@@ -42,10 +42,6 @@ public class Favorite extends BaseEntity {
         return new Favorite(source, target, member);
     }
 
-    public static Favorite createEmpty() {
-        return new Favorite();
-    }
-
     public Long getId() {
         return this.id;
     }

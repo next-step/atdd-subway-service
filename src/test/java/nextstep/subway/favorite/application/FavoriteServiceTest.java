@@ -28,7 +28,8 @@ class FavoriteServiceTest {
     @Test
     void createFavorite() {
         // given
-        FavoriteResponse favoriteResponse = FavoriteResponse.from(Favorite.createEmpty());
+        Favorite favorite = Favorite.of(Station.of(1L, "강남역"), Station.of(2L, "판교역"), new Member());
+        FavoriteResponse favoriteResponse = FavoriteResponse.from(favorite);
         doReturn(favoriteResponse).when(favoriteService).createFavorites(any(LoginMember.class), any(FavoriteRequest.class));
 
         // when
