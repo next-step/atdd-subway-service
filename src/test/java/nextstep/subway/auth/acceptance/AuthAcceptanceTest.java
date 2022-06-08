@@ -56,7 +56,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
     }
 
-
     /**
      * Feature: 엑세스토큰 인증 기능
      * 
@@ -82,7 +81,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
         나의정보_조회됨(response);
     }
 
-
     /**
      * Feature: 인증토큰
      **
@@ -100,8 +98,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
         //then
         로그인_실패됨(response);
     }
-
-
 
     /**
      * Feature: 나의 정보 조회기능 (인증불가 토근)
