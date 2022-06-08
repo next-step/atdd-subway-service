@@ -43,10 +43,6 @@ public class Line extends BaseEntity {
         sections.removeSection(section);
     }
 
-    public int sectionsSize() {
-        return sections.sectionsSize();
-    }
-
     public List<Station> findStations() {
         return sections.findStations();
     }
@@ -56,8 +52,8 @@ public class Line extends BaseEntity {
     }
 
     public void removeSectionByStation(Station station) {
-        if (sectionsSize() <= 1) {
-            throw new RuntimeException();
+        if (isOnlySection()) {
+            throw new RuntimeException("구간이 하나뿐인 노선의 경우 역을 제외할 수 없습니다");
         }
 
         Optional<Section> upSection = sections.findSectionByUpStation(station);
@@ -69,6 +65,10 @@ public class Line extends BaseEntity {
 
         upSection.ifPresent(this::removeSection);
         downSection.ifPresent(this::removeSection);
+    }
+
+    private boolean isOnlySection() {
+        return sections.sectionsSize() <= 1;
     }
 
     private void reRegisterSection(Section upSection, Section downSection) {
