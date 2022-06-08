@@ -168,4 +168,34 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         즐겨찾기_삭제_실패(deleteResponse);
     }
+
+    /**
+     * When. 즐겨찾기 생성 요청
+     * Then. 즐겨찾기 생성 됨
+     * When. 즐겨찾기 목록 조회 요청
+     * Then. 즐겨찾기 목록 조회 됨
+     * When. 즐겨찾기 삭제
+     * Then. 즐겨찾기 삭제 됨
+     */
+    @DisplayName("즐겨찾기 통합 인수테스트 등록-조회-삭제")
+    @Test
+    void favoriteTest() {
+        // when
+        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성_요청(토큰, FavoriteRequest.of(강남역.getId(), 양재역.getId()));
+
+        // then
+        즐겨찾기_생성됨(createdResponse);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(토큰);
+
+        // then
+        즐겨찾기_조회됨(response, Arrays.asList(createdResponse));
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(토큰, createdResponse);
+
+        // then
+        즐겨찾기_삭제됨(deleteResponse);
+    }
 }

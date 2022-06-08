@@ -128,3 +128,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - 예외케이스에 대한 인수테스트 작성
     - [X] 존재하지 않는 역을 즐겨찾기 할 수 없다. 
     - [X] 내가 생성하지 않은 즐겨찾기는 삭제할 수 없다.
+  - [X] 즐겨찾기 기능에 대한 통합 인수테스트 작성
+
