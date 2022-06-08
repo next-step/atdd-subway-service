@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -90,5 +91,24 @@ public class Section {
         if (upStation.equals(section.upStation)) {
             updateUpStation(section.downStation, section.distance);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Section section = (Section) o;
+        return Objects.equals(id, section.id) && Objects.equals(line, section.line)
+                && Objects.equals(upStation, section.upStation) && Objects.equals(downStation,
+                section.downStation) && Objects.equals(distance, section.distance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, line, upStation, downStation, distance);
     }
 }

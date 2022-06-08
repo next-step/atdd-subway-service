@@ -33,13 +33,13 @@ public class LineService {
         Distance distance = Distance.of(request.getDistance());
         Line persistLine = lineRepository.save(
                 new Line(request.getName(), request.getColor(), upStation, downStation, distance));
-        return persistLine.toLineResponse(StationsResponse.of(persistLine.getStations()));
+        return persistLine.toLineResponse(StationsResponse.of(persistLine.getSections()));
     }
 
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-                .map(line -> line.toLineResponse(StationsResponse.of(line.getStations())))
+                .map(line -> line.toLineResponse(StationsResponse.of(line.getSections())))
                 .collect(Collectors.toList());
     }
 
@@ -49,7 +49,7 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return persistLine.toLineResponse(StationsResponse.of(persistLine.getStations()));
+        return persistLine.toLineResponse(StationsResponse.of(persistLine.getSections()));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {

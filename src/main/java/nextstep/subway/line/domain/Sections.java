@@ -104,13 +104,13 @@ public class Sections {
         return downStation;
     }
 
-    public Optional<Section> findUpSection(Station station) {
+    private Optional<Section> findUpSection(Station station) {
         return this.sections.stream()
                 .filter(it -> it.upStation() == station)
                 .findFirst();
     }
 
-    public Optional<Section> findDownSection(Station station) {
+    private Optional<Section> findDownSection(Station station) {
         return this.sections.stream()
                 .filter(it -> it.downStation() == station)
                 .findFirst();
@@ -118,6 +118,10 @@ public class Sections {
 
     public boolean isEmpty() {
         return this.sections.isEmpty();
+    }
+
+    public int size() {
+        return this.sections.size();
     }
 
     private void validateSize() {
