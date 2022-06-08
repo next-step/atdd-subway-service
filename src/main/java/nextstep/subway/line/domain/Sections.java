@@ -99,7 +99,7 @@ public class Sections {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation =findSectionByUpStation(finalDownStation);
+            Optional<Section> nextLineStation = findSectionByUpStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
