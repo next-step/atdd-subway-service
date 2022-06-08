@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import nextstep.subway.exception.AlreadyExistException;
+import nextstep.subway.exception.NotExistException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -74,7 +75,7 @@ public class Sections {
             throw new AlreadyExistException("이미 등록된 구간 입니다.");
         }
         if (hasNothingStations(upStation, downStation)) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+            throw new NotExistException("등록할 수 없는 구간 입니다.");
         }
     }
 

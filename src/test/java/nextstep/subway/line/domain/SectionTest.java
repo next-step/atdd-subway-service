@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
@@ -19,5 +20,19 @@ class SectionTest {
         Section section = new Section(twoLine, gangNam, yangJae, distance);
 
         assertThat(section).isEqualTo(new Section(twoLine, gangNam, yangJae, distance));
+    }
+
+    @Test
+    @DisplayName("구간 변경이 변경되는지 확인")
+    void updateSection() {
+        Section section = new Section(twoLine, gangNam, yangJae, distance);
+        Section interSection = new Section(twoLine, gangNam, panGyo, Distance.of(3));
+        section.update(interSection);
+
+        assertAll(
+                () -> assertThat(section.upStation()).isEqualTo(panGyo),
+                () -> assertThat(section.downStation()).isEqualTo(yangJae),
+                () -> assertThat(section.getDistance()).isEqualTo(Distance.of(7))
+        );
     }
 }

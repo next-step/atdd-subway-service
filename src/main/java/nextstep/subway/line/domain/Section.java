@@ -42,6 +42,41 @@ public class Section {
         this.distance = distance;
     }
 
+    public void update(Section section) {
+        updateUpStation(section);
+        updateDownStation(section);
+    }
+
+    private void updateDownStation(Section section) {
+        if (downStation.equals(section.downStation)) {
+            changeDownStation(section.upStation, section.distance);
+        }
+    }
+
+    private void updateUpStation(Section section) {
+        if (upStation.equals(section.upStation)) {
+            changeUpStation(section.downStation, section.distance);
+        }
+    }
+
+    private void changeUpStation(Station station, Distance newDistance) {
+        try {
+            this.distance = this.distance.subtract(newDistance);
+            this.upStation = station;
+        } catch (IllegalArgumentException iae) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+    }
+
+    private void changeDownStation(Station station, Distance newDistance) {
+        try {
+            this.distance = this.distance.subtract(newDistance);
+            this.downStation = station;
+        } catch (IllegalArgumentException iae) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+    }
+
     public Line getLine() {
         return line;
     }
@@ -56,41 +91,6 @@ public class Section {
 
     public Distance getDistance() {
         return distance;
-    }
-
-    public void updateUpStation(Station station, Distance newDistance) {
-        try {
-            this.distance = this.distance.subtract(newDistance);
-            this.upStation = station;
-        } catch (IllegalArgumentException iae) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-    }
-
-    public void updateDownStation(Station station, Distance newDistance) {
-        try {
-            this.distance = this.distance.subtract(newDistance);
-            this.downStation = station;
-        } catch (IllegalArgumentException iae) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-    }
-
-    public void update(Section section) {
-        updateUpStation(section);
-        updateDownStation(section);
-    }
-
-    private void updateDownStation(Section section) {
-        if (downStation.equals(section.downStation)) {
-            updateDownStation(section.upStation, section.distance);
-        }
-    }
-
-    private void updateUpStation(Section section) {
-        if (upStation.equals(section.upStation)) {
-            updateUpStation(section.downStation, section.distance);
-        }
     }
 
     @Override

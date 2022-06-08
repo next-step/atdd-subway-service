@@ -1,6 +1,6 @@
 package nextstep.subway.exception;
 
-public class AlreadyExistException extends IllegalStateException {
+public class AlreadyExistException extends IllegalArgumentException {
 
     public AlreadyExistException() {
         super();
