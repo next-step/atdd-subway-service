@@ -1,9 +1,7 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import nextstep.subway.exception.AlreadyExistException;
 import nextstep.subway.exception.NotExistException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
