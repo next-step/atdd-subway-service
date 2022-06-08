@@ -5,6 +5,7 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Path;
 import nextstep.subway.line.domain.PathResult;
 import nextstep.subway.line.dto.PathResponse;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
@@ -17,25 +18,22 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class PathService {
-    final private StationRepository stationRepository;
+    final private StationService stationService;
     final private LineRepository lineRepository;
 
-    public PathService(StationRepository stationRepository, LineRepository lineRepository) {
-        this.stationRepository = stationRepository;
+    public PathService(StationService stationService, LineRepository lineRepository) {
+        this.stationService = stationService;
         this.lineRepository = lineRepository;
     }
 
     public PathResponse findPath(Long sourceId, Long targetId) {
-        List<Line> lines = lineRepository.findAll();
-
-        Station sourceStation = stationRepository.findById(sourceId)
-                .orElseThrow(() -> new RuntimeException("출발역이 존재하지 않습니다."));
-        Station targetStation = stationRepository.findById(targetId)
-                .orElseThrow(() -> new RuntimeException("도착역이 존재하지 않습니다."));
-
-        if (sourceStation.equals(targetStation)) {
+        if (sourceId.equals(targetId)) {
             throw new RuntimeException("출발역과 도착역이 같습니다.");
         }
+
+        List<Line> lines = lineRepository.findAll();
+        Station sourceStation = stationService.findStationById(sourceId);
+        Station targetStation = stationService.findStationById(targetId);
 
         PathResult result = Path.of(lines).findShortest(sourceStation, targetStation);
 
