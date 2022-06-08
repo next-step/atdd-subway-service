@@ -87,6 +87,41 @@ public class Line extends BaseEntity {
         return downStation;
     }
 
+    public void removeStation(Station 지울_정거장) {
+        Optional<Section> downSectionOptional = sections.stream().filter(
+            section -> section.getUpStation().equals(지울_정거장)
+        ).findFirst();
+
+        Optional<Section> upSectionOptional = sections.stream().filter(
+            section -> section.getDownStation().equals(지울_정거장)
+        ).findFirst();
+
+        validateOnlyOneSection();
+        validateNoSectionForRemove(downSectionOptional, upSectionOptional);
+
+        Section downSection = downSectionOptional.orElse(Section.emptyOf(this));
+        Section upSection = upSectionOptional.orElse(Section.emptyOf(this));
+
+        Section mergeSection = Section.mergeOf(downSection, upSection);
+
+        sections.add(mergeSection);
+        sections.remove(downSection);
+        sections.remove(upSection);
+    }
+
+    private void validateNoSectionForRemove(Optional<Section> downSection,
+        Optional<Section> upSection) {
+        if (!downSection.isPresent() && !upSection.isPresent()) {
+            throw new RuntimeException();
+        }
+    }
+
+    private void validateOnlyOneSection() {
+        if (sections.size() == 1) {
+            throw new RuntimeException();
+        }
+    }
+
     public void addStation(Station upStation, Station downStation, int distance) {
         List<Station> stations = getStations();
         Section appendSection = new Section(this, upStation, downStation, distance);
