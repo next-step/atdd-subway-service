@@ -34,6 +34,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private StationResponse 존재하지않는역;
+    private StationResponse 연결되지않는역;
 
     /**
      * <pre>
@@ -64,6 +65,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        연결되지않는역 = 지하철역_등록되어_있음("연결되지않는역").as(StationResponse.class);
         존재하지않는역 = new StationResponse(7L, "존재하지않는역", LocalDateTime.now(), LocalDateTime.now());
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10).as(LineResponse.class);
@@ -89,7 +91,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void searchShortestPathWithNoConnectStation() {
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역, 남부터미널역);
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역, 연결되지않는역);
 
         최단_경로_조회_실패됨(response);
     }
