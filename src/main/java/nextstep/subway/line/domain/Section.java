@@ -34,11 +34,11 @@ public class Section {
     public Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = Distance.of(distance);
+        this.distance = distance;
     }
 
     public Long getId() {
@@ -49,11 +49,11 @@ public class Section {
         return line;
     }
 
-    public Station getUpStation() {
+    public Station upStation() {
         return upStation;
     }
 
-    public Station getDownStation() {
+    public Station downStation() {
         return downStation;
     }
 
@@ -61,21 +61,38 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
+    public void updateUpStation(Station station, Distance newDistance) {
         try {
-            this.distance = this.distance.subtract(Distance.of(newDistance));
+            this.distance = this.distance.subtract(newDistance);
             this.upStation = station;
         } catch (IllegalArgumentException iae) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
     }
 
-    public void updateDownStation(Station station, int newDistance) {
+    public void updateDownStation(Station station, Distance newDistance) {
         try {
-            this.distance = this.distance.subtract(Distance.of(newDistance));
+            this.distance = this.distance.subtract(newDistance);
             this.downStation = station;
         } catch (IllegalArgumentException iae) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+    }
+
+    public void update(Section section) {
+        updateUpStation(section);
+        updateDownStation(section);
+    }
+
+    private void updateDownStation(Section section) {
+        if (downStation.equals(section.downStation)) {
+            updateDownStation(section.upStation, section.distance);
+        }
+    }
+
+    private void updateUpStation(Section section) {
+        if (upStation.equals(section.upStation)) {
+            updateUpStation(section.downStation, section.distance);
         }
     }
 }

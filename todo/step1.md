@@ -47,8 +47,8 @@ Feature: 지하철 구간 관련 기능
 - [ ] LineService 개선사항
   - [x] getStations 도메인으로 로직 이동
   - [x] findUpStation 도메인으로 로직 이동
-  - [ ] removeLineStation 내부로직(upLineStation, downLineStation) 개선
-  - [ ] addLineStation 내부로직 개선
+  - [x] removeLineStation 내부로직(upLineStation, downLineStation) 개선
+  - [x] addLineStation 내부로직 개선
   - [ ] findLines, findLineResponseById, saveLine stream 부분 개선
 - [ ] LineSectionAcceptanceTest 개선사항
   - [ ] 흐름 시나리오 추가
