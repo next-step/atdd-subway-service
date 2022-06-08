@@ -1,12 +1,20 @@
 package nextstep.subway.path.dto;
 
-import java.util.Collections;
 import java.util.List;
 import nextstep.subway.station.dto.StationResponse;
 
-public class ShortestPathResponse {
+public class PathResponse {
     private List<StationResponse> stations;
+
+    protected PathResponse(){
+
+    }
+
+    public PathResponse(List<StationResponse> stations) {
+        this.stations = stations;
+    }
+
     public List<StationResponse> getStations() {
-        return Collections.unmodifiableList(stations);
+        return stations;
     }
 }

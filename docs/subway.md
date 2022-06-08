@@ -38,6 +38,9 @@
 ## 2단계
   - [X] 최단 경로 조회 인수 테스트 만들기
   - [ ] 최단 경로 조회 기능 구현하기
+    - [ ] Outside - in 방식 TDD
+      - [X] PathControllerTest 작성(Mock : PathService.findShortestPath)
+      - [ ] PathServiceTest 작성(Mock : Domain Object & its Method)
 
 ---
 

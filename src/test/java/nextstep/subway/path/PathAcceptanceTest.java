@@ -11,7 +11,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.dto.ShortestPathResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,14 +63,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 도착역으로가는_최단경로를_조회한다(교대역,양재역);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        ShortestPathResponse shortestPathResponse = response.as(ShortestPathResponse.class);
-        List<StationResponse> stations = shortestPathResponse.getStations();
+        PathResponse pathResponse = response.as(PathResponse.class);
+        List<StationResponse> stations = pathResponse.getStations();
         assertThat(stations)
                 .hasSize(3)
                 .containsExactly(교대역,남부터미널역,양재역);
     }
 
-    public ExtractableResponse<Response> 도착역으로가는_최단경로를_조회한다(StationResponse source, StationResponse target) {
+    public static ExtractableResponse<Response> 도착역으로가는_최단경로를_조회한다(StationResponse source, StationResponse target) {
         Map<String,String> queryParams = new HashMap<>();
         queryParams.put("source",String.valueOf(source.getId()));
         queryParams.put("target",String.valueOf(target.getId()));
