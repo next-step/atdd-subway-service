@@ -20,7 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @DisplayName("인증 관련 인수테스트")
-class AuthAcceptanceTest extends AcceptanceTest {
+public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final int AGE = 15;
@@ -148,7 +148,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest){
+    public static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest){
 
         return RestAssured
                 .given().log().all()
