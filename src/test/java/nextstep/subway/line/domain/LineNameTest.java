@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.enums.LineExceptionType.CANNOT_EMPTY_LINE_NAME;
+import static nextstep.subway.line.domain.LineExceptionType.CANNOT_EMPTY_LINE_NAME;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 

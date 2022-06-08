@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.enums.LineExceptionType.NEED_NARROW_DISTANCE_THAN_SECTION;
+import static nextstep.subway.line.domain.LineExceptionType.NEED_NARROW_DISTANCE_THAN_SECTION;
 
 import java.util.Objects;
 import javax.persistence.CascadeType;

@@ -1,4 +1,4 @@
-package nextstep.subway.line.enums;
+package nextstep.subway.line.domain;
 
 public enum LineExceptionType {
 

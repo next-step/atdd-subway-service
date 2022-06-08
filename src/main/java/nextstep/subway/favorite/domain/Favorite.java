@@ -1,6 +1,6 @@
 package nextstep.subway.favorite.domain;
 
-import static nextstep.subway.favorite.enums.FavoriteExceptionType.FAVORITE_FILED_IS_NOT_NULL;
+import static nextstep.subway.favorite.domain.FavoriteExceptionType.FAVORITE_FILED_IS_NOT_NULL;
 
 import java.util.Objects;
 import javax.persistence.Entity;

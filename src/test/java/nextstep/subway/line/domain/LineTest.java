@@ -1,11 +1,10 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.enums.LineExceptionType.ALREADY_ADDED_SECTION;
-import static nextstep.subway.line.enums.LineExceptionType.CANNOT_ADDED_SECTION;
-import static nextstep.subway.line.enums.LineExceptionType.CANNOT_REMOVE_STATION_IS_NOT_EXIST;
-import static nextstep.subway.line.enums.LineExceptionType.CANNOT_REMOVE_STATION_WHEN_ONLY_ONE_SECTIONS;
+import static nextstep.subway.line.domain.LineExceptionType.ALREADY_ADDED_SECTION;
+import static nextstep.subway.line.domain.LineExceptionType.CANNOT_ADDED_SECTION;
+import static nextstep.subway.line.domain.LineExceptionType.CANNOT_REMOVE_STATION_IS_NOT_EXIST;
+import static nextstep.subway.line.domain.LineExceptionType.CANNOT_REMOVE_STATION_WHEN_ONLY_ONE_SECTIONS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertAll;

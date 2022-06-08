@@ -1,8 +1,8 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.enums.LineExceptionType.CANNOT_REMOVE_STATION_IS_NOT_EXIST;
-import static nextstep.subway.line.enums.LineExceptionType.CANNOT_REMOVE_STATION_WHEN_ONLY_ONE_SECTIONS;
-import static nextstep.subway.line.enums.LineExceptionType.NOT_EXIST_FIRST_SECTION;
+import static nextstep.subway.line.domain.LineExceptionType.CANNOT_REMOVE_STATION_IS_NOT_EXIST;
+import static nextstep.subway.line.domain.LineExceptionType.CANNOT_REMOVE_STATION_WHEN_ONLY_ONE_SECTIONS;
+import static nextstep.subway.line.domain.LineExceptionType.NOT_EXIST_FIRST_SECTION;
 
 import com.google.common.collect.Lists;
 import java.util.ArrayList;

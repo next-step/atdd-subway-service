@@ -1,10 +1,9 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.enums.LineExceptionType.ALREADY_ADDED_SECTION;
-import static nextstep.subway.line.enums.LineExceptionType.CANNOT_ADDED_SECTION;
+import static nextstep.subway.line.domain.LineExceptionType.ALREADY_ADDED_SECTION;
+import static nextstep.subway.line.domain.LineExceptionType.CANNOT_ADDED_SECTION;
 
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
