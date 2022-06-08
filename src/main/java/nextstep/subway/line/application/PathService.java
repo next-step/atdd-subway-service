@@ -7,10 +7,12 @@ import nextstep.subway.line.domain.PathResult;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -37,6 +39,10 @@ public class PathService {
 
         PathResult result = Path.of(lines).findShortest(sourceStation, targetStation);
 
-        return PathResponse.of(result.getStations(), result.getDistance());
+        return PathResponse.of(
+                result.getStations().stream()
+                        .map(station -> StationResponse.of(station))
+                        .collect(Collectors.toList()),
+                result.getDistance());
     }
 }
