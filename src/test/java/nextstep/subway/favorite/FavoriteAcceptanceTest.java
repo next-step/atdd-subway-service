@@ -13,7 +13,6 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
@@ -25,7 +24,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -36,7 +34,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final int AGE = 15;
 
-    private TokenRequest 로그인정보;
     private TokenResponse 사용자;
 
     private StationResponse 사당역;
@@ -62,11 +59,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_되어_있음(이호선, 교대역, 삼성역, 10);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_되어_있음(이호선, 삼성역, 잠실역, 15);
         
-        MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        로그인정보 = new TokenRequest(EMAIL, PASSWORD);
-        사용자 = AuthAcceptanceTest.로그인_요청(로그인정보).as(TokenResponse.class);
+        MemberAcceptanceTest.회원_등록_되어있음(EMAIL, PASSWORD, AGE);
+        사용자 = AuthAcceptanceTest.로그인_되어있음(new TokenRequest(EMAIL, PASSWORD));
     }
-
 
     /**
      * Feature: 즐겨찾기를 관리한다.

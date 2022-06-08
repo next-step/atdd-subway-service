@@ -80,7 +80,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = 로그인_요청(로그인정보).as(TokenResponse.class);
 
         //when
-        MemberResponse response = 나의정보_요청(tokenResponse.getAccessToken()).as(MemberResponse.class);
+        MemberResponse response =  MemberAcceptanceTest.나의정보_요청(tokenResponse.getAccessToken()).as(MemberResponse.class);
 
         //then
         나의정보_조회됨(response);
@@ -119,7 +119,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         String invalidToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2NTQ2NzQ0NzcsImV4cCI6MTY1NDY3ODA3N30.JbtFjzck0lLRGTKNR7JvD71k_YJhPwBriHHrB2";
 
         //when
-        ExtractableResponse<Response> response = 나의정보_요청(invalidToken);
+        ExtractableResponse<Response> response = MemberAcceptanceTest.나의정보_요청(invalidToken);
 
         //then
         나의정보_조회_실패됨(response);
@@ -130,6 +130,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 ()-> assertThat(tokenResponse.getAccessToken()).isNotBlank(),
                 ()-> assertThat(jwtTokenProvider.validateToken(tokenResponse.getAccessToken())).isTrue()
         );
+    }
+
+    public static TokenResponse 로그인_되어있음(TokenRequest tokenRequest) {
+        return 로그인_요청(tokenRequest).as(TokenResponse.class);
     }
 
     private void 나의정보_조회됨(MemberResponse response) {
@@ -156,17 +160,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .body(tokenRequest)
                 .when().post(" /login/token")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> 나의정보_요청(String accessToken){
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
                 .then().log().all()
                 .extract();
     }
