@@ -6,6 +6,7 @@ import static nextstep.subway.line.acceptance.LineRestAssured.지하철_노선_�
 import static nextstep.subway.line.acceptance.LineRestAssured.지하철_노선_수정_요청;
 import static nextstep.subway.line.acceptance.LineRestAssured.지하철_노선_제거_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -89,7 +90,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청(createResponse);
 
         // then
-        지하철_노선_응답됨(response, createResponse);
+        지하철_노선_응답됨(response);
     }
 
     @DisplayName("지하철 노선을 수정한다.")
@@ -131,9 +132,11 @@ class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, ExtractableResponse<Response> createdResponse) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.as(LineResponse.class)).isNotNull();
+    public static void 지하철_노선_응답됨(ExtractableResponse<Response> response) {
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(response.as(LineResponse.class)).isNotNull()
+        );
     }
 
     public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
