@@ -1,8 +1,10 @@
 package nextstep.subway.favorite;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.로그인_요청;
+import static nextstep.subway.favorite.FavoriteAcceptanceTestMethod.즐겨찾기_삭제_실패;
 import static nextstep.subway.favorite.FavoriteAcceptanceTestMethod.즐겨찾기_삭제_요청;
 import static nextstep.subway.favorite.FavoriteAcceptanceTestMethod.즐겨찾기_삭제됨;
+import static nextstep.subway.favorite.FavoriteAcceptanceTestMethod.즐겨찾기_생성_실패;
 import static nextstep.subway.favorite.FavoriteAcceptanceTestMethod.즐겨찾기_생성_요청;
 import static nextstep.subway.favorite.FavoriteAcceptanceTestMethod.즐겨찾기_생성됨;
 import static nextstep.subway.favorite.FavoriteAcceptanceTestMethod.즐겨찾기_조회_요청;
@@ -23,6 +25,7 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.member.dto.MemberRequest;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,6 +37,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
+
+    public static final String NEW_EMAIL = "new_email@email.com";
+    public static final String NEW_PASSWORD = "new_password";
+    public static final int NEW_AGE = 200;
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -121,5 +128,44 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         즐겨찾기_삭제됨(response);
+    }
+
+    /**
+     * Given. 등록되지 않은 새로운 역을 만든다.
+     * When. 즐겨찾기를 생성한다.
+     * Then. 즐겨찾기 생성에 실패한다.
+     */
+    @DisplayName("존재하지 않은 역을 즐겨찾기로 등록할 수 없다.")
+    @Test
+    void exceptionCreateFavorite01() {
+        // given
+        Station 수서역 = Station.from("수서역");
+        Station 판교역 = Station.from("판교역");
+
+        // when
+        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성_요청(토큰, FavoriteRequest.of(수서역.getId(), 판교역.getId()));
+
+        // then
+        즐겨찾기_생성_실패(createdResponse);
+    }
+
+    @DisplayName("내가 만든 즐겨찾기가 아닌 즐겨찾기를 제거할 수 없다.")
+    @Test
+    void exceptionRemoveFavorite01() {
+        // when
+        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성_요청(토큰, FavoriteRequest.of(강남역.getId(), 양재역.getId()));
+
+        // then
+        즐겨찾기_생성됨(createdResponse);
+
+        // given
+        회원_등록됨(MemberRequest.of(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
+        TokenResponse new토큰 = 로그인_요청(TokenRequest.of(NEW_EMAIL, NEW_PASSWORD)).as(TokenResponse.class);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(new토큰, createdResponse);
+
+        // then
+        즐겨찾기_삭제_실패(deleteResponse);
     }
 }
