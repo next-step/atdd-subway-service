@@ -9,23 +9,19 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import nextstep.subway.RestAssuredTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 
 import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class PathControllerTest {
-    @LocalServerPort
-    int port;
+class PathControllerTest extends RestAssuredTest {
 
     @MockBean
     PathService pathService;
@@ -36,23 +32,27 @@ class PathControllerTest {
 
     @BeforeEach
     public void setUp() {
-        RestAssured.port = port;
+        super.setUp();
     }
 
     @Test
     void 최단경로요청시_정상응답여부_확인(){
-        String startStationId = String.valueOf(강남역.getId());
-        String endStationId = String.valueOf(교대역.getId());
+        Long startStationId = 강남역.getId();
+        Long endStationId = 교대역.getId();
 
         // Given
         when(pathService.findShortestPath(startStationId,endStationId))
-                .thenReturn(new PathResponse(Lists.newArrayList(강남역,양재역,교대역)));
+                .thenReturn(new PathResponse(Lists.newArrayList(강남역,양재역,교대역),10));
         // When
-        ExtractableResponse<Response> response = pathController로_요청보내기(startStationId,endStationId);
+        ExtractableResponse<Response> response = pathController로_요청보내기(
+                String.valueOf(startStationId),
+                String.valueOf(endStationId)
+        );
 
         // Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getDistance()).isEqualTo(10);
         List<StationResponse> stations = pathResponse.getStations();
         List<String> stationNames = stations.stream().map((StationResponse::getName)).collect(toList());
         assertThat(stationNames)
