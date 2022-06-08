@@ -24,10 +24,10 @@ public class FavoriteService {
         this.stationService = stationService;
     }
 
-    public void createFavorite(LoginMember loginMember, Long sourceId, Long targetId){
+    public Favorite createFavorite(LoginMember loginMember, Long sourceId, Long targetId){
         Member member = memberService.findMemberById(loginMember.getId());
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
-        favoriteRepository.save(new Favorite(source,target,member));
+        return favoriteRepository.save(new Favorite(source,target,member));
     }
 }
