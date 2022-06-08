@@ -15,8 +15,8 @@ import java.util.List;
 @Service
 @Transactional
 public class PathService {
-    private StationRepository stationRepository;
-    private LineRepository lineRepository;
+    final private StationRepository stationRepository;
+    final private LineRepository lineRepository;
 
     public PathService(StationRepository stationRepository, LineRepository lineRepository) {
         this.stationRepository = stationRepository;
