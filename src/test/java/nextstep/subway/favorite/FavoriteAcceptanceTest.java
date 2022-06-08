@@ -116,6 +116,48 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    /**
+     * Feature: 즐겨찾기를 관리한다.(실패)
+     *
+     *   Background
+     *     Given 지하철역 등록되어 있음
+     *     And 지하철 노선 등록되어 있음
+     *     And 지하철 노선에 지하철역 등록되어 있음
+     *     And 회원 등록되어 있음
+     *     And 로그인 되어있음
+     *
+     *   Scenario: 즐겨찾기를 관리 (실패)
+     *     When 즐겨찾기 동일한 역으로 생성 요청
+     *     Then 즐겨찾기 생성 실패됨
+     *     When 없는 즐겨찾기 삭제 요청
+     *     Then 즐겨찾기 삭제 실패됨
+     */
+    @DisplayName("즐겨찾기를 관리한다.(실패)")
+    @TestFactory
+    Stream<DynamicTest> managefavorite_fail(){
+
+        return Stream.of(
+            DynamicTest.dynamicTest("즐겨찾기는 동일한 역으로 생성할 수 없다.",()->{
+
+                //when
+                ExtractableResponse<Response> response = 즐겨찾기_생성_요청(사용자, 사당역, 사당역);
+
+                //then
+                즐겨찾기_생성_실패됨(response);
+
+            }),
+
+            DynamicTest.dynamicTest("없는 즐겨찾기를 삭제할 수 없다.",()->{
+                //when
+                ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(사용자, 999999999L);
+
+                //then
+                즐겨찾기_목록_삭제_실패됨(response);
+            })
+        );
+    }
+
+
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(TokenResponse tokenResponse, StationResponse source, StationResponse target){
         Map<String, Object> params = new HashMap<>();
         params.put("source",source.getId());
@@ -169,6 +211,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_목록_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 즐겨찾기_생성_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void 즐겨찾기_목록_삭제_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 }
