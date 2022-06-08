@@ -30,6 +30,16 @@ public class Section {
 
     private int distance;
 
+    public static Section emptyOf(Line line) {
+        return new Section(line, null, null, 0);
+    }
+
+    public static Section mergeOf(Section downSection, Section upSection) {
+        return new Section(downSection.getLine(), upSection.getUpStation(),
+            downSection.getDownStation(),
+            downSection.getDistance() + upSection.getDistance());
+    }
+
     public Section() {
     }
 
