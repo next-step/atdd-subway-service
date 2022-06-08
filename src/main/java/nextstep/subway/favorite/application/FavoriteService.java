@@ -10,6 +10,7 @@ import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,6 +32,7 @@ public class FavoriteService {
         Member member = memberService.findMemberById(loginMember.getId());
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
+        validateSameStation(source, target);
         return favoriteRepository.save(new Favorite(source,target,member));
     }
 
@@ -43,6 +45,17 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(Long favoriteId){
-        favoriteRepository.deleteById(favoriteId);
+        try {
+            favoriteRepository.deleteById(favoriteId);
+        }catch (EmptyResultDataAccessException e){
+            throw new IllegalArgumentException("[ERROR] 즐겨찾기가 존재하지 않습니다.");
+        }
     }
+
+    private void validateSameStation(Station source, Station target) {
+        if(source.equals(target)){
+            throw new IllegalArgumentException("[ERROR] 동일한 역을 즐겨찾기로 등록할 수 없습니다.");
+        }
+    }
+
 }
