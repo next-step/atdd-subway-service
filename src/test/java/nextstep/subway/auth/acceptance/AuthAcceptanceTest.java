@@ -35,7 +35,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
      * When. 가입된 회원정보로 로그인을 시도한다.
      * Then. 로그인이 성공한다.
      */
-    @DisplayName("Bearer Auth")
+    @DisplayName("가입된 회원정보로 로그인이 성공되면 Access Token을 발급받는다.")
     @Test
     void myInfoWithBearerAuth() {
         // when
@@ -50,7 +50,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
      * When. 토큰 발급(로그인) 요청을 시도한다.
      * Then. 로그인이 실패한다.
      */
-    @DisplayName("Bearer Auth 로그인 실패")
+    @DisplayName("로그인 실패 시 UNAUTHORIZED 응답이 반환된다.")
     @Test
     void myInfoWithBadBearerAuth() {
         // given
@@ -70,7 +70,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
      * When. 토큰을 이용하여 회원 정보를 조회한다.
      * Then. 토큰 인증에 실패한다.
      */
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @DisplayName("유효하지 않은 토큰으로 회원정보 조회 시 UNAUTHORIZED 응답이 반환된다.")
     @ParameterizedTest
     @ValueSource(strings = {"1", "aa", "bbb", "asdofina", "!@#!@#!@#"})
     void myInfoWithWrongBearerAuth(String accessToken) {
@@ -84,11 +84,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
         토큰_인증_실패(response);
     }
     /**
-     * Given. 유효하지 않은 인증 토큰
+     * Given. 정상적인 로그인을 통해 발급받은 토큰
      * When. 토큰을 이용하여 회원 정보를 조회한다.
-     * Then. 토큰 인증에 실패한다.
+     * Then. 토큰 인증에 성공한다.
      */
-    @DisplayName("Bearer Auth 유효한 토큰으로 회원정보 조회")
+    @DisplayName("정상적인 토큰으로 회원정보 조회 시 정상 조회가 된다.")
     @Test
     void myInfoWithBearerAuth01() {
         // Given
