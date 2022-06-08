@@ -47,22 +47,6 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
-    public Station findUpStation() {
-        Station downStation = this.sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                .filter(it -> it.getDownStation() == finalDownStation)
-                .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
-    }
-
     public List<Station> getStations() {
         if (this.sections.isEmpty()) {
             return Arrays.asList();
@@ -85,6 +69,21 @@ public class Line extends BaseEntity {
         }
 
         return stations;
+    }
+    private Station findUpStation() {
+        Station downStation = this.sections.get(0).getUpStation();
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = this.sections.stream()
+                .filter(it -> it.getDownStation() == finalDownStation)
+                .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getUpStation();
+        }
+
+        return downStation;
     }
 
     public Long getId() {
