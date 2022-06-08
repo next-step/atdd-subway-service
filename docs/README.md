@@ -47,3 +47,10 @@ Feature: 지하철 구간 관련 기능
     Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
 ```
 
+------------
+1. LineService 리팩토링 시작
+    - 리팩토링 포인트 정리
+      - [ ] Line 안의 Section List 를 일급 컬렉션 Sections 로 변경
+      - [ ] LineService 에서 getStations 함수를 부분을 Sections 이동 
+      - [ ] LineService 에서 구간 추가하는 부분을 Sections 으로 이동
+      - [ ] LineService 에서 구각 삭제하는 부분을 Sections 으로 이동 
