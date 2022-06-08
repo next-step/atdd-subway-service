@@ -88,25 +88,23 @@ public class Line extends BaseEntity {
     }
 
     public void removeStation(Station 지울_정거장) {
-        Optional<Section> downSectionOptional = sections.stream().filter(
+        Optional<Section> downSection = sections.stream().filter(
             section -> section.getUpStation().equals(지울_정거장)
         ).findFirst();
 
-        Optional<Section> upSectionOptional = sections.stream().filter(
+        Optional<Section> upSection = sections.stream().filter(
             section -> section.getDownStation().equals(지울_정거장)
         ).findFirst();
 
         validateOnlyOneSection();
-        validateNoSectionForRemove(downSectionOptional, upSectionOptional);
+        validateNoSectionForRemove(downSection, upSection);
 
-        Section downSection = downSectionOptional.orElse(Section.emptyOf(this));
-        Section upSection = upSectionOptional.orElse(Section.emptyOf(this));
+        if (downSection.isPresent() && upSection.isPresent()) {
+            sections.add(Section.mergeOf(downSection.get(), upSection.get()));
+        }
+        sections.remove(downSection.orElse(Section.emptyOf(this)));
+        sections.remove(upSection.orElse(Section.emptyOf(this)));
 
-        Section mergeSection = Section.mergeOf(downSection, upSection);
-
-        sections.add(mergeSection);
-        sections.remove(downSection);
-        sections.remove(upSection);
     }
 
     private void validateNoSectionForRemove(Optional<Section> downSection,
