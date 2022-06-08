@@ -1,6 +1,7 @@
 package nextstep.subway.auth.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -8,11 +9,13 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -24,6 +27,8 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
     private TokenRequest 로그인정보;
     private TokenRequest 미등록정보;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     public void setUp(){
@@ -52,7 +57,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = 로그인_요청(로그인정보).as(TokenResponse.class);
 
         //then
-        토큰_검증(tokenResponse);
+        로그인됨(tokenResponse);
 
     }
 
@@ -120,14 +125,19 @@ class AuthAcceptanceTest extends AcceptanceTest {
         나의정보_조회_실패됨(response);
     }
 
-    private void 토큰_검증(TokenResponse tokenResponse) {
-        assertThat(tokenResponse.getAccessToken()).isNotBlank();
+    private void 로그인됨(TokenResponse tokenResponse) {
+        assertAll(
+                ()-> assertThat(tokenResponse.getAccessToken()).isNotBlank(),
+                ()-> assertThat(jwtTokenProvider.validateToken(tokenResponse.getAccessToken())).isTrue()
+        );
     }
 
     private void 나의정보_조회됨(MemberResponse response) {
-        assertThat(response.getId()).isNotNull();
-        assertThat(response.getEmail()).isEqualTo(EMAIL);
-        assertThat(response.getAge()).isEqualTo(AGE);
+        assertAll(
+                ()-> assertThat(response.getId()).isNotNull(),
+                ()-> assertThat(response.getEmail()).isEqualTo(EMAIL),
+                ()-> assertThat(response.getAge()).isEqualTo(AGE)
+        );
     }
 
     private void 나의정보_조회_실패됨(ExtractableResponse<Response> response) {
