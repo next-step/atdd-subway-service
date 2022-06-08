@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class FavoriteService {
 
+    private static final String NOT_FOUND_FAVORITE_BY_ID_AND_MEMBER_ID = "즐겨찾기 정보를 찾을 수 없습니다. (id=%s, memberId=%s)";
+
     private final FavoriteRepository favoriteRepository;
     private final MemberService memberService;
     private final StationService stationService;
@@ -44,5 +46,15 @@ public class FavoriteService {
         return favorites.stream()
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void removeFavorite(LoginMember loginMember, Long favoriteId) {
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, loginMember.getId())
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format(NOT_FOUND_FAVORITE_BY_ID_AND_MEMBER_ID, favoriteId, loginMember.getId())
+                ));
+
+        favoriteRepository.delete(favorite);
     }
 }
