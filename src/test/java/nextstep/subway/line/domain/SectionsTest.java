@@ -24,9 +24,9 @@ class SectionsTest {
     @Test
     void getDistance() {
         List<Section> sections = new ArrayList<>();
-        sections.add(createSection(Line.createEmpty(), createStation(1L, "강남역"), createStation(2L, "양재역"),
+        sections.add(createSection(노선_생성(), createStation(1L, "강남역"), createStation(2L, "양재역"),
                 Distance.valueOf(10)));
-        sections.add(createSection(Line.createEmpty(), createStation(2L, "양재역"), createStation(4L, "양재시민의숲역"),
+        sections.add(createSection(노선_생성(), createStation(2L, "양재역"), createStation(4L, "양재시민의숲역"),
                 Distance.valueOf(5)));
         assertThat(Sections.valueOf(sections).distance()).isEqualTo(Distance.valueOf(15));
     }
@@ -35,9 +35,9 @@ class SectionsTest {
     @Test
     void addSectionIfEqualUpStation() {
         Sections sections = Sections.valueOf(Lists.newArrayList(
-                createSection(Line.createEmpty(), createStation(1L, "양재역"), createStation(2L, "양재시민의숲역"),
+                createSection(노선_생성(), createStation(1L, "양재역"), createStation(2L, "양재시민의숲역"),
                         Distance.valueOf(10))));
-        Section newSection = createSection(Line.createEmpty(), createStation(1L, "양재역"), createStation(3L, "판교역"),
+        Section newSection = createSection(노선_생성(), createStation(1L, "양재역"), createStation(3L, "판교역"),
                 Distance.valueOf(5));
         sections.addSection(newSection);
         List<String> stationNames = sections.orderedStations().stream()
@@ -50,9 +50,9 @@ class SectionsTest {
     @Test
     void addSectionIfEqualDownStation() {
         Sections sections = Sections.valueOf(Lists.newArrayList(
-                createSection(Line.createEmpty(), createStation(1L, "양재역"), createStation(2L, "양재시민의숲역"),
+                createSection(노선_생성(), createStation(1L, "양재역"), createStation(2L, "양재시민의숲역"),
                         Distance.valueOf(10))));
-        Section newSection = createSection(Line.createEmpty(), createStation(3L, "판교역"), createStation(2L, "양재시민의숲역"),
+        Section newSection = createSection(노선_생성(), createStation(3L, "판교역"), createStation(2L, "양재시민의숲역"),
                 Distance.valueOf(5));
         sections.addSection(newSection);
         List<String> stationNames = sections.orderedStations().stream()
@@ -65,9 +65,9 @@ class SectionsTest {
     @Test
     void addSectionAtDownStation() {
         Sections sections = Sections.valueOf(Lists.newArrayList(
-                createSection(Line.createEmpty(), createStation(1L, "양재역"), createStation(3L, "판교역"),
+                createSection(노선_생성(), createStation(1L, "양재역"), createStation(3L, "판교역"),
                         Distance.valueOf(10))));
-        Section newSection = createSection(Line.createEmpty(), createStation(3L, "판교역"), createStation(2L, "양재시민의숲역"),
+        Section newSection = createSection(노선_생성(), createStation(3L, "판교역"), createStation(2L, "양재시민의숲역"),
                 Distance.valueOf(5));
         sections.addSection(newSection);
         List<String> stationNames = sections.orderedStations().stream()
@@ -80,9 +80,9 @@ class SectionsTest {
     @Test
     void addSectionAtUpStation() {
         Sections sections = Sections.valueOf(Lists.newArrayList(
-                createSection(Line.createEmpty(), createStation(2L, "판교역"), createStation(3L, "양재시민의숲역"),
+                createSection(노선_생성(), createStation(2L, "판교역"), createStation(3L, "양재시민의숲역"),
                         Distance.valueOf(10))));
-        Section newSection = createSection(Line.createEmpty(), createStation(1L, "양재역"), createStation(2L, "판교역"),
+        Section newSection = createSection(노선_생성(), createStation(1L, "양재역"), createStation(2L, "판교역"),
                 Distance.valueOf(5));
         sections.addSection(newSection);
         List<String> stationNames = sections.orderedStations().stream()
@@ -96,9 +96,9 @@ class SectionsTest {
     @ValueSource(ints = {10, 12})
     void addSectionInsideByEqualOrLongerDistance(int input) {
         Sections sections = Sections.valueOf(Lists.newArrayList(
-                createSection(Line.createEmpty(), createStation(1L, "양재역"), createStation(3L, "양재시민의숲역"),
+                createSection(노선_생성(), createStation(1L, "양재역"), createStation(3L, "양재시민의숲역"),
                         Distance.valueOf(10))));
-        Section newSection = createSection(Line.createEmpty(), createStation(1L, "양재역"), createStation(2L, "판교역"),
+        Section newSection = createSection(노선_생성(), createStation(1L, "양재역"), createStation(2L, "판교역"),
                 Distance.valueOf(input));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> sections.addSection(newSection))
@@ -109,9 +109,9 @@ class SectionsTest {
     @Test
     void addSectionContainsUpStationAndDownStation() {
         Sections sections = Sections.valueOf(Lists.newArrayList(
-                createSection(Line.createEmpty(), createStation(1L, "양재역"), createStation(3L, "양재시민의숲역"),
+                createSection(노선_생성(), createStation(1L, "양재역"), createStation(3L, "양재시민의숲역"),
                         Distance.valueOf(10))));
-        Section newSection = createSection(Line.createEmpty(), createStation(1L, "양재역"), createStation(3L, "양재시민의숲역"),
+        Section newSection = createSection(노선_생성(), createStation(1L, "양재역"), createStation(3L, "양재시민의숲역"),
                 Distance.valueOf(5));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> sections.addSection(newSection))
@@ -122,9 +122,9 @@ class SectionsTest {
     @Test
     void addSectionContainsNoneOfUpStationAndDownStation() {
         Sections sections = Sections.valueOf(Lists.newArrayList(
-                createSection(Line.createEmpty(), createStation(1L, "양재역"), createStation(3L, "양재시민의숲역"),
+                createSection(노선_생성(), createStation(1L, "양재역"), createStation(3L, "양재시민의숲역"),
                         Distance.valueOf(10))));
-        Section newSection = createSection(Line.createEmpty(), createStation(2L, "판교"), createStation(4L, "미정"),
+        Section newSection = createSection(노선_생성(), createStation(2L, "판교"), createStation(4L, "미정"),
                 Distance.valueOf(5));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> sections.addSection(newSection))
@@ -138,9 +138,9 @@ class SectionsTest {
         Station 판교역 = createStation(2L, "판교역");
         Station 양재시민의숲역 = createStation(3L, "양재시민의숲역");
         Sections sections = Sections.valueOf(Lists.newArrayList(
-                createSection(Line.createEmpty(), 판교역, 양재시민의숲역,
+                createSection(노선_생성(), 판교역, 양재시민의숲역,
                         Distance.valueOf(10))));
-        Section newSection = createSection(Line.createEmpty(), 양재역, 판교역,
+        Section newSection = createSection(노선_생성(), 양재역, 판교역,
                 Distance.valueOf(5));
         sections.addSection(newSection);
 
@@ -158,9 +158,9 @@ class SectionsTest {
         Station 판교역 = createStation(2L, "판교역");
         Station 양재시민의숲역 = createStation(3L, "양재시민의숲역");
         Sections sections = Sections.valueOf(Lists.newArrayList(
-                createSection(Line.createEmpty(), 판교역, 양재시민의숲역,
+                createSection(노선_생성(), 판교역, 양재시민의숲역,
                         Distance.valueOf(10))));
-        Section newSection = createSection(Line.createEmpty(), 양재역, 판교역,
+        Section newSection = createSection(노선_생성(), 양재역, 판교역,
                 Distance.valueOf(5));
         sections.addSection(newSection);
 
@@ -179,9 +179,9 @@ class SectionsTest {
         Station 양재시민의숲역 = createStation(3L, "양재시민의숲역");
         Station 미정역 = createStation(4L, "미정역");
         Sections sections = Sections.valueOf(Lists.newArrayList(
-                createSection(Line.createEmpty(), 판교역, 양재시민의숲역,
+                createSection(노선_생성(), 판교역, 양재시민의숲역,
                         Distance.valueOf(10))));
-        Section newSection = createSection(Line.createEmpty(), 양재역, 판교역,
+        Section newSection = createSection(노선_생성(), 양재역, 판교역,
                 Distance.valueOf(5));
         sections.addSection(newSection);
 
@@ -196,10 +196,15 @@ class SectionsTest {
         Station 양재역 = createStation(1L, "양재역");
         Station 판교역 = createStation(2L, "판교역");
         Sections sections = Sections.valueOf(Lists.newArrayList(
-                createSection(Line.createEmpty(), 양재역, 판교역,
+                createSection(노선_생성(), 양재역, 판교역,
                         Distance.valueOf(10))));
         assertThatThrownBy(() -> sections.deleteSection(판교역))
                 .isInstanceOf(ImpossibleDeleteException.class)
                 .hasMessage("제거 가능한 구간이 없습니다.");
+    }
+
+    private Line 노선_생성() {
+        return Line.builder("노선", "color", createStation("지하철역"), createStation("새로운지하철역"), Distance.valueOf(1))
+                .build();
     }
 }

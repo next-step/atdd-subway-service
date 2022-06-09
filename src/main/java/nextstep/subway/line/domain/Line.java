@@ -35,10 +35,6 @@ public class Line extends BaseEntity {
                 .build());
     }
 
-    public static Line createEmpty() {
-        return new Line();
-    }
-
     public static LineBuilder builder(String name, String color, Station upStation, Station downStation,
                                       Distance distance) {
         return new LineBuilder(name, color, upStation, downStation, distance);

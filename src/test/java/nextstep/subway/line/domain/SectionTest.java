@@ -16,7 +16,7 @@ class SectionTest {
     @Test
     void createSectionByNullUpStation() {
         assertThatThrownBy(
-                () -> Section.builder(Line.createEmpty(), null, createStation(1L, "새로운지하철역"), Distance.valueOf(10))
+                () -> Section.builder(노선_생성(), null, createStation(1L, "새로운지하철역"), Distance.valueOf(10))
                         .build()).isInstanceOf(NotFoundException.class).hasMessage("상행역 정보가 없습니다.");
     }
 
@@ -24,7 +24,7 @@ class SectionTest {
     @Test
     void createSectionByNullDownStation() {
         assertThatThrownBy(
-                () -> Section.builder(Line.createEmpty(), createStation(1L, "지하철역"), null, Distance.valueOf(10))
+                () -> Section.builder(노선_생성(), createStation(1L, "지하철역"), null, Distance.valueOf(10))
                         .build()).isInstanceOf(NotFoundException.class).hasMessage("하행역 정보가 없습니다.");
     }
 
@@ -32,9 +32,9 @@ class SectionTest {
     @Test
     void updateSectionEqualToUpStation() {
         Station newStation = createStation(3L, "더새로운지하철역");
-        Section section = createSection(Line.createEmpty(), createStation(1L, "지하철역"), createStation(2L, "새로운지하철역"),
+        Section section = createSection(노선_생성(), createStation(1L, "지하철역"), createStation(2L, "새로운지하철역"),
                 Distance.valueOf(10));
-        Section newSection = createSection(Line.createEmpty(), createStation(1L, "지하철역"), newStation,
+        Section newSection = createSection(노선_생성(), createStation(1L, "지하철역"), newStation,
                 Distance.valueOf(5));
         section.update(newSection);
         assertAll(() -> assertThat(section.upStation()).isEqualTo(newStation),
@@ -45,12 +45,17 @@ class SectionTest {
     @Test
     void updateSectionEqualToDownStation() {
         Station newStation = createStation(3L, "더새로운지하철역");
-        Section section = createSection(Line.createEmpty(), createStation(1L, "지하철역"), createStation(2L, "새로운지하철역"),
+        Section section = createSection(노선_생성(), createStation(1L, "지하철역"), createStation(2L, "새로운지하철역"),
                 Distance.valueOf(10));
-        Section newSection = createSection(Line.createEmpty(), newStation, createStation(2L, "새로운지하철역"),
+        Section newSection = createSection(노선_생성(), newStation, createStation(2L, "새로운지하철역"),
                 Distance.valueOf(5));
         section.update(newSection);
         assertAll(() -> assertThat(section.downStation()).isEqualTo(newStation),
                 () -> assertThat(section.distance()).isEqualTo(Distance.valueOf(5)));
+    }
+
+    private Line 노선_생성() {
+        return Line.builder("노선", "color", createStation("지하철역"), createStation("새로운지하철역"), Distance.valueOf(1))
+                .build();
     }
 }
