@@ -24,11 +24,11 @@ public class PathService {
     public PathResponse findShortestPath(Long departureStationId, Long arrivalStationId) {
         List<Line> lines = lineService.findAll();
         PathFinder pathFinder = new PathFinder(lines);
-        Station source = stationService.findById(departureStationId);
-        Station target = stationService.findById(arrivalStationId);
+        Station departureStation = stationService.findById(departureStationId);
+        Station arrivalStation = stationService.findById(arrivalStationId);
 
-        List<Station> vertexList = pathFinder.findVertexList(source, target);
-        int weight = pathFinder.getWeight(source, target);
+        List<Station> vertexList = pathFinder.findVertexList(departureStation, arrivalStation);
+        int weight = pathFinder.getWeight(departureStation, arrivalStation);
         return PathResponse.of(vertexList, weight);
     }
 }
