@@ -15,6 +15,10 @@ public class SectionEdge extends DefaultWeightedEdge {
         this.weight = weight;
     }
 
+    public static SectionEdge of(Section section) {
+        return new SectionEdge(section.getUpStation(), section.getDownStation(), section.getDistance());
+    }
+
     @Override
     public Station getSource() {
         return source;
@@ -28,9 +32,5 @@ public class SectionEdge extends DefaultWeightedEdge {
     @Override
     public double getWeight() {
         return weight;
-    }
-
-    public static SectionEdge of(Section section){
-        return new SectionEdge(section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 }

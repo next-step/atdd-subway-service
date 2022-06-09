@@ -1,5 +1,7 @@
 package nextstep.subway.path;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
@@ -19,8 +21,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static org.assertj.core.api.Assertions.*;
-
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
 
@@ -32,11 +32,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
 
+    public static ExtractableResponse<Response> 도착역으로가는_최단경로를_조회한다(StationResponse source, StationResponse target) {
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("source", String.valueOf(source.getId()));
+        queryParams.put("target", String.valueOf(target.getId()));
+
+        return RestAssured
+                .given().log().all()
+                .accept(ContentType.JSON)
+                .queryParams(queryParams)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
     /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
+     * 교대역    --- *2호선* ---   강남역 |                        | *3호선*                   *신분당선* |                        |
      * 남부터미널역  --- *3호선* ---   양재
      */
     @BeforeEach
@@ -56,31 +67,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 최단경로찾기(){
-        StationResponse 출발역 =  교대역;
-        StationResponse 도착역 =  양재역;
+    void 최단경로찾기() {
+        StationResponse 출발역 = 교대역;
+        StationResponse 도착역 = 양재역;
 
-        ExtractableResponse<Response> response = 도착역으로가는_최단경로를_조회한다(교대역,양재역);
+        ExtractableResponse<Response> response = 도착역으로가는_최단경로를_조회한다(교대역, 양재역);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         PathResponse pathResponse = response.as(PathResponse.class);
         List<StationResponse> stations = pathResponse.getStations();
         assertThat(stations)
                 .hasSize(3)
-                .containsExactly(교대역,남부터미널역,양재역);
+                .containsExactly(교대역, 남부터미널역, 양재역);
     }
-
-    public static ExtractableResponse<Response> 도착역으로가는_최단경로를_조회한다(StationResponse source, StationResponse target) {
-        Map<String,String> queryParams = new HashMap<>();
-        queryParams.put("source",String.valueOf(source.getId()));
-        queryParams.put("target",String.valueOf(target.getId()));
-
-        return RestAssured
-                    .given().log().all()
-                        .accept(ContentType.JSON)
-                        .queryParams(queryParams)
-                    .when().get("/paths")
-                    .then().log().all()
-                    .extract();
-        }
 }

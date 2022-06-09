@@ -23,7 +23,7 @@ public class Sections {
 
     }
 
-    public List<SectionEdge> toSectionEdge(){
+    public List<SectionEdge> toSectionEdge() {
         return elements.stream().map(SectionEdge::of).collect(toList());
     }
 
@@ -142,10 +142,11 @@ public class Sections {
                 .findFirst();
     }
 
-    private void addMergedSection(Optional<Section> upStationMatchedSection, Optional<Section> downStationMatchedSection) {
+    private void addMergedSection(Optional<Section> upStationMatchedSection,
+                                  Optional<Section> downStationMatchedSection) {
         boolean isMiddleStation = upStationMatchedSection.isPresent() && downStationMatchedSection.isPresent();
         if (isMiddleStation) {
-            elements.add(Section.createMergedSection(downStationMatchedSection.get(),upStationMatchedSection.get()));
+            elements.add(Section.createMergedSection(downStationMatchedSection.get(), upStationMatchedSection.get()));
         }
     }
 

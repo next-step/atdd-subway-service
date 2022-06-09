@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain.exception;
 
-public class NotExistPathException extends Exception{
+public class NotExistPathException extends Exception {
     public NotExistPathException() {
     }
 

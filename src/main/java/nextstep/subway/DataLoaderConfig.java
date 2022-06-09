@@ -38,8 +38,8 @@ public class DataLoaderConfig implements CommandLineRunner {
         memberRepository.save(new Member("probitanima11@gmail.com", "11", 10));
     }
 
-    private Line createLine(String name, String color, Station upStation, Station downStation, int distance){
-        return new Builder(name,color)
+    private Line createLine(String name, String color, Station upStation, Station downStation, int distance) {
+        return new Builder(name, color)
                 .upStation(upStation)
                 .downStation(downStation)
                 .distance(distance)

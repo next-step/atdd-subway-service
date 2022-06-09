@@ -10,7 +10,7 @@ public class PathResponse {
 
     private int distance;
 
-    protected PathResponse(){
+    protected PathResponse() {
 
     }
 
@@ -21,7 +21,7 @@ public class PathResponse {
     }
 
     public static PathResponse of(PathFindResult findResult) {
-        return new PathResponse(StationResponse.of(findResult.getStations()),findResult.getDistance());
+        return new PathResponse(StationResponse.of(findResult.getStations()), findResult.getDistance());
     }
 
     public List<StationResponse> getStations() {

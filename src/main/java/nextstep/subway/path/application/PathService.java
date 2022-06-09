@@ -29,7 +29,7 @@ public class PathService {
         try {
             findResult = pathFindService.findShortestPath(startStation, endStation);
         } catch (NotExistPathException e) {
-            throw new IllegalStateException(e.getMessage(),e);
+            throw new IllegalStateException(e.getMessage(), e);
         }
         return PathResponse.of(findResult);
     }

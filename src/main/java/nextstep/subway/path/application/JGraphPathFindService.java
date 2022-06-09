@@ -31,15 +31,15 @@ public class JGraphPathFindService implements PathFindService {
 
         GraphPath<Station, SectionEdge> shortestPath = algorithm.getPath(startStation, endStation);
         boolean notExistPath = shortestPath == null;
-        if(notExistPath){
+        if (notExistPath) {
             throw new NotExistPathException("도달가능한 경로가 없습니다.");
         }
-        return new PathFindResult(shortestPath.getVertexList(),(int) shortestPath.getWeight());
+        return new PathFindResult(shortestPath.getVertexList(), (int) shortestPath.getWeight());
     }
 
-    private WeightedMultigraph<Station, SectionEdge> toGraph(List<Line> lines){
+    private WeightedMultigraph<Station, SectionEdge> toGraph(List<Line> lines) {
         WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
-        lines.stream().forEach( line -> addLineToGraph(graph,line));
+        lines.stream().forEach(line -> addLineToGraph(graph, line));
         return graph;
     }
 
@@ -48,6 +48,6 @@ public class JGraphPathFindService implements PathFindService {
         stations.stream().forEach(graph::addVertex);
         Sections sections = line.getSections();
         List<SectionEdge> edges = sections.toSectionEdge();
-        edges.stream().forEach(edge-> graph.addEdge(edge.getSource(),edge.getTarget(),edge));
+        edges.stream().forEach(edge -> graph.addEdge(edge.getSource(), edge.getTarget(), edge));
     }
 }

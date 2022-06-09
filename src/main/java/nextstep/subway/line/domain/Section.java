@@ -41,20 +41,21 @@ public class Section {
     }
 
     public static Section createMergedSection(Section firstSection, Section secondSection) {
-        if(firstSection.downStation != secondSection.upStation){
+        if (firstSection.downStation != secondSection.upStation) {
             throw new IllegalArgumentException("인접한 두 역끼리만 합칠 수 있습니다.");
         }
-        if(firstSection.line != secondSection.line){
+        if (firstSection.line != secondSection.line) {
             throw new IllegalArgumentException("동일한 노선에 속한 구간만 합칠 수 있습니다.");
         }
-        return new Section(firstSection.line, firstSection.upStation, secondSection.downStation, firstSection.distance + secondSection.distance);
+        return new Section(firstSection.line, firstSection.upStation, secondSection.downStation,
+                firstSection.distance + secondSection.distance);
     }
 
-    public boolean isPrevOf(Section another){
+    public boolean isPrevOf(Section another) {
         return this.downStation == another.upStation;
     }
 
-    public boolean isNextOf(Section another){
+    public boolean isNextOf(Section another) {
         return this.upStation == another.downStation;
     }
 
