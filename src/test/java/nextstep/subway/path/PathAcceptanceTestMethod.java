@@ -39,4 +39,13 @@ public class PathAcceptanceTestMethod extends AcceptanceTest {
     public static void 지하철_최단경로_조회_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
+
+    public static void 지하철_최단경로_요금도_함께_조회됨(ExtractableResponse<Response> response,
+                                           List<StationResponse> expectedStations,
+                                           int distance,
+                                           int fare) {
+        지하철_최단경로_조회됨(response, expectedStations, distance);
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
+    }
 }

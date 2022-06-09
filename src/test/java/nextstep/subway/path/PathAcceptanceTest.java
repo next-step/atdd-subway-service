@@ -2,6 +2,7 @@ package nextstep.subway.path;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTestMethod.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestMethod.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.path.PathAcceptanceTestMethod.지하철_최단경로_요금도_함께_조회됨;
 import static nextstep.subway.path.PathAcceptanceTestMethod.지하철_최단경로_조회_실패;
 import static nextstep.subway.path.PathAcceptanceTestMethod.지하철_최단경로_조회_요청;
 import static nextstep.subway.path.PathAcceptanceTestMethod.지하철_최단경로_조회됨;
@@ -103,5 +104,24 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_최단경로_조회_실패(response);
+    }
+
+    /**
+     * given. 지하철 역이 등록되어 있음.
+     * and. 지하철 노선이 등록되어 있음.
+     * and. 지하철 노선에 지하철역이 등록되어 있음.
+     * when. 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+     * then. 최단 거리 경로를 응답
+     * and. 총 거리도 함께 응답함.
+     * and. ** 지하철 이용 요금도 함께 응답함 **
+     */
+    @DisplayName("두 역의 최단 거리 경로를 조회할 수 있다.")
+    @Test
+    void findShortPath02() {
+        // when
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId());
+
+        // then
+        지하철_최단경로_요금도_함께_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 8, 1250);
     }
 }

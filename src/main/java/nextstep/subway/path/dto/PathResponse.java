@@ -8,6 +8,7 @@ import nextstep.subway.utils.StreamUtils;
 public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
+    private int fare;
 
     private PathResponse() {}
 
@@ -28,4 +29,6 @@ public class PathResponse {
     public int getDistance() {
         return this.distance;
     }
+
+    public int getFare() { return this.fare; }
 }
