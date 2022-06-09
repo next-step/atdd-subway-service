@@ -63,11 +63,11 @@ public class Sections {
     }
 
     private boolean isUpStationExisted(Section section) {
-        return orderedStations().stream().anyMatch(station -> station.equals(section.upStation()));
+        return orderedStations().stream().anyMatch(station -> section.sameUpStation(station));
     }
 
     private boolean isDownStationExisted(Section section) {
-        return orderedStations().stream().anyMatch(station -> station.equals(section.downStation()));
+        return orderedStations().stream().anyMatch(station -> section.sameDownStation(station));
     }
 
     public List<Station> orderedStations() {
@@ -154,14 +154,14 @@ public class Sections {
 
     private Section findSectionWithSameUpStation(Station station) {
         return sections.stream()
-                .filter(section -> station.equals(section.upStation()))
+                .filter(section -> section.sameUpStation(station))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("일치하는 상행역이 없습니다."));
     }
 
     private Section findSectionWithSameDownStation(Station station) {
         return sections.stream()
-                .filter(section -> station.equals(section.downStation()))
+                .filter(section -> section.sameDownStation(station))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("일치하는 하행역이 없습니다."));
     }

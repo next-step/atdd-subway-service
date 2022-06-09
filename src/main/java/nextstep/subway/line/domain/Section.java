@@ -136,7 +136,7 @@ public class Section extends BaseEntity {
     }
 
     private boolean isEqualsUpStation(Section newSection) {
-        return this.upStation().equals(newSection.upStation());
+        return upStation.equals(newSection.upStation());
     }
 
     private void updateUpStation(Section newSection) {
@@ -159,6 +159,14 @@ public class Section extends BaseEntity {
         if (!isLongerThan(newDistance)) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
+    }
+
+    public boolean sameDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
+    public boolean sameUpStation(Station station) {
+        return upStation.equals(station);
     }
 
     private boolean isLongerThan(Distance newDistance) {
