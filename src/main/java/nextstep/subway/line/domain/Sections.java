@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.error.ErrorCodeException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -11,6 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
+import static nextstep.subway.error.ErrorCode.EXISTS_BOTH_STATIONS;
+import static nextstep.subway.error.ErrorCode.NO_EXISTS_BOTH_STATIONS;
 
 @Embeddable
 public class Sections {
@@ -70,11 +73,11 @@ public class Sections {
         boolean isDownStationExisted = stations.stream().anyMatch(section::matchDownStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new ErrorCodeException(EXISTS_BOTH_STATIONS);
         }
 
         if (!isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new ErrorCodeException(NO_EXISTS_BOTH_STATIONS);
         }
 
         if (isUpStationExisted) {
