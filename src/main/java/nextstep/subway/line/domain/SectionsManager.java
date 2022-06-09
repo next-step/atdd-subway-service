@@ -70,10 +70,7 @@ public class SectionsManager {
             .findFirst();
     }
 
-    public void removeSectionWithStation(Station removeStation) {
-        Optional<Section> downSection = getSectionByUpStation(removeStation);
-        Optional<Section> upSection = getSectionByDownStation(removeStation);
-
+    public void removeSectionWithStation(Optional<Section> upSection, Optional<Section> downSection) {
         validateOnlyOneSection();
         validateNoSectionForRemove(downSection, upSection);
 
