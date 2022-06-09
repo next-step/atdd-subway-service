@@ -97,11 +97,7 @@ public class Sections {
             sections.remove(findSectionWithSameDownStation(station));
             return;
         }
-        Section nextSection = findSectionWithSameUpStation(station);
-        Section prevSection = findSectionWithSameDownStation(station);
-        sections.remove(nextSection);
-        sections.remove(prevSection);
-        sections.add(mergeSection(prevSection, nextSection));
+        deleteInsideStation(station);
     }
 
     private void validateNumberOfSections() {
@@ -164,6 +160,14 @@ public class Sections {
                 .filter(section -> section.sameDownStation(station))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("일치하는 하행역이 없습니다."));
+    }
+
+    private void deleteInsideStation(Station station) {
+        Section nextSection = findSectionWithSameUpStation(station);
+        Section prevSection = findSectionWithSameDownStation(station);
+        sections.remove(nextSection);
+        sections.remove(prevSection);
+        sections.add(mergeSection(prevSection, nextSection));
     }
 
     private Section mergeSection(Section prevSection, Section nextSection) {
