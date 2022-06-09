@@ -1,13 +1,13 @@
 package nextstep.subway.path;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.로그인_요청;
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.토큰_인증_실패;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestMethod.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestMethod.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.member.MemberAcceptanceTestMethod.회원_등록됨;
+import static nextstep.subway.path.PathAcceptanceTestMethod.비회원_지하철_최단경로_조회_요청;
 import static nextstep.subway.path.PathAcceptanceTestMethod.지하철_최단경로_요금도_함께_조회됨;
 import static nextstep.subway.path.PathAcceptanceTestMethod.지하철_최단경로_조회_실패;
-import static nextstep.subway.path.PathAcceptanceTestMethod.지하철_최단경로_조회_요청;
+import static nextstep.subway.path.PathAcceptanceTestMethod.회원_지하철_최단경로_조회_요청;
 import static nextstep.subway.path.PathAcceptanceTestMethod.지하철_최단경로_조회됨;
 import static nextstep.subway.station.StationAcceptanceTest.*;
 
@@ -83,7 +83,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortPath01() {
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId(), 토큰);
+        ExtractableResponse<Response> response = 회원_지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId(), 토큰);
 
         // then
         지하철_최단경로_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 8);
@@ -93,7 +93,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void exceptionFindShortPath01() {
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 교대역.getId(), 토큰);
+        ExtractableResponse<Response> response = 회원_지하철_최단경로_조회_요청(교대역.getId(), 교대역.getId(), 토큰);
 
         // then
         지하철_최단경로_조회됨(response, Arrays.asList(교대역), 0);
@@ -106,7 +106,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 수서역 = 지하철역_등록되어_있음("수서역").as(StationResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(수서역.getId(), 교대역.getId(), 토큰);
+        ExtractableResponse<Response> response = 회원_지하철_최단경로_조회_요청(수서역.getId(), 교대역.getId(), 토큰);
 
         // then
         지하철_최단경로_조회_실패(response);
@@ -119,7 +119,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 수서역 = 지하철역_등록되어_있음("수서역").as(StationResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 수서역.getId(), 토큰);
+        ExtractableResponse<Response> response = 회원_지하철_최단경로_조회_요청(교대역.getId(), 수서역.getId(), 토큰);
 
         // then
         지하철_최단경로_조회_실패(response);
@@ -138,7 +138,20 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortPath02() {
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId(), 토큰);
+        ExtractableResponse<Response> response = 회원_지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId(), 토큰);
+
+        // then
+        지하철_최단경로_요금도_함께_조회됨(response,
+                Arrays.asList(교대역, 남부터미널역, 양재역),
+                8,
+                BASIC_FARE + TRD_LINE_FARE);
+    }
+
+    @DisplayName("비로그인 상태에서 두 역의 최단 거리 경로를 조회할 수 있다.")
+    @Test
+    void findShortPath03() {
+        // when
+        ExtractableResponse<Response> response = 비회원_지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId());
 
         // then
         지하철_최단경로_요금도_함께_조회됨(response,

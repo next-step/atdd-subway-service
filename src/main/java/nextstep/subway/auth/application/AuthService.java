@@ -1,5 +1,6 @@
 package nextstep.subway.auth.application;
 
+import java.util.Objects;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -29,6 +30,10 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
+        if (Objects.isNull(credentials)) {
+            return new LoginMember();
+        }
+
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException();
         }
