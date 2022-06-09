@@ -1,5 +1,9 @@
 package study.jgraph;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -9,11 +13,6 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JgraphTest {
 
@@ -26,12 +25,23 @@ class JgraphTest {
     @BeforeEach
     void setUp(){
         graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+
         graph.addVertex(V1);
         graph.addVertex(V2);
         graph.addVertex(V3);
         graph.setEdgeWeight(graph.addEdge(V1, V2), 2);
         graph.setEdgeWeight(graph.addEdge(V2, V3), 2);
         graph.setEdgeWeight(graph.addEdge(V1, V3), 100);
+    }
+
+    @Test
+    @DisplayName("Vertax 추가 테스트")
+    void addVertexDuplicateTest() {
+        boolean isFirstVertexAdded = graph.addVertex(V4);
+        boolean isSecondVertexAdded = graph.addVertex(V4);
+
+        assertThat(isFirstVertexAdded).isTrue();
+        assertThat(isSecondVertexAdded).isFalse();
     }
 
     @Test
@@ -52,6 +62,8 @@ class JgraphTest {
         ShortestPathAlgorithm dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath<String,DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(source, target);
         assertThat(shortestPath.getLength()).isZero();
+        assertThat(shortestPath.getVertexList()).hasSize(1).containsOnly(V1);
+        assertThat(shortestPath.getWeight()).isEqualTo(0);
     }
 
     @Test
@@ -66,6 +78,7 @@ class JgraphTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
+
     @Test
     @DisplayName("Dijkstra 최단경로까지 찾기")
     void getDijkstraShortestPath() {
@@ -73,9 +86,14 @@ class JgraphTest {
         String target = V1;
 
         ShortestPathAlgorithm dijkstraShortestPath = new DijkstraShortestPath(graph);
-        List<String> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
+        GraphPath<String,DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(source, target);
+        List<String> stationList = shortestPath.getVertexList();
+        int edgeCount = shortestPath.getLength();
+        double totalWeight = shortestPath.getWeight();
 
-        assertThat(shortestPath).hasSize(3);
+        assertThat(stationList).hasSize(3);
+        assertThat(edgeCount).isEqualTo(2);
+        assertThat(totalWeight).isEqualTo(4L);
     }
 
     @Test
