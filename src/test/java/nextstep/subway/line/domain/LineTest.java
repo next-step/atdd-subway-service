@@ -2,8 +2,8 @@ package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.util.List;
 import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.exception.ExceptionType;
 import nextstep.subway.station.domain.Station;
@@ -66,40 +66,21 @@ class LineTest {
         assertThat(line.getColor()).isEqualTo("blue");
     }
 
-    @DisplayName("노선에 구간을 등록하면 정상적으로 등록되어야 한다")
+    @DisplayName("노선이 구간을 생성하면 정상적으로 생성되어야 한다")
     @Test
-    void line_register_section_test() {
+    void line_created_section_test() {
         // given
-        Station 강남역 = new Station("강남");
-        Station 양재역 = new Station("양재");
-        Station 양재시민의숲역 = new Station("양재시민의숲");
-        Station 신논현역 = new Station("신논현");
+        Station 대림역 = new Station("대림");
+        Station 신대방역 = new Station("신대방");
+        Station 신림역 = new Station("신림");
+        Line 이호선 = Line.of("2호선", "blue", 대림역, 신림역, 5);
 
-        // when
-        Line line = Line.of("신분당선", "red", 강남역, 양재시민의숲역, 10);
-        line.registerSection(강남역, 양재역, 5);
-        line.registerSection(신논현역, 강남역, 10);
+        Section 생성된_노선 = 이호선.createSection(대림역, 신대방역, 10);
 
-        // then
-        assertThat(line.getStations()).containsExactly(신논현역, 강남역, 양재역, 양재시민의숲역);
-    }
-
-    @DisplayName("노선에 구간을 삭제하면 정상적으로 삭제되어야 한다")
-    @Test
-    void line_remove_section_test() {
-        // given
-        Station 강남역 = new Station("강남");
-        Station 양재역 = new Station("양재");
-        Station 양재시민의숲역 = new Station("양재시민의숲");
-        Station 신논현역 = new Station("신논현");
-
-        // when
-        Line line = Line.of("신분당선", "red", 강남역, 양재시민의숲역, 10);
-        line.registerSection(강남역, 양재역, 5);
-        line.registerSection(신논현역, 강남역, 10);
-
-        // then
-        line.removeStation(양재역);
-        assertThat(line.getStations()).containsExactly(신논현역, 강남역, 양재시민의숲역);
+        assertAll(
+            () -> assertThat(생성된_노선.getUpStation()).isEqualTo(대림역),
+            () -> assertThat(생성된_노선.getDownStation()).isEqualTo(신대방역),
+            () -> assertThat(생성된_노선.getDistance()).isEqualTo(new Distance(10))
+        );
     }
 }
