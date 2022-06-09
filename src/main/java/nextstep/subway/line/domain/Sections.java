@@ -79,7 +79,7 @@ public class Sections {
         Optional<Section> downSection = findDownSection(station);
 
         if (upSection.isPresent() && downSection.isPresent()) {
-            reLocateStation(upSection.get(), downSection.get());
+            addReConstructedStation(upSection.get(), downSection.get());
         }
 
         upSection.ifPresent(elements::remove);
@@ -108,7 +108,8 @@ public class Sections {
                 .findFirst();
     }
 
-    private void reLocateStation(Section upSection, Section downSection) {
+    private void addReConstructedStation(Section upSection, Section downSection) {
         upSection.reLocateDownStation(downSection);
+        elements.add(upSection);
     }
 }
