@@ -5,6 +5,8 @@ public enum FareSectionType {
     SECTION_10_TO_50(10, 5),
     SECTION_OVER_50(50, 8);
 
+    private static final int BASIC_SECTION_MAX_DISTANCE = 10;
+
     private int minDistance;
     private int additionalFareUnit;
 
@@ -21,5 +23,13 @@ public enum FareSectionType {
             return SECTION_10_TO_50;
         }
         return BASIC;
+    }
+
+    public int getAdditionalFareUnit() {
+        return this.additionalFareUnit;
+    }
+
+    public int findOverDistance(int distance) {
+        return distance - BASIC_SECTION_MAX_DISTANCE;
     }
 }

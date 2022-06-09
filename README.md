@@ -141,7 +141,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - 기본(10km 이내) : 1,250원 → **BASIC(0, 0)**
     - 10km 초과 ~ 50km 까지 구간 : 5km 당 100원 추가 → **SECTION_10_TO_50(10, 5)**
     - 50km 초과 ~  : 8km 당 100원 추가 → **SECTION_OVER_50(50, 8)**
-- [ ] 거리 기준의 요금정보 처리 모듈 (**FareCalculator**)
+- [X] 거리 기준의 요금정보 처리 모듈 (**FareCalculator**)
   - 금액 타입 (**FareType**)
     - 기본금액 : 1,250원
     - 기본금액 구간 초과 시 n Km 당 100 추가금
