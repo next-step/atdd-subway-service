@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import java.util.NoSuchElementException;
 import nextstep.subway.path.domain.PathFindResult;
 import nextstep.subway.path.domain.PathFindService;
 import nextstep.subway.path.domain.exception.NotExistPathException;
@@ -22,8 +23,8 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(Long startStationId, Long endStationId) {
-        Station startStation = stationRepository.findById(startStationId).get();
-        Station endStation = stationRepository.findById(endStationId).get();
+        Station startStation = stationRepository.findById(startStationId).orElseThrow(NoSuchElementException::new);
+        Station endStation = stationRepository.findById(endStationId).orElseThrow(NoSuchElementException::new);
         PathFindResult findResult = null;
         try {
             findResult = pathFindService.findShortestPath(startStation, endStation);

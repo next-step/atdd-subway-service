@@ -15,10 +15,12 @@ public class SectionEdge extends DefaultWeightedEdge {
         this.weight = weight;
     }
 
+    @Override
     public Station getSource() {
         return source;
     }
 
+    @Override
     public Station getTarget() {
         return target;
     }

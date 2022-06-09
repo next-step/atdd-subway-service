@@ -61,16 +61,17 @@ class PathFindServiceTest {
      * 남부터미널역  --- *3호선* ---   양재
      */
     @Test
-    void 그래프에_노선추가할때_예외발생하지않고_정상동작하는지_테스트(){
+    void 그래프에_노선추가_테스트(){
         WeightedMultigraph graph = new WeightedMultigraph<Station, SectionEdge>(SectionEdge.class);
         List<Station> stations = 삼호선.getStations();
         stations.stream().forEach((station -> {
             graph.addVertex(station);
         }));
-        graph.addVertex(강남역);
         Sections sections = 삼호선.getSections();
         List<SectionEdge> edges = sections.toSectionEdge();
         edges.stream().forEach((edge) -> graph.addEdge(edge.getSource(),edge.getTarget(),edge));
+        assertThat(graph.vertexSet()).hasSize(3);
+        assertThat(graph.edgeSet()).hasSize(2);
     }
 
     /**
@@ -110,7 +111,7 @@ class PathFindServiceTest {
         when(mockLineRepository.findAll()).thenReturn(Lists.newArrayList(신분당선,이호선,삼호선));
         PathFindResult result = pathFindService.findShortestPath(교대역,교대역);
         assertThat(result.getStations()).hasSize(1).containsOnly(교대역);
-        assertThat(result.getDistance()).isEqualTo(0);
+        assertThat(result.getDistance()).isZero();
     }
 
     @Test

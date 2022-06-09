@@ -63,7 +63,7 @@ class JgraphTest {
         GraphPath<String,DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(source, target);
         assertThat(shortestPath.getLength()).isZero();
         assertThat(shortestPath.getVertexList()).hasSize(1).containsOnly(V1);
-        assertThat(shortestPath.getWeight()).isEqualTo(0);
+        assertThat(shortestPath.getWeight()).isZero();
     }
 
     @Test

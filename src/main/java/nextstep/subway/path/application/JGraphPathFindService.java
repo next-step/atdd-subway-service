@@ -27,7 +27,7 @@ public class JGraphPathFindService implements PathFindService {
     public PathFindResult findShortestPath(Station startStation, Station endStation) throws NotExistPathException {
         List<Line> lines = lineRepository.findAll();
         WeightedMultigraph<Station, SectionEdge> graph = toGraph(lines);
-        ShortestPathAlgorithm<Station, SectionEdge> algorithm = new DijkstraShortestPath(graph);
+        ShortestPathAlgorithm<Station, SectionEdge> algorithm = new DijkstraShortestPath<>(graph);
 
         GraphPath<Station, SectionEdge> shortestPath = algorithm.getPath(startStation, endStation);
         boolean notExistPath = shortestPath == null;
@@ -39,19 +39,15 @@ public class JGraphPathFindService implements PathFindService {
 
     private WeightedMultigraph<Station, SectionEdge> toGraph(List<Line> lines){
         WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
-        lines.stream().forEach((line)-> {addLineToGraph(graph,line);});
+        lines.stream().forEach( line -> addLineToGraph(graph,line));
         return graph;
     }
 
     private void addLineToGraph(WeightedMultigraph<Station, SectionEdge> graph, Line line) {
         List<Station> stations = line.getStations();
-        stations.stream().forEach((station -> {
-            graph.addVertex(station);
-        }));
+        stations.stream().forEach(graph::addVertex);
         Sections sections = line.getSections();
         List<SectionEdge> edges = sections.toSectionEdge();
-        edges.stream().forEach((edge) -> {
-                    graph.addEdge(edge.getSource(),edge.getTarget(),edge);
-                });
+        edges.stream().forEach(edge-> graph.addEdge(edge.getSource(),edge.getTarget(),edge));
     }
 }
