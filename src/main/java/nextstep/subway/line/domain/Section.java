@@ -45,11 +45,11 @@ public class Section {
         this.distance = distance.minus(newDistance);
     }
 
-    public boolean isEqualsUpStation(Station station) {
+    public boolean equalsUpStation(Station station) {
         return upStation == station;
     }
 
-    public boolean isEqualsDownStation(Station station) {
+    public boolean equalsDownStation(Station station) {
         return downStation == station;
     }
 

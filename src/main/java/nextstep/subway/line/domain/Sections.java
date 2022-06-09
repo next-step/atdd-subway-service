@@ -58,14 +58,14 @@ public class Sections {
 
     private void relocateSectionsByUpStation(Section section) {
         items.stream()
-            .filter(it -> it.isEqualsUpStation(section.getUpStation()))
+            .filter(it -> it.equalsUpStation(section.getUpStation()))
             .findFirst()
             .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
     }
 
     private void relocateSectionsByDownStation(Section section) {
         items.stream()
-            .filter(it -> it.isEqualsDownStation(section.getDownStation()))
+            .filter(it -> it.equalsDownStation(section.getDownStation()))
             .findFirst()
             .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
     }
@@ -101,7 +101,7 @@ public class Sections {
 
     private Optional<Section> findNextSection(Section section) {
         return this.items.stream()
-            .filter(item -> item.isEqualsUpStation(section.getDownStation()))
+            .filter(item -> item.equalsUpStation(section.getDownStation()))
             .findAny();
     }
 
@@ -109,7 +109,7 @@ public class Sections {
         Station firstStation = findUpStation();
 
         return items.stream()
-            .filter(item -> item.isEqualsUpStation(firstStation))
+            .filter(item -> item.equalsUpStation(firstStation))
             .findAny()
             .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_FOUND_LINE_STATION));
     }
@@ -127,7 +127,7 @@ public class Sections {
 
     private boolean isNoneMatchedDownStation(List<Section> sections, Station upStation) {
         return sections.stream()
-            .noneMatch(section -> section.isEqualsDownStation(upStation));
+            .noneMatch(section -> section.equalsDownStation(upStation));
     }
 
     public void removeStation(Station station) {
@@ -143,13 +143,13 @@ public class Sections {
 
     private Optional<Section> upStationConnectedSection(Station station) {
         return items.stream()
-            .filter(it -> it.isEqualsUpStation(station))
+            .filter(it -> it.equalsUpStation(station))
             .findFirst();
     }
 
     private Optional<Section> downStationConnectedSection(Station station) {
         return items.stream()
-            .filter(it -> it.isEqualsDownStation(station))
+            .filter(it -> it.equalsDownStation(station))
             .findFirst();
     }
 
