@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Section {
@@ -68,5 +69,11 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public void validate(Section section) {
+        if (Objects.equals(this.getUpStation(), section.getUpStation()) && Objects.equals(this.getDownStation(), section.getDownStation())) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
     }
 }
