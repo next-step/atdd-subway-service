@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Distance {
-    private static final long MIN_DISTANCE = 1;
+    private static final int MIN_DISTANCE = 1;
     @Column
     private int distance;
 
@@ -31,7 +31,7 @@ public class Distance {
         return new Distance(this.distance - targetDistance.distance);
     }
 
-    private void invalidInputCheck(long distance) {
+    private void invalidInputCheck(int distance) {
         if (distance < MIN_DISTANCE) {
             throw new IllegalArgumentException("구간은 최소 " + MIN_DISTANCE + " 이상의 값이어야 합니다.");
         }
