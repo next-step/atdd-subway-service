@@ -23,6 +23,10 @@ public class Sections {
 
     }
 
+    public List<SectionEdge> toSectionEdge(){
+        return elements.stream().map(SectionEdge::of).collect(toList());
+    }
+
     List<Station> getStations() {
         if (elements.isEmpty()) {
             return Arrays.asList();

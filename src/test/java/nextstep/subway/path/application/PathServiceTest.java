@@ -42,7 +42,7 @@ class PathServiceTest{
     }
 
     @Test
-    void 최단경로를_조회한다(){
+    void 최단경로를_조회한다() throws Exception{
         // Given
         List<Station> shortestPathStations = Lists.newArrayList(강남역, 을지로3가역, 광교역);
         when(mockPathFindService.findShortestPath(강남역,광교역))

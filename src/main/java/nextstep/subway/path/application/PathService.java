@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.path.domain.PathFindResult;
 import nextstep.subway.path.domain.PathFindService;
+import nextstep.subway.path.domain.exception.NotExistPathException;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -23,7 +24,12 @@ public class PathService {
     public PathResponse findShortestPath(Long startStationId, Long endStationId) {
         Station startStation = stationRepository.findById(startStationId).get();
         Station endStation = stationRepository.findById(endStationId).get();
-        PathFindResult findResult = pathFindService.findShortestPath(startStation, endStation);
+        PathFindResult findResult = null;
+        try {
+            findResult = pathFindService.findShortestPath(startStation, endStation);
+        } catch (NotExistPathException e) {
+            throw new IllegalStateException(e.getMessage(),e);
+        }
         return PathResponse.of(findResult);
     }
 }
