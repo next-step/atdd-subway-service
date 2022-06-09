@@ -11,7 +11,7 @@ import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
-
+    private static final int MINIMUM_DELETE_SECTION_SIZE = 1;
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
@@ -45,6 +45,29 @@ public class Sections {
         }
 
         return stations;
+    }
+
+    public void deleteSection(Station station, Line line) {
+        if (sections.size() <= MINIMUM_DELETE_SECTION_SIZE) {
+            throw new IllegalArgumentException("마지막 구간은 삭제할 수 없음");
+        }
+
+        Optional<Section> upLineStation = sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(sections::remove);
+        downLineStation.ifPresent(sections::remove);
     }
 
     private Station findFirstUpStation() {

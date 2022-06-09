@@ -92,4 +92,62 @@ class SectionsTest {
                 () -> 이호선_구간.addSection(시청역_왕십리역)
         );
     }
+
+    @Test
+    @DisplayName("기존 구간에서 시작역을 삭제할 수 있다")
+    void deleteFirstStation() {
+        // given
+        final Sections 이호선_구간 = new Sections();
+        이호선_구간.addSection(강남역_삼성역);
+        이호선_구간.addSection(삼성역_잠실역);
+
+        // when
+        이호선_구간.deleteSection(강남역, 이호선);
+
+        // then
+        assertThat(이호선_구간.getStations()).containsExactly(삼성역, 잠실역);
+    }
+
+    @Test
+    @DisplayName("기존 구간에서 종착역을 삭제할 수 있다")
+    void deleteLastStation() {
+        // given
+        final Sections 이호선_구간 = new Sections();
+        이호선_구간.addSection(강남역_삼성역);
+        이호선_구간.addSection(삼성역_잠실역);
+
+        // when
+        이호선_구간.deleteSection(잠실역, 이호선);
+
+        // then
+        assertThat(이호선_구간.getStations()).containsExactly(강남역, 삼성역);
+    }
+
+    @Test
+    @DisplayName("기존 구간에서 중간역을 삭제할 수 있다")
+    void deleteMiddleStation() {
+        // given
+        final Sections 이호선_구간 = new Sections();
+        이호선_구간.addSection(강남역_삼성역);
+        이호선_구간.addSection(삼성역_잠실역);
+
+        // when
+        이호선_구간.deleteSection(삼성역, 이호선);
+
+        // then
+        assertThat(이호선_구간.getStations()).containsExactly(강남역, 잠실역);
+    }
+
+    @Test
+    @DisplayName("현재 남아있는 구간이 하나인 경우 삭제할 수 없다")
+    void lastSectionDeleteError() {
+        // given
+        final Sections 이호선_구간 = new Sections();
+        이호선_구간.addSection(강남역_삼성역);
+
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> 이호선_구간.deleteSection(강남역, 이호선)
+        );
+    }
 }

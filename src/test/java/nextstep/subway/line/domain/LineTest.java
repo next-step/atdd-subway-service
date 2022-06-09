@@ -42,4 +42,22 @@ class LineTest {
         // then
         assertThat(actual).containsExactly(강남역, 삼성역, 잠실역);
     }
+
+    @Test
+    @DisplayName("노선에서 역을 삭제한다")
+    void deleteStation() {
+        // given
+        final Line 이호선 = new Line("2호선", "green");
+        final Section 강남역_삼성역 = new Section(이호선, 강남역, 삼성역, 5);
+        final Section 삼성역_잠실역 = new Section(이호선, 삼성역, 잠실역, 5);
+        이호선.addSection(강남역_삼성역);
+        이호선.addSection(삼성역_잠실역);
+
+        // when
+        이호선.deleteStation(삼성역);
+        List<Station> actual = 이호선.getStations();
+
+        // then
+        assertThat(actual).containsExactly(강남역, 잠실역);
+    }
 }
