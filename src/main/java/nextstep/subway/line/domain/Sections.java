@@ -143,4 +143,8 @@ public class Sections {
             throw new InvalidSectionSizeException();
         }
     }
+
+    public List<Section> get() {
+        return Collections.unmodifiableList(this.sections);
+    }
 }

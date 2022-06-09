@@ -68,4 +68,9 @@ public class LineService {
         Station station = stationService.findStationById(stationId);
         line.removeStation(station);
     }
+
+    @Transactional(readOnly = true)
+    public List<Line> findAllLines() {
+        return lineRepository.findAll();
+    }
 }

@@ -56,3 +56,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ## 단계별 미션
 
 - [1단계 - 인수 테스트 기반 리팩터링](./docs/step1.md)
+- [2단계 - 2단계 - 경로 조회 기능](./docs/step2.md)

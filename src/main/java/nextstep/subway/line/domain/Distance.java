@@ -30,6 +30,10 @@ public class Distance {
         this.distance -= other.distance;
     }
 
+    public int get() {
+        return distance;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
