@@ -27,10 +27,7 @@ public class LineResponse {
         this.modifiedDate = modifiedDate;
     }
 
-    public static LineResponse of(Line line) {
-        List<StationResponse> stations = line.sections().orderedStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+    public static LineResponse of(Line line, List<StationResponse> stations) {
         return new LineResponse(line.id(), line.name(), line.color(), stations, line.getCreatedDate(),
                 line.getModifiedDate());
     }
