@@ -14,7 +14,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.http.HttpStatus;
 
 public class PathFinder {
-    private static final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private static final WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
     public PathFinder(List<Line> lines) {
         lines.forEach(PathFinder::registerPath);
@@ -27,32 +27,32 @@ public class PathFinder {
 
     private static void registerEdges(List<Station> stations) {
         for (Station station : stations) {
-            graph.addVertex(station);
+            graph.addVertex(station.getId());
         }
     }
 
     public static void registerEdgeWith(List<Section> sections) {
         for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistanceValue());
+            graph.setEdgeWeight(graph.addEdge(section.getUpStationId(), section.getDownStationId()), section.getDistanceValue());
         }
     }
 
-    public List<Station> findVertexList(Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> graphPath = this.findPath(source, target);
+    public List<Long> findVertexList(Station source, Station target) {
+        GraphPath<Long, DefaultWeightedEdge> graphPath = this.findPath(source, target);
         return graphPath.getVertexList();
     }
 
     public int getWeight(Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> graphPath = this.findPath(source, target);
+        GraphPath<Long, DefaultWeightedEdge> graphPath = this.findPath(source, target);
         return (int) graphPath.getWeight();
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> findPath(Station source, Station target) {
+    private GraphPath<Long, DefaultWeightedEdge> findPath(Station source, Station target) {
         validateEdge(source, target);
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
         try {
-            GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
+            GraphPath<Long, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source.getId(), target.getId());
             validatePath(graphPath);
             return graphPath;
         } catch (IllegalArgumentException e) {
@@ -66,7 +66,7 @@ public class PathFinder {
         }
     }
 
-    private void validatePath(GraphPath<Station, DefaultWeightedEdge> graphPath) {
+    private void validatePath(GraphPath<Long, DefaultWeightedEdge> graphPath) {
         if (graphPath == null) {
             throw new CannotFindPathException(HttpStatus.UNPROCESSABLE_ENTITY, ExceptionType.IS_NOT_CONNECTED_STATION);
         }

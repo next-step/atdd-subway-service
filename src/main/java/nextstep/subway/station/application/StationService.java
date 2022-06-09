@@ -31,7 +31,7 @@ public class StationService {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-                .map(station -> StationResponse.of(station))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -43,5 +43,14 @@ public class StationService {
     public Station findById(Long id) {
         return stationRepository.findById(id)
             .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_FOUND_LINE.getMessage(id)));
+    }
+
+    @Transactional(readOnly = true)
+    public List<StationResponse> findAllStationsByIds(List<Long> ids) {
+        List<Station> stations = stationRepository.findAllByIdIn(ids);
+
+        return stations.stream()
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
     }
 }

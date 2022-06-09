@@ -7,6 +7,7 @@ import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +28,11 @@ public class PathService {
         Station departureStation = stationService.findById(departureStationId);
         Station arrivalStation = stationService.findById(arrivalStationId);
 
-        List<Station> vertexList = pathFinder.findVertexList(departureStation, arrivalStation);
+        List<Long> vertexList = pathFinder.findVertexList(departureStation, arrivalStation);
+        List<StationResponse> stations = stationService.findAllStationsByIds(vertexList);
         int weight = pathFinder.getWeight(departureStation, arrivalStation);
-        return PathResponse.of(vertexList, weight);
+        return PathResponse.of(stations, weight);
     }
+
+
 }
