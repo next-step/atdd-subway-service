@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -15,6 +16,7 @@ import nextstep.subway.exception.CannotFindPathException;
 import nextstep.subway.exception.ExceptionType;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -44,16 +46,17 @@ class PathServiceTest {
     private Station 대림역;
     private Station 구로디지털단지역;
     private Station 신대방역;
-    private Line 노선;
+    private Section 대림_구로디지털단지;
+    private Section 구로디지털단지_신대방;
 
     private Station 남구로역;
     private Station 가산디지털단지역;
-    private Line 노선_2;
-    private Line 노선_3;
+    private Section 남구로_가산디지털단지;
+    private Section 가산디지털단지_신대방;
 
     private Station 부산역;
     private Station 대구역;
-    private Line 영남선;
+    private Section 부산_대구;
 
     /**
      * 대림역                 ---       *2호선* ---   구로디지털단지역 |
@@ -65,27 +68,36 @@ class PathServiceTest {
         대림역 = new Station("대림");
         구로디지털단지역 = new Station("구로디지털단지");
         신대방역 = new Station("신대방");
-        노선 = Line.of("2호선", "testColor", 대림역, 신대방역, 10);
-        노선.registerSection(대림역, 구로디지털단지역, 5);
+        대림_구로디지털단지 = new Section(null, 대림역, 구로디지털단지역, 10);
+        구로디지털단지_신대방 = new Section(null, 구로디지털단지역, 신대방역, 5);
 
         남구로역 = new Station("남구로");
         가산디지털단지역 = new Station("가산디지털단지");
-        노선_2 = Line.of("7호선", "testColor2", 대림역, 남구로역, 10);
-        노선_2.registerSection(남구로역, 가산디지털단지역, 4);
-
-        노선_3 = Line.of("독산선", "testColor3", 신대방역, 가산디지털단지역, 7);
+        남구로_가산디지털단지 = new Section(null, 남구로역, 가산디지털단지역, 3);
+        가산디지털단지_신대방 = new Section(null, 가산디지털단지역, 신대방역, 4);
 
         부산역 = new Station("부산");
         대구역 = new Station("대구");
-        영남선 = Line.of("영남선", "blue", 부산역, 대구역, 15);
+        부산_대구 = new Section(null, 부산역, 대구역, 8);
     }
 
     @DisplayName("지하철 최단거리 경로를 조회하면 정상적으로 조회되어야 한다")
     @Test
     void shortest_path_test() {
         // given
+        Line 노선 = mock(Line.class);
+        List<Station> 역_목록 = Arrays.asList(대림역, 구로디지털단지역, 신대방역);
+        List<Section> 구간_목록 = Arrays.asList(대림_구로디지털단지, 구로디지털단지_신대방);
+
+        when(노선.getStations())
+            .thenReturn(역_목록);
+
+        when(노선.getSections())
+            .thenReturn(구간_목록);
+
         when(lineService.findAll())
             .thenReturn(Collections.singletonList(노선));
+
         when(stationService.findById(any()))
             .thenReturn(대림역)
             .thenReturn(신대방역);
@@ -94,7 +106,7 @@ class PathServiceTest {
         PathResponse pathResponse = pathService.findShortestPath(1L, 10L);
 
         // then
-        assertThat(pathResponse.getDistance()).isEqualTo(10);
+        assertThat(pathResponse.getDistance()).isEqualTo(15);
         assertThat(toNames(pathResponse.getStations())).containsExactly("대림", "구로디지털단지", "신대방");
     }
 
@@ -102,8 +114,21 @@ class PathServiceTest {
     @Test
     void shortest_path_test2() {
         // given
+        Line 노선 = mock(Line.class);
+        Line 노선2 = mock(Line.class);
+
+        when(노선.getStations())
+            .thenReturn(Arrays.asList(대림역, 구로디지털단지역, 신대방역));
+        when(노선.getSections())
+            .thenReturn(Arrays.asList(대림_구로디지털단지, 구로디지털단지_신대방));
+
+        when(노선2.getStations())
+            .thenReturn(Arrays.asList(남구로역, 가산디지털단지역));
+        when(노선2.getSections())
+            .thenReturn(Arrays.asList(남구로_가산디지털단지, 가산디지털단지_신대방));
+
         when(lineService.findAll())
-            .thenReturn(Arrays.asList(노선, 노선_2, 노선_3));
+            .thenReturn(Arrays.asList(노선, 노선2));
         when(stationService.findById(any()))
             .thenReturn(구로디지털단지역)
             .thenReturn(가산디지털단지역);
@@ -113,7 +138,7 @@ class PathServiceTest {
 
         // then
         assertAll(
-            () -> assertThat(pathResponse.getDistance()).isEqualTo(12),
+            () -> assertThat(pathResponse.getDistance()).isEqualTo(9),
             () -> assertThat(toNames(pathResponse.getStations()))
                 .containsExactly("구로디지털단지", "신대방", "가산디지털단지")
         );
@@ -140,6 +165,19 @@ class PathServiceTest {
     @Test
     void path_exception_test2() {
         // given
+        Line 노선 = mock(Line.class);
+        Line 영남선 = mock(Line.class);
+
+        when(노선.getStations())
+            .thenReturn(Arrays.asList(대림역, 구로디지털단지역, 신대방역));
+        when(노선.getSections())
+            .thenReturn(Arrays.asList(대림_구로디지털단지, 구로디지털단지_신대방));
+
+        when(영남선.getStations())
+            .thenReturn(Arrays.asList(부산역, 대구역));
+        when(영남선.getSections())
+            .thenReturn(Arrays.asList(부산_대구));
+
         when(lineService.findAll())
             .thenReturn(Arrays.asList(노선, 영남선));
         when(stationService.findById(any()))
@@ -157,8 +195,11 @@ class PathServiceTest {
     @Test
     void path_exception_test3() {
         // given
+        Line 노선 = mock(Line.class);
+        when(노선.getStations())
+            .thenReturn(Arrays.asList(대림역, 구로디지털단지역, 신대방역));
         when(lineService.findAll())
-            .thenReturn(Arrays.asList(노선, 영남선));
+            .thenReturn(Arrays.asList(노선));
         when(stationService.findById(any()))
             .thenReturn(구로디지털단지역)
             .thenReturn(new Station("새로운역"));
