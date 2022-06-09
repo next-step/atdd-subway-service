@@ -28,7 +28,7 @@ public class SpringExtensionTest {
     @Test
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
+        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line("2호선", "green")));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when
