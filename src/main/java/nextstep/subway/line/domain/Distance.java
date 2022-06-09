@@ -21,4 +21,16 @@ public class Distance {
             throw new IllegalArgumentException("구간의 길이는 0보다 커야합니다.");
         }
     }
+
+    public Distance minus(Distance distance) {
+        return new Distance(value - distance.value);
+    }
+
+    public Distance plus(Distance distance) {
+        return new Distance(value + distance.value);
+    }
+
+    public int value() {
+        return value;
+    }
 }
