@@ -4,7 +4,6 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -100,8 +99,7 @@ class LineTest {
 
         // then
         assertThat(노선의_지하철_이름(line)).containsExactly(광교역.getName(), 광교중앙역.getName(), 성복역.getName());
-        Arrays.asList(new Section(line, 광교역, 광교중앙역, 10), new Section(line, 광교중앙역, 성복역, 20))
-                .forEach(compareSection -> checkSections(line.getSections().getSections(), compareSection));
+        assertThat(노선의_구간_거리(line)).containsExactly(10, 20);
     }
 
     @DisplayName("구간이 1개 이하인 노선의 구간을 삭제하면 예외가 발생해야 한다")
@@ -132,26 +130,25 @@ class LineTest {
     }
 
     private List<String> 노선의_지하철_이름(Line line) {
-        return line.getSections()
-                .getStations()
+        return line.getStations()
                 .stream()
                 .map(Station::getName)
                 .collect(Collectors.toList());
     }
 
-    private void checkSections(List<Section> target, Section compare) {
-        String compareUpStationName = compare.getUpStation().getName();
-        String compareDownStationName = compare.getDownStation().getName();
+    private List<Integer> 노선의_구간_거리(Line line) {
+        List<String> lineNames = 노선의_지하철_이름(line);
 
-        Section checkTarget = target.stream().filter(section ->
-                section.getUpStation().getName().equals(compareUpStationName) &&
-                        section.getDownStation().getName().equals(compareDownStationName)
-        ).findFirst().orElse(null);
+        return lineNames.subList(0, lineNames.size() - 1).stream()
+                .map(name -> 지하철_이름이_상행역인_구간_찾기(line, name).getDistance().getValue())
+                .collect(Collectors.toList());
+    }
 
-        if (checkTarget == null) {
-            fail("비교 구간을 찾을 수 없습니다.");
-        }
-
-        assertThat(checkTarget.getDistance()).isEqualTo(compare.getDistance());
+    private Section 지하철_이름이_상행역인_구간_찾기(Line line, String name) {
+        return line.getSections()
+                .stream()
+                .filter(it -> it.getUpStation().getName().equals(name))
+                .findFirst()
+                .orElseGet(() -> fail("구간을 찾을 수 없습니다."));
     }
 }
