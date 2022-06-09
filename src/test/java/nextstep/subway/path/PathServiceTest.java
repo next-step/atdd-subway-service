@@ -65,19 +65,19 @@ class PathServiceTest {
      */
     @BeforeEach
     void setUp() {
-        대림역 = new Station("대림");
-        구로디지털단지역 = new Station("구로디지털단지");
-        신대방역 = new Station("신대방");
+        대림역 = new Station(1L, "대림");
+        구로디지털단지역 = new Station(2L, "구로디지털단지");
+        신대방역 = new Station(3L, "신대방");
         대림_구로디지털단지 = new Section(null, 대림역, 구로디지털단지역, 10);
         구로디지털단지_신대방 = new Section(null, 구로디지털단지역, 신대방역, 5);
 
-        남구로역 = new Station("남구로");
-        가산디지털단지역 = new Station("가산디지털단지");
+        남구로역 = new Station(4L, "남구로");
+        가산디지털단지역 = new Station(5L, "가산디지털단지");
         남구로_가산디지털단지 = new Section(null, 남구로역, 가산디지털단지역, 3);
         가산디지털단지_신대방 = new Section(null, 가산디지털단지역, 신대방역, 4);
 
-        부산역 = new Station("부산");
-        대구역 = new Station("대구");
+        부산역 = new Station(6L, "부산");
+        대구역 = new Station(7L, "대구");
         부산_대구 = new Section(null, 부산역, 대구역, 8);
     }
 
@@ -101,6 +101,13 @@ class PathServiceTest {
         when(stationService.findById(any()))
             .thenReturn(대림역)
             .thenReturn(신대방역);
+
+        when(stationService.findAllStationsByIds(any()))
+            .thenReturn(Arrays.asList(
+                StationResponse.of(대림역),
+                StationResponse.of(구로디지털단지역),
+                StationResponse.of(신대방역))
+            );
 
         // when
         PathResponse pathResponse = pathService.findShortestPath(1L, 10L);
@@ -132,6 +139,13 @@ class PathServiceTest {
         when(stationService.findById(any()))
             .thenReturn(구로디지털단지역)
             .thenReturn(가산디지털단지역);
+
+        when(stationService.findAllStationsByIds(any()))
+            .thenReturn(Arrays.asList(
+                StationResponse.of(구로디지털단지역),
+                StationResponse.of(신대방역),
+                StationResponse.of(가산디지털단지역))
+            );
 
         // when
         PathResponse pathResponse = pathService.findShortestPath(2L, 5L);
