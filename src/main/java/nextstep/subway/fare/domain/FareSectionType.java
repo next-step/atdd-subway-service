@@ -1,4 +1,4 @@
-package nextstep.subway.fare;
+package nextstep.subway.fare.domain;
 
 public enum FareSectionType {
     BASIC(0, 0),
