@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,46 +15,48 @@ import static java.util.Collections.emptyList;
 @Embeddable
 public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    private List<Section> sections = new LinkedList<>();
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
             return emptyList();
         }
-
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.matchUpStation(finalDownStation))
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        Station upStation = findUpStation();
+        while (upStation != null) {
+            stations.add(upStation);
+            upStation = getDownStation(upStation);
         }
-
         return stations;
     }
 
     public Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.matchDownStation(finalDownStation))
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+        if (sections.isEmpty()) {
+            return null;
         }
+        Station downStation = sections.get(0).getUpStation();
+        Station tempStation = downStation;
+        while (downStation != null) {
+            tempStation = downStation;
+            downStation = getUpStation(downStation);
+        }
+        return tempStation;
+    }
 
-        return downStation;
+    private Station getUpStation(Station downStation) {
+        return sections.stream()
+                .filter(it -> it.matchDownStation(downStation))
+                .findFirst()
+                .map(Section::getUpStation)
+                .orElse(null);
+    }
+
+    private Station getDownStation(Station upStation) {
+        return sections.stream()
+                .filter(it -> it.matchUpStation(upStation))
+                .findFirst()
+                .map(Section::getDownStation)
+                .orElse(null);
     }
 
     public void add(Section section) {
