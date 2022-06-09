@@ -10,13 +10,11 @@ class LineTest {
 
     @DisplayName("Line 은 Section 을 추가 할수 있다.")
     @Test
-    void createLineTest() {
+    void addSectionTest() {
         final Line 신분당선 = new Line("신분당선", "bg-blue-200");
-        Station 수원역 = new Station("수원역");
-        Station 병점역 = new Station("병점역");
-        Section section = new Section(신분당선, 수원역, 병점역, 10);
-        신분당선.addSection(section);
+        final Station 수원역 = new Station("수원역");
+        final Station 병점역 = new Station("병점역");
+        신분당선.addSection(new Section(신분당선, 수원역, 병점역, 10));
         assertThat(신분당선).isEqualTo(new Line("신분당선", "bg-blue-200", 수원역, 병점역, 10));
     }
-
 }
