@@ -114,4 +114,12 @@ class SectionsTest {
             sections.remove(new Station("강남역"))
         ).isInstanceOf(IllegalStateException.class);
     }
+
+    @Test
+    void 기존_구간의_중간역을_삭제한다() {
+        // when
+        sections.remove(new Station("판교역"));
+        // then
+        assertThat(sections.getElements()).hasSize(1);
+    }
 }
