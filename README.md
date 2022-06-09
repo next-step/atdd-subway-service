@@ -155,7 +155,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X]  경로 중 추가 운임료가 있는 노선을 환승하여 이용할 경우 가장 높은 금액의 추가 운임료만 적용된다.
 
 3. 연령별 할인 정책 추가
-- [ ]  노선 조회 시 로그인한 사용자 정보 포함하여 요청할 수 있도록 변경
-- [ ]  비로그인 상태에서 노선 조회 시 Exception 처리
+- [X]  노선 조회 시 로그인한 사용자 정보 포함하여 요청할 수 있도록 변경
+- [X]  비로그인 상태에서 노선 조회 시 Exception 처리
+  - UNAUTHORIZED Exception 발생
 - [ ]  청소년 : 운임에서 350원을 공제한 금액의 20% 할인
 - [ ]  어린이 : 운임에서 350원을 공제한 금액의 50% 할인

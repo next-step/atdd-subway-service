@@ -7,6 +7,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.StreamUtils;
@@ -16,8 +17,10 @@ public class PathAcceptanceTestMethod extends AcceptanceTest {
 
     private static final String PATH_FINDER_PATH_FORMAT = "/paths?source=%s&target=%s";
 
-    public static ExtractableResponse<Response> 지하철_최단경로_조회_요청(Long sourceId, Long targetId) {
-        return get(String.format(PATH_FINDER_PATH_FORMAT, sourceId, targetId));
+    public static ExtractableResponse<Response> 지하철_최단경로_조회_요청(Long sourceId,
+                                                               Long targetId,
+                                                               TokenResponse tokenResponse) {
+        return getWithAuth(String.format(PATH_FINDER_PATH_FORMAT, sourceId, targetId), tokenResponse);
     }
 
     public static void 지하철_최단경로_조회됨(ExtractableResponse<Response> response,
