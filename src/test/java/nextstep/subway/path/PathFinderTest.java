@@ -11,8 +11,6 @@ import nextstep.subway.exception.ExceptionType;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,20 +53,6 @@ class PathFinderTest {
     void find_path_test() {
         int weight = pathFinder.getWeight(대림역, 신대방역);
         assertThat(weight).isEqualTo(10);
-    }
-
-    @DisplayName("1보다 큰 경로를 조회하면 정상적으로 거리와 가중치가 나와야 한다")
-    @Test
-    void find_path_test2() {
-        // given
-        노선.registerSection(신대방역, 신도림역, 5);
-        pathFinder = new PathFinder(Arrays.asList(노선));
-
-        // when
-        int weight = pathFinder.getWeight(대림역, 신도림역);
-
-        // then
-        assertThat(weight).isEqualTo(15);
     }
 
     @DisplayName("경로 조회시 두 역이 같으면 예외가 발생한다")
