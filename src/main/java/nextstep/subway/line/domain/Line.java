@@ -1,12 +1,19 @@
 package nextstep.subway.line.domain;
 
+import static javax.persistence.FetchType.LAZY;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
+
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
@@ -22,6 +29,13 @@ public class Line extends BaseEntity {
     @Embedded
     private SectionsManager sections = new SectionsManager();
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "UP_STATION_ID", foreignKey = @ForeignKey(name = "fk_line_up_station"))
+    private Station upStation;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "DOWN_STATION_ID", foreignKey = @ForeignKey(name = "fk_line_down_station"))
+    private Station downStation;
 
     public Line() {
     }
