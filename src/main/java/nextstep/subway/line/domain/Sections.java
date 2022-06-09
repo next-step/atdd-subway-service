@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.common.Distance;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -27,40 +28,29 @@ public class Sections {
         return getFromToLastStations(findUpStation());
     }
 
-    public void addStation(Line line, Station upStation, Station downStation, int distance) {
+    public void addStation(Line line, Station upStation, Station downStation, Distance distance) {
         checkPossibleAddSection(upStation, downStation);
-
-        boolean isUpStationExisted = isContainStationInSections(upStation);
-        boolean isDownStationExisted = isContainStationInSections(downStation);
 
         if (isAddNewSection()) {
             addSection(line, upStation, downStation, distance);
-            return;
         }
-
-        if (isUpStationExisted) {
+        if (isContainStationInSections(upStation)) {
             addSectionByUpToDown(upStation, downStation, distance);
-
-            addSection(line, upStation, downStation, distance);
-            return;
         }
-        if (isDownStationExisted) {
+        if (isContainStationInSections(downStation)) {
             addSectionByMiddleToDown(upStation, downStation, distance);
-
-            addSection(line, upStation, downStation, distance);
-            return;
         }
 
-        throw new RuntimeException();
+        addSection(line, upStation, downStation, distance);
     }
 
-    public void addSection(Line line, Station upStation, Station downStation, int distance) {
+    public void addSection(Line line, Station upStation, Station downStation, Distance distance) {
         this.sections.add(new Section(line, upStation, downStation, distance));
     }
 
     public void removeStation(Line line, Station station) {
         if (this.sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new RuntimeException("구간에 최소한 1개 이상의 구간이 존재해야 합니다.");
         }
 
         Section upSection = findSectionByPredicateAndRemove(section -> section.getUpStation() == station);
@@ -69,13 +59,13 @@ public class Sections {
         if (upSection != null && downSection != null) {
             Station newUpStation = downSection.getUpStation();
             Station newDownStation = upSection.getDownStation();
-            int newDistance = upSection.getDistance() + downSection.getDistance();
+            Distance newDistance = upSection.getDistance().addThenReturnResult(downSection.getDistance());
 
             addSection(line, newUpStation, newDownStation, newDistance);
         }
     }
 
-    public List<Section> getSections() {
+    public List<Section> getValue() {
         return this.sections;
     }
 
@@ -150,7 +140,6 @@ public class Sections {
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
-
         if (isImpossibleAddSection(upStation, downStation)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
@@ -163,9 +152,9 @@ public class Sections {
     }
 
     private boolean isImpossibleAddSection(Station upStation, Station downStation) {
-        return !this.getStations().isEmpty() &&
-                this.getStations().stream().noneMatch(it -> it == upStation) &&
-                this.getStations().stream().noneMatch(it -> it == downStation);
+        return !this.isAddNewSection() &&
+                !this.isContainStationInSections(upStation) &&
+                !this.isContainStationInSections(downStation);
     }
 
     private boolean isAddNewSection() {
@@ -173,14 +162,14 @@ public class Sections {
                 .isEmpty();
     }
 
-    private void addSectionByUpToDown(Station upStation, Station downStation, int distance) {
+    private void addSectionByUpToDown(Station upStation, Station downStation, Distance distance) {
         this.sections.stream()
                 .filter(it -> it.getUpStation() == upStation)
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
     }
 
-    private void addSectionByMiddleToDown(Station upStation, Station downStation, int distance) {
+    private void addSectionByMiddleToDown(Station upStation, Station downStation, Distance distance) {
         this.sections.stream()
                 .filter(it -> it.getDownStation() == downStation)
                 .findFirst()

@@ -1,17 +1,11 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.common.Distance;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 @Entity
 public class Line extends BaseEntity {
@@ -38,7 +32,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.addSection(this, upStation, downStation, distance);
+        sections.addSection(this, upStation, downStation, new Distance(distance));
     }
 
     public void update(Line line) {
@@ -47,7 +41,7 @@ public class Line extends BaseEntity {
     }
 
     public void addStation(Station upStation, Station downStation, int distance) {
-        this.sections.addStation(this, upStation, downStation, distance);
+        this.sections.addStation(this, upStation, downStation, new Distance(distance));
     }
 
     public void removeStation(Station station) {
@@ -66,7 +60,11 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public Sections getSections() {
-        return sections;
+    public List<Section> getSections() {
+        return this.sections.getValue();
+    }
+
+    public List<Station> getStations() {
+        return this.sections.getStations();
     }
 }

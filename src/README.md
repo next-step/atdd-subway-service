@@ -1,6 +1,6 @@
 ## 요구사항
 
-* [ ] LineService 리팩토링
+* [x] LineService 리팩토링
 * [ ] LineSectionAcceptanceTest 리팩토링
 
 ## 요구사항 설명
