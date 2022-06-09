@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,19 +11,20 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import nextstep.subway.line.domain.exception.CannotAddSectionException;
 import nextstep.subway.line.domain.exception.CannotDeleteSectionException;
+import nextstep.subway.path.application.SectionEdge;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sectionCollection = new ArrayList<>();
+    private List<Section> elements = new ArrayList<>();
 
     protected Sections() {
 
     }
 
     List<Station> getStations() {
-        if (sectionCollection.isEmpty()) {
+        if (elements.isEmpty()) {
             return Arrays.asList();
         }
         List<Station> stations = new ArrayList<>();
@@ -45,7 +48,7 @@ public class Sections {
     }
 
     private Section firstSection() {
-        return findFirstSection(sectionCollection.get(0));
+        return findFirstSection(elements.get(0));
     }
 
     private Section findFirstSection(Section initSection) {
@@ -59,19 +62,19 @@ public class Sections {
     }
 
     private Optional<Section> findPrevSection(Section currentSection) {
-        return sectionCollection.stream()
+        return elements.stream()
                 .filter(section -> section.isPrevOf(currentSection))
                 .findFirst();
     }
 
     private Optional<Section> findNextSection(Section currentSection) {
-        return sectionCollection.stream()
+        return elements.stream()
                 .filter(section -> section.isNextOf(currentSection))
                 .findFirst();
     }
 
     void addFirstSection(Section newSection) {
-        sectionCollection.add(newSection);
+        elements.add(newSection);
     }
 
     void addSection(Section newSection) {
@@ -97,23 +100,23 @@ public class Sections {
     }
 
     private void insertSectionFromDownStation(Section newSection) {
-        sectionCollection.stream()
+        elements.stream()
                 .filter(section -> section.getDownStation() == newSection.getDownStation())
                 .findFirst()
                 .ifPresent(section -> section.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
-        sectionCollection.add(newSection);
+        elements.add(newSection);
     }
 
     private void insertSectionFromUpStation(Section newSection) {
-        sectionCollection.stream()
+        elements.stream()
                 .filter(section -> section.getUpStation() == newSection.getUpStation())
                 .findFirst()
                 .ifPresent(section -> section.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
-        sectionCollection.add(newSection);
+        elements.add(newSection);
     }
 
     void deleteStation(Station deleteTargetStation) {
-        if (sectionCollection.size() <= 1) {
+        if (elements.size() <= 1) {
             throw new CannotDeleteSectionException("노선을 유지하기 위해서는 최소 1구간은 유지되어야 합니다.");
         }
         Optional<Section> upStationMatchedSection = matchUpStation(deleteTargetStation);
@@ -124,13 +127,13 @@ public class Sections {
     }
 
     private Optional<Section> matchUpStation(Station deleteTargetStation) {
-        return sectionCollection.stream()
+        return elements.stream()
                 .filter(section -> section.getUpStation() == deleteTargetStation)
                 .findFirst();
     }
 
     private Optional<Section> matchDownStation(Station deleteTargetStation) {
-        return sectionCollection.stream()
+        return elements.stream()
                 .filter(section -> section.getDownStation() == deleteTargetStation)
                 .findFirst();
     }
@@ -138,14 +141,14 @@ public class Sections {
     private void addMergedSection(Optional<Section> upStationMatchedSection, Optional<Section> downStationMatchedSection) {
         boolean isMiddleStation = upStationMatchedSection.isPresent() && downStationMatchedSection.isPresent();
         if (isMiddleStation) {
-            sectionCollection.add(Section.createMergedSection(downStationMatchedSection.get(),upStationMatchedSection.get()));
+            elements.add(Section.createMergedSection(downStationMatchedSection.get(),upStationMatchedSection.get()));
         }
     }
 
     private void deleteInvalidSection(Optional<Section> upStationMatchedSection,
                                       Optional<Section> downStationMatchedSection) {
-        upStationMatchedSection.ifPresent(section -> sectionCollection.remove(section));
-        downStationMatchedSection.ifPresent(section -> sectionCollection.remove(section));
+        upStationMatchedSection.ifPresent(section -> elements.remove(section));
+        downStationMatchedSection.ifPresent(section -> elements.remove(section));
     }
 
     private class SectionsStateForAddNewSection {
