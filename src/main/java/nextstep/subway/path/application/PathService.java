@@ -1,12 +1,12 @@
 package nextstep.subway.path.application;
 
+import java.util.List;
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +21,14 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findShortestPath(Long sourceId, Long targetId) {
-        PathFinder pathFinder = new PathFinder(lineService.findAll());
-        Station source = stationService.findById(sourceId);
-        Station target = stationService.findById(targetId);
-        GraphPath<Station, DefaultWeightedEdge> graphPath = pathFinder.findPath(source, target);
-        return PathResponse.of(graphPath.getVertexList(), (int) graphPath.getWeight());
+    public PathResponse findShortestPath(Long departureStationId, Long arrivalStationId) {
+        List<Line> lines = lineService.findAll();
+        PathFinder pathFinder = new PathFinder(lines);
+        Station source = stationService.findById(departureStationId);
+        Station target = stationService.findById(arrivalStationId);
+
+        List<Station> vertexList = pathFinder.findVertexList(source, target);
+        int weight = pathFinder.getWeight(source, target);
+        return PathResponse.of(vertexList, weight);
     }
 }

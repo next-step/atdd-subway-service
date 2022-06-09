@@ -46,23 +46,15 @@ class PathFinderTest {
     @DisplayName("PathFinder 에 노선을 등록하면 해당 역들도 등록되어야 한다")
     @Test
     void register_vertex_test() {
-        // when
-        GraphPath<Station, DefaultWeightedEdge> graphPath = pathFinder.findPath(대림역, 신대방역);
-
-        // then
-        List<Station> stations = graphPath.getVertexList();
+        List<Station> stations = pathFinder.findVertexList(대림역, 신대방역);
         assertThat(stations).containsExactly(대림역, 신대방역);
     }
 
-    @DisplayName("PathFinder 에 경로를 조회하면 정상적으로 거리와 가중치가 나와야 한다")
+    @DisplayName("PathFinder 에 경로를 조회하면 정상적으로 가중치가 나와야 한다")
     @Test
     void find_path_test() {
-        // when
-        GraphPath<Station, DefaultWeightedEdge> graphPath = pathFinder.findPath(대림역, 신대방역);
-
-        // then
-        assertThat(graphPath.getLength()).isEqualTo(1);
-        assertThat(graphPath.getWeight()).isEqualTo(10);
+        int weight = pathFinder.getWeight(대림역, 신대방역);
+        assertThat(weight).isEqualTo(10);
     }
 
     @DisplayName("1보다 큰 경로를 조회하면 정상적으로 거리와 가중치가 나와야 한다")
@@ -73,18 +65,17 @@ class PathFinderTest {
         pathFinder = new PathFinder(Arrays.asList(노선));
 
         // when
-        GraphPath<Station, DefaultWeightedEdge> graphPath = pathFinder.findPath(대림역, 신도림역);
+        int weight = pathFinder.getWeight(대림역, 신도림역);
 
         // then
-        assertThat(graphPath.getLength()).isEqualTo(2);
-        assertThat(graphPath.getWeight()).isEqualTo(15);
+        assertThat(weight).isEqualTo(15);
     }
 
     @DisplayName("경로 조회시 두 역이 같으면 예외가 발생한다")
     @Test
     void find_path_exception_test() {
         assertThatThrownBy(() -> {
-            pathFinder.findPath(대림역, 대림역);
+            pathFinder.findVertexList(대림역, 대림역);
         }).isInstanceOf(BadRequestException.class)
             .hasMessageContaining(ExceptionType.CAN_NOT_SAME_STATION.getMessage());
     }
@@ -93,7 +84,7 @@ class PathFinderTest {
     @Test
     void find_path_exception_test2() {
         assertThatThrownBy(() -> {
-            pathFinder.findPath(대림역, 부산역);
+            pathFinder.findVertexList(대림역, 부산역);
         }).isInstanceOf(CannotFindPathException.class)
             .hasMessageContaining(ExceptionType.IS_NOT_CONNECTED_STATION.getMessage());
     }
@@ -102,7 +93,7 @@ class PathFinderTest {
     @Test
     void find_path_exception_test3() {
         assertThatThrownBy(() -> {
-            pathFinder.findPath(대림역, new Station("처음보는역"));
+            pathFinder.findVertexList(대림역, new Station("처음보는역"));
         }).isInstanceOf(CannotFindPathException.class)
             .hasMessageContaining(ExceptionType.NOT_FOUND_STATION.getMessage());
     }

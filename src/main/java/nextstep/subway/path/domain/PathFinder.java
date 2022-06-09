@@ -37,7 +37,17 @@ public class PathFinder {
         }
     }
 
-    public GraphPath<Station, DefaultWeightedEdge> findPath(Station source, Station target) {
+    public List<Station> findVertexList(Station source, Station target) {
+        GraphPath<Station, DefaultWeightedEdge> graphPath = this.findPath(source, target);
+        return graphPath.getVertexList();
+    }
+
+    public int getWeight(Station source, Station target) {
+        GraphPath<Station, DefaultWeightedEdge> graphPath = this.findPath(source, target);
+        return (int) graphPath.getWeight();
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> findPath(Station source, Station target) {
         validateEdge(source, target);
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
