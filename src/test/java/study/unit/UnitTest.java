@@ -20,8 +20,8 @@ class UnitTest {
 
         Station upStation = Station.from("강남역");
         Station downStation = Station.from("광교역");
-        Line line = Line.of("신분당선", "RED", upStation, downStation, 10);
-        Line newLine = Line.of(newName, "GREEN");
+        Line line = Line.of("신분당선", "RED", upStation, downStation, 10, 500);
+        Line newLine = Line.of(newName, "GREEN", 400);
 
         // when
         line.update(newLine);
@@ -38,8 +38,8 @@ class UnitTest {
 
         Station upStation = Station.from("강남역");
         Station downStation = Station.from("광교역");
-        Line line = Line.of("신분당선", "RED", upStation, downStation, 10);
-        Line newLine = Line.of("신신분당선", newColor);
+        Line line = Line.of("신분당선", "RED", upStation, downStation, 10, 500);
+        Line newLine = Line.of("신신분당선", newColor, 400);
 
         // when
         line.update(newLine);

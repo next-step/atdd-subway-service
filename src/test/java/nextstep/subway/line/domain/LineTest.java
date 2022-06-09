@@ -27,7 +27,7 @@ class LineTest {
 
     @BeforeEach
     void setUp() {
-        신분당선 = Line.of("신분당선", "RED");
+        신분당선 = Line.of("신분당선", "RED", 500);
         강남역 = Station.of(1L, "강남역");
         판교역 = Station.of(2L, "판교역");
         강남역_판교역_구간 = Section.of(강남역, 판교역, 10);
@@ -35,15 +35,16 @@ class LineTest {
 
     @DisplayName("지하철 노선을 이름과 노선 색상으로 생성할 수 있다.")
     @ParameterizedTest
-    @CsvSource(value = {"신분당선,RED", "분당선,YELLOW"})
-    void generate01(String name, String color) {
+    @CsvSource(value = {"신분당선,RED,500", "분당선,YELLOW,400"})
+    void generate01(String name, String color, int fare) {
         // given & when
-        Line line = Line.of(name, color);
+        Line line = Line.of(name, color, fare);
 
         // then
         assertAll(
-            () -> assertEquals(line.getName(), LineName.from(name)),
-            () -> assertEquals(line.getColor(), LineColor.from(color))
+                () -> assertEquals(line.getName(), LineName.from(name)),
+                () -> assertEquals(line.getColor(), LineColor.from(color)),
+                () -> assertEquals(line.getFare(), Fare.from(fare))
         );
     }
 

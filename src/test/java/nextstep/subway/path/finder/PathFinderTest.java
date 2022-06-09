@@ -43,9 +43,9 @@ class PathFinderTest {
         교대역 = Station.of(3L, "교대역");
         남부터미널역 = Station.of(4L, "남부터미널역");
 
-        신분당선 = Line.of("신분당선", "RED", 강남역, 양재역, 10);
-        이호선 = Line.of("이호선", "GREED", 교대역, 강남역, 10);
-        삼호선 = Line.of("삼호선", "ORANGE", 남부터미널역, 양재역, 5);
+        신분당선 = Line.of("신분당선", "RED", 강남역, 양재역, 10, 500);
+        이호선 = Line.of("이호선", "GREED", 교대역, 강남역, 10, 200);
+        삼호선 = Line.of("삼호선", "ORANGE", 남부터미널역, 양재역, 5, 300);
         삼호선.addSection(Section.of(교대역, 남부터미널역, 3));
     }
 

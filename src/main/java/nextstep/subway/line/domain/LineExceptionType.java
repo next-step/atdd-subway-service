@@ -14,7 +14,9 @@ public enum LineExceptionType {
 
     CANNOT_REMOVE_STATION_WHEN_ONLY_ONE_SECTIONS("노선의 구간이 1개만 존재할 경우, 지하철 역을 삭제할 수 없습니다."),
     CANNOT_REMOVE_STATION_IS_NOT_EXIST("노선에 존재하지 않은 지하철 역은 삭제할 수 없습니다."),
-    NEED_NARROW_DISTANCE_THAN_SECTION("역과 역 사이의 거리보다 좁은 거리를 입력해주세요")
+    NEED_NARROW_DISTANCE_THAN_SECTION("역과 역 사이의 거리보다 좁은 거리를 입력해주세요"),
+
+    LINE_FARE_IS_OVER_ZERO("노선의 추가 운임료는 0 이상의 요금으로 설정되어야 합니다.")
     ;
 
     private String message;

@@ -148,7 +148,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   
 
 2. 노선별 추가 요금 정책 추가
-- [ ]  노선(Line) 도메인에 추가 운임료(**AdditionalFare**) 추가하기
+- [X]  노선(Line) 도메인에 추가 운임료(**Fare**) 추가하기
   - 추가 운임료는 0 이상의 금액으로 설정가능하다.
 - [ ]  추가 운임료가 있는 노선을 이용할 경우 측정된 요금에 추가 운임료가 포함되어 총 금액이 산출된다.
   - 최단거리 경로의 Stations Collection을 바탕으로 구간 Section을 판단하고 Section의 노선정보를 이용하여 추가 운임료를 판단
