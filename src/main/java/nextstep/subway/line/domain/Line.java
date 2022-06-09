@@ -56,6 +56,9 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(final Section section) {
+        if (!Objects.equals(this, section.getLine())) {
+            throw new IllegalArgumentException("Line 이 다릅니다.");
+        }
         sections.add(section);
     }
 
