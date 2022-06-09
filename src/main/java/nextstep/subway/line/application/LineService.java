@@ -34,6 +34,7 @@ public class LineService {
         return persistLine.getId();
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         return lineRepository.findAll()
                 .stream()
@@ -41,11 +42,13 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("지하철 노선을 찾을 수 없습니다."));
     }
 
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         return LineResponse.of(findLineById(id));
     }
