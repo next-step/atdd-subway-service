@@ -66,13 +66,30 @@ public class Section {
         return distance.getDistance();
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        this.upStation = station;
-        this.distance.subtractDistance(new Distance(newDistance));
+    public void changeStationInfo(Section section) {
+        if (upStation.equals(section.upStation)) {
+            this.upStation = section.downStation;
+            this.distance.subtractDistance(section.distance);
+        }
+        if (downStation.equals(section.downStation)) {
+            this.downStation = section.upStation;
+            this.distance.subtractDistance(section.distance);
+        }
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        this.downStation = station;
-        this.distance.subtractDistance(new Distance(newDistance));
+    public boolean hasAllStations(Section section) {
+        return hasUpStation(section) && hasDownStation(section);
+    }
+
+    public boolean hasAnyStations(Section section) {
+        return hasUpStation(section) || hasDownStation(section);
+    }
+
+    private boolean hasUpStation(Section section) {
+        return upStation.equals(section.upStation) || upStation.equals(section.downStation);
+    }
+
+    private boolean hasDownStation(Section section) {
+        return downStation.equals(section.upStation) || downStation.equals(section.downStation);
     }
 }

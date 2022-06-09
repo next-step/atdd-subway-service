@@ -16,6 +16,9 @@ public class Sections {
     private final List<Section> sections = new ArrayList<>();
 
     public void addSection(Section section) {
+        if (!sections.isEmpty()) {
+            updateSection(section);
+        }
         sections.add(section);
     }
 
@@ -61,5 +64,26 @@ public class Sections {
     private boolean isStartStation(Station station) {
         return sections.stream()
                 .noneMatch(currentStation -> station.equals(currentStation.getDownStation()));
+    }
+
+    private void updateSection(Section section) {
+        if (isContainAllStation(section)) {
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+        }
+
+        Section targetSection = findTargetSection(section);
+        targetSection.changeStationInfo(section);
+    }
+
+    private boolean isContainAllStation(Section section) {
+        return sections.stream()
+                .anyMatch(currentSection -> currentSection.hasAllStations(section));
+    }
+
+    private Section findTargetSection(Section section) {
+        return sections.stream()
+                .filter(currentSection -> currentSection.hasAnyStations(section))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("상행역과 하행역 둘 중 하나도 포함되어 있지 않으면 추가할 수 없음"));
     }
 }
