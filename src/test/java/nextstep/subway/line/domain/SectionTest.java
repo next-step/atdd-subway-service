@@ -28,7 +28,7 @@ public class SectionTest {
         assertAll(
             () -> assertThat(구간).extracting("upStation").isEqualTo(두번째역),
             () -> assertThat(구간).extracting("downStation").isEqualTo(첫번째역),
-            () -> assertThat(구간).extracting("distance").isEqualTo(10 - 3)
+            () -> assertThat(구간).extracting("distance.distance").isEqualTo(10 - 3)
         );
     }
 
@@ -50,7 +50,7 @@ public class SectionTest {
         assertAll(
             () -> assertThat(구간).extracting("upStation").isEqualTo(세번째역),
             () -> assertThat(구간).extracting("downStation").isEqualTo(두번째역),
-            () -> assertThat(구간).extracting("distance").isEqualTo(10 - 3)
+            () -> assertThat(구간).extracting("distance.distance").isEqualTo(10 - 3)
         );
     }
 
@@ -87,7 +87,7 @@ public class SectionTest {
         assertAll(
             () -> assertThat(합친_구간).extracting("downStation").isEqualTo(첫번째역),
             () -> assertThat(합친_구간).extracting("upStation").isEqualTo(세번째역),
-            () -> assertThat(합친_구간).extracting("distance").isEqualTo(3 + 4)
+            () -> assertThat(합친_구간).extracting("distance.distance").isEqualTo(3 + 4)
         );
     }
 
@@ -106,7 +106,7 @@ public class SectionTest {
         assertAll(
             () -> assertThat(합친_구간).extracting("downStation").isEqualTo(첫번째역),
             () -> assertThat(합친_구간).extracting("upStation").isEqualTo(null),
-            () -> assertThat(합친_구간).extracting("distance").isEqualTo(3)
+            () -> assertThat(합친_구간).extracting("distance.distance").isEqualTo(3)
         );
     }
 
@@ -125,7 +125,7 @@ public class SectionTest {
         assertAll(
             () -> assertThat(합친_구간).extracting("downStation").isEqualTo(null),
             () -> assertThat(합친_구간).extracting("upStation").isEqualTo(두번째역),
-            () -> assertThat(합친_구간).extracting("distance").isEqualTo(3)
+            () -> assertThat(합친_구간).extracting("distance.distance").isEqualTo(3)
         );
     }
 }
