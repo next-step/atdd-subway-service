@@ -35,12 +35,8 @@ public class Sections {
         Station downStation = findFirstUpStation();
         stations.add(downStation);
 
-        while (downStation != null) {
-            Optional<Section> nextLineStation = findNextLineStation(downStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
+        while (sections.size() + 1 != stations.size()) {
+            downStation = findNextLineStation(downStation).getDownStation();
             stations.add(downStation);
         }
 
@@ -53,10 +49,10 @@ public class Sections {
         }
 
         Optional<Section> upLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(it -> station.equals(it.getUpStation()))
                 .findFirst();
         Optional<Section> downLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(it -> station.equals(it.getDownStation()))
                 .findFirst();
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
@@ -78,10 +74,11 @@ public class Sections {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    private Optional<Section> findNextLineStation(Station finalDownStation) {
+    private Section findNextLineStation(Station finalDownStation) {
         return sections.stream()
                 .filter(it -> finalDownStation.equals(it.getUpStation()))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     private boolean isStartStation(Station station) {
