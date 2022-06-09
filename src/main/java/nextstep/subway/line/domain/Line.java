@@ -102,7 +102,6 @@ public class Line extends BaseEntity {
         return sections.orderedStations();
     }
 
-
     public Long id() {
         return id;
     }
@@ -113,10 +112,6 @@ public class Line extends BaseEntity {
 
     public String color() {
         return color;
-    }
-
-    public Sections sections() {
-        return sections;
     }
 
     @Override
