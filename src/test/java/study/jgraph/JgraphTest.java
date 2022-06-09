@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class JgraphTest {
+class JgraphTest {
     @Test
     public void getDijkstraShortestPath() {
         String source = "v3";

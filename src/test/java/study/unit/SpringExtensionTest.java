@@ -1,25 +1,25 @@
 package study.unit;
 
+import static nextstep.subway.line.domain.DomainFixtureFactory.createStation;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
 import com.google.common.collect.Lists;
+import java.util.List;
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
 @DisplayName("단위 테스트 - SpringExtension을 활용한 가짜 협력 객체 사용")
 @ExtendWith(org.springframework.test.context.junit.jupiter.SpringExtension.class)
-public class SpringExtensionTest {
+class SpringExtensionTest {
     @MockBean
     private LineRepository lineRepository;
     @MockBean
@@ -28,7 +28,7 @@ public class SpringExtensionTest {
     @Test
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
+        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(노선_생성()));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when
@@ -36,5 +36,10 @@ public class SpringExtensionTest {
 
         // then
         assertThat(responses).hasSize(1);
+    }
+
+    private Line 노선_생성() {
+        return Line.builder("노선", "color", createStation("지하철역"), createStation("새로운지하철역"), Distance.valueOf(1))
+                .build();
     }
 }

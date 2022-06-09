@@ -4,6 +4,8 @@ import nextstep.subway.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Objects;
+import nextstep.subway.exception.NotFoundException;
+import org.apache.commons.lang3.StringUtils;
 
 @Entity
 public class Station extends BaseEntity {
@@ -13,18 +15,48 @@ public class Station extends BaseEntity {
     @Column(unique = true)
     private String name;
 
-    public Station() {
+    protected Station() {
     }
 
-    public Station(String name) {
-        this.name = name;
+    private Station(StationBuilder stationBuilder) {
+        this.id = stationBuilder.id;
+        this.name = stationBuilder.name;
     }
 
-    public Long getId() {
+    public static StationBuilder builder(String name) {
+        return new StationBuilder(name);
+    }
+
+    public static class StationBuilder {
+        private Long id;
+        private final String name;
+
+        private StationBuilder(String name) {
+            validateNameNotNull(name);
+            this.name = name;
+        }
+
+        private void validateNameNotNull(String name) {
+            if (StringUtils.isEmpty(name)) {
+                throw new NotFoundException("이름 정보가 없습니다.");
+            }
+        }
+
+        public StationBuilder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Station build() {
+            return new Station(this);
+        }
+    }
+
+    public Long id() {
         return id;
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 
