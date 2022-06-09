@@ -62,37 +62,37 @@ public class Line extends BaseEntity {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        stations.add(this.findFirstSection().getUpStation());
+        for (int i = 0; i < sections.size(); i++) {
+            Optional<Section> sectionByUpStation = findSectionByUpStation(stations.get(i));
+            sectionByUpStation.map(Section::getDownStation)
+                    .ifPresent(stations::add);
         }
-
         return stations;
     }
 
-    private Station findUpStation() {
-        Station downStation = this.sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
+    private Optional<Section> findSectionByUpStation(Station station) {
+        return sections.stream().filter(section -> section.isEqualsUpStation(station)).
+                findFirst();
     }
+
+    private Section findFirstSection() {
+        List<Station> downStations = findDownStations();
+        return sections.stream().filter(section -> !downStations.contains(section.getUpStation())).
+                findFirst().
+                orElseThrow(IllegalArgumentException::new);
+    }
+
+    private List<Station> findUpStations() {
+        List<Station> result = new ArrayList<>();
+        sections.stream().forEach(section -> result.add(section.getUpStation()));
+        return result;
+    }
+
+    private List<Station> findDownStations() {
+        List<Station> result = new ArrayList<>();
+        sections.stream().forEach(section -> result.add(section.getDownStation()));
+        return result;
+    }
+
 }
