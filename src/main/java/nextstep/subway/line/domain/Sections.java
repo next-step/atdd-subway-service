@@ -26,20 +26,15 @@ public class Sections {
             return;
         }
 
+        validate(section);
+        this.items.add(section);
+    }
+
+    public void validate(Section section) {
         List<Station> stations = getOrderedStations();
         boolean isUpStationExisted = isContainsStation(section.getUpStation(), stations);
         boolean isDownStationExisted = isContainsStation(section.getDownStation(), stations);
         validateSection(isUpStationExisted, isDownStationExisted);
-
-        if (isUpStationExisted) {
-            relocateSectionsByUpStation(section);
-        }
-
-        if (isDownStationExisted) {
-            relocateSectionsByDownStation(section);
-        }
-
-        this.items.add(section);
     }
 
     private boolean isContainsStation(Station station, List<Station> stations) {
@@ -54,20 +49,6 @@ public class Sections {
         if (!isUpStationExisted && !isDownStationExisted) {
             throw new CannotRegisterException(ExceptionType.CAN_NOT_REGISTER_SECTION);
         }
-    }
-
-    private void relocateSectionsByUpStation(Section section) {
-        items.stream()
-            .filter(it -> it.equalsUpStation(section.getUpStation()))
-            .findFirst()
-            .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-    }
-
-    private void relocateSectionsByDownStation(Section section) {
-        items.stream()
-            .filter(it -> it.equalsDownStation(section.getDownStation()))
-            .findFirst()
-            .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
     }
 
     public List<Section> getItems() {
@@ -136,7 +117,7 @@ public class Sections {
         Optional<Section> upLineStation = upStationConnectedSection(station);
         Optional<Section> downLineStation = downStationConnectedSection(station);
 
-        sectionRelocate(upLineStation, downLineStation);
+        removeRelocate(upLineStation, downLineStation);
         upLineStation.ifPresent(it -> items.remove(it));
         downLineStation.ifPresent(it -> items.remove(it));
     }
@@ -153,7 +134,7 @@ public class Sections {
             .findFirst();
     }
 
-    private void sectionRelocate(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+    private void removeRelocate(Optional<Section> upLineStation, Optional<Section> downLineStation) {
         validateExistsStation(upLineStation, downLineStation);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
