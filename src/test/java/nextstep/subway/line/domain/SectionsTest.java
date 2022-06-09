@@ -122,4 +122,12 @@ class SectionsTest {
         // then
         assertThat(sections.getElements()).hasSize(1);
     }
+
+    @Test
+    void 종점역을_삭제한다() {
+        // when
+        sections.remove(new Station("강남역"));
+        // then
+        assertThat(sections.getElements()).hasSize(1);
+    }
 }
