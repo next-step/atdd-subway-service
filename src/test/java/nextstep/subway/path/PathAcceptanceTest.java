@@ -12,11 +12,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +23,12 @@ import org.junit.jupiter.api.Test;
 
 @DisplayName("지하철 경로 조회")
 class PathAcceptanceTest extends AcceptanceTest {
+
+    private static final int BASIC_FARE = 1250;
+    private static final int TRD_LINE_FARE = 300;
+    private static final int SEC_LINE_FARE = 200;
+    private static final int NBD_LINE_FARE = 500;
+
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -49,9 +53,9 @@ class PathAcceptanceTest extends AcceptanceTest {
         교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        LineRequest 신분당선_Request = LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 500);
-        LineRequest 이호선_Request = LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 200);
-        LineRequest 삼호선_Request = LineRequest.of("삼호선", "bg-red-600", 남부터미널역.getId(), 양재역.getId(), 5, 300);
+        LineRequest 신분당선_Request = LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, NBD_LINE_FARE);
+        LineRequest 이호선_Request = LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, SEC_LINE_FARE);
+        LineRequest 삼호선_Request = LineRequest.of("삼호선", "bg-red-600", 남부터미널역.getId(), 양재역.getId(), 5, TRD_LINE_FARE);
 
         신분당선 = 지하철_노선_등록되어_있음(신분당선_Request).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(이호선_Request).as(LineResponse.class);
@@ -122,6 +126,9 @@ class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId());
 
         // then
-        지하철_최단경로_요금도_함께_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 8, 1250);
+        지하철_최단경로_요금도_함께_조회됨(response,
+                Arrays.asList(교대역, 남부터미널역, 양재역),
+                8,
+                BASIC_FARE + TRD_LINE_FARE);
     }
 }

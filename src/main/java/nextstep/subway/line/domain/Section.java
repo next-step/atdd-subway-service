@@ -64,6 +64,11 @@ public class Section {
         this.distance = distance;
     }
 
+    private Section(Station upStation, Station downStation) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+    }
+
     public static Section of(Long id, Station upStation, Station downStation, Distance distance) {
         return new Section(id, upStation, downStation, distance);
     }
@@ -78,6 +83,10 @@ public class Section {
 
     public static Section of(Station upStation, Station downStation, int distance) {
         return new Section(upStation, downStation, distance);
+    }
+
+    public static Section of(Station upStation, Station downStation) {
+        return new Section(upStation, downStation);
     }
 
     public Long getId() {
@@ -126,6 +135,11 @@ public class Section {
 
     public boolean isEqualsDownStation(Station station) {
         return this.downStation.equals(station);
+    }
+
+    public boolean isEqualsUpDownStation(Section section) {
+        return (this.isEqualsUpStation(section.getUpStation()) && this.isEqualsDownStation(section.getDownStation()))
+                || (this.isEqualsUpStation(section.getDownStation()) && this.isEqualsDownStation(section.getUpStation()));
     }
 
     @Override

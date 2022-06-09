@@ -105,4 +105,8 @@ public class Line extends BaseEntity {
             throw new IllegalStateException(ALREADY_ADDED_SECTION.getMessage());
         }
     }
+
+    public boolean hasFareSections(Sections fareSections) {
+        return this.sections.hasFareSection(fareSections);
+    }
 }

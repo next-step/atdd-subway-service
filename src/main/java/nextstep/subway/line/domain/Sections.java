@@ -36,6 +36,14 @@ public class Sections {
         return new Sections(Lists.newArrayList());
     }
 
+    public static Sections createFareSections(List<Station> stations) {
+        List<Section> fareSections = Lists.newArrayList();
+        for (int i = 0; i < stations.size() - 1; i++) {
+            fareSections.add(Section.of(stations.get(i), stations.get(i+1)));
+        }
+        return Sections.from(fareSections);
+    }
+
     public void add(Section section) {
         if (!this.isEmpty() && !this.isEndOfStation(section)){
             adjustSections(section);
@@ -87,6 +95,12 @@ public class Sections {
 
     public Optional<Section> findSectionById(Long sectionId) {
         return StreamUtils.filterAndFindFirst(this.sections, section -> section.getId().equals(sectionId));
+    }
+
+    public boolean hasFareSection(Sections fareSections) {
+        return fareSections.getSections().stream()
+                .anyMatch(fareSection -> this.sections.stream()
+                        .anyMatch(section -> section.isEqualsUpDownStation(fareSection)));
     }
 
     private void addMiddleSection(Section upLineSection, Section downLineSection) {

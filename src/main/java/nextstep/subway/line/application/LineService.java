@@ -3,6 +3,7 @@ package nextstep.subway.line.application;
 import java.util.List;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -80,7 +81,7 @@ public class LineService {
         line.removeSection(station);
     }
 
-    public List<Line> findAll() {
-        return lineRepository.findAll();
+    public Lines findAll() {
+        return Lines.from(lineRepository.findAll());
     }
 }

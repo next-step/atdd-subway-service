@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.List;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.DijkstraPathFinder;
 import nextstep.subway.path.domain.PathFinder;
@@ -54,11 +55,12 @@ class PathFinderTest {
     void find01() {
 
         // given
-        PathFinder dijkstraPathFinder = DijkstraPathFinder.from(Lists.newArrayList(신분당선, 이호선, 삼호선));
+        Lines lines = Lines.from(Lists.newArrayList(신분당선, 이호선, 삼호선));
+        PathFinder dijkstraPathFinder = DijkstraPathFinder.from(lines);
 
         // when
         Path path = dijkstraPathFinder.findShortPath(교대역, 양재역);
-        PathResponse pathResponse = PathResponse.from(path);
+        PathResponse pathResponse = PathResponse.of(path, 0);
 
         // then
         List<Station> expectedStations = Lists.newArrayList(교대역, 남부터미널역, 양재역);
@@ -75,7 +77,8 @@ class PathFinderTest {
     @Test
     void exception01() {
         // given
-        PathFinder pathFinder = DijkstraPathFinder.from(Lists.newArrayList());
+        Lines lines = Lines.from(Lists.newArrayList());
+        PathFinder pathFinder = DijkstraPathFinder.from(lines);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortPath(교대역, 양재역));
@@ -86,7 +89,8 @@ class PathFinderTest {
     void exception02() {
         // given
         Station 수서역 = Station.of(5L, "수서역");
-        PathFinder pathFinder = DijkstraPathFinder.from(Lists.newArrayList(신분당선, 이호선, 삼호선));
+        Lines lines = Lines.from(Lists.newArrayList(신분당선, 이호선, 삼호선));
+        PathFinder pathFinder = DijkstraPathFinder.from(lines);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortPath(수서역, 교대역));
@@ -97,7 +101,8 @@ class PathFinderTest {
     void exception03() {
         // given
         Station 수서역 = Station.of(5L, "수서역");
-        PathFinder pathFinder = DijkstraPathFinder.from(Lists.newArrayList(신분당선, 이호선, 삼호선));
+        Lines lines = Lines.from(Lists.newArrayList(신분당선, 이호선, 삼호선));
+        PathFinder pathFinder = DijkstraPathFinder.from(lines);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortPath(교대역, 수서역));
@@ -107,11 +112,12 @@ class PathFinderTest {
     @Test
     void find02() {
         // given
-        PathFinder pathFinder = DijkstraPathFinder.from(Lists.newArrayList(신분당선, 이호선, 삼호선));
+        Lines lines = Lines.from(Lists.newArrayList(신분당선, 이호선, 삼호선));
+        PathFinder pathFinder = DijkstraPathFinder.from(lines);
 
         // when
         Path path = pathFinder.findShortPath(교대역, 교대역);
-        PathResponse pathResponse = PathResponse.from(path);
+        PathResponse pathResponse = PathResponse.of(path, 0);
 
         // then
         List<StationResponse> expectedStations = Lists.newArrayList(StationResponse.of(교대역));

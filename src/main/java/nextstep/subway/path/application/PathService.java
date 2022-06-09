@@ -1,11 +1,11 @@
 package nextstep.subway.path.application;
 
-import java.util.List;
+import nextstep.subway.fare.calculator.FareCalculator;
 import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.DijkstraPathFinder;
-import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -25,12 +25,16 @@ public class PathService {
     }
 
     public PathResponse findShortPath(Long sourceId, Long targetId) {
-        List<Line> lines = lineService.findAll();
+        Lines lines = lineService.findAll();
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
 
         PathFinder pathFinder = DijkstraPathFinder.from(lines);
         Path path = pathFinder.findShortPath(source, target);
-        return PathResponse.from(path);
+        return PathResponse.of(path, findPathFare(lines, path));
+    }
+
+    private int findPathFare(Lines lines, Path path) {
+        return FareCalculator.calculate(lines, path);
     }
 }
