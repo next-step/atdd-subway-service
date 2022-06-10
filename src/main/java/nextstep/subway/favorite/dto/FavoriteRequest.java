@@ -12,4 +12,12 @@ public class FavoriteRequest {
 
     protected FavoriteRequest() {
     }
+
+    public Long getSource() {
+        return source;
+    }
+
+    public Long getTarget() {
+        return target;
+    }
 }

@@ -28,7 +28,8 @@ public class FavoriteServiceTest extends ServiceTest {
     private StationResponse 역삼역;
     private LoginMember 로그인된_사용자;
 
-    private FavoriteService service = new FavoriteService();
+    @Autowired
+    private FavoriteService service;
 
     @BeforeEach
     public void setUp(@Autowired StationService stationService, @Autowired MemberService memberService) {
