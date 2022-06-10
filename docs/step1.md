@@ -17,11 +17,11 @@
   - [X] getStations -> Sections
   - [X] addLineStation(stationService 아래 부분) -> Sections
   - [ ] removeLineStation(stationService 아래 부분) -> Sections
-  - [ ] findUpStation -> Sections
-  - [ ] findLines(return 부분) -> LineResponse
+  - [X] findUpStation -> Sections
+  - [X] findLines(return 부분) -> LineResponse
 - [ ] Service의 로직 Domain으로 이동
   - [X] getStations -> Sections
   - [X] addLineStation(stationService 아래 부분) -> Sections
   - [ ] removeLineStation(stationService 아래 부분) -> Sections
-  - [ ] findUpStation -> Sections
-  - [ ] findLines(return 부분) -> LineResponse
+  - [X] findUpStation -> Sections
+  - [X] findLines(return 부분) -> LineResponse
