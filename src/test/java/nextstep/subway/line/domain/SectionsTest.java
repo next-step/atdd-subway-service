@@ -87,4 +87,17 @@ class SectionsTest {
         assertThat(section.getUpStation()).isEqualTo(C역);
         assertThat(section.getDownStation()).isEqualTo(D역);
     }
+
+    @DisplayName("지하철 역 리스트 구하기")
+    @Test
+    void getStations() {
+        // given
+        Sections sections = new Sections(list);
+
+        // when
+        List<Station> stations = sections.getStations();
+
+        // then
+        assertThat(stations).containsExactly(A역, B역, C역, D역);
+    }
 }

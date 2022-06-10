@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.SectionNotFoundException;
 import nextstep.subway.exception.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
 
@@ -43,15 +44,35 @@ public class Sections {
     }
 
     public Optional<Section> findSectionWithUpStation(Station upStation) {
-        return list.stream()
+        return this.list.stream()
                 .filter(section -> upStation.equals(section.getUpStation()))
                 .findFirst();
     }
 
     public Optional<Section> findSectionWithDownStation(Station downStation) {
-        return list.stream()
+        return this.list.stream()
                 .filter(section -> downStation.equals(section.getDownStation()))
                 .findFirst();
+    }
+
+    public List<Station> getStations() {
+        if (this.list.isEmpty()) {
+            return Arrays.asList();
+        }
+
+        Station curStation = getLineUpStation();
+        Station lineDownStation = getLineDownStation();
+
+        List<Station> stations = new ArrayList<>();
+        stations.add(curStation);
+        while (!curStation.equals(lineDownStation)) {
+            Section section = findSectionWithUpStation(curStation)
+                    .orElseThrow(SectionNotFoundException::new);
+            curStation = section.getDownStation();
+            stations.add(curStation);
+        }
+
+        return stations;
     }
 
     private Set<Station> getStationSet() {
