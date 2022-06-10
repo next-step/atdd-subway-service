@@ -4,7 +4,6 @@ import static javax.persistence.FetchType.LAZY;
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -68,13 +67,17 @@ public class Line extends BaseEntity {
 
 
     public void removeStation(Station stationForRemove) {
-        Optional<Section> downSection = sections.getSectionByUpStation(stationForRemove);
-        Optional<Section> upSection = sections.getSectionByDownStation(stationForRemove);
-        sections.removeSectionWithStation(upSection, downSection);
-        if (stationForRemove.equals(this.upStation) || stationForRemove.equals(this.downStation)) {
-            updateUpDownStation(downSection.orElse(Section.emptyOf(this)).getDownStation(),
-                upSection.orElse(Section.emptyOf(this)).getUpStation());
+
+        Section baseSection = sections.removeSectionWithStation(stationForRemove);
+        if (stationForRemove.equals(this.upStation)) {
+            updateUpDownStation(baseSection.getDownStation(), null);
+            return;
         }
+        if (stationForRemove.equals(this.downStation)) {
+            updateUpDownStation(null, baseSection.getUpStation());
+            return;
+        }
+
     }
 
     public void addStation(Station upStation, Station downStation, int distance) {

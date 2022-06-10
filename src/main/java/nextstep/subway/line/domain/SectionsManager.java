@@ -57,16 +57,28 @@ public class SectionsManager {
         return this.sections.stream().filter(it -> it.getDownStation().equals(station)).findFirst();
     }
 
-    public void removeSectionWithStation(Optional<Section> upSection,
-        Optional<Section> downSection) {
+    public Section removeSectionWithStation(Station stationForRemove) {
+        Optional<Section> downSection = getSectionByUpStation(stationForRemove);
+        Optional<Section> upSection = getSectionByDownStation(stationForRemove);
+
         validateOnlyOneSectionExist();
         validateNoSectionForRemove(downSection, upSection);
 
-        if (downSection.isPresent() && upSection.isPresent()) {
-            sections.add(Section.mergeOf(downSection.get(), upSection.get()));
-        }
         sections.remove(downSection.orElse(Section.emptyOf(null)));
         sections.remove(upSection.orElse(Section.emptyOf(null)));
+
+        if (downSection.isPresent() && upSection.isPresent()) {
+            Section section = Section.mergeOf(downSection.get(), upSection.get());
+            sections.add(section);
+            return section;
+        }
+        if (downSection.isPresent()) {
+            return downSection.get();
+        }
+        if (upSection.isPresent()) {
+            return upSection.get();
+        }
+        throw new RuntimeException();
     }
 
     private void validateNoSectionForRemove(Optional<Section> downSection,
