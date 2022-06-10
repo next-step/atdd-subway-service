@@ -1,7 +1,8 @@
 package nextstep.subway.line.domain;
 
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -26,7 +27,15 @@ public class Lines {
     public GraphPath<Station, DefaultWeightedEdge> shortestPath(Station source, Station target) {
         validateNotSameStation(source, target);
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(getGraph());
-        return dijkstraShortestPath.getPath(source, target);
+        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+        validatePathNotNull(path);
+        return path;
+    }
+
+    private void validatePathNotNull(GraphPath<Station, DefaultWeightedEdge> path) {
+        if (Objects.isNull(path)) {
+            throw new NotFoundException("최단경로를 조회할 수 없습니다.");
+        }
     }
 
     private void validateNotSameStation(Station source, Station target) {
