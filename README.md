@@ -1,3 +1,9 @@
+### Step1 요구사항
+- [ ] LineService 리팩터링
+  - [ ] LineService에 있는 비즈니스 로직을 도메인으로 옮긴다
+  - [ ] 도메인 로직을 생성 시 tdd로 진행한다.
+  - [ ] 리팩토링 과정에서 인수테스트를 통과 시켜, 로직을 보호한다.
+
 <p align="center">
     <img width="200px;" src="https://raw.githubusercontent.com/woowacourse/atdd-subway-admin-frontend/master/images/main_logo.png"/>
 </p>
