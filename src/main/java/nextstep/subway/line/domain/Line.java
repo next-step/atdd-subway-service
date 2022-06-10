@@ -91,8 +91,34 @@ public class Line extends BaseEntity {
         return stations;
     }
 
+    public List<Station> getStations1() {
+        if (this.sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return insertStationBySorted();
+    }
+
+
     public int isSize() {
         return this.sections.size();
+    }
+
+    private List<Station> insertStationBySorted() {
+        List<Station> result = new ArrayList<>();
+        Optional<Station> isStartStation = getStartStation();
+        while (isStartStation.isPresent()) {
+            Station station = isStartStation.get();
+            result.add(station);
+            isStartStation = findNextStation(station);
+        }
+        return result;
+    }
+
+    private Optional<Station> findNextStation(final Station station) {
+        return sections.stream()
+                .filter(section -> section.isMatchUpStation(station))
+                .map(Section::getDownStation)
+                .findAny();
     }
 
     private boolean isPreSection(final Section source) {
