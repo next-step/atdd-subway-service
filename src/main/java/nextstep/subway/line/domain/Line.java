@@ -72,13 +72,13 @@ public class Line extends BaseEntity {
         Optional<Section> upSection = sections.getSectionByDownStation(stationForRemove);
         sections.removeSectionWithStation(upSection, downSection);
         if (stationForRemove.equals(this.upStation) || stationForRemove.equals(this.downStation)) {
-            updateUpDownStation(upSection.orElse(Section.emptyOf(this)).getDownStation(),
-                downSection.orElse(Section.emptyOf(this)).getUpStation());
+            updateUpDownStation(downSection.orElse(Section.emptyOf(this)).getDownStation(),
+                upSection.orElse(Section.emptyOf(this)).getUpStation());
         }
     }
 
     public void addStation(Station upStation, Station downStation, int distance) {
-        sections.addStation(upStation, downStation, distance, this);
+        sections.addStation(upStation, downStation, distance, this, this.upStation);
         if (this.upStation.equals(downStation)) {
             updateUpDownStation(upStation, null);
         }
@@ -101,6 +101,6 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-        return sections.getStationsOrdered();
+        return sections.getStationsOrdered(upStation);
     }
 }

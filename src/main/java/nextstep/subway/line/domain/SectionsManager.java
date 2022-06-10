@@ -30,13 +30,13 @@ public class SectionsManager {
     }
 
 
-    public List<Station> getStationsOrdered() {
+    public List<Station> getStationsOrdered(Station lastStation) {
         if (this.sections.isEmpty()) {
             return Arrays.asList();
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = getLastStation();
+        Station downStation = lastStation;
         stations.add(downStation);
 
         for (int i = 0; i < sections.size(); i++) {
@@ -48,15 +48,6 @@ public class SectionsManager {
         return stations;
     }
 
-    private Station getLastStation() {
-        Station downStation = sections.get(0).getUpStation();
-        Optional<Section> section;
-        while ((section = getSectionByDownStation(downStation)).isPresent()) {
-            downStation = section.get().getUpStation();
-        }
-        return downStation;
-
-    }
 
     public Optional<Section> getSectionByUpStation(Station station) {
         return this.sections.stream()
@@ -70,7 +61,8 @@ public class SectionsManager {
             .findFirst();
     }
 
-    public void removeSectionWithStation(Optional<Section> upSection, Optional<Section> downSection) {
+    public void removeSectionWithStation(Optional<Section> upSection,
+        Optional<Section> downSection) {
         validateOnlyOneSection();
         validateNoSectionForRemove(downSection, upSection);
 
@@ -94,8 +86,9 @@ public class SectionsManager {
         }
     }
 
-    public void addStation(Station upStation, Station downStation, int distance, Line line) {
-        List<Station> stations = getStationsOrdered();
+    public void addStation(Station upStation, Station downStation, int distance, Line line,
+        Station lastStation) {
+        List<Station> stations = getStationsOrdered(lastStation);
         Section appendSection = new Section(line, upStation, downStation, distance);
         if (stations.isEmpty()) {
             sections.add(appendSection);
@@ -131,7 +124,7 @@ public class SectionsManager {
     private Optional<Section> getBaseSection(Station baseStation, boolean baseIsUp) {
         for (Section section : sections) {
             if (baseIsUp) {
-                if (section.getUpStation().equals(baseStation)) {
+                if (section.getUpStation().equals(baseStation)) { /* 영속성에 등록되어있어, 동일 */
                     return Optional.of(section);
                 }
                 if (section.getDownStation().equals(baseStation)) {
