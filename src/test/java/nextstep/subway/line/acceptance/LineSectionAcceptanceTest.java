@@ -47,6 +47,9 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 구간을 등록한다.")
     @Test
     void addLineSection() {
+        //추가전 : 강남역 - 광교역
+        //추가후 : 강남역 - 양재역 - 광교역
+
         // when
         지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
 
@@ -59,6 +62,9 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
     @Test
     void addLineSection2() {
+        //추가전 : 강남역 - 광교역
+        //추가후 : 정자역 - 강남역 - 양재역 - 광교역
+
         // when
         지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
         지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 강남역, 5);
@@ -92,6 +98,9 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
     @Test
     void removeLineSection1() {
+
+        //삭제전 : 강남역 - 양재역 - 정자역 - 광교역
+        //삭제후 : 강남역 - 정자역 - 광교역
         // given
         지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
         지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 2);
