@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
@@ -44,6 +45,14 @@ class FavoriteTest {
                 ()-> assertThat(favorite.getTarget()).isEqualTo(교대),
                 ()-> assertThat(favorite.getMember()).isEqualTo(사용자)
         );
+    }
+
+    @DisplayName("출발역과 도착역을 같은역으로 즐겨찾기를 생성하면 예외가 발생한다.")
+    @Test
+    void create_same(){
+        // when then
+        assertThatIllegalArgumentException()
+                .isThrownBy(()->new Favorite(1L, 강남, 강남, 사용자));
     }
 
     @DisplayName("사용자 즐겨찾기 목록을 조회한다.")
