@@ -71,13 +71,18 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                     ExtractableResponse<Response> response = 내_정보_조회_요청(accessToken);
 
                     회원_정보_조회됨(response, EMAIL, AGE);
-                })
-                ,
+                }),
                 dynamicTest("내 정보를 수정한다.", () -> {
                     ExtractableResponse<Response> updateResponse =
                             내_정보_수정_요청(accessToken, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
 
                     회원_정보_수정됨(updateResponse);
+                }),
+                dynamicTest("재로그인을 한다.", () -> {
+                    TokenResponse response = 로그인_됨(NEW_EMAIL, NEW_PASSWORD).as(TokenResponse.class);
+
+                    토큰_확인됨(response);
+                    accessToken = response.getAccessToken();
                 }),
                 dynamicTest("내 정보를 삭제한다.", () -> {
                     ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(accessToken);
