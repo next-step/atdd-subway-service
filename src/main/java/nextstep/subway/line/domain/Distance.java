@@ -7,12 +7,13 @@ import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.exception.ExceptionType;
 
 @Embeddable
-public class Distance {
+public final class Distance {
 
     @Column(name = "distance")
-    private int value;
+    private final int value;
 
     protected Distance() {
+        this.value = 0;
     }
 
     public Distance(int value) {
@@ -27,13 +28,12 @@ public class Distance {
     }
 
     public Distance plus(Distance target) {
-        this.value += target.getValue();
-        return this;
+        return new Distance(this.value + target.getValue());
     }
 
-    public void minus(Distance target) {
+    public Distance minus(Distance target) {
         validateDistance(target);
-        this.value -= target.getValue();
+        return new Distance(this.value - target.getValue());
     }
 
     private void validateDistance(Distance target) {

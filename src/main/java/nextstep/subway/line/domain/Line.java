@@ -61,9 +61,14 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
-    public void registerSection(Station upStation, Station downStation, int distance) {
-        Section section = new Section(this, upStation, downStation, distance);
+    public void registerSection(Section section) {
         this.sections.add(section);
+    }
+
+    public Section createSection(Station upStation, Station downStation, int distance) {
+        Section section = new Section(this, upStation, downStation, distance);
+        this.sections.validate(section);
+        return section;
     }
 
     public void removeStation(Station station) {
@@ -84,5 +89,9 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         return sections.getOrderedStations();
+    }
+
+    public List<Section> getSections() {
+        return sections.getItems();
     }
 }

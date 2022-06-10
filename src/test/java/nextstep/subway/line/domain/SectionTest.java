@@ -21,8 +21,8 @@ class SectionTest {
         Section 구간 = new Section(new Line(), upStation, downStation, 10);
 
         // when
-        boolean 상행역과_같음 = 구간.isEqualsUpStation(upStation);
-        boolean 상행역과_다름 = 구간.isEqualsUpStation(downStation);
+        boolean 상행역과_같음 = 구간.equalsUpStation(upStation);
+        boolean 상행역과_다름 = 구간.equalsUpStation(downStation);
 
         // then
         assertAll(
@@ -40,8 +40,8 @@ class SectionTest {
         Section 구간 = new Section(new Line(), upStation, downStation, 10);
 
         // when
-        boolean 하행역과_같음 = 구간.isEqualsDownStation(downStation);
-        boolean 하행역과_다름 = 구간.isEqualsDownStation(upStation);
+        boolean 하행역과_같음 = 구간.equalsDownStation(downStation);
+        boolean 하행역과_다름 = 구간.equalsDownStation(upStation);
 
         // then
         assertAll(

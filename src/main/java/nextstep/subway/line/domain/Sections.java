@@ -26,20 +26,15 @@ public class Sections {
             return;
         }
 
+        validate(section);
+        this.items.add(section);
+    }
+
+    public void validate(Section section) {
         List<Station> stations = getOrderedStations();
         boolean isUpStationExisted = isContainsStation(section.getUpStation(), stations);
         boolean isDownStationExisted = isContainsStation(section.getDownStation(), stations);
         validateSection(isUpStationExisted, isDownStationExisted);
-
-        if (isUpStationExisted) {
-            relocateSectionsByUpStation(section);
-        }
-
-        if (isDownStationExisted) {
-            relocateSectionsByDownStation(section);
-        }
-
-        this.items.add(section);
     }
 
     private boolean isContainsStation(Station station, List<Station> stations) {
@@ -56,22 +51,8 @@ public class Sections {
         }
     }
 
-    private void relocateSectionsByUpStation(Section section) {
-        items.stream()
-            .filter(it -> it.isEqualsUpStation(section.getUpStation()))
-            .findFirst()
-            .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-    }
-
-    private void relocateSectionsByDownStation(Section section) {
-        items.stream()
-            .filter(it -> it.isEqualsDownStation(section.getDownStation()))
-            .findFirst()
-            .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-    }
-
     public List<Section> getItems() {
-        return items;
+        return new ArrayList<>(items);
     }
 
     public List<Station> getOrderedStations() {
@@ -101,7 +82,7 @@ public class Sections {
 
     private Optional<Section> findNextSection(Section section) {
         return this.items.stream()
-            .filter(item -> item.isEqualsUpStation(section.getDownStation()))
+            .filter(item -> item.equalsUpStation(section.getDownStation()))
             .findAny();
     }
 
@@ -109,7 +90,7 @@ public class Sections {
         Station firstStation = findUpStation();
 
         return items.stream()
-            .filter(item -> item.isEqualsUpStation(firstStation))
+            .filter(item -> item.equalsUpStation(firstStation))
             .findAny()
             .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_FOUND_LINE_STATION));
     }
@@ -127,7 +108,7 @@ public class Sections {
 
     private boolean isNoneMatchedDownStation(List<Section> sections, Station upStation) {
         return sections.stream()
-            .noneMatch(section -> section.isEqualsDownStation(upStation));
+            .noneMatch(section -> section.equalsDownStation(upStation));
     }
 
     public void removeStation(Station station) {
@@ -136,24 +117,24 @@ public class Sections {
         Optional<Section> upLineStation = upStationConnectedSection(station);
         Optional<Section> downLineStation = downStationConnectedSection(station);
 
-        sectionRelocate(upLineStation, downLineStation);
+        removeRelocate(upLineStation, downLineStation);
         upLineStation.ifPresent(it -> items.remove(it));
         downLineStation.ifPresent(it -> items.remove(it));
     }
 
     private Optional<Section> upStationConnectedSection(Station station) {
         return items.stream()
-            .filter(it -> it.isEqualsUpStation(station))
+            .filter(it -> it.equalsUpStation(station))
             .findFirst();
     }
 
     private Optional<Section> downStationConnectedSection(Station station) {
         return items.stream()
-            .filter(it -> it.isEqualsDownStation(station))
+            .filter(it -> it.equalsDownStation(station))
             .findFirst();
     }
 
-    private void sectionRelocate(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+    private void removeRelocate(Optional<Section> upLineStation, Optional<Section> downLineStation) {
         validateExistsStation(upLineStation, downLineStation);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {

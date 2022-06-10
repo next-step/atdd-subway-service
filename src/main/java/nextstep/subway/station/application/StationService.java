@@ -1,5 +1,7 @@
 package nextstep.subway.station.application;
 
+import nextstep.subway.exception.ExceptionType;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
@@ -11,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class StationService {
     private StationRepository stationRepository;
 
@@ -23,11 +26,12 @@ public class StationService {
         return StationResponse.of(persistStation);
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-                .map(station -> StationResponse.of(station))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -35,11 +39,18 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+    @Transactional(readOnly = true)
+    public Station findById(Long id) {
+        return stationRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_FOUND_LINE.getMessage(id)));
     }
 
-    public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+    @Transactional(readOnly = true)
+    public List<StationResponse> findAllStationsByIds(List<Long> ids) {
+        List<Station> stations = stationRepository.findAllByIdIn(ids);
+
+        return stations.stream()
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
     }
 }

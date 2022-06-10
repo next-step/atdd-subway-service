@@ -63,27 +63,6 @@ class SectionsTest {
         assertThat(result).containsExactly(신도림역, 대림역, 신대방역);
     }
 
-    @DisplayName("구간사이에 상행이 같은 구간인 역을 추가하면 정상적으로 추가되어야 한다")
-    @Test
-    void sections_save_test2() {
-        // given
-        Section new_구간 = new Section(new Line(), 대림역, 신도림역, 5);
-
-        Sections sections = new Sections();
-        sections.add(구간);
-        sections.add(new_구간);
-
-        // when
-        List<Station> result = sections.getOrderedStations();
-
-        // then
-        assertAll(
-            () -> assertThat(result).containsExactly(대림역, 신도림역, 신대방역),
-            () -> assertThat(구간.getDistance()).isEqualTo(new Distance(5)),
-            () -> assertThat(구간.getUpStation()).isEqualTo(new_구간.getDownStation())
-        );
-    }
-
     @DisplayName("등록하려는 구간의 두 역이 이미 노선에 이미 노선에 존재한다면 예외가 발생한다")
     @Test
     void sections_add_exception() {
