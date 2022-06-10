@@ -10,6 +10,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PathService {
@@ -22,6 +23,10 @@ public class PathService {
     }
 
     public PathResponse findPath(Long startStationId, Long endStationId) {
+        if(isSameStationId(startStationId, endStationId)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+        }
+
         List<Line> lines = lineRepository.findAll();
         PathFinder pathFinder = new PathFinder(lines);
 
@@ -31,5 +36,9 @@ public class PathService {
         Path findPath = pathFinder.findPath(startStation, endStation);
 
         return PathResponse.of(findPath);
+    }
+
+    private boolean isSameStationId(Long startStationId, Long endStationId) {
+        return Objects.equals(startStationId, endStationId);
     }
 }
