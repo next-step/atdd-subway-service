@@ -30,7 +30,7 @@ public class Sections {
     protected Sections() {
     }
 
-    public Sections(List<Section> sections) {
+    private Sections(List<Section> sections) {
         this.sections = sections;
     }
 
