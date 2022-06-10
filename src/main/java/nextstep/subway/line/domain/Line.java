@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -18,7 +19,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    private final List<Section> sections = new ArrayList<>();
 
     public Line() {
     }
@@ -57,9 +58,28 @@ public class Line extends BaseEntity {
 
     public void addSection(final Section section) {
         if (!Objects.equals(this, section.getLine())) {
-            throw new IllegalArgumentException("Line 이 다릅니다.");
+            throw new IllegalStateException("노선 정보가 다릅니다.");
         }
         sections.add(section);
+    }
+
+    public Optional<Station> getStartStation() {
+        if (sections.isEmpty()) {
+            return Optional.empty();
+        }
+        Station downStation = getSections().get(0).getUpStation();
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = getSections().stream()
+                    .filter(it -> it.getDownStation() == finalDownStation)
+                    .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getUpStation();
+        }
+
+        return Optional.of(downStation);
     }
 
     @Override
