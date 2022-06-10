@@ -1,6 +1,7 @@
 package nextstep.subway.member.ui;
 
 import java.net.URI;
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
@@ -48,6 +49,9 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(LoginMember loginMember) {
+        if(loginMember.getId() == null){
+            throw new AuthorizationException("로그인 정보가 없습니다.");
+        }
         MemberResponse member = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(member);
     }
