@@ -52,4 +52,63 @@ class DiscountAgeRuleTypeTest {
         assertThat(type).isEqualTo(DiscountAgeRuleType.ADULT);
     }
 
+    @DisplayName("CHILDREN 은 350원을 공제한 금액의 50%를 할인받는다.")
+    @ParameterizedTest
+    @ValueSource(ints = {6, 7, 8, 9, 10, 11, 12})
+    void discount01(int age) {
+        // given
+        int fare = 1250;
+
+        // when
+        int discountedFare = DiscountAgeRuleType.discountFare(fare, age);
+
+        // then
+        //  1250 - 350 = 900 -> 900 * 0.5 = 450
+        assertThat(discountedFare).isEqualTo(450);
+    }
+
+    @DisplayName("TEENAGER 은 350원을 공제한 금액의 20%를 할인받는다.")
+    @ParameterizedTest
+    @ValueSource(ints = {13, 14, 15, 16, 17, 18})
+    void discount02(int age) {
+        // given
+        int fare = 1250;
+
+        // when
+        int discountedFare = DiscountAgeRuleType.discountFare(fare, age);
+
+        // then
+        //  1250 - 350 = 900 -> 900 * 0.8 = 450
+        assertThat(discountedFare).isEqualTo(720);
+    }
+
+    @DisplayName("TODDLER 은 공짜다!")
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 2, 3, 4, 5})
+    void discount03(int age) {
+        // given
+        int fare = 1250;
+
+        // when
+        int discountedFare = DiscountAgeRuleType.discountFare(fare, age);
+
+        // then
+        assertThat(discountedFare).isEqualTo(0);
+    }
+
+
+    @DisplayName("ADULT는 할인이 없다.")
+    @ParameterizedTest
+    @ValueSource(ints = {19, 29, 59, 89, 109})
+    void discount04(int age) {
+        // given
+        int fare = 1250;
+
+        // when
+        int discountedFare = DiscountAgeRuleType.discountFare(fare, age);
+
+        // then
+        assertThat(discountedFare).isEqualTo(1250);
+    }
+
 }
