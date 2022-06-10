@@ -4,6 +4,8 @@ import static nextstep.subway.line.domain.DomainFixtureFactory.createLine;
 import static nextstep.subway.line.domain.DomainFixtureFactory.createSection;
 import static nextstep.subway.line.domain.DomainFixtureFactory.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.google.common.collect.Lists;
@@ -11,6 +13,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import nextstep.subway.exception.ImpossibleDeleteException;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -57,5 +60,14 @@ class LinesTest {
                 () -> assertThat(path).containsExactlyElementsOf(Lists.newArrayList(교대역, 남부터미널역, 양재역)),
                 () -> assertThat(weight).isEqualTo(5)
         );
+    }
+
+    @DisplayName("경로에 같은 도착역, 목적역으로 최단경로를 조회시 실패 테스트")
+    @Test
+    void shortestPathWithSameSourceAndTarget() {
+        Lines lines = Lines.valueOf(new HashSet<>(Arrays.asList(신분당선, 이호선, 삼호선)));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> lines.shortestPath(교대역, 교대역))
+                .withMessage("출발역과 도착역이 같을 수 없습니다.");
     }
 }

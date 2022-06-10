@@ -24,8 +24,15 @@ public class Lines {
     }
 
     public GraphPath<Station, DefaultWeightedEdge> shortestPath(Station source, Station target) {
+        validateNotSameStation(source, target);
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(getGraph());
         return dijkstraShortestPath.getPath(source, target);
+    }
+
+    private void validateNotSameStation(Station source, Station target) {
+        if(source.equals(target)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같을 수 없습니다.");
+        }
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> getGraph() {
