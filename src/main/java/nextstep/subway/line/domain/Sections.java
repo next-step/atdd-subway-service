@@ -9,6 +9,7 @@ import java.util.*;
 
 @Embeddable
 public class Sections {
+    private static final int ONLY_ONE = 1;
 
     protected Sections() {
     }
@@ -43,6 +44,9 @@ public class Sections {
     public Optional<Station> getStartStation() {
         if (sections.isEmpty()) {
             return Optional.empty();
+        }
+        if (sections.size() == ONLY_ONE) {
+           return this.sections.stream().map(Section::getUpStation).findAny();
         }
         return sections.stream().filter(this::isPreSection)
                 .map(Section::getUpStation).findAny();
