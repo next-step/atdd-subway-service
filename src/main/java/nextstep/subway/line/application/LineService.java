@@ -146,7 +146,7 @@ public class LineService {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation(line);
+        Station downStation = line.getSections().getLineUpStation();
         stations.add(downStation);
 
         while (downStation != null) {
@@ -162,21 +162,5 @@ public class LineService {
         }
 
         return stations;
-    }
-
-    private Station findUpStation(Line line) {
-        Station downStation = line.getSections().getList().get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = line.getSections().getList().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
     }
 }
