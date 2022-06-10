@@ -51,4 +51,8 @@ public class Favorite {
     public Station getTarget() {
         return target;
     }
+
+    public boolean checkCreatedByMemberId(Long id) {
+        return member.getId() == id;
+    }
 }

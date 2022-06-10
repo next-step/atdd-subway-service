@@ -25,10 +25,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static final String EMAIL = "email@email.com";
+    public static final String EMAIL_2 = "email2@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
 
     public String 사용자_토큰;
+    public String 사용자_토큰_2;
 
     private LineResponse 신분당선;
     private StationResponse 강남역;
@@ -41,7 +43,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성을_요청(EMAIL_2, PASSWORD, AGE);
         사용자_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
+        사용자_토큰_2 = 로그인_되어_있음(EMAIL_2, PASSWORD);
 
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
@@ -65,8 +69,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // Then 즐겨찾기 목록 조회됨
         즐겨찾기_목록_조회됨(findResponse);
 
-        // When 즐겨찾기 삭제 요청
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createResponse, 사용자_토큰);
+        // When 다른 사용자 토큰으로 즐겨찾기 삭제 요청
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createResponse, 사용자_토큰_2);
+        // Then 즐겨찾기 삭제 실패됨
+        즐겨찾기_목록_삭제실패됨(deleteResponse);
+
+        // When 자신의 사용자 토큰으로 즐겨찾기 삭제 요청
+        deleteResponse = 즐겨찾기_삭제_요청(createResponse, 사용자_토큰);
         // Then 즐겨찾기 삭제됨
         즐겨찾기_목록_삭제됨(deleteResponse);
     }
@@ -111,5 +120,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_목록_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 즐겨찾기_목록_삭제실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
