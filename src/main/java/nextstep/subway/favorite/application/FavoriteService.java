@@ -12,6 +12,7 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class FavoriteService {
@@ -28,6 +29,7 @@ public class FavoriteService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public FavoriteResponse createFavorite(LoginMember loginMember, Long sourceId, Long targetId){
         Member member = memberService.findMemberById(loginMember.getId());
         Station source = stationService.findStationById(sourceId);
@@ -36,6 +38,7 @@ public class FavoriteService {
         return FavoriteResponse.from(favorite);
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember loginMember){
         Member member = memberService.findMemberById(loginMember.getId());
         List<Favorite> favorites = favoriteRepository.findAllByMember(member);
