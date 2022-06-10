@@ -68,6 +68,6 @@ public class Line extends BaseEntity {
     }
 
     public void deleteStation(Station station) {
-        sections.delete(station);
+        sections.delete(station, this);
     }
 }
