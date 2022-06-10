@@ -98,11 +98,11 @@ public class SectionsManager {
         validateNoBaseStation(stations, isUpStationExisted, isDownStationExisted);
 
         if (isUpStationExisted) {
-            insertSection(appendSection, upStation, true);
+            insertSection(appendSection, upStation);
             return;
         }
         if (isDownStationExisted) {
-            insertSection(appendSection, downStation, false);
+            insertSection(appendSection, downStation);
             return;
         }
 

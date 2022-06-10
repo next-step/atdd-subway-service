@@ -22,7 +22,7 @@ public class SectionTest {
 
         //when
         Section 추가할_구간 = new Section(null, 세번째역, 두번째역, 3);
-        구간.insert(추가할_구간, 후방에끼워넣는다);
+        구간.insert(추가할_구간);
 
         //then
         assertAll(
