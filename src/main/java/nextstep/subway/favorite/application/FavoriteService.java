@@ -28,12 +28,13 @@ public class FavoriteService {
         this.stationService = stationService;
     }
 
-    public Favorite createFavorite(LoginMember loginMember, Long sourceId, Long targetId){
+    public FavoriteResponse createFavorite(LoginMember loginMember, Long sourceId, Long targetId){
         Member member = memberService.findMemberById(loginMember.getId());
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
         validateSameStation(source, target);
-        return favoriteRepository.save(new Favorite(source,target,member));
+        Favorite favorite = favoriteRepository.save(new Favorite(source, target, member));
+        return FavoriteResponse.from(favorite);
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember){
