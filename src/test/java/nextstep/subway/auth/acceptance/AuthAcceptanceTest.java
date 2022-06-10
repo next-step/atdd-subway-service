@@ -44,7 +44,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithWrongBearerAuth() {
         // When 로그인 정보 요청
-        ExtractableResponse<Response> response = 로그인_정보_요청("wrong_token");
+        ExtractableResponse<Response> response = 내_정보_조회_요청("wrong_token");
         // Then 유효하지 않은 토큰
         토큰_유효하지_않음(response);
     }
