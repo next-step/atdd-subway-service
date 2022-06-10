@@ -4,6 +4,7 @@ import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되�
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -149,7 +150,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 내정보_수정(String token, String email, String password, int age) {
         MemberRequest updateRequest = new MemberRequest(email,password,age);
         return RestAssured
-                .given().log().all()
+                .given().log().all().contentType(ContentType.JSON)
                 .auth().oauth2(token)
                 .when().body(updateRequest).put("/members/me")
                 .then().log().all()
