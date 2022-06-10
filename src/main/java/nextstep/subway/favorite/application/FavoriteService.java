@@ -35,16 +35,13 @@ public class FavoriteService {
         Station sourceStation = stationService.findStationById(request.getSource());
         Station targetStation = stationService.findStationById(request.getTarget());
         Favorite favorite = new Favorite(member, sourceStation, targetStation);
-        return new FavoriteResponse(favoriteRepository.save(favorite));
+        return FavoriteResponse.of(favoriteRepository.save(favorite));
     }
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findAll(LoginMember loginMember) {
         Member member = memberService.findById(loginMember.getId());
-        return favoriteRepository.findByMember(member)
-                                 .stream()
-                                 .map(FavoriteResponse::new)
-                                 .collect(Collectors.toList());
+        return FavoriteResponse.of(favoriteRepository.findByMember(member));
     }
 
     public void deleteById(LoginMember loginMember, Long id) {
