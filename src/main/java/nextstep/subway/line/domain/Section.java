@@ -86,6 +86,33 @@ public class Section {
         this.line = line;
     }
 
+    public void modifySectionFor(Section newSection) {
+        if (this.upStation.equals(newSection.upStation)) {
+            this.upStation = newSection.downStation;
+            changeDistance(newSection);
+        }
+        if (this.downStation.equals(newSection.downStation)) {
+            this.downStation = newSection.upStation;
+            changeDistance(newSection);
+        }
+    }
+
+    private void changeDistance(Section newSection) {
+        if (this.distance <= newSection.distance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.distance -= newSection.distance;
+    }
+
+    public Section merge(Section nextSection) {
+        return new Section(this.upStation, nextSection.getDownStation(), distance + nextSection.distance);
+    }
+
+    public boolean isSameBothStation(Section other) {
+        return this.upStation.equals(other.upStation)
+                && this.downStation.equals(other.downStation);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
