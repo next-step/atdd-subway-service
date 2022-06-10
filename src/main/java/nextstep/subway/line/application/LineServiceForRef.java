@@ -22,10 +22,10 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineServiceForRef {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
-    private SectionRepository sectionRepository;
+    private final SectionRepository sectionRepository;
 
     public LineServiceForRef(LineRepository lineRepository, StationService stationService, SectionRepository sectionRepository) {
         this.lineRepository = lineRepository;
@@ -34,13 +34,11 @@ public class LineServiceForRef {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
-        Section savedSection = sectionRepository.save(new Section(request.toLine(), upStation, downStation, request.getDistance()));
-        List<StationResponse> stations = savedSection.getLine().getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-        return LineResponse.of(savedSection.getLine(), stations);
+        final Station upStation = stationService.findById(request.getUpStationId());
+        final Station downStation = stationService.findById(request.getDownStationId());
+        final Section savedSection = sectionRepository.save(new Section(request.toLine(), upStation, downStation, request.getDistance()));
+        final Line savedLine = savedSection.getLine();
+        return LineResponse.of(savedLine, stationResponsesBy(savedLine.getStations()));
     }
 
     public List<LineResponse> findLines() {
@@ -182,5 +180,9 @@ public class LineServiceForRef {
         }
 
         return downStation;
+    }
+
+    private List<StationResponse> stationResponsesBy(final List<Station> stations) {
+        return stations.stream().map(StationResponse::of).collect(Collectors.toList());
     }
 }
