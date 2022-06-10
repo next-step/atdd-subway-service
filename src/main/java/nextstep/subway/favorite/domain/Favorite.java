@@ -6,6 +6,8 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
+import static java.util.Objects.requireNonNull;
+
 @Entity
 public class Favorite extends BaseEntity {
 
@@ -23,9 +25,19 @@ public class Favorite extends BaseEntity {
     private Station target;
 
     public Favorite(Member member, Station sourceStation, Station targetStation) {
+        requireNonNull(member, "member");
+        requireNonNull(sourceStation, "sourceStation");
+        requireNonNull(targetStation, "targetStation");
+        validateSameStation(sourceStation, targetStation);
         this.member = member;
         this.source = sourceStation;
         this.target = targetStation;
+    }
+
+    private void validateSameStation(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new CannotCreatingFavoriteException("출발지와 목적지가 같을 수 없습니다.");
+        }
     }
 
     public Member getMember() {
