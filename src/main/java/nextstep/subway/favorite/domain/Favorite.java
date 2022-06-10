@@ -35,7 +35,15 @@ public class Favorite extends BaseEntity {
     }
 
     public Favorite(Station source, Station target, Member member) {
-        validateSameStation(source, target);
+        validateSameStation(source , target);
+        this.source = source;
+        this.target = target;
+        this.member = member;
+    }
+
+    public Favorite(long id, Station source, Station target, Member member) {
+        validateSameStation(source , target);
+        this.id = id;
         this.source = source;
         this.target = target;
         this.member = member;
