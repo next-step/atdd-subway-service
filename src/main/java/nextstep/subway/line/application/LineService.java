@@ -44,7 +44,7 @@ public class LineService {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
                 .map(line -> {
-                    List<StationResponse> stations = getStations(line).stream()
+                    List<StationResponse> stations = line.getStations().stream()
                             .map(it -> StationResponse.of(it))
                             .collect(Collectors.toList());
                     return LineResponse.of(line, stations);
