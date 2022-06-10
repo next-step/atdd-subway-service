@@ -66,6 +66,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_생성을_요청(email, password, age);
     }
 
+    public static String 로그인_되어_있음(String email, String password) {
+        return 로그인_요청(email, password).jsonPath().getString("accessToken");
+    }
+
     public static void 로그인_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }

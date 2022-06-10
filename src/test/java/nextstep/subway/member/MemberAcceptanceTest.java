@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -55,9 +56,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
-        // when 로그인 요청
-        ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
-        String token = loginResponse.jsonPath().getString("accessToken");
+        // when 로그인 되어 있음
+        String token = 로그인_되어_있음(EMAIL, PASSWORD);
 
         // when 내 정보 조회
         ExtractableResponse<Response> findResponse = 내_정보_조회_요청(token);
