@@ -28,8 +28,7 @@ public class PathService {
     public PathResponse findShortestPath(long sourceId, long targetId) {
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
-        List<Section> sections = findSections();
-        Lines lines = Lines.valueOf(sections.stream()
+        Lines lines = Lines.valueOf(findSections().stream()
                 .map(Section::line)
                 .collect(Collectors.toSet()));
         GraphPath<Station, DefaultWeightedEdge> shortestPath = lines.shortestPath(source, target);
