@@ -54,7 +54,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         내_정보_조회_실패됨(response);
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_됨(String email, String password) {
+        return 로그인_요청(email, password);
+    }
+
+    private static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest request = new TokenRequest(email, password);
         return RestAssured
                 .given().log().all()
