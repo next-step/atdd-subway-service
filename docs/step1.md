@@ -1,7 +1,7 @@
 #1단계 - 인수 테스트 기반 리팩터링
 ##요구사항
 ---
-- [ ] LineService 리팩터링
+- [x] LineService 리팩터링
 - [ ] LineSectionAcceptanceTest 리팩터링
 
 ## 요구사항 설명
@@ -45,13 +45,13 @@ Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
 ```
 ## 리팩토링 목록
 ### 인수 테스트
-- [ ] LineAcceptanceTest
+- LineAcceptanceTest
   - [x] Assured method 분리
-- [ ] LineSectionAcceptanceTest
+- LineSectionAcceptanceTest
   - [x] Assured method 분리
 
-### 도메인
-- [ ] 원시값 포장
-- [ ] 원시값 포장으로 인한 도메인 테스트 코드
-- [ ] 정적 팩토리 생성자
+- [x] LineService 로직 Line으로 이동
+- [x] Line의 로직 Sections 로 이동
+- [x] 각 도메인 테스트 코드
+
 
