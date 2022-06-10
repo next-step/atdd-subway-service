@@ -50,6 +50,10 @@ public class Sections {
         return sections;
     }
 
+    public boolean isContains(final Section section) {
+        return sections.contains(section);
+    }
+
     private List<Station> insertStationBySorted() {
         List<Station> result = new ArrayList<>();
         Optional<Station> isStartStation = getStartStation();

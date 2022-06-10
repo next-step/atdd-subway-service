@@ -105,4 +105,18 @@ class SectionsTest {
     void invalidCreateTest() {
         assertThatThrownBy(() -> new Sections(null)).isExactlyInstanceOf(IllegalArgumentException.class);
     }
+
+    /*
+    * Given 저장된 구간들에서
+    * When 특정 구간을 포함되어 있는지 요청하면
+    * Then 포함 여부를 알수 있다.
+    * */
+    @DisplayName("구간 정보들 에서 특정 구간을 있는지 여부를 알수 있다.")
+    @Test
+    void isContainsTest() {
+        // When
+        final boolean result = 구간들이_저장된_노선들.isContains(new Section(신분당선, 광교역, 광교중앙역, 10));
+        // Then
+        assertThat(result).isTrue();
+    }
 }
