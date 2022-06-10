@@ -50,15 +50,11 @@ public class SectionsManager {
 
 
     public Optional<Section> getSectionByUpStation(Station station) {
-        return this.sections.stream()
-            .filter(it -> it.getUpStation() == station)
-            .findFirst();
+        return this.sections.stream().filter(it -> it.getUpStation().equals(station)).findFirst();
     }
 
     public Optional<Section> getSectionByDownStation(Station station) {
-        return this.sections.stream()
-            .filter(it -> it.getDownStation() == station)
-            .findFirst();
+        return this.sections.stream().filter(it -> it.getDownStation().equals(station)).findFirst();
     }
 
     public void removeSectionWithStation(Optional<Section> upSection,
