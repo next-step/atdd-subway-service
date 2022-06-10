@@ -63,7 +63,7 @@ public class SectionsManager {
 
     public void removeSectionWithStation(Optional<Section> upSection,
         Optional<Section> downSection) {
-        validateOnlyOneSection();
+        validateOnlyOneSectionExist();
         validateNoSectionForRemove(downSection, upSection);
 
         if (downSection.isPresent() && upSection.isPresent()) {
@@ -80,7 +80,7 @@ public class SectionsManager {
         }
     }
 
-    private void validateOnlyOneSection() {
+    private void validateOnlyOneSectionExist() {
         if (sections.size() == 1) {
             throw new RuntimeException();
         }
