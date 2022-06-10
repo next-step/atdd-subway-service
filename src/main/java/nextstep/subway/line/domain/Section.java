@@ -35,26 +35,6 @@ public class Section {
         this.distance = distance;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Line getLine() {
-        return line;
-    }
-
-    public Station getUpStation() {
-        return upStation;
-    }
-
-    public Station getDownStation() {
-        return downStation;
-    }
-
-    public int getDistance() {
-        return distance;
-    }
-
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
@@ -75,5 +55,25 @@ public class Section {
         if (Objects.equals(this.getUpStation(), section.getUpStation()) && Objects.equals(this.getDownStation(), section.getDownStation())) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Line getLine() {
+        return line;
+    }
+
+    public Station getUpStation() {
+        return upStation;
+    }
+
+    public Station getDownStation() {
+        return downStation;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 }
