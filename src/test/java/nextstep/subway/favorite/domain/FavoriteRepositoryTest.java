@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.RepositoryTest;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -16,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("FavoriteRepository 클래스 테스트")
 @DataJpaTest
-public class FavoriteRepositoryTest {
+public class FavoriteRepositoryTest extends RepositoryTest {
 
     @Autowired
     private FavoriteRepository favoriteRepository;
@@ -26,7 +27,8 @@ public class FavoriteRepositoryTest {
     private Member 사용자;
 
     @BeforeEach
-    void setUp(@Autowired StationRepository stationRepository, @Autowired MemberRepository memberRepository) {
+    public void setUp(@Autowired StationRepository stationRepository, @Autowired MemberRepository memberRepository) {
+        super.setUp();
         강남역 = stationRepository.save(new Station("강남역"));
         역삼역 = stationRepository.save(new Station("역삼역"));
 
