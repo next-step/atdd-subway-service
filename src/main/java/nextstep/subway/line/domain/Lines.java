@@ -26,7 +26,8 @@ public class Lines {
 
     public GraphPath<Station, DefaultWeightedEdge> shortestPath(Station source, Station target) {
         validateNotSameStation(source, target);
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(getGraph());
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
+                getGraph());
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
         validatePathNotNull(path);
         return path;
@@ -39,7 +40,7 @@ public class Lines {
     }
 
     private void validateNotSameStation(Station source, Station target) {
-        if(source.equals(target)) {
+        if (source.equals(target)) {
             throw new IllegalArgumentException("출발역과 도착역이 같을 수 없습니다.");
         }
     }

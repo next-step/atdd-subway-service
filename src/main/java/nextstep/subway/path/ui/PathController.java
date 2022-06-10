@@ -3,7 +3,6 @@ package nextstep.subway.path.ui;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
