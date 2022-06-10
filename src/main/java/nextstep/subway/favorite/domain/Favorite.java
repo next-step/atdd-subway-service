@@ -34,6 +34,9 @@ public class Favorite extends BaseEntity {
         this.target = targetStation;
     }
 
+    protected Favorite() {
+    }
+
     private void validateSameStation(Station sourceStation, Station targetStation) {
         if (sourceStation.equals(targetStation)) {
             throw new CannotCreatingFavoriteException("출발지와 목적지가 같을 수 없습니다.");
