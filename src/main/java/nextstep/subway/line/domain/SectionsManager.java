@@ -124,7 +124,7 @@ public class SectionsManager {
     private Optional<Section> getBaseSection(Station baseStation, boolean baseIsUp) {
         for (Section section : sections) {
             if (baseIsUp) {
-                if (section.getUpStation().equals(baseStation)) { /* 영속성에 등록되어있어, 동일 */
+                if (section.getUpStation().equals(baseStation)) {
                     return Optional.of(section);
                 }
                 if (section.getDownStation().equals(baseStation)) {
