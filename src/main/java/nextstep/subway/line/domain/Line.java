@@ -82,6 +82,21 @@ public class Line extends BaseEntity {
         return Optional.of(downStation);
     }
 
+    public Optional<Station> getStartStation1() {
+        if (sections.isEmpty()) {
+            return Optional.empty();
+        }
+        return sections.stream().filter(this::isPreSection)
+                .map(Section::getUpStation).findAny();
+    }
+
+    private boolean isPreSection(final Section source) {
+        Optional<Section> isPreSection = sections.stream()
+                .filter(section -> !section.isMatchDownStation(source.getUpStation()) &&
+                        section.isMatchUpStation(source.getDownStation())).findAny();
+        return isPreSection.isPresent();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
