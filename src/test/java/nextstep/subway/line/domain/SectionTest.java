@@ -23,4 +23,14 @@ class SectionTest {
     void equalsStationTest() {
         assertThat(section.isEqualsUpStation(잠실역)).isTrue();
     }
+
+    @Test
+    void modifyForSectionTest() {
+        Station 선릉역 = new Station("선릉역");
+        Section newSection = new Section(잠실역,선릉역, 5);
+
+        section.modifySectionFor(newSection);
+
+        assertThat(section.getUpStation()).isEqualTo(선릉역);
+    }
 }
