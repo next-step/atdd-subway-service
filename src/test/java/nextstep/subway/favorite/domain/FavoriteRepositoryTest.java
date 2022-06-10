@@ -1,7 +1,9 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,11 +26,11 @@ public class FavoriteRepositoryTest {
     private Member 사용자;
 
     @BeforeEach
-    void setUp() {
-        강남역 = new Station("강남역");
-        역삼역 = new Station("역삼역");
+    void setUp(@Autowired StationRepository stationRepository, @Autowired MemberRepository memberRepository) {
+        강남역 = stationRepository.save(new Station("강남역"));
+        역삼역 = stationRepository.save(new Station("역삼역"));
 
-        사용자 = new Member("heowc1992@gmail.com", "password", 31);
+        사용자 = memberRepository.save(new Member("heowc1992@gmail.com", "password", 31));
     }
 
     @DisplayName("Favorite를 저장한다.")
