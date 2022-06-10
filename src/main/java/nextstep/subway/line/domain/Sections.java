@@ -46,6 +46,10 @@ public class Sections {
                 .map(Section::getUpStation).findAny();
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     private List<Station> insertStationBySorted() {
         List<Station> result = new ArrayList<>();
         Optional<Station> isStartStation = getStartStation();

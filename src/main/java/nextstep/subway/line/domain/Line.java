@@ -15,12 +15,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private final List<Section> sections = new ArrayList<>();
-
-    @Transient
     @Embedded
-    private final Sections sections1 = new Sections();
+    private final Sections sections = new Sections();
 
     public Line() {
     }
@@ -33,8 +29,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
-        sections1.addSection(new Section(this, upStation, downStation, distance));
+        sections.addSection(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
@@ -55,31 +50,26 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections;
-    }
-
-    public Sections getSections1() {
-        return sections1;
+        return sections.getSections();
     }
 
     public void addSection(final Section section) {
         if (!Objects.equals(this, section.getLine())) {
             throw new IllegalStateException("노선 정보가 다릅니다.");
         }
-        sections.add(section);
-        sections1.addSection(section);
+        sections.addSection(section);
     }
 
     public Optional<Station> getStartStation() {
-       return sections1.getStartStation();
+       return sections.getStartStation();
     }
 
     public List<Station> getStations() {
-      return sections1.getStations();
+      return sections.getStations();
     }
 
     public int isSize() {
-       return sections1.isSize();
+       return sections.isSize();
     }
 
     @Override
