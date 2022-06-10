@@ -2,8 +2,8 @@ package nextstep.subway.line.acceptance;
 
 import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_등록되어_있음;
 import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_조회_요청;
-import static nextstep.subway.utils.LineSectionAcceptanceHelper.지하철_노선에_지하철역_등록_요청;
-import static nextstep.subway.utils.LineSectionAcceptanceHelper.지하철_노선에_지하철역_제외_요청;
+import static nextstep.subway.utils.LineSectionApiHelper.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.utils.LineSectionApiHelper.지하철_노선에_지하철역_제외_요청;
 import static nextstep.subway.utils.LineSectionAssertionHelper.지하철_노선에_지하철역_등록_실패됨;
 import static nextstep.subway.utils.LineSectionAssertionHelper.지하철_노선에_지하철역_등록됨;
 import static nextstep.subway.utils.LineSectionAssertionHelper.지하철_노선에_지하철역_순서_정렬됨;

@@ -8,7 +8,7 @@ import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.http.MediaType;
 
-public class LineSectionAcceptanceHelper {
+public class LineSectionApiHelper {
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line,
         StationResponse upStation, StationResponse downStation, int distance) {
