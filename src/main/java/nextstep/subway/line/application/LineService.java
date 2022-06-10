@@ -47,9 +47,6 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        List<StationResponse> stations = persistLine.findStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
         return LineResponse.of(persistLine);
     }
 

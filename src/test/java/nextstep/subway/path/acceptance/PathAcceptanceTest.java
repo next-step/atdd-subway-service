@@ -1,18 +1,27 @@
 package nextstep.subway.path.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("지하철 경로 조회")
@@ -57,6 +66,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단경로_조회됨(최단경로_조회_결과);
+        최단경로_지하철역_목록과_거리_조회됨(최단경로_조회_결과, new PathResponse(Arrays.asList(교대역, 남부터미널역, 양재역), 5));
+
     }
 
     @DisplayName("최단경로 조회 실패 시나리오")
@@ -73,21 +84,43 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 출발역과_도착역이_연결되어_있지않은_최단경로_조회_결과 = 최단경로_조회(강남역, 남부터미널역);
         // Then 조회 요청이 실패됨
-        최단경로_조회_실패됨(출발역과_도착역이_같은_최단경로_조회_결과);
+        최단경로_조회_실패됨(출발역과_도착역이_연결되어_있지않은_최단경로_조회_결과);
 
         // when
         ExtractableResponse<Response> 존재하지_않는_역_최단경로_조회_결과 = 최단경로_조회(교대역, 존재하지않는역);
         // Then 조회 요청이 실패됨
-        최단경로_조회_실패됨(출발역과_도착역이_같은_최단경로_조회_결과);
+        최단경로_조회_실패됨(존재하지_않는_역_최단경로_조회_결과);
     }
 
     private  ExtractableResponse<Response> 최단경로_조회(StationResponse 출발역, StationResponse 도착역) {
-        return null;
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={source}&target={target}", 출발역.getId(), 도착역.getId())
+                .then().log().all()
+                .extract();
     }
 
     private void 최단경로_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 최단경로_지하철역_목록과_거리_조회됨(ExtractableResponse<Response> response, PathResponse expectedPath) {
+        PathResponse path = response.as(PathResponse.class);
+
+        List<Long> stationIds = path.getStations().stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        List<Long> expectedStationIds = expectedPath.getStations().stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        assertThat(stationIds).isEqualTo(expectedStationIds);
+        assertThat(path.getDistance()).isEqualTo(expectedPath.getDistance());
     }
 
     private void 최단경로_조회_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
