@@ -16,6 +16,11 @@ public class Sections {
     private List<Section> sections = new ArrayList<>();
 
     public void add(Section section) {
+        if (this.sections.isEmpty()) {
+            this.sections.add(section);
+            return;
+        }
+
         List<Station> stations = this.getStations();
 
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
@@ -28,11 +33,6 @@ public class Sections {
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
             stations.stream().noneMatch(it -> it == section.getDownStation())) {
             throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
-            this.sections.add(section);
-            return;
         }
 
         this.addSection(section, isUpStationExisted, isDownStationExisted);
@@ -56,6 +56,30 @@ public class Sections {
         }
 
         return stations;
+    }
+
+    public void removeLineStation(Station station, Line line) {
+        if (this.sections.size() <= 1) {
+            throw new IllegalArgumentException();
+        }
+
+        Optional<Section> upLineStation = this.sections.stream()
+            .filter(it -> it.getUpStation() == station)
+            .findFirst();
+        Optional<Section> downLineStation = this.sections.stream()
+            .filter(it -> it.getDownStation() == station)
+            .findFirst();
+
+
+        upLineStation.ifPresent(it -> this.sections.remove(it));
+        downLineStation.ifPresent(it -> this.sections.remove(it));
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            Distance newDistance = upLineStation.get().getDistance().merge(downLineStation.get().getDistance());
+            this.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
     }
 
     private void addSection(Section section, boolean isUpStationExisted, boolean isDownStationExisted) {

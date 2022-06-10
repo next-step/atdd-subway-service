@@ -26,7 +26,7 @@ class DistanceTest {
     @Test
     @DisplayName("Distance의 거리에서 특정 거리를 뺄 경우 새로운 객체를 리턴한다.")
     void subtractDistance() {
-        Distance subtract = new Distance(10).subtract(5);
+        Distance subtract = new Distance(10).subtract(new Distance(5));
         assertThat(subtract).isEqualTo(new Distance(5));
     }
 

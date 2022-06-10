@@ -18,8 +18,8 @@ class SectionsTest {
         Station 강남역 = new Station("강남역");
         Station 판교역 = new Station("판교역");
         Station 양재시민의숲역 = new Station("양재시민의숲역");
-        Line 신분당선 = new Line("신분당선", "red", 강남역, 판교역, 10);
-        신분당선.add(new Section(신분당선, 양재시민의숲역, 판교역, 5));
+        Line 신분당선 = new Line("신분당선", "red", 강남역, 판교역, new Distance(10));
+        신분당선.add(new Section(신분당선, 양재시민의숲역, 판교역, new Distance(5)));
 
         assertThat(신분당선.getStations()).containsExactly(강남역, 양재시민의숲역, 판교역);
     }
@@ -31,22 +31,46 @@ class SectionsTest {
         Station 양재시민의숲역 = new Station("양재시민의숲역");
         Station 판교역 = new Station("판교역");
         Station 양재역 = new Station("양재역");
-        Line 신분당선 = new Line("신분당선", "red", 강남역, 양재시민의숲역, 10);
+        Line 신분당선 = new Line("신분당선", "red", 강남역, 양재시민의숲역, new Distance(10));
 
         return Stream.of(
             DynamicTest.dynamicTest("노선에 이미 구간이 등록되어있을 경우", () -> {
                 assertThatIllegalArgumentException()
-                    .isThrownBy(() -> 신분당선.add(new Section(신분당선, 강남역, 양재시민의숲역, 5)));
+                    .isThrownBy(() -> 신분당선.add(new Section(신분당선, 강남역, 양재시민의숲역, new Distance(5))));
             }),
             DynamicTest.dynamicTest("노선에 두 종점역이 모두 등록되어있지 않을 경우", () -> {
                 assertThatIllegalArgumentException()
-                    .isThrownBy(() -> 신분당선.add(new Section(신분당선, 양재역, 판교역, 5)));
+                    .isThrownBy(() -> 신분당선.add(new Section(신분당선, 양재역, 판교역, new Distance(5))));
             }),
             DynamicTest.dynamicTest("기존 구간보다 거리가 긴 노선이 추가될 경우 ", () -> {
                 assertThatIllegalArgumentException()
-                    .isThrownBy(() -> 신분당선.add(new Section(신분당선, 강남역, 판교역, 15)));
+                    .isThrownBy(() -> 신분당선.add(new Section(신분당선, 강남역, 판교역, new Distance(15))));
             })
         );
+    }
+
+    @Test
+    @DisplayName("노선에서 지하철역을 삭제할 때, 남은 구간이 1개라면 에러를 던진다.")
+    void removeLineStation_fail() {
+        Station 강남역 = new Station("강남역");
+        Station 양재시민의숲역 = new Station("양재시민의숲역");
+        Line 신분당선 = new Line("신분당선", "red", 강남역, 양재시민의숲역, new Distance(10));
+
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> 신분당선.removeLineStation(강남역));
+    }
+
+    @Test
+    @DisplayName("노선에서 지하철역을 삭제하면, 노선 정보에 지하철역에서 삭제된다.")
+    void removeLineStation() {
+        Station 강남역 = new Station("강남역");
+        Station 판교역 = new Station("판교역");
+        Station 양재시민의숲역 = new Station("양재시민의숲역");
+        Line 신분당선 = new Line("신분당선", "red", 강남역, 판교역, new Distance(10));
+        신분당선.add(new Section(신분당선, 양재시민의숲역, 판교역, new Distance(5)));
+
+        신분당선.removeLineStation(양재시민의숲역);
+        assertThat(신분당선.getStations()).containsExactly(강남역, 판교역);
     }
 
 }

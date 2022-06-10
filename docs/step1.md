@@ -13,15 +13,15 @@
   - removeLineStation(stationService 아래 부분) -> Sections
   - findUpStation -> Sections
   - findLines(return 부분) -> LineResponse
-- [ ] 옮길 로직을 바탕으로 Domain 단위 테스트 작성
+- [X] 옮길 로직을 바탕으로 Domain 단위 테스트 작성
   - [X] getStations -> Sections
   - [X] addLineStation(stationService 아래 부분) -> Sections
-  - [ ] removeLineStation(stationService 아래 부분) -> Sections
+  - [X] removeLineStation(stationService 아래 부분) -> Sections
   - [X] findUpStation -> Sections
   - [X] findLines(return 부분) -> LineResponse
-- [ ] Service의 로직 Domain으로 이동
+- [X] Service의 로직 Domain으로 이동
   - [X] getStations -> Sections
   - [X] addLineStation(stationService 아래 부분) -> Sections
-  - [ ] removeLineStation(stationService 아래 부분) -> Sections
+  - [X] removeLineStation(stationService 아래 부분) -> Sections
   - [X] findUpStation -> Sections
   - [X] findLines(return 부분) -> LineResponse

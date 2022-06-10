@@ -20,12 +20,12 @@ public class Distance {
         this.distance = distance;
     }
 
-    public Distance subtract(int newDistance) {
-        return new Distance(this.distance -= newDistance);
+    public Distance subtract(Distance newDistance) {
+        return new Distance(this.distance -= newDistance.distance);
     }
 
-    public int getDistance() {
-        return distance;
+    public Distance merge(Distance newDistance) {
+        return new Distance(this.distance += newDistance.distance);
     }
 
     @Override
