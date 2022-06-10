@@ -145,7 +145,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private void 나의정보_조회_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private void 로그인_실패됨(ExtractableResponse<Response> response) {

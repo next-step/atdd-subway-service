@@ -13,10 +13,16 @@ public class GlobalExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class, AuthorizationException.class})
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void badRequest(Exception e) {
         logger.error("Bad Request ", e);
+    }
+
+    @ExceptionHandler({AuthorizationException.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public void author(Exception e){
+        logger.error("Unauthorized ",e);
     }
 
     @ExceptionHandler({Exception.class})
