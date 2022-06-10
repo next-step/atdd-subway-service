@@ -18,7 +18,7 @@ public enum DiscountAgeRuleType {
     }
 
     public static DiscountAgeRuleType findDiscountAgeRuleType(int age) {
-        return Arrays.asList(values()).stream()
+        return Arrays.stream(values())
                 .filter(type -> type.isIncludeAge(age))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(INVALID_AGE));
