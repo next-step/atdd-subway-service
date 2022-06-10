@@ -12,6 +12,8 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 import org.apache.commons.lang3.StringUtils;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 @Entity
 public class Line extends BaseEntity {
@@ -100,6 +102,14 @@ public class Line extends BaseEntity {
 
     public List<Station> orderedStations() {
         return sections.orderedStations();
+    }
+
+    public void addVertexAt(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        sections.addVertexAt(graph);
+    }
+
+    public void setEdgeWeightAt(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        sections.setEdgeWeightAt(graph);
     }
 
     public Long id() {

@@ -11,6 +11,8 @@ import javax.persistence.OneToMany;
 import nextstep.subway.exception.ImpossibleDeleteException;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 @Embeddable
 public class Sections {
@@ -63,11 +65,11 @@ public class Sections {
     }
 
     private boolean isUpStationExisted(Section section) {
-        return orderedStations().stream().anyMatch(station -> section.sameUpStation(station));
+        return orderedStations().stream().anyMatch(section::sameUpStation);
     }
 
     private boolean isDownStationExisted(Section section) {
-        return orderedStations().stream().anyMatch(station -> section.sameDownStation(station));
+        return orderedStations().stream().anyMatch(section::sameDownStation);
     }
 
     public List<Station> orderedStations() {
@@ -181,5 +183,17 @@ public class Sections {
         return Distance.valueOf(sections.stream()
                 .mapToInt(section -> section.distance().distance())
                 .reduce(0, Integer::sum));
+    }
+
+    public void addVertexAt(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        for(Station station : orderedStations()) {
+            graph.addVertex(station);
+        }
+    }
+
+    public void setEdgeWeightAt(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        for (Section section : sections){
+            graph.setEdgeWeight(graph.addEdge(section.upStation(), section.downStation()), section.weight());
+        }
     }
 }

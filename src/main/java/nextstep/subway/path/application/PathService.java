@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -29,15 +30,8 @@ public class PathService {
     public PathResponse findShortestPath(long sourceId, long targetId) {
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
-        List<Line> lines = lineRepository.findAll();
-
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        for (Line line : lines) {
-            //line.addVertexAt(graph);
-            //line.setEdgeWeightAt(graph);
-        }
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(source, target);
+        Lines lines = Lines.valueOf(lineRepository.findAll());
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = lines.shortestPath(source, target);
         List<Station> path = shortestPath.getVertexList();
         return PathResponse.of(path.stream()
                 .map(StationResponse::of)
