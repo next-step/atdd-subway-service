@@ -69,35 +69,11 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-        List<Station> stations = new ArrayList<>();
-        if (this.sections.isEmpty()) {
-            return stations;
-        }
-        Station downStation = getStartStation().get();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
-    }
-
-    public List<Station> getStations1() {
         if (this.sections.isEmpty()) {
             return Collections.emptyList();
         }
         return insertStationBySorted();
     }
-
 
     public int isSize() {
         return this.sections.size();

@@ -112,7 +112,7 @@ class LineTest {
         신분당선.addSection(new Section(신분당선, 상현역, 성복역, 10));
 
         // When
-        List<Station> 순서대로_역_정보 = 신분당선.getStations1();
+        List<Station> 순서대로_역_정보 = 신분당선.getStations();
         // Then
         assertThat(순서대로_역_정보.toArray(new Station[0])).containsExactly(광교역,광교중앙역,상현역,성복역);
     }
@@ -128,7 +128,7 @@ class LineTest {
         // Given
         assertThat(신분당선.isSize()).isEqualTo(0);
         // When
-        List<Station> 결과값이_비어_있음 = 신분당선.getStations1();
+        List<Station> 결과값이_비어_있음 = 신분당선.getStations();
         // Then
         assertThat(결과값이_비어_있음.isEmpty()).isTrue();
     }
