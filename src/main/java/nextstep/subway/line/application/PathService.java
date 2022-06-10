@@ -39,7 +39,7 @@ public class PathService {
 
         return PathResponse.of(
                 result.getStations().stream()
-                        .map(station -> StationResponse.of(station))
+                        .map(StationResponse::of)
                         .collect(Collectors.toList()),
                 result.getDistance());
     }

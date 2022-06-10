@@ -50,7 +50,6 @@ npm run dev
 <br>
 
 ## 📝 License
-
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
 
 

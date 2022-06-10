@@ -15,7 +15,7 @@ public class Path {
         this.createGraph(lines);
     }
 
-    static public Path of(List<Line> lines) {
+    public static Path of(List<Line> lines) {
         return new Path(lines);
     }
 
