@@ -18,6 +18,10 @@ public class Line extends BaseEntity {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
+    @Transient
+    @Embedded
+    private final Sections sections1 = new Sections();
+
     public Line() {
     }
 
@@ -30,6 +34,7 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
+        sections1.addSection(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
@@ -53,55 +58,28 @@ public class Line extends BaseEntity {
         return sections;
     }
 
+    public Sections getSections1() {
+        return sections1;
+    }
+
     public void addSection(final Section section) {
         if (!Objects.equals(this, section.getLine())) {
             throw new IllegalStateException("노선 정보가 다릅니다.");
         }
         sections.add(section);
+        sections1.addSection(section);
     }
 
     public Optional<Station> getStartStation() {
-        if (sections.isEmpty()) {
-            return Optional.empty();
-        }
-        return sections.stream().filter(this::isPreSection)
-                .map(Section::getUpStation).findAny();
+       return sections1.getStartStation();
     }
 
     public List<Station> getStations() {
-        if (this.sections.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return insertStationBySorted();
+      return sections1.getStations();
     }
 
     public int isSize() {
-        return this.sections.size();
-    }
-
-    private List<Station> insertStationBySorted() {
-        List<Station> result = new ArrayList<>();
-        Optional<Station> isStartStation = getStartStation();
-        while (isStartStation.isPresent()) {
-            Station station = isStartStation.get();
-            result.add(station);
-            isStartStation = findNextStation(station);
-        }
-        return result;
-    }
-
-    private Optional<Station> findNextStation(final Station station) {
-        return sections.stream()
-                .filter(section -> section.isMatchUpStation(station))
-                .map(Section::getDownStation)
-                .findAny();
-    }
-
-    private boolean isPreSection(final Section source) {
-        Optional<Section> isPreSection = sections.stream()
-                .filter(section -> !section.isMatchDownStation(source.getUpStation()) &&
-                        section.isMatchUpStation(source.getDownStation())).findAny();
-        return isPreSection.isPresent();
+       return sections1.isSize();
     }
 
     @Override
