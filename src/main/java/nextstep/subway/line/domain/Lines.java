@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.List;
+import java.util.Set;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -8,17 +9,17 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class Lines {
-    private final List<Line> lines;
+    private final Set<Line> lines;
 
-    private Lines(List<Line> lines) {
+    private Lines(Set<Line> lines) {
         this.lines = lines;
     }
 
-    public static Lines valueOf(List<Line> lines) {
+    public static Lines valueOf(Set<Line> lines) {
         return new Lines(lines);
     }
 
-    public List<Line> lines() {
+    public Set<Line> lines() {
         return lines;
     }
 
@@ -30,8 +31,7 @@ public class Lines {
     private WeightedMultigraph<Station, DefaultWeightedEdge> getGraph() {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         for (Line line : lines) {
-            line.makeVertexOn(graph);
-            line.makeEdgeWeightOn(graph);
+            line.makeGraph(graph);
         }
         return graph;
     }
