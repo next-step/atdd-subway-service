@@ -116,4 +116,20 @@ class LineTest {
         // Then
         assertThat(순서대로_역_정보.toArray(new Station[0])).containsExactly(광교역,광교중앙역,상현역,성복역);
     }
+
+    /*
+     * Given 구간이 정보가 없는 노선에서
+     * When 역을 가져오면
+     * Then 결과값이 없다.
+     * */
+    @DisplayName("구간이 등록되지 않는 노선에서 역정보를 가져오면 결과 값이 없다.")
+    @Test
+    void invalidGetStationsWhenLineHasEmptySection() {
+        // Given
+        assertThat(신분당선.isSize()).isEqualTo(0);
+        // When
+        List<Station> 결과값이_비어_있음 = 신분당선.getStations();
+        // Then
+        assertThat(결과값이_비어_있음.isEmpty()).isTrue();
+    }
 }

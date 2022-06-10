@@ -70,6 +70,9 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         List<Station> stations = new ArrayList<>();
+        if (this.sections.isEmpty()) {
+            return stations;
+        }
         Station downStation = getStartStation().get();
         stations.add(downStation);
 
@@ -86,6 +89,10 @@ public class Line extends BaseEntity {
         }
 
         return stations;
+    }
+
+    public int isSize() {
+        return this.sections.size();
     }
 
     private boolean isPreSection(final Section source) {
