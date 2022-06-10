@@ -89,7 +89,7 @@ public class Section {
         this.downStation = station;
     }
 
-    public void add(Section appendSection, boolean baseIsUp) {
+    public void insert(Section appendSection, boolean baseIsUp) {
 
         if (baseIsUp && this.upStation.equals(appendSection.getUpStation())) {
             updateUpStation(appendSection.getDownStation(), appendSection.getDistance());
