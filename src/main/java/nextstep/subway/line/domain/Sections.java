@@ -24,7 +24,7 @@ public class Sections {
     private static final String NO_LAST_SECTION_ERROR = "마지막 섹션이 없습니다.";
     private static final String NO_FIRST_SECTION_ERROR = "첫번째 섹션이 없습니다.";
 
-    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
     protected Sections() {
@@ -107,7 +107,7 @@ public class Sections {
         return sections;
     }
 
-    public void delete(Station station) {
+    public void delete(Station station, Line line) {
         validateSectionSize();
         validateContainStation(station);
         Section firstSection = getFirstSection();
@@ -122,7 +122,7 @@ public class Sections {
             return;
         }
 
-        deleteMiddleSection(station);
+        deleteMiddleSection(station, line);
     }
 
     private void validateContainStation(Station station) {
@@ -137,11 +137,12 @@ public class Sections {
         }
     }
 
-    private void deleteMiddleSection(Station station) {
+    private void deleteMiddleSection(Station station, Line line) {
         Section prevSection = getPrevSection(station);
         Section nextSection = getNextSection(station);
 
         Section mergedSection = mergeSections(prevSection, nextSection);
+        mergedSection.registerLine(line);
         sections.add(mergedSection);
         sections.remove(prevSection);
         sections.remove(nextSection);
