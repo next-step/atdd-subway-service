@@ -46,8 +46,8 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(lines);
 
         // then
-        assertThat(pathFinder.findPath(교대역, 양재역)).containsExactly(교대역, 남부터미널역, 양재역);
-
+        assertThat(pathFinder.findPath(교대역, 양재역).getStations()).containsExactly(교대역, 남부터미널역, 양재역);
+        assertThat(pathFinder.findPath(교대역, 양재역).getDistance()).isEqualTo(5);
     }
 
     @DisplayName("jgrapht 라이브러리 테스트")

@@ -23,8 +23,8 @@ public class PathFinder {
         path = new DijkstraShortestPath(graph);
     }
 
-    public List<Station> findPath(Station startStation, Station endStation) {
-        return path.getPath(startStation, endStation).getVertexList();
+    public Path findPath(Station startStation, Station endStation) {
+        return new Path(path.getPath(startStation, endStation).getVertexList(), (int) path.getPathWeight(startStation, endStation));
     }
 
     private void registerPath(Line line) {
