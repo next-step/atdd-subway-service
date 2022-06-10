@@ -1,13 +1,15 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.line.utils.SectionsComparator;
+import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Embeddable
 public class Sections {
@@ -110,5 +112,9 @@ public class Sections {
 
     public boolean isEmptyByStation() {
         return findStations().isEmpty();
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 }
