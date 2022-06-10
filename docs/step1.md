@@ -4,7 +4,7 @@
 
 ---
 
-- [ ] Line 인수테스트 공통 메소드 추출 및 정리
+- [X] Line 인수테스트 공통 메소드 추출 및 정리
 - [ ] Line의 sections 일급컬렉션으로 변경
 - [ ] Section의 distance 원시값 포장
 - [ ] LineService에서 Domain으로 옮길 로직 확인하여 정리
