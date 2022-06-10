@@ -8,10 +8,10 @@ import java.util.Comparator;
 public class SectionsComparator implements Comparator<Section> {
     @Override
     public int compare(Section o1, Section o2) {
-        Station s1_downStation = o1.getDownStation();
-        Station s2_upStation = o2.getUpStation();
+        Station downStation = o1.getDownStation();
+        Station upStation = o2.getUpStation();
 
-        if (!s1_downStation.getName().equals(s2_upStation.getName())) {
+        if (!downStation.getName().equals(upStation.getName())) {
             return 1;
         } else {
             return -1;
