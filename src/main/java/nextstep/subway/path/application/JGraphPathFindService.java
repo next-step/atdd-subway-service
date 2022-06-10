@@ -30,8 +30,7 @@ public class JGraphPathFindService implements PathFindService {
         ShortestPathAlgorithm<Station, SectionEdge> algorithm = new DijkstraShortestPath<>(graph);
 
         GraphPath<Station, SectionEdge> shortestPath = algorithm.getPath(startStation, endStation);
-        boolean notExistPath = shortestPath == null;
-        if (notExistPath) {
+        if (shortestPath == null) {
             throw new NotExistPathException("도달가능한 경로가 없습니다.");
         }
         return new PathFindResult(shortestPath.getVertexList(), (int) shortestPath.getWeight());
