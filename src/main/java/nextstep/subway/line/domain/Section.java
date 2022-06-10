@@ -172,4 +172,8 @@ public class Section extends BaseEntity {
     private boolean isLongerThan(Distance newDistance) {
         return this.distance.distance() > newDistance.distance();
     }
+
+    public int weight() {
+        return distance.distance();
+    }
 }
