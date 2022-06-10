@@ -59,15 +59,22 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
         String token = loginResponse.jsonPath().getString("accessToken");
 
-        // then 내 정보 조회
+        // when 내 정보 조회
         ExtractableResponse<Response> findResponse = 내_정보_조회_요청(token);
         // then 내 정보 조회 됨
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
-        // 수정
-        // 삭제
+        // when 내 정보 수정
+        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(token, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        // then 내 정보 수정 됨
+        회원_정보_수정됨(updateResponse);
+
+        // when 내 정보 삭제
+        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(token);
+        // then 내 정보 삭제 됨
+        회원_삭제됨(deleteResponse);
     }
-    
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
@@ -122,6 +129,28 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 then().
                 log().all().extract();
         return response;
+    }
+
+    public static ExtractableResponse<Response> 내_정보_수정_요청(String token, String email, String password, Integer age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_삭제_요청(String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
