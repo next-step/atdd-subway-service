@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.common.Distance;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -10,9 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Embeddable
@@ -25,7 +21,7 @@ public class Sections {
             return Collections.emptyList();
         }
 
-        return getFromToLastStations(findUpStation());
+        return getTargetToLastStations(findFirstStation(this.sections.get(0).getUpStation()));
     }
 
     public void addStation(Line line, Station upStation, Station downStation, Distance distance) {
@@ -69,68 +65,28 @@ public class Sections {
         return this.sections;
     }
 
-    private Station findUpStation() {
-        Station downStation = this.sections.get(0).getUpStation();
+    private Station findFirstStation(Station station) {
+        Optional<Section> nextDownSection = this.sections.stream()
+                .filter(it -> it.getDownStation().equals(station))
+                .findFirst();
 
-        return findStationByPredicateWithExecuteAction(
-                downStation,
-                null,
-                (section, station) -> section.getDownStation() == station,
-                Section::getUpStation
-        );
+        if (nextDownSection.isPresent()) {
+            return findFirstStation(nextDownSection.get().getUpStation());
+        }
+        return station;
     }
 
-    private List<Station> getFromToLastStations(Station startStation) {
-        List<Station> stations = new ArrayList<>();
-        stations.add(startStation);
+    private List<Station> getTargetToLastStations(Station target) {
+        List<Station> result = new ArrayList<>(Collections.singletonList(target));
+        Optional<Section> nextDownSection = this.sections.stream()
+                .filter(it -> it.getUpStation().equals(target))
+                .findFirst();
 
-        findStationByPredicateWithExecuteAction(
-                startStation,
-                stations::add,
-                (section, station) -> section.getUpStation() == station,
-                Section::getDownStation
-        );
-
-        return stations;
-    }
-
-    private Station findStationByPredicateWithExecuteAction(
-            Station firstStation, Consumer<Station> action,
-            BiPredicate<Section, Station> findNextFilter,
-            Function<Section, Station> findNextTarget
-    ) {
-        boolean isEnd = false;
-        Station downStation = firstStation;
-
-        while (!isEnd) {
-            Station finalDownStation = downStation;
-            Section nextSection = this.sections.stream()
-                    .filter(it -> findNextFilter.test(it, finalDownStation))
-                    .findFirst()
-                    .orElse(null);
-
-            isEnd = (nextSection == null);
-            downStation = findNextStationAndAfterProcessing(downStation, nextSection, action, findNextTarget);
+        if (nextDownSection.isPresent()) {
+            result.addAll(getTargetToLastStations(nextDownSection.get().getDownStation()));
+            return result;
         }
-
-        return downStation;
-    }
-
-    private Station findNextStationAndAfterProcessing (
-            Station beforeProcessingStation, Section nextSection,
-            Consumer<Station> action, Function<Section, Station> findNextTarget
-    ) {
-        if (nextSection == null) {
-            return beforeProcessingStation;
-        }
-
-        Station downStation = findNextTarget.apply(nextSection);
-
-        if (action != null) {
-            action.accept(downStation);
-        }
-
-        return downStation;
+        return result;
     }
 
     private void checkPossibleAddSection(Station upStation, Station downStation) {
@@ -148,30 +104,37 @@ public class Sections {
     private boolean isContainStationInSections(Station station) {
         return this.getStations()
                 .stream()
-                .anyMatch(it -> it == station);
+                .anyMatch(it -> it.equals(station));
+    }
+
+    private boolean isNotContainStationInSections(Station station) {
+        return !this.isContainStationInSections(station);
     }
 
     private boolean isImpossibleAddSection(Station upStation, Station downStation) {
-        return !this.isAddNewSection() &&
-                !this.isContainStationInSections(upStation) &&
-                !this.isContainStationInSections(downStation);
+        return this.isNotAddNewSection() &&
+                this.isNotContainStationInSections(upStation) &&
+                this.isNotContainStationInSections(downStation);
     }
 
     private boolean isAddNewSection() {
-        return this.getStations()
-                .isEmpty();
+        return this.getStations().isEmpty();
+    }
+
+    private boolean isNotAddNewSection() {
+        return !this.isAddNewSection();
     }
 
     private void addSectionByUpToDown(Station upStation, Station downStation, Distance distance) {
         this.sections.stream()
-                .filter(it -> it.getUpStation() == upStation)
+                .filter(it -> it.isSameUpStation(upStation))
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
     }
 
     private void addSectionByMiddleToDown(Station upStation, Station downStation, Distance distance) {
         this.sections.stream()
-                .filter(it -> it.getDownStation() == downStation)
+                .filter(it -> it.isSameDownStation(downStation))
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
     }

@@ -1,4 +1,4 @@
-package nextstep.subway.common;
+package nextstep.subway.line.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -8,7 +8,7 @@ public class Distance {
     private final static int MIN_VALUE = 0;
 
     @Column(nullable = false)
-    private Integer value;
+    private int value;
 
     protected Distance() {}
 

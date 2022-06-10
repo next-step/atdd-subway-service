@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.common.Distance;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -36,6 +35,30 @@ public class Section {
         this.distance = distance;
     }
 
+    public void updateUpStation(Station station, Distance newDistance) {
+        if (this.distance.isLessThanOrEqualTo(newDistance)) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.upStation = station;
+        this.distance.subtract(newDistance);
+    }
+
+    public void updateDownStation(Station station, Distance newDistance) {
+        if (this.distance.isLessThanOrEqualTo(newDistance)) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.downStation = station;
+        this.distance.subtract(newDistance);
+    }
+
+    public boolean isSameUpStation(Station target) {
+        return this.upStation.equals(target);
+    }
+
+    public boolean isSameDownStation(Station target) {
+        return this.downStation.equals(target);
+    }
+
     public Long getId() {
         return id;
     }
@@ -54,21 +77,5 @@ public class Section {
 
     public Distance getDistance() {
         return distance;
-    }
-
-    public void updateUpStation(Station station, Distance newDistance) {
-        if (this.distance.isLessThanOrEqualTo(newDistance)) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance.subtract(newDistance);
-    }
-
-    public void updateDownStation(Station station, Distance newDistance) {
-        if (this.distance.isLessThanOrEqualTo(newDistance)) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance.subtract(newDistance);
     }
 }
