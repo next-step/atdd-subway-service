@@ -23,12 +23,16 @@ public class Lines {
     }
 
     public GraphPath<Station, DefaultWeightedEdge> shortestPath(Station source, Station target) {
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(getGraph());
+        return dijkstraShortestPath.getPath(source, target);
+    }
+
+    private WeightedMultigraph<Station, DefaultWeightedEdge> getGraph() {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         for (Line line : lines) {
-            line.addVertexAt(graph);
-            line.setEdgeWeightAt(graph);
+            line.makeVertexOn(graph);
+            line.makeEdgeWeightOn(graph);
         }
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        return dijkstraShortestPath.getPath(source, target);
+        return graph;
     }
 }

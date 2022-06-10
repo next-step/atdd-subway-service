@@ -104,12 +104,12 @@ public class Line extends BaseEntity {
         return sections.orderedStations();
     }
 
-    public void addVertexAt(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        sections.addVertexAt(graph);
+    public void makeVertexOn(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        sections.makeVertexOn(graph);
     }
 
-    public void setEdgeWeightAt(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        sections.setEdgeWeightAt(graph);
+    public void makeEdgeWeightOn(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        sections.makeEdgeWeightOn(graph);
     }
 
     public Long id() {

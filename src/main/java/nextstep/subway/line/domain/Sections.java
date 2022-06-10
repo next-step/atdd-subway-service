@@ -185,13 +185,13 @@ public class Sections {
                 .reduce(0, Integer::sum));
     }
 
-    public void addVertexAt(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    public void makeVertexOn(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         for(Station station : orderedStations()) {
             graph.addVertex(station);
         }
     }
 
-    public void setEdgeWeightAt(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    public void makeEdgeWeightOn(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         for (Section section : sections){
             section.setEdgeWeightAt(graph);
         }
