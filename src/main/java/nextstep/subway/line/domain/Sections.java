@@ -56,22 +56,15 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        if (this.list.isEmpty()) {
-            return Arrays.asList();
-        }
-
         Station curStation = getLineUpStation();
         Station lineDownStation = getLineDownStation();
-
         List<Station> stations = new ArrayList<>();
         stations.add(curStation);
         while (!curStation.equals(lineDownStation)) {
-            Section section = findSectionWithUpStation(curStation)
-                    .orElseThrow(SectionNotFoundException::new);
+            Section section = findSectionWithUpStation(curStation).orElseThrow(SectionNotFoundException::new);
             curStation = section.getDownStation();
             stations.add(curStation);
         }
-
         return stations;
     }
 
