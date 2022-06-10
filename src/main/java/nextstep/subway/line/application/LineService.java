@@ -1,8 +1,10 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.exception.SectionNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -145,20 +147,17 @@ public class LineService {
             return Arrays.asList();
         }
 
-        List<Station> stations = new ArrayList<>();
-        Station downStation = line.getSections().getLineUpStation();
-        stations.add(downStation);
+        Sections sections = line.getSections();
+        Station curStation = sections.getLineUpStation();
+        Station lineDownStation = sections.getLineDownStation();
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = line.getSections().getList().stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        List<Station> stations = new ArrayList<>();
+        stations.add(curStation);
+        while (!curStation.equals(lineDownStation)) {
+            Section section = sections.findSectionWithUpStation(curStation)
+                    .orElseThrow(SectionNotFoundException::new);
+            curStation = section.getDownStation();
+            stations.add(curStation);
         }
 
         return stations;

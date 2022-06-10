@@ -6,10 +6,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Embeddable
 public class Sections {
@@ -37,6 +34,24 @@ public class Sections {
         Set<Station> stationSet = getStationSet();
         this.list.forEach(section -> stationSet.remove(section.getDownStation()));
         return findFirstStation(stationSet);
+    }
+
+    public Station getLineDownStation() {
+        Set<Station> stationSet = getStationSet();
+        this.list.forEach(section -> stationSet.remove(section.getUpStation()));
+        return findFirstStation(stationSet);
+    }
+
+    public Optional<Section> findSectionWithUpStation(Station upStation) {
+        return list.stream()
+                .filter(section -> upStation.equals(section.getUpStation()))
+                .findFirst();
+    }
+
+    public Optional<Section> findSectionWithDownStation(Station downStation) {
+        return list.stream()
+                .filter(section -> downStation.equals(section.getDownStation()))
+                .findFirst();
     }
 
     private Set<Station> getStationSet() {
