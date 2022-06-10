@@ -18,7 +18,6 @@ public class SectionTest {
         Station 두번째역 = new Station("두번째역");
         Station 세번째역 = new Station("세번째역");
         Section 구간 = new Section(null, 세번째역, 첫번째역, 10);
-        boolean 후방에끼워넣는다 = true;
 
         //when
         Section 추가할_구간 = new Section(null, 세번째역, 두번째역, 3);
@@ -40,11 +39,10 @@ public class SectionTest {
         Station 두번째역 = new Station("두번째역");
         Station 세번째역 = new Station("세번째역");
         Section 구간 = new Section(null, 세번째역, 첫번째역, 10);
-        boolean 전방에끼워넣는다 = false;
 
         //when
         Section 추가할_구간 = new Section(null, 두번째역, 첫번째역, 3);
-        구간.insert(추가할_구간, 전방에끼워넣는다);
+        구간.insert(추가할_구간);
 
         //then
         assertAll(
@@ -62,13 +60,12 @@ public class SectionTest {
         Station 두번째역 = new Station("두번째역");
         Station 세번째역 = new Station("세번째역");
         Section 구간 = new Section(null, 세번째역, 첫번째역, 10);
-        boolean 전방에끼워넣는다 = false;
 
         //when
         Section 추가할_구간 = new Section(null, 두번째역, 첫번째역, 10);
 
         //then
-        assertThatThrownBy(() -> 구간.insert(추가할_구간, 전방에끼워넣는다)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> 구간.insert(추가할_구간)).isInstanceOf(RuntimeException.class);
     }
 
     @Test
