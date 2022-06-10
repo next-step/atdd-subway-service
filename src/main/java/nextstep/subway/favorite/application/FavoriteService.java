@@ -45,4 +45,9 @@ public class FavoriteService {
                         StationResponse.of(favorite.getTarget()))
                 ).collect(Collectors.toList());
     }
+
+    public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
+        favoriteRepository.delete(favorite);
+    }
 }

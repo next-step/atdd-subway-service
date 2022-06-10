@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -55,7 +56,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void manageFavorite() {
         // when 즐겨찾기 생성을 요청
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(사용자_토큰, 강남역, 정자역);
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(사용자_토큰, 강남역, 정자역);
         // then 즐겨찾기 생성됨
         즐겨찾기_생성됨(createResponse);
 
@@ -65,10 +66,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_조회됨(findResponse);
 
         // When 즐겨찾기 삭제 요청
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createResponse, 사용자_토큰);
         // Then 즐겨찾기 삭제됨
+        즐겨찾기_목록_삭제됨(deleteResponse);
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(String accessToken, StationResponse sourceStation, StationResponse targetStation) {
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, StationResponse sourceStation, StationResponse targetStation) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(sourceStation.getId(), targetStation.getId());
         return RestAssured
                 .given().log().all()
@@ -88,11 +91,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> createResponse, String accessToken) {
+        String uri = createResponse.header("Location");
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(uri)
+                .then().log().all().extract();
+    }
+
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 즐겨찾기_목록_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
