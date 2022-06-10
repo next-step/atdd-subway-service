@@ -33,6 +33,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 사당역;
+    private StationResponse 범계역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -49,6 +51,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        사당역 = StationAcceptanceTest.지하철역_등록되어_있음("사당역").as(StationResponse.class);
+        범계역 = StationAcceptanceTest.지하철역_등록되어_있음("범계역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
@@ -61,9 +65,48 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     public void findPath() {
         //when
-        ExtractableResponse<Response> response = 최단경로_요청();
+        ExtractableResponse<Response> response = 최단경로_요청(교대역.getId(), 양재역.getId());
         //then
-        최단경로_응답_확인(response,40, "양재시민의숲역", "양재역", "강남역", "역삼역", "선릉역");
+        최단경로_응답_확인(response,5, "교대역", "남부터미널역", "양재역");
+    }
+    @DisplayName("같은 역일 경우, BadRequest")
+    @Test
+    public void findPath_fail_sameStation() {
+        //when
+        ExtractableResponse<Response> response = 최단경로_요청(교대역.getId(), 교대역.getId());
+        //then
+        최단경로_응답_BadRequest(response);
+    }
+
+    @DisplayName("역이 연결되지 않았을 경우, BadRequest")
+    @Test
+    public void findPath_fail_stationNotConnected() {
+        //given
+        LineResponse 사호선 = 지하철_노선_등록되어_있음(new LineRequest("사호선", "bg-red-500", 사당역.getId(), 범계역.getId(), 5)).as(LineResponse.class);
+        //when
+        ExtractableResponse<Response> response = 최단경로_요청(사당역.getId(), 교대역.getId());
+        //then
+        최단경로_응답_BadRequest(response);
+    }
+
+    @DisplayName("역이 없는 경우, NotFound")
+    @Test
+    public void findPath_fail_stationNotFound() {
+        //when
+        ExtractableResponse<Response> response = 최단경로_요청(사당역.getId(), 범계역.getId());
+        //then
+        최단경로_응답_NotFound(response);
+    }
+
+    private ExtractableResponse<Response> 최단경로_요청(Long sourceId, Long targetId) {
+        return RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .param("source", sourceId)
+                .param("target", targetId)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
     }
 
     private void 최단경로_응답_확인(ExtractableResponse<Response> response, int expectedDistance, String... strings) {
@@ -79,14 +122,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private ExtractableResponse<Response> 최단경로_요청() {
-        return RestAssured.given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .param("source", 1)
-                .param("target", 6)
-                .when().get("/path")
-                .then().log().all()
-                .extract();
+    private void 최단경로_응답_BadRequest(ExtractableResponse<Response> response) {
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+    }
+
+    private void 최단경로_응답_NotFound(ExtractableResponse<Response> response) {
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.statusCode());
     }
 }
