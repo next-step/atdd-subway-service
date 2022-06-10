@@ -42,7 +42,7 @@ public class Section {
             downSection.getDistance().plus(upSection.getDistance()));
     }
 
-    public Section() {
+    protected Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {

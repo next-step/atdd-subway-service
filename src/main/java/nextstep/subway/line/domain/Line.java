@@ -36,7 +36,7 @@ public class Line extends BaseEntity {
     @JoinColumn(name = "DOWN_STATION_ID", foreignKey = @ForeignKey(name = "fk_line_down_station"))
     private Station downStation;
 
-    public Line() {
+    protected Line() {
     }
 
     public Line(String name, String color) {
