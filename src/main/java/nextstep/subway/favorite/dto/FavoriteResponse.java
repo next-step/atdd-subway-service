@@ -12,19 +12,13 @@ public class FavoriteResponse {
     private StationResponse source;
     private StationResponse target;
 
-    public FavoriteResponse(Long id, StationResponse source, StationResponse target) {
-        this.id = id;
-        this.source = source;
-        this.target = target;
-    }
-
-    protected FavoriteResponse() {
-    }
-
     protected FavoriteResponse(Favorite favorite) {
         this.id = favorite.getId();
         this.source = StationResponse.of(favorite.getSource());
         this.target = StationResponse.of(favorite.getTarget());
+    }
+
+    protected FavoriteResponse() {
     }
 
     public static FavoriteResponse of(Favorite favorite) {
