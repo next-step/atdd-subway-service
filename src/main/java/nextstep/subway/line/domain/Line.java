@@ -31,7 +31,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.addSection(this, upStation, downStation, new Distance(distance));
+        sections.addSection(upStation, downStation, new Distance(distance));
     }
 
     public void update(Line line) {
@@ -40,11 +40,11 @@ public class Line extends BaseEntity {
     }
 
     public void addStation(Station upStation, Station downStation, int distance) {
-        this.sections.addStation(this, upStation, downStation, new Distance(distance));
+        this.sections.addSection(upStation, downStation, new Distance(distance));
     }
 
     public void removeStation(Station station) {
-        this.sections.removeStation(this, station);
+        this.sections.removeStation(station);
     }
 
     public Long getId() {

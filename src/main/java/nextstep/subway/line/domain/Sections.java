@@ -4,6 +4,7 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +14,8 @@ import java.util.function.Predicate;
 
 @Embeddable
 public class Sections {
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @JoinColumn(name = "line_id")
     private List<Section> sections = new ArrayList<>();
 
     public List<Station> getStations() {
@@ -24,11 +26,12 @@ public class Sections {
         return getTargetToLastStations(findFirstStation(this.sections.get(0).getUpStation()));
     }
 
-    public void addStation(Line line, Station upStation, Station downStation, Distance distance) {
+    public void addSection(Station upStation, Station downStation, Distance distance) {
         checkPossibleAddSection(upStation, downStation);
 
         if (isAddNewSection()) {
-            addSection(line, upStation, downStation, distance);
+            addStation(upStation, downStation, distance);
+            return;
         }
         if (isContainStationInSections(upStation)) {
             addSectionByUpToDown(upStation, downStation, distance);
@@ -37,14 +40,10 @@ public class Sections {
             addSectionByMiddleToDown(upStation, downStation, distance);
         }
 
-        addSection(line, upStation, downStation, distance);
+        addStation(upStation, downStation, distance);
     }
 
-    public void addSection(Line line, Station upStation, Station downStation, Distance distance) {
-        this.sections.add(new Section(line, upStation, downStation, distance));
-    }
-
-    public void removeStation(Line line, Station station) {
+    public void removeStation(Station station) {
         if (this.sections.size() <= 1) {
             throw new RuntimeException("구간에 최소한 1개 이상의 구간이 존재해야 합니다.");
         }
@@ -57,12 +56,16 @@ public class Sections {
             Station newDownStation = upSection.getDownStation();
             Distance newDistance = upSection.getDistance().addThenReturnResult(downSection.getDistance());
 
-            addSection(line, newUpStation, newDownStation, newDistance);
+            addSection(newUpStation, newDownStation, newDistance);
         }
     }
 
     public List<Section> getValue() {
         return this.sections;
+    }
+
+    private void addStation(Station upStation, Station downStation, Distance distance) {
+        this.sections.add(new Section(upStation, downStation, distance));
     }
 
     private Station findFirstStation(Station station) {

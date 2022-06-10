@@ -23,6 +23,10 @@ public class Distance {
     }
 
     public void subtract(Distance distance) {
+        if (this.value - distance.value < MIN_VALUE) {
+            throw new IllegalArgumentException("거리 계산 결과가 0 보다 작을 수 없습니다.");
+        }
+
         this.value -= distance.value;
     }
 

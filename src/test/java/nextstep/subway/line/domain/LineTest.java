@@ -7,9 +7,10 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.station.domain.StationTest.지하철_생성;
 import static org.assertj.core.api.Assertions.*;
 
-class LineTest {
+public class LineTest {
 
     @DisplayName("노선의 이름과 색을 수정하면 정상 수정되어야 한다")
     @Test
@@ -117,11 +118,7 @@ class LineTest {
         assertThatThrownBy(() -> line2.removeStation(광교중앙역)).isInstanceOf(RuntimeException.class);
     }
 
-    private Station 지하철_생성(String name) {
-        return new Station(name);
-    }
-
-    private Line 노선_생성(String name, String color, Station upStation, Station downStation, int distance) {
+    public static Line 노선_생성(String name, String color, Station upStation, Station downStation, int distance) {
         return new Line(name, color, upStation, downStation, distance);
     }
 
