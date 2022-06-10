@@ -6,17 +6,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class DiscountAgeRuleTypeTest {
+class DiscountAgeRuleTest {
 
     @DisplayName("0~6살 미만의 나이는 TODDLER 타입이다.")
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2, 3, 4, 5})
     void discountAgeRuleType01(int age) {
         // given & when
-        DiscountAgeRuleType type = DiscountAgeRuleType.findDiscountAgeRuleType(age);
+        DiscountAgeRule type = DiscountAgeRule.findDiscountAgeRuleType(age);
 
         // then
-        assertThat(type).isEqualTo(DiscountAgeRuleType.TODDLER);
+        assertThat(type).isEqualTo(DiscountAgeRule.TODDLER);
     }
 
     @DisplayName("6 ~ 13살 미만의 나이는 CHILDREN 타입이다.")
@@ -24,10 +24,10 @@ class DiscountAgeRuleTypeTest {
     @ValueSource(ints = {6, 7, 8, 9, 10, 11, 12})
     void discountAgeRuleType02(int age) {
         // given & when
-        DiscountAgeRuleType type = DiscountAgeRuleType.findDiscountAgeRuleType(age);
+        DiscountAgeRule type = DiscountAgeRule.findDiscountAgeRuleType(age);
 
         // then
-        assertThat(type).isEqualTo(DiscountAgeRuleType.CHILDREN);
+        assertThat(type).isEqualTo(DiscountAgeRule.CHILDREN);
     }
 
     @DisplayName("13 ~ 19살 미만의 나이는 TEENAGER 타입이다.")
@@ -35,10 +35,10 @@ class DiscountAgeRuleTypeTest {
     @ValueSource(ints = {13, 14, 15, 16, 17, 18})
     void discountAgeRuleType03(int age) {
         // given & when
-        DiscountAgeRuleType type = DiscountAgeRuleType.findDiscountAgeRuleType(age);
+        DiscountAgeRule type = DiscountAgeRule.findDiscountAgeRuleType(age);
 
         // then
-        assertThat(type).isEqualTo(DiscountAgeRuleType.TEENAGER);
+        assertThat(type).isEqualTo(DiscountAgeRule.TEENAGER);
     }
 
     @DisplayName("19살 이상의 나이는 ADULT 타입이다.")
@@ -46,10 +46,10 @@ class DiscountAgeRuleTypeTest {
     @ValueSource(ints = {19, 29, 59, 89, 109})
     void discountAgeRuleType04(int age) {
         // given & when
-        DiscountAgeRuleType type = DiscountAgeRuleType.findDiscountAgeRuleType(age);
+        DiscountAgeRule type = DiscountAgeRule.findDiscountAgeRuleType(age);
 
         // then
-        assertThat(type).isEqualTo(DiscountAgeRuleType.ADULT);
+        assertThat(type).isEqualTo(DiscountAgeRule.ADULT);
     }
 
     @DisplayName("CHILDREN 은 350원을 공제한 금액의 50%를 할인받는다.")
@@ -60,7 +60,7 @@ class DiscountAgeRuleTypeTest {
         int fare = 1250;
 
         // when
-        int discountedFare = DiscountAgeRuleType.discountFare(fare, age);
+        int discountedFare = DiscountAgeRule.discountFare(fare, age);
 
         // then
         //  1250 - 350 = 900 -> 900 * 0.5 = 450
@@ -75,7 +75,7 @@ class DiscountAgeRuleTypeTest {
         int fare = 1250;
 
         // when
-        int discountedFare = DiscountAgeRuleType.discountFare(fare, age);
+        int discountedFare = DiscountAgeRule.discountFare(fare, age);
 
         // then
         //  1250 - 350 = 900 -> 900 * 0.8 = 450
@@ -90,10 +90,10 @@ class DiscountAgeRuleTypeTest {
         int fare = 1250;
 
         // when
-        int discountedFare = DiscountAgeRuleType.discountFare(fare, age);
+        int discountedFare = DiscountAgeRule.discountFare(fare, age);
 
         // then
-        assertThat(discountedFare).isEqualTo(0);
+        assertThat(discountedFare).isZero();
     }
 
 
@@ -105,7 +105,7 @@ class DiscountAgeRuleTypeTest {
         int fare = 1250;
 
         // when
-        int discountedFare = DiscountAgeRuleType.discountFare(fare, age);
+        int discountedFare = DiscountAgeRule.discountFare(fare, age);
 
         // then
         assertThat(discountedFare).isEqualTo(1250);

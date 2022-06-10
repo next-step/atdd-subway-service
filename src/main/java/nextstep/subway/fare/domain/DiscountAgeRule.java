@@ -3,7 +3,7 @@ package nextstep.subway.fare.domain;
 import java.util.Arrays;
 import java.util.function.IntUnaryOperator;
 
-public enum DiscountAgeRuleType {
+public enum DiscountAgeRule {
     TODDLER(0, 6, fare -> 0),
     CHILDREN(6, 13, fare -> discountByPercent(fare, 50)),
     TEENAGER(13, 19, fare -> discountByPercent(fare, 80)),
@@ -20,13 +20,13 @@ public enum DiscountAgeRuleType {
     private int maxAge;
     private IntUnaryOperator discountCalculate;
 
-    DiscountAgeRuleType(int minAge, int maxAge, IntUnaryOperator discountCalculate) {
+    DiscountAgeRule(int minAge, int maxAge, IntUnaryOperator discountCalculate) {
         this.minAge = minAge;
         this.maxAge = maxAge;
         this.discountCalculate = discountCalculate;
     }
 
-    public static DiscountAgeRuleType findDiscountAgeRuleType(int age) {
+    public static DiscountAgeRule findDiscountAgeRuleType(int age) {
         return Arrays.stream(values())
                 .filter(type -> type.isIncludeAge(age))
                 .findFirst()
@@ -34,7 +34,7 @@ public enum DiscountAgeRuleType {
     }
 
     public static int discountFare(int fare, int age) {
-        DiscountAgeRuleType type = findDiscountAgeRuleType(age);
+        DiscountAgeRule type = findDiscountAgeRuleType(age);
         return type.discountCalculate.applyAsInt(fare);
     }
 

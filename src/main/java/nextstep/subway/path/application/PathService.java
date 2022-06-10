@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.calculator.FareCalculator;
+import nextstep.subway.fare.domain.DiscountAgeRule;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.DijkstraPathFinder;
@@ -32,10 +33,16 @@ public class PathService {
 
         PathFinder pathFinder = DijkstraPathFinder.from(lines);
         Path path = pathFinder.findShortPath(source, target);
-        return PathResponse.of(path, findPathFare(lines, path));
+        return PathResponse.of(path, calculatePathFare(loginMember, lines, path));
     }
 
-    private int findPathFare(Lines lines, Path path) {
-        return FareCalculator.calculate(lines, path);
+    private int calculatePathFare(LoginMember loginMember, Lines lines, Path path) {
+        int fare = FareCalculator.calculate(lines, path);
+
+        if (loginMember.isLogin()) {
+            fare = DiscountAgeRule.discountFare(fare, loginMember.getAge());
+        }
+
+        return fare;
     }
 }
