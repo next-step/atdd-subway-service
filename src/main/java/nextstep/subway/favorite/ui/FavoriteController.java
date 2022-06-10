@@ -5,7 +5,6 @@ import java.util.List;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
-import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
@@ -29,19 +28,21 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest favoriteRequest){
-        FavoriteResponse favoriteResponse = favoriteService.createFavorite(loginMember, favoriteRequest.getSource(), favoriteRequest.getTarget());
-        return ResponseEntity.created(URI.create("/favorites/"+favoriteResponse.getId())).build();
+    public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal LoginMember loginMember,
+                                               @RequestBody FavoriteRequest favoriteRequest) {
+        FavoriteResponse favoriteResponse = favoriteService
+                .createFavorite(loginMember, favoriteRequest.getSource(), favoriteRequest.getTarget());
+        return ResponseEntity.created(URI.create("/favorites/" + favoriteResponse.getId())).build();
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoriteResponse>> findFavorites(@AuthenticationPrincipal LoginMember loginMember){
+    public ResponseEntity<List<FavoriteResponse>> findFavorites(@AuthenticationPrincipal LoginMember loginMember) {
         List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
         return ResponseEntity.ok(favorites);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal @PathVariable Long id){
+    public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal @PathVariable Long id) {
         favoriteService.deleteFavorite(id);
         return ResponseEntity.noContent().build();
     }

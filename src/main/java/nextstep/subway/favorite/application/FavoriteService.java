@@ -30,7 +30,7 @@ public class FavoriteService {
     }
 
     @Transactional
-    public FavoriteResponse createFavorite(LoginMember loginMember, Long sourceId, Long targetId){
+    public FavoriteResponse createFavorite(LoginMember loginMember, Long sourceId, Long targetId) {
         Member member = memberService.findMemberById(loginMember.getId());
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
@@ -39,7 +39,7 @@ public class FavoriteService {
     }
 
     @Transactional(readOnly = true)
-    public List<FavoriteResponse> findFavorites(LoginMember loginMember){
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         Member member = memberService.findMemberById(loginMember.getId());
         List<Favorite> favorites = favoriteRepository.findAllByMember(member);
         return favorites.stream()
@@ -47,10 +47,10 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(Long favoriteId){
+    public void deleteFavorite(Long favoriteId) {
         try {
             favoriteRepository.deleteById(favoriteId);
-        }catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new IllegalArgumentException("[ERROR] 즐겨찾기가 존재하지 않습니다.");
         }
     }
