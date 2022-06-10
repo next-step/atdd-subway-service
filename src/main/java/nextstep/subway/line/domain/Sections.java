@@ -24,7 +24,9 @@ public class Sections {
     }
 
     public void addSection(final Section section) {
-        sections.add(section);
+        if (!sections.contains(section)) {
+            sections.add(section);
+        }
     }
 
     public List<Station> getStations() {
@@ -53,6 +55,7 @@ public class Sections {
     public boolean isContains(final Section section) {
         return sections.contains(section);
     }
+
 
     private List<Station> insertStationBySorted() {
         List<Station> result = new ArrayList<>();

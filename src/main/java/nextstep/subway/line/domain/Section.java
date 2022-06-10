@@ -79,6 +79,13 @@ public class Section {
         this.distance -= newDistance;
     }
 
+    public void updateLineBy(final Line line) {
+        this.line = line;
+        if (!line.getSections1().isContains(this)) {
+            line.addSection(this);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -29,7 +29,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.addSection(new Section(this, upStation, downStation, distance));
+        addSection(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
@@ -53,11 +53,17 @@ public class Line extends BaseEntity {
         return sections.getSections();
     }
 
+    public Sections getSections1() {
+        return this.sections;
+    }
+
     public void addSection(final Section section) {
         if (!Objects.equals(this, section.getLine())) {
-            throw new IllegalStateException("노선 정보가 다릅니다.");
+            section.updateLineBy(this);
         }
-        sections.addSection(section);
+        if (!sections.isContains(section)) {
+            sections.addSection(section);
+        }
     }
 
     public Optional<Station> getStartStation() {

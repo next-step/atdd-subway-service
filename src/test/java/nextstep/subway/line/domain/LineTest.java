@@ -45,22 +45,6 @@ class LineTest {
     }
 
     /*
-    * When 다른 노선에 등록된 Section 을 기존 노선에 등록하려면
-    * Then 등록되지 않는다.
-    * */
-    @DisplayName("Section 추가시 같은 노선이 아닌 경우 에러를 발생한다.")
-    @Test
-    void invalidAddSectionTest() {
-        // when
-        final Section otherSection = new Section(new Line("일호선", "bg-red-200"), 광교역, 광교중앙역, 10);
-
-        // then
-        assertThatThrownBy(() -> 신분당선.addSection(otherSection))
-                .isExactlyInstanceOf(IllegalStateException.class)
-                .hasMessage("노선 정보가 다릅니다.");
-    }
-
-    /*
     * Given 빈 노선에서
     * When 구간을 검색하면
     * Then 검색이 되지 않는다.
