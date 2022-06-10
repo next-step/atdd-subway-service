@@ -21,10 +21,6 @@ public class SectionsManager {
         sections.add(section);
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public boolean isEmpty() {
         return sections.isEmpty();
     }
@@ -143,5 +139,9 @@ public class SectionsManager {
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 }

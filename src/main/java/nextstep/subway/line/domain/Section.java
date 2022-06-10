@@ -59,6 +59,27 @@ public class Section {
         this.distance = distance;
     }
 
+    public void updateUpStation(Station station, Distance newDistance) {
+        this.distance.minus(newDistance);
+        this.upStation = station;
+    }
+
+    public void updateDownStation(Station station, Distance newDistance) {
+        this.distance.minus(newDistance);
+        this.downStation = station;
+    }
+
+    public void insert(Section appendSection) {
+        if (appendSection.getUpStation().equals(this.upStation)) {
+            updateUpStation(appendSection.getDownStation(), appendSection.getDistance());
+            return;
+        }
+        if (appendSection.getDownStation().equals(this.downStation)) {
+            updateDownStation(appendSection.getUpStation(), appendSection.getDistance());
+            return;
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -77,27 +98,5 @@ public class Section {
 
     public Distance getDistance() {
         return distance;
-    }
-
-    public void updateUpStation(Station station, Distance newDistance) {
-        this.distance.minus(newDistance);
-        this.upStation = station;
-    }
-
-    public void updateDownStation(Station station, Distance newDistance) {
-        this.distance.minus(newDistance);
-        this.downStation = station;
-    }
-
-    public void insert(Section appendSection) {
-
-        if (appendSection.getUpStation().equals(this.upStation)) {
-            updateUpStation(appendSection.getDownStation(), appendSection.getDistance());
-            return;
-        }
-        if (appendSection.getDownStation().equals(this.downStation)) {
-            updateDownStation(appendSection.getUpStation(), appendSection.getDistance());
-            return;
-        }
     }
 }

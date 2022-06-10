@@ -67,7 +67,6 @@ public class Line extends BaseEntity {
 
 
     public void removeStation(Station stationForRemove) {
-
         Section baseSection = sections.removeSectionWithStation(stationForRemove);
         if (stationForRemove.equals(this.upStation)) {
             updateUpDownStation(baseSection.getDownStation(), null);
@@ -77,7 +76,6 @@ public class Line extends BaseEntity {
             updateUpDownStation(null, baseSection.getUpStation());
             return;
         }
-
     }
 
     public void addStation(Station upStation, Station downStation, int distance) {
