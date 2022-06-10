@@ -4,9 +4,13 @@ import static nextstep.subway.line.domain.DomainFixtureFactory.createLine;
 import static nextstep.subway.line.domain.DomainFixtureFactory.createSection;
 import static nextstep.subway.line.domain.DomainFixtureFactory.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.google.common.collect.Lists;
+import java.util.List;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,5 +41,18 @@ class LinesTest {
     void valueOf() {
         Lines lines = Lines.valueOf(Lists.newArrayList(신분당선, 이호선, 삼호선));
         assertThat(lines.lines()).containsExactlyElementsOf(Lists.newArrayList(신분당선, 이호선, 삼호선));
+    }
+
+    @DisplayName("최단 경로 조회 테스트")
+    @Test
+    void shortestPath() {
+        Lines lines = Lines.valueOf(Lists.newArrayList(신분당선, 이호선, 삼호선));
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = lines.shortestPath(교대역, 양재역);
+        List<Station> path = shortestPath.getVertexList();
+        int weight = (int) shortestPath.getWeight();
+        assertAll(
+                () -> assertThat(path).containsExactlyElementsOf(Lists.newArrayList(교대역, 남부터미널역, 양재역)),
+                () -> assertThat(weight).isEqualTo(5)
+        );
     }
 }
