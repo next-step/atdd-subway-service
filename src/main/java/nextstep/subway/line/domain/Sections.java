@@ -11,6 +11,8 @@ import javax.persistence.OneToMany;
 import nextstep.subway.exception.ImpossibleDeleteException;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
@@ -185,15 +187,9 @@ public class Sections {
                 .reduce(0, Integer::sum));
     }
 
-    public void makeVertexOn(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        for(Station station : orderedStations()) {
-            graph.addVertex(station);
-        }
-    }
-
-    public void makeEdgeWeightOn(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    public void makeGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         for (Section section : sections){
-            section.setEdgeWeightAt(graph);
+            section.makeGraph(graph);
         }
     }
 }

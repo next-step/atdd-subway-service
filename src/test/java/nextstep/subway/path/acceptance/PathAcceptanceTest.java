@@ -4,18 +4,22 @@ import static nextstep.subway.line.acceptance.LineRestAssured.지하철_노선_�
 import static nextstep.subway.line.acceptance.LineSectionRestAssured.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.path.acceptance.PathRestAssured.지하철_경로_최단거리_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 
 @DisplayName("지하철 경로 조회")
@@ -53,18 +57,30 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     /**
      * When 지하철 경로에 출발지와 목적지로 최단경로를 조회하면
-     * Then 최단 거리가 조회된다.
+     * Then 최단 거리 경로와 거리가 조회된다.
      */
     @DisplayName("지하철 경로에 출발지와 목적지로 최단경로를 조회하면 입력하면 최단 거리가 조회된다.")
     @Test
     void findShortestPath() {
         // when
         ExtractableResponse<Response> response = 지하철_경로_최단거리_요청(교대역.getId(), 양재역.getId());
+
         // then
-        지하철_경로_최단거리_응답됨(response);
+        지하철_경로_최단거리_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
     }
 
-    private void 지하철_경로_최단거리_응답됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    private void 지하철_경로_최단거리_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations, int distance) {
+        PathResponse path = response.as(PathResponse.class);
+        List<Long> stationIds = path.getStations().stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        List<Long> expectedStationIds = expectedStations.stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+        assertAll(
+                () -> assertThat(path.getDistance()).isEqualTo(distance),
+                () -> assertThat(stationIds).containsExactlyElementsOf(expectedStationIds)
+        );
     }
 }

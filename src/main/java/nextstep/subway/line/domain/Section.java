@@ -175,7 +175,9 @@ public class Section extends BaseEntity {
         return this.distance.distance() > newDistance.distance();
     }
 
-    public void setEdgeWeightAt(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    public void makeGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        graph.addVertex(upStation);
+        graph.addVertex(downStation);
         graph.setEdgeWeight(graph.addEdge(upStation, downStation), distance.distance());
     }
 }
