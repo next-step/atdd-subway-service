@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
+import java.util.List;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -68,5 +70,35 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public List<Station> findStations() {
+        return Arrays.asList(upStation, downStation);
+    }
+
+    public void update(Section newSection) {
+        if (isEqualsUpStation(upStation)) {
+            this.upStation = newSection.downStation;
+            updateDistance(newSection);
+        }
+        if (isEqualsDownStation(downStation)) {
+            this.downStation = newSection.upStation;
+            updateDistance(newSection);
+        }
+    }
+
+    private boolean isEqualsUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    private boolean isEqualsDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
+
+    private void updateDistance(Section newSection) {
+        if (this.distance <= newSection.distance) {
+            throw new IllegalArgumentException("기존 역 사이 길이보다 크거나 같으면 등록을 할 수 없습니다.");
+        }
+        this.distance -= newSection.distance;
     }
 }
