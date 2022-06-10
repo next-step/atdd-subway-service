@@ -16,8 +16,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.subway.member.MemberAcceptanceTest.내정보_조회;
 import static org.assertj.core.api.Assertions.*;
-class AuthAcceptanceTest extends AcceptanceTest {
+public class AuthAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     private MemberRepository memberRepository;
@@ -56,7 +57,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithWrongBearerAuth() {
         //When
-        ExtractableResponse<Response> response = 내정보_요청(new TokenResponse("WrongTokenValue"));
+        ExtractableResponse<Response> response = 내정보_조회("WrongAccessToken");
 
         //Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -77,15 +78,9 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static TokenResponse 로그인_되어있음(String email, String password) {
+        ExtractableResponse<Response> response = 로그인_요청(email, password);
 
-    private static  ExtractableResponse<Response> 내정보_요청(TokenResponse tokenResponse) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
+        return response.as(TokenResponse.class);
     }
-
-
 }
