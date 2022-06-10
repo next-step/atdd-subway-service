@@ -23,9 +23,7 @@ public class PathService {
     }
 
     public PathResponse findPath(Long startStationId, Long endStationId) {
-        if(isSameStationId(startStationId, endStationId)) {
-            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
-        }
+        validateStations(startStationId, endStationId);
 
         List<Line> lines = lineRepository.findAll();
         PathFinder pathFinder = new PathFinder(lines);
@@ -36,6 +34,12 @@ public class PathService {
         Path findPath = pathFinder.findPath(startStation, endStation);
 
         return PathResponse.of(findPath);
+    }
+
+    private void validateStations(Long startStationId, Long endStationId) {
+        if(isSameStationId(startStationId, endStationId)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+        }
     }
 
     private boolean isSameStationId(Long startStationId, Long endStationId) {
