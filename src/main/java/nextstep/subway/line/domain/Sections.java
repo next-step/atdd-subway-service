@@ -62,14 +62,14 @@ public class Sections {
         sections.remove(section);
     }
 
-    public void updateUpStationOfSection(Section section) {
+    private void updateUpStationOfSection(Section section) {
         this.sections.stream()
                 .filter(it -> it.getUpStation() == section.getUpStation())
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
     }
 
-    public void updateDownStationOfSection(Section section) {
+    private void updateDownStationOfSection(Section section) {
         this.sections.stream()
                 .filter(it -> it.getDownStation() == section.getDownStation())
                 .findFirst()
@@ -106,11 +106,11 @@ public class Sections {
         return stations;
     }
 
-    public boolean matchStation(Station station) {
+    private boolean matchStation(Station station) {
         return findStations().stream().anyMatch(it -> it == station);
     }
 
-    public boolean isEmptyByStation() {
+    private boolean isEmptyByStation() {
         return findStations().isEmpty();
     }
 
