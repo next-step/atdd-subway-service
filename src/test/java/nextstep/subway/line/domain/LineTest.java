@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityExistsException;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -97,5 +98,22 @@ class LineTest {
         assertThat(isStartStation.orElseThrow(EntityExistsException::new)).isEqualTo(광교역);
     }
 
+    /*
+    * Given 등록된 노선에서
+    * When 역을 가져오면
+    * Then 순서대로 역을 가져온다.
+    * */
+    @DisplayName("노선에서 역정보를 가져올때 순서대로 가져온다.")
+    @Test
+    void getStationsTest() {
+        // Given
+        신분당선.addSection(new Section(신분당선, 광교역, 광교중앙역, 10));
+        신분당선.addSection(new Section(신분당선, 광교중앙역, 상현역, 10));
+        신분당선.addSection(new Section(신분당선, 상현역, 성복역, 10));
 
+        // When
+        List<Station> 순서대로_역_정보 = 신분당선.getStations();
+        // Then
+        assertThat(순서대로_역_정보.toArray(new Station[0])).containsExactly(광교역,광교중앙역,상현역,성복역);
+    }
 }

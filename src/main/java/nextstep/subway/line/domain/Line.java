@@ -4,10 +4,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Entity
 public class Line extends BaseEntity {
@@ -69,6 +66,26 @@ public class Line extends BaseEntity {
         }
         return sections.stream().filter(this::isPreSection)
                 .map(Section::getUpStation).findAny();
+    }
+
+    public List<Station> getStations() {
+        List<Station> stations = new ArrayList<>();
+        Station downStation = getStartStation().get();
+        stations.add(downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = sections.stream()
+                    .filter(it -> it.getUpStation() == finalDownStation)
+                    .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getDownStation();
+            stations.add(downStation);
+        }
+
+        return stations;
     }
 
     private boolean isPreSection(final Section source) {
