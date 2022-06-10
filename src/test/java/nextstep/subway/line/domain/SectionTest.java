@@ -54,14 +54,6 @@ class SectionTest {
                 () -> assertThat(section.distance()).isEqualTo(Distance.valueOf(5)));
     }
 
-    @DisplayName("section 가중치 조회 테스트")
-    @Test
-    void weight() {
-        Section section = createSection(노선_생성(), createStation(1L, "지하철역"), createStation(2L, "새로운지하철역"),
-                Distance.valueOf(10));
-        assertThat(section.weight()).isEqualTo(10);
-    }
-
     private Line 노선_생성() {
         return Line.builder("노선", "color", createStation("지하철역"), createStation("새로운지하철역"), Distance.valueOf(1))
                 .build();

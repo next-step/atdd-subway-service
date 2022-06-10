@@ -193,7 +193,7 @@ public class Sections {
 
     public void setEdgeWeightAt(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         for (Section section : sections){
-            graph.setEdgeWeight(graph.addEdge(section.upStation(), section.downStation()), section.weight());
+            section.setEdgeWeightAt(graph);
         }
     }
 }
