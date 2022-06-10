@@ -3,6 +3,7 @@ package nextstep.subway.line.application;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -24,19 +25,22 @@ public class LineServiceForRef {
     private LineRepository lineRepository;
     private StationService stationService;
 
-    public LineServiceForRef(LineRepository lineRepository, StationService stationService) {
+    private SectionRepository sectionRepository;
+
+    public LineServiceForRef(LineRepository lineRepository, StationService stationService, SectionRepository sectionRepository) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
+        this.sectionRepository = sectionRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        List<StationResponse> stations = getStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
+        Section savedSection = sectionRepository.save(new Section(request.toLine(), upStation, downStation, request.getDistance()));
+        List<StationResponse> stations = savedSection.getLine().getStations().stream()
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(savedSection.getLine(), stations);
     }
 
     public List<LineResponse> findLines() {

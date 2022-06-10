@@ -29,7 +29,7 @@ public class Section {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
-        this.line = line;
+        updateLineBy(line);
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
