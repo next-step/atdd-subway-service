@@ -10,13 +10,14 @@ import org.junit.jupiter.api.Test;
 
 public class SectionTest {
 
+    Station 첫번째역 = new Station("첫번째역");
+    Station 두번째역 = new Station("두번째역");
+    Station 세번째역 = new Station("세번째역");
+
     @DisplayName("첫번째역 ~ 세번째역 사이에 두번째역을 끼워넣는다")
     @Test
     public void 섹션안에서_후방에_끼워넣기() {
         //given
-        Station 첫번째역 = new Station("첫번째역");
-        Station 두번째역 = new Station("두번째역");
-        Station 세번째역 = new Station("세번째역");
         Section 구간 = new Section(null, 세번째역, 첫번째역, 10);
 
         //when
@@ -35,9 +36,6 @@ public class SectionTest {
     @Test
     public void 섹션안에서_전방에_끼워넣기() {
         //given
-        Station 첫번째역 = new Station("첫번째역");
-        Station 두번째역 = new Station("두번째역");
-        Station 세번째역 = new Station("세번째역");
         Section 구간 = new Section(null, 세번째역, 첫번째역, 10);
 
         //when
@@ -56,9 +54,6 @@ public class SectionTest {
     @Test
     public void 섹션에_끼워넣기_거리초과에러발생() {
         //given
-        Station 첫번째역 = new Station("첫번째역");
-        Station 두번째역 = new Station("두번째역");
-        Station 세번째역 = new Station("세번째역");
         Section 구간 = new Section(null, 세번째역, 첫번째역, 10);
 
         //when
@@ -71,9 +66,6 @@ public class SectionTest {
     @Test
     public void 섹션합치기_섹션과_섹션() {
         //given
-        Station 첫번째역 = new Station("첫번째역");
-        Station 두번째역 = new Station("두번째역");
-        Station 세번째역 = new Station("세번째역");
         Section 앞_구간 = new Section(null, 두번째역, 첫번째역, 3);
         Section 뒤_구간 = new Section(null, 세번째역, 두번째역, 4);
 
@@ -91,8 +83,6 @@ public class SectionTest {
     @Test
     public void 섹션합치기_섹션과_빈섹션() {
         //given
-        Station 첫번째역 = new Station("첫번째역");
-        Station 두번째역 = new Station("두번째역");
         Section 앞_구간 = new Section(null, 두번째역, 첫번째역, 3);
         Section 뒤_구간 = Section.emptyOf(null);
 
@@ -110,8 +100,6 @@ public class SectionTest {
     @Test
     public void 섹션합치기_빈섹션과_섹션() {
         //given
-        Station 첫번째역 = new Station("첫번째역");
-        Station 두번째역 = new Station("두번째역");
         Section 뒤_구간 = new Section(null, 두번째역, 첫번째역, 3);
         Section 앞_구간 = Section.emptyOf(null);
 
