@@ -54,10 +54,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
     void manageFavorite() {
-        // when
+        // when 즐겨찾기 생성을 요청
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(사용자_토큰, 강남역, 정자역);
-        // then
+        // then 즐겨찾기 생성됨
         즐겨찾기_생성됨(createResponse);
+
+        // When 즐겨찾기 목록 조회 요청
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자_토큰);
+        // Then 즐겨찾기 목록 조회됨
+        즐겨찾기_목록_조회됨(findResponse);
+
+        // When 즐겨찾기 삭제 요청
+        // Then 즐겨찾기 삭제됨
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(String accessToken, StationResponse sourceStation, StationResponse targetStation) {
@@ -71,7 +79,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
