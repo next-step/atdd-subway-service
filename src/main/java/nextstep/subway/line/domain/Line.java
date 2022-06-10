@@ -64,6 +64,50 @@ public class Line extends BaseEntity {
         return stations;
     }
 
+    public void addSection(Station upStation, Station downStation, int distance) {
+        validateAddSection(upStation, downStation);
+
+        if (getStations().isEmpty()) {
+            sections.add(new Section(this, upStation, downStation, distance));
+            return;
+        }
+        if (hasStation(upStation)) {
+            sections.stream()
+                    .filter(it -> it.getUpStation() == upStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+            sections.add(new Section(this, upStation, downStation, distance));
+            return;
+        }
+        if (hasStation(downStation)) {
+            sections.stream()
+                    .filter(it -> it.getDownStation() == downStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+            sections.add(new Section(this, upStation, downStation, distance));
+            return;
+        }
+        throw new RuntimeException();
+    }
+
+    private void validateAddSection(Station upStation, Station downStation) {
+        if (hasStation(upStation) && hasStation(downStation)) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        List<Station> stations = getStations();
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+                stations.stream().noneMatch(it -> it == downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    public boolean hasStation(Station station) {
+        return getStations().stream().anyMatch(it -> it == station);
+    }
+
     private Station findUpStation() {
         Station downStation = getSections().get(0).getUpStation();
         while (downStation != null) {
