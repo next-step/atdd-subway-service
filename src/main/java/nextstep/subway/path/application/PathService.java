@@ -1,7 +1,7 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -14,18 +14,18 @@ import java.util.Objects;
 
 @Service
 public class PathService {
-    private final LineRepository lineRepository;
+    private final LineService lineService;
     private final StationService stationService;
 
-    public PathService(LineRepository lineRepository, StationService stationService) {
-        this.lineRepository = lineRepository;
+    public PathService(LineService lineService, StationService stationService) {
+        this.lineService = lineService;
         this.stationService = stationService;
     }
 
     public PathResponse findPath(Long startStationId, Long endStationId) {
         validateStations(startStationId, endStationId);
 
-        List<Line> lines = lineRepository.findAll();
+        List<Line> lines = lineService.findLines();
         PathFinder pathFinder = new PathFinder(lines);
 
         Station startStation = stationService.findById(startStationId);
