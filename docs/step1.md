@@ -20,7 +20,7 @@
   - [ ] findUpStation -> Sections
   - [ ] findLines(return 부분) -> LineResponse
 - [ ] Service의 로직 Domain으로 이동
-  - [ ] getStations -> Sections
+  - [X] getStations -> Sections
   - [ ] addLineStation(stationService 아래 부분) -> Sections
   - [ ] removeLineStation(stationService 아래 부분) -> Sections
   - [ ] findUpStation -> Sections
