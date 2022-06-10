@@ -56,4 +56,4 @@
 
 ## 2단계 
   - [X] PathService 중복 제거
-  - [ ] SectionEdge 접근 제어자 수정 
+  - [X] SectionEdge 접근 제어자 수정 
