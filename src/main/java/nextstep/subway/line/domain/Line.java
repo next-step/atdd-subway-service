@@ -41,11 +41,14 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
-    public LineResponse findLineResponse() {
-        List<StationResponse> stations = getSections().getStations().stream()
+    public List<StationResponse> findStationResponses() {
+        return getSections().getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        return LineResponse.of(this, stations);
+    }
+
+    public LineResponse findLineResponse() {
+        return LineResponse.of(this, findStationResponses());
     }
 
     public Long getId() {
