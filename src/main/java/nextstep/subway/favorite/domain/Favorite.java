@@ -35,9 +35,16 @@ public class Favorite extends BaseEntity {
     }
 
     public Favorite(Station source, Station target, Member member) {
+        validateSameStation(source, target);
         this.source = source;
         this.target = target;
         this.member = member;
+    }
+
+    private void validateSameStation(Station source, Station target) {
+        if(source.equals(target)){
+            throw new IllegalArgumentException("[ERROR] 동일한 역을 즐겨찾기로 등록할 수 없습니다.");
+        }
     }
 
     public Long getId() {
