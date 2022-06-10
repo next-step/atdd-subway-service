@@ -23,8 +23,8 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(Long startStationId, Long endStationId) {
-        Station startStation = stationRepository.findById(startStationId).orElseThrow(NoSuchElementException::new);
-        Station endStation = stationRepository.findById(endStationId).orElseThrow(NoSuchElementException::new);
+        Station startStation = findStationById(startStationId);
+        Station endStation = findStationById(endStationId);
         PathFindResult findResult = null;
         try {
             findResult = pathFindService.findShortestPath(startStation, endStation);
@@ -32,5 +32,9 @@ public class PathService {
             throw new IllegalStateException(e.getMessage(), e);
         }
         return PathResponse.of(findResult);
+    }
+
+    private Station findStationById(Long startStationId){
+        return stationRepository.findById(startStationId).orElseThrow(NoSuchElementException::new);
     }
 }

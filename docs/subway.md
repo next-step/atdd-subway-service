@@ -53,3 +53,7 @@
   - [X] Sections 내부 콜렉션 필드명 변경
   - [X] Sections.addMergedSection 리팩토링
   - [X] Section 간 비교를 위한 메서드 추가, 객체 비교를 위한 기존 getter 호출 제거
+
+## 2단계 
+  - [X] PathService 중복 제거
+  - [ ] SectionEdge 접근 제어자 수정 
