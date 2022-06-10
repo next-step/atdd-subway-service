@@ -117,7 +117,7 @@ class FavoriteServiceTest {
         favoriteService.deleteFavorite(1L);
 
         // then
-        verify(favoriteRepository).deleteById(any());
+        verify(favoriteRepository).deleteById(1L);
     }
 
 
