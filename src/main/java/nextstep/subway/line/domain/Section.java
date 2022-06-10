@@ -82,6 +82,10 @@ public class Section {
         return this.upStation.equals(station);
     }
 
+    public void registerLine(Line line) {
+        this.line = line;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

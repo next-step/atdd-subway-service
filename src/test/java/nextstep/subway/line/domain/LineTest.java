@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.setAllowComparingPrivateFields;
 
 import java.util.List;
 import nextstep.subway.station.domain.Station;
@@ -25,5 +26,14 @@ class LineTest {
     void getStations() {
         List<Station> stations = line.getStations();
         assertThat(stations).containsExactly(잠실역, 강남역);
+    }
+
+    @Test
+    void addSectionTest() {
+        Station 선릉역 = new Station("선릉역");
+        Section newSection = new Section(잠실역, 선릉역, 5);
+        line.addSection(newSection);
+        assertThat(line.getStations()).containsExactly(잠실역, 선릉역, 강남역);
+
     }
 }
