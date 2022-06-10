@@ -105,39 +105,18 @@ public class SectionsManager {
             insertSection(appendSection, downStation);
             return;
         }
-
     }
 
-    private void insertSection(Section appendSection, Station baseStation, boolean baseIsUp) {
-        Section baseSection = getBaseSection(baseStation, baseIsUp)
-            .orElseThrow(RuntimeException::new);
+    private void insertSection(Section appendSection, Station baseStation) {
+        Section upStation = getSectionByUpStation(baseStation)
+            .orElse(Section.emptyOf(null));
+        Section downStation = getSectionByDownStation(baseStation)
+            .orElse(Section.emptyOf(null));
 
-        baseSection.add(appendSection, baseIsUp);
+        upStation.insert(appendSection);
+        downStation.insert(appendSection);
 
         sections.add(appendSection);
-    }
-
-    private Optional<Section> getBaseSection(Station baseStation, boolean baseIsUp) {
-        for (Section section : sections) {
-            if (baseIsUp) {
-                if (section.getUpStation().equals(baseStation)) {
-                    return Optional.of(section);
-                }
-                if (section.getDownStation().equals(baseStation)) {
-                    return Optional.of(section);
-                }
-            }
-
-            if (!baseIsUp) {
-                if (section.getDownStation().equals(baseStation)) {
-                    return Optional.of(section);
-                }
-                if (section.getUpStation().equals(baseStation)) {
-                    return Optional.of(section);
-                }
-            }
-        }
-        return Optional.empty();
     }
 
     private void validateNoBaseStation(List<Station> stations, boolean isUpStationExisted,
