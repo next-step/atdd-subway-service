@@ -50,20 +50,20 @@ public class FavoriteRepositoryTest extends RepositoryTest {
 
     @DisplayName("Favorite 목록을 조회한다.")
     @Test
-    void findAll() {
+    void findByMember() {
         favoriteRepository.save(new Favorite(사용자, 강남역, 역삼역));
 
-        List<Favorite> favorites = favoriteRepository.findAll();
+        List<Favorite> favorites = favoriteRepository.findByMember(사용자);
 
         assertThat(favorites).hasSize(1);
     }
 
     @DisplayName("Favorite를 제거한다.")
     @Test
-    void delete() {
+    void deleteByIdAndMember() {
         Favorite favorite = favoriteRepository.save(new Favorite(사용자, 강남역, 역삼역));
 
-        favoriteRepository.delete(favorite);
+        favoriteRepository.deleteByIdAndMember(favorite.getId(), 사용자);
 
         List<Favorite> favorites = favoriteRepository.findAll();
         assertThat(favorites).hasSize(0);
