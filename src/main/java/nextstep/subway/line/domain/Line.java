@@ -58,4 +58,8 @@ public class Line extends BaseEntity {
         return sections.getSections();
     }
 
+    public Sections getSectionsObj() {
+        return sections;
+    }
+
 }
