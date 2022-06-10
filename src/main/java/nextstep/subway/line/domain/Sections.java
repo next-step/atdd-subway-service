@@ -16,6 +16,13 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
+    public Sections(List<Section> sections) {
+        if (Objects.isNull(sections)) {
+            throw new IllegalArgumentException("null 을 입력할수 없습니다.");
+        }
+        this.sections.addAll(sections);
+    }
+
     public void addSection(final Section section) {
         sections.add(section);
     }
