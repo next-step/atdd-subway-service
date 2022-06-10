@@ -2,12 +2,14 @@ package nextstep.subway.path;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceSupport.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.SectionAcceptanceSupport.지하철_노선에_지하철역_등록_요청;
-import static nextstep.subway.path.PathAcceptanceSupport.지하철역_최단경로_검증_완료;
-import static nextstep.subway.path.PathAcceptanceSupport.지하철역_최단경로_조회_성공;
+import static nextstep.subway.path.PathAcceptanceSupport.지하철역_최단거리_경로_검증_완료;
+import static nextstep.subway.path.PathAcceptanceSupport.지하철역_최단거리_경로_조회_성공;
+import static nextstep.subway.path.PathAcceptanceSupport.지하철역_최단거리_길이_검증_완료;
 import static nextstep.subway.path.PathAcceptanceSupport.지하철역_최단경로_조회_요청;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -66,32 +68,19 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void find_shortest_path_test() {
         ExtractableResponse<Response> response = 지하철역_최단경로_조회_요청(강남역.getId(), 양재역.getId());
-        지하철역_최단경로_조회_성공(response);
+        지하철역_최단거리_경로_조회_성공(response);
 
-        지하철역_최단경로_검증_완료(response, 12, "강남역", "양재역");
+        지하철역_최단거리_경로_검증_완료(response, Arrays.asList("강남역", "양재역"));
+        지하철역_최단거리_길이_검증_완료(response, 12);
     }
 
-    /**
-     * Feature: 지하철 구간 관련 기능
-     *
-     *   Given 지하철역 등록되어 있음
-     *   And 지하철 노선 등록되어 있음
-     *   And 지하철 노선에 지하철역 등록되어 있음
-     *
-     *  Scenario: 지하철 최단경로를 조회
-     *  강남역은 신분당선 (강남 --- 양재)
-     *  남부터미널은 3호선 (교대 --- 남부터미널 --- 양재)
-     *  강남 -> 양재 -> 남부터미널 경로 혹은 강남 ->교대 -> 남부터미널 두 경로중 최단거리로 조회되어야 함
-     *
-     *    Given 서로 노선이 다른 출발역, 도착역을 전달해 지하철역의 최단경로를 조회하면
-     *    Then: 최단경로가 조회됨
-     **/
     @DisplayName("지하철 환승역 포함 최단 경로 조회 기능")
     @Test
     void find_shortest_path_test2() {
         ExtractableResponse<Response> response = 지하철역_최단경로_조회_요청(강남역.getId(), 남부터미널역.getId());
-        지하철역_최단경로_조회_성공(response);
+        지하철역_최단거리_경로_조회_성공(response);
 
-        지하철역_최단경로_검증_완료(response, 13, "강남역", "교대역", "남부터미널역");
+        지하철역_최단거리_길이_검증_완료(response, 13);
+        지하철역_최단거리_경로_검증_완료(response, Arrays.asList("강남역", "교대역", "남부터미널역"));
     }
 }
