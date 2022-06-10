@@ -48,7 +48,7 @@ class FavoriteTest {
 
     @DisplayName("사용자 즐겨찾기 목록을 조회한다.")
     @Test
-    void findAll(){
+    void findAllByMember(){
         //given
         when(favoriteRepository.findAllByMember(사용자))
                 .thenReturn(Arrays.asList(new Favorite(강남, 교대, 사용자), new Favorite(신도림, 잠실, 사용자)));
