@@ -67,25 +67,6 @@ public class Line extends BaseEntity {
         if (sections.isEmpty()) {
             return Optional.empty();
         }
-        Station downStation = getSections().get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSections().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return Optional.of(downStation);
-    }
-
-    public Optional<Station> getStartStation1() {
-        if (sections.isEmpty()) {
-            return Optional.empty();
-        }
         return sections.stream().filter(this::isPreSection)
                 .map(Section::getUpStation).findAny();
     }

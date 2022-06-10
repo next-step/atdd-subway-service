@@ -91,7 +91,7 @@ class LineTest {
         신분당선.addSection(new Section(신분당선, 상현역, 성복역, 10));
 
         // When
-        final Optional<Station> isStartStation = 신분당선.getStartStation1();
+        final Optional<Station> isStartStation = 신분당선.getStartStation();
 
         // Then
         assertThat(isStartStation.orElseThrow(EntityExistsException::new)).isEqualTo(광교역);
