@@ -1,5 +1,6 @@
 package nextstep.subway.member.ui;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Optional;
 
 @RestController
 public class MemberController {
@@ -45,7 +47,8 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(LoginMember loginMember) {
-        MemberResponse member = memberService.findMember(loginMember.getId());
+        Long id = Optional.ofNullable(loginMember.getId()).orElseThrow(AuthorizationException::new);
+        MemberResponse member = memberService.findMember(id);
         return ResponseEntity.ok().body(member);
     }
 

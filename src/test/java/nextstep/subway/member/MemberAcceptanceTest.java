@@ -96,6 +96,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 로그인_정보_요청(String token) {
+        ExtractableResponse<Response> response = RestAssured.given().log().all().
+                auth().oauth2(token).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                get("/members/me").
+                then().
+                log().all().extract();
+        return response;
+    }
+
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
