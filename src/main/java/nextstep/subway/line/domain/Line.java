@@ -1,12 +1,9 @@
 package nextstep.subway.line.domain;
 
-import java.util.Arrays;
-import java.util.Optional;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
