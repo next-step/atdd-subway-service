@@ -116,4 +116,46 @@ class LineTest {
         // Then
         assertThat(결과값이_비어_있음.isEmpty()).isTrue();
     }
+
+
+    /*
+     * Given 하나의 구간만 등록된 노선에서
+     * When 구간을 삭제하면
+     * Then 삭제가 되지 않는다.
+     * */
+    @DisplayName("구간이 하나인 리스트에서 구간을 삭제 할수 없다.")
+    @Test
+    void noRemoveWhenSectionIsOne() {
+        // Given
+        Line 알호선 = new Line("일호선", "bg-blue-300");
+        알호선.addSection(new Section(알호선, 광교역, 상현역, 10));
+
+
+        // When
+        assertThatThrownBy(() -> 알호선.removeSection(광교역)).isExactlyInstanceOf(IllegalStateException.class);
+    }
+
+    /*
+     * Given 노선에 많은 구간 저장되어있고
+     * When 특정역을 삭제하면
+     * Then 해당 구간이 삭제가 된다.
+     * */
+    @DisplayName("구간 정보가 많을경우 구간을 삭제 할수 있다.")
+    @Test
+    void removeSectionTest() {
+        // Given
+        신분당선 = new Line("신분당선", "bg-blue-200");
+        신분당선.addSection(new Section(신분당선, 광교역, 광교중앙역, 10));
+        신분당선.addSection(new Section(신분당선, 광교중앙역, 성복역,  10));
+
+        // When
+        신분당선.removeSection(광교역);
+
+        // Then
+        assertThat(신분당선.getStations().toArray(new Station[0])).containsExactly(광교중앙역, 성복역);
+    }
+
+    private boolean isExist(final Section section, final  Station station) {
+        return section.isMatchDownStation(station) || section.isMatchUpStation(station);
+    }
 }

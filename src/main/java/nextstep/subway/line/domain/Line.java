@@ -8,6 +8,7 @@ import java.util.*;
 
 @Entity
 public class Line extends BaseEntity {
+    private static final int ONLY_ONE = 1;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -66,6 +67,31 @@ public class Line extends BaseEntity {
         }
     }
 
+    public void removeSection(final Station station) {
+        if (this.sections.isSize() <= ONLY_ONE) {
+            throw new IllegalStateException("구간이 한개 뿐이거나 없는 경우에 삭제할수 없습니다.");
+        }
+
+        final Optional<Section> upLineStation = sections.getSections().stream().filter(it -> it.isMatchUpStation(station)).findFirst();
+        final Optional<Section> downLineStation = sections.getSections().stream().filter(it -> it.isMatchDownStation(station)).findFirst();
+
+        upLineStation.ifPresent(this::removeSection);
+        downLineStation.ifPresent(this::removeSection);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            this.addSection(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+    }
+
+    public void removeSection(final Section section) {
+        if (this.sections.isContains(section)) {
+            this.sections.removeSection(section);
+        }
+    }
+
     public Optional<Station> getStartStation() {
        return sections.getStartStation();
     }
@@ -76,6 +102,10 @@ public class Line extends BaseEntity {
 
     public int isSize() {
        return sections.isSize();
+    }
+
+    public boolean isContains (final Section section) {
+        return this.sections.isContains(section);
     }
 
     @Override

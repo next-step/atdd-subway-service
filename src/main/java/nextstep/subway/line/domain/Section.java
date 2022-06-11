@@ -33,7 +33,7 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
-        updateLineBy(line);
+        line.addSection(this);
     }
 
     public Long getId() {

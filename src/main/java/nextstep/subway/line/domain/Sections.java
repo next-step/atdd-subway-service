@@ -60,6 +60,13 @@ public class Sections {
         return sections.contains(section);
     }
 
+    public void removeSection(final Section section) {
+        this.sections.remove(section);
+        if (section.getLine().isContains(section)) {
+            section.getLine().removeSection(section);
+        }
+    }
+
     private void insertSection(final Section section) {
         if (sections.isEmpty()) {
             return;
