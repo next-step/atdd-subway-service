@@ -46,6 +46,10 @@ public class Line extends BaseEntity {
         sections.insertSection(this, section);
     }
 
+    public void deleteStation(Station station) {
+        sections.deleteStation(this, station);
+    }
+
     public List<StationResponse> findStationResponses() {
         return getSections().getStations().stream()
                 .map(StationResponse::of)

@@ -80,6 +80,29 @@ public class Sections {
         addSection(line, insertSection);
     }
 
+    public void deleteStation(Line line, Station station) {
+        if (list.size() <= 1) {
+            throw new InvalidSectionException("하나만 남은 구간은 삭제할 수 없습니다.");
+        }
+
+        Optional<Section> upLineStation = list.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = list.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            Distance newDistance = upLineStation.get().getDistance().plusDistance(downLineStation.get().getDistance().getDistance());
+            addSection(line, new Section(newUpStation, newDownStation, newDistance.getDistance()));
+        }
+
+        upLineStation.ifPresent(it -> removeSection(line, it));
+        downLineStation.ifPresent(it -> removeSection(line, it));
+    }
+
     public void validateInsertSection(Section section) {
         if (containBothStation(section)) {
             throw new InvalidSectionException("이미 노선에 포함된 구간은 추가할 수 없습니다.");
@@ -93,6 +116,11 @@ public class Sections {
     private void addSection(Line line, Section section) {
         list.add(section);
         section.updateLine(line);
+    }
+
+    private void removeSection(Line line, Section section) {
+        list.remove(section);
+        section.updateLine(null);
     }
 
     private boolean containBothStation(Section section) {
