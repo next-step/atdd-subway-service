@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
 import nextstep.subway.station.domain.Station;
 
+@Embeddable
 public class Sections {
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     List<Section> sections = new ArrayList<>();
 
     public void addSection(Section newSection) {
@@ -44,5 +49,9 @@ public class Sections {
             stations.addAll(section.findStations());
         }
         return stations;
+    }
+
+    public List<Section> getSections() {
+        return this.sections;
     }
 }
