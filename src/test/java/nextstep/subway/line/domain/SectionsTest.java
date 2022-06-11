@@ -29,9 +29,9 @@ class SectionsTest {
         F역 = new Station(6L, "F역");
 
         list = new ArrayList<>();
-        list.add(new Section(null, A역, B역, 10));
-        list.add(new Section(null, B역, C역, 10));
-        list.add(new Section(null, C역, D역, 10));
+        list.add(new Section(A역, B역, 10));
+        list.add(new Section(B역, C역, 10));
+        list.add(new Section(C역, D역, 10));
     }
 
     @DisplayName("구간 내 상행 종점역 구하기")
@@ -99,5 +99,23 @@ class SectionsTest {
 
         // then
         assertThat(stations).containsExactly(A역, B역, C역, D역);
+    }
+
+    @DisplayName("구간 추가하기")
+    @Test
+    void addSection() {
+        // given
+        List<Section> list = new ArrayList<>();
+        list.add(new Section(B역, E역, 10));
+        Sections sections = new Sections(list);
+        
+        // when
+        sections.addSection(null, new Section(A역, B역, 10));
+        sections.addSection(null, new Section(B역, C역, 3));
+        sections.addSection(null, new Section(D역, E역, 3));
+        sections.addSection(null, new Section(E역, F역, 10));
+        
+        // then
+        assertThat(sections.getList()).hasSize(5);
     }
 }

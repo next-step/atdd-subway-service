@@ -77,6 +77,11 @@ public class Sections {
         return stationSet;
     }
 
+    public void addSection(Line line, Section section) {
+        this.list.add(section);
+        section.updateLine(line);
+    }
+
     private Station findFirstStation(Set<Station> stationSet) {
         return stationSet.stream()
                 .findFirst()

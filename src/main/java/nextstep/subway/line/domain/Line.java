@@ -55,7 +55,7 @@ public class Line extends BaseEntity {
         }
 
         if (stations.isEmpty()) {
-            this.sections.add(section);
+            this.sections.addSection(this, section);
             return;
         }
 
@@ -65,14 +65,14 @@ public class Line extends BaseEntity {
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance().getDistance()));
 
-            this.sections.add(section);
+            this.sections.addSection(this, section);
         } else if (isDownStationExisted) {
             this.sections.getList().stream()
                     .filter(it -> it.getDownStation() == section.getDownStation())
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance().getDistance()));
 
-            this.sections.add(section);
+            this.sections.addSection(this, section);
         } else {
             throw new RuntimeException();
         }

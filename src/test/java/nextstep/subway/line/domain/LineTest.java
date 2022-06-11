@@ -68,10 +68,10 @@ class LineTest {
         Line line = new Line("2호선", "green", B역, E역, 10);
 
         // when
-        line.addSection(new Section(line, A역, B역, 10));
-        line.addSection(new Section(line, B역, C역, 3));
-        line.addSection(new Section(line, D역, E역, 3));
-        line.addSection(new Section(line, E역, F역, 10));
+        line.addSection(new Section(A역, B역, 10));
+        line.addSection(new Section(B역, C역, 3));
+        line.addSection(new Section(D역, E역, 3));
+        line.addSection(new Section(E역, F역, 10));
 
         // then
         List<StationResponse> responses = line.findStationResponses();
