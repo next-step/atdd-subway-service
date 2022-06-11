@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.consts.ErrorMessage;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -14,6 +15,8 @@ import java.util.Optional;
 public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
+
+    private static final int MINIMUM_SECTION_LENGTH = 1;
 
     protected Sections() {
     }
@@ -74,14 +77,14 @@ public class Sections {
 
     private void validateSectionToAdd(Section sectionToAdd) {
         List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.contains(sectionToAdd.getUpStation());
-        boolean isDownStationExisted = stations.contains(sectionToAdd.getDownStation());
+        boolean upStationExists = stations.contains(sectionToAdd.getUpStation());
+        boolean downStationExists = stations.contains(sectionToAdd.getDownStation());
 
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+        if (upStationExists && downStationExists) {
+            throw new IllegalArgumentException(ErrorMessage.ERROR_SECTION_ADD_ALREADY_REGISTERED);
         }
-        if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+        if (!stations.isEmpty() && !upStationExists && !downStationExists) {
+            throw new IllegalArgumentException(ErrorMessage.ERROR_SECTION_ADD_UNKNOWN_STATIONS);
         }
     }
 
@@ -127,11 +130,23 @@ public class Sections {
     }
 
     private void validateStationToRemove(Station station) {
-        if (sections.size() <= 1) {
-            throw new IllegalArgumentException();
+        validateSectionLength();
+        validateStationExists(station);
+    }
+
+    private void validateSectionLength() {
+        if (sections.size() <= MINIMUM_SECTION_LENGTH) {
+            throw new IllegalArgumentException(
+                    String.format(ErrorMessage.ERROR_SECTION_DELETE_MINIMUM_LENGTH, MINIMUM_SECTION_LENGTH)
+            );
         }
+    }
+
+    private void validateStationExists(Station station) {
         if (!getStations().contains(station)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(
+                    String.format(ErrorMessage.ERROR_SECTION_DELETE_UNKNOWN_STATION, station.getName())
+            );
         }
     }
 }

@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.line.consts.ErrorMessage;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -39,9 +40,10 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        return lineRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(
+                String.format(ErrorMessage.ERROR_LINE_NOT_FOUND, id))
+        );
     }
-
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
@@ -49,7 +51,9 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Line persistLine = lineRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(
+                String.format(ErrorMessage.ERROR_LINE_NOT_FOUND, id))
+        );
         persistLine.update(Line.of(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 

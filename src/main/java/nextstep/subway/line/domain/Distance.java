@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.consts.ErrorMessage;
+
 import javax.persistence.Embeddable;
 
 @Embeddable
@@ -22,7 +24,9 @@ public class Distance {
 
     private void validateDistance(int distance) {
         if (distance < MINIMUM_DISTANCE) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException(
+                    String.format(ErrorMessage.ERROR_DISTANCE_TOO_SHORT, MINIMUM_DISTANCE, distance)
+            );
         }
     }
 

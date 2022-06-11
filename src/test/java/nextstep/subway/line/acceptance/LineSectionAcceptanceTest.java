@@ -54,7 +54,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
      *     When 지하철 구간 등록 요청
      *     Then 지하철 구간 등록됨
      *     When 지하철 노선에 등록된 역 목록 조회 요청
-     *     Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+     *     Then 등록한 지하철 구간이 반영된 역 목록이 순서에 맞게 조회됨
      *     When 지하철 구간 삭제 요청
      *     Then 지하철 구간 삭제됨
      *     When 지하철 노선에 등록된 역 목록 조회 요청
@@ -63,17 +63,18 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 구간을 관리한다.")
     @Test
     void 지하철_구간_관리_정상_시나리오() {
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
+        지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 강남역, 5);
 
         ExtractableResponse<Response> 신분당선_조회 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
         지하철_노선에_지하철역_등록됨(신분당선_조회);
-        지하철_노선에_지하철역_순서_정렬됨(신분당선_조회, Arrays.asList(강남역, 양재역, 광교역));
+        지하철_노선에_지하철역_순서_정렬됨(신분당선_조회, Arrays.asList(정자역, 강남역, 양재역, 광교역));
 
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
         지하철_노선에_지하철역_제외됨(removeResponse);
 
         ExtractableResponse<Response> 삭제후_신분당선_조회 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_순서_정렬됨(삭제후_신분당선_조회, Arrays.asList(강남역, 광교역));
+        지하철_노선에_지하철역_순서_정렬됨(삭제후_신분당선_조회, Arrays.asList(정자역, 강남역, 광교역));
     }
 
     /**
@@ -106,19 +107,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
 
-    }
-
-    @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
-    @Test
-    void addLineSection2() {
-        // when
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-        지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 강남역, 5);
-
-        // then
-        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_등록됨(response);
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(정자역, 강남역, 양재역, 광교역));
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
