@@ -50,13 +50,13 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public Line findLineById(Long id) {
+    public Line findById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
+        Line persistLine = findById(id);
         List<StationResponse> stations = persistLine.getStations()
                 .stream()
                 .map(it -> StationResponse.of(it))
@@ -75,14 +75,14 @@ public class LineService {
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
-        Line line = findLineById(lineId);
+        Line line = findById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         line.addStation(upStation,downStation,request.getDistance());
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = findLineById(lineId);
+        Line line = findById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeStation(station);
     }
