@@ -4,7 +4,9 @@ import static nextstep.subway.line.acceptance.LineAcceptanceTestMethod.지하철
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestMethod.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.지하철_최단_경로_조회_요청_응답됨;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.지하철_최단_경로_조회됨;
+import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.지하철_최단경로_조회_실패;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.최단_경로_조회_요청;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -68,7 +70,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("교대에서 양재역으로 가는 최단 경로를 구한다.")
+    @DisplayName("교대에서 양재역으로 가는 최단 경로를 조회한다.")
     void pathTest02() {
 
         //when : 교대에서 양재역으로 가는 최단 거리를 조회한다.
@@ -76,6 +78,61 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         //then : 최단 거리가 조회된다.
         지하철_최단_경로_조회됨(최단_경로_조회_요청, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
+    }
+
+    @Test
+    @DisplayName("같은 출발역과 도착역을 이용해 최단 경로를 조회한다.")
+    void pathFailTest1() {
+
+        //when : 양재역에서 양재역으로 가는 최단거리 조회한다.
+        ExtractableResponse<Response> 최단_경로_조회_요청 = 최단_경로_조회_요청(양재역.getId(), 양재역.getId());
+
+        //then : 조회 실패
+        지하철_최단경로_조회_실패(최단_경로_조회_요청);
+    }
+
+    @Test
+    @DisplayName("노선에 존재 하지 않는 출발역을 이용해 경로를 조회한다.")
+    void pathFailTest2() {
+
+        //given
+        StationResponse 도쿄역 = StationAcceptanceTest.지하철역_등록되어_있음("도쿄역").as(StationResponse.class);
+
+        //when : 도쿄역에서 양재역으로 가는 최단거리 조회한다.
+        ExtractableResponse<Response> 최단_경로_조회_요청 = 최단_경로_조회_요청(도쿄역.getId(), 양재역.getId());
+
+        //then : 조회 실패
+        지하철_최단경로_조회_실패(최단_경로_조회_요청);
+    }
+
+    @Test
+    @DisplayName("노선에 존재 하지 않는 도착역을 이용해 경로를 조회한다.")
+    void pathFailTest3() {
+
+        //given
+        StationResponse 도쿄역 = StationAcceptanceTest.지하철역_등록되어_있음("도쿄역").as(StationResponse.class);
+
+        //when : 교대역에서 도쿄역으로 가는 최단거리 조회한다.
+        ExtractableResponse<Response> 최단_경로_조회_요청 = 최단_경로_조회_요청(교대역.getId(), 도쿄역.getId());
+
+        //then : 조회 실패
+        지하철_최단경로_조회_실패(최단_경로_조회_요청);
+    }
+
+    @Test
+    @DisplayName("연결이 되어 있지 않은 지하철역을 이용해 경로를 조회한다.")
+    void pathFailTest4() {
+
+        //given
+        StationResponse 도쿄역 = StationAcceptanceTest.지하철역_등록되어_있음("도쿄역").as(StationResponse.class);
+        StationResponse 쿄토역 = StationAcceptanceTest.지하철역_등록되어_있음("쿄토역").as(StationResponse.class);
+        LineRequest 신칸센_요청 = new LineRequest("신칸센", "bg-blck-600", 도쿄역.getId(), 쿄토역.getId(), 40);
+
+        //when : 교대역에서 도쿄역으로 가는 최단거리 조회한다.
+        ExtractableResponse<Response> 최단_경로_조회_요청 = 최단_경로_조회_요청(교대역.getId(), 도쿄역.getId());
+
+        //then : 조회 실패
+        지하철_최단경로_조회_실패(최단_경로_조회_요청);
     }
 
 

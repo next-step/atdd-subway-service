@@ -13,6 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class PathAcceptanceTestMethod {
+
+    private PathAcceptanceTestMethod() {
+    }
+
     public static ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceStationId, Long targetStationId) {
         return RestAssured.given().log().all()
                 .when()
@@ -41,6 +45,10 @@ public class PathAcceptanceTestMethod {
 
     public static void 지하철_최단_경로_조회_요청_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 지하철_최단경로_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
 }
