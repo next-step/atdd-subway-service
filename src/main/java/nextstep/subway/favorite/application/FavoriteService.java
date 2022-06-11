@@ -1,8 +1,10 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.CannotRegisterException;
 import nextstep.subway.exception.ExceptionType;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
@@ -32,11 +34,19 @@ public class FavoriteService {
     public FavoriteResponse registerFavorite(LoginMember loginMember, FavoriteRequest request) {
         Station source = stationService.findById(request.getSourceId());
         Station target = stationService.findById(request.getTargetId());
-
         Member member = memberService.findById(loginMember.getId());
+        alreadyRegisteredCheck(source, target, member);
+
         Favorite favorite = Favorite.of(source, target, member);
         favoriteRepository.save(favorite);
         return FavoriteResponse.of(favorite);
+    }
+
+    private void alreadyRegisteredCheck(Station source, Station target, Member member) {
+        Optional<Favorite> favorite = favoriteRepository.findBySourceAndTargetAndMember(source, target, member);
+        if (favorite.isPresent()) {
+            throw new CannotRegisterException(ExceptionType.ALREADY_REGISTERED_FAVORITE);
+        }
     }
 
     @Transactional(readOnly = true)
