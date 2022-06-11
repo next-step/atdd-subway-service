@@ -49,6 +49,20 @@ npm run dev
 
 <br>
 
+# 요구사항 정리
+## 1단계 
+- [ ] LineService 리팩터링
+  - [ ] 도메인으로 로직이동
+  - [ ] 도메인 단위테스트 작성
+- [ ] (선택) LineSectionAcceptanceTest 리팩터링
+
+
+
+
+
+
+
+
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
