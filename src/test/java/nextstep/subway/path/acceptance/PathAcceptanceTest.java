@@ -4,9 +4,8 @@ import static nextstep.subway.line.acceptance.LineAcceptanceTestMethod.지하철
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestMethod.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.지하철_최단_경로_조회_요청_응답됨;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.지하철_최단_경로_조회됨;
-import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.지하철_최단경로_조회_실패;
+import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.지하철_최단경로_조회_실패함;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.최단_경로_조회_요청;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -88,7 +87,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 최단_경로_조회_요청 = 최단_경로_조회_요청(양재역.getId(), 양재역.getId());
 
         //then : 조회 실패
-        지하철_최단경로_조회_실패(최단_경로_조회_요청);
+        지하철_최단경로_조회_실패함(최단_경로_조회_요청);
     }
 
     @Test
@@ -102,7 +101,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 최단_경로_조회_요청 = 최단_경로_조회_요청(도쿄역.getId(), 양재역.getId());
 
         //then : 조회 실패
-        지하철_최단경로_조회_실패(최단_경로_조회_요청);
+        지하철_최단경로_조회_실패함(최단_경로_조회_요청);
     }
 
     @Test
@@ -116,7 +115,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 최단_경로_조회_요청 = 최단_경로_조회_요청(교대역.getId(), 도쿄역.getId());
 
         //then : 조회 실패
-        지하철_최단경로_조회_실패(최단_경로_조회_요청);
+        지하철_최단경로_조회_실패함(최단_경로_조회_요청);
     }
 
     @Test
@@ -132,7 +131,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 최단_경로_조회_요청 = 최단_경로_조회_요청(교대역.getId(), 도쿄역.getId());
 
         //then : 조회 실패
-        지하철_최단경로_조회_실패(최단_경로_조회_요청);
+        지하철_최단경로_조회_실패함(최단_경로_조회_요청);
     }
 
 

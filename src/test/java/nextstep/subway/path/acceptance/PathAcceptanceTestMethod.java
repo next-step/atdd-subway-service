@@ -47,7 +47,7 @@ public class PathAcceptanceTestMethod {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 지하철_최단경로_조회_실패(ExtractableResponse<Response> response) {
+    public static void 지하철_최단경로_조회_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
