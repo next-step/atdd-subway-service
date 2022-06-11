@@ -25,7 +25,7 @@ class SectionsTest {
         양재시민의숲역 = new Station("양재시민의숲역");
         판교역 = new Station("판교역");
         양재역 = new Station("양재역");
-        신분당선 = new Line("신분당선", "red", 강남역, 양재시민의숲역, new Distance(10));
+        신분당선 = new Line("신분당선", "red", 강남역, 양재시민의숲역, 10);
     }
 
     @Test

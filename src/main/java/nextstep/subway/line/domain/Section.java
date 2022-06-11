@@ -1,6 +1,8 @@
 package nextstep.subway.line.domain;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,6 +35,10 @@ public class Section {
     private Distance distance;
 
     public Section() {
+    }
+
+    public Section(Line line, Station upStation, Station downStation, int distance) {
+        this(line, upStation, downStation,new Distance(distance));
     }
 
     public Section(Line line, Station upStation, Station downStation, Distance distance) {

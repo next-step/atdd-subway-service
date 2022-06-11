@@ -21,11 +21,11 @@ public class Distance {
     }
 
     public Distance subtract(Distance newDistance) {
-        return new Distance(this.distance -= newDistance.distance);
+        return new Distance(this.distance - newDistance.distance);
     }
 
     public Distance merge(Distance newDistance) {
-        return new Distance(this.distance += newDistance.distance);
+        return new Distance(this.distance + newDistance.distance);
     }
 
     @Override
