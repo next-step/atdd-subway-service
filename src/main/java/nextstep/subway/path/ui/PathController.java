@@ -1,6 +1,7 @@
 package nextstep.subway.path.ui;
 
 import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.StationNotConnectException;
 import nextstep.subway.path.exception.StationNotFoundException;
@@ -22,8 +23,8 @@ public class PathController {
     }
 
     @GetMapping
-    public PathResponse findPath(Long source, Long target) {
-        return pathService.findPath(source, target);
+    public PathResponse findPath(PathRequest request) {
+        return pathService.findPath(request);
     }
 
     @ExceptionHandler({StationsSameException.class, StationNotConnectException.class})
