@@ -42,6 +42,10 @@ public class LineRequest {
         return distance;
     }
 
+    public int getAdditionalFare() {
+        return additionalFare;
+    }
+
     public Line toLine() {
         return new Line(name, color);
     }
