@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.exception.ExceptionType;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,6 +31,7 @@ public class FavoriteAcceptanceSupport {
 
     public static void 중복으로_인해_즐겨찾기_등록_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.asString()).contains(ExceptionType.ALREADY_REGISTERED_FAVORITE.getMessage());
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_조회_요청(String accessToken) {

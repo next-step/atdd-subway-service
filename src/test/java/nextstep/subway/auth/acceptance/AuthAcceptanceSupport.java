@@ -6,6 +6,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.exception.ExceptionType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -36,5 +37,10 @@ public class AuthAcceptanceSupport {
 
     public static void 정보가_달라_로그인_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static void 유효하지_않은_토큰임(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.asString()).contains(ExceptionType.INVALID_TOKEN.getMessage());
     }
 }

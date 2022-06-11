@@ -2,6 +2,7 @@ package nextstep.subway.favorite;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceSupport.로그인_성공후_토큰_조회됨;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceSupport.로그인_시도함;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceSupport.유효하지_않은_토큰임;
 import static nextstep.subway.favorite.FavoriteAcceptanceSupport.중복으로_인해_즐겨찾기_등록_실패됨;
 import static nextstep.subway.favorite.FavoriteAcceptanceSupport.즐겨찾기_등록_요청;
 import static nextstep.subway.favorite.FavoriteAcceptanceSupport.즐겨찾기_등록됨;
@@ -10,6 +11,7 @@ import static nextstep.subway.member.MemberAcceptanceSupport.회원_생성을_�
 import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.response.ExtractableResponse;
@@ -31,6 +33,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 신대방역;
     private ExtractableResponse<Response> createResponse;
     private String accessToken;
+    private String 유효하지_않은_토큰;
 
     @BeforeEach
     public void setUp() {
@@ -45,15 +48,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         구로디지털단지역 = StationAcceptanceTest.지하철역_등록되어_있음("구로디지털단지").as(StationResponse.class);
         신대방역 = StationAcceptanceTest.지하철역_등록되어_있음("신대방").as(StationResponse.class);
 
+        유효하지_않은_토큰 = "invalid token...";
     }
 
-    // 즐겨찾기 생성
     @DisplayName("지하철역을 즐겨찾기로 등록한다")
     @Test
     void registerFavorite() {
         ExtractableResponse<Response> response = 즐겨찾기_등록_요청(accessToken, 대림역.getId(), 구로디지털단지역.getId());
 
         즐겨찾기_등록됨(response);
+    }
+
+    @DisplayName("잘못된 토큰으로 즐겨찾기 등록을 요청하면 실패한다")
+    @Test
+    void registerFavorite_token_failed() {
+        ExtractableResponse<Response> response = 즐겨찾기_등록_요청(유효하지_않은_토큰, 대림역.getId(), 구로디지털단지역.getId());
+        유효하지_않은_토큰임(response);
     }
 
     @DisplayName("이미 등록된 지하철역들을 중복으로 등록하면 실패한다")
