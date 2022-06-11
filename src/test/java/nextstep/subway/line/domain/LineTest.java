@@ -71,4 +71,34 @@ class LineTest {
         }).isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("등록할 수 없는 구간 입니다.");
     }
+
+    @DisplayName("강남역-판교역-광교역인 신분당선에서 광교역을 삭제하면, 광교역이 삭제된다.")
+    @Test
+    void removeStation() {
+        // given
+        Station 판교역 = new Station("판교역");
+        신분당선.addSection(판교역, 광교역, 5);
+
+        // when
+        신분당선.removeStation(광교역);
+
+        // then
+        assertThat(신분당선.getSections()).hasSize(1);
+        assertThat(신분당선.getStations())
+                .hasSize(2)
+                .containsExactly(강남역, 판교역);
+    }
+
+    @DisplayName("구간이 없는 노선에서 광교역을 제거하면, 제거에 실패한다.")
+    @Test
+    void invalid_removeStation_zeroSection() {
+        // given
+        Line 새로운노선 = new Line("새로운노선", "green");
+
+        // when & then
+        assertThatThrownBy(() -> {
+            새로운노선.removeStation(광교역);
+        }).isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("구간이 없는 노선입니다.");
+    }
 }

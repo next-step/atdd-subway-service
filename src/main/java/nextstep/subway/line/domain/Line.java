@@ -41,7 +41,7 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-        if (getSections().isEmpty()) {
+        if (sections.isEmpty()) {
             return Arrays.asList();
         }
 
@@ -51,7 +51,7 @@ public class Line extends BaseEntity {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSections().stream()
+            Optional<Section> nextLineStation = sections.stream()
                     .filter(it -> it.getUpStation() == finalDownStation)
                     .findFirst();
             if (!nextLineStation.isPresent()) {
@@ -65,10 +65,10 @@ public class Line extends BaseEntity {
     }
 
     private Station findUpStation() {
-        Station downStation = getSections().get(0).getUpStation();
+        Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSections().stream()
+            Optional<Section> nextLineStation = sections.stream()
                     .filter(it -> it.getDownStation() == finalDownStation)
                     .findFirst();
             if (!nextLineStation.isPresent()) {
@@ -95,27 +95,50 @@ public class Line extends BaseEntity {
         }
 
         if (stations.isEmpty()) {
-            getSections().add(new Section(this, upStation, downStation, distance));
+            sections.add(new Section(this, upStation, downStation, distance));
             return;
         }
 
         if (isUpStationExisted) {
-            getSections().stream()
+            sections.stream()
                     .filter(it -> it.getUpStation() == upStation)
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(downStation, distance));
 
-            getSections().add(new Section(this, upStation, downStation, distance));
+            sections.add(new Section(this, upStation, downStation, distance));
         } else if (isDownStationExisted) {
-            getSections().stream()
+            sections.stream()
                     .filter(it -> it.getDownStation() == downStation)
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(upStation, distance));
 
-            getSections().add(new Section(this, upStation, downStation, distance));
+            sections.add(new Section(this, upStation, downStation, distance));
         } else {
             throw new RuntimeException();
         }
+    }
+
+    public void removeStation(Station station) {
+        if (sections.size() <= 1) {
+            throw new RuntimeException("구간이 없는 노선입니다.");
+        }
+
+        Optional<Section> upLineStation = sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
     }
 
     public Long getId() {
