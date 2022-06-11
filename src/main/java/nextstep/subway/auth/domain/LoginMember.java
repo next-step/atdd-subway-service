@@ -1,6 +1,5 @@
 package nextstep.subway.auth.domain;
 
-import java.util.Objects;
 
 public class LoginMember {
     private Long id;
@@ -29,6 +28,6 @@ public class LoginMember {
     }
 
     public boolean isLogin() {
-        return Objects.nonNull(id);
+        return id != null;
     }
 }

@@ -2,7 +2,6 @@ package nextstep.subway.favorite.domain;
 
 import static nextstep.subway.favorite.domain.FavoriteExceptionType.FAVORITE_FILED_IS_NOT_NULL;
 
-import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -47,7 +46,7 @@ public class Favorite extends BaseEntity {
     }
 
     private static void validateFavorite(Station source, Station target, Member member) {
-        if (Objects.isNull(source) || Objects.isNull(target) || Objects.isNull(member)) {
+        if (source == null || target == null || member == null) {
             throw new IllegalArgumentException(FAVORITE_FILED_IS_NOT_NULL.getMessage());
         }
     }
