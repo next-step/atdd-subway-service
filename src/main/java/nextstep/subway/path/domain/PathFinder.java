@@ -1,6 +1,5 @@
 package nextstep.subway.path.domain;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import nextstep.subway.line.domain.Line;
