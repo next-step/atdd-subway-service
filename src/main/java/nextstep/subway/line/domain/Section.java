@@ -62,6 +62,14 @@ public class Section {
         this.line = line;
     }
 
+    public boolean containUpStation(Station station) {
+        return this.upStation == station;
+    }
+
+    public boolean containDownStation(Station station) {
+        return this.downStation == station;
+    }
+
     public Long getId() {
         return id;
     }

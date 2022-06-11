@@ -21,17 +21,14 @@ public class Sections {
             return;
         }
 
-        List<Station> stations = this.getStations();
-
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+        boolean isUpStationExisted = findByStation(section.getUpStation()).isPresent();
+        boolean isDownStationExisted = findByStation(section.getDownStation()).isPresent();
 
         if (isUpStationExisted && isDownStationExisted) {
             throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
-            stations.stream().noneMatch(it -> it == section.getDownStation())) {
+        if (!isUpStationExisted && !isDownStationExisted) {
             throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
 
@@ -45,9 +42,7 @@ public class Sections {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                .filter(it -> it.getUpStation() == finalDownStation)
-                .findFirst();
+            Optional<Section> nextLineStation = findByUpStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -59,17 +54,10 @@ public class Sections {
     }
 
     public void removeLineStation(Station station, Line line) {
-        if (this.sections.size() <= 1) {
-            throw new IllegalArgumentException();
-        }
+        validateDeleteStationInSection();
 
-        Optional<Section> upLineStation = this.sections.stream()
-            .filter(it -> it.getUpStation() == station)
-            .findFirst();
-        Optional<Section> downLineStation = this.sections.stream()
-            .filter(it -> it.getDownStation() == station)
-            .findFirst();
-
+        Optional<Section> upLineStation = findByUpStation(station);
+        Optional<Section> downLineStation = findByDownStation(station);
 
         upLineStation.ifPresent(it -> this.sections.remove(it));
         downLineStation.ifPresent(it -> this.sections.remove(it));
@@ -83,39 +71,55 @@ public class Sections {
     }
 
     private void addSection(Section section, boolean isUpStationExisted, boolean isDownStationExisted) {
-        if (isUpStationExisted) {
-            this.sections.stream()
-                .filter(it -> it.getUpStation() == section.getUpStation())
-                .findFirst()
-                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
-            this.sections.add(section);
-        } else if (isDownStationExisted) {
-            this.sections.stream()
-                .filter(it -> it.getDownStation() == section.getDownStation())
-                .findFirst()
-                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-
-            this.sections.add(section);
-        } else {
+        if (!isDownStationExisted && !isUpStationExisted) {
             throw new IllegalStateException();
+        }
+
+        if (isUpStationExisted) {
+            findByUpStation(section.getUpStation())
+                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+        }
+
+        if (isDownStationExisted) {
+            findByDownStation(section.getDownStation())
+                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+        }
+
+        this.sections.add(section);
+    }
+
+    private void validateDeleteStationInSection() {
+        if (this.sections.size() <= 1) {
+            throw new IllegalArgumentException();
         }
     }
 
     private Station findUpStation() {
-        Station downStation = this.sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                .filter(it -> it.getDownStation() == finalDownStation)
-                .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
+        Section startSection = findStartSection(this.sections.get(0));
+        return startSection.getUpStation();
+    }
 
-        return downStation;
+    private Section findStartSection(Section section) {
+        Optional<Section> optionalSection = findByDownStation(section.getUpStation());
+        return optionalSection.map(this::findStartSection).orElse(section);
+    }
+
+    private Optional<Section> findByUpStation(Station station) {
+        return this.sections.stream()
+            .filter(section -> section.containUpStation(station))
+            .findFirst();
+    }
+
+    private Optional<Section> findByDownStation(Station station) {
+        return this.sections.stream()
+            .filter(section -> section.containDownStation(station))
+            .findFirst();
+    }
+
+    private Optional<Section> findByStation(Station station) {
+        return this.sections.stream()
+            .filter(section -> section.containUpStation(station) || section.containDownStation(station))
+            .findFirst();
     }
 
     @Override
