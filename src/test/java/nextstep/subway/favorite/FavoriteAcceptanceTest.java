@@ -6,16 +6,21 @@ import static nextstep.subway.auth.acceptance.AuthAcceptanceSupport.유효하지
 import static nextstep.subway.favorite.FavoriteAcceptanceSupport.중복으로_인해_즐겨찾기_등록_실패됨;
 import static nextstep.subway.favorite.FavoriteAcceptanceSupport.즐겨찾기_등록_요청;
 import static nextstep.subway.favorite.FavoriteAcceptanceSupport.즐겨찾기_등록됨;
+import static nextstep.subway.favorite.FavoriteAcceptanceSupport.즐겨찾기_삭제_요청;
+import static nextstep.subway.favorite.FavoriteAcceptanceSupport.즐겨찾기_삭제됨;
+import static nextstep.subway.favorite.FavoriteAcceptanceSupport.즐겨찾기_조회_검증됨;
+import static nextstep.subway.favorite.FavoriteAcceptanceSupport.즐겨찾기_조회_요청;
 import static nextstep.subway.member.MemberAcceptanceSupport.회원_생성됨;
 import static nextstep.subway.member.MemberAcceptanceSupport.회원_생성을_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.Stream;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -35,6 +40,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private String accessToken;
     private String 유효하지_않은_토큰;
 
+    private ExtractableResponse<Response> 즐겨찾기;
+    private ExtractableResponse<Response> 즐겨찾기_2;
+
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -51,12 +59,48 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         유효하지_않은_토큰 = "invalid token...";
     }
 
+    /**
+     * Feature: 즐겨찾기를 관리한다.
+     *
+     *   Background
+     *     Given 지하철역 등록되어 있음
+     *     And 지하철 노선 등록되어 있음
+     *     And 지하철 노선에 지하철역 등록되어 있음
+     *     And 회원 등록되어 있음
+     *     And 로그인 되어있음
+     *
+     *   Scenario: 즐겨찾기를 관리
+     *     When 즐겨찾기 생성을 요청
+     *     Then 즐겨찾기 생성됨
+     *     When 즐겨찾기 목록 조회 요청
+     *     Then 즐겨찾기 목록 조회됨
+     *     When 즐겨찾기 삭제 요청
+     *     Then 즐겨찾기 삭제됨
+     * */
     @DisplayName("지하철역을 즐겨찾기로 등록한다")
-    @Test
-    void registerFavorite() {
-        ExtractableResponse<Response> response = 즐겨찾기_등록_요청(accessToken, 대림역.getId(), 구로디지털단지역.getId());
+    @TestFactory
+    Stream<DynamicTest> registerFavorite() {
+        return Stream.of(
+            dynamicTest("즐겨찾기 생성을 요청하면 즐겨찾기가 생성된다", () -> {
+                즐겨찾기 = 즐겨찾기_등록_요청(accessToken, 대림역.getId(), 구로디지털단지역.getId());
+                즐겨찾기_등록됨(즐겨찾기);
 
-        즐겨찾기_등록됨(response);
+                즐겨찾기_2 = 즐겨찾기_등록_요청(accessToken, 대림역.getId(), 신대방역.getId());
+                즐겨찾기_등록됨(즐겨찾기_2);
+            }),
+            dynamicTest("생성된 즐겨찾기를 조회하면 즐겨찾기 목록이 조회된다", () -> {
+                ExtractableResponse<Response> response = 즐겨찾기_조회_요청(accessToken);
+                즐겨찾기_조회_검증됨(response, Arrays.asList(즐겨찾기, 즐겨찾기_2));
+            }),
+            dynamicTest("즐겨찾기를 삭제하면 정상적으로 삭제되어야 한다 ", () -> {
+                ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(accessToken, 즐겨찾기);
+                즐겨찾기_삭제됨(response);
+            }),
+            dynamicTest("삭제 후 즐겨찾기를 다시 조회하면 정상적으로 조회된다", () -> {
+                ExtractableResponse<Response> response = 즐겨찾기_조회_요청(accessToken);
+                즐겨찾기_조회_검증됨(response, Collections.singletonList(즐겨찾기_2));
+            })
+        );
     }
 
     @DisplayName("잘못된 토큰으로 즐겨찾기 등록을 요청하면 실패한다")
@@ -80,8 +124,4 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             })
         );
     }
-
-    // 즐겨찾기 목록 조회
-
-    // 즐겨찾기 삭제
 }
