@@ -4,13 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Optional;
-import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.application.LineService;
 import nextstep.subway.path.domain.PathFindResult;
 import nextstep.subway.path.domain.PathFindService;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.assertj.core.util.Lists;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -25,10 +24,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 class PathServiceTest {
 
     @MockBean
-    StationRepository mockStationRepository;
+    StationService mockStationService;
 
     @MockBean
-    LineRepository mockLineRepository;
+    LineService mockLineService;
 
     @MockBean
     PathFindService mockPathFindService;
@@ -42,7 +41,7 @@ class PathServiceTest {
 
     @BeforeEach
     public void setUp() {
-        pathService = new PathService(mockStationRepository, mockLineRepository, mockPathFindService);
+        pathService = new PathService(mockStationService, mockLineService, mockPathFindService);
         ReflectionTestUtils.setField(강남역, "id", 1L);
         ReflectionTestUtils.setField(광교역, "id", 2L);
     }
@@ -54,8 +53,8 @@ class PathServiceTest {
 
         when(mockPathFindService.findShortestPath(mockGraph, 강남역, 광교역))
                 .thenReturn(new PathFindResult(shortestPathStations, 10));
-        when(mockStationRepository.findById(1L)).thenReturn(Optional.of(강남역));
-        when(mockStationRepository.findById(2L)).thenReturn(Optional.of(광교역));
+        when(mockStationService.findStationById(1L)).thenReturn(강남역);
+        when(mockStationService.findStationById(2L)).thenReturn(광교역);
         // When
         PathResponse shortestPath = pathService.findShortestPath(강남역.getId(), 광교역.getId());
 

@@ -3,6 +3,7 @@ package nextstep.subway.line.application;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Line.Builder;
 import nextstep.subway.line.domain.LineRepository;
@@ -28,8 +29,8 @@ public class LineService {
 
     public LineResponse saveLine(LineRequest request) {
         Builder builder = new Builder(request.getName(), request.getColor())
-                .upStation(stationService.findById(request.getUpStationId()))
-                .downStation(stationService.findById(request.getDownStationId()))
+                .upStation(stationService.findStationById(request.getUpStationId()))
+                .downStation(stationService.findStationById(request.getDownStationId()))
                 .distance(request.getDistance());
         return LineResponse.of(lineRepository.save(builder.build()));
     }
@@ -41,10 +42,12 @@ public class LineService {
                 .collect(toList());
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+    public List<Line> findAll() {
+        return lineRepository.findAll();
     }
-
+    public Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    }
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);

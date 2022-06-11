@@ -3,6 +3,7 @@ package nextstep.subway.station.application;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
@@ -35,10 +36,6 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
-    public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        return stationRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 }
