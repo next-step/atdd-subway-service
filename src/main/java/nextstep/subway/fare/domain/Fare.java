@@ -3,6 +3,7 @@ package nextstep.subway.fare.domain;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.policy.DiscountPolicy;
 
 public class Fare {
 
@@ -16,8 +17,8 @@ public class Fare {
         this.lineFare = calculateLineFare(lines, path);
     }
 
-    public int findTotalFare() {
-        return FareType.BASIC.getFare() + this.overFare + this.lineFare;
+    public int findTotalFare(DiscountPolicy discountPolicy) {
+        return discountPolicy.discountFare(FareType.BASIC.getFare() + this.overFare + this.lineFare);
     }
 
     public int findLineFare() {

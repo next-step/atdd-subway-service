@@ -1,6 +1,9 @@
 package nextstep.subway.auth.domain;
 
 
+import nextstep.subway.fare.domain.DiscountAgeType;
+import nextstep.subway.policy.DiscountPolicy;
+
 public class LoginMember implements ServiceMember{
     private Long id;
     private String email;
@@ -28,5 +31,11 @@ public class LoginMember implements ServiceMember{
     @Override
     public Integer getAge() {
         return age;
+    }
+
+    @Override
+    public DiscountPolicy getDiscountPolicy() {
+        DiscountAgeType rule = DiscountAgeType.findDiscountAgeRuleType(this.age);
+        return rule.getDiscountPolicy();
     }
 }

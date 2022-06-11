@@ -8,6 +8,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.DijkstraPathFinder;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.policy.NonDiscountPolicy;
 import nextstep.subway.station.domain.Station;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -137,7 +138,7 @@ class FareTest {
         Fare fare = new Fare(lines, path);
 
         // when
-        int totalFare = fare.findTotalFare();
+        int totalFare = fare.findTotalFare(new NonDiscountPolicy());
 
         // then
         /**

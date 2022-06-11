@@ -34,6 +34,6 @@ public class PathService {
         Path path = pathFinder.findShortPath(source, target);
         Fare fare = new Fare(lines, path);
 
-        return PathResponse.of(path, fare.findTotalFare());
+        return PathResponse.of(path, fare.findTotalFare(serviceMember.getDiscountPolicy()));
     }
 }
