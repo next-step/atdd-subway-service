@@ -1,6 +1,8 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.auth.domain.GuestMember;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.ServiceMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
@@ -28,9 +30,9 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public ServiceMember findMemberByToken(String credentials) {
         if (credentials == null) {
-            return new LoginMember();
+            return new GuestMember();
         }
 
         if (!jwtTokenProvider.validateToken(credentials)) {
