@@ -19,6 +19,8 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 
 @DisplayName("지하철 경로 조회")
@@ -59,8 +61,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("교대에서 양재역으로 가는 최단 경로를 구한다.")
+    @DisplayName("교대에서 양재역으로 가는 최단 경로요청에 응답한다.")
     void pathTest01() {
+
+        //when : 교대에서 양재역으로 가는 최단 거리를 조회한다.
+        ExtractableResponse<Response> 최단_경로_조회_요청 = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
+
+        //then : 요청에 응답한다.
+        지하철_최단_경로_조회_요청_응답됨(최단_경로_조회_요청);
+    }
+
+    @Test
+    @DisplayName("교대에서 양재역으로 가는 최단 경로를 구한다.")
+    void pathTest02() {
 
         //when : 교대에서 양재역으로 가는 최단 거리를 조회한다.
         ExtractableResponse<Response> 최단_경로_조회_요청 = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
@@ -71,12 +84,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceStationId, Long targetStationId) {
         return RestAssured.given().log().all()
-                .when().get("/paths/?source={sourceStationId}&target={targetStationId}", sourceStationId, targetStationId)
+                .when()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .param("sourceId", sourceStationId)
+                .param("targetId", targetStationId)
+                .get("/paths")
                 .then().log().all()
                 .extract();
     }
 
-    public static void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations, int distance) {
+    public static void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations,
+                                     int distance) {
         PathResponse path = response.as(PathResponse.class);
         List<Long> stationIds = path.getStations().stream()
                 .map(it -> it.getId())
@@ -89,5 +107,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
         assertThat(path.getDistance()).isEqualTo(distance);
     }
+
+    public static void 지하철_최단_경로_조회_요청_응답됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
 
 }
