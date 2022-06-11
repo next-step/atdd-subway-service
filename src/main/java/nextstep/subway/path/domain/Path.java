@@ -1,8 +1,10 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
+import java.util.Set;
 
 public class Path {
 
@@ -20,5 +22,9 @@ public class Path {
 
     public int getDistance() {
         return distance;
+    }
+
+    public Set<Line> getLines() {
+        return null;
     }
 }

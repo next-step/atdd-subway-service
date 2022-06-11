@@ -57,6 +57,7 @@ class PathFinderTest {
 
         assertThat(path.getStations()).containsExactly(교대역, 남부터미널역, 양재역);
         assertThat(path.getDistance()).isEqualTo(8);
+        assertThat(path.getLines()).containsExactly(삼호선);
     }
 
     @DisplayName("출발지와 목적지가 같은 최단 경로를 조회한다.")
