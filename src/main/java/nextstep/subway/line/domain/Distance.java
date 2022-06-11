@@ -4,7 +4,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Distance {
-    private static final int MIN_DISTANCE = 0;
+    private static final int MIN = 0;
 
     private int value;
 
@@ -17,7 +17,7 @@ public class Distance {
     }
 
     private void validateDistance(int value) {
-        if (value <= MIN_DISTANCE) {
+        if (value <= MIN) {
             throw new IllegalArgumentException("구간의 길이는 0보다 커야합니다.");
         }
     }
