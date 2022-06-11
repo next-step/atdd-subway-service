@@ -66,9 +66,7 @@ public class Sections {
             return CACHE;
         }
 
-        Stations stations = new Stations();
-        stations.connectStation(getElements());
-
+        Stations stations = new Stations(elements);
         return stations.getElements();
     }
 

@@ -10,9 +10,18 @@ import java.util.Objects;
 public class Stations {
     private final List<Station> elements = new ArrayList<>();
 
-    public void connectStation(List<Section> sections) {
+    public Stations(List<Section> sections) {
         validate(sections);
+        connectStation(sections);
+    }
 
+    private void validate(List<Section> sections) {
+        if (Objects.isNull(sections)) {
+            throw new IllegalArgumentException("구간이 비어있습니다.");
+        }
+    }
+
+    private void connectStation(List<Section> sections) {
         Station downStation = findUpStation(sections);
         add(downStation);
 
@@ -20,12 +29,6 @@ public class Stations {
             Station nextStation = findNextStation(sections, downStation);
             add(nextStation);
             downStation = nextStation;
-        }
-    }
-
-    private void validate(List<Section> sections) {
-        if (Objects.isNull(sections)) {
-            throw new IllegalArgumentException("구간이 비어있습니다.");
         }
     }
 
@@ -42,7 +45,7 @@ public class Stations {
                 .noneMatch(section -> section.isSameDownStation(station));
     }
 
-    public void add(Station station) {
+    private void add(Station station) {
         if (Objects.isNull(station)) {
             return;
         }

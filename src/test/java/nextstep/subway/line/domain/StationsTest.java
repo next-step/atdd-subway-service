@@ -27,8 +27,7 @@ class StationsTest {
     @Test
     void 역을_순서대로_연결한다() {
         // given
-        Stations stations = new Stations();
-        stations.connectStation(sections);
+        Stations stations = new Stations(sections);
 
         // when
         List<Station> result = stations.getElements();
@@ -45,13 +44,10 @@ class StationsTest {
     }
 
     @Test
-    void 역_연결에_대한_유효성_검사() {
-        // given
-        Stations stations = new Stations();
-
+    void 구간이_널일_경우_예외가_발생한다() {
         // when & then
         assertThatThrownBy(() ->
-                stations.connectStation(null)
+                new Stations(null)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }
