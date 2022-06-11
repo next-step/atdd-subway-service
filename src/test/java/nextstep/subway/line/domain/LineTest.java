@@ -83,7 +83,6 @@ class LineTest {
         신분당선.removeStation(광교역);
 
         // then
-        assertThat(신분당선.getSections()).hasSize(1);
         assertThat(신분당선.getStations())
                 .hasSize(2)
                 .containsExactly(강남역, 판교역);
