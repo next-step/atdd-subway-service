@@ -64,4 +64,26 @@ class SectionsTest {
         // then
         assertThat(sections.getList()).hasSize(5);
     }
+
+    @DisplayName("구간 삭제하기")
+    @Test
+    void deleteStation() {
+        // given
+        List<Section> list = new ArrayList<>();
+        list.add(new Section(B역, E역, 10));
+        Sections sections = new Sections(list);
+        sections.insertSection(null, new Section(A역, B역, 10));
+        sections.insertSection(null, new Section(B역, C역, 3));
+        sections.insertSection(null, new Section(D역, E역, 3));
+        sections.insertSection(null, new Section(E역, F역, 10));
+
+        // when
+        sections.deleteStation(null, A역);
+        sections.deleteStation(null, F역);
+        sections.deleteStation(null, C역);
+        sections.deleteStation(null, D역);
+
+        // then
+        assertThat(sections.getList()).hasSize(1);
+    }
 }

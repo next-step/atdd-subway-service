@@ -85,22 +85,29 @@ public class Sections {
             throw new InvalidSectionException("하나만 남은 구간은 삭제할 수 없습니다.");
         }
 
-        Optional<Section> upLineStation = list.stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = list.stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            Distance newDistance = upLineStation.get().getDistance().plusDistance(downLineStation.get().getDistance().getDistance());
-            addSection(line, new Section(newUpStation, newDownStation, newDistance.getDistance()));
+        Optional<Section> leftSection = deleteLeftSection(station);
+        Optional<Section> rightSection = deleteRightSection(station);
+        if (leftSection.isPresent() && rightSection.isPresent()) {
+            Section newSection = leftSection.get().connectSection(rightSection.get());
+            addSection(line, newSection);
         }
+    }
 
-        upLineStation.ifPresent(it -> removeSection(line, it));
-        downLineStation.ifPresent(it -> removeSection(line, it));
+    private Optional<Section> deleteLeftSection(Station station) {
+        Optional<Section> section = findSectionWithDownStation(station);
+        section.ifPresent(this::removeSection);
+        return section;
+    }
+
+    private Optional<Section> deleteRightSection(Station station) {
+        Optional<Section> section = findSectionWithUpStation(station);
+        section.ifPresent(this::removeSection);
+        return section;
+    }
+
+    private void removeSection(Section section) {
+        list.remove(section);
+        section.updateLine(null);
     }
 
     public void validateInsertSection(Section section) {

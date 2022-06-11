@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.InvalidDistanceException;
 import nextstep.subway.exception.InvalidSectionException;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.domain.Station;
@@ -71,27 +72,12 @@ class LineTest {
 
         // when
         line.addSection(new Section(A역, B역, 10));
-
-        List<StationResponse> responses = line.findStationResponses();
-        System.out.println(responses);
-
         line.addSection(new Section(B역, C역, 3));
-
-        responses = line.findStationResponses();
-        System.out.println(responses);
-
         line.addSection(new Section(D역, E역, 3));
-
-        responses = line.findStationResponses();
-        System.out.println(responses);
-
         line.addSection(new Section(E역, F역, 10));
 
-        responses = line.findStationResponses();
-        System.out.println(responses);
-
         // then
-        responses = line.findStationResponses();
+        List<StationResponse> responses = line.findStationResponses();
         assertThat(responses).containsExactly(
                 new StationResponse(A역.getId(), A역.getName()),
                 new StationResponse(B역.getId(), B역.getName()),
@@ -103,7 +89,7 @@ class LineTest {
 
     @DisplayName("중간 지하철 역 삭제")
     @Test
-    void deleteStation01() {
+    void deleteStation_middle() {
         // given
         Line line = new Line("2호선", "초록", A역, C역, 15);
 
@@ -118,7 +104,7 @@ class LineTest {
 
     @DisplayName("상행 종점역 지하철 역삭제")
     @Test
-    void deleteStation02() {
+    void deleteStation_head() {
         // given
         Line line = new Line("2호선", "초록", A역, C역, 15);
         line.addSection(new Section(B역, C역, 5));
@@ -133,7 +119,7 @@ class LineTest {
 
     @DisplayName("하행 종점역 지하철 역삭제")
     @Test
-    void deleteStation03() {
+    void deleteStation_tail() {
         // given
         Line line = new Line("2호선", "초록", A역, C역, 15);
         line.addSection(new Section(B역, C역, 5));
@@ -148,7 +134,7 @@ class LineTest {
 
     @DisplayName("하나만 남은 구간은 삭제 불가")
     @Test
-    void deleteStation04() {
+    void deleteStation_exception01() {
         // given
         Line line = new Line("2호선", "초록", A역, C역, 15);
 
@@ -160,13 +146,49 @@ class LineTest {
 
     @DisplayName("하나만 남은 구간은 삭제 불가")
     @Test
-    void deleteStation05() {
+    void deleteStation_exception02() {
         // given
         Line line = new Line("2호선", "초록", A역, C역, 15);
 
         // when, then
         assertThatThrownBy(() -> {
             line.deleteStation(C역);
+        }).isInstanceOf(InvalidSectionException.class);
+    }
+
+    @DisplayName("기존 구간의 길이를 넘어서는 구간은 추가 불가")
+    @Test
+    void addSection_exception01() {
+        // given
+        Line line = new Line("2호선", "초록", A역, C역, 10);
+
+        // when
+        assertThatThrownBy(() -> {
+            line.addSection(new Section(B역, C역, 13));
+        }).isInstanceOf(InvalidDistanceException.class);
+    }
+
+    @DisplayName("노선에 이미 추가된 지하철 역 구간 추가")
+    @Test
+    void addSection_exception02() {
+        // given
+        Line line = new Line("2호선", "초록", A역, C역, 10);
+
+        // when
+        assertThatThrownBy(() -> {
+            line.addSection(new Section(A역, C역, 5));
+        }).isInstanceOf(InvalidSectionException.class);
+    }
+
+    @DisplayName("노선에 모두 추가 안 된 지하철 역 구간 추가")
+    @Test
+    void addSection_exception03() {
+        // given
+        Line line = new Line("2호선", "초록", A역, B역, 10);
+
+        // when
+        assertThatThrownBy(() -> {
+            line.addSection(new Section(C역, D역, 10));
         }).isInstanceOf(InvalidSectionException.class);
     }
 }

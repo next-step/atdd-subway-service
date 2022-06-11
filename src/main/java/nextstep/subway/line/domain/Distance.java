@@ -21,6 +21,10 @@ public class Distance {
         this.distance = distance;
     }
 
+    public Distance plusDistance(Distance distance) {
+        return plusDistance(distance.getDistance());
+    }
+
     public Distance plusDistance(int distance) {
         int plus = this.distance + distance;
         return new Distance(plus);
