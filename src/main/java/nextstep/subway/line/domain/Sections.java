@@ -38,7 +38,7 @@ public class Sections {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Section downLineSection = downLineStation.get();
             Section upLineSection = upLineStation.get();
-            Distance newDistance = downLineSection.getDistance().add(upLineSection.getDistance());
+            Distance newDistance = downLineSection.addDistance(upLineSection);
             this.sections.add(new Section(upLineSection.getLine(), downLineSection.upStation(),
                     upLineSection.downStation(), newDistance));
         }

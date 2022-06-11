@@ -77,6 +77,10 @@ public class Section {
         }
     }
 
+    public Distance addDistance(Section other) {
+        return this.distance.add(other.distance);
+    }
+
     public Line getLine() {
         return line;
     }
