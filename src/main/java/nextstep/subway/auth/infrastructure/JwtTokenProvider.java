@@ -1,10 +1,13 @@
 package nextstep.subway.auth.infrastructure;
 
 import io.jsonwebtoken.*;
+import nextstep.subway.exception.ExceptionType;
+import nextstep.subway.exception.UnAuthorizedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 
 @Component
 public class JwtTokenProvider {
@@ -35,8 +38,8 @@ public class JwtTokenProvider {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 
             return !claims.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
+        } catch (MalformedJwtException | SignatureException | ExpiredJwtException | UnsupportedJwtException e) {
+            throw new UnAuthorizedException(ExceptionType.INVALID_TOKEN);
         }
     }
 }
