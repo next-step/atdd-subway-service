@@ -5,7 +5,7 @@ import javax.persistence.Embeddable;
 import static java.util.Objects.requireNonNull;
 
 @Embeddable
-public class Fare {
+public class Fare implements Comparable<Fare> {
 
     private Integer value;
 
@@ -39,5 +39,10 @@ public class Fare {
 
     public Integer getValue() {
         return value;
+    }
+
+    @Override
+    public int compareTo(Fare other) {
+        return Integer.compare(value, other.value);
     }
 }

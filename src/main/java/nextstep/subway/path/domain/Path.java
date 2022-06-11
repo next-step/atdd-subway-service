@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
@@ -35,5 +37,23 @@ public class Path {
 
     public Set<Line> getLines() {
         return lines;
+    }
+
+    public Fare calculateFare(LoginMember loginMember) {
+        Fare distanceFare = DistanceFarePoilcy.calculate(distance);
+        Fare additionalFare = applyAdditionalFare();
+        Fare totalFare = distanceFare.plus(additionalFare);
+        if (loginMember.isLogged()) {
+            AgeDiscountPolicy ageDiscountPolicy = AgeDiscountPolicy.of(loginMember.getAge());
+            totalFare = ageDiscountPolicy.discount(totalFare);
+        }
+        return totalFare;
+    }
+
+    private Fare applyAdditionalFare() {
+        return lines.stream()
+                    .map(Line::getAdditionalFare)
+                    .max(Fare::compareTo)
+                    .orElseThrow(IllegalStateException::new);
     }
 }

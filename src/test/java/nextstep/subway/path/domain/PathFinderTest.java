@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,6 +59,7 @@ class PathFinderTest {
         assertThat(path.getStations()).containsExactly(교대역, 남부터미널역, 양재역);
         assertThat(path.getDistance()).isEqualTo(8);
         assertThat(path.getLines()).containsExactly(삼호선);
+        assertThat(path.calculateFare(new LoginMember()).getValue()).isEqualTo(1250);
     }
 
     @DisplayName("출발지와 목적지가 같은 최단 경로를 조회한다.")
