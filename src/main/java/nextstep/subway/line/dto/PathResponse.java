@@ -25,4 +25,12 @@ public class PathResponse {
         this.stations = stations;
         this.distance = distance;
     }
+
+    public List<StationPathDTO> getStations() {
+        return stations;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
 }
