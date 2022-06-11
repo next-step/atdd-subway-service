@@ -26,7 +26,7 @@ public class Lines {
                 .collect(Collectors.toList());
 
         return fareLines.stream()
-                .mapToInt(line -> line.getFare().getValue())
+                .mapToInt(line -> line.getAdditionalFare().getValue())
                 .max()
                 .orElse(0);
     }

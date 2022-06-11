@@ -14,7 +14,7 @@ class FareTest {
     @ValueSource(ints = {1, 10, 100, 1000, 10000})
     void create01(int fare) {
         // given & when
-        Fare createdFare = Fare.from(fare);
+        AdditionalFare createdFare = AdditionalFare.from(fare);
 
         // then
         assertThat(createdFare.getValue()).isEqualTo(fare);
@@ -25,7 +25,7 @@ class FareTest {
     @ValueSource(ints = {-100, -10, -1})
     void create02(int fare) {
         // given & when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> Fare.from(fare))
+        assertThatIllegalArgumentException().isThrownBy(() -> AdditionalFare.from(fare))
                 .withMessageContaining(LineExceptionType.LINE_FARE_IS_OVER_ZERO.getMessage());
     }
 }

@@ -44,7 +44,7 @@ class LineTest {
         assertAll(
                 () -> assertEquals(line.getName(), LineName.from(name)),
                 () -> assertEquals(line.getColor(), LineColor.from(color)),
-                () -> assertEquals(line.getFare(), Fare.from(fare))
+                () -> assertEquals(line.getAdditionalFare(), AdditionalFare.from(fare))
         );
     }
 

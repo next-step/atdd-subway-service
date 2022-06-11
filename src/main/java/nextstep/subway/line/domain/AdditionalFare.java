@@ -5,27 +5,27 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class Fare {
+public class AdditionalFare {
 
-    @Column(name = "fare", nullable = false)
+    @Column(name = "additional_fare", nullable = false)
     private int value;
 
-    protected Fare() {}
+    protected AdditionalFare() {}
 
-    private Fare(int fare) {
+    private AdditionalFare(int fare) {
         this.value = fare;
     }
 
-    public static Fare from(int fare) {
-        validateFare(fare);
-        return new Fare(fare);
+    public static AdditionalFare from(int fare) {
+        validateAdditionalFare(fare);
+        return new AdditionalFare(fare);
     }
 
     public int getValue() {
         return this.value;
     }
 
-    private static void validateFare(int fare) {
+    private static void validateAdditionalFare(int fare) {
         if (fare < 0) {
             throw new IllegalArgumentException(LineExceptionType.LINE_FARE_IS_OVER_ZERO.getMessage());
         }
@@ -39,8 +39,8 @@ public class Fare {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Fare fare = (Fare) o;
-        return value == fare.value;
+        AdditionalFare additionalFare = (AdditionalFare) o;
+        return value == additionalFare.value;
     }
 
     @Override
