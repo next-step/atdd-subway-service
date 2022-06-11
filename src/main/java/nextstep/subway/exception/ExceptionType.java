@@ -21,7 +21,9 @@ public enum ExceptionType {
     CAN_NOT_SAME_STATION("두 역이 같을 수 없습니다."),
     IS_NOT_CONNECTED_STATION("출발역과 도착역이 연결되어있지 않습니다."),
     INVALID_TOKEN("토큰정보가 유효하지 않습니다."),
-    NOT_FOUND_MEMBER("존재하지 않는 회원입니다.");
+    NOT_FOUND_MEMBER("존재하지 않는 회원입니다."),
+    NOT_FOUND_FAVORITE("즐겨찾기 항목을 찾을 수 없습니다."),
+    NOT_THE_MEMBER_FAVORITE("즐겨찾기를 등록한 회원이 아닙니다.");
 
 
     private final String message;

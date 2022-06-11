@@ -4,12 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.BadRequestException;
+import nextstep.subway.exception.CannotDeleteException;
 import nextstep.subway.exception.ExceptionType;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.favorite.application.FavoriteService;
@@ -49,6 +54,8 @@ class FavoriteServiceTest {
     private Member 회원;
     private LoginMember 로그인_멤버;
 
+    private Favorite 즐겨찾기_대림_구로디지털단지;
+    private Favorite 즐겨찾기_대림_신대방;
     private List<Favorite> 즐겨찾기_목록;
 
 
@@ -60,10 +67,10 @@ class FavoriteServiceTest {
 
         회원 = new Member("woobeen@naver.com", "password", 29);
         로그인_멤버 = new LoginMember(1L, "woobeen@naver.com", 29);
-        즐겨찾기_목록 = Arrays.asList(
-            Favorite.of(대림역, 구로디지털단지역, 회원),
-            Favorite.of(대림역, 신대방역, 회원)
-        );
+
+        즐겨찾기_대림_구로디지털단지 = Favorite.of(대림역, 구로디지털단지역, 회원);
+        즐겨찾기_대림_신대방 = Favorite.of(대림역, 신대방역, 회원);
+        즐겨찾기_목록 = Arrays.asList(즐겨찾기_대림_구로디지털단지, 즐겨찾기_대림_신대방);
     }
 
     @DisplayName("지하철역을 즐겨찾기로 등록하면 정상적으로 등록되어야 한다")
@@ -161,5 +168,41 @@ class FavoriteServiceTest {
 
         // then
         assertThat(result.size()).isEqualTo(즐겨찾기_목록.size());
+    }
+
+    @DisplayName("즐겨찾기 항목을 삭제하면 정상적으로 삭제되어야 한다")
+    @Test
+    void delete_favorite_test() {
+        Favorite favorite = mock(Favorite.class);
+
+        // given
+        when(memberService.findById(anyLong()))
+            .thenReturn(회원);
+        when(favoriteRepository.findById(anyLong()))
+            .thenReturn(Optional.of(favorite));
+
+        // when
+        favoriteService.removeFavorite(로그인_멤버, anyLong());
+
+        // then
+        verify(favoriteRepository, times(1))
+            .delete(any());
+    }
+
+    @DisplayName("즐겨찾기 항목의 작성자가 회원과 다르면 예외가 발생한다")
+    @Test
+    void delete_favorite_exception_test() {
+        // given
+        Member 새로운_회원 = new Member("woobeen2@naver.com", "password", 29);
+        when(memberService.findById(anyLong()))
+            .thenReturn(새로운_회원);
+        when(favoriteRepository.findById(anyLong()))
+            .thenReturn(Optional.of(즐겨찾기_대림_신대방));
+
+        // then
+        assertThatThrownBy(() -> {
+            favoriteService.removeFavorite(로그인_멤버, anyLong());
+        }).isInstanceOf(CannotDeleteException.class)
+            .hasMessageContaining(ExceptionType.NOT_THE_MEMBER_FAVORITE.getMessage());
     }
 }
