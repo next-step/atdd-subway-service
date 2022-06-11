@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -49,8 +50,8 @@ public class Sections {
         if (sections.size() <= ONLY_ONE) {
             return this.sections.stream().map(Section::getUpStation).findAny();
         }
-        Station startStation = isStartStation(sections.get(0));
-        return Objects.isNull(startStation) ? Optional.empty() : Optional.of(startStation);
+
+        return sections.stream().filter(this::isStartStation).map(Section::getUpStation).findAny();
     }
 
     public List<Section> getSections() {
@@ -74,10 +75,10 @@ public class Sections {
         }
         Match match = findInsertSomePlace(section);
         if (Match.isUP(match)) {
-            findPreSectionBy(section).ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+            findPreSectionBy(section.getUpStation()).ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
         }
         if (Match.isDOWN(match)) {
-            findDownSectionBy(section).ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+            findDownSectionBy(section.getDownStation()).ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
         }
     }
 
@@ -112,26 +113,17 @@ public class Sections {
                 .findAny();
     }
 
-    private Optional<Section> findPreSectionBy(final Section target) {
-        return sections.stream().filter(it -> it.isMatchUpStation(target.getUpStation())).findFirst();
+    private Optional<Section> findPreSectionBy(final Station station) {
+        return sections.stream().filter(it -> it.isMatchUpStation(station)).findFirst();
     }
 
-    private Optional<Section> findDownSectionBy(final Section target) {
-        return sections.stream().filter(it -> it.isMatchDownStation(target.getDownStation())).findFirst();
+    private Optional<Section> findDownSectionBy(final Station station) {
+        return sections.stream().filter(it -> it.isMatchDownStation(station)).findFirst();
     }
 
-    private Station isStartStation(final Section source) {
-        Station downStation = source.getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-        return downStation;
+    private boolean isStartStation(final Section section) {
+        final List<Section> isMatchUpStations = sections.stream().filter(it -> it.isMatchUpStation(section.getDownStation())).collect(Collectors.toList());
+        final List<Section> isMatchDownStations = sections.stream().filter(it -> it.isMatchDownStation(section.getUpStation())).collect(Collectors.toList());
+        return !isMatchUpStations.isEmpty() && isMatchDownStations.isEmpty();
     }
 }
