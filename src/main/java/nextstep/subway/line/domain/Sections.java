@@ -30,6 +30,7 @@ public class Sections {
                     .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
 
             sections.add(section);
+            return;
         } else if (hasStation(section.getDownStation())) {
             sections.stream()
                     .filter(it -> it.getDownStation() == section.getDownStation())
@@ -37,6 +38,7 @@ public class Sections {
                     .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
 
             sections.add(section);
+            return;
         }
         throw new RuntimeException();
     }
@@ -87,7 +89,7 @@ public class Sections {
 
     public boolean hasStation(Station station) {
         return getStations().stream()
-                .anyMatch(item -> item.equals(station));
+                .anyMatch(item -> item == station);
     }
 
     public void remove(Line line, Station station) {
