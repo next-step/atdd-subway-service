@@ -52,3 +52,10 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+## 경로 조회 기능
+- 출발역에서 도착역까지 갈 수 있는 최단경로와 최단거리를 조회한다
+- 역은 노선의 구간으로 연결되어있다
+- 출발역과 도착역이 같으면 경로를 조회할 수 없다
+- 출발역에서 도착역까지 연결되어있지 않으면 조회할 수 없다
+- 출발역과 도착역이 존재하지 않는 역인 경우 조회할 수 없다
