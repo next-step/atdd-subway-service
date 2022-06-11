@@ -74,7 +74,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
 
         // Then 최단 경로 조회됨
-        최단_경로_조회_조회됨(response, 5);
+        최단_경로_조회_조회됨(response, 5, 1_250);
     }
 
     @DisplayName("최단 경로 조회 - 실패 (출발역과 도착역이 같은 경우)")
@@ -116,10 +116,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 최단_경로_조회_조회됨(ExtractableResponse<Response> response, int distance) {
+    public static void 최단_경로_조회_조회됨(ExtractableResponse<Response> response, int distance, int fare) {
         PathResponse path = response.as(PathResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(path.getDistance()).isEqualTo(distance);
+        assertThat(path.getFare()).isEqualTo(fare);
     }
 
     public static void 최단_경로_조회_실패(ExtractableResponse<Response> response) {

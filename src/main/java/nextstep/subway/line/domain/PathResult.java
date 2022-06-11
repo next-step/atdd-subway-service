@@ -22,6 +22,19 @@ public class PathResult {
         return stations;
     }
 
+    public int getFare() {
+        int fare = 1_250;
+        int distance = getDistance();
+
+        if (distance > 10 && distance < 50) {
+            fare += Math.round((distance - 10) / 5) * 100;
+        } else if (distance > 50) {
+            fare += Math.round((distance - 10) / 8) * 100;
+        }
+
+        return fare;
+    }
+
     public int getDistance() {
         return sectionEdges.stream()
                 .mapToInt(SectionWeightedEdge::getDistance)

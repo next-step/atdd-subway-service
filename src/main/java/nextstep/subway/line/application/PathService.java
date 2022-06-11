@@ -7,7 +7,6 @@ import nextstep.subway.line.domain.PathResult;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +40,7 @@ public class PathService {
                 result.getStations().stream()
                         .map(StationResponse::of)
                         .collect(Collectors.toList()),
-                result.getDistance());
+                result.getDistance(),
+                result.getFare());
     }
 }
