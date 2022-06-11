@@ -2,11 +2,15 @@ package nextstep.subway.member;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceSupport.로그인_성공됨;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceSupport.로그인_성공후_토큰_조회됨;
@@ -23,6 +27,7 @@ import static nextstep.subway.member.MemberAcceptanceSupport.회원_정보_수�
 import static nextstep.subway.member.MemberAcceptanceSupport.회원_정보_수정됨;
 import static nextstep.subway.member.MemberAcceptanceSupport.회원_정보_조회_요청;
 import static nextstep.subway.member.MemberAcceptanceSupport.회원_정보_조회됨;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -63,40 +68,37 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("나의 정보를 관리한다.")
-    @Test
-    void manageMyInfo() {
-        ExtractableResponse<Response> loginSuccessResponse = 로그인_시도함(EMAIL, PASSWORD);
-        String accessToken = 로그인_성공후_토큰_조회됨(loginSuccessResponse);
+    @TestFactory
+    Stream<DynamicTest> manageMyInfo() {
+        AtomicReference<String> accessToken = new AtomicReference<>("");
+        AtomicReference<String> newAccessToken = new AtomicReference<>("");
 
-        ExtractableResponse<Response> response = 나의_정보_조회_요청(accessToken);
-        나의_정보_일치함(response, EMAIL, AGE);
-
-    }
-
-    @DisplayName("나의 정보를 수정한다.")
-    @Test
-    void manageMyInfo_put() {
-        ExtractableResponse<Response> loginSuccessResponse = 로그인_시도함(EMAIL, PASSWORD);
-        String accessToken = 로그인_성공후_토큰_조회됨(loginSuccessResponse);
-
-        ExtractableResponse<Response> updateResponse = 나의_정보_수정_요청(accessToken, new MemberRequest(NEW_EMAIL, PASSWORD, AGE));
-        회원_정보_수정됨(updateResponse);
-
-        ExtractableResponse<Response> reLoginSuccessResponse = 로그인_시도함(NEW_EMAIL, PASSWORD);
-        로그인_성공됨(reLoginSuccessResponse);
-        String new_accessToken = 로그인_성공후_토큰_조회됨(reLoginSuccessResponse);
-
-        ExtractableResponse<Response> findResponse = 나의_정보_조회_요청(new_accessToken);
-        나의_정보_일치함(findResponse, NEW_EMAIL, AGE);
-    }
-
-    @DisplayName("나의 정보를 삭제한다")
-    @Test
-    void manageMyInfo_delete() {
-        ExtractableResponse<Response> loginSuccessResponse = 로그인_시도함(EMAIL, PASSWORD);
-        String accessToken = 로그인_성공후_토큰_조회됨(loginSuccessResponse);
-
-        ExtractableResponse<Response> deleteResponse = 나의_정보_삭제_요청(accessToken);
-        회원_삭제됨(deleteResponse);
+        return Stream.of(
+            dynamicTest("로그인을 시도해서 토큰을 반환받는다" , () -> {
+                ExtractableResponse<Response> loginSuccessResponse = 로그인_시도함(EMAIL, PASSWORD);
+                accessToken.set(로그인_성공후_토큰_조회됨(loginSuccessResponse));
+            }),
+            dynamicTest("반환받은 토큰으로 나의 정보 조회를 시도하면 정보가 조회된다", () -> {
+                ExtractableResponse<Response> response = 나의_정보_조회_요청(accessToken.get());
+                나의_정보_일치함(response, EMAIL, AGE);
+            }),
+            dynamicTest("토큰을 이용해 나의 정보 수정을 요청한다", () -> {
+                ExtractableResponse<Response> updateResponse = 나의_정보_수정_요청(accessToken.get(), new MemberRequest(NEW_EMAIL, PASSWORD, AGE));
+                회원_정보_수정됨(updateResponse);
+            }),
+            dynamicTest("로그인을 시도해 새로운 토큰정보를 반환받는다", () -> {
+                ExtractableResponse<Response> reLoginSuccessResponse = 로그인_시도함(NEW_EMAIL, PASSWORD);
+                로그인_성공됨(reLoginSuccessResponse);
+                newAccessToken.set(로그인_성공후_토큰_조회됨(reLoginSuccessResponse));
+            }),
+            dynamicTest("토큰을 이용해 수정된 정보를 조회하면 수정된 정보가 조회된다", () -> {
+                ExtractableResponse<Response> findResponse = 나의_정보_조회_요청(newAccessToken.get());
+                나의_정보_일치함(findResponse, NEW_EMAIL, AGE);
+            }),
+            dynamicTest("토큰을 이용해 나의 정보를 삭제하면 정상적으로 삭제된다", () -> {
+                ExtractableResponse<Response> deleteResponse = 나의_정보_삭제_요청(newAccessToken.get());
+                회원_삭제됨(deleteResponse);
+            })
+        );
     }
 }
