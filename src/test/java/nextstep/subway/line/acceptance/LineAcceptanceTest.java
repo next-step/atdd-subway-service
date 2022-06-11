@@ -131,6 +131,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
                         extract();
     }
 
+    public static LineResponse 생성된_지하철노선(ExtractableResponse response) {
+        return response.as(LineResponse.class);
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
         return 지하철_노선_목록_조회_요청("/lines");
     }

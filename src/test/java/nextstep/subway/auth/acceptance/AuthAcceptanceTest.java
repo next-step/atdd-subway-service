@@ -83,8 +83,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         String responseToken = response.body().jsonPath().getString("accessToken");
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.statusCode()),
-                () -> assertThat(responseToken).isNotEmpty(),
-                () -> assertThat(responseToken).isNotNull()
+                () -> assertThat(responseToken).isNotBlank()
         );
     }
 

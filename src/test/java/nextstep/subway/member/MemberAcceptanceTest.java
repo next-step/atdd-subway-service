@@ -132,9 +132,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
         MemberResponse memberResponse = response.as(MemberResponse.class);
-        assertThat(memberResponse.getId()).isNotNull();
-        assertThat(memberResponse.getEmail()).isEqualTo(email);
-        assertThat(memberResponse.getAge()).isEqualTo(age);
+        assertAll(
+                () -> assertThat(memberResponse.getId()).isNotNull(),
+                () -> assertThat(memberResponse.getEmail()).isEqualTo(email),
+                () -> assertThat(memberResponse.getAge()).isEqualTo(age)
+        );
     }
 
     public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
