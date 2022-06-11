@@ -8,6 +8,7 @@ import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,6 +23,7 @@ public class PathService {
         this.stationService = stationService;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findPath(Long startStationId, Long endStationId) {
         validateStations(startStationId, endStationId);
 
