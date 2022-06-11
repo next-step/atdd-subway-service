@@ -9,6 +9,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PathFinder {
     private static DijkstraShortestPath path;
@@ -36,7 +37,7 @@ public class PathFinder {
     }
 
     private boolean isNull(GraphPath path) {
-        return path == null;
+        return Objects.isNull(path);
     }
 
     private void registerPath(Line line, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
