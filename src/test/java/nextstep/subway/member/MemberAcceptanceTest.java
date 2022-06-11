@@ -1,7 +1,6 @@
 package nextstep.subway.member;
 
 import io.restassured.RestAssured;
-import io.restassured.http.Header;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -25,8 +24,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
     public static final String MEMBER_ME_URI = "/members/me";
-    public static final String BEARER = "Bearer ";
-    public static final String AUTHORIZATION = "Authorization";
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -150,18 +147,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 내_정보_조회_요청(String token) {
         return RestAssured.given().log().all()
-                .header(getAuthorizationHeader(token))
+                .auth().oauth2(token)
                 .when().get(MEMBER_ME_URI)
                 .then().log().all()
                 .extract();
-    }
-
-    private static Header getAuthorizationHeader(String token) {
-        return new Header(AUTHORIZATION, getBearerToken(token));
-    }
-
-    private static String getBearerToken(String token) {
-        return BEARER + token;
     }
 
     private void 내_정보_조회됨(ExtractableResponse<Response> getResponse, String expectedEmail, int expectedAge) {
@@ -174,7 +163,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 내_정보_수정_요청(String token, MemberRequest request) {
         return RestAssured.given().log().all()
-                .header(getAuthorizationHeader(token))
+                .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when().put(MEMBER_ME_URI)
@@ -188,7 +177,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 내_정보_삭제_요청(String token) {
         return RestAssured.given().log().all()
-                .header(getAuthorizationHeader(token))
+                .auth().oauth2(token)
                 .when().delete(MEMBER_ME_URI)
                 .then().log().all()
                 .extract();
