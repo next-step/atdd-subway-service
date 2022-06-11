@@ -49,7 +49,7 @@ public class Section {
         return new Section(upStation, downStation, distance);
     }
 
-    public void updateSection(Section newSection) {
+    public void updateWith(Section newSection) {
         if (upStationEquals(newSection.getUpStation())) {
             upStation = newSection.getDownStation();
             distance.subtract(newSection.getDistance());

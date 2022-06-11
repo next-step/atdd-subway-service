@@ -39,12 +39,6 @@ public class LineService {
         return LineResponse.generateLineResponses(persistLines);
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(
-                String.format(ErrorMessage.ERROR_LINE_NOT_FOUND, id))
-        );
-    }
-
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.from(persistLine);
@@ -72,5 +66,11 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeStation(station);
+    }
+
+    private Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(
+                String.format(ErrorMessage.ERROR_LINE_NOT_FOUND, id))
+        );
     }
 }

@@ -7,9 +7,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -30,39 +30,18 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        if (sections.isEmpty()) {
-            return Arrays.asList();
+        sortSections();
+        List<Station> stations = sections.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toList());
+        if(!stations.isEmpty()) {
+            stations.add(getLastDownStation());
         }
-
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findFirstStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findPostSection(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
         return stations;
     }
 
-    private Station findFirstStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findPreviousSection(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
+    private Station getLastDownStation() {
+        return sections.get(sections.size() - 1).getDownStation();
     }
 
     public void addSection(Section sectionToAdd) {
@@ -71,26 +50,54 @@ public class Sections {
         sections.add(sectionToAdd);
     }
 
-    private void updateAdjacentSection(Section sectionToAdd) {
-        sections.stream().forEach(section -> section.updateSection(sectionToAdd));
-    }
-
     private void validateSectionToAdd(Section sectionToAdd) {
         List<Station> stations = getStations();
         boolean upStationExists = stations.contains(sectionToAdd.getUpStation());
         boolean downStationExists = stations.contains(sectionToAdd.getDownStation());
+        validateSectionDuplicated(upStationExists, downStationExists);
+        validateSectionAddable(stations, upStationExists, downStationExists);
+    }
 
+    private void validateSectionDuplicated(boolean upStationExists, boolean downStationExists) {
         if (upStationExists && downStationExists) {
             throw new IllegalArgumentException(ErrorMessage.ERROR_SECTION_ADD_ALREADY_REGISTERED);
         }
+    }
+
+    private void validateSectionAddable(List<Station> stations, boolean upStationExists, boolean downStationExists) {
         if (!stations.isEmpty() && !upStationExists && !downStationExists) {
             throw new IllegalArgumentException(ErrorMessage.ERROR_SECTION_ADD_UNKNOWN_STATIONS);
         }
     }
 
+    private void updateAdjacentSection(Section sectionToAdd) {
+        sections.stream().forEach(section -> section.updateWith(sectionToAdd));
+    }
+
     public void removeStation(Station station) {
         validateStationToRemove(station);
         removeValidStation(station);
+    }
+
+    private void validateStationToRemove(Station station) {
+        validateSectionLength();
+        validateStationExists(station);
+    }
+
+    private void validateSectionLength() {
+        if (sections.size() <= MINIMUM_SECTION_LENGTH) {
+            throw new IllegalArgumentException(
+                    String.format(ErrorMessage.ERROR_SECTION_DELETE_MINIMUM_LENGTH, MINIMUM_SECTION_LENGTH)
+            );
+        }
+    }
+
+    private void validateStationExists(Station station) {
+        if (!getStations().contains(station)) {
+            throw new IllegalArgumentException(
+                    String.format(ErrorMessage.ERROR_SECTION_DELETE_UNKNOWN_STATION, station.getName())
+            );
+        }
     }
 
     private void removeValidStation(Station station) {
@@ -129,24 +136,12 @@ public class Sections {
                 .findFirst();
     }
 
-    private void validateStationToRemove(Station station) {
-        validateSectionLength();
-        validateStationExists(station);
-    }
-
-    private void validateSectionLength() {
-        if (sections.size() <= MINIMUM_SECTION_LENGTH) {
-            throw new IllegalArgumentException(
-                    String.format(ErrorMessage.ERROR_SECTION_DELETE_MINIMUM_LENGTH, MINIMUM_SECTION_LENGTH)
-            );
-        }
-    }
-
-    private void validateStationExists(Station station) {
-        if (!getStations().contains(station)) {
-            throw new IllegalArgumentException(
-                    String.format(ErrorMessage.ERROR_SECTION_DELETE_UNKNOWN_STATION, station.getName())
-            );
-        }
+    private void sortSections() {
+        sections.sort((Section section1, Section section2) -> {
+            if (section1.downStationEquals(section2.getUpStation())) {
+                return -1;
+            }
+            return 1;
+        });
     }
 }

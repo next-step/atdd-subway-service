@@ -22,7 +22,7 @@ public class SectionTest {
 
         //when
         Section newSection = Section.of(상행역, 신규역, 3);
-        defaultSection.updateSection(newSection);
+        defaultSection.updateWith(newSection);
 
         //then
         assertAll(
@@ -42,7 +42,7 @@ public class SectionTest {
 
         //when
         Section newSection = Section.of(신규역, 하행역, 3);
-        defaultSection.updateSection(newSection);
+        defaultSection.updateWith(newSection);
 
         //then
         assertAll(

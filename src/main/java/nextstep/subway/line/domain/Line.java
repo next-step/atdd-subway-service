@@ -39,13 +39,8 @@ public class Line extends BaseEntity {
         return new Line(name, color);
     }
 
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
-    }
-
-    public List<Station> getStations() {
-        return sections.getStations();
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
+        return new Line(name, color, upStation, downStation, distance);
     }
 
     public void addSection(Section sectionToAdd) {
@@ -54,6 +49,15 @@ public class Line extends BaseEntity {
 
     public void removeStation(Station station) {
         sections.removeStation(station);
+    }
+
+    public List<Station> getStations() {
+        return sections.getStations();
+    }
+
+    public void update(Line line) {
+        this.name = line.getName();
+        this.color = line.getColor();
     }
 
     public Long getId() {
