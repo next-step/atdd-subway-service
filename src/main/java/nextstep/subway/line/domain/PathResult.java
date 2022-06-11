@@ -8,10 +8,14 @@ import java.util.List;
 public class PathResult {
     private List<Station> stations;
     private List<SectionWeightedEdge> sectionEdges;
+    private int distance;
 
     public PathResult(GraphPath graphPath) {
         this.stations = graphPath.getVertexList();
         this.sectionEdges = graphPath.getEdgeList();
+        this.distance = sectionEdges.stream()
+                .mapToInt(SectionWeightedEdge::getDistance)
+                .sum();
     }
 
     public PathResult of(GraphPath graphPath) {
@@ -22,23 +26,27 @@ public class PathResult {
         return stations;
     }
 
+    public int getDistance() {
+        return this.distance;
+    }
+
     public int getFare() {
-        int fare = 1_250 + calculateOverFare(getDistance());
+        int fare = 1_250 + calculateOverFare() + calulateExtraFare();
         return fare;
     }
 
-    public int getDistance() {
-        return sectionEdges.stream()
-                .mapToInt(SectionWeightedEdge::getDistance)
-                .sum();
-    }
-
-    private int calculateOverFare(int distance) {
-        if (distance > 10 && distance < 50) {
-            return (int) (Math.ceil((distance - 10) / 5) * 100);
-        } else if (distance > 50) {
-            return (int) (Math.ceil((distance - 50) / 8) * 100);
+    private int calculateOverFare() {
+        if (this.distance > 10 && this.distance < 50) {
+            return (int) (Math.ceil((this.distance - 10) / 5) * 100);
+        } else if (this.distance > 50) {
+            return (int) (Math.ceil((this.distance - 50) / 8) * 100);
         }
         return 0;
+    }
+
+    private int calulateExtraFare() {
+        return sectionEdges.stream()
+                .mapToInt(sectionWeightedEdge -> sectionWeightedEdge.getLine().getExtraFare())
+                .max().orElseThrow(RuntimeException::new);
     }
 }

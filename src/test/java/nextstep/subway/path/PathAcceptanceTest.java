@@ -26,40 +26,45 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 이호선;
     private LineResponse 삼호선;
     private LineResponse 오호선;
+    private StationResponse 교대역;
     private StationResponse 강남역;
     private StationResponse 역삼역;
     private StationResponse 신림역;
-    private StationResponse 양재역;
-    private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 양재역;
+    private StationResponse 판교역;
     private StationResponse 왕십리역;
     private StationResponse 마장역;
     private StationResponse 창동역;
 
     /**
-     * (*3호선*)
+     * (*3호선*)               (*신분당선*)
      * 교대역    --- 10 ------  강남역 --- 10 ---  역삼역 --- 46 ---  신림역 (*2호선*)
      * |                      |
      * 3                      10
      * |                      |
-     * 남부터미널역 ---  2 ------  양재 (*3호선*)
-     * (*신분당선*)
+     * 남부터미널역 ---  2 ------ 양재역
+     *                        |
+     *                        10
+     *                        |
+     *                        판교역
      */
     @BeforeEach
     public void setUp() {
         super.setUp();
 
+        교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
         역삼역 = 지하철역_등록되어_있음("역삼역").as(StationResponse.class);
-        양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
         신림역 = 지하철역_등록되어_있음("신림역").as(StationResponse.class);
-        교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        판교역 = 지하철역_등록되어_있음("판교역").as(StationResponse.class);
         왕십리역 = 지하철역_등록되어_있음("왕십리역").as(StationResponse.class);
         마장역 = 지하철역_등록되어_있음("마장역").as(StationResponse.class);
         창동역 = new StationResponse(99L, "창동역", null, null);
 
-        신분당선 = 지하철_노선_등록되어_있음(LineRequest.of("신분당선", "bg-red-600", 0, 강남역.getId(), 양재역.getId(), 10))
+        신분당선 = 지하철_노선_등록되어_있음(LineRequest.of("신분당선", "bg-red-600", 900, 강남역.getId(), 양재역.getId(), 10))
                 .as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(LineRequest.of("이호선", "bg-green-600", 0, 교대역.getId(), 강남역.getId(), 10))
                 .as(LineResponse.class);
@@ -71,6 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
         지하철_노선에_지하철역_등록되어_있음(이호선, 강남역, 역삼역, 10);
         지하철_노선에_지하철역_등록되어_있음(이호선, 역삼역, 신림역, 46);
+        지하철_노선에_지하철역_등록되어_있음(신분당선, 양재역, 판교역, 10);
     }
 
     @DisplayName("최단 경로 10km 이내 조회 - 성공")
@@ -101,6 +107,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // Then 최단 경로 조회됨
         최단_경로_조회_조회됨(response, 66, 1_450);
+    }
+
+    @DisplayName("최단 경로 10km~50km & 노선 추가 요금 조회 - 성공")
+    @Test
+    void 최단_경로_조회_성공_4() {
+        // when 최단 경로 조회 요청
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 판교역.getId());
+
+        // Then 최단 경로 조회됨
+        최단_경로_조회_조회됨(response, 15, 2_250);
     }
 
     @DisplayName("최단 경로 조회 - 실패 (출발역과 도착역이 같은 경우)")
