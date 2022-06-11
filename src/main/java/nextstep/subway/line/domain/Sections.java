@@ -45,11 +45,6 @@ public class Sections {
         return stations;
     }
 
-    public void addSection(Line line, Section section) {
-        list.add(section);
-        section.updateLine(line);
-    }
-
     public void insertSection(Line line, Section section) {
         insertSectionWhenSectionIsHeadOrTail(line, section);
         if (containBothStation(section)) {
@@ -93,6 +88,11 @@ public class Sections {
         if (containNoneStation(section)) {
             throw new InvalidSectionException("구간 내 지하철 역이 하나는 등록된 상태여야 합니다.");
         }
+    }
+
+    private void addSection(Line line, Section section) {
+        list.add(section);
+        section.updateLine(line);
     }
 
     private boolean containBothStation(Section section) {
