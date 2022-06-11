@@ -4,7 +4,7 @@
     - [x] LineService에 있는 비즈니스 로직을 도메인으로 옮긴다
     - [x] 도메인 로직을 생성 시 tdd로 진행한다.
     - [x] 리팩토링 과정에서 인수테스트를 통과 시켜, 로직을 보호한다.
-- [ ] (선택) LineSectionAcceptanceTest을 시나리오 흐름을 검증하는 방식으로 변경해 본다.
+- [x] (선택) LineSectionAcceptanceTest을 시나리오 흐름을 검증하는 방식으로 변경해 본다.
 
 ```
 Feature: 지하철 구간 관련 기능
