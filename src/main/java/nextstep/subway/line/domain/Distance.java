@@ -6,9 +6,9 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Distance {
-    private int distance;
-
     public static final int MINIMUM_DISTANCE = 1;
+
+    private int distance;
 
     protected Distance() {
     }
@@ -31,13 +31,13 @@ public class Distance {
     }
 
     public void add(Distance distance) {
+        validateDistance(this.distance + distance.getDistance());
         this.distance += distance.getDistance();
-        validateDistance(this.distance);
     }
 
     public void subtract(Distance distance) {
+        validateDistance(this.distance - distance.getDistance());
         this.distance -= distance.getDistance();
-        validateDistance(this.distance);
     }
 
     public int getDistance() {
