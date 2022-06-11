@@ -53,6 +53,18 @@ public class Sections {
         insertSectionWhenSectionIsMiddle(line, section);
     }
 
+    private void insertSectionWhenSectionIsHeadOrTail(Line line, Section insertSection) {
+        if (insertSection.getDownStation().equals(getLineUpStation()) ||
+                insertSection.getUpStation().equals(getLineDownStation())) {
+            addSection(line, insertSection);
+        }
+    }
+
+    private void addSection(Line line, Section section) {
+        list.add(section);
+        section.updateLine(line);
+    }
+
     private void insertSectionWhenSectionIsMiddle(Line line, Section insertSection) {
         Optional<Section> find = findSectionWithUpStation(insertSection.getUpStation());
         find.ifPresent(frontSection -> insertSectionWhenUpStationSame(line, frontSection, insertSection));
@@ -63,11 +75,8 @@ public class Sections {
         find2.ifPresent(rearSection -> insertSectionWhenDownStationSame(line, rearSection, insertSection));
     }
 
-    private void insertSectionWhenSectionIsHeadOrTail(Line line, Section insertSection) {
-        if (insertSection.getDownStation().equals(getLineUpStation()) ||
-                insertSection.getUpStation().equals(getLineDownStation())) {
-            addSection(line, insertSection);
-        }
+    private boolean containBothStation(Section section) {
+        return containStation(section.getUpStation()) && containStation(section.getDownStation());
     }
 
     private void insertSectionWhenUpStationSame(Line line, Section section, Section insertSection) {
@@ -100,6 +109,10 @@ public class Sections {
         }
     }
 
+    private boolean containStation(Station station) {
+        return list.stream().anyMatch(section -> section.containsStation(station));
+    }
+
     private Optional<Section> deleteLeftSection(Station station) {
         Optional<Section> section = findSectionWithDownStation(station);
         section.ifPresent(this::removeSection);
@@ -127,21 +140,8 @@ public class Sections {
         }
     }
 
-    private void addSection(Line line, Section section) {
-        list.add(section);
-        section.updateLine(line);
-    }
-
-    private boolean containBothStation(Section section) {
-        return containStation(section.getUpStation()) && containStation(section.getDownStation());
-    }
-
     private boolean containNoneStation(Section section) {
         return !containStation(section.getUpStation()) && !containStation(section.getDownStation());
-    }
-
-    private boolean containStation(Station station) {
-        return list.stream().anyMatch(section -> section.containsStation(station));
     }
 
     private Set<Station> getStationSet() {
