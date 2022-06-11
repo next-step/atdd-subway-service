@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.List;
 
 @Entity
 public class Line extends BaseEntity {
@@ -43,6 +44,44 @@ public class Line extends BaseEntity {
 
     public void remove(Station station) {
         sections.remove(this, station);
+    }
+
+    public void addSection(Station upStation, Station downStation, int distance) {
+        List<Station> stations = getSections().getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+                stations.stream().noneMatch(it -> it == downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (stations.isEmpty()) {
+            sections.add(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        if (isUpStationExisted) {
+            sections.getSections().stream()
+                    .filter(it -> it.getUpStation() == upStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+            sections.add(new Section(this, upStation, downStation, distance));
+        } else if (isDownStationExisted) {
+            sections.getSections().stream()
+                    .filter(it -> it.getDownStation() == downStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+            sections.add(new Section(this, upStation, downStation, distance));
+        } else {
+            throw new RuntimeException();
+        }
     }
 
     public Long getId() {
