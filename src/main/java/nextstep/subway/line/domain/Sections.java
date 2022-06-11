@@ -1,13 +1,15 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.line.utils.SectionsComparator;
+import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Embeddable
 public class Sections {
@@ -60,14 +62,14 @@ public class Sections {
         sections.remove(section);
     }
 
-    public void updateUpStationOfSection(Section section) {
+    private void updateUpStationOfSection(Section section) {
         this.sections.stream()
                 .filter(it -> it.getUpStation() == section.getUpStation())
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
     }
 
-    public void updateDownStationOfSection(Section section) {
+    private void updateDownStationOfSection(Section section) {
         this.sections.stream()
                 .filter(it -> it.getDownStation() == section.getDownStation())
                 .findFirst()
@@ -104,11 +106,15 @@ public class Sections {
         return stations;
     }
 
-    public boolean matchStation(Station station) {
+    private boolean matchStation(Station station) {
         return findStations().stream().anyMatch(it -> it == station);
     }
 
-    public boolean isEmptyByStation() {
+    private boolean isEmptyByStation() {
         return findStations().isEmpty();
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 }
