@@ -36,6 +36,13 @@ public class PathFinder {
     }
 
     public GraphPath findPath(Station sourceStation, Station targetStation) {
+        validateSameStation(sourceStation, targetStation);
         return dijkstraShortestPath.getPath(sourceStation, targetStation);
+    }
+
+    private void validateSameStation(Station sourceStation, Station targetStation){
+        if (sourceStation.equals(targetStation)) {
+            throw new RuntimeException();
+        }
     }
 }
