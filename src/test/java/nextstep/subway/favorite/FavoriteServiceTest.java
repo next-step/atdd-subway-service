@@ -2,14 +2,18 @@ package nextstep.subway.favorite;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.List;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.exception.ExceptionType;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.favorite.application.FavoriteService;
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -41,15 +45,25 @@ class FavoriteServiceTest {
 
     private Station 대림역;
     private Station 구로디지털단지역;
+    private Station 신대방역;
     private Member 회원;
     private LoginMember 로그인_멤버;
+
+    private List<Favorite> 즐겨찾기_목록;
+
 
     @BeforeEach
     void setUp() {
         대림역 = new Station(1L, "대림");
         구로디지털단지역 = new Station(2L, "구로디지털단지");
+        신대방역 = new Station(3L, "신대방역");
+
         회원 = new Member("woobeen@naver.com", "password", 29);
         로그인_멤버 = new LoginMember(1L, "woobeen@naver.com", 29);
+        즐겨찾기_목록 = Arrays.asList(
+            Favorite.of(대림역, 구로디지털단지역, 회원),
+            Favorite.of(대림역, 신대방역, 회원)
+        );
     }
 
     @DisplayName("지하철역을 즐겨찾기로 등록하면 정상적으로 등록되어야 한다")
@@ -131,5 +145,21 @@ class FavoriteServiceTest {
             favoriteService.registerFavorite(로그인_멤버, request);
         }).isInstanceOf(BadRequestException.class)
             .hasMessageContaining(ExceptionType.CAN_NOT_SAME_STATION.getMessage());
+    }
+
+    @DisplayName("즐겨찾기 목록을 조회하면 정상저으로 조회되어야 한다")
+    @Test
+    void find_favorite_test() {
+        // given
+        when(memberService.findById(anyLong()))
+            .thenReturn(회원);
+        when(favoriteRepository.findAllByMember(any()))
+            .thenReturn(즐겨찾기_목록);
+
+        // when
+        List<FavoriteResponse> result = favoriteService.findAll(로그인_멤버);
+
+        // then
+        assertThat(result.size()).isEqualTo(즐겨찾기_목록.size());
     }
 }
