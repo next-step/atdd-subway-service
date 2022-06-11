@@ -19,6 +19,7 @@ public class PathFinderTest {
 
     @Mock
     private LineService lineService;
+    private PathFinder pathFinder;
     private Line 이호선;
     private Line 신분당선;
     private Line 삼호선;
@@ -46,13 +47,11 @@ public class PathFinderTest {
         삼호선.addStation(교대역, 남부터미널역, 7);
 
         when(lineService.findAllLines()).thenReturn(Arrays.asList(이호선, 신분당선, 삼호선));
+        pathFinder = new PathFinder(lineService.findAllLines());
     }
 
     @Test
     public void 정상_경로찾기_테스트(){
-        //given
-        PathFinder pathFinder = new PathFinder(lineService.findAllLines());
-
         //when
         GraphPath path = pathFinder.findPath(교대역, 양재역);
 
