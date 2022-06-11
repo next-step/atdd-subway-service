@@ -111,8 +111,8 @@ public class Sections {
             sections.add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 
-        upLineStation.ifPresent(it -> line.getSections().getSections().remove(it));
-        downLineStation.ifPresent(it -> line.getSections().getSections().remove(it));
+        upLineStation.ifPresent(it -> line.getSections().remove(it));
+        downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
 
     private void validateAddSection(Section section) {
