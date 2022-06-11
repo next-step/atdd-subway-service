@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.station.dto.StationResponse.getStationsResponse;
+
 @Service
 @Transactional(readOnly = true)
 public class LineService {
@@ -31,9 +33,7 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        List<StationResponse> stations = persistLine.getStations().stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
+        List<StationResponse> stations = getStationsResponse(persistLine);
         return LineResponse.of(persistLine, stations);
     }
 
@@ -41,9 +41,7 @@ public class LineService {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
                 .map(line -> {
-                    List<StationResponse> stations = line.getStations().stream()
-                            .map(it -> StationResponse.of(it))
-                            .collect(Collectors.toList());
+                    List<StationResponse> stations = getStationsResponse(line);
                     return LineResponse.of(line, stations);
                 })
                 .collect(Collectors.toList());
@@ -56,9 +54,7 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        List<StationResponse> stations = persistLine.getStations().stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
+        List<StationResponse> stations = getStationsResponse(persistLine);
         return LineResponse.of(persistLine, stations);
     }
 
@@ -78,7 +74,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        line.addSection(new Section(line,upStation,downStation, request.getDistance()));
+        line.addSection(new Section(line, upStation, downStation, request.getDistance()));
     }
 
     @Transactional
