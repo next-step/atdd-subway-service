@@ -60,8 +60,9 @@ public class Line extends BaseEntity {
         this.sections.deleteSection(station);
     }
 
-    public LineResponse toLineResponse(StationsResponse stations) {
-        return new LineResponse(this.id, this.name, this.color, stations.getStations(), this.getCreatedDate(),
+    public LineResponse toLineResponse() {
+        StationsResponse stationsResponse = StationsResponse.of(this.sections);
+        return new LineResponse(this.id, this.name, this.color, stationsResponse.getStations(), this.getCreatedDate(),
                 this.getModifiedDate());
     }
 

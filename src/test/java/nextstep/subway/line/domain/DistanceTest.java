@@ -21,7 +21,7 @@ class DistanceTest {
     void inputInvalid() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> Distance.of(-5))
-                .withMessage("거리는 0이하가 될 수 없습니다.");
+                .withMessage("거리는 0이하가 될 수 없습니다. 역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
     }
 
     @Test
