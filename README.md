@@ -55,7 +55,7 @@ npm run dev
   - [x] 도메인으로 옮길 로직 찾기
   - [x] 도메인 단위테스트 작성
   - [x] 도메인으로 로직이동
-- [ ] (선택) LineSectionAcceptanceTest 리팩터링
+- [x] (선택) LineSectionAcceptanceTest 리팩터링
 
 
 
