@@ -31,14 +31,22 @@ public class AuthService {
     }
 
     public ServiceMember findMemberByToken(String credentials) {
-        if (credentials == null) {
-            return new GuestMember();
-        }
-
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException();
         }
 
+        return createServiceMember(credentials);
+    }
+
+    public ServiceMember findMemberNonRequiredByToken(String credentials) {
+        if (credentials == null) {
+            return new GuestMember();
+        }
+
+        return this.createServiceMember(credentials);
+    }
+
+    private LoginMember createServiceMember(String credentials) {
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
