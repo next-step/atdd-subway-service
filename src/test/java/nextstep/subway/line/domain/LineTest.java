@@ -29,10 +29,10 @@ class LineTest {
     }
 
     /*
-    * Given 등록된 라인 에
-    * When Section 을 추가하면
-    * Then 성공적으로 등록된다.
-    * */
+     * Given 등록된 라인 에
+     * When Section 을 추가하면
+     * Then 성공적으로 등록된다.
+     * */
     @DisplayName("Line 은 Section 을 추가 할수 있다.")
     @Test
     void addSectionTest() {
@@ -41,14 +41,14 @@ class LineTest {
         신분당선.addSection(new Section(신분당선, 광교역, 광교중앙역, 10));
 
         // then
-        assertThat(신분당선).isEqualTo(new Line("신분당선", "bg-blue-200",  광교역, 광교중앙역, 10));
+        assertThat(신분당선).isEqualTo(new Line("신분당선", "bg-blue-200", 광교역, 광교중앙역, 10));
     }
 
     /*
-    * Given 빈 노선에서
-    * When 구간을 검색하면
-    * Then 검색이 되지 않는다.
-    * */
+     * Given 빈 노선에서
+     * When 구간을 검색하면
+     * Then 검색이 되지 않는다.
+     * */
     @DisplayName("노선에 구간이 저장되어 있지 않은 상태에서 시작구간을 찾으면 검색이 되지 않는다.")
     @Test
     void invalidHasFindStartStationTest() {
@@ -83,10 +83,10 @@ class LineTest {
     }
 
     /*
-    * Given 등록된 노선에서
-    * When 역을 가져오면
-    * Then 순서대로 역을 가져온다.
-    * */
+     * Given 등록된 노선에서
+     * When 역을 가져오면
+     * Then 순서대로 역을 가져온다.
+     * */
     @DisplayName("노선에서 역정보를 가져올때 순서대로 가져온다.")
     @Test
     void getStationsTest() {
@@ -98,7 +98,7 @@ class LineTest {
         // When
         List<Station> 순서대로_역_정보 = 신분당선.getStations();
         // Then
-        assertThat(순서대로_역_정보.toArray(new Station[0])).containsExactly(광교역,광교중앙역,상현역,성복역);
+        assertThat(순서대로_역_정보.toArray(new Station[0])).containsExactly(광교역, 광교중앙역, 상현역, 성복역);
     }
 
     /*
@@ -146,16 +146,12 @@ class LineTest {
         // Given
         신분당선 = new Line("신분당선", "bg-blue-200");
         신분당선.addSection(new Section(신분당선, 광교역, 광교중앙역, 10));
-        신분당선.addSection(new Section(신분당선, 광교중앙역, 성복역,  10));
+        신분당선.addSection(new Section(신분당선, 광교중앙역, 성복역, 10));
 
         // When
         신분당선.removeSection(광교역);
 
         // Then
         assertThat(신분당선.getStations().toArray(new Station[0])).containsExactly(광교중앙역, 성복역);
-    }
-
-    private boolean isExist(final Section section, final  Station station) {
-        return section.isMatchDownStation(station) || section.isMatchUpStation(station);
     }
 }

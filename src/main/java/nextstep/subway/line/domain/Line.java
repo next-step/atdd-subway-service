@@ -4,7 +4,9 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -50,11 +52,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections.getSections();
-    }
-
-    public Sections getSections1() {
+    public Sections getSections() {
         return this.sections;
     }
 
@@ -71,7 +69,10 @@ public class Line extends BaseEntity {
         if (this.sections.isSize() <= ONLY_ONE) {
             throw new IllegalStateException("구간이 한개 뿐이거나 없는 경우에 삭제할수 없습니다.");
         }
+        removeSectionBy(station);
+    }
 
+    private void removeSectionBy(Station station) {
         final Optional<Section> upLineStation = sections.getSections().stream().filter(it -> it.isMatchUpStation(station)).findFirst();
         final Optional<Section> downLineStation = sections.getSections().stream().filter(it -> it.isMatchDownStation(station)).findFirst();
 
@@ -93,18 +94,18 @@ public class Line extends BaseEntity {
     }
 
     public Optional<Station> getStartStation() {
-       return sections.getStartStation();
+        return sections.getStartStation();
     }
 
     public List<Station> getStations() {
-      return sections.getStations();
+        return sections.getStations();
     }
 
     public int isSize() {
-       return sections.isSize();
+        return sections.isSize();
     }
 
-    public boolean isContains (final Section section) {
+    public boolean isContains(final Section section) {
         return this.sections.isContains(section);
     }
 

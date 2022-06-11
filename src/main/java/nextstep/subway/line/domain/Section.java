@@ -61,7 +61,7 @@ public class Section {
     }
 
     public boolean isMatchDownStation(final Station source) {
-        return  Objects.equals(downStation, source);
+        return Objects.equals(downStation, source);
     }
 
     public void updateUpStation(Station station, int newDistance) {
@@ -82,7 +82,7 @@ public class Section {
 
     public void updateLineBy(final Line line) {
         this.line = line;
-        if (!line.getSections1().isContains(this)) {
+        if (!line.getSections().isContains(this)) {
             line.addSection(this);
         }
     }

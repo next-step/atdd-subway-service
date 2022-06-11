@@ -46,10 +46,11 @@ public class Sections {
         if (sections.isEmpty()) {
             return Optional.empty();
         }
-        if (sections.size() == ONLY_ONE) {
+        if (sections.size() <= ONLY_ONE) {
             return this.sections.stream().map(Section::getUpStation).findAny();
         }
-        return sections.stream().filter(this::isStartStation).map(Section::getUpStation).findAny();
+        Station startStation = isStartStation(sections.get(0));
+        return Objects.isNull(startStation) ? Optional.empty() : Optional.of(startStation);
     }
 
     public List<Section> getSections() {
@@ -119,10 +120,18 @@ public class Sections {
         return sections.stream().filter(it -> it.isMatchDownStation(target.getDownStation())).findFirst();
     }
 
-    private boolean isStartStation(final Section source) {
-        Optional<Section> isPreSection = sections.stream()
-                .filter(section -> !section.isMatchDownStation(source.getUpStation()) &&
-                        section.isMatchUpStation(source.getDownStation())).findAny();
-        return isPreSection.isPresent();
+    private Station isStartStation(final Section source) {
+        Station downStation = source.getUpStation();
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = sections.stream()
+                    .filter(it -> it.getDownStation() == finalDownStation)
+                    .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getUpStation();
+        }
+        return downStation;
     }
 }
