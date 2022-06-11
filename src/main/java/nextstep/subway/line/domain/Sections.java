@@ -81,15 +81,22 @@ public class Sections {
     }
 
     public void deleteStation(Line line, Station station) {
-        if (list.size() <= 1) {
-            throw new InvalidSectionException("하나만 남은 구간은 삭제할 수 없습니다.");
-        }
-
+        validateDeleteSection(station);
         Optional<Section> leftSection = deleteLeftSection(station);
         Optional<Section> rightSection = deleteRightSection(station);
         if (leftSection.isPresent() && rightSection.isPresent()) {
             Section newSection = leftSection.get().connectSection(rightSection.get());
             addSection(line, newSection);
+        }
+    }
+
+    private void validateDeleteSection(Station station) {
+        if (!containStation(station)) {
+            throw new InvalidSectionException("제거할 지하철 역을 포함한 구간이 노선에 존재하지 않습니다.");
+        }
+
+        if (getList().size() == 1) {
+            throw new InvalidSectionException("하나만 남은 구간은 삭제할 수 없습니다.");
         }
     }
 
@@ -123,11 +130,6 @@ public class Sections {
     private void addSection(Line line, Section section) {
         list.add(section);
         section.updateLine(line);
-    }
-
-    private void removeSection(Line line, Section section) {
-        list.remove(section);
-        section.updateLine(null);
     }
 
     private boolean containBothStation(Section section) {
