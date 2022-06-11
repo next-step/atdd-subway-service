@@ -33,11 +33,21 @@ public class Section {
         this.distance = new Distance(distance);
     }
 
+    public Section(Station upStation, Station downStation, Distance distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
+    }
+
     public Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = new Distance(distance);
+    }
+
+    public void updateLine(Line line) {
+        this.line = line;
     }
 
     public Long getId() {
