@@ -16,7 +16,29 @@ public class Sections {
     private List<Section> sections = new ArrayList<>();
 
     public void add(Section section) {
-        sections.add(section);
+        validateAddSection(section);
+
+        if (sections.isEmpty()) {
+            sections.add(section);
+            return;
+        }
+
+        if (hasStation(section.getUpStation())) {
+            sections.stream()
+                    .filter(it -> it.getUpStation() == section.getUpStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+
+            sections.add(section);
+        } else if (hasStation(section.getDownStation())) {
+            sections.stream()
+                    .filter(it -> it.getDownStation() == section.getDownStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+
+            sections.add(section);
+        }
+        throw new RuntimeException();
     }
 
     public List<Section> getSections() {
@@ -63,6 +85,11 @@ public class Sections {
         return stations;
     }
 
+    public boolean hasStation(Station station) {
+        return getStations().stream()
+                .anyMatch(item -> item.equals(station));
+    }
+
     public void remove(Line line, Station station) {
         if (sections.size() <= 1) {
             throw new RuntimeException();
@@ -84,5 +111,16 @@ public class Sections {
 
         upLineStation.ifPresent(it -> line.getSections().getSections().remove(it));
         downLineStation.ifPresent(it -> line.getSections().getSections().remove(it));
+    }
+
+    private void validateAddSection(Section section) {
+        if (hasStation(section.getUpStation()) && hasStation(section.getDownStation())) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+        List<Station> stations = getStations();
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
+                stations.stream().noneMatch(it -> it == section.getDownStation())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
     }
 }
