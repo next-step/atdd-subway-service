@@ -64,11 +64,41 @@ class PathFinderTest {
     void pathFinderFailTest1() {
 
         PathFinder finder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
-        
+
         //when : 양재역에서 양재역으로 가는 최단거리 검색
         //then : 검색 실패
         assertThatThrownBy(
                 () -> finder.findShortest(양재역, 양재역)
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("노선에 존재 하지 않는 출발역을 이용해 최단 거리 탐색")
+    void pathFinderFailTest2() {
+
+        //given
+        Station 도쿄역 = new Station(5L, "도쿄역");
+        PathFinder finder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        //when : 도쿄역에서 양재역으로 가는 최단거리 검색
+        //then : 검색 실패
+        assertThatThrownBy(
+                () -> finder.findShortest(도쿄역, 양재역)
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("노선에 존재 하지 않는 도착역을 이용해 최단 거리 탐색")
+    void pathFinderFailTest3() {
+
+        //given
+        Station 도쿄역 = new Station(5L, "도쿄역");
+        PathFinder finder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        //when : 도쿄역에서 양재역으로 가는 최단거리 검색
+        //then : 검색 실패
+        assertThatThrownBy(
+                () -> finder.findShortest(교대역, 도쿄역)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
