@@ -1,13 +1,14 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Fare;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("DistanceFare 클래스 테스트")
-class DistanceFareTest {
+@DisplayName("DistanceFarePolicy 클래스 테스트")
+class DistanceFarePolicyTest {
 
     @DisplayName("거리별 요금 계산을 한다.")
     @ParameterizedTest
@@ -20,8 +21,7 @@ class DistanceFareTest {
             "51, 2150",
     })
     void test(int distanceValue, int expectedFareValue) {
-        Distance distance = new Distance(distanceValue);
-        Fare actual = DistanceFare.calculate(distance);
+        Fare actual = DistanceFarePoilcy.calculate(distanceValue);
         assertThat(actual.getValue()).isEqualTo(expectedFareValue);
     }
 }
