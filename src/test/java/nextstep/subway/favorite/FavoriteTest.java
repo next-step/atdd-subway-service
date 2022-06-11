@@ -8,6 +8,7 @@ import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.exception.ExceptionType;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,18 +18,20 @@ import org.junit.jupiter.api.Test;
 class FavoriteTest {
     private Station 대림역;
     private Station 구로디지털단지역;
+    private Member 회원;
 
     @BeforeEach
     void setUp() {
         대림역 = new Station("대림역");
         구로디지털단지역 = new Station("구로디지털단지");
+        회원 = new Member("woobeen@naver.com", "password", 29);
     }
 
     @DisplayName("즐겨찾기에 추가할 지하철역을 전달하면 즐겨찾기 객체에 저장되어야 한다")
     @Test
     void favorite_add_test() {
         // given
-        Favorite favorite = Favorite.of(대림역, 구로디지털단지역);
+        Favorite favorite = Favorite.of(대림역, 구로디지털단지역, 회원);
 
         // then
         assertAll(
@@ -41,12 +44,12 @@ class FavoriteTest {
     @Test
     void favorite_add_exception_test() {
         assertThatThrownBy(() -> {
-            Favorite.of(대림역, null);
+            Favorite.of(대림역, null, 회원);
         }).isInstanceOf(NotFoundException.class)
             .hasMessageContaining(ExceptionType.NOT_FOUND_STATION.getMessage());
 
         assertThatThrownBy(() -> {
-            Favorite.of(null, 대림역);
+            Favorite.of(null, 대림역, 회원);
         }).isInstanceOf(NotFoundException.class)
             .hasMessageContaining(ExceptionType.NOT_FOUND_STATION.getMessage());
     }
@@ -55,7 +58,7 @@ class FavoriteTest {
     @Test
     void favorite_add_exception_test2() {
         assertThatThrownBy(() -> {
-            Favorite.of(대림역, 대림역);
+            Favorite.of(대림역, 대림역, 회원);
         }).isInstanceOf(BadRequestException.class)
             .hasMessageContaining(ExceptionType.CAN_NOT_SAME_STATION.getMessage());
     }
