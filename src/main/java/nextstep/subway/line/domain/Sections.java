@@ -33,24 +33,24 @@ public class Sections {
 
     public Station getLineUpStation() {
         Set<Station> stationSet = getStationSet();
-        this.list.forEach(section -> stationSet.remove(section.getDownStation()));
+        list.forEach(section -> stationSet.remove(section.getDownStation()));
         return findFirstStation(stationSet);
     }
 
     public Station getLineDownStation() {
         Set<Station> stationSet = getStationSet();
-        this.list.forEach(section -> stationSet.remove(section.getUpStation()));
+        list.forEach(section -> stationSet.remove(section.getUpStation()));
         return findFirstStation(stationSet);
     }
 
     public Optional<Section> findSectionWithUpStation(Station upStation) {
-        return this.list.stream()
+        return list.stream()
                 .filter(section -> upStation.equals(section.getUpStation()))
                 .findFirst();
     }
 
     public Optional<Section> findSectionWithDownStation(Station downStation) {
-        return this.list.stream()
+        return list.stream()
                 .filter(section -> downStation.equals(section.getDownStation()))
                 .findFirst();
     }
@@ -68,18 +68,26 @@ public class Sections {
         return stations;
     }
 
+    public void addSection(Line line, Section section) {
+        list.add(section);
+        section.updateLine(line);
+    }
+
+    public void addSectionWhenUpStationSame(Line line, Section section, Section insertSection) {
+        section.updateUpStation(insertSection.getDownStation(), insertSection.getDistance());
+    }
+
+    public void addSectionWhenDownStationSame(Line line, Section section, Section insertSection) {
+        section.updateDownStation(insertSection.getUpStation(), insertSection.getDistance());
+    }
+
     private Set<Station> getStationSet() {
         Set<Station> stationSet = new HashSet<>();
-        for (Section section : this.list) {
+        for (Section section : list) {
             stationSet.add(section.getUpStation());
             stationSet.add(section.getDownStation());
         }
         return stationSet;
-    }
-
-    public void addSection(Line line, Section section) {
-        this.list.add(section);
-        section.updateLine(line);
     }
 
     private Station findFirstStation(Set<Station> stationSet) {

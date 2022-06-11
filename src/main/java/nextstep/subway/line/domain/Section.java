@@ -70,12 +70,20 @@ public class Section {
         return distance;
     }
 
+    public void updateUpStation(Station station, Distance newDistance) {
+        updateUpStation(station, newDistance.getDistance());
+    }
+
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance.getDistance() <= newDistance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.upStation = station;
         this.distance = this.distance.minusDistance(newDistance);
+    }
+
+    public void updateDownStation(Station station, Distance newDistance) {
+        updateDownStation(station, newDistance.getDistance());
     }
 
     public void updateDownStation(Station station, int newDistance) {

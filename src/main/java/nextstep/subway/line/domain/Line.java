@@ -7,6 +7,7 @@ import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Entity
@@ -55,24 +56,18 @@ public class Line extends BaseEntity {
         }
 
         if (stations.isEmpty()) {
-            this.sections.addSection(this, section);
+            sections.addSection(this, section);
             return;
         }
 
         if (isUpStationExisted) {
-            this.sections.getList().stream()
-                    .filter(it -> it.getUpStation() == section.getUpStation())
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance().getDistance()));
-
-            this.sections.addSection(this, section);
+            Optional<Section> find = sections.findSectionWithUpStation(section.getUpStation());
+            find.ifPresent(frontSection -> sections.addSectionWhenUpStationSame(this, frontSection, section));
+            sections.addSection(this, section);
         } else if (isDownStationExisted) {
-            this.sections.getList().stream()
-                    .filter(it -> it.getDownStation() == section.getDownStation())
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance().getDistance()));
-
-            this.sections.addSection(this, section);
+            Optional<Section> find = sections.findSectionWithDownStation(section.getDownStation());
+            find.ifPresent(rearSection -> sections.addSectionWhenDownStationSame(this, rearSection, section));
+            sections.addSection(this, section);
         } else {
             throw new RuntimeException();
         }
