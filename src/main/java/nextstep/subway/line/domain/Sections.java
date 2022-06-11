@@ -63,11 +63,11 @@ public class Sections {
     }
 
     private boolean isUpStationExisted(Section section) {
-        return orderedStations().stream().anyMatch(station -> section.sameUpStation(station));
+        return orderedStations().stream().anyMatch(section::sameUpStation);
     }
 
     private boolean isDownStationExisted(Section section) {
-        return orderedStations().stream().anyMatch(station -> section.sameDownStation(station));
+        return orderedStations().stream().anyMatch(section::sameDownStation);
     }
 
     public List<Station> orderedStations() {
@@ -181,5 +181,9 @@ public class Sections {
         return Distance.valueOf(sections.stream()
                 .mapToInt(section -> section.distance().distance())
                 .reduce(0, Integer::sum));
+    }
+
+    public List<Section> sections() {
+        return sections;
     }
 }

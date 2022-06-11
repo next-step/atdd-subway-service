@@ -102,6 +102,10 @@ public class Line extends BaseEntity {
         return sections.orderedStations();
     }
 
+    public Sections sections() {
+        return sections;
+    }
+
     public Long id() {
         return id;
     }
