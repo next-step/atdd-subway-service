@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import java.util.Set;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -62,6 +63,39 @@ public class DijkstraTest {
             () -> assertThat(shortestPath)
                 .hasSize(3)
                 .containsExactly("강남역", "양재역", "잠실역"),
+            () -> assertThat(weight).isEqualTo(4.0)
+        );
+    }
+
+    @Test
+    public void dijkstraStationTestWithDomain() {
+        Station 강남역 = new Station("강남역");
+        Station 양재역 = new Station("양재역");
+        Station 서초역 = new Station("서초역");
+        Station 잠실역 = new Station("잠실역");
+
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph
+            = new WeightedMultigraph(DefaultWeightedEdge.class);
+
+        graph.addVertex(강남역);
+        graph.addVertex(양재역);
+        graph.addVertex(서초역);
+        graph.addVertex(잠실역);
+
+        graph.setEdgeWeight(graph.addEdge(강남역, 양재역), 1);
+        graph.setEdgeWeight(graph.addEdge(양재역, 서초역), 2);
+        graph.setEdgeWeight(graph.addEdge(양재역, 잠실역), 3);
+
+        DijkstraShortestPath dijkstraShortestPath
+            = new DijkstraShortestPath(graph);
+        List<Station> shortestPath
+            = dijkstraShortestPath.getPath(강남역, 잠실역).getVertexList();
+        double weight = dijkstraShortestPath.getPath(강남역, 잠실역).getWeight();
+
+        assertAll(
+            () -> assertThat(shortestPath)
+                .hasSize(3)
+                .extracting("name").containsExactly("강남역", "양재역", "잠실역"),
             () -> assertThat(weight).isEqualTo(4.0)
         );
     }
