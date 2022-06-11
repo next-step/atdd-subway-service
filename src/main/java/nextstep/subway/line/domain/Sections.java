@@ -72,10 +72,10 @@ public class Sections {
         Station downStation = section.downStation();
 
         if (hasAlreadyStations(upStation, downStation)) {
-            throw new AlreadyExistException("이미 등록된 구간 입니다.");
+            throw new AlreadyExistException();
         }
         if (hasNothingStations(upStation, downStation)) {
-            throw new NotExistException("등록할 수 없는 구간 입니다.");
+            throw new NotExistException();
         }
     }
 
