@@ -21,11 +21,19 @@ public class Distance {
     }
 
     public Distance subtract(Distance newDistance) {
+        validateIfNull(newDistance);
         return new Distance(this.distance - newDistance.distance);
     }
 
     public Distance merge(Distance newDistance) {
+        validateIfNull(newDistance);
         return new Distance(this.distance + newDistance.distance);
+    }
+
+    private void validateIfNull(Distance newDistance) {
+        if (newDistance == null) {
+            throw new IllegalArgumentException("거리 값이 존재하지 않습니다.");
+        }
     }
 
     @Override
