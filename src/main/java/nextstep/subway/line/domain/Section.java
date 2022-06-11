@@ -22,16 +22,46 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    private Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = Distance.from(distance);
+    }
+
+    public static Section of(Line line, Station upStation, Station downStation, int distance) {
+        return new Section(line, upStation, downStation, distance);
+    }
+
+    public void updateSection(Section newSection) {
+        if (upStationEquals(newSection.getUpStation())) {
+            upStation = newSection.getDownStation();
+            distance.subtract(newSection.getDistance());
+            return;
+        }
+        if (downStationEquals(newSection.getDownStation())) {
+            downStation = newSection.getUpStation();
+            distance.subtract(newSection.getDistance());
+        }
+    }
+
+    public void mergeWith(Section section) {
+        downStation = section.getDownStation();
+        distance.add(section.getDistance());
+    }
+
+    public boolean upStationEquals(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean downStationEquals(Station station) {
+        return this.downStation.equals(station);
     }
 
     public Long getId() {
@@ -50,41 +80,7 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
-    }
-
-    public boolean upStationEquals(Station station) {
-        return this.upStation.equals(station);
-    }
-
-    public boolean downStationEquals(Station station) {
-        return this.downStation.equals(station);
-    }
-
-    public void updateSection(Section sectionToAdd) {
-        if (upStationEquals(sectionToAdd.getUpStation())) {
-            validateDistance(sectionToAdd);
-            upStation = sectionToAdd.getDownStation();
-            distance -= sectionToAdd.getDistance();
-            return;
-        }
-        if (downStationEquals(sectionToAdd.getDownStation())) {
-            validateDistance(sectionToAdd);
-            downStation = sectionToAdd.getUpStation();
-            distance -= sectionToAdd.getDistance();
-        }
-    }
-
-    private void validateDistance(Section sectionToAdd) {
-        if (this.distance <= sectionToAdd.getDistance()) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-    }
-
-    public void mergeWith(Section section) {
-        downStation = section.getDownStation();
-        distance += section.getDistance();
-
     }
 }

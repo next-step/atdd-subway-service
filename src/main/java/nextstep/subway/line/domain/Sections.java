@@ -18,8 +18,12 @@ public class Sections {
     protected Sections() {
     }
 
-    protected Sections(Section section) {
+    private Sections(Section section) {
         this.sections.add(section);
+    }
+
+    public static Sections from(Section section) {
+        return new Sections(section);
     }
 
     public List<Station> getStations() {
@@ -89,11 +93,15 @@ public class Sections {
     private void removeValidStation(Station station) {
         Optional<Section> postSection = findPostSection(station);
         Optional<Section> previousSection = findPreviousSection(station);
-        if (postSection.isPresent() && previousSection.isPresent()) {
+        if (isMiddleStation(postSection, previousSection)) {
             removeMiddleStation(postSection.get(), previousSection.get());
             return;
         }
         removeEndStation(postSection, previousSection);
+    }
+
+    private boolean isMiddleStation(Optional<Section> postSection, Optional<Section> previousSection) {
+        return postSection.isPresent() && previousSection.isPresent();
     }
 
     private void removeMiddleStation(Section postSection, Section previousSection) {
@@ -108,13 +116,13 @@ public class Sections {
 
     private Optional<Section> findPreviousSection(Station station) {
         return sections.stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(section -> section.downStationEquals(station))
                 .findFirst();
     }
 
     private Optional<Section> findPostSection(Station station) {
         return sections.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(section -> section.upStationEquals(station))
                 .findFirst();
     }
 
