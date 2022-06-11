@@ -43,24 +43,7 @@ public class Line extends BaseEntity {
 
     public void addSection(Section section) {
         sections.validateInsertSection(section);
-
-        sections.insertSectionWhenSectionIsHeadOrTail(this, section);
-
-        if (sections.containBothStation(section)) {
-            return;
-        }
-
-        Optional<Section> find = sections.findSectionWithUpStation(section.getUpStation());
-        find.ifPresent(frontSection -> sections.insertSectionWhenUpStationSame(this, frontSection, section));
-
-        if (sections.containBothStation(section)) {
-            return;
-        }
-
-        Optional<Section> find2 = sections.findSectionWithDownStation(section.getDownStation());
-        find2.ifPresent(rearSection -> sections.insertSectionWhenDownStationSame(this, rearSection, section));
-        sections.addSection(this, section);
-
+        sections.insertSection(this, section);
     }
 
     public List<StationResponse> findStationResponses() {

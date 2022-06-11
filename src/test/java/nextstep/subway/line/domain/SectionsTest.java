@@ -34,60 +34,6 @@ class SectionsTest {
         list.add(new Section(C역, D역, 10));
     }
 
-    @DisplayName("구간 내 상행 종점역 구하기")
-    @Test
-    void getLineUpStation() {
-        // given
-        Sections sections = new Sections(list);
-
-        // when
-        Station lineUpStation = sections.getLineUpStation();
-
-        // then
-        assertThat(lineUpStation).isEqualTo(A역);
-    }
-
-    @DisplayName("구간 내 하행 종점역 구하기")
-    @Test
-    void getLineDownStation() {
-        // given
-        Sections sections = new Sections(list);
-
-        // when
-        Station lineDownStation = sections.getLineDownStation();
-
-        // then
-        assertThat(lineDownStation).isEqualTo(D역);
-    }
-
-    @DisplayName("상행 종점역으로 구간 구하기")
-    @Test
-    void findSectionWithUpStation() {
-        // given
-        Sections sections = new Sections(list);
-
-        // when
-        Section section = sections.findSectionWithUpStation(A역).get();
-
-        // then
-        assertThat(section.getUpStation()).isEqualTo(A역);
-        assertThat(section.getDownStation()).isEqualTo(B역);
-    }
-
-    @DisplayName("하행 종점역으로 구간 구하기")
-    @Test
-    void findSectionWithDownStation() {
-        // given
-        Sections sections = new Sections(list);
-
-        // when
-        Section section = sections.findSectionWithDownStation(D역).get();
-
-        // then
-        assertThat(section.getUpStation()).isEqualTo(C역);
-        assertThat(section.getDownStation()).isEqualTo(D역);
-    }
-
     @DisplayName("지하철 역 리스트 구하기")
     @Test
     void getStations() {
@@ -103,17 +49,17 @@ class SectionsTest {
 
     @DisplayName("구간 추가하기")
     @Test
-    void addSection() {
+    void insertSection() {
         // given
         List<Section> list = new ArrayList<>();
         list.add(new Section(B역, E역, 10));
         Sections sections = new Sections(list);
         
         // when
-        sections.addSection(null, new Section(A역, B역, 10));
-        sections.addSection(null, new Section(B역, C역, 3));
-        sections.addSection(null, new Section(D역, E역, 3));
-        sections.addSection(null, new Section(E역, F역, 10));
+        sections.insertSection(null, new Section(A역, B역, 10));
+        sections.insertSection(null, new Section(B역, C역, 3));
+        sections.insertSection(null, new Section(D역, E역, 3));
+        sections.insertSection(null, new Section(E역, F역, 10));
         
         // then
         assertThat(sections.getList()).hasSize(5);

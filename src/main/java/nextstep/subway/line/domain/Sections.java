@@ -32,30 +32,6 @@ public class Sections {
         return this.list;
     }
 
-    public Station getLineUpStation() {
-        Set<Station> stationSet = getStationSet();
-        list.forEach(section -> stationSet.remove(section.getDownStation()));
-        return findFirstStation(stationSet);
-    }
-
-    public Station getLineDownStation() {
-        Set<Station> stationSet = getStationSet();
-        list.forEach(section -> stationSet.remove(section.getUpStation()));
-        return findFirstStation(stationSet);
-    }
-
-    public Optional<Section> findSectionWithUpStation(Station upStation) {
-        return list.stream()
-                .filter(section -> upStation.equals(section.getUpStation()))
-                .findFirst();
-    }
-
-    public Optional<Section> findSectionWithDownStation(Station downStation) {
-        return list.stream()
-                .filter(section -> downStation.equals(section.getDownStation()))
-                .findFirst();
-    }
-
     public List<Station> getStations() {
         Station curStation = getLineUpStation();
         Station lineDownStation = getLineDownStation();
@@ -74,14 +50,32 @@ public class Sections {
         section.updateLine(line);
     }
 
-    public void insertSectionWhenSectionIsHeadOrTail(Line line, Section insertSection) {
+    public void insertSection(Line line, Section section) {
+        insertSectionWhenSectionIsHeadOrTail(line, section);
+        if (containBothStation(section)) {
+            return;
+        }
+        insertSectionWhenSectionIsMiddle(line, section);
+    }
+
+    private void insertSectionWhenSectionIsMiddle(Line line, Section insertSection) {
+        Optional<Section> find = findSectionWithUpStation(insertSection.getUpStation());
+        find.ifPresent(frontSection -> insertSectionWhenUpStationSame(line, frontSection, insertSection));
+        if (containBothStation(insertSection)) {
+            return;
+        }
+        Optional<Section> find2 = findSectionWithDownStation(insertSection.getDownStation());
+        find2.ifPresent(rearSection -> insertSectionWhenDownStationSame(line, rearSection, insertSection));
+    }
+
+    private void insertSectionWhenSectionIsHeadOrTail(Line line, Section insertSection) {
         if (insertSection.getDownStation().equals(getLineUpStation()) ||
                 insertSection.getUpStation().equals(getLineDownStation())) {
             addSection(line, insertSection);
         }
     }
 
-    public void insertSectionWhenUpStationSame(Line line, Section section, Section insertSection) {
+    private void insertSectionWhenUpStationSame(Line line, Section section, Section insertSection) {
         section.updateUpStation(insertSection.getDownStation(), insertSection.getDistance());
         addSection(line, insertSection);
     }
@@ -101,7 +95,7 @@ public class Sections {
         }
     }
 
-    public boolean containBothStation(Section section) {
+    private boolean containBothStation(Section section) {
         return containStation(section.getUpStation()) && containStation(section.getDownStation());
     }
 
@@ -126,5 +120,29 @@ public class Sections {
         return stationSet.stream()
                 .findFirst()
                 .orElseThrow(StationNotFoundException::new);
+    }
+
+    private Station getLineUpStation() {
+        Set<Station> stationSet = getStationSet();
+        list.forEach(section -> stationSet.remove(section.getDownStation()));
+        return findFirstStation(stationSet);
+    }
+
+    private Station getLineDownStation() {
+        Set<Station> stationSet = getStationSet();
+        list.forEach(section -> stationSet.remove(section.getUpStation()));
+        return findFirstStation(stationSet);
+    }
+
+    private Optional<Section> findSectionWithUpStation(Station upStation) {
+        return list.stream()
+                .filter(section -> upStation.equals(section.getUpStation()))
+                .findFirst();
+    }
+
+    private Optional<Section> findSectionWithDownStation(Station downStation) {
+        return list.stream()
+                .filter(section -> downStation.equals(section.getDownStation()))
+                .findFirst();
     }
 }
