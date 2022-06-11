@@ -78,15 +78,15 @@ public class Sections {
         boolean isDownStationExisted = stations.contains(sectionToAdd.getDownStation());
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
         if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
     }
 
     public void removeStation(Station station) {
-        validateStationToRemove();
+        validateStationToRemove(station);
         removeValidStation(station);
     }
 
@@ -126,9 +126,12 @@ public class Sections {
                 .findFirst();
     }
 
-    private void validateStationToRemove() {
+    private void validateStationToRemove(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException();
+        }
+        if (!getStations().contains(station)) {
+            throw new IllegalArgumentException();
         }
     }
 }

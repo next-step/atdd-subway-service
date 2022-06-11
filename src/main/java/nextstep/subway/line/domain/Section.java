@@ -35,8 +35,18 @@ public class Section {
         this.distance = Distance.from(distance);
     }
 
+    private Section(Station upStation, Station downStation, int distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = Distance.from(distance);
+    }
+
     public static Section of(Line line, Station upStation, Station downStation, int distance) {
         return new Section(line, upStation, downStation, distance);
+    }
+
+    public static Section of(Station upStation, Station downStation, int distance) {
+        return new Section(upStation, downStation, distance);
     }
 
     public void updateSection(Section newSection) {
