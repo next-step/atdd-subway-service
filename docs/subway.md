@@ -59,4 +59,4 @@
   - [X] SectionEdge 접근 제어자 수정
   - [X] JGraphPathFindService에서 Repository 의존성 제거
   - [X] PathService에서 타 도메인의 Service를 사용하도록 변경(Repository에 대한 의존성 제거)
-  - [ ] lines, graph 캐시 도입 
+  - [X] lines, graph 캐시 도입 

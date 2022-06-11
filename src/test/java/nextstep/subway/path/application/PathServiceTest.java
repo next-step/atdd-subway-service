@@ -16,13 +16,13 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(SpringExtension.class)
 class PathServiceTest {
-
     @MockBean
     StationService mockStationService;
 
@@ -32,6 +32,8 @@ class PathServiceTest {
     @MockBean
     PathFindService mockPathFindService;
 
+    @Autowired
+    SubwayGraphProvider subwayGraphProvider;
     PathService pathService;
 
     private Station 강남역 = new Station("강남역");
@@ -40,8 +42,8 @@ class PathServiceTest {
     private WeightedMultigraph<Station, SectionEdge> mockGraph = new WeightedMultigraph<>(SectionEdge.class);
 
     @BeforeEach
-    public void setUp() {
-        pathService = new PathService(mockStationService, mockLineService, mockPathFindService);
+    void setUp() {
+        pathService = new PathService(mockStationService, mockLineService, mockPathFindService, subwayGraphProvider);
         ReflectionTestUtils.setField(강남역, "id", 1L);
         ReflectionTestUtils.setField(광교역, "id", 2L);
     }
@@ -63,5 +65,4 @@ class PathServiceTest {
                 .hasSize(3)
                 .containsExactlyElementsOf(StationResponse.of(shortestPathStations));
     }
-
 }

@@ -3,7 +3,6 @@ package nextstep.subway.path.application;
 import java.util.List;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.PathFindResult;
 import nextstep.subway.path.domain.PathFindService;
 import nextstep.subway.path.domain.exception.NotExistPathException;
@@ -21,19 +20,23 @@ public class PathService {
     private final StationService stationService;
     private final LineService lineService;
     private final PathFindService pathFindService;
+    private SubwayGraphProvider subwayGraphProvider;
 
     public PathService(StationService stationService, LineService lineService,
-                       PathFindService pathFindService) {
+                       PathFindService pathFindService,
+                       SubwayGraphProvider subwayGraphProvider) {
         this.stationService = stationService;
         this.lineService = lineService;
         this.pathFindService = pathFindService;
+        this.subwayGraphProvider = subwayGraphProvider;
     }
 
     public PathResponse findShortestPath(Long startStationId, Long endStationId) {
         Station startStation = stationService.findStationById(startStationId);
         Station endStation = stationService.findStationById(endStationId);
         PathFindResult findResult = null;
-        WeightedMultigraph<Station, SectionEdge> graph = getSubwayGraph();
+        List<Line> lines = lineService.findAll();
+        WeightedMultigraph<Station, SectionEdge> graph = subwayGraphProvider.getSubwayGraph(lines);
         try {
             findResult = pathFindService.findShortestPath(graph, startStation, endStation);
         } catch (NotExistPathException e) {
@@ -41,25 +44,4 @@ public class PathService {
         }
         return PathResponse.of(findResult);
     }
-
-
-    private WeightedMultigraph<Station, SectionEdge> getSubwayGraph(){
-        List<Line> lines = lineService.findAll();
-        return toGraph(lines);
-    }
-
-    private WeightedMultigraph<Station, SectionEdge> toGraph(List<Line> lines) {
-        WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
-        lines.stream().forEach(line -> addLineToGraph(graph, line));
-        return graph;
-    }
-
-    private void addLineToGraph(WeightedMultigraph<Station, SectionEdge> graph, Line line) {
-        List<Station> stations = line.getStations();
-        stations.stream().forEach(graph::addVertex);
-        Sections sections = line.getSections();
-        List<SectionEdge> edges = sections.toSectionEdge();
-        edges.stream().forEach(edge -> graph.addEdge(edge.getSource(), edge.getTarget(), edge));
-    }
-
 }
