@@ -69,4 +69,11 @@ public class PathFinderTest {
         assertThatThrownBy(() -> pathFinder.findPath(강남역, 강남역)).isInstanceOf(
             RuntimeException.class);
     }
+
+    @Test
+    public void 찾을수없는_정거장_경로찾기_실패(){
+        Station 없는역 = new Station("없는역");
+        assertThatThrownBy(() -> pathFinder.findPath(없는역, 강남역)).isInstanceOf(
+            RuntimeException.class);
+    }
 }
