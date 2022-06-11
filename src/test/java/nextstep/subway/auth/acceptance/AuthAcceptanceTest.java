@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static nextstep.subway.member.MemberAcceptanceTest.회원_정보_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,7 +40,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         //when
         ExtractableResponse<Response> response = 로그인_요청(tokenRequest);
         //then
-        로그인_완료_확인(response);
+        로그인_완료됨(response);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -51,19 +51,25 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         //when
         ExtractableResponse<Response> response = 로그인_요청(tokenRequest);
         //then
-        로그인_실패_확인(response);
+        로그인_실패함(response);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
         //when
-        ExtractableResponse<Response> response = 회원_정보_조회_요청("bad_token");
+        ExtractableResponse<Response> response = MemberAcceptanceTest.내_정보_조회_요청("bad_token");
         //then
-        로그인_실패_확인(response);
+        로그인_실패함(response);
     }
 
-    private ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
+    public static String 로그인_토큰_얻기(String email, String password) {
+        TokenRequest tokenRequest = new TokenRequest(email, password);
+        ExtractableResponse<Response> response = 로그인_요청(tokenRequest);
+        return response.body().jsonPath().getString("accessToken");
+    }
+
+    private static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -73,7 +79,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 로그인_완료_확인(ExtractableResponse<Response> response) {
+    private void 로그인_완료됨(ExtractableResponse<Response> response) {
         String responseToken = response.body().jsonPath().getString("accessToken");
         assertAll(
                 () -> assertEquals(HttpStatus.OK.value(), response.statusCode()),
@@ -82,7 +88,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private void 로그인_실패_확인(ExtractableResponse<Response> response) {
+    private void 로그인_실패함(ExtractableResponse<Response> response) {
         assertEquals(HttpStatus.UNAUTHORIZED.value(), response.statusCode());
     }
 
