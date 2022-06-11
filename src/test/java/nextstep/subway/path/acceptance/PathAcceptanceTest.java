@@ -81,7 +81,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회됨(response);
         final PathResponse pathResponse = response.as(PathResponse.class);
         최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(교대역, 남부터미널역, 양재역));
-        최단_경로_거리_확인됨(pathResponse, 5);
+        총_거리_확인됨(pathResponse, 5);
+        총_요금_확인됨(pathResponse, 1350);
     }
 
     private void searchShortestPathWithSameStation() {
@@ -121,8 +122,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(actual).containsExactlyElementsOf(expected);
     }
 
-    private void 최단_경로_거리_확인됨(PathResponse response, int distance) {
+    private void 총_거리_확인됨(PathResponse response, int distance) {
         assertThat(response.getDistance()).isEqualTo(distance);
+    }
+
+    private void 총_요금_확인됨(PathResponse response, int totalFare) {
+        assertThat(response.getFare()).isEqualTo(totalFare);
     }
 
     public ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse sourceStation,
