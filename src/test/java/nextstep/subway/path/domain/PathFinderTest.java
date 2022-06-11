@@ -95,7 +95,24 @@ class PathFinderTest {
         Station 도쿄역 = new Station(5L, "도쿄역");
         PathFinder finder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        //when : 도쿄역에서 양재역으로 가는 최단거리 검색
+        //when : 교대역에서 도쿄역으로 가는 최단거리 검색
+        //then : 검색 실패
+        assertThatThrownBy(
+                () -> finder.findShortest(교대역, 도쿄역)
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("연결이 되어 있지 않은 지하철역을 이용해 최단 거리 탐색")
+    void pathFinderFailTest4() {
+
+        //given
+        Station 도쿄역 = new Station(5L, "도쿄역");
+        Station 쿄토역 = new Station(6L, "쿄토역");
+        Line 신칸센 = new Line("신칸센","black", 도쿄역, 쿄토역, 40);
+        PathFinder finder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 신칸센));
+
+        //when : 교대역에서 도쿄역으로 가는 최단거리 검색
         //then : 검색 실패
         assertThatThrownBy(
                 () -> finder.findShortest(교대역, 도쿄역)

@@ -37,7 +37,14 @@ public class PathFinder {
         validateSourceTargetEquality(source, target);
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath path = dijkstraShortestPath.getPath(source, target);
+        validateNullPath(path);
         return new Path(path.getVertexList(), (int) path.getWeight());
+    }
+
+    private void validateNullPath(GraphPath path) {
+        if (path == null) {
+            throw new IllegalArgumentException("경로를 검색 할 수 없습니다.");
+        }
     }
 
     private void validateSourceTargetEquality(Station source, Station target) {
