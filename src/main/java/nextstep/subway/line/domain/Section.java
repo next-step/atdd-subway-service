@@ -13,8 +13,6 @@ import javax.persistence.ManyToOne;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 @Entity
 public class Section extends BaseEntity {
@@ -175,9 +173,7 @@ public class Section extends BaseEntity {
         return this.distance.distance() > newDistance.distance();
     }
 
-    public void makeGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        graph.addVertex(upStation);
-        graph.addVertex(downStation);
-        graph.setEdgeWeight(graph.addEdge(upStation, downStation), distance.distance());
+    public int weight() {
+        return distance.distance();
     }
 }

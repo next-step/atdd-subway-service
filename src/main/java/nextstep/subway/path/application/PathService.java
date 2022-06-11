@@ -1,16 +1,15 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
-import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,24 +17,29 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class PathService {
     private final StationService stationService;
+    private final PathFinder pathFinder;
     private final EntityManager entityManager;
 
-    public PathService(StationService stationService, EntityManager entityManager) {
+    public PathService(StationService stationService, PathFinder pathFinder, EntityManager entityManager) {
         this.stationService = stationService;
+        this.pathFinder = pathFinder;
         this.entityManager = entityManager;
     }
 
     public PathResponse findShortestPath(long sourceId, long targetId) {
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
-        Lines lines = Lines.valueOf(findSections().stream()
-                .map(Section::line)
-                .collect(Collectors.toSet()));
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = lines.shortestPath(source, target);
-        List<Station> path = shortestPath.getVertexList();
+        pathFinder.initGraph(findLines());
+        List<Station> path = pathFinder.shortestPathVertexList(source, target);
         return PathResponse.of(path.stream()
                 .map(StationResponse::of)
-                .collect(Collectors.toList()), (int) shortestPath.getWeight());
+                .collect(Collectors.toList()), pathFinder.shortestPathWeight(source, target));
+    }
+
+    private Set<Line> findLines() {
+        return findSections().stream()
+                .map(Section::line)
+                .collect(Collectors.toSet());
     }
 
     private List<Section> findSections() {

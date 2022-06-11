@@ -205,24 +205,6 @@ class SectionsTest {
                 .hasMessage("제거 가능한 구간이 없습니다.");
     }
 
-    @DisplayName("그래프에 간선 등록 테스트")
-    @Test
-    void makeGraph() {
-        Station 양재역 = createStation(1L, "양재역");
-        Station 양재시민의숲역 = createStation(2L, "양재시민의숲역");
-        Station 판교역 = createStation(3L, "판교역");
-        Section section = createSection(1L, 노선_생성(), 양재역, 판교역, Distance.valueOf(10));
-        Sections sections = Sections.valueOf(Lists.newArrayList(section));
-        Section newSection = createSection(2L, 노선_생성(), 판교역, 양재시민의숲역, Distance.valueOf(5));
-        sections.addSection(newSection);
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        sections.makeGraph(graph);
-        assertAll(
-                () -> assertThat(graph.getEdgeSource(graph.getEdge(양재역, 판교역))).isEqualTo(양재역),
-                () -> assertThat(graph.getEdgeTarget(graph.getEdge(판교역, 양재시민의숲역))).isEqualTo(양재시민의숲역)
-        );
-    }
-
     private Line 노선_생성() {
         return Line.builder("노선", "color", createStation("지하철역"), createStation("새로운지하철역"), Distance.valueOf(1))
                 .build();

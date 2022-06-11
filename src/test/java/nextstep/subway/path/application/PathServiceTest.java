@@ -35,6 +35,8 @@ class PathServiceTest {
     TypedQuery<Section> typedQuery;
     @Mock
     private StationService stationService;
+    @Mock
+    private PathFinder pathFinder;
     Station 강남역;
     Station 양재역;
     Station 교대역;
@@ -74,6 +76,8 @@ class PathServiceTest {
                 "select s from Section s join fetch s.upStation join fetch s.downStation join fetch s.line",
                 Section.class)).thenReturn(typedQuery);
         when(typedQuery.getResultList()).thenReturn(sections);
+        when(pathFinder.shortestPathWeight(양재역, 교대역)).thenReturn(5);
+        when(pathFinder.shortestPathVertexList(양재역, 교대역)).thenReturn(Lists.newArrayList(양재역, 남부터미널역, 교대역));
         PathResponse pathResponse = pathService.findShortestPath(양재역.id(), 교대역.id());
         assertAll(
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(5),

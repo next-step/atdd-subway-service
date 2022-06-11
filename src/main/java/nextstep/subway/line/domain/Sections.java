@@ -11,8 +11,6 @@ import javax.persistence.OneToMany;
 import nextstep.subway.exception.ImpossibleDeleteException;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 @Embeddable
 public class Sections {
@@ -185,9 +183,7 @@ public class Sections {
                 .reduce(0, Integer::sum));
     }
 
-    public void makeGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        for (Section section : sections){
-            section.makeGraph(graph);
-        }
+    public List<Section> sections() {
+        return sections;
     }
 }
