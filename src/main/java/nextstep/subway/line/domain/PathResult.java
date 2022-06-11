@@ -29,7 +29,7 @@ public class PathResult {
         if (distance > 10 && distance < 50) {
             fare += Math.round((distance - 10) / 5) * 100;
         } else if (distance > 50) {
-            fare += Math.round((distance - 10) / 8) * 100;
+            fare += Math.round((distance - 50) / 8) * 100;
         }
 
         return fare;

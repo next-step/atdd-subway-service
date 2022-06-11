@@ -27,6 +27,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 삼호선;
     private LineResponse 오호선;
     private StationResponse 강남역;
+    private StationResponse 역삼역;
+    private StationResponse 신림역;
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
@@ -36,7 +38,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     /**
      * (*3호선*)
-     * 교대역    --- 10 ------  강남역 (*2호선*)
+     * 교대역    --- 10 ------  강남역 --- 10 ---  역삼역 --- 46 ---  신림역 (*2호선*)
      * |                      |
      * 3                      10
      * |                      |
@@ -48,7 +50,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        역삼역 = 지하철역_등록되어_있음("역삼역").as(StationResponse.class);
         양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        신림역 = 지하철역_등록되어_있음("신림역").as(StationResponse.class);
         교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
         왕십리역 = 지하철역_등록되어_있음("왕십리역").as(StationResponse.class);
@@ -65,16 +69,38 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+        지하철_노선에_지하철역_등록되어_있음(이호선, 강남역, 역삼역, 10);
+        지하철_노선에_지하철역_등록되어_있음(이호선, 역삼역, 신림역, 46);
     }
 
-    @DisplayName("최단 경로 조회 - 성공")
+    @DisplayName("최단 경로 10km 이내 조회 - 성공")
     @Test
-    void 최단_경로_조회_성공() {
+    void 최단_경로_조회_성공_1() {
         // when 최단 경로 조회 요청
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
 
         // Then 최단 경로 조회됨
         최단_경로_조회_조회됨(response, 5, 1_250);
+    }
+
+    @DisplayName("최단 경로 10km~50km 조회 - 성공")
+    @Test
+    void 최단_경로_조회_성공_2() {
+        // when 최단 경로 조회 요청
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 역삼역.getId());
+
+        // Then 최단 경로 조회됨
+        최단_경로_조회_조회됨(response, 20, 1_450);
+    }
+
+    @DisplayName("최단 경로 50km이상 조회 - 성공")
+    @Test
+    void 최단_경로_조회_성공_3() {
+        // when 최단 경로 조회 요청
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 신림역.getId());
+
+        // Then 최단 경로 조회됨
+        최단_경로_조회_조회됨(response, 66, 1_450);
     }
 
     @DisplayName("최단 경로 조회 - 실패 (출발역과 도착역이 같은 경우)")
