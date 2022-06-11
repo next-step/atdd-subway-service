@@ -25,10 +25,6 @@ public class Sections {
     public Sections() {
     }
 
-    public Sections(List<Section> sections) {
-        this.sections = sections;
-    }
-
     public List<Section> getSections() {
         return sections;
     }
@@ -168,13 +164,13 @@ public class Sections {
 
     private Section getBeforeSection(Station station) {
         return sections.stream()
-                .filter(section -> section.getDownStation().equals(station))
+                .filter(section -> section.isDownStation(station))
                 .findFirst().orElseThrow(EntityNotFoundException::new);
     }
 
     private Section getAfterSection(Station station) {
         return sections.stream()
-                .filter(section -> section.getUpStation().equals(station))
+                .filter(section -> section.isUpStation(station))
                 .findFirst().orElseThrow(EntityNotFoundException::new);
     }
 
