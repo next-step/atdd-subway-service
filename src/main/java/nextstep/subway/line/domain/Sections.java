@@ -74,19 +74,19 @@ public class Sections {
         section.updateLine(line);
     }
 
-    public void addSectionWhenSectionIsHeadOrTail(Line line, Section insertSection) {
+    public void insertSectionWhenSectionIsHeadOrTail(Line line, Section insertSection) {
         if (insertSection.getDownStation().equals(getLineUpStation()) ||
                 insertSection.getUpStation().equals(getLineDownStation())) {
             addSection(line, insertSection);
         }
     }
 
-    public void addSectionWhenUpStationSame(Line line, Section section, Section insertSection) {
+    public void insertSectionWhenUpStationSame(Line line, Section section, Section insertSection) {
         section.updateUpStation(insertSection.getDownStation(), insertSection.getDistance());
         addSection(line, insertSection);
     }
 
-    public void addSectionWhenDownStationSame(Line line, Section section, Section insertSection) {
+    public void insertSectionWhenDownStationSame(Line line, Section section, Section insertSection) {
         section.updateDownStation(insertSection.getUpStation(), insertSection.getDistance());
         addSection(line, insertSection);
     }
