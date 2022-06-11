@@ -29,10 +29,11 @@ public class Section {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
-        updateLineBy(line);
+        this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+        updateLineBy(line);
     }
 
     public Long getId() {
