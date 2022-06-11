@@ -3,6 +3,8 @@ package nextstep.subway.favorite.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.ExceptionType;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -45,5 +47,16 @@ public class FavoriteService {
         return favorites.stream()
             .map(FavoriteResponse::of)
             .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void removeFavorite(LoginMember loginMember, Long favoriteId) {
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+            .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_FOUND_FAVORITE.getMessage(favoriteId)));
+
+        Member member = memberService.findById(loginMember.getId());
+        favorite.validateMember(member);
+
+        favoriteRepository.delete(favorite);
     }
 }

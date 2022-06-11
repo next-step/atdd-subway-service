@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.BadRequestException;
+import nextstep.subway.exception.CannotDeleteException;
 import nextstep.subway.exception.ExceptionType;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.member.domain.Member;
@@ -46,6 +47,12 @@ public class Favorite extends BaseEntity {
 
     public static Favorite of(Station source, Station target, Member member) {
         return new Favorite(source, target, member);
+    }
+
+    public void validateMember(Member member) {
+        if (!this.member.equals(member)) {
+            throw new CannotDeleteException(ExceptionType.NOT_THE_MEMBER_FAVORITE);
+        }
     }
 
     private void validateFavorite(Station source, Station target) {
