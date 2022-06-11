@@ -68,9 +68,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         연결되지않는역 = 지하철역_등록되어_있음("연결되지않는역").as(StationResponse.class);
         존재하지않는역 = new StationResponse(7L, "존재하지않는역", LocalDateTime.now(), LocalDateTime.now());
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 31, 0).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 53, 500).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 15, 900).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -81,8 +81,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회됨(response);
         final PathResponse pathResponse = response.as(PathResponse.class);
         최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(교대역, 남부터미널역, 양재역));
-        총_거리_확인됨(pathResponse, 5);
-        총_요금_확인됨(pathResponse, 1350);
+        총_거리_확인됨(pathResponse, 15);
+        총_요금_확인됨(pathResponse, 1450);
     }
 
     private void searchShortestPathWithSameStation() {
