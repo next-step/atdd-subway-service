@@ -50,6 +50,10 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    public List<Line> findAllLines(){
+        return lineRepository.findAll();
+    }
+
     public Line findById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
