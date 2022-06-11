@@ -69,12 +69,27 @@ class LineTest {
 
         // when
         line.addSection(new Section(A역, B역, 10));
+
+        List<StationResponse> responses = line.findStationResponses();
+        System.out.println(responses);
+
         line.addSection(new Section(B역, C역, 3));
+
+        responses = line.findStationResponses();
+        System.out.println(responses);
+
         line.addSection(new Section(D역, E역, 3));
+
+        responses = line.findStationResponses();
+        System.out.println(responses);
+
         line.addSection(new Section(E역, F역, 10));
 
+        responses = line.findStationResponses();
+        System.out.println(responses);
+
         // then
-        List<StationResponse> responses = line.findStationResponses();
+        responses = line.findStationResponses();
         assertThat(responses).containsExactly(
                 new StationResponse(A역.getId(), A역.getName()),
                 new StationResponse(B역.getId(), B역.getName()),

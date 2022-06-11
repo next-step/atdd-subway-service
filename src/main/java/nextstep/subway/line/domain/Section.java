@@ -98,4 +98,15 @@ public class Section {
         return station.equals(getUpStation())
                 || station.equals(getDownStation());
     }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "id=" + id +
+                ", line=" + line +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
+    }
 }

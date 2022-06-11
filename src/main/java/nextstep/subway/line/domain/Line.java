@@ -44,26 +44,23 @@ public class Line extends BaseEntity {
     public void addSection(Section section) {
         sections.validateInsertSection(section);
 
-        List<Station> stations = getSections().getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+        sections.addSectionWhenSectionIsHeadOrTail(this, section);
 
-        if (stations.isEmpty()) {
-            sections.addSection(this, section);
+        if (sections.containBothStation(section)) {
             return;
         }
 
-        if (isUpStationExisted) {
-            Optional<Section> find = sections.findSectionWithUpStation(section.getUpStation());
-            find.ifPresent(frontSection -> sections.addSectionWhenUpStationSame(this, frontSection, section));
-            sections.addSection(this, section);
-        } else if (isDownStationExisted) {
-            Optional<Section> find = sections.findSectionWithDownStation(section.getDownStation());
-            find.ifPresent(rearSection -> sections.addSectionWhenDownStationSame(this, rearSection, section));
-            sections.addSection(this, section);
-        } else {
-            throw new RuntimeException();
+        Optional<Section> find = sections.findSectionWithUpStation(section.getUpStation());
+        find.ifPresent(frontSection -> sections.addSectionWhenUpStationSame(this, frontSection, section));
+
+        if (sections.containBothStation(section)) {
+            return;
         }
+
+        Optional<Section> find2 = sections.findSectionWithDownStation(section.getDownStation());
+        find2.ifPresent(rearSection -> sections.addSectionWhenDownStationSame(this, rearSection, section));
+        sections.addSection(this, section);
+
     }
 
     public List<StationResponse> findStationResponses() {
