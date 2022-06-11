@@ -10,7 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
     @Query(value = "select f from Favorite f "
-        + "join fetch Station s "
+        + "join fetch f.source "
+        + "join fetch f.target "
         + "where f.member = :member")
     List<Favorite> findAllByMember(Member member);
 
