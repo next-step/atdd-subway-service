@@ -18,6 +18,10 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "additional_fare"))
+    private Fare additionalFare;
+
     public Line() {
     }
 
@@ -27,8 +31,13 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this(name, color, upStation, downStation, distance, 0);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int additionalFare) {
         this.name = name;
         this.color = color;
+        this.additionalFare = new Fare(additionalFare);
         addSection(upStation, downStation, distance);
     }
 
@@ -59,6 +68,10 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections.get();
+    }
+
+    public Fare getAdditionalFare() {
+        return additionalFare;
     }
 
     public void removeStation(Station station) {
