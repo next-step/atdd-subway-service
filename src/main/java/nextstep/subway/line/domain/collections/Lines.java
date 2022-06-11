@@ -33,8 +33,8 @@ public class Lines {
                 = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         for (Line line : lines) {
-            line.addVertexByStations(subwayMap);
-            line.addEdgeBySections(subwayMap);
+            line.makeVertexByStationsTo(subwayMap);
+            line.makedgeBySectionsTo(subwayMap);
         }
 
         return subwayMap;

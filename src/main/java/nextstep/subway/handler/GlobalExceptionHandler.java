@@ -1,5 +1,6 @@
 package nextstep.subway.handler;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void badRequest(Exception e) {
         logger.error("Bad Request ", e);
+    }
+
+    @ExceptionHandler({AuthorizationException.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public void author(Exception e){
+        logger.error("Unauthorized ",e);
     }
 
     @ExceptionHandler({Exception.class})
