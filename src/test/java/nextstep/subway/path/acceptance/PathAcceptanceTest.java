@@ -86,33 +86,43 @@ class PathAcceptanceTest extends AcceptanceTest {
     /**
      * When 지하철 경로에 같은 출발역, 도착역으로 최단경로를 조회하면
      * Then 조회에 실패한다.
+     */
+    @DisplayName("지하철 경로에 같은 도착역, 목적역으로 최단경로를 조회시 실패 한다.")
+    @Test
+    void shortestPathWithSameSourceAndTarget() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_최단거리_요청(교대역.getId(), 교대역.getId());
+
+        // then
+        지하철_경로_최단거리_실패됨(response);
+    }
+
+    /**
      * When 지하철 경로에 출발역, 도착역이 연결이 되지 않은 상태로 조회하면
      * Then 조회에 실패한다.
+     */
+    @DisplayName("지하철 경로에 출발역, 도착역이 연결이 되지 않은 상태로 조회시 실패 한다.")
+    @Test
+    void shortestPathWithUnConnectedSourceAndTarget() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_최단거리_요청(교대역.getId(), 천호역.getId());
+
+        // then
+        지하철_경로_최단거리_실패됨(response);
+    }
+
+    /**
      * When 지하철 경로에 존재하지 않는 출발역이나 도착역으로 최단경로를 조회하면
      * Then 조회에 실패한다.
      */
-    @DisplayName("지하철 경로에 출발역, 도착역으로 최단경로 조회할때 실패한하는 시나리오")
+    @DisplayName("지하철 경로에 존재하지 않는 출발역이나 도착역으로 최단경로 조회시 실패 한다.")
     @Test
-    void findShortestPathWithFailCase() {
+    void shortestPathWithExcludeStation() {
         // when
-        ExtractableResponse<Response> response1 = 지하철_경로_최단거리_요청(교대역.getId(), 교대역.getId());
+        ExtractableResponse<Response> response = 지하철_경로_최단거리_요청(교대역.getId(), createStation(999999L, "홍대입구").id());
 
         // then
-        지하철_경로_최단거리_실패됨(response1);
-
-        // when
-        ExtractableResponse<Response> response2 = 지하철_경로_최단거리_요청(교대역.getId(), 천호역.getId());
-
-        // then
-        지하철_경로_최단거리_실패됨(response2);
-
-        // when
-        ExtractableResponse<Response> response3 = 지하철_경로_최단거리_요청(교대역.getId(), createStation(999999L, "홍대입구").id());
-        ExtractableResponse<Response> response4 = 지하철_경로_최단거리_요청(createStation(999999L, "홍대입구").id(), 교대역.getId());
-
-        // then
-        지하철_경로_최단거리_실패됨(response3);
-        지하철_경로_최단거리_실패됨(response4);
+        지하철_경로_최단거리_실패됨(response);
     }
 
     private void 지하철_경로_최단거리_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations, int distance) {

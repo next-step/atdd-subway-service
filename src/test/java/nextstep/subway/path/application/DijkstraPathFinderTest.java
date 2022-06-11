@@ -90,4 +90,13 @@ public class DijkstraPathFinderTest {
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("최단경로를 조회할 수 없습니다.");
     }
+
+    @DisplayName("경로를 initGraph 하지 않고 출발역이나 도착역으로 최단경로 조회시 실패 테스트")
+    @Test
+    void shortestPathWithoutInitGraph() {
+        DijkstraPathFinder dijkstraPathFinder = new DijkstraPathFinder();
+        assertThatThrownBy(() -> dijkstraPathFinder.shortestPathVertexList(교대역, 강동역))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("최단경로를 조회할 수 없습니다.");
+    }
 }
