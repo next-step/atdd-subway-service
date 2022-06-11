@@ -63,4 +63,23 @@ class LineTest {
                 () -> line.addSection(lineUpStation, lineDownStation, 2)
         ).isInstanceOf(RuntimeException.class);
     }
+
+    @Test
+    void 역_제거() {
+        // when
+        Station station = new Station("구간역");
+        line.addSection(upStation, station, 2);
+        line.removeStation(station);
+
+        // then
+        assertThat(line.getStations()).doesNotContain(station);
+    }
+
+    @Test
+    void 역_제거_예외() {
+        // then
+        assertThatThrownBy(
+                () -> line.removeStation(upStation)
+        ).isInstanceOf(RuntimeException.class);
+    }
 }

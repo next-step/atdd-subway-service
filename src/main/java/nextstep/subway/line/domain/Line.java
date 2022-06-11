@@ -92,6 +92,35 @@ public class Line extends BaseEntity {
         throw new RuntimeException();
     }
 
+    public void removeStation(Station station) {
+        validateRemoveStation();
+
+        Optional<Section> upLineStation = getUpLineStation(station);
+        Optional<Section> downLineStation = getDownLineStation(station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private Optional<Section> getUpLineStation(Station station) {
+        return getSections().stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+    }
+
+    private Optional<Section> getDownLineStation(Station station) {
+        return getSections().stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+    }
+
     private void validateAddSection(Station upStation, Station downStation) {
         if (hasStation(upStation) && hasStation(downStation)) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
@@ -101,6 +130,12 @@ public class Line extends BaseEntity {
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void validateRemoveStation() {
+        if (sections.size() <= 1) {
+            throw new RuntimeException("구간이 하나 밖에 존재하지 않으면, 역을 삭제 할 수 없습니다.");
         }
     }
 
