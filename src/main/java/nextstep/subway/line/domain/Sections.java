@@ -22,6 +22,7 @@ public class Sections {
     public List<Section> getSections() {
         return sections;
     }
+
     public Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
@@ -60,5 +61,28 @@ public class Sections {
         }
 
         return stations;
+    }
+
+    public void remove(Line line, Station station) {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> line.getSections().getSections().remove(it));
+        downLineStation.ifPresent(it -> line.getSections().getSections().remove(it));
     }
 }
