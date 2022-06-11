@@ -11,7 +11,7 @@ public class PathApiHelper {
             .queryParam("source",시작역)
             .queryParam("target",종착역)
             .when()
-            .get()
+            .get("/paths")
             .then().log().all()
             .extract();
     }
