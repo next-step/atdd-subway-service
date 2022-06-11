@@ -20,7 +20,8 @@ public enum ExceptionType {
     IS_NOT_NULL_LINE_COLOR("노선의 색상은 필수값입니다."),
     CAN_NOT_SAME_STATION("두 역이 같을 수 없습니다."),
     IS_NOT_CONNECTED_STATION("출발역과 도착역이 연결되어있지 않습니다."),
-    INVALID_TOKEN("토큰정보가 유효하지 않습니다.");
+    INVALID_TOKEN("토큰정보가 유효하지 않습니다."),
+    NOT_FOUND_MEMBER("존재하지 않는 회원입니다.");
 
 
     private final String message;
