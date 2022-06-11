@@ -47,8 +47,7 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        Long id = Optional.ofNullable(loginMember.getId()).orElseThrow(AuthorizationException::new);
-        MemberResponse member = memberService.findMember(id);
+        MemberResponse member = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(member);
     }
 
