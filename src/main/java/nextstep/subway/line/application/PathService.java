@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class PathService {
-    final private StationService stationService;
-    final private LineRepository lineRepository;
+    private final StationService stationService;
+    private final LineRepository lineRepository;
 
     public PathService(StationService stationService, LineRepository lineRepository) {
         this.stationService = stationService;
@@ -39,7 +39,7 @@ public class PathService {
 
         return PathResponse.of(
                 result.getStations().stream()
-                        .map(station -> StationResponse.of(station))
+                        .map(StationResponse::of)
                         .collect(Collectors.toList()),
                 result.getDistance());
     }
