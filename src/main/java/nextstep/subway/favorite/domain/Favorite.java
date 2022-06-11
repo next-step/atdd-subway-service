@@ -12,6 +12,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.exception.ExceptionType;
 import nextstep.subway.exception.NotFoundException;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -29,17 +30,22 @@ public class Favorite extends BaseEntity {
     @JoinColumn(name = "target_id")
     private Station target;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     protected Favorite() {
     }
 
-    private Favorite(Station source, Station target) {
+    private Favorite(Station source, Station target, Member member) {
         validateFavorite(source, target);
         this.source = source;
         this.target = target;
+        this.member = member;
     }
 
-    public static Favorite of(Station source, Station target) {
-        return new Favorite(source, target);
+    public static Favorite of(Station source, Station target, Member member) {
+        return new Favorite(source, target, member);
     }
 
     private void validateFavorite(Station source, Station target) {
