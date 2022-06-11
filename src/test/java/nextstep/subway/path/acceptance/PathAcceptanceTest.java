@@ -82,7 +82,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final PathResponse pathResponse = response.as(PathResponse.class);
         최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(교대역, 남부터미널역, 양재역));
         총_거리_확인됨(pathResponse, 15);
-        총_요금_확인됨(pathResponse, 1450);
+        총_요금_확인됨(pathResponse, 2250);
     }
 
     private void searchShortestPathWithSameStation() {
