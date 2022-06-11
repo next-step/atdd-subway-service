@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
@@ -63,5 +64,9 @@ public class PathFinderTest {
         );
     }
 
-
+    @Test
+    public void 동일_정거장_경로찾기_실패(){
+        assertThatThrownBy(() -> pathFinder.findPath(강남역, 강남역)).isInstanceOf(
+            RuntimeException.class);
+    }
 }
