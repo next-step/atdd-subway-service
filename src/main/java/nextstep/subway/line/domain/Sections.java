@@ -48,8 +48,7 @@ public class Sections {
         if (sections.size() == ONLY_ONE) {
            return this.sections.stream().map(Section::getUpStation).findAny();
         }
-        return sections.stream().filter(this::isPreSection)
-                .map(Section::getUpStation).findAny();
+        return sections.stream().filter(this::isStartStation).map(Section::getUpStation).findAny();
     }
 
     public List<Section> getSections() {
@@ -79,7 +78,7 @@ public class Sections {
                 .findAny();
     }
 
-    private boolean isPreSection(final Section source) {
+    private boolean isStartStation(final Section source) {
         Optional<Section> isPreSection = sections.stream()
                 .filter(section -> !section.isMatchDownStation(source.getUpStation()) &&
                         section.isMatchUpStation(source.getDownStation())).findAny();
