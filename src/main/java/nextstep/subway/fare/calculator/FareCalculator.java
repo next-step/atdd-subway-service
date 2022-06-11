@@ -10,6 +10,8 @@ public class FareCalculator {
 
     private static final int ZERO_FARE = 0;
 
+    private FareCalculator() {}
+
     public static int calculate(Lines lines, Path path) {
         FareSectionType fareSectionType = FareSectionType.findTypeByDistance(path.getDistance());
 
