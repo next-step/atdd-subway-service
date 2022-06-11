@@ -21,13 +21,13 @@ public class FavoriteTest {
         강남역 = new Station("강남역");
         역삼역 = new Station("역삼역");
 
-        사용자 = new Member("heowc1992@gmail.com", "password", 31);
+        사용자 = new Member(1L, "heowc1992@gmail.com", "password", 31);
     }
 
     @DisplayName("Favorite를 생성한다.")
     @Test
     void successfulCreate() {
-        Favorite favorite = new Favorite(사용자, 강남역, 역삼역);
+        Favorite favorite = new Favorite(사용자.getId(), 강남역, 역삼역);
 
         assertThat(favorite).isNotNull();
     }
@@ -36,7 +36,7 @@ public class FavoriteTest {
     @Test
     void failureCreateWithSameStation() {
         assertThatThrownBy(() -> {
-            new Favorite(사용자, 강남역, 강남역);
+            new Favorite(사용자.getId(), 강남역, 강남역);
         }).isInstanceOf(CannotCreatingFavoriteException.class)
         .hasMessageContaining("출발지와 목적지가 같을 수 없습니다.");
     }
