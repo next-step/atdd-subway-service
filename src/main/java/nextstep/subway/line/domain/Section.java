@@ -173,7 +173,7 @@ public class Section extends BaseEntity {
         return this.distance.distance() > newDistance.distance();
     }
 
-    public int weight() {
+    public int distanceValue() {
         return distance.distance();
     }
 }
