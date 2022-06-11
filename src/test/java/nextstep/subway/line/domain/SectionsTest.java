@@ -80,7 +80,7 @@ class SectionsTest {
         // When
         List<Station> 순서대로_역_정보 = 구간들이_저장된_노선들.getStations();
         // Then
-        assertThat(순서대로_역_정보.toArray(new Station[0])).containsExactly(광교역,광교중앙역,상현역,성복역);
+        assertThat(순서대로_역_정보.toArray(new Station[0])).containsExactly(광교역, 광교중앙역, 상현역, 성복역);
     }
 
     /*
@@ -107,10 +107,10 @@ class SectionsTest {
     }
 
     /*
-    * Given 저장된 구간들에서
-    * When 특정 구간을 포함되어 있는지 요청하면
-    * Then 포함 여부를 알수 있다.
-    * */
+     * Given 저장된 구간들에서
+     * When 특정 구간을 포함되어 있는지 요청하면
+     * Then 포함 여부를 알수 있다.
+     * */
     @DisplayName("구간 정보들 에서 특정 구간을 있는지 여부를 알수 있다.")
     @Test
     void isContainsTest() {
@@ -118,5 +118,48 @@ class SectionsTest {
         final boolean result = 구간들이_저장된_노선들.isContains(new Section(신분당선, 광교역, 광교중앙역, 10));
         // Then
         assertThat(result).isTrue();
+    }
+
+    /*
+     * Given 저장된 구간들 에서
+     * When 특정 구간보다 거리가 긴 구간을 추가하면
+     * Then 등록이 실패한다.
+     * */
+    @DisplayName("구간 추가시 기존구간보다 길이가 긴 구간을 추가하면 등록이 되지 않는다.")
+    @Test
+    void invalidDistanceTest() {
+        // When
+        assertThatThrownBy(() -> new Section(신분당선, 광교중앙역, new Station("수원역"), 11))
+                .isExactlyInstanceOf(RuntimeException.class);
+    }
+
+    /*
+     * Given 저장된 구간들 에서
+     * When 기존에 등록된 구간을 추가하면
+     * Then 등록이 실패한다.
+     * */
+    @DisplayName("중복 구간을 허용하지  않는다.")
+    @Test
+    void noOverlapTest() {
+        // When
+        assertThatThrownBy(() -> new Section(신분당선, 광교중앙역, 상현역, 2))
+                .isExactlyInstanceOf(RuntimeException.class);
+    }
+
+    /*
+     * Given 저장된 구간들 에서
+     * When 새로운 구간을 추가하면
+     * Then 정상 등록이 된다.
+     * */
+    @DisplayName("새로운 구간을 추가시 정상 등록이 된다.")
+    @Test
+    void addSectionTest() {
+        // Given
+        Station 양재시민의숲 = new Station("양재시민의숲");
+        // When
+        구간들이_저장된_노선들.addSection(new Section(신분당선, 광교중앙역,양재시민의숲, 3));
+
+        // Then
+        assertThat(구간들이_저장된_노선들.getStations().toArray(new Station[0])).containsExactly(광교역, 광교중앙역, 양재시민의숲, 상현역, 성복역);
     }
 }
