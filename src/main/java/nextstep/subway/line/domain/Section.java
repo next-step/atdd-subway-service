@@ -87,11 +87,11 @@ public class Section {
         }
     }
 
-    private boolean isEqualsUpStation(Station station) {
+    public boolean isEqualsUpStation(Station station) {
         return this.upStation.equals(station);
     }
 
-    private boolean isEqualsDownStation(Station station) {
+    public boolean isEqualsDownStation(Station station) {
         return this.downStation.equals(station);
     }
 
@@ -100,5 +100,10 @@ public class Section {
             throw new IllegalArgumentException("기존 역 사이 길이보다 크거나 같으면 등록을 할 수 없습니다.");
         }
         this.distance -= newSection.distance;
+    }
+
+    public Section rearrange(Section downSection) {
+        this.distance += downSection.distance;
+        return new Section(this.line, this.upStation, downSection.downStation, this.distance);
     }
 }
