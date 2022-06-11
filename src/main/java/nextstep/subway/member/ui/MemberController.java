@@ -1,6 +1,5 @@
 package nextstep.subway.member.ui;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.application.MemberService;
@@ -44,7 +43,7 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(LoginMember loginMember) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(member);
     }
