@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -52,7 +53,9 @@ public class Favorite {
         return target;
     }
 
-    public boolean checkCreatedByMemberId(Long id) {
-        return member.getId() == id;
+    public void checkAuth(Long id) {
+        if (member.getId() != id) {
+            throw new AuthorizationException("삭제 권한이 없습니다.");
+        }
     }
 }
