@@ -40,7 +40,7 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    public List<LineResponse> findLinesRespose() {
+    public List<LineResponse> findLineResposes() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
                 .map(LineResponse::of)
