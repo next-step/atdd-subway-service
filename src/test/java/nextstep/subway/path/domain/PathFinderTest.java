@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
@@ -8,6 +9,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class PathFinderTest {
@@ -43,15 +45,31 @@ class PathFinderTest {
     }
 
     @Test
+    @DisplayName("최단 경로 검색 테스트")
     void findShortestTest() {
 
+        //when : 양재역에서 교대역으로 가는 최단거리 검색
         PathFinder finder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
         Path path = finder.findShortest(양재역, 교대역);
 
+        //then : 최단 거리와 경로를 알 수 있다.
         assertAll(
                 () -> assertThat(path.getShortestPath()).containsExactly(양재역,남부터미널역,교대역),
                 () -> assertThat(path.getShortestDistance()).isEqualTo(5)
         );
+    }
+
+    @Test
+    @DisplayName("같은 출발역과 도착역을 이용해 최단 거리 탐색")
+    void pathFinderFailTest1() {
+
+        PathFinder finder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
+        
+        //when : 양재역에서 양재역으로 가는 최단거리 검색
+        //then : 검색 실패
+        assertThatThrownBy(
+                () -> finder.findShortest(양재역, 양재역)
+        ).isInstanceOf(IllegalArgumentException.class);
     }
 
 }

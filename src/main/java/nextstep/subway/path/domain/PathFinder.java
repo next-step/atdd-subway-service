@@ -34,8 +34,15 @@ public class PathFinder {
     }
 
     public Path findShortest(Station source, Station target) {
+        validateSourceTargetEquality(source, target);
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath path = dijkstraShortestPath.getPath(source, target);
         return new Path(path.getVertexList(), (int) path.getWeight());
+    }
+
+    private void validateSourceTargetEquality(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("출발역과 도착역은 동일 할 수 없습니다.");
+        }
     }
 }
