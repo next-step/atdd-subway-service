@@ -87,7 +87,7 @@ public class Section {
         repairStation(section);
     }
 
-    public void repairStation(Section section) {
+    private void repairStation(Section section) {
         if (isSameUpStation(section.upStation)) {
             updateUpStation(section.downStation, section.distance);
             return;

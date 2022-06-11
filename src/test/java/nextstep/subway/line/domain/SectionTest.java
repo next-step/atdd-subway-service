@@ -26,7 +26,7 @@ class SectionTest {
         Section newSection = new Section(upStation, downStation, 3);
         
         // when
-        section.repairStation(newSection);
+        section.repair(newSection);
 
         // then
         assertThat(section.getDistance()).isEqualTo(7);
