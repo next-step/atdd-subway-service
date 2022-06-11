@@ -2,6 +2,8 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.*;
 import java.util.List;
@@ -76,6 +78,28 @@ public class Line extends BaseEntity {
         Station reDownStation = upSection.getDownStation();
         int reDistance = upSection.getDistance() + downSection.getDistance();
         sections.addSection(new Section(this, reUpStation, reDownStation, reDistance));
+    }
+
+    public void registerPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        addVertices(graph);
+        addEdges(graph);
+    }
+
+    private void addVertices(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        findStations().forEach(graph::addVertex);
+    }
+
+    private void addEdges(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        getSections().getSections()
+                .forEach(section -> addEdgeWith(addEdge(section, graph), section.getDistance(), graph));
+    }
+
+    private DefaultWeightedEdge addEdge(Section section, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        return graph.addEdge(section.getUpStation(), section.getDownStation());
+    }
+
+    private void addEdgeWith(DefaultWeightedEdge edge, int weight, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        graph.setEdgeWeight(edge, weight);
     }
 
     public Long getId() {
