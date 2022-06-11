@@ -25,4 +25,28 @@ public class Favorite extends BaseEntity {
     @JoinColumn(name = "target_station_id")
     private Station target;
 
+    protected Favorite() {
+    }
+
+    public Favorite(Member member, Station source, Station target) {
+        this.member = member;
+        this.source = source;
+        this.target = target;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public Station getSource() {
+        return source;
+    }
+
+    public Station getTarget() {
+        return target;
+    }
 }

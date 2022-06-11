@@ -56,7 +56,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void manageFavorite() {
         // when
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(강남역.getId(), 서초역.getId());
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(token, 강남역.getId(), 서초역.getId());
         //then
         즐겨찾기_생성됨(createResponse);
 
@@ -71,8 +71,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(deleteResponse);
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청(Long source, Long target) {
+    private ExtractableResponse<Response> 즐겨찾기_생성_요청(String token, Long source, Long target) {
         return RestAssured.given().log().all()
+                .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new FavoriteRequest(source, target))
                 .when().post("/favorites")
@@ -107,7 +108,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String token, Long favoriteId) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
-                .when().post("/favorites/{id}", favoriteId)
+                .when().delete("/favorites/{id}", favoriteId)
                 .then().log().all()
                 .extract();
     }
