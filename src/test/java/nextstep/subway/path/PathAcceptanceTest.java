@@ -1,11 +1,61 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.line.dto.LineRequest;
+import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.dto.StationResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 
 @DisplayName("지하철 경로 조회")
 class PathAcceptanceTest extends AcceptanceTest {
+    private LineResponse 신분당선;
+    private LineResponse 이호선;
+    private LineResponse 삼호선;
+    private StationResponse 강남역;
+    private StationResponse 양재역;
+    private StationResponse 교대역;
+    private StationResponse 남부터미널역;
+
+    /**
+     * 교대역    --- *2호선* ---   강남역
+     * |                        |
+     * *3호선*                   *신분당선*
+     * |                        |
+     * 남부터미널역  --- *3호선* ---   양재
+     */
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+
+        강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
+        남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+
+        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+    }
 
     /**
      *  Given 지하철 노선에 지하철 역이 등록되어 있고
@@ -15,6 +65,11 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("정상적인 출발, 도착역을 경로조회하면 최단거리를 알려준다.")
     void searchShortestPath() {
+        // when
+        ExtractableResponse<Response> 지하철_경로_조회_요청_결과 = 지하철_경로_조회_요청(강남역, 남부터미널역);
+
+        // then
+        최단_거리_확인(지하철_경로_조회_요청_결과, 13, Arrays.asList(강남역, 교대역, 남부터미널역));
     }
 
     /**
@@ -45,5 +100,36 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("존재하지 않는 역은 경로조회 할 수 없다.")
     void searchNotExistStationPath() {
+    }
+
+    private ExtractableResponse<Response> 지하철_경로_조회_요청(StationResponse 출발역, StationResponse 도착역) {
+        Map<String, Long> params = new HashMap<>();
+        params.put("source", 출발역.getId());
+        params.put("target", 도착역.getId());
+
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .params(params)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
+    private void 최단_거리_확인(ExtractableResponse<Response> 지하철_경로_조회_요청_결과, int 거리, List<StationResponse> 역리스트) {
+        PathResponse response = 지하철_경로_조회_요청_결과.as(PathResponse.class);
+
+        List<Long> 응답_역_아이디_리스트 = response.getStations().stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        List<Long> 예상된_역_아이디_리스트 = 역리스트.stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        assertAll(
+                () -> assertThat(response.getDistance()).isEqualTo(거리),
+                () -> assertThat(응답_역_아이디_리스트).containsExactlyElementsOf(예상된_역_아이디_리스트)
+        );
     }
 }

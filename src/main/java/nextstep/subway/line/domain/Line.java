@@ -7,7 +7,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.List;
 import nextstep.subway.station.dto.StationsResponse;
 
 @Entity
