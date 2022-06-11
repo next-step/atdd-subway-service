@@ -77,11 +77,11 @@ public class Section {
     }
 
     public void update(Section newSection) {
-        if (isEqualsUpStation(upStation)) {
+        if (isEqualsUpStation(newSection.getUpStation())) {
             this.upStation = newSection.downStation;
             updateDistance(newSection);
         }
-        if (isEqualsDownStation(downStation)) {
+        if (isEqualsDownStation(newSection.getDownStation())) {
             this.downStation = newSection.upStation;
             updateDistance(newSection);
         }
