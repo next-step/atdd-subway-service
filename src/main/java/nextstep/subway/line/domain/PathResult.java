@@ -23,15 +23,7 @@ public class PathResult {
     }
 
     public int getFare() {
-        int fare = 1_250;
-        int distance = getDistance();
-
-        if (distance > 10 && distance < 50) {
-            fare += Math.round((distance - 10) / 5) * 100;
-        } else if (distance > 50) {
-            fare += Math.round((distance - 50) / 8) * 100;
-        }
-
+        int fare = 1_250 + calculateOverFare(getDistance());
         return fare;
     }
 
@@ -39,5 +31,14 @@ public class PathResult {
         return sectionEdges.stream()
                 .mapToInt(SectionWeightedEdge::getDistance)
                 .sum();
+    }
+
+    private int calculateOverFare(int distance) {
+        if (distance > 10 && distance < 50) {
+            return (int) (Math.ceil((distance - 10) / 5) * 100);
+        } else if (distance > 50) {
+            return (int) (Math.ceil((distance - 50) / 8) * 100);
+        }
+        return 0;
     }
 }

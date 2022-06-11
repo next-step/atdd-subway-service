@@ -35,9 +35,9 @@ public class PathTest {
      */
     @BeforeEach
     void setup() {
-        이호선 = new Line("2호선", "green", 교대역, 강남역, 10);
-        신분당선 = new Line("신분당선", "red", 강남역, 양재역, 10);
-        삼호선 = new Line("삼호선", "orange", 교대역, 양재역, 5);
+        이호선 = new Line("2호선", "green", 0, 교대역, 강남역, 10);
+        신분당선 = new Line("신분당선", "red", 0, 강남역, 양재역, 10);
+        삼호선 = new Line("삼호선", "orange", 0, 교대역, 양재역, 5);
         삼호선.addSection(new Section(교대역, 남부터미널역, 3));
     }
 

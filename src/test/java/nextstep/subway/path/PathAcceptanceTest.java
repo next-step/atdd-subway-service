@@ -59,13 +59,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         마장역 = 지하철역_등록되어_있음("마장역").as(StationResponse.class);
         창동역 = new StationResponse(99L, "창동역", null, null);
 
-        신분당선 = 지하철_노선_등록되어_있음(LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10))
+        신분당선 = 지하철_노선_등록되어_있음(LineRequest.of("신분당선", "bg-red-600", 0, 강남역.getId(), 양재역.getId(), 10))
                 .as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(LineRequest.of("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10))
+        이호선 = 지하철_노선_등록되어_있음(LineRequest.of("이호선", "bg-green-600", 0, 교대역.getId(), 강남역.getId(), 10))
                 .as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(LineRequest.of("삼호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 5))
+        삼호선 = 지하철_노선_등록되어_있음(LineRequest.of("삼호선", "bg-orange-600", 0, 교대역.getId(), 양재역.getId(), 5))
                 .as(LineResponse.class);
-        오호선 = 지하철_노선_등록되어_있음(LineRequest.of("오호선", "bg-purple-600", 왕십리역.getId(), 마장역.getId(), 5))
+        오호선 = 지하철_노선_등록되어_있음(LineRequest.of("오호선", "bg-purple-600", 0, 왕십리역.getId(), 마장역.getId(), 5))
                 .as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
