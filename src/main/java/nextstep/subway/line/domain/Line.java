@@ -42,18 +42,11 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Section section) {
+        sections.validateInsertSection(section);
+
         List<Station> stations = getSections().getStations();
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
-                stations.stream().noneMatch(it -> it == section.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
 
         if (stations.isEmpty()) {
             sections.addSection(this, section);

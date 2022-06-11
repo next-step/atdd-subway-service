@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.InvalidSectionException;
 import nextstep.subway.exception.SectionNotFoundException;
 import nextstep.subway.exception.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
@@ -79,6 +80,28 @@ public class Sections {
 
     public void addSectionWhenDownStationSame(Line line, Section section, Section insertSection) {
         section.updateDownStation(insertSection.getUpStation(), insertSection.getDistance());
+    }
+
+    public void validateInsertSection(Section section) {
+        if (containBothStation(section)) {
+            throw new InvalidSectionException("이미 노선에 포함된 구간은 추가할 수 없습니다.");
+        }
+
+        if (containNoneStation(section)) {
+            throw new InvalidSectionException("구간 내 지하철 역이 하나는 등록된 상태여야 합니다.");
+        }
+    }
+
+    private boolean containBothStation(Section section) {
+        return containStation(section.getUpStation()) && containStation(section.getDownStation());
+    }
+
+    private boolean containNoneStation(Section section) {
+        return !containStation(section.getUpStation()) && !containStation(section.getDownStation());
+    }
+
+    private boolean containStation(Station station) {
+        return list.stream().anyMatch(section -> section.containsStation(station));
     }
 
     private Set<Station> getStationSet() {

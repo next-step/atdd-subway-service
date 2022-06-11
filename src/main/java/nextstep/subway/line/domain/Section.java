@@ -93,4 +93,9 @@ public class Section {
         this.downStation = station;
         this.distance = this.distance.minusDistance(newDistance);
     }
+
+    public boolean containsStation(Station station) {
+        return station.equals(getUpStation())
+                || station.equals(getDownStation());
+    }
 }
