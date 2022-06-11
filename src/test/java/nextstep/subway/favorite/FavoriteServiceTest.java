@@ -15,6 +15,7 @@ import java.util.Optional;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.exception.CannotDeleteException;
+import nextstep.subway.exception.CannotRegisterException;
 import nextstep.subway.exception.ExceptionType;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.favorite.application.FavoriteService;
@@ -152,6 +153,27 @@ class FavoriteServiceTest {
             favoriteService.registerFavorite(로그인_멤버, request);
         }).isInstanceOf(BadRequestException.class)
             .hasMessageContaining(ExceptionType.CAN_NOT_SAME_STATION.getMessage());
+    }
+
+    @DisplayName("즐겨찾기로 등록할 역이 이미 등록되어 있다면 예외가 발생한다")
+    @Test
+    void register_favorite_overlap_exception_test() {
+        // given
+        FavoriteRequest request = new FavoriteRequest(1L, 1L);
+
+        when(stationService.findById(anyLong()))
+            .thenReturn(대림역)
+            .thenReturn(구로디지털단지역);
+        when(memberService.findById(anyLong()))
+            .thenReturn(회원);
+        when(favoriteRepository.findBySourceAndTargetAndMember(대림역, 구로디지털단지역, 회원))
+            .thenReturn(Optional.of(즐겨찾기_대림_구로디지털단지));
+
+        // then
+        assertThatThrownBy(() -> {
+            favoriteService.registerFavorite(로그인_멤버, request);
+        }).isInstanceOf(CannotRegisterException.class)
+            .hasMessageContaining(ExceptionType.ALREADY_REGISTERED_FAVORITE.getMessage());
     }
 
     @DisplayName("즐겨찾기 목록을 조회하면 정상저으로 조회되어야 한다")

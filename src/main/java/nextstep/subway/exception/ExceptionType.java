@@ -23,7 +23,8 @@ public enum ExceptionType {
     INVALID_TOKEN("토큰정보가 유효하지 않습니다."),
     NOT_FOUND_MEMBER("존재하지 않는 회원입니다."),
     NOT_FOUND_FAVORITE("즐겨찾기 항목을 찾을 수 없습니다."),
-    NOT_THE_MEMBER_FAVORITE("즐겨찾기를 등록한 회원이 아닙니다.");
+    NOT_THE_MEMBER_FAVORITE("즐겨찾기를 등록한 회원이 아닙니다."),
+    ALREADY_REGISTERED_FAVORITE("이미 등록된 즐겨찾기입니다.");
 
 
     private final String message;
