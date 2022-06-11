@@ -38,6 +38,10 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    public List<Line> findAll() {
+        return lineRepository.findAllWithSections();
+    }
+
     public Line findLineById(Long id) {
         return lineRepository.findByIdWithSections(id).orElseThrow(RuntimeException::new);
     }
