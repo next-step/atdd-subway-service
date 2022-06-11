@@ -51,7 +51,7 @@ public class FavoriteService {
     @Transactional
     public void removeFavorite(LoginMember loginMember, Long favoriteId) {
         Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, loginMember.getId())
-                .orElseThrow(() -> new IllegalStateException(
+                .orElseThrow(() -> new IllegalArgumentException(
                         String.format(NOT_FOUND_FAVORITE_BY_ID_AND_MEMBER_ID, favoriteId, loginMember.getId())
                 ));
 

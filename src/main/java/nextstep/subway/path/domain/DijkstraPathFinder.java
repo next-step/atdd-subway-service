@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
@@ -21,8 +22,8 @@ public class DijkstraPathFinder implements PathFinder{
         this.dijkstraShortestPath = dijkstraShortestPath;
     }
 
-    public static DijkstraPathFinder from(List<Line> lines) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = createWeightedMultiGraphByLines(lines);
+    public static DijkstraPathFinder from(Lines lines) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = createWeightedMultiGraphByLines(lines.getValues());
         return new DijkstraPathFinder(new DijkstraShortestPath<>(graph));
     }
 

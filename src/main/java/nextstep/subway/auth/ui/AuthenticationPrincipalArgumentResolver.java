@@ -29,8 +29,15 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
                                   ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) {
+
         String credentials = AuthorizationExtractor.extract(
                 Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
-        return authService.findMemberByToken(credentials);
+
+        AuthenticationPrincipal authenticationPrincipalAnnotation = parameter.getParameterAnnotation(AuthenticationPrincipal.class);
+        if (authenticationPrincipalAnnotation.required()) {
+            return authService.findMemberByToken(credentials);
+        }
+
+        return authService.findMemberNonRequiredByToken(credentials);
     }
 }

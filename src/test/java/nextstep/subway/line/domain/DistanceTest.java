@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.enums.LineExceptionType.DISTANCE_IS_MUST_BE_GREATER_THAN_1;
+import static nextstep.subway.line.domain.LineExceptionType.DISTANCE_IS_MUST_BE_GREATER_THAN_1;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 

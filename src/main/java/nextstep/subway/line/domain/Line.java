@@ -1,10 +1,9 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.enums.LineExceptionType.ALREADY_ADDED_SECTION;
-import static nextstep.subway.line.enums.LineExceptionType.CANNOT_ADDED_SECTION;
+import static nextstep.subway.line.domain.LineExceptionType.ALREADY_ADDED_SECTION;
+import static nextstep.subway.line.domain.LineExceptionType.CANNOT_ADDED_SECTION;
 
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,27 +23,31 @@ public class Line extends BaseEntity {
     private LineColor color;
     @Embedded
     private Sections sections = Sections.createEmpty();
+    @Embedded
+    private AdditionalFare additionalFare;
 
     protected Line() {
     }
 
-    private Line(String name, String color) {
+    private Line(String name, String color, int additionalFare) {
         this.name = LineName.from(name);
         this.color = LineColor.from(color);
+        this.additionalFare = AdditionalFare.from(additionalFare);
     }
 
-    private Line(String name, String color, Station upStation, Station downStation, int distance) {
+    private Line(String name, String color, Station upStation, Station downStation, int distance, int additionalFare) {
         this.name = LineName.from(name);
         this.color = LineColor.from(color);
+        this.additionalFare = AdditionalFare.from(additionalFare);
         this.sections.add(Section.of(this, upStation, downStation, distance));
     }
 
-    public static Line of(String name, String color) {
-        return new Line(name, color);
+    public static Line of(String name, String color, int fare) {
+        return new Line(name, color, fare);
     }
 
-    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
-        return new Line(name, color, upStation, downStation, distance);
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance, int fare) {
+        return new Line(name, color, upStation, downStation, distance, fare);
     }
 
     public void update(Line line) {
@@ -62,6 +65,10 @@ public class Line extends BaseEntity {
 
     public LineColor getColor() {
         return color;
+    }
+
+    public AdditionalFare getAdditionalFare() {
+        return additionalFare;
     }
 
     public void addSection(Section section) {
@@ -97,5 +104,9 @@ public class Line extends BaseEntity {
         if (this.sections.containStationBySection(section)) {
             throw new IllegalStateException(ALREADY_ADDED_SECTION.getMessage());
         }
+    }
+
+    public boolean hasFareSections(Sections fareSections) {
+        return this.sections.hasFareSection(fareSections);
     }
 }

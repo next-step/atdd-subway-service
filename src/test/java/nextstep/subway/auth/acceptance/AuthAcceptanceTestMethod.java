@@ -30,7 +30,7 @@ public class AuthAcceptanceTestMethod extends AcceptanceTest {
     }
 
     public static void 토큰_인증_실패(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     public static void 토큰_인증_성공(ExtractableResponse<Response> response) {

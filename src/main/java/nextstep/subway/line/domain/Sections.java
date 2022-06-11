@@ -1,8 +1,8 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.enums.LineExceptionType.CANNOT_REMOVE_STATION_IS_NOT_EXIST;
-import static nextstep.subway.line.enums.LineExceptionType.CANNOT_REMOVE_STATION_WHEN_ONLY_ONE_SECTIONS;
-import static nextstep.subway.line.enums.LineExceptionType.NOT_EXIST_FIRST_SECTION;
+import static nextstep.subway.line.domain.LineExceptionType.CANNOT_REMOVE_STATION_IS_NOT_EXIST;
+import static nextstep.subway.line.domain.LineExceptionType.CANNOT_REMOVE_STATION_WHEN_ONLY_ONE_SECTIONS;
+import static nextstep.subway.line.domain.LineExceptionType.NOT_EXIST_FIRST_SECTION;
 
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
@@ -34,6 +34,14 @@ public class Sections {
 
     public static Sections createEmpty() {
         return new Sections(Lists.newArrayList());
+    }
+
+    public static Sections createFareSections(List<Station> stations) {
+        List<Section> fareSections = Lists.newArrayList();
+        for (int i = 0; i < stations.size() - 1; i++) {
+            fareSections.add(Section.of(stations.get(i), stations.get(i+1)));
+        }
+        return Sections.from(fareSections);
     }
 
     public void add(Section section) {
@@ -87,6 +95,12 @@ public class Sections {
 
     public Optional<Section> findSectionById(Long sectionId) {
         return StreamUtils.filterAndFindFirst(this.sections, section -> section.getId().equals(sectionId));
+    }
+
+    public boolean hasFareSection(Sections fareSections) {
+        return fareSections.getSections().stream()
+                .anyMatch(fareSection -> this.sections.stream()
+                        .anyMatch(section -> section.isEqualsUpDownStation(fareSection)));
     }
 
     private void addMiddleSection(Section upLineSection, Section downLineSection) {

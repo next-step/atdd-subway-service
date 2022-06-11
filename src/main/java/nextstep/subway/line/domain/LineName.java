@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.enums.LineExceptionType.CANNOT_EMPTY_LINE_NAME;
+import static nextstep.subway.line.domain.LineExceptionType.CANNOT_EMPTY_LINE_NAME;
 
 import java.util.Objects;
 import javax.persistence.Column;

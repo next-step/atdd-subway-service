@@ -1,13 +1,12 @@
 package nextstep.subway.favorite.domain;
 
-import static nextstep.subway.favorite.enums.FavoriteExceptionType.FAVORITE_FILED_IS_NOT_NULL;
+import static nextstep.subway.favorite.domain.FavoriteExceptionType.FAVORITE_FILED_IS_NOT_NULL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.stream.Stream;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
-import org.hibernate.annotations.Parameter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -3,6 +3,7 @@ package nextstep.subway.line.application;
 import java.util.List;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -31,15 +32,15 @@ public class LineService {
         Station downStation = stationService.findStationById(request.getDownStationId());
 
         Line persistLine = lineRepository.save(
-            Line.of(request.getName(), request.getColor(), upStation, downStation,
-                request.getDistance()));
+                Line.of(request.getName(), request.getColor(), upStation, downStation, request.getDistance(), request.getFare())
+        );
         return LineResponse.of(persistLine, StreamUtils.mapToList(persistLine.getStations(), StationResponse::of));
     }
 
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return StreamUtils.mapToList(persistLines,
-            line -> LineResponse.of(line, StreamUtils.mapToList(line.getStations(), StationResponse::of)));
+                line -> LineResponse.of(line, StreamUtils.mapToList(line.getStations(), StationResponse::of)));
     }
 
     public Line findLineById(Long id) {
@@ -54,7 +55,7 @@ public class LineService {
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        persistLine.update(Line.of(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(Line.of(lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getFare()));
     }
 
     @Transactional
@@ -80,7 +81,7 @@ public class LineService {
         line.removeSection(station);
     }
 
-    public List<Line> findAll() {
-        return lineRepository.findAll();
+    public Lines findAll() {
+        return Lines.from(lineRepository.findAll());
     }
 }
