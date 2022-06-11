@@ -32,8 +32,6 @@ class PathServiceTest {
     @MockBean
     PathFindService mockPathFindService;
 
-    @Autowired
-    SubwayGraphProvider subwayGraphProvider;
     PathService pathService;
 
     private Station 강남역 = new Station("강남역");
@@ -43,7 +41,7 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(mockStationService, mockLineService, mockPathFindService, subwayGraphProvider);
+        pathService = new PathService(mockStationService, mockLineService, mockPathFindService, new SubwayGraphProvider());
         ReflectionTestUtils.setField(강남역, "id", 1L);
         ReflectionTestUtils.setField(광교역, "id", 2L);
     }
