@@ -56,4 +56,6 @@
 
 ## 2단계 
   - [X] PathService 중복 제거
-  - [X] SectionEdge 접근 제어자 수정 
+  - [X] SectionEdge 접근 제어자 수정
+  - [X] JGraphPathFindService에서 Repository 의존성 제거
+  - [ ] graph 캐시 도입 
