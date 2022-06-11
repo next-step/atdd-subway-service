@@ -18,7 +18,7 @@ public enum ExceptionType {
     CAN_NOT_DELETE_LINE_STATION("해당 노선의 지하철역을 삭제할 수 없습니다."),
     IS_NOT_NULL_LINE_NAME("노선의 이름은 필수값입니다."),
     IS_NOT_NULL_LINE_COLOR("노선의 색상은 필수값입니다."),
-    CAN_NOT_SAME_STATION("경로를 찾으려는 두 역이 같을 수 없습니다."),
+    CAN_NOT_SAME_STATION("두 역이 같을 수 없습니다."),
     IS_NOT_CONNECTED_STATION("출발역과 도착역이 연결되어있지 않습니다."),
     INVALID_TOKEN("토큰정보가 유효하지 않습니다.");
 
