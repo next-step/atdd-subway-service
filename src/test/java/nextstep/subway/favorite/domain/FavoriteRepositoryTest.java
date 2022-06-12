@@ -31,14 +31,12 @@ class FavoriteRepositoryTest extends DataJpaTestWithDatabaseCleanup {
         사용자 = new LoginMember(1L, "email@email.com", 40);
     }
 
-
     @Test
     void 즐겨찾기_저장() {
         Favorite favorite = 즐겨찾기_저장되어_있음(사용자.getId(), 신촌역, 홍대입구역);
         Optional<Favorite> savedFavorite = favoriteRepository.findById(favorite.getId());
 
-        assertThat(savedFavorite.isPresent()).isTrue();
-        assertThat(savedFavorite.get()).isSameAs(favorite);
+        assertThat(savedFavorite).isPresent().containsSame(favorite);
     }
 
     @Test
@@ -54,7 +52,7 @@ class FavoriteRepositoryTest extends DataJpaTestWithDatabaseCleanup {
         Favorite favorite = 즐겨찾기_저장되어_있음(사용자.getId(), 신촌역, 홍대입구역);
         favoriteRepository.delete(favorite);
         Optional<Favorite> deletedFavorite = favoriteRepository.findById(favorite.getId());
-        assertThat(deletedFavorite.isPresent()).isFalse();
+        assertThat(deletedFavorite).isEmpty();
     }
 
     private Station 지하철역_저장되어_있음(String stationName) {

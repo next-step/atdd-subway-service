@@ -123,6 +123,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(deleteResponse);
 
         favorites = 즐겨찾기_목록_조회_요청(사용자토큰).jsonPath().getList("$", FavoriteResponse.class);
-        assertThat(favorites).hasSize(0);
+        assertThat(favorites).isEmpty();
     }
 }

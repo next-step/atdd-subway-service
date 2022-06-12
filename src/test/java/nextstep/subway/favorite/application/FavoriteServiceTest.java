@@ -67,7 +67,7 @@ class FavoriteServiceTest extends DataJpaTestWithDatabaseCleanup {
         Favorite favorite = 즐겨찾기_저장되어_있음(사용자.getId(), 신촌역, 홍대입구역);
         favoriteService.deleteFavorite(favorite.getId());
         Optional<Favorite> deletedFavorite = favoriteRepository.findById(favorite.getId());
-        assertThat(deletedFavorite.isPresent()).isFalse();
+        assertThat(deletedFavorite).isEmpty();
     }
 
     private Station 지하철역_저장되어_있음(String stationName) {

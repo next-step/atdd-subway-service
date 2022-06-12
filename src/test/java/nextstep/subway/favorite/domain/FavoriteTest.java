@@ -37,25 +37,24 @@ class FavoriteTest {
 
     @Test
     void 경로_즐겨찾기_생성_memberId가_없는_경우_예외() {
-        assertThatThrownBy(() -> {
-            경로_즐겨찾기를_생성한다(null, 신촌역, 홍대입구역);
-        }).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> 경로_즐겨찾기를_생성한다(null, 신촌역, 홍대입구역))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 경로_즐겨찾기_생성_출발역이_없는_경우_예외() {
         Station 유령역 = null;
-        assertThatThrownBy(() -> {
-            경로_즐겨찾기를_생성한다(사용자.getId(), 신촌역, 유령역);
-        }).isInstanceOf(IllegalArgumentException.class);
+        Long 사용자ID = 사용자.getId();
+        assertThatThrownBy(() -> 경로_즐겨찾기를_생성한다(사용자ID, 신촌역, 유령역))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 경로_즐겨찾기_생성_도착역이_없는_경우_예외() {
         Station 유령역 = null;
-        assertThatThrownBy(() -> {
-            경로_즐겨찾기를_생성한다(사용자.getId(), 유령역, 신촌역);
-        }).isInstanceOf(IllegalArgumentException.class);
+        Long 사용자ID = 사용자.getId();
+        assertThatThrownBy(() -> 경로_즐겨찾기를_생성한다(사용자ID, 유령역, 신촌역))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     private Favorite 경로_즐겨찾기를_생성한다(Long memberId, Station source, Station target) {
