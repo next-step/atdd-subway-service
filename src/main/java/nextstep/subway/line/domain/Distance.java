@@ -22,11 +22,11 @@ public class Distance {
         return distance;
     }
 
-    public Distance addDistance(Distance targetDistance) {
+    public Distance add(Distance targetDistance) {
         return new Distance(this.distance + targetDistance.distance);
     }
 
-    public Distance subtractDistance(Distance targetDistance) {
+    public Distance subtract(Distance targetDistance) {
         validDistanceCheck(targetDistance);
         return new Distance(this.distance - targetDistance.distance);
     }

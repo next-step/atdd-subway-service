@@ -27,7 +27,7 @@ class DistanceTest {
         final Distance expected = new Distance(result);
 
         // when
-        final Distance actual = 기존_거리.subtractDistance(변경하려는_거리);
+        final Distance actual = 기존_거리.subtract(변경하려는_거리);
 
         // then
         assertThat(actual).isEqualTo(expected);
@@ -42,7 +42,7 @@ class DistanceTest {
 
         // when
         assertThatIllegalArgumentException().isThrownBy(
-                () -> 기존_거리.subtractDistance(변경하려는_거리)
+                () -> 기존_거리.subtract(변경하려는_거리)
         );
     }
 
@@ -55,7 +55,7 @@ class DistanceTest {
         final Distance expected = new Distance(currDistance + newDistance);
 
         // when
-        final Distance actual = 기존_거리.addDistance(추가하는_거리);
+        final Distance actual = 기존_거리.add(추가하는_거리);
 
         // then
         assertThat(actual).isEqualTo(expected);
