@@ -16,6 +16,10 @@ public class Sections {
     private List<Section> elements = new ArrayList<>();
 
     public Station lastUpStation() {
+        if (elements.isEmpty()) {
+            throw new IllegalStateException("구간 목록이 비어 있음");
+        }
+
         Station upStation = elements.get(0).getUpStation();
         while (upStation != null) {
             Optional<Section> prevSection = findPrevSection(upStation);
@@ -85,38 +89,6 @@ public class Sections {
         elements.add(section);
     }
 
-    private void rearrangeElementsFor(Section section) {
-        elements.stream()
-                .filter(it -> it.getUpStation() == section.getUpStation())
-                .findFirst()
-                .ifPresent(it -> {
-                    it.updateUpStation(section.getDownStation(), section.getDistance());
-                    return;
-                });
-
-        elements.stream()
-                .filter(it -> it.getDownStation() == section.getDownStation())
-                .findFirst()
-                .ifPresent(it -> {
-                    it.updateDownStation(section.getUpStation(), section.getDistance());
-                    return;
-                });
-    }
-
-    private void validateStations(Station upStation, Station downStation) {
-        List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
-        }
-    }
-
     public void removeStation(Station station) {
         if (elements.size() <= 1) {
             throw new IllegalStateException("구간이 하나뿐일 때는 삭제할 수 없습니다.");
@@ -134,5 +106,37 @@ public class Sections {
 
         downSection.ifPresent(it -> elements.remove(it));
         upSection.ifPresent(it -> elements.remove(it));
+    }
+
+    private void validateStations(Station upStation, Station downStation) {
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void rearrangeElementsFor(Section section) {
+        elements.stream()
+                .filter(it -> it.getUpStation() == section.getUpStation())
+                .findFirst()
+                .ifPresent(it -> {
+                    it.updateUpStation(section.getDownStation(), section.getDistance());
+                    return;
+                });
+
+        elements.stream()
+                .filter(it -> it.getDownStation() == section.getDownStation())
+                .findFirst()
+                .ifPresent(it -> {
+                    it.updateDownStation(section.getUpStation(), section.getDistance());
+                    return;
+                });
     }
 }

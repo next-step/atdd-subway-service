@@ -1,6 +1,5 @@
 package nextstep.subway.line.unit;
 
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
