@@ -3,13 +3,13 @@ package nextstep.subway.path.application;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.exception.StationNotConnectException;
-import nextstep.subway.path.exception.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,7 +50,7 @@ public class PathFinder {
         try {
             graphPath = shortestPath.getPath(source, target);
         } catch (IllegalArgumentException e) {
-            throw new StationNotFoundException();
+            throw new EntityNotFoundException();
         }
         checkConnected(graphPath);
         return graphPath;
