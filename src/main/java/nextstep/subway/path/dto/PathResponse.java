@@ -9,6 +9,9 @@ public class PathResponse {
     private List<StationResponse> stationResponses;
     private int distance;
 
+    protected PathResponse() {
+    }
+
     public PathResponse(List<StationResponse> stations, int distance) {
         this.stationResponses = stations;
         this.distance = distance;
