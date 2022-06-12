@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +29,7 @@ import org.springframework.http.MediaType;
 @DisplayName("지하철 경로 조회")
 class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선, 이호선, 삼호선, 일호선;
-    private StationResponse 강남역, 양재역, 교대역, 남부터미널역, 용산역, 서울역;
+    private StationResponse 강남역, 양재역, 교대역, 남부터미널역, 용산역, 서울역, 없는역;
 
     /**
      * 교대역    --- *2호선* ---   강남역         서울역 --- *1호선* --- 용산역
@@ -47,6 +48,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
         서울역 = 지하철역_등록되어_있음("서울역").as(StationResponse.class);
         용산역 = 지하철역_등록되어_있음("용산역").as(StationResponse.class);
+        없는역 = new StationResponse(99L, "없는역", LocalDateTime.now(), LocalDateTime.now());
 
         신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
@@ -109,6 +111,11 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("존재하지 않는 역은 경로조회 할 수 없다.")
     void searchNotExistStationPath() {
+        // when
+        ExtractableResponse<Response> 없는역_지하철_경로_조회_결과 = 지하철_경로_조회_요청(없는역, 강남역);
+
+        // then
+        경로_조회_결과_실패(없는역_지하철_경로_조회_결과);
     }
 
     private ExtractableResponse<Response> 지하철_경로_조회_요청(StationResponse 출발역, StationResponse 도착역) {

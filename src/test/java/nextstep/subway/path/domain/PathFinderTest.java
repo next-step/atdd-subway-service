@@ -10,8 +10,6 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,12 +42,11 @@ class PathFinderTest {
     @Test
     @DisplayName("최단 거리 경로, 거리 확인")
     void verifyShortestPathAndDistance() {
-        List<Station> shortestPathStation = pathFinder.getShortestPath(강남역, 남부터미널역);
-        int shortestDistance = pathFinder.getShortestDistance(강남역, 남부터미널역);
+        Path dijkstraPath = pathFinder.getDijkstraPath(강남역, 남부터미널역);
 
         assertAll(
-                () -> assertThat(shortestDistance).isEqualTo(12),
-                () -> assertThat(shortestPathStation).containsExactly(강남역, 양재역, 남부터미널역)
+                () -> assertThat(dijkstraPath.getDistance()).isEqualTo(12),
+                () -> assertThat(dijkstraPath.getStations()).containsExactly(강남역, 양재역, 남부터미널역)
         );
     }
 

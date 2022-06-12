@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -25,6 +26,6 @@ public class PathService {
         Station targetStation = stationService.findStationById(target);
 
         pathFinder.init(lineService.findAllLines());
-        return PathResponse.of(pathFinder.getDijkstraPath(sourceStation, targetStation));
+        return pathFinder.getDijkstraPath(sourceStation, targetStation).toPathResponse();
     }
 }

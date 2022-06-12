@@ -48,12 +48,14 @@ public class PathFinder {
         return graph.addEdge(section.upStation(), section.downStation());
     }
 
-    public GraphPath<Station, DefaultWeightedEdge> getDijkstraPath(Station source, Station target) {
+    public Path getDijkstraPath(Station source, Station target) {
         validateSameSourceAndTarget(source, target);
-        return getOptionalDijkstraPath(source, target).orElseThrow(NotLinkedPathException::new);
+        GraphPath<Station, DefaultWeightedEdge> graphPath = getOptionalDijkstraPath(source, target)
+                .orElseThrow(NotLinkedPathException::new);
+        return new Path(graphPath.getVertexList(), (int) graphPath.getWeight());
     }
 
-    public Optional<GraphPath<Station, DefaultWeightedEdge>> getOptionalDijkstraPath(Station source, Station target) {
+    private Optional<GraphPath<Station, DefaultWeightedEdge>> getOptionalDijkstraPath(Station source, Station target) {
         if (dijkstraShortestPath == null) {
             dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         }
@@ -64,15 +66,5 @@ public class PathFinder {
         if (source.equals(target)) {
             throw new SamePathException();
         }
-    }
-
-    List<Station> getShortestPath(Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> dijkstraPath = getDijkstraPath(source, target);
-        return dijkstraPath.getVertexList();
-    }
-
-    int getShortestDistance(Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> dijkstraPath = getDijkstraPath(source, target);
-        return (int) dijkstraPath.getWeight();
     }
 }
