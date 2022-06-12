@@ -24,6 +24,47 @@ public class Section {
 
     private int distance;
 
+    public static class Builder {
+        private Line line;
+        private Station upStation;
+        private Station downStation;
+        private int distance;
+
+        public Builder() {
+        }
+
+        public Builder(Line line, Station upStation, Station downStation, int distance) {
+            this.line = line;
+            this.upStation = upStation;
+            this.downStation = downStation;
+            this.distance = distance;
+        }
+
+        public Builder line(Line line) {
+            this.line = line;
+            return this;
+        }
+
+        public Builder upStation(Station station) {
+            this.upStation = station;
+            return this;
+        }
+
+        public Builder downStation(Station station) {
+            this.downStation = station;
+            return this;
+        }
+
+        public Builder distance(int distance) {
+            this.distance = distance;
+            return this;
+        }
+
+        public Section build() {
+            return new Section(line, upStation, downStation, distance);
+        }
+    }
+
     public Section() {
     }
 

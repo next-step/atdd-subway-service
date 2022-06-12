@@ -53,12 +53,12 @@ public class Sections {
 
     private void changeLineUpStation(Section upLineStation, Section downLineStation) {
         sections.add(
-                new Section(
-                        upLineStation.getLine(),
-                        downLineStation.getUpStation(),
-                        upLineStation.getDownStation(),
-                        upLineStation.getDistance() + downLineStation.getDistance()
-                )
+                new Section.Builder()
+                        .line(upLineStation.getLine())
+                        .upStation(downLineStation.getUpStation())
+                        .downStation(upLineStation.getDownStation())
+                        .distance(upLineStation.getDistance() + downLineStation.getDistance())
+                        .build()
         );
     }
 
