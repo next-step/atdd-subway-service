@@ -6,7 +6,6 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.getAccessToken;
@@ -64,9 +64,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_결과, 목록_예상_사이즈);
 
         // When
-        ExtractableResponse<Response> 즐겨찾기_삭제_결과 = 즐겨찾기_목록_삭제_요청(즐겨찾기_생성_결과);
+        ExtractableResponse<Response> 즐겨찾기_삭제_결과 = 즐겨찾기_목록_삭제_요청(즐겨찾기_생성_결과.as(FavoriteResponse.class).getId());
         // Then
         즐겨찾기_삭제됨(즐겨찾기_삭제_결과);
+    }
+
+    @DisplayName("즐겨찾기 관리 실패 시나리오")
+    @Test
+    void fail_scenario() {
+        // Given
+        StationResponse 존재하지않는역 = new StationResponse(99L, "존재하지않는역", LocalDateTime.now(), LocalDateTime.now());
+        즐겨찾기_생성을_요청(token, 강남역, 광교역);
+
+        // When
+        ExtractableResponse<Response> 존재하지_않는_역으로_즐겨찾기_생성_결과 = 즐겨찾기_생성을_요청(token, 존재하지않는역, 광교역);
+        // Then
+        즐겨찾기_생성_실패됨(존재하지_않는_역으로_즐겨찾기_생성_결과);
+
+        // When
+        ExtractableResponse<Response> 존재하지_않는_ID로_즐겨찾기_삭제_결과 = 즐겨찾기_목록_삭제_요청(99L);
+        // Then
+        즐겨찾기_삭제_실패됨(존재하지_않는_ID로_즐겨찾기_삭제_결과);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성을_요청(String token, StationResponse 강남역, StationResponse 광교역) {
@@ -89,12 +107,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_목록_삭제_요청(ExtractableResponse<Response> response) {
-        FavoriteResponse favorite = response.as(FavoriteResponse.class);
-
+    private ExtractableResponse<Response> 즐겨찾기_목록_삭제_요청(Long id) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
-                .when().delete("/favorites/{id}", favorite.getId())
+                .when().delete("/favorites/{id}", id)
                 .then().log().all()
                 .extract();
     }
@@ -110,5 +126,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 즐겨찾기_생성_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    private void 즐겨찾기_삭제_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
