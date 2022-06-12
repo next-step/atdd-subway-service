@@ -5,6 +5,7 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.data.geo.Distance;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -110,7 +111,7 @@ public class Line extends BaseEntity {
         return LineResponse.of(this, getStationResponses());
     }
 
-    public void addLineStation(Station upStation, Station downStation, SectionRequest request) {
+    public void addLineStation(Station upStation, Station downStation, int distance) {
         List<Station> stations = getStations();
         boolean isUpStationExisted = isUpStationExisted(stations, upStation); //stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = isDownStationExisted(stations, downStation); //stations.stream().anyMatch(it -> it == downStation);
@@ -125,7 +126,7 @@ public class Line extends BaseEntity {
         }
 
         if (stations.isEmpty()) {
-            sections.add(new Section(this, upStation, downStation, request.getDistance()));
+            sections.add(new Section(this, upStation, downStation, distance));
             return;
         }
 
@@ -133,16 +134,16 @@ public class Line extends BaseEntity {
             sections.stream()
                     .filter(it -> it.getUpStation() == upStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
+                    .ifPresent(it -> it.updateUpStation(downStation, distance));
 
-            sections.add(new Section(this, upStation, downStation, request.getDistance()));
+            sections.add(new Section(this, upStation, downStation, distance));
         } else if (isDownStationExisted) {
             sections.stream()
                     .filter(it -> it.getDownStation() == downStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
 
-            sections.add(new Section(this, upStation, downStation, request.getDistance()));
+            sections.add(new Section(this, upStation, downStation, distance));
         } else {
             throw new RuntimeException();
         }
