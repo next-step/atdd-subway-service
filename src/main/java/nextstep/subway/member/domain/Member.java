@@ -2,6 +2,7 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.member.constant.MemberDiscountPolicy;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;
@@ -53,5 +54,9 @@ public class Member extends BaseEntity {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }
+    }
+
+    public MemberDiscountPolicy getMemberDiscountPolicy() {
+        return MemberDiscountPolicy.convert(age);
     }
 }

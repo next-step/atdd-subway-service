@@ -27,6 +27,10 @@ public class SectionEdge extends DefaultWeightedEdge {
         return downStation;
     }
 
+    public Line getLine() {
+        return line;
+    }
+
     public int getDistance() {
         return distance;
     }

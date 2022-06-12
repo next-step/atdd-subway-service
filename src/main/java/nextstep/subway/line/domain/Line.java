@@ -63,6 +63,10 @@ public class Line extends BaseEntity {
         return sections;
     }
 
+    public Integer getExtraCharge() {
+        return extraCharge;
+    }
+    
     public void addSection(Section section) {
         sections.addSection(section);
         section.setLine(this);
