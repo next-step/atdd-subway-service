@@ -2,7 +2,6 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.InvalidPathException;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -16,23 +15,23 @@ public class PathFinder {
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath;
 
     public PathFinder(List<Line> lines) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-
-        for (Line line : lines) {
-            Sections sections = line.getSections();
-            for (Station station : sections.getStations()) {
-                graph.addVertex(station);
-            }
-        }
-
-        for (Line line : lines) {
-            Sections sections = line.getSections();
-            for (Section section : sections.getList()) {
-                graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().getDistance());
-            }
-        }
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = getInitializedGraph(lines);
         shortestPath = new DijkstraShortestPath<>(graph);
+    }
+
+    private WeightedMultigraph<Station, DefaultWeightedEdge> getInitializedGraph(List<Line> lines) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+
+        for (Line line : lines) {
+            Sections sections = line.getSections();
+            sections.getStations().forEach(graph::addVertex);
+            sections.getList().forEach(section -> {
+                int weight = section.getDistance().getDistance();
+                DefaultWeightedEdge edge = graph.addEdge(section.getUpStation(), section.getDownStation());
+                graph.setEdgeWeight(edge, weight);
+            });
+        }
+        return graph;
     }
 
     public List<Station> findShortestStationList(Station source, Station destination) {
