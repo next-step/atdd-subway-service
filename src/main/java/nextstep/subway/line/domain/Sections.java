@@ -20,28 +20,29 @@ public class Sections {
 
     public void add(Section newSection) {
         List<Station> stations = getStations();
-        boolean isUpStationExisted = containsStation(stations, newSection.getUpStation());
-        boolean isDownStationExisted = containsStation(stations, newSection.getDownStation());
-
-        validateAdd(stations, isUpStationExisted, isDownStationExisted);
-
         if (stations.isEmpty()) {
             elements.add(newSection);
             return;
         }
+        validateAdd(newSection, stations);
+        addSectionInMiddle(newSection);
+        elements.add(newSection);
+    }
 
-        if (isUpStationExisted) {
-            sectionMatchedUpStation(newSection.getUpStation())
-                    .ifPresent(section -> section.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
-            elements.add(newSection);
-            return;
-        }
+    private void addSectionInMiddle(Section newSection) {
+        addUpSection(newSection);
+        addDownSection(newSection);
+    }
 
-        if (isDownStationExisted) {
-            sectionMatchedDownStation(newSection.getDownStation())
-                    .ifPresent(section -> section.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
-            elements.add(newSection);
-        }
+    private void addDownSection(Section newSection) {
+        sectionMatchedDownStation(newSection.getDownStation())
+                .ifPresent(section -> section.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
+
+    }
+
+    private void addUpSection(Section newSection) {
+        sectionMatchedUpStation(newSection.getUpStation())
+                .ifPresent(section -> section.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
     }
 
     private static boolean containsStation(List<Station> stations, Station newStation) {
@@ -49,7 +50,10 @@ public class Sections {
                 .anyMatch(station -> Objects.equals(station, newStation));
     }
 
-    private void validateAdd(List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
+    private void validateAdd(Section newSection, List<Station> stations) {
+        boolean isUpStationExisted = containsStation(stations, newSection.getUpStation());
+        boolean isDownStationExisted = containsStation(stations, newSection.getDownStation());
+
         if (isUpStationExisted && isDownStationExisted) {
             throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
@@ -67,14 +71,11 @@ public class Sections {
         Station downStation = findUpStation();
         stations.add(downStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextSection = sectionMatchedUpStation(finalDownStation);
-            if (!nextSection.isPresent()) {
-                break;
-            }
+        Optional<Section> nextSection = sectionMatchedUpStation(downStation);
+        while (nextSection.isPresent()) {
             downStation = nextSection.get().getDownStation();
             stations.add(downStation);
+            nextSection = sectionMatchedUpStation(downStation);
         }
 
         return stations;
@@ -82,34 +83,31 @@ public class Sections {
 
     private Station findUpStation() {
         Station downStation = elements.get(0).getUpStation();
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextSection = sectionMatchedDownStation(finalDownStation);
-            if (!nextSection.isPresent()) {
-                break;
-            }
+        Optional<Section> nextSection = sectionMatchedDownStation(downStation);
+        while (nextSection.isPresent()) {
             downStation = nextSection.get().getUpStation();
+            nextSection = sectionMatchedDownStation(downStation);
         }
-
         return downStation;
     }
 
     public void removeStation(Line line, Station station) {
         validateRemove();
-
         Optional<Section> upSection = sectionMatchedUpStation(station);
         Optional<Section> downSection = sectionMatchedDownStation(station);
-
         if (upSection.isPresent() && downSection.isPresent()) {
-            Station newUpStation = downSection.get().getUpStation();
-            Station newDownStation = upSection.get().getDownStation();
-            int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
-            elements.add(new Section(line, newUpStation, newDownStation, newDistance));
+            mergeSection(line, upSection.get(), downSection.get());
         }
-
         upSection.ifPresent(section -> elements.remove(section));
         downSection.ifPresent(section -> elements.remove(section));
+    }
+
+    private void mergeSection(Line line, Section upSection, Section downSection) {
+        Station newUpStation = downSection.getUpStation();
+        Station newDownStation = upSection.getDownStation();
+        int newDistance = upSection.getDistance() + downSection.getDistance();
+        Section newSection = new Section(line, newUpStation, newDownStation, newDistance);
+        elements.add(newSection);
     }
 
     private void validateRemove() {
