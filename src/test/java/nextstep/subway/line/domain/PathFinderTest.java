@@ -76,4 +76,18 @@ public class PathFinderTest {
         assertThatThrownBy(() -> pathFinder.findPath(없는역, 강남역)).isInstanceOf(
             RuntimeException.class);
     }
+
+    @Test
+    public void 연결되지않은_정거장_경로찾기_실패() {
+        //given
+        Station 연결안된역1 = new Station("연결안된역1");
+        Station 연결안된역2 = new Station("연결안된역2");
+        Line 연결안된노선 = new Line("연결안된노선", "흰색", 연결안된역1, 연결안된역2, 10);
+        when(lineService.findAllLines()).thenReturn(Arrays.asList(이호선, 신분당선, 삼호선, 연결안된노선));
+        pathFinder = new PathFinder(lineService.findAllLines());
+
+        //when, then
+        assertThatThrownBy(() -> pathFinder.findPath(연결안된역1, 강남역)).isInstanceOf(
+            RuntimeException.class);
+    }
 }
