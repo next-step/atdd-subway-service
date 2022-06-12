@@ -9,7 +9,7 @@ public class Distance {
     private int distance;
 
     protected Distance() {
-
+        // Distance 에서 기본 생성자는 JPA 용도이므로 로직에서 사용하지 마세요.
     }
 
     public Distance(int distance) {
