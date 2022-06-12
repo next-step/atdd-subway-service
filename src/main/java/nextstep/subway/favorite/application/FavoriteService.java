@@ -2,8 +2,9 @@ package nextstep.subway.favorite.application;
 
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
-import nextstep.subway.favorite.dto.FavoriteReqeust;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -11,23 +12,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
+    private final MemberService memberService;
     private final StationService stationService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService) {
+    public FavoriteService(FavoriteRepository favoriteRepository, MemberService memberService, StationService stationService) {
         this.favoriteRepository = favoriteRepository;
+        this.memberService = memberService;
         this.stationService = stationService;
     }
 
     @Transactional
-    public FavoriteResponse saveFavorite(Member member, FavoriteReqeust reqeust) {
-        Station source = stationService.findById(reqeust.getSourceId());
-        Station target = stationService.findById(reqeust.getTargetId());
+    public FavoriteResponse saveFavorite(Long memberId, FavoriteRequest request) {
+        Member member = memberService.findMemberById(memberId);
+        Station source = stationService.findById(request.getSourceId());
+        Station target = stationService.findById(request.getTargetId());
         Favorite favorite = favoriteRepository.save(new Favorite(member, source, target));
 
         return FavoriteResponse.of(favorite);
@@ -37,11 +42,23 @@ public class FavoriteService {
     public List<FavoriteResponse> findAllFavoritesByMemberId(Long memberId) {
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
 
-        return favorites.stream().map(FavoriteResponse::of).collect(Collectors.toList());
+        return favorites.stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public void deleteFavoriteById(Long id) {
         favoriteRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public FavoriteResponse findFavoriteById(Long id) {
+        Optional<Favorite> findFavorite = favoriteRepository.findById(id);
+        if (findFavorite.isPresent()) {
+            return FavoriteResponse.of(findFavorite.get());
+        }
+
+        throw new IllegalArgumentException("요청하신 즐겨찾기 정보가 존재하지 않습니다");
     }
 }

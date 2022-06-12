@@ -22,7 +22,13 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberResponse findMember(Long id) {
+    public Member findMemberById(Long id) {
+        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        return member;
+    }
+
+    @Transactional(readOnly = true)
+    public MemberResponse findMemberResponseById(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
