@@ -12,6 +12,8 @@ public class Fare {
 
     private static final int NOT_CHARGE = 0;
     private static final int PER_CHARGE_DISTANCE = 5;
+    private static final int CHANGE_CHARGE_DISTANCE = 50;
+    private static final int PER_CHARGE_DISTANCE_OVER = 8;
     private static final int STANDARD_DISTANCE = 10;
     private static final int STANDARD_FARE = 1250;
     private static final int DEDUCTION = 350;
@@ -41,10 +43,21 @@ public class Fare {
     }
 
     private int calcAdditionalChargeBy(int distance) {
-        if(distance > STANDARD_DISTANCE){
-            return (int) ((Math.ceil((distance - STANDARD_DISTANCE + 1 ) / PER_CHARGE_DISTANCE) + 1) * 100);
+        int charge = NOT_CHARGE;
+        if (distance > CHANGE_CHARGE_DISTANCE) {
+            int section = distance - CHANGE_CHARGE_DISTANCE;
+            charge += getCharge(section, PER_CHARGE_DISTANCE_OVER);
+            distance -= section;
         }
-        return NOT_CHARGE;
+        if (distance > STANDARD_DISTANCE) {
+            int section = distance - STANDARD_DISTANCE;
+            charge += getCharge(section, PER_CHARGE_DISTANCE);
+        }
+        return charge;
+    }
+
+    private int getCharge(int section, int perChargeDistanceOver) {
+        return (int) ((Math.ceil((section - 1) / perChargeDistanceOver) + 1) * 100);
     }
 
     private int applyToDiscountPolicy(int fare) {
