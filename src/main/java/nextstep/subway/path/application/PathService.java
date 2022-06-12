@@ -9,7 +9,6 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,6 +27,6 @@ public class PathService {
         Station targetStation = stationService.findStationById(targetStationId);
         PathFinder pathFinder = new PathFinder(lines);
         Path path = pathFinder.findPath(sourceStation, targetStation);
-        return new PathResponse(new ArrayList<>(), 10);
+        return PathResponse.from(path);
     }
 }

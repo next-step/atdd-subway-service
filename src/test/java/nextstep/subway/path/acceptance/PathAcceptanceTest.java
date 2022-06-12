@@ -1,5 +1,6 @@
 package nextstep.subway.path.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -102,8 +104,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 지하철_경로_탐색_비정상_시나리오() {
         //given
-        StationResponse 부평역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
-        StationResponse 인천시청역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        StationResponse 부평역 = 지하철역_등록되어_있음("부평역").as(StationResponse.class);
+        StationResponse 인천시청역 = 지하철역_등록되어_있음("인천시청역").as(StationResponse.class);
         LineResponse 인천호선 = 지하철_노선_등록되어_있음(new LineRequest("인천호선", "bg-skyblue-600", 부평역.getId(), 인천시청역.getId(), 10)).as(LineResponse.class);
 
         ExtractableResponse<Response> 교대역_교대역_조회 = 최단경로_조회_요청(교대역, 교대역);
@@ -119,8 +121,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_조회_실패됨(존재하지않는역_교대역_조회);
     }
 
-    private static ExtractableResponse<Response> 최단경로_조회_요청(StationResponse fromStation, StationResponse toStation) {
-        return null;
+    private static ExtractableResponse<Response> 최단경로_조회_요청(StationResponse sourceStation, StationResponse targetStation) {
+        return 최단경로_조회_요청(String.format("/paths?source=%d&target=%d", sourceStation.getId(), targetStation.getId()));
     }
 
     public static void 최단경로_조회됨(ExtractableResponse<Response> response) {
@@ -142,5 +144,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private static void 최단경로_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    private static ExtractableResponse<Response> 최단경로_조회_요청(String uri) {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(uri)
+                .then().log().all()
+                .extract();
     }
 }

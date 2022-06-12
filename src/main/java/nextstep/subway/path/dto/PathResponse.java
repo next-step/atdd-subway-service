@@ -19,6 +19,10 @@ public class PathResponse {
         this.distance = path.getDistance();
     }
 
+    public static PathResponse from(Path path) {
+        return new PathResponse(path);
+    }
+
     public List<StationResponse> getStationResponses() {
         return stationResponses;
     }
