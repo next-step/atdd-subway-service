@@ -27,13 +27,13 @@ public class PathService {
 
     public PathResponse findShortestPath(PathRequest pathRequest) {
         Station source = stationService.findById(pathRequest.getSource());
-        Station target = stationService.findById(pathRequest.getSource());
+        Station target = stationService.findById(pathRequest.getTarget());
         PathFinder path = new PathFinder(lineRepository.findAll());
         List<StationResponse> shortestStationList = path.findShortestStationList(source, target)
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
         int shortestPathLength = path.findShortestPathLength(source, target);
-        return new PathResponse(shortestStationList, new Distance(shortestPathLength));
+        return new PathResponse(shortestStationList, shortestPathLength);
     }
 }
