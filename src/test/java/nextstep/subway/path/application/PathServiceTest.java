@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.StationResponse;
 import nextstep.subway.station.application.StationService;
@@ -38,6 +39,9 @@ class PathServiceTest {
     @Mock
     private LineRepository lineRepository;
 
+    @Mock
+    private Fare fare;
+
     @BeforeEach
     void setUp() {
         일호선.addNewSection(독산, 가산디지털단지, 3);
@@ -51,6 +55,8 @@ class PathServiceTest {
         //given
         when(stationService.findStationById(anyLong())).thenReturn(독산).thenReturn(남구로);
         when(lineRepository.findAll()).thenReturn(Arrays.asList(일호선, 칠호선));
+        when(fare.calcFare()).thenReturn(1250);
+
         PathService pathService = new PathService(lineRepository, stationService);
 
         //when
@@ -61,7 +67,10 @@ class PathServiceTest {
                 .stream()
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
-        assertThat(stationNames).containsExactly("독산", "가산디지털단지", "남구로");
-        assertThat(pathResponse.getDistance()).isEqualTo(9);
+        assertAll(
+                () -> assertThat(stationNames).containsExactly("독산", "가산디지털단지", "남구로"),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(9),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1250)
+        );
     }
 }
