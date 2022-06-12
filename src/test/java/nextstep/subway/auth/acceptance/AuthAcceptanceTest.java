@@ -4,23 +4,18 @@ import static nextstep.subway.utils.AuthMemberApiHelper.로그인을통한_토�
 import static nextstep.subway.utils.AuthMemberApiHelper.토큰을통해_내정보받기;
 import static nextstep.subway.utils.AuthMemberAssertionHelper.가져온_내정보_확인하기;
 import static nextstep.subway.utils.AuthMemberAssertionHelper.인증실패;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Optional;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
@@ -46,7 +41,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         //given
         when(memberRepository.findByEmail(member.getEmail())).thenReturn(Optional.of(member));
         when(memberRepository.findById(null)).thenReturn(Optional.of(member));
-        String token = 로그인을통한_토큰받기(member.getEmail(), member.getPassword()).jsonPath().get("accessToken");
+        String token = 로그인을통한_토큰받기(member.getEmail(), member.getPassword()).jsonPath()
+            .get("accessToken");
 
         //when
         ExtractableResponse<Response> 토큰을통해_내정보받기_response = 토큰을통해_내정보받기(token);
@@ -82,7 +78,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-       //when
+        //when
         ExtractableResponse<Response> 토큰을통해_내정보받기_response = 토큰을통해_내정보받기("wrongToken!!!");
 
         //then
