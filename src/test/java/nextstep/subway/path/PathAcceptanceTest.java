@@ -139,6 +139,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_응답_실패(조회_응답);
     }
 
+    /**
+     * Given 노선에 등록되지 않은 역을 생성
+     * When 노선에 등록되지 않은 역으로 최단경로 조회요청하면
+     * Then 실패한다
+     */
     @Test
     void 노선에_등록되지않은역() {
         // given
