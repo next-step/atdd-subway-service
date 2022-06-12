@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
     public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
@@ -46,10 +46,6 @@ public class LineService {
                     return LineResponse.of(line, stations);
                 })
                 .collect(Collectors.toList());
-    }
-
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     public LineResponse findLineResponseById(Long id) {
@@ -80,5 +76,9 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeSection(station);
+    }
+
+    private Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 }
