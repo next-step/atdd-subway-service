@@ -40,7 +40,9 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id).orElseThrow(() -> {
+            throw new RuntimeException("지하철노선이 없습니다.");
+        });
     }
 
     public LineResponse findLineResponseById(Long id) {
@@ -49,7 +51,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = findLineById(id);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
