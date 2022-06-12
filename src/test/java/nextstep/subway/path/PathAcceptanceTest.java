@@ -68,7 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         공덕역 = StationAcceptanceTest.지하철역_등록되어_있음("공덕역").as(StationResponse.class);
         신길역 = StationAcceptanceTest.지하철역_등록되어_있음("신길역").as(StationResponse.class);
 
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10))
+        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 900))
                 .as(LineResponse.class);
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10))
                 .as(LineResponse.class);
