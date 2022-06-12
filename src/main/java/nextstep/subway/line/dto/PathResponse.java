@@ -9,19 +9,15 @@ import nextstep.subway.station.dto.StationPathDTO;
 public class PathResponse {
 
     private List<StationPathDTO> stations = new LinkedList<>();
-    private int distance;
+    private double distance;
 
-    public static PathResponse of(List<Station> stations, int distance){
+    public static PathResponse of(List<Station> stations, double distance) {
         return new PathResponse(
-            stations.stream()
-                .map(StationPathDTO::of)
-                .collect(Collectors.toList()),
-            distance
-        ) ;
+            stations.stream().map(StationPathDTO::of).collect(Collectors.toList()), distance);
 
     }
 
-    protected PathResponse(List<StationPathDTO> stations, int distance) {
+    protected PathResponse(List<StationPathDTO> stations, double distance) {
         this.stations = stations;
         this.distance = distance;
     }
@@ -30,7 +26,7 @@ public class PathResponse {
         return stations;
     }
 
-    public int getDistance() {
+    public double getDistance() {
         return distance;
     }
 }
