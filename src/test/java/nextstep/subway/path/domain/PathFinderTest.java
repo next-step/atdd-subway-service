@@ -59,4 +59,11 @@ class PathFinderTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> pathFinder.getDijkstraPath(강남역, 서울역));
     }
+
+    @Test
+    @DisplayName("출발, 도착역 동일한 경로 조회시 에러 발생")
+    void sameSourceAndTargetPath() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> pathFinder.getDijkstraPath(강남역, 강남역));
+    }
 }

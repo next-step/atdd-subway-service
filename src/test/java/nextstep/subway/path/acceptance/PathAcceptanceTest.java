@@ -83,7 +83,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 올바르지_않은_지하철_경로_조회_결과 = 지하철_경로_조회_요청(강남역, 서울역);
 
         // then
-        assertThat(올바르지_않은_지하철_경로_조회_결과.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        경로_조회_결과_실패(올바르지_않은_지하철_경로_조회_결과);
     }
 
     /**
@@ -94,6 +94,11 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("출발, 도착역이 동일하면 경로조회 할 수 없다.")
     void searchSameStationPath() {
+        // when
+        ExtractableResponse<Response> 동일한_지하철_경로_조회_결과 = 지하철_경로_조회_요청(강남역, 강남역);
+
+        // then
+        경로_조회_결과_실패(동일한_지하철_경로_조회_결과);
     }
 
     /**
@@ -135,5 +140,9 @@ class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.getDistance()).isEqualTo(거리),
                 () -> assertThat(응답_역_아이디_리스트).containsExactlyElementsOf(예상된_역_아이디_리스트)
         );
+    }
+
+    private void 경로_조회_결과_실패(ExtractableResponse<Response> 응답_결과) {
+        assertThat(응답_결과.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
