@@ -23,10 +23,10 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse findShortestPath(Long departureStationId, Long arrivalStationId) {
-        List<Line> lines = lineService.findAll();
-        PathFinder pathFinder = new PathFinder(lines);
         Station departureStation = stationService.findById(departureStationId);
         Station arrivalStation = stationService.findById(arrivalStationId);
+        List<Line> lines = lineService.findAll();
+        PathFinder pathFinder = new PathFinder(lines);
 
         List<Long> vertexList = pathFinder.findVertexList(departureStation, arrivalStation);
         List<StationResponse> stations = stationService.findAllStationsByIds(vertexList);

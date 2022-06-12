@@ -52,7 +52,7 @@ public class Sections {
     }
 
     public List<Section> getItems() {
-        return new ArrayList<>(items);
+        return Collections.unmodifiableList(items);
     }
 
     public List<Station> getOrderedStations() {

@@ -19,6 +19,7 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional
     public TokenResponse login(TokenRequest request) {
         Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
         member.checkPassword(request.getPassword());
@@ -27,11 +28,8 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
+    @Transactional(readOnly = true)
     public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
-        }
-
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
