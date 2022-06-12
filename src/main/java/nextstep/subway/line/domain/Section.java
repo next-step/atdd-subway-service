@@ -78,18 +78,12 @@ public class Section {
     }
 
     public boolean hasAllStations(Section section) {
-        return hasUpStation(section) && hasDownStation(section);
+        return (upStation.equals(section.upStation) || upStation.equals(section.downStation))
+                && (downStation.equals(section.upStation) || downStation.equals(section.downStation));
     }
 
     public boolean hasAnyStations(Section section) {
-        return hasUpStation(section) || hasDownStation(section);
-    }
-
-    private boolean hasUpStation(Section section) {
-        return upStation.equals(section.upStation) || upStation.equals(section.downStation);
-    }
-
-    private boolean hasDownStation(Section section) {
-        return downStation.equals(section.upStation) || downStation.equals(section.downStation);
+        return (upStation.equals(section.upStation) || upStation.equals(section.downStation))
+                || (downStation.equals(section.upStation) || downStation.equals(section.downStation));
     }
 }
