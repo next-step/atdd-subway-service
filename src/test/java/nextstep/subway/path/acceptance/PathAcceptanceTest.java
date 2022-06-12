@@ -1,4 +1,4 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.path.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -69,7 +69,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 지하철_경로_조회_요청_결과 = 지하철_경로_조회_요청(강남역, 남부터미널역);
 
         // then
-        최단_거리_확인(지하철_경로_조회_요청_결과, 13, Arrays.asList(강남역, 교대역, 남부터미널역));
+        최단_거리_확인(지하철_경로_조회_요청_결과, 12, Arrays.asList(강남역, 양재역, 남부터미널역));
     }
 
     /**

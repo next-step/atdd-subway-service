@@ -117,6 +117,10 @@ public class Sections {
                 .findFirst();
     }
 
+    public List<Section> getSections() {
+        return this.sections;
+    }
+
     public boolean isEmpty() {
         return this.sections.isEmpty();
     }
