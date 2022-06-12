@@ -1,7 +1,7 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -9,8 +9,6 @@ import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class PathService {
@@ -25,7 +23,7 @@ public class PathService {
     public PathResponse findShortestPath(Long source, Long target) {
         Station upStation = stationService.findStationById(source);
         Station downStation = stationService.findStationById(target);
-        List<Line> lines = lineRepository.findAll();
+        Lines lines = new Lines(lineRepository.findAll());
 
         PathFinder pathFinder = new PathFinder();
         GraphPath<Station, DefaultWeightedEdge> shortestPath = pathFinder.findShortestPath(lines, upStation, downStation);
