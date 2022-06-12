@@ -25,4 +25,10 @@ public class LoginMember {
     public Integer getAge() {
         return age;
     }
+
+    public boolean isLogged() {
+        return id != null &&
+                email != null &&
+                age != null;
+    }
 }

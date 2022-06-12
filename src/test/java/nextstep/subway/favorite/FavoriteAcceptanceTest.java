@@ -41,7 +41,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
         역삼역 = 지하철역_등록되어_있음("역삼역").as(StationResponse.class);
-        지하철_노선_등록되어_있음("2호선", "bg-red-600", 강남역, 역삼역, 10);
+        지하철_노선_등록되어_있음("2호선", "bg-red-600", 강남역, 역삼역, 10, 0);
         회원_생성되어_있음("heowc1992@gmail.com", "password", 31);
         사용자 = 로그인_됨("heowc1992@gmail.com", "password").as(TokenResponse.class);
     }

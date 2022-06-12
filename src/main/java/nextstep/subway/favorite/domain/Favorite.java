@@ -1,7 +1,6 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -15,8 +14,7 @@ public class Favorite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Member member;
+    private Long memberId;
 
     @ManyToOne
     private Station source;
@@ -24,12 +22,12 @@ public class Favorite extends BaseEntity {
     @ManyToOne
     private Station target;
 
-    public Favorite(Member member, Station sourceStation, Station targetStation) {
-        requireNonNull(member, "member");
+    public Favorite(Long memberId, Station sourceStation, Station targetStation) {
+        requireNonNull(memberId, "memberId");
         requireNonNull(sourceStation, "sourceStation");
         requireNonNull(targetStation, "targetStation");
         validateSameStation(sourceStation, targetStation);
-        this.member = member;
+        this.memberId = memberId;
         this.source = sourceStation;
         this.target = targetStation;
     }
@@ -47,8 +45,8 @@ public class Favorite extends BaseEntity {
         return id;
     }
 
-    public Member getMember() {
-        return member;
+    public Long getMemberId() {
+        return memberId;
     }
 
     public Station getSource() {

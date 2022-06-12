@@ -38,12 +38,12 @@ public class FavoriteRepositoryTest extends RepositoryTest {
     @DisplayName("Favorite를 저장한다.")
     @Test
     void save() {
-        Favorite favorite = new Favorite(사용자, 강남역, 역삼역);
+        Favorite favorite = new Favorite(사용자.getId(), 강남역, 역삼역);
 
         Favorite createdFavorite = favoriteRepository.save(favorite);
 
         assertThat(createdFavorite).isNotNull();
-        assertThat(createdFavorite.getMember()).isEqualTo(사용자);
+        assertThat(createdFavorite.getMemberId()).isEqualTo(사용자.getId());
         assertThat(createdFavorite.getSource()).isEqualTo(강남역);
         assertThat(createdFavorite.getTarget()).isEqualTo(역삼역);
     }
@@ -51,9 +51,9 @@ public class FavoriteRepositoryTest extends RepositoryTest {
     @DisplayName("Favorite 목록을 조회한다.")
     @Test
     void findByMember() {
-        favoriteRepository.save(new Favorite(사용자, 강남역, 역삼역));
+        favoriteRepository.save(new Favorite(사용자.getId(), 강남역, 역삼역));
 
-        List<Favorite> favorites = favoriteRepository.findByMember(사용자);
+        List<Favorite> favorites = favoriteRepository.findByMemberId(사용자.getId());
 
         assertThat(favorites).hasSize(1);
     }
@@ -61,9 +61,9 @@ public class FavoriteRepositoryTest extends RepositoryTest {
     @DisplayName("Favorite를 제거한다.")
     @Test
     void deleteByIdAndMember() {
-        Favorite favorite = favoriteRepository.save(new Favorite(사용자, 강남역, 역삼역));
+        Favorite favorite = favoriteRepository.save(new Favorite(사용자.getId(), 강남역, 역삼역));
 
-        favoriteRepository.deleteByIdAndMember(favorite.getId(), 사용자);
+        favoriteRepository.deleteByIdAndMemberId(favorite.getId(), 사용자.getId());
 
         List<Favorite> favorites = favoriteRepository.findAll();
         assertThat(favorites).hasSize(0);

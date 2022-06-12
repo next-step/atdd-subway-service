@@ -104,4 +104,11 @@ class LineTest {
         List<Station> stations = 신분당선.getStations();
         assertThat(stations).containsExactly(양재시민의숲역, 정자역);
     }
+
+    @DisplayName("Line에 대한 추가 요금을 확인한다.")
+    @Test
+    void additionalFare() {
+        Fare 추가요금 = 신분당선.getAdditionalFare();
+        assertThat(추가요금.getValue()).isEqualTo(0);
+    }
 }

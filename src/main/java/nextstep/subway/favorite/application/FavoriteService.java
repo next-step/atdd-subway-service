@@ -34,18 +34,18 @@ public class FavoriteService {
         Member member = memberService.findById(loginMember.getId());
         Station sourceStation = stationService.findStationById(request.getSource());
         Station targetStation = stationService.findStationById(request.getTarget());
-        Favorite favorite = new Favorite(member, sourceStation, targetStation);
+        Favorite favorite = new Favorite(member.getId(), sourceStation, targetStation);
         return FavoriteResponse.of(favoriteRepository.save(favorite));
     }
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findAll(LoginMember loginMember) {
         Member member = memberService.findById(loginMember.getId());
-        return FavoriteResponse.of(favoriteRepository.findByMember(member));
+        return FavoriteResponse.of(favoriteRepository.findByMemberId(member.getId()));
     }
 
     public void deleteById(LoginMember loginMember, Long id) {
         Member member = memberService.findById(loginMember.getId());
-        favoriteRepository.deleteByIdAndMember(id, member);
+        favoriteRepository.deleteByIdAndMemberId(id, member.getId());
     }
 }
