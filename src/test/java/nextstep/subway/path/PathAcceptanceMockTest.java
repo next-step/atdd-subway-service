@@ -25,7 +25,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 
 @DisplayName("지하철 경로 조회")
-public class PathAcceptanceTest extends AcceptanceTest {
+public class PathAcceptanceMockTest extends AcceptanceTest {
 
     @MockBean
     private PathService pathService;
@@ -88,4 +88,5 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         최단경로_결과_확인(지하철_경로_조회_요청_response, Arrays.asList("교대역", "남부터미널역", "양재역"), 21);
     }
+
 }
