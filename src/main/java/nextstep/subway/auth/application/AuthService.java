@@ -9,6 +9,8 @@ import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
+
 @Service
 public class AuthService {
     private MemberRepository memberRepository;
@@ -33,7 +35,7 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

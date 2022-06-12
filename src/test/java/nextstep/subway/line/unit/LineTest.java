@@ -73,19 +73,19 @@ public class LineTest {
     @Test
     void 중복_구간_추가_예외() {
         assertThatThrownBy(() -> 분당선.addSection(왕십리역, 선릉역, 왕십리_선릉_길이 - 5))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 거리_초과_구간_추가_예외() {
         assertThatThrownBy(() -> 분당선.addSection(왕십리역, 서울숲역, 왕십리_선릉_길이))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 역_미일치_구간_추가_예외() {
         assertThatThrownBy(() -> 분당선.addSection(청량리역, 서울숲역, 3))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -131,8 +131,8 @@ public class LineTest {
     @Test
     void 역_제거_예외() {
         assertThatThrownBy(() -> 분당선.removeSection(왕십리역))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(IllegalStateException.class);
         assertThatThrownBy(() -> 분당선.removeSection(선릉역))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(IllegalStateException.class);
     }
 }

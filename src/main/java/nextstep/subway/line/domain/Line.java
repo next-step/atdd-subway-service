@@ -102,12 +102,12 @@ public class Line extends BaseEntity {
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
 
         if (stations.isEmpty()) {
@@ -130,13 +130,13 @@ public class Line extends BaseEntity {
 
             sections.add(new Section(this, upStation, downStation, distance));
         } else {
-            throw new RuntimeException();
+            throw new IllegalArgumentException();
         }
     }
 
     public void removeSection(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new IllegalStateException();
         }
 
         Optional<Section> upLineStation = sections.stream()
