@@ -56,8 +56,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ## 인수 테스트 기반 리펙터링 (STEP 1)
 ### 기능 요구사항 
-- [ ] LineService 리팩터링
-- [ ] (선택) LineSectionAcceptanceTest 리팩터링
+- [X] LineService 리팩터링
+- [X] (선택) LineSectionAcceptanceTest 리팩터링
 
 - LineService의 비즈니스 로직을 도메인으로 옮기기
 - 한번에 많은 부분을 고치려 하지 말고 나눠서 부분부분 리팩터링하기
