@@ -27,7 +27,7 @@ public class Sections {
 
         if (hasStation(section.getUpStation())) {
             sections.stream()
-                    .filter(it -> it.getUpStation() == section.getUpStation())
+                    .filter(it -> it.isSameUpStation(section))
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
 
@@ -37,7 +37,7 @@ public class Sections {
 
         if (hasStation(section.getDownStation())) {
             sections.stream()
-                    .filter(it -> it.getDownStation() == section.getDownStation())
+                    .filter(it -> it.isSameDownStation(section))
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
 
