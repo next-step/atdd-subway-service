@@ -47,9 +47,9 @@ public class Sections {
         throw new RuntimeException();
     }
 
-    private static boolean containsStation(List<Station> stations, Station station) {
+    private static boolean containsStation(List<Station> stations, Station newStation) {
         return stations.stream()
-                .anyMatch(it -> Objects.equals(it, station));
+                .anyMatch(station -> Objects.equals(station, newStation));
     }
 
     private void validateAdd(List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
