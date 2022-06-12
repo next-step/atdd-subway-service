@@ -49,6 +49,7 @@ public class PathFinder {
     }
 
     public GraphPath<Station, DefaultWeightedEdge> getDijkstraPath(Station source, Station target) {
+        validateSameSourceAndTarget(source, target);
         return getOptionalDijkstraPath(source, target).orElseThrow(NotLinkedPathException::new);
     }
 
@@ -57,6 +58,12 @@ public class PathFinder {
             dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         }
         return Optional.ofNullable(dijkstraShortestPath.getPath(source, target));
+    }
+
+    private void validateSameSourceAndTarget(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new SamePathException();
+        }
     }
 
     List<Station> getShortestPath(Station source, Station target) {
@@ -68,5 +75,4 @@ public class PathFinder {
         GraphPath<Station, DefaultWeightedEdge> dijkstraPath = getDijkstraPath(source, target);
         return (int) dijkstraPath.getWeight();
     }
-
 }
