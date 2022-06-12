@@ -47,6 +47,7 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteFavorite(Long favoriteId) {
         try {
             favoriteRepository.deleteById(favoriteId);
