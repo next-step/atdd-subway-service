@@ -57,22 +57,6 @@ class LinesTest {
         lineRepository.saveAll(Arrays.asList(일호선, 이호선, 칠호선, 신분당선));
     }
 
-
-    @DisplayName("출발역과 도착역 사이의 경유역들과 최단거리를 조회한다.")
-    @Test
-    void findShortestPath(){
-
-        //when
-        Lines lines = new Lines(lineRepository.findAll());
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = lines.findShortestPath(독산, 신림);
-        List<Station> routes = shortestPath.getVertexList();
-
-        //then
-        List<String> pathStationNames = routes.stream().map(Station::getName).collect(Collectors.toList());
-        assertThat(pathStationNames).containsExactly("독산","가산디지털단지","남구로","신풍","신림");
-        assertThat((int) shortestPath.getWeight()).isEqualTo(25);
-    }
-
     @DisplayName("출발역과 도착역 사이의 경유역들과 최단거리를 조회한다.")
     @Test
     void findShortestPathV2(){
@@ -94,7 +78,7 @@ class LinesTest {
 
         //given
         Lines lines = new Lines(lineRepository.findAll());
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = lines.findShortestPath(독산, 가산디지털단지);
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(독산, 가산디지털단지);
         List<Station> routes = shortestPath.getVertexList();
         int distance = (int) shortestPath.getWeight();
 
@@ -111,7 +95,7 @@ class LinesTest {
 
         //given
         Lines lines = new Lines(lineRepository.findAll());
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = lines.findShortestPath(독산, 구로);
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(독산, 구로);
         List<Station> routes = shortestPath.getVertexList();
         int distance = (int) shortestPath.getWeight();
 
@@ -129,7 +113,7 @@ class LinesTest {
 
         //given
         Lines lines = new Lines(lineRepository.findAll());
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = lines.findShortestPath(강남, 판교);
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(강남, 판교);
         List<Station> routes = shortestPath.getVertexList();
         int distance = (int) shortestPath.getWeight();
 
@@ -146,7 +130,7 @@ class LinesTest {
 
         //given
         Lines lines = new Lines(lineRepository.findAll());
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = lines.findShortestPath(강남, 판교);
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(강남, 판교);
         List<Station> routes = shortestPath.getVertexList();
         int distance = (int) shortestPath.getWeight();
         Member 청소년 = new Member("teenager@test.com","1234",15);

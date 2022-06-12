@@ -4,10 +4,10 @@ import java.util.List;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.collections.Lines;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.vo.SectionEdge;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +28,7 @@ public class PathService {
         Station target = stationService.findStationById(targetId);
         Lines lines = new Lines(lineRepository.findAll());
 
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = lines.findShortestPath(source, target);
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(source, target);
         List<Station> routes = shortestPath.getVertexList();
         int distance = (int) shortestPath.getWeight();
         return PathResponse.of(routes, distance);

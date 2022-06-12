@@ -12,7 +12,6 @@ import nextstep.subway.line.exception.SectionCreateException;
 import nextstep.subway.line.exception.SectionRemoveException;
 import nextstep.subway.path.vo.SectionEdge;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 @Embeddable
@@ -171,18 +170,6 @@ public class Sections {
     private void validateNotFoundRemoveSection(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (!isUpStationExisted && !isDownStationExisted) {
             throw new SectionRemoveException("[ERROR] 삭제할 구간이 존재하지 않습니다.");
-        }
-    }
-
-    public void addVertexByStations(WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap) {
-        for (Station station : getStations()){
-            subwayMap.addVertex(station);
-        }
-    }
-
-    public void addEdgeBySections(WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap) {
-        for (Section section : sections){
-            subwayMap.setEdgeWeight(subwayMap.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
         }
     }
 

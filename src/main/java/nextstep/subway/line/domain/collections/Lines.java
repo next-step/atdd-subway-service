@@ -7,7 +7,6 @@ import nextstep.subway.path.vo.SectionEdge;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class Lines {
@@ -16,11 +15,6 @@ public class Lines {
 
     public Lines(List<Line> lines) {
         this.lines = lines;
-    }
-
-    public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target) {
-        validateEqualStation(source, target);
-        return getShortestPath(source, target);
     }
 
     public GraphPath<Station, SectionEdge> findShortestPathV2(Station source, Station target) {
@@ -45,31 +39,6 @@ public class Lines {
         }
 
         return subwayMap;
-    }
-
-    private GraphPath<Station, DefaultWeightedEdge> getShortestPath(Station source, Station target) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(makeSubwayMap());
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(source, target);
-        validatePath(shortestPath);
-        return shortestPath;
-    }
-
-    private WeightedMultigraph<Station, DefaultWeightedEdge> makeSubwayMap() {
-        WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap
-                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-
-        for (Line line : lines) {
-            line.makeVertexByStationsTo(subwayMap);
-            line.makedgeBySectionsTo(subwayMap);
-        }
-
-        return subwayMap;
-    }
-
-    private void validatePath(GraphPath<Station, DefaultWeightedEdge> path) {
-        if (path == null) {
-            throw new IllegalStateException("[ERROR] 최단경로를 찾을 수 없습니다.");
-        }
     }
 
     private void validatePathV2(GraphPath<Station, SectionEdge> path) {
