@@ -76,4 +76,8 @@ public class LineService {
                 String.format(ErrorMessage.ERROR_LINE_NOT_FOUND, id))
         );
     }
+
+    public List<Line> findAllLines() {
+        return lineRepository.findAll();
+    }
 }

@@ -129,7 +129,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private static void 최단경로_결과_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         PathResponse pathResponse = response.as(PathResponse.class);
-        List<Long> stationIds = pathResponse.getStations().stream()
+        List<Long> stationIds = pathResponse.getStationResponses().stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
 
