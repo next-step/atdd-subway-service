@@ -123,13 +123,13 @@ public class Sections {
 
     private Optional<Section> sectionMatchedUpStation(Station station) {
         return elements.stream()
-                .filter(section -> section.getUpStation() == station)
+                .filter(section -> Objects.equals(section.getUpStation(), station))
                 .findFirst();
     }
 
     private Optional<Section> sectionMatchedDownStation(Station station) {
         return elements.stream()
-                .filter(section -> section.getDownStation() == station)
+                .filter(section -> Objects.equals(section.getDownStation(), station))
                 .findFirst();
     }
 
