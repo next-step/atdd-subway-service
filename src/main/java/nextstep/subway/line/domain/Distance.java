@@ -8,40 +8,40 @@ import javax.persistence.Embeddable;
 public class Distance {
     public static final int MINIMUM_DISTANCE = 1;
 
-    private int distance;
+    private int value;
 
     protected Distance() {
     }
 
-    private Distance(int distance) {
-        validateDistance(distance);
-        this.distance = distance;
+    private Distance(int value) {
+        validateDistance(value);
+        this.value = value;
     }
 
-    public static Distance from(int distance) {
-        return new Distance(distance);
+    public static Distance from(int value) {
+        return new Distance(value);
     }
 
-    private void validateDistance(int distance) {
-        if (distance < MINIMUM_DISTANCE) {
+    private void validateDistance(int value) {
+        if (value < MINIMUM_DISTANCE) {
             throw new IllegalArgumentException(
-                    String.format(ErrorMessage.ERROR_DISTANCE_TOO_SHORT, MINIMUM_DISTANCE, distance)
+                    String.format(ErrorMessage.ERROR_DISTANCE_TOO_SHORT, MINIMUM_DISTANCE, value)
             );
         }
     }
 
     public void add(Distance distance) {
-        validateDistance(this.distance + distance.getDistance());
-        this.distance += distance.getDistance();
+        validateDistance(this.value + distance.value());
+        this.value += distance.value();
     }
 
     public void subtract(Distance distance) {
-        validateDistance(this.distance - distance.getDistance());
-        this.distance -= distance.getDistance();
+        validateDistance(this.value - distance.value());
+        this.value -= distance.value();
     }
 
-    public int getDistance() {
-        return distance;
+    public int value() {
+        return value;
     }
 
     @Override
@@ -57,6 +57,6 @@ public class Distance {
         if (!(obj instanceof Distance)) {
             return false;
         }
-        return ((Distance)obj).getDistance() == distance;
+        return ((Distance)obj).value() == value;
     }
 }

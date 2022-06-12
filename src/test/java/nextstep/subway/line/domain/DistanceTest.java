@@ -11,7 +11,7 @@ public class DistanceTest {
     @DisplayName("Distance 생성")
     void Distance_생성(){
         Distance distance = Distance.from(10);
-        assertThat(distance.getDistance()).isEqualTo(10);
+        assertThat(distance.value()).isEqualTo(10);
     }
 
     @Test
@@ -25,7 +25,7 @@ public class DistanceTest {
     void Distance_더하기(){
         Distance distance = Distance.from(10);
         distance.add(Distance.from(10));
-        assertThat(distance.getDistance()).isEqualTo(20);
+        assertThat(distance.value()).isEqualTo(20);
     }
 
     @Test
@@ -33,6 +33,6 @@ public class DistanceTest {
     void Distance_빼기(){
         Distance distance = Distance.from(10);
         distance.subtract(Distance.from(5));
-        assertThat(distance.getDistance()).isEqualTo(5);
+        assertThat(distance.value()).isEqualTo(5);
     }
 }

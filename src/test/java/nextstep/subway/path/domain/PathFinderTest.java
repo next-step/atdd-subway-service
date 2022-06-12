@@ -43,19 +43,6 @@ public class PathFinderTest {
     }
 
     @Test
-    @DisplayName("PathFinder 생성")
-    void PathFinder_생성() {
-        //when
-        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
-
-        //then
-        assertAll(
-                () -> assertThat(pathFinder.getRouteGraph().vertexSet()).containsExactly(양재역, 강남역, 교대역, 남부터미널역),
-                () -> assertThat(pathFinder.getRouteGraph().edgeSet().size()).isEqualTo(4)
-        );
-    }
-
-    @Test
     @DisplayName("최단 경로 탐색")
     void 최단경로탐색() {
         //given
