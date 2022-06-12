@@ -133,7 +133,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
      *     When 지하철 노선에 등록된 역 목록 조회 요청
      *     Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
      */
-    @DisplayName("지하철 구간을 관리")
+    @DisplayName("지하철 구간을 등록한 뒤 조회하고 삭제한 뒤 조회한다.")
     @Test
     void subwaySectionAcceptanceTest() {
         ExtractableResponse<Response> createResponse = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
