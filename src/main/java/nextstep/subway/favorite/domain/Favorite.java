@@ -29,7 +29,7 @@ public class Favorite extends BaseEntity {
     }
 
     public Favorite(Member member, Station source, Station target) {
-        new Favorite(null, member, source, target);
+        this(null, member, source, target);
     }
 
     public Favorite(Long id, Member member, Station source, Station target) {
@@ -37,6 +37,22 @@ public class Favorite extends BaseEntity {
         this.member = member;
         this.source = source;
         this.target = target;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public Station getSource() {
+        return source;
+    }
+
+    public Station getTarget() {
+        return target;
     }
 
     @Override
