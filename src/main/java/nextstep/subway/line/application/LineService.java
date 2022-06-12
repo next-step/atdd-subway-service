@@ -1,5 +1,9 @@
 package nextstep.subway.line.application;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -8,15 +12,8 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -82,7 +79,7 @@ public class LineService {
         }
 
         if (stations.isEmpty()) {
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+            line.getSections().add(new Section(line, upStation, downStation, new Distance(request.getDistance())));
             return;
         }
 
@@ -90,16 +87,16 @@ public class LineService {
             line.getSections().stream()
                     .filter(it -> it.getUpStation() == upStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
+                    .ifPresent(it -> it.updateUpStation(downStation, new Distance(request.getDistance())));
 
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+            line.getSections().add(new Section(line, upStation, downStation, new Distance(request.getDistance())));
         } else if (isDownStationExisted) {
             line.getSections().stream()
                     .filter(it -> it.getDownStation() == downStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
+                    .ifPresent(it -> it.updateDownStation(upStation, new Distance(request.getDistance())));
 
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+            line.getSections().add(new Section(line, upStation, downStation, new Distance(request.getDistance())));
         } else {
             throw new RuntimeException();
         }
@@ -124,7 +121,7 @@ public class LineService {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
+            line.getSections().add(new Section(line, newUpStation, newDownStation, new Distance(newDistance)));
         }
 
         upLineStation.ifPresent(it -> line.getSections().remove(it));
