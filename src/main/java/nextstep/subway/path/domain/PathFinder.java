@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.error.ErrorCode;
+import nextstep.subway.error.ErrorCodeException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
@@ -25,6 +27,9 @@ public class PathFinder {
         });
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
+        if (graphPath == null) {
+            throw new ErrorCodeException(ErrorCode.SOURCE_NOT_CONNECT_TARGET);
+        }
         List<StationResponse> path = graphPath.getVertexList().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());

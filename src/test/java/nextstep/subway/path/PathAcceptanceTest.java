@@ -102,6 +102,25 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_응답_실패(조회_응답);
     }
 
+    /**
+     * Given 연결되어 있지 않은 노선을 생성한다
+     * When 출발역과 도착역이 같은경우 최단경로를 조회요청하면
+     * Then 실패한다
+     */
+    @Test
+    void 출발역과_도착역이_연결되어있지않다() {
+        // given
+        StationResponse 방화역 = 지하철역_등록되어_있음("방화역").as(StationResponse.class);
+        StationResponse 김포공항역 = 지하철역_등록되어_있음("김포공항역").as(StationResponse.class);
+        지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-puple-600", 방화역.getId(), 김포공항역.getId(), 10)).as(LineResponse.class);
+
+        // when
+        ExtractableResponse<Response> 조회_응답 = 최단경로_조회_요청(강남역, 방화역);
+
+        // then
+        최단경로_응답_실패(조회_응답);
+    }
+
     public static void 최단경로_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
