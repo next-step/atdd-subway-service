@@ -31,10 +31,11 @@ public class FavoriteService {
         return favoriteList.stream().map(FavoriteResponse::of).collect(toList());
     }
 
-    public void saveFavorite(Long memberId, FavoriteCreateRequest request) {
+    public FavoriteResponse saveFavorite(Long memberId, FavoriteCreateRequest request) {
         Station source = stationService.findStationById(request.getSourceStationId());
         Station target = stationService.findStationById(request.getTargetStationId());
-        favoriteRepository.save(new Favorite(memberId,source,target));
+        Favorite newFavorite = favoriteRepository.save(new Favorite(memberId,source,target));
+        return FavoriteResponse.of(newFavorite);
     }
 
     public void deleteFavorite(Long favoriteId) {

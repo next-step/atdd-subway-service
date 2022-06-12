@@ -4,6 +4,10 @@ public class FavoriteCreateRequest {
     private String sourceStationId;
     private String targetStationId;
 
+    protected FavoriteCreateRequest(){
+
+    }
+
     public FavoriteCreateRequest(String sourceStationId, String targetStationId) {
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;

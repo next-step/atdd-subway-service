@@ -74,13 +74,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(사용자토큰);
         즐겨찾기_목록_조회됨(response);
 
-        List<FavoriteResponse> favorites = response.jsonPath().getList("$..*",FavoriteResponse.class);
+        List<FavoriteResponse> favorites = response.jsonPath().getList("$",FavoriteResponse.class);
         assertThat(favorites).hasSize(1);
 
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(사용자토큰, favorites.get(0));
         즐겨찾기_삭제됨(deleteResponse);
 
-        favorites = 즐겨찾기_목록_조회_요청(사용자토큰).jsonPath().getList("$..*",FavoriteResponse.class);
+        favorites = 즐겨찾기_목록_조회_요청(사용자토큰).jsonPath().getList("$",FavoriteResponse.class);
         assertThat(favorites).hasSize(0);
     }
 
@@ -89,7 +89,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all().contentType(ContentType.JSON)
                 .auth().oauth2(token)
-                .when().body(createRequest).put("/favorites")
+                .when().body(createRequest).post("/favorites")
                 .then().log().all()
                 .extract();
     }
