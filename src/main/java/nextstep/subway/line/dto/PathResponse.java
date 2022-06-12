@@ -13,8 +13,9 @@ public class PathResponse {
 
     public static PathResponse of(List<Station> stations, double distance) {
         return new PathResponse(
-            stations.stream().map(StationPathDTO::of).collect(Collectors.toList()), distance);
-
+            stations.stream().map(StationPathDTO::of)
+                .collect(Collectors.toList())
+            , distance);
     }
 
     protected PathResponse(List<StationPathDTO> stations, double distance) {

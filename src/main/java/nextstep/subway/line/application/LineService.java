@@ -1,5 +1,7 @@
 package nextstep.subway.line.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -11,12 +13,10 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @Transactional
 public class LineService {
+
     private LineRepository lineRepository;
     private StationService stationService;
 
@@ -28,7 +28,9 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(
+            new Line(request.getName(), request.getColor(), upStation, downStation,
+                request.getDistance()));
 
         List<StationResponse> stations = persistLine.getStations()
             .stream()
@@ -40,31 +42,32 @@ public class LineService {
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-                .map(line -> {
-                    List<StationResponse> stations = line.getStations()
-                            .stream()
-                            .map(it -> StationResponse.of(it))
-                            .collect(Collectors.toList());
-                    return LineResponse.of(line, stations);
-                })
-                .collect(Collectors.toList());
+            .map(line -> {
+                List<StationResponse> stations = line.getStations()
+                    .stream()
+                    .map(it -> StationResponse.of(it))
+                    .collect(Collectors.toList());
+                return LineResponse.of(line, stations);
+            })
+            .collect(Collectors.toList());
     }
 
-    public List<Line> findAllLines(){
+    public List<Line> findAllLines() {
         return lineRepository.findAll();
     }
 
     public Line findById(Long id) {
-        return lineRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("노선을 찾을수 없습니다"));
+        return lineRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("노선을 찾을수 없습니다"));
     }
 
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findById(id);
         List<StationResponse> stations = persistLine.getStations()
-                .stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
+            .stream()
+            .map(it -> StationResponse.of(it))
+            .collect(Collectors.toList());
         return LineResponse.of(persistLine, stations);
     }
 
@@ -81,7 +84,7 @@ public class LineService {
         Line line = findById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        line.addStation(upStation,downStation,request.getDistance());
+        line.addStation(upStation, downStation, request.getDistance());
     }
 
     public void removeLineStation(Long lineId, Long stationId) {

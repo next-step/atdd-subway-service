@@ -37,8 +37,8 @@ public class SectionsManager {
         stations.add(downStation);
 
         for (int i = 0; i < sections.size(); i++) {
-            Section section = getSectionByUpStation(downStation)
-                .orElseThrow(() -> new SectionManagerException("구간을 찾을수 없습니다"));
+            Section section = getSectionByUpStation(downStation).orElseThrow(
+                () -> new SectionManagerException("구간을 찾을수 없습니다"));
             stations.add(section.getDownStation());
             downStation = section.getDownStation();
         }
@@ -47,11 +47,15 @@ public class SectionsManager {
 
 
     public Optional<Section> getSectionByUpStation(Station station) {
-        return this.sections.stream().filter(it -> it.getUpStation().equals(station)).findFirst();
+        return this.sections.stream()
+            .filter(it -> it.getUpStation().equals(station))
+            .findFirst();
     }
 
     public Optional<Section> getSectionByDownStation(Station station) {
-        return this.sections.stream().filter(it -> it.getDownStation().equals(station)).findFirst();
+        return this.sections.stream()
+            .filter(it -> it.getDownStation().equals(station))
+            .findFirst();
     }
 
     public Section removeSectionWithStation(Station stationForRemove) {
