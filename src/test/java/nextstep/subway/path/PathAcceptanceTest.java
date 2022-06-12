@@ -37,6 +37,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 이호선;
     private LineResponse 삼호선;
     private LineResponse 칠호선;
+    private LineResponse 신강남선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
@@ -71,6 +72,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .as(LineResponse.class);
         칠호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("칠호선", "bg-dark-green-600", 철산역.getId(), 가산디지털단지역.getId(), 5))
                 .as(LineResponse.class);
+        신강남선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신강남선", "bg-dark-blue-600", 가산디지털단지역.getId(), 강남역.getId(), 10))
+                .as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -85,23 +88,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *
      *   Scenario: 지하철 최단 경로를 조회
      *     When 출발역과 도착역의 최단 경로를 조회 하면
-     *     Then 최단경로와 최단거리를 응답
-     *     And  총 거리도 함께 응답함
-     *     And  지하철 이용 요금도 함께 응답함
+     *     Then 최단경로를 응답함
+     *     And  최단거리도 함께 응답함
+     *     And  이용요금도 함께 응답함
+     *
+     *     When 출발역과 도착역의 최단 경로를 조회 하면
+     *     Then 최단경로를 응답함
+     *     And  최단거리도 함께 응답함
+     *     And  이용요금도 함께 응답함 (노선별 추가요금 적용)
      *
      *     Given 회원 등록됨
      *     And   로그인 됨
      *     When 출발역과 도착역의 최단 경로를 조회 하면 (사용자 토큰 포함)
-     *     Then 최단경로와 최단거리를 응답
-     *     And  총 거리도 함께 응답함
-     *     And  할인정책(청소년, 어린이) 적용된 지하철 이용 요금도 함께 응답함
+     *     Then 최단경로를 응답함
+     *     And  최단거리도 함께 응답함
+     *     And  이용요금도 함께 응답함 (할인요금 적용)
      *
-     *     Given 회원 등록됨
-     *     And   로그인 됨
-     *     When 출발역과 도착역의 최단 경로를 조회 하면 (사용자 토큰 포함)
-     *     Then 최단경로와 최단거리를 응답
-     *     And  총 거리도 함께 응답함
-     *     And  추가 정책(노선별) 적용된 지하철 이용 요금도 함께 응답함
      **/
     @DisplayName("지하철역 최단경로(+거리)를 조회한다.")
     @Test
@@ -114,6 +116,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_거리와_최단_경로_목록_검증됨(getResponse, 5, "교대역", "남부터미널역", "양재역");
         요금_검증됨(getResponse, 1250);
 
+        //when
+        ExtractableResponse<Response> getResponse2 = 지하철_최단_경로_조회_요청(철산역.getId(), 양재역.getId());
+
+        //then
+        최단_거리와_최단_경로_목록_검증됨(getResponse2, 25, "철산역", "가산디지털단지역", "강남역", "양재역");
+        요금_검증됨(getResponse2, 2450);
+
         //given
         MemberAcceptanceTest.회원_등록_되어있음("teenager@test.com", "1234", 17);
         MemberAcceptanceTest.회원_등록_되어있음("children@test.com", "1234", 9);
@@ -121,14 +130,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         TokenResponse 어린이 = AuthAcceptanceTest.로그인_되어있음(new TokenRequest("children@test.com", "1234"));
 
         //when
-        ExtractableResponse<Response> getResponse2 = 지하철_최단_경로_조회_요청(교대역.getId(), 양재역.getId(), 청소년);
-        ExtractableResponse<Response> getResponse3 = 지하철_최단_경로_조회_요청(교대역.getId(), 양재역.getId(), 어린이);
+        ExtractableResponse<Response> getResponse3 = 지하철_최단_경로_조회_요청(교대역.getId(), 양재역.getId(), 청소년);
+        ExtractableResponse<Response> getResponse4 = 지하철_최단_경로_조회_요청(교대역.getId(), 양재역.getId(), 어린이);
 
         //then
-        최단_거리와_최단_경로_목록_검증됨(getResponse2, 5, "교대역", "남부터미널역", "양재역");
-        요금_검증됨(getResponse2, 720);
         최단_거리와_최단_경로_목록_검증됨(getResponse3, 5, "교대역", "남부터미널역", "양재역");
-        요금_검증됨(getResponse2, 450);
+        요금_검증됨(getResponse3, 720);
+        최단_거리와_최단_경로_목록_검증됨(getResponse4, 5, "교대역", "남부터미널역", "양재역");
+        요금_검증됨(getResponse4, 450);
 
     }
 
