@@ -21,17 +21,20 @@ public class PathFinder {
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> getInitializedGraph(List<Line> lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-
         for (Line line : lines) {
-            Sections sections = line.getSections();
-            sections.getStations().forEach(graph::addVertex);
-            sections.getList().forEach(section -> {
-                int weight = section.getDistance().getDistance();
-                DefaultWeightedEdge edge = graph.addEdge(section.getUpStation(), section.getDownStation());
-                graph.setEdgeWeight(edge, weight);
-            });
+            initGraph(graph, line);
         }
         return graph;
+    }
+
+    private void initGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
+        Sections sections = line.getSections();
+        sections.getStations().forEach(graph::addVertex);
+        sections.getList().forEach(section -> {
+            int weight = section.getDistance().getDistance();
+            DefaultWeightedEdge edge = graph.addEdge(section.getUpStation(), section.getDownStation());
+            graph.setEdgeWeight(edge, weight);
+        });
     }
 
     public List<Station> findShortestStationList(Station source, Station destination) {
