@@ -15,7 +15,7 @@ public class PathAssertionHelper {
             () -> assertThat(response.jsonPath().getList("stations")).hasSize(3).extracting("name")
                 .containsExactlyElementsOf(stations),
             () -> assertThat(response.jsonPath().get("distance").toString()).isEqualTo(
-                String.valueOf(distance)));
+                String.valueOf(distance / 1.0)));
 
         ;
     }
