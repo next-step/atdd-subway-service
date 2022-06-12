@@ -40,7 +40,7 @@ public class Sections {
             stations.add(downStation);
         }
 
-        return stations;
+        return Collections.unmodifiableList(stations);
     }
 
     public void deleteSection(Station station, Line line) {
