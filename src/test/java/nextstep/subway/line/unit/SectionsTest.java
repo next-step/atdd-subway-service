@@ -35,8 +35,17 @@ public class SectionsTest {
     }
 
     @Test
-    void 중간_역_삽입_구간_추가() {
+    void 중간_역_삽입_구간_추가_1() {
         sections.add(new Section(null, 왕십리역, 서울숲역, 3));
+
+        assertThat(sections.getElements()).containsExactlyInAnyOrder(
+                new Section(null, 왕십리역, 서울숲역, 3),
+                new Section(null, 서울숲역, 선릉역, 4));
+    }
+
+    @Test
+    void 중간_역_삽입_구간_추가_2() {
+        sections.add(new Section(null, 서울숲역, 선릉역, 4));
 
         assertThat(sections.getElements()).containsExactlyInAnyOrder(
                 new Section(null, 왕십리역, 서울숲역, 3),
