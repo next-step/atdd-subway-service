@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JgraphTest {
     @Test
@@ -28,6 +29,38 @@ public class JgraphTest {
         List<String> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
 
         assertThat(shortestPath.size()).isEqualTo(3);
+    }
+
+    @Test
+    public void getDijkstraShortestPath_연결되지_않은_정점_탐색() {
+        String source = "v3";
+        String target = "v1";
+        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        graph.addVertex("v1");
+        graph.addVertex("v2");
+        graph.addVertex("v3");
+        graph.addVertex("v4");
+        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
+        graph.setEdgeWeight(graph.addEdge("v3", "v4"), 100);
+
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        assertThrows(NullPointerException.class, () -> dijkstraShortestPath.getPath(source, target).getVertexList());
+    }
+
+    @Test
+    public void getDijkstraShortestPath_존재하지_않는_정점_탐색() {
+        String source = "v3";
+        String target = "v4";
+        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        graph.addVertex("v1");
+        graph.addVertex("v2");
+        graph.addVertex("v3");
+        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
+        graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
+        graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
+
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        assertThrows(IllegalArgumentException.class, () -> dijkstraShortestPath.getPath(source, target).getVertexList());
     }
 
     @Test
