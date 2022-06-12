@@ -23,7 +23,7 @@ import static org.mockito.BDDMockito.given;
 
 @DisplayName("지하철 최단 경로 조회 로직")
 @ExtendWith(MockitoExtension.class)
-class PathServiceTest {
+public class PathServiceTest {
     @InjectMocks
     private PathService pathService;
     @Mock
@@ -35,6 +35,10 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
+        lines = getLines();
+    }
+
+    public static List<Line> getLines() {
         Station 강남역 = getStation(1L, "강남역");
         Station 양재역 = getStation(2L, "양재역");
         Station 남부터미널역 = getStation(3L, "남부터미널역");
@@ -46,10 +50,10 @@ class PathServiceTest {
 
         삼호선.addSection(new Section(남부터미널역, 양재역, 2));
 
-        lines = Arrays.asList(신분당선, 삼호선, 이호선);
+        return Arrays.asList(신분당선, 삼호선, 이호선);
     }
 
-    private Station getStation(long id, String name) {
+    public static Station getStation(long id, String name) {
         Station station = new Station(name);
         ReflectionTestUtils.setField(station, "id", id);
 

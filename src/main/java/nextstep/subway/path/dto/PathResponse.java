@@ -2,6 +2,8 @@ package nextstep.subway.path.dto;
 
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
+import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
 
@@ -11,9 +13,9 @@ public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
 
-    public PathResponse(List<Station> stations, int distance) {
-        this.stations = mapToStationResponse(stations);
-        this.distance = distance;
+    public PathResponse(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
+        this.stations = mapToStationResponse(shortestPath.getVertexList());
+        this.distance = (int) shortestPath.getWeight();
     }
 
     private List<StationResponse> mapToStationResponse(List<Station> stations) {
