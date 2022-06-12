@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Embeddable
 public class Distance {
-    @Column(name = "distance")
+    @Column(name = "distance", nullable = false)
     private int distance;
 
     public Distance() {
