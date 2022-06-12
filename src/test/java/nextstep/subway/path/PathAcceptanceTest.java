@@ -118,6 +118,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_조회_실패(response);
     }
 
+    @DisplayName("존재하지 않는 지하철역 검색")
+    @Test
+    void findShortestPath_exception03() {
+        ExtractableResponse<Response> response = 최단경로_조회(종합운동장, new StationResponse(100L, "NEXTSTEP"));
+
+        최단경로_조회_실패(response);
+    }
+
     public static ExtractableResponse<Response> 최단경로_조회(StationResponse source, StationResponse target) {
         return RestAssured
                 .given().log().all()
