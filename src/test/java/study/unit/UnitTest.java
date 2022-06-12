@@ -20,7 +20,7 @@ public class UnitTest {
         Line newLine = new Line(newName, "GREEN");
 
         // when
-        line.update(newLine);
+        line.updateNameColor(newLine.getName(), newLine.getColor());
 
         // then
         assertThat(line.getName()).isEqualTo(newName);
