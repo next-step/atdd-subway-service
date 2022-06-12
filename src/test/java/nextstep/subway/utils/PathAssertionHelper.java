@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 
 public class PathAssertionHelper {
 
@@ -20,4 +21,7 @@ public class PathAssertionHelper {
         ;
     }
 
+    public static void 최단경로_조회불가(ExtractableResponse<Response> response){
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }
