@@ -1,20 +1,22 @@
 package nextstep.subway.member.constant;
 
-public enum MemberDiscountPolicy {
-    CHILD(0.5), TEENAGER(0.2), GENERAL(0);
+public enum MemberFarePolicy {
+    CHILD(0.5, 350), TEENAGER(0.2, 350), GENERAL(0, 0);
 
 
     private final double discountPercent;
+    private final int deductionAmount;
 
-    MemberDiscountPolicy(double discountPercent){
+    MemberFarePolicy(double discountPercent, int deductionAmount) {
         this.discountPercent = discountPercent;
+        this.deductionAmount = deductionAmount;
     }
 
-    public static MemberDiscountPolicy convert(Integer age) {
-        if(isTeenager(age)){
+    public static MemberFarePolicy convert(Integer age) {
+        if (isTeenager(age)) {
             return TEENAGER;
         }
-        if(isChild(age)){
+        if (isChild(age)) {
             return CHILD;
         }
         return GENERAL;
@@ -30,5 +32,9 @@ public enum MemberDiscountPolicy {
 
     public double getDiscountPercent() {
         return discountPercent;
+    }
+
+    public int getDeductionAmount() {
+        return deductionAmount;
     }
 }

@@ -2,8 +2,7 @@ package nextstep.subway.path.domain;
 
 import java.util.List;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.member.constant.MemberDiscountPolicy;
-import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.constant.MemberFarePolicy;
 import nextstep.subway.path.vo.SectionEdge;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -16,20 +15,19 @@ public class Fare {
     private static final int PER_CHARGE_DISTANCE_OVER = 8;
     private static final int STANDARD_DISTANCE = 10;
     private static final int STANDARD_FARE = 1250;
-    private static final int DEDUCTION = 350;
 
     private final GraphPath<Station, SectionEdge> shortestPath;
-    private final Member member;
+    private final MemberFarePolicy memberFarePolicy;
 
-    public Fare(GraphPath<Station, SectionEdge> shortestPath, Member member) {
+    public Fare(GraphPath<Station, SectionEdge> shortestPath, MemberFarePolicy memberFarePolicy) {
         this.shortestPath = shortestPath;
-        this.member = member;
+        this.memberFarePolicy = memberFarePolicy;
     }
 
     public int calcFare() {
         int distance = (int) shortestPath.getWeight();
         int fare = STANDARD_FARE + calcExtraChargeByLine() + calcAdditionalChargeBy(distance) ;
-        return applyToDiscountPolicy(fare);
+        return applyFarePolicyTo(fare);
     }
 
     private int calcExtraChargeByLine() {
@@ -60,10 +58,9 @@ public class Fare {
         return (int) ((Math.ceil((section - 1) / perChargeDistanceOver) + 1) * 100);
     }
 
-    private int applyToDiscountPolicy(int fare) {
-        if(member != null){
-            MemberDiscountPolicy memberDiscountPolicy = member.getMemberDiscountPolicy();
-            fare = (int) Math.ceil((fare - DEDUCTION) * (1-memberDiscountPolicy.getDiscountPercent()));
+    private int applyFarePolicyTo(int fare) {
+        if (memberFarePolicy != null) {
+            return (int) Math.ceil((fare - memberFarePolicy.getDeductionAmount()) * (1 - memberFarePolicy.getDiscountPercent()));
         }
         return fare;
     }

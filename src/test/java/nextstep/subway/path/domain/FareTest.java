@@ -7,6 +7,7 @@ import java.util.Arrays;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.collections.Lines;
+import nextstep.subway.member.constant.MemberFarePolicy;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.path.vo.SectionEdge;
 import nextstep.subway.station.domain.Station;
@@ -123,10 +124,8 @@ class FareTest {
     void calcFare_discount(){
         //given
         GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(강남, 판교);
-        Member 청소년 = new Member("teenager@test.com","1234",15);
-        Member 어린이 = new Member("teenager@test.com","1234",9);
-        Fare fare1 = new Fare(shortestPath, 청소년);
-        Fare fare2 = new Fare(shortestPath, 어린이);
+        Fare fare1 = new Fare(shortestPath, MemberFarePolicy.TEENAGER);
+        Fare fare2 = new Fare(shortestPath, MemberFarePolicy.CHILD);
 
         //when
         int teenagerFare = fare1.calcFare();
@@ -142,12 +141,9 @@ class FareTest {
     void calcFare_complex(){
         //given
         GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(독산, 수지);
-        Member 일반 = new Member("general@test.com", "1234", 25);
-        Member 청소년 = new Member("teenager@test.com", "1234", 15);
-        Member 어린이 = new Member("child@test.com", "1234", 9);
-        Fare fare1 = new Fare(shortestPath, 일반);
-        Fare fare2 = new Fare(shortestPath, 청소년);
-        Fare fare3 = new Fare(shortestPath, 어린이);
+        Fare fare1 = new Fare(shortestPath, MemberFarePolicy.GENERAL);
+        Fare fare2 = new Fare(shortestPath, MemberFarePolicy.TEENAGER);
+        Fare fare3 = new Fare(shortestPath, MemberFarePolicy.CHILD);
 
         //when
         int generalFare = fare1.calcFare();
