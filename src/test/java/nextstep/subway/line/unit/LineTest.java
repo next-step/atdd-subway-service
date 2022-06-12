@@ -19,6 +19,7 @@ public class LineTest {
     Station 선릉역;
     Station 도곡역;
     Line 분당선;
+    int 왕십리_선릉_길이;
 
     @BeforeEach
     void setup() {
@@ -28,7 +29,9 @@ public class LineTest {
         선릉역 = new Station("선릉역");
         도곡역 = new Station("도곡역");
 
-        분당선 = new Line("분당선", "bg-yellow-600", 왕십리역, 선릉역, 7);
+        왕십리_선릉_길이 = 7;
+
+        분당선 = new Line("분당선", "bg-yellow-600", 왕십리역, 선릉역, 왕십리_선릉_길이);
     }
 
     @Test
@@ -45,7 +48,7 @@ public class LineTest {
 
     @Test
     void 중간_역_추가() {
-        분당선.addSection(왕십리역, 서울숲역, 2);
+        분당선.addSection(왕십리역, 서울숲역, 왕십리_선릉_길이 - 5);
 
         List<Station> stations = 분당선.getStations();
         assertThat(stations).containsExactly(왕십리역, 서울숲역, 선릉역);
@@ -65,6 +68,24 @@ public class LineTest {
 
         List<Station> stations = 분당선.getStations();
         assertThat(stations).containsExactly(왕십리역, 선릉역, 도곡역);
+    }
+
+    @Test
+    void 중복_구간_추가_예외() {
+        assertThatThrownBy(() -> 분당선.addSection(왕십리역, 선릉역, 왕십리_선릉_길이 - 5))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void 거리_초과_구간_추가_예외() {
+        assertThatThrownBy(() -> 분당선.addSection(왕십리역, 서울숲역, 왕십리_선릉_길이))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void 역_미일치_구간_추가_예외() {
+        assertThatThrownBy(() -> 분당선.addSection(청량리역, 서울숲역, 3))
+                .isInstanceOf(RuntimeException.class);
     }
 
     @Test
