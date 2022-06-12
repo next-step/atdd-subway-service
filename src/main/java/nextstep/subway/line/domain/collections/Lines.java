@@ -3,6 +3,7 @@ package nextstep.subway.line.domain.collections;
 import java.util.List;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.path.vo.SectionEdge;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -20,6 +21,10 @@ public class Lines {
     public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target) {
         validateEqualStation(source, target);
         return getShortestPath(source, target);
+    }
+
+    public GraphPath<Station, SectionEdge> findShortestPathV2(Station source, Station target) {
+        return null;
     }
 
     private GraphPath<Station, DefaultWeightedEdge> getShortestPath(Station source, Station target) {

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.path.vo.SectionEdge;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.jgrapht.GraphPath;
@@ -64,6 +65,21 @@ class LinesTest {
         //when
         Lines lines = new Lines(lineRepository.findAll());
         GraphPath<Station, DefaultWeightedEdge> shortestPath = lines.findShortestPath(독산, 신림);
+        List<Station> routes = shortestPath.getVertexList();
+
+        //then
+        List<String> pathStationNames = routes.stream().map(Station::getName).collect(Collectors.toList());
+        assertThat(pathStationNames).containsExactly("독산","가산디지털단지","남구로","신풍","신림");
+        assertThat((int) shortestPath.getWeight()).isEqualTo(25);
+    }
+
+    @DisplayName("출발역과 도착역 사이의 경유역들과 최단거리를 조회한다.")
+    @Test
+    void findShortestPathV2(){
+
+        //when
+        Lines lines = new Lines(lineRepository.findAll());
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(독산, 신림);
         List<Station> routes = shortestPath.getVertexList();
 
         //then
