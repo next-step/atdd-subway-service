@@ -14,8 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -119,6 +121,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회_조회됨(response, 15, 2_250);
     }
 
+    @DisplayName("최단 경로 10km~50km & 로그인 사용자 & 노선 추가 요금 조회 - 성공")
+    @Test
+    void 로그인사용자_최단_경로_조회_성공_5() {
+        // When 사용자 로그인 되어 있음
+        String email = "test@test.com";
+        String password = "password";
+        회원_생성을_요청(email, password, 10);
+        String 사용자_토큰 = 로그인_되어_있음(email, password);
+        // when 최단 경로 조회 요청
+        ExtractableResponse<Response> response = 로그인사용자_최단_경로_조회_요청(사용자_토큰, 교대역.getId(), 판교역.getId());
+
+        // Then 최단 경로 조회됨
+        최단_경로_조회_조회됨(response, 15, 2_155);
+    }
+
     @DisplayName("최단 경로 조회 - 실패 (출발역과 도착역이 같은 경우)")
     @Test
     void 최단_경로_조회_실패_1() {
@@ -152,6 +169,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceId, Long targetId) {
         return RestAssured
                 .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", sourceId, targetId)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 로그인사용자_최단_경로_조회_요청(String accessToken, Long sourceId, Long targetId) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={sourceId}&target={targetId}", sourceId, targetId)
                 .then().log().all()

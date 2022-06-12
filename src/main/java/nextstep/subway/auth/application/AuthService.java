@@ -29,7 +29,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            return new LoginMember(19);
         }
 
         String email = jwtTokenProvider.getPayload(credentials);

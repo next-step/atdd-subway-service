@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Path;
@@ -25,7 +26,7 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
-    public PathResponse findPath(Long sourceId, Long targetId) {
+    public PathResponse findPath(LoginMember loginMember, Long sourceId, Long targetId) {
         if (sourceId.equals(targetId)) {
             throw new RuntimeException("출발역과 도착역이 같습니다.");
         }
@@ -34,7 +35,7 @@ public class PathService {
         Station sourceStation = stationService.findStationById(sourceId);
         Station targetStation = stationService.findStationById(targetId);
 
-        PathResult result = Path.of(lines).findShortest(sourceStation, targetStation);
+        PathResult result = Path.of(lines).findShortest(loginMember, sourceStation, targetStation);
 
         return PathResponse.of(
                 result.getStations().stream()

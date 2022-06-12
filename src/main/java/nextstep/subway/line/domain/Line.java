@@ -71,4 +71,15 @@ public class Line extends BaseEntity {
     public void removeSection(Station station) {
         sections.remove(this, station);
     }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", extraFare=" + extraFare +
+                ", sections=" + sections +
+                '}';
+    }
 }

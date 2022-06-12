@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @Entity
 public class Section {
@@ -62,6 +63,10 @@ public class Section {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return line.getExtraFare();
     }
 
     public void updateUpStation(Section section) {
