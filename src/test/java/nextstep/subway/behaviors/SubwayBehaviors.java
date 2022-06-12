@@ -91,7 +91,11 @@ public class SubwayBehaviors {
         LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
         return 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
     }
-
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,
+                                              StationResponse downStation, int distance, int extraCharge) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraCharge);
+        return 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
+    }
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
         return RestAssured
                 .given().log().all()
