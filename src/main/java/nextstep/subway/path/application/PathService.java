@@ -1,5 +1,7 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.error.ErrorCode;
+import nextstep.subway.error.ErrorCodeException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.PathFinder;
@@ -25,6 +27,9 @@ public class PathService {
     public PathResponse findPath(Long sourceId, Long targetId) {
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
+        if (source == target) {
+            throw new ErrorCodeException(ErrorCode.SOURCE_EQUALS_TARGET);
+        }
         List<Line> lines = lineService.findAll();
         return pathFinder.findPath(lines, source, target);
     }

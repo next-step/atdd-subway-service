@@ -1,12 +1,10 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.error.ErrorCodeException;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/paths")
@@ -20,5 +18,10 @@ public class PathController {
     @GetMapping
     public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target) {
         return ResponseEntity.ok(pathService.findPath(source, target));
+    }
+
+    @ExceptionHandler(ErrorCodeException.class)
+    public ResponseEntity handleError(ErrorCodeException e) {
+        return ResponseEntity.badRequest().build();
     }
 }

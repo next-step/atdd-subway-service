@@ -89,8 +89,25 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_거리_일치함(조회_응답, 12);
     }
 
+    /**
+     * When 출발역과 도착역이 같은경우 최단경로를 조회요청하면
+     * Then 실패한다
+     */
+    @Test
+    void 출발역과_도착역이_같은경우() {
+        // when
+        ExtractableResponse<Response> 조회_응답 = 최단경로_조회_요청(강남역, 강남역);
+
+        // then
+        최단경로_응답_실패(조회_응답);
+    }
+
     public static void 최단경로_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 최단경로_응답_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 최단경로_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
