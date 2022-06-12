@@ -1,4 +1,4 @@
-package nextstep.subway.path;
+package nextstep.subway.path.domain;
 
 import java.util.List;
 import nextstep.subway.line.domain.Distance;
@@ -10,7 +10,9 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PathFinder {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
             DefaultWeightedEdge.class);
@@ -53,7 +55,7 @@ public class PathFinder {
         return (int) dijkstraPath.getWeight();
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> getDijkstraPath(Station source, Station target) {
+    public GraphPath<Station, DefaultWeightedEdge> getDijkstraPath(Station source, Station target) {
         if (dijkstraShortestPath == null) {
             dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         }
