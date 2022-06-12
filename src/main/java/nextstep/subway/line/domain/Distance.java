@@ -54,7 +54,7 @@ public class Distance {
         if (this == obj) {
             return true;
         }
-        if (obj == null || !(obj instanceof Distance)) {
+        if (!(obj instanceof Distance)) {
             return false;
         }
         return ((Distance)obj).getDistance() == distance;
