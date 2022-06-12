@@ -11,9 +11,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 
-import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTest.나의_정보_조회_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -54,17 +54,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-        // Given
-        ExtractableResponse<Response> response = (ExtractableResponse<Response>) ResponseEntity.ok().body(new TokenResponse("garbageToken"));
-
         // When
-        ExtractableResponse<Response> 유효하지_않은_토큰으로_회원_정보_조회_요청_결과 = 회원_정보_조회_요청(response);
+        ExtractableResponse<Response> 유효하지_않은_토큰으로_나의_정보_관리_요청_결과 = 나의_정보_조회_요청("garbageToken");
 
         // Then
-        회원_정보_조회_실패됨(유효하지_않은_토큰으로_회원_정보_조회_요청_결과);
+        로그인_실패됨(유효하지_않은_토큰으로_나의_정보_관리_요청_결과);
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
 
         return RestAssured.given().log().all()
@@ -85,6 +82,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private void 로그인_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static String getAccessToken(ExtractableResponse<Response> tokenResponse) {
+        return tokenResponse.as(TokenResponse.class).getAccessToken();
     }
 
 }
