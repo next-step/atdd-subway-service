@@ -49,7 +49,7 @@ public class PathFinderTest {
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
         //when
-        Path path = pathFinder.findPath(교대역, 양재역);
+        Path path = pathFinder.findShortestPath(교대역, 양재역);
 
         //then
         assertAll(
@@ -65,7 +65,7 @@ public class PathFinderTest {
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> pathFinder.findPath(교대역, 교대역));
+        assertThrows(IllegalArgumentException.class, () -> pathFinder.findShortestPath(교대역, 교대역));
     }
 
     @Test
@@ -78,7 +78,7 @@ public class PathFinderTest {
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 인천선));
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> pathFinder.findPath(교대역, 부평역));
+        assertThrows(IllegalArgumentException.class, () -> pathFinder.findShortestPath(교대역, 부평역));
     }
 
     @Test
@@ -89,6 +89,6 @@ public class PathFinderTest {
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> pathFinder.findPath(교대역, 존재하지않는역));
+        assertThrows(IllegalArgumentException.class, () -> pathFinder.findShortestPath(교대역, 존재하지않는역));
     }
 }

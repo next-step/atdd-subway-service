@@ -14,10 +14,13 @@ public class PathFinder {
     private DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public PathFinder(List<Line> lines) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> routeGraph =
-                new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
-        registerLines(routeGraph, lines);
-        dijkstraShortestPath = new DijkstraShortestPath(routeGraph);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        registerLines(graph, lines);
+        this.dijkstraShortestPath = new DijkstraShortestPath(graph);
+    }
+
+    public static PathFinder from(List<Line> lines) {
+        return new PathFinder(lines);
     }
 
     private void registerLines(WeightedMultigraph<Station, DefaultWeightedEdge> routeGraph, List<Line> lines) {
@@ -34,18 +37,20 @@ public class PathFinder {
 
     private void addEdges(WeightedMultigraph<Station, DefaultWeightedEdge> routeGraph, Line line) {
         line.getSections().stream()
-                .forEach(section -> routeGraph.setEdgeWeight(addEdge(routeGraph, section), section.getDistance().value()));
+                .forEach(section -> routeGraph.setEdgeWeight(
+                        addEdge(routeGraph, section), section.getDistance().value())
+                );
     }
 
     private DefaultWeightedEdge addEdge(WeightedMultigraph<Station, DefaultWeightedEdge> routeGraph, Section section) {
         return routeGraph.addEdge(section.getUpStation(), section.getDownStation());
     }
 
-    public Path findPath(Station sourceStation, Station targetStation) {
+    public Path findShortestPath(Station sourceStation, Station targetStation) {
         validateInputStations(sourceStation, targetStation);
-        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
-        validateResult(path);
-        return Path.from(path);
+        GraphPath<Station, DefaultWeightedEdge> resultPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        validateResult(resultPath);
+        return Path.of(resultPath.getVertexList(), (int) resultPath.getWeight());
     }
 
     private void validateResult(GraphPath<Station, DefaultWeightedEdge> path) {
