@@ -12,7 +12,7 @@ public class SectionEdge extends DefaultWeightedEdge {
     private final Line line;
     private final int distance;
 
-    public SectionEdge(Section section){
+    public SectionEdge(Section section) {
         this.upStation = section.getUpStation();
         this.downStation = section.getDownStation();
         this.line = section.getLine();

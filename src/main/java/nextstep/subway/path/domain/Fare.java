@@ -26,7 +26,7 @@ public class Fare {
 
     public int calcFare() {
         int distance = (int) shortestPath.getWeight();
-        int fare = STANDARD_FARE + calcExtraChargeByLine() + calcAdditionalChargeBy(distance) ;
+        int fare = STANDARD_FARE + calcExtraChargeByLine() + calcAdditionalChargeBy(distance);
         return applyFarePolicyTo(fare);
     }
 
