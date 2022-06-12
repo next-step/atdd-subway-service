@@ -26,22 +26,12 @@ public class Sections {
         }
 
         if (hasStation(section.getUpStation())) {
-            sections.stream()
-                    .filter(it -> it.isSameUpStation(section))
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
-            sections.add(section);
+            addFromUpStation(section);
             return;
         }
 
         if (hasStation(section.getDownStation())) {
-            sections.stream()
-                    .filter(it -> it.isSameDownStation(section))
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-
-            sections.add(section);
+            addFromDownStation(section);
             return;
         }
         throw new RuntimeException();
@@ -118,6 +108,25 @@ public class Sections {
 
     private boolean hasStation(Station station) {
         return getStations().stream().anyMatch(it -> it == station);
+    }
+
+
+    private void addFromDownStation(Section section) {
+        sections.stream()
+                .filter(it -> it.isSameDownStation(section))
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+
+        sections.add(section);
+    }
+
+    private void addFromUpStation(Section section) {
+        sections.stream()
+                .filter(it -> it.isSameUpStation(section))
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+
+        sections.add(section);
     }
 
     private void validateAddSection(Section section) {
