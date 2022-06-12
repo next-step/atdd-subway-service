@@ -41,11 +41,22 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
+        TokenRequest tokenRequest = new TokenRequest("toughchb@gmail.com", "wrong_password");
+
+        //when: 로그인 요청
+        ExtractableResponse<Response> response = 로그인_요청(tokenRequest);
+
+        //then: 로그인 실패
+        로그인_실패(response);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+    }
+
+    private void 로그인_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private void 로그인_성공(ExtractableResponse<Response> response) {
