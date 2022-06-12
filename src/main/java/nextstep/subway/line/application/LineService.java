@@ -12,10 +12,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,41 +34,30 @@ public class LineService {
                 Line.of(request.getName(), request.getColor(), upStation, downStation, request.getDistance())
         );
 
-        List<StationResponse> stations = persistLine.getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(persistLine);
     }
 
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
 
         return persistLines.stream()
-                .map(line -> {
-                    List<StationResponse> stations = line.getStations().stream()
-                            .map(StationResponse::of)
-                            .collect(Collectors.toList());
-                    return LineResponse.of(line, stations);
-                })
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
-
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        List<StationResponse> stations = persistLine.getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(persistLine);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        Line persistLine = lineRepository.findById(id).orElseThrow(NoSuchElementException::new);
+
+        persistLine.update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 
     public void deleteLineById(Long id) {
