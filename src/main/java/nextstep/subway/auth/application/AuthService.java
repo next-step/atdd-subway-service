@@ -1,5 +1,6 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.auth.domain.ActualMember;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -33,7 +34,7 @@ public class AuthService {
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = findMember(email);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+        return new ActualMember(member.getId(), member.getEmail(), member.getAge());
     }
 
     private Member findMember(String email) {
