@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.line.domain.collections.Sections;
+import nextstep.subway.path.vo.SectionEdge;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -86,5 +87,12 @@ public class Line extends BaseEntity {
 
     public void makedgeBySectionsTo(WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap) {
         sections.addEdgeBySections(subwayMap);
+
+    }  public void makeVertexByStationsToV2(WeightedMultigraph<Station, SectionEdge> subwayMap) {
+        sections.addVertexByStationsV2(subwayMap);
+    }
+
+    public void makeEdgeBySectionsToV2(WeightedMultigraph<Station, SectionEdge> subwayMap) {
+        sections.addEdgeBySectionsV2(subwayMap);
     }
 }
