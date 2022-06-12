@@ -62,7 +62,7 @@ class FareTest {
     @Test
     void calcFare(){
         //given
-        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(독산, 구로);
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(독산, 가산디지털단지);
         Fare fare = new Fare(shortestPath, null);
 
         //when
@@ -83,7 +83,7 @@ class FareTest {
         int finalFare = fare.calcFare();
 
         //then
-        assertThat(finalFare).isEqualTo(1450);
+        assertThat(finalFare).isEqualTo(1550);
     }
 
     @DisplayName("요금을 계산한다.(노선 추가요금)")
@@ -97,7 +97,7 @@ class FareTest {
         int finalFare = fare.calcFare();
 
         //then
-        assertThat(finalFare).isEqualTo(1450);
+        assertThat(finalFare).isEqualTo(2150);
     }
 
     @DisplayName("요금을 계산한다.(할인요금)")
