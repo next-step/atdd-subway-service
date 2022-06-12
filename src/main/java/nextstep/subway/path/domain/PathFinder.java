@@ -1,6 +1,9 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import java.util.Optional;
+import nextstep.subway.exception.NotLinkedPathException;
+import nextstep.subway.exception.SamePathException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -45,20 +48,25 @@ public class PathFinder {
         return graph.addEdge(section.upStation(), section.downStation());
     }
 
-    public List<Station> getShortestPath(Station source, Station target) {
+    public GraphPath<Station, DefaultWeightedEdge> getDijkstraPath(Station source, Station target) {
+        return getOptionalDijkstraPath(source, target).orElseThrow(NotLinkedPathException::new);
+    }
+
+    public Optional<GraphPath<Station, DefaultWeightedEdge>> getOptionalDijkstraPath(Station source, Station target) {
+        if (dijkstraShortestPath == null) {
+            dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        }
+        return Optional.ofNullable(dijkstraShortestPath.getPath(source, target));
+    }
+
+    List<Station> getShortestPath(Station source, Station target) {
         GraphPath<Station, DefaultWeightedEdge> dijkstraPath = getDijkstraPath(source, target);
         return dijkstraPath.getVertexList();
     }
 
-    public int getShortestDistance(Station source, Station target) {
+    int getShortestDistance(Station source, Station target) {
         GraphPath<Station, DefaultWeightedEdge> dijkstraPath = getDijkstraPath(source, target);
         return (int) dijkstraPath.getWeight();
     }
 
-    public GraphPath<Station, DefaultWeightedEdge> getDijkstraPath(Station source, Station target) {
-        if (dijkstraShortestPath == null) {
-            dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        }
-        return dijkstraShortestPath.getPath(source, target);
-    }
 }

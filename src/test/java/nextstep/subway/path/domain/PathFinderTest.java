@@ -1,4 +1,4 @@
-package nextstep.subway.path;
+package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -9,8 +9,9 @@ import java.util.List;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ class PathFinderTest {
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, Distance.of(3)));
 
         pathFinder = new PathFinder();
-        pathFinder.init(Arrays.asList(신분당선, 이호선, 삼호선));
+        pathFinder.init(Arrays.asList(신분당선, 이호선, 삼호선, 일호선));
     }
 
     @Test
@@ -56,6 +57,6 @@ class PathFinderTest {
     @DisplayName("경로 조회시 연결되어 있지 않은 역은 에러 발생")
     void searchNotLinkedPath() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> pathFinder.getShortestPath(강남역, 서울역));
+                .isThrownBy(() -> pathFinder.getDijkstraPath(강남역, 서울역));
     }
 }
