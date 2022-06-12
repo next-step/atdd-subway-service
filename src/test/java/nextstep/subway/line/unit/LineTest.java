@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineTest {
 
+    Station 청량리역;
     Station 왕십리역;
     Station 서울숲역;
     Station 선릉역;
@@ -20,6 +21,7 @@ public class LineTest {
 
     @BeforeEach
     void setup() {
+        청량리역 = new Station("청량리역");
         왕십리역 = new Station("왕십리역");
         서울숲역 = new Station("서울숲역");
         선릉역 = new Station("선릉역");
@@ -38,5 +40,32 @@ public class LineTest {
     void 역_목록() {
         List<Station> stations = 분당선.getStations();
         assertThat(stations).containsExactly(왕십리역, 선릉역);
+    }
+
+    @Test
+    void 중간_역_추가() {
+        분당선.addSection(왕십리역, 서울숲역, 2);
+
+        List<Station> stations = 분당선.getStations();
+
+        assertThat(stations).containsExactly(왕십리역, 서울숲역, 선릉역);
+    }
+
+    @Test
+    void 상행_종점_추가() {
+        분당선.addSection(청량리역, 왕십리역, 3);
+
+        List<Station> stations = 분당선.getStations();
+
+        assertThat(stations).containsExactly(청량리역, 왕십리역, 선릉역);
+    }
+
+    @Test
+    void 하행_종점_추가() {
+        분당선.addSection(선릉역, 도곡역, 3);
+
+        List<Station> stations = 분당선.getStations();
+
+        assertThat(stations).containsExactly(왕십리역, 선릉역, 도곡역);
     }
 }
