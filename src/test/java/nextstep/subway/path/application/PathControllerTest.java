@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import nextstep.subway.RestAssuredTest;
+import nextstep.subway.path.domain.SubwayFare;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +43,7 @@ class PathControllerTest extends RestAssuredTest {
 
         // Given
         when(pathService.findShortestPath(startStationId, endStationId))
-                .thenReturn(new PathResponse(Lists.newArrayList(강남역, 양재역, 교대역), 10));
+                .thenReturn(new PathResponse(Lists.newArrayList(강남역, 양재역, 교대역), 10, SubwayFare.of(0)));
         // When
         ExtractableResponse<Response> response = pathController로_요청보내기(
                 String.valueOf(startStationId),

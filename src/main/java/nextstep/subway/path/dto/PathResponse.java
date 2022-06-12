@@ -3,6 +3,7 @@ package nextstep.subway.path.dto;
 import java.util.List;
 import java.util.Objects;
 import nextstep.subway.path.domain.PathFindResult;
+import nextstep.subway.path.domain.SubwayFare;
 import nextstep.subway.station.dto.StationResponse;
 
 public class PathResponse {
@@ -10,18 +11,20 @@ public class PathResponse {
 
     private int distance;
 
+    private SubwayFare fare;
+
     protected PathResponse() {
 
     }
 
-    public PathResponse(List<StationResponse> stations, int distance) {
-
+    public PathResponse(List<StationResponse> stations, int distance, SubwayFare fare) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = fare;
     }
 
     public static PathResponse of(PathFindResult findResult) {
-        return new PathResponse(StationResponse.of(findResult.getStations()), findResult.getDistance());
+        return new PathResponse(StationResponse.of(findResult.getStations()), findResult.getDistance(), findResult.getFare());
     }
 
     public List<StationResponse> getStations() {
@@ -30,6 +33,10 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public SubwayFare getFare() {
+        return fare;
     }
 
     @Override

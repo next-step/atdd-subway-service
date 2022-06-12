@@ -11,6 +11,8 @@ public class PathFindResult {
 
     private int distance;
 
+    private SubwayFare fare;
+
     protected PathFindResult() {
 
     }
@@ -18,6 +20,11 @@ public class PathFindResult {
     public PathFindResult(List<Station> stations, int distance) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = calculateSubwayFareByDistance(distance);
+    }
+
+    private SubwayFare calculateSubwayFareByDistance(int distance){
+        return SubwayFare.calculateByDistance(distance);
     }
 
     public List<Station> getStations() {
@@ -26,5 +33,9 @@ public class PathFindResult {
 
     public int getDistance() {
         return distance;
+    }
+
+    public SubwayFare getFare() {
+        return fare;
     }
 }
