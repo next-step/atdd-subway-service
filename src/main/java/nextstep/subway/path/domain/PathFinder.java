@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.consts.ErrorMessage;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -55,13 +56,13 @@ public class PathFinder {
 
     private void validateResult(GraphPath<Station, DefaultWeightedEdge> path) {
         if (path == null) {
-            throw new IllegalArgumentException("[ERROR] 경로를 찾을 수 없습니다.");
+            throw new IllegalArgumentException(ErrorMessage.ERROR_PATH_NOT_FOUND);
         }
     }
 
     private void validateInputStations(Station sourceStation, Station targetStation) {
         if (sourceStation.equals(targetStation)) {
-            throw new IllegalArgumentException("[ERROR] 경로탐색 시 출발역과 도착역이 같을 수 없습니다.");
+            throw new IllegalArgumentException(ErrorMessage.ERROR_PATH_SAME_SOURCE_TARGET);
         }
     }
 }
