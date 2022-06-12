@@ -39,8 +39,8 @@ public class PathFinder {
         return findShortestPath(source, destination).getVertexList();
     }
 
-    public double findShortestPathLength(Station source, Station destination) {
-        return findShortestPath(source, destination).getWeight();
+    public int findShortestPathLength(Station source, Station destination) {
+        return (int) findShortestPath(source, destination).getWeight();
     }
 
     private GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station destination) {
