@@ -106,38 +106,47 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *
      **/
     @DisplayName("지하철역 최단경로(+거리)를 조회한다.")
-    @Test
-    void findShortestPath() {
+    @TestFactory
+    Stream<DynamicTest> findShortestPath() {
 
-        //when
-        ExtractableResponse<Response> getResponse = 지하철_최단_경로_조회_요청(교대역.getId(), 양재역.getId());
+        return Stream.of(
 
-        //then
-        최단_거리와_최단_경로_목록_검증됨(getResponse, 5, "교대역", "남부터미널역", "양재역");
-        요금_검증됨(getResponse, 1250);
+                dynamicTest("최단경로(+거리) 및 요금을 조회한다.(기본운임)", () -> {
+                    //when
+                    ExtractableResponse<Response> getResponse = 지하철_최단_경로_조회_요청(교대역.getId(), 양재역.getId());
 
-        //when
-        ExtractableResponse<Response> getResponse2 = 지하철_최단_경로_조회_요청(철산역.getId(), 양재역.getId());
+                    //then
+                    최단_거리와_최단_경로_목록_검증됨(getResponse, 5, "교대역", "남부터미널역", "양재역");
+                    요금_검증됨(getResponse, 1250);
+                }),
 
-        //then
-        최단_거리와_최단_경로_목록_검증됨(getResponse2, 25, "철산역", "가산디지털단지역", "강남역", "양재역");
-        요금_검증됨(getResponse2, 2450);
+                dynamicTest("최단경로(+거리) 및 요금을 조회한다.(노선별 추가요금)", () -> {
+                    //when
+                    ExtractableResponse<Response> getResponse = 지하철_최단_경로_조회_요청(철산역.getId(), 양재역.getId());
 
-        //given
-        MemberAcceptanceTest.회원_등록_되어있음("teenager@test.com", "1234", 17);
-        MemberAcceptanceTest.회원_등록_되어있음("children@test.com", "1234", 9);
-        TokenResponse 청소년 = AuthAcceptanceTest.로그인_되어있음(new TokenRequest("teenager@test.com", "1234"));
-        TokenResponse 어린이 = AuthAcceptanceTest.로그인_되어있음(new TokenRequest("children@test.com", "1234"));
+                    //then
+                    최단_거리와_최단_경로_목록_검증됨(getResponse, 25, "철산역", "가산디지털단지역", "강남역", "양재역");
+                    요금_검증됨(getResponse, 2450);
+                }),
 
-        //when
-        ExtractableResponse<Response> getResponse3 = 지하철_최단_경로_조회_요청(교대역.getId(), 양재역.getId(), 청소년);
-        ExtractableResponse<Response> getResponse4 = 지하철_최단_경로_조회_요청(교대역.getId(), 양재역.getId(), 어린이);
+                dynamicTest("최단경로(+거리) 및 요금을 조회한다.(할인정책 적용)", () -> {
+                    //given
+                    MemberAcceptanceTest.회원_등록_되어있음("teenager@test.com", "1234", 17);
+                    MemberAcceptanceTest.회원_등록_되어있음("children@test.com", "1234", 9);
+                    TokenResponse 청소년 = AuthAcceptanceTest.로그인_되어있음(new TokenRequest("teenager@test.com", "1234"));
+                    TokenResponse 어린이 = AuthAcceptanceTest.로그인_되어있음(new TokenRequest("children@test.com", "1234"));
 
-        //then
-        최단_거리와_최단_경로_목록_검증됨(getResponse3, 5, "교대역", "남부터미널역", "양재역");
-        요금_검증됨(getResponse3, 720);
-        최단_거리와_최단_경로_목록_검증됨(getResponse4, 5, "교대역", "남부터미널역", "양재역");
-        요금_검증됨(getResponse4, 450);
+                    //when
+                    ExtractableResponse<Response> getResponse1 = 지하철_최단_경로_조회_요청(교대역.getId(), 양재역.getId(), 청소년);
+                    ExtractableResponse<Response> getResponse2 = 지하철_최단_경로_조회_요청(교대역.getId(), 양재역.getId(), 어린이);
+
+                    //then
+                    최단_거리와_최단_경로_목록_검증됨(getResponse1, 5, "교대역", "남부터미널역", "양재역");
+                    요금_검증됨(getResponse1, 720);
+                    최단_거리와_최단_경로_목록_검증됨(getResponse2, 5, "교대역", "남부터미널역", "양재역");
+                    요금_검증됨(getResponse2, 450);
+                })
+        );
 
     }
 
