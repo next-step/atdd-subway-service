@@ -56,7 +56,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * *3호선*                   *신분당선*
      * |                        |
      * 남부터미널역  --- *3호선* ---   양재
-     * background given : 위와같은 지하철 도면일때 when 교대~양재역 까지의 거리 및 경로를 조회했을때 then 교대~남부터미널~양재 경로로 안내된다.
+     * background
+        * given : 위와같은 지하철 도면일때
+     * when 교대~양재역 까지의 거리 및 경로를 조회했을때
+     * then 교대~남부터미널~양재 경로로 안내된다.
      */
     @Test
     public void 지하철_경로_조회하기() {
