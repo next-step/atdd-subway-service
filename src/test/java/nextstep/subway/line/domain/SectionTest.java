@@ -43,7 +43,7 @@ class SectionTest {
     }
 
     @Test
-    @DisplayName("해당 구간이 다른 구간과 동일하다")
+    @DisplayName("해당 구간이 다른 구간과 동일한 시작역과 종착역 정보를 가진다")
     void hasAllStations_true() {
         // given
         final Section 강남역_삼성역 = new Section(이호선, 강남역, 삼성역, 5);
@@ -56,7 +56,7 @@ class SectionTest {
     }
 
     @Test
-    @DisplayName("해당 구간이 다른 구간과 완전히 동일하지 않다")
+    @DisplayName("해당 구간이 다른 구간과 다른 시작역과 종착역 정보를 가진다")
     void hasAllStations_false() {
         // given
         final Section 강남역_삼성역 = new Section(이호선, 강남역, 삼성역, 5);
@@ -70,7 +70,7 @@ class SectionTest {
     }
 
     @Test
-    @DisplayName("해당 구간이 다른 구간과 일부 동일하지 않다")
+    @DisplayName("해당 구간이 다른 구간과 동일한 시작역 또는 종착역 정보를 가진다")
     void hasAllStations_false2() {
         // given
         final Section 강남역_삼성역 = new Section(이호선, 강남역, 삼성역, 5);
@@ -84,7 +84,7 @@ class SectionTest {
     }
 
     @Test
-    @DisplayName("입력한 구간이 해당 구간의 시작역 또는 종착역에 해당한다")
+    @DisplayName("입력한 구간의 시작역 또는 종착역이 해당 구간의 시작역 또는 종착역에 해당한다")
     void hasAnyStations() {
         // given
         final Section 강남역_삼성역 = new Section(이호선, 강남역, 삼성역, 5);
@@ -98,7 +98,7 @@ class SectionTest {
     }
 
     @Test
-    @DisplayName("입력한 구간이 해당 구간의 시작역 또는 종착역에 해당하지 않는다")
+    @DisplayName("입력한 구간이 시작역 또는 종착역이 해당 구간의 시작역 또는 종착역에 해당하지 않는다")
     void hasAnyStations_False() {
         // given
         final Section 강남역_삼성역 = new Section(이호선, 강남역, 삼성역, 5);
