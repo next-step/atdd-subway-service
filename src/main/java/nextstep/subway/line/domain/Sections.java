@@ -30,7 +30,7 @@ public class Sections {
     protected Sections() {
     }
 
-    public Sections(List<Section> sections) {
+    private Sections(List<Section> sections) {
         this.sections = sections;
     }
 
@@ -86,20 +86,23 @@ public class Sections {
     }
 
     private Optional<Section> findSectionByUpStation(Station station) {
-        return sections.stream().filter(section -> section.isEqualsUpStation(station)).
+        return sections.stream().
+                filter(section -> section.isEqualsUpStation(station)).
                 findFirst();
     }
 
     private Section findFirstSection() {
         List<Station> downStations = findDownStations();
-        return sections.stream().filter(section -> !downStations.contains(section.getUpStation())).
+        return sections.stream().
+                filter(section -> !downStations.contains(section.getUpStation())).
                 findFirst().
                 orElseThrow(IllegalArgumentException::new);
     }
 
     private List<Station> findDownStations() {
         List<Station> result = new ArrayList<>();
-        sections.stream().forEach(section -> result.add(section.getDownStation()));
+        sections.stream().
+                forEach(section -> result.add(section.getDownStation()));
         return result;
     }
 
@@ -168,8 +171,10 @@ public class Sections {
 
     private Section getLastSection() {
         List<Station> upStations = getUpStations();
-        return sections.stream().filter(section -> !upStations.contains(section.getDownStation())).
-                findAny().orElseThrow(() -> new NoSuchElementException(NO_LAST_SECTION_ERROR));
+        return sections.stream().
+                filter(section -> !upStations.contains(section.getDownStation())).
+                findAny().
+                orElseThrow(() -> new NoSuchElementException(NO_LAST_SECTION_ERROR));
     }
 
     private List<Station> getUpStations() {
@@ -181,7 +186,8 @@ public class Sections {
     private Section getFirstSection() {
         List<Station> downStations = getDownStations();
         return sections.stream().filter(section -> !downStations.contains(section.getUpStation())).
-                findAny().orElseThrow(() -> new NoSuchElementException(NO_FIRST_SECTION_ERROR));
+                findAny().
+                orElseThrow(() -> new NoSuchElementException(NO_FIRST_SECTION_ERROR));
     }
 
     private List<Station> getDownStations() {
