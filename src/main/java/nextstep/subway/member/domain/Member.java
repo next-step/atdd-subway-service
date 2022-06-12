@@ -1,13 +1,12 @@
 package nextstep.subway.member.domain;
 
-import nextstep.subway.BaseEntity;
-import nextstep.subway.auth.application.AuthorizationException;
-import org.apache.commons.lang3.StringUtils;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import nextstep.subway.BaseEntity;
+import nextstep.subway.auth.application.AuthorizationException;
+import org.apache.commons.lang3.StringUtils;
 
 @Entity
 public class Member extends BaseEntity {
