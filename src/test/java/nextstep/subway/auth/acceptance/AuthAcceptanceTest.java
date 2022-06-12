@@ -73,7 +73,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     /**
      * when : 인가되지 않은 토큰을 통해 내 정보를 조회했을때
-     * then : 에러가 발생한다.
+     * then : 상태코드가 401이 반환된다
     */
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
