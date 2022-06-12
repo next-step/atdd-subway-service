@@ -37,6 +37,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 이호선;
     private LineResponse 삼호선;
     private LineResponse 칠호선;
+    private LineResponse 오호선;
     private LineResponse 신강남선;
     private StationResponse 강남역;
     private StationResponse 양재역;
@@ -44,6 +45,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
     private StationResponse 철산역;
     private StationResponse 가산디지털단지역;
+    private StationResponse 공덕역;
+    private StationResponse 신길역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -63,12 +66,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
         철산역 = StationAcceptanceTest.지하철역_등록되어_있음("철산역").as(StationResponse.class);
         가산디지털단지역 = StationAcceptanceTest.지하철역_등록되어_있음("가산디지털단지역").as(StationResponse.class);
+        공덕역 = StationAcceptanceTest.지하철역_등록되어_있음("공덕역").as(StationResponse.class);
+        신길역 = StationAcceptanceTest.지하철역_등록되어_있음("신길역").as(StationResponse.class);
 
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10))
                 .as(LineResponse.class);
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10))
                 .as(LineResponse.class);
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5))
+                .as(LineResponse.class);
+        오호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-wine-600", 공덕역.getId(), 신길역.getId(), 5))
                 .as(LineResponse.class);
         칠호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("칠호선", "bg-dark-green-600", 철산역.getId(), 가산디지털단지역.getId(), 5))
                 .as(LineResponse.class);
@@ -180,7 +187,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
             dynamicTest("출발역과 도착역이 연결되지 않은 경로를 조회 할 경우 실패한다.", () -> {
                 //when
-                ExtractableResponse<Response> getResponse = 지하철_최단_경로_조회_요청(교대역.getId(), 철산역.getId());
+                ExtractableResponse<Response> getResponse = 지하철_최단_경로_조회_요청(공덕역.getId(), 교대역.getId());
 
                 //then
                 최단_경로_조회_실패됨(getResponse);
