@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,6 +56,45 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+    }
+
+    /**
+     * Given 신규노선(강남역-남부터미널역, 거리 10)을 등록한다
+     * When 강남역에서 남부터미널역까지 최단경로를 조회한다
+     * Then 강남역-남부터미널역 경로가 조회됨
+     * Then 최단거리는 10으로 조회됨
+     * When 신규노선을 삭제한다
+     * Then 노선이 삭제됨
+     * When 강남역에서 남부터미널역까지 최단경로를 조회한다
+     * Then 강남역-양재역-남부터미널역 경로가 조회됨
+     * Then 최단거리는 12로 조회됨
+     */
+    @Test
+    void 지하철경로_조회() {
+        // given
+        ExtractableResponse<Response> 노선등록_응답 = 지하철_노선_등록되어_있음(new LineRequest("신규노선", "bg-black-600", 강남역.getId(), 남부터미널역.getId(), 10));
+
+        // when
+        ExtractableResponse<Response> 조회_응답1 = 최단경로_조회_요청(강남역, 남부터미널역);
+
+        // then
+        최단경로_응답됨(조회_응답1);
+        최단경로_지하철역_순서_정렬됨(조회_응답1, Arrays.asList(강남역, 남부터미널역));
+        최단경로_거리_일치함(조회_응답1, 10);
+
+        // when
+        ExtractableResponse<Response> 노선제거_응답 = 지하철_노선_제거_요청(노선등록_응답);
+
+        // then
+        지하철_노선_삭제됨(노선제거_응답);
+
+        // when
+        ExtractableResponse<Response> 조회_응답2 = 최단경로_조회_요청(강남역, 남부터미널역);
+
+        // then
+        최단경로_응답됨(조회_응답2);
+        최단경로_지하철역_순서_정렬됨(조회_응답2, Arrays.asList(강남역, 양재역, 남부터미널역));
+        최단경로_거리_일치함(조회_응답2, 12);
     }
 
     /**
