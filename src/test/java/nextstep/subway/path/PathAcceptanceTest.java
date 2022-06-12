@@ -7,6 +7,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -103,8 +104,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given 연결되어 있지 않은 노선을 생성한다
-     * When 출발역과 도착역이 같은경우 최단경로를 조회요청하면
+     * Given 다른 노선들과 연결되어 있지 않은 노선을 생성한다
+     * When 출발역과 도착역이 연결되어있지 않으면
      * Then 실패한다
      */
     @Test
@@ -116,6 +117,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> 조회_응답 = 최단경로_조회_요청(강남역, 방화역);
+
+        // then
+        최단경로_응답_실패(조회_응답);
+    }
+
+    /**
+     * Given 존재하지 않는 역을 만든다
+     * When 존재하지 않는 역으로 최단경로 조회요청하면
+     * Then 실패한다
+     */
+    @Test
+    void 존재하지않는역으로_경로조회() {
+        // given
+        StationResponse 존재하지않는역 = StationResponse.of(new Station("존재하지않는역"));
+
+        // when
+        ExtractableResponse<Response> 조회_응답 = 최단경로_조회_요청(강남역, 존재하지않는역);
 
         // then
         최단경로_응답_실패(조회_응답);
