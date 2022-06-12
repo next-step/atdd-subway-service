@@ -125,4 +125,8 @@ public class Sections {
         upLineStation.ifPresent(sections::remove);
         downLineStation.ifPresent(sections::remove);
     }
+
+    public List<Section> getSections() {
+        return sections;
+    }
 }
