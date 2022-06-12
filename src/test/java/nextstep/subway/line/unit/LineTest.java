@@ -35,12 +35,6 @@ public class LineTest {
     }
 
     @Test
-    void 상행_종점_찾기() {
-        Station 상행종점 = 분당선.findUpStation();
-        assertThat(상행종점).isSameAs(왕십리역);
-    }
-
-    @Test
     void 역_목록() {
         List<Station> stations = 분당선.getStations();
         assertThat(stations).containsExactly(왕십리역, 선릉역);
