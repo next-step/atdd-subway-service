@@ -33,6 +33,7 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        //TODO 도메인으로 옮길 예정
         List<StationResponse> stations = getStations(persistLine).stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
@@ -43,6 +44,7 @@ public class LineService {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
                 .map(line -> {
+                    //TODO 도메인으로 옮길 예정 (위와 중복)
                     List<StationResponse> stations = getStations(line).stream()
                             .map(it -> StationResponse.of(it))
                             .collect(Collectors.toList());
@@ -58,6 +60,7 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
+        //TODO 도메인으로 옮길 예정 (위와 중복)
         List<StationResponse> stations = getStations(persistLine).stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
@@ -77,6 +80,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
+        //TODO 도메인으로 옮길 예정
         List<Station> stations = getStations(line);
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
@@ -117,6 +121,7 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
+        //TODO 도메인으로 옮길 예정
         if (line.getSections().size() <= 1) {
             throw new RuntimeException();
         }
@@ -139,7 +144,7 @@ public class LineService {
         downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
 
-
+    //TODO 도메인으로 옮길 예정
     public List<Station> getStations(Line line) {
         if (line.getSections().isEmpty()) {
             return Arrays.asList();
@@ -164,6 +169,7 @@ public class LineService {
         return stations;
     }
 
+    //TODO 도메인으로 옮길 예정
     private Station findUpStation(Line line) {
         Station downStation = line.getSections().get(0).getUpStation();
         while (downStation != null) {
