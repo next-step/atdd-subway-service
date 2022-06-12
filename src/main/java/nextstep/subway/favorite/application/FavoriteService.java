@@ -4,15 +4,14 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.favorite.exception.FavoriteNotFoundException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
-import nextstep.subway.path.exception.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,11 +38,11 @@ public class FavoriteService {
     }
 
     private Member findMember(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(FavoriteNotFoundException::new);
+        return memberRepository.findById(memberId).orElseThrow(EntityNotFoundException::new);
     }
 
     private Station getStation(Long stationId) {
-        return stationRepository.findById(stationId).orElseThrow(StationNotFoundException::new);
+        return stationRepository.findById(stationId).orElseThrow(EntityNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
@@ -55,7 +54,7 @@ public class FavoriteService {
     }
 
     public void delete(Long id, Long memberId) {
-        Favorite favorite = favoriteRepository.findByIdAndMemberId(id, memberId).orElseThrow(FavoriteNotFoundException::new);
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(id, memberId).orElseThrow(EntityNotFoundException::new);
         favoriteRepository.delete(favorite);
     }
 }

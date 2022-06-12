@@ -3,12 +3,12 @@ package nextstep.subway.path.application;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.path.exception.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -38,7 +38,7 @@ public class PathService {
 
     private Station getStation(Long source) {
         return stationRepository.findById(source)
-                .orElseThrow(StationNotFoundException::new);
+                .orElseThrow(EntityNotFoundException::new);
     }
 
 }

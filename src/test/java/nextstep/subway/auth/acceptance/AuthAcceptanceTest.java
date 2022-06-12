@@ -43,11 +43,22 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_완료됨(response);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
+    @DisplayName("Bearer Auth 로그인 실패 - 비밀번호 불일치")
     @Test
-    void myInfoWithBadBearerAuth() {
+    void myInfoWithBadBearerAuth_invalidPassword() {
         //given
         TokenRequest tokenRequest = new TokenRequest(email, "badPassword");
+        //when
+        ExtractableResponse<Response> response = 로그인_요청(tokenRequest);
+        //then
+        로그인_실패함(response);
+    }
+
+    @DisplayName("Bearer Auth 로그인 실패 - 존재하지 않는 이메일")
+    @Test
+    void myInfoWithBadBearerAuth_notExistsEmail() {
+        //given
+        TokenRequest tokenRequest = new TokenRequest("cyr9210@gmail.com", password);
         //when
         ExtractableResponse<Response> response = 로그인_요청(tokenRequest);
         //then
