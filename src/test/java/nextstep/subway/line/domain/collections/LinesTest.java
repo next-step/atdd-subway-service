@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.path.dto.StationResponse;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.jgrapht.GraphPath;
@@ -36,9 +35,13 @@ class LinesTest {
     private final Station 남구로 = new Station("남구로");
     private final Station 가산디지털단지 = new Station("가산디지털단지");
     private final Station 구로디지털단지 = new Station("구로디지털단지");
+    private final Station 강남 = new Station("강남");
+    private final Station 판교 = new Station("판교");
+    
     private final Line 일호선 = new Line("일호선", "bg-blue-100", 신도림, 구로, 5);
     private final Line 이호선 = new Line("이호선", "bg-green-100", 신도림, 신풍, 10);
     private final Line 칠호선 = new Line("칠호선", "bg-dark-green-100", 가산디지털단지, 남구로, 5);
+    private final Line 신분당선 = new Line("신분당선", "bg-red-100", 강남, 판교, 5, 900);
 
 
     @BeforeEach
@@ -46,10 +49,11 @@ class LinesTest {
         일호선.addNewSection(구로, 가산디지털단지, 15);
         일호선.addNewSection(가산디지털단지, 독산, 5);
         이호선.addNewSection(신풍, 신림, 10);
+        이호선.addNewSection(신림, 강남, 15);
         칠호선.addNewSection(남구로, 신풍, 5);
 
-        stationRepository.saveAll(Arrays.asList(독산,구로디지털단지));
-        lineRepository.saveAll(Arrays.asList(일호선,이호선,칠호선));
+        stationRepository.saveAll(Arrays.asList(독산, 구로디지털단지));
+        lineRepository.saveAll(Arrays.asList(일호선, 이호선, 칠호선, 신분당선));
     }
 
 
@@ -66,6 +70,79 @@ class LinesTest {
         List<String> pathStationNames = routes.stream().map(Station::getName).collect(Collectors.toList());
         assertThat(pathStationNames).containsExactly("독산","가산디지털단지","남구로","신풍","신림");
         assertThat((int) shortestPath.getWeight()).isEqualTo(25);
+    }
+
+    @DisplayName("경로검색 결과에 대한 요금을 계산한다.(기본요금)")
+    @Test
+    void calcFare(){
+
+        //given
+        Lines lines = new Lines(lineRepository.findAll());
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = lines.findShortestPath(독산, 가산디지털단지);
+        List<Station> routes = shortestPath.getVertexList();
+        int distance = (int) shortestPath.getWeight();
+
+        //when
+        int fare = lines.calcFare(routes, distance, null);
+
+        //then
+        assertThat(fare).isEqualTo(1250);
+    }
+
+    @DisplayName("경로검색 결과에 대한 요금을 계산한다.(거리 추가요금)")
+    @Test
+    void calcFare_extra(){
+
+        //given
+        Lines lines = new Lines(lineRepository.findAll());
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = lines.findShortestPath(독산, 구로);
+        List<Station> routes = shortestPath.getVertexList();
+        int distance = (int) shortestPath.getWeight();
+
+        //when
+        int fare = lines.calcFare(routes, distance, null);
+
+        //then
+        assertThat(fare).isEqualTo(1450);
+        
+    }
+
+    @DisplayName("경로검색 결과에 대한 요금을 계산한다.(노선 추가요금)")
+    @Test
+    void calcFare_extra_charge(){
+
+        //given
+        Lines lines = new Lines(lineRepository.findAll());
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = lines.findShortestPath(강남, 판교);
+        List<Station> routes = shortestPath.getVertexList();
+        int distance = (int) shortestPath.getWeight();
+
+        //when
+        int fare = lines.calcFare(routes, distance, null);
+
+        //then
+        assertThat(fare).isEqualTo(2150);
+    }
+
+    @DisplayName("경로검색 결과에 대한 요금을 계산한다.(할인요금)")
+    @Test
+    void calcFare_discount(){
+
+        //given
+        Lines lines = new Lines(lineRepository.findAll());
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = lines.findShortestPath(강남, 판교);
+        List<Station> routes = shortestPath.getVertexList();
+        int distance = (int) shortestPath.getWeight();
+        Member 청소년 = new Member("teenager@test.com","1234",15);
+        Member 어린이 = new Member("teenager@test.com","1234",9);
+
+        //when
+        int teenagerFare = lines.calcFare(routes, distance, 청소년);
+        int childFare = lines.calcFare(routes, distance, 어린이);
+
+        //then
+        assertThat(teenagerFare).isEqualTo(1440);
+        assertThat(childFare).isEqualTo(900);
     }
 
 

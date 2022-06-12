@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import javax.persistence.criteria.CriteriaBuilder.In;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.line.domain.collections.Sections;
 import nextstep.subway.station.domain.Station;
@@ -30,15 +29,16 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Integer extraCharge) {
-        this.name = name;
-        this.color = color;
-        this.extraCharge = extraCharge;
-    }
-
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        sections.addSection(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int extraCharge) {
+        this.name = name;
+        this.color = color;
+        this.extraCharge = extraCharge;
         sections.addSection(new Section(this, upStation, downStation, distance));
     }
 
