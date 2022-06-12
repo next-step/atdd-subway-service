@@ -14,13 +14,13 @@ class AgeDiscountPolicyTest {
     @ParameterizedTest
     @CsvSource({
             "5, 0",
-            "6, 500",
-            "13, 800",
-            "19, 1000",
+            "6, 450",
+            "13, 720",
+            "19, 1250",
             "65, 0"
     })
     void test(int age, int expected) {
-        Fare fare = new Fare(1000);
+        Fare fare = new Fare(1250);
 
         AgeDiscountPolicy ageDiscountPolicy = AgeDiscountPolicy.of(age);
         Fare discount = ageDiscountPolicy.discount(fare);

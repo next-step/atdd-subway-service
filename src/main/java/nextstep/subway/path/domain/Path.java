@@ -40,7 +40,7 @@ public class Path {
     }
 
     public Fare calculateFare(LoginMember loginMember) {
-        Fare distanceFare = DistanceFarePoilcy.calculate(distance);
+        Fare distanceFare = DistanceFarePolicy.calculate(distance);
         Fare additionalFare = applyAdditionalFare();
         Fare totalFare = distanceFare.plus(additionalFare);
         if (loginMember.isLogged()) {
@@ -54,6 +54,6 @@ public class Path {
         return lines.stream()
                     .map(Line::getAdditionalFare)
                     .max(Fare::compareTo)
-                    .orElseThrow(IllegalStateException::new);
+                    .orElse(Fare.ZERO);
     }
 }

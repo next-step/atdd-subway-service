@@ -11,6 +11,8 @@ public enum AgeDiscountPolicy {
     CHILDREN(6, 50),
     TODDLER(0, 100);
 
+    private static final Fare DEFAULT_MINUS_FARE = new Fare(350);
+
     private final int age;
     private final double discount;
 
@@ -30,6 +32,11 @@ public enum AgeDiscountPolicy {
         if (discount == 0) {
             return fare;
         }
+        return calculate(fare);
+    }
+
+    private Fare calculate(Fare fare) {
+        fare = fare.minus(DEFAULT_MINUS_FARE);
         int fareValue = fare.getValue().intValue();
         Fare discountFare = new Fare((int) (fareValue * (discount / 100)));
         return fare.minus(discountFare);

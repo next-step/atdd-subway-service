@@ -21,7 +21,7 @@ class DistanceFarePolicyTest {
             "51, 2150",
     })
     void test(int distanceValue, int expectedFareValue) {
-        Fare actual = DistanceFarePoilcy.calculate(distanceValue);
+        Fare actual = DistanceFarePolicy.calculate(distanceValue);
         assertThat(actual.getValue()).isEqualTo(expectedFareValue);
     }
 }

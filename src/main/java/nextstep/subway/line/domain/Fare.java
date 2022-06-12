@@ -7,6 +7,8 @@ import static java.util.Objects.requireNonNull;
 @Embeddable
 public class Fare implements Comparable<Fare> {
 
+    public static final Fare ZERO = new Fare(0);
+
     private Integer value;
 
     public Fare(Integer value) {
