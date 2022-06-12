@@ -44,14 +44,22 @@ public class Sections {
         Optional<Section> downLineStation = getDownLineStation(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            sections.add(new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance));
+            changeLineUpStation(upLineStation.get(), downLineStation.get());
         }
 
         upLineStation.ifPresent(it -> sections.remove(it));
         downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private void changeLineUpStation(Section upLineStation, Section downLineStation) {
+        sections.add(
+                new Section(
+                        upLineStation.getLine(),
+                        downLineStation.getUpStation(),
+                        upLineStation.getDownStation(),
+                        upLineStation.getDistance() + downLineStation.getDistance()
+                )
+        );
     }
 
     private Optional<Section> getUpLineStation(Station station) {

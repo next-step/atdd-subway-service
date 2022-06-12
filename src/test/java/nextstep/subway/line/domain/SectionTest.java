@@ -23,8 +23,22 @@ class SectionTest {
         Section section = new Section(line, upStation, downStation, 5);
 
         assertAll(
-                () -> assertThat(section.isSameUpStation(new Section(line, upStation, new Station("역"), 5))).isEqualTo(true),
-                () -> assertThat(section.isSameUpStation(new Section(line, new Station("역"), downStation, 5))).isEqualTo(false)
+                () -> assertThat(section.isSameUpStation(new Section(line, upStation, new Station("역"), 5))).isEqualTo(
+                        true),
+                () -> assertThat(
+                        section.isSameUpStation(new Section(line, new Station("역"), downStation, 5))).isEqualTo(false)
+        );
+    }
+
+    @Test
+    void 상행역과_역을_비교() {
+        Station upStation = new Station("상행역");
+        Station downStation = new Station("하행역");
+        Section section = new Section(line, upStation, downStation, 5);
+
+        assertAll(
+                () -> assertThat(section.isSameUpStation(upStation)).isEqualTo(true),
+                () -> assertThat(section.isSameUpStation(downStation)).isEqualTo(false)
         );
     }
 
@@ -35,8 +49,23 @@ class SectionTest {
         Section section = new Section(line, upStation, downStation, 5);
 
         assertAll(
-                () -> assertThat(section.isSameDownStation(new Section(line, new Station("역"), downStation, 5))).isEqualTo(true),
-                () -> assertThat(section.isSameDownStation(new Section(line, upStation, new Station("역"), 5))).isEqualTo(false)
+                () -> assertThat(
+                        section.isSameDownStation(new Section(line, new Station("역"), downStation, 5))).isEqualTo(true),
+                () -> assertThat(
+                        section.isSameDownStation(new Section(line, upStation, new Station("역"), 5))).isEqualTo(false)
+        );
+
+    }
+
+    @Test
+    void 하행역과_역을_비교() {
+        Station upStation = new Station("상행역");
+        Station downStation = new Station("하행역");
+        Section section = new Section(line, upStation, downStation, 5);
+
+        assertAll(
+                () -> assertThat(section.isSameDownStation(downStation)).isEqualTo(true),
+                () -> assertThat(section.isSameDownStation(upStation)).isEqualTo(false)
         );
     }
 }

@@ -77,4 +77,12 @@ public class Section {
     public boolean isSameDownStation(Section target) {
         return downStation.equals(target.downStation);
     }
+
+    public boolean isSameUpStation(Station targetStation) {
+        return upStation.equals(targetStation);
+    }
+
+    public boolean isSameDownStation(Station targetStation) {
+        return downStation.equals(targetStation);
+    }
 }
