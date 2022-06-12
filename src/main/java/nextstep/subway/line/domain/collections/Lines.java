@@ -18,31 +18,31 @@ public class Lines {
         this.lines = lines;
     }
 
-    public GraphPath<Station, SectionEdge> findShortestPathV2(Station source, Station target) {
+    public GraphPath<Station, SectionEdge> findShortestPath(Station source, Station target) {
         validateEqualStation(source, target);
-        return getShortestPathV2(source, target);
+        return getShortestPath(source, target);
     }
 
-    private GraphPath<Station, SectionEdge> getShortestPathV2(Station source, Station target) {
-        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(makeSubwayMapV2());
+    private GraphPath<Station, SectionEdge> getShortestPath(Station source, Station target) {
+        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(makeSubwayMap());
         GraphPath<Station, SectionEdge> shortestPath = dijkstraShortestPath.getPath(source, target);
-        validatePathV2(shortestPath);
+        validatePath(shortestPath);
         return shortestPath;
     }
 
-    private WeightedMultigraph<Station, SectionEdge> makeSubwayMapV2() {
+    private WeightedMultigraph<Station, SectionEdge> makeSubwayMap() {
         WeightedMultigraph<Station, SectionEdge> subwayMap
                 = new WeightedMultigraph<>(SectionEdge.class);
 
         for (Line line : lines) {
-            line.makeVertexByStationsToV2(subwayMap);
-            line.makeEdgeBySectionsToV2(subwayMap);
+            line.makeVertexByStationsTo(subwayMap);
+            line.makeEdgeBySectionsTo(subwayMap);
         }
 
         return subwayMap;
     }
 
-    private void validatePathV2(GraphPath<Station, SectionEdge> path) {
+    private void validatePath(GraphPath<Station, SectionEdge> path) {
         if (path == null) {
             throw new IllegalStateException("[ERROR] 최단경로를 찾을 수 없습니다.");
         }

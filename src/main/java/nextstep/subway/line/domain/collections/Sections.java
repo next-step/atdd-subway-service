@@ -173,13 +173,13 @@ public class Sections {
         }
     }
 
-    public void addVertexByStationsV2(WeightedMultigraph<Station, SectionEdge> subwayMap) {
+    public void addVertexByStations(WeightedMultigraph<Station, SectionEdge> subwayMap) {
         for (Station station : getStations()) {
             subwayMap.addVertex(station);
         }
     }
 
-    public void addEdgeBySectionsV2(WeightedMultigraph<Station, SectionEdge> subwayMap) {
+    public void addEdgeBySections(WeightedMultigraph<Station, SectionEdge> subwayMap) {
         for (Section section : sections) {
             subwayMap.addEdge(section.getUpStation(), section.getDownStation(), new SectionEdge(section));
             subwayMap.setEdgeWeight(new SectionEdge(section), section.getDistance());

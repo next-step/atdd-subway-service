@@ -1,7 +1,6 @@
 package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import nextstep.subway.line.domain.Line;
@@ -54,7 +53,7 @@ class FareTest {
     @Test
     void calcFare(){
         //given
-        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(독산, 가산디지털단지);
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(독산, 가산디지털단지);
         Fare fare = new Fare(shortestPath, null);
 
         //when
@@ -68,7 +67,7 @@ class FareTest {
     @Test
     void calcFare_extra_distance(){
         //given
-        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(독산, 구로);
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(독산, 구로);
         Fare fare = new Fare(shortestPath, null);
 
         //when
@@ -82,7 +81,7 @@ class FareTest {
     @Test
     void calcFare_extra_distance_over_50KM(){
         //given
-        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(독산, 잠실);
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(독산, 잠실);
         Fare fare = new Fare(shortestPath, null);
 
         //when
@@ -96,7 +95,7 @@ class FareTest {
     @Test
     void calcFare_extra_charge(){
         //given
-        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(강남, 판교);
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(강남, 판교);
         Fare fare = new Fare(shortestPath, null);
 
         //when
@@ -110,7 +109,7 @@ class FareTest {
     @Test
     void calcFare_discount(){
         //given
-        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(강남, 판교);
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(강남, 판교);
         Fare fare1 = new Fare(shortestPath, MemberFarePolicy.TEENAGER);
         Fare fare2 = new Fare(shortestPath, MemberFarePolicy.CHILD);
 
@@ -127,7 +126,7 @@ class FareTest {
     @Test
     void calcFare_complex(){
         //given
-        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(독산, 수지);
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(독산, 수지);
         Fare fare1 = new Fare(shortestPath, MemberFarePolicy.GENERAL);
         Fare fare2 = new Fare(shortestPath, MemberFarePolicy.TEENAGER);
         Fare fare3 = new Fare(shortestPath, MemberFarePolicy.CHILD);

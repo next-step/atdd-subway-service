@@ -1,6 +1,5 @@
 package nextstep.subway.path.application;
 
-import java.util.List;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.collections.Lines;
@@ -30,7 +29,7 @@ public class PathService {
         Station target = stationService.findStationById(targetId);
         Lines lines = new Lines(lineRepository.findAll());
 
-        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(source, target);
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(source, target);
         Fare fare = lines.calcFare(shortestPath, loginMember.getMemberFarePolicy());
         return PathResponse.of(shortestPath, fare.calcFare());
     }

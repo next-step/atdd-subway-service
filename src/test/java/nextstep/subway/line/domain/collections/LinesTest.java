@@ -49,7 +49,7 @@ class LinesTest {
 
         //when
         Lines lines = new Lines(Arrays.asList(일호선, 이호선, 칠호선, 신분당선));
-        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(독산, 신림);
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(독산, 신림);
         List<Station> routes = shortestPath.getVertexList();
 
         //then
@@ -64,7 +64,7 @@ class LinesTest {
 
         //given
         Lines lines = new Lines(Arrays.asList(일호선, 이호선, 칠호선, 신분당선));
-        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(독산, 신림);
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(독산, 신림);
 
         //when
         Fare fare = lines.calcFare(shortestPath, MemberFarePolicy.GENERAL);
