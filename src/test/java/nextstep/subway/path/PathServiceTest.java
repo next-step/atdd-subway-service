@@ -8,17 +8,16 @@ import java.util.Arrays;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.application.PathService;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.PathFinder;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class PathServiceTest {
 
     @Mock
@@ -32,8 +31,9 @@ public class PathServiceTest {
     Station 교대역;
     Station 남부터미널역;
     Station 양재역;
+
     @BeforeEach
-    public void init(){
+    public void init() {
         강남역 = new Station("강남역");
 
         교대역 = new Station("교대역");
@@ -46,6 +46,7 @@ public class PathServiceTest {
         삼호선.addStation(교대역, 남부터미널역, 7);
 
     }
+
     /**
      * 교대역    --- *2호선*(10) ---   강남역
      * |                        |
@@ -54,7 +55,7 @@ public class PathServiceTest {
      * 남부터미널역  --- *3호선*(8) ---   양재
      */
     @Test
-    public void 정상_경로찾기(){
+    public void 정상_경로찾기() {
         //given
         when(lineService.findAllLines()).thenReturn(Arrays.asList(이호선, 신분당선, 삼호선));
         when(stationService.findById(1L)).thenReturn(교대역);
@@ -65,11 +66,9 @@ public class PathServiceTest {
         PathResponse pathResponse = pathService.findPath(1L, 3L);
 
         //then
-        assertAll(
-            () -> assertThat(pathResponse.getDistance()).isEqualTo(15),
+        assertAll(() -> assertThat(pathResponse.getDistance()).isEqualTo(15),
             () -> assertThat(pathResponse.getStations()).extracting("name")
-                .containsExactly("교대역","남부터미널역","양재역")
-        );
+                .containsExactly("교대역", "남부터미널역", "양재역"));
     }
 
 }
