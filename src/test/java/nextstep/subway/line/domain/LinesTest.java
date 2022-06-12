@@ -27,4 +27,13 @@ public class LinesTest {
         // then
         assertThat(stations).hasSize(4);
     }
+
+    @Test
+    void 전체_노선에_등록된_구간을_조회한다() {
+        // when
+        List<Section> sections = lines.getAllSections();
+
+        // then
+        assertThat(sections).hasSize(4);
+    }
 }

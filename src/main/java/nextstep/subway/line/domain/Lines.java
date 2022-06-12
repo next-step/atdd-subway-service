@@ -19,4 +19,10 @@ public class Lines {
                 .distinct()
                 .collect(Collectors.toList());
     }
+
+    public List<Section> getAllSections() {
+        return elements.stream()
+                .flatMap(line -> line.getSections().stream())
+                .collect(Collectors.toList());
+    }
 }
