@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.Arrays;
+import nextstep.subway.exception.PathFindException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -66,15 +67,17 @@ public class PathFinderTest {
 
     @Test
     public void 동일_정거장_경로찾기_실패(){
-        assertThatThrownBy(() -> pathFinder.findPath(강남역, 강남역)).isInstanceOf(
-            RuntimeException.class);
+        assertThatThrownBy(() -> pathFinder.findPath(강남역, 강남역))
+            .isInstanceOf(PathFindException.class)
+            .hasMessage("출발지와 종착지가 같으면 안됩니다");
     }
 
     @Test
     public void 찾을수없는_정거장_경로찾기_실패(){
         Station 없는역 = new Station("없는역");
-        assertThatThrownBy(() -> pathFinder.findPath(없는역, 강남역)).isInstanceOf(
-            RuntimeException.class);
+        assertThatThrownBy(() -> pathFinder.findPath(없는역, 강남역))
+            .isInstanceOf(PathFindException.class)
+            .hasMessage("존재하지않는 정거장입니다");
     }
 
     @Test
@@ -87,7 +90,8 @@ public class PathFinderTest {
         pathFinder = new PathFinder(lineService.findAllLines());
 
         //when, then
-        assertThatThrownBy(() -> pathFinder.findPath(연결안된역1, 강남역)).isInstanceOf(
-            RuntimeException.class);
+        assertThatThrownBy(() -> pathFinder.findPath(연결안된역1, 강남역))
+            .isInstanceOf(PathFindException.class)
+            .hasMessage("경로를 찾을수 없습니다");
     }
 }

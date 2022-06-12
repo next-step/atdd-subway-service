@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 import java.util.List;
+import nextstep.subway.exception.PathFindException;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -50,22 +51,22 @@ public class PathFinder {
 
     private void validateSameStation(Station sourceStation, Station targetStation) {
         if (sourceStation.equals(targetStation)) {
-            throw new RuntimeException();
+            throw new PathFindException("출발지와 종착지가 같으면 안됩니다");
         }
     }
 
     private void validateNoStationToFind(Station sourceStation, Station targetStation) {
         if (isEmpty(sourceStation) || isEmpty(targetStation)) {
-            throw new RuntimeException();
+            throw new PathFindException("존재하지않는 정거장입니다");
         }
         if (!(graph.containsVertex(sourceStation)) || !(graph.containsVertex(targetStation))) {
-            throw new RuntimeException();
+            throw new PathFindException("존재하지않는 정거장입니다");
         }
     }
 
     private void validateNoPathToTarget(GraphPath graphPath){
         if(isEmpty(graphPath)){
-            throw new RuntimeException();
+            throw new PathFindException("경로를 찾을수 없습니다");
         }
     }
 }
