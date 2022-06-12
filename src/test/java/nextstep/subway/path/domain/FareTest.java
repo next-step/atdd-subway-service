@@ -5,28 +5,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.collections.Lines;
 import nextstep.subway.member.constant.MemberFarePolicy;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.path.vo.SectionEdge;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import org.jgrapht.GraphPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DisplayName("요금 관련 단위테스트")
-@DataJpaTest
 class FareTest {
-
-    @Autowired
-    private StationRepository stationRepository;
-    @Autowired
-    private LineRepository lineRepository;
 
     private final Station 구로 = new Station("구로");
     private final Station 독산 = new Station("독산");
@@ -58,8 +47,6 @@ class FareTest {
         이호선.addNewSection(강남, 잠실, 30);
         칠호선.addNewSection(남구로, 신풍, 5);
 
-        stationRepository.saveAll(Arrays.asList(독산, 구로디지털단지));
-        lineRepository.saveAll(Arrays.asList(일호선, 이호선, 칠호선, 신분당선, 분당선));
         lines = new Lines(Arrays.asList(일호선, 이호선, 칠호선, 신분당선, 분당선));
     }
 
