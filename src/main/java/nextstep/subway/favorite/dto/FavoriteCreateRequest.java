@@ -4,7 +4,7 @@ public class FavoriteCreateRequest {
     private String sourceStationId;
     private String targetStationId;
 
-    protected FavoriteCreateRequest(){
+    protected FavoriteCreateRequest() {
 
     }
 

@@ -2,7 +2,7 @@ package nextstep.subway.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TokenResponse {
     private String accessToken;
 

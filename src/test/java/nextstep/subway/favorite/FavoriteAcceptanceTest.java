@@ -33,59 +33,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 역삼역;
     private StationResponse 잠실역;
     private LineResponse 이호선;
-    
-    @BeforeEach
-    public void setUp(){
-        super.setUp();
-        강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        역삼역 = 지하철역_등록되어_있음("역삼역").as(StationResponse.class);
-        잠실역 = 지하철역_등록되어_있음("잠실역").as(StationResponse.class);
-        이호선 = 지하철_노선_등록되어_있음("이호선","green", 강남역, 잠실역, 10);
-        지하철_노선에_지하철역_등록_요청(이호선,강남역,역삼역,5);
-        
-        회원_생성을_요청(EMAIL,PASSWORD,AGE);
-        사용자토큰 = 로그인_되어있음(EMAIL,PASSWORD).getAccessToken();
-    }
 
-    /*
-    <인수조건>
-    Feature: 즐겨찾기를 관리한다.
-      Background
-        Given 지하철역 등록되어 있음
-        And 지하철 노선 등록되어 있음
-        And 지하철 노선에 지하철역 등록되어 있음
-        And 회원 등록되어 있음
-        And 로그인 되어있음
-
-      Scenario: 즐겨찾기를 관리
-        When 즐겨찾기 생성을 요청
-        Then 즐겨찾기 생성됨
-        When 즐겨찾기 목록 조회 요청
-        Then 즐겨찾기 목록 조회됨
-        When 즐겨찾기 삭제 요청
-        Then 즐겨찾기 삭제됨
-     */
-    @DisplayName("즐겨찾기 관리 시나리오 테스트")
-    @Test
-    void favoriteTest(){
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(사용자토큰,String.valueOf(강남역.getId()),String.valueOf(역삼역.getId()));
-        즐겨찾기_생성됨(createResponse);
-
-        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(사용자토큰);
-        즐겨찾기_목록_조회됨(response);
-
-        List<FavoriteResponse> favorites = response.jsonPath().getList("$",FavoriteResponse.class);
-        assertThat(favorites).hasSize(1);
-
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(사용자토큰, favorites.get(0));
-        즐겨찾기_삭제됨(deleteResponse);
-
-        favorites = 즐겨찾기_목록_조회_요청(사용자토큰).jsonPath().getList("$",FavoriteResponse.class);
-        assertThat(favorites).hasSize(0);
-    }
-
-    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String token, String sourceStationId, String targetStationId) {
-        FavoriteCreateRequest createRequest = new FavoriteCreateRequest(sourceStationId,targetStationId);
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String token, String sourceStationId,
+                                                           String targetStationId) {
+        FavoriteCreateRequest createRequest = new FavoriteCreateRequest(sourceStationId, targetStationId);
         return RestAssured
                 .given().log().all().contentType(ContentType.JSON)
                 .auth().oauth2(token)
@@ -122,5 +73,56 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        역삼역 = 지하철역_등록되어_있음("역삼역").as(StationResponse.class);
+        잠실역 = 지하철역_등록되어_있음("잠실역").as(StationResponse.class);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "green", 강남역, 잠실역, 10);
+        지하철_노선에_지하철역_등록_요청(이호선, 강남역, 역삼역, 5);
+
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        사용자토큰 = 로그인_되어있음(EMAIL, PASSWORD).getAccessToken();
+    }
+
+    /*
+    <인수조건>
+    Feature: 즐겨찾기를 관리한다.
+      Background
+        Given 지하철역 등록되어 있음
+        And 지하철 노선 등록되어 있음
+        And 지하철 노선에 지하철역 등록되어 있음
+        And 회원 등록되어 있음
+        And 로그인 되어있음
+
+      Scenario: 즐겨찾기를 관리
+        When 즐겨찾기 생성을 요청
+        Then 즐겨찾기 생성됨
+        When 즐겨찾기 목록 조회 요청
+        Then 즐겨찾기 목록 조회됨
+        When 즐겨찾기 삭제 요청
+        Then 즐겨찾기 삭제됨
+     */
+    @DisplayName("즐겨찾기 관리 시나리오 테스트")
+    @Test
+    void favoriteTest() {
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(사용자토큰, String.valueOf(강남역.getId()),
+                String.valueOf(역삼역.getId()));
+        즐겨찾기_생성됨(createResponse);
+
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(사용자토큰);
+        즐겨찾기_목록_조회됨(response);
+
+        List<FavoriteResponse> favorites = response.jsonPath().getList("$", FavoriteResponse.class);
+        assertThat(favorites).hasSize(1);
+
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(사용자토큰, favorites.get(0));
+        즐겨찾기_삭제됨(deleteResponse);
+
+        favorites = 즐겨찾기_목록_조회_요청(사용자토큰).jsonPath().getList("$", FavoriteResponse.class);
+        assertThat(favorites).hasSize(0);
     }
 }

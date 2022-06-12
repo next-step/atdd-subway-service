@@ -17,17 +17,17 @@ public class Favorite {
     private Long id;
     @Column(nullable = false)
     private Long memberId;
-    @ManyToOne(fetch = FetchType.EAGER,optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Station source;
-    @ManyToOne(fetch = FetchType.EAGER,optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Station target;
 
-    protected Favorite(){
+    protected Favorite() {
         //For JPA Entity
     }
 
     public Favorite(Long memberId, Station source, Station target) {
-        if(Objects.isNull(memberId) || Objects.isNull(source) || Objects.isNull(target)){
+        if (Objects.isNull(memberId) || Objects.isNull(source) || Objects.isNull(target)) {
             throw new IllegalArgumentException("필수값이 누락되어 즐겨찾기를 생성할 수 없습니다.");
         }
         this.memberId = memberId;

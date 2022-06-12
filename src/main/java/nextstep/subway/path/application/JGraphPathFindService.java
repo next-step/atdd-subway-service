@@ -14,7 +14,8 @@ import org.springframework.stereotype.Component;
 public class JGraphPathFindService implements PathFindService {
 
     @Override
-    public PathFindResult findShortestPath(WeightedMultigraph<Station, SectionEdge> graph, Station startStation, Station endStation) throws NotExistPathException {
+    public PathFindResult findShortestPath(WeightedMultigraph<Station, SectionEdge> graph, Station startStation,
+                                           Station endStation) throws NotExistPathException {
         ShortestPathAlgorithm<Station, SectionEdge> algorithm = new DijkstraShortestPath<>(graph);
 
         GraphPath<Station, SectionEdge> shortestPath = algorithm.getPath(startStation, endStation);

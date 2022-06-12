@@ -1,6 +1,6 @@
 package nextstep.subway.favorite.application;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +26,7 @@ public class FavoriteService {
     }
 
     @Transactional(readOnly = true)
-    public List<FavoriteResponse> findFavorites(Long memberId){
+    public List<FavoriteResponse> findFavorites(Long memberId) {
         List<Favorite> favoriteList = favoriteRepository.findByMemberId(memberId);
         return favoriteList.stream().map(FavoriteResponse::of).collect(toList());
     }
@@ -34,13 +34,13 @@ public class FavoriteService {
     public FavoriteResponse saveFavorite(Long memberId, FavoriteCreateRequest request) {
         Station source = stationService.findStationById(request.getSourceStationId());
         Station target = stationService.findStationById(request.getTargetStationId());
-        Favorite newFavorite = favoriteRepository.save(new Favorite(memberId,source,target));
+        Favorite newFavorite = favoriteRepository.save(new Favorite(memberId, source, target));
         return FavoriteResponse.of(newFavorite);
     }
 
     public void deleteFavorite(Long favoriteId) {
         Optional<Favorite> deleteTarget = favoriteRepository.findById(favoriteId);
-        if(deleteTarget.isPresent()){
+        if (deleteTarget.isPresent()) {
             favoriteRepository.delete(deleteTarget.get());
         }
     }

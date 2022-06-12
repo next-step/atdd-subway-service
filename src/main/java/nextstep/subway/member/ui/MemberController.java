@@ -1,7 +1,6 @@
 package nextstep.subway.member.ui;
 
 import java.net.URI;
-import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.application.MemberService;

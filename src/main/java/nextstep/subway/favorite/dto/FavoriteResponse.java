@@ -8,7 +8,7 @@ public class FavoriteResponse {
     private StationResponse source;
     private StationResponse target;
 
-    protected FavoriteResponse(){
+    protected FavoriteResponse() {
 
     }
 
@@ -18,8 +18,9 @@ public class FavoriteResponse {
         this.target = target;
     }
 
-    public static FavoriteResponse of(Favorite favorite){
-        return new FavoriteResponse(favorite.getId(),StationResponse.of(favorite.getSource()),StationResponse.of(favorite.getTarget()));
+    public static FavoriteResponse of(Favorite favorite) {
+        return new FavoriteResponse(favorite.getId(), StationResponse.of(favorite.getSource()),
+                StationResponse.of(favorite.getTarget()));
     }
 
     public Long getId() {

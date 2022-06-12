@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Profile;
 @EnableCaching
 public class CacheConfig {
     @Bean
-    CacheManagerCustomizer<ConcurrentMapCacheManager> cacheManagerCustomizer(){
+    CacheManagerCustomizer<ConcurrentMapCacheManager> cacheManagerCustomizer() {
         return new CacheManagerCustomizer<ConcurrentMapCacheManager>() {
             @Override
             public void customize(ConcurrentMapCacheManager cacheManager) {
