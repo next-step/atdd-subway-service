@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import static org.springframework.util.ObjectUtils.isEmpty;
+
 import java.util.List;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -36,12 +38,33 @@ public class PathFinder {
     }
 
     public GraphPath findPath(Station sourceStation, Station targetStation) {
+        validateNoStationToFind(sourceStation, targetStation);
         validateSameStation(sourceStation, targetStation);
+
+        GraphPath path = dijkstraShortestPath.getPath(sourceStation, targetStation);
+
+        validateNoPathToTarget(path);
+
         return dijkstraShortestPath.getPath(sourceStation, targetStation);
     }
 
-    private void validateSameStation(Station sourceStation, Station targetStation){
+    private void validateSameStation(Station sourceStation, Station targetStation) {
         if (sourceStation.equals(targetStation)) {
+            throw new RuntimeException();
+        }
+    }
+
+    private void validateNoStationToFind(Station sourceStation, Station targetStation) {
+        if (isEmpty(sourceStation) || isEmpty(targetStation)) {
+            throw new RuntimeException();
+        }
+        if (!(graph.containsVertex(sourceStation)) || !(graph.containsVertex(targetStation))) {
+            throw new RuntimeException();
+        }
+    }
+
+    private void validateNoPathToTarget(GraphPath graphPath){
+        if(isEmpty(graphPath)){
             throw new RuntimeException();
         }
     }
