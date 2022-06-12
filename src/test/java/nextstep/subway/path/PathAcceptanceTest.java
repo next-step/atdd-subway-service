@@ -12,6 +12,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 import java.util.List;
@@ -93,6 +94,30 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_길이확인(response, 30);
     }
 
+    @DisplayName("종합운동장 ~ 오금 최단 경로 길이 조회")
+    @Test
+    void findShortestPath03() {
+        ExtractableResponse<Response> response = 최단경로_조회(종합운동장, 오금);
+
+        최단경로_지하철역_순서_정렬됨(response, Arrays.asList(종합운동장, 잠실새내, 잠실, 석촌, 가락시장, 오금));
+    }
+
+    @DisplayName("출발 역과 도착 역이 같은 경우")
+    @Test
+    void findShortestPath_exception01() {
+        ExtractableResponse<Response> response = 최단경로_조회(종합운동장, 종합운동장);
+
+        최단경로_조회_실패(response);
+    }
+
+    @DisplayName("출발 역과 도착 역이 연결되지 않은 경우")
+    @Test
+    void findShortestPath_exception02() {
+        ExtractableResponse<Response> response = 최단경로_조회(종합운동장, 광교);
+
+        최단경로_조회_실패(response);
+    }
+
     public static ExtractableResponse<Response> 최단경로_조회(StationResponse source, StationResponse target) {
         return RestAssured
                 .given().log().all()
@@ -119,5 +144,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse path = response.as(PathResponse.class);
         int actualDistance = path.getDistance();
         assertThat(actualDistance).isEqualTo(expectedDistance);
+    }
+
+    public static void 최단경로_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
