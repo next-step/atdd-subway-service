@@ -4,11 +4,13 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -22,6 +24,10 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("지하철 최단 경로 조회 로직")
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
+    @InjectMocks
+    private PathService pathService;
+    @Mock
+    private StationService stationService;
     @Mock
     private LineRepository lineRepository;
 
@@ -54,7 +60,10 @@ class PathServiceTest {
     void 최단_경로를_조회한다() {
         // given
         given(lineRepository.findAll()).willReturn(lines);
-        PathService pathService = new PathService(lineRepository);
+        given(stationService.findStationById(1L))
+                .willReturn(getStation(1L, "강남역"));
+        given(stationService.findStationById(4L))
+                .willReturn(getStation(4L, "교대역"));
 
         // when
         PathResponse response = pathService.findShortestPath(1L, 4L);
