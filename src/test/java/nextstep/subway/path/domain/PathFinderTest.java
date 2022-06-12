@@ -21,6 +21,7 @@ class PathFinderTest {
     Station 남부터미널역;
     Station 교대역;
     Station 양재역;
+    List<Station> stations;
     List<Line> lines;
 
     /**
@@ -38,6 +39,7 @@ class PathFinderTest {
         남부터미널역 = new Station("남부터미널역");
         교대역 = new Station("교대역");
         양재역 = new Station("양재역");
+        stations = Arrays.asList(강남역, 남부터미널역, 교대역, 양재역);
 
         Line 신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
         Line 이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10);
@@ -49,7 +51,7 @@ class PathFinderTest {
     @DisplayName("최단경로와 최단거리를 계산한다")
     @Test
     void findPath() {
-        PathResponse response = pathFinder.findPath(lines, 강남역, 남부터미널역);
+        PathResponse response = pathFinder.findPath(stations, lines, 강남역, 남부터미널역);
         List<String> stationNames = response.getStations().stream()
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());

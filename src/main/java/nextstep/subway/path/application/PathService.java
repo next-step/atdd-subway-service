@@ -25,12 +25,13 @@ public class PathService {
     }
 
     public PathResponse findPath(Long sourceId, Long targetId) {
+        List<Station> stations = stationService.findAll();
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
         if (source == target) {
             throw new ErrorCodeException(ErrorCode.SOURCE_EQUALS_TARGET);
         }
         List<Line> lines = lineService.findAll();
-        return pathFinder.findPath(lines, source, target);
+        return pathFinder.findPath(stations, lines, source, target);
     }
 }

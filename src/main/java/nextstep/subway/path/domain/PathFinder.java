@@ -19,12 +19,10 @@ import java.util.stream.Collectors;
 @Component
 public class PathFinder {
 
-    public PathResponse findPath(List<Line> lines, Station source, Station target) {
+    public PathResponse findPath(List<Station> stations, List<Line> lines, Station source, Station target) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        lines.forEach(line -> {
-            addVertex(graph, line.getStations());
-            setEdgeWeight(graph, line.getSections().getSections());
-        });
+        addVertex(graph, stations);
+        lines.forEach(line -> setEdgeWeight(graph, line.getSections().getSections()));
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
         if (graphPath == null) {

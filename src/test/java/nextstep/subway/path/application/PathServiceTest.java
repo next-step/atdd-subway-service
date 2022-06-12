@@ -38,6 +38,7 @@ public class PathServiceTest {
     Station source;
     Station target;
     Station mid;
+    List<Station> stations;
     List<Line> lines;
     PathResponse pathResponse;
 
@@ -53,6 +54,9 @@ public class PathServiceTest {
         targetId = 20L;
         source = new Station("교대역");
         target = new Station("역삼역");
+        mid = new Station("남부터미널역");
+        stations = Arrays.asList(source, target, mid);
+        when(stationService.findAll()).thenReturn(stations);
         when(stationService.findById(sourceId)).thenReturn(source);
         when(stationService.findById(targetId)).thenReturn(target);
     }
@@ -63,9 +67,8 @@ public class PathServiceTest {
     }
 
     void stubPathFinder() {
-        mid = new Station("남부터미널역");
         pathResponse = new PathResponse(Arrays.asList(StationResponse.of(source), StationResponse.of(mid), StationResponse.of(target)), 19);
-        when(pathFinder.findPath(lines, source, target)).thenReturn(pathResponse);
+        when(pathFinder.findPath(stations, lines, source, target)).thenReturn(pathResponse);
     }
 
     @DisplayName("최단 경로를 조회한다")

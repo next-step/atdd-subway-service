@@ -139,6 +139,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_응답_실패(조회_응답);
     }
 
+    @Test
+    void 노선에_등록되지않은역() {
+        // given
+        StationResponse 샛강역 = 지하철역_등록되어_있음("샛강역").as(StationResponse.class);
+
+        // when
+        ExtractableResponse<Response> 조회_응답 = 최단경로_조회_요청(강남역, 샛강역);
+
+        // then
+        최단경로_응답_실패(조회_응답);
+    }
+
     public static void 최단경로_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }

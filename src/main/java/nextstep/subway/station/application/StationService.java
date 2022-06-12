@@ -26,6 +26,10 @@ public class StationService {
         return StationResponse.of(persistStation);
     }
 
+    public List<Station> findAll() {
+        return stationRepository.findAll();
+    }
+
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
