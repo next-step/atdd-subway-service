@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
-import java.util.List;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
