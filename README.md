@@ -81,6 +81,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       - Outside in방식으로 테스트코드 작성 
         - 서비스 로직 테스트시, 사용되는 도메인은 Mock객체를 활용하여 테스트
         - Happy case에 대한 부분만 구현
-        
+  - 각 RunTimeException을 알맞은 Exception으로 변경 및 Advice생성
 
       
