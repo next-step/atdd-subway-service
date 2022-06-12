@@ -85,6 +85,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_지하철역_순서_정렬됨(response, Arrays.asList(종합운동장, 잠실새내, 잠실, 석촌));
     }
 
+    @DisplayName("종합운동장 ~ 석촌 최단 경로 길이 조회")
+    @Test
+    void findShortestPath02() {
+        ExtractableResponse<Response> response = 최단경로_조회(종합운동장, 석촌);
+
+        최단경로_길이확인(response, 30);
+    }
+
     public static ExtractableResponse<Response> 최단경로_조회(StationResponse source, StationResponse target) {
         return RestAssured
                 .given().log().all()
@@ -105,5 +113,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+    }
+
+    public static void 최단경로_길이확인(ExtractableResponse<Response> response, int expectedDistance) {
+        PathResponse path = response.as(PathResponse.class);
+        int actualDistance = path.getDistance();
+        assertThat(actualDistance).isEqualTo(expectedDistance);
     }
 }
