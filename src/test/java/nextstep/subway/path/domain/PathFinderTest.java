@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.error.ErrorCodeException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -8,10 +9,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 @DisplayName("최단경로 계산 단위테스트")
@@ -59,5 +62,15 @@ class PathFinderTest {
             softAssertions.assertThat(stationNames).containsExactly("강남역", "양재역", "남부터미널역");
             softAssertions.assertThat(response.getDistance()).isEqualTo(12);
         });
+    }
+
+    @DisplayName("최단경로를 조회할 수 없다")
+    @Test
+    void cannotFindPath() {
+        Station 떨어져있는역 = new Station("떨어져있는역");
+        List<Station> newStations = new ArrayList<>(stations);
+        newStations.add(떨어져있는역);
+        assertThatThrownBy(() -> pathFinder.findPath(newStations, lines, 강남역, 떨어져있는역))
+                        .isInstanceOf(ErrorCodeException.class);
     }
 }
