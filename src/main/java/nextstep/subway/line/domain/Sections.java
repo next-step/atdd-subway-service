@@ -79,6 +79,42 @@ public class Sections {
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
     }
 
+    public void removeSection(final Line line, final Station station) {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        final Optional<Section> upLineStation = findUpLineStation(station);
+        final Optional<Section> downLineStation = findDownLineStation(station);
+
+        mergeIfUpAndDownStationExists(line, upLineStation, downLineStation);
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private Optional<Section> findUpLineStation(final Station station) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+    }
+
+    private Optional<Section> findDownLineStation(final Station station) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+    }
+
+    private void mergeIfUpAndDownStationExists(final Line line, final Optional<Section> upLineStation,
+                                               final Optional<Section> downLineStation) {
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(line, newUpStation, newDownStation, new Distance(newDistance)));
+        }
+    }
+
     public List<Station> getStations() {
         if (sections.isEmpty()) {
             return Arrays.asList();

@@ -110,9 +110,8 @@ public class SectionsTest {
             //when
             섹션_리스트.addSection(일호선, 노량진역, 용산역, 거리_5);
 
-            final List<Station> 정렬된_역_목록 = 섹션_리스트.getStations();
-
             //then
+            final List<Station> 정렬된_역_목록 = 섹션_리스트.getStations();
             첫번째역_확인(정렬된_역_목록, 노량진역);
             두번째역_확인(정렬된_역_목록, 용산역);
         }
@@ -127,9 +126,8 @@ public class SectionsTest {
             //when
             섹션_리스트.addSection(일호선, 용산역, 남영역, 거리_3);
 
-            final List<Station> 정렬된_역_목록 = 섹션_리스트.getStations();
-
             //then
+            final List<Station> 정렬된_역_목록 = 섹션_리스트.getStations();
             첫번째역_확인(정렬된_역_목록, 용산역);
             두번째역_확인(정렬된_역_목록, 남영역);
             세번째역_확인(정렬된_역_목록, 서울역);
@@ -145,13 +143,69 @@ public class SectionsTest {
             //when
             섹션_리스트.addSection(일호선, 용산역, 남영역, 거리_3);
 
-            final List<Station> 정렬된_역_목록 = 섹션_리스트.getStations();
-
             //then
+            final List<Station> 정렬된_역_목록 = 섹션_리스트.getStations();
             첫번째역_확인(정렬된_역_목록, 노량진역);
             두번째역_확인(정렬된_역_목록, 용산역);
             세번째역_확인(정렬된_역_목록, 남영역);
         }
+    }
+
+    @DisplayName("removeSection 메서드")
+    @Nested
+    class RemoveSection {
+        @DisplayName("섹션이 하나 이하로 존재하면 익셉션 발생한다.")
+        @Test
+        void alreadyRegisteredSection() {
+            //given
+            final Sections 섹션_리스트 = 빈_섹션_생성();
+            섹션_리스트.addSection(일호선, 노량진역, 용산역, 거리_5);
+
+            //when
+            //then
+            assertThatThrownBy(() -> 섹션_리스트.removeSection(일호선, 노량진역))
+                    .isInstanceOf(RuntimeException.class);
+        }
+
+        @DisplayName("역이 일치하는 구간이 하나면 해당하는 구간을 삭제한다.")
+        @Test
+        void oneStationEquals() {
+            //given
+            final Sections 섹션_리스트 = 빈_섹션_생성();
+            섹션_리스트.addSection(일호선, 노량진역, 용산역, 거리_5);
+            섹션_리스트.addSection(일호선, 용산역, 남영역, 거리_5);
+
+            //when
+            섹션_리스트.removeSection(일호선, 남영역);
+
+            //then
+            final List<Station> 정렬된_역_목록 = 섹션_리스트.getStations();
+            역_개수_확인(정렬된_역_목록, 2);
+            첫번째역_확인(정렬된_역_목록, 노량진역);
+            두번째역_확인(정렬된_역_목록, 용산역);
+        }
+
+        @DisplayName("역이 일치하는 구간이 두개면 역을 삭제하고 구간을 합친다.")
+        @Test
+        void twoStationEquals() {
+            //given
+            final Sections 섹션_리스트 = 빈_섹션_생성();
+            섹션_리스트.addSection(일호선, 노량진역, 용산역, 거리_5);
+            섹션_리스트.addSection(일호선, 용산역, 남영역, 거리_5);
+
+            //when
+            섹션_리스트.removeSection(일호선, 용산역);
+
+            //then
+            final List<Station> 정렬된_역_목록 = 섹션_리스트.getStations();
+            역_개수_확인(정렬된_역_목록, 2);
+            첫번째역_확인(정렬된_역_목록, 노량진역);
+            두번째역_확인(정렬된_역_목록, 남영역);
+        }
+    }
+
+    private void 역_개수_확인(final List<Station> stations, final int size) {
+        assertThat(stations.size()).isEqualTo(size);
     }
 
     private void 첫번째역_확인(final List<Station> stations, final Station station) {
