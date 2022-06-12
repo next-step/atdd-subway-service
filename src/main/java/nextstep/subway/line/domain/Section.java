@@ -35,11 +35,6 @@ public class Section {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
-        this(null, line, upStation, downStation, distance);
-    }
-
-    public Section(Long id, Line line, Station upStation, Station downStation, int distance) {
-        this.id = id;
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;

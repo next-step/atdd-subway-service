@@ -9,16 +9,16 @@ import org.junit.jupiter.api.Test;
 
 class LineTest {
 
-    private final static Station 강남역 = new Station(1L, "강남역");
-    private final static Station 삼성역 = new Station(2L, "삼성역");
-    private final static Station 잠실역 = new Station(3L, "잠실역");
+    private final static Station 강남역 = new Station("강남역");
+    private final static Station 삼성역 = new Station("삼성역");
+    private final static Station 잠실역 = new Station("잠실역");
 
     @Test
     @DisplayName("노선은 구간 정보를 저장한다")
     void addSection() {
         // given
         final Line 이호선 = new Line("2호선", "green");
-        final Section 강남역_삼성역 = new Section(1L, 이호선, 강남역, 삼성역, 5);
+        final Section 강남역_삼성역 = new Section(이호선, 강남역, 삼성역, 5);
 
         // when
         이호선.addSection(강남역_삼성역);
@@ -33,8 +33,8 @@ class LineTest {
     void getStations() {
         // given
         final Line 이호선 = new Line("2호선", "green");
-        이호선.addSection(new Section(1L, 이호선, 강남역, 삼성역, 5));
-        이호선.addSection(new Section(2L, 이호선, 삼성역, 잠실역, 5));
+        이호선.addSection(new Section(이호선, 강남역, 삼성역, 5));
+        이호선.addSection(new Section(이호선, 삼성역, 잠실역, 5));
 
         // when
         final List<Station> actual = 이호선.getStations();

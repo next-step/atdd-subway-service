@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 
 class SectionTest {
     private final static Line 이호선 = new Line();
-    private final static Station 강남역 = new Station(1L, "강남역");
-    private final static Station 삼성역 = new Station(2L, "삼성역");
-    private final static Station 잠실역 = new Station(3L, "잠실역");
-    private final static Station 성수역 = new Station(4L, "성수역");
+    private final static Station 강남역 = new Station("강남역");
+    private final static Station 삼성역 = new Station("삼성역");
+    private final static Station 잠실역 = new Station("잠실역");
+    private final static Station 성수역 = new Station("성수역");
 
     @Test
     @DisplayName("특정 구간에 중간역이 추가되는 경우 현재 저장된 구간 정보를 변경한다")
