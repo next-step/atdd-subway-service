@@ -83,16 +83,13 @@ public class Sections {
         Station downStation = findUpStation();
         stations.add(downStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
+        Optional<Section> nextLineStation = findNextStationFromUpStation(downStation);
+
+        while (nextLineStation.isPresent()) {
             downStation = nextLineStation.get().getDownStation();
             stations.add(downStation);
+
+            nextLineStation = findNextStationFromUpStation(downStation);
         }
 
         return stations;
@@ -100,18 +97,25 @@ public class Sections {
 
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
+        Optional<Section> nextLineStation = findNextStationFromDownStation(downStation);
+        while (nextLineStation.isPresent()) {
             downStation = nextLineStation.get().getUpStation();
+            nextLineStation = findNextStationFromDownStation(downStation);
         }
 
         return downStation;
+    }
+
+    private Optional<Section> findNextStationFromUpStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.isSameUpStation(station))
+                .findFirst();
+    }
+
+    private Optional<Section> findNextStationFromDownStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.isSameDownStation(station))
+                .findFirst();
     }
 
     private boolean hasStation(Station station) {
