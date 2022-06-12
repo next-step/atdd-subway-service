@@ -4,7 +4,6 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,8 +13,7 @@ import java.util.function.Predicate;
 
 @Embeddable
 public class Sections {
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    @JoinColumn(name = "line_id")
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
     public List<Station> getStations() {
@@ -26,11 +24,11 @@ public class Sections {
         return getTargetToLastStations(findFirstStation(this.sections.get(0).getUpStation()));
     }
 
-    public void addSection(Station upStation, Station downStation, Distance distance) {
+    public void addSection(Line line, Station upStation, Station downStation, Distance distance) {
         checkPossibleAddSection(upStation, downStation);
 
         if (isAddNewSection()) {
-            addStation(upStation, downStation, distance);
+            addStation(line, upStation, downStation, distance);
             return;
         }
         if (isContainStationInSections(upStation)) {
@@ -40,10 +38,10 @@ public class Sections {
             addSectionByMiddleToDown(upStation, downStation, distance);
         }
 
-        addStation(upStation, downStation, distance);
+        addStation(line, upStation, downStation, distance);
     }
 
-    public void removeStation(Station station) {
+    public void removeStation(Line line, Station station) {
         if (this.sections.size() <= 1) {
             throw new RuntimeException("구간에 최소한 1개 이상의 구간이 존재해야 합니다.");
         }
@@ -56,7 +54,7 @@ public class Sections {
             Station newDownStation = upSection.getDownStation();
             Distance newDistance = upSection.getDistance().addThenReturnResult(downSection.getDistance());
 
-            addSection(newUpStation, newDownStation, newDistance);
+            addSection(line, newUpStation, newDownStation, newDistance);
         }
     }
 
@@ -64,8 +62,8 @@ public class Sections {
         return this.sections;
     }
 
-    private void addStation(Station upStation, Station downStation, Distance distance) {
-        this.sections.add(new Section(upStation, downStation, distance));
+    private void addStation(Line line, Station upStation, Station downStation, Distance distance) {
+        this.sections.add(new Section(line, upStation, downStation, distance));
     }
 
     private Station findFirstStation(Station station) {
@@ -81,14 +79,11 @@ public class Sections {
 
     private List<Station> getTargetToLastStations(Station target) {
         List<Station> result = new ArrayList<>(Collections.singletonList(target));
-        Optional<Section> nextDownSection = this.sections.stream()
+        this.sections.stream()
                 .filter(it -> it.getUpStation().equals(target))
-                .findFirst();
+                .findFirst()
+                .ifPresent(section -> result.addAll(getTargetToLastStations(section.getDownStation())));
 
-        if (nextDownSection.isPresent()) {
-            result.addAll(getTargetToLastStations(nextDownSection.get().getDownStation()));
-            return result;
-        }
         return result;
     }
 

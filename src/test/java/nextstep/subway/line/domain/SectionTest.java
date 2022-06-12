@@ -70,6 +70,6 @@ class SectionTest {
     }
 
     public static Section 구간_생성(Station upStation, Station downStation, Distance distance) {
-        return new Section(upStation, downStation, distance);
+        return new Section(new Line(), upStation, downStation, distance);
     }
 }

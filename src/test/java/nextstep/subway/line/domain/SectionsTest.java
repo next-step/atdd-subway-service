@@ -25,10 +25,10 @@ class SectionsTest {
 
         // when
         Sections 구간_목록 = 구간_목록_생성(동대문역사문화공원역, 왕십리역, 50);
-        구간_목록.addSection(동대문역사문화공원역, 신당역, new Distance(10));
-        구간_목록.addSection(왕십리역, 한양대역, new Distance(10));
-        구간_목록.addSection(신당역, 상왕십리역, new Distance(15));
-        구간_목록.addSection(한양대역, 뚝섬역, new Distance(15));
+        구간_목록에_구간_추가(구간_목록, 동대문역사문화공원역, 신당역, 10);
+        구간_목록에_구간_추가(구간_목록, 왕십리역, 한양대역, 10);
+        구간_목록에_구간_추가(구간_목록, 신당역, 상왕십리역, 15);
+        구간_목록에_구간_추가(구간_목록, 한양대역, 뚝섬역, 15);
 
         // then
         assertThat(노선의_지하철_이름(구간_목록))
@@ -49,8 +49,8 @@ class SectionsTest {
         Sections 하행_추가될_구간 = 구간_목록_생성(을지로3가역, 을지로4가역, 10);
 
         // when
-        상행_추가될_구간.addSection(동대문역사문화공원역, 을지로4가역, new Distance(20));
-        하행_추가될_구간.addSection(을지로4가역, 동대문역사문화공원역, new Distance(30));
+        구간_목록에_구간_추가(상행_추가될_구간, 동대문역사문화공원역, 을지로4가역, 20);
+        구간_목록에_구간_추가(하행_추가될_구간, 을지로4가역, 동대문역사문화공원역, 30);
 
         // then
         assertThat(노선의_지하철_이름(상행_추가될_구간))
@@ -73,7 +73,7 @@ class SectionsTest {
         Sections 구간_목록 = 구간_목록_생성(동대문역사문화공원역, 을지로3가역, 10);
 
         // when
-        구간_목록.addSection(동대문역사문화공원역, 을지로4가역, new Distance(4));
+        구간_목록에_구간_추가(구간_목록, 동대문역사문화공원역, 을지로4가역, 4);
 
         // then
         assertThat(노선의_지하철_이름(구간_목록))
@@ -92,7 +92,7 @@ class SectionsTest {
         Sections 구간_목록 = 구간_목록_생성(동대문역사문화공원역, 을지로3가역, 10);
 
         // then
-        assertThatThrownBy(() -> 구간_목록.addSection(동대문역사문화공원역, 을지로4가역, new Distance(11)))
+        assertThatThrownBy(() -> 구간_목록에_구간_추가(구간_목록, 동대문역사문화공원역, 을지로4가역, 11))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -107,7 +107,7 @@ class SectionsTest {
         Sections 구간_목록 = 구간_목록_생성(왕십리역, 한양대역, 10);
 
         // then
-        assertThatThrownBy(() -> 구간_목록.addSection(신촌역, 홍대입구역, new Distance(10)))
+        assertThatThrownBy(() -> 구간_목록에_구간_추가(구간_목록, 신촌역, 홍대입구역, 5))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -120,12 +120,12 @@ class SectionsTest {
         Station 뚝섬역 = 지하철_생성("뚝섬역");
         Sections 시작_구간이_삭제될_구간_목록 = 구간_목록_생성(왕십리역, 한양대역, 10);
         Sections 종점_구간이_삭제될_구간_목록 = 구간_목록_생성(왕십리역, 한양대역, 10);
-        시작_구간이_삭제될_구간_목록.addSection(한양대역, 뚝섬역, new Distance(10));
-        종점_구간이_삭제될_구간_목록.addSection(한양대역, 뚝섬역, new Distance(10));
+        구간_목록에_구간_추가(시작_구간이_삭제될_구간_목록, 한양대역, 뚝섬역, 10);
+        구간_목록에_구간_추가(종점_구간이_삭제될_구간_목록, 한양대역, 뚝섬역, 10);
 
         // when
-        시작_구간이_삭제될_구간_목록.removeStation(왕십리역);
-        종점_구간이_삭제될_구간_목록.removeStation(뚝섬역);
+        구간_목록의_특정_구간_삭제(시작_구간이_삭제될_구간_목록,  왕십리역);
+        구간_목록의_특정_구간_삭제(종점_구간이_삭제될_구간_목록, 뚝섬역);
 
         // then
         assertThat(노선의_지하철_이름(시작_구간이_삭제될_구간_목록))
@@ -143,11 +143,11 @@ class SectionsTest {
         Station 뚝섬역 = 지하철_생성("뚝섬역");
         Station 성수역 = 지하철_생성("성수역");
         Sections 구간_목록 = 구간_목록_생성(왕십리역, 한양대역, 3);
-        구간_목록.addSection(한양대역, 뚝섬역, new Distance(4));
-        구간_목록.addSection(뚝섬역, 성수역, new Distance(5));
+        구간_목록에_구간_추가(구간_목록, 한양대역, 뚝섬역, 4);
+        구간_목록에_구간_추가(구간_목록, 뚝섬역, 성수역, 5);
 
         // when
-        구간_목록.removeStation(한양대역);
+        구간_목록의_특정_구간_삭제(구간_목록, 한양대역);
 
         // then
         assertThat(노선의_지하철_이름(구간_목록))
@@ -158,9 +158,17 @@ class SectionsTest {
 
     public static Sections 구간_목록_생성(Station upStation, Station downStation, int distance) {
         Sections result = new Sections();
-        result.addSection(upStation, downStation, new Distance(distance));
+        result.addSection(new Line(), upStation, downStation, new Distance(distance));
 
         return result;
+    }
+
+    private void 구간_목록에_구간_추가(Sections sections, Station upStation, Station downStation, int distance) {
+        sections.addSection(new Line(), upStation, downStation, new Distance(distance));
+    }
+
+    private void 구간_목록의_특정_구간_삭제(Sections sections, Station station) {
+        sections.removeStation(new Line(), station);
     }
 
     private List<String> 노선의_지하철_이름(Sections sections) {
