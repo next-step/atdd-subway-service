@@ -1,5 +1,7 @@
 package nextstep.subway.auth.domain;
 
+import nextstep.subway.member.constant.MemberFarePolicy;
+
 public class ActualMember implements LoginMember {
     private Long id;
     private String email;
@@ -11,14 +13,22 @@ public class ActualMember implements LoginMember {
         this.age = age;
     }
 
+    @Override
+    public MemberFarePolicy getMemberFarePolicy() {
+        return MemberFarePolicy.convert(age);
+    }
+
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
+    @Override
     public Integer getAge() {
         return age;
     }
