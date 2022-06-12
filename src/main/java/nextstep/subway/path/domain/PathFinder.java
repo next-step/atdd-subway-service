@@ -11,7 +11,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import java.util.List;
 
 public class PathFinder {
-    private DijkstraShortestPath shortestPath;
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath;
 
     public PathFinder(List<Line> lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph
@@ -30,6 +30,14 @@ public class PathFinder {
                 graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().getDistance());
             }
         }
-        shortestPath = new DijkstraShortestPath(graph);
+        shortestPath = new DijkstraShortestPath<>(graph);
+    }
+
+    public List<Station> findShortestPath(Station source, Station destination) {
+        return shortestPath.getPath(source, destination).getVertexList();
+    }
+
+    public double findShortestPathLength(Station source, Station destination) {
+        return shortestPath.getPathWeight(source, destination);
     }
 }
