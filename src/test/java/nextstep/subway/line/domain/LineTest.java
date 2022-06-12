@@ -54,7 +54,7 @@ class LineTest {
         // when & then
         assertThatThrownBy(() -> {
             신분당선.addSection(강남역, 광교역, 5);
-        }).isInstanceOf(RuntimeException.class)
+        }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("이미 등록된 구간 입니다.");
     }
 
@@ -68,7 +68,7 @@ class LineTest {
         // when & then
         assertThatThrownBy(() -> {
             신분당선.addSection(선릉역, 사당역, 5);
-        }).isInstanceOf(RuntimeException.class)
+        }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록할 수 없는 구간 입니다.");
     }
 
@@ -97,7 +97,7 @@ class LineTest {
         // when & then
         assertThatThrownBy(() -> {
             새로운노선.removeStation(광교역);
-        }).isInstanceOf(RuntimeException.class)
+        }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("구간이 없는 노선입니다.");
     }
 }

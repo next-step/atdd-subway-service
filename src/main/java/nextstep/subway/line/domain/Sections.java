@@ -41,10 +41,7 @@ public class Sections {
             sectionMatchedDownStation(newSection.getDownStation())
                     .ifPresent(section -> section.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
             elements.add(newSection);
-            return;
         }
-
-        throw new RuntimeException();
     }
 
     private static boolean containsStation(List<Station> stations, Station newStation) {
@@ -54,10 +51,10 @@ public class Sections {
 
     private void validateAdd(List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
         if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
     }
 
@@ -117,7 +114,7 @@ public class Sections {
 
     private void validateRemove() {
         if (elements.size() < Section.MIN_STATION_SIZE) {
-            throw new RuntimeException("구간이 없는 노선입니다.");
+            throw new IllegalArgumentException("구간이 없는 노선입니다.");
         }
     }
 
