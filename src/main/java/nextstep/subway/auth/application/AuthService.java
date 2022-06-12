@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
@@ -29,7 +29,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new AuthorizationException();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
