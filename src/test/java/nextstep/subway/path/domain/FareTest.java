@@ -37,6 +37,7 @@ class FareTest {
     private final Station 구로디지털단지 = new Station("구로디지털단지");
     private final Station 강남 = new Station("강남");
     private final Station 판교 = new Station("판교");
+    private final Station 잠실 = new Station("잠실");
 
     private final Line 일호선 = new Line("일호선", "bg-blue-100", 신도림, 구로, 5);
     private final Line 이호선 = new Line("이호선", "bg-green-100", 신도림, 신풍, 10);
@@ -51,6 +52,7 @@ class FareTest {
         일호선.addNewSection(가산디지털단지, 독산, 5);
         이호선.addNewSection(신풍, 신림, 10);
         이호선.addNewSection(신림, 강남, 15);
+        이호선.addNewSection(강남, 잠실, 30);
         칠호선.addNewSection(남구로, 신풍, 5);
 
         stationRepository.saveAll(Arrays.asList(독산, 구로디지털단지));
@@ -83,7 +85,21 @@ class FareTest {
         int finalFare = fare.calcFare();
 
         //then
-        assertThat(finalFare).isEqualTo(1550);
+        assertThat(finalFare).isEqualTo(1450);
+    }
+
+    @DisplayName("요금을 계산한다.(거리 추가요금 50KM 초과)")
+    @Test
+    void calcFare_extra_distance_over_50KM(){
+        //given
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(독산, 잠실);
+        Fare fare = new Fare(shortestPath, null);
+
+        //when
+        int finalFare = fare.calcFare();
+
+        //then
+        assertThat(finalFare).isEqualTo(2350);
     }
 
     @DisplayName("요금을 계산한다.(노선 추가요금)")
