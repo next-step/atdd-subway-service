@@ -2,6 +2,8 @@ package nextstep.subway.line.domain.collections;
 
 import java.util.List;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.member.constant.MemberFarePolicy;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.vo.SectionEdge;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -50,5 +52,9 @@ public class Lines {
         if (source.equals(target)) {
             throw new IllegalArgumentException("[ERROR] 출발역과 도착역은 동일할 수 없습니다.");
         }
+    }
+
+    public Fare calcFare(GraphPath<Station, SectionEdge> shortestPath, MemberFarePolicy memberFarePolicy) {
+        return null;
     }
 }
