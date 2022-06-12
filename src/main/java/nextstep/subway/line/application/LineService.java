@@ -69,8 +69,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("노선을 찾을수 없습니다"));
+        Line persistLine = findById(id);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
