@@ -66,7 +66,7 @@ public class Section {
         return distance.getDistance();
     }
 
-    public void changeStationInfo(Section section) {
+    public void changeStation(Section section) {
         if (upStation.equals(section.upStation)) {
             this.upStation = section.downStation;
             this.distance.subtractDistance(section.distance);

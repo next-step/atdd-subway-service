@@ -2,7 +2,6 @@ package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.*;
 
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +22,7 @@ class SectionTest {
         final Section 삼성역_잠실역 = new Section(이호선, 삼성역, 잠실역, 5);
 
         // when
-        강남역_잠실역.changeStationInfo(삼성역_잠실역);
+        강남역_잠실역.changeStation(삼성역_잠실역);
 
         // then
         assertThat(강남역_잠실역.getUpStation()).isEqualTo(강남역);
@@ -39,7 +38,7 @@ class SectionTest {
 
         // when
         assertThatIllegalArgumentException().isThrownBy(
-                () -> 강남역_잠실역.changeStationInfo(삼성역_잠실역)
+                () -> 강남역_잠실역.changeStation(삼성역_잠실역)
         );
     }
 

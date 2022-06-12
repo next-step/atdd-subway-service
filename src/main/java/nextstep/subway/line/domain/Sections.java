@@ -92,7 +92,7 @@ public class Sections {
         }
 
         Section targetSection = findTargetSection(section);
-        targetSection.changeStationInfo(section);
+        targetSection.changeStation(section);
     }
 
     private boolean isContainAllStation(Section section) {
