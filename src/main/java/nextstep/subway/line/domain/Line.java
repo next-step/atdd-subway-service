@@ -3,6 +3,8 @@ package nextstep.subway.line.domain;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.line.exception.SectionAddException;
+import nextstep.subway.line.exception.SectionSizeMinimunException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.data.geo.Distance;
@@ -113,16 +115,15 @@ public class Line extends BaseEntity {
 
     public void addLineStation(Station upStation, Station downStation, int distance) {
         List<Station> stations = getStations();
-        boolean isUpStationExisted = isUpStationExisted(stations, upStation); //stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = isDownStationExisted(stations, downStation); //stations.stream().anyMatch(it -> it == downStation);
+        boolean isUpStationExisted = isUpStationExisted(stations, upStation);
+        boolean isDownStationExisted = isDownStationExisted(stations, downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new SectionAddException(SectionAddException.SECTION_HAS_UP_AND_DOWN_STATION_MSG);
         }
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new SectionAddException(SectionAddException.SECTION_HAS_NOT_UP_AND_DOWN_STATION_MSG);
         }
 
         if (stations.isEmpty()) {
@@ -144,14 +145,12 @@ public class Line extends BaseEntity {
                     .ifPresent(it -> it.updateDownStation(upStation, distance));
 
             sections.add(new Section(this, upStation, downStation, distance));
-        } else {
-            throw new RuntimeException();
         }
     }
 
     public void removeLineStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new SectionSizeMinimunException();
         }
 
         Optional<Section> upLineStation = sections.stream()
