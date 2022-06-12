@@ -1,8 +1,6 @@
 package nextstep.subway.line.domain;
 
-import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,7 +36,7 @@ public class Section {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
-        this(line, upStation, downStation,new Distance(distance));
+        this(line, upStation, downStation, new Distance(distance));
     }
 
     public Section(Line line, Station upStation, Station downStation, Distance distance) {
@@ -49,11 +47,17 @@ public class Section {
     }
 
     public void updateUpStation(Station station, Distance newDistance) {
+        if (containDownStation(station)) {
+            throw new IllegalArgumentException("이미 하행역으로 설정되어 있습니다.");
+        }
         this.upStation = station;
         this.distance = this.distance.subtract(newDistance);
     }
 
     public void updateDownStation(Station station, Distance newDistance) {
+        if (containUpStation(station)) {
+            throw new IllegalArgumentException("이미 하행역으로 설정되어 있습니다.");
+        }
         this.downStation = station;
         this.distance = this.distance.subtract(newDistance);
     }
