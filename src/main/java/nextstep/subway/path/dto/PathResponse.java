@@ -2,7 +2,9 @@ package nextstep.subway.path.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.path.vo.SectionEdge;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 
 public class PathResponse {
     private final List<StationResponse> stations;
@@ -15,7 +17,9 @@ public class PathResponse {
         this.fare = fare;
     }
 
-    public static PathResponse of(List<Station> routes, int distance, int fare) {
+    public static PathResponse of(GraphPath<Station, SectionEdge> shortestPath, int fare) {
+        List<Station> routes = shortestPath.getVertexList();
+        int distance = (int) shortestPath.getWeight();
         List<StationResponse> stations = routes.stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());

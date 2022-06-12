@@ -31,9 +31,7 @@ public class PathService {
         Lines lines = new Lines(lineRepository.findAll());
 
         GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(source, target);
-        List<Station> routes = shortestPath.getVertexList();
-        int distance = (int) shortestPath.getWeight();
-        Fare fare = new Fare(shortestPath, loginMember.getMemberFarePolicy());
-        return PathResponse.of(routes, distance, fare.calcFare());
+        Fare fare = lines.calcFare(shortestPath, loginMember.getMemberFarePolicy());
+        return PathResponse.of(shortestPath, fare.calcFare());
     }
 }
