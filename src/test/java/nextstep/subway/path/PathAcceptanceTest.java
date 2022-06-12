@@ -133,7 +133,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 로그인사용자_최단_경로_조회_요청(사용자_토큰, 교대역.getId(), 판교역.getId());
 
         // Then 최단 경로 조회됨
-        최단_경로_조회_조회됨(response, 15, 2_155);
+        최단_경로_조회_조회됨(response, 15, 1_300);
     }
 
     @DisplayName("최단 경로 조회 - 실패 (출발역과 도착역이 같은 경우)")

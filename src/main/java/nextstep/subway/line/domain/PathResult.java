@@ -9,13 +9,13 @@ import java.util.List;
 public class PathResult {
     private List<Station> stations;
     private List<SectionWeightedEdge> sectionEdges;
-    private int distance;
+    private Distance distance;
     private Fare fare;
 
     private PathResult(LoginMember loginMember, GraphPath graphPath) {
         this.stations = graphPath.getVertexList();
         this.sectionEdges = graphPath.getEdgeList();
-        this.distance = culculateDistance();
+        this.distance = Distance.of(sectionEdges);
         this.fare = Fare.of(distance, loginMember.getAge(), sectionEdges);
     }
 
@@ -28,16 +28,10 @@ public class PathResult {
     }
 
     public int getDistance() {
-        return this.distance;
+        return this.distance.getDistance();
     }
 
     public int getFare() {
         return this.fare.getFare();
-    }
-
-    private int culculateDistance() {
-        return sectionEdges.stream()
-                .mapToInt(SectionWeightedEdge::getDistance)
-                .sum();
     }
 }

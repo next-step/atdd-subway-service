@@ -60,12 +60,12 @@ public class PathTest {
         assertThat(result.getFare()).isEqualTo(2_250);
     }
 
-    @DisplayName("교대역 -> 판교역 최단 경로 길이는 15이고, 요금(어린이 할인)은 2,250이다.")
+    @DisplayName("교대역 -> 판교역 최단 경로 길이는 15이고, 요금(어린이 할인)은 1,300이다.")
     @Test
     void findShortest2() {
         PathResult result = Path.of(Arrays.asList(이호선, 신분당선, 삼호선)).findShortest(new LoginMember(10), 교대역, 판교역);
         assertThat(result.getStations().size()).isEqualTo(4);
         assertThat(result.getDistance()).isEqualTo(15);
-        assertThat(result.getFare()).isEqualTo(2_155);
+        assertThat(result.getFare()).isEqualTo(1_300);
     }
 }
