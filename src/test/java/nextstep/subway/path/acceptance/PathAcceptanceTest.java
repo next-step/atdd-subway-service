@@ -22,6 +22,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @DisplayName("지하철 경로 조회")
@@ -80,6 +81,11 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("연결되어 있지 않은 출발, 도착역은 경로조회 할 수 없다.")
     void searchNotLinkedPath() {
+        // when
+        ExtractableResponse<Response> 올바르지_않은_지하철_경로_조회_결과 = 지하철_경로_조회_요청(강남역, 남부터미널역);
+
+        // then
+        assertThat(올바르지_않은_지하철_경로_조회_결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     /**
