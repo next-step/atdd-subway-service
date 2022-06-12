@@ -1,5 +1,8 @@
 package nextstep.subway.auth.acceptance;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.로그인_성공;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.로그인_실패;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.로그인_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성됨;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,22 +56,5 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-    }
-
-    private void 로그인_실패(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    private void 로그인_성공(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    private ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
-        return RestAssured.given().log().all().
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                body(tokenRequest).
-                when().post("/login/token").
-                then().log().all().
-                extract();
     }
 }
