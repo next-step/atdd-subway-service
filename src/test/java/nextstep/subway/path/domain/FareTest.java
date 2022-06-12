@@ -38,11 +38,13 @@ class FareTest {
     private final Station 강남 = new Station("강남");
     private final Station 판교 = new Station("판교");
     private final Station 잠실 = new Station("잠실");
+    private final Station 수지 = new Station("수지");
 
     private final Line 일호선 = new Line("일호선", "bg-blue-100", 신도림, 구로, 5);
     private final Line 이호선 = new Line("이호선", "bg-green-100", 신도림, 신풍, 10);
     private final Line 칠호선 = new Line("칠호선", "bg-dark-green-100", 가산디지털단지, 남구로, 5);
     private final Line 신분당선 = new Line("신분당선", "bg-red-100", 강남, 판교, 5, 900);
+    private final Line 분당선 = new Line("분당선", "bg-red-100", 판교, 수지, 14, 500);
     private Lines lines;
 
 
@@ -56,8 +58,8 @@ class FareTest {
         칠호선.addNewSection(남구로, 신풍, 5);
 
         stationRepository.saveAll(Arrays.asList(독산, 구로디지털단지));
-        lineRepository.saveAll(Arrays.asList(일호선, 이호선, 칠호선, 신분당선));
-        lines = new Lines(Arrays.asList(일호선, 이호선, 칠호선, 신분당선));
+        lineRepository.saveAll(Arrays.asList(일호선, 이호선, 칠호선, 신분당선, 분당선));
+        lines = new Lines(Arrays.asList(일호선, 이호선, 칠호선, 신분당선, 분당선));
     }
 
     @DisplayName("요금을 계산한다.(기본요금)")
@@ -133,6 +135,29 @@ class FareTest {
         //then
         assertThat(teenagerFare).isEqualTo(1440);
         assertThat(childFare).isEqualTo(900);
+    }
+
+    @DisplayName("요금을 계산한다.(복합)")
+    @Test
+    void calcFare_complex(){
+        //given
+        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPathV2(독산, 수지);
+        Member 일반 = new Member("general@test.com", "1234", 25);
+        Member 청소년 = new Member("teenager@test.com", "1234", 15);
+        Member 어린이 = new Member("child@test.com", "1234", 9);
+        Fare fare1 = new Fare(shortestPath, 일반);
+        Fare fare2 = new Fare(shortestPath, 청소년);
+        Fare fare3 = new Fare(shortestPath, 어린이);
+
+        //when
+        int generalFare = fare1.calcFare();
+        int teenagerFare = fare2.calcFare();
+        int childFare = fare3.calcFare();
+
+        //then
+        assertThat(generalFare).isEqualTo(3150);
+        assertThat(teenagerFare).isEqualTo(2240);
+        assertThat(childFare).isEqualTo(1400);
     }
 
 
