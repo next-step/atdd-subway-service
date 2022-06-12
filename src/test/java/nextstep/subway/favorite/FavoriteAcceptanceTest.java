@@ -42,7 +42,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
         역삼역 = 지하철역_등록되어_있음("역삼역").as(StationResponse.class);
         잠실역 = 지하철역_등록되어_있음("잠실역").as(StationResponse.class);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "green", 강남역, 잠실역, 10);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "green", 강남역, 잠실역, 10,0);
         지하철_노선에_지하철역_등록_요청(이호선, 강남역, 역삼역, 5);
 
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
