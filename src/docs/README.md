@@ -9,7 +9,9 @@
         - [x] Sections 클래스
             - [x] 정렬된 역 목록 조회 단위 테스트
             - [x] Distance Wrapper Class 작성
+            - [x] 구간 등록 단위 테스트
     - [] 로직 옮기기
         - [x] 정렬된 역 목록 조회 로직 변경
+        - [x] 구간 등록 로직 변경
 - [] (선택) LineSectionAcceptanceTest 리팩터링
 

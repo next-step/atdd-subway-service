@@ -1,10 +1,11 @@
 package nextstep.subway.line.domain;
 
+import static nextstep.subway.line.domain.DistanceTest.거리_생성;
 import static nextstep.subway.line.domain.LineTest.섹션_없는_라인_생성;
 import static nextstep.subway.line.domain.SectionTest.빈_섹션_생성;
-import static nextstep.subway.line.domain.SectionTest.섹션_생성;
 import static nextstep.subway.line.domain.StationTest.역_생성;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import nextstep.subway.station.domain.Station;
@@ -20,8 +21,9 @@ public class SectionsTest {
     private Station 노량진역;
     private Station 용산역;
     private Station 남영역;
-    private Section 노량진_용산_섹션;
-    private Section 용산_남영_섹션;
+    private Station 서울역;
+    private Distance 거리_5;
+    private Distance 거리_3;
 
     @BeforeEach
     void setUp() {
@@ -29,8 +31,9 @@ public class SectionsTest {
         노량진역 = 역_생성("노량진역");
         용산역 = 역_생성("용산역");
         남영역 = 역_생성("남영역");
-        노량진_용산_섹션 = 섹션_생성(일호선, 노량진역, 용산역, 5);
-        용산_남영_섹션 = 섹션_생성(일호선, 용산역, 남영역, 5);
+        서울역 = 역_생성("서울역");
+        거리_5 = 거리_생성(5);
+        거리_3 = 거리_생성(3);
     }
 
     @DisplayName("getStations 메서드")
@@ -55,8 +58,8 @@ public class SectionsTest {
         void sectionsExist() {
             //given
             final Sections 섹션_리스트 = 빈_섹션_생성();
-            섹션_리스트.addSection(노량진_용산_섹션);
-            섹션_리스트.addSection(용산_남영_섹션);
+            섹션_리스트.addSection(일호선, 노량진역, 용산역, 거리_5);
+            섹션_리스트.addSection(일호선, 용산역, 남영역, 거리_5);
 
             //when
             final List<Station> 정렬된_역_목록 = 섹션_리스트.getStations();
@@ -67,6 +70,88 @@ public class SectionsTest {
             세번째역_확인(정렬된_역_목록, 남영역);
         }
 
+    }
+
+    @DisplayName("addSection 메서드")
+    @Nested
+    class AddSection {
+        @DisplayName("상행 하행 모두 이미 등록된 구간일 경우 익셉션 발생한다.")
+        @Test
+        void alreadyRegisteredSection() {
+            //given
+            final Sections 섹션_리스트 = 빈_섹션_생성();
+            섹션_리스트.addSection(일호선, 노량진역, 용산역, 거리_5);
+
+            //when
+            //then
+            assertThatThrownBy(() -> 섹션_리스트.addSection(일호선, 노량진역, 용산역, 거리_5))
+                    .isInstanceOf(RuntimeException.class);
+        }
+
+        @DisplayName("상행 하행 모두 등록되지 않은 구간일 경우 익셉션 발생한다.")
+        @Test
+        void bothNotRegisteredSection() {
+            //given
+            final Sections 섹션_리스트 = 빈_섹션_생성();
+            섹션_리스트.addSection(일호선, 노량진역, 용산역, 거리_5);
+
+            //when
+            //then
+            assertThatThrownBy(() -> 섹션_리스트.addSection(일호선, 남영역, 서울역, 거리_5))
+                    .isInstanceOf(RuntimeException.class);
+        }
+
+        @DisplayName("역이 하나도 등록되지 않았으면 등록에 성공한다.")
+        @Test
+        void stationIsEmpty() {
+            //given
+            final Sections 섹션_리스트 = 빈_섹션_생성();
+
+            //when
+            섹션_리스트.addSection(일호선, 노량진역, 용산역, 거리_5);
+
+            final List<Station> 정렬된_역_목록 = 섹션_리스트.getStations();
+
+            //then
+            첫번째역_확인(정렬된_역_목록, 노량진역);
+            두번째역_확인(정렬된_역_목록, 용산역);
+        }
+
+        @DisplayName("상행역이 일치하면 상행역 앞에 등록한다.")
+        @Test
+        void equalsUpStation() {
+            //given
+            final Sections 섹션_리스트 = 빈_섹션_생성();
+            섹션_리스트.addSection(일호선, 용산역, 서울역, 거리_5);
+
+            //when
+            섹션_리스트.addSection(일호선, 용산역, 남영역, 거리_3);
+
+            final List<Station> 정렬된_역_목록 = 섹션_리스트.getStations();
+
+            //then
+            첫번째역_확인(정렬된_역_목록, 용산역);
+            두번째역_확인(정렬된_역_목록, 남영역);
+            세번째역_확인(정렬된_역_목록, 서울역);
+        }
+
+        @DisplayName("하행역이 일치하면 하행역 뒤에 등록한다.")
+        @Test
+        void equalsDownStation() {
+            //given
+            final Sections 섹션_리스트 = 빈_섹션_생성();
+            섹션_리스트.addSection(일호선, 노량진역, 남영역, 거리_5);
+
+            //when
+            섹션_리스트.addSection(일호선, 용산역, 남영역, 거리_3);
+
+            final List<Station> 정렬된_역_목록 = 섹션_리스트.getStations();
+
+            //then
+            첫번째역_확인(정렬된_역_목록, 노량진역);
+            두번째역_확인(정렬된_역_목록, 용산역);
+            세번째역_확인(정렬된_역_목록, 남영역);
+        }
     }
 
     private void 첫번째역_확인(final List<Station> stations, final Station station) {
