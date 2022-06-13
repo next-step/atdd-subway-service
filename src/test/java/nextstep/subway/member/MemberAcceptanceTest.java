@@ -21,34 +21,72 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
 
-    @DisplayName("회원 정보를 관리한다.")
+
     @Test
+    @DisplayName("회원 정보를 관리한다.")
     void manageMember() {
+        // when && then
+        ExtractableResponse<Response> 생성_결과 = 회원_생성하고_확인();
+
+        // when && then
+        회원_조회하고_확인(생성_결과);
+
+        // when && then
+        회원_수정하고_확인(생성_결과);
+
+        // when && then
+        회원_삭제하고_확인(생성_결과);
+    }
+
+    /**
+     *  Given 내 정보가 등록되어 있고
+     *  When 내 정보로 로그인을 하면
+     *  Then 토큰 값이 발급된다
+     *  When 내 정보를 조회하면
+     *  Then 조회된다
+     *  When 내 정보를 수정하면
+     *  Then 수정된다
+     *  When 내 정보를 삭제하면
+     *  Then 삭제된다
+     */
+    @Test
+    @DisplayName("나의 정보를 관리한다.")
+    void manageMyInfo() {
+        // given
+
+        // when
+
+        // then
+    }
+
+    private ExtractableResponse<Response> 회원_생성하고_확인() {
         // when
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         // then
         회원_생성됨(createResponse);
 
+        return createResponse;
+    }
+
+    private void 회원_조회하고_확인(ExtractableResponse<Response> createResponse) {
         // when
         ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
         // then
         회원_정보_조회됨(findResponse, EMAIL, AGE);
+    }
 
+    private void 회원_수정하고_확인(ExtractableResponse<Response> createResponse) {
         // when
         ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
         // then
         회원_정보_수정됨(updateResponse);
+    }
 
+    private void 회원_삭제하고_확인(ExtractableResponse<Response> createResponse) {
         // when
         ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
         // then
         회원_삭제됨(deleteResponse);
-    }
-
-    @DisplayName("나의 정보를 관리한다.")
-    @Test
-    void manageMyInfo() {
-
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
