@@ -12,8 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
-import static nextstep.subway.error.ErrorCode.EXISTS_BOTH_STATIONS;
-import static nextstep.subway.error.ErrorCode.NO_EXISTS_BOTH_STATIONS;
+import static nextstep.subway.error.ErrorCode.*;
 
 @Embeddable
 public class Sections {
@@ -105,7 +104,7 @@ public class Sections {
 
     public void remove(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new ErrorCodeException(CANNOT_DELETE_LAST_SECTION);
         }
 
         Optional<Section> upLineStation = sections.stream()

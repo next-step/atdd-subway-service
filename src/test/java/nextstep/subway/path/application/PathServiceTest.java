@@ -1,11 +1,11 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.Mockito.when;
@@ -27,9 +28,9 @@ public class PathServiceTest {
     @Autowired
     PathService pathService;
     @MockBean
-    StationService stationService;
+    StationRepository stationRepository;
     @MockBean
-    LineService lineService;
+    LineRepository lineRepository;
     @MockBean
     PathFinder pathFinder;
 
@@ -56,14 +57,14 @@ public class PathServiceTest {
         target = new Station("역삼역");
         mid = new Station("남부터미널역");
         stations = Arrays.asList(source, target, mid);
-        when(stationService.findAll()).thenReturn(stations);
-        when(stationService.findById(sourceId)).thenReturn(source);
-        when(stationService.findById(targetId)).thenReturn(target);
+        when(stationRepository.findAll()).thenReturn(stations);
+        when(stationRepository.findById(sourceId)).thenReturn(Optional.of(source));
+        when(stationRepository.findById(targetId)).thenReturn(Optional.of(target));
     }
 
     void stubLineService() {
         lines = Collections.emptyList();
-        when(lineService.findAll()).thenReturn(lines);
+        when(lineRepository.findAllWithSections()).thenReturn(lines);
     }
 
     void stubPathFinder() {
