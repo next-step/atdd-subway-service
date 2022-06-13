@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class SectionsTest {
@@ -29,6 +30,7 @@ class SectionsTest {
     }
 
     @Test
+    @DisplayName("지하철 구간 콜렉션에서 순서대로 지하철역을 가져오는 정상 테스트")
     void getStations() {
         // given
         final Sections sections = new Sections(Arrays.asList(강남역_판교역, 판교역_광교역));

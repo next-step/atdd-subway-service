@@ -76,3 +76,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### to-do list
 - [ ] LineService 리팩터링
+    - [X] Sections 추가
+        - [X] getStation 이동
+        - [X] SectionsTest getStations 추가

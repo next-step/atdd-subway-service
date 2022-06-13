@@ -3,7 +3,8 @@ package nextstep.subway.line.domain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -35,38 +36,53 @@ public class Sections {
             return Arrays.asList();
         }
 
+        return getStationsOrderByUpToDown();
+    }
+
+    private List<Station> getStationsOrderByUpToDown() {
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
+        Station downStation = findPrimaryUpStation();
         stations.add(downStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
+        while (hasUpStation(downStation)) {
+            Section nextLineStation = getNextSectionByUpStation(downStation);
+            downStation = nextLineStation.getDownStation();
             stations.add(downStation);
         }
-
         return stations;
     }
 
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
+    private Section getNextSectionByUpStation(final Station downStation) {
+        return sections.stream()
+                .filter(it -> it.hasUpStation(downStation))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+    }
 
-        return downStation;
+    private Station findPrimaryUpStation() {
+        return findAllUpStation().stream()
+                .filter(station -> !hasDownStation(station))
+                .findFirst()
+                .orElseThrow(IllegalStateException::new);
+    }
+
+    private boolean hasUpStation(final Station station) {
+        return findAllUpStation().contains(station);
+    }
+
+    private boolean hasDownStation(final Station station) {
+        return findAllDownStation().contains(station);
+    }
+
+    private Set<Station> findAllUpStation() {
+        return sections.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toSet());
+    }
+
+    private Set<Station> findAllDownStation() {
+        return sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toSet());
     }
 }
