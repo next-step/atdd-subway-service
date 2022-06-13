@@ -88,6 +88,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("즐겨찾기 목록 조회")
     void favoriteTest02() {
+        // given: 즐겨찾기 생성을 요청
+        ExtractableResponse<Response> 즐겨찾기_생성_요청_응답 = 즐겨찾기_생성_요청(로그인_토큰, 가락시장역.getId(), 오금역.getId());
+
+        // given: 즐겨찾기 생성됨
+        즐겨찾기_생성됨(즐겨찾기_생성_요청_응답);
+
         // when: 즐겨찾기 목록 조회을 요청
         ExtractableResponse<Response> 즐겨찾기_목록_조회_요청_응답 = 즐겨찾기_목록_조회_요청(로그인_토큰);
 
@@ -147,7 +153,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
         List<FavoriteResponse> favoriteResponses = response.jsonPath().getList(".", FavoriteResponse.class);
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK),
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(favoriteResponses).hasSize(1)
         );
     }
