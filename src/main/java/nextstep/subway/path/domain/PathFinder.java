@@ -3,8 +3,6 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
@@ -19,12 +17,12 @@ public class PathFinder {
         this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     }
 
-    public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Lines lines, Station upStation, Station downStation) {
+    public ShortestPath findShortestPath(Lines lines, Station upStation, Station downStation) {
         validate(lines, upStation, downStation);
         addVertex(lines);
         assignEdgeWeight(lines);
 
-        return getPath(upStation, downStation);
+        return new ShortestPath(graph, upStation, downStation);
     }
 
     private void validate(Lines lines, Station upStation, Station downStation) {
@@ -58,13 +56,5 @@ public class PathFinder {
         for (Section section : lines.getAllSections()) {
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
         }
-    }
-
-    private GraphPath<Station, DefaultWeightedEdge> getPath(Station upStation, Station downStation) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(upStation, downStation);
-        Objects.requireNonNull(shortestPath, "출발역과 도착역이 연결되어 있지 않습니다.");
-        return shortestPath;
     }
 }
