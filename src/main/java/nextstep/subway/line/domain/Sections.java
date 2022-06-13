@@ -9,11 +9,13 @@ import java.util.*;
 
 @Embeddable
 public class Sections {
-    public static final int SECTION_LIST_LOWER_BOUND_SIZE = 1;
+    private static final int SECTION_LIST_LOWER_BOUND_SIZE = 1;
+
     @OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
-    private List<Section> sectionList = new ArrayList<>();
+    private List<Section> sectionList;
 
     public Sections() {
+        this.sectionList = new ArrayList<>();
     }
 
     public void add(Section section) {
@@ -113,8 +115,8 @@ public class Sections {
     }
 
     private void checkEitherOneOfAddedStation(Station upStation, Station downStation, List<Station> stations) {
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) && stations.stream()
-                .noneMatch(it -> it == downStation)) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(station -> station.equals(upStation)) && stations
+                .stream().noneMatch(station -> station.equals(downStation))) {
             throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
     }
