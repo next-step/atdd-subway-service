@@ -79,3 +79,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] Sections 추가
         - [X] getStation 이동
         - [X] SectionsTest getStations 추가
+- [X] 전역 예외 처리 추가
+    - [X] RuntimeException 으로 사용되던 예외 수정
