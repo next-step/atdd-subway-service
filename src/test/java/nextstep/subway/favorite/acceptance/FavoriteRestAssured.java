@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 
 public class FavoriteRestAssured {
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(String token, StationResponse 강남역, StationResponse 정자역) {
-        FavoriteRequest favoriteRequest = FavoriteRequest.of(강남역.getId(), 정자역.getId());
+        FavoriteRequest favoriteRequest = FavoriteRequest.of(String.valueOf(강남역.getId()), String.valueOf((정자역.getId())));
 
         return RestAssured
                 .given().log().all()

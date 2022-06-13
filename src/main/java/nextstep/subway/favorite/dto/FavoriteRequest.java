@@ -11,8 +11,8 @@ public class FavoriteRequest {
         this.target = target;
     }
 
-    public static FavoriteRequest of(Long source, Long target) {
-        return new FavoriteRequest(String.valueOf(source), String.valueOf(target));
+    public static FavoriteRequest of(String source, String target) {
+        return new FavoriteRequest(source, target);
     }
 
     public long getSource() {
