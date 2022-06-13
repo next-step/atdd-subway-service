@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AuthAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
+    public static final String WRONG_PASSWORD = "wrong_password";
     public static final int AGE = 20;
 
     @DisplayName("로그인을 성공한다.")
@@ -35,6 +36,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
+        // when
+        ExtractableResponse<Response> response = 로그인_요청(new TokenRequest(EMAIL, WRONG_PASSWORD));
+
+        // then
+        로그인_실패(response);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -53,5 +62,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static void 로그인_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 로그인_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
