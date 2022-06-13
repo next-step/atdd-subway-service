@@ -122,7 +122,7 @@ public class Sections {
     }
 
     private boolean isStartStation(final Section section) {
-        final List<Section> isMatchDownStations = sections.stream().filter(it -> it.isMatchDownStation(section.getUpStation())).collect(Collectors.toList());
-        return isMatchDownStations.isEmpty() && sections.stream().anyMatch(it -> it.isMatchUpStation(section.getDownStation()));
+        return sections.stream().noneMatch(it -> it.isMatchDownStation(section.getUpStation())) &&
+                sections.stream().anyMatch(it -> it.isMatchUpStation(section.getDownStation()));
     }
 }
