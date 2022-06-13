@@ -8,17 +8,18 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Optional;
+import java.util.stream.Stream;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
-import org.assertj.core.api.AbstractIntegerAssert;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,8 @@ import org.springframework.http.MediaType;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthAcceptanceTest extends AcceptanceTest {
-    private final TokenRequest 몬드 = new TokenRequest("mond@mond.com", "younggun");
+    private static final TokenRequest 몬드 = new TokenRequest("mond@mond.com", "younggun");
+    private static final TokenRequest 없다 = new TokenRequest("not@exist.com", "exist");
 
     @MockBean
     private MemberRepository memberRepository;
@@ -51,15 +53,28 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     *  Given 멤버가 주어지고
      *  When 올바르지 않은 id / password로 로그인을 하면
      *  Then 로그인이 실패한다
      */
-    @Test
-    @DisplayName("올바르지 않은 정보로 로그인을 하면 로그인이 실패한다")
-    void myInfoWithBadBearerAuth() {
+    @ParameterizedTest(name = "올바르지 않은 정보({0})로 로그인을 하면 로그인이 실패한다")
+    @MethodSource("invalidTokenRequest")
+    void myInfoWithBadBearerAuth(TokenRequest 올바르지_않은_유저_정보) {
+        // given
+        Member mond = new Member("mond@mond.com", "mondmondmond", 10);
+        when(memberRepository.findByEmail("mond@mond.com")).thenReturn(Optional.of(mond));
+
         // when
+        ExtractableResponse<Response> 로그인_요청_결과 = 로그인_요청(올바르지_않은_유저_정보);
 
         // then
+        로그인_요청_실패(로그인_요청_결과);
+    }
+
+    public static Stream<Arguments> invalidTokenRequest() {
+        return Stream.of(
+                Arguments.of(몬드), Arguments.of(없다)
+        );
     }
 
     /**
@@ -89,5 +104,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(로그인_요청_결과.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(응답_토큰.getAccessToken()).isNotNull()
         );
+    }
+
+    private void 로그인_요청_실패(ExtractableResponse<Response> 로그인_요청_결과) {
+        assertThat(로그인_요청_결과.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
