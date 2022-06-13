@@ -123,4 +123,20 @@ public class SectionsTest {
             sections.remove(upStation);
         }).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    @DisplayName("정렬된 역을 반환한다.")
+    void findOrderedStations() {
+        upStation = new Station("애오개역");
+        downStation = new Station("마포역");
+        Section newSection = new Section(line, upStation, downStation, 5);
+        sections.addSection(newSection);
+
+        List<Station> orderedAllStations = sections.findOrderedAllStations();
+        List<String> orderedAllStationsNames = orderedAllStations.stream()
+                .map(Station::getName)
+                .collect(Collectors.toList());
+
+        assertThat(orderedAllStationsNames).containsExactly("공덕역", "애오개역", "마포역");
+    }
 }
