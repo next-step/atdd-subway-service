@@ -75,4 +75,13 @@ public class MemberRestAssured {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 나의_정보_삭제_요청(String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
+    }
 }
