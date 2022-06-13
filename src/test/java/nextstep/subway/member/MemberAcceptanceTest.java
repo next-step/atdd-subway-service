@@ -19,7 +19,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.utils.AuthMemberApiHelper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -75,22 +74,23 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMyInfo() {
         //when
-        ExtractableResponse<Response> 회원생성_response = 회원_생성을_요청("이메일@테스트.입니다", "테스트패스워드", 32);
+        ExtractableResponse<Response> 회원생성_response = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         // then
         회원_생성됨(회원생성_response);
 
         //when
-        ExtractableResponse<Response> 로그인을통한_토큰받기_response = 로그인을통한_토큰받기("이메일@테스트.입니다", "테스트패스워드");
+        ExtractableResponse<Response> 로그인을통한_토큰받기_response = 로그인을통한_토큰받기(EMAIL, PASSWORD);
         //then
         String 토큰 = 로그인을통한_토큰받기_response.jsonPath().get("accessToken").toString();
 
         //when(me를통한 사용자변경)
-        ExtractableResponse<Response> 내정보_수정_요청_resposne = 내정보_수정_요청("이메일변경@테스트.입니다", "패스워드변경테스트", 30, 토큰);
+        ExtractableResponse<Response> 내정보_수정_요청_resposne = 내정보_수정_요청(NEW_EMAIL, NEW_PASSWORD,
+            NEW_AGE, 토큰);
         //when(토큰재발급)
-        토큰 = 로그인을통한_토큰받기("이메일변경@테스트.입니다", "패스워드변경테스트").jsonPath().get("accessToken").toString();
+        토큰 = 로그인을통한_토큰받기(NEW_EMAIL, NEW_PASSWORD).jsonPath().get("accessToken").toString();
         //then
         ExtractableResponse<Response> 토큰을통해_내정보받기_response = 토큰을통해_내정보받기(토큰);
-        가져온_내정보_확인하기(new Member("이메일변경@테스트.입니다", "패스워드변경테스트", 30), 토큰을통해_내정보받기_response);
+        가져온_내정보_확인하기(new Member(NEW_EMAIL, NEW_PASSWORD, NEW_AGE), 토큰을통해_내정보받기_response);
 
         //when(me를 통한 사용자 삭제)
         ExtractableResponse<Response> 내정보_삭제_요청_response = 내정보_삭제_요청(토큰);
@@ -98,6 +98,4 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         토큰을통해_내정보받기_response = 토큰을통해_내정보받기(토큰);
         인증실패(토큰을통해_내정보받기_response);
     }
-
-
 }
