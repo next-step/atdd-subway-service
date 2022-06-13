@@ -10,10 +10,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.data.geo.Distance;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -26,7 +23,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-    private Sections sections = new Sections(); //new ArrayList<>();
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -67,22 +64,6 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
-    private Station findUpStation() {
-        Station downStation = sections.getSections().get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.getSections().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
-    }
-
     public List<StationResponse> getStationResponses() {
         return getStations().stream()
                 .map(it -> StationResponse.of(it))
@@ -94,70 +75,23 @@ public class Line extends BaseEntity {
     }
 
     public void addLineStation(Station upStation, Station downStation, int distance) {
-        List<Station> stations = getStations();
-        boolean isUpStationExisted = isUpStationExisted(stations, upStation);
-        boolean isDownStationExisted = isDownStationExisted(stations, downStation);
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new SectionAddException(SectionAddException.SECTION_HAS_UP_AND_DOWN_STATION_MSG);
-        }
-
-        if (!isUpStationExisted && !isDownStationExisted) {
-            throw new SectionAddException(SectionAddException.SECTION_HAS_NOT_UP_AND_DOWN_STATION_MSG);
-        }
-
-        if (stations.isEmpty()) {
-            sections.add(new Section(this, upStation, downStation, distance));
-            return;
-        }
-
-        if (isUpStationExisted) {
-            sections.getSections()
-                    .stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, distance));
-
-            sections.add(new Section(this, upStation, downStation, distance));
-        } else if (isDownStationExisted) {
-            sections.getSections()
-                    .stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, distance));
-
-            sections.add(new Section(this, upStation, downStation, distance));
-        }
+        sections.addSection(this, upStation, downStation, distance);
     }
 
     public void removeLineStation(Station station) {
-        if (sections.getSections().size() <= 1) {
-            throw new SectionSizeMinimunException();
-        }
-
-        Optional<Section> upLineStation = sections.getSections().stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = sections.getSections().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            sections.add(new Section(this, newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(it -> sections.getSections().remove(it));
-        downLineStation.ifPresent(it -> sections.getSections().remove(it));
+        sections.removeSection(this, station);
     }
 
-    private boolean isUpStationExisted(List<Station> stations, Station upStation) {
-        return stations.stream().anyMatch(it -> it == upStation);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Line line = (Line) o;
+        return Objects.equals(id, line.id);
     }
 
-    private boolean isDownStationExisted(List<Station> stations, Station downStation) {
-        return stations.stream().anyMatch(it -> it == downStation);
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
