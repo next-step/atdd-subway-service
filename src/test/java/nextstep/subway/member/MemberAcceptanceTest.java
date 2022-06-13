@@ -180,7 +180,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 내_정보_조회_요청(TokenResponse 토큰_정보) {
         return RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰_정보.getAccessToken())
+                .header(HttpHeaders.AUTHORIZATION, 토큰_정보.addBearerAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(MINE_URI)
                 .then().log().all()
@@ -205,7 +205,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰_정보.getAccessToken())
+                .header(HttpHeaders.AUTHORIZATION, 토큰_정보.addBearerAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
                 .when().put(MINE_URI)
@@ -225,7 +225,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 내_정보_삭제_요청(TokenResponse 토큰_정보) {
         return RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + 토큰_정보.getAccessToken())
+                .header(HttpHeaders.AUTHORIZATION, 토큰_정보.addBearerAccessToken())
                 .when().delete(MINE_URI)
                 .then().log().all()
                 .extract();
