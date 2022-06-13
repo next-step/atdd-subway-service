@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
@@ -50,5 +51,13 @@ public class FavoriteService {
         return findFavorites.stream().
                 map(FavoriteResponse::new).
                 collect(Collectors.toList());
+    }
+
+    public void delete(LoginMember loginMember, Long id) {
+        Favorite findFavorite = favoriteRepository.
+                findByIdAndMemberId(id, loginMember.getId()).
+                orElseThrow(RuntimeException::new);
+        favoriteRepository.delete(findFavorite);
+
     }
 }
