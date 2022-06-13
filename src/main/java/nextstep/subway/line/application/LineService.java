@@ -47,6 +47,9 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
+    public List<Line> findAllLine() {
+        return lineRepository.findAll();
+    }
 
     @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {

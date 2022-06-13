@@ -3,17 +3,21 @@ package nextstep.subway.path.dto;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.dto.StationResponse;
 
 public class PathResponse {
 
     private List<StationResponse> stations;
-    private double distance;
+    private int distance;
 
-    public PathResponse(List<Station> stations, double distance) {
-        this.stations = stations.stream().map(StationResponse::of)
-            .collect(Collectors.toList());
+    public PathResponse(Path path) {
+        this.stations = path.getStations().stream().map(StationResponse::of).collect(Collectors.toList());
+        this.distance = path.getDistance();
+    }
+
+    public PathResponse(List<StationResponse> stations, int distance) {
+        this.stations = stations;
         this.distance = distance;
     }
 
@@ -21,7 +25,7 @@ public class PathResponse {
         return stations;
     }
 
-    public double getDistance() {
+    public int getDistance() {
         return this.distance;
     }
 
@@ -34,7 +38,7 @@ public class PathResponse {
             return false;
         }
         PathResponse that = (PathResponse) o;
-        return Double.compare(that.distance, distance) == 0 && Objects.equals(stations, that.stations);
+        return that.distance == distance && Objects.equals(stations, that.stations);
     }
 
     @Override
