@@ -80,26 +80,9 @@ public class Line extends BaseEntity {
         sections.addSection(new Section(this, reUpStation, reDownStation, reDistance));
     }
 
-    public void registerPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        addVertices(graph);
-        addEdges(graph);
-    }
-
-    private void addVertices(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        findStations().forEach(graph::addVertex);
-    }
-
-    private void addEdges(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        getSections().getSections()
-                .forEach(section -> addEdgeWith(addEdge(section, graph), section.getDistance(), graph));
-    }
-
-    private DefaultWeightedEdge addEdge(Section section, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        return graph.addEdge(section.getUpStation(), section.getDownStation());
-    }
-
-    private void addEdgeWith(DefaultWeightedEdge edge, int weight, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        graph.setEdgeWeight(edge, weight);
+    public void registerPath(SectionGraph graph) {
+        graph.addVertices(findStations());
+        graph.addEdges(getSections().getSections());
     }
 
     public Long getId() {
