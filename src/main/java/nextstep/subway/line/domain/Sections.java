@@ -54,16 +54,12 @@ public class Sections {
             Station newDownStation = upSection.getDownStation();
             Distance newDistance = upSection.getDistance().addThenReturnResult(downSection.getDistance());
 
-            addSection(new Section(line, newUpStation, newDownStation, newDistance));
+            this.sections.add(new Section(line, newUpStation, newDownStation, newDistance));
         }
     }
 
     public List<Section> getValue() {
         return this.sections;
-    }
-
-    private void addStation(Line line, Station upStation, Station downStation, Distance distance) {
-        this.sections.add(new Section(line, upStation, downStation, distance));
     }
 
     private Station findFirstStation(Station station) {

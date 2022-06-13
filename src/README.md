@@ -2,6 +2,8 @@
 
 * [x] LineService 리팩토링
 * [x] LineSectionAcceptanceTest 리팩토링
+* [ ] 최단 경로 조회 인수 테스트 만들기
+* [ ] 최단 경로 조회 기능 구현하기
 
 ## 요구사항 설명
 
@@ -19,6 +21,18 @@
     3. 로직 옮기기
        * 기존 로직을 지우지 말고 새로운 로직을 만들어서 수행
        * 정상 동작 확인 후 기존 로직을 제거한다
+
+## 미션 수행 순서
+
+* 최단 경로 조회
+    1. mock 서버와 dto 를 정의하여 인수 테스트 성공 시키기
+
+## 예외상황
+
+* 최단 경로 조회 예외상황
+    1. 출발역과 도착역이 같지 않은 경우
+    2. 출발역과 도착역이 연결이 되어 있지 않은 경우
+    3. 존재하지 않은 출발역이나 도착역을 조회하는 경우
 
 ## 인수 테스트 통합
 
@@ -44,4 +58,60 @@ Feature: 지하철 구간 관련 기능
     Then 지하철 구간 삭제됨
     When 지하철 노선에 등록된 역 목록 조회 요청
     Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+```
+
+### 외부 라이브러리 테스트
+
+* 외부 라이브러리의 구현은 수정할 수 없기 때문에 단위 테스트를 하지 않는다
+* 외부 라이브러리를 사용하여 직접 구현하는 로직을 검증해야 한다
+* 직접 구현하는 로직 검증 시 외부 라이브러리 부분은 실제 객체를 활용한다
+
+### 최단 경로 조회 요청/응답
+
+```http request
+HTTP/1.1 200 
+Request method:	GET
+Request URI:	http://localhost:55494/paths?source=1&target=6
+Headers: 	Accept=application/json
+		Content-Type=application/json; charset=UTF-8
+```
+
+```http response
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 09 May 2020 14:54:11 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    "stations": [
+        {
+            "id": 5,
+            "name": "양재시민의숲역",
+            "createdAt": "2020-05-09T23:54:12.007"
+        },
+        {
+            "id": 4,
+            "name": "양재역",
+            "createdAt": "2020-05-09T23:54:11.995"
+        },
+        {
+            "id": 1,
+            "name": "강남역",
+            "createdAt": "2020-05-09T23:54:11.855"
+        },
+        {
+            "id": 2,
+            "name": "역삼역",
+            "createdAt": "2020-05-09T23:54:11.876"
+        },
+        {
+            "id": 3,
+            "name": "선릉역",
+            "createdAt": "2020-05-09T23:54:11.893"
+        }
+    ],
+    "distance": 40
+}
 ```
