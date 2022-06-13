@@ -15,10 +15,18 @@ public class ShortestPath {
     public ShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Station upStation, Station downStation) {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         elements = dijkstraShortestPath.getPath(upStation, downStation);
+        validatePath();
+    }
+
+    private void validatePath() {
+        Objects.requireNonNull(elements, "출발역과 도착역이 연결되어 있지 않습니다.");
     }
 
     public List<Station> getPath() {
-        Objects.requireNonNull(elements, "출발역과 도착역이 연결되어 있지 않습니다.");
         return elements.getVertexList();
+    }
+
+    public int getDistance() {
+        return (int) elements.getWeight();
     }
 }
