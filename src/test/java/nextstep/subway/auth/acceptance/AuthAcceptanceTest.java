@@ -1,6 +1,7 @@
 package nextstep.subway.auth.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthRestAssured.로그인_요청;
+import static nextstep.subway.member.MemberRestAssured.나의_정보_조회_요청;
 import static nextstep.subway.member.MemberRestAssured.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -69,9 +70,18 @@ class AuthAcceptanceTest extends AcceptanceTest {
         로그인_실패됨(response);
     }
 
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    /**
+     * When 유효하지 않은 토큰으로 나의 정보를 요청하면
+     * Then 정보 조회에 실패한다.
+     */
+    @DisplayName("Bearer Auth 유효하지 않은 토큰으로 나의 정보를 요청하면 실패한다.")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // When
+        String invalidToken = "InvalidTokenText";
+        ExtractableResponse<Response> response = 나의_정보_조회_요청(invalidToken);
+        // Then
+        나의_정보_조회_실패됨(response);
     }
 
     public static void 로그인_됨(ExtractableResponse<Response> response) {
@@ -82,6 +92,10 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private void 로그인_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private void 나의_정보_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
