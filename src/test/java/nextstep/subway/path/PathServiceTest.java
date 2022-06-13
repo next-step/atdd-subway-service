@@ -23,9 +23,9 @@ import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -90,149 +90,223 @@ class PathServiceTest {
         회원 = new LoginMember(1L, "woobeen@naver.com", 22);
     }
 
-    @DisplayName("지하철 최단거리 경로를 조회하면 정상적으로 조회되어야 한다")
-    @Test
-    void shortest_path_test() {
-        // given
-        Line 노선 = mock(Line.class);
-        List<Station> 역_목록 = Arrays.asList(대림역, 구로디지털단지역, 신대방역);
-        List<Section> 구간_목록 = Arrays.asList(대림_구로디지털단지, 구로디지털단지_신대방);
+    @Nested
+    @DisplayName("노선 최단경로에 대한 테스트")
+    class PathTest {
+        @DisplayName("지하철 최단거리 경로를 조회하면 정상적으로 조회되어야 한다")
+        @Test
+        void shortest_path_test() {
+            // given
+            Line 노선 = mock(Line.class);
+            List<Station> 역_목록 = Arrays.asList(대림역, 구로디지털단지역, 신대방역);
+            List<Section> 구간_목록 = Arrays.asList(대림_구로디지털단지, 구로디지털단지_신대방);
 
-        when(노선.getStations())
-            .thenReturn(역_목록);
-        when(노선.getSections())
-            .thenReturn(구간_목록);
+            when(노선.getStations())
+                .thenReturn(역_목록);
+            when(노선.getSections())
+                .thenReturn(구간_목록);
 
-        when(lineService.findAll())
-            .thenReturn(Collections.singletonList(노선));
+            when(lineService.findAll())
+                .thenReturn(Collections.singletonList(노선));
 
-        when(stationService.findById(any()))
-            .thenReturn(대림역)
-            .thenReturn(신대방역);
+            when(stationService.findById(any()))
+                .thenReturn(대림역)
+                .thenReturn(신대방역);
 
-        when(stationService.findAllStationsByIds(any()))
-            .thenReturn(Arrays.asList(
-                StationResponse.of(대림역),
-                StationResponse.of(구로디지털단지역),
-                StationResponse.of(신대방역))
+            when(stationService.findAllStationsByIds(any()))
+                .thenReturn(Arrays.asList(
+                    StationResponse.of(대림역),
+                    StationResponse.of(구로디지털단지역),
+                    StationResponse.of(신대방역))
+                );
+
+            // when
+            PathResponse pathResponse = pathService.findShortestPath(회원, 1L, 10L);
+
+            // then
+            assertThat(pathResponse.getDistance()).isEqualTo(15);
+            assertThat(toNames(pathResponse.getStations())).containsExactly("대림", "구로디지털단지", "신대방");
+        }
+
+        @DisplayName("환승역이 있는 경우 최단경로를 조회하면 정상적으로 조회되어야 한다")
+        @Test
+        void shortest_path_test2() {
+            // given
+            Line 노선 = mock(Line.class);
+            Line 노선2 = mock(Line.class);
+
+            when(노선.getStations())
+                .thenReturn(Arrays.asList(대림역, 구로디지털단지역, 신대방역));
+            when(노선.getSections())
+                .thenReturn(Arrays.asList(대림_구로디지털단지, 구로디지털단지_신대방));
+
+            when(노선2.getStations())
+                .thenReturn(Arrays.asList(남구로역, 가산디지털단지역));
+            when(노선2.getSections())
+                .thenReturn(Arrays.asList(남구로_가산디지털단지, 가산디지털단지_신대방));
+
+            when(lineService.findAll())
+                .thenReturn(Arrays.asList(노선, 노선2));
+            when(stationService.findById(any()))
+                .thenReturn(구로디지털단지역)
+                .thenReturn(가산디지털단지역);
+
+            when(stationService.findAllStationsByIds(any()))
+                .thenReturn(Arrays.asList(
+                    StationResponse.of(구로디지털단지역),
+                    StationResponse.of(신대방역),
+                    StationResponse.of(가산디지털단지역))
+                );
+
+            // when
+            PathResponse pathResponse = pathService.findShortestPath(회원, 2L, 5L);
+
+            // then
+            assertAll(
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(9),
+                () -> assertThat(toNames(pathResponse.getStations()))
+                    .containsExactly("구로디지털단지", "신대방", "가산디지털단지")
             );
+        }
 
-        // when
-        PathResponse pathResponse = pathService.findShortestPath(회원, 1L, 10L);
+        @DisplayName("출발지와 목적지가 같은 역인 경우 예외가 발생해야 한다")
+        @Test
+        void path_exception_test() {
+            // given
+            when(lineService.findAll())
+                .thenReturn(Collections.emptyList());
+            when(stationService.findById(any()))
+                .thenReturn(대림역)
+                .thenReturn(대림역);
 
-        // then
-        assertThat(pathResponse.getDistance()).isEqualTo(15);
-        assertThat(toNames(pathResponse.getStations())).containsExactly("대림", "구로디지털단지", "신대방");
+            // then
+            assertThatThrownBy(() -> {
+                pathService.findShortestPath(회원, 2L, 2L);
+            }).isInstanceOf(BadRequestException.class)
+                .hasMessageContaining(ExceptionType.CAN_NOT_SAME_STATION.getMessage());
+        }
+
+        @DisplayName("출발지와 목적지가 연결되어있지 않은 경우 예외가 발생해야 한다")
+        @Test
+        void path_exception_test2() {
+            // given
+            Line 노선 = mock(Line.class);
+            Line 영남선 = mock(Line.class);
+
+            when(노선.getStations())
+                .thenReturn(Arrays.asList(대림역, 구로디지털단지역, 신대방역));
+            when(노선.getSections())
+                .thenReturn(Arrays.asList(대림_구로디지털단지, 구로디지털단지_신대방));
+
+            when(영남선.getStations())
+                .thenReturn(Arrays.asList(부산역, 대구역));
+            when(영남선.getSections())
+                .thenReturn(Arrays.asList(부산_대구));
+
+            when(lineService.findAll())
+                .thenReturn(Arrays.asList(노선, 영남선));
+            when(stationService.findById(any()))
+                .thenReturn(구로디지털단지역)
+                .thenReturn(부산역);
+
+            // then
+            assertThatThrownBy(() -> {
+                pathService.findShortestPath(회원, 2L, 4L);
+            }).isInstanceOf(CannotFindPathException.class)
+                .hasMessageContaining(ExceptionType.IS_NOT_CONNECTED_STATION.getMessage());
+        }
+
+        @DisplayName("출발지 or 목적지가 경로에 등록되어 있지 않은 경우 예외가 발생해야 한다")
+        @Test
+        void path_exception_test3() {
+            // given
+            Line 노선 = mock(Line.class);
+            when(노선.getStations())
+                .thenReturn(Arrays.asList(대림역, 구로디지털단지역, 신대방역));
+            when(lineService.findAll())
+                .thenReturn(Arrays.asList(노선));
+            when(stationService.findById(any()))
+                .thenReturn(구로디지털단지역)
+                .thenReturn(new Station("새로운역"));
+
+            // then
+            assertThatThrownBy(() -> {
+                pathService.findShortestPath(회원, 2L, 4L);
+            }).isInstanceOf(CannotFindPathException.class)
+                .hasMessageContaining(ExceptionType.NOT_FOUND_STATION.getMessage());
+        }
     }
 
-    @DisplayName("환승역이 있는 경우 최단경로를 조회하면 정상적으로 조회되어야 한다")
-    @Test
-    void shortest_path_test2() {
-        // given
-        Line 노선 = mock(Line.class);
-        Line 노선2 = mock(Line.class);
+    @Nested
+    @DisplayName("경로 및 나이에 따른 노선 요금에 대한 테스트")
+    class FareTest {
 
-        when(노선.getStations())
-            .thenReturn(Arrays.asList(대림역, 구로디지털단지역, 신대방역));
-        when(노선.getSections())
-            .thenReturn(Arrays.asList(대림_구로디지털단지, 구로디지털단지_신대방));
+        @DisplayName("경로의 거리가 15, 나이가 성인이라면 성인요금 + 15km 추가요금이 정상적으로 조회되어야 한다")
+        @Test
+        void fare_test() {
+            // given
+            회원 = new LoginMember(1L, "test", 25);
+            대림_구로디지털단지 = new Section(이호선, 대림역, 구로디지털단지역, 10);
+            구로디지털단지_신대방 = new Section(이호선, 구로디지털단지역, 신대방역, 5);
+            지하철_노선_mocking();
 
-        when(노선2.getStations())
-            .thenReturn(Arrays.asList(남구로역, 가산디지털단지역));
-        when(노선2.getSections())
-            .thenReturn(Arrays.asList(남구로_가산디지털단지, 가산디지털단지_신대방));
+            // when
+            PathResponse pathResponse = pathService.findShortestPath(회원, 1L, 10L);
 
-        when(lineService.findAll())
-            .thenReturn(Arrays.asList(노선, 노선2));
-        when(stationService.findById(any()))
-            .thenReturn(구로디지털단지역)
-            .thenReturn(가산디지털단지역);
+            // then
+            assertThat(pathResponse.getFare()).isEqualTo(1550);
+        }
 
-        when(stationService.findAllStationsByIds(any()))
-            .thenReturn(Arrays.asList(
-                StationResponse.of(구로디지털단지역),
-                StationResponse.of(신대방역),
-                StationResponse.of(가산디지털단지역))
-            );
+        @DisplayName("경로의 거리가 80, 나이가 청소년이라면 청소년요금 + 80km 추가요금이 정상적으로 조회되어야 한다")
+        @Test
+        void fare_test2() {
+            // given
+            회원 = new LoginMember(1L, "test", 17);
+            대림_구로디지털단지 = new Section(이호선, 대림역, 구로디지털단지역, 50);
+            구로디지털단지_신대방 = new Section(이호선, 구로디지털단지역, 신대방역, 30);
+            지하철_노선_mocking();
 
-        // when
-        PathResponse pathResponse = pathService.findShortestPath(회원, 2L, 5L);
+            // when
+            PathResponse pathResponse = pathService.findShortestPath(회원, 1L, 10L);
 
-        // then
-        assertAll(
-            () -> assertThat(pathResponse.getDistance()).isEqualTo(9),
-            () -> assertThat(toNames(pathResponse.getStations()))
-                .containsExactly("구로디지털단지", "신대방", "가산디지털단지")
-        );
+            // then
+            assertThat(pathResponse.getFare()).isEqualTo(1720);
+        }
+
+        @DisplayName("경로의 거리가 3, 나이가 노인이라면 운임요금이 무료여야 한다")
+        @Test
+        void fare_test3() {
+            // given
+            회원 = new LoginMember(1L, "test", 77);
+            대림_구로디지털단지 = new Section(이호선, 대림역, 구로디지털단지역, 1);
+            구로디지털단지_신대방 = new Section(이호선, 구로디지털단지역, 신대방역, 2);
+            지하철_노선_mocking();
+
+            // when
+            PathResponse pathResponse = pathService.findShortestPath(회원, 1L, 10L);
+
+            // then
+            assertThat(pathResponse.getFare()).isEqualTo(0);
+        }
+
+        void 지하철_노선_mocking() {
+            Line 노선 = mock(Line.class);
+            List<Station> 역_목록 = Arrays.asList(대림역, 구로디지털단지역, 신대방역);
+            List<Section> 구간_목록 = Arrays.asList(대림_구로디지털단지, 구로디지털단지_신대방);
+
+            when(노선.getStations())
+                .thenReturn(역_목록);
+            when(노선.getSections())
+                .thenReturn(구간_목록);
+
+            when(lineService.findAll())
+                .thenReturn(Collections.singletonList(노선));
+
+            when(stationService.findById(any()))
+                .thenReturn(대림역)
+                .thenReturn(신대방역);
+        }
     }
-
-    @DisplayName("출발지와 목적지가 같은 역인 경우 예외가 발생해야 한다")
-    @Test
-    void path_exception_test() {
-        // given
-        when(lineService.findAll())
-            .thenReturn(Collections.emptyList());
-        when(stationService.findById(any()))
-            .thenReturn(대림역)
-            .thenReturn(대림역);
-
-        // then
-        assertThatThrownBy(() -> {
-            pathService.findShortestPath(회원, 2L, 2L);
-        }).isInstanceOf(BadRequestException.class)
-            .hasMessageContaining(ExceptionType.CAN_NOT_SAME_STATION.getMessage());
-    }
-
-    @DisplayName("출발지와 목적지가 연결되어있지 않은 경우 예외가 발생해야 한다")
-    @Test
-    void path_exception_test2() {
-        // given
-        Line 노선 = mock(Line.class);
-        Line 영남선 = mock(Line.class);
-
-        when(노선.getStations())
-            .thenReturn(Arrays.asList(대림역, 구로디지털단지역, 신대방역));
-        when(노선.getSections())
-            .thenReturn(Arrays.asList(대림_구로디지털단지, 구로디지털단지_신대방));
-
-        when(영남선.getStations())
-            .thenReturn(Arrays.asList(부산역, 대구역));
-        when(영남선.getSections())
-            .thenReturn(Arrays.asList(부산_대구));
-
-        when(lineService.findAll())
-            .thenReturn(Arrays.asList(노선, 영남선));
-        when(stationService.findById(any()))
-            .thenReturn(구로디지털단지역)
-            .thenReturn(부산역);
-
-        // then
-        assertThatThrownBy(() -> {
-            pathService.findShortestPath(회원, 2L, 4L);
-        }).isInstanceOf(CannotFindPathException.class)
-            .hasMessageContaining(ExceptionType.IS_NOT_CONNECTED_STATION.getMessage());
-    }
-
-    @DisplayName("출발지 or 목적지가 경로에 등록되어 있지 않은 경우 예외가 발생해야 한다")
-    @Test
-    void path_exception_test3() {
-        // given
-        Line 노선 = mock(Line.class);
-        when(노선.getStations())
-            .thenReturn(Arrays.asList(대림역, 구로디지털단지역, 신대방역));
-        when(lineService.findAll())
-            .thenReturn(Arrays.asList(노선));
-        when(stationService.findById(any()))
-            .thenReturn(구로디지털단지역)
-            .thenReturn(new Station("새로운역"));
-
-        // then
-        assertThatThrownBy(() -> {
-            pathService.findShortestPath(회원, 2L, 4L);
-        }).isInstanceOf(CannotFindPathException.class)
-            .hasMessageContaining(ExceptionType.NOT_FOUND_STATION.getMessage());
-    }
-
 
     private List<String> toNames(List<StationResponse> stationResponses) {
         return stationResponses.stream()
