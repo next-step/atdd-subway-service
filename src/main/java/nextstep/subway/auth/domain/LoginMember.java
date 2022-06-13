@@ -1,20 +1,22 @@
 package nextstep.subway.auth.domain;
 
+import nextstep.subway.line.domain.Age;
+
 public class LoginMember {
     private static final int DEFAULT_AGE = 19;
 
     private Long id;
     private String email;
-    private Integer age;
+    private Age age;
 
     public LoginMember() {
-        this.age = DEFAULT_AGE;
+        this.age = Age.of(DEFAULT_AGE);
     }
 
     public LoginMember(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
-        this.age = age;
+        this.age = Age.of(age);
     }
 
     public Long getId() {
@@ -26,6 +28,6 @@ public class LoginMember {
     }
 
     public Integer getAge() {
-        return age;
+        return age.getValue();
     }
 }
