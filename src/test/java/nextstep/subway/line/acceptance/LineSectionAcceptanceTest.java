@@ -113,6 +113,33 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
+    /*
+        When 지하철 구간 삭제 요청
+        Then 지하철 구간 삭제됨
+        When 지하철 노선에 등록된 역 목록 조회 요청
+        Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+    * */
+    @DisplayName("docs의 시나리오")
+    @Test
+    void scenario() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
+        // then
+        지하철_노선에_지하철역_등록됨(response);
+        // when
+        ExtractableResponse<Response> response2 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        // then
+        지하철_노선에_지하철역_순서_정렬됨(response2, Arrays.asList(강남역, 양재역, 광교역));
+        // when
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+        // then
+        지하철_노선에_지하철역_제외됨(removeResponse);
+        // when
+        ExtractableResponse<Response> response3 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        // then
+        지하철_노선에_지하철역_순서_정렬됨(response3, Arrays.asList(강남역, 광교역));
+    }
+
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
