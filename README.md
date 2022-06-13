@@ -57,12 +57,10 @@ npm run dev
   - [x] 도메인으로 로직이동
 - [x] (선택) LineSectionAcceptanceTest 리팩터링
 
+## 2단계
 
-
-
-
-
-
+- [ ] 최단 경로 조회 인수테스트 만들기
+- [ ] 최단 경로 조회 기능 구현하기
 
 ## 📝 License
 
