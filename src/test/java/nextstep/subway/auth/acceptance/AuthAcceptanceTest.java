@@ -1,5 +1,8 @@
 package nextstep.subway.auth.acceptance;
 
+import static nextstep.subway.member.MemberAcceptanceTest.내정보_조회;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
@@ -15,9 +18,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-
-import static nextstep.subway.member.MemberAcceptanceTest.내정보_조회;
-import static org.assertj.core.api.Assertions.*;
 public class AuthAcceptanceTest extends AcceptanceTest {
 
     @Autowired
