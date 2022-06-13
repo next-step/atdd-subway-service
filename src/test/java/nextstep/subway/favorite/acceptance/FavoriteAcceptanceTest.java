@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthRestAssured.로그인_되어_있음;
+import static nextstep.subway.favorite.acceptance.FavoriteRestAssured.즐겨찾기_생성을_요청;
 import static nextstep.subway.line.acceptance.LineRestAssured.지하철_노선_등록되어_있음;
 import static nextstep.subway.member.MemberRestAssured.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
@@ -48,6 +49,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMember() {
         // when
-       //ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(사용자토큰, 강남역, 정자역);
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(사용자토큰, 강남역, 정자역);
     }
 }
