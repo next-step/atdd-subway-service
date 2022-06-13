@@ -31,8 +31,12 @@ public class Distance {
 
     private void validate(int distance) {
         if (distance <= 0) {
-            throw new IllegalArgumentException("거리는 0이하가 될 수 없습니다.");
+            throw new IllegalArgumentException("거리는 0이하가 될 수 없습니다. 역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
         }
+    }
+
+    public int getDistance() {
+        return this.distance;
     }
 
     @Override

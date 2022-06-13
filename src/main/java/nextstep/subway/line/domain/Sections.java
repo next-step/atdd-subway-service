@@ -38,7 +38,7 @@ public class Sections {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Section downLineSection = downLineStation.get();
             Section upLineSection = upLineStation.get();
-            Distance newDistance = downLineSection.getDistance().add(upLineSection.getDistance());
+            Distance newDistance = downLineSection.addDistance(upLineSection);
             this.sections.add(new Section(upLineSection.getLine(), downLineSection.upStation(),
                     upLineSection.downStation(), newDistance));
         }
@@ -72,10 +72,10 @@ public class Sections {
         Station downStation = section.downStation();
 
         if (hasAlreadyStations(upStation, downStation)) {
-            throw new AlreadyExistException("이미 등록된 구간 입니다.");
+            throw new AlreadyExistException();
         }
         if (hasNothingStations(upStation, downStation)) {
-            throw new NotExistException("등록할 수 없는 구간 입니다.");
+            throw new NotExistException();
         }
     }
 
@@ -115,6 +115,10 @@ public class Sections {
         return this.sections.stream()
                 .filter(it -> it.downStation() == station)
                 .findFirst();
+    }
+
+    public List<Section> getSections() {
+        return this.sections;
     }
 
     public boolean isEmpty() {

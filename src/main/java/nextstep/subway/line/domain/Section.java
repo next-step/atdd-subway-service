@@ -60,21 +60,17 @@ public class Section {
     }
 
     private void changeUpStation(Station station, Distance newDistance) {
-        try {
-            this.distance = this.distance.subtract(newDistance);
-            this.upStation = station;
-        } catch (IllegalArgumentException iae) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+        this.distance = this.distance.subtract(newDistance);
+        this.upStation = station;
     }
 
     private void changeDownStation(Station station, Distance newDistance) {
-        try {
-            this.distance = this.distance.subtract(newDistance);
-            this.downStation = station;
-        } catch (IllegalArgumentException iae) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+        this.distance = this.distance.subtract(newDistance);
+        this.downStation = station;
+    }
+
+    public Distance addDistance(Section other) {
+        return this.distance.add(other.distance);
     }
 
     public Line getLine() {

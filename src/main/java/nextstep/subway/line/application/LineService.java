@@ -12,7 +12,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationsResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,14 +32,18 @@ public class LineService {
         Distance distance = Distance.of(request.getDistance());
         Line persistLine = lineRepository.save(
                 new Line(request.getName(), request.getColor(), upStation, downStation, distance));
-        return persistLine.toLineResponse(StationsResponse.of(persistLine.getSections()));
+        return persistLine.toLineResponse();
     }
 
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-                .map(line -> line.toLineResponse(StationsResponse.of(line.getSections())))
+                .map(Line::toLineResponse)
                 .collect(Collectors.toList());
+    }
+
+    public List<Line> findAllLines() {
+        return lineRepository.findAll();
     }
 
     public Line findLineById(Long id) {
@@ -49,7 +52,7 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return persistLine.toLineResponse(StationsResponse.of(persistLine.getSections()));
+        return persistLine.toLineResponse();
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
