@@ -54,11 +54,9 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public FavoriteResponse findFavoriteById(Long id) {
-        Optional<Favorite> findFavorite = favoriteRepository.findById(id);
-        if (findFavorite.isPresent()) {
-            return FavoriteResponse.of(findFavorite.get());
-        }
+        Favorite findFavorite = favoriteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("요청하신 즐겨찾기 정보가 존재하지 않습니다"));
 
-        throw new IllegalArgumentException("요청하신 즐겨찾기 정보가 존재하지 않습니다");
+        return FavoriteResponse.of(findFavorite);
     }
 }
