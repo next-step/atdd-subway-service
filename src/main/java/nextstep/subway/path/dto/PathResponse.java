@@ -13,6 +13,8 @@ public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
 
+    private PathResponse() {}
+
     public PathResponse(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
         this.stations = mapToStationResponse(shortestPath.getVertexList());
         this.distance = (int) shortestPath.getWeight();
