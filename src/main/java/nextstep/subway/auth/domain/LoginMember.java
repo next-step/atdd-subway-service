@@ -1,5 +1,6 @@
 package nextstep.subway.auth.domain;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.line.domain.Age;
 
 public class LoginMember {
@@ -20,6 +21,9 @@ public class LoginMember {
     }
 
     public Long getId() {
+        if (null == id) {
+            throw new AuthorizationException();
+        }
         return id;
     }
 

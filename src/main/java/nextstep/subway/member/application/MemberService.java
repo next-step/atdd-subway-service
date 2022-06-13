@@ -21,9 +21,6 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        if (null == id) {
-            throw new AuthorizationException();
-        }
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
