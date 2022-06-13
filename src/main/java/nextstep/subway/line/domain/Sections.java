@@ -72,7 +72,7 @@ public class Sections {
             section.getLine().removeSection(section);
         }
     }
-    
+
     private void insertSection(final Section section) {
         if (sections.isEmpty()) {
             return;
@@ -90,8 +90,8 @@ public class Sections {
 
     private Match findInsertSomePlace(final Section section) {
         final List<Station> stations = getStations();
-        final boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
-        final boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+        final boolean isUpStationExisted = stations.stream().anyMatch(it -> Objects.equals(it,section.getUpStation()));
+        final boolean isDownStationExisted = stations.stream().anyMatch(it -> Objects.equals(it,section.getDownStation()));
         if (Objects.equals(isUpStationExisted, true) && Objects.equals(isDownStationExisted, true)) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
