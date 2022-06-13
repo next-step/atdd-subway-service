@@ -52,6 +52,21 @@ class SectionsTest {
     }
 
     @Test
+    void add_is_not_empty() {
+        //given
+        sections.add(new Section(삼호선, 고속터미널역, 교대역, 3));
+        sections.add(new Section(삼호선, 교대역, 남부터미널역, 3));
+        sections.add(new Section(삼호선, 남부터미널역, 양재역, 3));
+
+        //when
+        Station 신사역 = new Station("신사역");
+        sections.addLineStation(삼호선, 신사역, 고속터미널역, 5);
+
+        //then
+        assertThat(sections.getStations()).containsExactlyInAnyOrder(양재역, 교대역, 신사역, 남부터미널역, 고속터미널역);
+    }
+
+    @Test
     void getStations_is_empty() {
         //then
         assertThat(sections.getStations()).isEmpty();
