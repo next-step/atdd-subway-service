@@ -27,24 +27,28 @@ public class Sections {
             return;
         }
 
+        if (isAdded(section)) {
+            return;
+        }
+
+        throw new BothUpDownDoNotExistException(UNREGISTERABLE_SECTION_MESSAGE);
+    }
+
+    private boolean isAdded(Section section) {
         if (hasStation(section.getUpStation())) {
-            sections.stream()
-                    .filter(it -> it.getUpStation() == section.getUpStation())
-                    .findFirst()
+            getUpLineStation(section.getUpStation())
                     .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
 
             sections.add(section);
-            return;
+            return true;
         } else if (hasStation(section.getDownStation())) {
-            sections.stream()
-                    .filter(it -> it.getDownStation() == section.getDownStation())
-                    .findFirst()
+            getDownLineStation(section.getDownStation())
                     .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
 
             sections.add(section);
-            return;
+            return true;
         }
-        throw new BothUpDownDoNotExistException(UNREGISTERABLE_SECTION_MESSAGE);
+        return false;
     }
 
     public List<Section> getSections() {
@@ -55,9 +59,7 @@ public class Sections {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = getDownLineStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -78,9 +80,7 @@ public class Sections {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = getUpLineStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -101,12 +101,8 @@ public class Sections {
             throw new MinimumSectionRemoveException("최소 구간은 한개이상 존재해야합니다.");
         }
 
-        Optional<Section> upLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+        Optional<Section> upLineStation = getUpLineStation(station);
+        Optional<Section> downLineStation = getDownLineStation(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
@@ -118,6 +114,18 @@ public class Sections {
 
         upLineStation.ifPresent(it -> line.getSections().remove(it));
         downLineStation.ifPresent(it -> line.getSections().remove(it));
+    }
+
+    private Optional<Section> getDownLineStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+    }
+
+    private Optional<Section> getUpLineStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
     }
 
     private void validateAddSection(Section section) {
