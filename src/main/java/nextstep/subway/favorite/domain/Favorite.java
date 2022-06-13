@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -41,9 +42,16 @@ public class Favorite extends BaseEntity {
     }
 
     public Favorite(Member member, Station sourceStation, Station targetStation) {
+        validateSourceTargetEquality(sourceStation, targetStation);
         this.member = member;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
+    }
+
+    private void validateSourceTargetEquality(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new IllegalArgumentException("source 와 target은 같을 수 없습니다.");
+        }
     }
 
     public Long getId() {
@@ -60,5 +68,24 @@ public class Favorite extends BaseEntity {
 
     public Station getSourceStation() {
         return this.sourceStation;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Favorite favorite = (Favorite) o;
+        return Objects.equals(id, favorite.id) && Objects.equals(member, favorite.member)
+                && Objects.equals(sourceStation, favorite.sourceStation) && Objects.equals(
+                targetStation, favorite.targetStation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, member, sourceStation, targetStation);
     }
 }
