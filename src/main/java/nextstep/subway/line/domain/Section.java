@@ -6,6 +6,8 @@ import javax.persistence.*;
 
 @Entity
 public class Section {
+    public static final int MIN_STATION_SIZE = 2;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
