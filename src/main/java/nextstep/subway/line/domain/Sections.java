@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -107,5 +108,40 @@ public class Sections {
 
     private void addRearrangedSection(Section upSection, Section downSection) {
         sections.add(upSection.rearrange(downSection));
+    }
+
+    public List<Station> findOrderedAllStations() {
+        if (this.sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return generateOrderedStations();
+    }
+
+    private List<Station> generateOrderedStations() {
+        List<Station> stations = new ArrayList<>();
+        Optional<Station> firstUpStationOptional = findFirstUpStation();
+
+        while (firstUpStationOptional.isPresent()) {
+            Station station = firstUpStationOptional.get();
+            stations.add(station);
+            firstUpStationOptional = findUpStation(station)
+                    .map(Section::getDownStation);
+        }
+
+        return stations;
+    }
+
+    private Optional<Station> findFirstUpStation() {
+        List<Station> downStations = findDownStations();
+        return sections.stream()
+                .filter(section -> !downStations.contains(section.getUpStation()))
+                .map(Section::getUpStation)
+                .findFirst();
+    }
+
+    private List<Station> findDownStations() {
+        return sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
     }
 }

@@ -61,4 +61,8 @@ public class Line extends BaseEntity {
     public void remove(Station station) {
         this.sections.remove(station);
     }
+
+    public List<Station> findAllStations() {
+        return this.sections.findOrderedAllStations();
+    }
 }
