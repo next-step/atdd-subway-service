@@ -22,7 +22,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     String PASSWORD = "password";
     String FAIL_PASSWORD = "failPassword";
     int AGE = 20;
-    // Given 회원 등록되어 있음
+
     @BeforeEach
     void setUP() {
         super.setUp();
