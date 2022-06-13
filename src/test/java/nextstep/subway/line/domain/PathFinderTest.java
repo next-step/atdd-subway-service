@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class PathFinderTest {
-    private PathFinder pathFinder;
     private Station 강남역;
     private Station 양재역;
     private Station 교대역;
@@ -56,12 +55,12 @@ class PathFinderTest {
                 .distance(5)
                 .build();
 
-        pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 연결안된노선));
+        PathFinder.addLines(Arrays.asList(신분당선, 이호선, 삼호선, 연결안된노선));
     }
 
     @Test
     void 최단_경로() {
-        Path path = pathFinder.findShortestPath(교대역, 양재역);
+        Path path = PathFinder.findShortestPath(교대역, 양재역);
 
         assertAll(
                 () -> assertThat(path.getDistance()).isEqualTo(5),
@@ -72,7 +71,7 @@ class PathFinderTest {
     @Test
     void 없는_경로_예외() {
         assertThatThrownBy(
-                () -> pathFinder.findShortestPath(교대역, 주안역)
+                () -> PathFinder.findShortestPath(교대역, 주안역)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -87,9 +86,9 @@ class PathFinderTest {
                 .distance(7)
                 .build();
 
-        pathFinder.addLine(추가노선);
+        PathFinder.addLine(추가노선);
 
-        Path path = pathFinder.findShortestPath(추가역1, 추가역2);
+        Path path = PathFinder.findShortestPath(추가역1, 추가역2);
         assertAll(
                 () -> assertThat(path.getDistance()).isEqualTo(7),
                 () -> assertThat(path.getStations()).containsExactly(추가역1, 추가역2)

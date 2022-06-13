@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,8 +31,8 @@ class PathServiceTest {
     private StationService stationService;
     @Mock
     private LineService lineService;
-    @Mock
-    private PathFinder pathFinder;
+
+    private static MockedStatic<PathFinder> mockedPathFinder;
 
     private Station 강남역;
     private Station 양재역;
@@ -44,7 +46,10 @@ class PathServiceTest {
 
         when(lineService.findLines()).thenReturn(Lists.newArrayList(이호선));
 
-        pathService = new PathService(stationService, lineService, pathFinder);
+        mockedPathFinder = mockStatic(PathFinder.class);
+
+        pathService = new PathService(stationService, lineService);
+
     }
 
     @Test
@@ -52,7 +57,8 @@ class PathServiceTest {
         // given
         when(stationService.findStationById(1L)).thenReturn(강남역);
         when(stationService.findStationById(2L)).thenReturn(양재역);
-        when(pathFinder.findShortestPath(강남역, 양재역)).thenReturn(Path.of(Arrays.asList(강남역, 양재역), 5));
+
+        when(PathFinder.findShortestPath(강남역, 양재역)).thenReturn(Path.of(Arrays.asList(강남역, 양재역), 5));
 
         // when
         PathResponse response = pathService.findShortestPath(1L, 2L);

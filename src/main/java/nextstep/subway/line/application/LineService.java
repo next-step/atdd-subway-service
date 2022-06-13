@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.PathFinder;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -35,7 +36,6 @@ public class LineService {
                         .distance(request.getDistance())
                         .build()
         );
-
         return LineResponse.from(persistLine);
     }
 
