@@ -17,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthServiceTest {
+class AuthServiceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 10;

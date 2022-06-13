@@ -11,8 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SubwayGraphProvider {
     @Cacheable("graph")
-    public WeightedMultigraph<Station, SectionEdge> getSubwayGraph(List<Line> lines){
-        System.out.println("getSubwayGraph 실행됨..");
+    public WeightedMultigraph<Station, SectionEdge> getSubwayGraph(List<Line> lines) {
         return toGraph(lines);
     }
 

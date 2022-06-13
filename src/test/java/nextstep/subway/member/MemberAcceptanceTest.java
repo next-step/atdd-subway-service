@@ -1,11 +1,14 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -113,6 +116,63 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        //given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인_되어있음(EMAIL,PASSWORD);
+        String 사용자토큰 = tokenResponse.getAccessToken();
 
+        //when
+        ExtractableResponse<Response> response = 내정보_조회(사용자토큰);
+        //then
+        내정보_조회됨(response);
+
+        //when
+        ExtractableResponse<Response> updateResponse = 내정보_수정(사용자토큰, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        //then
+        내정보_수정됨(updateResponse);
+
+        //when
+        ExtractableResponse<Response> deleteResponse = 내정보_삭제(사용자토큰);
+        //then
+        내정보_삭제됨(deleteResponse);
+
+
+    }
+
+    public static ExtractableResponse<Response> 내정보_조회(String token) {
+            return RestAssured
+                    .given().log().all()
+                    .auth().oauth2(token)
+                    .when().get("/members/me")
+                    .then().log().all()
+                    .extract();
+        }
+    public static ExtractableResponse<Response> 내정보_수정(String token, String email, String password, int age) {
+        MemberRequest updateRequest = new MemberRequest(email,password,age);
+        return RestAssured
+                .given().log().all().contentType(ContentType.JSON)
+                .auth().oauth2(token)
+                .when().body(updateRequest).put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+    public static ExtractableResponse<Response> 내정보_삭제(String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
+    }
+    public static void 내정보_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 내정보_수정됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 내정보_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

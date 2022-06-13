@@ -54,7 +54,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    @CacheEvict({"lines","graph"})
+    @CacheEvict({"lines", "graph"})
     public LineResponse saveLine(LineRequest request) {
         Builder builder = new Builder(request.getName(), request.getColor())
                 .upStation(stationService.findStationById(request.getUpStationId()))
@@ -63,18 +63,18 @@ public class LineService {
         return LineResponse.of(lineRepository.save(builder.build()));
     }
 
-    @CacheEvict({"lines","graph"})
+    @CacheEvict({"lines", "graph"})
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
-    @CacheEvict({"lines","graph"})
+    @CacheEvict({"lines", "graph"})
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
-    @CacheEvict({"lines","graph"})
+    @CacheEvict({"lines", "graph"})
     public void addSection(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -82,7 +82,7 @@ public class LineService {
         line.addSection(new Section(line, upStation, downStation, request.getDistance()));
     }
 
-    @CacheEvict({"lines","graph"})
+    @CacheEvict({"lines", "graph"})
     public void removeStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
