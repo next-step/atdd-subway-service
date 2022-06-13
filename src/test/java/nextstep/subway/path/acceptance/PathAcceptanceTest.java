@@ -3,6 +3,7 @@ package nextstep.subway.path.acceptance;
 import static org.assertj.core.api.Assertions.*;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.*;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -10,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -18,14 +20,12 @@ import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
 
 
-@DisplayName("지하철 경로 조회")
-@ExtendWith(MockitoExtension.class)
+@DisplayName("지하철 경로 조회 관련")
 public class PathAcceptanceTest extends AcceptanceTest {
 
     public static final String path = "/paths";
@@ -64,16 +64,45 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
 
-    @Test
-    void 최단_경로_조회() {
-        //when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
+    /**
+     * Feature: 최단 경로 조회 기능
+     *
+     *   Background
+     *     Given 지하철역 등록되어 있음
+     *     And 지하철 노선 등록되어 있음
+     *     And 지하철 노선에 지하철역 등록되어 있음
+     *
+     *   Scenario: 최단 경로를 조회한다.
+     *     When 교대역-양재역 최단 경로를 조회하면,
+     *     Then 교대역-남부터미널역-양재역이 조회됨
+     *     When 남부터미널역-강남역 최단 경로를 조회하면,
+     *     Then 남부터미널역-양재역-강남역이 조회됨
+     */
+    @TestFactory
+    Stream<DynamicTest> findShortestPath() {
+        return Stream.of(
+                dynamicTest("교대역-양재역 최단 경로를 조회하면, 교대역-남부터미널역-양재역이 조회됨", () -> {
+                    //when
+                    ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
 
-        //then
-        응답결과_확인(response, HttpStatus.OK);
-        List<StationResponse> stations = Arrays.asList(교대역, 남부터미널역, 양재역);
-        경유지_확인(response, stations);
-        경유거리_확인(response, 5);
+                    //then
+                    응답결과_확인(response, HttpStatus.OK);
+                    List<StationResponse> stations = Arrays.asList(교대역, 남부터미널역, 양재역);
+                    경유지_확인(response, stations);
+                    경유거리_확인(response, 5);
+                }),
+
+                dynamicTest("남부터미널역-강남역 최단 경로를 조회하면, 남부터미널역-양재역-강남역이 조회됨", () -> {
+                    //when
+                    ExtractableResponse<Response> response = 최단_경로_조회_요청(남부터미널역.getId(), 강남역.getId());
+
+                    //then
+                    응답결과_확인(response, HttpStatus.OK);
+                    List<StationResponse> stations = Arrays.asList(남부터미널역, 양재역, 강남역);
+                    경유지_확인(response, stations);
+                    경유거리_확인(response, 12);
+                })
+        );
     }
 
     private ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceStationId, Long targetStationId) {
