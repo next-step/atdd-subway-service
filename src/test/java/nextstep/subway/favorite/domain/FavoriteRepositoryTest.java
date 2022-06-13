@@ -43,7 +43,7 @@ class FavoriteRepositoryTest {
                 .build();
     }
 
-    @DisplayName("저장 테스트")
+    @DisplayName("즐겨찾기 저장 테스트")
     @Test
     void save() {
         Favorite favorite = favoriteRepository.save(즐겨찾기);
@@ -55,11 +55,20 @@ class FavoriteRepositoryTest {
         );
     }
 
-    @DisplayName("회원 ID로 조회 테스트")
+    @DisplayName("즐겨찾기 회원 ID로 조회 테스트")
     @Test
     void findByMemberId() {
         favoriteRepository.save(즐겨찾기);
         List<Favorite> favorites = favoriteRepository.findByMemberId(사용자.getId());
         assertThat(favorites).containsExactly(즐겨찾기);
+    }
+
+    @DisplayName("즐겨찾기 제거 테스트")
+    @Test
+    void delete() {
+        Favorite favorite = favoriteRepository.save(즐겨찾기);
+        favoriteRepository.delete(favorite);
+        List<Favorite> favorites = favoriteRepository.findByMemberId(사용자.getId());
+        assertThat(favorites).isEmpty();
     }
 }
