@@ -69,7 +69,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 dynamicTest("출발역과 도착역에 대한 최단 거리를 조회한다.", this::출발역과_도착역에_대한_최단_거리를_조회한다),
                 dynamicTest("출박역과 도착역이 같은 경우 조회할 수 없다.", this::출발역과_도착역이_같은_경우_조회할_수_없다),
                 dynamicTest("출발역과 도착역이 연결되어 있지 않으면 조회할 수 없다.", this::출발역과_도착역이_연결되어_있지_않으면_조회할_수_없다),
-                dynamicTest("출발역이 존재하지 않으면 조회할 수 없다.", this::출발역이_존재하지_않으면_조회할_수_없다),
+                dynamicTest("출발역이 노선에 존재하지 않으면 조회할 수 없다.", this::출발역이_노선에_존재하지_않으면_조회할_수_없다),
                 dynamicTest("도착역이 존재하지 않으면 조회할 수 없다.", this::도착역이_존재하지_않으면_조회할_수_없다)
         );
     }
@@ -98,7 +98,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회_실패(최단_경로_조회_응답);
     }
 
-    private void 출발역이_존재하지_않으면_조회할_수_없다() {
+    private void 출발역이_노선에_존재하지_않으면_조회할_수_없다() {
+        // when
+        ExtractableResponse<Response> 최단_경로_조회_응답 = 최단_경로_조회_요청(동작역, 사당역);
+
+        // then
+        최단_경로_조회_실패(최단_경로_조회_응답);
     }
 
     private void 도착역이_존재하지_않으면_조회할_수_없다() {
