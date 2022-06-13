@@ -83,5 +83,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - [X] Section 에 distance 변수 타입을 Distance 로 변경
         - [X] DistanceConverter 추가
         - [X] DistanceTest 추가
+    - [ ] addLineStation 변경
+        - [X] Line 에 addSection 추가
+        - [ ] Sections 에 로직 이동 
 - [X] 전역 예외 처리 추가
     - [X] RuntimeException 으로 사용되던 예외 수정

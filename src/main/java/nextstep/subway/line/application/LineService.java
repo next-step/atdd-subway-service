@@ -105,6 +105,13 @@ public class LineService {
         }
     }
 
+    public void addLineStation_refactoring(Long lineId, SectionRequest request) {
+        Line line = findLineById(lineId);
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
+        line.addSection(new Section(line, upStation, downStation, request.getDistance()));
+    }
+
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
