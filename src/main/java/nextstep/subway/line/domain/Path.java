@@ -22,8 +22,7 @@ public class Path {
 
     public PathResult findShortest(LoginMember loginMember, Station source, Station target) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        return PathResult.of(loginMember, Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
-                .orElseThrow(() -> new RuntimeException("출발역과 도착역이 연결되어 있지 않음")));
+        return PathResult.of(loginMember, dijkstraShortestPath.getPath(source, target));
     }
 
     private void createGraph(List<Line> lines) {
