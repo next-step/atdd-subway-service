@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,5 +25,10 @@ public class Lines {
         return elements.stream()
                 .flatMap(line -> line.getSections().stream())
                 .collect(Collectors.toList());
+    }
+
+    public boolean notContainsAll(Station upStation, Station downStation) {
+        return !getAllStations()
+                .containsAll(Arrays.asList(upStation, downStation));
     }
 }
