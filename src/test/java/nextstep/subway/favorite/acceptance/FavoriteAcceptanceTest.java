@@ -112,7 +112,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String token, Long sourceStationId, Long targetStationId) {

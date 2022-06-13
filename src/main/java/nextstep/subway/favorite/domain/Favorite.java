@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -17,18 +18,30 @@ public class Favorite extends BaseEntity {
     Long id;
 
     @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @ManyToOne
     @JoinColumn(name = "source_station_id")
-    Station sourceStation;
+    private Station sourceStation;
 
 
     @ManyToOne
     @JoinColumn(name = "target_station_id")
-    Station targetStation;
+    private Station targetStation;
 
-    public Favorite() {
+    protected Favorite() {
     }
 
-    public Favorite(Station sourceStation, Station targetStation) {
+    public Favorite(Long id, Member member, Station sourceStation, Station targetStation) {
+        this.id = id;
+        this.member = member;
+        this.sourceStation = sourceStation;
+        this.targetStation = targetStation;
+    }
+
+    public Favorite(Member member, Station sourceStation, Station targetStation) {
+        this.member = member;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
     }
@@ -37,11 +50,15 @@ public class Favorite extends BaseEntity {
         return this.id;
     }
 
+    public Member getMember() {
+        return member;
+    }
+
     public Station getTargetStation() {
-        return targetStation;
+        return this.targetStation;
     }
 
     public Station getSourceStation() {
-        return sourceStation;
+        return this.sourceStation;
     }
 }

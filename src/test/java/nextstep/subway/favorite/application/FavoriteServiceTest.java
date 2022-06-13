@@ -1,11 +1,16 @@
 package nextstep.subway.favorite.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +26,12 @@ class FavoriteServiceTest {
     @Mock
     StationService stationService;
 
+    @Mock
+    MemberService memberService;
+
+    @Mock
+    FavoriteRepository favoriteRepository;
+
     @InjectMocks
     FavoriteService favoriteService;
 
@@ -30,16 +41,24 @@ class FavoriteServiceTest {
         // 즐겨찾기를 db에 저장
         // FavoriteResponse를 응답한다.
 
-        //given
+        //given: 지하철역이 등록되어 있다.
         Station 강남역 = new Station(1L, "강남역");
         Station 잠실역 = new Station(2L, "잠실역");
+        //and : 회원이 등록 되어 있다.
+        Member 회원 = new Member("email@email.com", "password", 30);
+        LoginMember 로그인_회원 = new LoginMember(1L, "email@email.com", 30);
 
         when(stationService.findStationById(1L)).thenReturn(강남역);
         when(stationService.findStationById(2L)).thenReturn(잠실역);
+        when(memberService.findById(1L)).thenReturn(회원);
+
         FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 잠실역.getId());
+        when(favoriteRepository.save(any(Favorite.class))).thenReturn(new Favorite(1L, 회원, 강남역, 잠실역));
 
-        FavoriteResponse favoriteResponse = favoriteService.save(favoriteRequest);
+        //when: 즐겨 찾기를 저장 한다.
+        FavoriteResponse favoriteResponse = favoriteService.createFavorite(로그인_회원, favoriteRequest);
 
+        //then: 저장 확인
         assertThat(favoriteResponse).isNotNull();
         assertThat(favoriteResponse.getId()).isNotNull();
     }
