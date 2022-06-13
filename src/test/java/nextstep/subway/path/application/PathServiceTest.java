@@ -12,15 +12,9 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 class PathServiceTest {
-    @Mock
     private PathService pathService;
-
     private Line 신분당선;
     private Line 이호선;
     private Line 삼호선;
@@ -39,6 +33,8 @@ class PathServiceTest {
     @BeforeEach
     public void setUp() {
         //given
+        pathService = new PathService();
+
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
         교대역 = new Station("교대역");
@@ -54,12 +50,16 @@ class PathServiceTest {
     @Test
     void findShortestPath() {
         //when
-        PathResponse pathResponse = pathService.findShortestPath(교대역.getId(), 양재역.getId());
+        PathResponse pathResponse = 최단_경로_조회함(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 양재역);
 
         //then
         List<Station> stations = Arrays.asList(교대역, 남부터미널역, 양재역);
         경유지_확인(pathResponse, stations);
         경유거리_확인(pathResponse, 5);
+    }
+
+    private PathResponse 최단_경로_조회함(List<Line> lines, Station sourceStation, Station targetStation) {
+        return pathService.findShortestPath(lines, sourceStation, targetStation);
     }
 
     private void 경유거리_확인(PathResponse pathResponse, int expectedDistance) {

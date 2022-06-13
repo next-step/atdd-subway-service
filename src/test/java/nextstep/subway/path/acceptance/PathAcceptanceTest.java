@@ -91,6 +91,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private void 경유지_확인(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         PathResponse pathResponse = response.as(PathResponse.class);
         List<StationResponse> actualStations = pathResponse.getStations();
-        assertThat(actualStations).hasSameElementsAs(expectedStations);
+        assertThat(actualStations).isEqualTo(expectedStations);
     }
 }
