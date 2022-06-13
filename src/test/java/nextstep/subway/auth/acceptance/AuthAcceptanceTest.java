@@ -21,7 +21,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private String EMAIL = "toughchb@gmail.com";
     private String PASSWORD = "password";
     private String WRONG_PASSWORD = "wrong_password";
-    private int AGE =18;
+    private int AGE = 18;
 
     private String WRONG_TOKEN = "wrong_token";
 
