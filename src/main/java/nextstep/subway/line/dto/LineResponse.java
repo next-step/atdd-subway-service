@@ -1,9 +1,9 @@
 package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.station.domain.Stations;
 import nextstep.subway.station.dto.StationResponse;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +24,9 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-        List<StationResponse> stations = line.getStations().stream()
+        Stations stations = line.getStations();
+
+        List<StationResponse> responses = stations.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
 
@@ -32,7 +34,7 @@ public class LineResponse {
                 line.getId(),
                 line.getName(),
                 line.getColor(),
-                stations
+                responses
         );
     }
 
