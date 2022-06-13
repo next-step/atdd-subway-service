@@ -8,20 +8,27 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-public class DijkstraPathFinder {
+@Component
+public class DijkstraPathFinder implements PathFinder{
     private DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public DijkstraPathFinder(List<Line> lines) {
+    @Override
+    public Path findShortestPathWithLines(List<Line> lines, Station sourceStation, Station targetStation) {
+        initializePathFinder(lines);
+        validateInputStations(sourceStation, targetStation);
+        GraphPath<Station, DefaultWeightedEdge> resultPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        validateResult(resultPath);
+        return Path.of(resultPath.getVertexList(), (int) resultPath.getWeight());
+    }
+
+    private void initializePathFinder(List<Line> lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         registerLines(graph, lines);
         this.dijkstraShortestPath = new DijkstraShortestPath(graph);
-    }
-
-    public static DijkstraPathFinder from(List<Line> lines) {
-        return new DijkstraPathFinder(lines);
     }
 
     private void registerLines(WeightedMultigraph<Station, DefaultWeightedEdge> routeGraph, List<Line> lines) {
@@ -45,13 +52,6 @@ public class DijkstraPathFinder {
 
     private DefaultWeightedEdge addEdge(WeightedMultigraph<Station, DefaultWeightedEdge> routeGraph, Section section) {
         return routeGraph.addEdge(section.getUpStation(), section.getDownStation());
-    }
-
-    public Path findShortestPath(Station sourceStation, Station targetStation) {
-        validateInputStations(sourceStation, targetStation);
-        GraphPath<Station, DefaultWeightedEdge> resultPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
-        validateResult(resultPath);
-        return Path.of(resultPath.getVertexList(), (int) resultPath.getWeight());
     }
 
     private void validateResult(GraphPath<Station, DefaultWeightedEdge> path) {

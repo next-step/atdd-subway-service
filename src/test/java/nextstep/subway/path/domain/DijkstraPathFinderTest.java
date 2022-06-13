@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PathFinderTest {
+public class DijkstraPathFinderTest {
     private Line 신분당선;
     private Line 이호선;
     private Line 삼호선;
@@ -21,6 +21,7 @@ public class PathFinderTest {
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
+    private DijkstraPathFinder dijkstraPathFinder;
 
     /**
      * 교대역  --- *2호선* (10)--   강남역
@@ -40,16 +41,14 @@ public class PathFinderTest {
         이호선 = createLine("이호선", "rbg-red-600", 교대역, 강남역, 10);
         삼호선 = createLine("삼호선", "rbg-red-600", 교대역, 양재역, 5);
         삼호선.addSection(createSection(교대역, 남부터미널역, 2));
+
+        dijkstraPathFinder = new DijkstraPathFinder();
     }
 
     @Test
     @DisplayName("최단 경로 탐색")
     void 최단경로탐색() {
-        //given
-        DijkstraPathFinder dijkstraPathFinder = new DijkstraPathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
-
-        //when
-        Path path = dijkstraPathFinder.findShortestPath(교대역, 양재역);
+        Path path = dijkstraPathFinder.findShortestPathWithLines(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 양재역);
 
         //then
         assertAll(
@@ -62,10 +61,11 @@ public class PathFinderTest {
     @DisplayName("최단 경로 탐색 실패 : 출발역과 도착역이 같은 경우")
     void 최단경로탐색_실패_출발역과_도착역이_같음() {
         //given
-        DijkstraPathFinder dijkstraPathFinder = new DijkstraPathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
+        DijkstraPathFinder dijkstraPathFinder = new DijkstraPathFinder();
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> dijkstraPathFinder.findShortestPath(교대역, 교대역));
+        assertThrows(IllegalArgumentException.class,
+                () -> dijkstraPathFinder.findShortestPathWithLines(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 교대역));
     }
 
     @Test
@@ -75,10 +75,10 @@ public class PathFinderTest {
         Station 부평역 = createStation("부평역");
         Station 인천시청역 = createStation("인천시청역");
         Line 인천선 = createLine("신분당선", "rbg-red-600", 부평역, 인천시청역, 10);
-        DijkstraPathFinder dijkstraPathFinder = new DijkstraPathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 인천선));
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> dijkstraPathFinder.findShortestPath(교대역, 부평역));
+        assertThrows(IllegalArgumentException.class,
+                () -> dijkstraPathFinder.findShortestPathWithLines(Arrays.asList(신분당선, 이호선, 삼호선, 인천선), 교대역, 부평역));
     }
 
     @Test
@@ -86,9 +86,9 @@ public class PathFinderTest {
     void 최단경로탐색_실패_존재하지_않는_역() {
         //given
         Station 존재하지않는역 = createStation("존재하지않는역");
-        DijkstraPathFinder dijkstraPathFinder = new DijkstraPathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> dijkstraPathFinder.findShortestPath(교대역, 존재하지않는역));
+        assertThrows(IllegalArgumentException.class,
+                () -> dijkstraPathFinder.findShortestPathWithLines(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 존재하지않는역));
     }
 }
