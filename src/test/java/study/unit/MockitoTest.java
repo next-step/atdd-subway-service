@@ -1,6 +1,6 @@
 package study.unit;
 
-import static nextstep.subway.line.domain.DomainFixtureFactory.createStation;
+import static nextstep.subway.DomainFixtureFactory.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

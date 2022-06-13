@@ -108,4 +108,21 @@ public class Favorite extends BaseEntity {
     public Station target() {
         return target;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Favorite favorite = (Favorite) o;
+        return Objects.equals(id, favorite.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

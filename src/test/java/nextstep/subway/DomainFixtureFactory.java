@@ -1,7 +1,13 @@
-package nextstep.subway.line.domain;
+package nextstep.subway;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 public class DomainFixtureFactory {
@@ -47,5 +53,24 @@ public class DomainFixtureFactory {
 
     public static SectionRequest createSectionRequest(long upStationId, long downStationId, int distance) {
         return new SectionRequest(upStationId, downStationId, distance);
+    }
+
+    public static LoginMember createLoginMember(long id, String email, int age) {
+        return new LoginMember(id, email, age);
+    }
+
+    public static Member createMember(long id, String email, String password, int age) {
+        return new Member(id, email, password, age);
+    }
+
+    public static Favorite createFavorite(long id, Member member, Station source, Station target) {
+        return Favorite.builder(member, source, target)
+                .id(id)
+                .build();
+    }
+
+    public static Favorite createFavorite(Member member, Station source, Station target) {
+        return Favorite.builder(member, source, target)
+                .build();
     }
 }

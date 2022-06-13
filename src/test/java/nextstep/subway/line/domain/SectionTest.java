@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.domain.DomainFixtureFactory.createSection;
-import static nextstep.subway.line.domain.DomainFixtureFactory.createStation;
+import static nextstep.subway.DomainFixtureFactory.createSection;
+import static nextstep.subway.DomainFixtureFactory.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
