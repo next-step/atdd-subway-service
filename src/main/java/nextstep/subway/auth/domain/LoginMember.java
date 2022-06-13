@@ -1,15 +1,14 @@
 package nextstep.subway.auth.domain;
 
 public class LoginMember {
+    private static final int DEFAULT_AGE = 19;
+
     private Long id;
     private String email;
     private Integer age;
 
-    protected LoginMember() {
-    }
-
-    public LoginMember(Integer age) {
-        this.age = age;
+    public LoginMember() {
+        this.age = DEFAULT_AGE;
     }
 
     public LoginMember(Long id, String email, Integer age) {
