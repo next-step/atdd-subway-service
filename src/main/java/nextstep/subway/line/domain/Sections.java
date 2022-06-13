@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.BothUpDownDoNotExistException;
+import nextstep.subway.exception.MinimumSectionRemoveException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -12,6 +14,8 @@ import java.util.Optional;
 
 @Embeddable
 public class Sections {
+    private static final String UNREGISTERABLE_SECTION_MESSAGE = "등록할 수 없는 구간 입니다.";
+    private static final int MINIMUM_SIZE = 1;
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -40,7 +44,7 @@ public class Sections {
             sections.add(section);
             return;
         }
-        throw new RuntimeException();
+        throw new BothUpDownDoNotExistException(UNREGISTERABLE_SECTION_MESSAGE);
     }
 
     public List<Section> getSections() {
@@ -93,8 +97,8 @@ public class Sections {
     }
 
     public void remove(Line line, Station station) {
-        if (sections.size() <= 1) {
-            throw new RuntimeException();
+        if (sections.size() <= MINIMUM_SIZE) {
+            throw new MinimumSectionRemoveException("최소 구간은 한개이상 존재해야합니다.");
         }
 
         Optional<Section> upLineStation = sections.stream()
@@ -117,12 +121,12 @@ public class Sections {
 
     private void validateAddSection(Section section) {
         if (hasStation(section.getUpStation()) && hasStation(section.getDownStation())) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
         List<Station> stations = getStations();
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
                 stations.stream().noneMatch(it -> it == section.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new BothUpDownDoNotExistException(UNREGISTERABLE_SECTION_MESSAGE);
         }
     }
 }
