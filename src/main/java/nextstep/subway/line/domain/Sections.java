@@ -18,14 +18,6 @@ public class Sections {
     public Sections() {
     }
 
-    public Sections(Section section) {
-        this.sectionList.add(section);
-    }
-
-    public List<Section> getAll() {
-        return this.sectionList;
-    }
-
     public void add(Section section) {
         this.sectionList.add(section);
     }
