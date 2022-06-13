@@ -22,7 +22,7 @@ public enum FareDistance {
 
     private static FareDistance of(Distance distance) {
         return Arrays.stream(values())
-                .filter(value -> (value.minDistance < distance.getDistance()) && (distance.getDistance() <= value.maxDistance))
+                .filter(value -> distance.betweenMinMax(value.minDistance, value.maxDistance))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }

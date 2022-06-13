@@ -17,6 +17,10 @@ public class Distance {
         return distance;
     }
 
+    public boolean betweenMinMax(int min, int max) {
+        return min < distance && distance <= max;
+    }
+
     private int calculateDistance(List<SectionWeightedEdge> sectionEdges) {
         return sectionEdges.stream()
                 .mapToInt(SectionWeightedEdge::getDistance)
