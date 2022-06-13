@@ -10,8 +10,8 @@ public class Fare {
 
     private Fare(Distance distance, int age, List<SectionWeightedEdge> sectionEdges) {
         this.fare = DEFAULT_FARE + calculateExtraFare(sectionEdges);
-        this.fare = FareDistance.culculate(this.fare, distance);
-        this.fare = FareAgeDiscount.culculate(this.fare, age);
+        this.fare = FareDistance.calculate(this.fare, distance);
+        this.fare = FareAgeDiscount.calculate(this.fare, age);
     }
 
     public static Fare of(Distance distance, int age, List<SectionWeightedEdge> sectionEdges) {

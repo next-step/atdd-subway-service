@@ -6,7 +6,7 @@ public class Distance {
     private int distance;
 
     private Distance(List<SectionWeightedEdge> sectionEdges) {
-        this.distance = culculateDistance(sectionEdges);
+        this.distance = calculateDistance(sectionEdges);
     }
 
     public static Distance of(List<SectionWeightedEdge> sectionEdges) {
@@ -17,7 +17,7 @@ public class Distance {
         return distance;
     }
 
-    private int culculateDistance(List<SectionWeightedEdge> sectionEdges) {
+    private int calculateDistance(List<SectionWeightedEdge> sectionEdges) {
         return sectionEdges.stream()
                 .mapToInt(SectionWeightedEdge::getDistance)
                 .sum();

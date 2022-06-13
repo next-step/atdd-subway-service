@@ -27,7 +27,7 @@ public enum FareDistance {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public static int culculate(int fare, Distance distance) {
+    public static int calculate(int fare, Distance distance) {
         if(distance.getDistance() < BASIC_DISTANCE) {
             return fare;
         }

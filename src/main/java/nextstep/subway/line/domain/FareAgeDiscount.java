@@ -26,7 +26,7 @@ public enum FareAgeDiscount {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public static int culculate(int fare, int age) {
+    public static int calculate(int fare, int age) {
         if (age == 0 || age >= ADULT) {
             return fare;
         }
