@@ -95,6 +95,10 @@ public class Sections {
         return stations;
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
         Optional<Section> nextLineStation = findNextStationFromDownStation(downStation);

@@ -97,6 +97,10 @@ public class Line extends BaseEntity {
         sections.removeStation(station);
     }
 
+    public List<Section> getSections() {
+        return sections.getSections();
+    }
+
     public Long getId() {
         return id;
     }

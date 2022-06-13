@@ -22,6 +22,14 @@ public class Path {
         return new Path(stations, distance);
     }
 
+    public List<Station> getStations() {
+        return stations;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
     private void validateDistance(int distance) {
         if (distance < MIN_DISTANCE) {
             throw new IllegalArgumentException("경로의 거리는 1 이상이어야 합니다.");
