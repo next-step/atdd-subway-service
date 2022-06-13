@@ -67,4 +67,25 @@ public class Sections {
 
         return downStation;
     }
+
+    public void removeLineStation(Line line, Station station) {
+        if (this.sectionList.size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation =
+                this.sectionList.stream().filter(it -> it.getUpStation() == station).findFirst();
+        Optional<Section> downLineStation =
+                this.sectionList.stream().filter(it -> it.getDownStation() == station).findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            this.sectionList.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> this.sectionList.remove(it));
+        downLineStation.ifPresent(it -> this.sectionList.remove(it));
+    }
 }
