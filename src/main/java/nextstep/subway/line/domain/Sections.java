@@ -24,21 +24,21 @@ public class Sections {
         return getTargetToLastStations(findFirstStation(this.sections.get(0).getUpStation()));
     }
 
-    public void addSection(Line line, Station upStation, Station downStation, Distance distance) {
-        checkPossibleAddSection(upStation, downStation);
+    public void addSection(Section section) {
+        checkPossibleAddSection(section);
 
         if (isAddNewSection()) {
-            addStation(line, upStation, downStation, distance);
+            this.sections.add(section);
             return;
         }
-        if (isContainStationInSections(upStation)) {
-            addSectionByUpToDown(upStation, downStation, distance);
+        if (isContainStationInSections(section.getUpStation())) {
+            addSectionByUpToDown(section.getUpStation(), section.getDownStation(), section.getDistance());
         }
-        if (isContainStationInSections(downStation)) {
-            addSectionByMiddleToDown(upStation, downStation, distance);
+        if (isContainStationInSections(section.getDownStation())) {
+            addSectionByMiddleToDown(section.getUpStation(), section.getDownStation(), section.getDistance());
         }
 
-        addStation(line, upStation, downStation, distance);
+        this.sections.add(section);
     }
 
     public void removeStation(Line line, Station station) {
@@ -54,7 +54,7 @@ public class Sections {
             Station newDownStation = upSection.getDownStation();
             Distance newDistance = upSection.getDistance().addThenReturnResult(downSection.getDistance());
 
-            addSection(line, newUpStation, newDownStation, newDistance);
+            addSection(new Section(line, newUpStation, newDownStation, newDistance));
         }
     }
 
@@ -87,14 +87,14 @@ public class Sections {
         return result;
     }
 
-    private void checkPossibleAddSection(Station upStation, Station downStation) {
-        boolean isUpStationExisted = isContainStationInSections(upStation);
-        boolean isDownStationExisted = isContainStationInSections(downStation);
+    private void checkPossibleAddSection(Section section) {
+        boolean isUpStationExisted = isContainStationInSections(section.getUpStation());
+        boolean isDownStationExisted = isContainStationInSections(section.getDownStation());
 
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
-        if (isImpossibleAddSection(upStation, downStation)) {
+        if (isImpossibleAddSection(section.getUpStation(), section.getDownStation())) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
     }

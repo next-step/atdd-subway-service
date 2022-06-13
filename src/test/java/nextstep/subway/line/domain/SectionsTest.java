@@ -158,13 +158,14 @@ class SectionsTest {
 
     public static Sections 구간_목록_생성(Station upStation, Station downStation, int distance) {
         Sections result = new Sections();
-        result.addSection(new Line(), upStation, downStation, new Distance(distance));
+        구간_목록에_구간_추가(result, upStation, downStation, distance);
 
         return result;
     }
 
-    private void 구간_목록에_구간_추가(Sections sections, Station upStation, Station downStation, int distance) {
-        sections.addSection(new Line(), upStation, downStation, new Distance(distance));
+    private static void 구간_목록에_구간_추가(Sections sections, Station upStation, Station downStation, int distance) {
+        Section section = new Section(new Line(), upStation, downStation, new Distance(distance));
+        sections.addSection(section);
     }
 
     private void 구간_목록의_특정_구간_삭제(Sections sections, Station station) {
