@@ -33,8 +33,8 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(Line.of(request.getName(), request.getColor(), upStation, downStation, Distance.from(request.getDistance())));
-        return LineResponse.of(persistLine);
+        Line line = lineRepository.save(Line.of(request.getName(), request.getColor(), upStation, downStation, Distance.from(request.getDistance())));
+        return LineResponse.of(line);
     }
 
     @Transactional(readOnly = true)
@@ -46,18 +46,13 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
-    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         return LineResponse.of(findLineById(id));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        Line line = findLineById(id);
+        line.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
@@ -75,5 +70,9 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.remove(station);
+    }
+
+    private Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 노선을 찾을 수 없습니다."));
     }
 }
