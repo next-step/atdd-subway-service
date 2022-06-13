@@ -2,12 +2,9 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -53,26 +50,25 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections.getSections();
+    public Sections getSections() {
+        return sections;
     }
 
     public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
         return new Line(name, color, upStation, downStation, distance);
     }
 
-    public List<Station> getStations() {
-        if (getSections().isEmpty()) {
-            return Arrays.asList();
+    public Stations getStations() {
+        if (sections.getSections().isEmpty()) {
+            return new Stations();
         }
 
-        List<Station> stations = new ArrayList<>();
+        Stations stations = new Stations();
         Station station = findUpStation();
         stations.add(station);
 
-
         while (sections.isNextUpSection(station)) {
-            Section nextLineStation = sections.nextUpSection(station);
+            Section nextLineStation = sections.findSectionByUpStation(station);
             station = nextLineStation.getDownStation();
             stations.add(station);
         }
@@ -81,13 +77,18 @@ public class Line extends BaseEntity {
     }
 
     private Station findUpStation() {
-        Station station = getSections().get(0).getUpStation();
+        Station station = sections.getSections().get(0).getUpStation();
 
         while (sections.isNextDownSection(station)) {
-            Section section = sections.nextDownSection(station);
+            Section section = sections.findSectionByDownStation(station);
             station = section.getUpStation();
         }
 
         return station;
+    }
+
+    public void addSection(Station upStation, Station downStation, int distance) {
+        Section section = Section.of(this, upStation, downStation, distance);
+        sections.addSection(section);
     }
 }
