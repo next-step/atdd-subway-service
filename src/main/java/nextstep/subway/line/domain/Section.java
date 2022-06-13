@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
+import java.util.List;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -22,16 +24,21 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    private Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section of(Line line, Station upStation, Station downStation, Distance distance) {
+        return new Section(line, upStation, downStation, distance);
     }
 
     public Long getId() {
@@ -50,23 +57,39 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    public List<Station> findStations() {
+        return Arrays.asList(upStation, downStation);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public void update(Section newSection) {
+        if (isEqualsUpStation(newSection.getUpStation())) {
+            this.upStation = newSection.downStation;
+            updateDistance(newSection);
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+        if (isEqualsDownStation(newSection.getDownStation())) {
+            this.downStation = newSection.upStation;
+            updateDistance(newSection);
+        }
+    }
+
+    public boolean isEqualsUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean isEqualsDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
+
+    private void updateDistance(Section newSection) {
+        distance.subtract(newSection.distance);
+    }
+
+    public Section rearrange(Section downSection) {
+        distance.add(downSection.distance);
+        return Section.of(this.line, this.upStation, downSection.downStation, this.distance);
     }
 }

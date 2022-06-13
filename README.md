@@ -52,3 +52,8 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+<br>
+
+## 📖 Mission
+[1단계 - 인수 테스트 기반 리팩토링](./docs/step1.md)
