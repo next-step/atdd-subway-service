@@ -11,6 +11,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +48,11 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavoriteById(Long id) {
-        favoriteRepository.deleteById(id);
+        try {
+            favoriteRepository.deleteById(id);
+        }catch (Exception e) {
+            throw new IllegalArgumentException("삭제할 즐겨찾기 정보가 존재하지 않습니다");
+        }
     }
 
     @Transactional(readOnly = true)
