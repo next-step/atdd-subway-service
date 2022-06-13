@@ -22,6 +22,17 @@ class MemberAcceptanceTest extends AcceptanceTest {
     int AGE = 20;
     int NEW_AGE = 21;
 
+    /**
+     *   Scenario: 회원 정보를 관리한다.
+     *     When 회원 생성을 요청
+     *     Then 회원 생성됨
+     *     When 회원 정보 조회 요청
+     *     Then 회원 정보 조회됨
+     *     When 회원 정보 수정 요청
+     *     Then 회원 정보 수정됨
+     *     When 회원 정보 삭제 요청
+     *     Then 회원 정보 삭제됨
+     */
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
@@ -46,6 +57,16 @@ class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    /**
+     *   Scenario: 나의 정보를 관리한다.
+     *     Given 나의 회원정보 등록 되어 있음
+     *     When 나의 정보 조회 요청
+     *     Then 나의 정보 조회됨
+     *     When 나의 정보 수정 요청
+     *     Then 나의 정보 수정됨
+     *     When 나의 정보 삭제 요청
+     *     Then 나의 정보 삭제됨
+     */
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
