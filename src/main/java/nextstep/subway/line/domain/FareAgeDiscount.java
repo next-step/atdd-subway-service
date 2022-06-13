@@ -32,10 +32,10 @@ public enum FareAgeDiscount {
         }
 
         FareAgeDiscount fareAgeDiscount = FareAgeDiscount.of(age.getValue());
-        return (int) (fare - fareAgeDiscount.getDiscount(fare, fareAgeDiscount.discountRate));
+        return (int) (fare - getDiscount(fare, fareAgeDiscount.discountRate));
     }
 
-    private double getDiscount(int fare, double discountRate) {
+    private static double getDiscount(int fare, double discountRate) {
         return (fare - DEDUCTION_FEE) * discountRate;
     }
 }

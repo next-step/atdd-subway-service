@@ -28,12 +28,15 @@ public enum FareDistance {
     }
 
     public static int calculate(int fare, Distance distance) {
-        if(distance.getDistance() < BASIC_DISTANCE) {
+        if (distance.getDistance() < BASIC_DISTANCE) {
             return fare;
         }
 
         FareDistance fareDistance = FareDistance.of(distance);
-        return fare + ((int) Math.ceil((distance.getDistance() - fareDistance.minDistance) / fareDistance.overFareDistance)
-                * fareDistance.overFarePrice);
+        return fare + getOverFare(distance.getDistance(), fareDistance);
+    }
+
+    private static int getOverFare(int distance, FareDistance fareDistance) {
+        return (int) (Math.ceil((distance - fareDistance.minDistance) / fareDistance.overFareDistance) * fareDistance.overFarePrice);
     }
 }
