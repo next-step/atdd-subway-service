@@ -62,6 +62,9 @@ public class PathFinder {
 
     private GraphPath<Station, DefaultWeightedEdge> getPath(Station upStation, Station downStation) {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        return dijkstraShortestPath.getPath(upStation, downStation);
+
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(upStation, downStation);
+        Objects.requireNonNull(shortestPath, "출발역과 도착역이 연결되어 있지 않습니다.");
+        return shortestPath;
     }
 }
