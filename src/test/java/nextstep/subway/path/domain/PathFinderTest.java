@@ -2,8 +2,6 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,12 +30,12 @@ class PathFinderTest {
     @Test
     void 최단_경로_목록을_반환한다() {
         // when
-        GraphPath<Station, DefaultWeightedEdge> result = pathFinder.findShortestPath(lines, upStation, downStation);
+        ShortestPath result = pathFinder.findShortestPath(lines, upStation, downStation);
 
         // then
         assertAll(
-                () -> assertThat(result.getVertexList()).hasSize(4),
-                () -> assertThat(result.getWeight()).isEqualTo(9)
+                () -> assertThat(result.getPath()).hasSize(4),
+                () -> assertThat(result.getDistance()).isEqualTo(9)
         );
     }
     
