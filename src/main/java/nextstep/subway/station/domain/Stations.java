@@ -21,7 +21,7 @@ public class Stations {
                 .collect(Collectors.toList());
     }
 
-    public boolean isNotEmpty(){
+    public boolean isNotEmpty() {
         return !stations.isEmpty();
     }
 }
