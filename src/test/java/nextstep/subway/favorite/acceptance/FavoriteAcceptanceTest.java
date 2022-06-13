@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthRestAssured.로그인_되어_있음;
+import static nextstep.subway.favorite.acceptance.FavoriteRestAssured.즐겨찾기_목록_조회_요청;
 import static nextstep.subway.favorite.acceptance.FavoriteRestAssured.즐겨찾기_생성을_요청;
 import static nextstep.subway.line.acceptance.LineRestAssured.지하철_노선_등록되어_있음;
 import static nextstep.subway.member.MemberRestAssured.회원_생성을_요청;
@@ -30,6 +31,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
+
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
         정자역 = 지하철역_등록되어_있음("정자역").as(StationResponse.class);
         신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 정자역.getId(), 10);
@@ -52,12 +54,21 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     void manageMember() {
         // when
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(사용자토큰, 강남역, 정자역);
-
         // then
         즐겨찾기_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(createResponse, 사용자토큰);
+        // then
+        즐겨찾기_목록_조회됨(findResponse);
     }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
+
+    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
 }

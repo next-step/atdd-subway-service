@@ -8,7 +8,7 @@ import nextstep.subway.exception.NotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class FavoriteTest {
+class FavoriteTest {
     @DisplayName("회원이 Null 일 경우 예외 테스트")
     @Test
     void createFavoriteByNullMember() {

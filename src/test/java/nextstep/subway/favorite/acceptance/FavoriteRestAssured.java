@@ -20,4 +20,16 @@ public class FavoriteRestAssured {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(ExtractableResponse<Response> response, String token) {
+        String uri = response.header("Location");
+
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
+                .when().get(uri)
+                .then().log().all()
+                .extract();
+    }
 }
