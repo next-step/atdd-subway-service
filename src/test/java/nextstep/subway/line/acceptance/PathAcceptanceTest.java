@@ -20,6 +20,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @DisplayName("지하철 최단 경로 조회 관련 기능")
@@ -63,7 +64,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * when  출발역, 도착역을 지정하여 최단 경로를 조회하면
+     * when 출발역, 도착역을 지정하여 최단 경로를 조회하면
      * <p>
      * then 최단경로가 조회됨
      */
@@ -75,6 +76,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_거리_확인됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
+    }
+
+    /**
+     * when 출발역과 도착역이 같게하여, 최단 경로를 조회하면
+     * <p>
+     * then 최단경로를 조회할 수 없다.
+     */
+
+    @DisplayName("출발역과 도착역이 같은 경우, 최단경로를 조회 할 수 없다")
+    @Test
+    void findSourceAndTargetSameShortestPath() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역, 교대역);
+
+        // then
+        최단_경로_조회_실패됨(response);
     }
 
     public ExtractableResponse<Response> 지하철_경로_조회_요청(StationResponse 출발역, StationResponse 도착역) {
@@ -104,6 +121,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(stationIds).containsExactlyElementsOf(expectedStationIds)
         );
 
+    }
+
+    public static void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
 }
