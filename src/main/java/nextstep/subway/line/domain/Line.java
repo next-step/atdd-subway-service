@@ -7,6 +7,7 @@ import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -21,7 +22,7 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
-    public Line() {
+    protected Line() {
     }
 
     public Line(String name, String color) {
@@ -73,5 +74,21 @@ public class Line extends BaseEntity {
 
     public Sections getSections() {
         return sections;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Line line = (Line) o;
+        return Objects.equals(id, line.id) &&
+                Objects.equals(name, line.name) &&
+                Objects.equals(color, line.color) &&
+                Objects.equals(sections, line.sections);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, color, sections);
     }
 }
