@@ -56,6 +56,22 @@ public class Line extends BaseEntity {
         return this.sections;
     }
 
+    public Optional<Station> getStartStation() {
+        return sections.getStartStation();
+    }
+
+    public List<Station> getStations() {
+        return sections.getStations();
+    }
+
+    public int isSize() {
+        return sections.isSize();
+    }
+
+    public boolean isContains(final Section section) {
+        return this.sections.isContains(section);
+    }
+
     public void addSection(final Section section) {
         if (!Objects.equals(this, section.getLine())) {
             section.updateLineBy(this);
@@ -70,6 +86,12 @@ public class Line extends BaseEntity {
             throw new IllegalStateException("구간이 한개 뿐이거나 없는 경우에 삭제할수 없습니다.");
         }
         removeSectionBy(station);
+    }
+
+    public void removeSection(final Section section) {
+        if (this.sections.isContains(section)) {
+            this.sections.removeSection(section);
+        }
     }
 
     private void removeSectionBy(Station station) {
@@ -92,28 +114,6 @@ public class Line extends BaseEntity {
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
             this.addSection(new Section(this, newUpStation, newDownStation, newDistance));
         }
-    }
-
-    public void removeSection(final Section section) {
-        if (this.sections.isContains(section)) {
-            this.sections.removeSection(section);
-        }
-    }
-
-    public Optional<Station> getStartStation() {
-        return sections.getStartStation();
-    }
-
-    public List<Station> getStations() {
-        return sections.getStations();
-    }
-
-    public int isSize() {
-        return sections.isSize();
-    }
-
-    public boolean isContains(final Section section) {
-        return this.sections.isContains(section);
     }
 
     @Override

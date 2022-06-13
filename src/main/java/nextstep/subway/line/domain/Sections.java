@@ -11,11 +11,11 @@ import java.util.*;
 public class Sections {
     private static final int MIN_SIZE = 1;
 
-    protected Sections() {
-    }
-
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
+
+    protected Sections() {
+    }
 
     public Sections(List<Section> sections) {
         if (Objects.isNull(sections)) {
@@ -24,22 +24,11 @@ public class Sections {
         this.sections.addAll(sections);
     }
 
-    public void addSection(final Section section) {
-        if (!sections.contains(section)) {
-            insertSection(section);
-            sections.add(section);
-        }
-    }
-
     public List<Station> getStations() {
         if (this.sections.isEmpty()) {
             return Collections.emptyList();
         }
         return insertStationBySorted();
-    }
-
-    public int isSize() {
-        return this.sections.size();
     }
 
     public Optional<Station> getStartStation() {
@@ -62,8 +51,19 @@ public class Sections {
         return sections;
     }
 
+    public int isSize() {
+        return this.sections.size();
+    }
+
     public boolean isContains(final Section section) {
         return sections.contains(section);
+    }
+
+    public void addSection(final Section section) {
+        if (!sections.contains(section)) {
+            insertSection(section);
+            sections.add(section);
+        }
     }
 
     public void removeSection(final Section section) {
@@ -72,7 +72,7 @@ public class Sections {
             section.getLine().removeSection(section);
         }
     }
-
+    
     private void insertSection(final Section section) {
         if (sections.isEmpty()) {
             return;
