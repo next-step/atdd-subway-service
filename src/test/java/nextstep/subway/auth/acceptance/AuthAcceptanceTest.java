@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.dto.MemberRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     public static final String PASSWORD = "password";
     public static final String WRONG_PASSWORD = "wrong_password";
     public static final int AGE = 20;
+
+    public static final String NEW_EMAIL = "nextstep@email.com";
+    public static final String NEW_PASSWORD = "nextstep";
+    public static final int NEW_AGE = 25;
 
     @DisplayName("로그인 성공한다.")
     @Test
@@ -56,10 +61,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = 로그인_성공(response);
 
         // when
-        ExtractableResponse<Response> response2 = 회원_조회(tokenResponse);
+        ExtractableResponse<Response> response2 = 본인_정보_조회(tokenResponse);
 
         // then
-        회원_조회_성공(response2);
+        본인_정보_조회_성공(response2);
     }
 
     @DisplayName("유효하지 않는 토큰으로 회원(본인) 정보를 조회한다.")
@@ -71,10 +76,25 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_성공(response);
 
         // when
-        ExtractableResponse<Response> response2 = 회원_조회(new TokenResponse("TEST"));
+        ExtractableResponse<Response> response2 = 본인_정보_조회(new TokenResponse("TEST"));
 
         // then
-        회원_조회_실패(response2);
+        본인_정보_조회_실패(response2);
+    }
+
+    @DisplayName("유효 토큰으로 회원(본인) 정보를 수정한다.")
+    @Test
+    void updateMemberOfMineWithValidToken() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> response = 로그인_요청(new TokenRequest(EMAIL, PASSWORD));
+        TokenResponse tokenResponse = 로그인_성공(response);
+
+        // when
+        ExtractableResponse<Response> response2 = 본인_정보_수정(tokenResponse, new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
+
+        // then
+        본인_정보_수정_성공(response2);
     }
 
     public static ExtractableResponse<Response> 로그인_요청(TokenRequest params) {
@@ -95,7 +115,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public static ExtractableResponse<Response> 회원_조회(TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 본인_정보_조회(TokenResponse tokenResponse) {
         return RestAssured.given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -103,11 +123,25 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    public static void 회원_조회_성공(ExtractableResponse<Response> response) {
+    public static ExtractableResponse<Response> 본인_정보_수정(TokenResponse tokenResponse, MemberRequest memberRequest) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put("/members/me")
+                .then().log().all().extract();
+    }
+
+    public static void 본인_정보_조회_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 회원_조회_실패(ExtractableResponse<Response> response) {
+    public static void 본인_정보_조회_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    public static void 본인_정보_수정_성공(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
