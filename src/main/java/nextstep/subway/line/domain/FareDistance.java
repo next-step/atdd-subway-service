@@ -13,14 +13,14 @@ public enum FareDistance {
     private int overFareDistance;
     private int overFarePrice;
 
-    FareDistance(int minDistance, int maxDistance, int overFareDistance, int overFarePrice) {
+    private FareDistance(int minDistance, int maxDistance, int overFareDistance, int overFarePrice) {
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
         this.overFareDistance = overFareDistance;
         this.overFarePrice = overFarePrice;
     }
 
-    public static FareDistance of(Distance distance) {
+    private static FareDistance of(Distance distance) {
         return Arrays.stream(values())
                 .filter(value -> (value.minDistance < distance.getDistance()) && (distance.getDistance() <= value.maxDistance))
                 .findFirst()

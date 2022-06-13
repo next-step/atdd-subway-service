@@ -13,7 +13,7 @@ public enum FareAgeDiscount {
     private int maxAge;
     private double discount;
 
-    FareAgeDiscount(int minAge, int maxAge, double discount) {
+    private FareAgeDiscount(int minAge, int maxAge, double discount) {
         this.minAge = minAge;
         this.maxAge = maxAge;
         this.discount = discount;
