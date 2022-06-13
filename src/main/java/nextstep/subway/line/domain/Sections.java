@@ -19,10 +19,6 @@ public class Sections {
         sections = new ArrayList<>();
     }
 
-    public Sections(List<Section> sections) {
-        this.sections = sections;
-    }
-
     public void add(Section section) {
         List<Station> stations = getStations();
         Station upStation = section.getUpStation();
@@ -35,21 +31,42 @@ public class Sections {
         validateSection(stations, upStation, downStation);
 
         if(stations.isEmpty()) {
-            addSection(section, upStation, downStation);
+            addSection(section.getLine(), upStation, downStation, section.getDistance());
             return;
         }
 
         if(isUpStationExisted) {
             updateSectionAsUpStation(section, upStation, downStation);
-            addSection(section, upStation, downStation);
+            addSection(section.getLine(), upStation, downStation, section.getDistance());
             return;
         }
 
         if(isDownStationExisted) {
             updateSectionAsDownStation(section, upStation, downStation);
-            addSection(section, upStation, downStation);
+            addSection(section.getLine(), upStation, downStation, section.getDistance());
             return;
         }
+    }
+
+    public void remove(Station station) {
+        if(sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = findStationAsUpStation(station);
+        Optional<Section> downLineStation = findStationAsDownStation(station);
+
+        if(upLineStation.isPresent() && downLineStation.isPresent()) {
+            Line line = downLineStation.get().getLine();
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+
+            addSection(line, newUpStation, newDownStation, newDistance);
+        }
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
     }
 
     public List<Section> getSections() {
@@ -114,8 +131,8 @@ public class Sections {
         }
     }
 
-    private void addSection(Section section, Station upStation, Station downStation) {
-        sections.add(new Section(section.getLine(), upStation, downStation, section.getDistance()));
+    private void addSection(Line line, Station upStation, Station downStation, int distance) {
+        sections.add(new Section(line, upStation, downStation, distance));
     }
 
     private void updateSectionAsUpStation(Section section, Station upStation, Station downStation) {
