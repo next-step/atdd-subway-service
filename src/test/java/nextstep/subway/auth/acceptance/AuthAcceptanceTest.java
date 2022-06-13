@@ -21,21 +21,24 @@ import org.springframework.http.MediaType;
 @DisplayName("로그인 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
 
+    private String EMAIL = "toughchb@gmail.com";
+    private String PASSWORD = "password";
+    private String WRONG_PASSWORD = "wrong_password";
+    private int AGE =18;
+
     @BeforeEach
     void before() {
         //given: 회원 등록 되어 있음
         super.setUp();
-        ExtractableResponse<Response> 회원_생성_요청 = 회원_생성을_요청("toughchb@gmail.com", "password", 18);
+        ExtractableResponse<Response> 회원_생성_요청 = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         회원_생성됨(회원_생성_요청);
     }
 
     @DisplayName("Bearer Auth 정상 로그인")
     @Test
     void myInfoWithBearerAuth() {
-        TokenRequest tokenRequest = new TokenRequest("toughchb@gmail.com", "password");
-
         //when: 로그인 요청
-        ExtractableResponse<Response> response = 로그인_요청(tokenRequest);
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
 
         //then: 로그인 됨
         로그인_성공(response);
@@ -44,10 +47,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
-        TokenRequest tokenRequest = new TokenRequest("toughchb@gmail.com", "wrong_password");
 
         //when: 로그인 요청
-        ExtractableResponse<Response> response = 로그인_요청(tokenRequest);
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, WRONG_PASSWORD);
 
         //then: 로그인 실패
         로그인_실패(response);
