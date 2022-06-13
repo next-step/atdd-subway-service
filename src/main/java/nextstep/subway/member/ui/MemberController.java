@@ -27,7 +27,7 @@ public class MemberController {
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
         MemberResponse member = memberService.findMemberResponseById(id);
-        return ResponseEntity.ok().body(member);
+        return ResponseEntity.ok(member);
     }
 
     @PutMapping("/members/{id}")
@@ -45,7 +45,7 @@ public class MemberController {
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMemberResponseById(loginMember.getId());
-        return ResponseEntity.ok().body(member);
+        return ResponseEntity.ok(member);
     }
 
     @PutMapping("/members/me")
