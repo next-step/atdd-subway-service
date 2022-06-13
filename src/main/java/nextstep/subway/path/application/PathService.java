@@ -36,6 +36,4 @@ public class PathService {
         List<StationResponse> stations = stationService.findAllStationsByIds(path.getStations());
         return PathResponse.of(stations, path.getDistance(), fare.getValue());
     }
-
-
 }
