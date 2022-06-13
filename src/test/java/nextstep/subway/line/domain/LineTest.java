@@ -22,7 +22,7 @@ public class LineTest {
     @Test
     void 정렬된_역_리스트를_구할_수_있다() {
         Line line = new Line("라인", "red", 강남역, 양재역, 10);
-        line.getSections().add(new Section(line, 양재역, 신논현역, 5));
+        line.addSection(new Section(line, 양재역, 신논현역, 5));
 
         assertThat(line.getOrderedStations()).containsExactly(강남역, 양재역, 신논현역);
     }

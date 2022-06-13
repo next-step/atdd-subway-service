@@ -3,13 +3,12 @@ package nextstep.subway.line.domain;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,8 +23,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private final List<Section> sections = new ArrayList<>();
+    @Embedded
+    private final Sections sections = new Sections();
 
     public Line() {
     }
@@ -58,8 +57,20 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
+    public Sections getSections() {
         return sections;
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
+    }
+
+    public void removeSection(Section section) {
+        sections.remove(section);
+    }
+
+    public int getSectionsSize() {
+        return sections.size();
     }
 
     public List<Station> getOrderedStations() {
@@ -73,13 +84,11 @@ public class Line extends BaseEntity {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
+            Optional<Section> nextSection = sections.getNextSectionByEqualUpStation(finalDownStation);
+            if (!nextSection.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getDownStation();
+            downStation = nextSection.get().getDownStation();
             stations.add(downStation);
         }
 
@@ -90,13 +99,11 @@ public class Line extends BaseEntity {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
+            Optional<Section> nextSection = sections.getNextSectionByEqualDownStation(finalDownStation);
+            if (!nextSection.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getUpStation();
+            downStation = nextSection.get().getUpStation();
         }
 
         return downStation;
