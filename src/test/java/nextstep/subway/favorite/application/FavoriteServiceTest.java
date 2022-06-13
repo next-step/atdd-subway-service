@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
@@ -45,13 +44,12 @@ public class FavoriteServiceTest {
         Member member = createMember(1L, "email@email.com", "password", 20);
         Station 강남역 = createStation(1L, "강남역");
         Station 정자역 = createStation(2L, "정자역");
-        Favorite favorite = createFavorite(member, 강남역, 정자역);
-        Favorite persistFavorite = createFavorite(1L, member, 강남역, 정자역);
 
         when(memberService.findMemberById(loginMember.getId())).thenReturn(member);
         when(stationService.findById(강남역.id())).thenReturn(강남역);
         when(stationService.findById(정자역.id())).thenReturn(정자역);
-        when(favoriteRepository.save(favorite)).thenReturn(persistFavorite);
+        when(favoriteRepository.save(createFavorite(member, 강남역, 정자역))).thenReturn(
+                createFavorite(1L, member, 강남역, 정자역));
 
         FavoriteResponse favoriteResponse = favoriteService.saveFavorite(loginMember, 강남역.id(), 정자역.id());
         assertAll(
