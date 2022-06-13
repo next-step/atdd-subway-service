@@ -76,6 +76,15 @@ public class Line extends BaseEntity {
         return stations;
     }
 
+    public void addSection(Station upStation, Station downStation, int distance) {
+        Section section = Section.of(this, upStation, downStation, distance);
+        sections.addSection(section);
+    }
+
+    public void removeLineStation(Station station) {
+        sections.removeSectionByStation(station);
+    }
+
     private Station findUpStation() {
         Station station = sections.getSections().get(0).getUpStation();
 
@@ -85,10 +94,5 @@ public class Line extends BaseEntity {
         }
 
         return station;
-    }
-
-    public void addSection(Station upStation, Station downStation, int distance) {
-        Section section = Section.of(this, upStation, downStation, distance);
-        sections.addSection(section);
     }
 }

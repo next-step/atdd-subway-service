@@ -9,8 +9,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
-import static nextstep.subway.common.Messages.ALREADY_REGISTERED_STATION;
-import static nextstep.subway.common.Messages.UNREGISTERED_STATION;
+import static nextstep.subway.common.Messages.*;
 
 @Embeddable
 public class Sections {
@@ -19,11 +18,6 @@ public class Sections {
     private List<Section> sections = new ArrayList<>();
 
     public void addSection(Section section) {
-        if (sections.isEmpty()) {
-            sections.add(section);
-            return;
-        }
-
         validate(section);
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
@@ -37,6 +31,20 @@ public class Sections {
         }
 
         this.sections.add(section);
+    }
+
+    public Section removeSectionByStation(Station station) {
+        validateRemoveStation(station);
+
+        if (isUpStationAndDownStation(station)) {
+            return matchUpStationAndDownStation(station);
+        }
+
+        if (matchUpStation(station)) {
+            return matchAndRemoveUpStation(station);
+        }
+
+        return matchAndRemoveDownStation(station);
     }
 
     public List<Section> getSections() {
@@ -96,6 +104,16 @@ public class Sections {
         }
     }
 
+    private void validateRemoveStation(Station station) {
+        if (sections.size() <= 1) {
+            throw new IllegalArgumentException(NOT_FOUND_REMOVE_STATION);
+        }
+
+        if (!matchUpStation(station) && !matchDownStation(station)) {
+            throw new IllegalArgumentException(NOT_MATCH_REMOVE_STATION);
+        }
+    }
+
     private boolean matchUpStation(Station station) {
         return sections.stream().anyMatch(section -> section.isEqualsUpStation(station));
     }
@@ -114,5 +132,38 @@ public class Sections {
         Station downStation = section.getDownStation();
         Section findSection = findSectionByDownStation(downStation);
         findSection.updateDownStation(section.getUpStation(), section.getDistance());
+    }
+
+    private boolean isUpStationAndDownStation(Station station) {
+        return matchUpStation(station) && matchDownStation(station);
+    }
+
+    private Section matchUpStationAndDownStation(Station station) {
+        Section sectionByUpStation = findSectionByUpStation(station);
+        Section sectionByDownStation = findSectionByDownStation(station);
+
+        Section section = Section.of(
+                sectionByUpStation.getLine(),
+                sectionByDownStation.getUpStation(),
+                sectionByUpStation.getDownStation(),
+                sectionByUpStation.getDistance() + sectionByDownStation.getDistance()
+        );
+
+        sections.add(section);
+        sections.remove(sectionByUpStation);
+        sections.remove(sectionByDownStation);
+        return section;
+    }
+
+    private Section matchAndRemoveUpStation(Station station) {
+        Section upStation = findSectionByUpStation(station);
+        sections.remove(upStation);
+        return upStation;
+    }
+
+    private Section matchAndRemoveDownStation(Station station) {
+        Section downStation = findSectionByDownStation(station);
+        sections.remove(downStation);
+        return downStation;
     }
 }
