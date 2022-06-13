@@ -3,7 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.DijkstraPathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -28,7 +28,7 @@ public class PathService {
         Station sourceStation = stationService.findStationById(sourceStationId);
         Station targetStation = stationService.findStationById(targetStationId);
 
-        Path path = PathFinder.from(lines).findShortestPath(sourceStation, targetStation);
+        Path path = DijkstraPathFinder.from(lines).findShortestPath(sourceStation, targetStation);
         return PathResponse.from(path);
     }
 }
