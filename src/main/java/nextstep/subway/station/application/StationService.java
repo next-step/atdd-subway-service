@@ -1,6 +1,5 @@
 package nextstep.subway.station.application;
 
-import nextstep.subway.error.ErrorCodeException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
@@ -9,8 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static nextstep.subway.error.ErrorCode.NO_EXISTS_STATION;
 
 @Service
 public class StationService {
@@ -35,13 +32,5 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
-    }
-
-    public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(() -> new ErrorCodeException(NO_EXISTS_STATION));
-    }
-
-    public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(() -> new ErrorCodeException(NO_EXISTS_STATION));
     }
 }
