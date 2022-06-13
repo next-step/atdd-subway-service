@@ -19,4 +19,8 @@ public class Age {
     public int getValue() {
         return age;
     }
+
+    public boolean isAdult() {
+        return age >= DEFAULT_AGE;
+    }
 }

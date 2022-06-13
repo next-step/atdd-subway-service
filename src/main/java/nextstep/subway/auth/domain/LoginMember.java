@@ -31,7 +31,7 @@ public class LoginMember {
         return email;
     }
 
-    public Integer getAge() {
-        return age.getValue();
+    public Age getAge() {
+        return age;
     }
 }

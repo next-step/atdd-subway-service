@@ -26,12 +26,12 @@ public enum FareAgeDiscount {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public static int calculate(int fare, int age) {
-        if (age == 0 || age >= ADULT) {
+    public static int calculate(int fare, Age age) {
+        if (age.isAdult()) {
             return fare;
         }
 
-        FareAgeDiscount fareAgeDiscount = FareAgeDiscount.of(age);
+        FareAgeDiscount fareAgeDiscount = FareAgeDiscount.of(age.getValue());
         return (int) (fare - fareAgeDiscount.getDiscount(fare, fareAgeDiscount.discountRate));
     }
 
