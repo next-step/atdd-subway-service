@@ -6,11 +6,13 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -20,6 +22,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
+
+    private ExtractableResponse<Response> 회원_생성_요청_응답;
+
+    @BeforeEach
+    void before() {
+        super.setUp();
+        ExtractableResponse<Response> 회원_생성_요청_응답 = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(회원_생성_요청_응답);
+    }
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -48,7 +59,29 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        //when: 로그인 요청
+        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(EMAIL, PASSWORD);
+        String 로그인_토큰 = 로그인_성공_이후_토큰(로그인_요청_응답);
 
+        //then: 내정보 조회
+        ExtractableResponse<Response> 내정보_조회_요청_응답 = 내정보_조회_요청(로그인_토큰);
+        assertThat(내정보_조회_요청_응답.statusCode()).isEqualTo(HttpStatus.OK);
+
+
+    }
+
+    public static String 로그인_성공_이후_토큰(ExtractableResponse<Response> response) {
+        return response.jsonPath().getString("accessToken");
+    }
+
+    private ExtractableResponse<Response> 내정보_조회_요청(String token) {
+        return RestAssured.given().log().all().
+                auth().
+                oauth2(token).
+                accept(MediaType.APPLICATION_JSON_VALUE).
+                when().get("/members/me").
+                then().log().all().
+                extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
