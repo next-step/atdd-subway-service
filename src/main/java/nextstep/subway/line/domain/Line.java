@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
-    private static final int ONLY_ONE = 1;
+    private static final int MIN_SIZE = 1;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -66,15 +66,22 @@ public class Line extends BaseEntity {
     }
 
     public void removeSection(final Station station) {
-        if (this.sections.isSize() <= ONLY_ONE) {
+        if (this.sections.isSize() <= MIN_SIZE) {
             throw new IllegalStateException("구간이 한개 뿐이거나 없는 경우에 삭제할수 없습니다.");
         }
         removeSectionBy(station);
     }
 
     private void removeSectionBy(Station station) {
-        final Optional<Section> upLineStation = sections.getSections().stream().filter(it -> it.isMatchUpStation(station)).findFirst();
-        final Optional<Section> downLineStation = sections.getSections().stream().filter(it -> it.isMatchDownStation(station)).findFirst();
+        final Optional<Section> upLineStation =
+                sections.getSections().stream()
+                        .filter(it -> it.isMatchUpStation(station))
+                        .findFirst();
+
+        final Optional<Section> downLineStation =
+                sections.getSections().stream()
+                        .filter(it -> it.isMatchDownStation(station))
+                        .findFirst();
 
         upLineStation.ifPresent(this::removeSection);
         downLineStation.ifPresent(this::removeSection);

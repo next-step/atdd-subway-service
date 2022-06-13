@@ -47,10 +47,15 @@ public class Sections {
             return Optional.empty();
         }
         if (sections.size() <= MIN_SIZE) {
-            return this.sections.stream().map(Section::getUpStation).findAny();
+            return this.sections.stream()
+                    .map(Section::getUpStation)
+                    .findAny();
         }
 
-        return sections.stream().filter(this::isStartStation).map(Section::getUpStation).findAny();
+        return sections.stream()
+                .filter(this::isStartStation)
+                .map(Section::getUpStation)
+                .findAny();
     }
 
     public List<Section> getSections() {
@@ -74,10 +79,12 @@ public class Sections {
         }
         Match match = findInsertSomePlace(section);
         if (Match.isUP(match)) {
-            findPreSectionBy(section.getUpStation()).ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+            findPreSectionBy(section.getUpStation())
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
         }
         if (Match.isDOWN(match)) {
-            findDownSectionBy(section.getDownStation()).ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+            findDownSectionBy(section.getDownStation())
+                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
         }
     }
 
@@ -113,15 +120,19 @@ public class Sections {
     }
 
     private Optional<Section> findPreSectionBy(final Station station) {
-        return sections.stream().filter(it -> it.isMatchUpStation(station)).findFirst();
+        return sections.stream()
+                .filter(it -> it.isMatchUpStation(station)).findFirst();
     }
 
     private Optional<Section> findDownSectionBy(final Station station) {
-        return sections.stream().filter(it -> it.isMatchDownStation(station)).findFirst();
+        return sections.stream()
+                .filter(it -> it.isMatchDownStation(station)).findFirst();
     }
 
     private boolean isStartStation(final Section section) {
-        return sections.stream().noneMatch(it -> it.isMatchDownStation(section.getUpStation())) &&
-                sections.stream().anyMatch(it -> it.isMatchUpStation(section.getDownStation()));
+        return sections.stream()
+                .noneMatch(it -> it.isMatchDownStation(section.getUpStation()))
+                && sections.stream()
+                .anyMatch(it -> it.isMatchUpStation(section.getDownStation()));
     }
 }
