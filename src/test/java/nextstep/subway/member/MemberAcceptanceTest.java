@@ -1,6 +1,7 @@
 package nextstep.subway.member;
 
 import static nextstep.subway.auth.acceptance.AuthRestAssured.로그인_되어_있음;
+import static nextstep.subway.member.MemberRestAssured.나의_정보_수정_요청;
 import static nextstep.subway.member.MemberRestAssured.나의_정보_조회_요청;
 import static nextstep.subway.member.MemberRestAssured.회원_삭제_요청;
 import static nextstep.subway.member.MemberRestAssured.회원_생성을_요청;
@@ -79,9 +80,14 @@ class MemberAcceptanceTest extends AcceptanceTest {
         String 사용자토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
 
         // when
-        ExtractableResponse<Response> response = 나의_정보_조회_요청(사용자토큰);
+        ExtractableResponse<Response> findResponse = 나의_정보_조회_요청(사용자토큰);
         // then
-        나의_정보_조회됨(response);
+        나의_정보_조회됨(findResponse);
+
+        // when
+        ExtractableResponse<Response> updateResponse = 나의_정보_수정_요청(사용자토큰, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        // then
+        나의_정보_수정됨(updateResponse);
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
@@ -104,6 +110,10 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     private void 나의_정보_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 나의_정보_수정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
