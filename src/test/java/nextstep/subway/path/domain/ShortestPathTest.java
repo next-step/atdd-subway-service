@@ -47,4 +47,13 @@ class ShortestPathTest {
         // then
         assertThat(stations).hasSize(4);
     }
+
+    @Test
+    void 최단_경로_거리를_조회한다() {
+        // when
+        int distance = shortestPath.getDistance();
+
+        // then
+        assertThat(distance).isEqualTo(9);
+    }
 }
