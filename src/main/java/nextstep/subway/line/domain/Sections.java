@@ -138,4 +138,10 @@ public class Sections {
             throw new BothUpDownDoNotExistException(UNREGISTERABLE_SECTION_MESSAGE);
         }
     }
+
+    public int totalDistanceLength() {
+        return sections.stream()
+                .mapToInt(Section::getDistanceValue)
+                .sum();
+    }
 }

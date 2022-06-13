@@ -25,13 +25,35 @@ class SectionsTest {
     }
 
     @Test
-    void 구간_등록_성공() {
+    void 구간_중간에_등록() {
         Station 신규역 = new Station("신규역");
         Section 상행_신규역구간 = new Section(신규라인, 상행역, 신규역, 5);
 
         sections.add(상행_신규역구간);
 
         assertThat(sections.getStations()).contains(신규역);
+    }
+
+    @Test
+    void 상행구간_구간연장() {
+        Station 상행연장역 = new Station("상행연장역");
+        Section 상행_연장_구간 = new Section(신규라인, 상행연장역, 상행역, 5);
+
+        sections.add(상행_연장_구간);
+
+        assertThat(this.sections.getSections()).hasSize(2);
+        assertThat(this.sections.totalDistanceLength()).isEqualTo(15);
+    }
+
+    @Test
+    void 하행구간_구간연장() {
+        Station 하행연장역 = new Station("하행연장역");
+        Section 하행_연장_구간 = new Section(신규라인, 하행역, 하행연장역, 5);
+
+        sections.add(하행_연장_구간);
+
+        assertThat(this.sections.getSections()).hasSize(2);
+        assertThat(this.sections.totalDistanceLength()).isEqualTo(15);
     }
 
     @Test
