@@ -1,22 +1,19 @@
 package nextstep.subway.auth.acceptance;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.내정보_조회_실패;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.로그인_성공;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.로그인_실패;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.로그인_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성됨;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
-import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.subway.member.MemberAcceptanceTestMethod.내정보_조회_요청;
+import static nextstep.subway.member.MemberAcceptanceTestMethod.회원_생성됨;
+import static nextstep.subway.member.MemberAcceptanceTestMethod.회원_생성을_요청;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.dto.TokenRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 @DisplayName("로그인 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -25,6 +22,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private String PASSWORD = "password";
     private String WRONG_PASSWORD = "wrong_password";
     private int AGE =18;
+
+    private String WRONG_TOKEN = "wrong_token";
 
     @BeforeEach
     void before() {
@@ -58,5 +57,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+
+        //when: 유효하지 않은 토큰으로 요청
+        ExtractableResponse<Response> 내정보_조회_요청_응답 = 내정보_조회_요청(WRONG_TOKEN);
+
+        //then: 요천 실패
+        내정보_조회_실패(내정보_조회_요청_응답);
     }
 }
