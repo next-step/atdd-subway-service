@@ -1,9 +1,9 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.domain.DistanceTest.거리_생성;
-import static nextstep.subway.line.domain.LineTest.섹션_없는_라인_생성;
-import static nextstep.subway.line.domain.SectionTest.빈_섹션_생성;
-import static nextstep.subway.line.domain.StationTest.역_생성;
+import static nextstep.subway.utils.DomainCreationHelper.거리_생성;
+import static nextstep.subway.utils.DomainCreationHelper.빈_섹션_생성;
+import static nextstep.subway.utils.DomainCreationHelper.섹션_없는_라인_생성;
+import static nextstep.subway.utils.DomainCreationHelper.역_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

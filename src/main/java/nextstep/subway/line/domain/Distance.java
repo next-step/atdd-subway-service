@@ -17,11 +17,11 @@ public class Distance {
         return distance;
     }
 
-    public boolean isEqualOrLessThan(final Distance newDistance) {
-        return distance <= newDistance.getValue();
+    public boolean isEqualOrLessThan(final Distance other) {
+        return distance <= other.getValue();
     }
 
-    public void minus(final Distance newDistance) {
-        distance = distance - newDistance.getValue();
+    public void minus(final Distance other) {
+        distance = distance - other.getValue();
     }
 }

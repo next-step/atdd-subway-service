@@ -25,7 +25,7 @@ public class Sections {
 
         final List<Station> stations = getStations();
 
-        checkAddableSection(stations, upStation, downStation);
+        checkAddableSection(upStation, downStation);
 
         if (stations.isEmpty()) {
             sections.add(new Section(line, upStation, downStation, distance));
@@ -44,7 +44,7 @@ public class Sections {
 
     }
 
-    private void checkAddableSection(final List<Station> stations, final Station upStation, final Station downStation) {
+    private void checkAddableSection(final Station upStation, final Station downStation) {
         if (isStationExisted(upStation) && isStationExisted(downStation)) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
@@ -95,21 +95,21 @@ public class Sections {
 
     private Optional<Section> findUpLineStation(final Station station) {
         return sections.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(it -> it.getDownStation() == station)
                 .findFirst();
     }
 
     private Optional<Section> findDownLineStation(final Station station) {
         return sections.stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(it -> it.getUpStation() == station)
                 .findFirst();
     }
 
     private void mergeIfUpAndDownStationExists(final Line line, final Optional<Section> upLineStation,
                                                final Optional<Section> downLineStation) {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
+            Station newUpStation = upLineStation.get().getUpStation();
+            Station newDownStation = downLineStation.get().getDownStation();
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
             sections.add(new Section(line, newUpStation, newDownStation, new Distance(newDistance)));
         }
