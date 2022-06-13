@@ -11,12 +11,12 @@ public enum FareAgeDiscount {
 
     private int minAge;
     private int maxAge;
-    private double discount;
+    private double discountRate;
 
-    private FareAgeDiscount(int minAge, int maxAge, double discount) {
+    private FareAgeDiscount(int minAge, int maxAge, double discountRate) {
         this.minAge = minAge;
         this.maxAge = maxAge;
-        this.discount = discount;
+        this.discountRate = discountRate;
     }
 
     private static FareAgeDiscount of(int age) {
@@ -32,6 +32,10 @@ public enum FareAgeDiscount {
         }
 
         FareAgeDiscount fareAgeDiscount = FareAgeDiscount.of(age);
-        return (int) (fare - ((fare - DEDUCTION_FEE) * fareAgeDiscount.discount));
+        return (int) (fare - fareAgeDiscount.getDiscount(fare, fareAgeDiscount.discountRate));
+    }
+
+    private double getDiscount(int fare, double discountRate) {
+        return (fare - DEDUCTION_FEE) * discountRate;
     }
 }

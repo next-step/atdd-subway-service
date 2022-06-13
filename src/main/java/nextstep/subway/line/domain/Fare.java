@@ -25,6 +25,6 @@ public class Fare {
     private int calculateExtraFare(List<SectionWeightedEdge> sectionEdges) {
         return sectionEdges.stream()
                 .mapToInt(SectionWeightedEdge::getExtraFare)
-                .max().orElse(0);
+                .max().orElseThrow(RuntimeException::new);
     }
 }
