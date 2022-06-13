@@ -45,7 +45,7 @@ public class FavoriteService {
     public void deleteFavorite(Long id, Long memberId) {
         Member member = memberService.findById(memberId);
         Favorite favorite = favoriteRepository.findByMemberAndId(member, id)
-            .orElseThrow(() -> new RuntimeException("권한에 맞는 즐겨찾기가 없습니다"));
+            .orElseThrow(() -> new IllegalArgumentException("삭제할 즐겨찾기를 찾을수 없습니다"));
         favoriteRepository.delete(favorite);
     }
 }
