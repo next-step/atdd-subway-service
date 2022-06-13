@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Section {
@@ -65,6 +66,14 @@ public class Section {
         checkUpdateDistance(newDistance);
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public boolean isSameUpStation(Station station) {
+        return Objects.equals(this.upStation, station);
+    }
+
+    public boolean isSameDownStation(Station station) {
+        return Objects.equals(this.downStation, station);
     }
 
     private void checkDistance(int distance) {

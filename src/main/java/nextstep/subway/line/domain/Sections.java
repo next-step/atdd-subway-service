@@ -5,13 +5,11 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Embeddable
 public class Sections {
+    public static final int SECTION_LIST_LOWER_BOUND_SIZE = 1;
     @OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
     private List<Section> sectionList = new ArrayList<>();
 
@@ -33,8 +31,7 @@ public class Sections {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation =
-                    this.sectionList.stream().filter(it -> it.getUpStation() == finalDownStation).findFirst();
+            Optional<Section> nextLineStation = findFirstByUpStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -46,11 +43,12 @@ public class Sections {
     }
 
     private Station findUpStation() {
-        Station downStation = this.sectionList.get(0).getUpStation();
+        Station downStation =
+                this.sectionList.stream().findFirst().orElseThrow(NoSuchElementException::new).getUpStation();
+
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation =
-                    this.sectionList.stream().filter(it -> it.getDownStation() == finalDownStation).findFirst();
+            Optional<Section> nextLineStation = findFirstByDownStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -61,24 +59,34 @@ public class Sections {
     }
 
     public void removeLineStation(Line line, Station station) {
-        if (this.sectionList.size() <= 1) {
-            throw new RuntimeException();
-        }
+        checkLeft();
 
-        Optional<Section> upLineStation =
-                this.sectionList.stream().filter(it -> it.getUpStation() == station).findFirst();
-        Optional<Section> downLineStation =
-                this.sectionList.stream().filter(it -> it.getDownStation() == station).findFirst();
+        Optional<Section> upLineStation = findFirstByUpStation(station);
+        Optional<Section> downLineStation = findFirstByDownStation(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            this.sectionList.add(new Section(line, newUpStation, newDownStation, newDistance));
+            add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 
         upLineStation.ifPresent(it -> this.sectionList.remove(it));
         downLineStation.ifPresent(it -> this.sectionList.remove(it));
+    }
+
+    private void checkLeft() {
+        if (this.sectionList.size() <= SECTION_LIST_LOWER_BOUND_SIZE) {
+            throw new CannotRemoveException();
+        }
+    }
+
+    private Optional<Section> findFirstByDownStation(Station station) {
+        return this.sectionList.stream().filter(section -> section.isSameDownStation(station)).findFirst();
+    }
+
+    private Optional<Section> findFirstByUpStation(Station station) {
+        return this.sectionList.stream().filter(section -> section.isSameUpStation(station)).findFirst();
     }
 
     public void addLineStation(Line line, Station upStation, Station downStation, int distance) {
@@ -86,34 +94,34 @@ public class Sections {
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) && stations.stream()
-                .noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
+        checkAlreadyAdded(isUpStationExisted, isDownStationExisted);
+        checkEitherOneOfAddedStation(upStation, downStation, stations);
 
         if (stations.isEmpty()) {
-            this.sectionList.add(new Section(line, upStation, downStation, distance));
+            add(new Section(line, upStation, downStation, distance));
             return;
         }
 
         if (isUpStationExisted) {
-            this.sectionList.stream().filter(it -> it.getUpStation() == upStation).findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+            findFirstByUpStation(upStation).ifPresent(it -> it.updateUpStation(downStation, distance));
+            add(new Section(line, upStation, downStation, distance));
+            return;
+        }
 
-            this.sectionList.add(new Section(line, upStation, downStation, distance));
-        } else {
-            if (isDownStationExisted) {
-                this.sectionList.stream().filter(it -> it.getDownStation() == downStation).findFirst()
-                        .ifPresent(it -> it.updateDownStation(upStation, distance));
+        findFirstByDownStation(downStation).ifPresent(it -> it.updateDownStation(upStation, distance));
+        add(new Section(line, upStation, downStation, distance));
+    }
 
-                this.sectionList.add(new Section(line, upStation, downStation, distance));
-            } else {
-                throw new RuntimeException();
-            }
+    private void checkEitherOneOfAddedStation(Station upStation, Station downStation, List<Station> stations) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) && stations.stream()
+                .noneMatch(it -> it == downStation)) {
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void checkAlreadyAdded(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
     }
 }

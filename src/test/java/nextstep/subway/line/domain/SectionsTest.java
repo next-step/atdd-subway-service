@@ -105,24 +105,22 @@ class SectionsTest {
     }
 
     @Test
-    void 구간이_비어있으면_역을_삭제할_수_없다() {
-        //when
-        sections = new Sections();
+    void 마지막_구간이면_역을_삭제할_수_없다() {
         //then
-        assertThatThrownBy(() -> sections.removeLineStation(삼호선, 양재역)).isExactlyInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> sections.removeLineStation(삼호선, 양재역)).isExactlyInstanceOf(CannotRemoveException.class);
     }
 
     @Test
     void 이미_포함된_구간은_추가할_수_없다() {
         //then
         assertThatThrownBy(() -> sections.addLineStation(삼호선, 교대역, 양재역, 20)).isExactlyInstanceOf(
-                RuntimeException.class);
+                IllegalArgumentException.class);
     }
 
     @Test
     void 구간_내_상행_하행_역_중_하나라도_포함되어_있지_않으면_추가할_수_없다() {
         //then
         assertThatThrownBy(() -> sections.addLineStation(삼호선, 남부터미널역, 고속터미널역, 1)).isExactlyInstanceOf(
-                RuntimeException.class);
+                IllegalArgumentException.class);
     }
 }
