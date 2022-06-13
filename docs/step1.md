@@ -1,7 +1,7 @@
 # 1단계 - 인수 테스트 기반 리팩터링
 ## 요구사항
-- [ ] LineService 리팩터링
-- [ ] LineSectionAcceptanceTest 리팩터링
+- [x] LineService 리팩터링
+- [x] LineSectionAcceptanceTest 리팩터링
 
 ## 요구사항 설명
 ### 인수 테스트 기반 리팩터링
@@ -43,11 +43,12 @@ Feature: 지하철 구간 관련 기능
 ```
 
 ## To-Do
-- [ ] 도메인으로 옮길 로직 찾기
+- [x] 도메인으로 옮길 로직 찾기
     - addLineStation 로직
     - removeLineStation 로직
     - getStations 로직
     - findUpStation 로직
-- [ ] 도메인의 단위 테스트 작성
-- [ ] 비즈니스 로직을 도메인으로 옮기기
+- [x] 도메인의 단위 테스트 작성
+- [x] 비즈니스 로직을 도메인으로 옮기기
+- [x] 인수 테스트 통합
 
