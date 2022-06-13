@@ -26,7 +26,7 @@ public class Favorite {
     }
 
     public Favorite(Long memberId, Station source, Station target) {
-        if (Objects.isNull(memberId) || Objects.isNull(source) || Objects.isNull(target)) {
+        if (memberId == null || source == null || target == null) {
             throw new IllegalArgumentException("필수값이 누락되어 즐겨찾기를 생성할 수 없습니다.");
         }
         this.memberId = memberId;
