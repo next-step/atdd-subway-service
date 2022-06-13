@@ -13,6 +13,7 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -30,6 +31,8 @@ public class FavoriteServiceTest {
     private FavoriteRepository favoriteRepository;
     @Mock
     private StationService stationService;
+    @Mock
+    private MemberService memberService;
     private FavoriteService favoriteService;
     private Member 내정보;
     private Station 시작역;
@@ -47,7 +50,7 @@ public class FavoriteServiceTest {
 
         즐겨찾기 = new Favorite(시작역, 종착역, 내정보);
 
-        favoriteService = new FavoriteService(favoriteRepository, stationService);
+        favoriteService = new FavoriteService(favoriteRepository, stationService, memberService);
     }
 
 
@@ -57,11 +60,12 @@ public class FavoriteServiceTest {
         when(stationService.findById(1L)).thenReturn(시작역);
         when(stationService.findById(4L)).thenReturn(종착역);
         when(favoriteRepository.save(any())).thenReturn(즐겨찾기);
+        when(memberService.findById(1L)).thenReturn(내정보);
 
         FavoriteRequest 즐겨찾기_요청정보 = new FavoriteRequest(1L, 4L);
 
         //when
-        Favorite favorite = favoriteService.saveFavorite(내정보, 즐겨찾기_요청정보);
+        Favorite favorite = favoriteService.saveFavorite(내정보.getId(), 즐겨찾기_요청정보);
 
         //then
         assertAll(() -> assertThat(favorite.getSource()).isEqualTo(시작역),
@@ -72,9 +76,10 @@ public class FavoriteServiceTest {
     public void 즐겨찾기_목록_조회하기() {
         //given
         when(favoriteRepository.findAllByMember(내정보)).thenReturn(Arrays.asList(즐겨찾기));
+        when(memberService.findById(1L)).thenReturn(내정보);
 
         //when
-        List<FavoriteResponse> favoriteList = favoriteService.getFavoriteList(내정보);
+        List<FavoriteResponse> favoriteList = favoriteService.getFavoriteList(내정보.getId());
 
         //then
         assertAll(() -> assertThat(favoriteList).extracting("source.name")
