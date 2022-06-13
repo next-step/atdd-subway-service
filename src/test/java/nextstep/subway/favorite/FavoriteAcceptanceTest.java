@@ -6,11 +6,11 @@ import static nextstep.subway.utils.FavoriteApiHelper.즐겨찾기_생성요청;
 import static nextstep.subway.utils.FavoriteAssertionHelper.즐겨찾기_목록조회_결과확인;
 import static nextstep.subway.utils.FavoriteAssertionHelper.즐겨찾기_삭제됨;
 import static nextstep.subway.utils.FavoriteAssertionHelper.즐겨찾기_생성됨;
+import static nextstep.subway.utils.ReflectionHelper.내정보_ID_설정하기;
 import static org.mockito.Mockito.when;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Optional;
 import nextstep.subway.AcceptanceTest;
@@ -127,12 +127,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private void 내정보_ID_설정하기(Long id, Member member)
-        throws NoSuchFieldException, IllegalAccessException {
-        Field field = Member.class.getDeclaredField("id");
-        field.setAccessible(true);
-        field.set(member, id);
-    }
+
 
 
 }
