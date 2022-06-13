@@ -1,3 +1,13 @@
+### Step2 요구사항
+
+- [ ] 최단 경로 조회 인수 테스트 만들기
+- [ ] 최단 경로 조회 기능 구현하기
+    - [ ] 인수테스트를 바탕으로 Inside Out으로 테스트를 만들며 진행
+    - [ ] Path 클래스 생성
+    - [ ] PathFinder 클래스 생성
+    - [ ] PathService 생성
+    - [ ] PathController 생성
+
 ### Step1 요구사항
 
 - [x] LineService 리팩터링
