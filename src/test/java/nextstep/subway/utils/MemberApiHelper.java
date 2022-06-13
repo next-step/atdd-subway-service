@@ -51,4 +51,25 @@ public class MemberApiHelper {
             .then().log().all()
             .extract();
     }
+
+    public static ExtractableResponse<Response> 내정보_수정_요청( String email, String password, Integer age, String token){
+        MemberRequest updateMemberRequest = new MemberRequest(email, password, age);
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .header("Authorization", "Bearer "+token)
+            .body(updateMemberRequest)
+            .when().put("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 내정보_삭제_요청(String token){
+        return RestAssured
+            .given().log().all()
+            .header("Authorization", "Bearer "+token)
+            .when().delete("/members/me")
+            .then().log().all()
+            .extract();
+    }
 }
