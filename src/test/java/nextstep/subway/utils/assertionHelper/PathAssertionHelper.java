@@ -1,4 +1,4 @@
-package nextstep.subway.utils;
+package nextstep.subway.utils.assertionHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

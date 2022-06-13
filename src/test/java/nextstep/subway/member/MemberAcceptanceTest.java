@@ -1,19 +1,19 @@
 package nextstep.subway.member;
 
-import static nextstep.subway.utils.AuthMemberApiHelper.로그인을통한_토큰받기;
-import static nextstep.subway.utils.AuthMemberApiHelper.토큰을통해_내정보받기;
-import static nextstep.subway.utils.AuthMemberAssertionHelper.가져온_내정보_확인하기;
-import static nextstep.subway.utils.AuthMemberAssertionHelper.인증실패;
-import static nextstep.subway.utils.MemberApiHelper.내정보_삭제_요청;
-import static nextstep.subway.utils.MemberApiHelper.내정보_수정_요청;
-import static nextstep.subway.utils.MemberApiHelper.회원_삭제_요청;
-import static nextstep.subway.utils.MemberApiHelper.회원_생성을_요청;
-import static nextstep.subway.utils.MemberApiHelper.회원_정보_수정_요청;
-import static nextstep.subway.utils.MemberApiHelper.회원_정보_조회_요청;
-import static nextstep.subway.utils.MemberAssertionHelper.회원_삭제됨;
-import static nextstep.subway.utils.MemberAssertionHelper.회원_생성됨;
-import static nextstep.subway.utils.MemberAssertionHelper.회원_정보_수정됨;
-import static nextstep.subway.utils.MemberAssertionHelper.회원_정보_조회됨;
+import static nextstep.subway.utils.apiHelper.AuthMemberApiHelper.로그인을통한_토큰받기;
+import static nextstep.subway.utils.apiHelper.AuthMemberApiHelper.토큰을통해_내정보받기;
+import static nextstep.subway.utils.assertionHelper.AuthMemberAssertionHelper.가져온_내정보_확인하기;
+import static nextstep.subway.utils.assertionHelper.AuthMemberAssertionHelper.인증실패;
+import static nextstep.subway.utils.apiHelper.MemberApiHelper.내정보_삭제_요청;
+import static nextstep.subway.utils.apiHelper.MemberApiHelper.내정보_수정_요청;
+import static nextstep.subway.utils.apiHelper.MemberApiHelper.회원_삭제_요청;
+import static nextstep.subway.utils.apiHelper.MemberApiHelper.회원_생성을_요청;
+import static nextstep.subway.utils.apiHelper.MemberApiHelper.회원_정보_수정_요청;
+import static nextstep.subway.utils.apiHelper.MemberApiHelper.회원_정보_조회_요청;
+import static nextstep.subway.utils.assertionHelper.MemberAssertionHelper.회원_삭제됨;
+import static nextstep.subway.utils.assertionHelper.MemberAssertionHelper.회원_생성됨;
+import static nextstep.subway.utils.assertionHelper.MemberAssertionHelper.회원_정보_수정됨;
+import static nextstep.subway.utils.assertionHelper.MemberAssertionHelper.회원_정보_조회됨;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

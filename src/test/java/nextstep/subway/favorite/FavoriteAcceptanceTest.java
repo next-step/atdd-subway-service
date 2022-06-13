@@ -1,15 +1,15 @@
 package nextstep.subway.favorite;
 
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
-import static nextstep.subway.utils.FavoriteApiHelper.즐겨찾기_목록조회요청;
-import static nextstep.subway.utils.FavoriteApiHelper.즐겨찾기_삭제요청;
-import static nextstep.subway.utils.FavoriteApiHelper.즐겨찾기_생성요청;
-import static nextstep.subway.utils.FavoriteAssertionHelper.즐겨찾기_목록조회_결과확인;
-import static nextstep.subway.utils.FavoriteAssertionHelper.즐겨찾기_삭제됨;
-import static nextstep.subway.utils.FavoriteAssertionHelper.즐겨찾기_생성됨;
-import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_등록되어_있음;
-import static nextstep.subway.utils.LineSectionApiHelper.지하철_노선에_지하철역_등록_요청;
-import static nextstep.subway.utils.MemberApiHelper.회원_생성을_요청;
+import static nextstep.subway.utils.apiHelper.LineApiHelper.지하철_노선_등록되어_있음;
+import static nextstep.subway.utils.apiHelper.FavoriteApiHelper.즐겨찾기_목록조회요청;
+import static nextstep.subway.utils.apiHelper.FavoriteApiHelper.즐겨찾기_삭제요청;
+import static nextstep.subway.utils.apiHelper.FavoriteApiHelper.즐겨찾기_생성요청;
+import static nextstep.subway.utils.assertionHelper.FavoriteAssertionHelper.즐겨찾기_목록조회_결과확인;
+import static nextstep.subway.utils.assertionHelper.FavoriteAssertionHelper.즐겨찾기_삭제됨;
+import static nextstep.subway.utils.assertionHelper.FavoriteAssertionHelper.즐겨찾기_생성됨;
+import static nextstep.subway.utils.apiHelper.LineSectionApiHelper.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.utils.apiHelper.MemberApiHelper.회원_생성을_요청;
 import static org.mockito.Mockito.when;
 
 import io.restassured.response.ExtractableResponse;

@@ -1,9 +1,9 @@
 package nextstep.subway.auth.acceptance;
 
-import static nextstep.subway.utils.AuthMemberApiHelper.로그인을통한_토큰받기;
-import static nextstep.subway.utils.AuthMemberApiHelper.토큰을통해_내정보받기;
-import static nextstep.subway.utils.AuthMemberAssertionHelper.가져온_내정보_확인하기;
-import static nextstep.subway.utils.AuthMemberAssertionHelper.인증실패;
+import static nextstep.subway.utils.apiHelper.AuthMemberApiHelper.로그인을통한_토큰받기;
+import static nextstep.subway.utils.apiHelper.AuthMemberApiHelper.토큰을통해_내정보받기;
+import static nextstep.subway.utils.assertionHelper.AuthMemberAssertionHelper.가져온_내정보_확인하기;
+import static nextstep.subway.utils.assertionHelper.AuthMemberAssertionHelper.인증실패;
 import static org.mockito.Mockito.when;
 
 import io.restassured.response.ExtractableResponse;

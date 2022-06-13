@@ -1,4 +1,4 @@
-package nextstep.subway.utils;
+package nextstep.subway.utils.apiHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,8 +12,7 @@ import nextstep.subway.line.dto.LineResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-public class LineAcceptanceHelper {
-
+public class LineApiHelper {
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
         return 지하철_노선_생성_요청(params);
     }
@@ -106,14 +105,6 @@ public class LineAcceptanceHelper {
             .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
-    }
-
-    public static void 지하철_노선_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
 }

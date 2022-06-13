@@ -13,6 +13,7 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.line.application.PathService;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
@@ -33,6 +34,8 @@ public class FavoriteServiceTest {
     private StationService stationService;
     @Mock
     private MemberService memberService;
+    @Mock
+    private PathService pathService;
     private FavoriteService favoriteService;
     private Member 내정보;
     private Station 시작역;
@@ -50,7 +53,7 @@ public class FavoriteServiceTest {
 
         즐겨찾기 = new Favorite(시작역, 종착역, 내정보);
 
-        favoriteService = new FavoriteService(favoriteRepository, stationService, memberService);
+        favoriteService = new FavoriteService(favoriteRepository, stationService, memberService, pathService);
     }
 
 

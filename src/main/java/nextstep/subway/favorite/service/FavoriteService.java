@@ -6,6 +6,8 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.line.application.PathService;
+import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
@@ -18,18 +20,24 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final StationService stationService;
     private final MemberService memberService;
+    private final PathService pathService;
 
     public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService,
-        MemberService memberService) {
+        MemberService memberService, PathService pathService) {
         this.favoriteRepository = favoriteRepository;
         this.stationService = stationService;
         this.memberService = memberService;
+        this.pathService = pathService;
     }
 
     public Favorite saveFavorite(Long memberId, FavoriteRequest favoriteRequest) {
+        PathResponse path = pathService.findPath(favoriteRequest.getSource(),
+            favoriteRequest.getTarget());
+
         Member member = memberService.findById(memberId);
         Station sourceStation = stationService.findById(favoriteRequest.getSource());
         Station targetStation = stationService.findById(favoriteRequest.getTarget());
+
         Favorite favorite = new Favorite(sourceStation, targetStation, member);
         return favoriteRepository.save(favorite);
     }

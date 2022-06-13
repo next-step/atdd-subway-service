@@ -1,4 +1,4 @@
-package nextstep.subway.utils;
+package nextstep.subway.utils.assertionHelper;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
