@@ -6,6 +6,7 @@ import static nextstep.subway.DomainFixtureFactory.createMember;
 import static nextstep.subway.DomainFixtureFactory.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -75,5 +76,12 @@ class FavoriteServiceTest {
 
         List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
         assertThat(favorites).containsExactly(FavoriteResponse.of(favorite));
+    }
+
+    @DisplayName("즐겨찾기 삭제 테스트")
+    @Test
+    void deleteFavorite() {
+        favoriteService.deleteFavorite(1L);
+        verify(favoriteRepository).deleteById(1L);
     }
 }

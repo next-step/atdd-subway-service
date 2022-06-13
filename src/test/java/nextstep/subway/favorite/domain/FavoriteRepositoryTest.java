@@ -67,7 +67,7 @@ class FavoriteRepositoryTest {
     @Test
     void delete() {
         Favorite favorite = favoriteRepository.save(즐겨찾기);
-        favoriteRepository.delete(favorite);
+        favoriteRepository.deleteById(favorite.id());
         List<Favorite> favorites = favoriteRepository.findByMemberId(사용자.getId());
         assertThat(favorites).isEmpty();
     }

@@ -47,11 +47,6 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavorite(long id) {
-        Favorite favorite = findById(id);
-        favoriteRepository.delete(favorite);
-    }
-
-    private Favorite findById(long id) {
-        return favoriteRepository.findById(id).orElseThrow(() -> new NotFoundException("조회되는 회원이 없습니다."));
+        favoriteRepository.deleteById(id);
     }
 }
