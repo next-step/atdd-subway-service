@@ -23,7 +23,6 @@ public class Favorite {
     private Station target;
 
     protected Favorite() {
-        //For JPA Entity
     }
 
     public Favorite(Long memberId, Station source, Station target) {
