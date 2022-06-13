@@ -24,10 +24,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
-    private LineResponse 신분당선;
-    private LineResponse 이호선;
     private LineResponse 삼호선;
-    private LineResponse 사호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
@@ -55,10 +52,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         이수역 = StationAcceptanceTest.지하철역_등록되어_있음("이수역").as(StationResponse.class);
         동작역 = StationAcceptanceTest.지하철역_등록되어_있음("동작역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 4);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-green-500", 교대역, 강남역, 10);
+        지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 4);
+        지하철_노선_등록되어_있음("이호선", "bg-green-500", 교대역, 강남역, 10);
+        지하철_노선_등록되어_있음("사호선", "bg-blue-300", 사당역, 이수역, 5);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-orange-400", 교대역, 양재역, 5);
-        사호선 = 지하철_노선_등록되어_있음("사호선", "bg-blue-300", 사당역, 이수역, 5);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -70,7 +67,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 dynamicTest("출박역과 도착역이 같은 경우 조회할 수 없다.", this::출발역과_도착역이_같은_경우_조회할_수_없다),
                 dynamicTest("출발역과 도착역이 연결되어 있지 않으면 조회할 수 없다.", this::출발역과_도착역이_연결되어_있지_않으면_조회할_수_없다),
                 dynamicTest("출발역이 노선에 존재하지 않으면 조회할 수 없다.", this::출발역이_노선에_존재하지_않으면_조회할_수_없다),
-                dynamicTest("도착역이 존재하지 않으면 조회할 수 없다.", this::도착역이_존재하지_않으면_조회할_수_없다)
+                dynamicTest("도착역이 노선에 존재하지 않으면 조회할 수 없다.", this::도착역이_노선에_존재하지_않으면_조회할_수_없다)
         );
     }
 
@@ -106,7 +103,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회_실패(최단_경로_조회_응답);
     }
 
-    private void 도착역이_존재하지_않으면_조회할_수_없다() {
+    private void 도착역이_노선에_존재하지_않으면_조회할_수_없다() {
+        // when
+        ExtractableResponse<Response> 최단_경로_조회_응답 = 최단_경로_조회_요청(사당역, 동작역);
+
+        // then
+        최단_경로_조회_실패(최단_경로_조회_응답);
     }
 
     private static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse upStation, StationResponse downStation) {
