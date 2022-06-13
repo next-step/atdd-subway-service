@@ -131,7 +131,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         throws NoSuchFieldException, IllegalAccessException {
         Field field = Member.class.getDeclaredField("id");
         field.setAccessible(true);
-        field.set(member, 1L);
+        field.set(member, id);
     }
 
 
