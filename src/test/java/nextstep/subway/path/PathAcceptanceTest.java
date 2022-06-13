@@ -121,7 +121,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회_조회됨(response, 15, 2_250);
     }
 
-    @DisplayName("최단 경로 10km~50km & 로그인 사용자 & 노선 추가 요금 조회 - 성공")
+    @DisplayName("최단 경로 10km~50km & 로그인 사용자(어린이) & 노선 추가 요금 조회 - 성공")
     @Test
     void 로그인사용자_최단_경로_조회_성공_5() {
         // When 사용자 로그인 되어 있음
@@ -134,6 +134,36 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // Then 최단 경로 조회됨
         최단_경로_조회_조회됨(response, 15, 1_300);
+    }
+
+    @DisplayName("최단 경로 10km~50km & 로그인 사용자(청소년) & 노선 추가 요금 조회 - 성공")
+    @Test
+    void 로그인사용자_최단_경로_조회_성공_6() {
+        // When 사용자 로그인 되어 있음
+        String email = "test@test.com";
+        String password = "password";
+        회원_생성을_요청(email, password, 17);
+        String 사용자_토큰 = 로그인_되어_있음(email, password);
+        // when 최단 경로 조회 요청
+        ExtractableResponse<Response> response = 로그인사용자_최단_경로_조회_요청(사용자_토큰, 교대역.getId(), 판교역.getId());
+
+        // Then 최단 경로 조회됨
+        최단_경로_조회_조회됨(response, 15, 1_870);
+    }
+
+    @DisplayName("최단 경로 10km~50km & 로그인 사용자(성인) & 노선 추가 요금 조회 - 성공")
+    @Test
+    void 로그인사용자_최단_경로_조회_성공_7() {
+        // When 사용자 로그인 되어 있음
+        String email = "test@test.com";
+        String password = "password";
+        회원_생성을_요청(email, password, 19);
+        String 사용자_토큰 = 로그인_되어_있음(email, password);
+        // when 최단 경로 조회 요청
+        ExtractableResponse<Response> response = 로그인사용자_최단_경로_조회_요청(사용자_토큰, 교대역.getId(), 판교역.getId());
+
+        // Then 최단 경로 조회됨
+        최단_경로_조회_조회됨(response, 15, 2_250);
     }
 
     @DisplayName("최단 경로 조회 - 실패 (출발역과 도착역이 같은 경우)")
