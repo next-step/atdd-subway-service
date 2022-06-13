@@ -12,4 +12,11 @@ public class FavoriteRequest {
         this.targetStationId = targetStationId;
     }
 
+    public Long getSourceStationId() {
+        return sourceStationId;
+    }
+
+    public Long getTargetStationId() {
+        return targetStationId;
+    }
 }
