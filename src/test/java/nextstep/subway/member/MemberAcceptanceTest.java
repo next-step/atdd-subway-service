@@ -1,5 +1,7 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.AuthRestAssured.로그인_되어_있음;
+import static nextstep.subway.member.MemberRestAssured.나의_정보_조회_요청;
 import static nextstep.subway.member.MemberRestAssured.회원_삭제_요청;
 import static nextstep.subway.member.MemberRestAssured.회원_생성을_요청;
 import static nextstep.subway.member.MemberRestAssured.회원_정보_수정_요청;
@@ -18,7 +20,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     String EMAIL = "email@email.com";
     String PASSWORD = "password";
     String NEW_EMAIL = "newemail@email.com";
-    String NEW_PASSWORD = "newpassword";
+    String NEW_PASSWORD = "newPassword";
     int AGE = 20;
     int NEW_AGE = 21;
 
@@ -60,6 +62,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     /**
      *   Scenario: 나의 정보를 관리한다.
      *     Given 나의 회원정보 등록 되어 있음
+     *     And 로그인 되어 있음
      *     When 나의 정보 조회 요청
      *     Then 나의 정보 조회됨
      *     When 나의 정보 수정 요청
@@ -70,7 +73,15 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        // and
+        String 사용자토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
 
+        // when
+        ExtractableResponse<Response> response = 나의_정보_조회_요청(사용자토큰);
+        // then
+        나의_정보_조회됨(response);
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
@@ -90,5 +101,9 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 나의_정보_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
