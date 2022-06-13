@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.dto;
 
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.station.dto.StationResponse;
 
 public class FavoriteResponse {
@@ -13,8 +14,9 @@ public class FavoriteResponse {
         this.target = target;
     }
 
-    public static FavoriteResponse of(long id, StationResponse source, StationResponse target) {
-        return new FavoriteResponse(id, source, target);
+    public static FavoriteResponse of(Favorite favorite) {
+        return new FavoriteResponse(favorite.id(), StationResponse.of(favorite.source()),
+                StationResponse.of(favorite.target()));
     }
 
     public long getId() {

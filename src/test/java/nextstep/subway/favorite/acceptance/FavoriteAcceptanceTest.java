@@ -5,6 +5,7 @@ import static nextstep.subway.favorite.acceptance.FavoriteRestAssured.즐겨찾�
 import static nextstep.subway.line.acceptance.LineRestAssured.지하철_노선_등록되어_있음;
 import static nextstep.subway.member.MemberRestAssured.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -14,6 +15,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 @DisplayName("즐겨찾기 관련 기능")
 class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -50,5 +52,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     void manageMember() {
         // when
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(사용자토큰, 강남역, 정자역);
+
+        // then
+        즐겨찾기_생성됨(createResponse);
+    }
+
+    private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 }

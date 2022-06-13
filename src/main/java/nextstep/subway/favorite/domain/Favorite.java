@@ -92,4 +92,20 @@ public class Favorite extends BaseEntity {
             return new Favorite(this);
         }
     }
+
+    public Long id() {
+        return id;
+    }
+
+    public Member member() {
+        return member;
+    }
+
+    public Station source() {
+        return source;
+    }
+
+    public Station target() {
+        return target;
+    }
 }
