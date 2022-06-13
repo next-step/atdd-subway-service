@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.exception.CannotFindPathException;
 import nextstep.subway.exception.ExceptionType;
@@ -22,6 +23,7 @@ import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,6 +45,8 @@ class PathServiceTest {
     @InjectMocks
     private PathService pathService;
 
+    private Line 이호선;
+    private Line 칠호선;
     private Station 대림역;
     private Station 구로디지털단지역;
     private Station 신대방역;
@@ -57,6 +61,7 @@ class PathServiceTest {
     private Station 부산역;
     private Station 대구역;
     private Section 부산_대구;
+    private LoginMember 회원;
 
     /**
      * 대림역                 ---       *2호선* ---   구로디지털단지역 |
@@ -65,20 +70,24 @@ class PathServiceTest {
      */
     @BeforeEach
     void setUp() {
+        이호선 = Line.of("이호선", "red", 대림역, 신대방역, 15, 0);
         대림역 = new Station(1L, "대림");
         구로디지털단지역 = new Station(2L, "구로디지털단지");
         신대방역 = new Station(3L, "신대방");
-        대림_구로디지털단지 = new Section(null, 대림역, 구로디지털단지역, 10);
-        구로디지털단지_신대방 = new Section(null, 구로디지털단지역, 신대방역, 5);
+        대림_구로디지털단지 = new Section(이호선, 대림역, 구로디지털단지역, 10);
+        구로디지털단지_신대방 = new Section(이호선, 구로디지털단지역, 신대방역, 5);
 
+        칠호선 = Line.of("칠호선", "blue", 남구로역, 가산디지털단지역, 7, 500);
         남구로역 = new Station(4L, "남구로");
         가산디지털단지역 = new Station(5L, "가산디지털단지");
-        남구로_가산디지털단지 = new Section(null, 남구로역, 가산디지털단지역, 3);
-        가산디지털단지_신대방 = new Section(null, 가산디지털단지역, 신대방역, 4);
+        남구로_가산디지털단지 = new Section(칠호선, 남구로역, 가산디지털단지역, 3);
+        가산디지털단지_신대방 = new Section(칠호선, 가산디지털단지역, 신대방역, 4);
 
         부산역 = new Station(6L, "부산");
         대구역 = new Station(7L, "대구");
         부산_대구 = new Section(null, 부산역, 대구역, 8);
+
+        회원 = new LoginMember(1L, "woobeen@naver.com", 22);
     }
 
     @DisplayName("지하철 최단거리 경로를 조회하면 정상적으로 조회되어야 한다")
@@ -91,7 +100,6 @@ class PathServiceTest {
 
         when(노선.getStations())
             .thenReturn(역_목록);
-
         when(노선.getSections())
             .thenReturn(구간_목록);
 
@@ -110,7 +118,7 @@ class PathServiceTest {
             );
 
         // when
-        PathResponse pathResponse = pathService.findShortestPath(1L, 10L);
+        PathResponse pathResponse = pathService.findShortestPath(회원, 1L, 10L);
 
         // then
         assertThat(pathResponse.getDistance()).isEqualTo(15);
@@ -148,7 +156,7 @@ class PathServiceTest {
             );
 
         // when
-        PathResponse pathResponse = pathService.findShortestPath(2L, 5L);
+        PathResponse pathResponse = pathService.findShortestPath(회원, 2L, 5L);
 
         // then
         assertAll(
@@ -170,7 +178,7 @@ class PathServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            pathService.findShortestPath(2L, 2L);
+            pathService.findShortestPath(회원, 2L, 2L);
         }).isInstanceOf(BadRequestException.class)
             .hasMessageContaining(ExceptionType.CAN_NOT_SAME_STATION.getMessage());
     }
@@ -200,7 +208,7 @@ class PathServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            pathService.findShortestPath(2L, 4L);
+            pathService.findShortestPath(회원, 2L, 4L);
         }).isInstanceOf(CannotFindPathException.class)
             .hasMessageContaining(ExceptionType.IS_NOT_CONNECTED_STATION.getMessage());
     }
@@ -220,7 +228,7 @@ class PathServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            pathService.findShortestPath(2L, 4L);
+            pathService.findShortestPath(회원, 2L, 4L);
         }).isInstanceOf(CannotFindPathException.class)
             .hasMessageContaining(ExceptionType.NOT_FOUND_STATION.getMessage());
     }
