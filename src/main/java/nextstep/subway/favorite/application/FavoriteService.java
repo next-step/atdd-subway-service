@@ -3,6 +3,7 @@ package nextstep.subway.favorite.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -11,8 +12,10 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final MemberService memberService;
@@ -25,6 +28,7 @@ public class FavoriteService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public FavoriteResponse saveFavorite(LoginMember loginMember, long sourceId, long targetId) {
         Member member = memberService.findMemberById(loginMember.getId());
         Station source = stationService.findById(sourceId);
@@ -39,5 +43,15 @@ public class FavoriteService {
         return favorites.stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteFavorite(long id) {
+        Favorite favorite = findById(id);
+        favoriteRepository.delete(favorite);
+    }
+
+    private Favorite findById(long id) {
+        return favoriteRepository.findById(id).orElseThrow(() -> new NotFoundException("조회되는 회원이 없습니다."));
     }
 }

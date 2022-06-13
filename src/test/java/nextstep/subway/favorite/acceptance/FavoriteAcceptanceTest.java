@@ -2,6 +2,7 @@ package nextstep.subway.favorite.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthRestAssured.로그인_되어_있음;
 import static nextstep.subway.favorite.acceptance.FavoriteRestAssured.즐겨찾기_목록_조회_요청;
+import static nextstep.subway.favorite.acceptance.FavoriteRestAssured.즐겨찾기_삭제_요청;
 import static nextstep.subway.favorite.acceptance.FavoriteRestAssured.즐겨찾기_생성을_요청;
 import static nextstep.subway.line.acceptance.LineRestAssured.지하철_노선_등록되어_있음;
 import static nextstep.subway.member.MemberRestAssured.회원_생성을_요청;
@@ -61,6 +62,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자토큰);
         // then
         즐겨찾기_목록_조회됨(findResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createResponse, 사용자토큰);
+        // then
+        즐겨찾기_삭제됨(deleteResponse);
     }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
@@ -69,5 +75,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
