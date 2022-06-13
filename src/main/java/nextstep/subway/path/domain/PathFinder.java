@@ -13,24 +13,25 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.http.HttpStatus;
 
 public class PathFinder {
-    private static final WeightedMultigraph<Long, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
+    private WeightedMultigraph<Long, SectionEdge> graph;
 
     public PathFinder(List<Line> lines) {
-        lines.forEach(PathFinder::registerPath);
+        graph = new WeightedMultigraph<>(SectionEdge.class);
+        lines.forEach(this::registerPath);
     }
 
-    private static void registerPath(Line line) {
+    private void registerPath(Line line) {
         registerEdges(line.getStations());
         registerEdgeWith(line.getSections());
     }
 
-    private static void registerEdges(List<Station> stations) {
+    private void registerEdges(List<Station> stations) {
         for (Station station : stations) {
             graph.addVertex(station.getId());
         }
     }
 
-    public static void registerEdgeWith(List<Section> sections) {
+    public void registerEdgeWith(List<Section> sections) {
         for (Section section : sections) {
             SectionEdge edge = graph.addEdge(section.getUpStationId(), section.getDownStationId());
             edge.addSection(section);

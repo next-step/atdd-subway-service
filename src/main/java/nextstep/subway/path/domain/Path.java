@@ -1,8 +1,6 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 
 public class Path {
@@ -29,9 +27,11 @@ public class Path {
         return distance;
     }
 
-    public Set<Line> getLines() {
+    public int getMostExpensiveLineFare() {
         return edges.stream()
             .map(SectionEdge::getLine)
-            .collect(Collectors.toSet());
+            .mapToInt(Line::getAdditionalFare)
+            .max()
+            .orElse(0);
     }
 }
