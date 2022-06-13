@@ -1,6 +1,5 @@
 package nextstep.subway.favorite;
 
-import static nextstep.subway.utils.AuthMemberApiHelper.토큰을통해_내정보받기;
 import static nextstep.subway.utils.FavoriteApiHelper.즐겨찾기_목록조회요청;
 import static nextstep.subway.utils.FavoriteApiHelper.즐겨찾기_삭제요청;
 import static nextstep.subway.utils.FavoriteApiHelper.즐겨찾기_생성요청;
@@ -12,7 +11,6 @@ import static org.mockito.Mockito.when;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Optional;
 import nextstep.subway.AcceptanceTest;
@@ -24,12 +22,10 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -81,7 +77,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         Member 내정보 = new Member("test@test.com", "testPw", 32);
         내정보_ID_설정하기(1L, 내정보);
 
-        when(authService.findMemberByToken(토큰)).thenReturn(new LoginMember(1L, 내정보.getEmail(), 내정보.getAge()));
+        when(authService.findMemberByToken(토큰)).thenReturn(
+            new LoginMember(1L, 내정보.getEmail(), 내정보.getAge()));
         when(memberRepository.findById(1L)).thenReturn(Optional.of(내정보));
         when(memberRepository.findByEmail(내정보.getEmail())).thenReturn(Optional.of(내정보));
         when(stationRepository.findById(1L)).thenReturn(Optional.of(교대역));
@@ -110,7 +107,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *     Then 즐겨찾기 삭제됨
     */
     @Test
-    public void 즐겨찾기를_관리한다(){
+    public void 즐겨찾기를_관리한다() {
         //when(즐겨찾기 생성요청)
         ExtractableResponse<Response> 즐겨찾기_생성요청_response_1 = 즐겨찾기_생성요청(토큰, "1", "4");
         ExtractableResponse<Response> 즐겨찾기_생성요청_response_2 = 즐겨찾기_생성요청(토큰, "2", "4");
@@ -128,8 +125,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //then
         즐겨찾기_삭제됨(즐겨찾기_삭제요청_response);
     }
-
-
 
 
     private void 내정보_ID_설정하기(Long id, Member member)
