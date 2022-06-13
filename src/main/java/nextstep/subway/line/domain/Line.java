@@ -63,6 +63,10 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
+    public void addSection(Station upStation, Station downStation, int distance) {
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
     @Override
     public boolean equals(Object o) {
         if(this == o) {

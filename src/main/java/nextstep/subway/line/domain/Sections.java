@@ -24,7 +24,32 @@ public class Sections {
     }
 
     public void add(Section section) {
-        sections.add(section);
+        List<Station> stations = getStations();
+        Station upStation = section.getUpStation();
+        Station downStation = section.getDownStation();
+
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it.equals(upStation));
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it.equals(downStation));
+
+        validateDuplication(isUpStationExisted, isDownStationExisted);
+        validateSection(stations, upStation, downStation);
+
+        if(stations.isEmpty()) {
+            addSection(section, upStation, downStation);
+            return;
+        }
+
+        if(isUpStationExisted) {
+            updateSectionAsUpStation(section, upStation, downStation);
+            addSection(section, upStation, downStation);
+            return;
+        }
+
+        if(isDownStationExisted) {
+            updateSectionAsDownStation(section, upStation, downStation);
+            addSection(section, upStation, downStation);
+            return;
+        }
     }
 
     public List<Section> getSections() {
@@ -73,5 +98,33 @@ public class Sections {
         return sections.stream()
             .filter(it -> it.isEqualToDownStation(station))
             .findFirst();
+    }
+
+    private void validateSection(List<Station> stations, Station upStation, Station downStation) {
+        if(!stations.isEmpty()
+            && stations.stream().noneMatch(it -> it.equals(upStation))
+            && stations.stream().noneMatch(it -> it.equals(downStation))) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void validateDuplication(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if(isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private void addSection(Section section, Station upStation, Station downStation) {
+        sections.add(new Section(section.getLine(), upStation, downStation, section.getDistance()));
+    }
+
+    private void updateSectionAsUpStation(Section section, Station upStation, Station downStation) {
+        Optional<Section> stationAsUpStation = findStationAsUpStation(upStation);
+        stationAsUpStation.ifPresent(it -> it.updateUpStation(downStation, section.getDistance()));
+    }
+
+    private void updateSectionAsDownStation(Section section, Station upStation, Station downStation) {
+        Optional<Section> stationAsDownStation = findStationAsDownStation(downStation);
+        stationAsDownStation.ifPresent(it -> it.updateDownStation(upStation, section.getDistance()));
     }
 }
