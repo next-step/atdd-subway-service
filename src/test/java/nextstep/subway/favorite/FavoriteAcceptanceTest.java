@@ -1,27 +1,26 @@
 package nextstep.subway.favorite;
 
+import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static nextstep.subway.utils.FavoriteApiHelper.즐겨찾기_목록조회요청;
 import static nextstep.subway.utils.FavoriteApiHelper.즐겨찾기_삭제요청;
 import static nextstep.subway.utils.FavoriteApiHelper.즐겨찾기_생성요청;
 import static nextstep.subway.utils.FavoriteAssertionHelper.즐겨찾기_목록조회_결과확인;
 import static nextstep.subway.utils.FavoriteAssertionHelper.즐겨찾기_삭제됨;
 import static nextstep.subway.utils.FavoriteAssertionHelper.즐겨찾기_생성됨;
-import static nextstep.subway.utils.ReflectionHelper.내정보_ID_설정하기;
+import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_등록되어_있음;
+import static nextstep.subway.utils.LineSectionApiHelper.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.utils.MemberApiHelper.회원_생성을_요청;
 import static org.mockito.Mockito.when;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.Arrays;
-import java.util.Optional;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.application.AuthService;
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.dto.LineRequest;
+import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
-import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,24 +31,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @MockBean
     AuthService authService;
-    @MockBean
-    MemberRepository memberRepository;
 
-    @MockBean
-    StationRepository stationRepository;
-
-    @MockBean
-    LineRepository lineRepository;
-
-    LoginMember 내정보;
-    private Line 이호선;
-    private Line 신분당선;
-    private Line 삼호선;
-    Station 강남역;
-    Station 교대역;
-    Station 남부터미널역;
-    Station 양재역;
-    String 토큰;
+    private LoginMember 내정보;
+    private LineResponse 이호선;
+    private LineResponse 신분당선;
+    private LineResponse 삼호선;
+    private StationResponse 강남역;
+    private StationResponse 교대역;
+    private StationResponse 남부터미널역;
+    private StationResponse 양재역;
+    private String 토큰;
 
     /**
      *
@@ -62,29 +53,31 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      */
     @BeforeEach
     public void init() throws NoSuchFieldException, IllegalAccessException {
-        강남역 = new Station("강남역");
-        교대역 = new Station("교대역");
-        남부터미널역 = new Station("남부터미널역");
-        양재역 = new Station("양재역");
+        // TODO: 2022/06/13 질문 : mock을 사용하니, 실제 테스트 대상 객체를 저장시 외래키 에러 발생..
+        강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
+        남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
 
-        이호선 = new Line("이호선", "녹색", 강남역, 교대역, 10);
-        신분당선 = new Line("신분당선", "빨강색", 강남역, 양재역, 9);
-        삼호선 = new Line("삼호선", "주황색", 남부터미널역, 양재역, 8);
-        삼호선.addStation(교대역, 남부터미널역, 7);
+        LineRequest 이호선_저장요청 = new LineRequest("이호선", "녹색", 강남역.getId(), 교대역.getId(), 10);
+        LineRequest 신분당선_저장요청 = new LineRequest("신분당선", "빨강색", 강남역.getId(), 양재역.getId(), 9);
+        LineRequest 삼호선_저장요청 = new LineRequest("삼호선", "주황색", 남부터미널역.getId(), 양재역.getId(), 8);
+
+        LineResponse 이호선 = 지하철_노선_등록되어_있음(이호선_저장요청).as(LineResponse.class);
+        LineResponse 신분당선 = 지하철_노선_등록되어_있음(신분당선_저장요청).as(LineResponse.class);
+        LineResponse 삼호선 = 지하철_노선_등록되어_있음(삼호선_저장요청).as(LineResponse.class);
+
+        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 7);
 
         토큰 = "token";
 
         Member 내정보 = new Member("test@test.com", "testPw", 32);
-        내정보_ID_설정하기(1L, 내정보);
+
+        String 내정보_ID = 회원_생성을_요청("test@test.com", "testPw", 32).response().getHeader("Location")
+            .split("/")[2];
 
         when(authService.findMemberByToken(토큰)).thenReturn(
-            new LoginMember(1L, 내정보.getEmail(), 내정보.getAge()));
-        when(memberRepository.findById(1L)).thenReturn(Optional.of(내정보));
-        when(memberRepository.findByEmail(내정보.getEmail())).thenReturn(Optional.of(내정보));
-        when(stationRepository.findById(1L)).thenReturn(Optional.of(교대역));
-        when(stationRepository.findById(2L)).thenReturn(Optional.of(남부터미널역));
-        when(stationRepository.findById(4L)).thenReturn(Optional.of(양재역));
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(이호선, 신분당선, 삼호선));
+            new LoginMember(Long.parseLong(내정보_ID), 내정보.getEmail(), 내정보.getAge()));
     }
 
 
@@ -109,8 +102,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     public void 즐겨찾기를_관리한다() {
         //when(즐겨찾기 생성요청)
-        ExtractableResponse<Response> 즐겨찾기_생성요청_response_1 = 즐겨찾기_생성요청(토큰, 1L, 4L);
-        ExtractableResponse<Response> 즐겨찾기_생성요청_response_2 = 즐겨찾기_생성요청(토큰, 2L, 4L);
+        ExtractableResponse<Response> 즐겨찾기_생성요청_response_1 = 즐겨찾기_생성요청(토큰, 강남역.getId(),
+            남부터미널역.getId());
+        ExtractableResponse<Response> 즐겨찾기_생성요청_response_2 = 즐겨찾기_생성요청(토큰, 교대역.getId(),
+            남부터미널역.getId());
         //then
         즐겨찾기_생성됨(즐겨찾기_생성요청_response_1);
         즐겨찾기_생성됨(즐겨찾기_생성요청_response_2);
@@ -125,9 +120,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //then
         즐겨찾기_삭제됨(즐겨찾기_삭제요청_response);
     }
-
-
-
 
 
 }
