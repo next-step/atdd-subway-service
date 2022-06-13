@@ -247,5 +247,8 @@ fun RequestSpecification.즐겨찾기_생성_요청(
   - [ ] 메소드 통합 가능여부 확인
 - [x] 토큰 인증 기능 구현
   
-- [ ] 즐겨찾기 기능 인수 테스트 작성
-- [ ] 즐겨찾기 기능 구현 
+- [x] 즐겨찾기 기능 인수 테스트 작성
+- [ ] 즐겨찾기 기능 구현
+  - [ ] FavoriteController 구현
+  - [ ] FavoriteService 구현
+  - [ ] FavoriteRequest, FavoriteResponse, FavoritesResponse 구현
