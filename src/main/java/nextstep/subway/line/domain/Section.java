@@ -65,11 +65,11 @@ public class Section {
     public void changeStation(Section section) {
         if (upStation.equals(section.upStation)) {
             this.upStation = section.downStation;
-            this.distance.subtract(section.distance);
+            this.distance = this.distance.subtract(section.distance);
         }
         if (downStation.equals(section.downStation)) {
             this.downStation = section.upStation;
-            this.distance.subtract(section.distance);
+            this.distance = this.distance.subtract(section.distance);
         }
     }
 
