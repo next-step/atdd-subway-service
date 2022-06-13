@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.exception.SectionManagerException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -36,8 +37,8 @@ public class SectionsManager {
         stations.add(downStation);
 
         for (int i = 0; i < sections.size(); i++) {
-            Section section = getSectionByUpStation(downStation)
-                .orElseThrow(RuntimeException::new);
+            Section section = getSectionByUpStation(downStation).orElseThrow(
+                () -> new SectionManagerException("구간을 찾을수 없습니다"));
             stations.add(section.getDownStation());
             downStation = section.getDownStation();
         }
@@ -46,11 +47,15 @@ public class SectionsManager {
 
 
     public Optional<Section> getSectionByUpStation(Station station) {
-        return this.sections.stream().filter(it -> it.getUpStation().equals(station)).findFirst();
+        return this.sections.stream()
+            .filter(it -> it.getUpStation().equals(station))
+            .findFirst();
     }
 
     public Optional<Section> getSectionByDownStation(Station station) {
-        return this.sections.stream().filter(it -> it.getDownStation().equals(station)).findFirst();
+        return this.sections.stream()
+            .filter(it -> it.getDownStation().equals(station))
+            .findFirst();
     }
 
     public Section removeSectionWithStation(Station stationForRemove) {
@@ -74,19 +79,19 @@ public class SectionsManager {
         if (upSection.isPresent()) {
             return upSection.get();
         }
-        throw new RuntimeException();
+        throw new SectionManagerException("구간을 삭제할수 없습니다");
     }
 
     private void validateNoSectionForRemove(Optional<Section> downSection,
         Optional<Section> upSection) {
         if (!downSection.isPresent() && !upSection.isPresent()) {
-            throw new RuntimeException();
+            throw new SectionManagerException("삭제할 구간이 없습니다");
         }
     }
 
     private void validateOnlyOneSectionExist() {
         if (sections.size() == 1) {
-            throw new RuntimeException();
+            throw new SectionManagerException("구간을 삭제하려면 구간이 최고 2개이상 있어야합니다");
         }
     }
 
@@ -130,14 +135,14 @@ public class SectionsManager {
     private void validateNoBaseStation(List<Station> stations, boolean isUpStationExisted,
         boolean isDownStationExisted) {
         if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new SectionManagerException("등록할수 없는 구간입니다");
         }
     }
 
     private void validateDuplicateSection(boolean isUpStationExisted,
         boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new SectionManagerException("이미 등록된 구간입니다");
         }
     }
 

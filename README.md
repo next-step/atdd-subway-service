@@ -72,6 +72,15 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
           - 삭제할 Station 앞 / 뒤 Section 합치는 기능 구현 
         - Section
           - 각 Section 합치는 기능 구현 
-        
+
+- step2
+  - 다익스트라 알고리즘을 사용하여 정거장 간 최단 거리, 정거장 추출 
+    - 다익스트라 외부 라이브러리 사용 테스트 코드 작성
+    - 다익스트라를 통한 최단거리 추출 인수테스트 작성 
+      - 이때 Controller, Service껍데기만 작성 후 Mock, dto 정의하여 인수테스트 성공시키기 부터 시작
+      - Outside in방식으로 테스트코드 작성 
+        - 서비스 로직 테스트시, 사용되는 도메인은 Mock객체를 활용하여 테스트
+        - Happy case에 대한 부분만 구현
+  - 각 RunTimeException을 알맞은 Exception으로 변경 및 Advice생성
 
       
