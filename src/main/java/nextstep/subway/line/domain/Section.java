@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import static nextstep.subway.exception.domain.SubwayExceptionMessage.OVER_THE_DISTANCE;
 
 import nextstep.subway.exception.domain.SubwayException;
+import nextstep.subway.generic.domain.Distance;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -25,7 +26,8 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Column(name = "distance")
+    private Distance distance;
 
     public Section() {
     }
@@ -34,7 +36,7 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = Distance.valueOf(distance);
     }
 
     public Long getId() {
@@ -53,24 +55,26 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public void updateUpStation(Station station, int newDistanceValue) {
+        final Distance newDistance = Distance.valueOf(newDistanceValue);
+        if (this.distance.isLessThanOrEqualsTo(newDistance)) {
             throw new SubwayException(OVER_THE_DISTANCE);
         }
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance = distance.minus(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public void updateDownStation(Station station, int newDistanceValue) {
+        final Distance newDistance = Distance.valueOf(newDistanceValue);
+        if (this.distance.isLessThanOrEqualsTo(newDistance)) {
             throw new SubwayException(OVER_THE_DISTANCE);
         }
         this.downStation = station;
-        this.distance -= newDistance;
+        this.distance = distance.minus(newDistance);
     }
 
     public boolean hasUpStation(final Station upStation) {
