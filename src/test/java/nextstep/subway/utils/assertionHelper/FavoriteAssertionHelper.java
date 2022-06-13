@@ -24,4 +24,9 @@ public class FavoriteAssertionHelper {
         Assertions.assertThat(즐겨찾기_삭제요청_response.statusCode())
             .isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    public static void 즐겨찾기_생성_불가(ExtractableResponse<Response> 즐겨찾기_생성요청_response) {
+        Assertions.assertThat(즐겨찾기_생성요청_response.statusCode())
+            .isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }
