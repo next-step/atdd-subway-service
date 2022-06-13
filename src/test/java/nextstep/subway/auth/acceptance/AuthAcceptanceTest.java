@@ -1,6 +1,6 @@
 package nextstep.subway.auth.acceptance;
 
-import static nextstep.subway.member.MemberAcceptanceTest.내정보_조회;
+import static nextstep.subway.behaviors.MemberBehaviors.내정보_조회;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;

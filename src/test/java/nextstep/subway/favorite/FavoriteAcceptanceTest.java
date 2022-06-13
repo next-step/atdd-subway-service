@@ -1,26 +1,28 @@
 package nextstep.subway.favorite;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어있음;
-import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
-import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static nextstep.subway.behaviors.MemberBehaviors.회원_생성을_요청;
+import static nextstep.subway.behaviors.SubwayBehaviors.즐겨찾기_목록_조회_요청;
+import static nextstep.subway.behaviors.SubwayBehaviors.즐겨찾기_목록_조회됨;
+import static nextstep.subway.behaviors.SubwayBehaviors.즐겨찾기_삭제_요청;
+import static nextstep.subway.behaviors.SubwayBehaviors.즐겨찾기_삭제됨;
+import static nextstep.subway.behaviors.SubwayBehaviors.즐겨찾기_생성_요청;
+import static nextstep.subway.behaviors.SubwayBehaviors.즐겨찾기_생성됨;
+import static nextstep.subway.behaviors.SubwayBehaviors.지하철_노선_등록되어_있음;
+import static nextstep.subway.behaviors.SubwayBehaviors.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.behaviors.SubwayBehaviors.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.favorite.dto.FavoriteCreateRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -33,47 +35,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 역삼역;
     private StationResponse 잠실역;
     private LineResponse 이호선;
-
-    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String token, String sourceStationId,
-                                                           String targetStationId) {
-        FavoriteCreateRequest createRequest = new FavoriteCreateRequest(sourceStationId, targetStationId);
-        return RestAssured
-                .given().log().all().contentType(ContentType.JSON)
-                .auth().oauth2(token)
-                .when().body(createRequest).post("/favorites")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String token) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(token)
-                .when().get("/favorites")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String token, FavoriteResponse favoriteResponse) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(token)
-                .when().delete("/favorites/" + favoriteResponse.getId())
-                .then().log().all()
-                .extract();
-    }
-
-    public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
 
     @BeforeEach
     public void setUp() {
