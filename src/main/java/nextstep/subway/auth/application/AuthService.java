@@ -39,6 +39,7 @@ public class AuthService {
     }
 
     private Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> new AuthorizationException("이메일로 등록된 계정을 찾을 수 없습니다."));
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new AuthorizationException("이메일로 등록된 계정을 찾을 수 없습니다."));
     }
 }
