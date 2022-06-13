@@ -34,7 +34,7 @@ public class LineService {
 
         List<StationResponse> stations = persistLine.getStations()
             .stream()
-            .map(station -> StationResponse.of(station))
+            .map(StationResponse::of)
             .collect(Collectors.toList());
         return LineResponse.of(persistLine, stations);
     }
@@ -45,7 +45,7 @@ public class LineService {
             .map(line -> {
                 List<StationResponse> stations = line.getStations()
                     .stream()
-                    .map(it -> StationResponse.of(it))
+                    .map(StationResponse::of)
                     .collect(Collectors.toList());
                 return LineResponse.of(line, stations);
             })
@@ -66,7 +66,7 @@ public class LineService {
         Line persistLine = findById(id);
         List<StationResponse> stations = persistLine.getStations()
             .stream()
-            .map(it -> StationResponse.of(it))
+            .map(StationResponse::of)
             .collect(Collectors.toList());
         return LineResponse.of(persistLine, stations);
     }
