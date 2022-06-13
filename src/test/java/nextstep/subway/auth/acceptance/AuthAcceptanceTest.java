@@ -97,6 +97,21 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         본인_정보_수정_성공(response2);
     }
 
+    @DisplayName("유효 토큰으로 회원(본인) 정보를 삭제한다.")
+    @Test
+    void deleteMemberOfMineWithValidToken() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> response = 로그인_요청(new TokenRequest(EMAIL, PASSWORD));
+        TokenResponse tokenResponse = 로그인_성공(response);
+
+        // when
+        ExtractableResponse<Response> response2 = 본인_정보_삭제(tokenResponse);
+
+        // then
+        본인_정보_삭제_성공(response2);
+    }
+
     public static ExtractableResponse<Response> 로그인_요청(TokenRequest params) {
         return RestAssured
                 .given().log().all()
@@ -143,5 +158,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static void 본인_정보_수정_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static ExtractableResponse<Response> 본인_정보_삭제(TokenResponse tokenResponse) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/members/me")
+                .then().log().all().extract();
+    }
+
+    public static void 본인_정보_삭제_성공(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
