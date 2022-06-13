@@ -7,20 +7,21 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "favorite", indexes = @Index(name = "idx_member_source_target", columnList = "member_id, source_station_id, target_station_id"))
 public class Favorite extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "source_station_id")
     private Station source;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "target_station_id")
     private Station target;
 
