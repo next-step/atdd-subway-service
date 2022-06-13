@@ -58,7 +58,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(createResponse);
 
         // when
-        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(createResponse, 사용자토큰);
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자토큰);
         // then
         즐겨찾기_목록_조회됨(findResponse);
     }
@@ -70,5 +70,4 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
-
 }
