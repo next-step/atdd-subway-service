@@ -28,6 +28,7 @@ public class Section {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
+        checkDistance(distance);
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -55,18 +56,27 @@ public class Section {
     }
 
     public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+        checkUpdateDistance(newDistance);
         this.upStation = station;
         this.distance -= newDistance;
     }
 
     public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+        checkUpdateDistance(newDistance);
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    private void checkDistance(int distance) {
+        if (distance < 1) {
+            throw new IllegalArgumentException("역과 역 사이의 거리는 1 이상 이어야 합니다.");
+        }
+    }
+
+    private void checkUpdateDistance(int newDistance) {
+        checkDistance(newDistance);
+        if (this.distance <= newDistance) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
     }
 }
