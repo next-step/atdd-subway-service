@@ -22,7 +22,7 @@ public class Favorite extends BaseEntity {
     private Station source;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "source_station_id")
+    @JoinColumn(name = "target_station_id")
     private Station target;
 
     protected Favorite() {
