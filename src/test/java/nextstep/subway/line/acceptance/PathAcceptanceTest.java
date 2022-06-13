@@ -94,6 +94,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회_실패됨(response);
     }
 
+    /**
+     * when 존재하지 않는 경로를 조회 할 경우
+     * <p>
+     * then 최단경로를 조회할 수 없다.
+     */
+
+    @DisplayName("존재하지 않는 경로를 조회 할 경우, 최단경로를 조회 할 수 없다")
+    @Test
+    void findNotExistedPath() {
+        // when
+        StationResponse 없는역 = StationAcceptanceTest.지하철역_등록되어_있음("없는역").as(StationResponse.class);
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역, 없는역);
+
+        // then
+        최단_경로_조회_실패됨(response);
+    }
+
     public ExtractableResponse<Response> 지하철_경로_조회_요청(StationResponse 출발역, StationResponse 도착역) {
         return RestAssured
                 .given().log().all()
