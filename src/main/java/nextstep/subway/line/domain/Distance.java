@@ -1,9 +1,14 @@
 package nextstep.subway.line.domain;
 
-public class Distance  implements Comparable<Distance> {
+import javax.persistence.Embeddable;
+
+@Embeddable
+public class Distance implements Comparable<Distance> {
     private static final int ZERO_VALUE = 0;
 
     private int distance;
+
+    protected Distance() {}
 
     private Distance(int distance) {
         this.distance = distance;

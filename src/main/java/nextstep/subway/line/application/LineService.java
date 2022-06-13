@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -32,7 +33,7 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(Line.of(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(Line.of(request.getName(), request.getColor(), upStation, downStation, Distance.from(request.getDistance())));
         return LineResponse.of(persistLine);
     }
 
@@ -65,7 +66,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        line.addSection(Section.of(line, upStation, downStation, request.getDistance()));
+        line.addSection(Section.of(line, upStation, downStation, Distance.from(request.getDistance())));
     }
 
     public void removeLineStation(Long lineId, Long stationId) {

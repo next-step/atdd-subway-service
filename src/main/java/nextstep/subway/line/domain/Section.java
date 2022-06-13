@@ -24,19 +24,20 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
 
-    private Section(Line line, Station upStation, Station downStation, int distance) {
+    private Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    public static Section of(Line line, Station upStation, Station downStation, int distance) {
+    public static Section of(Line line, Station upStation, Station downStation, Distance distance) {
         return new Section(line, upStation, downStation, distance);
     }
 
@@ -56,24 +57,8 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
-    }
-
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
     }
 
     public List<Station> findStations() {
@@ -100,14 +85,11 @@ public class Section {
     }
 
     private void updateDistance(Section newSection) {
-        if (this.distance <= newSection.distance) {
-            throw new IllegalArgumentException("기존 역 사이 길이보다 크거나 같으면 등록을 할 수 없습니다.");
-        }
-        this.distance -= newSection.distance;
+        distance.subtract(newSection.distance);
     }
 
     public Section rearrange(Section downSection) {
-        this.distance += downSection.distance;
-        return new Section(this.line, this.upStation, downSection.downStation, this.distance);
+        distance.add(downSection.distance);
+        return Section.of(this.line, this.upStation, downSection.downStation, this.distance);
     }
 }

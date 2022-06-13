@@ -16,7 +16,7 @@ public class LineTest {
         Station upStation = new Station("공덕역");
         Station downStation = new Station("마포역");
         line = new Line("오호선", "purple");
-        line.addSection(Section.of(line, upStation, downStation, 10));
+        line.addSection(Section.of(line, upStation, downStation, Distance.from(10)));
     }
 
     @Test
@@ -25,7 +25,7 @@ public class LineTest {
         Station upStation = new Station("공덕역");
         Station downStation = new Station("여의나루역");
 
-        line.addSection(Section.of(line, upStation, downStation, 5));
+        line.addSection(Section.of(line, upStation, downStation, Distance.from(5)));
         List<Section> sections = line.getSections();
 
         assertThat(sections.size()).isEqualTo(2);
@@ -36,7 +36,7 @@ public class LineTest {
     void removeSection() {
         Station upStation = new Station("마포역");
         Station downStation = new Station("여의나루역");
-        line.addSection(Section.of(line, upStation, downStation, 5));
+        line.addSection(Section.of(line, upStation, downStation, Distance.from(5)));
 
         line.remove(upStation);
         List<Section> sections = line.getSections();
