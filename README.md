@@ -56,9 +56,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ## Step1 인수 테스트 기반 리팩토링
 1. LineService 리팩터링
-    [ ] LineService의 비즈니스 로직을 도메인으로 옮기기
-    [ ] 한번에 많은 부분을 고치려 하지 말고 나눠서 부분부분 리팩터링하기
-    [ ] 전체 기능은 인수 테스트로 보호한 뒤 세부 기능을 TDD로 리팩터링하기
+    [v] LineService의 비즈니스 로직을 도메인으로 옮기기
+    [v] 한번에 많은 부분을 고치려 하지 말고 나눠서 부분부분 리팩터링하기
+    [v] 전체 기능은 인수 테스트로 보호한 뒤 세부 기능을 TDD로 리팩터링하기
 
     1) Domain으로 옮길 로직을 찾기
     스프링 빈을 사용하는 객체와 의존하는 로직을 제외하고는 도메인으로 옮길 예정
