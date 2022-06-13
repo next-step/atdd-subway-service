@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import static nextstep.subway.path.application.PathServiceTest.getLines;
 import static nextstep.subway.path.application.PathServiceTest.getStation;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("최단 경로 찾기")
@@ -38,5 +39,13 @@ class PathFinderTest {
                 () -> assertThat(result.getVertexList()).hasSize(4),
                 () -> assertThat(result.getWeight()).isEqualTo(9)
         );
+    }
+    
+    @Test
+    void 출발역과_도착역이_같을_경우_최단경로를_구할_수_없다() {
+        // when & then
+        assertThatThrownBy(() ->
+            pathFinder.findShortestPath(lines, upStation, upStation)
+        ).isInstanceOf(IllegalArgumentException.class);
     }
 }
