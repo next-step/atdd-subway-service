@@ -71,7 +71,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         //then
         응답결과_확인(response, HttpStatus.OK);
-        List<StationResponse> stations = Arrays.asList(교대역, 남부터미널역, 양재역)
+        List<StationResponse> stations = Arrays.asList(교대역, 남부터미널역, 양재역);
         경유지_확인(response, stations);
         경유거리_확인(response, 5);
     }
