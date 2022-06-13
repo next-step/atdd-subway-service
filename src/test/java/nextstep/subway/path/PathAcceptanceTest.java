@@ -27,10 +27,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 사호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 사당역;
+    private StationResponse 이수역;
+    private StationResponse 동작역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -47,10 +51,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        사당역 = StationAcceptanceTest.지하철역_등록되어_있음("사당역").as(StationResponse.class);
+        이수역 = StationAcceptanceTest.지하철역_등록되어_있음("이수역").as(StationResponse.class);
+        동작역 = StationAcceptanceTest.지하철역_등록되어_있음("동작역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 4);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-green-500", 교대역, 강남역, 10);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-orange-400", 교대역, 양재역, 5);
+        사호선 = 지하철_노선_등록되어_있음("사호선", "bg-blue-300", 사당역, 이수역, 5);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -83,6 +91,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void 출발역과_도착역이_연결되어_있지_않으면_조회할_수_없다() {
+        // when
+        ExtractableResponse<Response> 최단_경로_조회_응답 = 최단_경로_조회_요청(강남역, 사당역);
+
+        // then
+        최단_경로_조회_실패(최단_경로_조회_응답);
     }
 
     private void 출발역이_존재하지_않으면_조회할_수_없다() {
