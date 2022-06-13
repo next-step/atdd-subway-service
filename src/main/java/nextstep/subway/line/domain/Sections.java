@@ -14,6 +14,10 @@ public class Sections {
     public Sections() {
     }
 
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+    }
+
     //add
     public void addSection(Section section) {
         sections.add(section);
@@ -38,10 +42,26 @@ public class Sections {
         }
     }
 
+    //remove
+    public void removeStation(Station station) {
+        validateRemoveSection();
+        Optional<Section> upLineSection = getUpLineSection(station);
+        Optional<Section> downLineSection = getDownLineSection(station);
+
+        if (upLineSection.isPresent() && downLineSection.isPresent()) {
+            mergeSection(upLineSection.get(), downLineSection.get());
+        }
+        removeSection(upLineSection);
+        removeSection(downLineSection);
+    }
+
+    private void removeSection(Optional<Section> section) {
+        section.ifPresent(it -> sections.remove(it));
+    }
+
     //get
     public List<Section> getSections() {
-        //return Collections.unmodifiableList(sections);
-        return sections;
+        return Collections.unmodifiableList(sections);
     }
 
     public List<Station> getStations() {
@@ -57,6 +77,18 @@ public class Sections {
         }
 
         return stations;
+    }
+
+    private Optional<Section> getUpLineSection(Station station) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+    }
+
+    private Optional<Section> getDownLineSection(Station station) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
     }
 
     private Station getUpStation(Station station) {
@@ -88,6 +120,14 @@ public class Sections {
     }
 
     //update
+    private void mergeSection(Section upLineStation, Section downLineStation) {
+        Line line = upLineStation.getLine();
+        Station newUpStation = downLineStation.getUpStation();
+        Station newDownStation = upLineStation.getDownStation();
+        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+        addSection(new Section(line, newUpStation, newDownStation, newDistance));
+    }
+
     private void updateUpStation(Section section) {
         sections.stream()
                 .filter(it -> it.getUpStation() == section.getUpStation())
@@ -122,6 +162,12 @@ public class Sections {
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void validateRemoveSection() {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
         }
     }
 }
