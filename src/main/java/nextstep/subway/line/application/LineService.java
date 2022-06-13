@@ -9,7 +9,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,13 +34,12 @@ public class LineService {
         final Station upStation = stationService.findById(request.getUpStationId());
         final Station downStation = stationService.findById(request.getDownStationId());
         final Section savedSection = sectionRepository.save(new Section(request.toLine(), upStation, downStation, request.getDistance()));
-        final Line savedLine = savedSection.getLine();
-        return LineResponse.of(savedLine, stationResponsesBy(savedLine.getStations()));
+        return LineResponse.of(savedSection.getLine());
     }
 
     public List<LineResponse> findLines() {
         return lineRepository.findAll().stream()
-                .map(line -> LineResponse.of(line, stationResponsesBy(line.getStations())))
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -51,11 +49,7 @@ public class LineService {
 
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        List<StationResponse> stations = persistLine.getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(findLineById(id));
     }
 
     @Transactional
@@ -74,18 +68,12 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        Section section = new Section(findLineById(lineId), upStation, downStation, request.getDistance());
-        line.addSection(section);
+        line.addSection(new Section(findLineById(lineId), upStation, downStation, request.getDistance()));
     }
 
     @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
-        line.removeSection(station);
-    }
-
-    private List<StationResponse> stationResponsesBy(final List<Station> stations) {
-        return stations.stream().map(StationResponse::of).collect(Collectors.toList());
+        line.removeSection(stationService.findStationById(stationId));
     }
 }
