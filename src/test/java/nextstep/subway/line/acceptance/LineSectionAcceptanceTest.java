@@ -113,15 +113,36 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+    @DisplayName("지하철 노선 구간 관련 기능을 확인한다")
+    @Test
+    void integration() {
+        //when
+        ExtractableResponse<Response> addResponse = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+        //then
+        지하철_노선에_지하철역_등록됨(addResponse);
+
+        //when
+        ExtractableResponse<Response> lineResponse = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        //then
+        지하철_노선에_지하철역_순서_정렬됨(lineResponse, Arrays.asList(강남역, 양재역, 광교역));
+
+        // when
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
+        //then
+        지하철_노선에_지하철역_제외됨(removeResponse);
+
+        //when
+        lineResponse = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        //then
+        지하철_노선에_지하철역_순서_정렬됨(lineResponse, Arrays.asList(양재역, 광교역));
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(
+            LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionRequest)
-                .when().post("/lines/{lineId}/sections", line.getId())
-                .then().log().all()
+        return RestAssured.given().log().all().contentType(MediaType.APPLICATION_JSON_VALUE).body(sectionRequest).when()
+                .post("/lines/{lineId}/sections", line.getId()).then().log().all()
                 .extract();
     }
 
