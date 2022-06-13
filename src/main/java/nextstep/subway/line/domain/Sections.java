@@ -6,11 +6,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
-    private static final int ONLY_ONE = 1;
+    private static final int MIN_SIZE = 1;
 
     protected Sections() {
     }
@@ -47,7 +46,7 @@ public class Sections {
         if (sections.isEmpty()) {
             return Optional.empty();
         }
-        if (sections.size() <= ONLY_ONE) {
+        if (sections.size() <= MIN_SIZE) {
             return this.sections.stream().map(Section::getUpStation).findAny();
         }
 
