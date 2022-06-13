@@ -62,16 +62,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("지하철역 사이의 최단 경로를 조회한다.")
-    void getShortestPath() {
+    void findShortestPath() {
         PathResponse pathResponse = 최단_경로를_조회함(교대역, 양재역).as(PathResponse.class);
 
         assertThat(pathResponse.getStations()).containsExactly(교대역, 남부터미널역, 양재역);
-        assertThat(pathResponse.getDistance()).isEqualTo(8);
+        assertThat(pathResponse.getDistance()).isEqualTo(5);
     }
 
     @TestFactory
     @DisplayName("최단경로 조회의 예외케이스를 검증한다.")
-    Stream<DynamicTest> getShortestPath_fail() {
+    Stream<DynamicTest> findShortestPath_fail() {
         return Stream.of(
             dynamicTest("출발역과 도착역을 같은 역으로 조회할 경우", () -> 최단_경로_조회시_실패_검증(교대역, 교대역)),
             dynamicTest("출발역과 도착역이 연결이 되어 있지 않은 경우", () -> {
@@ -80,7 +80,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 최단_경로_조회시_실패_검증(교대역, 연결되지_않는_역);
             }),
             dynamicTest("존재하지 않은 출발역이나 도착역을 조회 할 경우", () -> {
-                StationResponse 존재하지_않는_역 = new StationResponse(10L, "존재하지 않는 역", LocalDateTime.now(),
+                StationResponse 존재하지_않는_역 = new StationResponse(-1L, "존재하지 않는 역", LocalDateTime.now(),
                     LocalDateTime.now());
                 최단_경로_조회시_실패_검증(교대역, 존재하지_않는_역);
             })
@@ -92,7 +92,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 최단_경로를_조회함(StationResponse sourceStation, StationResponse targetStation) {
-        return get("/paths/?source={sourceStationId}&target={targetStationId}", sourceStation.getId(), targetStation.getId());
+        return get("/paths?source={sourceStationId}&target={targetStationId}", sourceStation.getId(), targetStation.getId());
     }
 
 }
