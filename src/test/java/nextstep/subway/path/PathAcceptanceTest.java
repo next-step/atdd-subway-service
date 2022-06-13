@@ -75,6 +75,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void 출발역과_도착역이_같은_경우_조회할_수_없다() {
+        // when
+        ExtractableResponse<Response> 최단_경로_조회_응답 = 최단_경로_조회_요청(강남역, 강남역);
+
+        // then
+        최단_경로_조회_실패(최단_경로_조회_응답);
     }
 
     private void 출발역과_도착역이_연결되어_있지_않으면_조회할_수_없다() {
@@ -86,7 +91,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private void 도착역이_존재하지_않으면_조회할_수_없다() {
     }
 
-    public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse upStation, StationResponse downStation) {
+    private static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse upStation, StationResponse downStation) {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -95,8 +100,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 최단_경로_목록_응답됨(ExtractableResponse<Response> response) {
+    private static void 최단_경로_목록_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(9);
+    }
+
+    private static void 최단_경로_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
