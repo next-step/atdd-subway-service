@@ -1,5 +1,8 @@
 package nextstep.subway.line.application;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -11,12 +14,6 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -139,44 +136,4 @@ public class LineService {
         downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
 
-
-    public List<Station> getStations(Line line) {
-        if (line.getSections().isEmpty()) {
-            return Arrays.asList();
-        }
-
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation(line);
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = line.getSections().stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
-    }
-
-    private Station findUpStation(Line line) {
-        Station downStation = line.getSections().get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = line.getSections().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
-    }
 }
