@@ -48,4 +48,12 @@ class PathFinderTest {
             pathFinder.findShortestPath(lines, upStation, upStation)
         ).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void 노선에_지하철_역이_포함되지_않은_경우_최단경로를_구할_수_없다() {
+        // when & then
+        assertThatThrownBy(() ->
+                pathFinder.findShortestPath(lines, upStation, getStation(5L, "수진역"))
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
 }
