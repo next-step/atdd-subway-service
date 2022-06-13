@@ -112,8 +112,8 @@ public class Sections {
             sections.add(new Section(line, newUpStation, newDownStation, upDistance.plus(downDistance)));
         }
 
-        upLineStation.ifPresent(it -> line.getSections().remove(it));
-        downLineStation.ifPresent(it -> line.getSections().remove(it));
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
     }
 
     private Optional<Section> getDownLineStation(Station station) {
