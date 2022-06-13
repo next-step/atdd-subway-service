@@ -35,6 +35,10 @@ public class Favorite extends BaseEntity {
         this.target = target;
     }
 
+    public Member getMember() {
+        return member;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
