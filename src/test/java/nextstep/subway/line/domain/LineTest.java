@@ -73,7 +73,7 @@ class LineTest {
         Station 대림역 = new Station("대림");
         Station 신대방역 = new Station("신대방");
         Station 신림역 = new Station("신림");
-        Line 이호선 = Line.of("2호선", "blue", 대림역, 신림역, 5);
+        Line 이호선 = Line.of("2호선", "blue", 대림역, 신림역, 5, 0);
 
         Section 생성된_노선 = 이호선.createSection(대림역, 신대방역, 10);
 

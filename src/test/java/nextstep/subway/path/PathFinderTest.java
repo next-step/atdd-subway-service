@@ -33,11 +33,11 @@ class PathFinderTest {
         대림역 = new Station(1L, "대림");
         신대방역 = new Station(2L, "신대방");
         신도림역 = new Station(3L, "신도림");
-        노선 = Line.of("2호선", "red", 대림역, 신대방역, 10);
+        노선 = Line.of("2호선", "red", 대림역, 신대방역, 10, 0);
 
         부산역 = new Station(4L, "부산");
         대구역 = new Station(5L, "대구");
-        영남선 = Line.of("영남선", "blue", 부산역, 대구역, 15);
+        영남선 = Line.of("영남선", "blue", 부산역, 대구역, 15, 0);
         pathFinder = new PathFinder(Arrays.asList(노선, 영남선));
     }
 
