@@ -250,6 +250,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    public static void 내_정보_조회_실패(ExtractableResponse<Response> 내_정보_조회_요청_결과) {
+        assertThat(내_정보_조회_요청_결과.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     // TODO : 합칠 수 있으면 합치기
     private static String URI_생성(ExtractableResponse<Response> response, MemberType memberType) {
         if (memberType == MemberType.MINE) {

@@ -1,5 +1,7 @@
 package nextstep.subway.auth.acceptance;
 
+import static nextstep.subway.member.MemberAcceptanceTest.내_정보_조회_실패;
+import static nextstep.subway.member.MemberAcceptanceTest.내_정보_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
@@ -14,7 +16,6 @@ import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -86,11 +87,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("올바르지 않는 토큰으로 조회 할 수 없다")
     void myInfoWithWrongBearerAuth() {
         // when
+        TokenResponse 올바르지_않은_토큰 = new TokenResponse("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY");
+        ExtractableResponse<Response> 내_정보_조회_요청_결과 = 내_정보_조회_요청(올바르지_않은_토큰);
 
         // then
+        내_정보_조회_실패(내_정보_조회_요청_결과);
     }
 
-    private ExtractableResponse<Response> 로그인_요청(TokenRequest 로그인정보) {
+    public static ExtractableResponse<Response> 로그인_요청(TokenRequest 로그인정보) {
         return RestAssured.given().log().all()
                 .body(로그인정보)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -99,12 +103,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 로그인_요청_성공(ExtractableResponse<Response> 로그인_요청_결과) {
+    public static TokenResponse 로그인_요청_성공(ExtractableResponse<Response> 로그인_요청_결과) {
         TokenResponse 응답_토큰 = 로그인_요청_결과.as(TokenResponse.class);
         assertAll(
                 () -> assertThat(로그인_요청_결과.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(응답_토큰.getAccessToken()).isNotNull()
         );
+        return 응답_토큰;
     }
 
     private void 로그인_요청_실패(ExtractableResponse<Response> 로그인_요청_결과) {
