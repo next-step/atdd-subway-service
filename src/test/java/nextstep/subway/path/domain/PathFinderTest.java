@@ -56,4 +56,12 @@ class PathFinderTest {
                 pathFinder.findShortestPath(lines, upStation, getStation(5L, "수진역"))
         ).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void 출발역과_도착역이_연결되어_있지_않으면_최단경로를_구할_수_없다() {
+        // when & then
+        assertThatThrownBy(() ->
+                pathFinder.findShortestPath(lines, upStation, getStation(5L, "사당역"))
+        ).isInstanceOf(RuntimeException.class);
+    }
 }

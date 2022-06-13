@@ -43,14 +43,17 @@ public class PathServiceTest {
         Station 양재역 = getStation(2L, "양재역");
         Station 남부터미널역 = getStation(3L, "남부터미널역");
         Station 교대역 = getStation(4L, "교대역");
+        Station 사당역 = getStation(5L, "사당역");
+        Station 이수역 = getStation(6L, "이수역");
 
         Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, 4);
         Line 삼호선 = new Line("삼호선", "orange", 교대역, 남부터미널역, 3);
         Line 이호선 = new Line("이호선", "green", 교대역, 강남역, 10);
+        Line 사호선 = new Line("사호선", "blue", 사당역, 이수역, 10);
 
         삼호선.addSection(new Section(남부터미널역, 양재역, 2));
 
-        return Arrays.asList(신분당선, 삼호선, 이호선);
+        return Arrays.asList(신분당선, 삼호선, 이호선, 사호선);
     }
 
     public static Station getStation(long id, String name) {
