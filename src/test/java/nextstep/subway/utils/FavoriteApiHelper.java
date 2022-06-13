@@ -8,8 +8,8 @@ import org.springframework.http.MediaType;
 
 public class FavoriteApiHelper {
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성요청(String 토큰, String 경로_시작역_ID,
-        String 경로_종료역_ID) {
+    public static ExtractableResponse<Response> 즐겨찾기_생성요청(String 토큰, Long 경로_시작역_ID,
+        Long 경로_종료역_ID) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(경로_시작역_ID, 경로_종료역_ID);
         return RestAssured.given().log().all()
             .header("Authorization", "Bearer " + 토큰)

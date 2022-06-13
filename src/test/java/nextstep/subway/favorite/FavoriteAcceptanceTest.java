@@ -109,8 +109,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     public void 즐겨찾기를_관리한다() {
         //when(즐겨찾기 생성요청)
-        ExtractableResponse<Response> 즐겨찾기_생성요청_response_1 = 즐겨찾기_생성요청(토큰, "1", "4");
-        ExtractableResponse<Response> 즐겨찾기_생성요청_response_2 = 즐겨찾기_생성요청(토큰, "2", "4");
+        ExtractableResponse<Response> 즐겨찾기_생성요청_response_1 = 즐겨찾기_생성요청(토큰, 1L, 4L);
+        ExtractableResponse<Response> 즐겨찾기_생성요청_response_2 = 즐겨찾기_생성요청(토큰, 2L, 4L);
         //then
         즐겨찾기_생성됨(즐겨찾기_생성요청_response_1);
         즐겨찾기_생성됨(즐겨찾기_생성요청_response_2);

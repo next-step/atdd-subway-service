@@ -41,7 +41,7 @@ public class FavoriteServiceTest {
     @Test
     public void 즐겨찾기_생성하기() {
         //given
-        FavoriteRequest 즐겨찾기_요청정보 = new FavoriteRequest("1", "4");
+        FavoriteRequest 즐겨찾기_요청정보 = new FavoriteRequest(1L, 4L);
 
         //when
         Favorite favorite = favoriteService.saveFavorite(내정보, 즐겨찾기_요청정보);
