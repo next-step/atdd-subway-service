@@ -1,3 +1,30 @@
+### Step1 요구사항
+
+- [x] LineService 리팩터링
+    - [x] LineService에 있는 비즈니스 로직을 도메인으로 옮긴다
+    - [x] 도메인 로직을 생성 시 tdd로 진행한다.
+    - [x] 리팩토링 과정에서 인수테스트를 통과 시켜, 로직을 보호한다.
+- [x] (선택) LineSectionAcceptanceTest을 시나리오 흐름을 검증하는 방식으로 변경해 본다.
+
+```
+Feature: 지하철 구간 관련 기능
+
+  Background 
+    Given 지하철역 등록되어 있음
+    And 지하철 노선 등록되어 있음
+    And 지하철 노선에 지하철역 등록되어 있음
+
+  Scenario: 지하철 구간을 관리
+    When 지하철 구간 등록 요청
+    Then 지하철 구간 등록됨
+    When 지하철 노선에 등록된 역 목록 조회 요청
+    Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+    When 지하철 구간 삭제 요청
+    Then 지하철 구간 삭제됨
+    When 지하철 노선에 등록된 역 목록 조회 요청
+    Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+``` 
+
 <p align="center">
     <img width="200px;" src="https://raw.githubusercontent.com/woowacourse/atdd-subway-admin-frontend/master/images/main_logo.png"/>
 </p>
@@ -13,6 +40,7 @@
 <br>
 
 # 지하철 노선도 미션
+
 [ATDD 강의](https://edu.nextstep.camp/c/R89PYi5H) 실습을 위한 지하철 노선도 애플리케이션
 
 <br>
@@ -20,25 +48,34 @@
 ## 🚀 Getting Started
 
 ### Install
+
 #### npm 설치
+
 ```
 cd frontend
 npm install
 ```
+
 > `frontend` 디렉토리에서 수행해야 합니다.
 
 ### Usage
+
 #### webpack server 구동
+
 ```
 npm run dev
 ```
+
 #### application 구동
+
 ```
 ./gradlew bootRun
 ```
+
 <br>
 
 ## ✏️ Code Review Process
+
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
 
 <br>
