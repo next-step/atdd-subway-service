@@ -28,9 +28,10 @@ public class Line extends BaseEntity {
         this.sections = new Sections();
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this(name, color);
-        this.sections.addSection(new Section(this, upStation, downStation, distance));
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
+        Line line = new Line(name, color);
+        line.addSection(Section.of(line, upStation, downStation, distance));
+        return line;
     }
 
     public void update(Line line) {

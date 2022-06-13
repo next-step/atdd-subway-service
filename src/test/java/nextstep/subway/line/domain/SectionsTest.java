@@ -25,7 +25,7 @@ public class SectionsTest {
         downStation = new Station("마포역");
         line = new Line("오호선", "purple");
         sections = new Sections();
-        sections.addSection(new Section(line, upStation, downStation, 10));
+        sections.addSection(Section.of(line, upStation, downStation, 10));
     }
 
     @Test
@@ -33,7 +33,7 @@ public class SectionsTest {
     void addSectionWithAlreadyExistingBothStations() {
         upStation = new Station("공덕역");
         downStation = new Station("마포역");
-        Section newSection = new Section(line, upStation, downStation, 5);
+        Section newSection = Section.of(line, upStation, downStation, 5);
 
         assertThatThrownBy(() -> {
             sections.addSection(newSection);
@@ -45,7 +45,7 @@ public class SectionsTest {
     void addSectionWithNoExistingStations() {
         upStation = new Station("여의나루");
         downStation = new Station("여의도역");
-        Section newSection = new Section(line, upStation, downStation, 5);
+        Section newSection = Section.of(line, upStation, downStation, 5);
 
         assertThatThrownBy(() -> {
             sections.addSection(newSection);
@@ -57,7 +57,7 @@ public class SectionsTest {
     void addSectionWithSameUpStation() {
         upStation = new Station("공덕역");
         downStation = new Station("여의나루역");
-        Section newSection = new Section(line, upStation, downStation, 5);
+        Section newSection = Section.of(line, upStation, downStation, 5);
 
         sections.addSection(newSection);
 
@@ -71,7 +71,7 @@ public class SectionsTest {
     void addSectionWithSameDownStation() {
         upStation = new Station("애오개역");
         downStation = new Station("마포역");
-        Section newSection = new Section(line, upStation, downStation, 5);
+        Section newSection = Section.of(line, upStation, downStation, 5);
 
         sections.addSection(newSection);
 
@@ -85,7 +85,7 @@ public class SectionsTest {
     void addSectionWithSameDistance() {
         upStation = new Station("애오개역");
         downStation = new Station("마포역");
-        Section newSection = new Section(line, upStation, downStation, 10);
+        Section newSection = Section.of(line, upStation, downStation, 10);
 
         assertThatThrownBy(() -> {
             sections.addSection(newSection);
@@ -97,7 +97,7 @@ public class SectionsTest {
     void removeSection() {
         upStation = new Station("마포역");
         downStation = new Station("여의나루역");
-        Section newSection = new Section(line, upStation, downStation, 10);
+        Section newSection = Section.of(line, upStation, downStation, 10);
         sections.addSection(newSection);
 
         sections.remove(upStation);
@@ -129,7 +129,7 @@ public class SectionsTest {
     void findOrderedStations() {
         upStation = new Station("애오개역");
         downStation = new Station("마포역");
-        Section newSection = new Section(line, upStation, downStation, 5);
+        Section newSection = Section.of(line, upStation, downStation, 5);
         sections.addSection(newSection);
 
         List<Station> orderedAllStations = sections.findOrderedAllStations();
