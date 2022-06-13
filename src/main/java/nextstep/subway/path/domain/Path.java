@@ -4,6 +4,7 @@ import java.util.List;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
+
     private final List<Station> stations;
     private final int distance;
 
@@ -19,4 +20,5 @@ public class Path {
     public int getDistance() {
         return distance;
     }
+
 }

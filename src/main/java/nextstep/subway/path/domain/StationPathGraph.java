@@ -12,10 +12,12 @@ public class StationPathGraph extends WeightedMultigraph<Station, DefaultWeighte
 
     public StationPathGraph(List<Line> lines) {
         super(DefaultWeightedEdge.class);
-        lines.forEach(line -> {
-            addStation(line.getStations());
-            addSection(line.getSections());
-        });
+        lines.forEach(this::addLine);
+    }
+
+    private void addLine(Line line) {
+        addStation(line.getStations());
+        addSection(line.getSections());
     }
 
     private void addSection(Sections sections) {
