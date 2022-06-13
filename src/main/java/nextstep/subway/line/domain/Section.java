@@ -2,11 +2,18 @@ package nextstep.subway.line.domain;
 
 import static nextstep.subway.exception.domain.SubwayExceptionMessage.OVER_THE_DISTANCE;
 
+import com.google.common.collect.Sets;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import nextstep.subway.exception.domain.SubwayException;
 import nextstep.subway.generic.domain.Distance;
 import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
 
 @Entity
 public class Section {
@@ -79,5 +86,49 @@ public class Section {
 
     public boolean hasUpStation(final Station upStation) {
         return this.upStation.equals(upStation);
+    }
+
+    public boolean intersects(final Section section) {
+        return hasUpStation(section) || hasDownStation(section);
+    }
+
+    public boolean equalsStations(final Section section) {
+        return hasUpStation(section) && hasDownStation(section);
+    }
+
+    public boolean hasUpStation(final Section section) {
+        return this.upStation.equals(section.upStation);
+    }
+
+    public boolean hasDownStation(final Section section) {
+        return this.downStation.equals(section.downStation);
+    }
+
+    public void rearrange(final Section section) {
+        validateDistance(section);
+
+        if (section.hasUpStation(this)) {
+            this.upStation = section.downStation;
+            this.distance = distance.minus(section.distance);
+            return;
+        }
+
+        this.downStation = section.upStation;
+        this.distance = distance.minus(section.distance);
+    }
+
+    public boolean hasStation(final Station station) {
+        return Sets.newHashSet(upStation, downStation)
+                .contains(station);
+    }
+
+    private void validateDistance(final Section section) {
+        if (section.isGreaterThanOrEqualsToDistance(this)) {
+            throw new SubwayException(OVER_THE_DISTANCE);
+        }
+    }
+
+    private boolean isGreaterThanOrEqualsToDistance(final Section section) {
+        return distance.isGreaterThanOrEqualsTo(section.distance);
     }
 }
