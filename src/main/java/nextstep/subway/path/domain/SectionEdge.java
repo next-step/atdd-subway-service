@@ -2,9 +2,9 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
-public class SectionEdge extends DefaultEdge {
+public class SectionEdge extends DefaultWeightedEdge {
     private Section section;
 
     public void addSection(Section section) {
