@@ -4,9 +4,12 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.error.ErrorCodeException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
+
+import static nextstep.subway.error.ErrorCode.CANNOT_FOUND_USER;
 
 @Service
 public class AuthService {
@@ -32,7 +35,7 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(AuthorizationException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new ErrorCodeException(CANNOT_FOUND_USER));
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }
