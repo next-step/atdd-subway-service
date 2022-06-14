@@ -6,7 +6,7 @@ public class Age {
     private int age;
 
     private Age(int age) {
-        if (age < 0) {
+        if (age < 1) {
             throw new RuntimeException("나이는 1살부터 시작합니다.");
         }
         this.age = age;
