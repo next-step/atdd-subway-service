@@ -6,11 +6,13 @@ import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하�
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.time.LocalDateTime;
+import java.util.List;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -98,7 +100,25 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 즐겨찾기_목록_조회_결과 = 즐겨찾기_목록_조회(몬드_토큰);
         // then
-        즐겨찾기_목록_확인(즐겨찾기_목록_조회_결과);
+        즐겨찾기_목록_확인(즐겨찾기_목록_조회_결과, 1);
+    }
+
+    /**
+     *  Given 즐겨찾기가 생성되어 있고
+     *  When 즐겨찾기를 삭제하면
+     *  Then 즐겨찾기 목록에서 검색되지 않는다.
+     */
+    @Test
+    @DisplayName("즐겨찾기를 삭제한다")
+    void deleteFavorite() {
+        // given
+        ExtractableResponse<Response> 즐겨찾기_생성_요청_결과 = 즐겨찾기_생성_요청(몬드_토큰, 서초역, 강남역);
+        // when
+        ExtractableResponse<Response> 즐겨찾기_삭제_요청_결과 = 즐겨찾기_삭제_요청(몬드_토큰, 즐겨찾기_생성_요청_결과);
+        즐겨찾기_삭제_확인(즐겨찾기_삭제_요청_결과);
+        // then
+        ExtractableResponse<Response> 즐겨찾기_목록_조회_결과 = 즐겨찾기_목록_조회(몬드_토큰);
+        즐겨찾기_목록_확인(즐겨찾기_목록_조회_결과, 0);
     }
 
     /**
@@ -124,12 +144,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 즐겨찾기_목록_조회_결과 = 즐겨찾기_목록_조회(몬드_토큰);
         // then
-        즐겨찾기_목록_확인(즐겨찾기_목록_조회_결과);
+        즐겨찾기_목록_확인(즐겨찾기_목록_조회_결과, 1);
 
         // when
         ExtractableResponse<Response> 남의_즐겨찾기_목록_조회_결과 = 즐겨찾기_목록_조회(스루기_토큰);
         // then
-        즐겨찾기_목록_확인(남의_즐겨찾기_목록_조회_결과);
+        즐겨찾기_목록_확인(남의_즐겨찾기_목록_조회_결과, 0);
 
         // when
         ExtractableResponse<Response> 즐겨찾기_삭제_요청_결과 = 즐겨찾기_삭제_요청(몬드_토큰, 즐겨찾기_생성_요청_결과);
@@ -187,8 +207,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 즐겨찾기_목록_확인(ExtractableResponse<Response> 즐겨찾기_목록_조회_결과) {
-        assertThat(즐겨찾기_목록_조회_결과.statusCode()).isEqualTo(HttpStatus.OK.value());
+    private void 즐겨찾기_목록_확인(ExtractableResponse<Response> 즐겨찾기_목록_조회_결과, int 예상되는_즐겨찾기_갯수) {
+        assertAll(
+                () -> assertThat(즐겨찾기_목록_조회_결과.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(즐겨찾기_목록_조회_결과.as(List.class)).hasSize(예상되는_즐겨찾기_갯수)
+        );
     }
 
     private ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse 토큰, ExtractableResponse<Response> 즐겨찾기_생성_요청_결과) {

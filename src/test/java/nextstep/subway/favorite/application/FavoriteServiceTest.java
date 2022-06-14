@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -30,19 +31,17 @@ class FavoriteServiceTest {
     private final Station gyoDae = new Station(2L, "교대역");
 
     private FavoriteService favoriteService;
-
     @Mock
     private StationService stationService;
-
     @Mock
     private MemberService memberService;
-
     @Mock
     private FavoriteRepository favoriteRepository;
 
     @BeforeEach
     void setUp() {
         favoriteService = new FavoriteService(stationService, memberService, favoriteRepository);
+
         // given
         when(memberService.findMemberById(1L)).thenReturn(mond);
     }
@@ -65,7 +64,7 @@ class FavoriteServiceTest {
 
     @Test
     @DisplayName("즐겨찾기를 조회한다")
-    void name() {
+    void searchFavorites() {
         // given
         when(favoriteRepository.findAllByMemberId(any())).thenReturn(
                 Collections.singletonList(new Favorite(mond, gangNam, gyoDae)));
@@ -79,6 +78,17 @@ class FavoriteServiceTest {
                 () -> verifySourceAndTarget(favoritesResponse.get(0).getSource(), favoritesResponse.get(0).getTarget(),
                         gangNam, gyoDae)
         );
+    }
+
+    @Test
+    @DisplayName("즐겨찾기를 삭제한다")
+    void deleteFavorite() {
+        // given
+        Optional<Favorite> optionalFavorite = Optional.of(new Favorite(mond, gangNam, gyoDae));
+        when(favoriteRepository.findByIdAndMemberId(any(), any())).thenReturn(optionalFavorite);
+
+        // when
+        favoriteService.deleteFavoriteOfMine(1L, 1L);
     }
 
     private void verifySourceAndTarget(StationResponse source, StationResponse target,

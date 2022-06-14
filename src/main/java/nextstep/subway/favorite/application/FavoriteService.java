@@ -1,7 +1,9 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import nextstep.subway.exception.NotExistException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -11,6 +13,7 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class FavoriteService {
@@ -25,6 +28,7 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
+    @Transactional
     public FavoriteResponse saveFavoriteOfMine(Long memberId, FavoriteRequest favoriteRequest) {
         final Member mine = memberService.findMemberById(memberId);
         final Station source = stationService.findStationById(favoriteRequest.getSourceId());
@@ -34,6 +38,7 @@ public class FavoriteService {
         return persistFavorite.toFavoriteResponse();
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavoriteOfMine(Long memberId) {
         final Member mine = memberService.findMemberById(memberId);
 
@@ -43,6 +48,13 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteFavoriteOfMine(Long memberId, Long favoriteId) {
+        final Member mine = memberService.findMemberById(memberId);
+
+        Optional<Favorite> optionalFavorite = favoriteRepository.findByIdAndMemberId(favoriteId, mine.getId());
+        favoriteRepository.delete(
+                optionalFavorite.orElseThrow(() -> new NotExistException("해당 ID에 대한 즐겨찾기가 존재하지 않습니다."))
+        );
     }
 }
