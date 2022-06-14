@@ -2,7 +2,6 @@ package nextstep.subway.member.ui;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -13,7 +12,7 @@ import java.net.URI;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -27,8 +26,8 @@ public class MemberController {
 
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
-        MemberResponse member = memberService.findMember(id);
-        return ResponseEntity.ok().body(member);
+        MemberResponse member = memberService.findMemberResponseById(id);
+        return ResponseEntity.ok(member);
     }
 
     @PutMapping("/members/{id}")
@@ -44,19 +43,19 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(LoginMember loginMember) {
-        MemberResponse member = memberService.findMember(loginMember.getId());
-        return ResponseEntity.ok().body(member);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        MemberResponse member = memberService.findMemberResponseById(loginMember.getId());
+        return ResponseEntity.ok(member);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(LoginMember loginMember, @RequestBody MemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember.getId(), param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(LoginMember loginMember) {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }

@@ -2,6 +2,8 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.*;
 import java.util.List;
@@ -76,6 +78,11 @@ public class Line extends BaseEntity {
         Station reDownStation = upSection.getDownStation();
         int reDistance = upSection.getDistance() + downSection.getDistance();
         sections.addSection(new Section(this, reUpStation, reDownStation, reDistance));
+    }
+
+    public void registerPath(SectionGraph graph) {
+        graph.addVertices(findStations());
+        graph.addEdges(getSections().getSections());
     }
 
     public Long getId() {

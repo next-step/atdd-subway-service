@@ -12,33 +12,38 @@ import java.util.stream.Collectors;
 
 @Service
 public class StationService {
-    private StationRepository stationRepository;
+    private final StationRepository stationRepository;
 
     public StationService(StationRepository stationRepository) {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-                .map(station -> StationResponse.of(station))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
+    @Transactional(readOnly = true)
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
