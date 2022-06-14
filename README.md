@@ -91,5 +91,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - [X] Section 에 유효성 검사 추가
             - [X] Sections 에 유효성 검사 추가
         - [X] 기존 로직제거
+    - [X] dto to domain 로직 수정
 - [X] 전역 예외 처리 추가
     - [X] RuntimeException 으로 사용되던 예외 수정
