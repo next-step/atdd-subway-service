@@ -56,12 +56,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(response);
     }
 
+    @DisplayName("즐겨찾기를 조회한다.")
+    @Test
+    void findFavorites() {
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_등록되어_있음(tokenResponse, 강남역, 잠실역);
+
+        // then
+        즐겨찾기_조회_요청(tokenResponse);
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_등록되어_있음(TokenResponse tokenResponse, StationResponse source, StationResponse target) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(source.getId(), target.getId());
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
-                .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(favoriteRequest)
                 .when().post("/favorites")
@@ -71,5 +80,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     public static void 즐겨찾기_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_조회_요청(TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
     }
 }

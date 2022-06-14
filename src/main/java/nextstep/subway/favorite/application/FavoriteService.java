@@ -34,7 +34,8 @@ public class FavoriteService {
         return FavoriteResponse.of(favorite);
     }
 
-    public List<FavoriteResponse> findLines(Member member) {
+    public List<FavoriteResponse> findFavorties(LoginMember loginMember) {
+        Member member = memberService.findById(loginMember.getId());
         List<Favorite> favorites = favoriteRepository.findAllByMember(member);
         return favorites.stream()
                 .map(FavoriteResponse::of)
