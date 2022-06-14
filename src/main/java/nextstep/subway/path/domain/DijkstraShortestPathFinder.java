@@ -19,13 +19,13 @@ public class DijkstraShortestPathFinder implements ShortestPathFinder {
     private WeightedMultigraph<Station, DefaultWeightedEdge> generateGraph(List<Line> lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         for (Line line : lines) {
-            addVertexex(graph, line);
+            addVertexes(graph, line);
             addEdges(graph, line);
         }
         return graph;
     }
 
-    private void addVertexex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
+    private void addVertexes(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
         line.getStations()
                 .forEach(graph::addVertex);
     }
