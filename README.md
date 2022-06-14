@@ -104,3 +104,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - [X] 기존로직 제거
 - [X] 전역 예외 처리 추가
     - [X] RuntimeException 으로 사용되던 예외 수정
+- [X] 인수 테스트 코드 시나리오 기반으로 리팩토링
