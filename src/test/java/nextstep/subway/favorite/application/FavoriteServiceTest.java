@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -8,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import nextstep.subway.exception.NotExistException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -27,6 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class FavoriteServiceTest {
     private final Member mond = new Member(1L, "mond@mond.com", "mond", 10);
+    final FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
     private final Station gangNam = new Station(1L, "강남역");
     private final Station gyoDae = new Station(2L, "교대역");
 
@@ -50,7 +53,6 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기를 생성한다")
     void saveFavorite() {
         // given
-        final FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
         when(stationService.findStationById(1L)).thenReturn(gangNam);
         when(stationService.findStationById(2L)).thenReturn(gyoDae);
         when(favoriteRepository.save(any())).thenReturn(new Favorite(mond, gangNam, gyoDae));
@@ -87,8 +89,20 @@ class FavoriteServiceTest {
         Optional<Favorite> optionalFavorite = Optional.of(new Favorite(mond, gangNam, gyoDae));
         when(favoriteRepository.findByIdAndMemberId(any(), any())).thenReturn(optionalFavorite);
 
-        // when
+        // when && then
         favoriteService.deleteFavoriteOfMine(1L, 1L);
+    }
+
+    @Test
+    @DisplayName("생성되지 않는 역을 즐겨찾기 등록하려고 하면 실패한다")
+    void saveFavoriteOfNotExistStation() {
+        // given
+        when(stationService.findStationById(1L)).thenReturn(gangNam);
+        when(stationService.findStationById(2L)).thenThrow(NotExistException.class);
+
+        // when && then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> favoriteService.saveFavoriteOfMine(mond.getId(), favoriteRequest));
     }
 
     private void verifySourceAndTarget(StationResponse source, StationResponse target,
