@@ -15,7 +15,6 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
-import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
@@ -84,6 +83,22 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_생성_요청_결과 = 즐겨찾기_생성_요청(몬드_토큰, 서초역, 강남역);
         // then
         즐겨찾기_생성_요청_성공(즐겨찾기_생성_요청_결과);
+    }
+
+    /**
+     *  Given 즐겨찾기 생성되어 있고
+     *  When 즐겨찾기 목록 조회하면
+     *  Then 즐겨찾기 목록이 조회된다
+     */
+    @Test
+    @DisplayName("즐겨찾기 목록이 조회한다")
+    void searchFavorites() {
+        // given
+        즐겨찾기_생성_요청(몬드_토큰, 서초역, 강남역);
+        // when
+        ExtractableResponse<Response> 즐겨찾기_목록_조회_결과 = 즐겨찾기_목록_조회(몬드_토큰);
+        // then
+        즐겨찾기_목록_확인(즐겨찾기_목록_조회_결과);
     }
 
     /**
@@ -173,10 +188,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_목록_확인(ExtractableResponse<Response> 즐겨찾기_목록_조회_결과) {
-        FavoriteResponse favoriteResponse = 즐겨찾기_목록_조회_결과.as(FavoriteResponse.class);
-
-        // TODO : 구현
-        assertThat(favoriteResponse).isNotNull();
+        assertThat(즐겨찾기_목록_조회_결과.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse 토큰, ExtractableResponse<Response> 즐겨찾기_생성_요청_결과) {
