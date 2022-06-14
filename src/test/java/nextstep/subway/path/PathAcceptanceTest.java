@@ -109,6 +109,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *     Then 최단경로를 응답함
      *     And  최단거리도 함께 응답함
      *     And  이용요금도 함께 응답함 (할인요금 적용)
+     *     When 로그인하지않고 최단 경로를 조회하면
+     *     Then 할인요금이 적용 되지않음
      *
      **/
     @DisplayName("지하철역 최단경로(+거리)를 조회한다.")
@@ -135,7 +137,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                     요금_검증됨(getResponse, 2450);
                 }),
 
-                dynamicTest("최단경로(+거리) 및 요금을 조회한다.(할인정책 적용)", () -> {
+                dynamicTest("최단경로(+거리) 및 요금을 조회한다.(할인정책 적용 & 미적용)", () -> {
                     //given
                     MemberAcceptanceTest.회원_등록_되어있음("teenager@test.com", "1234", 17);
                     MemberAcceptanceTest.회원_등록_되어있음("children@test.com", "1234", 9);
@@ -151,6 +153,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
                     요금_검증됨(getResponse1, 720);
                     최단_거리와_최단_경로_목록_검증됨(getResponse2, 5, "교대역", "남부터미널역", "양재역");
                     요금_검증됨(getResponse2, 450);
+
+                    //when
+                    ExtractableResponse<Response> getResponse3 = 지하철_최단_경로_조회_요청(교대역.getId(), 양재역.getId());
+
+                    //then
+                    할인금액_적용되지_않음(getResponse3, 720, 450, 1250);
+
                 })
         );
 
@@ -246,5 +255,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 요금_검증됨(ExtractableResponse<Response> getResponse, int expectedFare) {
         assertThat(getResponse.jsonPath().getInt("fare")).isEqualTo(expectedFare);
+    }
+
+    private void 할인금액_적용되지_않음(ExtractableResponse<Response> getResponse, int teenagerFare, int childFare, int generalFare) {
+        assertThat(getResponse.jsonPath().getInt("fare")).isNotEqualTo(teenagerFare);
+        assertThat(getResponse.jsonPath().getInt("fare")).isNotEqualTo(childFare);
+        assertThat(getResponse.jsonPath().getInt("fare")).isEqualTo(generalFare);
     }
 }
