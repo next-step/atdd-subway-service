@@ -8,7 +8,7 @@ public class AuthorizationExtractor {
     public static final String ACCESS_TOKEN_TYPE = AuthorizationExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";
     public static final String BEARER_TYPE = "Bearer";
 
-    private AuthorizationExtractor(){
+    private AuthorizationExtractor() {
 
     }
 

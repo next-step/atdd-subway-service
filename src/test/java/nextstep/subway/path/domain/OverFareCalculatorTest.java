@@ -16,29 +16,30 @@ class OverFareCalculatorTest {
 
     Station 강남역 = new Station("강남역");
     Station 역삼역 = new Station("역삼역");
-    Line 이호선 = 노선생성("이호선","green",강남역,역삼역,5,500);
-    Line 삼호선 = 노선생성("삼호선","orange",강남역,역삼역,5,800);
+    Line 이호선 = 노선생성("이호선", "green", 강남역, 역삼역, 5, 500);
+    Line 삼호선 = 노선생성("삼호선", "orange", 강남역, 역삼역, 5, 800);
 
     @ParameterizedTest
-    @CsvSource(delimiterString = ":", value ={"5:0", "10:0","11:100","20:200","50:800","51:900","66:1000","67:1100"} )
-    void 거리별_추가요금_계산_테스트(String distance, String expectedOverFare){
-        PathFindResult pathFindResult = new PathFindResult(emptyList(), emptySet(),Integer.parseInt(distance));
+    @CsvSource(delimiterString = ":", value = {"5:0", "10:0", "11:100", "20:200", "50:800", "51:900", "66:1000",
+            "67:1100"})
+    void 거리별_추가요금_계산_테스트(String distance, String expectedOverFare) {
+        PathFindResult pathFindResult = new PathFindResult(emptyList(), emptySet(), Integer.parseInt(distance));
         int overFare = OverFareCalculator.calculateOverFareByDistance(pathFindResult);
         assertThat(overFare).isEqualTo(Integer.parseInt(expectedOverFare));
     }
 
     @Test
-    void 노선별_추가요금_계산_테스트(){
-        PathFindResult pathFindResult = new PathFindResult(emptyList(), Sets.newLinkedHashSet(이호선,삼호선),10);
+    void 노선별_추가요금_계산_테스트() {
+        PathFindResult pathFindResult = new PathFindResult(emptyList(), Sets.newLinkedHashSet(이호선, 삼호선), 10);
         int overFare = OverFareCalculator.calculateOverFareByLine(pathFindResult);
         assertThat(overFare).isEqualTo(삼호선.getExtraCharge());
     }
 
     @ParameterizedTest
-    @CsvSource(delimiterString = ":", value ={"6:500", "13:800","19:1350"} )
-    void 연령별_할인요금_계산_테스트(String age, String expectedFare){
+    @CsvSource(delimiterString = ":", value = {"6:500", "13:800", "19:1350"})
+    void 연령별_할인요금_계산_테스트(String age, String expectedFare) {
         SubwayFare beforeSubwayFare = SubwayFare.of(1350);
-        int discountedFare = OverFareCalculator.calculateDiscountedFareByAge(beforeSubwayFare,Integer.parseInt(age));
+        int discountedFare = OverFareCalculator.calculateDiscountedFareByAge(beforeSubwayFare, Integer.parseInt(age));
         assertThat(discountedFare).isEqualTo(Integer.parseInt(expectedFare));
     }
 }

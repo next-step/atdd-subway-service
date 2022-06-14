@@ -38,9 +38,9 @@ class PathFindServiceTest {
         ReflectionTestUtils.setField(교대역, "id", 3L);
         ReflectionTestUtils.setField(남부터미널역, "id", 4L);
 
-        신분당선 = 노선생성("신분당선", "bg-red-600", 강남역, 양재역, 10,0);
-        이호선 = 노선생성("이호선", "bg-red-600", 교대역, 강남역, 10,0);
-        삼호선 = 노선생성("삼호선", "bg-red-600", 교대역, 양재역, 5,0);
+        신분당선 = 노선생성("신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
+        이호선 = 노선생성("이호선", "bg-red-600", 교대역, 강남역, 10, 0);
+        삼호선 = 노선생성("삼호선", "bg-red-600", 교대역, 양재역, 5, 0);
         구간추가(삼호선, 교대역, 남부터미널역, 3);
     }
 
@@ -67,7 +67,7 @@ class PathFindServiceTest {
      */
     @Test
     void 최단경로테스트() throws Exception {
-        WeightedMultigraph<Station, SectionEdge> 지하철그래프 = 그래프_생성(Lists.newArrayList(신분당선,이호선,삼호선));
+        WeightedMultigraph<Station, SectionEdge> 지하철그래프 = 그래프_생성(Lists.newArrayList(신분당선, 이호선, 삼호선));
         PathFindResult result = pathFindService.findShortestPath(지하철그래프, 교대역, 양재역);
         assertThat(result.getStations())
                 .hasSize(3)
@@ -85,7 +85,7 @@ class PathFindServiceTest {
     @Test
     void 경로가_없는경우() {
         구간제거(삼호선, 양재역);
-        WeightedMultigraph<Station, SectionEdge> 지하철그래프 = 그래프_생성(Lists.newArrayList(신분당선,삼호선));
+        WeightedMultigraph<Station, SectionEdge> 지하철그래프 = 그래프_생성(Lists.newArrayList(신분당선, 삼호선));
         assertThatThrownBy(() -> {
             PathFindResult result = pathFindService.findShortestPath(지하철그래프, 교대역, 양재역);
         }).isInstanceOf(NotExistPathException.class);
@@ -93,7 +93,7 @@ class PathFindServiceTest {
 
     @Test
     void 출발역과_도착역이_같은경우() throws Exception {
-        WeightedMultigraph<Station, SectionEdge> 지하철그래프 = 그래프_생성(Lists.newArrayList(신분당선,이호선, 삼호선));
+        WeightedMultigraph<Station, SectionEdge> 지하철그래프 = 그래프_생성(Lists.newArrayList(신분당선, 이호선, 삼호선));
         PathFindResult result = pathFindService.findShortestPath(지하철그래프, 교대역, 교대역);
         assertThat(result.getStations()).hasSize(1).containsOnly(교대역);
         assertThat(result.getDistance()).isZero();
@@ -101,7 +101,7 @@ class PathFindServiceTest {
 
     @Test
     void 존재하지않는_목적지() throws Exception {
-        WeightedMultigraph<Station, SectionEdge> 지하철그래프 = 그래프_생성(Lists.newArrayList(신분당선,이호선, 삼호선));
+        WeightedMultigraph<Station, SectionEdge> 지하철그래프 = 그래프_생성(Lists.newArrayList(신분당선, 이호선, 삼호선));
         assertThatThrownBy(() -> {
             PathFindResult result = pathFindService.findShortestPath(지하철그래프, 교대역, 공사중인역);
         }).isInstanceOf(IllegalArgumentException.class);

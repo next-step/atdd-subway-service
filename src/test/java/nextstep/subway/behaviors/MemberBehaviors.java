@@ -6,6 +6,9 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.HashMap;
+import java.util.Map;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.HttpStatus;
@@ -78,16 +81,16 @@ public class MemberBehaviors {
     }
 
     public static ExtractableResponse<Response> 내정보_조회(String token) {
-            return RestAssured
-                    .given().log().all()
-                    .auth().oauth2(token)
-                    .when().get("/members/me")
-                    .then().log().all()
-                    .extract();
-        }
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
 
     public static ExtractableResponse<Response> 내정보_수정(String token, String email, String password, int age) {
-        MemberRequest updateRequest = new MemberRequest(email,password,age);
+        MemberRequest updateRequest = new MemberRequest(email, password, age);
         return RestAssured
                 .given().log().all().contentType(ContentType.JSON)
                 .auth().oauth2(token)
@@ -115,5 +118,26 @@ public class MemberBehaviors {
 
     public static void 내정보_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("password", password);
+        params.put("email", email);
+
+        return RestAssured
+                .given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .log().all()
+                .when().body(params).post("/login/token")
+                .then().log().all()
+                .extract();
+    }
+
+    public static TokenResponse 로그인_되어있음(String email, String password) {
+        ExtractableResponse<Response> response = 로그인_요청(email, password);
+
+        return response.as(TokenResponse.class);
     }
 }

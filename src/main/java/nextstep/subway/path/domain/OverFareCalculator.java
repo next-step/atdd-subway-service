@@ -30,23 +30,25 @@ public class OverFareCalculator {
     }
 
     private static int calculateOverFareInFirstRange(int distance) {
-        int overDistance = Math.min(distance , FIRST_OVER_FARE_RANGE_END) - FIRST_OVER_FARE_RANGE_START;
-        if(!hasOverDistance(overDistance)){
+        int overDistance = Math.min(distance, FIRST_OVER_FARE_RANGE_END) - FIRST_OVER_FARE_RANGE_START;
+        if (!hasOverDistance(overDistance)) {
             return NO_OVER_FARE;
         }
-        return (int) ((Math.ceil((overDistance - 1) / FIRST_OVER_FARE_RANGE_INTERVAL) + 1) * FIRST_OVER_FARE_RANGE_FARE_UNIT);
+        return (int) ((Math.ceil((overDistance - 1) / FIRST_OVER_FARE_RANGE_INTERVAL) + 1)
+                * FIRST_OVER_FARE_RANGE_FARE_UNIT);
     }
 
-    private static boolean hasOverDistance(int overDistance){
+    private static boolean hasOverDistance(int overDistance) {
         return overDistance > 0;
     }
 
     private static int calculateOverFareInSecondRange(int distance) {
         int overDistance = distance - SECOND_OVER_FARE_RANGE_START;
-        if(!hasOverDistance(overDistance)){
+        if (!hasOverDistance(overDistance)) {
             return NO_OVER_FARE;
         }
-        return (int) ((Math.ceil((overDistance - 1) / SECOND_OVER_FARE_RANGE_INTERVAL) + 1) * SECOND_OVER_FARE_RANGE_FARE_UNIT);
+        return (int) ((Math.ceil((overDistance - 1) / SECOND_OVER_FARE_RANGE_INTERVAL) + 1)
+                * SECOND_OVER_FARE_RANGE_FARE_UNIT);
     }
 
     public static int calculateOverFareByLine(PathFindResult pathFindResult) {
@@ -58,12 +60,12 @@ public class OverFareCalculator {
     }
 
     public static int calculateDiscountedFareByAge(SubwayFare beforeDiscount, int age) {
-        if(isChild(age)){
+        if (isChild(age)) {
             return beforeDiscount.subtract(DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY)
                     .discountedByPercent(CHILD_DISCOUNT_RATE)
                     .getValue();
         }
-        if(isTeen(age)){
+        if (isTeen(age)) {
             return beforeDiscount.subtract(DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY)
                     .discountedByPercent(TEEN_DISCOUNT_RATE)
                     .getValue();
@@ -74,6 +76,7 @@ public class OverFareCalculator {
     private static boolean isChild(int age) {
         return age >= 6 && age < 13;
     }
+
     private static boolean isTeen(int age) {
         return age >= 13 && age < 19;
     }

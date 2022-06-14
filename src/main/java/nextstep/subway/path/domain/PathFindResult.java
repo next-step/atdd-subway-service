@@ -37,7 +37,7 @@ public class PathFindResult {
         int overFareByDistance = calculateOverFareByDistance(this);
         int overFareByLine = calculateOverFareByLine(this);
         int middleSum = this.fare.getValue() + overFareByDistance + overFareByLine;
-        if(loginMember.getId() == null){
+        if (loginMember.getId() == null) {
             this.fare = SubwayFare.of(middleSum);
             return;
         }

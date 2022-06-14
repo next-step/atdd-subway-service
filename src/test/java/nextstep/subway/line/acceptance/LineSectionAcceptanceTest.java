@@ -37,7 +37,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
         정자역 = 지하철역_등록되어_있음("정자역").as(StationResponse.class);
         광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10,0);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 10, 0);
 
     }
 

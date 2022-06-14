@@ -1,6 +1,6 @@
 package nextstep.subway.favorite;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어있음;
+import static nextstep.subway.behaviors.MemberBehaviors.로그인_되어있음;
 import static nextstep.subway.behaviors.MemberBehaviors.회원_생성을_요청;
 import static nextstep.subway.behaviors.SubwayBehaviors.즐겨찾기_목록_조회_요청;
 import static nextstep.subway.behaviors.SubwayBehaviors.즐겨찾기_목록_조회됨;
@@ -42,7 +42,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
         역삼역 = 지하철역_등록되어_있음("역삼역").as(StationResponse.class);
         잠실역 = 지하철역_등록되어_있음("잠실역").as(StationResponse.class);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "green", 강남역, 잠실역, 10,0);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "green", 강남역, 잠실역, 10, 0);
         지하철_노선에_지하철역_등록_요청(이호선, 강남역, 역삼역, 5);
 
         회원_생성을_요청(EMAIL, PASSWORD, AGE);

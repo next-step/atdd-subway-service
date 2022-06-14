@@ -1,6 +1,6 @@
 package nextstep.subway.member;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어있음;
+import static nextstep.subway.behaviors.MemberBehaviors.로그인_되어있음;
 import static nextstep.subway.behaviors.MemberBehaviors.내정보_삭제;
 import static nextstep.subway.behaviors.MemberBehaviors.내정보_삭제됨;
 import static nextstep.subway.behaviors.MemberBehaviors.내정보_수정;
@@ -60,7 +60,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     void manageMyInfo() {
         //given
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        TokenResponse tokenResponse = 로그인_되어있음(EMAIL,PASSWORD);
+        TokenResponse tokenResponse = 로그인_되어있음(EMAIL, PASSWORD);
         String 사용자토큰 = tokenResponse.getAccessToken();
 
         //when

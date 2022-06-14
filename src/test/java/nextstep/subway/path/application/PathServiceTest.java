@@ -46,7 +46,8 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(mockStationService, mockLineService, mockPathFindService, new SubwayGraphProvider());
+        pathService = new PathService(mockStationService, mockLineService, mockPathFindService,
+                new SubwayGraphProvider());
         ReflectionTestUtils.setField(강남역, "id", 1L);
         ReflectionTestUtils.setField(광교역, "id", 2L);
     }

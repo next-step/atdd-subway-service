@@ -1,14 +1,11 @@
 package nextstep.subway.auth.acceptance;
 
 import static nextstep.subway.behaviors.MemberBehaviors.내정보_조회;
+import static nextstep.subway.behaviors.MemberBehaviors.로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.HashMap;
-import java.util.Map;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.domain.Member;
@@ -18,7 +15,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-public class AuthAcceptanceTest extends AcceptanceTest {
+
+class AuthAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     private MemberRepository memberRepository;
@@ -27,7 +25,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private String memberOnePassword = "11";
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         super.setUp();
         memberRepository.save(new Member(memberOneEmail, memberOnePassword, 11));
     }
@@ -36,7 +34,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBearerAuth() {
         //When
-        ExtractableResponse<Response> response = 로그인_요청(memberOneEmail,memberOnePassword);
+        ExtractableResponse<Response> response = 로그인_요청(memberOneEmail, memberOnePassword);
 
         //Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -47,7 +45,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBadBearerAuth() {
         //When
-        ExtractableResponse<Response> response = 로그인_요청(memberOneEmail,"WrongPassword");
+        ExtractableResponse<Response> response = 로그인_요청(memberOneEmail, "WrongPassword");
 
         //Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -61,26 +59,5 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         //Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
-        Map<String,String> params = new HashMap<>();
-        params.put("password",password);
-        params.put("email",email);
-
-        return RestAssured
-                .given()
-                .contentType(ContentType.JSON)
-                .accept(ContentType.JSON)
-                .log().all()
-                .when().body(params).post("/login/token")
-                .then().log().all()
-                .extract();
-    }
-
-    public static TokenResponse 로그인_되어있음(String email, String password) {
-        ExtractableResponse<Response> response = 로그인_요청(email, password);
-
-        return response.as(TokenResponse.class);
     }
 }

@@ -44,7 +44,8 @@ class PathControllerTest extends RestAssuredTest {
 
         // Given
         when(pathService.findShortestPath(eq(startStationId), eq(endStationId), any()))
-                .thenReturn(new PathResponse(Lists.newArrayList(강남역, 양재역, 교대역), Lists.newArrayList(삼호선), 10, SubwayFare.of(0)));
+                .thenReturn(new PathResponse(Lists.newArrayList(강남역, 양재역, 교대역), Lists.newArrayList(삼호선), 10,
+                        SubwayFare.of(0)));
         // When
         ExtractableResponse<Response> response = 로그인정보없이_최단경로_및_요금을_조회한다(
                 String.valueOf(startStationId),

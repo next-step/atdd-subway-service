@@ -35,7 +35,7 @@ public class PathResponse {
                 .stream()
                 .map(LineResponse::of)
                 .collect(toList());
-        return new PathResponse(stationResponses,lineResponses, findResult.getDistance(), findResult.getFare());
+        return new PathResponse(stationResponses, lineResponses, findResult.getDistance(), findResult.getFare());
     }
 
     public List<StationResponse> getStations() {
@@ -45,6 +45,7 @@ public class PathResponse {
     public List<LineResponse> getLines() {
         return lines;
     }
+
     public int getDistance() {
         return distance;
     }
