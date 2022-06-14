@@ -89,7 +89,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         PathResponse pathResponse = response.as(PathResponse.class);
-        최단경로거리_확인(pathResponse, 15);
+        최단경로거리_확인(pathResponse, 9);
         int 노선추가요금 = Math.max(삼호선.getExtraCharge(),신분당선.getExtraCharge());
         지하철요금_확인(pathResponse,SubwayFare.DEFAULT_FARE.plus(노선추가요금));
         최단경로_확인(pathResponse, Lists.newArrayList(출발역, 남부터미널역, 양재역, 도착역));

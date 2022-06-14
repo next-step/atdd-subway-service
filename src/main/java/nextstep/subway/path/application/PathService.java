@@ -43,9 +43,14 @@ public class PathService {
         } catch (NotExistPathException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
-        int overFareByDistance = OverFareCalculator.calculateOverFareByDistance(findResult);
-        findResult.applyOverFare(overFareByDistance);
-
+        int overFare = calculateOverFare(findResult);
+        findResult.applyOverFare(overFare);
         return PathResponse.of(findResult);
+    }
+
+    private int calculateOverFare(PathFindResult findResult){
+        int overFareByDistance = OverFareCalculator.calculateOverFareByDistance(findResult);
+        int overFareByLine = OverFareCalculator.calculateOverFareByLine(findResult);
+        return overFareByDistance + overFareByLine;
     }
 }

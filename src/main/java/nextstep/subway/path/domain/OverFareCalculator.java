@@ -42,8 +42,12 @@ public class OverFareCalculator {
         return (int) ((Math.ceil((overDistance - 1) / SECOND_OVER_FARE_RANGE_INTERVAL) + 1) * SECOND_OVER_FARE_RANGE_FARE_UNIT);
     }
 
-    public static int calculateOverFareByLine(Set<Line> lines) {
-        return 0;
+    public static int calculateOverFareByLine(PathFindResult pathFindResult) {
+        Set<Line> lines = pathFindResult.getLines();
+        return lines.stream()
+                .mapToInt(Line::getExtraCharge)
+                .max()
+                .getAsInt();
     }
 
 }

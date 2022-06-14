@@ -38,9 +38,9 @@ class PathFindServiceTest {
         ReflectionTestUtils.setField(교대역, "id", 3L);
         ReflectionTestUtils.setField(남부터미널역, "id", 4L);
 
-        신분당선 = 노선생성("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 노선생성("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 노선생성("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        신분당선 = 노선생성("신분당선", "bg-red-600", 강남역, 양재역, 10,0);
+        이호선 = 노선생성("이호선", "bg-red-600", 교대역, 강남역, 10,0);
+        삼호선 = 노선생성("삼호선", "bg-red-600", 교대역, 양재역, 5,0);
         구간추가(삼호선, 교대역, 남부터미널역, 3);
     }
 
@@ -107,12 +107,13 @@ class PathFindServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    private Line 노선생성(String name, String color, Station upStation,
-                      Station downStation, int distance) {
+    public static Line 노선생성(String name, String color, Station upStation,
+                      Station downStation, int distance, int extraCharge) {
         return new Builder(name, color)
                 .upStation(upStation)
                 .downStation(downStation)
                 .distance(distance)
+                .extraCharge(extraCharge)
                 .build();
     }
 
