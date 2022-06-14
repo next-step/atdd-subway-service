@@ -7,6 +7,7 @@ import static nextstep.subway.utils.apiHelper.FavoriteApiHelper.즐겨찾기_생
 import static nextstep.subway.utils.apiHelper.LineApiHelper.지하철_노선_등록되어_있음;
 import static nextstep.subway.utils.apiHelper.LineSectionApiHelper.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.utils.apiHelper.MemberApiHelper.회원_생성을_요청;
+import static nextstep.subway.utils.assertionHelper.AuthMemberAssertionHelper.인증실패;
 import static nextstep.subway.utils.assertionHelper.FavoriteAssertionHelper.즐겨찾기_목록조회_결과확인;
 import static nextstep.subway.utils.assertionHelper.FavoriteAssertionHelper.즐겨찾기_삭제됨;
 import static nextstep.subway.utils.assertionHelper.FavoriteAssertionHelper.즐겨찾기_생성_불가;
@@ -17,6 +18,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.application.AuthService;
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -42,6 +44,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
     private StationResponse 양재역;
     private String 토큰;
+    private String 잘못된_토큰;
 
     /**
      *
@@ -71,7 +74,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 7);
 
         토큰 = "token";
-
+        잘못된_토큰 = "invalidToken";
         Member 내정보 = new Member("test@test.com", "testPw", 32);
 
         String 내정보_ID = 회원_생성을_요청("test@test.com", "testPw", 32).response().getHeader("Location")
@@ -79,6 +82,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         when(authService.findMemberByToken(토큰)).thenReturn(
             new LoginMember(Long.parseLong(내정보_ID), 내정보.getEmail(), 내정보.getAge()));
+        when(authService.findMemberByToken(잘못된_토큰)).thenThrow(new AuthorizationException());
     }
 
 
@@ -130,7 +134,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * then: 즐겨찾기 생성이 되지 않는다
      */
     @Test
-    public void 즐겨찾기_생성에러(){
+    public void 즐겨찾기_생성에러() {
         //when
         ExtractableResponse<Response> 즐겨찾기_생성요청_1 = 즐겨찾기_생성요청(토큰, 강남역.getId(), 강남역.getId());
 
@@ -148,5 +152,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         //then
         즐겨찾기_생성_불가(즐겨찾기_생성요청_2);
+
+        //when
+        ExtractableResponse<Response> 즐겨찾기_생성요청_3 = 즐겨찾기_생성요청(잘못된_토큰, 강남역.getId(), 남부터미널역.getId());
+
+        //then
+        인증실패(즐겨찾기_생성요청_3);
     }
 }
