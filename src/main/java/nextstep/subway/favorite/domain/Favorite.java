@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -49,6 +50,10 @@ public class Favorite extends BaseEntity {
 
     public Member getMember() {
         return member;
+    }
+
+    public boolean isRegisteredBy(LoginMember loginMember) {
+        return id.equals(loginMember.getId());
     }
 
     @Override
