@@ -19,18 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
-    // TODO : 합칠 수 있으면 합치기
-    enum MemberType {
-        MINE("/members/mine"),
-        OTHER("/members/{id}");
-
-        private String uri;
-
-        MemberType(String uri) {
-            this.uri = uri;
-        }
-    }
-
     public static final String MINE_URI = "/members/me";
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
@@ -252,13 +240,5 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 내_정보_조회_실패(ExtractableResponse<Response> 내_정보_조회_요청_결과) {
         assertThat(내_정보_조회_요청_결과.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    // TODO : 합칠 수 있으면 합치기
-    private static String URI_생성(ExtractableResponse<Response> response, MemberType memberType) {
-        if (memberType == MemberType.MINE) {
-            return memberType.uri;
-        }
-        return response.header("Location");
     }
 }
