@@ -2,11 +2,11 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
-import java.util.Optional;
 
 public class Path {
 
@@ -22,7 +22,14 @@ public class Path {
 
     public PathResult findShortest(LoginMember loginMember, Station source, Station target) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        return PathResult.of(loginMember, dijkstraShortestPath.getPath(source, target));
+        GraphPath graphPath = dijkstraShortestPath.getPath(source, target);
+
+        if (null == graphPath) {
+            throw new RuntimeException("출발역과 도착역이 연결되어 있지 않습니다.");
+        }
+
+        SectionWeightedEdges edges = SectionWeightedEdges.of(graphPath.getEdgeList());
+        return PathResult.of(graphPath.getVertexList(), edges.getDisance(), Fare.of(loginMember.getAge(), edges));
     }
 
     private void createGraph(List<Line> lines) {

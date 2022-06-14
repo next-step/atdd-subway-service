@@ -1,29 +1,22 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
 
 import java.util.List;
 
 public class PathResult {
     private List<Station> stations;
-    private List<SectionWeightedEdge> sectionEdges;
     private Distance distance;
     private Fare fare;
 
-    private PathResult(LoginMember loginMember, GraphPath graphPath) {
-        this.stations = graphPath.getVertexList();
-        this.sectionEdges = graphPath.getEdgeList();
-        this.distance = Distance.of(sectionEdges);
-        this.fare = Fare.of(distance, loginMember.getAge(), sectionEdges);
+    private PathResult(List<Station> stations, Distance distance, Fare fare) {
+        this.stations = stations;
+        this.distance = distance;
+        this.fare = fare;
     }
 
-    public static PathResult of(LoginMember loginMember, GraphPath graphPath) {
-        if(null == graphPath) {
-            throw new RuntimeException("출발역과 도착역이 연결되어 있지 않습니다.");
-        }
-        return new PathResult(loginMember, graphPath);
+    public static PathResult of(List<Station> stations, Distance distance, Fare fare) {
+        return new PathResult(stations, distance, fare);
     }
 
     public List<Station> getStations() {

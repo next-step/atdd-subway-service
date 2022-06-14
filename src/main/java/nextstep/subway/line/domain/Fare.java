@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import java.util.List;
+import java.util.Set;
 
 public class Fare {
 
@@ -8,23 +8,23 @@ public class Fare {
 
     private int fare;
 
-    private Fare(Distance distance, Age age, List<SectionWeightedEdge> sectionEdges) {
-        this.fare = DEFAULT_FARE + calculateExtraFare(sectionEdges);
-        this.fare = FareDistance.calculate(this.fare, distance);
+    private Fare(Age age, SectionWeightedEdges sectionEdges) {
+        this.fare = DEFAULT_FARE + calculateExtraFare(sectionEdges.getLine());
+        this.fare = FareDistance.calculate(this.fare, sectionEdges.getDisance());
         this.fare = FareAgeDiscount.calculate(this.fare, age);
     }
 
-    public static Fare of(Distance distance, Age age, List<SectionWeightedEdge> sectionEdges) {
-        return new Fare(distance, age, sectionEdges);
+    public static Fare of(Age age, SectionWeightedEdges sectionEdges) {
+        return new Fare(age, sectionEdges);
     }
 
     public int getFare() {
         return fare;
     }
 
-    private int calculateExtraFare(List<SectionWeightedEdge> sectionEdges) {
-        return sectionEdges.stream()
-                .mapToInt(SectionWeightedEdge::getExtraFare)
+    private int calculateExtraFare(Set<Line> lines) {
+        return lines.stream()
+                .mapToInt(Line::getExtraFare)
                 .max().orElseThrow(RuntimeException::new);
     }
 }
