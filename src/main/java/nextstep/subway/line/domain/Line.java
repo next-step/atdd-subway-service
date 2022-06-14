@@ -13,8 +13,8 @@ public class Line extends BaseEntity {
     private Long id;
     @Column(unique = true)
     private String name;
+    @Column(nullable = false)
     private String color;
-
     @Embedded
     private final Sections sections = new Sections();
 
@@ -49,17 +49,12 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections.getSections();
-    }
-
     public List<Station> getStations() {
         return sections.stations();
     }
 
     public void addLineStation(Station upStation, Station downStation, int distance) {
         sections.add(this, upStation, downStation, distance);
-
     }
 
     public void removeLineStation(Station station) {
