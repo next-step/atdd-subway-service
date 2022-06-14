@@ -39,4 +39,8 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id).orElseThrow(RuntimeException::new);
+    }
+
 }
