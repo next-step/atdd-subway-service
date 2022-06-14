@@ -36,7 +36,7 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, Station upStation, Station downStation, Distance distance) {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
@@ -111,7 +111,7 @@ public class Line extends BaseEntity {
         return downStation;
     }
 
-    public void addLineStation(Station upStation, Station downStation, int distance) {
+    public void addLineStation(Station upStation, Station downStation, Distance distance) {
         boolean isUpStationExisted = sections.isStationExisted(upStation);
         boolean isDownStationExisted = sections.isStationExisted(downStation);
 
@@ -161,7 +161,7 @@ public class Line extends BaseEntity {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            Distance newDistance = upLineStation.get().getDistance().plus(downLineStation.get().getDistance());
             addSection(new Section(this, newUpStation, newDownStation, newDistance));
         }
 

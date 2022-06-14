@@ -22,8 +22,8 @@ class LineTest {
 
     @Test
     void 정렬된_역_리스트를_구할_수_있다() {
-        Line line = new Line("라인", "red", 강남역, 양재역, 10);
-        line.addSection(new Section(line, 양재역, 신논현역, 5));
+        Line line = new Line("라인", "red", 강남역, 양재역, new Distance(10));
+        line.addSection(new Section(line, 양재역, 신논현역, new Distance(5)));
 
         assertThat(line.getOrderedStations()).containsExactly(강남역, 양재역, 신논현역);
     }
@@ -31,23 +31,23 @@ class LineTest {
     @Test
     void addLineStation_비어있는_구간리스트_구간추가() {
         Line line = new Line("라인", "red");
-        line.addLineStation(강남역, 양재역, 10);
+        line.addLineStation(강남역, 양재역, new Distance(10));
 
         assertThat(line.getSections().size()).isEqualTo(1);
     }
 
     @Test
     void addLineStation_하행_구간추가() {
-        Line line = new Line("라인", "red", 강남역, 양재역, 10);
-        line.addLineStation(양재역, 신논현역, 5);
+        Line line = new Line("라인", "red", 강남역, 양재역, new Distance(10));
+        line.addLineStation(양재역, 신논현역, new Distance(5));
 
         assertThat(line.getSections().size()).isEqualTo(2);
     }
 
     @Test
     void addLineStation_상행_구간추가() {
-        Line line = new Line("라인", "red", 강남역, 양재역, 10);
-        line.addLineStation(신논현역, 강남역, 5);
+        Line line = new Line("라인", "red", 강남역, 양재역, new Distance(10));
+        line.addLineStation(신논현역, 강남역, new Distance(5));
 
         assertThat(line.getSections().size()).isEqualTo(2);
     }
@@ -55,36 +55,36 @@ class LineTest {
     @Test
     void addLineStation_구간사이_구간추가() {
         Station 양재시민의숲 = new Station("양재시민의숲");
-        Line line = new Line("라인", "red", 강남역, 양재역, 10);
+        Line line = new Line("라인", "red", 강남역, 양재역, new Distance(10));
 
-        line.addLineStation(양재역, 신논현역, 5);
-        line.addLineStation(양재역, 양재시민의숲, 3);
+        line.addLineStation(양재역, 신논현역, new Distance(5));
+        line.addLineStation(양재역, 양재시민의숲, new Distance(3));
 
         assertThat(line.getSections().size()).isEqualTo(3);
     }
 
     @Test
     void addLineStation_이미_등록된_구간추가_실패() {
-        Line line = new Line("라인", "red", 강남역, 양재역, 10);
+        Line line = new Line("라인", "red", 강남역, 양재역, new Distance(10));
 
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> line.addLineStation(강남역, 양재역, 5));
+                .isThrownBy(() -> line.addLineStation(강남역, 양재역, new Distance(5)));
     }
 
     @Test
     void addLineStation_상행_하행_매칭되는_구간이_아예_없는_구간추가_실패() {
-        Line line = new Line("라인", "red", 강남역, 양재역, 10);
+        Line line = new Line("라인", "red", 강남역, 양재역, new Distance(10));
 
         Station 양재시민의숲 = new Station("양재시민의숲");
 
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> line.addLineStation(신논현역, 양재시민의숲, 5));
+                .isThrownBy(() -> line.addLineStation(신논현역, 양재시민의숲, new Distance(5)));
     }
 
     @Test
     void removeLineStation_상행역_삭제() {
-        Line line = new Line("라인", "red", 강남역, 양재역, 10);
-        line.addLineStation(양재역, 신논현역, 5);
+        Line line = new Line("라인", "red", 강남역, 양재역, new Distance(10));
+        line.addLineStation(양재역, 신논현역, new Distance(5));
 
         line.removeLineStation(강남역);
 
@@ -93,8 +93,8 @@ class LineTest {
 
     @Test
     void removeLineStation_하행역_삭제() {
-        Line line = new Line("라인", "red", 강남역, 양재역, 10);
-        line.addLineStation(양재역, 신논현역, 5);
+        Line line = new Line("라인", "red", 강남역, 양재역, new Distance(10));
+        line.addLineStation(양재역, 신논현역, new Distance(5));
 
         line.removeLineStation(신논현역);
 
@@ -103,8 +103,8 @@ class LineTest {
 
     @Test
     void removeLineStation_구간사이_역_삭제() {
-        Line line = new Line("라인", "red", 강남역, 양재역, 10);
-        line.addLineStation(양재역, 신논현역, 5);
+        Line line = new Line("라인", "red", 강남역, 양재역, new Distance(10));
+        line.addLineStation(양재역, 신논현역, new Distance(5));
 
         line.removeLineStation(양재역);
 
@@ -113,7 +113,7 @@ class LineTest {
 
     @Test
     void removeLineStation_구간이_하나_이하인_경우에는_삭제_불가() {
-        Line line = new Line("라인", "red", 강남역, 양재역, 10);
+        Line line = new Line("라인", "red", 강남역, 양재역, new Distance(10));
 
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> line.removeLineStation(양재역));

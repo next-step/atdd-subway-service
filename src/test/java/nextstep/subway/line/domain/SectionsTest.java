@@ -26,8 +26,8 @@ class SectionsTest {
     @Test
     void 상행으로_비교하여_구간을_구할_수_있다() {
         Sections sections = new Sections();
-        Section firstSection = new Section(신분당선, 강남역, 양재역, 10);
-        Section secondSection = new Section(신분당선, 양재역, 신논현역, 5);
+        Section firstSection = new Section(신분당선, 강남역, 양재역, new Distance(10));
+        Section secondSection = new Section(신분당선, 양재역, 신논현역, new Distance(5));
         sections.add(firstSection);
         sections.add(secondSection);
 
@@ -39,8 +39,8 @@ class SectionsTest {
     @Test
     void 하행으로_비교하여_구간을_구할_수_있다() {
         Sections sections = new Sections();
-        Section firstSection = new Section(신분당선, 강남역, 양재역, 10);
-        Section secondSection = new Section(신분당선, 양재역, 신논현역, 5);
+        Section firstSection = new Section(신분당선, 강남역, 양재역, new Distance(10));
+        Section secondSection = new Section(신분당선, 양재역, 신논현역, new Distance(5));
         sections.add(firstSection);
         sections.add(secondSection);
 
@@ -52,7 +52,7 @@ class SectionsTest {
     @Test
     void 구간중에_역이_존재하는지_알_수_있다() {
         Sections sections = new Sections();
-        Section firstSection = new Section(신분당선, 강남역, 양재역, 10);
+        Section firstSection = new Section(신분당선, 강남역, 양재역, new Distance(10));
         sections.add(firstSection);
 
         assertThat(sections.isStationExisted(강남역)).isTrue();
