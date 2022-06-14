@@ -66,24 +66,34 @@ public class Sections {
     }
 
     public void add(Section section) {
-        validateStations(section.getUpStation(), section.getDownStation());
+        validateStations(section);
 
         rearrangeElementsFor(section);
         elements.add(section);
     }
 
-    private void validateStations(Station upStation, Station downStation) {
-        List<Station> stations = getStationsInOrder();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+    private void validateStations(Section section) {
+        if (elements.isEmpty()) {
+            return;
+        }
 
-        if (isUpStationExisted && isDownStationExisted) {
+        if (isDuplicated(section)) {
             throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
 
-        if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+        if (hasValidStation(section)) {
+            throw new IllegalArgumentException("일치하는 역이 없어 등록할 수 없는 구간 입니다.");
         }
+    }
+
+    private boolean isDuplicated(Section newSection) {
+        return elements.stream()
+                .anyMatch(section -> section.hasExactlySameStationsAs(newSection));
+    }
+
+    private boolean hasValidStation(Section newSection) {
+        return elements.stream()
+                .noneMatch(section -> section.hasAtLeastOneSameStationOf(newSection));
     }
 
     private void rearrangeElementsFor(Section section) {

@@ -87,6 +87,17 @@ public class Section {
         return upStation.equals(station);
     }
 
+    public boolean hasExactlySameStationsAs(Section newSection) {
+        return upStation.equals(newSection.upStation) && downStation.equals(newSection.downStation);
+    }
+
+    public boolean hasAtLeastOneSameStationOf(Section other) {
+        return upStation.equals(other.upStation) ||
+                upStation.equals(other.downStation) ||
+                downStation.equals(other.upStation) ||
+                downStation.equals(other.downStation);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
