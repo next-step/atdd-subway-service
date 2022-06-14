@@ -147,4 +147,23 @@ public class Line extends BaseEntity {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
     }
+
+    public void removeLineStation(Station station) {
+        if (getSectionsSize() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = sections.getNextSectionByEqualUpStation(station);
+        Optional<Section> downLineStation = sections.getNextSectionByEqualDownStation(station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            addSection(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(this::removeSection);
+        downLineStation.ifPresent(this::removeSection);
+    }
 }

@@ -80,4 +80,42 @@ class LineTest {
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> line.addLineStation(신논현역, 양재시민의숲, 5));
     }
+
+    @Test
+    void removeLineStation_상행역_삭제() {
+        Line line = new Line("라인", "red", 강남역, 양재역, 10);
+        line.addLineStation(양재역, 신논현역, 5);
+
+        line.removeLineStation(강남역);
+
+        assertThat(line.getSections().size()).isEqualTo(1);
+    }
+
+    @Test
+    void removeLineStation_하행역_삭제() {
+        Line line = new Line("라인", "red", 강남역, 양재역, 10);
+        line.addLineStation(양재역, 신논현역, 5);
+
+        line.removeLineStation(신논현역);
+
+        assertThat(line.getSections().size()).isEqualTo(1);
+    }
+
+    @Test
+    void removeLineStation_구간사이_역_삭제() {
+        Line line = new Line("라인", "red", 강남역, 양재역, 10);
+        line.addLineStation(양재역, 신논현역, 5);
+
+        line.removeLineStation(양재역);
+
+        assertThat(line.getSections().size()).isEqualTo(1);
+    }
+
+    @Test
+    void removeLineStation_구간이_하나_이하인_경우에는_삭제_불가() {
+        Line line = new Line("라인", "red", 강남역, 양재역, 10);
+
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> line.removeLineStation(양재역));
+    }
 }
