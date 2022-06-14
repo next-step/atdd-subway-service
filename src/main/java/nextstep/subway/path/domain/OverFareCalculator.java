@@ -20,6 +20,9 @@ public class OverFareCalculator {
     public static final int CHILD_DISCOUNT_RATE = 50;
     public static final int TEEN_DISCOUNT_RATE = 20;
 
+    private OverFareCalculator() {
+    }
+
     public static int calculateOverFareByDistance(PathFindResult pathFindResult) {
         int distance = pathFindResult.getDistance();
         return calculateOverFareInFirstRange(distance)

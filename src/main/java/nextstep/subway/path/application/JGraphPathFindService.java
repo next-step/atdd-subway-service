@@ -1,9 +1,7 @@
 package nextstep.subway.path.application;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-import java.util.List;
 import java.util.Set;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.PathFindResult;
@@ -30,7 +28,7 @@ public class JGraphPathFindService implements PathFindService {
         }
         Set<Line> lines = shortestPath.getEdgeList()
                 .stream()
-                .map(edge -> edge.getLine())
+                .map(SectionEdge::getLine)
                 .collect(toSet());
         return new PathFindResult(shortestPath.getVertexList(), lines, (int) shortestPath.getWeight());
     }

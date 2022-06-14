@@ -22,7 +22,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("지하철 구간 관련 기능")
-public class LineSectionAcceptanceTest extends AcceptanceTest {
+class LineSectionAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private StationResponse 강남역;
     private StationResponse 양재역;
