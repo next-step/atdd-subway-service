@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.auth.domain.ActualMember;
+import nextstep.subway.auth.domain.AnonymousMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
@@ -44,24 +46,53 @@ class PathServiceTest {
         칠호선.addNewSection(가산디지털단지, 남구로, 6);
     }
 
-    @DisplayName("출발역과 도착역 사이의 최단경로(+ 거리)를 조회한다.")
+    @DisplayName("출발역과 도착역 사이의 최단경로(+ 거리, 요금)를 조회한다.")
     @Test
     void findShortestPath() {
 
         //given
-        when(stationService.findStationById(anyLong())).thenReturn(독산).thenReturn(남구로);
+        when(stationService.findStationById(1L)).thenReturn(독산);
+        when(stationService.findStationById(5L)).thenReturn(남구로);
         when(lineRepository.findAll()).thenReturn(Arrays.asList(일호선, 칠호선));
+
         PathService pathService = new PathService(lineRepository, stationService);
 
         //when
-        PathResponse pathResponse = pathService.findShortestPath(1L, 5L);
+        PathResponse anonymousResponse = pathService.findShortestPath(new AnonymousMember(), 1L, 5L);
+        PathResponse generalResponse = pathService.findShortestPath(new ActualMember(1L, "general@test.com", 20), 1L, 5L);
+        PathResponse teenagerResponse = pathService.findShortestPath(new ActualMember(1L, "teenager@test.com", 17), 1L, 5L);
+        PathResponse childResponse = pathService.findShortestPath(new ActualMember(1L, "child@test.com", 9), 1L, 5L);
 
         //then
-        List<String> stationNames = pathResponse.getStations()
+        assertAll("익명사용자(비로그인)",
+                () -> assertThat(getStationNames(anonymousResponse)).containsExactly("독산", "가산디지털단지", "남구로"),
+                () -> assertThat(anonymousResponse.getDistance()).isEqualTo(9),
+                () -> assertThat(anonymousResponse.getFare()).isEqualTo(1250)
+        );
+
+        assertAll("일반",
+                () -> assertThat(getStationNames(generalResponse)).containsExactly("독산", "가산디지털단지", "남구로"),
+                () -> assertThat(generalResponse.getDistance()).isEqualTo(9),
+                () -> assertThat(generalResponse.getFare()).isEqualTo(1250)
+        );
+
+        assertAll("청소년",
+                () -> assertThat(getStationNames(teenagerResponse)).containsExactly("독산", "가산디지털단지", "남구로"),
+                () -> assertThat(teenagerResponse.getDistance()).isEqualTo(9),
+                () -> assertThat(teenagerResponse.getFare()).isEqualTo(720)
+        );
+
+        assertAll("어린이",
+                () -> assertThat(getStationNames(childResponse)).containsExactly("독산", "가산디지털단지", "남구로"),
+                () -> assertThat(childResponse.getDistance()).isEqualTo(9),
+                () -> assertThat(childResponse.getFare()).isEqualTo(450)
+        );
+    }
+
+    private List<String> getStationNames(PathResponse pathResponse) {
+        return pathResponse.getStations()
                 .stream()
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
-        assertThat(stationNames).containsExactly("독산", "가산디지털단지", "남구로");
-        assertThat(pathResponse.getDistance()).isEqualTo(9);
     }
 }

@@ -10,8 +10,8 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.exception.SectionCreateException;
 import nextstep.subway.line.exception.SectionRemoveException;
+import nextstep.subway.path.vo.SectionEdge;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 @Embeddable
@@ -173,15 +173,16 @@ public class Sections {
         }
     }
 
-    public void addVertexByStations(WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap) {
-        for (Station station : getStations()){
+    public void addVertexByStations(WeightedMultigraph<Station, SectionEdge> subwayMap) {
+        for (Station station : getStations()) {
             subwayMap.addVertex(station);
         }
     }
 
-    public void addEdgeBySections(WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap) {
-        for (Section section : sections){
-            subwayMap.setEdgeWeight(subwayMap.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+    public void addEdgeBySections(WeightedMultigraph<Station, SectionEdge> subwayMap) {
+        for (Section section : sections) {
+            subwayMap.addEdge(section.getUpStation(), section.getDownStation(), new SectionEdge(section));
+            subwayMap.setEdgeWeight(new SectionEdge(section), section.getDistance());
         }
     }
 }

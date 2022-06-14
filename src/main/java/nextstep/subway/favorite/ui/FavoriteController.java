@@ -3,7 +3,7 @@ package nextstep.subway.favorite.ui;
 import java.net.URI;
 import java.util.List;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.AccessMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -28,16 +28,16 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal AccessMember accessMember,
                                                @RequestBody FavoriteRequest favoriteRequest) {
         FavoriteResponse favoriteResponse = favoriteService
-                .createFavorite(loginMember, favoriteRequest.getSource(), favoriteRequest.getTarget());
+                .createFavorite(accessMember, favoriteRequest.getSource(), favoriteRequest.getTarget());
         return ResponseEntity.created(URI.create("/favorites/" + favoriteResponse.getId())).build();
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoriteResponse>> findFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
+    public ResponseEntity<List<FavoriteResponse>> findFavorites(@AuthenticationPrincipal AccessMember accessMember) {
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(accessMember);
         return ResponseEntity.ok(favorites);
     }
 

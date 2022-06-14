@@ -9,7 +9,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
-import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.ActualMember;
+import nextstep.subway.auth.domain.AccessMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -32,7 +33,7 @@ class FavoriteServiceTest {
     private Station 신림 = new Station(3L, "신림");
     private Station 건대입구 = new Station(4L, "건대입구");
     private Member 사용자 = new Member("test@email.com", "1234", 15);
-    private LoginMember 로그인사용자 = new LoginMember(1L, "test@email.com", 15);
+    private AccessMember 로그인사용자 = new ActualMember(1L, "test@email.com", 15);
 
     @Mock
     private FavoriteRepository favoriteRepository;

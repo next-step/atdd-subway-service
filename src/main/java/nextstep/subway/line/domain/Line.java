@@ -2,11 +2,11 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.line.domain.collections.Sections;
+import nextstep.subway.path.vo.SectionEdge;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.List;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 @Entity
@@ -17,6 +17,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    private Integer extraCharge;
     @Embedded
     private Sections sections = new Sections();
 
@@ -31,6 +32,13 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        sections.addSection(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int extraCharge) {
+        this.name = name;
+        this.color = color;
+        this.extraCharge = extraCharge;
         sections.addSection(new Section(this, upStation, downStation, distance));
     }
 
@@ -55,6 +63,10 @@ public class Line extends BaseEntity {
         return sections;
     }
 
+    public Integer getExtraCharge() {
+        return extraCharge;
+    }
+    
     public void addSection(Section section) {
         sections.addSection(section);
         section.setLine(this);
@@ -72,11 +84,11 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
-    public void makeVertexByStationsTo(WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap) {
+    public void makeVertexByStationsTo(WeightedMultigraph<Station, SectionEdge> subwayMap) {
         sections.addVertexByStations(subwayMap);
     }
 
-    public void makedgeBySectionsTo(WeightedMultigraph<Station, DefaultWeightedEdge> subwayMap) {
+    public void makeEdgeBySectionsTo(WeightedMultigraph<Station, SectionEdge> subwayMap) {
         sections.addEdgeBySections(subwayMap);
     }
 }
