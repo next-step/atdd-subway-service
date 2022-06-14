@@ -46,7 +46,7 @@ public class Sections {
             sections.add(section);
             return;
         }
-        throw new RuntimeException();
+        throw new IllegalArgumentException();
     }
 
     private boolean isStationExisted(Station station) {
@@ -56,11 +56,11 @@ public class Sections {
 
     private void raiseIfNotValidAddSection(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
 
         if (!sections.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
     }
 
@@ -107,7 +107,7 @@ public class Sections {
 
     private void raiseIfNotValidRemoveStation() {
         if (sections.size() <= MIN_REMOVE_SECTION_SIZE) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException("구간이 하나 이상일때 역을 지울 수 있습니다.");
         }
     }
 }

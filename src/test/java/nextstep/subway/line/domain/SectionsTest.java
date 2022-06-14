@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 class SectionsTest {
 
@@ -92,7 +92,7 @@ class SectionsTest {
         Sections sections = new Sections();
         sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
 
-        assertThatExceptionOfType(RuntimeException.class)
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> sections.add(new Section(신분당선, 강남역, 양재역, new Distance(5))));
     }
 
@@ -103,7 +103,7 @@ class SectionsTest {
 
         Station 양재시민의숲 = new Station("양재시민의숲");
 
-        assertThatExceptionOfType(RuntimeException.class)
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> sections.add(new Section(신분당선, 신논현역, 양재시민의숲, new Distance(5))));
     }
 
@@ -145,7 +145,7 @@ class SectionsTest {
         Sections sections = new Sections();
         sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
 
-        assertThatExceptionOfType(RuntimeException.class)
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> sections.remove(신분당선, 양재역));
     }
 

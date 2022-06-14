@@ -38,9 +38,9 @@ class DistanceTest {
 
     @Test
     void 뺄때_결과값이_음수_또는_0이_될_수_없다() {
-        assertThatExceptionOfType(RuntimeException.class)
+        assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> new Distance(1).minus(new Distance(2)));
-        assertThatExceptionOfType(RuntimeException.class)
+        assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> new Distance(1).minus(new Distance(1)));
     }
 
