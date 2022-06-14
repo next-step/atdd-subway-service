@@ -40,8 +40,8 @@ npm run dev
 
 ## 요구사항
 
-- [ ] LineService 리팩터링
-- [ ] (선택) LineSectionAcceptanceTest 리팩터링
+- [x] LineService 리팩터링
+- [x] (선택) LineSectionAcceptanceTest 리팩터링
 
 
 ## ✏️ Code Review Process

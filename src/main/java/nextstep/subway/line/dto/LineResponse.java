@@ -27,12 +27,18 @@ public class LineResponse {
         this.modifiedDate = modifiedDate;
     }
 
-    public static LineResponse of(Line line) {
+    public static LineResponse from(Line line) {
         List<StationResponse> stations = line.getStations().stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
 
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
+    }
+
+    public static List<LineResponse> toList(List<Line> lines) {
+        return lines.stream()
+            .map(LineResponse::from)
+            .collect(Collectors.toList());
     }
 
     public Long getId() {
