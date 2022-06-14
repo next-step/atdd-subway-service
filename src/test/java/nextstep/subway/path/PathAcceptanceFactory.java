@@ -25,4 +25,8 @@ public class PathAcceptanceFactory {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(path.getDistance()).isEqualTo(distance);
     }
+
+    public static void 최단_경로_조회_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }

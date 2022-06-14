@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.exception.SameOriginDestinationException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.PathFinder;
@@ -21,6 +22,9 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(Long source, Long target) {
+        if (source.equals(target)) {
+            throw new SameOriginDestinationException("출발지와 도착지가 같습니다.");
+        }
         List<Line> lines = lineRepository.findAll();
 
         Station sourceStation = stationRepository.findById(source)

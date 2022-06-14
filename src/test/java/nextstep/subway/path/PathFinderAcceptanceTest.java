@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.path.PathAcceptanceFactory.최단_경로_조회_요청;
+import static nextstep.subway.path.PathAcceptanceFactory.최단_경로_조회_조회_실패;
 import static nextstep.subway.path.PathAcceptanceFactory.최단_경로_조회_조회됨;
 
 
@@ -55,5 +56,12 @@ public class PathFinderAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
 
         최단_경로_조회_조회됨(response, 5);
+    }
+
+    @Test
+    void 출발지와_도착지가_같아서_조회실패() {
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 교대역.getId());
+
+        최단_경로_조회_조회_실패(response);
     }
 }
