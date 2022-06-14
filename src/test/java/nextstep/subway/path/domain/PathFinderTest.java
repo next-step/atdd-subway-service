@@ -112,11 +112,11 @@ class PathFinderTest {
     @Test
     void findShortestPathByUnreachablePath() {
         // given
-        PathFinder pathFinder = new PathFinder(Collections.singletonList(이호선));
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 수인분당선));
 
         // then
-        assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(교대역, 양재역));
-        assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(양재역, 교대역));
+        assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(강남역, 도곡역));
+        assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(한티역, 강남역));
     }
 
     private void 최소_노선_경로_일치됨(PathResponse.Stations source, Station... target) {

@@ -4,6 +4,7 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -11,7 +12,8 @@ import org.jgrapht.graph.WeightedMultigraph;
 import java.util.List;
 
 public class PathFinder {
-    private WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    private WeightedMultigraph<Station, DefaultWeightedEdge> graph =
+            new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 
     public PathFinder(List<Line> lines) {
         validationLines(lines);
@@ -24,7 +26,7 @@ public class PathFinder {
 
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath =
                 new DijkstraShortestPath<Station, DefaultWeightedEdge>(graph);
-        List<Station> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
+        List<Station> shortestPath = getShortestPath(dijkstraShortestPath, source, target);
         int totalShortestDistance = (int) dijkstraShortestPath.getPathWeight(source, target);
 
         return new PathResponse.ShortestPath(shortestPath, totalShortestDistance);
@@ -36,7 +38,7 @@ public class PathFinder {
         }
     }
 
-    public void validationFindPathStation(Station source, Station target) {
+    private void validationFindPathStation(Station source, Station target) {
         if (source.equals(target)) {
             throw new IllegalArgumentException("출발지와 도착지가 같을 수 없습니다.");
         }
@@ -75,5 +77,17 @@ public class PathFinder {
 
     private boolean isNotHasEdge(Station upStation, Station downStation) {
         return !this.graph.containsEdge(upStation, downStation);
+    }
+
+    private List<Station> getShortestPath(
+            DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath, Station source, Station target
+    ) {
+        GraphPath<Station, DefaultWeightedEdge> result = dijkstraShortestPath.getPath(source, target);
+
+        if (result == null) {
+            throw new IllegalArgumentException("경로를 찾을 수 없습니다.");
+        }
+
+        return result.getVertexList();
     }
 }
