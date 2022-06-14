@@ -39,7 +39,7 @@ public class PathFinder {
         line.getSections()
                 .forEach(section -> graph.setEdgeWeight(
                         graph.addEdge(section.getUpStation(), section.getDownStation()),
-                        section.getDistance())
+                        section.getDistance().getValue())
                 );
     }
 

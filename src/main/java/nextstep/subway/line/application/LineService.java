@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.PathFinder;
@@ -35,7 +36,7 @@ public class LineService {
                 new Line.Builder(request.getName(), request.getColor())
                         .upStation(upStation)
                         .downStation(downStation)
-                        .distance(request.getDistance())
+                        .distance(Distance.from(request.getDistance()))
                         .build()
         );
 
@@ -82,7 +83,7 @@ public class LineService {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
 
-        line.addSection(upStation, downStation, request.getDistance());
+        line.addSection(upStation, downStation, Distance.from(request.getDistance()));
         pathFinder.removeLine(line);
         pathFinder.addLine(line);
     }

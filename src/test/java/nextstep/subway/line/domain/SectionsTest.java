@@ -20,16 +20,16 @@ class SectionsTest {
     public void setUp() {
         upStation = new Station("상행 종점");
         downStation = new Station("하행 종점");
-        line = new Line("2호선", "color", upStation, downStation, 5);
+        line = new Line("2호선", "color", upStation, downStation, Distance.from(5));
         sections = new Sections();
-        sections.add(new Section(line, upStation, downStation, 10));
+        sections.add(new Section(line, upStation, downStation, Distance.from(10)));
     }
 
     @Test
     void 구간_등록() {
         // when
         Station newStation = new Station("역");
-        Section input = new Section(line, upStation, newStation, 2);
+        Section input = new Section(line, upStation, newStation, Distance.from(2));
         sections.add(input);
 
         // then
@@ -40,7 +40,7 @@ class SectionsTest {
     void 구간_등록_중복_예외() {
         // then
         assertThatThrownBy(
-                () -> sections.add(new Section(line, upStation, downStation, 2))
+                () -> sections.add(new Section(line, upStation, downStation, Distance.from(2)))
         ).isInstanceOf(RuntimeException.class);
     }
 
@@ -52,7 +52,7 @@ class SectionsTest {
 
         // then
         assertThatThrownBy(
-                () -> sections.add(new Section(line, notExistedStation1, notExistedStation2, 2))
+                () -> sections.add(new Section(line, notExistedStation1, notExistedStation2, Distance.from(2)))
         ).isInstanceOf(RuntimeException.class);
     }
 
@@ -60,7 +60,7 @@ class SectionsTest {
     void 역_제거() {
         // given
         Station removedStation = new Station("역");
-        Section input = new Section(line, upStation, removedStation, 2);
+        Section input = new Section(line, upStation, removedStation, Distance.from(2));
         sections.add(input);
 
         // when

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Path;
 import nextstep.subway.line.domain.PathFinder;
@@ -39,7 +40,7 @@ class PathServiceTest {
         // given
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
-        Line 이호선 = new Line("이호선", "초록색", 강남역, 양재역, 5);
+        Line 이호선 = new Line("이호선", "초록색", 강남역, 양재역, Distance.from(5));
 
         when(lineService.findLines()).thenReturn(Lists.newArrayList(이호선));
 

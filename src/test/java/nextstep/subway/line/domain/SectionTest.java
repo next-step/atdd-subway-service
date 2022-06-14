@@ -20,13 +20,15 @@ class SectionTest {
     void 상행역과_상행역_비교() {
         Station upStation = new Station("상행역");
         Station downStation = new Station("하행역");
-        Section section = new Section(line, upStation, downStation, 5);
+        Section section = new Section(line, upStation, downStation, Distance.from(5));
 
         assertAll(
-                () -> assertThat(section.isSameUpStation(new Section(line, upStation, new Station("역"), 5))).isEqualTo(
+                () -> assertThat(section.isSameUpStation(
+                        new Section(line, upStation, new Station("역"), Distance.from(5)))).isEqualTo(
                         true),
                 () -> assertThat(
-                        section.isSameUpStation(new Section(line, new Station("역"), downStation, 5))).isEqualTo(false)
+                        section.isSameUpStation(
+                                new Section(line, new Station("역"), downStation, Distance.from(5)))).isEqualTo(false)
         );
     }
 
@@ -34,7 +36,7 @@ class SectionTest {
     void 상행역과_역을_비교() {
         Station upStation = new Station("상행역");
         Station downStation = new Station("하행역");
-        Section section = new Section(line, upStation, downStation, 5);
+        Section section = new Section(line, upStation, downStation, Distance.from(5));
 
         assertAll(
                 () -> assertThat(section.isSameUpStation(upStation)).isEqualTo(true),
@@ -46,13 +48,15 @@ class SectionTest {
     void 하행역과_하행역_비교() {
         Station upStation = new Station("상행역");
         Station downStation = new Station("하행역");
-        Section section = new Section(line, upStation, downStation, 5);
+        Section section = new Section(line, upStation, downStation, Distance.from(5));
 
         assertAll(
                 () -> assertThat(
-                        section.isSameDownStation(new Section(line, new Station("역"), downStation, 5))).isEqualTo(true),
+                        section.isSameDownStation(
+                                new Section(line, new Station("역"), downStation, Distance.from(5)))).isEqualTo(true),
                 () -> assertThat(
-                        section.isSameDownStation(new Section(line, upStation, new Station("역"), 5))).isEqualTo(false)
+                        section.isSameDownStation(
+                                new Section(line, upStation, new Station("역"), Distance.from(5)))).isEqualTo(false)
         );
 
     }
@@ -61,7 +65,7 @@ class SectionTest {
     void 하행역과_역을_비교() {
         Station upStation = new Station("상행역");
         Station downStation = new Station("하행역");
-        Section section = new Section(line, upStation, downStation, 5);
+        Section section = new Section(line, upStation, downStation, Distance.from(5));
 
         assertAll(
                 () -> assertThat(section.isSameDownStation(downStation)).isEqualTo(true),

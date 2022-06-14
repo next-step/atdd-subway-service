@@ -32,20 +32,20 @@ class PathFinderTest {
         신분당선 = new Line.Builder("신분당선", "bg-red-600")
                 .upStation(강남역)
                 .downStation(양재역)
-                .distance(10)
+                .distance(Distance.from(10))
                 .build();
         이호선 = new Line.Builder("이호선", "bg-red-600")
                 .upStation(교대역)
                 .downStation(강남역)
-                .distance(10)
+                .distance(Distance.from(10))
                 .build();
         삼호선 = new Line.Builder("삼호선", "bg-red-600")
                 .upStation(교대역)
                 .downStation(양재역)
-                .distance(5)
+                .distance(Distance.from(5))
                 .build();
 
-        삼호선.addSection(교대역, 남부터미널역, 3);
+        삼호선.addSection(교대역, 남부터미널역, Distance.from(3));
 
         주안역 = new Station("주안역");
         인하대역 = new Station("인하대역");
@@ -53,7 +53,7 @@ class PathFinderTest {
         연결안된노선 = new Line.Builder("연결안된노선", "bg-red-600")
                 .upStation(주안역)
                 .downStation(인하대역)
-                .distance(5)
+                .distance(Distance.from(5))
                 .build();
 
         pathFinder = new PathFinder();
@@ -65,7 +65,7 @@ class PathFinderTest {
         Path path = pathFinder.findShortestPath(교대역, 양재역);
 
         assertAll(
-                () -> assertThat(path.getDistance()).isEqualTo(5),
+                () -> assertThat(path.getDistance()).isEqualTo(Distance.from(5)),
                 () -> assertThat(path.getStations()).containsExactly(교대역, 남부터미널역, 양재역)
         );
     }
@@ -85,14 +85,14 @@ class PathFinderTest {
         Line 추가노선 = new Line.Builder("추가노선", "bg-red-600")
                 .upStation(추가역1)
                 .downStation(추가역2)
-                .distance(7)
+                .distance(Distance.from(7))
                 .build();
 
         pathFinder.addLine(추가노선);
 
         Path path = pathFinder.findShortestPath(추가역1, 추가역2);
         assertAll(
-                () -> assertThat(path.getDistance()).isEqualTo(7),
+                () -> assertThat(path.getDistance()).isEqualTo(Distance.from(7)),
                 () -> assertThat(path.getStations()).containsExactly(추가역1, 추가역2)
         );
     }

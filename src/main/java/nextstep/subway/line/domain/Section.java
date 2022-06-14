@@ -21,19 +21,19 @@ public class Section {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "down_station_id")
     private Station downStation;
-
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public static class Builder {
         private Line line;
         private Station upStation;
         private Station downStation;
-        private int distance;
+        private Distance distance;
 
         public Builder() {
         }
 
-        public Builder(Line line, Station upStation, Station downStation, int distance) {
+        public Builder(Line line, Station upStation, Station downStation, Distance distance) {
             this.line = line;
             this.upStation = upStation;
             this.downStation = downStation;
@@ -55,7 +55,7 @@ public class Section {
             return this;
         }
 
-        public Builder distance(int distance) {
+        public Builder distance(Distance distance) {
             this.distance = distance;
             return this;
         }
@@ -68,7 +68,7 @@ public class Section {
     public Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -91,24 +91,24 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public void updateUpStation(Station station, Distance newDistance) {
+        if (this.distance.getValue() <= newDistance.getValue()) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance.minus(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public void updateDownStation(Station station, Distance newDistance) {
+        if (this.distance.getValue() <= newDistance.getValue()) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.downStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance.minus(newDistance);
     }
 
     public boolean isSameUpStation(Section target) {

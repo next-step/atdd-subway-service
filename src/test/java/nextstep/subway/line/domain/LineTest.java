@@ -18,7 +18,7 @@ class LineTest {
     public void setUp() {
         upStation = new Station("상행 종점");
         downStation = new Station("하행 종점");
-        line = new Line("2호선", "color", upStation, downStation, 5);
+        line = new Line("2호선", "color", upStation, downStation, Distance.from(5));
 
     }
 
@@ -33,7 +33,7 @@ class LineTest {
         // when
         Station lineUpStation = upStation;
         Station lineDownStation = new Station("구간역");
-        line.addSection(lineUpStation, lineDownStation, 2);
+        line.addSection(lineUpStation, lineDownStation, Distance.from(2));
 
         // then
         assertThat(line.getStations()).containsExactly(upStation, lineDownStation, downStation);
@@ -47,7 +47,7 @@ class LineTest {
 
         // then
         assertThatThrownBy(
-                () -> line.addSection(lineUpStation, lineDownStation, 2)
+                () -> line.addSection(lineUpStation, lineDownStation, Distance.from(2))
         ).isInstanceOf(RuntimeException.class);
 
     }
@@ -60,7 +60,7 @@ class LineTest {
 
         // then
         assertThatThrownBy(
-                () -> line.addSection(lineUpStation, lineDownStation, 2)
+                () -> line.addSection(lineUpStation, lineDownStation, Distance.from(2))
         ).isInstanceOf(RuntimeException.class);
     }
 
@@ -68,7 +68,7 @@ class LineTest {
     void 역_제거() {
         // when
         Station station = new Station("구간역");
-        line.addSection(upStation, station, 2);
+        line.addSection(upStation, station, Distance.from(2));
         line.removeStation(station);
 
         // then
