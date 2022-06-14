@@ -8,11 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DataJpaTest
 class LineTest {
@@ -56,13 +58,14 @@ class LineTest {
     @DisplayName("지하철 구간을 추가한다.")
     @Test
     void addStationAtBeginning() {
+        // given
         Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
 
         // when
         line.addLineStation(new Section(line, addStation, upStation, 10));
 
         // then
-        List<Long> ids = line.getStations().stream().map(Station::getId).collect(Collectors.toList());
+        List<Long> ids = getStationIds(line);
         assertThat(ids).containsExactly(addStation.getId(), upStation.getId(), downStation.getId());
     }
 
@@ -76,7 +79,7 @@ class LineTest {
         line.addLineStation(new Section(line, upStation, addStation, 5));
 
         // then
-        List<Long> ids = line.getStations().stream().map(Station::getId).collect(Collectors.toList());
+        List<Long> ids = getStationIds(line);
         assertThat(ids).containsExactly(upStation.getId(), addStation.getId(), downStation.getId());
     }
 
@@ -90,30 +93,97 @@ class LineTest {
         line.addLineStation(new Section(line, downStation, addStation, 10));
 
         // then
-        List<Long> ids = line.getStations().stream().map(Station::getId).collect(Collectors.toList());
+        List<Long> ids = getStationIds(line);
         assertThat(ids).containsExactly(upStation.getId(), downStation.getId(), addStation.getId());
     }
 
     @DisplayName("이미 노선에 등록된 역으로는 구간을 추가할 수 없다.")
     @Test
     void addDuplicatedStation() {
-        // given
+        // when
         Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
         line.addLineStation(new Section(line, downStation, addStation, 10));
 
         // then
-        assertThatThrownBy(() -> line.addLineStation(new Section(line, upStation, addStation,10)))
+        assertThatThrownBy(() -> line.addLineStation(new Section(line, upStation, addStation, 10)))
                 .isInstanceOf(RuntimeException.class);
     }
 
     @DisplayName("기존 역 사이 길이보다 크거나 같은 구간은 추가할 수 없다.")
     @Test
     void addStation() {
+        // when
+        Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
+
+        // then
+        assertThatThrownBy(() -> line.addLineStation(new Section(line, upStation, addStation, 10)))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @DisplayName("시작역을 삭제한다.")
+    @Test
+    void deleteUpStation() {
+        // given
+        Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
+        line.addLineStation(new Section(line, downStation, addStation, 10));
+
+        // when
+        line.removeLineStation(upStation);
+
+        // then
+        List<Long> stationIds = getStationIds(line);
+        assertThat(stationIds).containsExactly(downStation.getId(), addStation.getId());
+
+    }
+
+    @DisplayName("도착역을 삭제한다.")
+    @Test
+    void deleteDownStation() {
+        // given
+        Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
+        line.addLineStation(new Section(line, downStation, addStation, 10));
+
+        // when
+        line.removeLineStation(addStation);
+
+        // then
+        List<Long> stationIds = getStationIds(line);
+        assertThat(stationIds).containsExactly(upStation.getId(), downStation.getId());
+    }
+
+    @DisplayName("중간역을 삭제한다.")
+    @Test
+    void deleteStationBetweenStations() {
+        // given
+        Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
+        line.addLineStation(new Section(line, downStation, addStation, 10));
+
+        // when
+        line.removeLineStation(downStation);
+
+        // then
+        List<Long> stationIds = getStationIds(line);
+        assertThat(stationIds).containsExactly(upStation.getId(), addStation.getId());
+    }
+
+    @DisplayName("역을 삭제할 수 없다.")
+    @Test
+    void canNotDeleteAnyStations() {
         // given
         Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
 
         // then
-        assertThatThrownBy(() -> line.addLineStation(new Section(line, upStation, addStation,10)))
-                .isInstanceOf(RuntimeException.class);
+        assertAll(
+                () -> assertThatThrownBy(() -> line.removeLineStation(upStation)).isInstanceOf(RuntimeException.class),
+                () -> assertThatThrownBy(() -> line.removeLineStation(downStation)).isInstanceOf(RuntimeException.class),
+                () -> assertThatThrownBy(() -> line.removeLineStation(addStation)).isInstanceOf(RuntimeException.class)
+        );
+    }
+
+    List<Long> getStationIds(Line line) {
+        return lines.getById(line.getId())
+                    .getStations().stream()
+                    .map(Station::getId)
+                    .collect(Collectors.toList());
     }
 }
