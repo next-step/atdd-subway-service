@@ -73,14 +73,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
-        //when
+        //when(사용자 생성 요청)
         ExtractableResponse<Response> 회원생성_response = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        // then
+        // then(사용자 생성됨)
         회원_생성됨(회원생성_response);
 
-        //when
+        //when(사용자 정보를 통해 로그인)
         ExtractableResponse<Response> 로그인을통한_토큰받기_response = 로그인을통한_토큰받기(EMAIL, PASSWORD);
-        //then
+        //then(토큰 발행)
         String 토큰 = 로그인을통한_토큰받기_response.jsonPath().get("accessToken").toString();
 
         //when(me를통한 사용자변경)
@@ -88,13 +88,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             NEW_AGE, 토큰);
         //when(토큰재발급)
         토큰 = 로그인을통한_토큰받기(NEW_EMAIL, NEW_PASSWORD).jsonPath().get("accessToken").toString();
-        //then
+        //then(변경된 정보 확인)
         ExtractableResponse<Response> 토큰을통해_내정보받기_response = 토큰을통해_내정보받기(토큰);
         가져온_내정보_확인하기(new Member(NEW_EMAIL, NEW_PASSWORD, NEW_AGE), 토큰을통해_내정보받기_response);
 
         //when(me를 통한 사용자 삭제)
         ExtractableResponse<Response> 내정보_삭제_요청_response = 내정보_삭제_요청(토큰);
-        //then
+        //then(사용자가 조회되지 않음)
         토큰을통해_내정보받기_response = 토큰을통해_내정보받기(토큰);
         인증실패(토큰을통해_내정보받기_response);
     }
