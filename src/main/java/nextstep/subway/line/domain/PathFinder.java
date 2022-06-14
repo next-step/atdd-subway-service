@@ -1,11 +1,13 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.NotConnectStationException;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -16,7 +18,7 @@ public class PathFinder {
     protected PathFinder() {
     }
 
-    public static PathFinder of(){
+    public static PathFinder of() {
         return new PathFinder();
     }
 
@@ -26,6 +28,10 @@ public class PathFinder {
         }
 
         GraphPath path = shortestPath.getPath(source, target);
+        if (ObjectUtils.isEmpty(path)) {
+            throw new NotConnectStationException("출발지와 도착지가 연결되지 않음.");
+        }
+
         double pathWeight = shortestPath.getPathWeight(source, target);
         return PathResponse.of(path.getVertexList(), (int) pathWeight);
     }

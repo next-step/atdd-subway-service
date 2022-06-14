@@ -23,10 +23,13 @@ public class PathFinderAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 신규노선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 신규상행역;
+    private StationResponse 신규하행역;
 
     /**
      * 교대역    --- *2호선 10* ---   강남역
@@ -43,10 +46,13 @@ public class PathFinderAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        신규상행역 = StationAcceptanceTest.지하철역_등록되어_있음("신규상행역").as(StationResponse.class);
+        신규하행역 = StationAcceptanceTest.지하철역_등록되어_있음("신규하행역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음(LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(LineRequest.of("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        신규노선 = 지하철_노선_등록되어_있음(LineRequest.of("신규호선", "bg-red-600", 신규상행역.getId(), 신규하행역.getId(), 5)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -61,6 +67,13 @@ public class PathFinderAcceptanceTest extends AcceptanceTest {
     @Test
     void 출발지와_도착지가_같아서_조회실패() {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 교대역.getId());
+
+        최단_경로_조회_조회_실패(response);
+    }
+
+    @Test
+    void 출발지와_도착지_연결되지않아__조회실패() {
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 신규상행역.getId());
 
         최단_경로_조회_조회_실패(response);
     }
