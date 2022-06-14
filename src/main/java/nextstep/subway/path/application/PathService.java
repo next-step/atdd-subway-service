@@ -3,12 +3,10 @@ package nextstep.subway.path.application;
 import nextstep.subway.auth.domain.AccessMember;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.collections.Lines;
-import nextstep.subway.path.domain.Fare;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.path.vo.SectionEdge;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +27,8 @@ public class PathService {
         Station target = stationService.findStationById(targetId);
         Lines lines = new Lines(lineRepository.findAll());
 
-        GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(source, target);
-        Fare fare = lines.calculateFare(shortestPath, accessMember.getMemberFarePolicy());
-        return PathResponse.of(shortestPath, fare.calculateFare());
+        ShortestPath shortestPath = lines.findShortestPath(source, target);
+        int fare = shortestPath.calculateFare(accessMember.getMemberFarePolicy());
+        return PathResponse.of(shortestPath, fare);
     }
 }

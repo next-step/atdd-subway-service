@@ -63,4 +63,12 @@ public class ShortestPath {
         }
         return fare;
     }
+
+    public List<Station> getRoutes() {
+        return shortestPath.getVertexList();
+    }
+
+    public int getDistance() {
+        return (int) shortestPath.getWeight();
+    }
 }

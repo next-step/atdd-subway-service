@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("최단경로(+요금) 관련 단위테스트")
 class ShortestPathTest {
 
     private final Station 구로 = new Station("구로");
@@ -50,7 +51,7 @@ class ShortestPathTest {
     @Test
     void calculateFare() {
         //given
-        ShortestPath shortestPath = new ShortestPath(lines.findShortestPath(독산, 가산디지털단지));
+        ShortestPath shortestPath = lines.findShortestPath(독산, 가산디지털단지);
 
         //when
         int finalFare = shortestPath.calculateFare(MemberFarePolicy.GENERAL);
@@ -63,7 +64,7 @@ class ShortestPathTest {
     @Test
     void calculateFare_extra_distance() {
         //given
-        ShortestPath shortestPath = new ShortestPath(lines.findShortestPath(독산, 구로));
+        ShortestPath shortestPath = lines.findShortestPath(독산, 구로);
 
         //when
         int finalFare = shortestPath.calculateFare(MemberFarePolicy.GENERAL);
@@ -76,7 +77,7 @@ class ShortestPathTest {
     @Test
     void calculateFare_extra_distance_over_50KM() {
         //given
-        ShortestPath shortestPath = new ShortestPath(lines.findShortestPath(독산, 잠실));
+        ShortestPath shortestPath = lines.findShortestPath(독산, 잠실);
 
         //when
         int finalFare = shortestPath.calculateFare(MemberFarePolicy.GENERAL);
@@ -89,7 +90,7 @@ class ShortestPathTest {
     @Test
     void calcFare_extra_charge() {
         //given
-        ShortestPath shortestPath = new ShortestPath(lines.findShortestPath(강남, 판교));
+        ShortestPath shortestPath = lines.findShortestPath(강남, 판교);
         //when
         int finalFare = shortestPath.calculateFare(MemberFarePolicy.GENERAL);
 
@@ -101,7 +102,7 @@ class ShortestPathTest {
     @Test
     void calculateFare_discount() {
         //given
-        ShortestPath shortestPath = new ShortestPath(lines.findShortestPath(강남, 판교));
+        ShortestPath shortestPath = lines.findShortestPath(강남, 판교);
 
         //when
         int teenagerFare = shortestPath.calculateFare(MemberFarePolicy.TEENAGER);
@@ -116,7 +117,7 @@ class ShortestPathTest {
     @Test
     void calculateFare_complex() {
         //given
-        ShortestPath shortestPath = new ShortestPath(lines.findShortestPath(독산, 수지));
+        ShortestPath shortestPath = lines.findShortestPath(독산, 수지);
 
         //when
         int generalFare = shortestPath.calculateFare(MemberFarePolicy.GENERAL);

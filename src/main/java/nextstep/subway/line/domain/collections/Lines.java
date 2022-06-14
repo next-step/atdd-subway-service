@@ -2,8 +2,7 @@ package nextstep.subway.line.domain.collections;
 
 import java.util.List;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.member.constant.MemberFarePolicy;
-import nextstep.subway.path.domain.Fare;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.vo.SectionEdge;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -18,9 +17,9 @@ public class Lines {
         this.lines = lines;
     }
 
-    public GraphPath<Station, SectionEdge> findShortestPath(Station source, Station target) {
+    public ShortestPath findShortestPath(Station source, Station target) {
         validateEqualStation(source, target);
-        return getShortestPath(source, target);
+        return new ShortestPath(getShortestPath(source, target));
     }
 
     private GraphPath<Station, SectionEdge> getShortestPath(Station source, Station target) {
@@ -54,7 +53,4 @@ public class Lines {
         }
     }
 
-    public Fare calculateFare(GraphPath<Station, SectionEdge> shortestPath, MemberFarePolicy memberFarePolicy) {
-        return new Fare(shortestPath, memberFarePolicy);
-    }
 }
