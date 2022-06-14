@@ -8,12 +8,16 @@ public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
 
-    public PathResponse() {
+    protected PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> stations, int distance) {
+    protected PathResponse(List<StationResponse> stations, int distance) {
         this.stations = stations;
         this.distance = distance;
+    }
+
+    public static PathResponse of(List<StationResponse> stations, int distance) {
+        return new PathResponse(stations, distance);
     }
 
     public List<StationResponse> getStations() {
