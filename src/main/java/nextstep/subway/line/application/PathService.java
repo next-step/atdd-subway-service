@@ -14,20 +14,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class PathService {
     private final StationService stationService;
     private final LineService lineService;
+    private final PathFinder pathFinder;
 
-    public PathService(StationService stationService, LineService lineService) {
+    public PathService(StationService stationService, LineService lineService, PathFinder pathFinder) {
         this.stationService = stationService;
         this.lineService = lineService;
-
+        this.pathFinder = pathFinder;
+        this.pathFinder.addLines(this.lineService.findLines());
     }
 
     public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
         Station sourceStation = stationService.findStationById(sourceStationId);
         Station targetStation = stationService.findStationById(targetStationId);
 
-        PathFinder.addLines(lineService.findLines());
-
-        return PathResponse.from(PathFinder.findShortestPath(sourceStation, targetStation));
+        return PathResponse.from(pathFinder.findShortestPath(sourceStation, targetStation));
     }
-
 }
