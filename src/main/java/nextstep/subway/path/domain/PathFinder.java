@@ -36,18 +36,26 @@ public class PathFinder {
         }
     }
 
+    private GraphPath<Station, DefaultWeightedEdge> findDijkstraShortestPath(Station source, Station target) {
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(path);
+        return dijkstraShortestPath.getPath(source, target);
+    }
+
     private void validateStation(Station source, Station target) {
-        if (source.equals(target)) {
+        if (isEquals(source, target)) {
             throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
         }
-        if (!path.containsVertex(source) || !path.containsVertex(target)) {
+        if (hasNot(source, target)) {
             throw new IllegalArgumentException("출발역 혹은 도착역이 존재하지 않습니다.");
         }
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> findDijkstraShortestPath(Station source, Station target) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(path);
-        return dijkstraShortestPath.getPath(source, target);
+    private boolean hasNot(Station source, Station target) {
+        return !path.containsVertex(source) || !path.containsVertex(target);
+    }
+
+    private boolean isEquals(Station source, Station target) {
+        return source.equals(target);
     }
 
     private void drawPath(List<Line> lines) {
