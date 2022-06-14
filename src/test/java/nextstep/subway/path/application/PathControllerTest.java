@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import nextstep.subway.RestAssuredTest;
+import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.domain.SubwayFare;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
@@ -30,6 +31,7 @@ class PathControllerTest extends RestAssuredTest {
     private StationResponse 강남역 = new StationResponse(1L, "강남역", LocalDateTime.now(), LocalDateTime.now());
     private StationResponse 양재역 = new StationResponse(2L, "양재역", LocalDateTime.now(), LocalDateTime.now());
     private StationResponse 교대역 = new StationResponse(3L, "교대역", LocalDateTime.now(), LocalDateTime.now());
+    private LineResponse 삼호선 = new LineResponse();
 
     @BeforeEach
     public void setUp() {
@@ -43,7 +45,7 @@ class PathControllerTest extends RestAssuredTest {
 
         // Given
         when(pathService.findShortestPath(startStationId, endStationId))
-                .thenReturn(new PathResponse(Lists.newArrayList(강남역, 양재역, 교대역), 10, SubwayFare.of(0)));
+                .thenReturn(new PathResponse(Lists.newArrayList(강남역, 양재역, 교대역), Lists.newArrayList(삼호선), 10, SubwayFare.of(0)));
         // When
         ExtractableResponse<Response> response = pathController로_요청보내기(
                 String.valueOf(startStationId),

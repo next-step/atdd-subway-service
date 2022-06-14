@@ -1,6 +1,8 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import java.util.Set;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
 /**
@@ -8,6 +10,8 @@ import nextstep.subway.station.domain.Station;
  */
 public class PathFindResult {
     private List<Station> stations;
+
+    private Set<Line> lines;
 
     private int distance;
 
@@ -17,8 +21,9 @@ public class PathFindResult {
 
     }
 
-    public PathFindResult(List<Station> stations, int distance) {
+    public PathFindResult(List<Station> stations, Set<Line> lines, int distance) {
         this.stations = stations;
+        this.lines = lines;
         this.distance = distance;
         this.fare = calculateSubwayFareByDistance(distance);
     }
@@ -37,5 +42,9 @@ public class PathFindResult {
 
     public SubwayFare getFare() {
         return fare;
+    }
+
+    public Set<Line> getLines() {
+        return lines;
     }
 }

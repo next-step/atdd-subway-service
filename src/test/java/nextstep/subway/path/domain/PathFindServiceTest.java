@@ -72,6 +72,7 @@ class PathFindServiceTest {
         assertThat(result.getStations())
                 .hasSize(3)
                 .containsExactly(교대역, 남부터미널역, 양재역);
+        assertThat(result.getLines()).hasSize(1).containsExactly(삼호선);
     }
 
     /**

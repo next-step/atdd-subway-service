@@ -2,6 +2,7 @@ package nextstep.subway.line.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -65,5 +66,22 @@ public class LineResponse {
 
     public LocalDateTime getModifiedDate() {
         return modifiedDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        LineResponse that = (LineResponse) o;
+        return name.equals(that.name) && color.equals(that.color);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, color);
     }
 }
