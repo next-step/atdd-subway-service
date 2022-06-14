@@ -71,7 +71,9 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     /**
      * When 지하철 경로에 출발지와 목적지로 최단경로를 조회하면
-     * Then 최단 거리 경로와 거리가 조회된다.
+     * Then 최단 거리 경로를 응답
+     * And 총 거리도 함께 응답함
+     * And ** 지하철 이용 요금도 함께 응답함 **
      */
     @DisplayName("지하철 경로에 출발지와 목적지로 최단경로를 조회하면 입력하면 최단 거리가 조회된다.")
     @Test
@@ -80,7 +82,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_경로_최단거리_요청(교대역.getId(), 양재역.getId());
 
         // then
-        지하철_경로_최단거리_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
+        지하철_경로_최단거리_이용요금_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
     }
 
     /**
@@ -125,7 +127,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         지하철_경로_최단거리_실패됨(response);
     }
 
-    private void 지하철_경로_최단거리_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations, int distance) {
+    private void 지하철_경로_최단거리_이용요금_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations, int distance) {
         PathResponse path = response.as(PathResponse.class);
         List<Long> stationIds = path.getStations().stream()
                 .map(StationResponse::getId)
