@@ -71,6 +71,7 @@ public class Sections {
         if (section.getLine().isContains(section)) {
             section.getLine().removeSection(section);
         }
+        section.getDownStation().getSections().remove(section);
     }
 
     private void insertSection(final Section section) {

@@ -34,6 +34,7 @@ public class Section {
         this.downStation = downStation;
         this.distance = distance;
         updateLineBy(line);
+        updateDownStationBy(downStation);
     }
 
     public Long getId() {
@@ -85,6 +86,16 @@ public class Section {
         if (!line.getSections().isContains(this)) {
             line.addSection(this);
         }
+    }
+
+    private void updateDownStationBy(final Station downStation) {
+        if (Objects.nonNull(this.downStation) && !Objects.equals(this.downStation, downStation)) {
+            this.downStation.getSections().remove(this);
+        }
+        if (!downStation.getSections().contains(this)) {
+            downStation.getSections().add(this);
+        }
+        this.downStation = downStation;
     }
 
     @Override
