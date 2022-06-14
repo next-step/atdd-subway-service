@@ -3,6 +3,7 @@ package nextstep.subway.line.application;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -62,26 +63,25 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        List<Station> stations = line.getOrderedStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+        Sections sections = line.getSections();
+        boolean isUpStationExisted = sections.isStationExisted(upStation);
+        boolean isDownStationExisted = sections.isStationExisted(downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
+        if (!sections.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
 
-        if (stations.isEmpty()) {
+        if (sections.isEmpty()) {
             line.addSection(new Section(line, upStation, downStation, request.getDistance()));
             return;
         }
 
         if (isUpStationExisted) {
-            line.getSections().getNextSectionByEqualUpStation(upStation)
+            sections.getNextSectionByEqualUpStation(upStation)
                     .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
 
             line.addSection(new Section(line, upStation, downStation, request.getDistance()));
@@ -89,7 +89,7 @@ public class LineService {
         }
 
         if (isDownStationExisted) {
-            line.getSections().getNextSectionByEqualDownStation(downStation)
+            sections.getNextSectionByEqualDownStation(downStation)
                     .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
 
             line.addSection(new Section(line, upStation, downStation, request.getDistance()));

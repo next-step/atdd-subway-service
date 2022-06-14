@@ -43,14 +43,19 @@ public class Sections {
     }
 
     public Optional<Section> getNextSectionByEqualUpStation(Station station) {
-        return getSections().stream()
+        return sections.stream()
                 .filter(it -> it.getUpStation() == station)
                 .findFirst();
     }
 
     public Optional<Section> getNextSectionByEqualDownStation(Station station) {
-        return getSections().stream()
+        return sections.stream()
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();
+    }
+
+    public boolean isStationExisted(Station station) {
+        return sections.stream()
+                .anyMatch(it -> it.getUpStation() == station || it.getDownStation() == station);
     }
 }

@@ -33,7 +33,7 @@ class SectionsTest {
 
         assertThat(sections.getNextSectionByEqualUpStation(강남역)).isEqualTo(Optional.of(firstSection));
         assertThat(sections.getNextSectionByEqualUpStation(양재역)).isEqualTo(Optional.of(secondSection));
-        assertThat(sections.getNextSectionByEqualUpStation(신논현역)).isEqualTo(Optional.empty());
+        assertThat(sections.getNextSectionByEqualUpStation(신논현역)).isEmpty();
     }
 
     @Test
@@ -44,9 +44,20 @@ class SectionsTest {
         sections.add(firstSection);
         sections.add(secondSection);
 
-        assertThat(sections.getNextSectionByEqualDownStation(강남역)).isEqualTo(Optional.empty());
+        assertThat(sections.getNextSectionByEqualDownStation(강남역)).isEmpty();
         assertThat(sections.getNextSectionByEqualDownStation(양재역)).isEqualTo(Optional.of(firstSection));
         assertThat(sections.getNextSectionByEqualDownStation(신논현역)).isEqualTo(Optional.of(secondSection));
+    }
+
+    @Test
+    void 구간중에_역이_존재하는지_알_수_있다() {
+        Sections sections = new Sections();
+        Section firstSection = new Section(신분당선, 강남역, 양재역, 10);
+        sections.add(firstSection);
+
+        assertThat(sections.isStationExisted(강남역)).isTrue();
+        assertThat(sections.isStationExisted(양재역)).isTrue();
+        assertThat(sections.isStationExisted(신논현역)).isFalse();
     }
 
 }
