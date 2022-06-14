@@ -27,7 +27,7 @@ public class PathController {
             @RequestParam(name = "target") String endStationId
     ) {
         PathResponse pathResponse = pathService.findShortestPath(Long.parseLong(startStationId),
-                Long.parseLong(endStationId));
+                Long.parseLong(endStationId), member);
         return ResponseEntity.ok(pathResponse);
     }
 

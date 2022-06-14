@@ -1,9 +1,9 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.OverFareCalculator;
 import nextstep.subway.path.domain.PathFindResult;
 import nextstep.subway.path.domain.PathFindService;
 import nextstep.subway.path.domain.exception.NotExistPathException;
@@ -32,7 +32,7 @@ public class PathService {
         this.subwayGraphProvider = subwayGraphProvider;
     }
 
-    public PathResponse findShortestPath(Long startStationId, Long endStationId) {
+    public PathResponse findShortestPath(Long startStationId, Long endStationId, LoginMember loginMember) {
         Station startStation = stationService.findStationById(startStationId);
         Station endStation = stationService.findStationById(endStationId);
         PathFindResult findResult = null;
@@ -43,14 +43,9 @@ public class PathService {
         } catch (NotExistPathException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
-        int overFare = calculateOverFare(findResult);
-        findResult.applyOverFare(overFare);
+        findResult.applyFarePolicy(loginMember);
         return PathResponse.of(findResult);
     }
 
-    private int calculateOverFare(PathFindResult findResult){
-        int overFareByDistance = OverFareCalculator.calculateOverFareByDistance(findResult);
-        int overFareByLine = OverFareCalculator.calculateOverFareByLine(findResult);
-        return overFareByDistance + overFareByLine;
-    }
+
 }

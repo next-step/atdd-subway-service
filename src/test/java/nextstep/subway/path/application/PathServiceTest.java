@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.Sets;
 import java.util.List;
 import java.util.Set;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.dto.LineResponse;
@@ -61,7 +62,7 @@ class PathServiceTest {
         when(mockStationService.findStationById(1L)).thenReturn(강남역);
         when(mockStationService.findStationById(2L)).thenReturn(광교역);
         // When
-        PathResponse shortestPath = pathService.findShortestPath(강남역.getId(), 광교역.getId());
+        PathResponse shortestPath = pathService.findShortestPath(강남역.getId(), 광교역.getId(), new LoginMember());
 
         // Then
         assertThat(shortestPath.getStations())

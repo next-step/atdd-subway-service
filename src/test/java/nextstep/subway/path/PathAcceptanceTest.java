@@ -45,7 +45,6 @@ class PathAcceptanceTest extends AcceptanceTest {
         교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
     }
-
     @Test
     void 최단경로찾기() {
         노선_추가요금_없는_테스트경로_세팅();

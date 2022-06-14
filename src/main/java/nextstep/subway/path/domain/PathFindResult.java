@@ -1,7 +1,12 @@
 package nextstep.subway.path.domain;
 
+import static nextstep.subway.path.domain.OverFareCalculator.calculateDiscountedFareByAge;
+import static nextstep.subway.path.domain.OverFareCalculator.calculateOverFareByDistance;
+import static nextstep.subway.path.domain.OverFareCalculator.calculateOverFareByLine;
+
 import java.util.List;
 import java.util.Set;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
@@ -28,8 +33,16 @@ public class PathFindResult {
         this.fare = SubwayFare.DEFAULT_FARE;
     }
 
-    public void applyOverFare(int overFare) {
-        this.fare = this.fare.plus(overFare);
+    public void applyFarePolicy(LoginMember loginMember) {
+        int overFareByDistance = calculateOverFareByDistance(this);
+        int overFareByLine = calculateOverFareByLine(this);
+        int middleSum = this.fare.getValue() + overFareByDistance + overFareByLine;
+        if(loginMember.getId() == null){
+            this.fare = SubwayFare.of(middleSum);
+            return;
+        }
+        int discountedFare = calculateDiscountedFareByAge(SubwayFare.of(middleSum), loginMember.getAge());
+        this.fare = SubwayFare.of(discountedFare);
     }
 
     public List<Station> getStations() {
@@ -47,4 +60,5 @@ public class PathFindResult {
     public Set<Line> getLines() {
         return lines;
     }
+
 }

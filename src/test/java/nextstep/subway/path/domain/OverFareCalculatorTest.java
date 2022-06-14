@@ -40,8 +40,11 @@ class OverFareCalculatorTest {
         assertThat(overFare).isEqualTo(삼호선.getExtraCharge());
     }
 
-    @Test
-    void 연령별_추가요금_계산_테스트(){
-
+    @ParameterizedTest
+    @CsvSource(delimiterString = ":", value ={"6:500", "13:800","19:1350"} )
+    void 연령별_할인요금_계산_테스트(String age, String expectedFare){
+        SubwayFare beforeSubwayFare = SubwayFare.of(1350);
+        int discountedFare = OverFareCalculator.calculateDiscountedFareByAge(beforeSubwayFare,Integer.parseInt(age));
+        assertThat(discountedFare).isEqualTo(Integer.parseInt(expectedFare));
     }
 }
