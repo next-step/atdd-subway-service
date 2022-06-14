@@ -1,5 +1,6 @@
 package nextstep.subway.member.domain;
 
+import java.util.Objects;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +23,13 @@ public class Member extends BaseEntity {
     }
 
     public Member(String email, String password, Integer age) {
+        this.email = email;
+        this.password = password;
+        this.age = age;
+    }
+
+    public Member(long id, String email, String password, Integer age) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.age = age;
@@ -53,5 +61,22 @@ public class Member extends BaseEntity {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Member member = (Member) o;
+        return Objects.equals(id, member.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

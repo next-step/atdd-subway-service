@@ -1,9 +1,9 @@
 package nextstep.subway.line.application;
 
-import static nextstep.subway.line.domain.DomainFixtureFactory.createLine;
-import static nextstep.subway.line.domain.DomainFixtureFactory.createLineRequest;
-import static nextstep.subway.line.domain.DomainFixtureFactory.createSectionRequest;
-import static nextstep.subway.line.domain.DomainFixtureFactory.createStation;
+import static nextstep.subway.DomainFixtureFactory.createLine;
+import static nextstep.subway.DomainFixtureFactory.createLineRequest;
+import static nextstep.subway.DomainFixtureFactory.createSectionRequest;
+import static nextstep.subway.DomainFixtureFactory.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;

@@ -35,7 +35,7 @@ public class DijkstraPathFinder implements PathFinder {
         for (Section section : sections) {
             graph.addVertex(section.upStation());
             graph.addVertex(section.downStation());
-            graph.setEdgeWeight(graph.addEdge(section.upStation(), section.downStation()), section.weight());
+            graph.setEdgeWeight(graph.addEdge(section.upStation(), section.downStation()), section.distanceValue());
         }
     }
 

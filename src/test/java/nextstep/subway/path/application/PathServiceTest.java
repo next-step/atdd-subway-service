@@ -1,8 +1,8 @@
 package nextstep.subway.path.application;
 
-import static nextstep.subway.line.domain.DomainFixtureFactory.createLine;
-import static nextstep.subway.line.domain.DomainFixtureFactory.createSection;
-import static nextstep.subway.line.domain.DomainFixtureFactory.createStation;
+import static nextstep.subway.DomainFixtureFactory.createLine;
+import static nextstep.subway.DomainFixtureFactory.createSection;
+import static nextstep.subway.DomainFixtureFactory.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
