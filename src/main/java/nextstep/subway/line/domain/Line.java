@@ -64,13 +64,13 @@ public class Line extends BaseEntity {
 
         while (station != null) {
             Station finalStation = station;
-            Optional<Section> optional = sections.stream()
-                                                 .filter(sec -> sec.getUpStation().equals(finalStation))
-                                                 .findFirst();
-            if (!optional.isPresent()) {
+            Optional<Section> departure = sections.stream()
+                                                  .filter(sec -> sec.getUpStation().equals(finalStation))
+                                                  .findFirst();
+            if (!departure.isPresent()) {
                 break;
             }
-            station = optional.get().getDownStation();
+            station = departure.get().getDownStation();
             stations.add(station);
         }
 
@@ -83,7 +83,7 @@ public class Line extends BaseEntity {
         while (station != null) {
             Station finalStation = station;
             Optional<Section> departure = sections.stream()
-                                                  .filter(sec -> sec.getDownStation().equals(finalStation))
+                                                  .filter(section -> section.getDownStation().equals(finalStation))
                                                   .findFirst();
             if (!departure.isPresent()) {
                 break;
@@ -92,6 +92,58 @@ public class Line extends BaseEntity {
         }
 
         return station;
+    }
+
+    public void addLineStation(Section section) {
+        List<Station> stations = getStations();
+        if (stations.isEmpty()) {
+            sections.add(section);
+            return;
+        }
+
+        boolean isUpStationExisted = isUpStationExisted(stations, section);
+        boolean isDownStationExisted = isDownStationExisted(stations, section);
+        validateRequestSection(isUpStationExisted, isDownStationExisted);
+        validateRequestParameter(stations, section);
+
+        if (isUpStationExisted) {
+            sections.stream()
+                    .filter(it -> it.getUpStation() == section.getUpStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+
+            sections.add(section);
+        } else if (isDownStationExisted) {
+            sections.stream()
+                    .filter(it -> it.getDownStation() == section.getDownStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+
+            sections.add(section);
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    public boolean isUpStationExisted(List<Station> stations, Section section) {
+        return stations.stream().anyMatch(it -> it == section.getUpStation());
+    }
+
+    public boolean isDownStationExisted(List<Station> stations, Section section) {
+        return stations.stream().anyMatch(it -> it == section.getDownStation());
+    }
+
+    public void validateRequestSection(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    public void validateRequestParameter(List<Station> stations, Section section) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
+                stations.stream().noneMatch(it -> it == section.getDownStation())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
     }
 
     @Override
