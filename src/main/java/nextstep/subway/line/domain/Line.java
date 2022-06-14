@@ -50,10 +50,6 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public Sections getSections() {
-        return sections;
-    }
-
     public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
         return new Line(name, color, upStation, downStation, distance);
     }
