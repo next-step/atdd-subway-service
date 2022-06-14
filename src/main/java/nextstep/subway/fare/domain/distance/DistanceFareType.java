@@ -13,17 +13,17 @@ public enum DistanceFareType {
     BETWEEN_10KM_AND_50KM(distance -> distance > 10 && distance <= 50, MiddleDistancePolicy.getInstance()),
     OVER_50KM(distance -> distance >= 50, LongDistancePolicy.getInstance());
 
-    private final Predicate<Integer> predicate;
+    private final DistancePredicate predicate;
     private final DistancePolicy distancePolicy;
 
-    DistanceFareType(Predicate<Integer> predicate, DistancePolicy distancePolicy) {
+    DistanceFareType(DistancePredicate predicate, DistancePolicy distancePolicy) {
         this.predicate = predicate;
         this.distancePolicy = distancePolicy;
     }
 
     public static DistancePolicy getDistancePolicy(int distance) {
         return Arrays.stream(values())
-            .filter(type -> type.predicate.test(distance))
+            .filter(type -> type.predicate.includeDistance(distance))
             .findFirst()
             .orElseThrow(() -> new BadRequestException(ExceptionType.INVALID_DISTANCE))
             .getDistancePolicy();
