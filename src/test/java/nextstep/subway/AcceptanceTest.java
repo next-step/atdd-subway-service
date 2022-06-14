@@ -28,67 +28,12 @@ public class AcceptanceTest {
         databaseCleanup.execute();
     }
 
-    public static <T> ExtractableResponse<Response> post(String path, T requestBody) {
-        return RestAssured
-                .given().log().all()
-                .body(requestBody)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post(path)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> get(String path) {
-        return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(path)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> get(String path, Long id) {
-        return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(path + "/" + id)
-                .then().log().all()
-                .extract();
-    }
-
     public static <T> ExtractableResponse<Response> get(String path, Map<String, T> params) {
         return RestAssured
                 .given().log().all()
                 .queryParams(params)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(path)
-                .then().log().all()
-                .extract();
-    }
-
-    public static <T> ExtractableResponse<Response> put(String path, Long id, T requestBody) {
-        return RestAssured
-                .given().log().all()
-                .body(requestBody)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().put(path + "/" + id)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> delete(String path, Long id) {
-        return RestAssured
-                .given().log().all()
-                .when().delete(path + "/" + id)
-                .then().log().all()
-                .extract();
-    }
-
-    public static <T> ExtractableResponse<Response> delete(String path, Map<String, T> params) {
-        return RestAssured
-                .given().log().all()
-                .queryParams(params)
-                .when().delete(path)
                 .then().log().all()
                 .extract();
     }
