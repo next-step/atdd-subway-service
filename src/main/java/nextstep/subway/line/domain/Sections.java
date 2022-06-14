@@ -96,20 +96,20 @@ public class Sections {
                 .noneMatch(section -> section.hasAtLeastOneSameStationOf(newSection));
     }
 
-    private void rearrangeElementsFor(Section section) {
+    private void rearrangeElementsFor(Section newSection) {
         elements.stream()
-                .filter(it -> it.getUpStation() == section.getUpStation())
+                .filter(section -> section.hasSameUpStationAs(newSection))
                 .findFirst()
-                .ifPresent(it -> {
-                    it.updateUpStation(section.getDownStation(), section.getDistance());
+                .ifPresent(section -> {
+                    section.updateUpStationAndDistanceFor(newSection);
                     return;
                 });
 
         elements.stream()
-                .filter(it -> it.getDownStation() == section.getDownStation())
+                .filter(section -> section.hasSameDownStationAs(newSection))
                 .findFirst()
-                .ifPresent(it -> {
-                    it.updateDownStation(section.getUpStation(), section.getDistance());
+                .ifPresent(section -> {
+                    section.updateDownStationAndDistanceFor(newSection);
                     return;
                 });
     }
@@ -123,14 +123,11 @@ public class Sections {
         Optional<Section> downSection = findSectionByUpStationSameAs(station);
 
         if (downSection.isPresent() && upSection.isPresent()) {
-            Station newUpStation = upSection.get().getUpStation();
-            Station newDownStation = downSection.get().getDownStation();
-            int newDistance = downSection.get().getDistance() + upSection.get().getDistance();
-            elements.add(new Section(upSection.get().getLine(), newUpStation, newDownStation, newDistance));
+            elements.add(upSection.get().merge(downSection.get()));
         }
 
-        downSection.ifPresent(it -> elements.remove(it));
-        upSection.ifPresent(it -> elements.remove(it));
+        downSection.ifPresent(section -> elements.remove(section));
+        upSection.ifPresent(section -> elements.remove(section));
     }
 
     private Optional<Section> findSectionByUpStationSameAs(Station station) {

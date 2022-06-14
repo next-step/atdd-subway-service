@@ -55,20 +55,40 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public void updateUpStationAndDistanceFor(Section newSection) {
+        if (!hasSameUpStationAs(newSection)) {
+            throw new IllegalArgumentException("상행 역이 일치하는 구간을 입력해주세요.");
+        }
+
+        if (this.distance <= newSection.distance) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.upStation = station;
-        this.distance -= newDistance;
+        this.upStation = newSection.downStation;
+        this.distance -= newSection.distance;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public void updateDownStationAndDistanceFor(Section newSection) {
+        if (!hasSameDownStationAs(newSection)) {
+            throw new IllegalArgumentException("하행 역이 일치하는 구간을 입력해주세요.");
+        }
+
+        if (this.distance <= newSection.distance) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+        this.downStation = newSection.upStation;
+        this.distance -= newSection.distance;
+    }
+
+    public Section merge(Section other) {
+        if (downStation.equals(other.upStation)) {
+            return new Section(line, upStation, other.downStation, distance + other.distance);
+        }
+
+        if (upStation.equals(other.downStation)) {
+            return new Section(line, other.upStation, downStation, distance + other.distance);
+        }
+
+        throw new IllegalArgumentException("구간을 합칠 수 없습니다.");
     }
 
     public boolean isPrevSectionOf(Section other) {
@@ -79,12 +99,20 @@ public class Section {
         return upStation.equals(other.downStation);
     }
 
+    public boolean hasUpStationSameAs(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean hasSameUpStationAs(Section other) {
+        return upStation.equals(other.upStation);
+    }
+
     public boolean hasDownStationSameAs(Station station) {
         return downStation.equals(station);
     }
 
-    public boolean hasUpStationSameAs(Station station) {
-        return upStation.equals(station);
+    public boolean hasSameDownStationAs(Section other) {
+        return downStation.equals(other.downStation);
     }
 
     public boolean hasExactlySameStationsAs(Section newSection) {
