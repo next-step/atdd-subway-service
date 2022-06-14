@@ -13,8 +13,7 @@ public class Lines {
         this.lines = lines;
     }
 
-    public DijkstraShortestPath createPath() {
-        SectionGraph graph = new SectionGraph(new WeightedMultigraph(DefaultWeightedEdge.class));
+    public DijkstraShortestPath createPath(SectionGraph graph) {
 
         for (Line line : lines) {
             line.registerPath(graph);

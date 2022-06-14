@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.SectionGraph;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -41,7 +42,8 @@ class PathFinderTest {
         Lines lines  = new Lines(Arrays.asList(신분당선, 이호선, 삼호선));
 
         // when
-        PathFinder pathFinder = new PathFinder(lines.createPath());
+        SectionGraph graph = new SectionGraph();
+        PathFinder pathFinder = new PathFinder(lines.createPath(graph));
 
         // then
         assertThat(pathFinder.findPath(교대역, 양재역).getStations()).containsExactly(교대역, 남부터미널역, 양재역);

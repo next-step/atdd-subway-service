@@ -10,8 +10,8 @@ import java.util.List;
 public class SectionGraph {
     WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-    public SectionGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        this.graph = graph;
+    public SectionGraph() {
+        this.graph = new WeightedMultigraph(DefaultWeightedEdge.class);
     }
 
     public void addVertices(List<Station> stations) {
