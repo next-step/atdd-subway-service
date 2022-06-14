@@ -13,6 +13,7 @@ import static nextstep.subway.common.Messages.*;
 
 @Embeddable
 public class Sections {
+    private static int MINIMUM_SIZE = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -98,16 +99,16 @@ public class Sections {
         boolean isDownStationExisted = distinctStations.contains(section.getDownStation());
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException(ALREADY_REGISTERED_STATION);
+            throw new IllegalArgumentException(ALREADY_REGISTERED_STATION);
         }
 
         if (stations.isNotEmpty() && !distinctStations.contains(upStation) && !distinctStations.contains(downStation)) {
-            throw new RuntimeException(UNREGISTERED_STATION);
+            throw new IllegalArgumentException(UNREGISTERED_STATION);
         }
     }
 
     private void validateRemoveStation(Station station) {
-        if (sections.size() <= 1) {
+        if (sections.size() < MINIMUM_SIZE) {
             throw new IllegalArgumentException(NOT_FOUND_REMOVE_STATION);
         }
 
