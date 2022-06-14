@@ -11,12 +11,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -117,9 +119,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
     }
 
-    private void 경유지_확인(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
+    private void 경유지_확인(ExtractableResponse<Response> response, List<StationResponse> expectedStationResponses) {
         PathResponse pathResponse = response.as(PathResponse.class);
-        List<StationResponse> actualStations = pathResponse.getStations();
+        List<Station> actualStations = toStations(pathResponse.getStations());
+        List<Station> expectedStations = toStations(expectedStationResponses);
         assertThat(actualStations).isEqualTo(expectedStations);
+    }
+
+    private List<Station> toStations(List<StationResponse> stationResponses) {
+        return stationResponses.stream()
+                .map(StationResponse::toStation)
+                .collect(Collectors.toList());
     }
 }
