@@ -7,6 +7,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
@@ -15,6 +16,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_성공;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
@@ -59,11 +64,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 조회한다.")
     @Test
     void findFavorites() {
+        // given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_등록되어_있음(tokenResponse, 강남역, 잠실역);
+
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_등록되어_있음(tokenResponse, 강남역, 잠실역);
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(tokenResponse);
 
         // then
-        즐겨찾기_조회_요청(tokenResponse);
+        즐겨찾기_목록_응답됨(response);
+        즐겨찾기_목록_포함됨(response, Collections.singletonList(createResponse));
     }
 
     @DisplayName("즐겨찾기를 제거한다.")
@@ -103,6 +112,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .when().get("/favorites")
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 즐겨찾기_목록_응답됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 즐겨찾기_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
+        List<Long> expectedLineIds = createdResponses.stream()
+                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+                .collect(Collectors.toList());
+
+        List<Long> resultLineIds = response.jsonPath().getList(".", FavoriteResponse.class).stream()
+                .map(FavoriteResponse::getId)
+                .collect(Collectors.toList());
+
+        assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_제거_요청(TokenResponse tokenResponse, ExtractableResponse<Response> response) {
