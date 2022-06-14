@@ -19,10 +19,12 @@ import java.util.stream.Collectors;
 public class LineService {
     private LineRepository lineRepository;
     private StationService stationService;
+    private PathFinder pathFinder;
 
-    public LineService(LineRepository lineRepository, StationService stationService) {
+    public LineService(LineRepository lineRepository, StationService stationService, PathFinder pathFinder) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
+        this.pathFinder = pathFinder;
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -36,6 +38,8 @@ public class LineService {
                         .distance(request.getDistance())
                         .build()
         );
+
+        pathFinder.addLine(persistLine);
         return LineResponse.from(persistLine);
     }
 
@@ -79,6 +83,8 @@ public class LineService {
         Station downStation = stationService.findStationById(request.getDownStationId());
 
         line.addSection(upStation, downStation, request.getDistance());
+        pathFinder.removeLine(line);
+        pathFinder.addLine(line);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -86,5 +92,7 @@ public class LineService {
         Station station = stationService.findStationById(stationId);
 
         line.removeStation(station);
+        pathFinder.removeLine(line);
+        pathFinder.addLine(line);
     }
 }
