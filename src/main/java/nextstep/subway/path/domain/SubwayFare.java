@@ -10,16 +10,6 @@ public class SubwayFare {
 
     private static final int MAX_DISCOUNT_RATE = 100;
     private static final int MIN_DISCOUNT_RATE = 0;
-    private static final int FIRST_OVER_FARE_RANGE_START = 10;
-    private static final int FIRST_OVER_FARE_RANGE_END = 50;
-    private static final int FIRST_OVER_FARE_RANGE_INTERVAL = 5;
-    public static final int FIRST_OVER_FARE_RANGE_FARE_UNIT = 100;
-
-    private static final int SECOND_OVER_FARE_RANGE_START = 50;
-    private static final int SECOND_OVER_FARE_RANGE_INTERVAL = 8;
-    public static final int SECOND_OVER_FARE_RANGE_FARE_UNIT = 100;
-
-    private static final int NO_OVER_FARE = 0;
     private static Map<Integer,SubwayFare> cacheMap = new HashMap<>();
 
     public static SubwayFare of(Integer value){
@@ -33,7 +23,6 @@ public class SubwayFare {
 
     private int value;
 
-    //For JSON Serialize
     private SubwayFare(){
         this.value = 0;
     }
@@ -43,32 +32,6 @@ public class SubwayFare {
             throw new IllegalArgumentException("운임은 음수가 될 수 없습니다.");
         }
         this.value = value;
-    }
-
-    public static SubwayFare calculateByDistance(int distance) {
-        return new SubwayFare(DEFAULT_FARE_VALUE
-                + calculateOverFareInFirstRange(distance)
-                + calculateOverFareInSecondRange(distance));
-    }
-
-    private static int calculateOverFareInFirstRange(int distance) {
-        int overDistance = Math.min(distance , FIRST_OVER_FARE_RANGE_END) - FIRST_OVER_FARE_RANGE_START;
-        if(!hasOverDistance(overDistance)){
-            return NO_OVER_FARE;
-        }
-        return (int) ((Math.ceil((overDistance - 1) / FIRST_OVER_FARE_RANGE_INTERVAL) + 1) * FIRST_OVER_FARE_RANGE_FARE_UNIT);
-    }
-
-    private static boolean hasOverDistance(int overDistance){
-        return overDistance > 0;
-    }
-
-    private static int calculateOverFareInSecondRange(int distance) {
-        int overDistance = distance - SECOND_OVER_FARE_RANGE_START;
-        if(!hasOverDistance(overDistance)){
-            return NO_OVER_FARE;
-        }
-        return (int) ((Math.ceil((overDistance - 1) / SECOND_OVER_FARE_RANGE_INTERVAL) + 1) * SECOND_OVER_FARE_RANGE_FARE_UNIT);
     }
 
     public SubwayFare plus(int plusValue){

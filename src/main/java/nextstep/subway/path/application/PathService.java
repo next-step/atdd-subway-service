@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import java.util.List;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.OverFareCalculator;
 import nextstep.subway.path.domain.PathFindResult;
 import nextstep.subway.path.domain.PathFindService;
 import nextstep.subway.path.domain.exception.NotExistPathException;
@@ -42,6 +43,9 @@ public class PathService {
         } catch (NotExistPathException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
+        int overFareByDistance = OverFareCalculator.calculateOverFareByDistance(findResult);
+        findResult.applyOverFare(overFareByDistance);
+
         return PathResponse.of(findResult);
     }
 }

@@ -25,11 +25,11 @@ public class PathFindResult {
         this.stations = stations;
         this.lines = lines;
         this.distance = distance;
-        this.fare = calculateSubwayFareByDistance(distance);
+        this.fare = SubwayFare.DEFAULT_FARE;
     }
 
-    private SubwayFare calculateSubwayFareByDistance(int distance){
-        return SubwayFare.calculateByDistance(distance);
+    public void applyOverFare(int overFare) {
+        this.fare = this.fare.plus(overFare);
     }
 
     public List<Station> getStations() {
