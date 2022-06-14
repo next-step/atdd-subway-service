@@ -62,11 +62,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(구호선, 봉은사역, 종합운동장역, 2);
 
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-green-600", 교대역, 강남역, 3);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 강남역, 선릉역, 2);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 강남역, 선릉역, 3);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 선릉역, 삼성역, 6);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 삼성역, 종합운동장역, 7);
 
-        신분당선 = 지하철_노선_등록되어_있음("이호선", "bg-green-600", 광교역, 광교중앙역, 3);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-green-600", 광교역, 광교중앙역, 3);
     }
 
     /**
@@ -170,7 +170,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse.ShortestPath pathResponse = response.as(PathResponse.ShortestPath.class);
         assertThat(pathResponse.getDistance()).isEqualTo(expectDistance);
         for (int idx = 0; idx < expectStations.length; idx++) {
-            PathResponse.PathStation pathStation = pathResponse.getStations().getStations().get(idx);
+            PathResponse.PathStation pathStation = pathResponse.getStations().get(idx);
             StationResponse compareStation = expectStations[idx];
 
             assertThat(pathStation.getId()).isEqualTo(compareStation.getId());

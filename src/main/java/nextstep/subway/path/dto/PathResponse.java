@@ -9,32 +9,22 @@ import java.util.List;
 public class PathResponse {
 
     public static class ShortestPath {
-        private final Stations stations;
-        private final int distance;
+        private List<PathStation> stations = new ArrayList<>();
+        private int distance;
+
+        public ShortestPath() {}
 
         public ShortestPath(List<Station> originalStations, int distance) {
-            this.stations = new Stations(originalStations);
+            originalStations.forEach(station -> this.stations.add(PathStation.of(station)));
             this.distance = distance;
         }
 
-        public Stations getStations() {
+        public List<PathStation> getStations() {
             return stations;
         }
 
         public int getDistance() {
             return distance;
-        }
-    }
-
-    public static class Stations {
-        private final List<PathStation> stations = new ArrayList<>();
-
-        Stations(List<Station> originalStations) {
-            originalStations.forEach(station -> this.stations.add(PathStation.of(station)));
-        }
-
-        public List<PathStation> getStations() {
-            return stations;
         }
     }
 

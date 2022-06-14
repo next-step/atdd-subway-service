@@ -87,7 +87,7 @@ class PathServiceTest {
         PathResponse.ShortestPath stations = pathService.findShortestPath(교대역.getId(), 선릉역.getId());
 
         // then
-        최소_노선_경로_일치됨(stations.getStations(), 교대역, 강남역, 역삼역, 선릉역);
+        최소_노선_경로_일치됨(stations, 교대역, 강남역, 역삼역, 선릉역);
         최소_노선_길이_일치됨(stations.getDistance(), 9);
     }
 
@@ -101,7 +101,7 @@ class PathServiceTest {
         PathResponse.ShortestPath stations = pathService.findShortestPath(교대역.getId(), 양재역.getId());
 
         // then
-        최소_노선_경로_일치됨(stations.getStations(), 교대역, 강남역, 양재역);
+        최소_노선_경로_일치됨(stations, 교대역, 강남역, 양재역);
         최소_노선_길이_일치됨(stations.getDistance(), 6);
     }
 
@@ -115,7 +115,7 @@ class PathServiceTest {
         PathResponse.ShortestPath stations = pathService.findShortestPath(교대역.getId(), 도곡역.getId());
 
         // then
-        최소_노선_경로_일치됨(stations.getStations(), 교대역, 강남역, 양재역, 매봉역, 도곡역);
+        최소_노선_경로_일치됨(stations, 교대역, 강남역, 양재역, 매봉역, 도곡역);
         최소_노선_길이_일치됨(stations.getDistance(), 12);
     }
 
@@ -159,7 +159,7 @@ class PathServiceTest {
         }
     }
 
-    private void 최소_노선_경로_일치됨(PathResponse.Stations source, Station... target) {
+    private void 최소_노선_경로_일치됨(PathResponse.ShortestPath source, Station... target) {
         List<PathResponse.PathStation> stations = source.getStations();
 
         assertThat(stations.size()).isEqualTo(target.length);
