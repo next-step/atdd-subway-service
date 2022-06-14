@@ -19,7 +19,12 @@ public class Station extends BaseEntity {
     @OneToMany(mappedBy = "downStation", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
-    public Station() {
+    protected Station() {
+    }
+
+    public Station(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public Station(String name) {

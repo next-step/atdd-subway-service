@@ -1,23 +1,22 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.path.utils.Route;
+import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
 
 @Service
 public class PathService {
+    private final StationRepository stationRepository;
 
-    public PathResponse findShortestRoute(long source, long target) {
-        return new PathResponse(
-                Arrays.asList(
-                        new StationResponse(1L, "양재역", LocalDateTime.now(), LocalDateTime.now()),
-                        new StationResponse(2L, "남부터미널역", LocalDateTime.now(), LocalDateTime.now()),
-                        new StationResponse(3L, "교대역", LocalDateTime.now(), LocalDateTime.now())
-                ),
-                5
-        );
+    public PathService(StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
+    }
+
+    public PathResponse findShortestRoute(long sourceId, long targetId) {
+        final Station startStation = stationRepository.findById(sourceId).get();
+        final Station endStation = stationRepository.findById(targetId).get();
+        return Route.getShortestRoute(startStation, endStation);
     }
 }
