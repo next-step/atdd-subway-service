@@ -41,10 +41,9 @@ public class SectionTest {
         Section otherSection = Section.of(line, upStation, otherDownStation, Distance.from(5));
 
         section.update(otherSection);
-        Distance distance = section.getDistance();
 
         assertThat(section.getUpStation()).isEqualTo(otherDownStation);
-        assertThat(distance.getDistance()).isEqualTo(5);
+        assertThat(section.getDistance()).isEqualTo(5);
     }
 
     @Test
@@ -54,9 +53,8 @@ public class SectionTest {
         Section otherSection = Section.of(line, otherUpStation, downStation, Distance.from(5));
 
         section.update(otherSection);
-        Distance distance = section.getDistance();
 
         assertThat(section.getDownStation()).isEqualTo(otherUpStation);
-        assertThat(distance.getDistance()).isEqualTo(5);
+        assertThat(section.getDistance()).isEqualTo(5);
     }
 }
