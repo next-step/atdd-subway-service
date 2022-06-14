@@ -128,7 +128,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .body(params)
                 .when().post("/lines")
                 .then().log().all().
-                        extract();
+                extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {

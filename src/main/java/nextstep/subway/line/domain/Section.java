@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Section {
@@ -32,6 +33,7 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+        updateLineBy(line);
     }
 
     public Long getId() {
@@ -54,6 +56,14 @@ public class Section {
         return distance;
     }
 
+    public boolean isMatchUpStation(final Station source) {
+        return Objects.equals(upStation, source);
+    }
+
+    public boolean isMatchDownStation(final Station source) {
+        return Objects.equals(downStation, source);
+    }
+
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
@@ -68,5 +78,25 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public void updateLineBy(final Line line) {
+        this.line = line;
+        if (!line.getSections().isContains(this)) {
+            line.addSection(this);
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Section section = (Section) o;
+        return distance == section.distance && Objects.equals(id, section.id) && Objects.equals(line, section.line) && Objects.equals(upStation, section.upStation) && Objects.equals(downStation, section.downStation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, line, upStation, downStation, distance);
     }
 }
