@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,8 +18,10 @@ import org.springframework.http.MediaType;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_토큰_얻기;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -98,10 +101,51 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_응답_NotFound(response);
     }
 
+    @DisplayName("로그인 하지 않은, 추가요금이 없는, 요금을 구한다.")
+    @Test
+    public void getFee_noAddCharge() {
+        //when
+        ExtractableResponse<Response> response = 최단경로_요청(교대역.getId(), 양재역.getId());
+        //then
+        최단경로_요금_확인(response, 5, 1250);
+    }
+
+    @DisplayName("로그인 하지 않은, 추가요금이 있는, 요금을 구한다.")
+    @Test
+    public void getFee_yesAddCharge() {
+        //when
+        ExtractableResponse<Response> response = 최단경로_요청(강남역.getId(), 남부터미널역.getId());
+        //then
+        최단경로_요금_확인(response, 12, 1250 + 100);
+    }
+
+    @DisplayName("로그인 하여 할인받은, 추가요금이 있는, 요금을 구한다.")
+    @Test
+    public void getFee_yesAddCharge_yesDiscount() {
+        //given
+        String token = 회원생성_토큰얻기();
+        //when
+        ExtractableResponse<Response> response = 최단경로_요청(token, 강남역.getId(), 남부터미널역.getId());
+        //then
+        최단경로_요금_확인(response, 12, 1150);
+    }
+
     private ExtractableResponse<Response> 최단경로_요청(Long sourceId, Long targetId) {
         return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .param("source", sourceId)
+                .param("target", targetId)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 최단경로_요청(String token, Long sourceId, Long targetId) {
+        return RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .param("source", sourceId)
                 .param("target", targetId)
                 .when().get("/paths")
@@ -128,5 +172,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 최단경로_응답_NotFound(ExtractableResponse<Response> response) {
         assertEquals(HttpStatus.NOT_FOUND.value(), response.statusCode());
+    }
+
+    private void 최단경로_요금_확인(ExtractableResponse<Response> response, int distance, int fee) {
+        PathResponse pathResponse = response.body().as(PathResponse.class);
+        assertAll(
+                () -> assertEquals(distance, pathResponse.getDistance()),
+                () -> assertEquals(fee, pathResponse.getFee())
+        );
+    }
+
+    private String 회원생성_토큰얻기() {
+        String email = "cyr9210@gmail.com";
+        String password = "password";
+        회원_생성을_요청(email, password, 13);
+        String token = 로그인_토큰_얻기(email, password);
+        return token;
     }
 }
