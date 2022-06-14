@@ -25,6 +25,17 @@ public class PathAcceptanceSupport {
             .extract();
     }
 
+    public static ExtractableResponse<Response> 비회원_지하철역_최단경로_조회_요청(String accessToken, Long source, Long target) {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .param("source", source)
+            .param("target", target)
+            .when().get("/paths")
+            .then().log().all()
+            .extract();
+    }
+
     public static void 지하철역_최단거리_경로_검증_완료(ExtractableResponse<Response> response, List<String> stationNames) {
         List<String> 지하철역_최단거리_경로_응답 = toStationNames(response.as(PathResponse.class).getStations());
         assertThat(지하철역_최단거리_경로_응답).isEqualTo(stationNames);

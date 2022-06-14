@@ -8,6 +8,7 @@ import static nextstep.subway.member.MemberAcceptanceSupport.회원_생성됨;
 import static nextstep.subway.member.MemberAcceptanceSupport.회원_생성을_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
+import static nextstep.subway.path.PathAcceptanceSupport.비회원_지하철역_최단경로_조회_요청;
 import static nextstep.subway.path.PathAcceptanceSupport.지하철_요금_검증_완료;
 import static nextstep.subway.path.PathAcceptanceSupport.지하철역_최단거리_경로_검증_완료;
 import static nextstep.subway.path.PathAcceptanceSupport.지하철역_최단거리_경로_조회_성공;
@@ -155,6 +156,17 @@ class PathAcceptanceTest extends AcceptanceTest {
         지하철역_최단거리_길이_검증_완료(response, 90);
         지하철역_최단거리_경로_검증_완료(response, Arrays.asList("강남역", "잠실역", "강변역"));
         지하철_요금_검증_완료(response, 2450);
+    }
+
+    @DisplayName("비회원이 30km 이동한 경우 지하철 요금 조회")
+    @Test
+    void find_fare_distance_non_login_test() {
+        ExtractableResponse<Response> response = 비회원_지하철역_최단경로_조회_요청("invalid token", 강남역.getId(), 잠실역.getId());
+        지하철역_최단거리_경로_조회_성공(response);
+
+        지하철역_최단거리_길이_검증_완료(response, 50);
+        지하철역_최단거리_경로_검증_완료(response, Arrays.asList("강남역", "잠실역"));
+        지하철_요금_검증_완료(response, 2250);
     }
 
     private void 연령에_맞는_회원생성_후_로그인(int age) {
