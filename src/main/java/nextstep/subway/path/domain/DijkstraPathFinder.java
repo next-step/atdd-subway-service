@@ -15,21 +15,19 @@ import java.util.stream.Collectors;
 
 @Component
 public class DijkstraPathFinder implements PathFinder{
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
-
     @Override
     public Path findShortestPath(List<Section> sections, Station sourceStation, Station targetStation) {
-        initialize(sections);
         validateInputStations(sourceStation, targetStation);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = buildDijkstraPath(sections);
         GraphPath<Station, DefaultWeightedEdge> resultPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         validateResult(resultPath);
         return Path.of(resultPath.getVertexList(), (int) resultPath.getWeight());
     }
 
-    private void initialize(List<Section> sections) {
+    private DijkstraShortestPath buildDijkstraPath(List<Section> sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         registerSections(graph, sections);
-        this.dijkstraShortestPath = new DijkstraShortestPath(graph);
+        return new DijkstraShortestPath(graph);
     }
 
     private void registerSections(WeightedMultigraph<Station, DefaultWeightedEdge> routeGraph, List<Section> sections) {
