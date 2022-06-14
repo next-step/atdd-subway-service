@@ -18,7 +18,7 @@ public class DijkstraPathFinder implements PathFinder {
         createStationGraphFromLines(lines);
     }
 
-    public void createStationGraphFromLines(List<Line> lines) {
+    private void createStationGraphFromLines(List<Line> lines) {
 
         HashSet<Section> allSections = new HashSet<>();
         for (Line line : lines) {
