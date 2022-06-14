@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.RemoveSectionFail;
+import nextstep.subway.exception.AddLineSectionFail;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -21,7 +23,7 @@ public class Sections {
 
     public void removeLineStation(Line line, Station station) {
         if (getSections().size() <= 1) {
-            throw new RuntimeException();
+            throw new RemoveSectionFail("구간의 길이가 1개 이하이므로 삭제할 수 없습니다.");
         }
 
         Optional<Section> upLineStation = getSections().stream()
@@ -61,7 +63,7 @@ public class Sections {
             addDownStationExisted1(line, upStation, downStation, distance);
             return ;
         }
-        throw new RuntimeException();
+        throw new AddLineSectionFail("역 정보를 찾지 못했습니다.");
     }
 
     private void addDownStationExisted1(Line line, Station upStation, Station downStation, int distance) {
@@ -84,12 +86,12 @@ public class Sections {
 
     private void validationAddLineStation(Station upStation, Station downStation, List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new AddLineSectionFail("이미 등록된 구간 입니다.");
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new AddLineSectionFail("등록할 수 없는 구간 입니다.");
         }
     }
 

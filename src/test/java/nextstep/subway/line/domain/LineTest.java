@@ -1,8 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.exception.AddLineSectionFail;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -90,8 +88,8 @@ public class LineTest {
 
         // then
         assertAll(
-                () -> assertThrows(RuntimeException.class, () -> line.addLineStation(강남역, 역삼역, 15)),
-                () -> assertThrows(RuntimeException.class, () -> line.addLineStation(신도림역, 대림역, 15)),
+                () -> assertThrows(AddLineSectionFail.class, () -> line.addLineStation(강남역, 역삼역, 15)),
+                () -> assertThrows(AddLineSectionFail.class, () -> line.addLineStation(신도림역, 대림역, 15)),
                 () -> assertEquals(line.getSections().size(), 5),
                 () -> equalsSection(line.getSections().get(0), 강남역, 역삼역, 15),
                 () -> equalsSection(line.getSections().get(1), 선릉역, 삼성역, 14),
