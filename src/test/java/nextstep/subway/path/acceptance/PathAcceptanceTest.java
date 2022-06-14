@@ -57,10 +57,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         동래역 = 지하철역_등록되어_있음("동래역").as(StationResponse.class);
 
         오호선 = 지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-red-600", 공덕역.getId(), 영등포구청역.getId(), 6)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 합정역.getId(), 영등포구청역.getId(), 8)).as(LineResponse.class);
         육호선 = 지하철_노선_등록되어_있음(new LineRequest("육호선", "bg-red-600", 합정역.getId(), 공덕역.getId(), 4)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 합정역.getId(), 영등포구청역.getId(), 8)).as(LineResponse.class);
         부산일호선 = 지하철_노선_등록되어_있음(new LineRequest("부산일호선", "bg-red-600", 동래역.getId(), 서면역.getId(), 4)).as(LineResponse.class);
-        지하철_노선에_지하철역_등록_요청(육호선, 합정역, 당산역, 3);
+        지하철_노선에_지하철역_등록_요청(이호선, 합정역, 당산역, 3);
     }
 
     /**
@@ -120,8 +120,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse sourceStationResponse, StationResponse targetStationResponse) {
         return RestAssured
                 .given()
-                .pathParam("source", sourceStationResponse.getId())
-                .pathParam("target", targetStationResponse.getId())
+                .queryParam("source", sourceStationResponse.getId())
+                .queryParam("target", targetStationResponse.getId())
                 .log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths")
