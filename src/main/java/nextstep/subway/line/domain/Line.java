@@ -108,4 +108,43 @@ public class Line extends BaseEntity {
 
         return downStation;
     }
+
+    public void addLineStation(Station upStation, Station downStation, int distance) {
+        boolean isUpStationExisted = sections.isStationExisted(upStation);
+        boolean isDownStationExisted = sections.isStationExisted(downStation);
+
+        raiseIfNotValidAddSection(isUpStationExisted, isDownStationExisted);
+
+        if (sections.isEmpty()) {
+            addSection(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        if (isUpStationExisted) {
+            sections.getNextSectionByEqualUpStation(upStation)
+                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+            addSection(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        if (isDownStationExisted) {
+            sections.getNextSectionByEqualDownStation(downStation)
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+            addSection(new Section(this, upStation, downStation, distance));
+            return;
+        }
+        throw new RuntimeException();
+    }
+
+    private void raiseIfNotValidAddSection(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!sections.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
 }

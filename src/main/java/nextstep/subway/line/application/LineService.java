@@ -63,39 +63,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        Sections sections = line.getSections();
-        boolean isUpStationExisted = sections.isStationExisted(upStation);
-        boolean isDownStationExisted = sections.isStationExisted(downStation);
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!sections.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (sections.isEmpty()) {
-            line.addSection(new Section(line, upStation, downStation, request.getDistance()));
-            return;
-        }
-
-        if (isUpStationExisted) {
-            sections.getNextSectionByEqualUpStation(upStation)
-                    .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
-
-            line.addSection(new Section(line, upStation, downStation, request.getDistance()));
-            return;
-        }
-
-        if (isDownStationExisted) {
-            sections.getNextSectionByEqualDownStation(downStation)
-                    .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
-
-            line.addSection(new Section(line, upStation, downStation, request.getDistance()));
-            return;
-        }
-        throw new RuntimeException();
+        line.addLineStation(upStation, downStation, request.getDistance());
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -105,8 +73,9 @@ public class LineService {
             throw new RuntimeException();
         }
 
-        Optional<Section> upLineStation = line.getSections().getNextSectionByEqualUpStation(station);
-        Optional<Section> downLineStation = line.getSections().getNextSectionByEqualDownStation(station);
+        Sections sections = line.getSections();
+        Optional<Section> upLineStation = sections.getNextSectionByEqualUpStation(station);
+        Optional<Section> downLineStation = sections.getNextSectionByEqualDownStation(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
