@@ -20,6 +20,6 @@ public class AnonymousMember implements AccessMember {
 
     @Override
     public MemberFarePolicy getMemberFarePolicy() {
-        return null;
+        return MemberFarePolicy.GENERAL;
     }
 }

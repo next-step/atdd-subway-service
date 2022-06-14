@@ -58,10 +58,7 @@ public class ShortestPath {
     }
 
     private int applyFarePolicyTo(int fare, MemberFarePolicy memberFarePolicy) {
-        if (memberFarePolicy != null) {
-            return (int) Math.ceil((fare - memberFarePolicy.getDeductionAmount()) * (1 - memberFarePolicy.getDiscountPercent()));
-        }
-        return fare;
+        return (int) Math.ceil((fare - memberFarePolicy.getDeductionAmount()) * (1 - memberFarePolicy.getDiscountPercent()));
     }
 
     public List<Station> getRoutes() {
