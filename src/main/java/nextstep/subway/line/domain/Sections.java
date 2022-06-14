@@ -7,10 +7,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Embeddable
 public class Sections {
@@ -30,42 +27,18 @@ public class Sections {
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
         Station downStation = findUpStation();
         stations.add(downStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        while (Objects.nonNull(downStation)) {
+            downStation = nextSectionDownStation(stations, downStation);
         }
 
         return stations;
-    }
-
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
     }
 
     public void addSection(Line line, Station upStation, Station downStation, int distance) {
@@ -121,6 +94,38 @@ public class Sections {
         upLineStation.ifPresent(it -> sections.remove(it));
         downLineStation.ifPresent(it -> sections.remove(it));
     }
+
+    private Station nextSectionDownStation(List<Station> stations, Station downStation) {
+        Optional<Section> nextLineStation = sections.stream()
+                .filter(it -> it.getUpStation().equals(downStation))
+                .findFirst();
+
+        if (!nextLineStation.isPresent()) {
+            return null;
+        }
+
+        Station nextStation = nextLineStation.get().getDownStation();
+        stations.add(nextStation);
+        return nextStation;
+    }
+
+    private Station findUpStation() {
+        Station downStation = sections.get(0).getUpStation();
+        return nextSectionUpStation(downStation);
+    }
+
+    private Station nextSectionUpStation(Station downStation) {
+        Optional<Section> nextLineStation = sections.stream()
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst();
+
+        if (!nextLineStation.isPresent()) {
+            return downStation;
+        }
+
+        return nextSectionUpStation(nextLineStation.get().getUpStation());
+    }
+
 
     private boolean isUpStationExisted(Station upStation) {
         return getStations().stream().anyMatch(it -> it == upStation);
