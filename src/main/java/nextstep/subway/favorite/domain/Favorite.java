@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -37,6 +38,11 @@ public class Favorite extends BaseEntity {
         this.member = member;
         this.source = source;
         this.target = target;
+    }
+
+    public FavoriteResponse toFavoriteResponse() {
+        return new FavoriteResponse(this.id, this.source.getId(), this.target.getId(), this.getCreatedDate(),
+                this.getModifiedDate());
     }
 
     @Override

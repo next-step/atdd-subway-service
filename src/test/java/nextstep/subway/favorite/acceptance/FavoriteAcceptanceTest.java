@@ -1,4 +1,4 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_생성_요청;
@@ -63,7 +63,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         // given
         지하철_노선에_지하철역_등록_요청(이호선, 교대역, 서초역, 10);
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 양재역, 3);
-//        지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 판교역, 15);
 
         // given
         회원_생성을_요청("mond@mond.com", "mond", 10);
@@ -72,6 +71,19 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         // given
         몬드_토큰 = 로그인_요청(new TokenRequest("mond@mond.com", "mond")).as(TokenResponse.class);
         스루기_토큰 = 로그인_요청(new TokenRequest("srugi@srugi.com", "srugi")).as(TokenResponse.class);
+    }
+
+    /**
+     *  When 즐겨찾기 생성 요청하면
+     *  Then 즐겨찾기가 생성된다
+     */
+    @Test
+    @DisplayName("즐겨찾기 생성 요청시 생성된다")
+    void saveFavorite() {
+        // when
+        ExtractableResponse<Response> 즐겨찾기_생성_요청_결과 = 즐겨찾기_생성_요청(몬드_토큰, 서초역, 강남역);
+        // then
+        즐겨찾기_생성_요청_성공(즐겨찾기_생성_요청_결과);
     }
 
     /**
