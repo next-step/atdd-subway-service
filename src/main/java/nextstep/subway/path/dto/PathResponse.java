@@ -9,6 +9,9 @@ public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
 
+    public PathResponse() {
+    }
+
     public PathResponse(Path path) {
        stations = path.getShortestPath().stream().
                 map(station -> StationResponse.of(station)).
