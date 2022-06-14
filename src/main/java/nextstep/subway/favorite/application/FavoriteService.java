@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.NotFoundException;
@@ -46,7 +47,13 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void deleteFavorite(long id) {
+    public void deleteFavorite(LoginMember loginMember, long id) {
+        Favorite favorite = findFavoriteById(id);
+        favorite.validateOwner(loginMember);
         favoriteRepository.deleteById(id);
+    }
+
+    private Favorite findFavoriteById(long id) {
+        return favoriteRepository.findById(id).orElseThrow(() -> new NotFoundException("조회되는 즐겨찾기가 없습니다."));
     }
 }

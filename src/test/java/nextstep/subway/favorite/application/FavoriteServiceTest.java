@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -81,7 +82,13 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기 삭제 테스트")
     @Test
     void deleteFavorite() {
-        favoriteService.deleteFavorite(1L);
+        LoginMember loginMember = createLoginMember(1L, "email@email.com", 20);
+        Member member = createMember(1L, "email@email.com", "password", 20);
+        Station 강남역 = createStation(1L, "강남역");
+        Station 정자역 = createStation(2L, "정자역");
+        Favorite favorite = createFavorite(1L, member, 강남역, 정자역);
+        when(favoriteRepository.findById(1L)).thenReturn(Optional.ofNullable(favorite));
+        favoriteService.deleteFavorite(loginMember, 1L);
         verify(favoriteRepository).deleteById(1L);
     }
 }

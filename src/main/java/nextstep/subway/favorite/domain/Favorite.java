@@ -10,7 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.NotFoundException;
+import nextstep.subway.exception.NotOwnerException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -107,6 +109,16 @@ public class Favorite extends BaseEntity {
 
     public Station target() {
         return target;
+    }
+
+    public void validateOwner(LoginMember loginMember) {
+        if (isNotEqualMemberId(loginMember)) {
+            throw new NotOwnerException("로그인한 회원의 즐겨찾기가 아닙니다.");
+        }
+    }
+
+    private boolean isNotEqualMemberId(LoginMember loginMember) {
+        return !loginMember.getId().equals(member.getId());
     }
 
     @Override

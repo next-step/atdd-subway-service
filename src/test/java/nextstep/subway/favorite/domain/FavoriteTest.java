@@ -1,10 +1,13 @@
 package nextstep.subway.favorite.domain;
 
+import static nextstep.subway.DomainFixtureFactory.createLoginMember;
 import static nextstep.subway.DomainFixtureFactory.createMember;
 import static nextstep.subway.DomainFixtureFactory.createStation;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.NotFoundException;
+import nextstep.subway.exception.NotOwnerException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -33,5 +36,18 @@ class FavoriteTest {
                 () -> Favorite.builder(createMember(1L, "email@email.com", "password", 20), createStation(1L, "지하철역"),
                                 null)
                         .build()).isInstanceOf(NotFoundException.class).hasMessage("도착역 정보가 없습니다.");
+    }
+
+    @DisplayName("로그인한 Id와 즐겨찾기를 등록한 회원 Id가 다른 경우")
+    @Test
+    void validateOwner() {
+        LoginMember loginMember = createLoginMember(2L, "mail@email.com", 20);
+        Favorite favorite = Favorite.builder(createMember(1L, "email@email.com", "password", 20),
+                        createStation(1L, "지하철역"), createStation(2L, "새로운지하철역"))
+                .build();
+        assertThatThrownBy(
+                () -> favorite.validateOwner(loginMember))
+                .isInstanceOf(NotOwnerException.class)
+                .hasMessage("로그인한 회원의 즐겨찾기가 아닙니다.");
     }
 }
