@@ -70,14 +70,15 @@ class PathServiceTest {
      */
     @BeforeEach
     void setUp() {
-        이호선 = Line.of("이호선", "red", 대림역, 신대방역, 15, 0);
+        이호선 = Line.of("이호선", "red", 대림역, 신대방역, 15);
         대림역 = new Station(1L, "대림");
         구로디지털단지역 = new Station(2L, "구로디지털단지");
         신대방역 = new Station(3L, "신대방");
         대림_구로디지털단지 = new Section(이호선, 대림역, 구로디지털단지역, 10);
         구로디지털단지_신대방 = new Section(이호선, 구로디지털단지역, 신대방역, 5);
 
-        칠호선 = Line.of("칠호선", "blue", 남구로역, 가산디지털단지역, 7, 500);
+        칠호선 = Line.of("칠호선", "blue", 남구로역, 가산디지털단지역, 7);
+        칠호선.registerAdditionalFare(500);
         남구로역 = new Station(4L, "남구로");
         가산디지털단지역 = new Station(5L, "가산디지털단지");
         남구로_가산디지털단지 = new Section(칠호선, 남구로역, 가산디지털단지역, 3);

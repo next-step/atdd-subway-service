@@ -69,14 +69,6 @@ class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(이호선, 잠실역, 강변역, 40);
     }
 
-    void 연령에_맞는_회원생성_후_로그인(int age) {
-        createResponse = 회원_생성을_요청(EMAIL, PASSWORD, age);
-        회원_생성됨(createResponse);
-
-        loginSuccessResponse = 로그인_시도함(EMAIL, PASSWORD);
-        accessToken = 로그인_성공후_토큰_조회됨(loginSuccessResponse);
-    }
-
     /**
      * Feature: 지하철 구간 관련 기능
      *
@@ -163,5 +155,13 @@ class PathAcceptanceTest extends AcceptanceTest {
         지하철역_최단거리_길이_검증_완료(response, 90);
         지하철역_최단거리_경로_검증_완료(response, Arrays.asList("강남역", "잠실역", "강변역"));
         지하철_요금_검증_완료(response, 2450);
+    }
+
+    private void 연령에_맞는_회원생성_후_로그인(int age) {
+        createResponse = 회원_생성을_요청(EMAIL, PASSWORD, age);
+        회원_생성됨(createResponse);
+
+        loginSuccessResponse = 로그인_시도함(EMAIL, PASSWORD);
+        accessToken = 로그인_성공후_토큰_조회됨(loginSuccessResponse);
     }
 }
