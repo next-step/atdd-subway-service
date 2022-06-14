@@ -4,10 +4,8 @@ import java.util.Arrays;
 
 public enum FareAgeDiscount {
     INFANT(6, 13, 0.5),
-    TEENAGER(13, 19, 0.2);
-
-    private static final int DEDUCTION_FEE = 350;
-    private static final int ADULT = 19;
+    TEENAGER(13, 19, 0.2),
+    ADULT(19, Integer.MAX_VALUE, 0);
 
     private int minAge;
     private int maxAge;
@@ -19,23 +17,14 @@ public enum FareAgeDiscount {
         this.discountRate = discountRate;
     }
 
-    private static FareAgeDiscount of(int age) {
+    public static FareAgeDiscount of(int age) {
         return Arrays.stream(values())
                 .filter(value -> (value.minAge <= age) && (age < value.maxAge))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public static int calculate(int fare, Age age) {
-        if (age.isAdult()) {
-            return fare;
-        }
-
-        FareAgeDiscount fareAgeDiscount = FareAgeDiscount.of(age.getValue());
-        return (int) (fare - getDiscount(fare, fareAgeDiscount.discountRate));
-    }
-
-    private static double getDiscount(int fare, double discountRate) {
-        return (fare - DEDUCTION_FEE) * discountRate;
+    public double getDiscountRate() {
+        return discountRate;
     }
 }
