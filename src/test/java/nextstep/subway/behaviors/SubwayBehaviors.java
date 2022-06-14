@@ -303,4 +303,20 @@ public class SubwayBehaviors {
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    public static ExtractableResponse<Response> 최단거리_조회(String startStationId, String endStationId) {
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("source", startStationId);
+        queryParams.put("target", endStationId);
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .queryParams(queryParams)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+        return response;
+    }
 }
