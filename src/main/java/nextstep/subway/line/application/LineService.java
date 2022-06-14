@@ -85,14 +85,17 @@ public class LineService {
                     .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
 
             line.addSection(new Section(line, upStation, downStation, request.getDistance()));
-        } else if (isDownStationExisted) {
+            return;
+        }
+
+        if (isDownStationExisted) {
             line.getSections().getNextSectionByEqualDownStation(downStation)
                     .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
 
             line.addSection(new Section(line, upStation, downStation, request.getDistance()));
-        } else {
-            throw new RuntimeException();
+            return;
         }
+        throw new RuntimeException();
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
