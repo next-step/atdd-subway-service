@@ -24,7 +24,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBearerAuth() {
         // given
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
         // when
         ExtractableResponse<Response> 로그인_응답 = 로그인_요청(EMAIL, PASSWORD);
@@ -61,10 +61,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithWrongBearerAuth() {
         // given
-        로그인_하지_않음();
+        String wrongToken = 로그인_하지_않음();
 
         // when
-        ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회_요청();
+        ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회_요청(wrongToken);
 
         // then
         권한_없음(내_정보_조회_응답);
@@ -91,7 +91,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public static void 로그인_하지_않음() {
+    public static String 로그인_되어있음(String email, String password) {
+        ExtractableResponse<Response> response = 로그인_요청(email, password);
+        return 로그인_성공(response);
+    }
+
+    public static String 로그인_하지_않음() {
+        return "";
     }
 
     public static void 권한_없음(ExtractableResponse<Response> response) {
