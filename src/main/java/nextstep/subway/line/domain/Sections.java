@@ -60,13 +60,13 @@ public class Sections {
             return ;
         }
         if (isDownStationExisted) {
-            addDownStationExisted1(line, upStation, downStation, distance);
+            addDownStationExisted(line, upStation, downStation, distance);
             return ;
         }
         throw new AddLineSectionFail("역 정보를 찾지 못했습니다.");
     }
 
-    private void addDownStationExisted1(Line line, Station upStation, Station downStation, int distance) {
+    private void addDownStationExisted(Line line, Station upStation, Station downStation, int distance) {
         sections.stream()
                 .filter(it -> it.getDownStation() == downStation)
                 .findFirst()

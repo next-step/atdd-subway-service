@@ -27,7 +27,7 @@ public class LineTest {
 
     @Test
     void saveLine() {
-        // when
+        // give
         Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
 
         // then
@@ -44,9 +44,9 @@ public class LineTest {
     void update() {
         // give
         Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
+        Line newLine = new Line("two", "green");
 
         // when
-        Line newLine = new Line("two", "green");
         line.update(newLine);
 
         // then
@@ -58,7 +58,7 @@ public class LineTest {
 
     @Test
     void getStations() {
-        // when
+        // give
         Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
 
         // then
@@ -114,8 +114,6 @@ public class LineTest {
     }
 
     private void equalsSection(Section section, Station upStation, Station downStation, int distance) {
-        System.out.println(section.getUpStation().getId() + " " + section.getUpStation().getName());
-        System.out.println(upStation.getId() + " " + upStation.getName());
         assertAll(
                 () -> assertTrue(section.getUpStation().equals(upStation)),
                 () -> assertTrue(section.getDownStation().equals(downStation)),
