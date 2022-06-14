@@ -99,7 +99,7 @@ public class Sections {
             throw new RuntimeException(ALREADY_REGISTERED_STATION);
         }
 
-        if (stations.isNotEmpty() && distinctStations.contains(upStation) && distinctStations.contains(downStation)) {
+        if (stations.isNotEmpty() && !distinctStations.contains(upStation) && !distinctStations.contains(downStation)) {
             throw new RuntimeException(UNREGISTERED_STATION);
         }
     }
