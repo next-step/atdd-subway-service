@@ -89,26 +89,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(response);
     }
 
-    /*
-    Feature: 즐겨찾기를 관리한다.
-
-      Background
-        Given 지하철역 등록되어 있음
-        And 지하철 노선 등록되어 있음
-        And 지하철 노선에 지하철역 등록되어 있음
-        And 회원 등록되어 있음
-        And 로그인 되어있음
-
-      Scenario: 즐겨찾기를 관리
-        When 즐겨찾기 생성을 요청
-        Then 즐겨찾기 생성됨
-        When 즐겨찾기 목록 조회 요청
-        Then 즐겨찾기 목록 조회됨
-        When 즐겨찾기 삭제 요청
-        Then 즐겨찾기 삭제됨
-     */
+    @DisplayName("시나리오 기반 인수테스트")
     @Test
-    void 인수_통합테스트() {
+    void scenario1() {
         // when: 즐겨찾기 생성을 요청
         ExtractableResponse<Response> 강남역_잠실역 = 즐겨찾기_등록되어_있음(tokenResponse, 강남역, 잠실역);
 
