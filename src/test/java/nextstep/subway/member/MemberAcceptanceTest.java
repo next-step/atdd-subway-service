@@ -3,6 +3,7 @@ package nextstep.subway.member;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -11,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -65,34 +66,31 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void manageMyInfo() {
         // given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-        String accessToken = 로그인_되어있음(EMAIL, PASSWORD);
+        RequestSpecification 사용자 = 로그인_되어있음(EMAIL, PASSWORD);
 
         // when
-        ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회_요청(accessToken);
+        ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회_요청(사용자);
 
         // then
         내_정보_조회됨(내_정보_조회_응답);
 
         // when
-        ExtractableResponse<Response> 내_정보_변경_응답 = 내_정보_변경_요청(accessToken, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        ExtractableResponse<Response> 내_정보_변경_응답 = 내_정보_변경_요청(사용자, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
 
         // then
         내_정보_변경됨(내_정보_변경_응답);
 
         // when
-        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(NEW_EMAIL, NEW_PASSWORD);
-
-        // then
-        String newAccessToken = 로그인_성공(로그인_응답);
+        RequestSpecification 변경된_사용자 = 로그인_되어있음(NEW_EMAIL, NEW_PASSWORD);
 
         // when
-        ExtractableResponse<Response> 회원_탈퇴_응답 = 회원_탈퇴_요청(newAccessToken);
+        ExtractableResponse<Response> 회원_탈퇴_응답 = 회원_탈퇴_요청(변경된_사용자);
 
         // then
         회원_탈퇴됨(회원_탈퇴_응답);
 
         // when
-        ExtractableResponse<Response> 탈퇴된_정보_조회_응답 = 내_정보_조회_요청(newAccessToken);
+        ExtractableResponse<Response> 탈퇴된_정보_조회_응답 = 내_정보_조회_요청(변경된_사용자);
 
         // then
         탈퇴된_정보_조회_실패됨(탈퇴된_정보_조회_응답);
@@ -167,11 +165,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성됨(response);
     }
 
-    public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
-        return RestAssured
-                .given().log().all()
+    public static ExtractableResponse<Response> 내_정보_조회_요청(RequestSpecification authorization) {
+        return authorization
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", "Bearer " + accessToken)
                 .when().get("members/me")
                 .then().log().all()
                 .extract();
@@ -181,12 +177,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static ExtractableResponse<Response> 내_정보_변경_요청(String accessToken, String email, String password, Integer age) {
-        return RestAssured
-                .given().log().all()
+    public static ExtractableResponse<Response> 내_정보_변경_요청(RequestSpecification authorization, String email, String password, Integer age) {
+        return authorization
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new MemberRequest(email, password, age))
-                .header("Authorization", "Bearer " + accessToken)
                 .when().put("members/me")
                 .then().log().all()
                 .extract();
@@ -196,10 +190,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static ExtractableResponse<Response> 회원_탈퇴_요청(String accessToken) {
-        return RestAssured
-                .given().log().all()
-                .header("Authorization", "Bearer " + accessToken)
+    public static ExtractableResponse<Response> 회원_탈퇴_요청(RequestSpecification authorization) {
+        return authorization
                 .when().delete("members/me")
                 .then().log().all()
                 .extract();

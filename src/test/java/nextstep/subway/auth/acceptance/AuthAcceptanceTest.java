@@ -3,6 +3,7 @@ package nextstep.subway.auth.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -61,10 +62,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithWrongBearerAuth() {
         // given
-        String wrongToken = 로그인_하지_않음();
+        RequestSpecification 비로그인 = 로그인_하지_않음();
 
         // when
-        ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회_요청(wrongToken);
+        ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회_요청(비로그인);
 
         // then
         권한_없음(내_정보_조회_응답);
@@ -91,13 +92,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public static String 로그인_되어있음(String email, String password) {
+    public static RequestSpecification 로그인_되어있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
-        return 로그인_성공(response);
+        String accessToken = 로그인_성공(response);
+        return RestAssured.given().log().all().auth().oauth2(accessToken);
     }
 
-    public static String 로그인_하지_않음() {
-        return "";
+    public static RequestSpecification 로그인_하지_않음() {
+        return RestAssured.given().log().all();
     }
 
     public static void 권한_없음(ExtractableResponse<Response> response) {
