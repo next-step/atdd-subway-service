@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.exception.NotExistStationException;
 import nextstep.subway.exception.SameOriginDestinationException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -28,10 +29,10 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
 
         Station sourceStation = stationRepository.findById(source)
-                .orElseThrow(() -> new IllegalArgumentException("출발역이 없습니다."));
+                .orElseThrow(() -> new NotExistStationException("출발역이 없습니다."));
 
         Station targetStation = stationRepository.findById(target)
-                .orElseThrow(() -> new IllegalArgumentException("도착역이 없습니다."));
+                .orElseThrow(() -> new NotExistStationException("도착역이 없습니다."));
 
         return PathFinder.of().findShortest(lines, sourceStation, targetStation);
     }

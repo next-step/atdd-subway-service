@@ -11,6 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.path.PathAcceptanceFactory.최단_경로_조회_요청;
@@ -30,6 +32,7 @@ public class PathFinderAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
     private StationResponse 신규상행역;
     private StationResponse 신규하행역;
+    private StationResponse 존재하지않는역;
 
     /**
      * 교대역    --- *2호선 10* ---   강남역
@@ -48,6 +51,7 @@ public class PathFinderAcceptanceTest extends AcceptanceTest {
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
         신규상행역 = StationAcceptanceTest.지하철역_등록되어_있음("신규상행역").as(StationResponse.class);
         신규하행역 = StationAcceptanceTest.지하철역_등록되어_있음("신규하행역").as(StationResponse.class);
+        존재하지않는역 = new StationResponse(100L, "존재하지않는역", LocalDateTime.now(), LocalDateTime.now());
 
         신분당선 = 지하철_노선_등록되어_있음(LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
@@ -72,9 +76,18 @@ public class PathFinderAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 출발지와_도착지_연결되지않아__조회실패() {
+    void 출발지와_도착지_연결되지않아_조회실패() {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 신규상행역.getId());
 
         최단_경로_조회_조회_실패(response);
+    }
+
+    @Test
+    void 출발지나_도착지가_존재하지않아_조회실패() {
+        ExtractableResponse<Response> 출발지_없음 = 최단_경로_조회_요청(존재하지않는역.getId(), 교대역.getId());
+        ExtractableResponse<Response> 도착지_없음 = 최단_경로_조회_요청(교대역.getId(), 존재하지않는역.getId());
+
+        최단_경로_조회_조회_실패(출발지_없음);
+        최단_경로_조회_조회_실패(도착지_없음);
     }
 }
