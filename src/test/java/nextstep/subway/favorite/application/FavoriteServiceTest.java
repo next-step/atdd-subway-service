@@ -10,12 +10,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import nextstep.subway.exception.NotExistException;
+import nextstep.subway.exception.NotLinkedPathException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.path.application.PathService;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -39,11 +41,13 @@ class FavoriteServiceTest {
     @Mock
     private MemberService memberService;
     @Mock
+    private PathService pathService;
+    @Mock
     private FavoriteRepository favoriteRepository;
 
     @BeforeEach
     void setUp() {
-        favoriteService = new FavoriteService(stationService, memberService, favoriteRepository);
+        favoriteService = new FavoriteService(stationService, memberService, pathService, favoriteRepository);
 
         // given
         when(memberService.findMemberById(1L)).thenReturn(mond);
@@ -101,6 +105,19 @@ class FavoriteServiceTest {
         when(stationService.findStationById(2L)).thenThrow(NotExistException.class);
 
         // when && then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> favoriteService.saveFavoriteOfMine(mond.getId(), favoriteRequest));
+    }
+
+    @Test
+    @DisplayName("연결되지 않는 역을 즐겨찾기 등록하려고 하면 실패한다")
+    void saveFavoriteOfNotLinkedSection() {
+        // given
+        when(stationService.findStationById(1L)).thenReturn(gangNam);
+        when(stationService.findStationById(2L)).thenReturn(gyoDae);
+        when(pathService.searchShortestPath(any(), any())).thenThrow(NotLinkedPathException.class);
+
+        // when
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> favoriteService.saveFavoriteOfMine(mond.getId(), favoriteRequest));
     }

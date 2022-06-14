@@ -253,8 +253,8 @@ fun RequestSpecification.즐겨찾기_생성_요청(
   - [x] 즐겨찾기 삭제한다
   - [x] 즐겨찾기 실패한다 (없는 역, 연결되지 않는 역)
   - [x] 즐겨찾기 성공 시나리오
-  - [ ] 즐겨찾기 실패 시나리오
-- [ ] 즐겨찾기 기능 구현
+  - [x] 즐겨찾기 실패 시나리오
+- [x] 즐겨찾기 기능 구현
   - [x] FavoriteController 구현
-  - [ ] FavoriteService 구현
+  - [x] FavoriteService 구현
   - [x] FavoriteRequest, FavoriteResponse, Favorite 구현

@@ -173,9 +173,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_요청_실패(없는_역_생성_요청_결과);
 
         // when
-//        ExtractableResponse<Response> 연결_안된_역_생성_요청_결과 = 즐겨찾기_생성_요청(몬드_토큰, 강남역, 판교역);
+        ExtractableResponse<Response> 연결_안된_역_생성_요청_결과 = 즐겨찾기_생성_요청(몬드_토큰, 강남역, 판교역);
         // then
-//        즐겨찾기_생성_요청_실패(연결_안된_역_생성_요청_결과);
+        즐겨찾기_생성_요청_실패(연결_안된_역_생성_요청_결과);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(TokenResponse 토큰, StationResponse 시작역, StationResponse 종료역) {
