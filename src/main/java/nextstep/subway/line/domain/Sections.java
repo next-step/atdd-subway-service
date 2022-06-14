@@ -33,18 +33,20 @@ public class Sections {
         this.sections.add(section);
     }
 
-    public Section removeSectionByStation(Station station) {
+    public void removeSectionByStation(Station station) {
         validateRemoveStation(station);
 
         if (isUpStationAndDownStation(station)) {
-            return matchUpStationAndDownStation(station);
+            matchUpStationAndDownStation(station);
+            return;
         }
 
         if (matchUpStation(station)) {
-            return matchAndRemoveUpStation(station);
+            matchAndRemoveUpStation(station);
+            return;
         }
 
-        return matchAndRemoveDownStation(station);
+        matchAndRemoveDownStation(station);
     }
 
     public List<Section> getSections() {
