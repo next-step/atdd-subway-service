@@ -108,7 +108,7 @@ public class Sections {
     }
 
     private void validateRemoveStation(Station station) {
-        if (sections.size() < MINIMUM_SIZE) {
+        if (sections.size() <= MINIMUM_SIZE) {
             throw new IllegalArgumentException(NOT_FOUND_REMOVE_STATION);
         }
 
