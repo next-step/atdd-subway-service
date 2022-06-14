@@ -10,7 +10,7 @@ public class Distance {
     @Column(nullable = false)
     public int distance;
 
-    public Distance() {
+    protected Distance() {
     }
 
     public Distance(int distance) {

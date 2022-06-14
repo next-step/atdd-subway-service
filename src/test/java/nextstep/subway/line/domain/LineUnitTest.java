@@ -1,10 +1,8 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.exception.SectionAddException;
 import nextstep.subway.line.exception.SectionSizeMinimunException;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,21 +38,10 @@ public class LineUnitTest {
     @Test
     @DisplayName("노선에 포함된 역 Response 리스트 가져오기")
     void getStationResponses() {
-        assertThat(칠호선.getStationResponses()
+        assertThat(칠호선.getStations()
                         .stream()
-                        .map(StationResponse::getId))
+                        .map(Station::getId))
                         .containsExactly(청담역.getId(), 건대입구역.getId());
-    }
-
-    @Test
-    @DisplayName("노선 Response 가져오기")
-    void findLineResponses() {
-        LineResponse lineResponse = 칠호선.findLineResponses();
-        assertThat(lineResponse.getId()).isEqualTo(칠호선.getId());
-        assertThat(lineResponse.getStations()
-                               .stream()
-                               .map(StationResponse::getId))
-                               .containsExactly(청담역.getId(), 건대입구역.getId());
     }
 
     @Test

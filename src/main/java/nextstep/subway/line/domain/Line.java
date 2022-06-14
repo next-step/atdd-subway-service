@@ -25,7 +25,7 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
-    public Line() {
+    protected Line() {
     }
 
     public Line(String name, String color) {
@@ -62,16 +62,6 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         return sections.getStations();
-    }
-
-    public List<StationResponse> getStationResponses() {
-        return getStations().stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
-    }
-
-    public LineResponse findLineResponses() {
-        return LineResponse.of(this, getStationResponses());
     }
 
     public void addLineStation(Station upStation, Station downStation, int distance) {
