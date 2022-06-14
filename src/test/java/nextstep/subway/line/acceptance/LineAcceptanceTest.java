@@ -14,14 +14,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("지하철 노선 관련 기능")
+@DisplayName("지하철 노선 관련 기능 인수 테스트")
 public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 광교역;
