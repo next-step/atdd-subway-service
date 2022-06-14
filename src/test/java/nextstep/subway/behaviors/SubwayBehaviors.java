@@ -15,6 +15,8 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.path.domain.SubwayFare;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.assertj.core.api.Assertions;
@@ -304,7 +306,7 @@ public class SubwayBehaviors {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static ExtractableResponse<Response> 최단거리_조회(String startStationId, String endStationId) {
+    public static ExtractableResponse<Response> 로그인정보없이_최단경로_및_요금을_조회한다(String startStationId, String endStationId) {
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("source", startStationId);
         queryParams.put("target", endStationId);
@@ -318,5 +320,60 @@ public class SubwayBehaviors {
                 .then().log().all()
                 .extract();
         return response;
+    }
+
+    public static ExtractableResponse<Response> 로그인정보없이_최단경로_및_요금을_조회한다(StationResponse source, StationResponse target) {
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("source", String.valueOf(source.getId()));
+        queryParams.put("target", String.valueOf(target.getId()));
+
+        return RestAssured
+                .given().log().all()
+                .accept(ContentType.JSON)
+                .queryParams(queryParams)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 로그인_상태에서_최단경로_및_요금을_조회한다(String accessToken, StationResponse source, StationResponse target) {
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("source", String.valueOf(source.getId()));
+        queryParams.put("target", String.valueOf(target.getId()));
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(ContentType.JSON)
+                .queryParams(queryParams)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 최단경로거리_확인(PathResponse pathResponse, int expected) {
+        int distance = pathResponse.getDistance();
+        assertThat(distance).isEqualTo(expected);
+    }
+
+    public static void 최단경로_확인(PathResponse pathResponse, List<StationResponse> expectedPath) {
+        List<StationResponse> stations = pathResponse.getStations();
+        assertThat(stations)
+                .hasSize(expectedPath.size())
+                .containsExactlyElementsOf(expectedPath);
+    }
+
+    public static void 지하철요금_확인(PathResponse pathResponse, SubwayFare fare) {
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
+    }
+
+    public static void 어린이_연령대인지_확인(int age) {
+        boolean isChild = age >= 6 && age < 13;
+        assertThat(isChild).isTrue();
+    }
+
+    public static void 청소년_연령대인지_확인(int age) {
+        boolean isTeen = age >= 13 && age < 19;
+        assertThat(isTeen).isTrue();
     }
 }

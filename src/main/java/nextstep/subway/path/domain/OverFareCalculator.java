@@ -16,9 +16,9 @@ public class OverFareCalculator {
 
     private static final int NO_OVER_FARE = 0;
 
-    private static final int DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY = 350;
-    private static final int CHILD_DISCOUNT_RATE = 50;
-    private static final int TEEN_DISCOUNT_RATE = 20;
+    public static final int DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY = 350;
+    public static final int CHILD_DISCOUNT_RATE = 50;
+    public static final int TEEN_DISCOUNT_RATE = 20;
 
     public static int calculateOverFareByDistance(PathFindResult pathFindResult) {
         int distance = pathFindResult.getDistance();

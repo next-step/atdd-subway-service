@@ -1,19 +1,24 @@
 package nextstep.subway.path;
 
 import static nextstep.subway.behaviors.MemberBehaviors.회원_생성을_요청;
+import static nextstep.subway.behaviors.SubwayBehaviors.로그인_상태에서_최단경로_및_요금을_조회한다;
+import static nextstep.subway.behaviors.SubwayBehaviors.로그인정보없이_최단경로_및_요금을_조회한다;
+import static nextstep.subway.behaviors.SubwayBehaviors.어린이_연령대인지_확인;
 import static nextstep.subway.behaviors.SubwayBehaviors.지하철_노선_등록되어_있음;
 import static nextstep.subway.behaviors.SubwayBehaviors.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.behaviors.SubwayBehaviors.지하철역_등록되어_있음;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어있음;
+import static nextstep.subway.behaviors.SubwayBehaviors.지하철요금_확인;
+import static nextstep.subway.behaviors.SubwayBehaviors.청소년_연령대인지_확인;
+import static nextstep.subway.behaviors.SubwayBehaviors.최단경로_확인;
+import static nextstep.subway.behaviors.SubwayBehaviors.최단경로거리_확인;
+import static nextstep.subway.path.domain.OverFareCalculator.CHILD_DISCOUNT_RATE;
+import static nextstep.subway.path.domain.OverFareCalculator.DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY;
+import static nextstep.subway.path.domain.OverFareCalculator.TEEN_DISCOUNT_RATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.domain.SubwayFare;
@@ -75,8 +80,6 @@ class PathAcceptanceTest extends AcceptanceTest {
         최단경로_확인(pathResponse, Lists.newArrayList(출발역, 남부터미널역, 도착역));
     }
 
-
-
     @Test
     void 노선별_추가요금_테스트() {
         노선_추가요금_있는_테스트경로_세팅();
@@ -104,12 +107,15 @@ class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 출발역 = 교대역;
         StationResponse 도착역 = 양재역;
 
-        ExtractableResponse<Response> response =  로그인_상태에서_최단경로_및_요금을_조회한다(사용자토큰, 출발역, 도착역);
+        ExtractableResponse<Response> response = 로그인_상태에서_최단경로_및_요금을_조회한다(사용자토큰, 출발역, 도착역);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(isChild(age)).isTrue();
+        어린이_연령대인지_확인(age);
+
         PathResponse pathResponse = response.as(PathResponse.class);
         최단경로거리_확인(pathResponse, 5);
-        SubwayFare expectedFare = SubwayFare.DEFAULT_FARE.subtract(350).discountedByPercent(50);
+        SubwayFare expectedFare = SubwayFare.DEFAULT_FARE
+                .subtract(DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY)
+                .discountedByPercent(CHILD_DISCOUNT_RATE);
         지하철요금_확인(pathResponse,expectedFare);
         최단경로_확인(pathResponse, Lists.newArrayList(출발역, 남부터미널역, 도착역));
     }
@@ -126,41 +132,15 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response =  로그인_상태에서_최단경로_및_요금을_조회한다(사용자토큰, 출발역, 도착역);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(isTeen(age)).isTrue();
+        청소년_연령대인지_확인(age);
+
         PathResponse pathResponse = response.as(PathResponse.class);
         최단경로거리_확인(pathResponse, 5);
-        SubwayFare expectedFare = SubwayFare.DEFAULT_FARE.subtract(350).discountedByPercent(20);
+        SubwayFare expectedFare = SubwayFare.DEFAULT_FARE
+                .subtract(DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY)
+                .discountedByPercent(TEEN_DISCOUNT_RATE);
         지하철요금_확인(pathResponse,expectedFare);
         최단경로_확인(pathResponse, Lists.newArrayList(출발역, 남부터미널역, 도착역));
-    }
-
-    private ExtractableResponse<Response> 로그인정보없이_최단경로_및_요금을_조회한다(StationResponse source, StationResponse target) {
-        Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("source", String.valueOf(source.getId()));
-        queryParams.put("target", String.valueOf(target.getId()));
-
-        return RestAssured
-                .given().log().all()
-                .accept(ContentType.JSON)
-                .queryParams(queryParams)
-                .when().get("/paths")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> 로그인_상태에서_최단경로_및_요금을_조회한다(String accessToken, StationResponse source, StationResponse target) {
-        Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("source", String.valueOf(source.getId()));
-        queryParams.put("target", String.valueOf(target.getId()));
-
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .accept(ContentType.JSON)
-                .queryParams(queryParams)
-                .when().get("/paths")
-                .then().log().all()
-                .extract();
     }
 
     /**
@@ -189,26 +169,5 @@ class PathAcceptanceTest extends AcceptanceTest {
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 100,2000);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 4,500);
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
-    }
-
-    private void 지하철요금_확인(PathResponse pathResponse, SubwayFare fare) {
-        assertThat(pathResponse.getFare()).isEqualTo(fare);
-    }
-    private void 최단경로거리_확인(PathResponse pathResponse, int expected) {
-        int distance = pathResponse.getDistance();
-        assertThat(distance).isEqualTo(expected);
-    }
-    private void 최단경로_확인(PathResponse pathResponse, List<StationResponse> expectedPath) {
-        List<StationResponse> stations = pathResponse.getStations();
-        assertThat(stations)
-                .hasSize(expectedPath.size())
-                .containsExactlyElementsOf(expectedPath);
-    }
-
-    private boolean isChild(int age) {
-        return age >= 6 && age < 13;
-    }
-    private boolean isTeen(int age) {
-        return age >= 13 && age < 19;
     }
 }
