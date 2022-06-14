@@ -67,35 +67,36 @@ public class Line extends BaseEntity {
         }
 
         List<Station> stations = new ArrayList<>();
-
         Station downStation = findUpStation(this);
         stations.add(downStation);
-        renewDownStation(this, downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = sections.findNextLineUpStation(finalDownStation);
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getDownStation();
+            stations.add(downStation);
+        }
 
         return stations;
     }
 
     private Station findUpStation(Line line) {
         Station downStation = line.findDownStation();
-        downStation = renewDownStation(line, downStation);
-        return downStation;
-    }
-
-    private Station findDownStation() {
-        return sections.findDownStation();
-    }
-
-    private Station renewDownStation(Line line, Station downStation) {
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = line.getSections().getValues().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = sections.findNextLineDownStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
             downStation = nextLineStation.get().getUpStation();
         }
         return downStation;
+    }
+
+    private Station findDownStation() {
+        return sections.findDownStation();
     }
 }

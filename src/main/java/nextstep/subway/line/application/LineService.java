@@ -47,12 +47,9 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        List<StationResponse> stations = getStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
+        List<StationResponse> stations = StationResponse.of(persistLine.getStations());
         return LineResponse.of(persistLine, stations);
     }
 

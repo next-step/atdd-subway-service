@@ -8,6 +8,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Embeddable
 public class Sections {
@@ -40,5 +41,17 @@ public class Sections {
 
     private Section findFirstSection() {
         return values.get(0);
+    }
+
+    public Optional<Section> findNextLineUpStation(Station finalDownStation) {
+        return values.stream()
+                .filter(it -> it.getUpStation() == finalDownStation)
+                .findFirst();
+    }
+
+    public Optional<Section> findNextLineDownStation(Station finalDownStation) {
+        return values.stream()
+                .filter(it -> it.getDownStation() == finalDownStation)
+                .findFirst();
     }
 }
