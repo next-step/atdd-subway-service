@@ -55,7 +55,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
      * When 내 정보 변경
      * Then 변경 성공
      * When 변경된 정보로 로그인
-     * Then 로그인 성공
      * When 회원 탈퇴
      * Then 탈퇴 성공
      * When 내 정보 조회

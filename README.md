@@ -97,7 +97,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - 내 정보 변경
   - 변경 성공
   - 변경된 정보로 로그인
-  - 로그인 성공
   - 회원 탈퇴
   - 탈퇴 성공
   - 내 정보 조회
