@@ -90,8 +90,13 @@ public class SectionsTest {
     @Test
     void 상행_종점_찾기() {
         sections.add(new Section(null, 청량리역, 왕십리역, 3));
+        sections.add(new Section(null, 선릉역, 도곡역, 3));
+        sections.add(new Section(null, 왕십리역, 서울숲역, 2));
 
-        assertThat(sections.lastUpStation()).isSameAs(청량리역);
+        Section firstSection = sections.findFirstSection();
+        assertThat(firstSection.getUpStation()).isSameAs(청량리역);
+        assertThat(firstSection.getDownStation()).isSameAs(왕십리역);
+        assertThat(firstSection.getDistance()).isEqualTo(3);
     }
 
     @Test
@@ -102,36 +107,6 @@ public class SectionsTest {
 
         List<Station> stations = sections.getStations();
         assertThat(stations).containsExactly(청량리역, 왕십리역, 서울숲역, 선릉역, 도곡역);
-    }
-
-    @Test
-    void 다음_구간_찾기() {
-        sections.add(new Section(null, 청량리역, 왕십리역, 3));
-
-        Section 왕십리_선릉_구간 = sections.findNextSection(왕십리역).get();
-        assertThat(왕십리_선릉_구간.getUpStation()).isSameAs(왕십리역);
-        assertThat(왕십리_선릉_구간.getDownStation()).isSameAs(선릉역);
-        assertThat(왕십리_선릉_구간.getDistance()).isEqualTo(7);
-    }
-
-    @Test
-    void 상행_역_일치_구간_찾기() {
-        sections.add(new Section(null, 청량리역, 왕십리역, 3));
-
-        Section 왕십리_선릉_구간 = sections.findSectionByUpStationSameAs(왕십리역).get();
-        assertThat(왕십리_선릉_구간.getUpStation()).isSameAs(왕십리역);
-        assertThat(왕십리_선릉_구간.getDownStation()).isSameAs(선릉역);
-        assertThat(왕십리_선릉_구간.getDistance()).isEqualTo(7);
-    }
-
-    @Test
-    void 하행_역_일치_구간_찾기() {
-        sections.add(new Section(null, 청량리역, 왕십리역, 3));
-
-        Section 왕십리_선릉_구간 = sections.findSectionByDownStationSameAs(왕십리역).get();
-        assertThat(왕십리_선릉_구간.getUpStation()).isSameAs(청량리역);
-        assertThat(왕십리_선릉_구간.getDownStation()).isSameAs(왕십리역);
-        assertThat(왕십리_선릉_구간.getDistance()).isEqualTo(3);
     }
 
     @Test

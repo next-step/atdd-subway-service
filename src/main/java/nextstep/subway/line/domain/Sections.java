@@ -15,21 +15,19 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> elements = new ArrayList<>();
 
-    public Station lastUpStation() {
+    public Section findFirstSection() {
         if (elements.isEmpty()) {
             throw new IllegalStateException("구간 목록이 비어 있음");
         }
 
-        Station upStation = elements.get(0).getUpStation();
-        while (upStation != null) {
-            Optional<Section> prevSection = findPrevSection(upStation);
-            if (!prevSection.isPresent()) {
-                break;
-            }
-            upStation = prevSection.get().getUpStation();
+        Section currentSection = elements.get(0);
+        Optional<Section> prevSection = findPrevSectionOf(currentSection);
+        while (prevSection.isPresent()) {
+            currentSection = prevSection.get();
+            prevSection = findPrevSectionOf(currentSection);
         }
 
-        return upStation;
+        return currentSection;
     }
 
     public List<Section> getElements() {
@@ -42,42 +40,40 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = lastUpStation();
-        stations.add(downStation);
+        Section currentSection = findFirstSection();
+        stations.add(currentSection.getUpStation());
+        stations.add(currentSection.getDownStation());
 
-        while (downStation != null) {
-            Optional<Section> nextSection = findNextSection(downStation);
-            if (!nextSection.isPresent()) {
-                break;
-            }
-            downStation = nextSection.get().getDownStation();
-            stations.add(downStation);
+        Optional<Section> nextSection = findNextSectionOf(currentSection);
+        while (nextSection.isPresent()) {
+            stations.add(nextSection.get().getDownStation());
+            nextSection = findNextSectionOf(nextSection.get());
         }
 
         return stations;
     }
 
-    public Optional<Section> findPrevSection(Station upStation) {
+    private Optional<Section> findPrevSectionOf(Section currentSection) {
         return elements.stream()
-                .filter(section -> section.getDownStation() == upStation)
+                .filter(section -> section.isPrevSectionOf(currentSection))
                 .findFirst();
     }
 
-    public Optional<Section> findNextSection(Station downStation) {
+    private Optional<Section> findNextSectionOf(Section currentSection) {
         return elements.stream()
-                .filter(section -> section.getUpStation() == downStation)
+                .filter(section -> section.isNextSectionOf(currentSection))
                 .findFirst();
     }
 
-    public Optional<Section> findSectionByUpStationSameAs(Station station) {
+    private Optional<Section> findSectionByUpStationSameAs(Station station) {
         return elements.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(section -> section.hasUpStationSameAs(station))
                 .findFirst();
     }
 
-    public Optional<Section> findSectionByDownStationSameAs(Station station) {
+    private Optional<Section> findSectionByDownStationSameAs(Station station) {
         return elements.stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(section -> section.hasDownStationSameAs(station))
                 .findFirst();
     }
 

@@ -71,6 +71,22 @@ public class Section {
         this.distance -= newDistance;
     }
 
+    public boolean isPrevSectionOf(Section other) {
+        return downStation.equals(other.upStation);
+    }
+
+    public boolean isNextSectionOf(Section other) {
+        return upStation.equals(other.downStation);
+    }
+
+    public boolean hasDownStationSameAs(Station station) {
+        return downStation.equals(station);
+    }
+
+    public boolean hasUpStationSameAs(Station station) {
+        return upStation.equals(station);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
