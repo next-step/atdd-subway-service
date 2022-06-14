@@ -148,6 +148,50 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
+    @DisplayName("시나리오 기반 인수테스트")
+    @Test
+    void authAcceptanceTestWithScenario() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
+        // when
+        ExtractableResponse<Response> 잘못된_비밀번호로_로그인 = 로그인_요청(new TokenRequest(EMAIL, WRONG_PASSWORD));
+
+        // then
+        로그인_실패(잘못된_비밀번호로_로그인);
+
+        // when
+        ExtractableResponse<Response> 유효한_비밀번호로_로그인 = 로그인_요청(new TokenRequest(EMAIL, PASSWORD));
+
+        // then
+        본인_정보_조회_성공(유효한_비밀번호로_로그인);
+        TokenResponse 유효한_인증_토큰 = 로그인_성공(유효한_비밀번호로_로그인);
+
+        // when
+        ExtractableResponse<Response> 잘못된_인증_토큰 = 본인_정보_조회(new TokenResponse("TEST"));
+
+        // then
+        본인_정보_조회_실패(잘못된_인증_토큰);
+
+        // when
+        ExtractableResponse<Response> 유효한_인증_토큰으로_조회 = 본인_정보_조회(유효한_인증_토큰);
+
+        // then
+        본인_정보_조회_성공(유효한_인증_토큰으로_조회);
+
+        // when
+        ExtractableResponse<Response> 유효한_인증_토큰으로_수정 = 본인_정보_수정(유효한_인증_토큰, new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
+
+        // then
+        본인_정보_수정_성공(유효한_인증_토큰으로_수정);
+
+        // when
+        ExtractableResponse<Response> 유효한_인증_토큰으로_삭제 = 본인_정보_삭제(유효한_인증_토큰);
+
+        // then
+        본인_정보_삭제_성공(유효한_인증_토큰으로_삭제);
+    }
+
     public static void 본인_정보_조회_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
