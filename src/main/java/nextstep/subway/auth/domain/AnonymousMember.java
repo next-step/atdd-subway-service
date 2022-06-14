@@ -2,7 +2,7 @@ package nextstep.subway.auth.domain;
 
 import nextstep.subway.member.constant.MemberFarePolicy;
 
-public class AnonymousMember implements LoginMember {
+public class AnonymousMember implements AccessMember {
     @Override
     public Long getId() {
         return null;

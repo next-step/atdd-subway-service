@@ -2,7 +2,7 @@ package nextstep.subway.auth.domain;
 
 import nextstep.subway.member.constant.MemberFarePolicy;
 
-public class ActualMember implements LoginMember {
+public class ActualMember implements AccessMember {
     private Long id;
     private String email;
     private Integer age;
