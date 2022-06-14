@@ -107,4 +107,46 @@ class SectionsTest {
                 .isThrownBy(() -> sections.add(new Section(신분당선, 신논현역, 양재시민의숲, new Distance(5))));
     }
 
+    @Test
+    void removeLineStation_상행역_삭제() {
+        Sections sections = new Sections();
+        sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
+        sections.add(new Section(신분당선, 신논현역, 강남역, new Distance(5)));
+
+        sections.remove(신분당선, 강남역);
+
+        assertThat(sections.size()).isEqualTo(1);
+    }
+
+    @Test
+    void removeLineStation_하행역_삭제() {
+        Sections sections = new Sections();
+        sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
+        sections.add(new Section(신분당선, 신논현역, 강남역, new Distance(5)));
+
+        sections.remove(신분당선, 신논현역);
+
+        assertThat(sections.size()).isEqualTo(1);
+    }
+
+    @Test
+    void removeLineStation_구간사이_역_삭제() {
+        Sections sections = new Sections();
+        sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
+        sections.add(new Section(신분당선, 신논현역, 강남역, new Distance(5)));
+
+        sections.remove(신분당선, 양재역);
+
+        assertThat(sections.size()).isEqualTo(1);
+    }
+
+    @Test
+    void removeLineStation_구간이_하나_이하인_경우에는_삭제_불가() {
+        Sections sections = new Sections();
+        sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
+
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> sections.remove(신분당선, 양재역));
+    }
+
 }

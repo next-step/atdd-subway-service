@@ -12,14 +12,12 @@ import java.util.Optional;
 @Embeddable
 public class Sections {
 
+    private static final int MIN_REMOVE_SECTION_SIZE = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
     public Sections() {
-    }
-
-    public List<Section> getSections() {
-        return sections;
     }
 
     public void add(Section section) {
@@ -66,11 +64,7 @@ public class Sections {
         }
     }
 
-    public void remove(Section section) {
-        sections.remove(section);
-    }
-
-    public int size() {
+    protected int size() {
         return sections.size();
     }
 
@@ -94,4 +88,26 @@ public class Sections {
                 .findFirst();
     }
 
+    public void remove(Line line, Station station) {
+        raiseIfNotValidRemoveStation();
+
+        Optional<Section> upLineStation = getNextSectionByEqualUpStation(station);
+        Optional<Section> downLineStation = getNextSectionByEqualDownStation(station);
+
+        upLineStation.ifPresent(sections::remove);
+        downLineStation.ifPresent(sections::remove);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            Distance newDistance = upLineStation.get().getDistance().plus(downLineStation.get().getDistance());
+            add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+    }
+
+    private void raiseIfNotValidRemoveStation() {
+        if (sections.size() <= MIN_REMOVE_SECTION_SIZE) {
+            throw new RuntimeException();
+        }
+    }
 }

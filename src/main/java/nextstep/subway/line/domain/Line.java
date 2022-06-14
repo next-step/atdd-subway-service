@@ -16,8 +16,6 @@ import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
-    private static final int MIN_REMOVE_SECTION_SIZE = 1;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -67,14 +65,6 @@ public class Line extends BaseEntity {
         sections.add(section);
     }
 
-    private void removeSection(Section section) {
-        sections.remove(section);
-    }
-
-    public int getSectionsSize() {
-        return sections.size();
-    }
-
     public List<Station> getOrderedStations() {
         if (sections.isEmpty()) {
             return Collections.emptyList();
@@ -112,24 +102,6 @@ public class Line extends BaseEntity {
     }
 
     public void removeLineStation(Station station) {
-        if (getSectionsSize() <= MIN_REMOVE_SECTION_SIZE) {
-            throw new RuntimeException();
-        }
-
-        Optional<Section> upLineStation = sections.getNextSectionByEqualUpStation(station);
-        Optional<Section> downLineStation = sections.getNextSectionByEqualDownStation(station);
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            Distance newDistance = upLineStation.get().getDistance().plus(downLineStation.get().getDistance());
-            removeSection(upLineStation.get());
-            removeSection(downLineStation.get());
-            addSection(new Section(this, newUpStation, newDownStation, newDistance));
-            return;
-        }
-
-        upLineStation.ifPresent(this::removeSection);
-        downLineStation.ifPresent(this::removeSection);
+        sections.remove(this, station);
     }
 }
