@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DistanceTest {
 
     @Test
-    void plus() {
+    void 거리를_더한다() {
         Distance distance = new Distance(5);
         Distance distance2 = new Distance(3);
 
@@ -17,7 +17,7 @@ class DistanceTest {
     }
 
     @Test
-    void minus() {
+    void 거리를_뺀다() {
         Distance distance = new Distance(5);
         Distance distance2 = new Distance(3);
 
