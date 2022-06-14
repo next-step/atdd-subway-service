@@ -28,7 +28,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new AuthorizationException("권한이 없는 사용자입니다.");
         }
 
         String email = jwtTokenProvider.getPayload(credentials);

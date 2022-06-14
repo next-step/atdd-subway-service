@@ -3,8 +3,8 @@ package nextstep.subway.auth.acceptance;
 import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
+import static nextstep.subway.member.MemberAcceptanceTest.나의_정보_조회_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_정보_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -47,12 +47,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-        ExtractableResponse<Response> response = 회원_정보_조회_요청(defaultMemberResponse);
+        ExtractableResponse<Response> response = 나의_정보_조회_요청("testToken");
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private ExtractableResponse<Response> 토큰_생성이_요청됨(String email, String password) {
+    public static ExtractableResponse<Response> 토큰_생성이_요청됨(String email, String password) {
         return post(new TokenRequest(email, password), "/login/token");
     }
 
