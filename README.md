@@ -94,7 +94,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - [X] 기존 로직제거
     - [X] dto to domain 로직 수정
     - [ ] removeLineStation 개선
-        - [ ] 기존로직 복사하여 개선
-        - 
+        - [X] 기존로직 복사하여 개선
+        - [X] Sections 에 로직 이동
+            - [X] 구간 병합 추가
+            - [X] 기존 구간 삭제
+        - [X] 테스트 케이스 추가
+            - [X] SectionsTest 케이스 추가
+            - [X] SectionTest 케이스 추가
 - [X] 전역 예외 처리 추가
     - [X] RuntimeException 으로 사용되던 예외 수정

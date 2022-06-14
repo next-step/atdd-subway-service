@@ -40,11 +40,23 @@ public class Section {
     public Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(final Line line, final Station upStation, final Station downStation, final Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = Distance.valueOf(distance);
+        this.distance = distance;
+    }
+
+    public Section(Line line, Station upStation, Station downStation, int distance) {
+        this(line, upStation, downStation, Distance.valueOf(distance));
+    }
+
+    public static Section mergeSection(final Section sectionByDownStation, final Section sectionByUpStation) {
+        return new Section(sectionByDownStation.line, sectionByDownStation.upStation, sectionByUpStation.downStation, sectionByUpStation.plusDistance(sectionByDownStation));
+    }
+
+    private Distance plusDistance(final Section section) {
+        return distance.plus(section.distance);
     }
 
     public Long getId() {
@@ -69,6 +81,10 @@ public class Section {
 
     public boolean hasUpStation(final Station upStation) {
         return this.upStation.equals(upStation);
+    }
+
+    public boolean hasDownStation(final Station downStation) {
+        return this.downStation.equals(downStation);
     }
 
     public boolean intersects(final Section section) {

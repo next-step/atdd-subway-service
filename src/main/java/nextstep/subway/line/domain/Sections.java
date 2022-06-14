@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import static nextstep.subway.exception.domain.SubwayExceptionMessage.DUPLICATE_SECTION;
 import static nextstep.subway.exception.domain.SubwayExceptionMessage.NOT_REGISTER_SECTION;
+import static nextstep.subway.exception.domain.SubwayExceptionMessage.NOT_REMOVE_SECTION;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +18,8 @@ import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
+
+    private static final int AVAILABLE_REMOVE_SIZE = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -128,5 +131,59 @@ public class Sections {
         return sections.stream()
                 .map(Section::getDownStation)
                 .collect(Collectors.toSet());
+    }
+
+    public void removeStation(final Station station) {
+        validateRemoveStation();
+
+        mergeSections(station);
+        removeUpStationSection(station);
+        removeDownStationSection(station);
+    }
+
+    private void validateRemoveStation() {
+        if (isAvailableRemove()) {
+            throw new SubwayException(NOT_REMOVE_SECTION);
+        }
+    }
+
+    private boolean isAvailableRemove() {
+        return sections.size() <= AVAILABLE_REMOVE_SIZE;
+    }
+
+    private void mergeSections(final Station station) {
+        if (hasBetweenStation(station)) {
+            sections.add(Section.mergeSection(findSectionByDownStation(station), findSectionByUpStation(station)));
+        }
+    }
+
+    private boolean hasBetweenStation(final Station station) {
+        return hasUpStation(station) && hasDownStation(station);
+    }
+
+    private void removeUpStationSection(final Station station) {
+        if (hasUpStation(station)) {
+            sections.remove(findSectionByUpStation(station));
+        }
+    }
+
+    private Section findSectionByUpStation(final Station upStation) {
+        return sections.stream()
+                .filter(section -> section.hasUpStation(upStation))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private void removeDownStationSection(final Station station) {
+        if (hasDownStation(station)) {
+            sections.remove(findSectionByDownStation(station));
+        }
+    }
+
+    private Section findSectionByDownStation(final Station downStation) {
+        return sections.stream()
+                .filter(section -> section.hasDownStation(downStation))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

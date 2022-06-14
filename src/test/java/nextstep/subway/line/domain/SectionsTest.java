@@ -99,7 +99,7 @@ class SectionsTest {
 
     @Test
     @DisplayName("추가하는 구간이 기존 보다 큰 경우 지하철 구간 추가 실패 ")
-    void add_exception_() {
+    void add_exception_over_the_distance() {
         // given
         final Sections sections = new Sections(ListTestUtils.newList(강남역_판교역, 판교역_광교역));
 
@@ -111,5 +111,32 @@ class SectionsTest {
         assertThatThrownBy(() -> sections.add(section))
                 .isInstanceOf(SubwayException.class)
                 .hasMessage(SubwayExceptionMessage.OVER_THE_DISTANCE.getMessage());
+    }
+
+    @Test
+    @DisplayName("지하철 역 제거 성공 테스트")
+    void removeStation() {
+        // given
+        final Sections sections = new Sections(ListTestUtils.newList(강남역_판교역, 판교역_광교역));
+
+        // when
+        sections.removeStation(판교역);
+
+        // then
+        assertAll(
+            () -> assertThat(sections.getStations()).hasSize(2),
+            () -> assertThat(sections.getStations()).containsExactly(강남역, 광교역)
+        );
+    }
+
+    @Test
+    @DisplayName("지하철 역 제거 실패 테스트 - 구간이 1개 이하인 경우")
+    void removeStation_exception() {
+        // given
+        final Sections sections = new Sections(ListTestUtils.newList(강남역_판교역));
+
+        // when & then
+        assertThatThrownBy(() -> sections.removeStation(판교역))
+                .isInstanceOf(SubwayException.class);
     }
 }

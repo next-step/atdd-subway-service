@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import nextstep.subway.generic.domain.Distance;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +40,19 @@ class SectionTest {
         assertAll(
             () -> assertThat(기존구간.hasUpStation(강남역)).isTrue(),
             () -> assertThat(기존구간.hasUpStation(광교역)).isFalse()
+        );
+    }
+
+    @Test
+    @DisplayName("하행역이 같은지 확인 - 역을 대입")
+    void hasDownStation_station() {
+        // given
+        final Section 기존구간 = new Section(신분당선, 강남역, 광교역, 10);
+
+        // when & then
+        assertAll(
+                () -> assertThat(기존구간.hasDownStation(광교역)).isTrue(),
+                () -> assertThat(기존구간.hasDownStation(강남역)).isFalse()
         );
     }
 
@@ -97,7 +111,7 @@ class SectionTest {
 
     @Test
     @DisplayName("구간 끼리 종점이 같은지 확인")
-    void hasDownStation() {
+    void hasDownStation_section() {
         // given
         final Section 기존구간 = new Section(신분당선, 강남역, 광교역, 10);
         final Station 동천역 = new Station("동천역");
@@ -155,4 +169,16 @@ class SectionTest {
             () -> assertThat(기존구간.hasStation(동천역)).isFalse()
         );
     }
+
+    @Test
+    @DisplayName("구간 병합시 생성되는 구간 테스트")
+    void mergeSection() {
+        // given
+        final Section 기존구간 = new Section(신분당선, 강남역, 판교역, 10);
+        final Section 다음구간 = new Section(신분당선, 판교역, 광교역, 5);
+
+        // when & then
+        assertThat(Section.mergeSection(기존구간, 다음구간)).isEqualTo(new Section(신분당선, 강남역, 광교역, 15));
+    }
+
 }
