@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Path;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -28,9 +29,6 @@ public class PathService {
         Station targetStation = stationRepository.findById(target)
                 .orElseThrow(() -> new IllegalArgumentException("도착역이 없습니다."));
 
-        //TODO 최단경로
-
-
-        return PathResponse.of(null, 10);
+        return Path.of().findShortest(lines, sourceStation, targetStation);
     }
 }
