@@ -32,31 +32,27 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(
+        Line line = lineRepository.save(
                 new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        return LineResponse.of(persistLine);
+        return LineResponse.of(line);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
+        return lineRepository.findAll()
+                .stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
-
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        return LineResponse.of(findLineById(id));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        Line line = findLineById(id);
+        line.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
@@ -74,6 +70,11 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeLineStation(station);
+    }
+
+    private Line findLineById(Long id) {
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("라인을 찾을 수 없습니다. id = " + id));
     }
 
 }

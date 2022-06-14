@@ -8,8 +8,10 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("지하철 구간 관련 기능")
 class SectionsTest {
     Sections sections = new Sections();
+    Station station0;
     Station station1;
     Station station2;
     Station station3;
@@ -18,6 +20,7 @@ class SectionsTest {
 
     @BeforeEach
     void setUp() {
+        station0 = new Station("서초역");
         station1 = new Station("강남역");
         station2 = new Station("력삼역");
         station3 = new Station("선릉역");
@@ -28,10 +31,26 @@ class SectionsTest {
 
     @Test
     @DisplayName("강남역-역삼역 구간을 등록한다")
-    void add() {
+    void addBetweenStation() {
         sections.add(line, station1, station2, 40);
         assertThat(sections.stations()).hasSize(3);
         assertThat(sections.stations()).contains(station2);
+    }
+
+    @Test
+    @DisplayName("강남역 상행으로 서초역을 등록한다")
+    void addUpStation() {
+        sections.add(line, station0, station1, 40);
+        assertThat(sections.stations()).hasSize(3);
+        assertThat(sections.stations()).contains(station0);
+    }
+
+    @Test
+    @DisplayName("선릉역 하행으로 삼성역을 등록한다")
+    void addDownStation() {
+        sections.add(line, station3, station4, 40);
+        assertThat(sections.stations()).hasSize(3);
+        assertThat(sections.stations()).contains(station4);
     }
 
     @Test
@@ -67,7 +86,7 @@ class SectionsTest {
         sections.add(line, station1, station2, 10);
         sections.remove(line, station2);
         assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(station3);
-        assertThat(sections.getSections().get(0).getDistance()).isEqualTo(50);
+        assertThat(sections.getSections().get(0).getDistance()).isEqualTo(new Distance(50));
     }
 
     @Test

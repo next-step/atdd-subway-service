@@ -17,6 +17,10 @@ public class Sections {
     }
 
     public void add(Line line, Station upStation, Station downStation, int distance) {
+        this.add(line, upStation, downStation, new Distance(distance));
+    }
+
+    public void add(Line line, Station upStation, Station downStation, Distance distance) {
         validateSections(upStation, downStation);
         updateUpStationIfPresent(upStation, downStation, distance);
         updateDownStationIfPresent(upStation, downStation, distance);
@@ -24,23 +28,31 @@ public class Sections {
     }
 
     private void validateSections(Station upStation, Station downStation) {
-        if (isPresentStation(upStation) && isPresentStation(downStation)) {
+        if (isPresentSection(upStation, downStation)) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
 
-        if (!stations().isEmpty() && !isPresentStation(upStation) && !isPresentStation(downStation) ) {
+        if (canAdd(upStation, downStation)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
     }
 
-    private void updateUpStationIfPresent(Station upStation, Station downStation, int distance) {
+    private boolean isPresentSection(Station upStation, Station downStation) {
+        return isPresentStation(upStation) && isPresentStation(downStation);
+    }
+
+    private boolean canAdd(Station upStation, Station downStation) {
+        return !stations().isEmpty() && !isPresentStation(upStation) && !isPresentStation(downStation);
+    }
+
+    private void updateUpStationIfPresent(Station upStation, Station downStation, Distance distance) {
         if (!isPresentStation(upStation)) {
             return;
         }
         getUpLineStation(upStation).ifPresent(it -> it.updateUpStation(downStation, distance));
     }
 
-    private void updateDownStationIfPresent(Station upStation, Station downStation, int distance) {
+    private void updateDownStationIfPresent(Station upStation, Station downStation, Distance distance) {
         if (!isPresentStation(downStation)) {
             return;
         }
@@ -73,17 +85,17 @@ public class Sections {
     }
 
     private Station firstStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while(isPresentPreSection(downStation)) {
-            downStation = preSection(downStation).getUpStation();
+        Station firstStation = sections.get(0).getUpStation();
+        while (isPresentPreSection(firstStation)) {
+            firstStation = preSection(firstStation).getUpStation();
         }
 
-        return downStation;
+        return firstStation;
     }
 
     private boolean isPresentPreSection(Station station) {
         return sections.stream()
-                .filter(s -> s.getUpStation() != null)
+                .filter(Section::existUpStation)
                 .anyMatch(s -> s.equalsDownStation(station));
     }
 
@@ -99,15 +111,15 @@ public class Sections {
 
     private boolean isPresentNextSection(Station station) {
         return sections.stream()
-                .filter(s -> s.getUpStation() != null)
+                .filter(Section::existUpStation)
                 .anyMatch(s -> s.equalsUpStation(station));
     }
 
     public void remove(Line line, Station station) {
         validateSectionSize();
 
-        Optional<Section> upLineStation = getUpLineStation(station);
-        Optional<Section> downLineStation = getDownLineStation(station);
+        Section upLineStation = getUpLineStation(station).orElse(null);
+        Section downLineStation = getDownLineStation(station).orElse(null);
 
         createSection(line, upLineStation, downLineStation);
         removeSections(upLineStation, downLineStation);
@@ -115,7 +127,7 @@ public class Sections {
 
     private void validateSectionSize() {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new RuntimeException("구간은 최소 1개 이상 존재해야 합니다. size = " + sections.size());
         }
     }
 
@@ -131,17 +143,21 @@ public class Sections {
                 .findFirst();
     }
 
-    private void createSection(Line line, Optional<Section> upLineStation, Optional<Section> downLineStation) {
-        if (!upLineStation.isPresent() || !downLineStation.isPresent()) {
+    private void createSection(Line line, Section upLineStation, Section downLineStation) {
+        if (upLineStation == null || downLineStation == null) {
             return;
         }
-        int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-        sections.add(new Section(line, downLineStation.get().getUpStation(), upLineStation.get().getDownStation(), newDistance));
+        Distance newDistance = upLineStation.plusDistance(downLineStation);
+        sections.add(new Section(line, downLineStation.getUpStation(), upLineStation.getDownStation(), newDistance));
     }
 
-    private void removeSections(Optional<Section> upLineStation, Optional<Section> downLineStation) {
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+    private void removeSections(Section upLineStation, Section downLineStation) {
+        if (upLineStation != null) {
+            sections.remove(upLineStation);
+        }
+        if (downLineStation != null) {
+            sections.remove(downLineStation);
+        }
     }
 
     @Override
