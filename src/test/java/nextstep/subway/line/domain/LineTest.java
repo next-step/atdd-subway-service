@@ -27,7 +27,7 @@ public class LineTest {
 
     @Test
     void saveLine() {
-        // give
+        // given
         Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
 
         // then
@@ -42,7 +42,7 @@ public class LineTest {
 
     @Test
     void update() {
-        // give
+        // given
         Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
         Line newLine = new Line("two", "green");
 
@@ -58,7 +58,7 @@ public class LineTest {
 
     @Test
     void getStations() {
-        // give
+        // given
         Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
 
         // then
@@ -70,7 +70,7 @@ public class LineTest {
 
     @Test
     void addLineStation() {
-        // give
+        // given
         Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
         Station 교대역 = stationRepository.save(new Station("교대역"));
         Station 선릉역 = stationRepository.save(new Station("선릉역"));
@@ -101,7 +101,7 @@ public class LineTest {
 
     @Test
     void removeLineStation() {
-        // give
+        // given
         Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
         Station 교대역 = stationRepository.save(new Station("교대역"));
 
