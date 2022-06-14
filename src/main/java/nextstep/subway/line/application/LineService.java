@@ -30,7 +30,15 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(
+                new Line(
+                        request.getName(),
+                        request.getColor(),
+                        upStation,
+                        downStation,
+                        request.getDistance()
+                )
+        );
 
         return LineResponse.of(persistLine);
     }
@@ -51,7 +59,7 @@ public class LineService {
 
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        Line persistLine = findLineById(id);
         persistLine.updateNameColor(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 
@@ -76,6 +84,7 @@ public class LineService {
     }
 
     private Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        return lineRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new);
     }
 }
