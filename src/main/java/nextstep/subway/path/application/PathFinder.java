@@ -1,5 +1,7 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.common.exception.EntityNotFoundException;
+import nextstep.subway.common.exception.ErrorCode;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.exception.StationNotConnectException;
@@ -9,7 +11,6 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,7 +51,7 @@ public class PathFinder {
         try {
             graphPath = shortestPath.getPath(source, target);
         } catch (IllegalArgumentException e) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException(ErrorCode.STATION_NOT_FOUND);
         }
         checkConnected(graphPath);
         return graphPath;

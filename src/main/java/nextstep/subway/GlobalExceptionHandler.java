@@ -1,12 +1,11 @@
 package nextstep.subway;
 
+import nextstep.subway.common.exception.EntityNotFoundException;
 import nextstep.subway.path.exception.StationNotConnectException;
 import nextstep.subway.path.exception.StationsSameException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import javax.persistence.EntityNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
