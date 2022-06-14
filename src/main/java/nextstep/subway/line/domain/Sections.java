@@ -41,6 +41,11 @@ public class Sections {
         return stations;
     }
 
+    public Station findUpStation() {
+        Station downStation = sections.get(0).getUpStation();
+        return nextSectionUpStation(downStation);
+    }
+
     public void addSection(Line line, Station upStation, Station downStation, int distance) {
         List<Station> stations = getStations();
 
@@ -104,11 +109,6 @@ public class Sections {
         Station nextStation = nextLineStation.get().getDownStation();
         stations.add(nextStation);
         return nextStation;
-    }
-
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        return nextSectionUpStation(downStation);
     }
 
     private Station nextSectionUpStation(Station downStation) {

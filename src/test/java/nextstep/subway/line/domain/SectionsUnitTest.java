@@ -23,6 +23,28 @@ public class SectionsUnitTest {
     }
 
     @Test
+    @DisplayName("노선에 포함된 역 리스트를 조회한다.")
+    void getStations() {
+        //given
+        칠호선.addLineStation(건대입구역, 어린이대공원역, 10);
+        Sections sections = 칠호선.getSections();
+
+        //then
+        assertThat(sections.getStations()).containsExactly(청담역, 건대입구역, 어린이대공원역);
+    }
+
+    @Test
+    @DisplayName("노선에 포함된 가장 상행 역을 조회한다.")
+    void findUpStation() {
+        //given
+        칠호선.addLineStation(건대입구역, 어린이대공원역, 10);
+        Sections sections = 칠호선.getSections();
+
+        //then
+        assertThat(sections.findUpStation()).isEqualTo(청담역);
+    }
+
+    @Test
     @DisplayName("새로운 구간을 추가한다.")
     void addSection() {
         //when
