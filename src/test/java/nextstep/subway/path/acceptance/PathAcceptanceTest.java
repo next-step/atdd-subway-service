@@ -130,7 +130,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private List<Station> toStations(List<StationResponse> stationResponses) {
         return stationResponses.stream()
-                .map(StationResponse::toStation)
+                .map(PathAcceptanceTest::toStation)
                 .collect(Collectors.toList());
     }
 
@@ -146,5 +146,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 응답결과_확인(ExtractableResponse<Response> response, HttpStatus httpStatus) {
         assertThat(response.statusCode()).isEqualTo(httpStatus.value());
+    }
+
+    public static Station toStation(StationResponse stationResponse) {
+        return new Station(stationResponse.getName());
     }
 }
