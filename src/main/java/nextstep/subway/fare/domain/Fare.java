@@ -15,15 +15,15 @@ public class Fare {
     }
 
     public static Fare of(Path path, LoginMember loginMember) {
-        AgePolicy agePolicy = AgeFareType.getAgePolicy(loginMember.getAge());
-        Fare fareByAge = new Fare(agePolicy.calculate());
-
         DistancePolicy distancePolicy = DistanceFareType.getDistancePolicy(path.getDistance());
         Fare fareByDistance = new Fare(distancePolicy.calculate(path.getDistance()));
 
+        AgePolicy agePolicy = AgeFareType.getAgePolicy(loginMember.getAge());
+        Fare fareByAge = new Fare(agePolicy.calculate());
+
         Fare totalFare = fareByAge.plus(fareByDistance);
         totalFare = totalFare.plus(new Fare(path.getMostExpensiveLineFare()));
-
+        totalFare = new Fare((int) (totalFare.getValue() * (100 - agePolicy.discountRate()) * 0.01));
         return totalFare;
     }
 

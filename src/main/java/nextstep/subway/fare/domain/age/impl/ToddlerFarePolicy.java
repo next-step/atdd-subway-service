@@ -3,6 +3,7 @@ package nextstep.subway.fare.domain.age.impl;
 import nextstep.subway.fare.domain.age.AgePolicy;
 
 public class ToddlerFarePolicy implements AgePolicy {
+
     private ToddlerFarePolicy() {
     }
 
@@ -22,5 +23,10 @@ public class ToddlerFarePolicy implements AgePolicy {
     @Override
     public int calculate() {
         return 0;
+    }
+
+    @Override
+    public int discountRate() {
+        return 100;
     }
 }

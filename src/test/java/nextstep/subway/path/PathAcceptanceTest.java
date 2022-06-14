@@ -128,7 +128,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         지하철역_최단거리_길이_검증_완료(response, 13);
         지하철역_최단거리_경로_검증_완료(response, Arrays.asList("강남역", "교대역", "남부터미널역"));
-        지하철_요금_검증_완료(response, 1020);
+        지하철_요금_검증_완료(response, 816);
     }
 
     @DisplayName("청소년이 50km 이동한 경우 지하철 요금 조회")
@@ -141,7 +141,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         지하철역_최단거리_길이_검증_완료(response, 50);
         지하철역_최단거리_경로_검증_완료(response, Arrays.asList("강남역", "잠실역"));
-        지하철_요금_검증_완료(response, 1720);
+        지하철_요금_검증_완료(response, 1376);
     }
 
     @DisplayName("성인이 90km 이동한 경우 지하철 요금 조회")

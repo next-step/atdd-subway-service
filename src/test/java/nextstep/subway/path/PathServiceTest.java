@@ -271,7 +271,7 @@ class PathServiceTest {
             PathResponse pathResponse = pathService.findShortestPath(회원, 1L, 10L);
 
             // then
-            assertThat(pathResponse.getFare()).isEqualTo(1720);
+            assertThat(pathResponse.getFare()).isEqualTo(1376);
         }
 
         @DisplayName("경로의 거리가 3, 나이가 노인이라면 운임요금이 무료여야 한다")

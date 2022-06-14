@@ -6,4 +6,5 @@ public interface AgePolicy {
 
     boolean includeAge(int age);
     int calculate();
+    int discountRate();
 }
