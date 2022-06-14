@@ -1,12 +1,15 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.exception.AddLineSectionFail;
+import nextstep.subway.line.application.LineService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -57,19 +60,37 @@ public class LineTest {
     }
 
     @Test
-    void getStations() {
+    void addLineStation() {
         // given
         Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
+        Station 교대역 = stationRepository.save(new Station("교대역"));
 
-        // then
+        // when
+        line.addDownStationExisted(new Section(line, 교대역, 강남역, 11));
         assertAll(
-                () -> assertEquals(line.getStations().get(0), 강남역),
-                () -> assertEquals(line.getStations().get(1), 역삼역)
+                () -> assertEquals(line.getSections().size(), 2),
+                () -> equalsSection(line.getSections().get(0), 강남역, 역삼역, 15),
+                () -> equalsSection(line.getSections().get(1), 교대역, 강남역, 11)
         );
     }
 
     @Test
-    void addLineStation() {
+    void addLineStation2() {
+        // given
+        Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
+        Station 선릉역 = stationRepository.save(new Station("선릉역"));
+
+        // when
+        line.addUpStationExisted(new Section(line, 역삼역, 선릉역, 11));
+        assertAll(
+                () -> assertEquals(line.getSections().size(), 2),
+                () -> equalsSection(line.getSections().get(0), 강남역, 역삼역, 15),
+                () -> equalsSection(line.getSections().get(1), 역삼역, 선릉역, 11)
+        );
+    }
+
+    @Test
+    void addLineStation3() {
         // given
         Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
         Station 교대역 = stationRepository.save(new Station("교대역"));
@@ -81,15 +102,13 @@ public class LineTest {
 
         // when
         // 교대역-11-강남역-15-역삼역-7-선릉역-14-삼성역-9-종합운동장역
-        line.addLineStation(역삼역, 종합운동장역, 30);
-        line.addLineStation(삼성역, 종합운동장역, 9);
-        line.addLineStation(역삼역, 선릉역, 7);
-        line.addLineStation(교대역, 강남역, 11);
+        line.addUpStationExisted(new Section(line, 역삼역, 종합운동장역, 30));
+        line.addDownStationExisted(new Section(line, 삼성역, 종합운동장역, 9));
+        line.addUpStationExisted(new Section(line, 역삼역, 선릉역, 7));
+        line.addDownStationExisted(new Section(line, 교대역, 강남역, 11));
 
         // then
         assertAll(
-                () -> assertThrows(AddLineSectionFail.class, () -> line.addLineStation(강남역, 역삼역, 15)),
-                () -> assertThrows(AddLineSectionFail.class, () -> line.addLineStation(신도림역, 대림역, 15)),
                 () -> assertEquals(line.getSections().size(), 5),
                 () -> equalsSection(line.getSections().get(0), 강남역, 역삼역, 15),
                 () -> equalsSection(line.getSections().get(1), 선릉역, 삼성역, 14),
@@ -104,13 +123,13 @@ public class LineTest {
         // given
         Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
         Station 교대역 = stationRepository.save(new Station("교대역"));
-
+        Section newSection = new Section(line, 교대역, 강남역, 13);
         // when
-        line.addLineStation(교대역, 강남역, 13);
-        line.removeLineStation(강남역);
+        line.addDownStationExisted(newSection);
+        line.removeLineStation(newSection);
 
         // then
-        equalsSection(line.getSections().get(0), 교대역, 역삼역, 28);
+        equalsSection(line.getSections().get(0), 강남역, 역삼역, 15);
     }
 
     private void equalsSection(Section section, Station upStation, Station downStation, int distance) {

@@ -1,5 +1,7 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.exception.AddLineSectionFail;
+import nextstep.subway.exception.RemoveSectionFail;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -52,14 +54,14 @@ public class LineService {
         return createLineResponse(persistLine);
     }
 
-    private List<StationResponse> stationsOf(Line persistLine) {
-        return persistLine.getStations().stream()
+    private List<StationResponse> createStations(Line persistLine) {
+        return getStations(persistLine).stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
     }
 
     private LineResponse createLineResponse(Line persistLine) {
-        return LineResponse.of(persistLine, stationsOf(persistLine));
+        return LineResponse.of(persistLine, createStations(persistLine));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
@@ -76,12 +78,104 @@ public class LineService {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
 
-        line.addLineStation(upStation, downStation, request.getDistance());
+        List<Station> stations = getStations(line);
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+
+        validationAddLineStation(upStation, downStation, stations, isUpStationExisted, isDownStationExisted);
+        Section section = new Section(line, upStation, downStation, request.getDistance());
+
+        addSections(line, isUpStationExisted, isDownStationExisted, section);
+    }
+
+    private void addSections(Line line, boolean isUpStationExisted, boolean isDownStationExisted, Section section) {
+        if (isUpStationExisted) {
+            line.addUpStationExisted(section);
+            return ;
+        }
+        if (isDownStationExisted) {
+            line.addDownStationExisted(section);
+            return ;
+        }
+        throw new AddLineSectionFail("역 정보를 찾지 못했습니다.");
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
-        line.removeLineStation(station);
+
+        if (line.getSections().size() <= 1) {
+            throw new RemoveSectionFail("구간의 길이가 1개 이하이므로 삭제할 수 없습니다.");
+        }
+
+        Optional<Section> upLineStation = line.getSections().stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = line.getSections().stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            line.addLineStation(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> line.removeLineStation(it));
+        downLineStation.ifPresent(it -> line.removeLineStation(it));
     }
+
+    private void validationAddLineStation(Station upStation, Station downStation, List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new AddLineSectionFail("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() &&
+                stations.stream().noneMatch(it -> it == upStation) &&
+                stations.stream().noneMatch(it -> it == downStation)) {
+            throw new AddLineSectionFail("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    public static List<Station> getStations(Line line) {
+        if (line.getSections().isEmpty()) {
+            return Arrays.asList();
+        }
+
+        List<Station> stations = new ArrayList<>();
+        Station downStation = findUpStation(line);
+        stations.add(downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = line.getSections().stream()
+                    .filter(it -> it.getUpStation() == finalDownStation)
+                    .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getDownStation();
+            stations.add(downStation);
+        }
+
+        return stations;
+    }
+
+    private static Station findUpStation(Line line) {
+        Station downStation = line.getSections().get(0).getUpStation();
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = line.getSections().stream()
+                    .filter(it -> it.getDownStation() == finalDownStation)
+                    .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getUpStation();
+        }
+
+        return downStation;
+    }
+
 }
