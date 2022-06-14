@@ -1,6 +1,8 @@
 package nextstep.subway.line.domain;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -8,15 +10,16 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 class DistanceTest {
 
-    @Test
-    void 생성시_0보다_작을_수_없다() {
+    @ParameterizedTest
+    @ValueSource(ints = {0, -1})
+    void 생성시_0보다_작거나_같을_수_없다(int input) {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Distance(-1));
+                .isThrownBy(() -> new Distance(input));
     }
 
     @Test
     void 거리를_생성할_수_있다() {
-        assertThat(new Distance(0).getDistance()).isZero();
+        assertThat(new Distance(1).getDistance()).isEqualTo(1);
     }
 
     @Test

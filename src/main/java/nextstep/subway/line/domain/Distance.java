@@ -12,8 +12,8 @@ public class Distance {
     private final int distance;
 
     public Distance(int distance) {
-        if (distance < MIN_DISTANCE) {
-            throw new IllegalArgumentException("거리는 0보다 작을 수 없습니다.");
+        if (distance <= MIN_DISTANCE) {
+            throw new IllegalArgumentException("거리는 0보다 작거나 같을 수 없습니다.");
         }
         this.distance = distance;
     }
@@ -27,9 +27,6 @@ public class Distance {
     }
 
     public Distance minus(Distance distance) {
-        if (this.distance <= distance.getDistance()) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
         return new Distance(this.distance - distance.getDistance());
     }
 
