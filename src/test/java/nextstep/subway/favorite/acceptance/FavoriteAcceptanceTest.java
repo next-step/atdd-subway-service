@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -108,24 +109,46 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      */
     @Test
     void 인수_통합테스트() {
+        // when: 즐겨찾기 생성을 요청
+        ExtractableResponse<Response> 강남역_잠실역 = 즐겨찾기_등록되어_있음(tokenResponse, 강남역, 잠실역);
+
+        // then: 즐겨찾기 생성됨
+        즐겨찾기_생성됨(강남역_잠실역);
+
+        // when: 즐겨찾기 목록 조회 요청
+        ExtractableResponse<Response> 조회된_즐겨찾기_목록 = 즐겨찾기_조회_요청(tokenResponse);
+
+        // then: 즐겨찾기 목록 조회됨
+        즐겨찾기_목록_응답됨(조회된_즐겨찾기_목록);
+        즐겨찾기_목록_포함됨(조회된_즐겨찾기_목록, Collections.singletonList(강남역_잠실역));
+
+        // when: 새로운 노선 등록됨
+        StationResponse 김포공항 = 지하철역_등록되어_있음("김포공항").as(StationResponse.class);
+        StationResponse 여의도 = 지하철역_등록되어_있음("여의도").as(StationResponse.class);
+        지하철_노선_등록되어_있음(new LineRequest("9호선", "gold", 김포공항.getId(), 여의도.getId(), 10)).as(LineResponse.class);
+
+        // then: 즐겨찾기 생성을 요청
+        ExtractableResponse<Response> 김포공항_여의도 = 즐겨찾기_등록되어_있음(tokenResponse, 김포공항, 여의도);
+
+        // when: 즐겨찾기 목록 조회 요청
+        ExtractableResponse<Response> 추가로_조회된_즐겨찾기_목록 = 즐겨찾기_조회_요청(tokenResponse);
+
+        // then: 즐겨찾기 목록 조회됨
+        즐겨찾기_목록_응답됨(추가로_조회된_즐겨찾기_목록);
+        즐겨찾기_목록_포함됨(추가로_조회된_즐겨찾기_목록, Arrays.asList(강남역_잠실역, 김포공항_여의도));
+
         // when
-        ExtractableResponse<Response> createResponse = 즐겨찾기_등록되어_있음(tokenResponse, 강남역, 잠실역);
-
-        // then
-        즐겨찾기_생성됨(createResponse);
-
-        // when
-        ExtractableResponse<Response> listResponse = 즐겨찾기_조회_요청(tokenResponse);
-
-        // then
-        즐겨찾기_목록_응답됨(listResponse);
-        즐겨찾기_목록_포함됨(listResponse, Collections.singletonList(createResponse));
-
-        // when
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_제거_요청(tokenResponse, createResponse);
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_제거_요청(tokenResponse, 강남역_잠실역);
 
         // then
         즐겨찾기_삭제됨(deleteResponse);
+
+        // when: 즐겨찾기 목록 조회 요청
+        ExtractableResponse<Response> 삭제후_조회된_즐겨찾기_목록 = 즐겨찾기_조회_요청(tokenResponse);
+
+        // then: 즐겨찾기 목록 조회됨
+        즐겨찾기_목록_응답됨(삭제후_조회된_즐겨찾기_목록);
+        즐겨찾기_목록_포함됨(삭제후_조회된_즐겨찾기_목록, Collections.singletonList(김포공항_여의도));
 
     }
 
