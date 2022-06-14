@@ -30,7 +30,7 @@ public class PathService {
         Lines lines = new Lines(lineRepository.findAll());
 
         GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(source, target);
-        Fare fare = lines.calcFare(shortestPath, loginMember.getMemberFarePolicy());
-        return PathResponse.of(shortestPath, fare.calcFare());
+        Fare fare = lines.calculateFare(shortestPath, loginMember.getMemberFarePolicy());
+        return PathResponse.of(shortestPath, fare.calculateFare());
     }
 }

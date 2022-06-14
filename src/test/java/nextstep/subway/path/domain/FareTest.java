@@ -51,13 +51,13 @@ class FareTest {
 
     @DisplayName("요금을 계산한다.(기본요금)")
     @Test
-    void calcFare(){
+    void calculateFare(){
         //given
         GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(독산, 가산디지털단지);
         Fare fare = new Fare(shortestPath, null);
 
         //when
-        int finalFare = fare.calcFare();
+        int finalFare = fare.calculateFare();
 
         //then
         assertThat(finalFare).isEqualTo(1250);
@@ -65,13 +65,13 @@ class FareTest {
 
     @DisplayName("요금을 계산한다.(거리 추가요금)")
     @Test
-    void calcFare_extra_distance(){
+    void calculateFare_extra_distance(){
         //given
         GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(독산, 구로);
         Fare fare = new Fare(shortestPath, null);
 
         //when
-        int finalFare = fare.calcFare();
+        int finalFare = fare.calculateFare();
 
         //then
         assertThat(finalFare).isEqualTo(1450);
@@ -79,13 +79,13 @@ class FareTest {
 
     @DisplayName("요금을 계산한다.(거리 추가요금 50KM 초과)")
     @Test
-    void calcFare_extra_distance_over_50KM(){
+    void calculateFare_extra_distance_over_50KM(){
         //given
         GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(독산, 잠실);
         Fare fare = new Fare(shortestPath, null);
 
         //when
-        int finalFare = fare.calcFare();
+        int finalFare = fare.calculateFare();
 
         //then
         assertThat(finalFare).isEqualTo(2350);
@@ -99,7 +99,7 @@ class FareTest {
         Fare fare = new Fare(shortestPath, null);
 
         //when
-        int finalFare = fare.calcFare();
+        int finalFare = fare.calculateFare();
 
         //then
         assertThat(finalFare).isEqualTo(2150);
@@ -107,15 +107,15 @@ class FareTest {
 
     @DisplayName("요금을 계산한다.(할인요금)")
     @Test
-    void calcFare_discount(){
+    void calculateFare_discount(){
         //given
         GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(강남, 판교);
         Fare fare1 = new Fare(shortestPath, MemberFarePolicy.TEENAGER);
         Fare fare2 = new Fare(shortestPath, MemberFarePolicy.CHILD);
 
         //when
-        int teenagerFare = fare1.calcFare();
-        int childFare = fare2.calcFare();
+        int teenagerFare = fare1.calculateFare();
+        int childFare = fare2.calculateFare();
 
         //then
         assertThat(teenagerFare).isEqualTo(1440);
@@ -124,7 +124,7 @@ class FareTest {
 
     @DisplayName("요금을 계산한다.(복합)")
     @Test
-    void calcFare_complex(){
+    void calculateFare_complex(){
         //given
         GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(독산, 수지);
         Fare fare1 = new Fare(shortestPath, MemberFarePolicy.GENERAL);
@@ -132,9 +132,9 @@ class FareTest {
         Fare fare3 = new Fare(shortestPath, MemberFarePolicy.CHILD);
 
         //when
-        int generalFare = fare1.calcFare();
-        int teenagerFare = fare2.calcFare();
-        int childFare = fare3.calcFare();
+        int generalFare = fare1.calculateFare();
+        int teenagerFare = fare2.calculateFare();
+        int childFare = fare3.calculateFare();
 
         //then
         assertThat(generalFare).isEqualTo(3150);

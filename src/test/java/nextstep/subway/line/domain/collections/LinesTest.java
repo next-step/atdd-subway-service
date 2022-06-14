@@ -60,17 +60,17 @@ class LinesTest {
 
     @DisplayName("최단경로(+거리)의 요금을 조회한다.")
     @Test
-    void calcFare() {
+    void calculateFare() {
 
         //given
         Lines lines = new Lines(Arrays.asList(일호선, 이호선, 칠호선, 신분당선));
         GraphPath<Station, SectionEdge> shortestPath = lines.findShortestPath(독산, 신림);
 
         //when
-        Fare fare = lines.calcFare(shortestPath, MemberFarePolicy.GENERAL);
+        Fare fare = lines.calculateFare(shortestPath, MemberFarePolicy.GENERAL);
 
         //then
-        assertThat(fare.calcFare()).isEqualTo(1550);
+        assertThat(fare.calculateFare()).isEqualTo(1550);
     }
 
 }

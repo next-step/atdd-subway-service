@@ -54,7 +54,7 @@ public class Lines {
         }
     }
 
-    public Fare calcFare(GraphPath<Station, SectionEdge> shortestPath, MemberFarePolicy memberFarePolicy) {
+    public Fare calculateFare(GraphPath<Station, SectionEdge> shortestPath, MemberFarePolicy memberFarePolicy) {
         return new Fare(shortestPath, memberFarePolicy);
     }
 }

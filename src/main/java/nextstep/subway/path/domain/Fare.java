@@ -24,13 +24,13 @@ public class Fare {
         this.memberFarePolicy = memberFarePolicy;
     }
 
-    public int calcFare() {
+    public int calculateFare() {
         int distance = (int) shortestPath.getWeight();
-        int fare = STANDARD_FARE + calcExtraChargeByLine() + calcAdditionalChargeBy(distance);
+        int fare = STANDARD_FARE + calculateExtraChargeByLine() + calculateAdditionalChargeBy(distance);
         return applyFarePolicyTo(fare);
     }
 
-    private int calcExtraChargeByLine() {
+    private int calculateExtraChargeByLine() {
         List<SectionEdge> shortestRouteSectionEdges = shortestPath.getEdgeList();
         return shortestRouteSectionEdges.stream()
                 .map(SectionEdge::getLine)
@@ -40,7 +40,7 @@ public class Fare {
                 .orElse(NOT_CHARGE);
     }
 
-    private int calcAdditionalChargeBy(int distance) {
+    private int calculateAdditionalChargeBy(int distance) {
         int charge = NOT_CHARGE;
         if (distance > CHANGE_CHARGE_DISTANCE) {
             int section = distance - CHANGE_CHARGE_DISTANCE;
