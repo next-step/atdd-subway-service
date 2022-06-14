@@ -88,6 +88,47 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(response);
     }
 
+    /*
+    Feature: 즐겨찾기를 관리한다.
+
+      Background
+        Given 지하철역 등록되어 있음
+        And 지하철 노선 등록되어 있음
+        And 지하철 노선에 지하철역 등록되어 있음
+        And 회원 등록되어 있음
+        And 로그인 되어있음
+
+      Scenario: 즐겨찾기를 관리
+        When 즐겨찾기 생성을 요청
+        Then 즐겨찾기 생성됨
+        When 즐겨찾기 목록 조회 요청
+        Then 즐겨찾기 목록 조회됨
+        When 즐겨찾기 삭제 요청
+        Then 즐겨찾기 삭제됨
+     */
+    @Test
+    void 인수_통합테스트() {
+        // when
+        ExtractableResponse<Response> createResponse = 즐겨찾기_등록되어_있음(tokenResponse, 강남역, 잠실역);
+
+        // then
+        즐겨찾기_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> listResponse = 즐겨찾기_조회_요청(tokenResponse);
+
+        // then
+        즐겨찾기_목록_응답됨(listResponse);
+        즐겨찾기_목록_포함됨(listResponse, Collections.singletonList(createResponse));
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_제거_요청(tokenResponse, createResponse);
+
+        // then
+        즐겨찾기_삭제됨(deleteResponse);
+
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_등록되어_있음(TokenResponse tokenResponse, StationResponse source, StationResponse target) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(source.getId(), target.getId());
         return RestAssured
