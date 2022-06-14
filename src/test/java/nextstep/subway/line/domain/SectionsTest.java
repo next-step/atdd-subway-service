@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class SectionsTest {
 
@@ -50,14 +51,60 @@ class SectionsTest {
     }
 
     @Test
-    void 구간중에_역이_존재하는지_알_수_있다() {
+    void add_비어있는_구간리스트_구간추가() {
         Sections sections = new Sections();
-        Section firstSection = new Section(신분당선, 강남역, 양재역, new Distance(10));
-        sections.add(firstSection);
+        sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
 
-        assertThat(sections.isStationExisted(강남역)).isTrue();
-        assertThat(sections.isStationExisted(양재역)).isTrue();
-        assertThat(sections.isStationExisted(신논현역)).isFalse();
+        assertThat(sections.size()).isEqualTo(1);
+    }
+
+    @Test
+    void add_하행_구간추가() {
+        Sections sections = new Sections();
+        sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
+        sections.add(new Section(신분당선, 양재역, 신논현역, new Distance(5)));
+
+        assertThat(sections.size()).isEqualTo(2);
+    }
+
+    @Test
+    void add_상행_구간추가() {
+        Sections sections = new Sections();
+        sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
+        sections.add(new Section(신분당선, 신논현역, 강남역, new Distance(5)));
+
+        assertThat(sections.size()).isEqualTo(2);
+    }
+
+    @Test
+    void add_구간사이_구간추가() {
+        Sections sections = new Sections();
+        Station 양재시민의숲 = new Station("양재시민의숲");
+        sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
+        sections.add(new Section(신분당선, 양재역, 신논현역, new Distance(5)));
+        sections.add(new Section(신분당선, 양재역, 양재시민의숲, new Distance(3)));
+
+        assertThat(sections.size()).isEqualTo(3);
+    }
+
+    @Test
+    void add_이미_등록된_구간추가_실패() {
+        Sections sections = new Sections();
+        sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
+
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> sections.add(new Section(신분당선, 강남역, 양재역, new Distance(5))));
+    }
+
+    @Test
+    void add_상행_하행_매칭되는_구간이_아예_없는_구간추가_실패() {
+        Sections sections = new Sections();
+        sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
+
+        Station 양재시민의숲 = new Station("양재시민의숲");
+
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> sections.add(new Section(신분당선, 신논현역, 양재시민의숲, new Distance(5))));
     }
 
 }

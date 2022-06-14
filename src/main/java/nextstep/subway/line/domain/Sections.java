@@ -23,7 +23,47 @@ public class Sections {
     }
 
     public void add(Section section) {
-        sections.add(section);
+        boolean isUpStationExisted = isStationExisted(section.getUpStation());
+        boolean isDownStationExisted = isStationExisted(section.getDownStation());
+
+        raiseIfNotValidAddSection(isUpStationExisted, isDownStationExisted);
+
+        if (isEmpty()) {
+            sections.add(section);
+            return;
+        }
+
+        if (isUpStationExisted) {
+            getNextSectionByEqualUpStation(section.getUpStation())
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+
+            sections.add(section);
+            return;
+        }
+
+        if (isDownStationExisted) {
+            getNextSectionByEqualDownStation(section.getDownStation())
+                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+
+            sections.add(section);
+            return;
+        }
+        throw new RuntimeException();
+    }
+
+    private boolean isStationExisted(Station station) {
+        return sections.stream()
+                .anyMatch(it -> it.getUpStation() == station || it.getDownStation() == station);
+    }
+
+    private void raiseIfNotValidAddSection(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!sections.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
     }
 
     public void remove(Section section) {
@@ -54,8 +94,4 @@ public class Sections {
                 .findFirst();
     }
 
-    public boolean isStationExisted(Station station) {
-        return sections.stream()
-                .anyMatch(it -> it.getUpStation() == station || it.getDownStation() == station);
-    }
 }
