@@ -15,26 +15,11 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> elements = new ArrayList<>();
 
-    public Section findFirstSection() {
-        if (elements.isEmpty()) {
-            throw new IllegalStateException("구간 목록이 비어 있음");
-        }
-
-        Section currentSection = elements.get(0);
-        Optional<Section> prevSection = findPrevSectionOf(currentSection);
-        while (prevSection.isPresent()) {
-            currentSection = prevSection.get();
-            prevSection = findPrevSectionOf(currentSection);
-        }
-
-        return currentSection;
-    }
-
     public List<Section> getElements() {
         return elements;
     }
 
-    public List<Station> getStations() {
+    public List<Station> getStationsInOrder() {
         if (elements.isEmpty()) {
             return Collections.emptyList();
         }
@@ -53,6 +38,21 @@ public class Sections {
         return stations;
     }
 
+    public Section findFirstSection() {
+        if (elements.isEmpty()) {
+            throw new IllegalStateException("구간 목록이 비어 있음");
+        }
+
+        Section currentSection = elements.get(0);
+        Optional<Section> prevSection = findPrevSectionOf(currentSection);
+        while (prevSection.isPresent()) {
+            currentSection = prevSection.get();
+            prevSection = findPrevSectionOf(currentSection);
+        }
+
+        return currentSection;
+    }
+
     private Optional<Section> findPrevSectionOf(Section currentSection) {
         return elements.stream()
                 .filter(section -> section.isPrevSectionOf(currentSection))
@@ -65,47 +65,15 @@ public class Sections {
                 .findFirst();
     }
 
-    private Optional<Section> findSectionByUpStationSameAs(Station station) {
-        return elements.stream()
-                .filter(section -> section.hasUpStationSameAs(station))
-                .findFirst();
-    }
-
-    private Optional<Section> findSectionByDownStationSameAs(Station station) {
-        return elements.stream()
-                .filter(section -> section.hasDownStationSameAs(station))
-                .findFirst();
-    }
-
     public void add(Section section) {
         validateStations(section.getUpStation(), section.getDownStation());
 
         rearrangeElementsFor(section);
-
         elements.add(section);
     }
 
-    public void removeStation(Station station) {
-        if (elements.size() <= 1) {
-            throw new IllegalStateException("구간이 하나뿐일 때는 삭제할 수 없습니다.");
-        }
-
-        Optional<Section> upSection = findSectionByDownStationSameAs(station);
-        Optional<Section> downSection = findSectionByUpStationSameAs(station);
-
-        if (downSection.isPresent() && upSection.isPresent()) {
-            Station newUpStation = upSection.get().getUpStation();
-            Station newDownStation = downSection.get().getDownStation();
-            int newDistance = downSection.get().getDistance() + upSection.get().getDistance();
-            elements.add(new Section(upSection.get().getLine(), newUpStation, newDownStation, newDistance));
-        }
-
-        downSection.ifPresent(it -> elements.remove(it));
-        upSection.ifPresent(it -> elements.remove(it));
-    }
-
     private void validateStations(Station upStation, Station downStation) {
-        List<Station> stations = getStations();
+        List<Station> stations = getStationsInOrder();
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
@@ -134,5 +102,36 @@ public class Sections {
                     it.updateDownStation(section.getUpStation(), section.getDistance());
                     return;
                 });
+    }
+
+    public void removeStation(Station station) {
+        if (elements.size() <= 1) {
+            throw new IllegalStateException("구간이 하나뿐일 때는 삭제할 수 없습니다.");
+        }
+
+        Optional<Section> upSection = findSectionByDownStationSameAs(station);
+        Optional<Section> downSection = findSectionByUpStationSameAs(station);
+
+        if (downSection.isPresent() && upSection.isPresent()) {
+            Station newUpStation = upSection.get().getUpStation();
+            Station newDownStation = downSection.get().getDownStation();
+            int newDistance = downSection.get().getDistance() + upSection.get().getDistance();
+            elements.add(new Section(upSection.get().getLine(), newUpStation, newDownStation, newDistance));
+        }
+
+        downSection.ifPresent(it -> elements.remove(it));
+        upSection.ifPresent(it -> elements.remove(it));
+    }
+
+    private Optional<Section> findSectionByUpStationSameAs(Station station) {
+        return elements.stream()
+                .filter(section -> section.hasUpStationSameAs(station))
+                .findFirst();
+    }
+
+    private Optional<Section> findSectionByDownStationSameAs(Station station) {
+        return elements.stream()
+                .filter(section -> section.hasDownStationSameAs(station))
+                .findFirst();
     }
 }

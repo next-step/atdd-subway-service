@@ -35,7 +35,7 @@ public class LineTest {
 
     @Test
     void 역_목록() {
-        List<Station> stations = 분당선.getStations();
+        List<Station> stations = 분당선.getStationsInOrder();
         assertThat(stations).containsExactly(왕십리역, 선릉역);
     }
 
@@ -43,7 +43,7 @@ public class LineTest {
     void 중간_역_추가() {
         분당선.addSection(왕십리역, 서울숲역, 왕십리_선릉_길이 - 5);
 
-        List<Station> stations = 분당선.getStations();
+        List<Station> stations = 분당선.getStationsInOrder();
         assertThat(stations).containsExactly(왕십리역, 서울숲역, 선릉역);
     }
 
@@ -51,7 +51,7 @@ public class LineTest {
     void 상행_종점_추가() {
         분당선.addSection(청량리역, 왕십리역, 3);
 
-        List<Station> stations = 분당선.getStations();
+        List<Station> stations = 분당선.getStationsInOrder();
         assertThat(stations).containsExactly(청량리역, 왕십리역, 선릉역);
     }
 
@@ -59,7 +59,7 @@ public class LineTest {
     void 하행_종점_추가() {
         분당선.addSection(선릉역, 도곡역, 3);
 
-        List<Station> stations = 분당선.getStations();
+        List<Station> stations = 분당선.getStationsInOrder();
         assertThat(stations).containsExactly(왕십리역, 선릉역, 도곡역);
     }
 
@@ -87,7 +87,7 @@ public class LineTest {
 
         분당선.removeSection(왕십리역);
 
-        List<Station> stations = 분당선.getStations();
+        List<Station> stations = 분당선.getStationsInOrder();
         assertThat(stations).containsExactly(청량리역, 선릉역);
     }
 
@@ -97,7 +97,7 @@ public class LineTest {
 
         분당선.removeSection(왕십리역);
 
-        List<Station> stations = 분당선.getStations();
+        List<Station> stations = 분당선.getStationsInOrder();
         assertThat(stations).containsExactly(서울숲역, 선릉역);
     }
 
@@ -107,7 +107,7 @@ public class LineTest {
 
         분당선.removeSection(선릉역);
 
-        List<Station> stations = 분당선.getStations();
+        List<Station> stations = 분당선.getStationsInOrder();
         assertThat(stations).containsExactly(왕십리역, 서울숲역);
     }
 
@@ -117,7 +117,7 @@ public class LineTest {
 
         분당선.removeSection(도곡역);
 
-        List<Station> stations = 분당선.getStations();
+        List<Station> stations = 분당선.getStationsInOrder();
         assertThat(stations).containsExactly(왕십리역, 서울숲역, 선릉역);
     }
 

@@ -105,7 +105,7 @@ public class SectionsTest {
         sections.add(new Section(null, 왕십리역, 서울숲역, 3));
         sections.add(new Section(null, 선릉역, 도곡역, 3));
 
-        List<Station> stations = sections.getStations();
+        List<Station> stations = sections.getStationsInOrder();
         assertThat(stations).containsExactly(청량리역, 왕십리역, 서울숲역, 선릉역, 도곡역);
     }
 
