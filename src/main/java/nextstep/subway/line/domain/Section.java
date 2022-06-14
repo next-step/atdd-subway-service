@@ -67,24 +67,6 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistanceValue) {
-        final Distance newDistance = Distance.valueOf(newDistanceValue);
-        if (this.distance.isLessThanOrEqualsTo(newDistance)) {
-            throw new SubwayException(OVER_THE_DISTANCE);
-        }
-        this.upStation = station;
-        this.distance = distance.minus(newDistance);
-    }
-
-    public void updateDownStation(Station station, int newDistanceValue) {
-        final Distance newDistance = Distance.valueOf(newDistanceValue);
-        if (this.distance.isLessThanOrEqualsTo(newDistance)) {
-            throw new SubwayException(OVER_THE_DISTANCE);
-        }
-        this.downStation = station;
-        this.distance = distance.minus(newDistance);
-    }
-
     public boolean hasUpStation(final Station upStation) {
         return this.upStation.equals(upStation);
     }
