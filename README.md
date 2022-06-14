@@ -87,6 +87,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - [X] Line 에 addSection 추가
         - [X] Sections 에 로직 이동
             - [X] Section 에 rearrange 추가
+            - [X] SectionTest 추가
             - [X] Section 에 유효성 검사 추가
             - [X] Sections 에 유효성 검사 추가
 - [X] 전역 예외 처리 추가

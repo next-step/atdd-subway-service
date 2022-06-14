@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import static nextstep.subway.exception.domain.SubwayExceptionMessage.OVER_THE_DISTANCE;
 
 import com.google.common.collect.Sets;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -130,5 +131,35 @@ public class Section {
 
     private boolean isGreaterThanOrEqualsToDistance(final Section section) {
         return distance.isGreaterThanOrEqualsTo(section.distance);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Section)) {
+            return false;
+        }
+        final Section section = (Section) o;
+        return Objects.equals(id, section.id) && Objects.equals(line, section.line)
+                && Objects.equals(upStation, section.upStation) && Objects.equals(downStation,
+                section.downStation) && Objects.equals(distance, section.distance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, line, upStation, downStation, distance);
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "id=" + id +
+                ", line=" + line +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
     }
 }
