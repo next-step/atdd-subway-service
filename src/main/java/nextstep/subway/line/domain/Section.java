@@ -65,10 +65,6 @@ public class Section {
         return distance;
     }
 
-    public int getExtraFare() {
-        return line.getExtraFare();
-    }
-
     public void updateUpStation(Section section) {
         if (this.distance <= section.distance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");

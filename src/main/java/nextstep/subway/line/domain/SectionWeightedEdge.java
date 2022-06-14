@@ -30,10 +30,6 @@ public class SectionWeightedEdge extends DefaultWeightedEdge {
         return section.getLine();
     }
 
-    public int getExtraFare() {
-        return section.getExtraFare();
-    }
-
     @Override
     public String toString() {
         return "SectionWeightedEdge{" +
