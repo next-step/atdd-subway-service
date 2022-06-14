@@ -81,10 +81,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("즐겨찾기 생성 요청시 생성된다")
     void saveFavorite() {
-        // when
-        ExtractableResponse<Response> 즐겨찾기_생성_요청_결과 = 즐겨찾기_생성_요청(몬드_토큰, 서초역, 강남역);
-        // then
-        즐겨찾기_생성_요청_성공(즐겨찾기_생성_요청_결과);
+        // when && then
+        즐겨찾기_생성하고_확인(몬드_토큰, 서초역, 강남역);
     }
 
     /**
@@ -96,11 +94,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 목록이 조회한다")
     void searchFavorites() {
         // given
-        즐겨찾기_생성_요청(몬드_토큰, 서초역, 강남역);
+        즐겨찾기_생성하고_확인(몬드_토큰, 서초역, 강남역);
         // when
-        ExtractableResponse<Response> 즐겨찾기_목록_조회_결과 = 즐겨찾기_목록_조회(몬드_토큰);
-        // then
-        즐겨찾기_목록_확인(즐겨찾기_목록_조회_결과, 1);
+        즐겨찾기_조회하고_확인(몬드_토큰, 1);
     }
 
     /**
@@ -112,13 +108,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 삭제한다")
     void deleteFavorite() {
         // given
-        ExtractableResponse<Response> 즐겨찾기_생성_요청_결과 = 즐겨찾기_생성_요청(몬드_토큰, 서초역, 강남역);
+        ExtractableResponse<Response> 즐겨찾기_생성_요청_결과 = 즐겨찾기_생성하고_확인(몬드_토큰, 서초역, 강남역);
         // when
-        ExtractableResponse<Response> 즐겨찾기_삭제_요청_결과 = 즐겨찾기_삭제_요청(몬드_토큰, 즐겨찾기_생성_요청_결과);
-        즐겨찾기_삭제_확인(즐겨찾기_삭제_요청_결과);
+        즐겨찾기_삭제하고_확인(몬드_토큰, 즐겨찾기_생성_요청_결과);
         // then
-        ExtractableResponse<Response> 즐겨찾기_목록_조회_결과 = 즐겨찾기_목록_조회(몬드_토큰);
-        즐겨찾기_목록_확인(즐겨찾기_목록_조회_결과, 0);
+        즐겨찾기_조회하고_확인(몬드_토큰, 0);
     }
 
     /**
@@ -136,25 +130,17 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("즐겨찾기 관리 성공 시나리오")
     void favoriteSuccessScenario() {
-        // when
-        ExtractableResponse<Response> 즐겨찾기_생성_요청_결과 = 즐겨찾기_생성_요청(몬드_토큰, 서초역, 강남역);
-        // then
-        즐겨찾기_생성_요청_성공(즐겨찾기_생성_요청_결과);
+        // when && then
+        ExtractableResponse<Response> 즐겨찾기_생성_요청_결과 = 즐겨찾기_생성하고_확인(몬드_토큰, 서초역, 강남역);
 
-        // when
-        ExtractableResponse<Response> 즐겨찾기_목록_조회_결과 = 즐겨찾기_목록_조회(몬드_토큰);
-        // then
-        즐겨찾기_목록_확인(즐겨찾기_목록_조회_결과, 1);
+        // when && then
+        즐겨찾기_조회하고_확인(몬드_토큰, 1);
 
-        // when
-        ExtractableResponse<Response> 남의_즐겨찾기_목록_조회_결과 = 즐겨찾기_목록_조회(스루기_토큰);
-        // then
-        즐겨찾기_목록_확인(남의_즐겨찾기_목록_조회_결과, 0);
+        // when && then
+        즐겨찾기_조회하고_확인(스루기_토큰, 0);
 
-        // when
-        ExtractableResponse<Response> 즐겨찾기_삭제_요청_결과 = 즐겨찾기_삭제_요청(몬드_토큰, 즐겨찾기_생성_요청_결과);
-        // then
-        즐겨찾기_삭제_확인(즐겨찾기_삭제_요청_결과);
+        // when && then
+        즐겨찾기_삭제하고_확인(몬드_토큰, 즐겨찾기_생성_요청_결과);
     }
 
     /**
@@ -176,6 +162,29 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 연결_안된_역_생성_요청_결과 = 즐겨찾기_생성_요청(몬드_토큰, 강남역, 판교역);
         // then
         즐겨찾기_생성_요청_실패(연결_안된_역_생성_요청_결과);
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_생성하고_확인(TokenResponse 토큰, StationResponse 시작역, StationResponse 종료역) {
+        // when
+        ExtractableResponse<Response> 즐겨찾기_생성_요청_결과 = 즐겨찾기_생성_요청(토큰, 시작역, 종료역);
+        // then
+        즐겨찾기_생성_요청_성공(즐겨찾기_생성_요청_결과);
+
+        return 즐겨찾기_생성_요청_결과;
+    }
+
+    private void 즐겨찾기_조회하고_확인(TokenResponse 토큰, int 예상되는_즐겨찾기_갯수) {
+        // when
+        ExtractableResponse<Response> 즐겨찾기_목록_조회_결과 = 즐겨찾기_목록_조회(토큰);
+        // then
+        즐겨찾기_목록_확인(즐겨찾기_목록_조회_결과, 예상되는_즐겨찾기_갯수);
+    }
+
+    private void 즐겨찾기_삭제하고_확인(TokenResponse 토큰, ExtractableResponse<Response> 즐겨찾기_생성_요청_결과) {
+        // when
+        ExtractableResponse<Response> 즐겨찾기_삭제_요청_결과 = 즐겨찾기_삭제_요청(토큰, 즐겨찾기_생성_요청_결과);
+        // then
+        즐겨찾기_삭제_확인(즐겨찾기_삭제_요청_결과);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(TokenResponse 토큰, StationResponse 시작역, StationResponse 종료역) {
