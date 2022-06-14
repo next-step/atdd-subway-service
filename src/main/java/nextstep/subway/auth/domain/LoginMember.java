@@ -1,6 +1,6 @@
 package nextstep.subway.auth.domain;
 
-public class LoginMember {
+public class LoginMember implements Customer {
     private Long id;
     private String email;
     private Integer age;

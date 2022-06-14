@@ -2,6 +2,7 @@ package nextstep.subway.auth.ui;
 
 import nextstep.subway.auth.application.AuthService;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.NonLoginMember;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import org.springframework.core.MethodParameter;
@@ -29,7 +30,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        jwtTokenProvider.validateToken(credentials);
+        if (credentials == null || !jwtTokenProvider.validateToken(credentials)) {
+            return new NonLoginMember();
+        }
+
         return authService.findMemberByToken(credentials);
     }
 }

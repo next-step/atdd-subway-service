@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 
 @Component
 public class JwtTokenProvider {
@@ -36,7 +35,6 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-
             return !claims.getBody().getExpiration().before(new Date());
         } catch (MalformedJwtException | SignatureException | ExpiredJwtException | UnsupportedJwtException e) {
             throw new UnAuthorizedException(ExceptionType.INVALID_TOKEN);
