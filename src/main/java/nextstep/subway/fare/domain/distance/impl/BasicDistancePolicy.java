@@ -17,6 +17,11 @@ public class BasicDistancePolicy implements DistancePolicy {
 
 
     @Override
+    public boolean includeDistance(int distance) {
+        return distance <= 10;
+    }
+
+    @Override
     public int calculate(int distance) {
         return 0;
     }

@@ -19,6 +19,11 @@ public class LongDistancePolicy implements DistancePolicy {
     }
 
     @Override
+    public boolean includeDistance(int distance) {
+        return distance >= 50;
+    }
+
+    @Override
     public int calculate(int distance) {
         return (int) ((Math.ceil((distance - 1) / 8) + 1) * 100);
     }

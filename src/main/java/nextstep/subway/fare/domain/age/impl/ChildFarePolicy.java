@@ -15,6 +15,11 @@ public class ChildFarePolicy implements AgePolicy {
     }
 
     @Override
+    public boolean includeAge(int age) {
+        return age >= 6 && age < 13;
+    }
+
+    @Override
     public int calculate() {
         return (int) ((DEFAULT_FARE - DISCOUNT_FARE) * 0.5);
     }

@@ -15,6 +15,11 @@ public class OldFarePolicy implements AgePolicy {
     }
 
     @Override
+    public boolean includeAge(int age) {
+        return age >= 65;
+    }
+
+    @Override
     public int calculate() {
         return 0;
     }

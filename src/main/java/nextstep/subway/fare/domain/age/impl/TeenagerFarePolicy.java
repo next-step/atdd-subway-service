@@ -15,6 +15,11 @@ public class TeenagerFarePolicy implements AgePolicy {
     }
 
     @Override
+    public boolean includeAge(int age) {
+        return age >= 13 && age <= 18;
+    }
+
+    @Override
     public int calculate() {
         return (int) ((DEFAULT_FARE - DISCOUNT_FARE) * 0.8);
     }

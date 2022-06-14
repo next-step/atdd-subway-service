@@ -15,6 +15,11 @@ public class AdultFarePolicy implements AgePolicy {
     }
 
     @Override
+    public boolean includeAge(int age) {
+        return age >= 19 && age < 65;
+    }
+
+    @Override
     public int calculate() {
         return DEFAULT_FARE;
     }

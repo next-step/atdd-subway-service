@@ -19,6 +19,11 @@ public class MiddleDistancePolicy implements DistancePolicy{
     }
 
     @Override
+    public boolean includeDistance(int distance) {
+        return distance > 10 && distance <= 50;
+    }
+
+    @Override
     public int calculate(int distance) {
         return (int) ((Math.ceil((distance - 1) / 5) + 1) * 100);
     }

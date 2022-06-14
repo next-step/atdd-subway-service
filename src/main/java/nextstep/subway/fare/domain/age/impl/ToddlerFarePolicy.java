@@ -15,6 +15,11 @@ public class ToddlerFarePolicy implements AgePolicy {
     }
 
     @Override
+    public boolean includeAge(int age) {
+        return 6 > age;
+    }
+
+    @Override
     public int calculate() {
         return 0;
     }
