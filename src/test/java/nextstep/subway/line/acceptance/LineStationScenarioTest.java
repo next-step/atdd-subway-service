@@ -45,8 +45,14 @@ public class LineStationScenarioTest extends AcceptanceTest {
 
     /**
      *  Scenario: 지하철 구간을 관리
+     *      When 지하철 구간 삭제 요청 (노선에 하나 남은 구간을 삭제 요청)
+     *      Then 지하철 구간 삭제됨 (400 BAD_REQUEST)
      *      When 지하철 구간 등록 요청
      *      Then 지하철 구간 등록됨
+     *      When 지하철 구간 등록 요청 (이미 존재하는 구간)
+     *      Then 지하철 구간이 등록되지 않음 (400 BAD_REQUEST)
+     *      When 지하철 구간 등록 요청 (기존 구간 사이에 들어가지만 길이가 더 긴 구간)
+     *      Then 지하철 구간이 등록되지 않음 (400 BAD_REQUEST)
      *      When 지하철 노선에 등록된 역 목록 조회 요청
      *      Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
      *      When 지하철 구간 삭제 요청
@@ -57,11 +63,30 @@ public class LineStationScenarioTest extends AcceptanceTest {
     @Test
     @DisplayName("지하철 구간 관련 기능 시나리오 테스트")
     void 지하철_구간_관련_기능_시나리오_테스트 () {
+        //When 지하철 구간 삭제 요청 (노선에 존재하지 않는 역을 요청)
+        ExtractableResponse<Response> removeResponseNonStation = 지하철_노선에_지하철역_제외_요청(칠호선, 뚝섬유원지역);
+
+        //Then 지하철 구간 삭제됨 (400 BAD_REQUEST)
+        지하철_노선에_지하철역_제외_실패됨(removeResponseNonStation);
+
         //When 지하철 구간 등록 요청
-        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(칠호선, 뚝섬유원지역, 건대입구역, 10);
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(칠호선, 뚝섬유원지역, 어린이대공원역, 10);
 
         //Then 지하철 구간 등록됨
         지하철_노선에_지하철역_등록됨(response);
+
+        //When 지하철 구간 등록 요청 (이미 존재하는 구간)
+        ExtractableResponse<Response> responseDuplicateLine = 지하철_노선에_지하철역_등록_요청(칠호선, 뚝섬유원지역, 어린이대공원역, 5);
+
+        //Then
+        지하철_노선에_지하철역_등록_실패됨(responseDuplicateLine);
+
+
+        //When 지하철 구간 등록 요청 (기존 구간 사이에 들어가지만 길이가 더 긴 구간)
+        ExtractableResponse<Response> responseLongDistance = 지하철_노선에_지하철역_등록_요청(칠호선, 뚝섬유원지역, 건대입구역, 20);
+
+        //Then
+        지하철_노선에_지하철역_등록_실패됨(responseLongDistance);
 
         //When 지하철 노선에 등록된 역 목록 조회 요청
         ExtractableResponse<Response> response_line = 지하철_노선_조회_요청(칠호선);
@@ -71,7 +96,7 @@ public class LineStationScenarioTest extends AcceptanceTest {
         assertThat(칠호선_response.getStations()
                                 .stream()
                                 .map(StationResponse::getId))
-                                .containsExactly(청담역.getId(), 뚝섬유원지역.getId(), 건대입구역.getId());
+                                .containsExactly(청담역.getId(), 뚝섬유원지역.getId(), 어린이대공원역.getId());
 
         지하철_노선_목록_응답됨(response);
 
@@ -89,6 +114,6 @@ public class LineStationScenarioTest extends AcceptanceTest {
         assertThat(칠호선_response.getStations()
                 .stream()
                 .map(StationResponse::getId))
-                .containsExactly(뚝섬유원지역.getId(), 건대입구역.getId());
+                .containsExactly(뚝섬유원지역.getId(), 어린이대공원역.getId());
     }
 }
