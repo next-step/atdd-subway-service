@@ -9,15 +9,15 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 
-public class Path {
+public class PathFinder {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     private DijkstraShortestPath shortestPath = new DijkstraShortestPath(graph);
 
-    protected Path() {
+    protected PathFinder() {
     }
 
-    public static Path of(){
-        return new Path();
+    public static PathFinder of(){
+        return new PathFinder();
     }
 
     public PathResponse findShortest(List<Line> lines, Station source, Station target) {

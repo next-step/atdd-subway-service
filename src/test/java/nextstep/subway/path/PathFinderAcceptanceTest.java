@@ -18,7 +18,7 @@ import static nextstep.subway.path.PathAcceptanceFactory.최단_경로_조회_�
 
 
 @DisplayName("지하철 경로 조회")
-public class PathAcceptanceTest extends AcceptanceTest {
+public class PathFinderAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;

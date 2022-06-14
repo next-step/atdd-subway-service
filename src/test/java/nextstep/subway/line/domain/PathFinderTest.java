@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PathTest {
+class PathFinderTest {
     private Line 신분당선;
     private Line 이호선;
     private Line 삼호선;
@@ -41,7 +41,7 @@ class PathTest {
 
     @Test
     void 최단구간_조회_교대_양재_구간() {
-        PathResponse shortest = Path.of().findShortest(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 양재역);
+        PathResponse shortest = PathFinder.of().findShortest(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 양재역);
         assertThat(shortest.getDistance()).isEqualTo(5);
     }
 
