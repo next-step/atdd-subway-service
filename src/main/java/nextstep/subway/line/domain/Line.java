@@ -16,6 +16,8 @@ import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
+    private static final int MIN_REMOVE_SECTION_SIZE = 1;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -149,7 +151,7 @@ public class Line extends BaseEntity {
     }
 
     public void removeLineStation(Station station) {
-        if (getSectionsSize() <= 1) {
+        if (getSectionsSize() <= MIN_REMOVE_SECTION_SIZE) {
             throw new RuntimeException();
         }
 
