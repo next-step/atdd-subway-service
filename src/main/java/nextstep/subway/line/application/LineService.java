@@ -94,4 +94,29 @@ public class LineService {
         downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
 
+    public void removeLineStation_refactoring(Long lineId, Long stationId) {
+        Line line = findLineById(lineId);
+        Station station = stationService.findStationById(stationId);
+        if (line.getSections().size() <= 1) {
+            throw new SubwayException(NOT_REMOVE_SECTION);
+        }
+
+        Optional<Section> upLineStation = line.getSections().stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = line.getSections().stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance().getValue() + downLineStation.get().getDistance().getValue();
+            line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> line.getSections().remove(it));
+        downLineStation.ifPresent(it -> line.getSections().remove(it));
+    }
+
 }

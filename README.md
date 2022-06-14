@@ -83,8 +83,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - [X] Section 에 distance 변수 타입을 Distance 로 변경
         - [X] DistanceConverter 추가
         - [X] DistanceTest 추가
-    - [X] addLineStation 변경
-        - [X] Line 에 addSection 추가
+    - [X] addLineStation 개선
+        - [X] 기존로직 복사하여 개선
+        - [X] Line 에 addSection 이동
         - [X] Sections 에 로직 이동
             - [X] Section 에 rearrange 추가
             - [X] SectionTest 추가
@@ -92,5 +93,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - [X] Sections 에 유효성 검사 추가
         - [X] 기존 로직제거
     - [X] dto to domain 로직 수정
+    - [ ] removeLineStation 개선
+        - [ ] 기존로직 복사하여 개선
+        - 
 - [X] 전역 예외 처리 추가
     - [X] RuntimeException 으로 사용되던 예외 수정
