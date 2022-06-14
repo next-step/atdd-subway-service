@@ -5,12 +5,12 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.member.dto.MemberRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -24,12 +24,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBearerAuth() {
         // given
-        String email = "tester@gmail.com";
-        String password = "1234";
-        회원_등록되어_있음(email, password, 20);
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
 
         // when
-        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(email, password);
+        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(EMAIL, PASSWORD);
 
         // then
         로그인_성공(로그인_응답);
@@ -54,23 +52,22 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_실패(로그인_응답);
     }
 
+    /**
+     * Given 로그인 하지 않음
+     * When 내 정보 조회
+     * Then 조회 실패
+     */
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-    }
+        // given
+        로그인_하지_않음();
 
-    public static String 회원_등록되어_있음(String email, String password, Integer age) {
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new MemberRequest(email, password, age))
-                .when().post("/members")
-                .then().log().all()
-                .extract();
+        // when
+        ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회_요청();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-
-        return response.header("location");
+        // then
+        권한_없음(내_정보_조회_응답);
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
@@ -91,6 +88,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 로그인_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static void 로그인_하지_않음() {
+    }
+
+    public static void 권한_없음(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
