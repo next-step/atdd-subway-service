@@ -56,8 +56,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * 남부터미널역  --- *3호선* ---   양재
      */
     @BeforeEach
-    public void init() throws NoSuchFieldException, IllegalAccessException {
-        // TODO: 2022/06/13 질문 : mock을 사용하니, 실제 테스트 대상 객체를 저장시 외래키 에러 발생..
+    public void init() {
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
         교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
