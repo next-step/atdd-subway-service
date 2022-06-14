@@ -15,6 +15,8 @@ public class Fare {
     private static final int PER_CHARGE_DISTANCE_OVER = 8;
     private static final int STANDARD_DISTANCE = 10;
     private static final int STANDARD_FARE = 1250;
+    private static final int OVER_CHARGE_PER_KILOMETER = 100;
+
 
     private final GraphPath<Station, SectionEdge> shortestPath;
     private final MemberFarePolicy memberFarePolicy;
@@ -55,7 +57,7 @@ public class Fare {
     }
 
     private int getCharge(int section, int perChargeDistanceOver) {
-        return (int) ((Math.ceil((section - 1) / perChargeDistanceOver) + 1) * 100);
+        return (int) ((Math.ceil((section - 1) / perChargeDistanceOver) + 1) * OVER_CHARGE_PER_KILOMETER);
     }
 
     private int applyFarePolicyTo(int fare) {
