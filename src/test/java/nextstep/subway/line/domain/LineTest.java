@@ -82,22 +82,25 @@ class LineTest {
     @Test
     @DisplayName("지하철 노선내 구간 삭제시 구간이 없는 경우 실패 테스트")
     void removeLineStationNotMatchRemove() {
-        지하철_2호선.addSection(서초역, 교대역, 거리);
+        지하철_2호선.addSection(강남역, 역삼역, 거리);
+        지하철_2호선.addSection(교대역, 강남역, 거리);
 
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> 지하철_2호선.removeLineStation(강남역))
+                .isThrownBy(() -> 지하철_2호선.removeLineStation(서초역))
                 .withMessageContaining(NOT_MATCH_REMOVE_STATION);
     }
 
     @Test
     @DisplayName("지하철 노선내 구간 삭제 테스트")
     void removeLineStation() {
+        지하철_2호선.addSection(강남역, 역삼역, 거리);
         지하철_2호선.addSection(교대역, 강남역, 거리);
+
         지하철_2호선.removeLineStation(강남역);
         Stations 지하철_2호선_삭제_결과 = 지하철_2호선.getStations();
 
         Assertions.assertAll(
-                () -> assertThat(지하철_2호선_삭제_결과.getStations()).size().isEqualTo(0)
+                () -> assertThat(지하철_2호선_삭제_결과.getStations()).size().isEqualTo(2)
         );
     }
 

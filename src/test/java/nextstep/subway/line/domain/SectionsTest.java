@@ -22,6 +22,7 @@ class SectionsTest {
 
     private int 거리;
     private Section 강남_역삼_지하철_구간;
+    private Section 교대_강남_지하철_구간;
 
     @BeforeEach
     void setUp() {
@@ -34,6 +35,7 @@ class SectionsTest {
         거리 = 10;
 
         강남_역삼_지하철_구간 = new Section(지하철_2호선, 강남역, 역삼역, 거리);
+        교대_강남_지하철_구간 = new Section(지하철_2호선, 교대역, 강남역, 거리);
     }
 
     @Test
@@ -105,12 +107,13 @@ class SectionsTest {
     void deleteSections() {
         Sections 지하철_구간_정보 = new Sections();
         지하철_구간_정보.addSection(강남_역삼_지하철_구간);
-        지하철_구간_정보.removeSectionByStation(강남역);
+        지하철_구간_정보.addSection(교대_강남_지하철_구간);
 
+        지하철_구간_정보.removeSectionByStation(강남역);
         Stations 지하철_구간_정보_조회_결과 = 지하철_구간_정보.findStations();
 
         Assertions.assertAll(
-                () -> assertThat(지하철_구간_정보_조회_결과.getStations()).size().isEqualTo(0)
+                () -> assertThat(지하철_구간_정보_조회_결과.getStations()).size().isEqualTo(2)
         );
     }
 
@@ -119,6 +122,7 @@ class SectionsTest {
     void deleteSectionsNotMatch() {
         Sections 지하철_구간_정보 = new Sections();
         지하철_구간_정보.addSection(강남_역삼_지하철_구간);
+        지하철_구간_정보.addSection(교대_강남_지하철_구간);
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> 지하철_구간_정보.removeSectionByStation(신도림역))
