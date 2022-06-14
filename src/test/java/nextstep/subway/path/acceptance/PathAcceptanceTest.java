@@ -5,6 +5,7 @@ import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 
 @DisplayName("지하철 경로 조회 관련")
@@ -130,5 +132,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return stationResponses.stream()
                 .map(StationResponse::toStation)
                 .collect(Collectors.toList());
+    }
+
+    public static <T> ExtractableResponse<Response> get(String path, Map<String, T> params) {
+        return RestAssured
+                .given().log().all()
+                .queryParams(params)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(path)
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 응답결과_확인(ExtractableResponse<Response> response, HttpStatus httpStatus) {
+        assertThat(response.statusCode()).isEqualTo(httpStatus.value());
     }
 }
