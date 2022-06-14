@@ -1,40 +1,27 @@
 package nextstep.subway.favorite.dto;
 
-import java.time.LocalDateTime;
+import nextstep.subway.station.dto.StationResponse;
 
 public class FavoriteResponse {
     private Long id;
-    private Long sourceId;
-    private Long targetId;
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
+    private StationResponse source;
+    private StationResponse target;
 
-    public FavoriteResponse(Long id, Long sourceId, Long targetId, LocalDateTime createdDate,
-                            LocalDateTime modifiedDate) {
+    public FavoriteResponse(Long id, StationResponse source, StationResponse target) {
         this.id = id;
-        this.sourceId = sourceId;
-        this.targetId = targetId;
-        this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
+        this.source = source;
+        this.target = target;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getSourceId() {
-        return sourceId;
+    public StationResponse getSource() {
+        return source;
     }
 
-    public Long getTargetId() {
-        return targetId;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public LocalDateTime getModifiedDate() {
-        return modifiedDate;
+    public StationResponse getTarget() {
+        return target;
     }
 }

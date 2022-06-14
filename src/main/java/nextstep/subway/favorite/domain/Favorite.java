@@ -12,6 +12,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 
 @Entity
 public class Favorite extends BaseEntity {
@@ -41,8 +42,9 @@ public class Favorite extends BaseEntity {
     }
 
     public FavoriteResponse toFavoriteResponse() {
-        return new FavoriteResponse(this.id, this.source.getId(), this.target.getId(), this.getCreatedDate(),
-                this.getModifiedDate());
+        StationResponse sourceResponse = StationResponse.of(this.source);
+        StationResponse targetResponse = StationResponse.of(this.target);
+        return new FavoriteResponse(this.id, sourceResponse, targetResponse);
     }
 
     @Override

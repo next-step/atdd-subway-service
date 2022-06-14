@@ -56,8 +56,10 @@ class FavoriteServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(favoriteResponse.getSourceId()).isEqualTo(1L),
-                () -> assertThat(favoriteResponse.getTargetId()).isEqualTo(2L)
+                () -> assertThat(favoriteResponse.getSource().getId()).isEqualTo(1L),
+                () -> assertThat(favoriteResponse.getSource().getName()).isEqualTo("강남역"),
+                () -> assertThat(favoriteResponse.getTarget().getId()).isEqualTo(2L),
+                () -> assertThat(favoriteResponse.getTarget().getName()).isEqualTo("교대역")
         );
     }
 }
