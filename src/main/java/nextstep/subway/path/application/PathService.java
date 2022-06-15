@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.SectionGraph;
+import nextstep.subway.line.domain.SectionGraphEdge;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;

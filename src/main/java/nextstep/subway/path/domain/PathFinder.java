@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -14,10 +15,10 @@ public class PathFinder {
     }
 
     public Path findPath(Station startStation, Station endStation) {
-        GraphPath path = PathFinder.path.getPath(startStation, endStation);
+        GraphPath path = this.path.getPath(startStation, endStation);
         validatePath(path);
-        int distance = (int) PathFinder.path.getPathWeight(startStation, endStation);
-        return new Path(path.getVertexList(), distance, Fare.of(distance).getFare());
+        int distance = (int) this.path.getPathWeight(startStation, endStation);
+        return new Path(path.getVertexList(), distance, Fare.of(Sections.of(path.getEdgeList()), distance).getFare());
     }
 
     private void validatePath(GraphPath path) {

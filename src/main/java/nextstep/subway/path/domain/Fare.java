@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Sections;
+
 import java.util.Optional;
 
 import static nextstep.subway.path.domain.FarePolicy.BASIC_CHARGE;
@@ -11,8 +13,8 @@ public class Fare {
         this.fare = fare;
     }
 
-    public static Fare of(int distance) {
-        int fare = BASIC_CHARGE + calculateOverFare(distance);
+    public static Fare of(Sections sections, int distance) {
+        int fare = BASIC_CHARGE + sections.findOverFareOfLine() + calculateOverFare(distance);
 
         return new Fare(fare);
     }

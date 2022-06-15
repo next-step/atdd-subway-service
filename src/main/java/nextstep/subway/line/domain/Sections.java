@@ -1,7 +1,9 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.line.utils.SectionsComparator;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -10,13 +12,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private final List<Section> sections = new ArrayList<>();
+    private final List<Section> sections;
 
     protected Sections() {
+        this.sections = new ArrayList<>();
+    }
+
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+    }
+
+    public static Sections of(List<SectionGraphEdge> sectionEdges) {
+        List<Section> sections = sectionEdges.stream()
+                .map(sectionEdge -> sectionEdge.getSection())
+                .collect(Collectors.toList());
+        return new Sections(sections);
     }
 
     public void addSection(Section section) {
@@ -101,9 +116,17 @@ public class Sections {
 
         List<Station> stations = new ArrayList<>();
         sections.forEach(section -> stations.add(section.getUpStation()));
-        stations.add(sections.get(sectionsSize()-1).getDownStation());
+        stations.add(sections.get(sectionsSize() - 1).getDownStation());
 
         return stations;
+    }
+
+    public int findOverFareOfLine() {
+        return sections.stream()
+                .map(section -> section.getLine())
+                .distinct()
+                .mapToInt(line -> line.getOverFare())
+                .sum();
     }
 
     private boolean matchStation(Station station) {

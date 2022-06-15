@@ -8,6 +8,7 @@ public class LineRequest {
     private Long upStationId;
     private Long downStationId;
     private int distance;
+    private int overFare;
 
     public LineRequest() {
     }
@@ -40,7 +41,11 @@ public class LineRequest {
         return distance;
     }
 
+    public int getOverFare() {
+        return overFare;
+    }
+
     public Line toLine() {
-        return new Line(name, color);
+        return new Line(name, color, overFare);
     }
 }

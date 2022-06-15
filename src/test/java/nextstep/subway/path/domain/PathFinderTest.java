@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -35,9 +36,9 @@ class PathFinderTest {
     @Test
     public void createPathFinder() throws Exception {
         // given
-        Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, 5);
-        Line 이호선 = new Line("이호선", "green", 교대역, 강남역, 10);
-        Line 삼호선 = new Line("삼호선", "orange", 교대역, 양재역, 5);
+        Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, 5, 500);
+        Line 이호선 = new Line("이호선", "green", 교대역, 강남역, 10, 500);
+        Line 삼호선 = new Line("삼호선", "orange", 교대역, 양재역, 20, 0);
         삼호선.addSection(교대역, 남부터미널역, 2);
         Lines lines  = new Lines(Arrays.asList(신분당선, 이호선, 삼호선));
 
@@ -47,10 +48,15 @@ class PathFinderTest {
 
         // then
         assertAll(
-                () -> assertThat(pathFinder.findPath(교대역, 양재역).getStations()).containsExactly(교대역, 남부터미널역, 양재역),
-                () -> assertThat(pathFinder.findPath(교대역, 양재역).getDistance()).isEqualTo(5),
-                () -> assertThat(pathFinder.findPath(교대역, 양재역).getFare()).isEqualTo(1250)
+                () -> assertThat(지하철역_이름_조회(pathFinder.findPath(교대역, 양재역).getStations())).containsExactly("교대역", "강남역", "양재역"),
+                () -> assertThat(pathFinder.findPath(교대역, 양재역).getDistance()).isEqualTo(15),
+                () -> assertThat(pathFinder.findPath(교대역, 양재역).getFare()).isEqualTo(1250 + 1000),
+                () -> assertThat(pathFinder.findPath(강남역, 양재역).getFare()).isEqualTo(1250 + 500)
         );
+    }
+
+    private List<String> 지하철역_이름_조회(List<Station> stations) {
+        return stations.stream().map(station -> station.getName()).collect(Collectors.toList());
     }
 
     @DisplayName("jgrapht 라이브러리 테스트")
