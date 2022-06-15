@@ -56,6 +56,7 @@ public class PathFinderTest {
                 .collect(Collectors.toList());
 
         pathFinder = new PathFinder();
+        pathFinder.decideShortestPathStrategy(new DijkstraShortestPathStrategy());
     }
 
     @Test

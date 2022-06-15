@@ -2,8 +2,8 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.DijkstraShortestPathStrategy;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -29,6 +29,7 @@ public class PathService {
         Station sourceStation = stationService.findById(sourceStationId);
         Station targetStation = stationService.findById(targetStationId);
         List<Sections> sections = findAllSections();
+        pathFinder.decideShortestPathStrategy(new DijkstraShortestPathStrategy());
         return pathFinder.findShortestPath(sections, sourceStation, targetStation);
     }
 
