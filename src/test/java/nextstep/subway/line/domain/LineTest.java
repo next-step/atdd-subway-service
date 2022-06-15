@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
 
 class LineTest {
-
     private Line line;
     private Station upStation;
     private Station downStation;

@@ -45,13 +45,14 @@ Feature: 지하철 구간 관련 기능
 ### 요구사항 구현
 - [x] Domain 으로 옮길 로직 찾기
 - [ ] Domain 의 단위 테스트 작성
-    - [ ] SectionsTest
+    - [x] SectionsTest
     - [ ] SectionTest
     - [x] LineTest
 - [ ] 로직 옮기기
-    - [ ] Sections 도메인
+    - [x] Sections 도메인
     - [ ] Section 도메인
-    - [ ] Line 도메인
+    - [x] Line 도메인
+- [ ] LineService 리팩터링
 - [ ] 인수 테스트 리팩터링
     - [ ] LineAcceptanceTest
     - [ ] LineSectionAcceptanceTest
