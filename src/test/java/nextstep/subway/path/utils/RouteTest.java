@@ -49,7 +49,7 @@ class RouteTest {
     @Test
     void getShortestRouteTest() {
         // when
-        PathResponse pathResponse = Route.getShortestRoute(교대역, 양재역);
+        PathResponse pathResponse = new Route().getShortestRoute(교대역, 양재역);
 
         // then
         List<String> responseStationNames = pathResponse.getStations().stream().map(StationResponse::getName).collect(Collectors.toList());

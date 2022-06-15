@@ -17,6 +17,6 @@ public class PathService {
     public PathResponse findShortestRoute(long sourceId, long targetId) {
         final Station startStation = stationRepository.findById(sourceId).get();
         final Station endStation = stationRepository.findById(targetId).get();
-        return Route.getShortestRoute(startStation, endStation);
+        return new Route().getShortestRoute(startStation, endStation);
     }
 }
