@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @Transactional
@@ -35,21 +37,22 @@ public class LineService {
         return LineResponse.of(persistLine, stations);
     }
 
-    public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
-                .map(line -> {
-                    List<StationResponse> stations =
-                            line.getStations().stream().map(StationResponse::of).collect(Collectors.toList());
-                    return LineResponse.of(line, stations);
-                })
-                .collect(Collectors.toList());
+    public List<LineResponse> findAllLineResponse() {
+        Lines lines = findLines();
+        return StreamSupport.stream(lines.spliterator(), false).map(line -> {
+            List<StationResponse> stations =
+                    line.getStations().stream().map(StationResponse::of).collect(Collectors.toList());
+            return LineResponse.of(line, stations);
+        }).collect(Collectors.toList());
+    }
+
+    public Lines findLines() {
+        return new Lines(lineRepository.findAll());
     }
 
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
-
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
