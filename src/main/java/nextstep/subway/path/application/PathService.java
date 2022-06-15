@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Path;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -30,13 +31,19 @@ public class PathService {
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
         pathFinder.initGraph(findLines());
-        List<Station> path = pathFinder.shortestPathVertexList(source, target);
-        return PathResponse.of(path.stream()
+        Path path = pathFinder.shortestPath(source, target);
+        return PathResponse.of(path.stations().stream()
                 .map(StationResponse::of)
-                .collect(Collectors.toList()), pathFinder.shortestPathWeight(source, target));
+                .collect(Collectors.toList()), path.distanceValue());
     }
 
     private Set<Line> findLines() {
+        return findSections().stream()
+                .map(Section::line)
+                .collect(Collectors.toSet());
+    }
+
+    private Set<Line> findPathLines(List<Station> path) {
         return findSections().stream()
                 .map(Section::line)
                 .collect(Collectors.toSet());

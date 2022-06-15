@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import nextstep.subway.exception.NotFoundException;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Path;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
@@ -39,12 +41,18 @@ public class DijkstraPathFinder implements PathFinder {
         }
     }
 
-    public List<Station> shortestPathVertexList(Station source, Station target) {
+    public Path shortestPath(Station source, Station target) {
+        List<Station> stations = shortestPathVertexList(source, target);
+        int distance = shortestPathWeight(source, target);
+        return Path.valueOf(stations, Distance.valueOf(distance));
+    }
+
+    private List<Station> shortestPathVertexList(Station source, Station target) {
         GraphPath<Station, DefaultWeightedEdge> shortestPath = getShortestPath(source, target);
         return shortestPath.getVertexList();
     }
 
-    public int shortestPathWeight(Station source, Station target) {
+    private int shortestPathWeight(Station source, Station target) {
         GraphPath<Station, DefaultWeightedEdge> shortestPath = getShortestPath(source, target);
         return (int) shortestPath.getWeight();
     }

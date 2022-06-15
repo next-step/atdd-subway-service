@@ -52,7 +52,7 @@ public class Line extends BaseEntity {
         private final Station downStation;
         private final Distance distance;
         private Fare additionalFare = null;
-        
+
         private LineBuilder(String name, String color, Station upStation, Station downStation, Distance distance) {
             validateParameter(name, color);
             this.name = name;

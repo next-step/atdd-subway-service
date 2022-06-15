@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import static nextstep.subway.DomainFixtureFactory.createLine;
+import static nextstep.subway.DomainFixtureFactory.createPath;
 import static nextstep.subway.DomainFixtureFactory.createSection;
 import static nextstep.subway.DomainFixtureFactory.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Path;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -69,15 +71,15 @@ class PathServiceTest {
                 createSection(이호선, 교대역, 강남역, Distance.valueOf(10)),
                 createSection(삼호선, 교대역, 남부터미널역, Distance.valueOf(3)),
                 createSection(삼호선, 남부터미널역, 양재역, Distance.valueOf(2)));
-
+        Path path = createPath(Lists.newArrayList(양재역, 남부터미널역, 교대역), Distance.valueOf(5));
         when(stationService.findById(2L)).thenReturn(양재역);
         when(stationService.findById(3L)).thenReturn(교대역);
         when(entityManager.createQuery(
                 "select s from Section s join fetch s.upStation join fetch s.downStation join fetch s.line",
                 Section.class)).thenReturn(typedQuery);
         when(typedQuery.getResultList()).thenReturn(sections);
-        when(pathFinder.shortestPathWeight(양재역, 교대역)).thenReturn(5);
-        when(pathFinder.shortestPathVertexList(양재역, 교대역)).thenReturn(Lists.newArrayList(양재역, 남부터미널역, 교대역));
+        when(pathFinder.shortestPath(양재역, 교대역)).thenReturn(path);
+
         PathResponse pathResponse = pathService.findShortestPath(양재역.id(), 교대역.id());
         assertAll(
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(5),

@@ -11,17 +11,17 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import com.google.common.collect.Lists;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Path;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 
-public class DijkstraPathFinderTest {
+class DijkstraPathFinderTest {
     Station 강남역;
     Station 양재역;
     Station 교대역;
@@ -53,11 +53,10 @@ public class DijkstraPathFinderTest {
     void shortestPath() {
         DijkstraPathFinder dijkstraPathFinder = new DijkstraPathFinder();
         dijkstraPathFinder.initGraph(new HashSet<>(Arrays.asList(신분당선, 이호선, 삼호선)));
-        List<Station> path = dijkstraPathFinder.shortestPathVertexList(교대역, 양재역);
-        int weight = dijkstraPathFinder.shortestPathWeight(교대역, 양재역);
+        Path path = dijkstraPathFinder.shortestPath(교대역, 양재역);
         assertAll(
-                () -> assertThat(path).containsExactlyElementsOf(Lists.newArrayList(교대역, 남부터미널역, 양재역)),
-                () -> assertThat(weight).isEqualTo(5)
+                () -> assertThat(path.stations()).containsExactlyElementsOf(Lists.newArrayList(교대역, 남부터미널역, 양재역)),
+                () -> assertThat(path.distanceValue()).isEqualTo(5)
         );
     }
 
@@ -67,7 +66,7 @@ public class DijkstraPathFinderTest {
         DijkstraPathFinder dijkstraPathFinder = new DijkstraPathFinder();
         dijkstraPathFinder.initGraph(new HashSet<>(Arrays.asList(신분당선, 이호선, 삼호선)));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> dijkstraPathFinder.shortestPathVertexList(교대역, 교대역))
+                .isThrownBy(() -> dijkstraPathFinder.shortestPath(교대역, 교대역))
                 .withMessage("출발역과 도착역이 같을 수 없습니다.");
     }
 
@@ -76,7 +75,7 @@ public class DijkstraPathFinderTest {
     void shortestPathWithUnConnectedSourceAndTarget() {
         DijkstraPathFinder dijkstraPathFinder = new DijkstraPathFinder();
         dijkstraPathFinder.initGraph(new HashSet<>(Arrays.asList(신분당선, 이호선, 삼호선, 오호선)));
-        assertThatThrownBy(() -> dijkstraPathFinder.shortestPathVertexList(교대역, 천호역))
+        assertThatThrownBy(() -> dijkstraPathFinder.shortestPath(교대역, 천호역))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("최단경로를 조회할 수 없습니다.");
     }
@@ -86,7 +85,7 @@ public class DijkstraPathFinderTest {
     void shortestPathWithExcludeStation() {
         DijkstraPathFinder dijkstraPathFinder = new DijkstraPathFinder();
         dijkstraPathFinder.initGraph(new HashSet<>(Arrays.asList(신분당선, 이호선, 삼호선)));
-        assertThatThrownBy(() -> dijkstraPathFinder.shortestPathVertexList(교대역, 강동역))
+        assertThatThrownBy(() -> dijkstraPathFinder.shortestPath(교대역, 강동역))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("최단경로를 조회할 수 없습니다.");
     }
@@ -95,7 +94,7 @@ public class DijkstraPathFinderTest {
     @Test
     void shortestPathWithoutInitGraph() {
         DijkstraPathFinder dijkstraPathFinder = new DijkstraPathFinder();
-        assertThatThrownBy(() -> dijkstraPathFinder.shortestPathVertexList(교대역, 강동역))
+        assertThatThrownBy(() -> dijkstraPathFinder.shortestPath(교대역, 강동역))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("최단경로를 조회할 수 없습니다.");
     }

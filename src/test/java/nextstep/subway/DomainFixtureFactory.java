@@ -1,9 +1,11 @@
 package nextstep.subway;
 
+import java.util.ArrayList;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Path;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.SectionRequest;
@@ -72,5 +74,9 @@ public class DomainFixtureFactory {
     public static Favorite createFavorite(Member member, Station source, Station target) {
         return Favorite.builder(member, source, target)
                 .build();
+    }
+
+    public static Path createPath(ArrayList<Station> stations, Distance distance) {
+        return Path.valueOf(stations, distance);
     }
 }
