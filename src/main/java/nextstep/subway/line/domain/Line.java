@@ -57,10 +57,6 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public Sections getSections() {
-        return sections;
-    }
-
     public List<Station> getStations() {
         if (sections.isEmpty()) {
             return Arrays.asList();
@@ -83,6 +79,14 @@ public class Line extends BaseEntity {
         return stations;
     }
 
+    public void addSection(Station upStation, Station downStation, int distance) {
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public void removeSection(Station station) {
+        this.sections.cutOff(this, station);
+    }
+
     private Station findUpStation(Line line) {
         Station downStation = line.findDownStation();
         while (downStation != null) {
@@ -96,15 +100,7 @@ public class Line extends BaseEntity {
         return downStation;
     }
 
-    public void addSection(Station upStation, Station downStation, int distance) {
-        sections.add(new Section(this, upStation, downStation, distance));
-    }
-
     private Station findDownStation() {
         return sections.findDownStation();
-    }
-
-    public void removeSection(Station station) {
-        this.sections.cutOff(this, station);
     }
 }
