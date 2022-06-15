@@ -12,7 +12,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class DijkstraPathFinder implements PathFinder {
 
-    WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    WeightedMultigraph<Station, SectionWeightedEdge> graph = new WeightedMultigraph(SectionWeightedEdge.class);
 
     public DijkstraPathFinder(List<Line> lines) {
         createStationGraphFromLines(lines);
@@ -28,7 +28,9 @@ public class DijkstraPathFinder implements PathFinder {
         allSections.stream().forEach(section -> {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+            SectionWeightedEdge sectionWeightedEdge = new SectionWeightedEdge(section);
+            graph.addEdge(section.getUpStation(), section.getDownStation(), sectionWeightedEdge);
+            graph.setEdgeWeight(sectionWeightedEdge, section.getDistance());
         });
     }
 
