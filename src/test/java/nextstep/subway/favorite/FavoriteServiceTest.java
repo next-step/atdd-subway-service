@@ -78,12 +78,12 @@ class FavoriteServiceTest {
     @Test
     void register_favorite_test() {
         // given
-        FavoriteRequest request = new FavoriteRequest(1L, 2L);
+        FavoriteRequest request = new FavoriteRequest(대림역.getId(), 구로디지털단지역.getId());
 
-        when(stationService.findById(anyLong()))
-            .thenReturn(대림역)
+        when(stationService.findById(대림역.getId()))
+            .thenReturn(대림역);
+        when(stationService.findById(구로디지털단지역.getId()))
             .thenReturn(구로디지털단지역);
-
         when(memberService.findById(anyLong()))
             .thenReturn(회원);
 
@@ -99,12 +99,12 @@ class FavoriteServiceTest {
     @Test
     void register_favorite_exception_test() {
         // given
-        FavoriteRequest request = new FavoriteRequest(1L, 2L);
+        FavoriteRequest request = new FavoriteRequest(대림역.getId(), 구로디지털단지역.getId());
 
-        when(stationService.findById(anyLong()))
-            .thenReturn(대림역)
+        when(stationService.findById(대림역.getId()))
+            .thenReturn(대림역);
+        when(stationService.findById(구로디지털단지역.getId()))
             .thenReturn(null);
-
         when(memberService.findById(anyLong()))
             .thenReturn(회원);
 
@@ -119,12 +119,12 @@ class FavoriteServiceTest {
     @Test
     void register_favorite_exception_test2() {
         // given
-        FavoriteRequest request = new FavoriteRequest(1L, 2L);
+        FavoriteRequest request = new FavoriteRequest(대림역.getId(), 구로디지털단지역.getId());
 
-        when(stationService.findById(anyLong()))
-            .thenReturn(null)
+        when(stationService.findById(대림역.getId()))
+            .thenReturn(null);
+        when(stationService.findById(구로디지털단지역.getId()))
             .thenReturn(구로디지털단지역);
-
         when(memberService.findById(anyLong()))
             .thenReturn(회원);
 
@@ -139,12 +139,12 @@ class FavoriteServiceTest {
     @Test
     void register_favorite_same_exception_test() {
         // given
-        FavoriteRequest request = new FavoriteRequest(1L, 1L);
+        FavoriteRequest request = new FavoriteRequest(대림역.getId(), 대림역.getId());
 
-        when(stationService.findById(anyLong()))
-            .thenReturn(구로디지털단지역)
-            .thenReturn(구로디지털단지역);
-
+        when(stationService.findById(대림역.getId()))
+            .thenReturn(대림역);
+        when(stationService.findById(대림역.getId()))
+            .thenReturn(대림역);
         when(memberService.findById(anyLong()))
             .thenReturn(회원);
 
@@ -159,10 +159,11 @@ class FavoriteServiceTest {
     @Test
     void register_favorite_overlap_exception_test() {
         // given
-        FavoriteRequest request = new FavoriteRequest(1L, 1L);
+        FavoriteRequest request = new FavoriteRequest(대림역.getId(), 구로디지털단지역.getId());
 
-        when(stationService.findById(anyLong()))
-            .thenReturn(대림역)
+        when(stationService.findById(대림역.getId()))
+            .thenReturn(대림역);
+        when(stationService.findById(구로디지털단지역.getId()))
             .thenReturn(구로디지털단지역);
         when(memberService.findById(anyLong()))
             .thenReturn(회원);

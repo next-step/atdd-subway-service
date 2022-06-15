@@ -24,7 +24,9 @@ public enum ExceptionType {
     NOT_FOUND_MEMBER("존재하지 않는 회원입니다."),
     NOT_FOUND_FAVORITE("즐겨찾기 항목을 찾을 수 없습니다."),
     NOT_THE_MEMBER_FAVORITE("즐겨찾기를 등록한 회원이 아닙니다."),
-    ALREADY_REGISTERED_FAVORITE("이미 등록된 즐겨찾기입니다.");
+    ALREADY_REGISTERED_FAVORITE("이미 등록된 즐겨찾기입니다."),
+    INVALID_DISTANCE("잘못된 거리값입니다."),
+    INVALID_AGE("잘못된 나이입니다.");
 
 
     private final String message;

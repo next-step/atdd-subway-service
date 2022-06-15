@@ -1,8 +1,12 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
+import nextstep.subway.auth.domain.Customer;
+import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -22,17 +26,15 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findShortestPath(Long departureStationId, Long arrivalStationId) {
+    public PathResponse findShortestPath(Customer customer, Long departureStationId, Long arrivalStationId) {
         Station departureStation = stationService.findById(departureStationId);
         Station arrivalStation = stationService.findById(arrivalStationId);
         List<Line> lines = lineService.findAll();
         PathFinder pathFinder = new PathFinder(lines);
 
-        List<Long> vertexList = pathFinder.findVertexList(departureStation, arrivalStation);
-        List<StationResponse> stations = stationService.findAllStationsByIds(vertexList);
-        int weight = pathFinder.getWeight(departureStation, arrivalStation);
-        return PathResponse.of(stations, weight);
+        Path path = pathFinder.findPath(departureStation, arrivalStation);
+        Fare fare = FareCalculator.calculate(path, customer);
+        List<StationResponse> stations = stationService.findAllStationsByIds(path.getStations());
+        return PathResponse.of(stations, path.getDistance(), fare.getValue());
     }
-
-
 }

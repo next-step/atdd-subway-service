@@ -1,6 +1,7 @@
 package nextstep.subway.auth.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceSupport.로그인_성공됨;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceSupport.로그인_성공후_토큰_조회됨;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceSupport.로그인_시도함;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceSupport.정보가_달라_로그인_실패됨;
 import static nextstep.subway.member.MemberAcceptanceSupport.나의_정보_조회_요청;
@@ -67,6 +68,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 로그인_시도함(등록된_이메일, 잘못된_패스워드);
 
         정보가_달라_로그인_실패됨(response);
+    }
+
+    @DisplayName("Bearer Auth 유효한 토큰")
+    @Test
+    void myInfoWithCorrectBearerAuth() {
+        ExtractableResponse<Response> loginResponse = 로그인_시도함(등록된_이메일, 등록된_패스워드);
+        String accessToken = 로그인_성공후_토큰_조회됨(loginResponse);
+
+        ExtractableResponse<Response> response = 나의_정보_조회_요청(accessToken);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
