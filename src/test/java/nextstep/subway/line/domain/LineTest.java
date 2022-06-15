@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,27 +18,27 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DataJpaTest
 class LineTest {
     @Autowired
-    private LineRepository lines;
+    private LineRepository lineRepository;
 
     @Autowired
-    private StationRepository stations;
+    private StationRepository stationRepository;
 
-    Station upStation;
-    Station downStation;
-    Station addStation;
+    Station gangnam;
+    Station gwanggyo;
+    Station sillim;
 
     @BeforeEach
     void beforeEach() {
-        upStation = stations.save(new Station("강남역"));
-        downStation = stations.save(new Station("광교역"));
-        addStation = stations.save(new Station("신림역"));
+        gangnam = stationRepository.save(new Station("강남역"));
+        gwanggyo = stationRepository.save(new Station("광교역"));
+        sillim = stationRepository.save(new Station("신림역"));
     }
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createEmptyLine() {
         // when
-        Line line = lines.save(new Line("신분당선", "RED"));
+        Line line = lineRepository.save(new Line("신분당선", "RED"));
 
         // then
         assertThat(line.getId()).isNotNull();
@@ -49,7 +48,7 @@ class LineTest {
     @Test
     void createLine() {
         // when
-        Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
+        Line line = lineRepository.save(new Line("신분당선", "RED", gangnam, gwanggyo, 10));
 
         // then
         assertThat(line.getStations()).hasSize(2);
@@ -59,53 +58,53 @@ class LineTest {
     @Test
     void addStationAtBeginning() {
         // given
-        Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
+        Line line = lineRepository.save(new Line("신분당선", "RED", gangnam, gwanggyo, 10));
 
         // when
-        line.addLineStation(new Section(line, addStation, upStation, 10));
+        line.addLineStation(new Section(line, sillim, gangnam, 10));
 
         // then
         List<Long> ids = getStationIds(line);
-        assertThat(ids).containsExactly(addStation.getId(), upStation.getId(), downStation.getId());
+        assertThat(ids).containsExactly(sillim.getId(), gangnam.getId(), gwanggyo.getId());
     }
 
     @DisplayName("지하철 구간을 추가한다.")
     @Test
     void addStationBetweenStations() {
         // given
-        Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
+        Line line = lineRepository.save(new Line("신분당선", "RED", gangnam, gwanggyo, 10));
 
         // when
-        line.addLineStation(new Section(line, upStation, addStation, 5));
+        line.addLineStation(new Section(line, gangnam, sillim, 5));
 
         // then
         List<Long> ids = getStationIds(line);
-        assertThat(ids).containsExactly(upStation.getId(), addStation.getId(), downStation.getId());
+        assertThat(ids).containsExactly(gangnam.getId(), sillim.getId(), gwanggyo.getId());
     }
 
     @DisplayName("지하철 구간을 추가한다.")
     @Test
     void addStationAtEnd() {
         // given
-        Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
+        Line line = lineRepository.save(new Line("신분당선", "RED", gangnam, gwanggyo, 10));
 
         // when
-        line.addLineStation(new Section(line, downStation, addStation, 10));
+        line.addLineStation(new Section(line, gwanggyo, sillim, 10));
 
         // then
         List<Long> ids = getStationIds(line);
-        assertThat(ids).containsExactly(upStation.getId(), downStation.getId(), addStation.getId());
+        assertThat(ids).containsExactly(gangnam.getId(), gwanggyo.getId(), sillim.getId());
     }
 
     @DisplayName("이미 노선에 등록된 역으로는 구간을 추가할 수 없다.")
     @Test
     void addDuplicatedStation() {
         // when
-        Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
-        line.addLineStation(new Section(line, downStation, addStation, 10));
+        Line line = lineRepository.save(new Line("신분당선", "RED", gangnam, gwanggyo, 10));
+        line.addLineStation(new Section(line, gwanggyo, sillim, 10));
 
         // then
-        assertThatThrownBy(() -> line.addLineStation(new Section(line, upStation, addStation, 10)))
+        assertThatThrownBy(() -> line.addLineStation(new Section(line, gangnam, sillim, 10)))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -113,10 +112,10 @@ class LineTest {
     @Test
     void addStation() {
         // when
-        Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
+        Line line = lineRepository.save(new Line("신분당선", "RED", gangnam, gwanggyo, 10));
 
         // then
-        assertThatThrownBy(() -> line.addLineStation(new Section(line, upStation, addStation, 10)))
+        assertThatThrownBy(() -> line.addLineStation(new Section(line, gangnam, sillim, 10)))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -124,15 +123,15 @@ class LineTest {
     @Test
     void deleteUpStation() {
         // given
-        Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
-        line.addLineStation(new Section(line, downStation, addStation, 10));
+        Line line = lineRepository.save(new Line("신분당선", "RED", gangnam, gwanggyo, 10));
+        line.addLineStation(new Section(line, gwanggyo, sillim, 10));
 
         // when
-        line.removeLineStation(upStation);
+        line.removeLineStation(gangnam);
 
         // then
         List<Long> stationIds = getStationIds(line);
-        assertThat(stationIds).containsExactly(downStation.getId(), addStation.getId());
+        assertThat(stationIds).containsExactly(gwanggyo.getId(), sillim.getId());
 
     }
 
@@ -140,50 +139,50 @@ class LineTest {
     @Test
     void deleteDownStation() {
         // given
-        Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
-        line.addLineStation(new Section(line, downStation, addStation, 10));
+        Line line = lineRepository.save(new Line("신분당선", "RED", gangnam, gwanggyo, 10));
+        line.addLineStation(new Section(line, gwanggyo, sillim, 10));
 
         // when
-        line.removeLineStation(addStation);
+        line.removeLineStation(sillim);
 
         // then
         List<Long> stationIds = getStationIds(line);
-        assertThat(stationIds).containsExactly(upStation.getId(), downStation.getId());
+        assertThat(stationIds).containsExactly(gangnam.getId(), gwanggyo.getId());
     }
 
     @DisplayName("중간역을 삭제한다.")
     @Test
     void deleteStationBetweenStations() {
         // given
-        Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
-        line.addLineStation(new Section(line, downStation, addStation, 10));
+        Line line = lineRepository.save(new Line("신분당선", "RED", gangnam, gwanggyo, 10));
+        line.addLineStation(new Section(line, gwanggyo, sillim, 10));
 
         // when
-        line.removeLineStation(downStation);
+        line.removeLineStation(gwanggyo);
 
         // then
         List<Long> stationIds = getStationIds(line);
-        assertThat(stationIds).containsExactly(upStation.getId(), addStation.getId());
+        assertThat(stationIds).containsExactly(gangnam.getId(), sillim.getId());
     }
 
     @DisplayName("역을 삭제할 수 없다.")
     @Test
     void canNotDeleteAnyStations() {
         // given
-        Line line = lines.save(new Line("신분당선", "RED", upStation, downStation, 10));
+        Line line = lineRepository.save(new Line("신분당선", "RED", gangnam, gwanggyo, 10));
 
         // then
         assertAll(
-                () -> assertThatThrownBy(() -> line.removeLineStation(upStation)).isInstanceOf(RuntimeException.class),
-                () -> assertThatThrownBy(() -> line.removeLineStation(downStation)).isInstanceOf(RuntimeException.class),
-                () -> assertThatThrownBy(() -> line.removeLineStation(addStation)).isInstanceOf(RuntimeException.class)
+                () -> assertThatThrownBy(() -> line.removeLineStation(gangnam)).isInstanceOf(RuntimeException.class),
+                () -> assertThatThrownBy(() -> line.removeLineStation(gwanggyo)).isInstanceOf(RuntimeException.class),
+                () -> assertThatThrownBy(() -> line.removeLineStation(sillim)).isInstanceOf(RuntimeException.class)
         );
     }
 
     List<Long> getStationIds(Line line) {
-        return lines.getById(line.getId())
-                    .getStations().stream()
-                    .map(Station::getId)
-                    .collect(Collectors.toList());
+        return lineRepository.getById(line.getId())
+                             .getStations().stream()
+                             .map(Station::getId)
+                             .collect(Collectors.toList());
     }
 }
