@@ -23,11 +23,11 @@ public class Sections {
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
 
-        if (matchUpStation(upStation)) {
+        if (hasNextUpSection(upStation)) {
             updateUpStation(section);
         }
 
-        if (matchDownStation(downStation)) {
+        if (hasNextDownSection(downStation)) {
             updateDownStation(section);
         }
 
@@ -42,7 +42,7 @@ public class Sections {
             return;
         }
 
-        if (matchUpStation(station)) {
+        if (hasNextUpSection(station)) {
             matchAndRemoveUpStation(station);
             return;
         }
@@ -109,20 +109,12 @@ public class Sections {
 
     private void validateRemoveStation(Station station) {
         if (sections.size() <= MINIMUM_SIZE) {
-            throw new IllegalArgumentException(NOT_FOUND_REMOVE_STATION);
+            throw new IllegalArgumentException(LEAST_ONE_MUST_EXIST_REMOVE_STATION);
         }
 
-        if (!matchUpStation(station) && !matchDownStation(station)) {
+        if (!hasNextUpSection(station) && !hasNextDownSection(station)) {
             throw new IllegalArgumentException(NOT_MATCH_REMOVE_STATION);
         }
-    }
-
-    private boolean matchUpStation(Station station) {
-        return sections.stream().anyMatch(section -> section.isEqualsUpStation(station));
-    }
-
-    private boolean matchDownStation(Station station) {
-        return sections.stream().anyMatch(section -> section.isEqualsDownStation(station));
     }
 
     private void updateUpStation(Section section) {
@@ -138,7 +130,7 @@ public class Sections {
     }
 
     private boolean isUpStationAndDownStation(Station station) {
-        return matchUpStation(station) && matchDownStation(station);
+        return hasNextUpSection(station) && hasNextDownSection(station);
     }
 
     private Section matchUpStationAndDownStation(Station station) {
