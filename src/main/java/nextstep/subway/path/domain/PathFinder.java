@@ -16,7 +16,8 @@ public class PathFinder {
     public Path findPath(Station startStation, Station endStation) {
         GraphPath path = PathFinder.path.getPath(startStation, endStation);
         validatePath(path);
-        return new Path(path.getVertexList(), (int) PathFinder.path.getPathWeight(startStation, endStation));
+        int distance = (int) PathFinder.path.getPathWeight(startStation, endStation);
+        return new Path(path.getVertexList(), distance, Fare.of(distance).getFare());
     }
 
     private void validatePath(GraphPath path) {

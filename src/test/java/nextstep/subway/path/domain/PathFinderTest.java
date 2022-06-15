@@ -11,11 +11,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class PathFinderTest {
     private Station 강남역;
@@ -46,8 +46,11 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(lines.createPath(graph));
 
         // then
-        assertThat(pathFinder.findPath(교대역, 양재역).getStations()).containsExactly(교대역, 남부터미널역, 양재역);
-        assertThat(pathFinder.findPath(교대역, 양재역).getDistance()).isEqualTo(5);
+        assertAll(
+                () -> assertThat(pathFinder.findPath(교대역, 양재역).getStations()).containsExactly(교대역, 남부터미널역, 양재역),
+                () -> assertThat(pathFinder.findPath(교대역, 양재역).getDistance()).isEqualTo(5),
+                () -> assertThat(pathFinder.findPath(교대역, 양재역).getFare()).isEqualTo(1250)
+        );
     }
 
     @DisplayName("jgrapht 라이브러리 테스트")
