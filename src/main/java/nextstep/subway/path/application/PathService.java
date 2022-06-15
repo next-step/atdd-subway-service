@@ -34,7 +34,7 @@ public class PathService {
         Station target = stationService.findById(targetId);
         pathFinder.initGraph(findLines());
         Path path = pathFinder.shortestPath(source, target);
-        Fare fare = FareCalculator.caculateFare(path.findPathLinesFrom(findSections()), path);
+        Fare fare = FareCalculator.calculateFare(path.findPathLinesFrom(findSections()), path);
         return PathResponse.of(path.stations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList()), path.distanceValue(), fare.fare());

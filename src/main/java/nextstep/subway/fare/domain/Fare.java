@@ -28,8 +28,28 @@ public class Fare implements Comparable<Fare> {
         }
     }
 
-    public Fare add(Fare money) {
-        return Fare.valueOf(Math.addExact(this.fare, money.fare));
+    public void add(Fare money) {
+        this.fare = Math.addExact(this.fare, money.fare);
+    }
+
+    public void minus(Fare fare) {
+        this.fare = Math.subtractExact(this.fare, fare.fare());
+        validateFare(this.fare);
+    }
+
+    public void multiply(int percentage) {
+        this.fare = Math.multiplyExact(this.fare, percentage);
+    }
+
+    public void divideBy(int number) {
+        if (isZero(number)) {
+            throw new IllegalArgumentException("0으로 나눌 수 없습니다.");
+        }
+        this.fare = Math.floorDiv(this.fare, number);
+    }
+
+    private boolean isZero(int number) {
+        return number == MIN_NUM;
     }
 
     public int fare() {
