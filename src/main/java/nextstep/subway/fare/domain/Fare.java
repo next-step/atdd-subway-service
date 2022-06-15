@@ -5,7 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class Fare {
+public class Fare implements Comparable<Fare> {
     private static final int MIN_NUM = 0;
     @Column
     private int fare;
@@ -28,6 +28,10 @@ public class Fare {
         }
     }
 
+    public Fare add(Fare money) {
+        return Fare.valueOf(Math.addExact(this.fare, money.fare));
+    }
+
     public int fare() {
         return fare;
     }
@@ -47,5 +51,10 @@ public class Fare {
     @Override
     public int hashCode() {
         return Objects.hash(fare);
+    }
+
+    @Override
+    public int compareTo(Fare other) {
+        return Integer.compare(fare, other.fare);
     }
 }
