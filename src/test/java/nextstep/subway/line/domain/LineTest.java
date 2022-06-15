@@ -42,8 +42,8 @@ public class LineTest {
         Line line5 = 노선_생성("5호선", "bg-purple-600", 을지로4가역, 동대문역사문화공원역, 10);
 
         // when
-        line2.addStation(을지로3가역, 동대문역사문화공원역, 10);
-        line5.addStation(동대문역사문화공원역, 청구역, 10);
+        line2.addSection(을지로3가역, 동대문역사문화공원역, 10);
+        line5.addSection(동대문역사문화공원역, 청구역, 10);
 
         // then
         assertThat(노선의_지하철_이름(line2))
@@ -62,7 +62,7 @@ public class LineTest {
         Line line = 노선_생성("2호선", "bg-green-600", 동대문역사문화공원역, 을지로3가역, 10);
 
         // when
-        line.addStation(동대문역사문화공원역, 을지로4가역, 5);
+        line.addSection(동대문역사문화공원역, 을지로4가역, 5);
 
         // then
         assertThat(노선의_지하철_이름(line))
@@ -80,7 +80,7 @@ public class LineTest {
         Line line = 노선_생성("2호선", "bg-green-600", 동대문역사문화공원역, 을지로3가역, 10);
 
         // then
-        assertThatThrownBy(() -> line.addStation(광교역, 광교중앙역, 5)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> line.addSection(광교역, 광교중앙역, 5)).isInstanceOf(RuntimeException.class);
     }
 
     @DisplayName("2개 이상의 구간이 존재하는 노선의 특정 구간을 삭제하면 정상 삭제되고 해당 구간의 길이는 삭제된 길이만큼 늘어야 한다")
@@ -92,8 +92,8 @@ public class LineTest {
         Station 상현역 = 지하철_생성("상현역");
         Station 성복역 = 지하철_생성("성복역");
         Line line = 노선_생성("신분당선", "bg-red-600", 광교역, 광교중앙역, 10);
-        line.addStation(광교중앙역, 상현역, 10);
-        line.addStation(상현역, 성복역, 10);
+        line.addSection(광교중앙역, 상현역, 10);
+        line.addSection(상현역, 성복역, 10);
 
         // when
         line.removeStation(상현역);

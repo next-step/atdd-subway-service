@@ -7,7 +7,8 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.dto.PathStation;
+import nextstep.subway.path.dto.ShortestPathResponse;
 import nextstep.subway.station.acceptance.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.RestAssuredRequest;
@@ -167,10 +168,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void 노선_경로와_거리가_최단으로_정상_조회됨(ExtractableResponse<Response> response, int expectDistance, StationResponse... expectStations) {
-        PathResponse.ShortestPath pathResponse = response.as(PathResponse.ShortestPath.class);
+        ShortestPathResponse pathResponse = response.as(ShortestPathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(expectDistance);
         for (int idx = 0; idx < expectStations.length; idx++) {
-            PathResponse.PathStation pathStation = pathResponse.getStations().get(idx);
+            PathStation pathStation = pathResponse.getStations().get(idx);
             StationResponse compareStation = expectStations[idx];
 
             assertThat(pathStation.getId()).isEqualTo(compareStation.getId());

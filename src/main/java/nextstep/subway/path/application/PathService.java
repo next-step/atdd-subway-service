@@ -2,8 +2,9 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.PathFinder;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.dto.ShortestPathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,8 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse.ShortestPath findShortestPath(Long source, Long target) {
-        List<Line> lines = lineService.findLines();
+    public ShortestPathResponse findShortestPath(Long source, Long target) {
+        Lines lines = lineService.findLines();
         Station sourceStation = stationService.findById(source);
         Station targetStation = stationService.findById(target);
         PathFinder pathFinder = new PathFinder(lines);

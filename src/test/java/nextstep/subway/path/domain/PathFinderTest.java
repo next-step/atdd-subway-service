@@ -1,17 +1,17 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.dto.PathStation;
+import nextstep.subway.path.dto.ShortestPathResponse;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static nextstep.subway.line.domain.LineTest.노선_생성;
+import static nextstep.subway.path.application.PathServiceTest.라인_목록_생성;
 import static nextstep.subway.station.domain.StationTest.지하철_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -42,28 +42,28 @@ class PathFinderTest {
         도곡역 = 지하철_생성("도곡역");
 
         이호선 = 노선_생성("이호선", "bg-green-color", 교대역, 강남역, 3);
-        이호선.addStation(강남역, 역삼역, 3);
-        이호선.addStation(역삼역, 선릉역, 3);
+        이호선.addSection(강남역, 역삼역, 3);
+        이호선.addSection(역삼역, 선릉역, 3);
 
         삼호선 = 노선_생성("삼호선", "bg-orange-color", 교대역, 남부터미널역, 5);
-        삼호선.addStation(남부터미널역, 양재역, 3);
-        삼호선.addStation(양재역, 매봉역, 3);
-        삼호선.addStation(매봉역, 도곡역, 3);
+        삼호선.addSection(남부터미널역, 양재역, 3);
+        삼호선.addSection(양재역, 매봉역, 3);
+        삼호선.addSection(매봉역, 도곡역, 3);
 
         신분당선 = 노선_생성("신분당선", "bg-red-color", 강남역, 양재역, 3);
 
         수인분당선 = 노선_생성("수인분당선", "bg-yellow-color", 선릉역, 한티역, 3);
-        수인분당선.addStation(한티역, 도곡역, 3);
+        수인분당선.addSection(한티역, 도곡역, 3);
     }
 
     @DisplayName("노선 목록 중 하나의 노선에 속한 2개의 역의 최소 경로를 조회하면 정상 동작해야 한다")
     @Test
     void findShortestPathByOneLine() {
         // given
-        PathFinder pathFinder = new PathFinder(Collections.singletonList(이호선));
+        PathFinder pathFinder = new PathFinder(라인_목록_생성(이호선));
 
         // when
-        PathResponse.ShortestPath stations = pathFinder.findShortestPath(교대역, 선릉역);
+        ShortestPathResponse stations = pathFinder.findShortestPath(교대역, 선릉역);
 
         // then
         최소_노선_경로_일치됨(stations, 교대역, 강남역, 역삼역, 선릉역);
@@ -74,10 +74,10 @@ class PathFinderTest {
     @Test
     void findShortestPathByOneTransfer() {
         // given
-        PathFinder pathFinder = new PathFinder(Arrays.asList(이호선, 신분당선));
+        PathFinder pathFinder = new PathFinder(라인_목록_생성(이호선, 신분당선));
 
         // when
-        PathResponse.ShortestPath stations = pathFinder.findShortestPath(교대역, 양재역);
+        ShortestPathResponse stations = pathFinder.findShortestPath(교대역, 양재역);
 
         // then
         최소_노선_경로_일치됨(stations, 교대역, 강남역, 양재역);
@@ -88,10 +88,10 @@ class PathFinderTest {
     @Test
     void findShortestPathByMultiplePath() {
         // given
-        PathFinder pathFinder = new PathFinder(Arrays.asList(이호선, 삼호선, 신분당선, 수인분당선));
+        PathFinder pathFinder = new PathFinder(라인_목록_생성(이호선, 삼호선, 신분당선, 수인분당선));
 
         // when
-        PathResponse.ShortestPath stations = pathFinder.findShortestPath(교대역, 도곡역);
+        ShortestPathResponse stations = pathFinder.findShortestPath(교대역, 도곡역);
 
         // then
         최소_노선_경로_일치됨(stations, 교대역, 강남역, 양재역, 매봉역, 도곡역);
@@ -102,7 +102,7 @@ class PathFinderTest {
     @Test
     void findShortestPathBySameStartAndEndStation() {
         // given
-        PathFinder pathFinder = new PathFinder(Collections.singletonList(이호선));
+        PathFinder pathFinder = new PathFinder(라인_목록_생성(이호선));
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(교대역, 교대역));
@@ -112,15 +112,15 @@ class PathFinderTest {
     @Test
     void findShortestPathByUnreachablePath() {
         // given
-        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 수인분당선));
+        PathFinder pathFinder = new PathFinder(라인_목록_생성(신분당선, 수인분당선));
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(강남역, 도곡역));
         assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(한티역, 강남역));
     }
 
-    private void 최소_노선_경로_일치됨(PathResponse.ShortestPath source, Station... target) {
-        List<PathResponse.PathStation> stations = source.getStations();
+    private void 최소_노선_경로_일치됨(ShortestPathResponse source, Station... target) {
+        List<PathStation> stations = source.getStations();
 
         assertThat(stations.size()).isEqualTo(target.length);
 

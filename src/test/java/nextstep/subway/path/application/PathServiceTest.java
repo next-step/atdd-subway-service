@@ -2,7 +2,9 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.dto.PathStation;
+import nextstep.subway.path.dto.ShortestPathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class PathServiceTest {
+public class PathServiceTest {
 
     @Mock
     private StationService stationService;
@@ -61,20 +63,20 @@ class PathServiceTest {
         진접역 = mock(Station.class);
 
         이호선 = 노선_생성("2호선", "bg-green-color", 교대역, 강남역, 3);
-        이호선.addStation(강남역, 역삼역, 3);
-        이호선.addStation(역삼역, 선릉역, 3);
+        이호선.addSection(강남역, 역삼역, 3);
+        이호선.addSection(역삼역, 선릉역, 3);
 
         삼호선 = 노선_생성("3호선", "bg-orange-color", 교대역, 남부터미널역, 5);
-        삼호선.addStation(남부터미널역, 양재역, 3);
-        삼호선.addStation(양재역, 매봉역, 3);
-        삼호선.addStation(매봉역, 도곡역, 3);
+        삼호선.addSection(남부터미널역, 양재역, 3);
+        삼호선.addSection(양재역, 매봉역, 3);
+        삼호선.addSection(매봉역, 도곡역, 3);
 
         사호선 = 노선_생성("4호선", "bg-sky-color", 오남역, 진접역, 3);
 
         신분당선 = 노선_생성("신분당선", "bg-red-color", 강남역, 양재역, 3);
 
         수인분당선 = 노선_생성("수인분당선", "bg-yellow-color", 선릉역, 한티역, 3);
-        수인분당선.addStation(한티역, 도곡역, 3);
+        수인분당선.addSection(한티역, 도곡역, 3);
     }
 
     @DisplayName("노선 목록 중 하나의 노선에 속한 2개의 역의 최소 경로를 조회하면 정상 동작해야 한다")
@@ -84,7 +86,7 @@ class PathServiceTest {
         stubServiceReturns();
 
         // when
-        PathResponse.ShortestPath stations = pathService.findShortestPath(교대역.getId(), 선릉역.getId());
+        ShortestPathResponse stations = pathService.findShortestPath(교대역.getId(), 선릉역.getId());
 
         // then
         최소_노선_경로_일치됨(stations, 교대역, 강남역, 역삼역, 선릉역);
@@ -98,7 +100,7 @@ class PathServiceTest {
         stubServiceReturns();
 
         // when
-        PathResponse.ShortestPath stations = pathService.findShortestPath(교대역.getId(), 양재역.getId());
+        ShortestPathResponse stations = pathService.findShortestPath(교대역.getId(), 양재역.getId());
 
         // then
         최소_노선_경로_일치됨(stations, 교대역, 강남역, 양재역);
@@ -112,7 +114,7 @@ class PathServiceTest {
         stubServiceReturns();
 
         // when
-        PathResponse.ShortestPath stations = pathService.findShortestPath(교대역.getId(), 도곡역.getId());
+        ShortestPathResponse stations = pathService.findShortestPath(교대역.getId(), 도곡역.getId());
 
         // then
         최소_노선_경로_일치됨(stations, 교대역, 강남역, 양재역, 매봉역, 도곡역);
@@ -143,6 +145,10 @@ class PathServiceTest {
                 .isThrownBy(() -> pathService.findShortestPath(오남역.getId(), 교대역.getId()));
     }
 
+    public static Lines 라인_목록_생성(Line... lines) {
+        return new Lines(Arrays.asList(lines));
+    }
+
     private void stubServiceReturns() {
         List<String> mockStationNames = Arrays.asList(
                 "교대역", "강남역", "역삼역", "선릉역", "한티역", "남부터미널역", "양재역", "매봉역", "도곡역", "오남역", "진접역"
@@ -151,7 +157,7 @@ class PathServiceTest {
                 교대역, 강남역, 역삼역, 선릉역, 한티역, 남부터미널역, 양재역, 매봉역, 도곡역, 오남역, 진접역
         );
 
-        when(lineService.findLines()).thenReturn(Arrays.asList(이호선, 삼호선, 사호선, 신분당선, 수인분당선));
+        when(lineService.findLines()).thenReturn(라인_목록_생성(이호선, 삼호선, 사호선, 신분당선, 수인분당선));
         for (int idx = 0; idx < mockStations.size(); idx++) {
             lenient().when(mockStations.get(idx).getId()).thenReturn(idx + 1L);
             lenient().when(mockStations.get(idx).getName()).thenReturn(mockStationNames.get(idx));
@@ -159,8 +165,8 @@ class PathServiceTest {
         }
     }
 
-    private void 최소_노선_경로_일치됨(PathResponse.ShortestPath source, Station... target) {
-        List<PathResponse.PathStation> stations = source.getStations();
+    private void 최소_노선_경로_일치됨(ShortestPathResponse source, Station... target) {
+        List<PathStation> stations = source.getStations();
 
         assertThat(stations.size()).isEqualTo(target.length);
 
