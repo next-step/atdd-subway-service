@@ -82,7 +82,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth - 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-        TokenResponse 유효하지않은_토큰 = 로그인_요청시도(new TokenRequest(YANG_EMAIL, YANG_PASSWORD)).as(TokenResponse.class);
+        TokenResponse 유효하지않은_토큰 = new TokenResponse("Invalid Token");
         ExtractableResponse<Response> 토큰_확인_결과 = 내정보_조회(유효하지않은_토큰);
 
         유효하지않은_토큰(토큰_확인_결과);
