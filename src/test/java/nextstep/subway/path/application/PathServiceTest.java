@@ -3,7 +3,7 @@ package nextstep.subway.path.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import nextstep.subway.line.domain.Line;
@@ -64,11 +64,12 @@ class PathServiceTest {
     @Test
     @DisplayName("교대역 -> 양재역의 최단 경로는 교대역 -> 남부터미널역 -> 양재역")
     void findPathTest() {
-        // when
-        when(stationService.findStationById(1L)).thenReturn(교대역);
-        when(stationService.findStationById(4L)).thenReturn(양재역);
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(이호선, 삼호선, 신분당선));
+        // given
+        given(stationService.findStationById(1L)).willReturn(교대역);
+        given(stationService.findStationById(4L)).willReturn(양재역);
+        given(lineRepository.findAll()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
 
+        // when
         PathResponse pathResponse = pathService.findPath(new PathRequest(1L, 4L));
 
         // then
@@ -81,11 +82,11 @@ class PathServiceTest {
     @Test
     @DisplayName("조회하려는 최단 구간의 출발역과 도착역은 달라야 한다")
     void 출발역과_도착역이_같은_경우() {
-        // when
-        when(stationService.findStationById(1L)).thenReturn(교대역);
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(이호선, 삼호선, 신분당선));
+        // given
+        given(stationService.findStationById(1L)).willReturn(교대역);
+        given(lineRepository.findAll()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
 
-        // then
+        // when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> pathService.findPath(new PathRequest(1L, 1L))
         ).withMessageContaining("출발역과 도착역은 다른 역으로 지정되어야 합니다.");
@@ -98,13 +99,11 @@ class PathServiceTest {
         Station 신논현역 = new Station("신논현역");
         Station 고속터미널역 = new Station("고속터미널역");
         Line 구호선 = new Line("구호선", "gold", 신논현역, 고속터미널역, 10);
+        given(stationService.findStationById(5L)).willReturn(신논현역);
+        given(stationService.findStationById(3L)).willReturn(강남역);
+        given(lineRepository.findAll()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선, 구호선));
 
-        // when
-        when(stationService.findStationById(5L)).thenReturn(신논현역);
-        when(stationService.findStationById(3L)).thenReturn(강남역);
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(이호선, 삼호선, 신분당선, 구호선));
-
-        // then
+        // when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> pathService.findPath(new PathRequest(5L, 3L))
         ).withMessageContaining("출발역과 도착역은 서로 연결이 되어있어야 합니다.");
@@ -114,14 +113,12 @@ class PathServiceTest {
     @DisplayName("존재하지 않는 출발역이나 도착역을 조회 할 경우 예외를 반환한다")
     void 존재하지_않는_출발역이나_도착역을_조회() {
         // given
-        Station 신논현역 = new Station("신논현역");
+        final Station 신논현역 = new Station("신논현역");
+        given(stationService.findStationById(5L)).willReturn(신논현역);
+        given(stationService.findStationById(3L)).willReturn(강남역);
+        given(lineRepository.findAll()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
 
-        // when
-        when(stationService.findStationById(5L)).thenReturn(신논현역);
-        when(stationService.findStationById(3L)).thenReturn(강남역);
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(이호선, 삼호선, 신분당선));
-
-        // then
+        // when & then
         assertAll(
                 () -> assertThatIllegalArgumentException().isThrownBy(
                         () -> pathService.findPath(new PathRequest(5L, 3L))
