@@ -27,14 +27,6 @@ public enum FareAgePolicy {
         return age >= min && age < max;
     }
 
-    public int getMin() {
-        return min;
-    }
-
-    public int getMax() {
-        return max;
-    }
-
     public int getDeduction() {
         return deduction;
     }

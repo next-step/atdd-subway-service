@@ -29,14 +29,6 @@ public enum FareDistancePolicy {
         return distance > min && distance <= max;
     }
 
-    public int getMin() {
-        return min;
-    }
-
-    public int getMax() {
-        return max;
-    }
-
     public int getOverFare() {
         return overFare;
     }

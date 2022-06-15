@@ -14,9 +14,12 @@ public class Fare {
     }
 
     public static Fare of(Sections sections, int distance, int age) {
-        int fare = BASIC_CHARGE + sections.findOverFareOfLine() + calculateDistanceOverFare(distance);
+        return new Fare(calculateFare(sections, distance, age));
+    }
 
-        return new Fare(calculateAgeDiscountFare(fare, age));
+    private static int calculateFare(Sections sections, int distance, int age) {
+        int fare = BASIC_CHARGE + sections.findOverFareOfLine() + calculateDistanceOverFare(distance);
+        return calculateAgeDiscountFare(fare, age);
     }
 
     private static int calculateDistanceOverFare(int distance) {
@@ -33,7 +36,6 @@ public class Fare {
         return farePolicy
                 .map(fareAgePolicy -> (int) ((fare - fareAgePolicy.getDeduction()) * fareAgePolicy.getDiscountFare() + fareAgePolicy.getDeduction()))
                 .orElse(fare);
-
     }
 
     public int getFare() {
