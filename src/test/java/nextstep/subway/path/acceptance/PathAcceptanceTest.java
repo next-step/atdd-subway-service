@@ -134,6 +134,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
     }
 
+    public static Station toStation(StationResponse stationResponse) {
+        return new Station(stationResponse.getName());
+    }
+
     public static <T> ExtractableResponse<Response> get(String path, Map<String, T> params) {
         return RestAssured
                 .given().log().all()
@@ -146,9 +150,5 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 응답결과_확인(ExtractableResponse<Response> response, HttpStatus httpStatus) {
         assertThat(response.statusCode()).isEqualTo(httpStatus.value());
-    }
-
-    public static Station toStation(StationResponse stationResponse) {
-        return new Station(stationResponse.getName());
     }
 }

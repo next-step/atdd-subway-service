@@ -1,7 +1,6 @@
 package nextstep.subway.path.dto;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.dto.StationResponse;
