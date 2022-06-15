@@ -48,7 +48,7 @@ public class PathAcceptanceTestMethod {
 
     public static void 최단경로_요금_조회됨(ExtractableResponse<Response> response, int fare) {
         PathResponse path = response.as(PathResponse.class);
-        assertThat(path.getDistance()).isEqualTo(fare);
+        assertThat(path.getFare()).isEqualTo(fare);
     }
 
     public static void 지하철_최단_경로_조회_요청_응답됨(ExtractableResponse<Response> response) {

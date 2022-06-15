@@ -7,10 +7,12 @@ public class Path {
 
     private List<Station> shortestPath;
     private int shortestDistance;
+    private int fare;
 
     public Path(List<Station> shortestPath, int shortestDistance) {
         this.shortestPath = shortestPath;
         this.shortestDistance = shortestDistance;
+        this.fare = DistanceFarePolicy.calculateFare(shortestDistance);
     }
 
     public List<Station> getShortestPath() {
@@ -19,5 +21,9 @@ public class Path {
 
     public int getShortestDistance() {
         return shortestDistance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }

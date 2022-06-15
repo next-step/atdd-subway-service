@@ -18,6 +18,7 @@ public class PathResponse {
                 map(station -> StationResponse.of(station)).
                 collect(Collectors.toList());
         distance = path.getShortestDistance();
+        fare = path.getFare();
     }
 
     public List<StationResponse> getStations() {
