@@ -13,21 +13,17 @@ public class Fare {
         this.fare = fare;
     }
 
-    public static Fare of(Sections sections, int distance, int age) {
-        return new Fare(calculateFare(sections, distance, age));
+    public static Fare of(Sections sections, TotalDistance totalDistance, int age) {
+        return new Fare(calculateFare(sections, totalDistance, age));
     }
 
-    private static int calculateFare(Sections sections, int distance, int age) {
-        int fare = BASIC_CHARGE + sections.findOverFareOfLine() + calculateDistanceOverFare(distance);
+    private static int calculateFare(Sections sections, TotalDistance totalDistance, int age) {
+        int fare = BASIC_CHARGE + sections.findOverFareOfLine() + calculateDistanceOverFare(totalDistance);
         return calculateAgeDiscountFare(fare, age);
     }
 
-    private static int calculateDistanceOverFare(int distance) {
-        Optional<FareDistancePolicy> farePolicy = FareDistancePolicy.findFarePolicyByDistance(distance);
-
-        return farePolicy
-                .map(policy -> (int) ((Math.ceil((distance - 1) / policy.getDistanceStandardValue()) + 1) * policy.getOverFare()))
-                .orElse(0);
+    private static int calculateDistanceOverFare(TotalDistance totalDistance) {
+        return totalDistance.calculateOverFare();
     }
 
     private static int calculateAgeDiscountFare(int fare, int age) {
