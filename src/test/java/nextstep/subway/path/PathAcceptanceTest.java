@@ -13,8 +13,10 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,6 +62,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_기준으로_지하철역_정보가_출력됨(response, Arrays.asList(양재역, 남부터미널역, 교대역));
     }
 
+    /**
+     * When : 등록되지 않은 지하철 역으로 요청 시
+     * Then : 검색이 되지 않는다.
+     */
+    @DisplayName("등록되지 않은 지하철역 정보로 경로 요청시 검색이 되지 않는다.")
+    @Test
+    void findInvalidStationId() {
+        // Given
+        final StationResponse 등록되지않은역 = new StationResponse(100L, "잘못된역", LocalDateTime.now(), LocalDateTime.now());
+
+        // When
+        final ExtractableResponse<Response> reponse = 최단_경로_검색(등록되지않은역, 양재역);
+
+        // Then
+        검색이_안됨(reponse);
+    }
+
     public static void 최단_경로_기준으로_지하철역_정보가_출력됨(ExtractableResponse<Response> response, List<StationResponse> expectedResult) {
         final PathResponse pathResponse = response.as(PathResponse.class);
         final List<String> resultStationNames = pathResponse.getStations().stream()
@@ -83,6 +102,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse preStation, StationResponse downStation, int distance) {
         return LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(name, color, preStation.getId(), downStation.getId(), 10)).as(LineResponse.class);
+    }
+
+
+    public static void 검색이_안됨(ExtractableResponse<Response> reponse) {
+        assertThat(HttpStatus.valueOf(reponse.statusCode())).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
 }

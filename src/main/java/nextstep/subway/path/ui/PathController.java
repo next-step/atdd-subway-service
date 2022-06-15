@@ -3,9 +3,12 @@ package nextstep.subway.path.ui;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.persistence.EntityNotFoundException;
 
 @RestController
 public class PathController {
@@ -17,8 +20,13 @@ public class PathController {
     }
 
     @GetMapping(value = "/paths")
-    ResponseEntity<PathResponse> search(@RequestParam long source, @RequestParam long target) {
+    public ResponseEntity<PathResponse> search(@RequestParam long source, @RequestParam long target) {
         PathResponse pathResponse = pathService.findShortestRoute(source, target);
         return ResponseEntity.ok().body(pathResponse);
+    }
+
+    @ExceptionHandler(value = {EntityNotFoundException.class})
+    public ResponseEntity handleException(EntityNotFoundException e) {
+        return ResponseEntity.badRequest().build();
     }
 }
