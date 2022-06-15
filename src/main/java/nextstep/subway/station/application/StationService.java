@@ -39,6 +39,7 @@ public class StationService {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
+    // TODO 중복 메소드 삭제
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }

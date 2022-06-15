@@ -32,8 +32,11 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
+        // TODO 정적 팩토리 메소드
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        // TODO Line 도메인에서 처리
         List<StationResponse> stations = getStations(persistLine).stream()
+                // TODO LineResponse 에서 처리
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
         return LineResponse.of(persistLine, stations);
@@ -43,7 +46,9 @@ public class LineService {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
                 .map(line -> {
+                    // TODO Line 도메인에서 처리
                     List<StationResponse> stations = getStations(line).stream()
+                            // TODO LineResponse 에서 처리
                             .map(it -> StationResponse.of(it))
                             .collect(Collectors.toList());
                     return LineResponse.of(line, stations);
@@ -58,14 +63,18 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
+        // TODO Line 도메인에서 처리
         List<StationResponse> stations = getStations(persistLine).stream()
+                // TODO LineResponse 에서 처리
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
         return LineResponse.of(persistLine, stations);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        // TODO 에러 메시지 추가
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        // TODO 정적 팩토리 메소드
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -77,6 +86,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
+        // TODO Line 도메인에서 처리------------------------
         List<Station> stations = getStations(line);
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
@@ -112,11 +122,14 @@ public class LineService {
         } else {
             throw new RuntimeException();
         }
+        // TODO new Section -> 정적 팩토리 메소드 사용
+        // TODO Line 도메인에서 처리------------------------
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
+        // TODO Line 도메인에서 처리------------------------
         if (line.getSections().size() <= 1) {
             throw new RuntimeException();
         }
@@ -137,10 +150,12 @@ public class LineService {
 
         upLineStation.ifPresent(it -> line.getSections().remove(it));
         downLineStation.ifPresent(it -> line.getSections().remove(it));
+        // TODO Line 도메인에서 처리------------------------
     }
 
 
     public List<Station> getStations(Line line) {
+        // TODO Line 도메인에서 처리------------------------
         if (line.getSections().isEmpty()) {
             return Arrays.asList();
         }
@@ -162,9 +177,11 @@ public class LineService {
         }
 
         return stations;
+        // TODO Line 도메인에서 처리------------------------
     }
 
     private Station findUpStation(Line line) {
+        // TODO Line 도메인에서 처리------------------------
         Station downStation = line.getSections().get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
@@ -178,5 +195,6 @@ public class LineService {
         }
 
         return downStation;
+        // TODO Line 도메인에서 처리------------------------
     }
 }
