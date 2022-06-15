@@ -20,7 +20,7 @@ class DistanceFarePolicyTest {
     @DisplayName("거리별 거리 요금 정책 요금 반환 테스트")
     @ParameterizedTest(name = "거리가 {0}일 때 해당하는 거리 요금 정책의 요금 {1} 반환 테스트")
     @CsvSource(value = {"10, 1250", "30, 1650", "51, 2150", "66, 2250"})
-    void findDistanceFarePolicyByDistance(int input, int fare) {
+    void calculateFare(int input, int fare) {
         Distance distance = Distance.valueOf(input);
         DistanceFarePolicy distanceFarePolicyByDistance = DistanceFarePolicy.findDistanceFarePolicyByDistance(distance);
         assertThat(distanceFarePolicyByDistance.calculateFare(distance)).isEqualTo(Fare.valueOf(fare));

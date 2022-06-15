@@ -14,7 +14,7 @@ import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
-    public static final int MIN = 1;
+    private static final int MIN = 1;
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 

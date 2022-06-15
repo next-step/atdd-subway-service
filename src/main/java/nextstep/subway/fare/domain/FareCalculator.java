@@ -6,7 +6,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Path;
 
 public class FareCalculator {
-    public static final int MIN_NUM = 0;
+    private static final int MIN_NUM = 0;
 
     public static Fare calculateFare(Set<Line> lines, Path path) {
         Distance distance = path.distance();

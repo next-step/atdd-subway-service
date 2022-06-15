@@ -13,12 +13,12 @@ public enum DistanceFarePolicy {
     SECOND_ADDITIONAL_POLICY(DistanceFarePolicy::isInSecondAdditionalFareRange,
             DistanceFarePolicy::calculateSecondAdditionalFare);
 
-    public static final int BASIC_END = 10;
-    public static final int FIRST_ADDITION_END = 50;
-    public static final int BASIC_FARE = 1_250;
-    public static final int ADDITIONAL_FARE = 100;
-    public static final int FIRST_ADDITIONAL_UNIT = 5;
-    public static final int SECOND_ADDITIONAL_UNIT = 8;
+    private static final int BASIC_END = 10;
+    private static final int FIRST_ADDITION_END = 50;
+    private static final int BASIC_FARE = 1_250;
+    private static final int ADDITIONAL_FARE = 100;
+    private static final int FIRST_ADDITIONAL_UNIT = 5;
+    private static final int SECOND_ADDITIONAL_UNIT = 8;
     private final Predicate<Distance> predicateByDistance;
     private final Function<Distance, Fare> calculateFare;
 
