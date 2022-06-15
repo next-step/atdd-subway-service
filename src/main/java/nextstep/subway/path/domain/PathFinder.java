@@ -55,6 +55,11 @@ public class PathFinder {
         return new Path(graphPath.getVertexList(), (int) graphPath.getWeight());
     }
 
+    public void validatePath(Station source, Station target) {
+        validateSameSourceAndTarget(source, target);
+        getDijkstraPath(source, target);
+    }
+
     private Optional<GraphPath<Station, DefaultWeightedEdge>> getOptionalDijkstraPath(Station source, Station target) {
         if (dijkstraShortestPath == null) {
             dijkstraShortestPath = new DijkstraShortestPath<>(graph);

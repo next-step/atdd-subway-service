@@ -2,8 +2,9 @@ package nextstep.subway.favorite.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
@@ -17,7 +18,7 @@ import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -41,13 +42,13 @@ class FavoriteServiceTest {
     @Mock
     private MemberService memberService;
     @Mock
-    private PathService pathService;
+    private PathFinder pathFinder;
     @Mock
     private FavoriteRepository favoriteRepository;
 
     @BeforeEach
     void setUp() {
-        favoriteService = new FavoriteService(stationService, memberService, pathService, favoriteRepository);
+        favoriteService = new FavoriteService(stationService, memberService, pathFinder, favoriteRepository);
 
         // given
         when(memberService.findMemberById(1L)).thenReturn(mond);
@@ -115,7 +116,7 @@ class FavoriteServiceTest {
         // given
         when(stationService.findStationById(1L)).thenReturn(gangNam);
         when(stationService.findStationById(2L)).thenReturn(gyoDae);
-        when(pathService.searchShortestPath(any(), any())).thenThrow(NotLinkedPathException.class);
+        doThrow(NotLinkedPathException.class).when(pathFinder).validatePath(any(), any());
 
         // when
         assertThatIllegalArgumentException()

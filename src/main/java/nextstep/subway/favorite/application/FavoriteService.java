@@ -10,7 +10,7 @@ import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -20,14 +20,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class FavoriteService {
     private final StationService stationService;
     private final MemberService memberService;
-    private final PathService pathService;
+    private final PathFinder pathFinder;
     private final FavoriteRepository favoriteRepository;
 
     public FavoriteService(StationService stationService, MemberService memberService,
-                           PathService pathService, FavoriteRepository favoriteRepository) {
+                           PathFinder pathFinder, FavoriteRepository favoriteRepository) {
         this.stationService = stationService;
         this.memberService = memberService;
-        this.pathService = pathService;
+        this.pathFinder = pathFinder;
         this.favoriteRepository = favoriteRepository;
     }
 
@@ -36,7 +36,7 @@ public class FavoriteService {
         final Member mine = memberService.findMemberById(memberId);
         final Station source = stationService.findStationById(favoriteRequest.getSourceId());
         final Station target = stationService.findStationById(favoriteRequest.getTargetId());
-        validateLinkedPath(source, target);
+        validateFavorite(source, target);
 
         Favorite persistFavorite = favoriteRepository.save(new Favorite(mine, source, target));
         return persistFavorite.toFavoriteResponse();
@@ -62,7 +62,7 @@ public class FavoriteService {
         );
     }
 
-    private void validateLinkedPath(Station source, Station target) {
-        pathService.searchShortestPath(source.getId(), target.getId());
+    private void validateFavorite(Station source, Station target) {
+        pathFinder.validatePath(source, target);
     }
 }
