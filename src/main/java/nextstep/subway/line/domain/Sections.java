@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -20,7 +21,26 @@ public class Sections {
     }
 
     public void add(Section section) {
-        values.add(section);
+        Stations stations = new Stations(section.getLine().getStations());
+
+        stations.validateDuplication(section.getUpStation(), section.getDownStation());
+        stations.validateStation(section.getUpStation(), section.getDownStation());
+
+        if (stations.isEmpty()) {
+            values.add(section);
+            return;
+        }
+
+        if (stations.isExisted(section.getUpStation())) {
+            updateUpStation(section.getUpStation(), section.getDownStation(), section.getDistance());
+            values.add(section);
+            return;
+        }
+        if (stations.isExisted(section.getDownStation())) {
+            updateDownStation(section.getUpStation(), section.getDownStation(), section.getDistance());
+            values.add(section);
+            return;
+        }
     }
 
     public boolean isEmpty() {
@@ -53,5 +73,19 @@ public class Sections {
         return values.stream()
                 .filter(it -> it.getDownStation() == finalDownStation)
                 .findFirst();
+    }
+
+    public void updateUpStation(Station upStation, Station downStation, int distance) {
+        values.stream()
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
+    }
+
+    public void updateDownStation(Station upStation, Station downStation, int distance) {
+        values.stream()
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
     }
 }

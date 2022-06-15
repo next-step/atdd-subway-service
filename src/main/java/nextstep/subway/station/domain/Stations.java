@@ -10,14 +10,14 @@ public class Stations {
         values.addAll(stations);
     }
 
-    public boolean isExisted(Station station) {
-        return values.stream().anyMatch(v -> v == station);
-    }
-
     public void validateDuplication(Station upStation, Station downStation) {
         if (isExisted(upStation) && isExisted(downStation)) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
+    }
+
+    public boolean isExisted(Station station) {
+        return values.stream().anyMatch(v -> v == station);
     }
 
     public void validateStation(Station upStation, Station downStation) {
