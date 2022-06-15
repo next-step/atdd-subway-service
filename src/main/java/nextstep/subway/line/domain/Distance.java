@@ -6,10 +6,10 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Distance {
 
-    private int distance;
+    private int value;
 
     protected Distance() {
-
+        // Distance 에서 기본 생성자는 JPA 용도이므로 로직에서 사용하지 마세요.
     }
 
     public Distance(int distance) {
@@ -17,23 +17,27 @@ public class Distance {
             throw new IllegalArgumentException("거리는 양수값 이어야 합니다.");
         }
 
-        this.distance = distance;
+        this.value = distance;
     }
 
     public Distance subtract(Distance newDistance) {
         validateIfNull(newDistance);
-        return new Distance(this.distance - newDistance.distance);
+        return new Distance(this.value - newDistance.value);
     }
 
     public Distance merge(Distance newDistance) {
         validateIfNull(newDistance);
-        return new Distance(this.distance + newDistance.distance);
+        return new Distance(this.value + newDistance.value);
     }
 
     private void validateIfNull(Distance newDistance) {
         if (newDistance == null) {
             throw new IllegalArgumentException("거리 값이 존재하지 않습니다.");
         }
+    }
+
+    public int getValue() {
+        return value;
     }
 
     @Override
@@ -45,12 +49,12 @@ public class Distance {
             return false;
         }
         Distance distance1 = (Distance) o;
-        return distance == distance1.distance;
+        return value == distance1.value;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(distance);
+        return Objects.hash(value);
     }
 
 }

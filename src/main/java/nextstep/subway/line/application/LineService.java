@@ -2,7 +2,6 @@ package nextstep.subway.line.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -48,6 +47,9 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
+    public List<Line> findAllLine() {
+        return lineRepository.findAll();
+    }
 
     @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
