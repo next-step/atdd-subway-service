@@ -19,12 +19,17 @@ public class Route {
             = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
     public PathResponse getShortestRoute(final Station startStation, final Station endStation) {
+        if (Objects.equals(startStation, endStation)) {
+            throw new IllegalStateException("출발역과 도착역을 달라야 된다.");
+        }
         makeEdge(endStation);
         if (!isContainVertex(startStation)) {
             throw new IllegalStateException("경로를 검색할 수 없습니다.");
         }
-        final GraphPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph)
-                .getPath(endStation, startStation);
+        return getResult(new DijkstraShortestPath<>(graph).getPath(endStation, startStation));
+    }
+
+    private PathResponse getResult(GraphPath<Station, DefaultWeightedEdge> path) {
         return new PathResponse(
                 path.getVertexList().stream()
                         .map(StationResponse::of)

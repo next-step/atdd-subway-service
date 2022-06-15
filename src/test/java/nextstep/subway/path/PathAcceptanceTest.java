@@ -99,6 +99,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         검색이_안됨(response);
     }
 
+    /**
+     * When : 출발역과 도착역을 같은 값으로 경로 요청 시
+     * Then : 검색이 되지 않는다.
+     */
+    @DisplayName("경로 검색시 출발역과 도착역이 같으면 검색이 안된다.")
+    @Test
+    void sameStationTest() {
+        // When
+        final ExtractableResponse<Response> response = 최단_경로_검색(교대역, 교대역);
+
+        // Then
+        검색이_안됨(response);
+    }
+
     public static void 최단_경로_기준으로_지하철역_정보가_출력됨(ExtractableResponse<Response> response, List<StationResponse> expectedResult) {
         final PathResponse pathResponse = response.as(PathResponse.class);
         final List<String> resultStationNames = pathResponse.getStations().stream()
