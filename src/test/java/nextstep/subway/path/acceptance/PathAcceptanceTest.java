@@ -48,9 +48,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        LineRequest 신분당선_요청 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
-        LineRequest 이호선_요청 = new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10);
-        LineRequest 삼호선_요청 = new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5);
+        LineRequest 신분당선_요청 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 900);
+        LineRequest 이호선_요청 = new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 400);
+        LineRequest 삼호선_요청 = new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 500);
 
         신분당선 = 지하철_노선_등록되어_있음(신분당선_요청).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(이호선_요청).as(LineResponse.class);
@@ -140,7 +140,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //given
         StationResponse 도쿄역 = StationAcceptanceTest.지하철역_등록되어_있음("도쿄역").as(StationResponse.class);
         StationResponse 쿄토역 = StationAcceptanceTest.지하철역_등록되어_있음("쿄토역").as(StationResponse.class);
-        LineRequest 신칸센_요청 = new LineRequest("신칸센", "bg-blck-600", 도쿄역.getId(), 쿄토역.getId(), 40);
+        LineRequest 신칸센_요청 = new LineRequest("신칸센", "bg-blck-600", 도쿄역.getId(), 쿄토역.getId(), 40, 5000);
 
         //when : 교대역에서 도쿄역으로 가는 최단거리 조회한다.
         ExtractableResponse<Response> 최단_경로_조회_요청 = 최단_경로_조회_요청(교대역.getId(), 도쿄역.getId());

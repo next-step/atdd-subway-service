@@ -48,7 +48,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         오금역 = StationAcceptanceTest.지하철역_등록되어_있음("오금역").as(StationResponse.class);
 
         // 3호선 등록 지하철역 : 가락시장역 - 경찰병원역 - 오금역
-        LineRequest lineRequest = new LineRequest("삼호선", "bg-orange-600", 가락시장역.getId(), 경찰병원역.getId(), 10);
+        LineRequest lineRequest = new LineRequest("삼호선", "bg-orange-600", 가락시장역.getId(), 경찰병원역.getId(), 10, 500);
         LineResponse 삼호선 = 지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(삼호선, 경찰병원역, 오금역, 3);
 
