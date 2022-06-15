@@ -6,6 +6,8 @@ import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.지하철
 import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.지하철_최단_경로_조회됨;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.지하철_최단경로_조회_실패함;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.최단_경로_조회_요청;
+import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.최단경로_거리_조회됨;
+import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.최단경로_요금_조회됨;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -76,7 +78,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 최단_경로_조회_요청 = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
 
         //then : 최단 거리가 조회된다.
-        지하철_최단_경로_조회됨(최단_경로_조회_요청, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
+        지하철_최단_경로_조회됨(최단_경로_조회_요청, Arrays.asList(교대역, 남부터미널역, 양재역));
+    }
+
+    @Test
+    @DisplayName("교대에서 양재역으로 가는 최단 경로의 거리와 요금을 조회한다.")
+    void pathTest03() {
+
+        //when : 교대에서 양재역으로 가는 최단 거리를 조회한다.
+        ExtractableResponse<Response> 최단_경로_조회_요청 = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
+
+        //then : 최단 거리가 조회된다.
+        지하철_최단_경로_조회됨(최단_경로_조회_요청, Arrays.asList(교대역, 남부터미널역, 양재역));
+        최단경로_거리_조회됨(최단_경로_조회_요청, 5);
+        최단경로_요금_조회됨(최단_경로_조회_요청, 1250);
     }
 
     @Test

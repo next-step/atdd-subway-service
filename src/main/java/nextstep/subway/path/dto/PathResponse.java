@@ -8,6 +8,7 @@ import nextstep.subway.station.dto.StationResponse;
 public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
+    private int fare;
 
     public PathResponse() {
     }
@@ -27,4 +28,7 @@ public class PathResponse {
         return this.distance;
     }
 
+    public int getFare() {
+        return fare;
+    }
 }

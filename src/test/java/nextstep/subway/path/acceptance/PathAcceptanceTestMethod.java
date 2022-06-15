@@ -28,8 +28,7 @@ public class PathAcceptanceTestMethod {
                 .extract();
     }
 
-    public static void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations,
-                                     int distance) {
+    public static void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         PathResponse path = response.as(PathResponse.class);
         List<Long> stationIds = path.getStations().stream()
                 .map(it -> it.getId())
@@ -40,7 +39,16 @@ public class PathAcceptanceTestMethod {
                 .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+    }
+
+    public static void 최단경로_거리_조회됨(ExtractableResponse<Response> response, int distance) {
+        PathResponse path = response.as(PathResponse.class);
         assertThat(path.getDistance()).isEqualTo(distance);
+    }
+
+    public static void 최단경로_요금_조회됨(ExtractableResponse<Response> response, int fare) {
+        PathResponse path = response.as(PathResponse.class);
+        assertThat(path.getDistance()).isEqualTo(fare);
     }
 
     public static void 지하철_최단_경로_조회_요청_응답됨(ExtractableResponse<Response> response) {
