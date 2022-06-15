@@ -18,7 +18,7 @@ class LineTest {
     void before() {
         잠실역 = new Station("잠실역");
         강남역 = new Station("강남역");
-        line = new Line("2호선", "green", 잠실역, 강남역,10);
+        line = new Line("2호선", "green", 잠실역, 강남역,10, 500);
     }
 
     @Test

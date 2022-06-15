@@ -54,9 +54,9 @@ public class PathServiceTest {
         교대역 = new Station(3L,"교대역");
         남부터미널역 = new Station(4L,"남부터미널역");
 
-        신분당선 = new Line("신분당선","red", 강남역, 양재역, 10);
-        이호선 = new Line("이호선","green", 교대역, 강남역, 10);
-        삼호선 = new Line("삼호선","orange", 교대역, 양재역, 5);
+        신분당선 = new Line("신분당선","red", 강남역, 양재역, 10, 900);
+        이호선 = new Line("이호선","green", 교대역, 강남역, 10, 500);
+        삼호선 = new Line("삼호선","orange", 교대역, 양재역, 5, 500);
 
         Section 삼호선_새로운구간 = new Section(삼호선, 교대역, 남부터미널역, 3);
         삼호선.addSection(삼호선_새로운구간);

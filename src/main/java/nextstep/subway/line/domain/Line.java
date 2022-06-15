@@ -19,6 +19,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    private int extraCharge;
 
     @Embedded
     private Sections sections = Sections.newInstance();
@@ -31,10 +32,11 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int extraCharge) {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
+        this.extraCharge = extraCharge;
     }
 
     public void update(Line line) {
@@ -61,6 +63,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public int getExtraCharge() {
+        return extraCharge;
     }
 
     public List<Section> getSections() {
