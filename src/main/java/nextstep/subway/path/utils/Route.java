@@ -10,6 +10,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,9 @@ public class Route {
 
     public PathResponse getShortestRoute(final Station startStation, final Station endStation) {
         makeEdge(endStation);
+        if (!isContainVertex(startStation)) {
+            throw new IllegalStateException("경로를 검색할 수 없습니다.");
+        }
         final GraphPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph)
                 .getPath(endStation, startStation);
         return new PathResponse(
@@ -28,13 +32,17 @@ public class Route {
                 Double.valueOf(path.getWeight()).intValue());
     }
 
+    private boolean isContainVertex(final Station start) {
+        return graph.vertexSet().stream()
+                .anyMatch(it -> Objects.equals(it, start));
+    }
+
     private void makeEdge(final Station endStation) {
         final Queue<Station> queue = new LinkedList<>();
         queue.add(endStation);
 
         while (!queue.isEmpty()) {
-            final Station station = queue.poll();
-            station.getSections().stream()
+            queue.poll().getSections().stream()
                     .peek(this::setVertexAndEdgeWeight)
                     .map(Section::getUpStation)
                     .forEach(queue::add);

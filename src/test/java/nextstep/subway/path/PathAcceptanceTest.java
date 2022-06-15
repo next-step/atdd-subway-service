@@ -79,6 +79,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
         검색이_안됨(reponse);
     }
 
+    /**
+     * Given : 출발역과 도착역이 서로 연결되어 있지 않은 상태에서
+     * When : 출발역과 도착역 정보로 경로 검색 시
+     * Then : 검색이 되지 않는다.
+     */
+    @DisplayName("출발역과 도착역 구간이 서로 연결 되어 있지 않으면 검색이 되지 않는다.")
+    @Test
+    void noConnectionSectionTest() {
+        // Given
+        final StationResponse 수원역 = StationAcceptanceTest.지하철역_등록되어_있음("수원역").as(StationResponse.class);
+        final StationResponse 병점역 = StationAcceptanceTest.지하철역_등록되어_있음("병점역").as(StationResponse.class);
+        final LineResponse 일호선 = 지하철_노선_등록되어_있음("일호선", "bg-red-600", 수원역, 병점역, 10);
+
+        // When
+        final ExtractableResponse<Response> response = 최단_경로_검색(교대역, 병점역);
+
+        // Then
+        검색이_안됨(response);
+    }
+
     public static void 최단_경로_기준으로_지하철역_정보가_출력됨(ExtractableResponse<Response> response, List<StationResponse> expectedResult) {
         final PathResponse pathResponse = response.as(PathResponse.class);
         final List<String> resultStationNames = pathResponse.getStations().stream()
