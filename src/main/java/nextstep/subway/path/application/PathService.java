@@ -7,6 +7,7 @@ import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ public class PathService {
         Station sourceStation = stationService.findStationById(pathRequest.getSourceStationId());
         Station targetStation = stationService.findStationById(pathRequest.getTargetStationId());
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
-        GraphPath path = pathFinder.getShortestPath(sourceStation, targetStation);
+        GraphPath<Station, DefaultWeightedEdge> path = pathFinder.getShortestPath(sourceStation, targetStation);
         return PathResponse.of(path.getVertexList(), path.getWeight());
     }
 }

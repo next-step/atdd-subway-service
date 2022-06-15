@@ -11,8 +11,8 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-    private final DijkstraShortestPath dijkstraShortestPath;
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public PathFinder(final List<Line> lines) {
         for (Line line : lines) {
@@ -23,9 +23,9 @@ public class PathFinder {
         dijkstraShortestPath = new DijkstraShortestPath<>(graph);
     }
 
-    public GraphPath getShortestPath(final Station sourceStation, final Station targetStation) {
+    public GraphPath<Station, DefaultWeightedEdge> getShortestPath(final Station sourceStation, final Station targetStation) {
         validInputCheck(sourceStation, targetStation);
-        GraphPath shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         if (shortestPath == null) {
             throw new IllegalArgumentException("출발역과 도착역은 서로 연결이 되어있어야 합니다.");
         }
