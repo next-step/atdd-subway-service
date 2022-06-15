@@ -55,20 +55,28 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    public boolean containsUpStation(Station station) {
+        return upStation.equals(station);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public boolean containsDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
+    public void updateUpStationReducedDistance(Section section) {
+        if (this.distance <= section.getDistance()) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+        this.upStation = section.getDownStation();
+        this.distance -= section.getDistance();
+    }
+
+    public void updateDownStationReducedDistance(Section section) {
+        if (this.distance <= section.getDistance()) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.downStation = section.getUpStation();
+        this.distance -= section.getDistance();
     }
 
     @Override
