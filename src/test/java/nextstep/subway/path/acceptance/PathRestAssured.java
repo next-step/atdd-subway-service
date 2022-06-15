@@ -16,4 +16,16 @@ public class PathRestAssured {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 지하철_경로_최단거리_요청(long source, long target, String token) {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .param("source", source)
+                .param("target", target)
+                .auth().oauth2(token)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+    }
 }

@@ -20,7 +20,7 @@ public class Member extends BaseEntity {
     @Embedded
     private Age age;
 
-    public Member() {
+    protected Member() {
     }
 
     public Member(String email, String password, Age age) {
@@ -49,6 +49,9 @@ public class Member extends BaseEntity {
     }
 
     public Age getAge() {
+        if (Objects.isNull(age)) {
+            return Age.valueOf(Age.MIN_NUM);
+        }
         return age;
     }
 

@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 
 @Entity
 public class Line extends BaseEntity {
+    public static final int MIN = 0;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -53,7 +54,7 @@ public class Line extends BaseEntity {
         private final Station upStation;
         private final Station downStation;
         private final Distance distance;
-        private Fare additionalFare = Fare.valueOf(0);
+        private Fare additionalFare;
 
         private LineBuilder(String name, String color, Station upStation, Station downStation, Distance distance) {
             validateParameter(name, color);
@@ -130,6 +131,9 @@ public class Line extends BaseEntity {
     }
 
     public Fare additionalFare() {
+        if (Objects.isNull(additionalFare)) {
+            return Fare.valueOf(MIN);
+        }
         return additionalFare;
     }
 

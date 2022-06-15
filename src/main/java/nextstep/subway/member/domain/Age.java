@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Age {
-    private static final int MIN_NUM = 0;
+    public static final int MIN_NUM = 0;
     @Column
     private int age;
 

@@ -1,8 +1,10 @@
 package nextstep.subway.path.acceptance;
 
+import static nextstep.subway.auth.acceptance.AuthRestAssured.로그인_되어_있음;
 import static nextstep.subway.line.acceptance.LineRestAssured.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionRestAssured.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.DomainFixtureFactory.createStation;
+import static nextstep.subway.member.acceptance.MemberRestAssured.회원_생성을_요청;
 import static nextstep.subway.path.acceptance.PathRestAssured.지하철_경로_최단거리_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -36,13 +38,17 @@ class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
     private StationResponse 강동역;
     private StationResponse 천호역;
+    String EMAIL = "email@email.com";
+    String PASSWORD = "password";
+    int AGE = 7;
+    String 사용자토큰;
 
     /**
      * 교대역    --- *2호선* (10) ---   강남역
      * |                             |
      * *3호선* (3)                  *신분당선* (10)
      * |                             |
-     * 남부터미널역  --- *3호선* (2) --- 양재
+     * 남부터미널역  --- *3호선* (2) --- 양재역
      *
      *  강동역  ---- *5호선* (5) ----  천호역
      *
@@ -62,9 +68,9 @@ class PathAcceptanceTest extends AcceptanceTest {
         강동역 = StationAcceptanceTest.지하철역_등록되어_있음("강동역").as(StationResponse.class);
         천호역 = StationAcceptanceTest.지하철역_등록되어_있음("천호역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 500)).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 900)).as(LineResponse.class);
         오호선 = 지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-red-600", 강동역.getId(), 천호역.getId(), 5)).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -75,14 +81,35 @@ class PathAcceptanceTest extends AcceptanceTest {
      * And 총 거리도 함께 응답함
      * And ** 지하철 이용 요금도 함께 응답함 **
      */
-    @DisplayName("지하철 경로에 출발지와 목적지로 최단경로를 조회하면 입력하면 최단 거리가 조회된다.")
+    @DisplayName("지하철 경로에 출발지와 목적지로 최단경로를 조회하면 입력하면 최단 거리와 요금이 조회된다.")
     @Test
-    void findShortestPath() {
+    void findShortestPathNotLogin() {
         // when
-        ExtractableResponse<Response> response = 지하철_경로_최단거리_요청(교대역.getId(), 양재역.getId());
+        ExtractableResponse<Response> response = 지하철_경로_최단거리_요청(남부터미널역.getId(), 강남역.getId());
 
         // then
-        지하철_경로_최단거리_이용요금_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
+        지하철_경로_최단거리_이용요금_조회됨(response, Arrays.asList(남부터미널역, 양재역, 강남역), 12, 2250);
+    }
+
+    /**
+     * Given 회원가입 되어 있음
+     * And 로그인 되어 있음
+     * When 지하철 경로에 출발지와 목적지로 최단경로를 조회하면
+     * Then 최단 거리 경로를 응답
+     * And 총 거리도 함께 응답함
+     * And ** 지하철 이용 요금도 함께 응답함 **
+     */
+    @DisplayName("로그인을 하고 지하철 경로에 출발지와 목적지로 최단경로를 조회하면 입력하면 최단 거리와 요금이 조회된다.")
+    @Test
+    void findShortestPathLogin() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        사용자토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_최단거리_요청(남부터미널역.getId(), 강남역.getId(), 사용자토큰);
+
+        // then
+        지하철_경로_최단거리_이용요금_조회됨(response, Arrays.asList(남부터미널역, 양재역, 강남역), 12, 950);
     }
 
     /**
@@ -127,7 +154,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         지하철_경로_최단거리_실패됨(response);
     }
 
-    private void 지하철_경로_최단거리_이용요금_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations, int distance) {
+    private void 지하철_경로_최단거리_이용요금_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations, int distance, int fare) {
         PathResponse path = response.as(PathResponse.class);
         List<Long> stationIds = path.getStations().stream()
                 .map(StationResponse::getId)
@@ -138,7 +165,8 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
         assertAll(
                 () -> assertThat(path.getDistance()).isEqualTo(distance),
-                () -> assertThat(stationIds).containsExactlyElementsOf(expectedStationIds)
+                () -> assertThat(stationIds).containsExactlyElementsOf(expectedStationIds),
+                () -> assertThat(path.getFare()).isEqualTo(fare)
         );
     }
 

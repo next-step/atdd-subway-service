@@ -24,5 +24,4 @@ public class FareCalculator {
                 .max(Fare::compareTo)
                 .orElse(Fare.valueOf(MIN_NUM));
     }
-
 }

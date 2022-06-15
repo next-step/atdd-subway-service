@@ -104,7 +104,7 @@ class PathServiceTest {
                 createSection(이호선, 교대역, 강남역, Distance.valueOf(10)),
                 createSection(삼호선, 교대역, 남부터미널역, Distance.valueOf(3)),
                 createSection(삼호선, 남부터미널역, 양재역, Distance.valueOf(2)));
-        Path path = createPath(Lists.newArrayList(남부터미널역, 양재역, 강남역), Distance.valueOf(15));
+        Path path = createPath(Lists.newArrayList(남부터미널역, 양재역, 강남역), Distance.valueOf(12));
         when(stationService.findById(4L)).thenReturn(남부터미널역);
         when(stationService.findById(1L)).thenReturn(강남역);
         when(entityManager.createQuery(
@@ -116,7 +116,7 @@ class PathServiceTest {
         PathResponse pathResponse = pathService.findShortestPath(
                 createLoginMember(1L, "email@email.com", Age.valueOf(input)), 남부터미널역.id(), 강남역.id());
         assertAll(
-                () -> assertThat(pathResponse.getDistance()).isEqualTo(15),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(12),
                 () -> assertThat(pathResponse.getStations()).containsExactlyElementsOf(stationResponses),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(expect)
         );
