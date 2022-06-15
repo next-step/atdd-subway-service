@@ -48,6 +48,7 @@ public class Line extends BaseEntity {
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+        this.overFare = line.getOverFare();
     }
 
     public void removeSection(Section section) {

@@ -13,12 +13,17 @@ public class LineRequest {
     public LineRequest() {
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int overFare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.overFare = overFare;
+    }
+
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+        this(name, color, upStationId, downStationId, distance, 0);
     }
 
     public String getName() {
