@@ -2,6 +2,7 @@ package nextstep.subway.member;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청_성공;
+import static nextstep.subway.utils.AuthPrefixHelper.addAuthPrefix;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -168,7 +169,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 내_정보_조회_요청(TokenResponse 토큰_정보) {
         return RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, 토큰_정보.addBearerAccessToken())
+                .header(HttpHeaders.AUTHORIZATION, addAuthPrefix(토큰_정보))
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(MINE_URI)
                 .then().log().all()
@@ -193,7 +194,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, 토큰_정보.addBearerAccessToken())
+                .header(HttpHeaders.AUTHORIZATION, addAuthPrefix(토큰_정보))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
                 .when().put(MINE_URI)
@@ -213,7 +214,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 내_정보_삭제_요청(TokenResponse 토큰_정보) {
         return RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, 토큰_정보.addBearerAccessToken())
+                .header(HttpHeaders.AUTHORIZATION, addAuthPrefix(토큰_정보))
                 .when().delete(MINE_URI)
                 .then().log().all()
                 .extract();
