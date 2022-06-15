@@ -8,6 +8,7 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -63,6 +63,39 @@ public class LineService {
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
+        Line line = findLineById(lineId);
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
+        Stations stations = new Stations(line.getStations());
+
+        stations.validateDuplication(upStation, downStation);
+        stations.validateStation(upStation, downStation);
+
+        if (stations.isEmpty()) {
+            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+            return;
+        }
+
+        if (stations.isExisted(upStation)) {
+            line.getSections().getValues().stream()
+                    .filter(it -> it.getUpStation() == upStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
+
+            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+        } else if (stations.isExisted(downStation)) {
+            line.getSections().getValues().stream()
+                    .filter(it -> it.getDownStation() == downStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
+
+            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    public void addLineStationOld(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
@@ -127,7 +160,6 @@ public class LineService {
         upLineStation.ifPresent(it -> line.getSections().remove(it));
         downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
-
 
     public List<Station> getStations(Line line) {
         if (line.getSections().isEmpty()) {
