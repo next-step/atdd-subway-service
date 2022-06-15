@@ -28,6 +28,19 @@ public class PathAcceptanceTestMethod {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 로그인후_최단_경로_조회_요청(String token, Long sourceStationId,
+                                                                 Long targetStationId) {
+        return RestAssured.given().log().all().
+                auth().oauth2(token)
+                .when()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .param("sourceId", sourceStationId)
+                .param("targetId", targetStationId)
+                .get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
     public static void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         PathResponse path = response.as(PathResponse.class);
         List<Long> stationIds = path.getStations().stream()

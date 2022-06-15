@@ -1,7 +1,11 @@
 package nextstep.subway.path.acceptance;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestMethod.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestMethod.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestMethod.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTestMethod.로그인_성공_이후_토큰;
+import static nextstep.subway.member.MemberAcceptanceTestMethod.회원_생성을_요청;
+import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.로그인후_최단_경로_조회_요청;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.지하철_최단_경로_조회_요청_응답됨;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.지하철_최단_경로_조회됨;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestMethod.지하철_최단경로_조회_실패함;
@@ -88,10 +92,58 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //when : 교대에서 양재역으로 가는 최단 거리를 조회한다.
         ExtractableResponse<Response> 최단_경로_조회_요청 = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
 
-        //then : 최단 거리가 조회된다.
+        //then : 최단 거리와 요금이 조회된다.
         지하철_최단_경로_조회됨(최단_경로_조회_요청, Arrays.asList(교대역, 남부터미널역, 양재역));
         최단경로_거리_조회됨(최단_경로_조회_요청, 5);
-        최단경로_요금_조회됨(최단_경로_조회_요청, 1250);
+        최단경로_요금_조회됨(최단_경로_조회_요청, 1750);
+    }
+
+    @Test
+    @DisplayName("어린이가 교대에서 양재역으로 가는 최단 경로의 거리와 요금을 조회한다.")
+    void pathTest04() {
+
+        //given: 어린이 회원 등록
+        String EMAIL = "email@email.com";
+        String PASSWORD = "password";
+        int AGE = 10;
+        // 회원 등록
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
+        // 로그인됨
+        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(EMAIL, PASSWORD);
+        String 로그인_토큰 = 로그인_성공_이후_토큰(로그인_요청_응답);
+
+        //when : 교대에서 양재역으로 가는 최단 거리를 조회한다.
+        ExtractableResponse<Response> 최단_경로_조회_요청 = 로그인후_최단_경로_조회_요청(로그인_토큰, 교대역.getId(), 양재역.getId());
+
+        //then : 최단 거리와 운임 요금이 조회된다.
+        지하철_최단_경로_조회됨(최단_경로_조회_요청, Arrays.asList(교대역, 남부터미널역, 양재역));
+        최단경로_거리_조회됨(최단_경로_조회_요청, 5);
+        최단경로_요금_조회됨(최단_경로_조회_요청, 700);
+    }
+
+    @Test
+    @DisplayName("청소년이 교대에서 양재역으로 가는 최단 경로의 거리와 요금을 조회한다.")
+    void pathTest05() {
+
+        //given: 청소년 회원 등록
+        String EMAIL = "email@email.com";
+        String PASSWORD = "password";
+        int AGE = 15;
+        // 회원 등록
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
+        // 로그인됨
+        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(EMAIL, PASSWORD);
+        String 로그인_토큰 = 로그인_성공_이후_토큰(로그인_요청_응답);
+
+        //when : 교대에서 양재역으로 가는 최단 거리를 조회한다.
+        ExtractableResponse<Response> 최단_경로_조회_요청 = 로그인후_최단_경로_조회_요청(로그인_토큰, 교대역.getId(), 양재역.getId());
+
+        //then : 최단 거리와 운임 요금이 조회된다.
+        지하철_최단_경로_조회됨(최단_경로_조회_요청, Arrays.asList(교대역, 남부터미널역, 양재역));
+        최단경로_거리_조회됨(최단_경로_조회_요청, 5);
+        최단경로_요금_조회됨(최단_경로_조회_요청, 1120);
     }
 
     @Test
