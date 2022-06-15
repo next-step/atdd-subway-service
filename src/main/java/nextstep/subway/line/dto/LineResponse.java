@@ -17,8 +17,8 @@ public class LineResponse {
     public LineResponse() {
     }
 
-    private LineResponse(final Long id, final String name, final String color, final List<StationResponse> stations,
-                         final LocalDateTime createdDate, final LocalDateTime modifiedDate) {
+    private LineResponse(Long id, String name, String color, List<StationResponse> stations, LocalDateTime createdDate,
+                         LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -27,7 +27,7 @@ public class LineResponse {
         this.modifiedDate = modifiedDate;
     }
 
-    public static LineResponse of(final Line line) {
+    public static LineResponse of(Line line) {
         return new LineResponse(line.getId(), line.getName(), line.getColor(), createStationResponse(line),
                 line.getCreatedDate(), line.getModifiedDate());
     }
