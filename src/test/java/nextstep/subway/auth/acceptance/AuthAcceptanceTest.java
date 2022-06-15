@@ -11,6 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.내정보_삭제;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.내정보_삭제성공;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.내정보_수정;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.내정보_수정성공;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.내정보_조회;
@@ -99,6 +101,20 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 업데이트_결과 = 내정보_수정(수정할_회원정보, 유효한_토큰);
 
         내정보_수정성공(업데이트_결과);
+    }
+
+    /**
+     * Given 회원 등록되어 있음- setup
+     * When 유효한 토큰으로 삭제 요청
+     * Then 삭제 성공
+     */
+    @DisplayName("내정보 삭제 - 유효한 토큰")
+    @Test
+    void deleteMyInfoWithValidToken() {
+        TokenResponse 유효한_토큰 = 로그인_요청시도(new TokenRequest(YANG_EMAIL, YANG_PASSWORD)).as(TokenResponse.class);
+        ExtractableResponse<Response> 삭제_결과 = 내정보_삭제(유효한_토큰);
+
+        내정보_삭제성공(삭제_결과);
     }
 
 }

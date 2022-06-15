@@ -38,10 +38,19 @@ public class AuthAcceptanceFactory {
                 .auth().oauth2(token.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-
                 .body(memberRequest)
                 .when()
                 .put("/members/me")
+                .then()
+                .log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 내정보_삭제(TokenResponse token) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .delete("/members/me")
                 .then()
                 .log().all().extract();
     }
@@ -64,5 +73,9 @@ public class AuthAcceptanceFactory {
 
     public static void 내정보_수정성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 내정보_삭제성공(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
