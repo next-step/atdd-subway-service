@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 
 public enum DistanceFarePolicy {
     DISTANCE_OVER_50(50, distance -> distance > 50, distance -> (int) ((Math.ceil((distance - 1) / 8) + 1) * 100)),
-    DISTANCE_BETWEEN_10_AND_50(10, distance -> distance > 10, distance -> (int) ((Math.ceil((distance -1) / 5) + 1) * 100)),
+    DISTANCE_BETWEEN_10_AND_50(10, distance -> distance > 10,
+            distance -> (int) ((Math.ceil((distance - 1) / 5) + 1) * 100)),
     DISTANCE_BASE(0, distance -> distance > 0, distance -> 1250);
 
     private final int minDistance;
