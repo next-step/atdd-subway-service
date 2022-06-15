@@ -14,10 +14,10 @@ import java.util.Queue;
 import java.util.stream.Collectors;
 
 public class Route {
-    private static final WeightedMultigraph<Station, DefaultWeightedEdge> graph
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph
             = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-    public static PathResponse getShortestRoute(final Station startStation, final Station endStation) {
+    public PathResponse getShortestRoute(final Station startStation, final Station endStation) {
         makeEdge(endStation);
         final GraphPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph)
                 .getPath(endStation, startStation);
@@ -28,20 +28,20 @@ public class Route {
                 Double.valueOf(path.getWeight()).intValue());
     }
 
-    private static void makeEdge(final Station endStation) {
+    private void makeEdge(final Station endStation) {
         final Queue<Station> queue = new LinkedList<>();
         queue.add(endStation);
 
         while (!queue.isEmpty()) {
             final Station station = queue.poll();
             station.getSections().stream()
-                    .peek(Route::setVertexAndEdgeWeight)
+                    .peek(this::setVertexAndEdgeWeight)
                     .map(Section::getUpStation)
                     .forEach(queue::add);
         }
     }
 
-    private static void setVertexAndEdgeWeight(final Section section) {
+    private void setVertexAndEdgeWeight(final Section section) {
         graph.addVertex(section.getUpStation());
         graph.addVertex(section.getDownStation());
         graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
