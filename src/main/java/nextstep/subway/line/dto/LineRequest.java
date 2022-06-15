@@ -54,6 +54,10 @@ public class LineRequest {
         return distance;
     }
 
+    public int getAdditionalFare() {
+        return additionalFare;
+    }
+
     public Line toLine(Station upStation, Station downStation) {
         return Line.builder(name, color, upStation, downStation, Distance.valueOf(this.distance))
                 .additionalFare(Fare.valueOf(additionalFare))
