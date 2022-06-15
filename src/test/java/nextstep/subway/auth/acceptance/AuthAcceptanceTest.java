@@ -2,6 +2,7 @@ package nextstep.subway.auth.acceptance;
 
 import static nextstep.subway.utils.apiHelper.AuthMemberApiHelper.로그인을통한_토큰받기;
 import static nextstep.subway.utils.apiHelper.AuthMemberApiHelper.토큰을통해_내정보받기;
+import static nextstep.subway.utils.apiHelper.MemberApiHelper.회원_생성을_요청;
 import static nextstep.subway.utils.assertionHelper.AuthMemberAssertionHelper.가져온_내정보_확인하기;
 import static nextstep.subway.utils.assertionHelper.AuthMemberAssertionHelper.인증실패;
 import static org.mockito.Mockito.when;
@@ -11,26 +12,23 @@ import io.restassured.response.Response;
 import java.util.Optional;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
-    @MockBean
-    MemberRepository memberRepository;
-
-    private Member member;
+    private Member 내정보;
 
     @BeforeEach
     public void init() {
-        member = new Member("test@naver.com", "testPassword", 30);
+        내정보 = new Member("test@naver.com", "testPassword", 30);
+        회원_생성을_요청(내정보.getEmail(), 내정보.getPassword(), 내정보.getAge());
     }
 
     /**
-     * given : member가 등록이 되어있을때 (mocking)
+     * background
+         * given : member가 등록이 되어있을때
      * given : 로그인을 통해 token을 받고
      * when : token을 통해 내 정보를 조회하면
      * then : 정상적으로 내 정보가 조회된다
@@ -39,31 +37,27 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBearerAuth() {
         //given
-        when(memberRepository.findByEmail(member.getEmail())).thenReturn(Optional.of(member));
-        when(memberRepository.findById(null)).thenReturn(Optional.of(member));
-        String token = 로그인을통한_토큰받기(member.getEmail(), member.getPassword()).jsonPath()
+        String token = 로그인을통한_토큰받기(내정보.getEmail(), 내정보.getPassword()).jsonPath()
             .get("accessToken");
 
         //when
         ExtractableResponse<Response> 토큰을통해_내정보받기_response = 토큰을통해_내정보받기(token);
 
         //then
-        가져온_내정보_확인하기(member, 토큰을통해_내정보받기_response);
+        가져온_내정보_확인하기(내정보, 토큰을통해_내정보받기_response);
     }
 
     /**
-     * given : member가 등록이 되어있을때 (mocking)
+     * background
+        * given : member가 등록이 되어있을때
      * when : 잘못된 아이디/비밀번호로 로그인을하면
      * then : 상태코드가 401이 반환된다
      */
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
-        //given
-        when(memberRepository.findByEmail(member.getEmail())).thenReturn(Optional.of(member));
-
         //when
-        ExtractableResponse<Response> 인증_요청_response = 로그인을통한_토큰받기(member.getEmail(),
+        ExtractableResponse<Response> 인증_요청_response = 로그인을통한_토큰받기(내정보.getEmail(),
             "wrongPassword");
 
         //then

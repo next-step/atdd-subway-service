@@ -1,6 +1,7 @@
 package nextstep.subway.favorite;
 
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static nextstep.subway.utils.apiHelper.AuthMemberApiHelper.로그인을통한_토큰받기;
 import static nextstep.subway.utils.apiHelper.FavoriteApiHelper.즐겨찾기_목록조회요청;
 import static nextstep.subway.utils.apiHelper.FavoriteApiHelper.즐겨찾기_삭제요청;
 import static nextstep.subway.utils.apiHelper.FavoriteApiHelper.즐겨찾기_생성요청;
@@ -31,9 +32,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
-
-    @MockBean
-    AuthService authService;
 
     private LoginMember 내정보;
     private LineResponse 이호선;
@@ -72,16 +70,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 7);
 
-        토큰 = "token";
-        잘못된_토큰 = "invalidToken";
+
         Member 내정보 = new Member("test@test.com", "testPw", 32);
 
-        String 내정보_ID = 회원_생성을_요청("test@test.com", "testPw", 32).response().getHeader("Location")
-            .split("/")[2];
+        회원_생성을_요청(내정보.getEmail(),내정보.getPassword(), 내정보.getAge());
+        토큰 = 로그인을통한_토큰받기(내정보.getEmail(), 내정보.getPassword()).jsonPath()
+            .get("accessToken");
+        잘못된_토큰 = "invalidToken";
 
-        when(authService.findMemberByToken(토큰)).thenReturn(
-            new LoginMember(Long.parseLong(내정보_ID), 내정보.getEmail(), 내정보.getAge()));
-        when(authService.findMemberByToken(잘못된_토큰)).thenThrow(new AuthorizationException());
     }
 
 
