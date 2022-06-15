@@ -16,6 +16,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -23,12 +24,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 일호선;
     private LineResponse 구호선;
     private LineResponse 오호선;
+    private LineResponse 사호선;
     private StationResponse 노량진역;
     private StationResponse 대방역;
     private StationResponse 신길역;
     private StationResponse 여의도역;
     private StationResponse 샛강역;
     private StationResponse 여의나루역;
+    private StationResponse 삼각지역;
+    private StationResponse 숙대입구역;
 
     @BeforeEach
     public void setUp() {
@@ -39,10 +43,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         여의도역 = StationAcceptanceTest.지하철역_등록되어_있음("여의도역").as(StationResponse.class);
         샛강역 = StationAcceptanceTest.지하철역_등록되어_있음("샛강역").as(StationResponse.class);
         여의나루역 = StationAcceptanceTest.지하철역_등록되어_있음("여의나루역").as(StationResponse.class);
+        삼각지역 = StationAcceptanceTest.지하철역_등록되어_있음("삼각지역").as(StationResponse.class);
+        숙대입구역 = StationAcceptanceTest.지하철역_등록되어_있음("숙대입구역").as(StationResponse.class);
 
         일호선 = 지하철_노선_등록되어_있음("일호선", "bg-blue-600", 노량진역, 신길역, 10);
         구호선 = 지하철_노선_등록되어_있음("구호선", "bg-yellow-600", 노량진역, 샛강역, 5);
         오호선 = 지하철_노선_등록되어_있음("오호선", "bg-purple-600", 신길역, 여의나루역, 12);
+        사호선 = 지하철_노선_등록되어_있음("사호선", "bg-skyblue-600", 삼각지역, 숙대입구역, 5);
 
         지하철_노선에_지하철역_등록_요청(일호선, 노량진역, 대방역, 7);
         지하철_노선에_지하철역_등록_요청(구호선, 샛강역, 여의도역, 8);
@@ -87,6 +94,40 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
+    @DisplayName("출발역과 도착역이 같은 경우 실패한다.")
+    @Test
+    void sourceEqualToTarget() {
+        //when
+        final ExtractableResponse<Response> 결과 = 최단_경로_요청(샛강역, 샛강역);
+
+        //then
+        경로_요청_실패_확인(결과);
+    }
+
+    @DisplayName("출발역과 도착역이 연결 되어 있지 않은 경우 실패한다.")
+    @Test
+    void sourceNotConnectedWithTarget() {
+        //when
+        final ExtractableResponse<Response> 결과 = 최단_경로_요청(노량진역, 삼각지역);
+
+        //then
+        경로_요청_실패_확인(결과);
+    }
+
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우 실패한다.")
+    @Test
+    void stationNotExist() {
+        //given
+        final StationResponse 등록되지_않은_구로역 = new StationResponse(998L, "구로역", null, null);
+        final StationResponse 등록되지_않은_동대문역 = new StationResponse(999L, "동대문역", null, null);
+
+        //when
+        final ExtractableResponse<Response> 결과 = 최단_경로_요청(등록되지_않은_구로역, 등록되지_않은_동대문역);
+
+        //then
+        경로_요청_실패_확인(결과);
+    }
+
     public static ExtractableResponse<Response> 최단_경로_요청(final StationResponse sourceStation,
                                                          final StationResponse targetStation) {
         return RestAssured
@@ -108,5 +149,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 이동_거리_확인(final int distance, final int expected) {
         assertThat(distance).isEqualTo(expected);
+    }
+
+    private void 경로_요청_실패_확인(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

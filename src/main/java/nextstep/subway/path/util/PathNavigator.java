@@ -2,7 +2,11 @@ package nextstep.subway.path.util;
 
 import java.util.List;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.exceptions.SourceAndTargetSameException;
+import nextstep.subway.path.exceptions.SourceNotConnectedWithTargetException;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -30,12 +34,23 @@ public class PathNavigator {
         });
     }
 
-    public List<Station> getStationVertexList(final Station sourceStation, final Station targetStation) {
-        return dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList();
+    public Path getPath(final Station sourceStation, final Station targetStation) {
+        final GraphPath<Station, Station> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        checkSourceEqualToTarget(sourceStation, targetStation);
+        checkSourceNotConnectedWithTarget(graphPath);
+        return new Path(graphPath.getVertexList(), (int) graphPath.getWeight());
     }
 
-    public int getDistance(final Station sourceStation, final Station targetStation) {
-        return (int) dijkstraShortestPath.getPath(sourceStation, targetStation).getWeight();
+    private void checkSourceNotConnectedWithTarget(final GraphPath<Station, Station> graphPath) {
+        if (graphPath == null) {
+            throw new SourceNotConnectedWithTargetException();
+        }
+    }
+
+    private void checkSourceEqualToTarget(final Station sourceStation, final Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new SourceAndTargetSameException();
+        }
     }
 
     public static PathNavigator of(final List<Line> lines) {
