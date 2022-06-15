@@ -23,7 +23,7 @@ public enum DistanceFarePolicy {
         this.calculationWithDistance = calculationWithDistance;
     }
 
-    public static int calculateFare(int distance) {
+    public static int calculateFare(final int distance) {
         int totalFare = 0;
 
         List<DistanceFarePolicy> policies = Arrays.stream(values()).
