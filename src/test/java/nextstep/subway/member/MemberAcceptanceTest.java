@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.토큰_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -47,10 +49,32 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    /**
+     * given 나의 정보가 생성되어 있음
+     * <p>
+     * when 나의 정보를 조회하면
+     * <p>
+     * then 나의 정보가 조회가 조회됨
+     * <p>
+     * when 나의 정보를 수정하면
+     * <p>
+     * then 나의 정보가 수정됨
+     * <p>
+     * when 나의 정보를 삭제하면
+     * <p>
+     * then 나의 정보가 삭제됨
+     */
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
 
+        // when
+        ExtractableResponse<Response> response = 나의_정보_조회_요청(EMAIL, PASSWORD);
+
+        // then
+        회원_정보_조회됨(response, EMAIL, AGE);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -103,6 +127,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 나의_정보_조회_요청(String email, String password) {
+        TokenResponse tokenResponse = 토큰_요청(new TokenRequest(EMAIL, PASSWORD)).as(TokenResponse.class);
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()

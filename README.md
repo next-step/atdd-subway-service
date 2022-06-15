@@ -3,9 +3,9 @@
 - [x] 토큰 발급 기능(로그인) (POST /login/token)
     - [x] 이메일, 패스워드를 받아 인증 후 access token 응답
 - [ ] 내 정보 기능
-    - [ ] 내 정보 조회 (GET /members/me)
-        - [ ] 토큰을 확인해 로그인 정보를 응답
-        - [ ] @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용
+    - [x] 내 정보 조회 (GET /members/me)
+        - [x] 토큰을 확인해 로그인 정보를 응답
+        - [x] @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용
     - [ ] 내 정보 변경 기능 (PUT /members/me)
     - [ ] 내 정보 삭제 기능 (DELETE /members/me)
 - [ ] 즐겨 찾기 기능 구현

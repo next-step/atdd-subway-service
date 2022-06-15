@@ -62,7 +62,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         유효하지_않은_토큰(response);
     }
 
-    private static ExtractableResponse<Response> 토큰_요청(TokenRequest params) {
+    public static ExtractableResponse<Response> 토큰_요청(TokenRequest params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
