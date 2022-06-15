@@ -24,14 +24,37 @@ public class Section {
 
     private int distance;
 
-    public Section() {
-    }
+    protected Section() {}
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    private Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section of(Line line, Station upStation, Station downStation, int distance) {
+        return new Section(line, upStation, downStation, distance);
+    }
+
+    public void assignLine(Line line) {
+        this.line = line;
+    }
+
+    public void updateUpStation(Station station, int newDistance) {
+        if (this.distance <= newDistance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.upStation = station;
+        this.distance -= newDistance;
+    }
+
+    public void updateDownStation(Station station, int newDistance) {
+        if (this.distance <= newDistance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.downStation = station;
+        this.distance -= newDistance;
     }
 
     public Long getId() {
@@ -52,21 +75,5 @@ public class Section {
 
     public int getDistance() {
         return distance;
-    }
-
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
     }
 }
