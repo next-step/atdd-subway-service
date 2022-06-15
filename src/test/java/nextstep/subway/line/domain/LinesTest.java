@@ -12,8 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static nextstep.subway.path.application.PathServiceTest.getLines;
-import static nextstep.subway.path.application.PathServiceTest.getStation;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("전체 노선에 대한 기능")
@@ -26,10 +24,18 @@ public class LinesTest {
 
     @BeforeEach
     void setUp() {
-        lines = new Lines(getLines());
-        강남역 = getStation(1L, "강남역");
-        양재역 = getStation(2L, "양재역");
-        수진역 = getStation(5L, "수진역");
+        강남역 = new Station( "강남역");
+        양재역 = new Station( "양재역");
+        Station 남부터미널역 = new Station( "남부터미널역");
+        Station 교대역 = new Station( "교대역");
+        수진역 = new Station( "수진역");
+
+        Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, 4);
+        Line 삼호선 = new Line("삼호선", "orange", 교대역, 남부터미널역, 3);
+        Line 이호선 = new Line("이호선", "green", 교대역, 강남역, 10);
+
+        삼호선.addSection(new Section(남부터미널역, 양재역, 2));
+        lines = new Lines(Arrays.asList(신분당선, 삼호선, 이호선));
     }
 
     @Test
@@ -38,7 +44,7 @@ public class LinesTest {
         List<Station> stations =  lines.getAllStations();
 
         // then
-        assertThat(stations).hasSize(6);
+        assertThat(stations).hasSize(4);
     }
 
     @Test
@@ -47,7 +53,7 @@ public class LinesTest {
         List<Section> sections = lines.getAllSections();
 
         // then
-        assertThat(sections).hasSize(5);
+        assertThat(sections).hasSize(4);
     }
 
     @ParameterizedTest

@@ -8,23 +8,20 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static nextstep.subway.path.application.PathServiceTest.getStation;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ShortestPathTest {
     private WeightedMultigraph<Station, DefaultWeightedEdge> graph;
     private ShortestPath shortestPath;
-    Station upStation = getStation(1L, "강남역");
-    Station downStation = getStation(4L, "교대역");
 
     @BeforeEach
     void setUp() {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-        Station 강남역 = getStation(1L, "강남역");
-        Station 양재역 = getStation(2L, "양재역");
-        Station 남부터미널역 = getStation(3L, "남부터미널역");
-        Station 교대역 = getStation(4L, "교대역");
+        Station 강남역 = new Station("강남역");
+        Station 양재역 = new Station("양재역");
+        Station 남부터미널역 = new Station("남부터미널역");
+        Station 교대역 = new Station("교대역");
 
         graph.addVertex(강남역);
         graph.addVertex(양재역);
@@ -36,7 +33,7 @@ class ShortestPathTest {
         graph.setEdgeWeight(graph.addEdge(남부터미널역, 교대역), 4);
         graph.setEdgeWeight(graph.addEdge(교대역, 강남역), 10);
 
-        shortestPath = new ShortestPath(graph, upStation, downStation);
+        shortestPath = new ShortestPath(graph, 강남역, 교대역);
     }
 
     @Test
