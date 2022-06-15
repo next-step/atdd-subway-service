@@ -113,7 +113,7 @@ class SectionsTest {
         sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
         sections.add(new Section(신분당선, 신논현역, 강남역, new Distance(5)));
 
-        sections.remove(신분당선, 강남역);
+        sections.remove(강남역);
 
         assertThat(sections.getOrderedStations()).containsExactly(신논현역, 양재역);
     }
@@ -124,7 +124,7 @@ class SectionsTest {
         sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
         sections.add(new Section(신분당선, 신논현역, 강남역, new Distance(5)));
 
-        sections.remove(신분당선, 신논현역);
+        sections.remove(신논현역);
 
         assertThat(sections.getOrderedStations()).containsExactly(강남역, 양재역);
     }
@@ -135,7 +135,7 @@ class SectionsTest {
         sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
         sections.add(new Section(신분당선, 신논현역, 강남역, new Distance(5)));
 
-        sections.remove(신분당선, 양재역);
+        sections.remove(양재역);
 
         assertThat(sections.getOrderedStations()).containsExactly(신논현역, 강남역);
     }
@@ -146,7 +146,7 @@ class SectionsTest {
         sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> sections.remove(신분당선, 양재역));
+                .isThrownBy(() -> sections.remove(양재역));
     }
 
 }

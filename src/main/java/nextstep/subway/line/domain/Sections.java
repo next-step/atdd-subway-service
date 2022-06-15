@@ -82,7 +82,7 @@ public class Sections {
                 .findFirst();
     }
 
-    public void remove(Line line, Station station) {
+    public void remove(Station station) {
         raiseIfNotValidRemoveStation();
 
         Optional<Section> upLineStation = getNextSectionByEqualUpStation(station);
@@ -92,10 +92,9 @@ public class Sections {
         downLineStation.ifPresent(sections::remove);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            Distance newDistance = upLineStation.get().getDistance().plus(downLineStation.get().getDistance());
-            add(new Section(line, newUpStation, newDownStation, newDistance));
+            Section upSection = downLineStation.get();
+            Section downSection = upLineStation.get();
+            add(upSection.combine(downSection));
         }
     }
 

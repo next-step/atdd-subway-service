@@ -71,4 +71,8 @@ public class Section {
         this.distance = this.distance.minus(newDistance);
         this.downStation = station;
     }
+
+    public Section combine(Section downStationSection) {
+        return new Section(line, upStation, downStationSection.getDownStation(), distance.plus(downStationSection.distance));
+    }
 }
