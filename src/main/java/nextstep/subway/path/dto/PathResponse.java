@@ -8,19 +8,19 @@ import java.util.List;
 public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
-    private int price;
+    private int fare;
 
     public PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> stations, int distance, int price) {
+    public PathResponse(List<StationResponse> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
-        this.price = price;
+        this.fare = fare;
     }
 
     public static PathResponse of(Path path) {
-        return new PathResponse(StationResponse.of(path.getStations()), path.getDistance(), path.getPrice());
+        return new PathResponse(StationResponse.of(path.getStations()), path.getDistance(), path.getFare());
     }
 
     public List<StationResponse> getStations() {
@@ -31,7 +31,7 @@ public class PathResponse {
         return distance;
     }
 
-    public int getPrice() {
-        return price;
+    public int getFare() {
+        return fare;
     }
 }
