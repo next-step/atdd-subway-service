@@ -126,7 +126,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(stationIds).isEqualTo(expectedStationIds),
                 () -> assertThat(path.getDistance()).isEqualTo(expectedPath.getDistance()),
-                () -> assertThat(path.getPrice()).isEqualTo(expectedPath.getPrice())
+                () -> assertThat(path.getFare()).isEqualTo(expectedPath.getFare())
         );
     }
 
