@@ -103,4 +103,8 @@ public class Line extends BaseEntity {
     private Station findDownStation() {
         return sections.findDownStation();
     }
+
+    public void removeSection(Station station) {
+        this.sections.cutOff(this, station);
+    }
 }
