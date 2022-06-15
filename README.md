@@ -1,3 +1,19 @@
+### Step3 요구사항
+
+- [ ] 토큰 발급 기능(로그인) (POST /login/token)
+    - [ ] 이메일, 패스워드를 받아 인증 후 access token 응답
+- [ ] 내 정보 기능
+    - [ ] 내 정보 조회 (GET /members/me)
+        - [ ] 토큰을 확인해 로그인 정보를 응답
+        - [ ] @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용
+    - [ ] 내 정보 변경 기능 (PUT /members/me)
+    - [ ] 내 정보 삭제 기능 (DELETE /members/me)
+- [ ] 즐겨 찾기 기능 구현
+    - [ ] 시나리오 기반으로 인수테스트 작성 및 통과 시키기
+    - [ ] 즐겨찾기 생성 (POST /favorites)
+    - [ ] 즐겨찾기 목록 불러오기 (GET /favorites)
+    - [ ] 즐겨찾기 삭제 (DELETE /favorites/:id)
+
 ### Step2 요구사항
 
 - [x] 최단 경로 조회 인수 테스트 만들기
