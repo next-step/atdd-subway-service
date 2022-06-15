@@ -127,3 +127,48 @@ Feature: 지하철 구간 관련 기능
   - Station
     - Section 정보를 가진다 (Line 과 Station 을 Section 을 중간 테이블로 두고 다대다 -> 일대다로 풀어서 정리)
   
+
+----------------------
+----------------------
+
+## 3단계 - 인증을 통한 기능 구현
+
+#### 요구 사항
+- [ ] 토큰 발급 기능 (로그인) 인수 테스트 만들기
+- [ ] 인증 - 내 정보 조회 기능 완성하기
+- [ ] 인증 - 즐겨 찾기 기능 완성하기 
+
+- 인수 조건
+```text
+Feature: 로그인 기능
+
+  Scenario: 로그인을 시도한다.
+    Given 회원 등록되어 있음
+    When 로그인 요청
+    Then 로그인 됨
+```
+
+- 요청 / 응답
+  - request
+       ```http request
+       POST /login/token HTTP/1.1
+       content-type: application/json; charset=UTF-8
+       accept: application/json
+       {
+           "password": "password",
+           "email": "email@email.com"
+       }
+       ```
+  - response
+      ````text
+            HTTP/1.1 200 
+            Content-Type: application/json
+            Transfer-Encoding: chunked
+            Date: Sun, 27 Dec 2020 04:32:26 GMT
+            Keep-Alive: timeout=60
+            Connection: keep-alive
+            
+            {
+                "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY"
+            } 
+      ````
