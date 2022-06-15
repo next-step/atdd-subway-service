@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -25,7 +26,7 @@ public class PathFinderTest {
     private Station 합정역;
     private Station 동래역;
     private Station 서면역;
-    private List<Line> lines;
+    private List<Sections> sections;
     private PathFinder pathFinder;
 
     /**
@@ -49,7 +50,10 @@ public class PathFinderTest {
         Line 오호선 = Line.of("5호선", "bg-red-600", 공덕역, 영등포구청역, Distance.from(6));
         Line 부산일호선 = Line.of("부산1호선", "bg-orange-600", 동래역, 서면역, Distance.from(7));
         이호선.addSection(Section.of(이호선, 당산역, 영등포구청역, Distance.from(5)));
-        lines = Arrays.asList(육호선, 이호선, 오호선, 부산일호선);
+        List<Line> lines = Arrays.asList(육호선, 이호선, 오호선, 부산일호선);
+        sections = lines.stream()
+                .map(Line::getSections)
+                .collect(Collectors.toList());
 
         pathFinder = new PathFinder();
     }
@@ -58,7 +62,7 @@ public class PathFinderTest {
     @DisplayName("지하철 출발역과 도착역 사이의 최단 경로를 탐색한다.")
     void findShortestPath() {
         //when
-        PathResponse pathResponse = pathFinder.findShortestPath(lines, 합정역, 영등포구청역);
+        PathResponse pathResponse = pathFinder.findShortestPath(sections, 합정역, 영등포구청역);
         List<StationResponse> stations = pathResponse.getStations();
         List<String> stationNames = stations.stream()
                 .map(StationResponse::getName)
@@ -73,7 +77,7 @@ public class PathFinderTest {
     @DisplayName("출발역과 도착역이 같은 경우, 최단 경로를 구할 수 없다.")
     void findShortestPathBetweenSameStations() {
         assertThatThrownBy(() -> {
-            PathResponse pathResponse = pathFinder.findShortestPath(lines, 합정역, 합정역);
+            PathResponse pathResponse = pathFinder.findShortestPath(sections, 합정역, 합정역);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -81,7 +85,7 @@ public class PathFinderTest {
     @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우, 최단 경로를 구할 수 없다.")
     void findShortestPathBetweenNotConnectedStations() {
         assertThatThrownBy(() -> {
-            PathResponse pathResponse = pathFinder.findShortestPath(lines, 합정역, 동래역);
+            PathResponse pathResponse = pathFinder.findShortestPath(sections, 합정역, 동래역);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -90,7 +94,7 @@ public class PathFinderTest {
     void findShortestPathBetweenNotExistingStations() {
         assertThatThrownBy(() -> {
             Station 존재하지_않는_역 = new Station("LA");
-            PathResponse pathResponse = pathFinder.findShortestPath(lines, 합정역, 존재하지_않는_역);
+            PathResponse pathResponse = pathFinder.findShortestPath(sections, 합정역, 존재하지_않는_역);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 }

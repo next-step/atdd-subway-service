@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import java.util.Objects;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 
@@ -22,8 +23,8 @@ public class PathFinder {
         path = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     }
 
-    public PathResponse findShortestPath(List<Line> lines, Station source, Station target) {
-        drawPath(lines);
+    public PathResponse findShortestPath(List<Sections> allSections, Station source, Station target) {
+        drawPath(allSections);
         validateStation(source, target);
         GraphPath<Station, DefaultWeightedEdge> shortestPath = findDijkstraShortestPath(source, target);
         validateShortestPath(shortestPath);
@@ -58,10 +59,10 @@ public class PathFinder {
         return source.equals(target);
     }
 
-    private void drawPath(List<Line> lines) {
-        lines.forEach(line -> {
-            addStations(line.findAllStations());
-            connectSections(line.getSections());
+    private void drawPath(List<Sections> allSections) {
+        allSections.forEach(sections -> {
+            addStations(sections.findOrderedAllStations());
+            connectSections(sections.getSections());
         });
     }
 

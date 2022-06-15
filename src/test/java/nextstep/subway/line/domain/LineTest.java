@@ -26,9 +26,9 @@ public class LineTest {
         Station downStation = new Station("여의나루역");
 
         line.addSection(Section.of(line, upStation, downStation, Distance.from(5)));
-        List<Section> sections = line.getSections();
+        Sections sections = line.getSections();
 
-        assertThat(sections.size()).isEqualTo(2);
+        assertThat(sections.getSize()).isEqualTo(2);
     }
 
     @Test
@@ -39,8 +39,8 @@ public class LineTest {
         line.addSection(Section.of(line, upStation, downStation, Distance.from(5)));
 
         line.remove(upStation);
-        List<Section> sections = line.getSections();
+        Sections sections = line.getSections();
 
-        assertThat(sections.size()).isEqualTo(1);
+        assertThat(sections.getSize()).isEqualTo(1);
     }
 }

@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -39,6 +40,7 @@ class PathServiceTest {
     private Station source;
     private Station target;
     private List<Line> lines;
+    private List<Sections> sections;
     private PathResponse pathResponse;
 
     @Test
@@ -68,7 +70,8 @@ class PathServiceTest {
                 StationResponse.of(source),
                 StationResponse.of(stopover),
                 StationResponse.of(target)), 8);
-        when(pathFinder.findShortestPath(lines, source, target)).thenReturn(pathResponse);
+        sections = Collections.emptyList();
+        when(pathFinder.findShortestPath(sections, source, target)).thenReturn(pathResponse);
     }
 
     private void stubLineRepository() {
