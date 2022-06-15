@@ -50,6 +50,10 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public Sections getSections() {
+        return this.sections;
+    }
+
     public List<Station> getStations() {
         return this.sections.getStations();
     }

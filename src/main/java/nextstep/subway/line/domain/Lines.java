@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -8,6 +9,10 @@ public class Lines implements Iterable<Line> {
 
     public Lines(List<Line> lineList) {
         this.lineList = lineList;
+    }
+
+    public Lines() {
+        this.lineList = new ArrayList<>();
     }
 
     @Override

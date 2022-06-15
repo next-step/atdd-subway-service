@@ -8,7 +8,7 @@ import javax.persistence.OneToMany;
 import java.util.*;
 
 @Embeddable
-public class Sections {
+public class Sections implements Iterable<Section> {
     private static final int SECTION_LIST_LOWER_BOUND_SIZE = 1;
 
     @OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
@@ -16,6 +16,10 @@ public class Sections {
 
     public Sections() {
         this.sectionList = new ArrayList<>();
+    }
+
+    public List<Section> getAll() {
+        return this.sectionList;
     }
 
     public void add(Section section) {
@@ -125,5 +129,10 @@ public class Sections {
         if (isUpStationExisted && isDownStationExisted) {
             throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
+    }
+
+    @Override
+    public Iterator<Section> iterator() {
+        return this.sectionList.iterator();
     }
 }
