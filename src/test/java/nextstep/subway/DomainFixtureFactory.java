@@ -2,6 +2,7 @@ package nextstep.subway;
 
 import java.util.ArrayList;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
@@ -40,6 +41,14 @@ public class DomainFixtureFactory {
                                   Distance distance) {
         return Line.builder(name, color, upStation, downStation, distance)
                 .id(id)
+                .build();
+    }
+
+    public static Line createLine(long id, String name, String color, Station upStation, Station downStation,
+                                  Distance distance, Fare fare) {
+        return Line.builder(name, color, upStation, downStation, distance)
+                .id(id)
+                .additionalFare(fare)
                 .build();
     }
 

@@ -4,16 +4,18 @@ import java.util.Set;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Path;
+import nextstep.subway.member.domain.Age;
 
 public class FareCalculator {
     private static final int MIN_NUM = 0;
 
-    public static Fare calculateFare(Set<Line> lines, Path path) {
+    public static Fare calculateFare(Set<Line> lines, Path path, Age age) {
         Distance distance = path.distance();
-        Fare lineFare = maxAdditionalFareByLines(lines);
-        Fare distanceFare = DistanceFarePolicy.findDistanceFarePolicyByDistance(distance).calculateFare(distance);
-        lineFare.add(distanceFare);
-        return lineFare;
+        Fare fare = DistanceFarePolicy.findDistanceFarePolicyByDistance(distance).calculateFare(distance);
+        Fare additionalFare = maxAdditionalFareByLines(lines);
+        fare.add(additionalFare);
+        AgeFarePolicy.findAgeFarePolicyByAge(age).discountFare(fare);
+        return fare;
     }
 
     private static Fare maxAdditionalFareByLines(Set<Line> lines) {
