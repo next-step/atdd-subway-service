@@ -19,7 +19,7 @@ public class Sections {
     private List<Section> sections = new ArrayList<>();
 
     public void addSection(Section section) {
-        validate(section);
+        validateAddSection(section);
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
 
@@ -89,7 +89,7 @@ public class Sections {
                 .orElse(null);
     }
 
-    private void validate(Section section) {
+    private void validateAddSection(Section section) {
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
         Stations stations = findStations();
