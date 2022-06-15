@@ -24,6 +24,9 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("지하철 최단 경로 조회 로직")
 @ExtendWith(MockitoExtension.class)
 public class PathServiceTest {
+    private static Station 강남역;
+    private static Station 교대역;
+
     @InjectMocks
     private PathService pathService;
     @Mock
@@ -33,16 +36,17 @@ public class PathServiceTest {
 
     private List<Line> lines;
 
+
     @BeforeEach
     void setUp() {
         lines = getLines();
     }
 
     public static List<Line> getLines() {
-        Station 강남역 = getStation(1L, "강남역");
+        강남역 = getStation(1L, "강남역");
         Station 양재역 = getStation(2L, "양재역");
         Station 남부터미널역 = getStation(3L, "남부터미널역");
-        Station 교대역 = getStation(4L, "교대역");
+        교대역 = getStation(4L, "교대역");
         Station 사당역 = getStation(5L, "사당역");
         Station 이수역 = getStation(6L, "이수역");
 
@@ -68,9 +72,9 @@ public class PathServiceTest {
         // given
         given(lineRepository.findAll()).willReturn(lines);
         given(stationService.findStationById(1L))
-                .willReturn(getStation(1L, "강남역"));
+                .willReturn(강남역);
         given(stationService.findStationById(4L))
-                .willReturn(getStation(4L, "교대역"));
+                .willReturn(교대역);
 
         // when
         PathResponse response = pathService.findShortestPath(1L, 4L);

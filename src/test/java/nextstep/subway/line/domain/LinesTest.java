@@ -18,11 +18,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("전체 노선에 대한 기능")
 public class LinesTest {
+    private static Station 강남역;
+    private static Station 양재역;
+    private static Station 수진역;
+
     private Lines lines;
 
     @BeforeEach
     void setUp() {
         lines = new Lines(getLines());
+        강남역 = getStation(1L, "강남역");
+        양재역 = getStation(2L, "양재역");
+        수진역 = getStation(5L, "수진역");
     }
 
     @Test
@@ -68,13 +75,13 @@ public class LinesTest {
 
     private static List<Station> 포함된_역() {
         return Arrays.asList(
-                getStation(1L, "강남역"),
-                getStation(2L, "양재역"));
+                강남역, 양재역
+        );
     }
 
     private static List<Station> 포함되지_않은_역() {
         return Arrays.asList(
-                getStation(1L, "강남역"),
-                getStation(5L, "수진역"));
+                강남역, 수진역
+        );
     }
 }
