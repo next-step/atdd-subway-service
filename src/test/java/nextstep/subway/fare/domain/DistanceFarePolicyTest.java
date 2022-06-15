@@ -23,6 +23,6 @@ class DistanceFarePolicyTest {
     void findDistanceFarePolicyByDistance(int input, int fare) {
         Distance distance = Distance.valueOf(input);
         DistanceFarePolicy distanceFarePolicyByDistance = DistanceFarePolicy.findDistanceFarePolicyByDistance(distance);
-        assertThat(distanceFarePolicyByDistance.calculateFare(distance)).isEqualTo(fare);
+        assertThat(distanceFarePolicyByDistance.calculateFare(distance)).isEqualTo(Fare.valueOf(fare));
     }
 }

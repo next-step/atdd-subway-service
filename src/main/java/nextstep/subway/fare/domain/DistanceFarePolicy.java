@@ -20,9 +20,9 @@ public enum DistanceFarePolicy {
     public static final int FIRST_ADDITIONAL_UNIT = 5;
     public static final int SECOND_ADDITIONAL_UNIT = 8;
     private final Predicate<Distance> predicateByDistance;
-    private final Function<Distance, Integer> calculateFare;
+    private final Function<Distance, Fare> calculateFare;
 
-    DistanceFarePolicy(Predicate<Distance> predicateByDistance, Function<Distance, Integer> calculateFare) {
+    DistanceFarePolicy(Predicate<Distance> predicateByDistance, Function<Distance, Fare> calculateFare) {
         this.predicateByDistance = predicateByDistance;
         this.calculateFare = calculateFare;
     }
@@ -39,23 +39,23 @@ public enum DistanceFarePolicy {
         return distance.distance() > FIRST_ADDITION_END;
     }
 
-    private static int calculateBasicFare(Distance distance) {
-        return BASIC_FARE;
+    private static Fare calculateBasicFare(Distance distance) {
+        return Fare.valueOf(BASIC_FARE);
     }
 
-    private static int calculateFirstAdditionalFare(Distance distance) {
-        int previousFare = calculateBasicFare(Distance.valueOf(BASIC_END));
+    private static Fare calculateFirstAdditionalFare(Distance distance) {
+        int previousFare = calculateBasicFare(Distance.valueOf(BASIC_END)).fare();
         int additionalFare = (int) ((Math.ceil((distance.distance() - BASIC_END - 1) / FIRST_ADDITIONAL_UNIT) + 1)
                 * ADDITIONAL_FARE);
-        return previousFare + additionalFare;
+        return Fare.valueOf(previousFare + additionalFare);
     }
 
-    private static int calculateSecondAdditionalFare(Distance distance) {
-        int previousFare = calculateFirstAdditionalFare(Distance.valueOf(FIRST_ADDITION_END));
+    private static Fare calculateSecondAdditionalFare(Distance distance) {
+        int previousFare = calculateFirstAdditionalFare(Distance.valueOf(FIRST_ADDITION_END)).fare();
         int additionalFare = (int) (
                 (Math.ceil((distance.distance() - FIRST_ADDITION_END - 1) / SECOND_ADDITIONAL_UNIT) + 1)
                         * ADDITIONAL_FARE);
-        return previousFare + additionalFare;
+        return Fare.valueOf(previousFare + additionalFare);
     }
 
     public static DistanceFarePolicy findDistanceFarePolicyByDistance(Distance distance) {
@@ -66,7 +66,7 @@ public enum DistanceFarePolicy {
                 .orElseThrow(() -> new NotFoundException("해당하는 거리 요금 정책이 없습니다."));
     }
 
-    public int calculateFare(Distance distance) {
+    public Fare calculateFare(Distance distance) {
         return this.calculateFare.apply(distance);
     }
 }
