@@ -52,3 +52,56 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+
+
+---
+# 1단계 인수 테스트 기반 리팩터링
+
+### 요구사항
+
+* 인수 테스트 기반 리팩터링
+    * LineService의 비즈니스 로직을 도메인으로 옮기기
+    * 한번에 많은 부분을 고치려 하지 말고 나눠서 부분부분 리팩터링하기
+    * 전체 기능은 인수 테스트로 보호한 뒤 세부 기능을 TDD로 리팩터링하기
+      1. Domain으로 옮길 로직을 찾기
+         스프링 빈을 사용하는 객체와 의존하는 로직을 제외하고는 도메인으로 옮길 예정
+         객체지향 생활체조를 참고
+      2. Domain의 단위 테스트를 작성하기
+         서비스 레이어에서 옮겨 올 로직의 기능을 테스트
+         SectionsTest나 LineTest 클래스가 생성될 수 있음
+      3. 로직을 옮기기
+         기존 로직을 지우지 말고 새로운 로직을 만들어 수행
+         정상 동작 확인 후 기존 로직 제거
+
+### to-do list
+- [ ] LineService 리팩터링
+    - [X] Sections 추가
+        - [X] getStation 이동
+        - [X] SectionsTest getStations 추가
+    - [X] Distance 값객체로 변경
+        - [X] Section 에 distance 변수 타입을 Distance 로 변경
+        - [X] DistanceConverter 추가
+        - [X] DistanceTest 추가
+    - [X] addLineStation 개선
+        - [X] 기존로직 복사하여 개선
+        - [X] Line 에 addSection 이동
+        - [X] Sections 에 로직 이동
+            - [X] Section 에 rearrange 추가
+            - [X] SectionTest 추가
+            - [X] Section 에 유효성 검사 추가
+            - [X] Sections 에 유효성 검사 추가
+        - [X] 기존로직 제거
+    - [X] dto to domain 로직 수정
+    - [X] removeLineStation 개선
+        - [X] 기존로직 복사하여 개선
+        - [X] Sections 에 로직 이동
+            - [X] 구간 병합 추가
+            - [X] 기존 구간 삭제
+        - [X] 테스트 케이스 추가
+            - [X] SectionsTest 케이스 추가
+            - [X] SectionTest 케이스 추가
+        - [X] 기존로직 제거
+- [X] 전역 예외 처리 추가
+    - [X] RuntimeException 으로 사용되던 예외 수정
+- [X] 인수 테스트 코드 시나리오 기반으로 리팩토링
