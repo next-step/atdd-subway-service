@@ -97,7 +97,7 @@ public class Sections {
 
     private boolean isContainAllStation(Section section) {
         return sections.stream()
-                .anyMatch(currentSection -> currentSection.hasAllStations(section));
+                .anyMatch(currentSection -> currentSection.equals(section));
     }
 
     private Section findTargetSection(Section section) {

@@ -47,9 +47,10 @@ class SectionTest {
     void hasAllStations_true() {
         // given
         final Section 강남역_삼성역 = new Section(이호선, 강남역, 삼성역, 5);
+        final Section 추가_강남역_삼성역 = new Section(이호선, 강남역, 삼성역, 5);
 
         // when
-        boolean actual = 강남역_삼성역.hasAllStations(강남역_삼성역);
+        boolean actual = 강남역_삼성역.equals(추가_강남역_삼성역);
 
         // then
         assertThat(actual).isTrue();
@@ -63,7 +64,7 @@ class SectionTest {
         final Section 잠실역_성수역 = new Section(이호선, 잠실역, 성수역, 5);
 
         // when
-        boolean actual = 강남역_삼성역.hasAllStations(잠실역_성수역);
+        boolean actual = 강남역_삼성역.equals(잠실역_성수역);
 
         // then
         assertThat(actual).isFalse();
@@ -77,7 +78,7 @@ class SectionTest {
         final Section 삼성역_잠실역 = new Section(이호선, 삼성역, 잠실역, 5);
 
         // when
-        boolean actual = 강남역_삼성역.hasAllStations(삼성역_잠실역);
+        boolean actual = 강남역_삼성역.equals(삼성역_잠실역);
 
         // then
         assertThat(actual).isFalse();
