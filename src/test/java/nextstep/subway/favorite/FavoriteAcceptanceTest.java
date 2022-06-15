@@ -13,13 +13,10 @@ import static nextstep.subway.utils.assertionHelper.FavoriteAssertionHelper.즐�
 import static nextstep.subway.utils.assertionHelper.FavoriteAssertionHelper.즐겨찾기_삭제됨;
 import static nextstep.subway.utils.assertionHelper.FavoriteAssertionHelper.즐겨찾기_생성_불가;
 import static nextstep.subway.utils.assertionHelper.FavoriteAssertionHelper.즐겨찾기_생성됨;
-import static org.mockito.Mockito.when;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.application.AuthService;
-import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -28,7 +25,6 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -70,10 +66,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 7);
 
-
         Member 내정보 = new Member("test@test.com", "testPw", 32);
 
-        회원_생성을_요청(내정보.getEmail(),내정보.getPassword(), 내정보.getAge());
+        회원_생성을_요청(내정보.getEmail(), 내정보.getPassword(), 내정보.getAge());
         토큰 = 로그인을통한_토큰받기(내정보.getEmail(), 내정보.getPassword()).jsonPath()
             .get("accessToken");
         잘못된_토큰 = "invalidToken";
