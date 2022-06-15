@@ -57,13 +57,10 @@ public class PathServiceTest {
     @Test
     public void 정상_경로찾기() {
         //given
-        when(lineService.findAllLines()).thenReturn(Arrays.asList(이호선, 신분당선, 삼호선));
-        when(stationService.findById(1L)).thenReturn(교대역);
-        when(stationService.findById(3L)).thenReturn(양재역);
-        PathService pathService = new PathService(lineService, stationService);
+        PathService pathService = new PathService();
 
         //when
-        PathResponse pathResponse = pathService.findPath(1L, 3L);
+        PathResponse pathResponse = pathService.findPath(교대역, 양재역, Arrays.asList(이호선, 신분당선, 삼호선));
 
         //then
         assertAll(() -> assertThat(pathResponse.getDistance()).isEqualTo(15),
