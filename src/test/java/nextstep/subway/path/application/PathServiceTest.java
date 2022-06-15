@@ -5,9 +5,12 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.NonLoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.policy.TeenagerDiscountPolicy;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -70,7 +73,7 @@ public class PathServiceTest {
         when(stationService.findStationById(3L)).thenReturn(교대역);
         when(lineRepository.findAll()).thenReturn(lines);
 
-        PathResponse pathResponse = pathService.findShortestPath(양재역.getId(), 교대역.getId());
+        PathResponse pathResponse = pathService.findShortestPath(new NonLoginMember(), 양재역.getId(), 교대역.getId());
         assertThat(pathResponse.getDistance()).isEqualTo(5);
         assertThat(pathResponse.getStations()).
                 containsExactlyElementsOf(
