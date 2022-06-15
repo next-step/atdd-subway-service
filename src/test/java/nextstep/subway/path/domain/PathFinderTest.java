@@ -48,15 +48,17 @@ class PathFinderTest {
 
         // then
         assertAll(
-                () -> assertThat(지하철역_이름_조회(pathFinder.findPath(교대역, 양재역).getStations())).containsExactly("교대역", "강남역", "양재역"),
-                () -> assertThat(pathFinder.findPath(교대역, 양재역).getDistance()).isEqualTo(15),
-                () -> assertThat(pathFinder.findPath(교대역, 양재역).getFare()).isEqualTo(1250 + 1000),
-                () -> assertThat(pathFinder.findPath(강남역, 양재역).getFare()).isEqualTo(1250 + 500)
+                () -> assertThat(지하철역_이름_조회(pathFinder.findPath(교대역, 양재역, 20).getStations())).containsExactly("교대역", "강남역", "양재역"),
+                () -> assertThat(pathFinder.findPath(교대역, 양재역, 20).getDistance()).isEqualTo(15),
+                () -> assertThat(pathFinder.findPath(교대역, 양재역, 20).getFare()).isEqualTo(1250 + 1000),
+                () -> assertThat(pathFinder.findPath(강남역, 양재역, 20).getFare()).isEqualTo(1250 + 500),
+                () -> assertThat(pathFinder.findPath(강남역, 양재역, 12).getFare()).isEqualTo((int) ((1250 + 500 - 350) * 0.5 + 350)),
+                () -> assertThat(pathFinder.findPath(강남역, 양재역, 13).getFare()).isEqualTo((int) ((1250 + 500 - 350) * 0.8 + 350))
         );
     }
 
     private List<String> 지하철역_이름_조회(List<Station> stations) {
-        return stations.stream().map(station -> station.getName()).collect(Collectors.toList());
+        return stations.stream().map(Station::getName).collect(Collectors.toList());
     }
 
     @DisplayName("jgrapht 라이브러리 테스트")

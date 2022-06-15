@@ -28,7 +28,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(Long startStationId, Long endStationId) {
+    public PathResponse findPath(Long startStationId, Long endStationId, int age) {
         validateStations(startStationId, endStationId);
 
         SectionGraph graph = new SectionGraph();
@@ -39,7 +39,7 @@ public class PathService {
         Station startStation = stationService.findById(startStationId);
         Station endStation = stationService.findById(endStationId);
 
-        Path findPath = pathFinder.findPath(startStation, endStation);
+        Path findPath = pathFinder.findPath(startStation, endStation, age);
 
         return PathResponse.of(findPath);
     }

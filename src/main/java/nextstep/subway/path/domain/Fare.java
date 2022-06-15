@@ -4,7 +4,7 @@ import nextstep.subway.line.domain.Sections;
 
 import java.util.Optional;
 
-import static nextstep.subway.path.domain.FarePolicy.BASIC_CHARGE;
+import static nextstep.subway.path.domain.FareDistancePolicy.BASIC_CHARGE;
 
 public class Fare {
     private final int fare;
@@ -13,18 +13,27 @@ public class Fare {
         this.fare = fare;
     }
 
-    public static Fare of(Sections sections, int distance) {
-        int fare = BASIC_CHARGE + sections.findOverFareOfLine() + calculateOverFare(distance);
+    public static Fare of(Sections sections, int distance, int age) {
+        int fare = BASIC_CHARGE + sections.findOverFareOfLine() + calculateDistanceOverFare(distance);
 
-        return new Fare(fare);
+        return new Fare(calculateAgeDiscountFare(fare, age));
     }
 
-    private static int calculateOverFare(int distance) {
-        Optional<FarePolicy> farePolicy = FarePolicy.findFarePolicyByDistance(distance);
+    private static int calculateDistanceOverFare(int distance) {
+        Optional<FareDistancePolicy> farePolicy = FareDistancePolicy.findFarePolicyByDistance(distance);
 
         return farePolicy
                 .map(policy -> (int) ((Math.ceil((distance - 1) / policy.getDistanceStandardValue()) + 1) * policy.getOverFare()))
                 .orElse(0);
+    }
+
+    private static int calculateAgeDiscountFare(int fare, int age) {
+        Optional<FareAgePolicy> farePolicy = FareAgePolicy.findFarePolicyByAge(age);
+
+        return farePolicy
+                .map(fareAgePolicy -> (int) ((fare - fareAgePolicy.getDeduction()) * fareAgePolicy.getDiscountFare() + fareAgePolicy.getDeduction()))
+                .orElse(fare);
+
     }
 
     public int getFare() {

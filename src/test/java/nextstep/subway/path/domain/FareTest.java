@@ -18,9 +18,9 @@ class FareTest {
         Line line = new Line("신분당선", "RED", 강남역, 판교역, 10, 0);
 
         // When
-        Fare 기본요금 = Fare.of(line.getSections(), 10);
-        Fare 거리_10초과_50이하 = Fare.of(line.getSections(),50);
-        Fare 거리_50초과 = Fare.of(line.getSections(),51);
+        Fare 기본요금 = Fare.of(line.getSections(), 10, 20);
+        Fare 거리_10초과_50이하 = Fare.of(line.getSections(),50, 20);
+        Fare 거리_50초과 = Fare.of(line.getSections(),51, 20);
 
         // Then
         assertAll(

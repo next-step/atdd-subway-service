@@ -14,11 +14,11 @@ public class PathFinder {
         this.path = path;
     }
 
-    public Path findPath(Station startStation, Station endStation) {
+    public Path findPath(Station startStation, Station endStation, int age) {
         GraphPath path = this.path.getPath(startStation, endStation);
         validatePath(path);
         int distance = (int) this.path.getPathWeight(startStation, endStation);
-        return new Path(path.getVertexList(), distance, Fare.of(Sections.of(path.getEdgeList()), distance).getFare());
+        return new Path(path.getVertexList(), distance, Fare.of(Sections.of(path.getEdgeList()), distance, age).getFare());
     }
 
     private void validatePath(GraphPath path) {
