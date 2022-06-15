@@ -6,7 +6,7 @@
     - [x] 내 정보 조회 (GET /members/me)
         - [x] 토큰을 확인해 로그인 정보를 응답
         - [x] @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용
-    - [ ] 내 정보 변경 기능 (PUT /members/me)
+    - [x] 내 정보 변경 기능 (PUT /members/me)
     - [ ] 내 정보 삭제 기능 (DELETE /members/me)
 - [ ] 즐겨 찾기 기능 구현
     - [ ] 시나리오 기반으로 인수테스트 작성 및 통과 시키기

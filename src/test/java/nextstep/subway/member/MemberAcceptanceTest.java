@@ -71,10 +71,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
 
         // when
-        ExtractableResponse<Response> response = 나의_정보_조회_요청(EMAIL, PASSWORD);
-
+        ExtractableResponse<Response> MyResponse = 나의_정보_조회_요청(EMAIL, PASSWORD);
         // then
-        회원_정보_조회됨(response, EMAIL, AGE);
+        회원_정보_조회됨(MyResponse, EMAIL, AGE);
+
+        // when
+        ExtractableResponse<Response> updateResponse = 나의_정보_변경_요청(NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        // then
+        회원_정보_수정됨(updateResponse);
+
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -134,12 +139,26 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 나의_정보_조회_요청(String email, String password) {
-        TokenResponse tokenResponse = 토큰_요청(new TokenRequest(EMAIL, PASSWORD)).as(TokenResponse.class);
+        TokenResponse tokenResponse = 토큰_요청(new TokenRequest(email, password)).as(TokenResponse.class);
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
-                .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+
+    public static ExtractableResponse<Response> 나의_정보_변경_요청(String email, String password, Integer age) {
+        TokenResponse tokenResponse = 토큰_요청(new TokenRequest(EMAIL, PASSWORD)).as(TokenResponse.class);
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put("/members/me")
                 .then().log().all()
                 .extract();
     }
