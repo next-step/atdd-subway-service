@@ -1,8 +1,8 @@
 package nextstep.subway.favorite;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.dto.LineRequest;
@@ -30,7 +30,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
-    private RequestSpecification 사용자;
+    private String 사용자;
 
     /**
      * Given 지하철역 등록되어 있음
@@ -89,8 +89,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(즐겨찾기_삭제_응답);
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(RequestSpecification authorization, StationResponse source, StationResponse target) {
-        return authorization
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, StationResponse source, StationResponse target) {
+        return RestAssured.given().log().all().auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new FavoriteRequest(source.getId(), target.getId()))
                 .when().post("favorites")
@@ -103,8 +103,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return response.header("location");
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(RequestSpecification authorization) {
-        return authorization
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
+        return RestAssured.given().log().all().auth().oauth2(accessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("favorites")
                 .then().log().all()
@@ -115,8 +115,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(RequestSpecification authorization, String location) {
-        return authorization
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, String location) {
+        return RestAssured.given().log().all().auth().oauth2(accessToken)
                 .when().delete(location)
                 .then().log().all()
                 .extract();

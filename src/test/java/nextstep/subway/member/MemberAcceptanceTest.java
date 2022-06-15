@@ -3,7 +3,6 @@ package nextstep.subway.member;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -65,7 +64,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void manageMyInfo() {
         // given
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
-        RequestSpecification 사용자 = 로그인_되어있음(EMAIL, PASSWORD);
+        String 사용자 = 로그인_되어있음(EMAIL, PASSWORD);
 
         // when
         ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회_요청(사용자);
@@ -80,7 +79,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         내_정보_변경됨(내_정보_변경_응답);
 
         // when
-        RequestSpecification 변경된_사용자 = 로그인_되어있음(NEW_EMAIL, NEW_PASSWORD);
+        String 변경된_사용자 = 로그인_되어있음(NEW_EMAIL, NEW_PASSWORD);
 
         // when
         ExtractableResponse<Response> 회원_탈퇴_응답 = 회원_탈퇴_요청(변경된_사용자);
@@ -164,8 +163,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성됨(response);
     }
 
-    public static ExtractableResponse<Response> 내_정보_조회_요청(RequestSpecification authorization) {
-        return authorization
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
+        return RestAssured.given().log().all().auth().oauth2(accessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("members/me")
                 .then().log().all()
@@ -176,8 +175,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static ExtractableResponse<Response> 내_정보_변경_요청(RequestSpecification authorization, String email, String password, Integer age) {
-        return authorization
+    public static ExtractableResponse<Response> 내_정보_변경_요청(String accessToken, String email, String password, Integer age) {
+        return RestAssured.given().log().all().auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new MemberRequest(email, password, age))
                 .when().put("members/me")
@@ -189,8 +188,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static ExtractableResponse<Response> 회원_탈퇴_요청(RequestSpecification authorization) {
-        return authorization
+    public static ExtractableResponse<Response> 회원_탈퇴_요청(String accessToken) {
+        return RestAssured.given().log().all().auth().oauth2(accessToken)
                 .when().delete("members/me")
                 .then().log().all()
                 .extract();
