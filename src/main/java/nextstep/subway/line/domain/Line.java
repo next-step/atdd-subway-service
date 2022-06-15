@@ -4,7 +4,9 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Line extends BaseEntity {
@@ -61,47 +63,8 @@ public class Line extends BaseEntity {
     }
 
     public void removeLineStation(Station station) {
-//        validateStationCount();
-//        validateStationInclusion(station);
-//
-//        if (isUpStation(station)) {
-//            Section section = sections.stream()
-//                                      .filter(sec -> sec.getUpStation().equals(station))
-//                                      .findFirst().orElseThrow(RuntimeException::new);
-//            sections.stream()
-//                    .filter(sec -> sec.getDownStation().equals(station))
-//                    .findFirst()
-//                    .ifPresent(sec -> sec.updateDownStation(section.getDownStation(), -section.getDistance()));
-//            sections.remove(section);
-//            return;
-//        }
-//
-//        Section section = sections.stream()
-//                                  .filter(sec -> sec.getDownStation().equals(station))
-//                                  .findFirst().orElseThrow(RuntimeException::new);
-//
-//        sections.stream()
-//                .filter(sec -> sec.getUpStation().equals(station))
-//                .findFirst()
-//                .ifPresent(sec -> sec.updateUpStation(section.getUpStation(), -section.getDistance()));
-//        sections.remove(section);
+        sections.removeSection(station);
     }
-
-    public void validateStationCount() {
-//        if (sections.size() <= 1) {
-//            throw new RuntimeException("마지막 구간은 삭제할 수 없습니다.");
-//        }
-    }
-
-    public void validateStationInclusion(Station station) {
-//        if (getStations().stream().noneMatch(st -> st.equals(station))) {
-//            throw new RuntimeException(String.format("%s 노선에 %s 역이 존재하지 않습니다.", name, station.getName()));
-//        }
-    }
-
-//    public boolean isUpStation(Station station) {
-//        return sections.stream().anyMatch(section -> section.getUpStation().equals(station));
-//    }
 
     @Override
     public boolean equals(Object o) {

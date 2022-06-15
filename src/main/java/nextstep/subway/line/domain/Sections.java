@@ -1,14 +1,18 @@
 package nextstep.subway.line.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import nextstep.subway.station.domain.Station;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Embeddable
 public class Sections {
+    @JsonManagedReference
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
@@ -114,5 +118,46 @@ public class Sections {
                 .filter(sec -> section.containsDownStation(sec.getDownStation()))
                 .findFirst()
                 .ifPresent(sec -> sec.updateDownStationReducedDistance(section));
+    }
+
+    public void removeSection(Station station) {
+        if (sections.size() == 1) {
+            throw new RuntimeException("마지막 구간은 삭제할 수 없습니다.");
+        }
+        if (getStations().stream().noneMatch(st -> st.equals(station))) {
+            throw new RuntimeException(String.format("%s 역은 노선에 존재하지 않습니다.", station.getName()));
+        }
+
+        if (isUpStationInSection(station)) {
+            updateDownStationIncreasedDistance(station);
+            return;
+        }
+        updateUpStationIncreasedDistance(station);
+    }
+
+    public boolean isUpStationInSection(Station station) {
+        return sections.stream().anyMatch(section -> section.getUpStation().equals(station));
+    }
+
+    public void updateDownStationIncreasedDistance(Station station) {
+        Section section = sections.stream()
+                                  .filter(sec -> sec.containsUpStation(station))
+                                  .findFirst().orElseThrow(RuntimeException::new);
+        sections.stream()
+                .filter(sec -> sec.containsDownStation(station))
+                .findFirst()
+                .ifPresent(sec -> sec.updateDownStationIncreasedDistance(section));
+        sections.remove(section);
+    }
+
+    public void updateUpStationIncreasedDistance(Station station) {
+        Section section = sections.stream()
+                                  .filter(sec -> sec.containsDownStation(station))
+                                  .findFirst().orElseThrow(RuntimeException::new);
+        sections.stream()
+                .filter(sec -> sec.containsUpStation(station))
+                .findFirst()
+                .ifPresent(sec -> sec.updateUpStationIncreasedDistance(sec));
+        sections.remove(section);
     }
 }
