@@ -5,11 +5,9 @@ import static nextstep.subway.utils.apiHelper.AuthMemberApiHelper.토큰을통�
 import static nextstep.subway.utils.apiHelper.MemberApiHelper.회원_생성을_요청;
 import static nextstep.subway.utils.assertionHelper.AuthMemberAssertionHelper.가져온_내정보_확인하기;
 import static nextstep.subway.utils.assertionHelper.AuthMemberAssertionHelper.인증실패;
-import static org.mockito.Mockito.when;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.Optional;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,8 +35,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBearerAuth() {
         //given
-        String token = 로그인을통한_토큰받기(내정보.getEmail(), 내정보.getPassword()).jsonPath()
-            .get("accessToken");
+        String token = 로그인을통한_토큰받기(내정보.getEmail(), 내정보.getPassword()).jsonPath().get("accessToken");
 
         //when
         ExtractableResponse<Response> 토큰을통해_내정보받기_response = 토큰을통해_내정보받기(token);
@@ -57,8 +54,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBadBearerAuth() {
         //when
-        ExtractableResponse<Response> 인증_요청_response = 로그인을통한_토큰받기(내정보.getEmail(),
-            "wrongPassword");
+        ExtractableResponse<Response> 인증_요청_response = 로그인을통한_토큰받기(내정보.getEmail(), "wrongPassword");
 
         //then
         인증실패(인증_요청_response);
