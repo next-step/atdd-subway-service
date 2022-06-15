@@ -37,8 +37,8 @@ public class Sections {
     public void removeSectionByStation(Station station) {
         validateRemoveStation(station);
 
-        if (isUpStationAndDownStation(station)) {
-            matchUpStationAndDownStation(station);
+        if (hasUpStationAndDownStation(station)) {
+            removeUpStationAndDownStation(station);
             return;
         }
 
@@ -129,11 +129,11 @@ public class Sections {
         findSection.updateDownStation(section.getUpStation(), section.getDistance());
     }
 
-    private boolean isUpStationAndDownStation(Station station) {
+    private boolean hasUpStationAndDownStation(Station station) {
         return hasNextUpSection(station) && hasNextDownSection(station);
     }
 
-    private Section matchUpStationAndDownStation(Station station) {
+    private void removeUpStationAndDownStation(Station station) {
         Section sectionByUpStation = findSectionByUpStation(station);
         Section sectionByDownStation = findSectionByDownStation(station);
 
@@ -147,7 +147,6 @@ public class Sections {
         sections.add(section);
         sections.remove(sectionByUpStation);
         sections.remove(sectionByDownStation);
-        return section;
     }
 
     private Section matchAndRemoveUpStation(Station station) {
