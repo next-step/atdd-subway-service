@@ -6,7 +6,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Embeddable
@@ -51,7 +53,7 @@ public class Sections {
 
     private boolean isStationExisted(Station station) {
         return sections.stream()
-                .anyMatch(it -> it.getUpStation() == station || it.getDownStation() == station);
+                .anyMatch(it -> Objects.equals(station, it.getUpStation()) || Objects.equals(station, it.getDownStation()));
     }
 
     private void raiseIfNotValidAddSection(boolean isUpStationExisted, boolean isDownStationExisted) {
@@ -64,27 +66,19 @@ public class Sections {
         }
     }
 
-    protected int size() {
-        return sections.size();
-    }
-
     public boolean isEmpty() {
         return sections.isEmpty();
     }
 
-    public Section get(int index) {
-        return sections.get(index);
-    }
-
     public Optional<Section> getNextSectionByEqualUpStation(Station station) {
         return sections.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(it -> Objects.equals(station, it.getUpStation()))
                 .findFirst();
     }
 
     public Optional<Section> getNextSectionByEqualDownStation(Station station) {
         return sections.stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(it -> Objects.equals(it.getDownStation(), station))
                 .findFirst();
     }
 
@@ -109,5 +103,41 @@ public class Sections {
         if (sections.size() <= MIN_REMOVE_SECTION_SIZE) {
             throw new IllegalArgumentException("구간이 하나 이상일때 역을 지울 수 있습니다.");
         }
+    }
+
+    public List<Station> getOrderedStations() {
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Station> stations = new ArrayList<>();
+        Station downStation = findUpStation();
+        stations.add(downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextSection = getNextSectionByEqualUpStation(finalDownStation);
+            if (!nextSection.isPresent()) {
+                break;
+            }
+            downStation = nextSection.get().getDownStation();
+            stations.add(downStation);
+        }
+
+        return stations;
+    }
+
+    private Station findUpStation() {
+        Station downStation = sections.get(0).getUpStation();
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextSection = getNextSectionByEqualDownStation(finalDownStation);
+            if (!nextSection.isPresent()) {
+                break;
+            }
+            downStation = nextSection.get().getUpStation();
+        }
+
+        return downStation;
     }
 }

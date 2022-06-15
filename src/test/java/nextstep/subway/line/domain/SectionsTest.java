@@ -55,7 +55,7 @@ class SectionsTest {
         Sections sections = new Sections();
         sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
 
-        assertThat(sections.size()).isEqualTo(1);
+        assertThat(sections.getOrderedStations()).containsExactly(강남역, 양재역);
     }
 
     @Test
@@ -64,7 +64,7 @@ class SectionsTest {
         sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
         sections.add(new Section(신분당선, 양재역, 신논현역, new Distance(5)));
 
-        assertThat(sections.size()).isEqualTo(2);
+        assertThat(sections.getOrderedStations()).containsExactly(강남역, 양재역, 신논현역);
     }
 
     @Test
@@ -73,7 +73,7 @@ class SectionsTest {
         sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
         sections.add(new Section(신분당선, 신논현역, 강남역, new Distance(5)));
 
-        assertThat(sections.size()).isEqualTo(2);
+        assertThat(sections.getOrderedStations()).containsExactly(신논현역, 강남역, 양재역);
     }
 
     @Test
@@ -84,7 +84,7 @@ class SectionsTest {
         sections.add(new Section(신분당선, 양재역, 신논현역, new Distance(5)));
         sections.add(new Section(신분당선, 양재역, 양재시민의숲, new Distance(3)));
 
-        assertThat(sections.size()).isEqualTo(3);
+        assertThat(sections.getOrderedStations()).containsExactly(강남역, 양재역, 양재시민의숲, 신논현역);
     }
 
     @Test
@@ -108,14 +108,25 @@ class SectionsTest {
     }
 
     @Test
-    void removeLineStation_상행역_삭제() {
+    void removeLineStation_구간사이_역_삭제() {
         Sections sections = new Sections();
         sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
         sections.add(new Section(신분당선, 신논현역, 강남역, new Distance(5)));
 
         sections.remove(신분당선, 강남역);
 
-        assertThat(sections.size()).isEqualTo(1);
+        assertThat(sections.getOrderedStations()).containsExactly(신논현역, 양재역);
+    }
+
+    @Test
+    void removeLineStation_상행역_삭제() {
+        Sections sections = new Sections();
+        sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
+        sections.add(new Section(신분당선, 신논현역, 강남역, new Distance(5)));
+
+        sections.remove(신분당선, 신논현역);
+
+        assertThat(sections.getOrderedStations()).containsExactly(강남역, 양재역);
     }
 
     @Test
@@ -124,20 +135,9 @@ class SectionsTest {
         sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
         sections.add(new Section(신분당선, 신논현역, 강남역, new Distance(5)));
 
-        sections.remove(신분당선, 신논현역);
-
-        assertThat(sections.size()).isEqualTo(1);
-    }
-
-    @Test
-    void removeLineStation_구간사이_역_삭제() {
-        Sections sections = new Sections();
-        sections.add(new Section(신분당선, 강남역, 양재역, new Distance(10)));
-        sections.add(new Section(신분당선, 신논현역, 강남역, new Distance(5)));
-
         sections.remove(신분당선, 양재역);
 
-        assertThat(sections.size()).isEqualTo(1);
+        assertThat(sections.getOrderedStations()).containsExactly(신논현역, 강남역);
     }
 
     @Test
