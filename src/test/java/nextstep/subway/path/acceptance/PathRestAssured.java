@@ -21,9 +21,9 @@ public class PathRestAssured {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .param("source", source)
                 .param("target", target)
-                .auth().oauth2(token)
                 .when().get("/paths")
                 .then().log().all()
                 .extract();
