@@ -103,7 +103,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - 조회 실패
 
 ## 즐겨찾기 기능
-- [ ] 즐겨찾기를 관리한다
+- [x] 즐겨찾기를 관리한다
   - 지하철역 등록되어 있음
   - 지하철 노선 등록되어 있음
   - 지하철 노선에 지하철역 등록되어 있음
