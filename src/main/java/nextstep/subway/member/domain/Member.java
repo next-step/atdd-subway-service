@@ -61,14 +61,11 @@ public class Member extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Member member = (Member) o;
-        return Objects.equals(id, member.id) &&
-                Objects.equals(email, member.email) &&
-                Objects.equals(password, member.password) &&
-                Objects.equals(age, member.age);
+        return Objects.equals(id, member.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, password, age);
+        return Objects.hash(id);
     }
 }

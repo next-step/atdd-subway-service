@@ -5,11 +5,10 @@ import nextstep.subway.exception.InvalidSectionException;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.dto.StationResponses;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -39,10 +38,10 @@ class LineTest {
         Line line = new Line("2호선", "green", A역, B역, 10);
 
         // when
-        List<StationResponse> responses = line.findStationResponses();
+        StationResponses responses = new StationResponses(line);
 
         // then
-        assertThat(responses).containsExactly(
+        assertThat(responses.getList()).containsExactly(
                 new StationResponse(A역.getId(), A역.getName()),
                 new StationResponse(B역.getId(), B역.getName()));
     }
@@ -54,7 +53,7 @@ class LineTest {
         Line line = new Line("2호선", "green", A역, B역, 10);
 
         // when
-        LineResponse lineResponse = line.findLineResponse();
+        LineResponse lineResponse = LineResponse.of(line);
 
         // then
         assertThat(lineResponse.getName()).isEqualTo("2호선");
@@ -77,8 +76,8 @@ class LineTest {
         line.addSection(new Section(E역, F역, 10));
 
         // then
-        List<StationResponse> responses = line.findStationResponses();
-        assertThat(responses).containsExactly(
+        StationResponses responses = new StationResponses(line);
+        assertThat(responses.getList()).containsExactly(
                 new StationResponse(A역.getId(), A역.getName()),
                 new StationResponse(B역.getId(), B역.getName()),
                 new StationResponse(C역.getId(), C역.getName()),

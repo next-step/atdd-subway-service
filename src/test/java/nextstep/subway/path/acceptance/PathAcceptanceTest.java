@@ -1,4 +1,4 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -124,6 +125,45 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단경로_조회(종합운동장, new StationResponse(100L, "NEXTSTEP"));
 
         최단경로_조회_실패(response);
+    }
+
+    // Scenario
+    @DisplayName("지하철 최단 경로를 조회한다.")
+    @Test
+    void scenario1() {
+        // when: 최단 경로 조회 요청
+        ExtractableResponse<Response> 조회된_최단_경로 = 최단경로_조회(종합운동장, 가락시장);
+
+        // then: 최단 경로가 조회됨
+        최단경로_지하철역_순서_정렬됨(조회된_최단_경로, Arrays.asList(종합운동장, 잠실새내, 잠실, 석촌, 가락시장));
+        최단경로_길이확인(조회된_최단_경로, 50);
+
+        // when: 최단 경로를 가지는 신규 노선 구간 등록 되어있음
+        지하철_노선_등록되어_있음(new LineRequest("최단경로노선", "bg-black-600", 종합운동장.getId(), 가락시장.getId(), 15)).as(LineResponse.class);
+
+        // and: 최단 경로 조회 요청
+        ExtractableResponse<Response> 조회된_신규_최단_경로 = 최단경로_조회(종합운동장, 가락시장);
+
+        // then: 최단 경로가 조회됨
+        최단경로_지하철역_순서_정렬됨(조회된_신규_최단_경로, Arrays.asList(종합운동장, 가락시장));
+        최단경로_길이확인(조회된_신규_최단_경로, 15);
+
+        // when: 새로운 노선 등록됨
+        StationResponse 김포공항 = 지하철역_등록되어_있음("김포공항").as(StationResponse.class);
+        StationResponse 여의도 = 지하철역_등록되어_있음("여의도").as(StationResponse.class);
+        지하철_노선_등록되어_있음(new LineRequest("9호선", "gold", 김포공항.getId(), 여의도.getId(), 10)).as(LineResponse.class);
+
+        // and: 연결된 구간으로 갈 수 없는 목적지 최단 경로 조회
+        ExtractableResponse<Response> 목적지_역으로_이동_불가능한_최단_경로_조회됨 = 최단경로_조회(잠실, 여의도);
+
+        // then: 최단 경로 조회에 실패
+        최단경로_조회_실패(목적지_역으로_이동_불가능한_최단_경로_조회됨);
+
+        // when: 존재하지 않는 역을 목적지로 최단 경로 조회
+        ExtractableResponse<Response> 존재하지_않는_목적지_역으로_최단_경로_조회됨 = 최단경로_조회(석촌,  new StationResponse(10000L, "존재하지 않는 역"));
+
+        // then: 최단 경로 조회에 실패
+        최단경로_조회_실패(존재하지_않는_목적지_역으로_최단_경로_조회됨);
     }
 
     public static ExtractableResponse<Response> 최단경로_조회(StationResponse source, StationResponse target) {
