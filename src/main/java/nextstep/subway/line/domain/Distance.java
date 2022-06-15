@@ -1,11 +1,13 @@
 package nextstep.subway.line.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class Distance implements Comparable<Distance> {
     private static final int ZERO_VALUE = 0;
 
+    @Column
     private int distance;
 
     protected Distance() {}

@@ -144,4 +144,8 @@ public class Sections {
                 .map(Section::getDownStation)
                 .collect(Collectors.toList());
     }
+
+    public int getSize() {
+        return sections.size();
+    }
 }
