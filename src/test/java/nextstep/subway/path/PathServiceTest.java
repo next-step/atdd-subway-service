@@ -14,16 +14,10 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class PathServiceTest {
-
-    @Mock
-    private LineService lineService;
-    @Mock
-    private StationService stationService;
     private Line 이호선;
     private Line 신분당선;
     private Line 삼호선;
