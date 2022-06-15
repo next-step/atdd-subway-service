@@ -10,6 +10,8 @@
     - [x] 내 정보 삭제 기능 (DELETE /members/me)
 - [ ] 즐겨 찾기 기능 구현
     - [ ] 시나리오 기반으로 인수테스트 작성 및 통과 시키기
+    - [ ] Favorite 도메인 엔티티 생성
+        - [ ] 멤버, Source Station, Target Station와 관계매핑
     - [ ] 즐겨찾기 생성 (POST /favorites)
     - [ ] 즐겨찾기 목록 불러오기 (GET /favorites)
     - [ ] 즐겨찾기 삭제 (DELETE /favorites/:id)
