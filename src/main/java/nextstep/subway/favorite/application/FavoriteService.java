@@ -61,7 +61,8 @@ public class FavoriteService {
     }
 
     public Favorite findFavoriteById(Long id) {
-        return this.favoriteRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        return this.favoriteRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("즐겨찾기가 존재하지 않습니다."));
     }
 
 }

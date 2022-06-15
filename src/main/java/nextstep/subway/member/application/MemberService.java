@@ -24,13 +24,13 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findMemberById(id);
         return MemberResponse.of(member);
     }
 
     @Transactional
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findMemberById(id);
         member.update(param.toMember());
     }
 
@@ -40,7 +40,8 @@ public class MemberService {
     }
 
     public Member findMemberById(Long id) {
-        return memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        return memberRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
     }
 
 }
