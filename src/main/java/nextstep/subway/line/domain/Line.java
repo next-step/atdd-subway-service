@@ -63,7 +63,7 @@ public class Line extends BaseEntity {
         Station station = findUpStation();
         stations.add(station);
 
-        while (sections.isNextUpSection(station)) {
+        while (sections.hasNextUpSection(station)) {
             Section nextLineStation = sections.findSectionByUpStation(station);
             station = nextLineStation.getDownStation();
             stations.add(station);
@@ -84,7 +84,7 @@ public class Line extends BaseEntity {
     private Station findUpStation() {
         Station station = sections.getSections().get(0).getUpStation();
 
-        while (sections.isNextDownSection(station)) {
+        while (sections.hasNextDownSection(station)) {
             Section section = sections.findSectionByDownStation(station);
             station = section.getUpStation();
         }

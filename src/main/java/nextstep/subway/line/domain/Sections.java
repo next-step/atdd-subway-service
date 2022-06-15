@@ -65,12 +65,12 @@ public class Sections {
         return stations;
     }
 
-    public boolean isNextUpSection(Station station) {
+    public boolean hasNextUpSection(Station station) {
         return sections.stream()
                 .anyMatch(section -> section.isEqualsUpStation(station));
     }
 
-    public boolean isNextDownSection(Station station) {
+    public boolean hasNextDownSection(Station station) {
         return sections.stream()
                 .anyMatch(section -> section.isEqualsDownStation(station));
     }
