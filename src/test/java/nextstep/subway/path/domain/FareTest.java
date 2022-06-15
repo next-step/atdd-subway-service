@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.Set;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.policy.ChildrenDiscountPolicy;
+import nextstep.subway.path.domain.policy.NonDiscountPolicy;
+import nextstep.subway.path.domain.policy.TeenagerDiscountPolicy;
 import nextstep.subway.station.domain.Station;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,10 +55,40 @@ public class FareTest {
         Path path = finder.findShortest(강남역, 남부터미널역);
 
 
-        Fare fare = new Fare(path);
+        Fare fare = new Fare(path, new NonDiscountPolicy());
         int totalFare = fare.getTotalFare();
         //거리에 비례한 요금(1350)과 노선에 할증 요금(900)이 합쳐서 운임 요금이 결산
         assertThat(path.getShortestDistance()).isEqualTo(12);
         assertThat(totalFare).isEqualTo(2250);
     }
+
+    @Test
+    @DisplayName("어린이가 경로를 조회 할때.")
+    void fareTest02() {
+        //when : 강남역에서 남부터미널로 가는 최단거리 검색
+        PathFinder finder = new DijkstraPathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
+        Path path = finder.findShortest(강남역, 남부터미널역);
+
+        Fare fare = new Fare(path, new ChildrenDiscountPolicy());
+        int totalFare = fare.getTotalFare();
+        assertThat(path.getShortestDistance()).isEqualTo(12);
+        // then : (2250 - 350) * 0.5
+        assertThat(totalFare).isEqualTo(950);
+    }
+
+    @Test
+    @DisplayName("청소년이 경로를 조회 할때.")
+    void fareTest03() {
+        //when : 강남역에서 남부터미널로 가는 최단거리 검색
+        PathFinder finder = new DijkstraPathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
+        Path path = finder.findShortest(강남역, 남부터미널역);
+
+        Fare fare = new Fare(path, new TeenagerDiscountPolicy());
+        int totalFare = fare.getTotalFare();
+        assertThat(path.getShortestDistance()).isEqualTo(12);
+        // then : (2250 - 350) * 0.8
+        assertThat(totalFare).isEqualTo(1520);
+    }
+
+
 }
