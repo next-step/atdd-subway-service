@@ -44,6 +44,6 @@ public class Route {
     private void setVertexAndEdgeWeight(final Section section) {
         graph.addVertex(section.getUpStation());
         graph.addVertex(section.getDownStation());
-        graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+        graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().of());
     }
 }

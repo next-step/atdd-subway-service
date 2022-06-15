@@ -13,7 +13,7 @@ public class Distance {
 
     public Distance(long distance) {
         if (distance < 0) {
-            throw new IllegalArgumentException("Distance 는 음수를 가질수 없다.");
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.distance = distance;
     }
@@ -24,6 +24,10 @@ public class Distance {
 
     public Distance minus(final Distance source) {
         return source.minusBy(distance);
+    }
+
+    public long of() {
+        return this.distance;
     }
 
     private Distance plus(final long source) {

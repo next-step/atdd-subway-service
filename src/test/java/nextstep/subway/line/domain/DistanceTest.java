@@ -17,7 +17,7 @@ class DistanceTest {
     @DisplayName("음수를 가질수 없다.")
     @Test
     void invalidCreateTest() {
-        assertThatThrownBy(() -> new Distance(-1)).isExactlyInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Distance(-1)).isExactlyInstanceOf(RuntimeException.class);
     }
 
     @DisplayName("더하면 새로운 Distance 를 반환한다.")

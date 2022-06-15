@@ -109,10 +109,13 @@ public class Line extends BaseEntity {
         isSectionMatchesDownStation.ifPresent(this::removeSection);
 
         if (isSectionMatchesUpStation.isPresent() && isSectionMatchesDownStation.isPresent()) {
-            Station newUpStation = isSectionMatchesDownStation.get().getUpStation();
-            Station newDownStation = isSectionMatchesUpStation.get().getDownStation();
-            int newDistance = isSectionMatchesUpStation.get().getDistance() + isSectionMatchesDownStation.get().getDistance();
-            this.addSection(new Section(this, newUpStation, newDownStation, newDistance));
+            final Section sectionMatchesDownStation = isSectionMatchesDownStation.orElseThrow(EntityNotFoundException::new);
+            final Section sectionMatchesUpStation = isSectionMatchesUpStation.orElseThrow(EntityNotFoundException::new);
+            this.addSection(
+                    new Section(
+                            this, sectionMatchesDownStation.getUpStation(),
+                            sectionMatchesUpStation.getDownStation(),
+                            sectionMatchesUpStation.getDistance().plus(sectionMatchesDownStation.getDistance())));
         }
     }
 
