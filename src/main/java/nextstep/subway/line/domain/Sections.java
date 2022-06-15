@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -12,7 +11,6 @@ import java.util.Optional;
 
 @Embeddable
 public class Sections {
-    @JsonManagedReference
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
