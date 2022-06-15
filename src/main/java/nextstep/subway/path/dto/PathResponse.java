@@ -1,10 +1,10 @@
 package nextstep.subway.path.dto;
 
-import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 
 public class PathResponse {
 
@@ -12,9 +12,14 @@ public class PathResponse {
     private int distance;
     private int fee;
 
-    public PathResponse(List<Station> stations, int distance) {
+    public PathResponse() {
+    }
+
+    public PathResponse(Path path) {
+        List<Station> stations = path.getStations();
         this.stations = stations.stream().map(StationResponse::of).collect(Collectors.toList());
-        this.distance = distance;
+        this.distance = path.getDistance();
+        this.fee = path.getFee();
     }
 
     public List<StationResponse> getStations() {
@@ -28,4 +33,5 @@ public class PathResponse {
     public int getFee() {
         return fee;
     }
+
 }

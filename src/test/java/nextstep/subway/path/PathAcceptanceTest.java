@@ -1,8 +1,18 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_토큰_얻기;
+import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -14,17 +24,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_토큰_얻기;
-import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @DisplayName("지하철 경로 조회")
@@ -57,9 +56,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         사당역 = StationAcceptanceTest.지하철역_등록되어_있음("사당역").as(StationResponse.class);
         범계역 = StationAcceptanceTest.지하철역_등록되어_있음("범계역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 900)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 500)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 0)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -85,7 +84,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     public void findPath_fail_stationNotConnected() {
         //given
-        LineResponse 사호선 = 지하철_노선_등록되어_있음(new LineRequest("사호선", "bg-red-500", 사당역.getId(), 범계역.getId(), 5)).as(LineResponse.class);
+        LineResponse 사호선 = 지하철_노선_등록되어_있음(new LineRequest("사호선", "bg-red-500", 사당역.getId(), 범계역.getId(), 5, 0)).as(LineResponse.class);
         //when
         ExtractableResponse<Response> response = 최단경로_요청(사당역.getId(), 교대역.getId());
         //then
@@ -116,7 +115,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //when
         ExtractableResponse<Response> response = 최단경로_요청(강남역.getId(), 남부터미널역.getId());
         //then
-        최단경로_요금_확인(response, 12, 1250 + 100);
+        최단경로_요금_확인(response, 12, 1250 + 100 + 900);
     }
 
     @DisplayName("로그인 하여 할인받은, 추가요금이 있는, 요금을 구한다.")
@@ -127,7 +126,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //when
         ExtractableResponse<Response> response = 최단경로_요청(token, 강남역.getId(), 남부터미널역.getId());
         //then
-        최단경로_요금_확인(response, 12, 1150);
+        최단경로_요금_확인(response, 12, (int) (2250 - ((2250 - 350) * 0.2)));
     }
 
     private ExtractableResponse<Response> 최단경로_요청(Long sourceId, Long targetId) {

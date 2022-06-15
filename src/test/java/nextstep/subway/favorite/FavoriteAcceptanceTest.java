@@ -1,22 +1,5 @@
 package nextstep.subway.favorite;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
-import nextstep.subway.favorite.dto.FavoriteRequest;
-import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.List;
-
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_토큰_얻기;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.생성된_지하철노선;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_생성_요청;
@@ -28,6 +11,22 @@ import static nextstep.subway.station.StationAcceptanceTest.지하철역_생성_
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import java.util.List;
+import nextstep.subway.AcceptanceTest;
+import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.line.dto.LineRequest;
+import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.station.dto.StationResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -43,7 +42,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         강남역 = 생성된_지하철역(지하철역_생성_요청("강남역"));
         서초역 = 생성된_지하철역(지하철역_생성_요청("서초역"));
         역삼역 = 생성된_지하철역(지하철역_생성_요청("역삼역"));
-        LineResponse 신분당선 = 생성된_지하철노선(지하철_노선_생성_요청(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 10)));
+        LineResponse 신분당선 = 생성된_지하철노선(지하철_노선_생성_요청(new LineRequest("신분당선", "bg-red-600",
+            강남역.getId(), 역삼역.getId(), 10, 900)));
         지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 서초역, 5);
 
         String email = "cyr9210@gmail.com";
