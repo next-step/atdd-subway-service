@@ -1,11 +1,12 @@
 package nextstep.subway.fare.domain;
 
-import java.util.List;
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.station.domain.Station;
+import java.util.Set;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Path;
 
 public class FareCalculator {
-    public static int caculateFare(List<Station> path, Distance distance) {
-        return 100;
+    public static Fare caculateFare(Set<Line> lines, Path path) {
+        return Fare.valueOf(100);
     }
+
 }

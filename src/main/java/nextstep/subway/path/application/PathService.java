@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
+import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Path;
 import nextstep.subway.line.domain.Section;
@@ -32,18 +34,13 @@ public class PathService {
         Station target = stationService.findById(targetId);
         pathFinder.initGraph(findLines());
         Path path = pathFinder.shortestPath(source, target);
+        Fare fare = FareCalculator.caculateFare(path.findPathLinesFrom(findSections()), path);
         return PathResponse.of(path.stations().stream()
                 .map(StationResponse::of)
-                .collect(Collectors.toList()), path.distanceValue());
+                .collect(Collectors.toList()), path.distanceValue(), fare.fare());
     }
 
     private Set<Line> findLines() {
-        return findSections().stream()
-                .map(Section::line)
-                .collect(Collectors.toSet());
-    }
-
-    private Set<Line> findPathLines(List<Station> path) {
         return findSections().stream()
                 .map(Section::line)
                 .collect(Collectors.toSet());

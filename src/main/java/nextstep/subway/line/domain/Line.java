@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -23,6 +24,7 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
     @Embedded
+    @AttributeOverride(name = "fare", column = @Column(name = "additional_fare"))
     private Fare additionalFare;
     @Embedded
     private final Sections sections = new Sections();
@@ -51,7 +53,7 @@ public class Line extends BaseEntity {
         private final Station upStation;
         private final Station downStation;
         private final Distance distance;
-        private Fare additionalFare = null;
+        private Fare additionalFare = Fare.valueOf(0);
 
         private LineBuilder(String name, String color, Station upStation, Station downStation, Distance distance) {
             validateParameter(name, color);

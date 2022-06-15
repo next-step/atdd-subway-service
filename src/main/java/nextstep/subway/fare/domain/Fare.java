@@ -1,16 +1,21 @@
 package nextstep.subway.fare.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class Fare {
     private static final int MIN_NUM = 0;
-    private final int fare;
+    @Column
+    private int fare;
 
     private Fare(int fare) {
         validateFare(fare);
         this.fare = fare;
+    }
+
+    protected Fare() {
     }
 
     public static Fare valueOf(int fare) {
