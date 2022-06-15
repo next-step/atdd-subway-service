@@ -30,10 +30,11 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        if (credentials == null || !jwtTokenProvider.validateToken(credentials)) {
+        if (credentials == null) {
             return new NonLoginMember();
         }
 
+        jwtTokenProvider.validateToken(credentials);
         return authService.findMemberByToken(credentials);
     }
 }
