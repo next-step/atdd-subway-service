@@ -31,7 +31,7 @@ public class LinesTest {
         List<Station> stations =  lines.getAllStations();
 
         // then
-        assertThat(stations).hasSize(4);
+        assertThat(stations).hasSize(6);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class LinesTest {
         List<Section> sections = lines.getAllSections();
 
         // then
-        assertThat(sections).hasSize(4);
+        assertThat(sections).hasSize(5);
     }
 
     @ParameterizedTest
