@@ -54,7 +54,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void shortestPathNoryangjinToYeouinaru() {
 
         //when
-        final PathResponse 최단_경로 = 최단_경로_요청(노량진역.getId(), 여의나루역.getId()).as(PathResponse.class);
+        final PathResponse 최단_경로 = 최단_경로_요청(노량진역, 여의나루역).as(PathResponse.class);
         final List<StationResponse> 역_이동_목록 = 최단_경로.getStations();
         final int 이동_거리 = 최단_경로.getDistance();
 
@@ -68,11 +68,31 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
-    public static ExtractableResponse<Response> 최단_경로_요청(final Long source, final Long target) {
+    @DisplayName("샛강역 -> 신길역 최단거리는 15이며 경로는 샛강 - 노량진 - 대방 - 신길이다.")
+    @Test
+    void shortestPathSaetGangToSingil() {
+
+        //when
+        final PathResponse 최단_경로 = 최단_경로_요청(샛강역, 신길역).as(PathResponse.class);
+        final List<StationResponse> 역_이동_목록 = 최단_경로.getStations();
+        final int 이동_거리 = 최단_경로.getDistance();
+
+        //then
+        역_이동_목록_개수_확인(역_이동_목록, 4);
+        N번째_역_이름_확인(역_이동_목록, 0, 샛강역);
+        N번째_역_이름_확인(역_이동_목록, 1, 노량진역);
+        N번째_역_이름_확인(역_이동_목록, 2, 대방역);
+        N번째_역_이름_확인(역_이동_목록, 3, 신길역);
+        이동_거리_확인(이동_거리, 15);
+
+    }
+
+    public static ExtractableResponse<Response> 최단_경로_요청(final StationResponse sourceStation,
+                                                         final StationResponse targetStation) {
         return RestAssured
                 .given().log().all()
-                .param("source", source)
-                .param("target", target)
+                .param("source", sourceStation.getId())
+                .param("target", targetStation.getId())
                 .when().get("/paths")
                 .then().log().all()
                 .extract();
