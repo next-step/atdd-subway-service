@@ -10,12 +10,7 @@ class DiscountPolicyTest {
     @Test
     @DisplayName("할인을 받지 못하는 경우")
     void policyTest1() {
-        DiscountPolicy policy = new DiscountPolicy() {
-            @Override
-            public int discount(int fare) {
-                return fare;
-            }
-        };
+        DiscountPolicy policy = new NonDiscountPolicy();
         assertThat(policy.discount(500)).isEqualTo(500);
     }
 
