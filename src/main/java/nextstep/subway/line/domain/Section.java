@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Section {
@@ -54,19 +55,65 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    public boolean containsUpStation(Station station) {
+        return upStation.equals(station);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public boolean containsDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
+    public void updateUpStationReducedDistance(Section section) {
+        if (this.distance <= section.getDistance()) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+        this.upStation = section.getDownStation();
+        this.distance -= section.getDistance();
+    }
+
+    public void updateDownStationReducedDistance(Section section) {
+        if (this.distance <= section.getDistance()) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.downStation = section.getUpStation();
+        this.distance -= section.getDistance();
+    }
+
+    public void updateUpStationIncreasedDistance(Section section) {
+        this.upStation = section.getUpStation();
+        this.distance += section.getDistance();
+    }
+
+    public void updateDownStationIncreasedDistance(Section section) {
+        this.downStation = section.getDownStation();
+        this.distance += section.getDistance();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Section section = (Section) o;
+        return distance == section.distance
+                && Objects.equals(id, section.id)
+                && Objects.equals(line, section.line)
+                && Objects.equals(upStation, section.upStation)
+                && Objects.equals(downStation, section.downStation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, line, upStation, downStation, distance);
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "id=" + id +
+                ", line=" + line +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
     }
 }
