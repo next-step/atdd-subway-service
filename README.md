@@ -1,7 +1,7 @@
 ### Step3 요구사항
 
-- [ ] 토큰 발급 기능(로그인) (POST /login/token)
-    - [ ] 이메일, 패스워드를 받아 인증 후 access token 응답
+- [x] 토큰 발급 기능(로그인) (POST /login/token)
+    - [x] 이메일, 패스워드를 받아 인증 후 access token 응답
 - [ ] 내 정보 기능
     - [ ] 내 정보 조회 (GET /members/me)
         - [ ] 토큰을 확인해 로그인 정보를 응답
