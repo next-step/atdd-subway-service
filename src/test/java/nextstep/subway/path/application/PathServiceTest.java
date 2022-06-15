@@ -18,7 +18,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Path;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.member.domain.Age;
 import nextstep.subway.path.dto.PathResponse;

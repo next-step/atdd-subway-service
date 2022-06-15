@@ -3,7 +3,7 @@ package nextstep.subway.fare.domain;
 import java.util.Set;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Path;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.member.domain.Age;
 
 public class FareCalculator {
@@ -12,8 +12,7 @@ public class FareCalculator {
     public static Fare calculateFare(Set<Line> lines, Path path, Age age) {
         Distance distance = path.distance();
         Fare fare = DistanceFarePolicy.findDistanceFarePolicyByDistance(distance).calculateFare(distance);
-        Fare additionalFare = maxAdditionalFareByLines(lines);
-        fare.add(additionalFare);
+        fare.add(maxAdditionalFareByLines(lines));
         AgeFarePolicy.findAgeFarePolicyByAge(age).discountFare(fare);
         return fare;
     }

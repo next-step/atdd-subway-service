@@ -6,7 +6,7 @@ import java.util.Set;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Path;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;

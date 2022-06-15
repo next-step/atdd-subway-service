@@ -5,10 +5,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Path;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -35,10 +34,11 @@ public class PathService {
         Station target = stationService.findById(targetId);
         pathFinder.initGraph(findLines());
         Path path = pathFinder.shortestPath(source, target);
-        Fare fare = FareCalculator.calculateFare(path.findPathLinesFrom(findSections()), path, loginMember.getAge());
         return PathResponse.of(path.stations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList()), path.distanceValue(), fare.fare());
+                        .map(StationResponse::of)
+                        .collect(Collectors.toList()), path.distanceValue(),
+                FareCalculator.calculateFare(path.findPathLinesFrom(findSections()), path, loginMember.getAge())
+                        .fare());
     }
 
     private Set<Line> findLines() {

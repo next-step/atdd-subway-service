@@ -1,7 +1,6 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.NotFoundException;

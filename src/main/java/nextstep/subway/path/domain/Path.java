@@ -1,10 +1,13 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
@@ -22,7 +25,7 @@ public class Path {
 
     public Set<Line> findPathLinesFrom(List<Section> sections) {
         return sections.stream()
-                .filter(section -> this.containSection(section))
+                .filter(this::containSection)
                 .map(Section::line)
                 .collect(Collectors.toSet());
     }
