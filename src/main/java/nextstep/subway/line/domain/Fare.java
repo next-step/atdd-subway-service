@@ -10,8 +10,8 @@ public class Fare {
     private int fare;
 
     private Fare(Age age, SectionWeightedEdges sectionEdges) {
-        int beforeDiscount = DEFAULT_FARE + getExtraFare(sectionEdges.getLine()) + getDistanceFare(sectionEdges.getDisance());
-        this.fare = beforeDiscount - getAgeDiscount(beforeDiscount, age);
+        int totalFare = DEFAULT_FARE + getExtraFare(sectionEdges.getLine()) + getDistanceFare(sectionEdges.getDisance());
+        this.fare = totalFare - getAgeDiscount(totalFare, age);
     }
 
     public static Fare of(Age age, SectionWeightedEdges sectionEdges) {
