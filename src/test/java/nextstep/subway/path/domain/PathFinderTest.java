@@ -45,15 +45,19 @@ class PathFinderTest {
         // when
         SectionGraph graph = new SectionGraph();
         PathFinder pathFinder = new PathFinder(lines.createPath(graph));
+        Path 교대역_양재역_경로조회_결과 = pathFinder.findPath(교대역, 양재역, 20);
+        Path 강남역_양재역_경로조회_결과 = pathFinder.findPath(강남역, 양재역, 20);
+        Path 강남역_양재역_어린이_경로조회_결과 = pathFinder.findPath(강남역, 양재역, 12);
+        Path 강남역_양재역_청소년_경로조회_결과 = pathFinder.findPath(강남역, 양재역, 13);
 
         // then
         assertAll(
                 () -> assertThat(지하철역_이름_조회(pathFinder.findPath(교대역, 양재역, 20).getStations())).containsExactly("교대역", "강남역", "양재역"),
-                () -> assertThat(pathFinder.findPath(교대역, 양재역, 20).getDistance()).isEqualTo(15),
-                () -> assertThat(pathFinder.findPath(교대역, 양재역, 20).getFare()).isEqualTo(1250 + 1000),
-                () -> assertThat(pathFinder.findPath(강남역, 양재역, 20).getFare()).isEqualTo(1250 + 500),
-                () -> assertThat(pathFinder.findPath(강남역, 양재역, 12).getFare()).isEqualTo((int) ((1250 + 500 - 350) * 0.5 + 350)),
-                () -> assertThat(pathFinder.findPath(강남역, 양재역, 13).getFare()).isEqualTo((int) ((1250 + 500 - 350) * 0.8 + 350))
+                () -> assertThat(교대역_양재역_경로조회_결과.getDistance()).isEqualTo(15),
+                () -> assertThat(교대역_양재역_경로조회_결과.getFare()).isEqualTo(1250 + 300 + 1000),
+                () -> assertThat(강남역_양재역_경로조회_결과.getFare()).isEqualTo(1250 + 500),
+                () -> assertThat(강남역_양재역_어린이_경로조회_결과.getFare()).isEqualTo((int) ((1250 + 500 - 350) * 0.5 + 350)),
+                () -> assertThat(강남역_양재역_청소년_경로조회_결과.getFare()).isEqualTo((int) ((1250 + 500 - 350) * 0.8 + 350))
         );
     }
 
