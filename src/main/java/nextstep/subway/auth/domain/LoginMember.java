@@ -1,6 +1,10 @@
 package nextstep.subway.auth.domain;
 
-public class LoginMember {
+import nextstep.subway.path.domain.AgeDiscountType;
+import nextstep.subway.path.domain.policy.DiscountPolicy;
+import nextstep.subway.path.domain.policy.NonDiscountPolicy;
+
+public class LoginMember implements LoginAbleMember {
     private Long id;
     private String email;
     private Integer age;
@@ -24,5 +28,11 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    @Override
+    public DiscountPolicy getDiscountPolicy() {
+        DiscountPolicy discountPolicyByAge = AgeDiscountType.findDiscountPolicyByAge(this.age);
+        return discountPolicyByAge != null ? discountPolicyByAge : new NonDiscountPolicy();
     }
 }
