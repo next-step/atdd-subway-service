@@ -61,9 +61,9 @@ class PathAcceptanceTest extends AcceptanceTest {
         잠실역 = StationAcceptanceTest.지하철역_등록되어_있음("잠실역").as(StationResponse.class);
         강변역 = StationAcceptanceTest.지하철역_등록되어_있음("강변역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 12)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 12, 0)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 0)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 0)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
         지하철_노선에_지하철역_등록_요청(이호선, 강남역, 잠실역, 50);
@@ -129,7 +129,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         지하철역_최단거리_길이_검증_완료(response, 13);
         지하철역_최단거리_경로_검증_완료(response, Arrays.asList("강남역", "교대역", "남부터미널역"));
-        지하철_요금_검증_완료(response, 816);
+        지하철_요금_검증_완료(response, 960);
     }
 
     @DisplayName("청소년이 50km 이동한 경우 지하철 요금 조회")
@@ -142,7 +142,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         지하철역_최단거리_길이_검증_완료(response, 50);
         지하철역_최단거리_경로_검증_완료(response, Arrays.asList("강남역", "잠실역"));
-        지하철_요금_검증_완료(response, 1376);
+        지하철_요금_검증_완료(response, 1520);
     }
 
     @DisplayName("성인이 90km 이동한 경우 지하철 요금 조회")
