@@ -10,10 +10,8 @@ public class Fare {
     private int fare;
 
     private Fare(Age age, SectionWeightedEdges sectionEdges) {
-        this.fare = DEFAULT_FARE
-                + getExtraFare(sectionEdges.getLine())
-                + getDistanceFare(sectionEdges.getDisance());
-        calculateAgeDiscount(fare, age);
+        int beforeDiscount = DEFAULT_FARE + getExtraFare(sectionEdges.getLine()) + getDistanceFare(sectionEdges.getDisance());
+        this.fare = beforeDiscount - getAgeDiscount(beforeDiscount, age);
     }
 
     public static Fare of(Age age, SectionWeightedEdges sectionEdges) {
@@ -37,13 +35,10 @@ public class Fare {
                 fareDistance.getOverFarePrice();
     }
 
-    private void calculateAgeDiscount(int fare, Age age) {
-        if (age.isNotAdult()) {
-            this.fare -= getAgeDiscount(fare, age);
-        }
-    }
-
     private int getAgeDiscount(int fare, Age age) {
+        if (age.isAdult()) {
+            return 0;
+        }
         FareAgeDiscount ageDiscount = FareAgeDiscount.of(age.getValue());
         return (int) ((fare - DEDUCTION_FEE) * ageDiscount.getDiscountRate());
     }

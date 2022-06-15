@@ -20,7 +20,7 @@ public class Age {
         return age;
     }
 
-    public boolean isNotAdult() {
-        return age < DEFAULT_AGE;
+    public boolean isAdult() {
+        return age >= DEFAULT_AGE;
     }
 }
