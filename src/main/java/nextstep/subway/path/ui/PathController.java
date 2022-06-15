@@ -5,10 +5,12 @@ import nextstep.subway.path.application.PathService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/paths")
+@RestController
+@RequestMapping("/paths")
 public class PathController {
     private final PathService pathService;
 
@@ -16,7 +18,7 @@ public class PathController {
         this.pathService = pathService;
     }
 
-    @GetMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
+    @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<PathResponse> get(@RequestParam long source, @RequestParam long target) {
         return ResponseEntity.ok(pathService.get(source, target));
     }
