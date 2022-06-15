@@ -31,13 +31,7 @@ class DiscountPolicyTest {
     @Test
     @DisplayName("어린이 할인을 받는 경우")
     void policyTest3() {
-        DiscountPolicy policy = new DiscountPolicy() {
-            @Override
-            public int discount(int fare) {
-                if (fare <= 350) return 0;
-                return (int) Math.ceil((fare - 350) * 0.5);
-            }
-        };
+        DiscountPolicy policy = new ChildrenDiscountPolicy();
         assertThat(policy.discount(500)).isEqualTo(75);
     }
 
