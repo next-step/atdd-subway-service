@@ -17,10 +17,6 @@ public class Sections {
     protected Sections() {
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public void add(Section section) {
         sections.add(section);
     }
@@ -31,11 +27,12 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        Optional<Station> downStation = Optional.of(findUpStation());
+        stations.add(downStation.get());
 
-        while (Objects.nonNull(downStation)) {
-            downStation = nextSectionDownStation(stations, downStation);
+        while (downStation.isPresent()) {
+            downStation = nextSectionDownStation(downStation);
+            downStation.ifPresent(station -> stations.add(station));
         }
 
         return stations;
@@ -97,18 +94,16 @@ public class Sections {
         sections.add(new Section(line, newUpStation, newDownStation, newDistance));
     }
 
-    private Station nextSectionDownStation(List<Station> stations, Station downStation) {
+    private Optional<Station> nextSectionDownStation(Optional<Station> downStation) {
         Optional<Section> nextLineStation = sections.stream()
-                .filter(it -> it.getUpStation().equals(downStation))
+                .filter(it -> it.getUpStation().equals(downStation.get()))
                 .findFirst();
 
         if (!nextLineStation.isPresent()) {
-            return null;
+            return Optional.empty();
         }
 
-        Station nextStation = nextLineStation.get().getDownStation();
-        stations.add(nextStation);
-        return nextStation;
+        return Optional.of(nextLineStation.get().getDownStation());
     }
 
     private Station nextSectionUpStation(Station downStation) {
