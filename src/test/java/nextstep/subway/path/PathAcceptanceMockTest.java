@@ -8,8 +8,11 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.application.AuthService;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +30,9 @@ public class PathAcceptanceMockTest extends AcceptanceTest {
     @MockBean
     private StationService stationService;
 
+    @MockBean
+    private AuthService authService;
+
     Station 강남역;
     Station 양재역;
     Station 교대역;
@@ -34,7 +40,7 @@ public class PathAcceptanceMockTest extends AcceptanceTest {
     Line 신분당선;
     Line 이호선;
     Line 삼호선;
-
+    String 토큰;
 
     @BeforeEach
     public void setUp() {
@@ -49,6 +55,10 @@ public class PathAcceptanceMockTest extends AcceptanceTest {
         이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 9);
         삼호선 = new Line("삼호선", "bg-red-600", 남부터미널역, 양재역, 8);
         삼호선.addStation(교대역, 남부터미널역, 3);
+
+        토큰 = "token";
+        when(authService.findMemberByToken(토큰)).thenReturn(new LoginMember(1L, "testEmail", 30));
+
     }
 
     /**
@@ -70,7 +80,7 @@ public class PathAcceptanceMockTest extends AcceptanceTest {
         when(stationService.findById(3L)).thenReturn(양재역);
 
         //when
-        ExtractableResponse<Response> 지하철_경로_조회_요청_response = 지하철_경로_조회_요청(1L, 3L);
+        ExtractableResponse<Response> 지하철_경로_조회_요청_response = 지하철_경로_조회_요청(1L, 3L, 토큰);
 
         //then
         최단경로_결과_확인(지하철_경로_조회_요청_response, Arrays.asList("교대역", "남부터미널역", "양재역"), 11);
