@@ -4,6 +4,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.PathResponse;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -14,10 +15,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class JGraphPathFinder implements PathFinder {
     @Override
-    public PathResponse getShortestPath(Lines lines, Station source, Station target) {
+    public PathResponse getShortestPath(PathRequest pathRequest) {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath =
-                new DijkstraShortestPath<>(graph(lines));
-        GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
+                new DijkstraShortestPath<>(graph(pathRequest.getLines()));
+        GraphPath<Station, DefaultWeightedEdge> graphPath =
+                dijkstraShortestPath.getPath(pathRequest.getSource(), pathRequest.getTarget());
         return new PathResponse(graphPath.getVertexList(), (long) graphPath.getWeight());
     }
 

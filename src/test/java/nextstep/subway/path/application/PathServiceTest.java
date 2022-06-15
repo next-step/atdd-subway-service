@@ -30,12 +30,13 @@ class PathServiceTest {
     @Test
     void 최단_경로를_찾을_수_있다() {
         //given
-        given(stationService.findStationById(any())).willReturn(new Station("강남역"));
+        given(stationService.findStationById(1L)).willReturn(new Station("강남역"));
+        given(stationService.findStationById(2L)).willReturn(new Station("양재역"));
         given(lineService.findLines()).willReturn(new Lines());
-        given(pathFinder.getShortestPath(any(), any(), any())).willReturn(new PathResponse());
+        given(pathFinder.getShortestPath(any())).willReturn(new PathResponse());
 
         //when
-        PathResponse pathResponse = pathService.get(0, 0);
+        PathResponse pathResponse = pathService.get(1, 2);
 
         //then
         assertThat(pathResponse.getDistance()).isZero();
