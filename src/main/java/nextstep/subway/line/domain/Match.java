@@ -5,11 +5,11 @@ import java.util.Objects;
 public enum Match {
     UP, DOWN;
 
-    public static boolean isUP(final Match match) {
-        return Objects.equals(UP, match);
+    public boolean isUP() {
+        return this == UP;
     }
 
-    public static boolean isDOWN(final Match match) {
-        return Objects.equals(DOWN, match);
+    public boolean isDOWN() {
+        return this == DOWN;
     }
 }

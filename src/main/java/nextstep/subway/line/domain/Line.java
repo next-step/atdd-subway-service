@@ -95,23 +95,23 @@ public class Line extends BaseEntity {
     }
 
     private void removeSectionBy(Station station) {
-        final Optional<Section> upLineStation =
+        final Optional<Section> isSectionMatchesUpStation =
                 sections.getSections().stream()
                         .filter(it -> it.isMatchUpStation(station))
                         .findFirst();
 
-        final Optional<Section> downLineStation =
+        final Optional<Section> isSectionMatchesDownStation =
                 sections.getSections().stream()
                         .filter(it -> it.isMatchDownStation(station))
                         .findFirst();
 
-        upLineStation.ifPresent(this::removeSection);
-        downLineStation.ifPresent(this::removeSection);
+        isSectionMatchesUpStation.ifPresent(this::removeSection);
+        isSectionMatchesDownStation.ifPresent(this::removeSection);
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+        if (isSectionMatchesUpStation.isPresent() && isSectionMatchesDownStation.isPresent()) {
+            Station newUpStation = isSectionMatchesDownStation.get().getUpStation();
+            Station newDownStation = isSectionMatchesUpStation.get().getDownStation();
+            int newDistance = isSectionMatchesUpStation.get().getDistance() + isSectionMatchesDownStation.get().getDistance();
             this.addSection(new Section(this, newUpStation, newDownStation, newDistance));
         }
     }

@@ -78,12 +78,12 @@ public class Sections {
         if (sections.isEmpty()) {
             return;
         }
-        Match match = findInsertSomePlace(section);
-        if (Match.isUP(match)) {
+        final Match match = findInsertSomePlace(section);
+        if (match.isUP()) {
             findPreSectionBy(section.getUpStation())
                     .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
         }
-        if (Match.isDOWN(match)) {
+        if (match.isDOWN()) {
             findDownSectionBy(section.getDownStation())
                     .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
         }
