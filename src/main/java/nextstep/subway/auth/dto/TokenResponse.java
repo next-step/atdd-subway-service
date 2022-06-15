@@ -13,8 +13,4 @@ public class TokenResponse {
     public String getAccessToken() {
         return accessToken;
     }
-
-    public String addBearerAccessToken() {
-        return "Bearer " + accessToken;
-    }
 }

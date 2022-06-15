@@ -29,6 +29,7 @@ import org.springframework.http.MediaType;
 
 @DisplayName("즐겨찾기 관련 기능")
 class FavoriteAcceptanceTest extends AcceptanceTest {
+    private final String AUTH_TYPE = "Bearer ";
     private final String FAVORITE_URI = "/favorites";
     private StationResponse 강남역, 교대역, 서초역, 양재역, 판교역, 고속터미널역;
     private LineResponse 이호선, 삼호선, 신분당선;
@@ -191,7 +192,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         FavoriteRequest favoriteRequest = new FavoriteRequest(시작역.getId(), 종료역.getId());
 
         return RestAssured.given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, 토큰.addBearerAccessToken())
+                .header(HttpHeaders.AUTHORIZATION, AUTH_TYPE + 토큰.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(favoriteRequest)
                 .when().post(FAVORITE_URI)
@@ -209,7 +210,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 즐겨찾기_목록_조회(TokenResponse 토큰) {
         return RestAssured.given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, 토큰.addBearerAccessToken())
+                .header(HttpHeaders.AUTHORIZATION, AUTH_TYPE + 토큰.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(FAVORITE_URI)
                 .then().log().all()
@@ -226,7 +227,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse 토큰, ExtractableResponse<Response> 즐겨찾기_생성_요청_결과) {
         final String uri = 즐겨찾기_생성_요청_결과.header("Location");
         return RestAssured.given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, 토큰.addBearerAccessToken())
+                .header(HttpHeaders.AUTHORIZATION, AUTH_TYPE + 토큰.getAccessToken())
                 .when().delete(uri)
                 .then().log().all()
                 .extract();
