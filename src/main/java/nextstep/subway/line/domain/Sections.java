@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,10 @@ import java.util.Optional;
 public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> values = new ArrayList<>();
+
+    public List<Section> getValues() {
+        return Collections.unmodifiableList(new ArrayList<>(values));
+    }
 
     public void add(Section section) {
         Stations stations = new Stations(section.getLine().getStations());
