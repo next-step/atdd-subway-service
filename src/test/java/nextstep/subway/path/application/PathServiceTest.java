@@ -22,7 +22,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @ExtendWith(SpringExtension.class)
 class PathServiceTest {
@@ -39,8 +38,6 @@ class PathServiceTest {
     private Long targetId;
     private Station source;
     private Station target;
-    private List<Line> lines;
-    private List<Sections> sections;
     private PathResponse pathResponse;
 
     @Test
@@ -54,9 +51,6 @@ class PathServiceTest {
         //when
         PathService pathService = new PathService(stationService, lineRepository, pathFinder);
         PathResponse actual = pathService.findShortestPath(sourceId, targetId);
-        List<String> names = actual.getStations().stream()
-                .map(StationResponse::getName)
-                .collect(Collectors.toList());
 
         //then
         assertThat(actual).isNotNull();
@@ -70,12 +64,12 @@ class PathServiceTest {
                 StationResponse.of(source),
                 StationResponse.of(stopover),
                 StationResponse.of(target)), 8);
-        sections = Collections.emptyList();
+        List<Sections> sections = Collections.emptyList();
         when(pathFinder.findShortestPath(sections, source, target)).thenReturn(pathResponse);
     }
 
     private void stubLineRepository() {
-        lines = Collections.emptyList();
+        List<Line> lines = Collections.emptyList();
         when(lineRepository.findAll()).thenReturn(lines);
     }
 
