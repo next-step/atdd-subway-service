@@ -70,4 +70,28 @@ public class SectionTest {
                 () -> assertThat(defaultSection.getDistance()).isEqualTo(Distance.from(DEFAULT_DISTANCE * 2))
         );
     }
+
+    @Test
+    @DisplayName("UpStation 비교 테스트")
+    void isUpStationEqualTo(){
+        //given
+        Station 상행역 = createStation("상행역");
+        Station 하행역 = createStation("하행역");
+        Section defaultSection = createSection(상행역, 하행역, DEFAULT_DISTANCE);
+
+        //then
+        assertThat(defaultSection.isUpStationEqualTo(상행역)).isTrue();
+    }
+
+    @Test
+    @DisplayName("DownStation 비교 테스트")
+    void isDownStationEqualTo(){
+        //given
+        Station 상행역 = createStation("상행역");
+        Station 하행역 = createStation("하행역");
+        Section defaultSection = createSection(상행역, 하행역, DEFAULT_DISTANCE);
+
+        //then
+        assertThat(defaultSection.isDownStationEqualTo(하행역)).isTrue();
+    }
 }

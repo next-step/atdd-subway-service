@@ -7,16 +7,17 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
+    private static final int MINIMUM_SECTION_LENGTH = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
-
-    private static final int MINIMUM_SECTION_LENGTH = 1;
 
     protected Sections() {
     }
@@ -103,15 +104,15 @@ public class Sections {
     private void removeValidStation(Station station) {
         Optional<Section> postSection = findPostSection(station);
         Optional<Section> previousSection = findPreviousSection(station);
-        if (isMiddleStation(postSection, previousSection)) {
+        if (isMiddleStation(postSection.orElse(null), previousSection.orElse(null))) {
             removeMiddleStation(postSection.get(), previousSection.get());
             return;
         }
-        removeEndStation(postSection, previousSection);
+        removeEndStation(postSection.orElse(null), previousSection.orElse(null));
     }
 
-    private boolean isMiddleStation(Optional<Section> postSection, Optional<Section> previousSection) {
-        return postSection.isPresent() && previousSection.isPresent();
+    private boolean isMiddleStation(Section postSection, Section previousSection) {
+        return postSection != null && previousSection != null;
     }
 
     private void removeMiddleStation(Section postSection, Section previousSection) {
@@ -119,29 +120,38 @@ public class Sections {
         sections.remove(postSection);
     }
 
-    private void removeEndStation(Optional<Section> postSection, Optional<Section> previousSection) {
-        postSection.ifPresent(it -> sections.remove(it));
-        previousSection.ifPresent(it -> sections.remove(it));
+    private void removeEndStation(Section postSection, Section previousSection) {
+        if(postSection != null){
+            sections.remove(postSection);
+            return;
+        }
+        if (previousSection != null) {
+            sections.remove(previousSection);
+        }
     }
 
     private Optional<Section> findPreviousSection(Station station) {
         return sections.stream()
-                .filter(section -> section.downStationEquals(station))
+                .filter(section -> section.isDownStationEqualTo(station))
                 .findFirst();
     }
 
     private Optional<Section> findPostSection(Station station) {
         return sections.stream()
-                .filter(section -> section.upStationEquals(station))
+                .filter(section -> section.isUpStationEqualTo(station))
                 .findFirst();
     }
 
     private void sortSections() {
         sections.sort((Section section1, Section section2) -> {
-            if (section1.downStationEquals(section2.getUpStation())) {
+            if (section1.isDownStationEqualTo(section2.getUpStation())) {
                 return -1;
             }
             return 1;
         });
+    }
+
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
     }
 }
