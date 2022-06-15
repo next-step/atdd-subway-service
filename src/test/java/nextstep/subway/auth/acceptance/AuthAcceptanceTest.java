@@ -5,6 +5,7 @@ import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.NEW_EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.NEW_PASSWORD;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
+import static nextstep.subway.member.MemberAcceptanceTest.나의_정보_조회_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -78,16 +79,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(tokenRequest)
                 .when().post("/login/token")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 나의_정보_조회_요청(String accessToken) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
                 .then().log().all()
                 .extract();
     }
