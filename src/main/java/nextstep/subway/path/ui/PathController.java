@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,8 +23,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findShortestPath(@RequestParam Long source, @RequestParam Long target) {
-        PathRequest pathRequest = new PathRequest(source, target);
+    public ResponseEntity<PathResponse> findShortestPath(PathRequest pathRequest) {
         return ResponseEntity.ok().body(pathService.findPath(pathRequest));
     }
 

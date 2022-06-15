@@ -22,8 +22,8 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse findPath(PathRequest pathRequest) {
-        Station sourceStation = stationService.findStationById(pathRequest.getSourceStation());
-        Station targetStation = stationService.findStationById(pathRequest.getTargetStation());
+        Station sourceStation = stationService.findStationById(pathRequest.getSourceStationId());
+        Station targetStation = stationService.findStationById(pathRequest.getTargetStationId());
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
         GraphPath path = pathFinder.getShortestPath(sourceStation, targetStation);
         return PathResponse.of(path.getVertexList(), path.getWeight());
