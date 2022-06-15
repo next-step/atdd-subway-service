@@ -136,6 +136,6 @@ class SectionsTest {
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> 지하철_구간_정보.removeSectionByStation(신도림역))
-                .withMessageContaining(NOT_FOUND_REMOVE_STATION);
+                .withMessageContaining(LEAST_ONE_MUST_EXIST_REMOVE_STATION);
     }
 }

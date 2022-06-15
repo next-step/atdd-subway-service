@@ -76,7 +76,7 @@ class LineTest {
     void removeLineStationMinimumSize() {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> 지하철_2호선.removeLineStation(강남역))
-                .withMessageContaining(NOT_FOUND_REMOVE_STATION);
+                .withMessageContaining(LEAST_ONE_MUST_EXIST_REMOVE_STATION);
     }
 
     @Test
