@@ -33,7 +33,7 @@ public class PathService {
         PathFinder pathFinder = new PathFinder(lines);
 
         Path path = pathFinder.findPath(departureStation, arrivalStation);
-        Fare fare = FareCalculator.of(path, customer);
+        Fare fare = FareCalculator.calculate(path, customer);
         List<StationResponse> stations = stationService.findAllStationsByIds(path.getStations());
         return PathResponse.of(stations, path.getDistance(), fare.getValue());
     }
