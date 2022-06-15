@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.member.domain.MemberAge;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -14,7 +15,7 @@ public class PathFinder {
         this.path = path;
     }
 
-    public Path findPath(Station startStation, Station endStation, int age) {
+    public Path findPath(Station startStation, Station endStation, MemberAge age) {
         GraphPath path = this.path.getPath(startStation, endStation);
         validatePath(path);
         int distance = (int) this.path.getPathWeight(startStation, endStation);

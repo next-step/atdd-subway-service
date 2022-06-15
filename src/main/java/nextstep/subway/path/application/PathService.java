@@ -4,6 +4,7 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.SectionGraph;
 import nextstep.subway.line.domain.SectionGraphEdge;
+import nextstep.subway.member.domain.MemberAge;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -39,7 +40,7 @@ public class PathService {
         Station startStation = stationService.findById(startStationId);
         Station endStation = stationService.findById(endStationId);
 
-        Path findPath = pathFinder.findPath(startStation, endStation, age);
+        Path findPath = pathFinder.findPath(startStation, endStation, new MemberAge(age));
 
         return PathResponse.of(findPath);
     }
