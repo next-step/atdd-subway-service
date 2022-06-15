@@ -65,4 +65,21 @@ public class Favorite {
         this.source = source;
         this.target = target;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public Station getSource() {
+        return source;
+    }
+
+    public Station getTarget() {
+        return target;
+    }
+
 }
