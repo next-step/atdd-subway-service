@@ -11,6 +11,8 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -18,9 +20,9 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.Path;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.member.domain.Age;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -77,7 +79,8 @@ class PathServiceTest {
                 createSection(이호선, 교대역, 강남역, Distance.valueOf(10)),
                 createSection(삼호선, 교대역, 남부터미널역, Distance.valueOf(3)),
                 createSection(삼호선, 남부터미널역, 양재역, Distance.valueOf(2)));
-        Path path = createPath(Lists.newArrayList(남부터미널역, 양재역, 강남역), Distance.valueOf(15));
+        Path path = createPath(Lists.newArrayList(남부터미널역, 양재역, 강남역), Distance.valueOf(15), new HashSet<>(
+                Arrays.asList(신분당선, 삼호선)));
         when(stationService.findById(4L)).thenReturn(남부터미널역);
         when(stationService.findById(1L)).thenReturn(강남역);
         when(entityManager.createQuery(
@@ -104,7 +107,8 @@ class PathServiceTest {
                 createSection(이호선, 교대역, 강남역, Distance.valueOf(10)),
                 createSection(삼호선, 교대역, 남부터미널역, Distance.valueOf(3)),
                 createSection(삼호선, 남부터미널역, 양재역, Distance.valueOf(2)));
-        Path path = createPath(Lists.newArrayList(남부터미널역, 양재역, 강남역), Distance.valueOf(12));
+        Path path = createPath(Lists.newArrayList(남부터미널역, 양재역, 강남역), Distance.valueOf(12), new HashSet<>(
+                Arrays.asList(신분당선, 삼호선)));
         when(stationService.findById(4L)).thenReturn(남부터미널역);
         when(stationService.findById(1L)).thenReturn(강남역);
         when(entityManager.createQuery(

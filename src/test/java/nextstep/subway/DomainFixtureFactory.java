@@ -1,6 +1,7 @@
 package nextstep.subway;
 
 import java.util.ArrayList;
+import java.util.Set;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.favorite.domain.Favorite;
@@ -86,7 +87,7 @@ public class DomainFixtureFactory {
                 .build();
     }
 
-    public static Path createPath(ArrayList<Station> stations, Distance distance) {
-        return Path.valueOf(stations, distance);
+    public static Path createPath(ArrayList<Station> stations, Distance distance, Set<Line> linesOfPath) {
+        return Path.valueOf(stations, distance, linesOfPath);
     }
 }

@@ -7,8 +7,8 @@ import javax.persistence.EntityManager;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.Path;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -37,8 +37,7 @@ public class PathService {
         return PathResponse.of(path.stations().stream()
                         .map(StationResponse::of)
                         .collect(Collectors.toList()), path.distanceValue(),
-                FareCalculator.calculateFare(path.findPathLinesFrom(findSections()), path, loginMember.getAge())
-                        .fare());
+                FareCalculator.calculateFare(path, loginMember.getAge()).fare());
     }
 
     private Set<Line> findLines() {
