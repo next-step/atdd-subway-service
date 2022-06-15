@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.NotFoundException;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,7 +22,8 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-
+    @Embedded
+    private Fare additionalFare;
     @Embedded
     private final Sections sections = new Sections();
 
@@ -32,6 +34,7 @@ public class Line extends BaseEntity {
         this.id = lineBuilder.id;
         this.name = lineBuilder.name;
         this.color = lineBuilder.color;
+        this.additionalFare = lineBuilder.additionalFare;
         sections.addSection(Section.builder(this, lineBuilder.upStation, lineBuilder.downStation, lineBuilder.distance)
                 .build());
     }
@@ -48,7 +51,8 @@ public class Line extends BaseEntity {
         private final Station upStation;
         private final Station downStation;
         private final Distance distance;
-
+        private Fare additionalFare = null;
+        
         private LineBuilder(String name, String color, Station upStation, Station downStation, Distance distance) {
             validateParameter(name, color);
             this.name = name;
@@ -77,6 +81,11 @@ public class Line extends BaseEntity {
 
         public LineBuilder id(Long id) {
             this.id = id;
+            return this;
+        }
+
+        public LineBuilder additionalFare(Fare additionalFare) {
+            this.additionalFare = additionalFare;
             return this;
         }
 
@@ -116,6 +125,10 @@ public class Line extends BaseEntity {
 
     public String color() {
         return color;
+    }
+
+    public Fare additionalFare() {
+        return additionalFare;
     }
 
     @Override

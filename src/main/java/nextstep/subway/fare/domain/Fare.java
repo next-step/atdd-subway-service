@@ -1,7 +1,9 @@
 package nextstep.subway.fare.domain;
 
 import java.util.Objects;
+import javax.persistence.Embeddable;
 
+@Embeddable
 public class Fare {
     private static final int MIN_NUM = 0;
     private final int fare;
