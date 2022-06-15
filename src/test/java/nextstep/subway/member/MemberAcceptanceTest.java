@@ -80,6 +80,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_정보_수정됨(updateResponse);
 
+        // when
+        ExtractableResponse<Response> deleteResponse = 나의_정보_삭제_요청(EMAIL, PASSWORD);
+        // then
+        회원_삭제됨(deleteResponse);
+
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -159,6 +164,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
                 .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 나의_정보_삭제_요청(String email, String password) {
+        TokenResponse tokenResponse = 토큰_요청(new TokenRequest(EMAIL, PASSWORD)).as(TokenResponse.class);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .when().delete("/members/me")
                 .then().log().all()
                 .extract();
     }
