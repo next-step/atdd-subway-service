@@ -88,13 +88,19 @@ public class Section {
     }
 
     private void updateDownStationBy(final Station downStation) {
-        if (Objects.nonNull(this.downStation) && !Objects.equals(this.downStation, downStation)) {
-            this.downStation.getSections().remove(this);
-        }
+        this.downStation = downStation;
         if (!downStation.getSections().contains(this)) {
             downStation.getSections().add(this);
         }
-        this.downStation = downStation;
+    }
+
+    public void remove() {
+        if (Objects.nonNull(this.line) && this.line.getSections().isContains(this)) {
+            this.line.getSections().removeSection(this);
+        }
+        if (Objects.nonNull(this.downStation) && this.downStation.getSections().contains(this)) {
+            this.downStation.getSections().remove(this);
+        }
     }
 
     @Override

@@ -73,11 +73,11 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(final Section section) {
-        if (!Objects.equals(this, section.getLine())) {
-            section.updateLineBy(this);
-        }
         if (!sections.isContains(section)) {
             sections.addSection(section);
+        }
+        if (!Objects.equals(this, section.getLine())) {
+            section.updateLineBy(this);
         }
     }
 
