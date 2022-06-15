@@ -44,17 +44,13 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(NoSuchElementException::new);
-    }
-
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        Line persistLine = findLineById(id);
         persistLine.update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 
@@ -76,5 +72,9 @@ public class LineService {
         Station station = stationService.findStationById(stationId);
 
         line.removeLineStation(station);
+    }
+
+    private Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 }
