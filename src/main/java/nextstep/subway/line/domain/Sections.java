@@ -7,7 +7,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,10 +14,6 @@ import java.util.Optional;
 public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> values = new ArrayList<>();
-
-    public List<Section> getValues() {
-        return Collections.unmodifiableList(new ArrayList<>(values));
-    }
 
     public void add(Section section) {
         Stations stations = new Stations(section.getLine().getStations());
@@ -46,16 +41,8 @@ public class Sections {
         return values.isEmpty();
     }
 
-    public int size() {
-        return values.size();
-    }
-
     public Station findDownStation() {
         return findFirstSection().getUpStation();
-    }
-
-    private Section findFirstSection() {
-        return values.get(0);
     }
 
     public Optional<Section> findNextLineUpStation(Station finalDownStation) {
@@ -70,25 +57,29 @@ public class Sections {
                 .findFirst();
     }
 
-    public void updateUpStation(Station upStation, Station downStation, int distance) {
+    public void cutOff(Line line, Station station) {
+        validateSize();
+        readjustDistance(line, station);
+        cutOffUpLineStation(station);
+        cutOffDownLineStation(station);
+    }
+
+    private Section findFirstSection() {
+        return values.get(0);
+    }
+
+    private void updateUpStation(Station upStation, Station downStation, int distance) {
         values.stream()
                 .filter(it -> it.getUpStation() == upStation)
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
     }
 
-    public void updateDownStation(Station upStation, Station downStation, int distance) {
+    private void updateDownStation(Station upStation, Station downStation, int distance) {
         values.stream()
                 .filter(it -> it.getDownStation() == downStation)
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
-    }
-
-    public void cutOff(Line line, Station station) {
-        validateSize();
-        readjustDistance(line, station);
-        cutOffUpLineStation(station);
-        cutOffDownLineStation(station);
     }
 
     private void readjustDistance(Line line, Station station) {

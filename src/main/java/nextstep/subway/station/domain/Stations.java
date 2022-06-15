@@ -26,18 +26,15 @@ public class Stations {
         }
     }
 
-    public boolean isAllMatch(Station upStation, Station downStation) {
-        if (isMatch(upStation) && isMatch(downStation)) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isMatch(Station station) {
-        return values.stream().noneMatch(v -> v == station);
-    }
-
     public boolean isEmpty() {
         return values.isEmpty();
+    }
+
+    private boolean isAllMatch(Station upStation, Station downStation) {
+        return isMatch(upStation) && isMatch(downStation);
+    }
+
+    private boolean isMatch(Station station) {
+        return values.stream().noneMatch(v -> v == station);
     }
 }
