@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Path;
@@ -83,7 +84,8 @@ class PathServiceTest {
         PathResponse pathResponse = pathService.findShortestPath(양재역.id(), 교대역.id());
         assertAll(
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(5),
-                () -> assertThat(pathResponse.getStations()).containsExactlyElementsOf(stationResponses)
+                () -> assertThat(pathResponse.getStations()).containsExactlyElementsOf(stationResponses),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(Fare.valueOf(10000))
         );
     }
 }

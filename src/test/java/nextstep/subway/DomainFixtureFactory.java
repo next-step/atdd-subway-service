@@ -9,6 +9,7 @@ import nextstep.subway.line.domain.Path;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.member.domain.Age;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -57,11 +58,11 @@ public class DomainFixtureFactory {
         return new SectionRequest(upStationId, downStationId, distance);
     }
 
-    public static LoginMember createLoginMember(long id, String email, int age) {
+    public static LoginMember createLoginMember(long id, String email, Age age) {
         return new LoginMember(id, email, age);
     }
 
-    public static Member createMember(long id, String email, String password, int age) {
+    public static Member createMember(long id, String email, String password, Age age) {
         return new Member(id, email, password, age);
     }
 

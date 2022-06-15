@@ -1,8 +1,8 @@
 package nextstep.subway.auth.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthRestAssured.로그인_요청;
-import static nextstep.subway.member.MemberRestAssured.나의_정보_조회_요청;
-import static nextstep.subway.member.MemberRestAssured.회원_생성을_요청;
+import static nextstep.subway.member.acceptance.MemberRestAssured.나의_정보_조회_요청;
+import static nextstep.subway.member.acceptance.MemberRestAssured.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

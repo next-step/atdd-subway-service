@@ -16,6 +16,7 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.domain.Age;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -45,8 +46,8 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기 저장 테스트")
     @Test
     void saveFavorite() {
-        LoginMember loginMember = createLoginMember(1L, "email@email.com", 20);
-        Member member = createMember(1L, "email@email.com", "password", 20);
+        LoginMember loginMember = createLoginMember(1L, "email@email.com", Age.valueOf(20));
+        Member member = createMember(1L, "email@email.com", "password", Age.valueOf(20));
         Station 강남역 = createStation(1L, "강남역");
         Station 정자역 = createStation(2L, "정자역");
 
@@ -67,8 +68,8 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기 목록 조회 테스트")
     @Test
     void findFavorites() {
-        LoginMember loginMember = createLoginMember(1L, "email@email.com", 20);
-        Member member = createMember(1L, "email@email.com", "password", 20);
+        LoginMember loginMember = createLoginMember(1L, "email@email.com", Age.valueOf(20));
+        Member member = createMember(1L, "email@email.com", "password", Age.valueOf(20));
         Station 강남역 = createStation(1L, "강남역");
         Station 정자역 = createStation(2L, "정자역");
         Favorite favorite = createFavorite(1L, member, 강남역, 정자역);
@@ -82,8 +83,8 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기 삭제 테스트")
     @Test
     void deleteFavorite() {
-        LoginMember loginMember = createLoginMember(1L, "email@email.com", 20);
-        Member member = createMember(1L, "email@email.com", "password", 20);
+        LoginMember loginMember = createLoginMember(1L, "email@email.com", Age.valueOf(20));
+        Member member = createMember(1L, "email@email.com", "password", Age.valueOf(20));
         Station 강남역 = createStation(1L, "강남역");
         Station 정자역 = createStation(2L, "정자역");
         Favorite favorite = createFavorite(1L, member, 강남역, 정자역);

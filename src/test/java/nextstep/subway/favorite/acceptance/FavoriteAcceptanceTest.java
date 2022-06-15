@@ -5,7 +5,7 @@ import static nextstep.subway.favorite.acceptance.FavoriteRestAssured.즐겨찾�
 import static nextstep.subway.favorite.acceptance.FavoriteRestAssured.즐겨찾기_삭제_요청;
 import static nextstep.subway.favorite.acceptance.FavoriteRestAssured.즐겨찾기_생성을_요청;
 import static nextstep.subway.line.acceptance.LineRestAssured.지하철_노선_등록되어_있음;
-import static nextstep.subway.member.MemberRestAssured.회원_생성을_요청;
+import static nextstep.subway.member.acceptance.MemberRestAssured.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 

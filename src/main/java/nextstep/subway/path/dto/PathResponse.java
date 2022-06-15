@@ -30,6 +30,10 @@ public class PathResponse {
         return distance;
     }
 
+    public int getFare() {
+        return fare;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
