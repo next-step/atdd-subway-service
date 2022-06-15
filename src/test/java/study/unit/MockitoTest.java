@@ -4,9 +4,9 @@ import com.google.common.collect.Lists;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.PathFinder;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,12 +23,13 @@ public class MockitoTest {
         // given
         LineRepository lineRepository = mock(LineRepository.class);
         StationService stationService = mock(StationService.class);
+        PathFinder pathFinder = mock(PathFinder.class);
 
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
-        LineService lineService = new LineService(lineRepository, stationService);
+        LineService lineService = new LineService(lineRepository, stationService, pathFinder);
 
         // when
-        List<LineResponse> responses = lineService.findLines();
+        List<LineResponse> responses = lineService.findLineResponses();
 
         // then
         assertThat(responses).hasSize(1);

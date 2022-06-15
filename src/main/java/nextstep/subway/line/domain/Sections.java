@@ -57,7 +57,7 @@ public class Sections {
                         .line(upLineStation.getLine())
                         .upStation(downLineStation.getUpStation())
                         .downStation(upLineStation.getDownStation())
-                        .distance(upLineStation.getDistance() + downLineStation.getDistance())
+                        .distance(upLineStation.getDistance().sum(downLineStation.getDistance()))
                         .build()
         );
     }
@@ -93,6 +93,10 @@ public class Sections {
         }
 
         return stations;
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     private Station findUpStation() {
