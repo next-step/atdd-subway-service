@@ -5,17 +5,22 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.dto.MemberRequest;
+import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.내정보_수정;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.내정보_수정성공;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.내정보_조회;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.로그인_성공;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.로그인_실패;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.로그인_요청시도;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.유효하지않은_토큰;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.유효한_토큰;
-import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.토큰_확인_시도;
 import static nextstep.subway.member.MemberAcceptanceFactory.회원_생성을_요청;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String YANG_EMAIL = "rhfpdk92@naver.com";
@@ -62,9 +67,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithValidBearerAuth() {
         TokenResponse 유효한_토큰 = 로그인_요청시도(new TokenRequest(YANG_EMAIL, YANG_PASSWORD)).as(TokenResponse.class);
-        ExtractableResponse<Response> 토큰_확인_결과 = 토큰_확인_시도(유효한_토큰);
+        ExtractableResponse<Response> 내정보_조회결과 = 내정보_조회(유효한_토큰);
 
-        유효한_토큰(토큰_확인_결과);
+        유효한_토큰(내정보_조회결과);
     }
 
     /**
@@ -75,10 +80,25 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth - 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-        TokenResponse 유효하지않은_토큰 = new TokenResponse("INVALID_TOKEN");
-        ExtractableResponse<Response> 토큰_확인_결과 = 토큰_확인_시도(유효하지않은_토큰);
+        TokenResponse 유효하지않은_토큰 = 로그인_요청시도(new TokenRequest(YANG_EMAIL, YANG_PASSWORD)).as(TokenResponse.class);
+        ExtractableResponse<Response> 토큰_확인_결과 = 내정보_조회(유효하지않은_토큰);
 
         유효하지않은_토큰(토큰_확인_결과);
+    }
+
+    /**
+     * Given 회원 등록되어 있음- setup
+     * When 유효한 토큰으로 수정 요청
+     * Then 수정 성공
+     */
+    @DisplayName("내정보 수정 - 유효한 토큰")
+    @Test
+    void updateMyInfoWithValidToken() {
+        MemberRequest 수정할_회원정보 = new MemberRequest("update@Email.com", "updatePassword", 100);
+        TokenResponse 유효한_토큰 = 로그인_요청시도(new TokenRequest(YANG_EMAIL, YANG_PASSWORD)).as(TokenResponse.class);
+        ExtractableResponse<Response> 업데이트_결과 = 내정보_수정(수정할_회원정보, 유효한_토큰);
+
+        내정보_수정성공(업데이트_결과);
     }
 
 }
