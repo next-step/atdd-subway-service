@@ -7,6 +7,7 @@ import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,17 +52,21 @@ class FavoriteServiceTest {
     @Test
     void findAllBy() {
         List<FavoriteResponse> favorites = favoriteService.findAllBy(loginMember);
-        assertThat(favorites.size()).isEqualTo(1);
-        assertThat(favorites.get(0).getSource().getName()).isEqualTo(source.getName());
-        assertThat(favorites.get(0).getTarget().getName()).isEqualTo(target.getName());
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(favorites.size()).isEqualTo(1);
+            softAssertions.assertThat(favorites.get(0).getSource().getName()).isEqualTo(source.getName());
+            softAssertions.assertThat(favorites.get(0).getTarget().getName()).isEqualTo(target.getName());
+        });
     }
 
     @DisplayName("내 즐겨찾기를 추가한다")
     @Test
     void createFavorite() {
         FavoriteResponse response = favoriteService.createFavorite(loginMember, request);
-        assertThat(response.getSource().getName()).isEqualTo(source.getName());
-        assertThat(response.getTarget().getName()).isEqualTo(target.getName());
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(response.getSource().getName()).isEqualTo(source.getName());
+            softAssertions.assertThat(response.getTarget().getName()).isEqualTo(target.getName());
+        });
     }
 
     @DisplayName("내 즐겨찾기를 삭제한다")
