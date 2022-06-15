@@ -126,6 +126,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         List<Station> actualStations = toStations(pathResponse.getStations());
         List<Station> expectedStations = toStations(expectedStationResponses);
         assertThat(actualStations).isEqualTo(expectedStations);
+        assertThat(actualStations).hasSize(3);
     }
 
     private List<Station> toStations(List<StationResponse> stationResponses) {
