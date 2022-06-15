@@ -87,7 +87,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("올바르지 않는 토큰으로 조회 할 수 없다")
     void myInfoWithWrongBearerAuth() {
         // when
-        TokenResponse 올바르지_않은_토큰 = new TokenResponse("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY");
+        TokenResponse 올바르지_않은_토큰 = new TokenResponse(null);
         ExtractableResponse<Response> 내_정보_조회_요청_결과 = 내_정보_조회_요청(올바르지_않은_토큰);
 
         // then
