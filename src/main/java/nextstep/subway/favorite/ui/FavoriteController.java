@@ -39,7 +39,8 @@ public class FavoriteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteMember(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
+    public ResponseEntity deleteMember(@PathVariable Long id) {
+        favoriteService.deleteFavorite(id);
         return ResponseEntity.noContent().build();
     }
 }
