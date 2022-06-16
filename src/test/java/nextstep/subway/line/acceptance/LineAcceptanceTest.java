@@ -15,23 +15,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_등록되어_있음;
-import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_목록_응답됨;
-import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_목록_조회_요청;
-import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_목록_포함됨;
-import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_삭제됨;
-import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_생성_실패됨;
-import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_생성_요청;
-import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_생성됨;
-import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_수정_요청;
-import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_수정됨;
-import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_응답됨;
-import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_제거_요청;
-import static org.assertj.core.api.Assertions.assertThat;
-
+import static nextstep.subway.utils.apiHelper.LineApiHelper.지하철_노선_등록되어_있음;
+import static nextstep.subway.utils.apiHelper.LineApiHelper.지하철_노선_목록_응답됨;
+import static nextstep.subway.utils.apiHelper.LineApiHelper.지하철_노선_목록_조회_요청;
+import static nextstep.subway.utils.apiHelper.LineApiHelper.지하철_노선_목록_포함됨;
+import static nextstep.subway.utils.apiHelper.LineApiHelper.지하철_노선_생성_실패됨;
+import static nextstep.subway.utils.apiHelper.LineApiHelper.지하철_노선_생성_요청;
+import static nextstep.subway.utils.apiHelper.LineApiHelper.지하철_노선_생성됨;
+import static nextstep.subway.utils.apiHelper.LineApiHelper.지하철_노선_수정_요청;
+import static nextstep.subway.utils.apiHelper.LineApiHelper.지하철_노선_응답됨;
+import static nextstep.subway.utils.apiHelper.LineApiHelper.지하철_노선_제거_요청;
+import static nextstep.subway.utils.assertionHelper.LineAssertionHelper.지하철_노선_삭제됨;
+import static nextstep.subway.utils.assertionHelper.LineAssertionHelper.지하철_노선_수정됨;
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;

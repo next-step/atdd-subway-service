@@ -30,7 +30,7 @@ public class MockitoExtensionTest {
     void findAllLines() {
         // given
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line("신분당선","red")));
-        LineService lineService = new LineService(lineRepository, stationService);
+        LineService lineService = new LineService(lineRepository);
 
         // when
         List<LineResponse> responses = lineService.findLines();

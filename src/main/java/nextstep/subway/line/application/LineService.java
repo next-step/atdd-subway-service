@@ -18,23 +18,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class LineService {
 
     private LineRepository lineRepository;
-    private StationService stationService;
 
-    public LineService(LineRepository lineRepository, StationService stationService) {
+
+    public LineService(LineRepository lineRepository) {
         this.lineRepository = lineRepository;
-        this.stationService = stationService;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+    public LineResponse saveLine(LineRequest request, Station upStation, Station downStation) {
         Line persistLine = lineRepository.save(
             new Line(request.getName(), request.getColor(), upStation, downStation,
                 request.getDistance()));
 
         List<StationResponse> stations = persistLine.getStations()
             .stream()
-            .map(station -> StationResponse.of(station))
+            .map(StationResponse::of)
             .collect(Collectors.toList());
         return LineResponse.of(persistLine, stations);
     }
@@ -45,7 +42,7 @@ public class LineService {
             .map(line -> {
                 List<StationResponse> stations = line.getStations()
                     .stream()
-                    .map(it -> StationResponse.of(it))
+                    .map(StationResponse::of)
                     .collect(Collectors.toList());
                 return LineResponse.of(line, stations);
             })
@@ -66,7 +63,7 @@ public class LineService {
         Line persistLine = findById(id);
         List<StationResponse> stations = persistLine.getStations()
             .stream()
-            .map(it -> StationResponse.of(it))
+            .map(StationResponse::of)
             .collect(Collectors.toList());
         return LineResponse.of(persistLine, stations);
     }
@@ -80,16 +77,13 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    public void addLineStation(Long lineId, SectionRequest request) {
+    public void addLineStation(Long lineId, SectionRequest request, Station upStation, Station downStation) {
         Line line = findById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
         line.addStation(upStation, downStation, request.getDistance());
     }
 
-    public void removeLineStation(Long lineId, Long stationId) {
+    public void removeLineStation(Long lineId, Station station) {
         Line line = findById(lineId);
-        Station station = stationService.findStationById(stationId);
         line.removeStation(station);
     }
 }
