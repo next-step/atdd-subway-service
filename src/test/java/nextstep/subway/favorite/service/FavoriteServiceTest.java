@@ -13,7 +13,9 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +29,11 @@ public class FavoriteServiceTest {
 
     @Mock
     private FavoriteRepository favoriteRepository;
-
+    @Mock
+    private StationService stationService;
+    @Mock
+    private MemberService memberService;
+    private FavoriteServiceFacade favoriteServiceFacade;
     private FavoriteService favoriteService;
     private Member 내정보;
     private Station 시작역;
@@ -46,6 +52,8 @@ public class FavoriteServiceTest {
         즐겨찾기 = new Favorite(시작역, 종착역, 내정보);
 
         favoriteService = new FavoriteService(favoriteRepository);
+        favoriteServiceFacade = new FavoriteServiceFacade(stationService, memberService,
+            favoriteService);
     }
 
 
@@ -57,7 +65,7 @@ public class FavoriteServiceTest {
         FavoriteRequest 즐겨찾기_요청정보 = new FavoriteRequest(1L, 4L);
 
         //when
-        Favorite favorite = favoriteService.saveFavorite(내정보, 시작역, 종착역);
+        Favorite favorite = favoriteServiceFacade.saveFavorite(내정보.getId(), 시작역.getId(), 종착역.getId());
 
         //then
         assertAll(() -> assertThat(favorite.getSource()).isEqualTo(시작역),
@@ -68,9 +76,10 @@ public class FavoriteServiceTest {
     public void 즐겨찾기_목록_조회하기() {
         //given
         when(favoriteRepository.findAllByMember(내정보)).thenReturn(Arrays.asList(즐겨찾기));
+        when(memberService.findById(내정보.getId())).thenReturn(내정보);
 
         //when
-        List<FavoriteResponse> favoriteList = favoriteService.getFavoriteList(내정보);
+        List<FavoriteResponse> favoriteList = favoriteServiceFacade.getFavoriteList(내정보.getId());
 
         //then
         assertAll(() -> assertThat(favoriteList).extracting("source.name")

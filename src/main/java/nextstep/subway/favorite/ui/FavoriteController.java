@@ -7,15 +7,9 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.favorite.service.FavoriteService;
-import nextstep.subway.line.application.LineService;
+import nextstep.subway.favorite.service.FavoriteServiceFacade;
 import nextstep.subway.line.application.PathServiceFacade;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.dto.PathResponse;
-import nextstep.subway.member.application.MemberService;
-import nextstep.subway.member.domain.Member;
-import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.domain.Station;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,49 +23,39 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/favorites")
 public class FavoriteController {
 
-    private final FavoriteService favoriteService;
+    private final FavoriteServiceFacade favoriteServiceFacade;
     private final PathServiceFacade pathServiceFacade;
-    private final StationService stationService;
-    private final LineService lineService;
-    private final MemberService memberService;
 
-    public FavoriteController(FavoriteService favoriteService, PathServiceFacade pathServiceFacade,
-        StationService stationService, LineService lineService, MemberService memberService) {
-        this.favoriteService = favoriteService;
+    public FavoriteController(FavoriteServiceFacade favoriteServiceFacade,
+        PathServiceFacade pathServiceFacade) {
+        this.favoriteServiceFacade = favoriteServiceFacade;
         this.pathServiceFacade = pathServiceFacade;
-        this.stationService = stationService;
-        this.lineService = lineService;
-        this.memberService = memberService;
     }
 
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> getFavoriteList(
         @AuthenticationPrincipal LoginMember loginMember) {
-        Member member = memberService.findById(loginMember.getId());
-        List<FavoriteResponse> favoriteList = favoriteService.getFavoriteList(member);
+        List<FavoriteResponse> favoriteList = favoriteServiceFacade.getFavoriteList(
+            loginMember.getId());
         return ResponseEntity.ok().body(favoriteList);
     }
 
     @PostMapping
     public ResponseEntity saveFavorite(@AuthenticationPrincipal LoginMember loginMember,
         @RequestBody FavoriteRequest favoriteRequest) {
-        Member member = memberService.findById(loginMember.getId());
-        Station sourceStation = stationService.findById(favoriteRequest.getSource());
-        Station destStation = stationService.findById(favoriteRequest.getTarget());
-        List<Line> lines = lineService.findAllLines();
 
         PathResponse path = pathServiceFacade.findPath(favoriteRequest.getSource(),
             favoriteRequest.getTarget());
 
-        Favorite favorite = favoriteService.saveFavorite(member, sourceStation, destStation);
+        Favorite favorite = favoriteServiceFacade.saveFavorite(loginMember.getId(),
+            favoriteRequest.getSource(), favoriteRequest.getTarget());
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
         @PathVariable Long id) {
-        Member member = memberService.findById(loginMember.getId());
-        favoriteService.deleteFavorite(id, member);
+        favoriteServiceFacade.deleteFavorite(id, loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 }
