@@ -1,15 +1,13 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
-import nextstep.subway.station.dto.StationResponses;
 
 import java.util.List;
 
 public class Path {
-    private List<Station> stations;
-    private Integer pathLength;
-    private Integer pathSurcharge;
+    private final List<Station> stations;
+    private final Integer pathLength;
+    private final Integer pathSurcharge;
 
     public Path(List<Station> stations, Integer pathLength, Integer pathSurcharge) {
         this.stations = stations;
@@ -28,4 +26,5 @@ public class Path {
     public Integer getPathSurcharge() {
         return pathSurcharge;
     }
+
 }
