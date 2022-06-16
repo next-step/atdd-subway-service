@@ -1,9 +1,6 @@
 package nextstep.subway.auth.acceptance;
 
-import static nextstep.subway.member.MemberAcceptanceTest.AGE;
-import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
-import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -74,23 +71,19 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithWrongBearerAuth() {
         //when
-        ExtractableResponse<Response> 내_정보_조회_응답_결과 = 내_정보_조회_요청();
+        String 유효하지_않은_토큰 = "Invalid Token";
+        ExtractableResponse<Response> 내_정보_조회_응답_결과 = 내_정보_조회_요청(유효하지_않은_토큰);
 
         //then
         권한_없음(내_정보_조회_응답_결과);
     }
 
-    private ExtractableResponse<Response> 내_정보_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .header("Authorization", "Invalid Token")
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
+    public static String 로그인_되어_있음(String email, String password) {
+        TokenResponse tokenResponse = 로그인_요청(email, password).as(TokenResponse.class);
+        return tokenResponse.getAccessToken();
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
         return RestAssured
                 .given().log().all()
@@ -101,12 +94,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 로그인_성공(ExtractableResponse<Response> response) {
+    public static void 로그인_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
-    private void 권한_없음(ExtractableResponse<Response> response) {
+    public static void 권한_없음(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
