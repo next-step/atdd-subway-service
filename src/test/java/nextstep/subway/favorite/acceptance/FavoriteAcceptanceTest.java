@@ -1,4 +1,4 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
