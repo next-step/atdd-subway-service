@@ -14,15 +14,25 @@ public class PathFinder {
     private final DijkstraShortestPath dijkstraShortestPath;
 
     public PathFinder(List<Line> lines) {
-        lines.forEach(line ->
-                line.getStationsInOrder().forEach(station -> graph.addVertex(station)));
-        lines.forEach(line ->
-                line.getSections().forEach(section ->
-                        graph.setEdgeWeight(
-                                graph.addEdge(section.getUpStation(), section.getDownStation()),
-                                section.getDistance())));
-
+        configureGraph(lines);
         dijkstraShortestPath = new DijkstraShortestPath(graph);
+    }
+
+    private void configureGraph(List<Line> lines) {
+        lines.forEach(line -> addVertexes(line));
+        lines.forEach(line -> setEdgeWeights(line));
+    }
+
+    private void addVertexes(Line line) {
+        line.getStationsInOrder()
+                .forEach(station -> graph.addVertex(station));
+    }
+
+    private void setEdgeWeights(Line line) {
+        line.getSections()
+                .forEach(section -> graph.setEdgeWeight(
+                        graph.addEdge(section.getUpStation(), section.getDownStation()),
+                        section.getDistance()));
     }
 
     public List<Station> findRoute(Station source, Station target) {

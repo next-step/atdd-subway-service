@@ -3,6 +3,7 @@ package nextstep.subway;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -41,6 +42,7 @@ public class PathFinderTest {
         삼호선.addSection(교대역, 남부터미널역, 3);
     }
 
+    @DisplayName("출발 역부터 도착 역까지 최단 경로를 조회한다.")
     @Test
     void 경로_조회() {
         // given
