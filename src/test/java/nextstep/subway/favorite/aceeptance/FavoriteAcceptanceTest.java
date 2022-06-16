@@ -10,8 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
@@ -76,6 +80,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then 즐겨찾기 목록 조회됨
      * When 즐겨찾기 삭제 요청
      * Then 즐겨찾기 삭제됨
+     * Then 즐겨찾기 목록 조회 안됨
      */
     @Test
     @DisplayName("즐겨찾기 관련 기능 인수통합테스트")
@@ -94,6 +99,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_삭제_응답_결과 = 즐겨찾기_목록_삭제_요청(사용자_인증_토큰, 즐겨찾기_생성_응답_결과);
         //then
         즐겨찾기_삭제됨(즐겨찾기_삭제_응답_결과);
+
+        //when
+        ExtractableResponse<Response> 즐겨찾기_재조회_응답_결과 = 즐겨찾기_목록_조회_요청(사용자_인증_토큰);
+        즐겨찾기_목록_조회_실패됨(즐겨찾기_재조회_응답_결과, 합정역, 당산역);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록_삭제_요청(String accessToken, ExtractableResponse<Response> createResponse) {
@@ -110,8 +119,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return sendPostWithAuth(accessToken, "/favorites", favoriteRequest);
     }
 
+    private void 즐겨찾기_목록_조회_실패됨(ExtractableResponse<Response> response, StationResponse source, StationResponse target) {
+        List<String> stationNames = 역_전체_이름_조회(response);
+        assertThat(stationNames).doesNotContain(source.getName(), target.getName());
+    }
+
+    private List<StationResponse> 역_목록_조회(ExtractableResponse<Response> response) {
+        return response.jsonPath().getList(".", FavoriteResponse.class).stream()
+                .map(FavoriteResponse::getStations)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    private List<String> 역_전체_이름_조회(ExtractableResponse<Response> response) {
+        List<StationResponse> stations = 역_목록_조회(response);
+        return stations.stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
+    }
+
     private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, StationResponse source, StationResponse target) {
+        List<String> stationNames = 역_전체_이름_조회(response);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(stationNames).containsExactly(source.getName(), target.getName());
     }
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
