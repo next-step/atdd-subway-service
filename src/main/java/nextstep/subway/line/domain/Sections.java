@@ -87,6 +87,10 @@ public class Sections {
         downLineStation.ifPresent(it -> sections.remove(it));
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     private void addNewSection (Line line, Section upLineStation, Section downLineStation) {
         Station newUpStation = downLineStation.getUpStation();
         Station newDownStation = upLineStation.getDownStation();
