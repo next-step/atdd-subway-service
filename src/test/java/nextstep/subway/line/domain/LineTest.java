@@ -190,4 +190,14 @@ class LineTest {
             line.addSection(new Section(C역, D역, 10));
         }).isInstanceOf(InvalidSectionException.class);
     }
+
+    @DisplayName("노선 추가요금 확인")
+    @Test
+    void surcharge() {
+        // given
+        Line line = new Line("신분당선", "red", A역, B역, 10, 500);
+
+        // when, then
+        assertThat(line.getSurcharge()).isEqualTo(new Surcharge(500));
+    }
 }
