@@ -55,7 +55,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         유효한_토큰 = 로그인_요청시도(new TokenRequest(YANG_EMAIL, YANG_PASSWORD)).as(TokenResponse.class);
     }
 
-    /**
+    /**s
      * When 즐겨찾기 생성을 요청
      * Then 즐겨찾기 생성됨
      */
