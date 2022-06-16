@@ -76,11 +76,11 @@ public class Sections {
             return;
         }
         final Match match = findInsertSomePlace(section);
-        if (match.isUP()) {
+        if (match.isUp()) {
             findPreSectionBy(section.getUpStation())
                     .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
         }
-        if (match.isDOWN()) {
+        if (match.isDown()) {
             findDownSectionBy(section.getDownStation())
                     .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
         }
