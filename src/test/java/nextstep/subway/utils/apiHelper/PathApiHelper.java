@@ -10,6 +10,7 @@ public class PathApiHelper {
             .given().log().all()
             .queryParam("source",시작역)
             .queryParam("target",종착역)
+            .header("Authorization", "Bearer "+토큰)
             .when()
             .get("/paths")
             .then().log().all()

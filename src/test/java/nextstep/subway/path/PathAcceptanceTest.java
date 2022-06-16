@@ -1,6 +1,7 @@
 package nextstep.subway.path;
 
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static nextstep.subway.utils.apiHelper.AuthMemberApiHelper.로그인을통한_토큰받기;
 import static nextstep.subway.utils.apiHelper.LineApiHelper.지하철_노선_등록되어_있음;
 import static nextstep.subway.utils.apiHelper.LineSectionApiHelper.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.utils.apiHelper.MemberApiHelper.회원_생성을_요청;
@@ -74,7 +75,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     public void 지하철_경로_조회하기() {
         //given
-        String 토큰 = null;
+        String 토큰 = 로그인을통한_토큰받기(EMAIL, PASSWORD).jsonPath().get("accessToken");
 
         //when
         ExtractableResponse<Response> 지하철_경로_조회_요청_response = 지하철_경로_조회_요청(교대역.getId(),
@@ -102,7 +103,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     public void 동일_지하철_경로_조회_에러(){
         //given
-        String 토큰 = null;
+        String 토큰 = 로그인을통한_토큰받기(EMAIL, PASSWORD).jsonPath().get("accessToken");
 
         //when
         ExtractableResponse<Response> 지하철_경로_조회_요청_response = 지하철_경로_조회_요청(교대역.getId(),
@@ -130,7 +131,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     public void 없는_지하철_경로_조회_에러(){
         //given
-        String 토큰 = null;
+        String 토큰 = 로그인을통한_토큰받기(EMAIL, PASSWORD).jsonPath().get("accessToken");
         StationResponse 동두천역= 지하철역_등록되어_있음("동두천역").as(StationResponse.class);
 
         //when
@@ -154,7 +155,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     public void 없는_경로_조회_에러(){
         //given
-        String 토큰 = null;
+        String 토큰 = 로그인을통한_토큰받기(EMAIL, PASSWORD).jsonPath().get("accessToken");
         StationResponse 송도달빛축제공원 = 지하철역_등록되어_있음("송도달빛축제공원").as(StationResponse.class);
         StationResponse 국제업무지구 = 지하철역_등록되어_있음("국제업무지구").as(StationResponse.class);
         지하철_노선_등록되어_있음(new LineRequest("인천1호선", "짙은푸른색", 송도달빛축제공원.getId(), 국제업무지구.getId(), 10));
