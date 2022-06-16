@@ -5,32 +5,42 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.station.application.StationService;
+import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class FavoriteService {
-    private final MemberService memberService;
-    private final StationService stationService;
+    private final MemberRepository memberRepository;
     private final FavoriteRepository favoriteRepository;
+    private final StationRepository stationRepository;
 
-    public FavoriteService(MemberService memberService, StationService stationService, FavoriteRepository favoriteRepository) {
-        this.memberService = memberService;
-        this.stationService = stationService;
+    public FavoriteService(MemberRepository memberRepository,
+                           FavoriteRepository favoriteRepository,
+                           StationRepository stationRepository) {
+        this.memberRepository = memberRepository;
         this.favoriteRepository = favoriteRepository;
+        this.stationRepository = stationRepository;
     }
 
     public FavoriteResponse saveFavorite(Long memberId, FavoriteRequest favoriteRequest) {
-        Member member = memberService.findMemberById(memberId);
-        Station sourceStation = stationService.findById(favoriteRequest.getSourceId());
-        Station targetStation = stationService.findById(favoriteRequest.getTargetId());
+        Member member = findMember(memberId);
+        Station sourceStation = findStation(favoriteRequest.getSourceId());
+        Station targetStation = findStation(favoriteRequest.getTargetId());
         Favorite favorite = favoriteRepository.save(new Favorite(member, sourceStation, targetStation));
         return FavoriteResponse.of(favorite);
+    }
+
+    private Member findMember(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("회원이 아닙니다."));
+    }
+
+    private Station findStation(Long stationId) {
+        return stationRepository.findById(stationId).orElseThrow(() -> new IllegalArgumentException("지하철 역이 존재하지 않습니다."));
     }
 
     public List<FavoriteResponse> findFavorites(Long memberId) {

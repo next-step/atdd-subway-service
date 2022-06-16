@@ -9,15 +9,16 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.station.application.StationService;
+import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
 
+import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,13 +29,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 class FavoriteServiceTest {
     @MockBean
-    MemberService memberService;
+    MemberRepository memberRepository;
 
     @MockBean
     FavoriteRepository favoriteRepository;
 
     @MockBean
-    StationService stationService;
+    StationRepository stationRepository;
 
     private FavoriteService favoriteService;
 
@@ -49,7 +50,7 @@ class FavoriteServiceTest {
 
     @BeforeEach
     void setUp() {
-        favoriteService = new FavoriteService(memberService, stationService, favoriteRepository);
+        favoriteService = new FavoriteService(memberRepository, favoriteRepository, stationRepository);
         memberId = 1L;
         member = new Member(EMAIL, PASSWORD, AGE);
         sourceId = 1L;
@@ -64,9 +65,9 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기를 등록한다.")
     void createFavorite() {
         //given
-        when(memberService.findMemberById(memberId)).thenReturn(member);
-        when(stationService.findById(sourceId)).thenReturn(source);
-        when(stationService.findById(targetId)).thenReturn(target);
+        when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+        when(stationRepository.findById(sourceId)).thenReturn(Optional.of(source));
+        when(stationRepository.findById(targetId)).thenReturn(Optional.of(target));
         when(favoriteRepository.save(any())).thenReturn(favorite);
 
         //when
