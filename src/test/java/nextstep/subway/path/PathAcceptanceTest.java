@@ -73,7 +73,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * then 지나온 정거장 만큼 금액이 안내된다
      */
     @Test
-    public void 지하철_경로_조회하기() {
+    public void 지하철_경로_조회하기_성인() {
         //given
         String 토큰 = 로그인을통한_토큰받기(EMAIL, PASSWORD).jsonPath().get("accessToken");
 
@@ -168,5 +168,61 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_조회불가(지하철_경로_조회_요청_response);
     }
 
+    /**
+     * 교대역    --- *2호선* ---   강남역
+     * |                        |
+     * *3호선*                   *신분당선*
+     * |                        |
+     * 남부터미널역  --- *3호선* ---   양재
+     * background
+         * given : 위와같은 지하철 도면일때
+     * given : 청소년 사용자를 생성하고
+     * given : 생성한 사용자에 대한 토큰을 획득하고
+     * when 교대~양재역 까지의 거리 및 경로를 조회했을때
+     * then 교대~남부터미널~양재 경로로 안내된다.
+     * then 지나온 정거장 만큼 금액이 안내된다
+     */
+    @Test
+    public void 지하철_경로_조회하기_청소년() {
+        //given
+        회원_생성을_요청("student"+EMAIL, PASSWORD, 18);
+        String 토큰 = 로그인을통한_토큰받기("student"+EMAIL, PASSWORD).jsonPath().get("accessToken");
 
+        //when
+        ExtractableResponse<Response> 지하철_경로_조회_요청_response = 지하철_경로_조회_요청(교대역.getId(),
+            양재역.getId(), 토큰);
+
+        //then
+        최단경로_결과_확인(지하철_경로_조회_요청_response, Arrays.asList("교대역", "남부터미널역", "양재역"), 11);
+        최단경로_금액_확인(지하철_경로_조회_요청_response, (int)(1350 * 0.8));
+    }
+
+    /**
+     * 교대역    --- *2호선* ---   강남역
+     * |                        |
+     * *3호선*                   *신분당선*
+     * |                        |
+     * 남부터미널역  --- *3호선* ---   양재
+     * background
+         * given : 위와같은 지하철 도면일때
+     * given : 어린이 사용자를 생성하고
+     * given : 생성한 사용자에 대한 토큰을 획득하고
+     * when 교대~양재역 까지의 거리 및 경로를 조회했을때
+     * then 교대~남부터미널~양재 경로로 안내된다.
+     * then 지나온 정거장 만큼 금액이 안내된다
+     */
+    @Test
+    public void 지하철_경로_조회하기_어린이() {
+        //given
+        회원_생성을_요청("child"+EMAIL, PASSWORD, 9);
+        String 토큰 = 로그인을통한_토큰받기("child"+EMAIL, PASSWORD).jsonPath().get("accessToken");
+
+        //when
+        ExtractableResponse<Response> 지하철_경로_조회_요청_response = 지하철_경로_조회_요청(교대역.getId(),
+            양재역.getId(), 토큰);
+
+        //then
+        최단경로_결과_확인(지하철_경로_조회_요청_response, Arrays.asList("교대역", "남부터미널역", "양재역"), 11);
+        최단경로_금액_확인(지하철_경로_조회_요청_response, (int)(1350 * 0.5));
+    }
 }
