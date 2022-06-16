@@ -42,4 +42,8 @@ public class StationService {
         return stationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("지하철역이 존재하지 않습니다."));
     }
 
+    public List<Station> findAllStationsById(List<Long> ids) {
+        return this.stationRepository.findAllById(ids);
+    }
+
 }
