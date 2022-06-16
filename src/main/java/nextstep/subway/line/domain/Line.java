@@ -68,11 +68,7 @@ public class Line extends BaseEntity {
         sections.removeStation(station);
     }
 
-    public List<Section> getSections() {
-        return sections.getElements();
-    }
-
-    public void configure(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        sections.configure(graph);
+    public void enrollIn(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        sections.enrollIn(graph);
     }
 }

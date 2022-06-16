@@ -19,29 +19,11 @@ public class PathFinder {
 
     public PathFinder(List<Line> lines, LineRepository lineRepository) {
         this.lineRepository = lineRepository;
-//        configureGraph(lines);
-        configureGraphNew(lines);
+        enrollInGraph(lines);
     }
 
-    private void configureGraph(List<Line> lines) {
-        lines.forEach(line -> addVertexes(line));
-        lines.forEach(line -> setEdgeWeights(line));
-    }
-
-    private void addVertexes(Line line) {
-        line.getStationsInOrder()
-                .forEach(station -> graph.addVertex(station));
-    }
-
-    private void setEdgeWeights(Line line) {
-        line.getSections()
-                .forEach(section -> graph.setEdgeWeight(
-                        graph.addEdge(section.getUpStation(), section.getDownStation()),
-                        section.getDistance()));
-    }
-
-    private void configureGraphNew(List<Line> lines) {
-        lines.forEach(line -> line.configure(graph));
+    private void enrollInGraph(List<Line> lines) {
+        lines.forEach(line -> line.enrollIn(graph));
     }
 
     public GraphPath<Station, DefaultWeightedEdge> getPath(Station source, Station target) {
@@ -72,6 +54,6 @@ public class PathFinder {
     public void renew() {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         lineRepository.findAll()
-                .forEach(line -> line.configure(graph));
+                .forEach(line -> line.enrollIn(graph));
     }
 }

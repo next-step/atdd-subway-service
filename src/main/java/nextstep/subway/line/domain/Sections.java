@@ -141,7 +141,7 @@ public class Sections {
                 .findFirst();
     }
 
-    public void configure(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    public void enrollIn(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         graph.addVertex(findFirstSection().getUpStation());
         elements.forEach(section -> graph.addVertex(section.getDownStation()));
         elements.forEach(section -> graph.setEdgeWeight(
