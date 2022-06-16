@@ -3,6 +3,7 @@ package nextstep.subway.favorite.application;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -97,10 +98,13 @@ class FavoriteServiceTest {
     @Test
     @DisplayName("즐겨찾기를 삭제한다.")
     void deleteFavorite() {
+        Favorite favorite = mock(Favorite.class);
         //when
+        when(favoriteRepository.findById(favoriteId)).thenReturn(Optional.of(favorite));
+        when(favorite.isCreatedBy(memberId)).thenReturn(true);
         favoriteService.deleteFavorite(memberId, favoriteId);
 
         //then
-        verify(favoriteRepository, times(1)).deleteByMemberIdAndId(memberId, favoriteId);
+        verify(favoriteRepository, times(1)).delete(favorite);
     }
 }
