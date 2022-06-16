@@ -66,7 +66,7 @@ class SectionsTest {
         // then
         assertAll(
                 () -> assertThat(this.sections.get()).hasSize(2),
-                () -> assertThat(this.sections.getStations()).containsExactly(addedStation)
+                () -> assertThat(this.sections.getStations()).containsExactly(this.upStation, addedStation, this.downStation)
         );
     }
 

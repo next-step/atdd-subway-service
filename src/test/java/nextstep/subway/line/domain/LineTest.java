@@ -91,7 +91,7 @@ class LineTest {
         // then
         assertAll(
                 () -> assertThat(this.line.getSections()).hasSize(2),
-                () -> assertThat(this.line.getStations()).containsExactly(addedStation)
+                () -> assertThat(this.line.getStations()).containsExactly(this.upStation, addedStation, this.downStation)
         );
     }
 

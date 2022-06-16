@@ -30,7 +30,7 @@ public class Sections {
     }
 
     public static Sections empty() {
-        return new Sections(Collections.emptyList());
+        return new Sections(new ArrayList<>());
     }
 
     public static Sections from(List<Section> sections) {
@@ -55,8 +55,8 @@ public class Sections {
 
     public void removeStation(Station removeStation) {
         if (removableStation(removeStation)) {
-            Optional<Section> upLineStation = findSectionByUpStation(removeStation);
-            Optional<Section> downLineStation = findSectionByDownStation(removeStation);
+            Optional<Section> upLineStation = findSectionByDownStation(removeStation);
+            Optional<Section> downLineStation = findSectionByUpStation(removeStation);
 
             addConnectSection(upLineStation, downLineStation);
 
@@ -75,7 +75,7 @@ public class Sections {
         for (int i = 0; i < this.sections.size(); i++) {
             Station nextStation = findSectionByUpStation(stations.get(i))
                     .map(Section::getDownStation)
-                    .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_NEXT_STATION));
+                    .orElseThrow(() -> new RuntimeException(NOT_FOUND_NEXT_STATION));
             stations.add(nextStation);
         }
 
@@ -89,7 +89,7 @@ public class Sections {
         return this.sections.stream()
                 .filter(section -> !downStations.contains(section.getUpStation()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_FIRST_UP_SECTION));
+                .orElseThrow(() -> new RuntimeException(NOT_FOUND_FIRST_UP_SECTION));
     }
 
     private void validateNoneMatchStation(Section section) {
@@ -124,10 +124,10 @@ public class Sections {
 
     private boolean removableStation(Station removeStation) {
         if (onlyOneSection()) {
-            throw new IllegalArgumentException(NOT_REMOVED_ONLY_ONE_SECTION);
+            throw new RuntimeException(NOT_REMOVED_ONLY_ONE_SECTION);
         }
         if (doesNotContainStation(removeStation)) {
-            throw new IllegalArgumentException(DOES_NOT_CONTAIN_STATION);
+            throw new RuntimeException(DOES_NOT_CONTAIN_STATION);
         }
         return isNotEmpty();
     }
