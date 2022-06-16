@@ -25,4 +25,15 @@ public class SectionWeightedEdge extends DefaultWeightedEdge {
     public int getDistance() {
         return section.getDistance();
     }
+
+    public Line getLine() {
+        return section.getLine();
+    }
+
+    @Override
+    public String toString() {
+        return "SectionWeightedEdge{" +
+                "section=" + section +
+                '}';
+    }
 }

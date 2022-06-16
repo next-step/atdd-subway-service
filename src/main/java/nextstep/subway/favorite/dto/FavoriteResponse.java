@@ -7,10 +7,10 @@ public class FavoriteResponse {
     private StationResponse source;
     private StationResponse target;
 
-    protected FavoriteResponse() {
+    private FavoriteResponse() {
     }
 
-    public FavoriteResponse(Long id, StationResponse source, StationResponse target) {
+    private FavoriteResponse(Long id, StationResponse source, StationResponse target) {
         this.id = id;
         this.source = source;
         this.target = target;

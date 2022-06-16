@@ -49,9 +49,7 @@ public class FavoriteService {
 
     public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
         Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
-        if (!favorite.checkCreatedByMemberId(loginMember.getId())) {
-            throw new AuthorizationException("삭제 권한이 없습니다.");
-        }
+        favorite.checkAuth(loginMember.getId());
         favoriteRepository.delete(favorite);
     }
 }

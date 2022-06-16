@@ -1,21 +1,22 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
 
 import java.util.List;
 
 public class PathResult {
     private List<Station> stations;
-    private List<SectionWeightedEdge> sectionEdges;
+    private Distance distance;
+    private Fare fare;
 
-    public PathResult(GraphPath graphPath) {
-        this.stations = graphPath.getVertexList();
-        this.sectionEdges = graphPath.getEdgeList();
+    private PathResult(List<Station> stations, Distance distance, Fare fare) {
+        this.stations = stations;
+        this.distance = distance;
+        this.fare = fare;
     }
 
-    public PathResult of(GraphPath graphPath) {
-        return new PathResult(graphPath);
+    public static PathResult of(List<Station> stations, Distance distance, Fare fare) {
+        return new PathResult(stations, distance, fare);
     }
 
     public List<Station> getStations() {
@@ -23,8 +24,10 @@ public class PathResult {
     }
 
     public int getDistance() {
-        return sectionEdges.stream()
-                .mapToInt(SectionWeightedEdge::getDistance)
-                .sum();
+        return this.distance.getDistance();
+    }
+
+    public int getFare() {
+        return this.fare.getFare();
     }
 }
