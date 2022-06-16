@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.member.domain.MemberAge;
 import nextstep.subway.station.domain.Station;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class FareTest {
 
+    @DisplayName("요금 계산 테스트")
     @Test
     void of() {
         // Given
