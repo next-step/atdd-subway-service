@@ -45,7 +45,7 @@ public class FavoriteController {
         @RequestBody FavoriteRequest favoriteRequest) {
 
         PathResponse path = pathServiceFacade.findPath(favoriteRequest.getSource(),
-            favoriteRequest.getTarget());
+            favoriteRequest.getTarget(), loginMember.getId());
 
         Favorite favorite = favoriteServiceFacade.saveFavorite(loginMember.getId(),
             favoriteRequest.getSource(), favoriteRequest.getTarget());
