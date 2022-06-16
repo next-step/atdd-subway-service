@@ -3,7 +3,7 @@ package nextstep.subway.line.utils;
 import java.util.List;
 import nextstep.subway.line.domain.Line;
 
-public class Under10PriceCalcHelper implements PathPriceCalcHelper {
+public class Under10PriceCalcHelper implements PriceCalcHelper {
 
     private final static int MIN_DISTANCE = 0;
     private final static int MAX_DISTANCE = 10;

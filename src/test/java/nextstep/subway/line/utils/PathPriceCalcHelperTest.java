@@ -11,17 +11,17 @@ import org.junit.jupiter.api.Test;
 
 class PathPriceCalcHelperTest {
 
-    private List<PathPriceCalcHelper> pathPriceCalcHelpers;
+    private List<PriceCalcHelper> priceCalcHelpers;
     private List<Line> lines;
 
     @BeforeEach
     public void init() {
-        pathPriceCalcHelpers = new LinkedList<>();
+        priceCalcHelpers = new LinkedList<>();
         lines = new LinkedList<>();
 
-        pathPriceCalcHelpers.add(new Under10PriceCalcHelper());
-        pathPriceCalcHelpers.add(new Between10And50PriceCalcHelper());
-        pathPriceCalcHelpers.add(new Over50PriceCalcHelper());
+        priceCalcHelpers.add(new Under10PriceCalcHelper());
+        priceCalcHelpers.add(new Between10And50PriceCalcHelper());
+        priceCalcHelpers.add(new Over50PriceCalcHelper());
 
         lines.add(new Line("신분당선", "빨강", null, null, 10, 1_000));
         lines.add(new Line("이호선", "녹색", null, null, 10));
@@ -31,8 +31,8 @@ class PathPriceCalcHelperTest {
     public void 가격체크_10KM이하_노선요금없음() {
         //given
         int distance = 9;
-        PathPriceCalcHelper priceHelper = pathPriceCalcHelpers.stream()
-            .filter(pathPriceCalcHelper -> pathPriceCalcHelper.canSupport(distance)).findFirst()
+        PriceCalcHelper priceHelper = priceCalcHelpers.stream()
+            .filter(priceCalcHelper -> priceCalcHelper.canSupport(distance)).findFirst()
             .get();
 
         //when
@@ -46,8 +46,8 @@ class PathPriceCalcHelperTest {
     public void 가격체크_10KM이하_노선요금있음() {
         //given
         int distance = 9;
-        PathPriceCalcHelper priceHelper = pathPriceCalcHelpers.stream()
-            .filter(pathPriceCalcHelper -> pathPriceCalcHelper.canSupport(distance)).findFirst()
+        PriceCalcHelper priceHelper = priceCalcHelpers.stream()
+            .filter(priceCalcHelper -> priceCalcHelper.canSupport(distance)).findFirst()
             .get();
 
         //when
@@ -61,8 +61,8 @@ class PathPriceCalcHelperTest {
     public void 가격체크_10_50KM사이_노선요금없음() {
         //given
         int distance = 49;
-        PathPriceCalcHelper priceHelper = pathPriceCalcHelpers.stream()
-            .filter(pathPriceCalcHelper -> pathPriceCalcHelper.canSupport(distance)).findFirst()
+        PriceCalcHelper priceHelper = priceCalcHelpers.stream()
+            .filter(priceCalcHelper -> priceCalcHelper.canSupport(distance)).findFirst()
             .get();
 
         //when
@@ -76,8 +76,8 @@ class PathPriceCalcHelperTest {
     public void 가격체크_10_50KM사이_노선요금있음() {
         //given
         int distance = 49;
-        PathPriceCalcHelper priceHelper = pathPriceCalcHelpers.stream()
-            .filter(pathPriceCalcHelper -> pathPriceCalcHelper.canSupport(distance)).findFirst()
+        PriceCalcHelper priceHelper = priceCalcHelpers.stream()
+            .filter(priceCalcHelper -> priceCalcHelper.canSupport(distance)).findFirst()
             .get();
 
         //when
@@ -91,8 +91,8 @@ class PathPriceCalcHelperTest {
     public void 가격체크_50KM_이상_노선요금없음() {
         //given
         int distance = 97;
-        PathPriceCalcHelper priceHelper = pathPriceCalcHelpers.stream()
-            .filter(pathPriceCalcHelper -> pathPriceCalcHelper.canSupport(distance)).findFirst()
+        PriceCalcHelper priceHelper = priceCalcHelpers.stream()
+            .filter(priceCalcHelper -> priceCalcHelper.canSupport(distance)).findFirst()
             .get();
 
         //when
@@ -106,8 +106,8 @@ class PathPriceCalcHelperTest {
     public void 가격체크_50KM_이상_노선요금있음() {
         //given
         int distance = 97;
-        PathPriceCalcHelper priceHelper = pathPriceCalcHelpers.stream()
-            .filter(pathPriceCalcHelper -> pathPriceCalcHelper.canSupport(distance)).findFirst()
+        PriceCalcHelper priceHelper = priceCalcHelpers.stream()
+            .filter(priceCalcHelper -> priceCalcHelper.canSupport(distance)).findFirst()
             .get();
 
         //when

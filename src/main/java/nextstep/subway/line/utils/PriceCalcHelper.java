@@ -3,7 +3,7 @@ package nextstep.subway.line.utils;
 import java.util.List;
 import nextstep.subway.line.domain.Line;
 
-public interface PathPriceCalcHelper {
+public interface PriceCalcHelper {
 
     boolean canSupport(int distance);
 
