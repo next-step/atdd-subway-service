@@ -11,7 +11,7 @@ import java.util.Objects;
 public class PathFinder {
     private static final String MUST_NOT_BE_NULL = "null일 수 없습니다.";
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     public PathFinder() {
         this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
