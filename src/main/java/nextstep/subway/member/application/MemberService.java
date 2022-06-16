@@ -38,4 +38,8 @@ public class MemberService {
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
+
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(email));
+    }
 }
