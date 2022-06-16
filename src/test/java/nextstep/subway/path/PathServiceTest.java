@@ -7,9 +7,12 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.application.PathPriceCalculator;
 import nextstep.subway.line.application.PathServiceFacade;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.dto.PathResponse;
+import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +28,10 @@ public class PathServiceTest {
     StationService stationService;
     @Mock
     LineService lineService;
+    @Mock
+    PathPriceCalculator pathPriceCalculator;
+    @Mock
+    MemberService memberService;
     private Line 이호선;
     private Line 신분당선;
     private Line 삼호선;
@@ -49,7 +56,7 @@ public class PathServiceTest {
         when(lineService.findAllLines()).thenReturn(Arrays.asList(이호선, 신분당선, 삼호선));
         when(stationService.findById(1L)).thenReturn(교대역);
         when(stationService.findById(4L)).thenReturn(양재역);
-
+        when(memberService.findById(1L)).thenReturn(new Member("email", "password", 18));
         역_ID_설정하기(1L, 교대역);
         역_ID_설정하기(4L, 양재역);
     }
@@ -64,10 +71,10 @@ public class PathServiceTest {
     @Test
     public void 정상_경로찾기() {
         //given
-        PathServiceFacade pathService = new PathServiceFacade(stationService, lineService);
+        PathServiceFacade pathService = new PathServiceFacade(stationService, lineService, pathPriceCalculator, memberService);
 
         //when
-        PathResponse pathResponse = pathService.findPath(교대역.getId(), 양재역.getId());
+        PathResponse pathResponse = pathService.findPath(교대역.getId(), 양재역.getId(), 1L);
 
         //then
         assertAll(() -> assertThat(pathResponse.getDistance()).isEqualTo(15),
