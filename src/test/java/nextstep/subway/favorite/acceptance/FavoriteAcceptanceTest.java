@@ -11,14 +11,17 @@ import static nextstep.subway.member.MemberAcceptanceTest.로그인_되어_있�
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성됨;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,12 +75,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // Then 즐겨찾기 생성됨
         즐겨찾기_생성됨(createResponse);
 
-        /*// When 즐겨찾기 목록 조회 요청
-        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청();
+        // When 즐겨찾기 목록 조회 요청
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자);
         // Then 즐겨찾기 목록 조회됨
         즐겨찾기_목록_조회됨(findResponse);
 
-        // When 즐겨찾기 삭제 요청
+        /*// When 즐겨찾기 삭제 요청
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청();
         // Then 즐겨찾기 삭제됨
         즐겨찾기_삭제됨(deleteResponse);*/
@@ -96,7 +99,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
+        FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
+
+        assertAll(
+                () -> assertThat(favoriteResponse.getId()).isNotNull(),
+            () -> assertThat(favoriteResponse.getSource()).isNotNull(),
+            () -> assertThat(favoriteResponse.getTarget()).isNotNull()
+        );
     }
 }
