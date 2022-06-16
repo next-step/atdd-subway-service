@@ -1,4 +1,4 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.sections.domain;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
 @Entity

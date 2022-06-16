@@ -1,4 +1,4 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.sections.domain;
 
 import java.util.ArrayList;
 import java.util.Arrays;

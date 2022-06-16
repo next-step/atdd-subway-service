@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.sections.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.Test;
 
