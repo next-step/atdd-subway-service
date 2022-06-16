@@ -15,6 +15,16 @@ public class LineResponse {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
+    public static LineResponse of(Line line) {
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), StationResponse.of(line.getStations()), line.getCreatedDate(), line.getModifiedDate());
+    }
+
+    public static List<LineResponse> of(List<Line> persistLines) {
+        return persistLines.stream()
+                .map(LineResponse::of)
+                .collect(Collectors.toList());
+    }
+
     public LineResponse() {
     }
 
@@ -25,16 +35,6 @@ public class LineResponse {
         this.stations = stations;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
-    }
-
-    public static LineResponse of(Line line, List<StationResponse> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
-    }
-
-    public static List<LineResponse> of(List<Line> persistLines) {
-        return persistLines.stream()
-                .map(line -> LineResponse.of(line, StationResponse.of(line.getStations())))
-                .collect(Collectors.toList());
     }
 
     public Long getId() {
