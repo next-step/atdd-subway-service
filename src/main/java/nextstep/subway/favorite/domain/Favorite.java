@@ -24,8 +24,7 @@ public class Favorite {
     protected Favorite() {
     }
 
-    public Favorite(Long id, Station sourceStation, Station targetStation, Member member) {
-        this.id = id;
+    public Favorite(Station sourceStation, Station targetStation, Member member) {
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
         this.member = member;

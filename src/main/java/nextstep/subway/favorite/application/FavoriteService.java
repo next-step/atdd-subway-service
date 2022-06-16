@@ -35,7 +35,7 @@ public class FavoriteService {
         Member member = memberService.findByEmail(loginMember.getEmail());
         Station source = stationService.findStationById(favoriteRequest.getSource());
         Station target = stationService.findStationById(favoriteRequest.getTarget());
-        Favorite favorite = favoriteRepository.save(new Favorite(member.getId(), source, target, member));
+        Favorite favorite = favoriteRepository.save(new Favorite(source, target, member));
         return FavoriteResponse.of(favorite);
     }
 

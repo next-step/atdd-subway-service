@@ -53,7 +53,7 @@ class FavoriteServiceTest {
         사용자 = new Member("email@email.com", "email", 10);
         로그인_사용자 = new LoginMember(1L, "email@email.com", 20);
 
-        즐겨찾기 = new Favorite(1L, 강남역, 잠실역, 사용자);
+        즐겨찾기 = new Favorite(강남역, 잠실역, 사용자);
     }
 
     @Test
