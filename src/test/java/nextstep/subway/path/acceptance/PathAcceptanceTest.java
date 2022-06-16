@@ -80,6 +80,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_최단_경로_조회_실패됨(response);
     }
 
+    @Test
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
+    public void notConnectSourceAndTarget() {
+        // given
+        StationResponse 서울역 = StationAcceptanceTest.지하철역_등록되어_있음("서울역").as(StationResponse.class);
+        StationResponse 삼각지역 = StationAcceptanceTest.지하철역_등록되어_있음("삼각지역").as(StationResponse.class);
+        LineResponse 사호선 = 지하철_노선_등록되어_있음(new LineRequest("4호선", "bg-blue-600", 서울역.getId(), 삼각지역.getId(), 8)).as(LineResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회(교대역.getId(), 삼각지역.getId());
+
+        // then
+        지하철_최단_경로_조회_실패됨(response);
+    }
+
     public static ExtractableResponse<Response> 지하철_최단_경로_조회(Long sourceId, Long targetId) {
         Map<String, String> params = new HashMap<>();
         params.put("source", sourceId + "");
