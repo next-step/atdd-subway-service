@@ -10,6 +10,7 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,11 +51,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(
                 "신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(
-                "이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 1000)).as(LineResponse.class);;
+                "이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 1000)).as(LineResponse.class);
+        ;
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(
-                "삼호선", "bg-red-600", 교대역.getId(), 남부터미널역.getId(), 5)).as(LineResponse.class);;
+                "삼호선", "bg-red-600", 교대역.getId(), 남부터미널역.getId(), 5)).as(LineResponse.class);
+        ;
 
-        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
         지하철_노선에_지하철역_등록_요청(이호선, 강남역, 력삼역, 3);
         지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 양재역, 3);
     }
@@ -73,11 +75,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(pathResponse.getStations()).hasSize(4);
-        assertThat(pathResponse.getStations().get(0).getId()).isEqualTo(교대역.getId());
-        assertThat(pathResponse.getStations().get(1).getId()).isEqualTo(남부터미널역.getId());
-        assertThat(pathResponse.getStations().get(2).getId()).isEqualTo(양재역.getId());
-        assertThat(pathResponse.getStations().get(3).getId()).isEqualTo(강남역.getId());
-        assertThat(pathResponse.getDistance()).isEqualTo(18);
+        Assertions.assertAll(
+                () -> assertThat(pathResponse.getStations().get(0).getId()).isEqualTo(교대역.getId()),
+                () -> assertThat(pathResponse.getStations().get(1).getId()).isEqualTo(남부터미널역.getId()),
+                () -> assertThat(pathResponse.getStations().get(2).getId()).isEqualTo(양재역.getId()),
+                () -> assertThat(pathResponse.getStations().get(3).getId()).isEqualTo(강남역.getId()),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(18));
     }
 
     /**
@@ -86,7 +89,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * Then 에러가 발생한다
      */
     @Test
-    @DisplayName("동일한 역을 검색하며 에러가 발생한다")
+    @DisplayName("동일한 역을 검색하면 에러가 발생한다")
     void sameStationError() {
         // when
         ExtractableResponse<Response> response = 지하철_노선_최단거리_노선_조회(교대역.getId(), 교대역.getId());
@@ -115,7 +118,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().log().all()
-                .get("/paths?source="+source+ "&target=" + target)
+                .get("/paths?source=" + source + "&target=" + target)
                 .then().log().all()
                 .extract();
     }

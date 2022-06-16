@@ -50,7 +50,7 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-        return sections.stations();
+        return sections.orderedStations();
     }
 
     public List<Section> getSections() {

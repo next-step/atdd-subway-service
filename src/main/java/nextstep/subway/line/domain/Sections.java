@@ -32,10 +32,6 @@ public class Sections {
         sections.add(new Section(line, upStation, downStation, distance));
     }
 
-    public void add(List<Section> sections) {
-        this.sections.addAll(new ArrayList<>(sections));
-    }
-
     @SafeVarargs
     public final void addAll(List<Section>... sections) {
         for (List<Section> sectionList : sections) {
@@ -58,7 +54,7 @@ public class Sections {
     }
 
     private boolean canAdd(Station upStation, Station downStation) {
-        return !stations().isEmpty() && !isPresentStation(upStation) && !isPresentStation(downStation);
+        return !orderedStations().isEmpty() && !isPresentStation(upStation) && !isPresentStation(downStation);
     }
 
     private void updateUpStationIfPresent(Station upStation, Station downStation, Distance distance) {
@@ -76,14 +72,25 @@ public class Sections {
     }
 
     private boolean isPresentStation(Station station) {
-        return stations().stream().anyMatch(it -> it == station);
+        return orderedStations().stream().anyMatch(it -> it == station);
     }
 
     public List<Section> getSections() {
         return Collections.unmodifiableList(sections);
     }
 
-    public List<Station> stations() {
+    public List<Station> allStations() {
+        HashSet<Station> stations = new HashSet<>();
+
+        for (Section s : sections) {
+            stations.add(s.getUpStation());
+            stations.add(s.getDownStation());
+        }
+
+        return new ArrayList<>(stations);
+    }
+
+    public List<Station> orderedStations() {
         if (sections.isEmpty()) {
             return Collections.emptyList();
         }

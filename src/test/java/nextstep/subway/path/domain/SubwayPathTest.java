@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.strategy.Dijkstra;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +48,7 @@ public class SubwayPathTest {
     @DisplayName("최단거리 기준으로 경로를 구한다")
     void dijkstra() {
         //when
-        List<Station> result = PathFinder.dijkstra(교대역, 력삼역, Arrays.asList(강남역, 력삼역, 양재역, 교대역, 남부터미널역), sections);
+        List<Station> result = PathFinder.find(new Dijkstra(교대역, 력삼역, Arrays.asList(강남역, 력삼역, 양재역, 교대역, 남부터미널역), sections));
         Distance distance = sections.filteredBy(result).totalDistance();
 
         //then
@@ -63,7 +64,7 @@ public class SubwayPathTest {
     @DisplayName("동일한 역으로 경로를 검색하면 예외가 발생한다")
     void sameStationPathException() {
         assertThatThrownBy(
-                () -> PathFinder.dijkstra(교대역, 교대역, Arrays.asList(강남역, 력삼역, 양재역, 교대역, 남부터미널역), sections))
+                () -> PathFinder.find(new Dijkstra(교대역, 교대역, Arrays.asList(강남역, 력삼역, 양재역, 교대역, 남부터미널역), sections)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("시작역과 종료역은 같을 수 없습니다.");
     }
@@ -72,7 +73,7 @@ public class SubwayPathTest {
     @DisplayName("경로를 찾지 못하면 예외가 발생한다")
     void notFoundPath() {
         assertThatThrownBy(
-                () -> PathFinder.dijkstra(서울역, 교대역, Arrays.asList(강남역, 력삼역, 양재역, 교대역, 남부터미널역), sections))
+                () -> PathFinder.find(new Dijkstra(서울역, 교대역, Arrays.asList(강남역, 력삼역, 양재역, 교대역, 남부터미널역), sections)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("graph must contain the source vertex");
     }

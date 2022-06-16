@@ -21,17 +21,7 @@ public class PathController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PathResponse> paths(@RequestParam("source") Long sourceId, @RequestParam("target") Long targetId) {
         PathResponse response = pathService.findShortestDistancePath(sourceId, targetId);
-
         return ResponseEntity.ok().body(response);
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
-        return ResponseEntity.badRequest().build();
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    }
 }
