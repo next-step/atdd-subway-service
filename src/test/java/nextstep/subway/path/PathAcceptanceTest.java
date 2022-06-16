@@ -92,6 +92,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단거리_조회중_에러메세지_확인(response, PathException.SAME_SOURCE_TARGET_STATION_MSG);
     }
 
+    @Test
+    void 경로_출발역과_도착역이_경로가_이어지지_않는_경우() {
+        PathRequest pathRequest = new PathRequest(교대역.getId(), 강남구청역.getId());
+        ExtractableResponse<Response> response = 최단구간을_조회한다(pathRequest);
+
+        최단구간이_정상적으로_조회되지않음(response);
+        최단거리_조회중_에러메세지_확인(response, PathException.PATH_FIND_NO_SEARCH_MSG);
+    }
+
+    @Test
+    void 출발역이나_도착역이_노선에_등록되어있지_않은_경우() {
+        PathRequest pathRequest = new PathRequest(교대역.getId(), 뚝섬유원지역.getId());
+        ExtractableResponse<Response> response = 최단구간을_조회한다(pathRequest);
+
+        최단구간이_정상적으로_조회되지않음(response);
+        최단거리_조회중_에러메세지_확인(response, PathException.NO_CONTAIN_STATION_MSG);
+    }
+
     public static ExtractableResponse<Response> 최단구간을_조회한다(PathRequest pathRequest) {
         return RestAssured
                 .given().log().all()
