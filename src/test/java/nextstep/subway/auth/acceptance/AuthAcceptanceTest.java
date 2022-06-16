@@ -79,7 +79,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         응답결과_확인(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         return RestAssured
                 .given().log().all()
                 .body(new TokenRequest(email, password))
