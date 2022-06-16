@@ -10,17 +10,21 @@ public class PathResponse {
 
     private List<StationPathDTO> stations = new LinkedList<>();
     private double distance;
+    private int price;
 
-    public static PathResponse of(List<Station> stations, double distance) {
+    public static PathResponse of(List<Station> stations, double distance, int price) {
         return new PathResponse(
-            stations.stream().map(StationPathDTO::of)
-                .collect(Collectors.toList())
-            , distance);
+            stations.stream()
+                .map(StationPathDTO::of)
+                .collect(Collectors.toList()),
+            distance,
+            price);
     }
 
-    protected PathResponse(List<StationPathDTO> stations, double distance) {
+    protected PathResponse(List<StationPathDTO> stations, double distance, int price) {
         this.stations = stations;
         this.distance = distance;
+        this.price = price;
     }
 
     public List<StationPathDTO> getStations() {
