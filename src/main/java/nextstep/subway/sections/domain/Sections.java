@@ -2,6 +2,7 @@ package nextstep.subway.sections.domain;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -76,7 +77,7 @@ public class Sections {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return Collections.unmodifiableList(sections);
     }
 
     public List<Station> orderedStations() {
@@ -98,7 +99,7 @@ public class Sections {
             stations.add(downStation);
         }
 
-        return stations;
+        return Collections.unmodifiableList(stations);
     }
 
     private Station findUpStation() {
@@ -117,7 +118,7 @@ public class Sections {
 
     public void delete(Station willDeleteStation) {
         if (sections.size() <= LOWER_SECTION_SIZE) {
-            throw new RuntimeException();
+            throw new RuntimeException("구간이 하나뿐일 때는 삭제할 수 없습니다.");
         }
 
         Section hasSameUpStationSection = findHasSameUpStationSection(willDeleteStation);
