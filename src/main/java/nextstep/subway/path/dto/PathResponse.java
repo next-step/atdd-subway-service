@@ -8,16 +8,16 @@ import java.util.stream.Collectors;
 
 public class PathResponse {
     private List<StationResponse> stations;
-    private Integer pathLength;
-    private Integer pathSurcharge;
+    private Integer distance;
+    private Integer fare;
 
     public PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> stations, Integer pathLength, Integer pathSurcharge) {
+    public PathResponse(List<StationResponse> stations, Integer distance, Integer fare) {
         this.stations = stations;
-        this.pathLength = pathLength;
-        this.pathSurcharge = pathSurcharge;
+        this.distance = distance;
+        this.fare = fare;
     }
 
     public PathResponse(Path path) {
@@ -25,19 +25,19 @@ public class PathResponse {
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        this.pathLength = path.getPathLength();
-        this.pathSurcharge = path.getPathSurcharge();
+        this.distance = path.getPathLength();
+        this.fare = path.getPathSurcharge();
     }
 
     public List<StationResponse> getStations() {
         return stations;
     }
 
-    public Integer getPathLength() {
-        return pathLength;
+    public Integer getDistance() {
+        return distance;
     }
 
-    public Integer getPathSurcharge() {
-        return pathSurcharge;
+    public Integer getFare() {
+        return fare;
     }
 }
