@@ -8,6 +8,9 @@ public class SectionEdge extends DefaultWeightedEdge {
 
     private Section section;
 
+    public SectionEdge() {
+    }
+
     public SectionEdge(Section section) {
         this.section = section;
     }
