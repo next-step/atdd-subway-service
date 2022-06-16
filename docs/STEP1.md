@@ -55,6 +55,6 @@ Feature: 지하철 구간 관련 기능
     - [x] Line 도메인
 - [x] LineResponse 리팩터링
 - [x] LineService 리팩터링
-- [ ] 인수 테스트 리팩터링
-    - [ ] LineAcceptanceTest
-    - [ ] LineSectionAcceptanceTest
+- [x] 인수 테스트 리팩터링
+    - [x] LineAcceptanceTest
+    - [x] LineSectionAcceptanceTest
