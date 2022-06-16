@@ -29,4 +29,12 @@ public class SectionService {
         line.updateSection(new Section(upStation, downStation, request.getDistance()));
     }
 
+    @Transactional
+    public void removeLineStation(Long lineId, Long stationId) {
+        Line line = lineService.findLineById(lineId);
+        Station station = stationService.findStationById(stationId);
+
+        line.removeSectionByStation(station);
+    }
+
 }
