@@ -37,16 +37,16 @@ public class PathFinder {
 
     public Path findPath(Station source, Station destination) {
         List<Station> stations = findPathStations(source, destination);
-        int pathLength = findPathLength(source, destination);
-        int pathSurcharge = findPathSurcharge(source, destination);
-        return new Path(stations, pathLength, pathSurcharge);
+        int distance = findPathDistance(source, destination);
+        int surcharge = findPathSurcharge(source, destination);
+        return new Path(stations, distance, surcharge);
     }
 
     public List<Station> findPathStations(Station source, Station destination) {
         return findShortestPath(source, destination).getVertexList();
     }
 
-    public int findPathLength(Station source, Station destination) {
+    public int findPathDistance(Station source, Station destination) {
         return (int) findShortestPath(source, destination).getWeight();
     }
 
