@@ -23,16 +23,20 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findById(id);
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findById(id);
         member.update(param.toMember());
     }
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    private Member findById(Long id) {
+        return memberRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 }
