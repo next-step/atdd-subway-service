@@ -5,7 +5,7 @@ public interface AgeFarePolicy {
     int defaultFare = 1250;
     int discountFare = 0;
 
-    int calculate(int age);
+    int calculate();
     boolean isAge(int age);
 
     double getDiscountRate();

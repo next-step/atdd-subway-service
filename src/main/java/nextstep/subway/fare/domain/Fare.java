@@ -20,7 +20,7 @@ public class Fare {
         DistanceFarePolicy distanceFarePolicy = DistanceFarePolicyType.getDistanceFarePolicy(distance);
         AgeFarePolicy ageFarePolicy = AgeFarePolicyType.getAgeFarePolicy(age);
 
-        int defaultAgeFare = ageFarePolicy.calculate(age);
+        int defaultAgeFare = ageFarePolicy.calculate();
         int additionalDistanceFare = distanceFarePolicy.calculate(distance, ageFarePolicy);
         int additionalLineFare = ageFarePolicy instanceof FreeAgeFarePolicy ? 0 : path.additionalLineFare();
 

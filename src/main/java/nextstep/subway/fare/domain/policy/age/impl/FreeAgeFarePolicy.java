@@ -7,7 +7,7 @@ public class FreeAgeFarePolicy implements AgeFarePolicy {
     private final int discountRate = 100;
 
     @Override
-    public int calculate(int age) {
+    public int calculate() {
         return 0;
     }
 

@@ -8,7 +8,7 @@ public class TeenagerAgeFarePolicy implements AgeFarePolicy {
     private final int discountFare = 350;
 
     @Override
-    public int calculate(int age) {
+    public int calculate() {
         return (int) ((defaultFare - discountFare) * (100 - discountRate) / 100);
     }
 

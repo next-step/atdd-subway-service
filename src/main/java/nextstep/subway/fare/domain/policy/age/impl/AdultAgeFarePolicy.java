@@ -5,7 +5,7 @@ import nextstep.subway.fare.domain.policy.age.AgeFarePolicy;
 public class AdultAgeFarePolicy implements AgeFarePolicy {
 
     @Override
-    public int calculate(int age) {
+    public int calculate() {
         return defaultFare;
     }
 
