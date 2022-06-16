@@ -26,7 +26,7 @@ import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노�
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("지하철 경로 조회")
+@DisplayName("지하철 경로 조회 인수테스트")
 public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;

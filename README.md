@@ -91,10 +91,10 @@ Feature: 지하철 구간 관련 기능
     Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
     
 ## Step2 경로 조회 기능
-[ ] 최단 경로 조회 기능 구현
-    [ ] 최단 경로 관리 객체 (Path) 구현
-    [ ] jgrapht를 이용한 (PathFinder) 구현
-    [ ] 최단 경로 조회 (HappyPath)
-    [ ] 출발역, 도착역이 같은 경우 BAD REQUEST
-    [ ] 출발역과 도착역이 연결되어 있지 않은 경우 BAD REQUEST
-    [ ] 경로 조회하는 역이 존재하지 않는 경우 BAD REQUEST
+[v] 최단 경로 조회 기능 구현
+    [v] 최단 경로 관리 객체 (Path) 구현
+    [v] jgrapht를 이용한 (PathFinder) 구현
+    [v] 최단 경로 조회 (HappyPath)
+    [v] 출발역, 도착역이 같은 경우 BAD REQUEST
+    [v] 출발역과 도착역이 연결되어 있지 않은 경우 BAD REQUEST
+    [v] 경로 조회하는 역이 존재하지 않는 경우 BAD REQUEST
