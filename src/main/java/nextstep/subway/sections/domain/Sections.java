@@ -19,7 +19,6 @@ public class Sections {
     public Sections() {
     }
 
-
     public Sections(Section section) {
         this.sections.add(section);
     }
@@ -29,42 +28,48 @@ public class Sections {
     }
 
     public void updateSection(Section requestSection) {
-        Station upStation = requestSection.getUpStation();
-        Station downStation = requestSection.getDownStation();
-        List<Station> stations = orderedStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it.equals(upStation));
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it.equals(downStation));
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it.equals(upStation)) &&
-            stations.stream().noneMatch(it -> it.equals(downStation))) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
+        if (orderedStations().isEmpty()) {
             sections.add(requestSection);
             return;
         }
 
-        if (isUpStationExisted) {
-            sections.stream()
-                .filter(it -> it.getUpStation().equals(upStation))
-                .findFirst()
-                .ifPresent(it -> it.updateUpStation(downStation, requestSection.getDistance()));
+        Station sameUpStation = findSameStation(requestSection.getUpStation());
+        Station sameDownStation = findSameStation(requestSection.getDownStation());
 
-            sections.add(requestSection);
-        } else if (isDownStationExisted) {
-            sections.stream()
-                .filter(it -> it.getDownStation().equals(downStation))
-                .findFirst()
-                .ifPresent(it -> it.updateDownStation(upStation, requestSection.getDistance()));
+        validate(sameUpStation, sameDownStation);
 
+        updateSection(requestSection, sameUpStation, sameDownStation);
+    }
+
+    private void updateSection(Section requestSection, Station sameUpStation,
+        Station sameDownStation) {
+        if (sameUpStation != null) {
+            updateStation(requestSection.getDownStation(), sameUpStation,
+                requestSection.getDistance());
             sections.add(requestSection);
-        } else {
-            throw new RuntimeException();
+        }
+
+        if (sameDownStation != null) {
+            updateStation(requestSection.getUpStation(), sameUpStation,
+                requestSection.getDistance());
+            sections.add(requestSection);
+        }
+    }
+
+    private void updateStation(Station station, Station sameUpStation, int distance) {
+        sections.stream()
+            .filter(it -> it.getUpStation().equals(sameUpStation))
+            .findFirst()
+            .ifPresent(it -> it.updateUpStation(station, distance));
+    }
+
+    private void validate(Station sameUpStation, Station sameDownStation) {
+        if (sameUpStation != null && sameDownStation != null) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (sameUpStation == null && sameDownStation == null) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
     }
 
@@ -136,4 +141,11 @@ public class Sections {
         upLineStation.ifPresent(it -> sections.remove(it));
         downLineStation.ifPresent(it -> sections.remove(it));
     }
+
+    private Station findSameStation(Station station) {
+
+        return orderedStations().stream().filter(it -> it.equals(station)).findFirst().orElse(null);
+    }
+
+
 }
