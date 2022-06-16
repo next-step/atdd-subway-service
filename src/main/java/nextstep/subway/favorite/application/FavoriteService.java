@@ -1,12 +1,14 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.dto.FavoriteResponses;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
@@ -48,15 +50,13 @@ public class FavoriteService {
     public List<FavoriteResponse> findAll(LoginMember loginMember) {
         Member findMember = memberService.findById(loginMember.getId());
         List<Favorite> findFavorites = favoriteRepository.findAllByMemberId(findMember.getId());
-        return findFavorites.stream().
-                map(FavoriteResponse::new).
-                collect(Collectors.toList());
+        return new FavoriteResponses(findFavorites).getFavoriteResponses();
     }
 
     public void delete(LoginMember loginMember, Long id) {
         Favorite findFavorite = favoriteRepository.
                 findByIdAndMemberId(id, loginMember.getId()).
-                orElseThrow(RuntimeException::new);
+                orElseThrow(NoSuchElementException::new);
         favoriteRepository.delete(findFavorite);
 
     }

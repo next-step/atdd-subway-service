@@ -25,7 +25,7 @@ class SectionsTest {
         강남역 = new Station("강남역");
 
         // given : 이호선에 구간 등록 잠실역 -10- 역삼역 -5- 강남역
-        이호선 = new Line("2호선", "green", 잠실역, 강남역,15);
+        이호선 = new Line("2호선", "green", 잠실역, 강남역,15, 500);
         sections.add(new Section(잠실역, 역삼역, 10));
         sections.add(new Section(역삼역, 강남역, 5));
     }

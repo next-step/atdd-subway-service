@@ -2,6 +2,8 @@ package nextstep.subway.path.domain;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -12,13 +14,13 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class DijkstraPathFinder implements PathFinder {
 
-    WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    WeightedMultigraph<Station, SectionWeightedEdge> graph = new WeightedMultigraph(SectionWeightedEdge.class);
 
     public DijkstraPathFinder(List<Line> lines) {
         createStationGraphFromLines(lines);
     }
 
-    public void createStationGraphFromLines(List<Line> lines) {
+    private void createStationGraphFromLines(List<Line> lines) {
 
         HashSet<Section> allSections = new HashSet<>();
         for (Line line : lines) {
@@ -28,7 +30,9 @@ public class DijkstraPathFinder implements PathFinder {
         allSections.stream().forEach(section -> {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+            SectionWeightedEdge sectionWeightedEdge = new SectionWeightedEdge(section);
+            graph.addEdge(section.getUpStation(), section.getDownStation(), sectionWeightedEdge);
+            graph.setEdgeWeight(sectionWeightedEdge, section.getDistance());
         });
     }
 
@@ -36,9 +40,12 @@ public class DijkstraPathFinder implements PathFinder {
     public Path findShortest(Station source, Station target) {
         validateSourceTargetEquality(source, target);
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath path = dijkstraShortestPath.getPath(source, target);
+        GraphPath<Station, SectionWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
         validateNullPath(path);
-        return new Path(path.getVertexList(), (int) path.getWeight());
+        Set<Line> extraChargedLines = path.getEdgeList().stream().
+                map(edge -> edge.getLine()).
+                collect(Collectors.toSet());
+        return new Path(path.getVertexList(), (int) path.getWeight(), extraChargedLines);
     }
 
     private void validateNullPath(GraphPath path) {

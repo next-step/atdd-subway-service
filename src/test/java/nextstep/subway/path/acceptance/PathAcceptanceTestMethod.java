@@ -28,8 +28,20 @@ public class PathAcceptanceTestMethod {
                 .extract();
     }
 
-    public static void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations,
-                                     int distance) {
+    public static ExtractableResponse<Response> 로그인후_최단_경로_조회_요청(String token, Long sourceStationId,
+                                                                 Long targetStationId) {
+        return RestAssured.given().log().all().
+                auth().oauth2(token)
+                .when()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .param("sourceId", sourceStationId)
+                .param("targetId", targetStationId)
+                .get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         PathResponse path = response.as(PathResponse.class);
         List<Long> stationIds = path.getStations().stream()
                 .map(it -> it.getId())
@@ -40,7 +52,16 @@ public class PathAcceptanceTestMethod {
                 .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+    }
+
+    public static void 최단경로_거리_조회됨(ExtractableResponse<Response> response, int distance) {
+        PathResponse path = response.as(PathResponse.class);
         assertThat(path.getDistance()).isEqualTo(distance);
+    }
+
+    public static void 최단경로_요금_조회됨(ExtractableResponse<Response> response, int fare) {
+        PathResponse path = response.as(PathResponse.class);
+        assertThat(path.getFare()).isEqualTo(fare);
     }
 
     public static void 지하철_최단_경로_조회_요청_응답됨(ExtractableResponse<Response> response) {
