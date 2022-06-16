@@ -7,14 +7,12 @@ import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
 
 @RestController
-@Transactional(readOnly = true)
 @RequestMapping("/favorites")
 public class FavoriteController {
     private final FavoriteService favoriteService;
