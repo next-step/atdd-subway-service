@@ -26,9 +26,9 @@ public class PathAssertionHelper {
     }
 
     public static void 최단경로_금액_확인(ExtractableResponse<Response> response, int 가격) {
-        assertThat("1").isEqualTo("1");
-//        assertAll(
-//            () -> assertThat(response.jsonPath().get("price").toString()).isEqualTo(
-//                String.valueOf(가격));
+        assertAll(
+            () -> assertThat(response.jsonPath().get("price").toString()).isEqualTo(
+                String.valueOf(가격))
+        );
     }
 }
