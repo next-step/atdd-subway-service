@@ -3,7 +3,6 @@ package nextstep.subway.member;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
@@ -14,7 +13,6 @@ import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -91,79 +89,37 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 내_정보_삭제_요청(String accessToken) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .when().delete("/members/me")
-                .then().log().all()
-                .extract();
+        return sendDeleteWithAuth(accessToken, "/members/me");
     }
 
     private ExtractableResponse<Response> 내_정보_수정_요청(String accessToken, String email, String password, int age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().put("/members/me")
-                .then().log().all()
-                .extract();
+        return sendPutWithAuth(accessToken, "/members/me", memberRequest);
     }
 
     public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
+        return sendGetWithAuth(accessToken, "/members/me");
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
-
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().post("/members")
-                .then().log().all()
-                .extract();
+        return sendPost("/members", memberRequest);
     }
 
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
-
-        return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(uri)
-                .then().log().all()
-                .extract();
+        return sendGet(uri);
     }
 
     public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
         String uri = response.header("Location");
         MemberRequest memberRequest = new MemberRequest(email, password, age);
-
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().put(uri)
-                .then().log().all()
-                .extract();
+        return sendPut(uri, memberRequest);
     }
 
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
-        return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
+        return sendDelete(uri);
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {

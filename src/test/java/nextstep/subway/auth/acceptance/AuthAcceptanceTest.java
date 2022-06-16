@@ -85,13 +85,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
-                .when().post("/login/token")
-                .then().log().all()
-                .extract();
+        return sendPost("/login/token", tokenRequest);
     }
 
     public static void 로그인_성공(ExtractableResponse<Response> response) {
