@@ -185,12 +185,10 @@ public class Sections {
 
     public Sections filteredBy(List<Station> stations) {
         Sections sections = new Sections();
-        int i = 0;
-        while (i < stations.size()) {
-            if (i != stations.size() - 1) {
-                sections.sections.add(getSection(this.sections, stations.get(i), stations.get(i + 1)));
-            }
-            i++;
+        int index = 0;
+        while (index < stations.size() - 1) {
+            sections.sections.add(getSection(this.sections, stations.get(index), stations.get(index + 1)));
+            index++;
         }
         return sections;
     }
