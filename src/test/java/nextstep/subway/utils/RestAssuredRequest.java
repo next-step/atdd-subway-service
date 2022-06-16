@@ -19,4 +19,15 @@ public class RestAssuredRequest {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> postRequest(
+            String path, Map<String, Object> params, Map<String, Object> body, Object... pathVariables
+    ) {
+        return RestAssured.given().log().all()
+                .params(params)
+                .body(body)
+                .when().post(path, pathVariables)
+                .then().log().all()
+                .extract();
+    }
 }
