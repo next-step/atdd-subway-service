@@ -37,8 +37,8 @@ public class SectionsManager {
         stations.add(downStation);
 
         for (int i = 0; i < sections.size(); i++) {
-            Section section = getSectionByUpStation(downStation).orElseThrow(
-                () -> new SectionManagerException("구간을 찾을수 없습니다"));
+            Section section = getSectionByUpStation(downStation)
+                .orElseThrow(() -> new SectionManagerException("구간을 찾을수 없습니다"));
             stations.add(section.getDownStation());
             downStation = section.getDownStation();
         }

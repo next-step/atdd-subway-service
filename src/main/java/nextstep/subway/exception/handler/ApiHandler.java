@@ -11,18 +11,18 @@ public class ApiHandler {
     @ExceptionHandler
     public ResponseEntity PathFindExceptionHandler(PathFindException e){
         return ResponseEntity.badRequest()
-            .build();
+            .body(e.getMessage());
     }
 
     @ExceptionHandler
     public ResponseEntity SectionManagerExceptionHandler(SectionManagerException e){
         return ResponseEntity.badRequest()
-            .build();
+            .body(e.getMessage());
     }
 
     @ExceptionHandler
     public ResponseEntity IllegalArgumentExceptionHandler(IllegalArgumentException e){
         return ResponseEntity.badRequest()
-            .build();
+            .body(e.getMessage());
     }
 }

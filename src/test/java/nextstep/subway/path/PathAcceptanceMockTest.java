@@ -1,7 +1,7 @@
 package nextstep.subway.path;
 
-import static nextstep.subway.utils.PathApiHelper.지하철_경로_조회_요청;
-import static nextstep.subway.utils.PathAssertionHelper.최단경로_결과_확인;
+import static nextstep.subway.utils.apiHelper.PathApiHelper.지하철_경로_조회_요청;
+import static nextstep.subway.utils.assertionHelper.PathAssertionHelper.최단경로_결과_확인;
 import static org.mockito.Mockito.when;
 
 import io.restassured.response.ExtractableResponse;

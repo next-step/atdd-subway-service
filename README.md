@@ -83,6 +83,15 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - Happy case에 대한 부분만 구현
   - 각 RunTimeException을 알맞은 Exception으로 변경 및 Advice생성
 
+- step3
+  - 토큰 발금 기능(로그인)인수 테스트 만들기
+  - 인증 - 내정보 조회/수정/삭제 인수테스트 만들기
+  - 인증 - 즐겨찾기 기능 완성하기 
+    - 인증 - 즐겨찾기 인수테스트 만들기 
+      - 이경우에 인증은 다른 인수테스트에서 완료하였으니, 토큰을통한 LoginMember 획득은 mock을 통해 진행 
+      - 즐겨찾기 추가/조회/삭제 기능 만들기 
+        - 인수테스트 mock을통해 선 생성후, 도메인테스트부터 진행하며, 구현할때마다 mock을 제거하여 실제 객체 사용 
+
 
 - step4
   - 정거장 간 경로 조회시, 해당 경로에 대한 운임을 추출/확인할수 있게 개발하여야 한다. 

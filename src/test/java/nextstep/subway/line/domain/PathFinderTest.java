@@ -16,11 +16,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-public class PathFinderTest {
 
-    @Mock
-    private LineService lineService;
+public class PathFinderTest {
     private PathFinder pathFinder;
     private Line 이호선;
     private Line 신분당선;
@@ -48,8 +45,7 @@ public class PathFinderTest {
         삼호선 = new Line("삼호선", "주황색", 남부터미널역, 양재역, 8);
         삼호선.addStation(교대역, 남부터미널역, 7);
 
-        when(lineService.findAllLines()).thenReturn(Arrays.asList(이호선, 신분당선, 삼호선));
-        pathFinder = new PathFinder(lineService.findAllLines());
+        pathFinder = new PathFinder(Arrays.asList(이호선, 신분당선, 삼호선));
     }
 
     @Test
@@ -86,8 +82,7 @@ public class PathFinderTest {
         Station 연결안된역1 = new Station("연결안된역1");
         Station 연결안된역2 = new Station("연결안된역2");
         Line 연결안된노선 = new Line("연결안된노선", "흰색", 연결안된역1, 연결안된역2, 10);
-        when(lineService.findAllLines()).thenReturn(Arrays.asList(이호선, 신분당선, 삼호선, 연결안된노선));
-        pathFinder = new PathFinder(lineService.findAllLines());
+        pathFinder = new PathFinder(Arrays.asList(이호선, 신분당선, 삼호선, 연결안된노선));
 
         //when, then
         assertThatThrownBy(() -> pathFinder.findPath(연결안된역1, 강남역))

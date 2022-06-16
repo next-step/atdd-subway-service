@@ -1,13 +1,11 @@
 package nextstep.subway.path;
 
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
-import static nextstep.subway.utils.LineAcceptanceHelper.지하철_노선_등록되어_있음;
-import static nextstep.subway.utils.LineSectionApiHelper.지하철_노선에_지하철역_등록_요청;
-import static nextstep.subway.utils.PathApiHelper.지하철_경로_조회_요청;
-import static nextstep.subway.utils.PathAssertionHelper.최단경로_결과_확인;
-import static nextstep.subway.utils.PathAssertionHelper.최단경로_금액_확인;
-import static nextstep.subway.utils.PathAssertionHelper.최단경로_조회불가;
+import static nextstep.subway.utils.apiHelper.LineApiHelper.지하철_노선_등록되어_있음;
+import static nextstep.subway.utils.apiHelper.LineSectionApiHelper.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.utils.apiHelper.PathApiHelper.지하철_경로_조회_요청;
+import static nextstep.subway.utils.assertionHelper.PathAssertionHelper.최단경로_결과_확인;
+import static nextstep.subway.utils.assertionHelper.PathAssertionHelper.최단경로_조회불가;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
