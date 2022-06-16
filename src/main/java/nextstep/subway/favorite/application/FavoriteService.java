@@ -34,8 +34,8 @@ public class FavoriteService {
     }
 
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
-        Station source = stationRepository.findById(request.getSource()).orElseThrow(() -> new ErrorCodeException(NO_EXISTS_STATION));
-        Station target = stationRepository.findById(request.getTarget()).orElseThrow(() -> new ErrorCodeException(NO_EXISTS_STATION));
+        Station source = findStationById(request.getSource());
+        Station target = findStationById(request.getTarget());
         Favorite favorite = new Favorite(loginMember.getId(), source, target);
         favorite = favoriteRepository.save(favorite);
         return FavoriteResponse.of(favorite);
@@ -47,5 +47,9 @@ public class FavoriteService {
             throw new ErrorCodeException(CANNOT_DELETE_FAVORITE);
         }
         favoriteRepository.delete(favorite);
+    }
+
+    private Station findStationById(Long id) {
+        return stationRepository.findById(id).orElseThrow(() -> new ErrorCodeException(NO_EXISTS_STATION));
     }
 }
