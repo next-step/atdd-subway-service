@@ -34,11 +34,11 @@ public class PathFinder {
         });
     }
 
-    public List<Station> findShortestStationList(Station source, Station destination) {
+    public List<Station> findPathStations(Station source, Station destination) {
         return findShortestPath(source, destination).getVertexList();
     }
 
-    public int findShortestPathLength(Station source, Station destination) {
+    public int findPathLength(Station source, Station destination) {
         return (int) findShortestPath(source, destination).getWeight();
     }
 

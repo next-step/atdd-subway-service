@@ -48,7 +48,7 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(createLines());
 
         // when
-        List<Station> stations = pathFinder.findShortestStationList(종합운동장, 석촌);
+        List<Station> stations = pathFinder.findPathStations(종합운동장, 석촌);
 
         // then
         assertThat(stations).hasSize(4);
@@ -62,7 +62,7 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(createLines());
 
         // when
-        double length = pathFinder.findShortestPathLength(종합운동장, 석촌);
+        double length = pathFinder.findPathLength(종합운동장, 석촌);
 
         // then
         assertThat(length).isEqualTo(30);
@@ -76,7 +76,7 @@ class PathFinderTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            pathFinder.findShortestStationList(종합운동장, 종합운동장);
+            pathFinder.findPathStations(종합운동장, 종합운동장);
         }).isInstanceOf(InvalidPathException.class);
     }
 
@@ -88,7 +88,7 @@ class PathFinderTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            pathFinder.findShortestStationList(종합운동장, 광교);
+            pathFinder.findPathStations(종합운동장, 광교);
         }).isInstanceOf(InvalidPathException.class);
     }
 
@@ -99,7 +99,7 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(createLines());
 
         // when, then
-        List<Station> stations = pathFinder.findShortestStationList(종합운동장, 오금);
+        List<Station> stations = pathFinder.findPathStations(종합운동장, 오금);
 
         // then
         assertThat(stations).hasSize(6);
