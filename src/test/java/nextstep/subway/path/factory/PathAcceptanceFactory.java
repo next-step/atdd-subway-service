@@ -1,12 +1,18 @@
 package nextstep.subway.path.factory;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.http.MediaType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 
@@ -34,5 +40,20 @@ public class PathAcceptanceFactory {
             int distance
     ) {
         return 지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
+    }
+
+    public static ExtractableResponse<Response> 최단_거리_조회(PathRequest pathRequest) {
+        Map<String, Integer> queryParams = new HashMap<>();
+        queryParams.put("source", pathRequest.getSource());
+        queryParams.put("target", pathRequest.getTarget());
+
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .queryParams(queryParams)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
     }
 }

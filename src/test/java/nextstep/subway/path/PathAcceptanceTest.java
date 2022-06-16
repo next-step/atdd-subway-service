@@ -2,9 +2,11 @@ package nextstep.subway.path;
 
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.path.factory.PathAcceptanceFactory.*;
 
@@ -39,5 +41,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-orange-600", 교대역, 양재역, 5);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+    }
+
+    @Test
+    @DisplayName("최단거리 조회 테스트")
+    void findShortestDistance() {
+        PathRequest pathRequest = PathRequest.of(1, 6);
+        최단_거리_조회(pathRequest);
     }
 }
