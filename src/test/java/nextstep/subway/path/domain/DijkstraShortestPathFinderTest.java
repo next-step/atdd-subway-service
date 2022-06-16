@@ -7,11 +7,8 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("Dijkstra 라이브러리를 활용한 최단경로조회 관련 기능")
-@ExtendWith(MockitoExtension.class)
 class DijkstraShortestPathFinderTest {
 
     private DijkstraShortestPathFinder dijkstraShortestPathFinder;
