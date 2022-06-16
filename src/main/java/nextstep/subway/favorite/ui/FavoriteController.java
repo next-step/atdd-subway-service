@@ -5,9 +5,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.application.MemberService;
-import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -28,17 +26,17 @@ public class FavoriteController {
     @PostMapping
     public ResponseEntity<FavoriteResponse> createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest favoriteRequest) {
         FavoriteResponse response = favoriteService.saveFavorite(loginMember.getId(), favoriteRequest);
-        return ResponseEntity.created(URI.create("/favorites" + response.getId())).build();
+        return ResponseEntity.created(URI.create("/favorites/" + response.getId())).build();
     }
 
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> findAllFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        return ResponseEntity.ok(favoriteService.findFavorites());
+        return ResponseEntity.ok(favoriteService.findFavorites(loginMember.getId()));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
-        favoriteService.deleteFavoriteById(id);
+        favoriteService.deleteFavorite(loginMember.getId(), id);
         return ResponseEntity.noContent().build();
     }
 }
