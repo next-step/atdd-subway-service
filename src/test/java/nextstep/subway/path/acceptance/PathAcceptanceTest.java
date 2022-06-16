@@ -70,6 +70,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_최단_경로_거리(response, 8);
     }
 
+    @Test
+    @DisplayName("출발역과 도착역이 같은 경우")
+    public void findPathSameSourceAndTarget() {
+        // when
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회(교대역.getId(), 교대역.getId());
+
+        // then
+        지하철_최단_경로_조회_실패됨(response);
+    }
+
     public static ExtractableResponse<Response> 지하철_최단_경로_조회(Long sourceId, Long targetId) {
         Map<String, String> params = new HashMap<>();
         params.put("source", sourceId + "");
@@ -105,5 +115,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 지하철_최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

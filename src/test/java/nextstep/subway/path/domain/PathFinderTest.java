@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +21,7 @@ public class PathFinderTest {
     private Line 이호선;
     private Line 신분당선;
     private Line 삼호선;
+    private PathFinder pathFinder;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -44,15 +46,14 @@ public class PathFinderTest {
         삼호선 = new Line("3호선", "bg-orange-600");
         삼호선.addSection(교대역, 남부터미널역, 5);
         삼호선.addSection(남부터미널역, 양재역, 3);
+
+        pathFinder = new PathFinder(new DijkstraShortestPathFinder());
     }
 
     @Test
     @DisplayName("최단 경로 조회")
     void findShortestPath() {
         // when
-        PathFinder pathFinder = new PathFinder(new DijkstraShortestPathFinder());
-
-        // then
         Path path = pathFinder.findShortestPath(Arrays.asList(이호선, 삼호선, 신분당선), 교대역, 양재역);
 
         // then
@@ -60,5 +61,11 @@ public class PathFinderTest {
         assertThat(path.getDistance()).isEqualTo(8);
     }
 
-
+    @Test
+    @DisplayName("출발역과 도착역이 같은 경우")
+    void findPathSameSourceAndTarget() {
+        // when then
+        assertThatThrownBy(()  -> pathFinder.findShortestPath(Arrays.asList(이호선, 삼호선, 신분당선), 교대역, 교대역))
+            .isInstanceOf(PathException.class);
+    }
 }
