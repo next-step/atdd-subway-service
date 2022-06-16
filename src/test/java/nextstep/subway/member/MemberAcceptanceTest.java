@@ -78,6 +78,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return post(memberRequest, "/members");
     }
 
+    public static String 회원_생성후_토큰발급(String email, String password, Integer age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+        post(memberRequest, "/members");
+
+        return 토큰_생성이_요청됨(email, password).as(TokenResponse.class).getAccessToken();
+    }
+
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 

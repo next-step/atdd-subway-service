@@ -6,11 +6,10 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class PathFinder {
 
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath;
+    private DijkstraShortestPath<Station, SectionEdge> shortestPath;
 
     public PathFinder(List<Line> lines) {
         if (lines == null || lines.isEmpty()) {
@@ -24,12 +23,12 @@ public class PathFinder {
     public Path findPath(Station sourceStation, Station targetStation) {
         validateStation(sourceStation, targetStation);
 
-        GraphPath<Station, DefaultWeightedEdge> path = shortestPath.getPath(sourceStation, targetStation);
+        GraphPath<Station, SectionEdge> path = shortestPath.getPath(sourceStation, targetStation);
         if (path == null) {
             throw new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
 
-        return new Path(path.getVertexList(), (int) path.getWeight());
+        return new Path(path.getVertexList(), (int) path.getWeight(), path.getEdgeList());
     }
 
     private void validateStation(Station sourceStation, Station targetStation) {
