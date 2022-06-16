@@ -3,7 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.station.domain.FakeStationRepository;
+import nextstep.subway.station.domain.InMemoryStationRepository;
 import nextstep.subway.station.domain.Station;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -12,14 +12,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class FakeLineRepository implements LineRepository {
     private final Map<Long, Line> elements = new HashMap<>();
     private long lineId = 0L;
 
     public FakeLineRepository() {
-        FakeStationRepository stations = new FakeStationRepository();
+        InMemoryStationRepository stations = new InMemoryStationRepository();
 
         Station empty = new Station("empty");
         Station 강남역 = stations.findById(1L).orElse(empty);

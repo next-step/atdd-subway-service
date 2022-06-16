@@ -4,7 +4,7 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.FakeLineRepository;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.domain.FakeStationRepository;
+import nextstep.subway.station.domain.InMemoryStationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ public class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        StationService stationService = new StationService(new FakeStationRepository());
+        StationService stationService = new StationService(new InMemoryStationRepository());
         LineRepository lineRepository = new FakeLineRepository();
 
         pathService = new PathService(stationService, lineRepository);
