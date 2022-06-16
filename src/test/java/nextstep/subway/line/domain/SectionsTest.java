@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
 
 class SectionsTest {
-    private Line line;
     private Station upStation;
     private Station downStation;
     private Section section;
@@ -22,10 +21,9 @@ class SectionsTest {
     @BeforeEach
     void setUp() {
         // given
-        this.line = Line.of("2호선", "GREEN");
         this.upStation = Station.from("강남역");
         this.downStation = Station.from("선릉역");
-        this.section = Section.of(this.line, this.upStation, this.downStation, 20);
+        this.section = Section.of(this.upStation, this.downStation, 20);
         this.sections = Sections.from(new ArrayList<>(Arrays.asList(this.section)));
     }
 
@@ -60,7 +58,7 @@ class SectionsTest {
     void add_section() {
         // given
         Station addedStation = Station.from("역삼역");
-        Section addedSection = Section.of(this.line, this.upStation, addedStation, 5);
+        Section addedSection = Section.of(this.upStation, addedStation, 5);
 
         // when
         this.sections.add(addedSection);
@@ -77,11 +75,11 @@ class SectionsTest {
     void remove_station() {
         // given
         Station addedStation = Station.from("역삼역");
-        Section addedSection = Section.of(this.line, this.upStation, addedStation, 5);
+        Section addedSection = Section.of(this.upStation, addedStation, 5);
         this.sections.add(addedSection);
 
         // when
-        this.sections.removeStation(addedStation, this.line);
+        this.sections.removeStation(addedStation);
 
         // then
         assertAll(

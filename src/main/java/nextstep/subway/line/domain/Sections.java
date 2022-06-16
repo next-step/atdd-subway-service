@@ -9,9 +9,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
+    private static final String NONE_MATCH_STATION = "등록할 수 없는 구간 입니다.";
+    private static final String STATION_EXISTED = "이미 등록된 구간 입니다.";
+    private static final String NOT_REMOVED_ONLY_ONE_SECTION = "구간이 하나인 노선에서 역을 제거할 수 없습니다.";
+    private static final String DOES_NOT_CONTAIN_STATION = "노선에 등록되어 있지 않은 역은 제거할 수 없습니다.";
+    private static final String NOT_FOUND_FIRST_UP_SECTION = "상행 종점을 찾을 수 없습니다.";
+    private static final String NOT_FOUND_NEXT_STATION = "다음 역을 찾을 수 없습니다.";
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -33,65 +41,28 @@ public class Sections {
         return this.sections;
     }
 
-    public void add(Section section) {
-        List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
-                stations.stream().noneMatch(it -> it == section.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
-            this.sections.add(section);
+    public void add(Section addedSection) {
+        if (this.sections.isEmpty()) {
+            this.sections.add(addedSection);
             return;
         }
+        validateStationExisted(addedSection);
+        validateNoneMatchStation(addedSection);
 
-        if (isUpStationExisted) {
-            this.sections.stream()
-                    .filter(it -> it.getUpStation() == section.getUpStation())
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
-            this.sections.add(section);
-        } else if (isDownStationExisted) {
-            this.sections.stream()
-                    .filter(it -> it.getDownStation() == section.getDownStation())
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-
-            this.sections.add(section);
-        } else {
-            throw new RuntimeException();
-        }
+        this.sections.forEach(section -> section.updateSection(addedSection));
+        this.sections.add(addedSection);
     }
 
-    public void removeStation(Station station, Line line) {
-        if (this.sections.size() <= 1) {
-            throw new RuntimeException();
+    public void removeStation(Station removeStation) {
+        if (removableStation(removeStation)) {
+            Optional<Section> upLineStation = findSectionByUpStation(removeStation);
+            Optional<Section> downLineStation = findSectionByDownStation(removeStation);
+
+            addConnectSection(upLineStation, downLineStation);
+
+            upLineStation.ifPresent(it -> this.sections.remove(it));
+            downLineStation.ifPresent(it -> this.sections.remove(it));
         }
-
-        Optional<Section> upLineStation = this.sections.stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = this.sections.stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            this.sections.add(Section.of(line, newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(it -> this.sections.remove(it));
-        downLineStation.ifPresent(it -> this.sections.remove(it));
     }
 
     public List<Station> getStations() {
@@ -100,37 +71,92 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        stations.add(findFirstUpSection().getUpStation());
+        for (int i = 0; i < this.sections.size(); i++) {
+            Station nextStation = findSectionByUpStation(stations.get(i))
+                    .map(Section::getDownStation)
+                    .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_NEXT_STATION));
+            stations.add(nextStation);
         }
 
         return stations;
     }
 
-    private Station findUpStation() {
-        Station downStation = this.sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
+    private Section findFirstUpSection() {
+        List<Station> downStations = this.sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
+        return this.sections.stream()
+                .filter(section -> !downStations.contains(section.getUpStation()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_FIRST_UP_SECTION));
+    }
 
-        return downStation;
+    private void validateNoneMatchStation(Section section) {
+        if (isNoneMatchStation(section)) {
+            throw new RuntimeException(NONE_MATCH_STATION);
+        }
+    }
+
+    private boolean isNoneMatchStation(Section section) {
+        return doesNotContainStation(section.getUpStation()) && doesNotContainStation(section.getDownStation());
+    }
+
+    private boolean doesNotContainStation(Station station) {
+        List<Station> stations = getStations();
+        return stations.stream().noneMatch(it -> it == station);
+    }
+
+    private void validateStationExisted(Section section) {
+        if (isStationExisted(section)) {
+            throw new RuntimeException(STATION_EXISTED);
+        }
+    }
+
+    private boolean isStationExisted(Section section) {
+        return containsStation(section.getUpStation()) && containsStation(section.getDownStation());
+    }
+
+    private boolean containsStation(Station station) {
+        List<Station> stations = getStations();
+        return stations.stream().anyMatch(it -> it == station);
+    }
+
+    private boolean removableStation(Station removeStation) {
+        if (onlyOneSection()) {
+            throw new IllegalArgumentException(NOT_REMOVED_ONLY_ONE_SECTION);
+        }
+        if (doesNotContainStation(removeStation)) {
+            throw new IllegalArgumentException(DOES_NOT_CONTAIN_STATION);
+        }
+        return isNotEmpty();
+    }
+
+    private boolean onlyOneSection() {
+        return this.sections.size() == 1;
+    }
+
+    private boolean isNotEmpty() {
+        return !this.sections.isEmpty();
+    }
+
+    private Optional<Section> findSectionByUpStation(Station upStation) {
+        return this.sections.stream()
+                .filter(section -> section.isEqualsUpStation(upStation))
+                .findFirst();
+    }
+
+    private Optional<Section> findSectionByDownStation(Station downStation) {
+        return this.sections.stream()
+                .filter(section -> section.isEqualsDownStation(downStation))
+                .findFirst();
+    }
+
+    private void addConnectSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Section upSection = upLineStation.get();
+            Section downSection = downLineStation.get();
+            this.sections.add(upSection.mergeSection(downSection));
+        }
     }
 }

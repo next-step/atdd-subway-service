@@ -83,7 +83,7 @@ class LineTest {
     void add_section() {
         // given
         Station addedStation = Station.from("역삼역");
-        Section addedSection = Section.of(this.line, this.upStation, addedStation, 5);
+        Section addedSection = Section.of(this.upStation, addedStation, 5);
 
         // when
         this.line.addSection(addedSection);
@@ -100,7 +100,7 @@ class LineTest {
     void remove_station() {
         // given
         Station addedStation = Station.from("역삼역");
-        Section addedSection = Section.of(this.line, this.upStation, addedStation, 5);
+        Section addedSection = Section.of(this.upStation, addedStation, 5);
         this.line.addSection(addedSection);
 
         // when
