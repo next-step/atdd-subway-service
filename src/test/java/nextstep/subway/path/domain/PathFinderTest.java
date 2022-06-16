@@ -108,7 +108,7 @@ class PathFinderTest {
         assertThat(stations).containsExactly(종합운동장, 잠실새내, 잠실, 석촌, 가락시장, 오금);
     }
 
-    @DisplayName("2호선 구간 기본 요금 구하기")
+    @DisplayName("2호선 구간 추가 요금 구하기")
     @Test
     void line2_surcharge() {
         // given
@@ -121,7 +121,7 @@ class PathFinderTest {
         assertThat(surcharge).isEqualTo(이호선.getSurcharge().getValue());
     }
 
-    @DisplayName("2,8호선 포함 구간 기본 요금 구하기")
+    @DisplayName("2,8호선 포함 구간 추가 요금 구하기")
     @Test
     void line2_8_surcharge() {
         // given
@@ -134,7 +134,7 @@ class PathFinderTest {
         assertThat(surcharge).isEqualTo(팔호선.getSurcharge().getValue());
     }
 
-    @DisplayName("2,3,8호선 포함 구간 기본 요금 구하기")
+    @DisplayName("2,3,8호선 포함 구간 추가 요금 구하기")
     @Test
     void line2_3_8_surcharge() {
         // given
