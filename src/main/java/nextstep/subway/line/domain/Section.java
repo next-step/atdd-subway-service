@@ -64,7 +64,7 @@ public class Section {
 
     public Section mergeSection(Section section) {
         int newDistance = this.distance + section.distance;
-        return new Section(this.upStation, section.downStation, newDistance);
+        return new Section(this.line, this.upStation, section.downStation, newDistance);
     }
 
     public void updateSection(Section addedSection) {

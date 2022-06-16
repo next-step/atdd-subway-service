@@ -1,7 +1,7 @@
 ## 1단계 - 인수 테스트 기반 리팩터링
 
 ### 요구사항
-- [ ] LineService 리팩터링
+- [x] LineService 리팩터링
 - [ ] (선택) LineSectionAcceptanceTest 리팩터링
 
 ### 요구사항 설명
@@ -44,16 +44,17 @@ Feature: 지하철 구간 관련 기능
 
 ### 요구사항 구현
 - [x] Domain 으로 옮길 로직 찾기
-- [ ] Domain 의 단위 테스트 작성
+- [x] Domain 의 단위 테스트 작성
     - [x] SectionsTest
     - [x] SectionTest
     - [x] LineTest
-- [ ] 로직 옮기기
+- [x] 로직 옮기기
     - [x] Sections 도메인
     - [x] Sections 도메인 리팩터링
     - [x] Section 도메인
     - [x] Line 도메인
-- [ ] LineService 리팩터링
+- [x] LineResponse 리팩터링
+- [x] LineService 리팩터링
 - [ ] 인수 테스트 리팩터링
     - [ ] LineAcceptanceTest
     - [ ] LineSectionAcceptanceTest

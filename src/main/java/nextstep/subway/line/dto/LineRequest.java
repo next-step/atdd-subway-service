@@ -39,9 +39,4 @@ public class LineRequest {
     public int getDistance() {
         return distance;
     }
-
-    // TODO 리팩토링 이후에도 사용되지 않을 경우 삭제
-    public Line toLine() {
-        return Line.of(name, color);
-    }
 }
