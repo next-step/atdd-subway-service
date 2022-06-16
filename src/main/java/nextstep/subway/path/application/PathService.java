@@ -19,6 +19,6 @@ public class PathService {
     public PathResponse findShortestRoute(long sourceId, long targetId) {
         final Station startStation = stationRepository.findById(sourceId).orElseThrow(EntityNotFoundException::new);
         final Station endStation = stationRepository.findById(targetId).orElseThrow(EntityNotFoundException::new);
-        return new Route().getShortestRoute(startStation, endStation);
+        return PathResponse.of(new Route().getShortestRoute(startStation, endStation));
     }
 }

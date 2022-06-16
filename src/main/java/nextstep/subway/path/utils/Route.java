@@ -1,9 +1,7 @@
 package nextstep.subway.path.utils;
 
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -12,13 +10,12 @@ import org.jgrapht.graph.WeightedMultigraph;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
-import java.util.stream.Collectors;
 
 public class Route {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph
             = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-    public PathResponse getShortestRoute(final Station startStation, final Station endStation) {
+    public GraphPath<Station, DefaultWeightedEdge> getShortestRoute(final Station startStation, final Station endStation) {
         if (Objects.equals(startStation, endStation)) {
             throw new IllegalStateException("출발역과 도착역을 달라야 된다.");
         }
@@ -26,15 +23,7 @@ public class Route {
         if (!isContainVertex(startStation)) {
             throw new IllegalStateException("경로를 검색할 수 없습니다.");
         }
-        return getResult(new DijkstraShortestPath<>(graph).getPath(endStation, startStation));
-    }
-
-    private PathResponse getResult(GraphPath<Station, DefaultWeightedEdge> path) {
-        return new PathResponse(
-                path.getVertexList().stream()
-                        .map(StationResponse::of)
-                        .collect(Collectors.toList()),
-                Double.valueOf(path.getWeight()).intValue());
+        return new DijkstraShortestPath<>(graph).getPath(endStation, startStation);
     }
 
     private boolean isContainVertex(final Station start) {
