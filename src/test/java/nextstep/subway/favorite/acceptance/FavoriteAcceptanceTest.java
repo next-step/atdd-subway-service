@@ -11,17 +11,17 @@ import static nextstep.subway.member.MemberAcceptanceTest.로그인_되어_있�
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성됨;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +37,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 삼성역;
     private StationResponse 잠실역;
     private LineResponse 이호선;
+    private FavoriteResponse 즐겨찾기_목록;
     private String 사용자;
 
     /**
@@ -78,7 +79,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // When 즐겨찾기 목록 조회 요청
         ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자);
         // Then 즐겨찾기 목록 조회됨
-        즐겨찾기_목록_조회됨(findResponse);
+        즐겨찾기_목록_조회됨(createResponse, findResponse);
 
         /*// When 즐겨찾기 삭제 요청
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청();
@@ -86,7 +87,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(deleteResponse);*/
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long sourceStationId, Long targetStationId) {
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long sourceStationId,
+                                                           Long targetStationId) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(sourceStationId, targetStationId);
 
         return RestAssured
@@ -113,13 +115,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
-        FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
+    public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> createResponse,
+                                   ExtractableResponse<Response> findResponse) {
+        Long id = Long.parseLong(createResponse.header("Location").split("/")[2]);
 
-        assertAll(
-                () -> assertThat(favoriteResponse.getId()).isNotNull(),
-            () -> assertThat(favoriteResponse.getSource()).isNotNull(),
-            () -> assertThat(favoriteResponse.getTarget()).isNotNull()
-        );
+        List<Long> favoriteIds = findResponse.jsonPath().getList(".", FavoriteResponse.class).stream()
+                .map(FavoriteResponse::getId)
+                .collect(Collectors.toList());
+
+        assertThat(favoriteIds).containsExactly(id);
     }
+
 }

@@ -1,8 +1,11 @@
 package nextstep.subway.favorite.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import java.util.Collections;
+import java.util.List;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -19,7 +22,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class FavoriteServiceTest {
@@ -28,6 +30,7 @@ class FavoriteServiceTest {
     private Station 잠실역;
     private Member 사용자;
     private LoginMember 로그인_사용자;
+    private Favorite 즐겨찾기;
 
     @InjectMocks
     FavoriteService favoriteService;
@@ -44,24 +47,23 @@ class FavoriteServiceTest {
     @BeforeEach
     void setUp() {
         강남역 = new Station("강남역");
-        역_ID_임의_지정(강남역, 1L);
 
         잠실역 = new Station("잠실역");
-        역_ID_임의_지정(잠실역, 2L);
 
         사용자 = new Member("email@email.com", "email", 10);
         로그인_사용자 = new LoginMember(1L, "email@email.com", 20);
+
+        즐겨찾기 = new Favorite(1L, 강남역, 잠실역, 사용자);
     }
 
     @Test
     @DisplayName("즐겨찾기를 저장한다")
     void save() {
         // given
-        Favorite favorite = new Favorite(1L, 강남역, 잠실역);
-        given(memberService.findByEmail(사용자.getEmail())).willReturn(사용자);
-        given(stationService.findStationById(강남역.getId())).willReturn(강남역);
-        given(stationService.findStationById(잠실역.getId())).willReturn(잠실역);
-        given(favoriteRepository.save(favorite)).willReturn(favorite);
+        given(memberService.findByEmail(any())).willReturn(사용자);
+        given(stationService.findStationById(any())).willReturn(강남역);
+        given(stationService.findStationById(any())).willReturn(잠실역);
+        given(favoriteRepository.save(any())).willReturn(즐겨찾기);
 
         // when
         FavoriteResponse save = favoriteService.save(로그인_사용자, new FavoriteRequest(강남역.getId(), 잠실역.getId()));
@@ -70,7 +72,17 @@ class FavoriteServiceTest {
         assertThat(save).isNotNull();
     }
 
-    void 역_ID_임의_지정(Station station, Long id) {
-        ReflectionTestUtils.setField(station, "id", id);
+    @Test
+    @DisplayName("즐겨찾기를 조회한 결과 1개의 즐겨찾기가 반환된다")
+    void findFavorites() {
+        // given
+        given(memberService.findByEmail(any())).willReturn(사용자);
+        given(favoriteRepository.findByMemberId(any())).willReturn(Collections.singletonList(즐겨찾기));
+
+        // when
+        List<FavoriteResponse> favoriteResponseList = favoriteService.findFavorite(로그인_사용자);
+
+        // then
+        assertThat(favoriteResponseList).hasSize(1);
     }
 }
