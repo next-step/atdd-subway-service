@@ -4,6 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.LinkedList;
 import java.util.List;
+import nextstep.subway.line.utils.Discount.AdultDiscountHelper;
+import nextstep.subway.line.utils.Discount.ChildDiscountHelper;
+import nextstep.subway.line.utils.Discount.DiscountHelper;
+import nextstep.subway.line.utils.Discount.StudentDiscountHelper;
 import nextstep.subway.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

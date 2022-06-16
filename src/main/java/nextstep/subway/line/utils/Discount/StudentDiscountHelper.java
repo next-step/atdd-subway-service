@@ -1,12 +1,12 @@
-package nextstep.subway.line.utils;
+package nextstep.subway.line.utils.Discount;
 
 import nextstep.subway.member.domain.Member;
 
-public class ChildDiscountHelper implements DiscountHelper {
+public class StudentDiscountHelper implements DiscountHelper {
 
-    private static final int MIN_AGE = 6;
-    private static final int MAX_AGE = 12;
-    private static final double DISCOUNT_RATE = 0.5;
+    private static final int MIN_AGE = 13;
+    private static final int MAX_AGE = 18;
+    private static final double DISCOUNT_RATE = 0.2;
 
     @Override
     public boolean canSupport(Member member) {

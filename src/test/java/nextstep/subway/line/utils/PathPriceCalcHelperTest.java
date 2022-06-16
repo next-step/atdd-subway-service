@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.utils.PriceCalculator.Between10And50PriceCalcHelper;
+import nextstep.subway.line.utils.PriceCalculator.Over50PriceCalcHelper;
+import nextstep.subway.line.utils.PriceCalculator.PriceCalcHelper;
+import nextstep.subway.line.utils.PriceCalculator.Under10PriceCalcHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package nextstep.subway.line.utils;
+package nextstep.subway.line.utils.PriceCalculator;
 
 import java.util.List;
 import nextstep.subway.line.domain.Line;

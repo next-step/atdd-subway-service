@@ -1,4 +1,4 @@
-package nextstep.subway.line.utils;
+package nextstep.subway.line.utils.Discount;
 
 import nextstep.subway.member.domain.Member;
 

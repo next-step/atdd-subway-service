@@ -1,14 +1,14 @@
-package nextstep.subway.line.utils;
+package nextstep.subway.line.utils.PriceCalculator;
 
 import java.util.List;
 import nextstep.subway.line.domain.Line;
 
-public class Between10And50PriceCalcHelper implements PriceCalcHelper {
+public class Over50PriceCalcHelper implements PriceCalcHelper {
 
-    private static final int MIN_DISTANCE = 10;
-    private static final int MAX_DISTANCE = 50;
-    private static final int DEFAULT_PRICE = 1_250;
-    private static final double CHECKING_DISTANCE = 5.0;
+    private static final int MIN_DISTANCE = 50;
+    private static final int MAX_DISTANCE = Integer.MAX_VALUE;
+    private static final int DEFAULT_PRICE = 1_250 + 800;
+    private static final double CHECKING_DISTANCE = 8.0;
     private static final int PRICE_PER_CHECKING_DISTANCE = 100;
 
     @Override
