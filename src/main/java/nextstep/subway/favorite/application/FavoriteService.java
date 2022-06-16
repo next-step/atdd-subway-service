@@ -27,6 +27,7 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findAllBy(LoginMember loginMember) {
         return favoriteRepository.findByMemberId(loginMember.getId()).stream()
                 .map(FavoriteResponse::of)
