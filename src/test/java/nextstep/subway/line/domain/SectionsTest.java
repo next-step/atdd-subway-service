@@ -21,7 +21,7 @@ class SectionsTest {
 
     private Sections 구간들이_저장된_노선들;
 
-    private Section 광교_광굑중앙역;
+    private Section 광교_광교중앙역;
     @BeforeEach
     void setUp() {
         신분당선 = new Line("신분당선", "bg-blue-200");
@@ -29,9 +29,9 @@ class SectionsTest {
         광교중앙역 = new Station("광교중앙역");
         상현역 = new Station("상현역");
         성복역 = new Station("성복역");
-        광교_광굑중앙역 = new Section(신분당선, 광교역, 광교중앙역, 10);
+        광교_광교중앙역 = new Section(신분당선, 광교역, 광교중앙역, 10);
         구간들이_저장된_노선들 = new Sections(Arrays.asList(
-                광교_광굑중앙역,
+                광교_광교중앙역,
                 new Section(신분당선, 광교중앙역, 상현역, 10),
                 new Section(신분당선, 상현역, 성복역, 10)));
     }
@@ -115,7 +115,7 @@ class SectionsTest {
     @Test
     void isContainsTest() {
         // When
-        final boolean result = 구간들이_저장된_노선들.isContains(광교_광굑중앙역);
+        final boolean result = 구간들이_저장된_노선들.isContains(광교_광교중앙역);
         // Then
         assertThat(result).isTrue();
     }
