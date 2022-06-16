@@ -9,7 +9,6 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public class PathFinder {
@@ -40,8 +39,19 @@ public class PathFinder {
         return findShortestPath(source, destination).getVertexList();
     }
 
-    public BigDecimal findPathLength(Station source, Station destination) {
-        return new BigDecimal(findShortestPath(source, destination).getWeight());
+    public int findPathLength(Station source, Station destination) {
+        return (int) findShortestPath(source, destination).getWeight();
+    }
+
+    public Integer findPathSurcharge(Station source, Station destination) {
+        return findShortestPath(source, destination).getEdgeList()
+                .stream()
+                .map(SectionEdge::getLine)
+                .map(Line::getSurcharge)
+                .mapToInt(Surcharge::getValue)
+                .max().orElseThrow(() -> {
+                    throw new InvalidPathException("기본 요금에 대한 노선을 찾을 수 없습니다");
+                });
     }
 
     private GraphPath<Station, SectionEdge> findShortestPath(Station source, Station destination) {

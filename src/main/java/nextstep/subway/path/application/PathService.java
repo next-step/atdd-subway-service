@@ -28,7 +28,7 @@ public class PathService {
         Station target = stationService.findById(pathRequest.getTarget());
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
         StationResponses stationResponses = new StationResponses(pathFinder.findPathStations(source, target));
-        BigDecimal shortestPathLength = pathFinder.findPathLength(source, target);
-        return new PathResponse(stationResponses.getList(), shortestPathLength.doubleValue());
+        int shortestPathLength = pathFinder.findPathLength(source, target);
+        return new PathResponse(stationResponses.getList(), shortestPathLength);
     }
 }

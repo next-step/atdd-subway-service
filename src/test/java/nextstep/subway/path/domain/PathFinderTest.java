@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.exception.InvalidPathException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Surcharge;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,10 +64,10 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(createLines());
 
         // when
-        BigDecimal length = pathFinder.findPathLength(종합운동장, 석촌);
+        int length = pathFinder.findPathLength(종합운동장, 석촌);
 
         // then
-        assertThat(length).isEqualTo(new BigDecimal(30));
+        assertThat(length).isEqualTo(30);
     }
 
     @DisplayName("출발역과 도착역이 같은 경우")
@@ -107,6 +108,45 @@ class PathFinderTest {
         assertThat(stations).containsExactly(종합운동장, 잠실새내, 잠실, 석촌, 가락시장, 오금);
     }
 
+    @DisplayName("2호선 구간 기본 요금 구하기")
+    @Test
+    void line2_surcharge() {
+        // given
+        PathFinder pathFinder = new PathFinder(createLines());
+
+        // when
+        Integer surcharge = pathFinder.findPathSurcharge(종합운동장, 잠실);
+
+        // then
+        assertThat(surcharge).isEqualTo(이호선.getSurcharge().getValue());
+    }
+
+    @DisplayName("2,8호선 포함 구간 기본 요금 구하기")
+    @Test
+    void line2_8_surcharge() {
+        // given
+        PathFinder pathFinder = new PathFinder(createLines());
+
+        // when (2호선) 종합운동장 - 잠실 (8호선) 잠실 - 석촌
+        Integer surcharge = pathFinder.findPathSurcharge(종합운동장, 석촌);
+
+        // then
+        assertThat(surcharge).isEqualTo(팔호선.getSurcharge().getValue());
+    }
+
+    @DisplayName("2,3,8호선 포함 구간 기본 요금 구하기")
+    @Test
+    void line2_3_8_surcharge() {
+        // given
+        PathFinder pathFinder = new PathFinder(createLines());
+
+        // when (2호선) 종합운동장 - 잠실 (8호선) 잠실 - 가락시장 (3호선) 가락시장 - 오금
+        Integer surcharge = pathFinder.findPathSurcharge(종합운동장, 오금);
+
+        // then
+        assertThat(surcharge).isEqualTo(팔호선.getSurcharge().getValue());
+    }
+
     private List<Line> createLines() {
         종합운동장 = new Station(1L, "종합운동장");
         잠실새내 = new Station(2L, "잠실새내");
@@ -119,19 +159,19 @@ class PathFinderTest {
         강남 = new Station(9L, "강남");
         광교 = new Station(10L, "광교");
 
-        이호선 = new Line("2호선", "green", 종합운동장, 잠실새내, 10);
+        이호선 = new Line("2호선", "green", 종합운동장, 잠실새내, 10, 200);
         이호선.addSection(new Section(잠실새내, 잠실, 10));
 
-        삼호선 = new Line("3호선", "orange", 가락시장, 오금, 20);
+        삼호선 = new Line("3호선", "orange", 가락시장, 오금, 20, 300);
 
-        오호선 = new Line("5호선", "purple", 천호, 마천, 90);
+        오호선 = new Line("5호선", "purple", 천호, 마천, 90, 500);
         오호선.addSection(new Section(천호, 오금, 50));
 
-        팔호선 = new Line("8호선", "pink", 잠실, 석촌, 10);
+        팔호선 = new Line("8호선", "pink", 잠실, 석촌, 10, 800);
         팔호선.addSection(new Section(석촌, 가락시장, 20));
         팔호선.addSection(new Section(천호, 잠실, 30));
 
-        신분당선 = new Line("신분당선", "red", 강남, 광교, 120);
+        신분당선 = new Line("신분당선", "red", 강남, 광교, 120, 1000);
 
         return Arrays.asList(이호선, 삼호선, 오호선, 팔호선, 신분당선);
     }
