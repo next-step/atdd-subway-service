@@ -1,12 +1,15 @@
 package nextstep.subway;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 import java.util.Arrays;
 
@@ -14,6 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class PathFinderTest {
+
+    @Mock
+    LineRepository lineRepository;
 
     Station 강남역;
     Station 양재역;
@@ -54,7 +60,7 @@ public class PathFinderTest {
     @Test
     void 경로_조회() {
         // given
-        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선), lineRepository);
 
         // when
         GraphPath<Station, DefaultWeightedEdge> path = pathFinder.getPath(강남역, 남부터미널역);
@@ -68,7 +74,7 @@ public class PathFinderTest {
     @Test
     void 경로_조회_예외_1() {
         // given
-        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선), lineRepository);
 
         // when
         assertThatThrownBy(() -> pathFinder.getPath(강남역, 강남역))
@@ -78,7 +84,7 @@ public class PathFinderTest {
     @DisplayName("연결되어 있지 않은 출발역과 도착역을 입력한다.")
     @Test
     void 경로_조회_예외_2() {
-        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 사호선));
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 사호선), lineRepository);
 
         assertThatThrownBy(() -> pathFinder.getPath(강남역, 사당역))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -87,7 +93,7 @@ public class PathFinderTest {
     @DisplayName("존재하지 않는 출발역이나 도착역을 입력한다.")
     @Test
     void 경로_조회_예외_3() {
-        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선), lineRepository);
 
         assertThatThrownBy(() -> pathFinder.getPath(강남역, 사당역))
                 .isInstanceOf(IllegalArgumentException.class);
