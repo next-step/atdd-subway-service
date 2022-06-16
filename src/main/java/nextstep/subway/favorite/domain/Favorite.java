@@ -23,7 +23,7 @@ public class Favorite extends BaseEntity {
     private Station sourceStation;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "source_station_id")
+    @JoinColumn(name = "target_station_id")
     private Station targetStation;
 
     protected Favorite() {}
