@@ -25,7 +25,6 @@ public class DijkstraPathFinder implements PathFinder {
     private static final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
             DefaultWeightedEdge.class);
     private final List<Section> sections = new ArrayList<>();
-    private List<Station> stations = new ArrayList<>();
 
     public DijkstraPathFinder() {
     }
@@ -52,9 +51,9 @@ public class DijkstraPathFinder implements PathFinder {
     }
 
     public Path shortestPath(Station source, Station target) {
-        stations = shortestPathVertexList(source, target);
+        List<Station> stations = shortestPathVertexList(source, target);
         int distance = shortestPathWeight(source, target);
-        return Path.valueOf(stations, Distance.valueOf(distance), findLinesOfPath());
+        return Path.valueOf(stations, Distance.valueOf(distance), findLinesOfPath(stations));
     }
 
     private List<Station> shortestPathVertexList(Station source, Station target) {
@@ -87,14 +86,14 @@ public class DijkstraPathFinder implements PathFinder {
         }
     }
 
-    private Set<Line> findLinesOfPath() {
+    private Set<Line> findLinesOfPath(List<Station> stations) {
         return sections.stream()
-                .filter(this::containSection)
+                .filter(section -> containSectionFromStations(section, stations))
                 .map(Section::line)
                 .collect(Collectors.toSet());
     }
 
-    private boolean containSection(Section section) {
+    private boolean containSectionFromStations(Section section, List<Station> stations) {
         Map<Station, Station> sections = new HashMap<>();
         for (int i = 0; i < stations.size() - 1; i++) {
             sections.put(stations.get(i), stations.get(i + 1));
