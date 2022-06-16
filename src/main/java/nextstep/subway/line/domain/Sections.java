@@ -37,7 +37,7 @@ public class Sections {
     public void removeSectionByStation(Station station) {
         validateRemoveStation(station);
 
-        if (hasUpStationAndDownStation(station)) {
+        if (notLastStopOfStation(station)) {
             removeUpStationAndDownStation(station);
             return;
         }
@@ -129,7 +129,7 @@ public class Sections {
         findSection.updateDownStation(section.getUpStation(), section.getDistance());
     }
 
-    private boolean hasUpStationAndDownStation(Station station) {
+    private boolean notLastStopOfStation(Station station) {
         return hasNextUpSection(station) && hasNextDownSection(station);
     }
 
