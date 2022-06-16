@@ -2,9 +2,9 @@ package nextstep.subway.line.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import nextstep.subway.line.domain.DijkstraWeightedEdgeWithLine;
+import nextstep.subway.line.utils.PathFinder.DijkstraWeightedEdgeWithLine;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.PathFinder;
+import nextstep.subway.line.utils.PathFinder.PathFinder;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;

@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
-import nextstep.subway.line.domain.DijkstraCustomGraph;
-import nextstep.subway.line.domain.DijkstraWeightedEdgeWithLine;
+import nextstep.subway.line.utils.PathFinder.DijkstraCustomGraph;
+import nextstep.subway.line.utils.PathFinder.DijkstraWeightedEdgeWithLine;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
