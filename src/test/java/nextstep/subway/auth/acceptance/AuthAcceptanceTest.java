@@ -6,7 +6,6 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,6 @@ import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.로그인_�
 import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.유효하지않은_토큰;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.유효한_토큰;
 import static nextstep.subway.member.MemberAcceptanceFactory.회원_생성을_요청;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String YANG_EMAIL = "rhfpdk92@naver.com";
