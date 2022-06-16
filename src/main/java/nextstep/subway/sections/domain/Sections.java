@@ -3,7 +3,6 @@ package nextstep.subway.sections.domain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -11,6 +10,9 @@ import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
+
+    private static final int LOWER_SECTION_SIZE = 1;
+    private static final int FIRST_INDEX = 0;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST,
         CascadeType.MERGE}, orphanRemoval = true)
@@ -88,13 +90,11 @@ public class Sections {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                .filter(it -> it.getUpStation().equals(finalDownStation))
-                .findFirst();
-            if (!nextLineStation.isPresent()) {
+            Section nextSection = findHasSameUpStationSection(finalDownStation);
+            if (nextSection == null) {
                 break;
             }
-            downStation = nextLineStation.get().getDownStation();
+            downStation = nextSection.getDownStation();
             stations.add(downStation);
         }
 
@@ -102,44 +102,61 @@ public class Sections {
     }
 
     private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
+        Station downStation = sections.get(FIRST_INDEX).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                .filter(it -> it.getDownStation().equals(finalDownStation))
-                .findFirst();
-            if (!nextLineStation.isPresent()) {
+            Section nextSection = findHasSameDownStationSection(finalDownStation);
+            if (nextSection == null) {
                 break;
             }
-            downStation = nextLineStation.get().getUpStation();
+            downStation = nextSection.getUpStation();
         }
 
         return downStation;
     }
 
-    public void delete(Station station) {
-        if (sections.size() <= 1) {
+    public void delete(Station willDeleteStation) {
+        if (sections.size() <= LOWER_SECTION_SIZE) {
             throw new RuntimeException();
         }
 
-        Optional<Section> upLineStation = sections.stream()
-            .filter(it -> it.getUpStation().equals(station))
-            .findFirst();
-        Optional<Section> downLineStation = sections.stream()
-            .filter(it -> it.getDownStation().equals(station))
-            .findFirst();
+        Section hasSameUpStationSection = findHasSameUpStationSection(willDeleteStation);
+        Section hasSameDownStationSection = findHasSameDownStationSection(willDeleteStation);
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance =
-                upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            sections.add(new Section(upLineStation.get().getLine(), newUpStation, newDownStation,
-                newDistance));
+        if (hasSameUpStationSection != null && hasSameDownStationSection != null) {
+            makeConnectSection(hasSameUpStationSection, hasSameDownStationSection);
         }
 
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+        removeSection(hasSameUpStationSection, hasSameDownStationSection);
+    }
+
+    private void makeConnectSection(Section hasUpStationSection, Section hasDownStationSection) {
+        Station newUpStation = hasDownStationSection.getUpStation();
+        Station newDownStation = hasUpStationSection.getDownStation();
+        int newDistance =
+            hasUpStationSection.getDistance() + hasDownStationSection.getDistance();
+        sections.add(new Section(hasUpStationSection.getLine(), newUpStation, newDownStation,
+            newDistance));
+    }
+
+    private void removeSection(Section hasUpStationSection, Section hasDownStationSection) {
+        if (hasUpStationSection != null) {
+            sections.remove(hasUpStationSection);
+        }
+        if (hasDownStationSection != null) {
+            sections.remove(hasDownStationSection);
+        }
+    }
+
+
+    private Section findHasSameUpStationSection(Station station) {
+        return sections.stream().filter(it -> it.getUpStation().equals(station)).findFirst()
+            .orElse(null);
+    }
+
+    private Section findHasSameDownStationSection(Station station) {
+        return sections.stream().filter(it -> it.getDownStation().equals(station)).findFirst()
+            .orElse(null);
     }
 
     private Station findSameStation(Station station) {
