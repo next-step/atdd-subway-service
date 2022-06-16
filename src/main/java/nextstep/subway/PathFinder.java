@@ -14,7 +14,8 @@ public class PathFinder {
     private final DijkstraShortestPath dijkstraShortestPath;
 
     public PathFinder(List<Line> lines) {
-        configureGraph(lines);
+//        configureGraph(lines);
+        configureGraphNew(lines);
         dijkstraShortestPath = new DijkstraShortestPath(graph);
     }
 
@@ -33,6 +34,10 @@ public class PathFinder {
                 .forEach(section -> graph.setEdgeWeight(
                         graph.addEdge(section.getUpStation(), section.getDownStation()),
                         section.getDistance()));
+    }
+
+    private void configureGraphNew(List<Line> lines) {
+        lines.forEach(line -> line.configure(graph));
     }
 
     public List<Station> findRoute(Station source, Station target) {

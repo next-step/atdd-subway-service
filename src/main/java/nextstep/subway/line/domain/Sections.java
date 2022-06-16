@@ -1,12 +1,13 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -138,5 +139,13 @@ public class Sections {
         return elements.stream()
                 .filter(section -> section.hasDownStationSameAs(station))
                 .findFirst();
+    }
+
+    public void configure(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        graph.addVertex(findFirstSection().getUpStation());
+        elements.forEach(section -> graph.addVertex(section.getDownStation()));
+        elements.forEach(section -> graph.setEdgeWeight(
+                graph.addEdge(section.getUpStation(), section.getDownStation()),
+                section.getDistance()));
     }
 }
