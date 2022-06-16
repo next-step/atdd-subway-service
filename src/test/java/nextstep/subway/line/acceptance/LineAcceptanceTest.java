@@ -49,6 +49,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성됨(response);
     }
 
+    @DisplayName("추가비용을 포함하여 지하철 노선을 생성한다.")
+    @Test
+    void createLineWithSurcharge() {
+        // given
+        LineRequest request = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15, 500);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(request);
+
+        // then
+        지하철_노선_추가요금_확인(response, 500);
+    }
+
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
     void createLineWithDuplicateName() {
@@ -184,6 +197,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static void 지하철_노선_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    public static void 지하철_노선_추가요금_확인(ExtractableResponse response, Integer expectedSurcharge) {
+        assertThat(response.as(LineResponse.class).getSurcharge()).isEqualTo(expectedSurcharge);
     }
 
     public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
