@@ -72,12 +72,12 @@ public class Section {
 
     public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
-        this.distance.minus(newDistance);
+        this.distance = this.distance.minus(newDistance);
     }
 
     public void updateDownStation(Station station, Distance newDistance) {
         this.downStation = station;
-        this.distance.minus(newDistance);
+        this.distance = this.distance.minus(newDistance);
     }
 
     public void updateLineBy(final Line line) {
