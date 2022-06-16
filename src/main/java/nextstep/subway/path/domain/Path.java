@@ -6,25 +6,25 @@ import java.util.List;
 
 public class Path {
     private final List<Station> stations;
-    private final Integer pathLength;
-    private final Integer pathSurcharge;
+    private final Integer distance;
+    private final Integer surcharge;
 
-    public Path(List<Station> stations, Integer pathLength, Integer pathSurcharge) {
+    public Path(List<Station> stations, Integer distance, Integer surcharge) {
         this.stations = stations;
-        this.pathLength = pathLength;
-        this.pathSurcharge = pathSurcharge;
+        this.distance = distance;
+        this.surcharge = surcharge;
     }
 
     public List<Station> getStations() {
         return stations;
     }
 
-    public Integer getPathLength() {
-        return pathLength;
+    public Integer getDistance() {
+        return distance;
     }
 
-    public Integer getPathSurcharge() {
-        return pathSurcharge;
+    public Integer getSurcharge() {
+        return surcharge;
     }
 
 }

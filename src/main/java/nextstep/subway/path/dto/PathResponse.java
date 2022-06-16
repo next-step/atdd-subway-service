@@ -25,8 +25,8 @@ public class PathResponse {
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        this.distance = path.getPathLength();
-        this.fare = path.getPathSurcharge();
+        this.distance = path.getDistance();
+        this.fare = path.getSurcharge();
     }
 
     public List<StationResponse> getStations() {

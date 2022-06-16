@@ -3,12 +3,10 @@ package nextstep.subway.path.domain;
 import nextstep.subway.exception.InvalidPathException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Surcharge;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -64,7 +62,7 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(createLines());
 
         // when
-        int length = pathFinder.findPathLength(종합운동장, 석촌);
+        int length = pathFinder.findPathDistance(종합운동장, 석촌);
 
         // then
         assertThat(length).isEqualTo(30);
