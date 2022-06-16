@@ -80,6 +80,10 @@ public class Section {
         return downStation.equals(station);
     }
 
+    public boolean isContain(Station station) {
+        return isEqualToUpStation(station) || isEqualToDownStation(station);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

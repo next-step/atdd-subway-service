@@ -3,6 +3,8 @@ package nextstep.subway.path.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import java.util.Arrays;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
@@ -77,6 +79,17 @@ public class PathFinderTest {
 
         // when then
         assertThatThrownBy(()  -> pathFinder.findShortestPath(Arrays.asList(이호선, 삼호선, 신분당선, 사호선), 교대역, 삼각지역))
+            .isInstanceOf(PathException.class);
+    }
+
+    @Test
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
+    public void findPathNoExistStation() {
+        // given
+        Station 존재하지않는역 = new Station("존재하지않는역");
+
+        // when then
+        assertThatThrownBy(()  -> pathFinder.findShortestPath(Arrays.asList(이호선, 삼호선, 신분당선), 교대역, 존재하지않는역))
             .isInstanceOf(PathException.class);
     }
 }

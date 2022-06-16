@@ -95,6 +95,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_최단_경로_조회_실패됨(response);
     }
 
+    @Test
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
+    public void findPathNoExistStation() {
+        // given
+        Long 존재하지않는역 = 4885L;
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회(교대역.getId(), 존재하지않는역);
+
+        // then
+        지하철_최단_경로_조회_실패됨(response);
+    }
+
     public static ExtractableResponse<Response> 지하철_최단_경로_조회(Long sourceId, Long targetId) {
         Map<String, String> params = new HashMap<>();
         params.put("source", sourceId + "");
