@@ -7,9 +7,13 @@ import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하�
 import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
+import static nextstep.subway.member.MemberAcceptanceTest.나의_정보_삭제_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.로그인_되어_있음;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_삭제됨;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성됨;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_정보_조회_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -87,6 +91,30 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(deleteResponse);
     }
 
+    @DisplayName("회원 삭제시 즐겨찾기 정보도 함께 삭제한다")
+    @Test
+    void deleteMember() {
+        // When 즐겨찾기 생성을 요청
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(사용자, 강남역.getId(), 삼성역.getId());
+        // Then 즐겨찾기 생성됨
+        즐겨찾기_생성됨(createResponse);
+
+        // When 즐겨찾기 목록 조회 요청
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자);
+        // Then 즐겨찾기 목록 조회됨
+        즐겨찾기_목록_조회됨(createResponse, findResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 나의_정보_삭제_요청(사용자);
+        // then
+        회원_삭제됨(deleteResponse);
+
+        // When 즐겨찾기 목록 조회 요청
+        ExtractableResponse<Response> findFavoriteResponse = 즐겨찾기_목록_조회_요청(사용자);
+        // Then 즐겨찾기 목록 조회 안됨
+        즐겨찾기_목록_조회_안됨(findFavoriteResponse);
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long sourceStationId,
                                                            Long targetStationId) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(sourceStationId, targetStationId);
@@ -139,5 +167,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 즐겨찾기_목록_조회_안됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }
