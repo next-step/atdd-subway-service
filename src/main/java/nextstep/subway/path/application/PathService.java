@@ -33,7 +33,7 @@ public class PathService {
         PathFinder pathFinder = new PathFinder(lines);
 
         Path path = pathFinder.findPath(sourceStation, targetStation);
-        Fare fare = new Fare(path, loginMember);
+        Fare fare = new Fare(path.getDistance(), path.additionalLineFare(), loginMember.getAge());
 
         return new PathResponse(path, fare);
     }

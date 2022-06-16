@@ -91,7 +91,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @TestFactory
-    @DisplayName("지하철역 사이의 최단 경로를 조회한다.")
+    @DisplayName("지하철역 사이의 최단 경로의 요금을 조회한다.")
     Stream<DynamicTest> findShortestPath_fare() {
         String babyAccessToken = 회원_생성후_토큰발급("Test1", "Password1", 5);
         String childAccessToken = 회원_생성후_토큰발급("Test2", "Password1", 10);
