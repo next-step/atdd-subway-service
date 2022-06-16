@@ -10,6 +10,8 @@ import nextstep.subway.station.dto.StationResponses;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 @Service
 @Transactional
 public class PathService {
@@ -26,7 +28,7 @@ public class PathService {
         Station target = stationService.findById(pathRequest.getTarget());
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
         StationResponses stationResponses = new StationResponses(pathFinder.findPathStations(source, target));
-        int shortestPathLength = pathFinder.findPathLength(source, target);
-        return new PathResponse(stationResponses.getList(), shortestPathLength);
+        BigDecimal shortestPathLength = pathFinder.findPathLength(source, target);
+        return new PathResponse(stationResponses.getList(), shortestPathLength.doubleValue());
     }
 }

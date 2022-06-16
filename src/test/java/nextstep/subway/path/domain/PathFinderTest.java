@@ -7,6 +7,7 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -62,10 +63,10 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(createLines());
 
         // when
-        double length = pathFinder.findPathLength(종합운동장, 석촌);
+        BigDecimal length = pathFinder.findPathLength(종합운동장, 석촌);
 
         // then
-        assertThat(length).isEqualTo(30);
+        assertThat(length).isEqualTo(new BigDecimal(30));
     }
 
     @DisplayName("출발역과 도착역이 같은 경우")

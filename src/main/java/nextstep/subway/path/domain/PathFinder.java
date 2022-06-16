@@ -3,11 +3,13 @@ package nextstep.subway.path.domain;
 import nextstep.subway.exception.InvalidPathException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.line.domain.Surcharge;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class PathFinder {
@@ -38,8 +40,8 @@ public class PathFinder {
         return findShortestPath(source, destination).getVertexList();
     }
 
-    public int findPathLength(Station source, Station destination) {
-        return (int) findShortestPath(source, destination).getWeight();
+    public BigDecimal findPathLength(Station source, Station destination) {
+        return new BigDecimal(findShortestPath(source, destination).getWeight());
     }
 
     private GraphPath<Station, SectionEdge> findShortestPath(Station source, Station destination) {
