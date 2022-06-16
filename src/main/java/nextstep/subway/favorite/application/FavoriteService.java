@@ -1,6 +1,8 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.FavoriteNotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -43,5 +45,16 @@ public class FavoriteService {
         return favorites.stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new FavoriteNotFoundException("없는 즐겨찾기입니다."));
+
+        if (favorite.isNotOwner(loginMember.getId())) {
+            throw new AuthorizationException("권한이 없습니다.");
+        }
+        favoriteRepository.delete(favorite);
     }
 }

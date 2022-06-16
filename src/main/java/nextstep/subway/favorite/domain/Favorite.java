@@ -64,4 +64,8 @@ public class Favorite {
     public Station getTarget() {
         return target;
     }
+
+    public boolean isNotOwner(Long id) {
+        return !member.getId().equals(id);
+    }
 }
