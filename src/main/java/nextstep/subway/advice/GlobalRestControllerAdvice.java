@@ -20,7 +20,7 @@ public class GlobalRestControllerAdvice {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
     public ResponseEntity<Map<String, String>> illegalArgumentException(Exception e) {
         Map<String, String> errors = new HashMap<>();
         errors.put("message", e.getMessage());
