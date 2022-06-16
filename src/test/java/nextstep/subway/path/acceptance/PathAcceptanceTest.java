@@ -190,7 +190,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 최단경로_길이확인(ExtractableResponse<Response> response, int expectedDistance) {
         PathResponse path = response.as(PathResponse.class);
-        double actualDistance = path.getDistance();
+        double actualDistance = path.getPathLength();
         assertThat(actualDistance).isEqualTo(expectedDistance);
     }
 

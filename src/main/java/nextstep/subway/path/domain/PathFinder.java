@@ -35,6 +35,13 @@ public class PathFinder {
         });
     }
 
+    public Path findPath(Station source, Station destination) {
+        List<Station> stations = findPathStations(source, destination);
+        int pathLength = findPathLength(source, destination);
+        int pathSurcharge = findPathSurcharge(source, destination);
+        return new Path(stations, pathLength, pathSurcharge);
+    }
+
     public List<Station> findPathStations(Station source, Station destination) {
         return findShortestPath(source, destination).getVertexList();
     }
