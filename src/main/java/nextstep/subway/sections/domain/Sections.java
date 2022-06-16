@@ -16,6 +16,14 @@ public class Sections {
         CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
+    public Sections() {
+    }
+
+
+    public Sections(Section section) {
+        this.sections.add(section);
+    }
+
     public void add(Section section) {
         sections.add(section);
     }
@@ -104,4 +112,6 @@ public class Sections {
         return downStation;
     }
 
+    public void delete(Section section) {
+    }
 }
