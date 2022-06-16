@@ -36,4 +36,10 @@ public class FavoriteService {
         Favorite favorite = favoriteRepository.save(new Favorite(member.getId(), source, target));
         return FavoriteResponse.of(favorite);
     }
+
+    @Transactional(readOnly = true)
+    public FavoriteResponse findFavorite(LoginMember loginMember) {
+        Favorite favorite = new Favorite(1L, new Station("강남역"), new Station("삼성역"));
+        return FavoriteResponse.of(favorite);
+    }
 }
