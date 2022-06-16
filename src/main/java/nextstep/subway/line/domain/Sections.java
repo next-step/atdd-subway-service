@@ -9,7 +9,6 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Embeddable
 public class Sections {
@@ -46,22 +45,6 @@ public class Sections {
         return values.isEmpty();
     }
 
-    public Station findDownStation() {
-        return findFirstSection().getUpStation();
-    }
-
-    public Optional<Section> findNextLineUpStation(Station finalDownStation) {
-        return values.stream()
-                .filter(it -> it.getUpStation() == finalDownStation)
-                .findFirst();
-    }
-
-    public Optional<Section> findNextLineDownStation(Station finalDownStation) {
-        return values.stream()
-                .filter(it -> it.getDownStation() == finalDownStation)
-                .findFirst();
-    }
-
     public void cutOff(Line line, Station station) {
         validateSize();
         readjustDistance(line, station);
@@ -69,8 +52,28 @@ public class Sections {
         cutOffDownLineStation(station);
     }
 
-    private Section findFirstSection() {
-        return values.get(0);
+    public boolean hasNextDownSection(Station station) {
+        return values.stream()
+                .anyMatch(section -> section.isEqualsDownStation(station));
+    }
+
+    public Section findSectionByDownStation(Station station) {
+        return values.stream()
+                .filter(section -> section.isEqualsDownStation(station))
+                .findFirst()
+                .orElseThrow(IllegalStateException::new);
+    }
+
+    public boolean hasNextUpSection(Station station) {
+        return values.stream()
+                .anyMatch(section -> section.isEqualsUpStation(station));
+    }
+
+    public Section findSectionByUpStation(Station station) {
+        return values.stream()
+                .filter(section -> section.isEqualsUpStation(station))
+                .findFirst()
+                .orElseThrow(IllegalStateException::new);
     }
 
     private void updateUpStation(Station upStation, Station downStation, int distance) {

@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -10,9 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -63,24 +62,20 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return new ArrayList<>();
         }
 
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation(this);
-        stations.add(downStation);
+        Stations stations = new Stations();
+        Station station = findUpStation();
+        stations.add(station);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.findNextLineUpStation(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        while (sections.hasNextUpSection(station)) {
+            Section nextLineStation = sections.findSectionByUpStation(station);
+            station = nextLineStation.getDownStation();
+            stations.add(station);
         }
 
-        return stations;
+        return stations.getValues();
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
@@ -91,20 +86,14 @@ public class Line extends BaseEntity {
         this.sections.cutOff(this, station);
     }
 
-    private Station findUpStation(Line line) {
-        Station downStation = line.findDownStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.findNextLineDownStation(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-        return downStation;
-    }
+    private Station findUpStation() {
+        Station station = sections.getValues().get(0).getUpStation();
 
-    private Station findDownStation() {
-        return sections.findDownStation();
+        while (sections.hasNextDownSection(station)) {
+            Section section = sections.findSectionByDownStation(station);
+            station = section.getUpStation();
+        }
+
+        return station;
     }
 }

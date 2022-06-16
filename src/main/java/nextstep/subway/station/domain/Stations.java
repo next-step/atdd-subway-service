@@ -6,8 +6,15 @@ import java.util.List;
 public class Stations {
     private List<Station> values = new ArrayList<>();
 
+    public Stations() {
+    }
+
     public Stations(List<Station> stations) {
         values.addAll(stations);
+    }
+
+    public List<Station> getValues() {
+        return values;
     }
 
     public void validateDuplication(Station upStation, Station downStation) {
@@ -36,5 +43,9 @@ public class Stations {
 
     private boolean isMatch(Station station) {
         return values.stream().noneMatch(v -> v == station);
+    }
+
+    public void add(Station station) {
+        values.add(station);
     }
 }
