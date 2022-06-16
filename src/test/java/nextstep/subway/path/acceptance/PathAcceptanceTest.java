@@ -148,8 +148,4 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
-
-    public static void 응답결과_확인(ExtractableResponse<Response> response, HttpStatus httpStatus) {
-        assertThat(response.statusCode()).isEqualTo(httpStatus.value());
-    }
 }
