@@ -16,6 +16,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,9 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단구간을_조회한다(pathRequest);
 
         최단구간이_정상적으로_조회됨(response);
-        PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getStations()).containsExactly(교대역, 남부터미널역, 양재역);
-        assertThat(pathResponse.getDistance()).isEqualTo(13);
+        최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13);
     }
 
     public static ExtractableResponse<Response> 최단구간을_조회한다(PathRequest pathRequest) {
@@ -86,12 +89,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-
-
-
-
-
-
-
+    public static void 최단거리_조회_결과_확인(ExtractableResponse<Response> response, List<StationResponse> stationResponses, int distance) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getStations()).containsExactlyElementsOf(stationResponses);
+        assertThat(pathResponse.getDistance()).isEqualTo(13);
+    }
 }
 
