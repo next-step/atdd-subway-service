@@ -5,6 +5,7 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.exception.NotAuthorizedException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -12,8 +13,10 @@ import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
     private final MemberRepository memberRepository;
     private final FavoriteRepository favoriteRepository;
@@ -27,6 +30,7 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public FavoriteResponse saveFavorite(Long memberId, FavoriteRequest favoriteRequest) {
         Member member = findMember(memberId);
         Station sourceStation = findStation(favoriteRequest.getSourceId());
@@ -50,7 +54,14 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteFavorite(Long memberId, Long favoriteId) {
-        favoriteRepository.deleteByMemberIdAndId(memberId, favoriteId);
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new IllegalArgumentException("즐겨찾기가 존재하지 않습니다."));
+
+        if (!favorite.isCreatedBy(memberId)) {
+            throw new NotAuthorizedException("삭제할 권한이 없습니다.");
+        }
+        favoriteRepository.delete(favorite);
     }
 }
