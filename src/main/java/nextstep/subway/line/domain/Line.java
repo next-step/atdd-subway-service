@@ -92,7 +92,7 @@ public class Line extends BaseEntity {
 
     public void registerPath(SectionGraph graph) {
         graph.addVertices(findStations());
-        graph.addEdges(getSections().getSections());
+        graph.addEdgeAndWeight(getSections().getSections());
     }
 
     public Long getId() {

@@ -19,26 +19,24 @@ public class SectionGraph implements PathFinderGraph {
     }
 
     @Override
-    public void addEdges(List<Section> sections) {
+    public void addEdgeAndWeight(List<Section> sections) {
         sections.forEach(section -> {
             SectionGraphEdge sectionEdge = SectionGraphEdge.of(section);
             addEdge(section, graph, sectionEdge);
-            addEdgeWith(section.getDistance(), graph, sectionEdge);
+            addEdgeWeight(section.getDistance(), graph, sectionEdge);
         });
-    }
-
-    @Override
-    public void addEdgeWith(int weight, WeightedMultigraph<Station, SectionGraphEdge> graph, SectionGraphEdge edge) {
-        graph.setEdgeWeight(edge, weight);
-    }
-
-    @Override
-    public void addEdge(Section section, WeightedMultigraph<Station, SectionGraphEdge> graph, SectionGraphEdge sectionGraphEdge) {
-        graph.addEdge(section.getUpStation(), section.getDownStation(), sectionGraphEdge);
     }
 
     @Override
     public DijkstraShortestPath getPath() {
         return new DijkstraShortestPath(graph);
+    }
+
+    private void addEdgeWeight(int weight, WeightedMultigraph<Station, SectionGraphEdge> graph, SectionGraphEdge edge) {
+        graph.setEdgeWeight(edge, weight);
+    }
+
+    private void addEdge(Section section, WeightedMultigraph<Station, SectionGraphEdge> graph, SectionGraphEdge sectionGraphEdge) {
+        graph.addEdge(section.getUpStation(), section.getDownStation(), sectionGraphEdge);
     }
 }
