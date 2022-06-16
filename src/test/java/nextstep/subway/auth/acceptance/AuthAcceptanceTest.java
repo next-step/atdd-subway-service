@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.member.MemberAcceptanceTest.내_정보_조회;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -69,7 +70,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         body.put("email", email);
         body.put("password", password);
 
-        return RestAssuredRequest.postRequest(PATH, Collections.emptyMap(), body);
+        return RestAssuredRequest.postRequest(PATH, Collections.emptyMap(), body, null);
     }
 
     public void 로그인_성공됨(ExtractableResponse<Response> response) {

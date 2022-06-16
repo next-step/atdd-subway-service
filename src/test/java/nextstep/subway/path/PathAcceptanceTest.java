@@ -156,7 +156,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         params.put("source", source.getId());
         params.put("target", target.getId());
 
-        return RestAssuredRequest.getRequest(PATH, params);
+        return RestAssuredRequest.getRequest(PATH, params, null);
     }
 
     private void 노선_경로_조회_성공됨(ExtractableResponse<Response> response) {
