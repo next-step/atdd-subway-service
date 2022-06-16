@@ -9,7 +9,7 @@ import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.favorite.service.FavoriteService;
 import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.application.PathService;
+import nextstep.subway.line.application.PathServiceFacade;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.member.application.MemberService;
@@ -30,15 +30,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
-    private final PathService pathService;
+    private final PathServiceFacade pathServiceFacade;
     private final StationService stationService;
     private final LineService lineService;
     private final MemberService memberService;
 
-    public FavoriteController(FavoriteService favoriteService, PathService pathService,
+    public FavoriteController(FavoriteService favoriteService, PathServiceFacade pathServiceFacade,
         StationService stationService, LineService lineService, MemberService memberService) {
         this.favoriteService = favoriteService;
-        this.pathService = pathService;
+        this.pathServiceFacade = pathServiceFacade;
         this.stationService = stationService;
         this.lineService = lineService;
         this.memberService = memberService;
@@ -60,7 +60,8 @@ public class FavoriteController {
         Station destStation = stationService.findById(favoriteRequest.getTarget());
         List<Line> lines = lineService.findAllLines();
 
-        PathResponse path = pathService.findPath(sourceStation, destStation, lines);
+        PathResponse path = pathServiceFacade.findPath(favoriteRequest.getSource(),
+            favoriteRequest.getTarget());
 
         Favorite favorite = favoriteService.saveFavorite(member, sourceStation, destStation);
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
