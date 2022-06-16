@@ -33,10 +33,8 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        List<StationResponse> stations = getStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+
+        return LineResponse.of(persistLine);
     }
 
     public List<LineResponse> findLines() {
@@ -139,7 +137,7 @@ public class LineService {
         downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
 
-
+    // TODO: 도메인으로 이동 (Sections)
     public List<Station> getStations(Line line) {
         if (line.getSections().isEmpty()) {
             return Arrays.asList();
