@@ -24,6 +24,7 @@ public class FavoriteAcceptanceFactory {
                 .then()
                 .log().all().extract();
     }
+
     public static ExtractableResponse<Response> 즐겨찾기_목록조회_시도(TokenResponse accessToken, StationResponse sourceStation, StationResponse targetStation) {
         return RestAssured
                 .given().log().all()
@@ -35,12 +36,28 @@ public class FavoriteAcceptanceFactory {
                 .log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_시도(TokenResponse accessToken, ExtractableResponse<Response> 즐겨찾기_생셩결과) {
+        String location = 즐겨찾기_생셩결과.header("Location");
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .delete(location)
+                .then()
+                .log().all().extract();
+    }
+
     public static void 즐겨찾기_생성완료(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     public static void 즐겨찾기_조회완료(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 즐겨찾기_삭제완료(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
 }

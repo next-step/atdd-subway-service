@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceFactory.로그인_요청시도;
 import static nextstep.subway.favorite.FavoriteAcceptanceFactory.즐겨찾기_목록조회_시도;
+import static nextstep.subway.favorite.FavoriteAcceptanceFactory.즐겨찾기_삭제_시도;
+import static nextstep.subway.favorite.FavoriteAcceptanceFactory.즐겨찾기_삭제완료;
 import static nextstep.subway.favorite.FavoriteAcceptanceFactory.즐겨찾기_생성_시도;
 import static nextstep.subway.favorite.FavoriteAcceptanceFactory.즐겨찾기_생성완료;
 import static nextstep.subway.favorite.FavoriteAcceptanceFactory.즐겨찾기_조회완료;
@@ -77,5 +79,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_조회결과 = 즐겨찾기_목록조회_시도(유효한_토큰, 강남역, 정자역);
 
         즐겨찾기_조회완료(즐겨찾기_조회결과);
+    }
+
+    /**
+     * When 즐겨찾기 삭제 요청
+     * Then 즐겨찾기 삭제됨
+     */
+    @Test
+    void 즐겨찾기를_삭제한다() {
+        ExtractableResponse<Response> 즐겨찾기_생셩결과 = 즐겨찾기_생성_시도(유효한_토큰, 강남역, 정자역);
+
+        ExtractableResponse<Response> 즐겨찾기_삭제결과 = 즐겨찾기_삭제_시도(유효한_토큰, 즐겨찾기_생셩결과);
+
+        즐겨찾기_삭제완료(즐겨찾기_삭제결과);
     }
 }
