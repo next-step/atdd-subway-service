@@ -7,12 +7,15 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
 
-public class SubwayPath {
-
-    private SubwayPath() {
+public class PathFinder {
+    private PathFinder() {
     }
 
-    public static List<Station> finder(Station source, Station target, List<Station> stations, Sections sections) {
+    public static List<Station> dijkstra(Station source, Station target, List<Station> stations, Sections sections) {
+        if (source == target) {
+            throw new IllegalArgumentException("시작역과 종료역은 같을 수 없습니다.");
+        }
+
         SubwayGraph subwayGraph = new SubwayGraph(DefaultWeightedEdge.class);
         subwayGraph.addVertex(stations);
         subwayGraph.setEdgeWeight(sections);

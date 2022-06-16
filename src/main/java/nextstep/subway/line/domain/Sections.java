@@ -11,9 +11,14 @@ import java.util.*;
 @Embeddable
 public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    private List<Section> sections;
 
     public Sections() {
+        this(new ArrayList<>());
+    }
+
+    public Sections(List<Section> sections) {
+        this.sections = new ArrayList<>(sections);
     }
 
     public void add(Line line, Station upStation, Station downStation, int distance) {
@@ -25,6 +30,17 @@ public class Sections {
         updateUpStationIfPresent(upStation, downStation, distance);
         updateDownStationIfPresent(upStation, downStation, distance);
         sections.add(new Section(line, upStation, downStation, distance));
+    }
+
+    public void add(List<Section> sections) {
+        this.sections.addAll(new ArrayList<>(sections));
+    }
+
+    @SafeVarargs
+    public final void addAll(List<Section>... sections) {
+        for (List<Section> sectionList : sections) {
+            this.sections.addAll(new ArrayList<>(sectionList));
+        }
     }
 
     private void validateSections(Station upStation, Station downStation) {
@@ -158,6 +174,33 @@ public class Sections {
         if (downLineStation != null) {
             sections.remove(downLineStation);
         }
+    }
+
+    public Sections filteredBy(List<Station> stations) {
+        Sections sections = new Sections();
+        int i = 0;
+        while (i < stations.size()) {
+            if (i != stations.size() - 1) {
+                sections.sections.add(getSection(this.sections, stations.get(i), stations.get(i + 1)));
+            }
+            i++;
+        }
+        return sections;
+    }
+
+    private Section getSection(List<Section> sections, Station station, Station nextStation) {
+        return sections.stream()
+                .filter(s -> s.containStations(station, nextStation))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다"));
+    }
+
+    public Distance totalDistance() {
+        Distance distance = new Distance();
+        for (Section section : sections) {
+            distance = distance.plus(section.getDistance());
+        }
+        return distance;
     }
 
     @Override
