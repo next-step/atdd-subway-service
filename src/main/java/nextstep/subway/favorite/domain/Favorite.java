@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -17,14 +18,17 @@ public class Favorite {
     private Station sourceStation;
     @OneToOne
     private Station targetStation;
+    @OneToOne
+    private Member member;
 
     protected Favorite() {
     }
 
-    public Favorite(Long id, Station sourceStation, Station targetStation) {
+    public Favorite(Long id, Station sourceStation, Station targetStation, Member member) {
         this.id = id;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
+        this.member = member;
     }
 
     public Long getId() {
@@ -37,6 +41,10 @@ public class Favorite {
 
     public Station getTargetStation() {
         return targetStation;
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     @Override
