@@ -36,12 +36,15 @@ public class Line extends BaseEntity {
     @JoinColumn(name = "DOWN_STATION_ID", foreignKey = @ForeignKey(name = "fk_line_down_station"))
     private Station downStation;
 
+    private int price;
+
     protected Line() {
     }
 
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+        this.price = 0;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
@@ -49,6 +52,15 @@ public class Line extends BaseEntity {
         this.color = color;
         updateUpDownStation(upStation, downStation);
         sections.add(new Section(this, upStation, downStation, distance));
+        this.price = 0;
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int price) {
+        this.name = name;
+        this.color = color;
+        updateUpDownStation(upStation, downStation);
+        sections.add(new Section(this, upStation, downStation, distance));
+        this.price = price;
     }
 
     private void updateUpDownStation(Station upStation, Station downStation) {
