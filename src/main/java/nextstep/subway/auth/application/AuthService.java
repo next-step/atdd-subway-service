@@ -31,7 +31,7 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new AuthorizationException();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);

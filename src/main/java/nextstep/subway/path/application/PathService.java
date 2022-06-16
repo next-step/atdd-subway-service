@@ -4,7 +4,6 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.EntityNotFoundException;
 import nextstep.subway.common.exception.ErrorCode;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.domain.DiscountType;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -32,8 +31,8 @@ public class PathService {
         Station sourceStation = getStation(request.getSource());
         Station targetStation = getStation(request.getTarget());
 
-        DiscountType discountType = loginMember.isLogin() ? loginMember.getDiscountType() : DiscountType.NONE;
-        Path path = pathFinder.getPath(sourceStation, targetStation, discountType);
+        double discountPercent = loginMember != null ? loginMember.getDiscountPercent() : 0.0;
+        Path path = pathFinder.getPath(sourceStation, targetStation, discountPercent);
         return new PathResponse(path);
     }
 

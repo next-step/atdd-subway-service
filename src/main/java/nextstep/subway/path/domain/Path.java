@@ -1,7 +1,8 @@
 package nextstep.subway.path.domain;
 
-import java.util.List;
 import nextstep.subway.station.domain.Station;
+
+import java.util.List;
 
 public class Path {
 
@@ -9,10 +10,10 @@ public class Path {
     private int distance;
     private Fee fee;
 
-    public Path(List<Station> stations, int distance, int addFee, DiscountType discountType) {
+    public Path(List<Station> stations, int distance, int addFee, double discountPercent) {
         this.stations = stations;
         this.distance = distance;
-        this.fee = new Fee(addFee, distance, discountType);
+        this.fee = new Fee(addFee, distance, discountPercent);
     }
 
     public List<Station> getStations() {

@@ -27,8 +27,8 @@ public class SectionEdge extends DefaultWeightedEdge {
         return section.getDistance();
     }
 
-    public int getAddFee() {
+    public int getAdditionalFee() {
         Line line = section.getLine();
-        return line.getAddFee();
+        return line.getAdditionalFee();
     }
 }

@@ -12,12 +12,12 @@ public class Fee {
 
     private int fee;
     private int distance;
-    private DiscountType discountType;
+    private double discountPercent;
 
-    public Fee(int addFee, int distance, DiscountType discountType) {
+    public Fee(int addFee, int distance, double discountPercent) {
         this.fee = DEFAULT_FEE + addFee;
         this.distance = distance;
-        this.discountType = discountType;
+        this.discountPercent = discountPercent;
     }
 
     public int calculate() {
@@ -49,7 +49,7 @@ public class Fee {
     }
 
     private int applyDiscount() {
-        int getDiscountAmount = (int) ((fee - MINUS_AMOUNT) * discountType.getDiscountPercent());
+        int getDiscountAmount = (int) ((fee - MINUS_AMOUNT) * discountPercent);
         return fee - getDiscountAmount;
     }
 

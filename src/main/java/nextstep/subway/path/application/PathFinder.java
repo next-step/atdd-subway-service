@@ -1,18 +1,18 @@
 package nextstep.subway.path.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import nextstep.subway.common.exception.EntityNotFoundException;
 import nextstep.subway.common.exception.ErrorCode;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.DiscountType;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.exception.StationNotConnectException;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PathFinder {
 
@@ -44,11 +44,11 @@ public class PathFinder {
         pathGraph.setEdgeWeight(sectionEdge, section.getDistance());
     }
 
-    public Path getPath(Station sourceStation, Station targetStation, DiscountType discountType) {
+    public Path getPath(Station sourceStation, Station targetStation, double discountPercent) {
         List<Station> pathStations = getPathStations(sourceStation, targetStation);
         int distance = getDistance(sourceStation, targetStation);
         int addFee = getAddFee(sourceStation, targetStation);
-        return new Path(pathStations, distance, addFee, discountType);
+        return new Path(pathStations, distance, addFee, discountPercent);
     }
 
     private List<Station> getPathStations(Station source, Station target) {
@@ -78,7 +78,7 @@ public class PathFinder {
 
     private Integer getAddFee(Station source, Station target) {
         return shortestPath.getPath(source, target).getEdgeList().stream()
-            .map(SectionEdge::getAddFee)
+            .map(SectionEdge::getAdditionalFee)
             .max(Integer::compareTo).orElse(0);
     }
 }

@@ -1,18 +1,8 @@
 package nextstep.subway.path;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_토큰_얻기;
-import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
-import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -22,8 +12,21 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_토큰_얻기;
+import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @DisplayName("지하철 경로 조회")
@@ -119,14 +122,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("로그인 하여 할인받은, 추가요금이 있는, 요금을 구한다.")
-    @Test
-    public void getFee_yesAddCharge_yesDiscount() {
+    @CsvSource(value = {"13,12,1870", "6,12,1300", "19,51,2150"})
+    @ParameterizedTest
+    public void getFee_yesAddCharge_yesDiscount(int age, int distance, int fee) {
         //given
-        String token = 회원생성_토큰얻기();
+        String token = 회원생성_토큰얻기(age);
+        LineResponse 사호선 = 지하철_노선_등록되어_있음(new LineRequest("사호선", "bg-red-500", 사당역.getId(), 범계역.getId(), distance, 900)).as(LineResponse.class);
         //when
-        ExtractableResponse<Response> response = 최단경로_요청(token, 강남역.getId(), 남부터미널역.getId());
+        ExtractableResponse<Response> response = 최단경로_요청(token, 사당역.getId(), 범계역.getId());
         //then
-        최단경로_요금_확인(response, 12, (int) (2250 - ((2250 - 350) * 0.2)));
+        최단경로_요금_확인(response, distance, fee);
     }
 
     private ExtractableResponse<Response> 최단경로_요청(Long sourceId, Long targetId) {
@@ -181,10 +186,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private String 회원생성_토큰얻기() {
+    private String 회원생성_토큰얻기(int age) {
         String email = "cyr9210@gmail.com";
         String password = "password";
-        회원_생성을_요청(email, password, 13);
+        회원_생성을_요청(email, password, age);
         String token = 로그인_토큰_얻기(email, password);
         return token;
     }
