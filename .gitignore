@@ -42,4 +42,4 @@ fronted/.prttierrc.js
 fronted/.eslintrc.js
 
 ## etc
-**/.DS_Store
+*.DS_Store
