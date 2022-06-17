@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.FavoriteDeleteException;
 import nextstep.subway.exception.FavoriteNotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -48,8 +49,9 @@ public class FavoriteService {
 
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(FavoriteNotFoundException::new);
-        if (favorite.isRegisteredBy(loginMember)) {
-            favoriteRepository.deleteById(id);
+        if (!favorite.isRegisteredBy(loginMember)) {
+            throw new FavoriteDeleteException("본인의 즐겨찾기만 삭제할 수 있습니다.");
         }
+        favoriteRepository.deleteById(id);
     }
 }
