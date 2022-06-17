@@ -68,6 +68,13 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
    * 기존 로직을 지우지 말고 새로운 로직을 만들어 수행한다.
    * 정상 동작 확인 후 기존 로직을 제거한다.
 
+### 구현 리스트
+* 지하철 구간 리스트 일급 컬렉션으로 분리
+  * 구간 추가 기능 이동
+  * 구간 삭제 기능 이동
+  * 지하철 역 정렬 기능 이동
+* 도메인 테스트 코드 작성
+
 
 
 
