@@ -1,6 +1,17 @@
 package nextstep.subway.line.domain;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 
-public interface LineRepository extends JpaRepository<Line, Long> {
+import java.util.Optional;
+
+public interface LineRepository {
+    Optional<Line> findById(Long id);
+
+    List<Line> findAll();
+
+    Line save(Line line);
+
+    List<Line> saveAll(Iterable<Line> lines);
+
+    void deleteById(Long id);
 }
