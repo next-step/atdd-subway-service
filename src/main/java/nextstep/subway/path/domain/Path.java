@@ -18,7 +18,7 @@ public class Path {
     public PathResponse toPathResponse() {
         List<StationResponse> stationsResponse = this.stations.stream()
                 .map(StationResponse::of).collect(Collectors.toList());
-        return new PathResponse(stationsResponse, this.distance);
+        return new PathResponse(stationsResponse, this.distance, 0);
     }
 
     public List<Station> getStations() {
