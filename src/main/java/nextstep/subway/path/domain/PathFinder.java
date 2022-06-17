@@ -39,7 +39,7 @@ public class PathFinder {
         List<Station> stations = findPathStations(source, destination);
         int distance = findPathDistance(source, destination);
         int surcharge = findPathSurcharge(source, destination);
-        return new Path(stations, distance, surcharge);
+        return new Path(stations, surcharge, distance);
     }
 
     public List<Station> findPathStations(Station source, Station destination) {

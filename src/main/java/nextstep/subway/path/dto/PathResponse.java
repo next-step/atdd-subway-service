@@ -14,10 +14,9 @@ public class PathResponse {
     public PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> stations, Integer distance, Integer fare) {
+    public PathResponse(List<StationResponse> stations, Integer distance) {
         this.stations = stations;
         this.distance = distance;
-        this.fare = fare;
     }
 
     public PathResponse(Path path) {
@@ -25,8 +24,8 @@ public class PathResponse {
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        this.distance = path.getDistance();
-        this.fare = path.getSurcharge();
+        this.distance = path.getDistance().getDistance();
+        this.fare = path.getFare().getValue();
     }
 
     public List<StationResponse> getStations() {

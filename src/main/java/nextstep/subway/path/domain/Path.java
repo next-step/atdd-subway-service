@@ -1,30 +1,31 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Surcharge;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
 
 public class Path {
     private final List<Station> stations;
-    private final Integer distance;
-    private final Integer surcharge;
+    private final Distance distance;
+    private final Fare fare;
 
-    public Path(List<Station> stations, Integer distance, Integer surcharge) {
+    public Path(List<Station> stations, Integer surcharge, Integer distance) {
         this.stations = stations;
-        this.distance = distance;
-        this.surcharge = surcharge;
+        this.distance = new Distance(distance);
+        this.fare = new Fare(new Surcharge(surcharge), new Distance(distance));
     }
 
     public List<Station> getStations() {
         return stations;
     }
 
-    public Integer getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public Integer getSurcharge() {
-        return surcharge;
+    public Fare getFare() {
+        return fare;
     }
-
 }
