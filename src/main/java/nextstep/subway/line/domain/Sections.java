@@ -15,7 +15,47 @@ public class Sections {
     private List<Section> sections = new ArrayList<>();
 
     public void addLineStation(Section section) {
-        sections.add(section);
+        if (sections.isEmpty()) {
+            sections.add(section);
+            return;
+        }
+
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = isUpStationExisted(stations, section.getUpStation());
+        boolean isDownStationExisted = isDownStationExisted(stations, section.getDownStation());
+
+        validateAlreadyExists(isUpStationExisted, isDownStationExisted);
+        validateNotExists(stations, section);
+
+        if (isUpStationExisted) {
+            findSectionByUpStation(section.getUpStation())
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+            sections.add(section);
+            return;
+        }
+
+        if (isDownStationExisted) {
+            findSectionByDownStation(section.getDownStation())
+                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+            sections.add(section);
+            return;
+        }
+
+        throw new RuntimeException();
+    }
+
+    private void validateAlreadyExists(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private void validateNotExists(List<Station> stations, Section section) {
+        if (!stations.isEmpty()
+                && stations.stream().noneMatch(it -> it.equals(section.getDownStation()))
+                && stations.stream().noneMatch(it -> it.equals(section.getUpStation()))) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
     }
 
     public List<Station> getStations() {
@@ -24,6 +64,14 @@ public class Sections {
         }
 
         return getStationsInOrder();
+    }
+
+    private boolean isUpStationExisted(List<Station> stations, Station station) {
+        return stations.stream().anyMatch(it -> it.equals(station));
+    }
+
+    private boolean isDownStationExisted(List<Station> stations, Station station) {
+        return stations.stream().anyMatch(it -> it.equals(station));
     }
 
     private List<Station> getStationsInOrder() {
@@ -56,5 +104,17 @@ public class Sections {
                 .findFirst()
                 .orElse(new Section())
                 .getDownStation();
+    }
+
+    private Optional<Section> findSectionByUpStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getUpStation().equals(station))
+                .findFirst();
+    }
+
+    private Optional<Section> findSectionByDownStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getDownStation().equals(station))
+                .findFirst();
     }
 }
