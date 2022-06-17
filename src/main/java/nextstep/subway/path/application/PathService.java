@@ -15,6 +15,6 @@ public class PathService {
     }
 
     public PathResponse findPath(Long source, Long target) {
-        return new PathResponse(stationService.findAllStations(), 50);
+        return new PathResponse(stationService.findById(1L), 50);
     }
 }
