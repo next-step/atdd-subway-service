@@ -91,3 +91,26 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       - 이경우에 인증은 다른 인수테스트에서 완료하였으니, 토큰을통한 LoginMember 획득은 mock을 통해 진행 
       - 즐겨찾기 추가/조회/삭제 기능 만들기 
         - 인수테스트 mock을통해 선 생성후, 도메인테스트부터 진행하며, 구현할때마다 mock을 제거하여 실제 객체 사용 
+
+
+- step4
+  - 정거장 간 경로 조회시, 해당 경로에 대한 운임을 추출/확인할수 있게 개발하여야 한다. 
+  - 인수테스트 작성
+    - PathAcceptanceTest에 "지하철 이용요금 확인" 인수테스트 추가 
+  - 이용요금 조건
+    - 나이 별 할인 
+      - 13 <= age < 19 : (totalPrice - 350) * 0.8
+      - 6 <= age < 13 : (totalPrice - 350) * 0.5
+      - else : none 
+    - 거리 별 운임료
+      - distance <= 10 : 1250 
+      - distance < 10 <= 50 : 1250 + Math.ceil((distance - 10) / 5) * 100    
+        - 10km 초과시, 5km당 100원
+      - distance > 50 : 1250 + 40 / 5 * 100 + Math.ceil((distance - 50)/8) * 100
+    - 노선 별 추가요금 
+      - 추가요금이 있는 노선을 이용할 경우, 측정된 요금에 추가된다 
+  - 요금정책 개발 예정 내역 
+    - 거리 별 금액을 계산하는 interface / 구현체 생성. 
+    - 나이 별 할인률을 제공하는 interface / 구현체 생성 
+    - Dijkstra Edge에 Line정보를 추가 
+      - GraphPath.getEdgeList() 를 통해, 지나온 Line들을 추출한뒤, 추가 운임료 계산 

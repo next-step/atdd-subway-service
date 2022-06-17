@@ -1,6 +1,7 @@
 package nextstep.subway.line.ui;
 
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.application.LineStationServiceFacade;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -18,18 +19,18 @@ import java.util.List;
 public class LineController {
     private final LineService lineService;
     private final StationService stationService;
+    private final LineStationServiceFacade lineStationServiceFacade;
 
-    public LineController(LineService lineService, StationService stationService) {
+    public LineController(LineService lineService, StationService stationService,
+        LineStationServiceFacade lineStationServiceFacade) {
         this.lineService = lineService;
         this.stationService = stationService;
+        this.lineStationServiceFacade = lineStationServiceFacade;
     }
 
     @PostMapping
     public ResponseEntity createLine(@RequestBody LineRequest lineRequest) {
-        Station upStation = stationService.findById(lineRequest.getUpStationId());
-        Station downStation = stationService.findById(lineRequest.getDownStationId());
-
-        LineResponse line = lineService.saveLine(lineRequest, upStation, downStation);
+        LineResponse line = lineStationServiceFacade.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
@@ -57,18 +58,13 @@ public class LineController {
 
     @PostMapping("/{lineId}/sections")
     public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
-        Station upStation = stationService.findStationById(sectionRequest.getUpStationId());
-        Station downStation = stationService.findStationById(sectionRequest.getDownStationId());
-
-        lineService.addLineStation(lineId, sectionRequest, upStation, downStation);
+        lineStationServiceFacade.addLineStation(lineId, sectionRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{lineId}/sections")
     public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
-        Station station = stationService.findStationById(stationId);
-
-        lineService.removeLineStation(lineId, station);
+        lineStationServiceFacade.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
     }
 

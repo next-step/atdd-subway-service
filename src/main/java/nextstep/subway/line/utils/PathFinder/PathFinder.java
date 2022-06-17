@@ -1,19 +1,18 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.line.utils.PathFinder;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 import java.util.List;
 import nextstep.subway.exception.PathFindException;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(
-        DefaultWeightedEdge.class);
+    private DijkstraCustomGraph graph = new DijkstraCustomGraph(DijkstraWeightedEdgeWithLine.class);
     private DijkstraShortestPath dijkstraShortestPath;
 
     public PathFinder(List<Line> lines) {
@@ -34,7 +33,7 @@ public class PathFinder {
     private void setWeightPerLine(Line line) {
         for (Section section : line.getSections()) {
             graph.setEdgeWeight(graph.addEdge(section.getDownStation(), section.getUpStation()),
-                section.getDistance().getDistance());
+                section.getDistance().getDistance(), section.getLine());
         }
     }
 

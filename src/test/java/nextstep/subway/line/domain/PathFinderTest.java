@@ -2,19 +2,15 @@ package nextstep.subway.line.domain;
 
 import java.util.Arrays;
 import nextstep.subway.exception.PathFindException;
-import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.utils.PathFinder.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.when;
 
 
 public class PathFinderTest {
