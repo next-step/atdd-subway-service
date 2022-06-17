@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,25 +57,24 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMyInfo() {
         // given
-        Member 회원 = 회원_생성을_요청(EMAIL, PASSWORD, AGE).as(Member.class);
+        MemberResponse 회원 = 회원_생성_및_회원_조회(EMAIL, PASSWORD, AGE);
         String token = 로그인_요청_및_토큰_추출(EMAIL, PASSWORD);
 
         // when
-        ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회(회원.getId(), 회원.getEmail(), 회원.getAge(), token);
+        ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회(token);
         // then
         회원_정보_조회됨(내_정보_조회_응답, EMAIL, AGE);
 
         // when
         MemberRequest memberUpdateRequestBody = new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
-        ExtractableResponse<Response> 내_정보_수정_응답 =
-                내_정보_수정(회원.getId(), 회원.getEmail(), 회원.getAge(), memberUpdateRequestBody, token);
+        ExtractableResponse<Response> 내_정보_수정_응답 = 내_정보_수정(memberUpdateRequestBody, token);
         ExtractableResponse<Response> 회원_정보 = 회원_정보_조회_요청(PATH + "/" + 회원.getId());
         // then
         회원_정보_수정됨(내_정보_수정_응답);
         회원_정보_조회됨(회원_정보, NEW_EMAIL, NEW_AGE);
 
         // when
-        ExtractableResponse<Response> 내_정보_삭제_응답 = 내_정보_삭제(회원.getId(), 회원.getEmail(), 회원.getAge(), token);
+        ExtractableResponse<Response> 내_정보_삭제_응답 = 내_정보_삭제(token);
         ExtractableResponse<Response> 삭제_회원_정보 = 회원_정보_조회_요청(PATH + "/" + 회원.getId());
         // then
         회원_삭제됨(내_정보_삭제_응답);
@@ -89,19 +89,18 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         String token = 로그인_요청_및_토큰_추출(EMAIL, PASSWORD);
 
         // when
-        ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회(회원.getId(), NEW_EMAIL, NEW_AGE, token);
+        ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회(token);
         // then
         회원_정보_요청_실패됨(내_정보_조회_응답);
 
         // when
         MemberRequest memberUpdateRequestBody = new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
-        ExtractableResponse<Response> 내_정보_수정_응답 =
-                내_정보_수정(회원.getId(), NEW_EMAIL, NEW_AGE, memberUpdateRequestBody, token);
+        ExtractableResponse<Response> 내_정보_수정_응답 = 내_정보_수정(memberUpdateRequestBody, token);
         // then
         회원_정보_요청_실패됨(내_정보_수정_응답);
 
         // when
-        ExtractableResponse<Response> 내_정보_삭제_응답 = 내_정보_삭제(회원.getId(), NEW_EMAIL, NEW_AGE, token);
+        ExtractableResponse<Response> 내_정보_삭제_응답 = 내_정보_삭제(token);
         // then
         회원_정보_요청_실패됨(내_정보_삭제_응답);
     }
@@ -116,6 +115,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .when().post("/members")
                 .then().log().all()
                 .extract();
+    }
+
+    public static MemberResponse 회원_생성_및_회원_조회(String email, String password, Integer age) {
+        String location = 회원_생성을_요청(email, password, age).header("Location");
+        String createdId = location.substring(location.lastIndexOf("/") + 1);
+
+        return 회원_정보_조회_요청(PATH + "/" + createdId).as(MemberResponse.class);
     }
 
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
@@ -182,34 +188,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    public static ExtractableResponse<Response> 내_정보_조회(Long id, String email, Integer age, String token) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", id);
-        params.put("email", email);
-        params.put("age", age);
-
-        return RestAssuredRequest.getRequest(PATH + "/me", params, token);
+    public static ExtractableResponse<Response> 내_정보_조회(String token) {
+        return RestAssuredRequest.getRequest(PATH + "/me", Collections.emptyMap(), token);
     }
 
-    public static ExtractableResponse<Response> 내_정보_수정(
-            Long id, String email, Integer age, MemberRequest body, String token
-    ) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", id);
-        params.put("email", email);
-        params.put("age", age);
-
-        return RestAssuredRequest.putRequest(PATH + "/me", params, body, token);
+    public static ExtractableResponse<Response> 내_정보_수정(MemberRequest body, String token) {
+        return RestAssuredRequest.putRequest(PATH + "/me", Collections.emptyMap(), body, token);
     }
 
-    public static ExtractableResponse<Response> 내_정보_삭제(
-            Long id, String email, Integer age, String token
-    ) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", id);
-        params.put("email", email);
-        params.put("age", age);
-
-        return RestAssuredRequest.deleteRequest(PATH + "/me", params, token);
+    public static ExtractableResponse<Response> 내_정보_삭제(String token) {
+        return RestAssuredRequest.deleteRequest(PATH + "/me", Collections.emptyMap(), token);
     }
 }

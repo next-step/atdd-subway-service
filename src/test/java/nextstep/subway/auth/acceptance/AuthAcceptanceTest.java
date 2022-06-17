@@ -4,7 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.utils.RestAssuredRequest;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,21 +15,21 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.member.MemberAcceptanceTest.내_정보_조회;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
-    private static final String PATH = "/login";
+    private static final String PATH = "/login/token";
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final int AGE = 20;
 
-    private Member member;
+    private MemberResponse member;
 
     @BeforeEach
-    void setUpTest() {
-        this.member = 회원_생성을_요청(EMAIL, PASSWORD, AGE).as(Member.class);
+    public void setUp() {
+        super.setUp();
+        this.member = 회원_생성_및_회원_조회(EMAIL, PASSWORD, AGE);
     }
 
     @DisplayName("Bearer Auth")
@@ -59,7 +59,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         String 토큰 = 로그인_요청_및_토큰_추출(EMAIL, PASSWORD);
 
         // when
-        ExtractableResponse<Response> 잘못된_토큰으로_요청_응답 = 내_정보_조회(member.getId(), EMAIL, AGE, 토큰 + "wrong");
+        ExtractableResponse<Response> 잘못된_토큰으로_요청_응답 = 내_정보_조회(토큰 + "wrong");
 
         // then
         잘못된_토큰으로_요청됨(잘못된_토큰으로_요청_응답);
@@ -79,7 +79,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public void 로그인_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_BAD_REQUEST);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_UNAUTHORIZED);
     }
 
     public void 잘못된_토큰으로_요청됨(ExtractableResponse<Response> response) {
@@ -89,5 +89,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     public static String 로그인_요청_및_토큰_추출(String email, String password) {
         return 회원_로그인_요청(email, password).as(TokenResponse.class)
                 .getAccessToken();
+    }
+
+    public static String 신규_회원가입_후_로그인_토큰_추출(String email, String password, int age) {
+        회원_생성을_요청(email, password, age);
+        return 로그인_요청_및_토큰_추출(email, password);
     }
 }
