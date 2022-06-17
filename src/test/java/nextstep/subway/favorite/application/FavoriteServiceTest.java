@@ -59,7 +59,7 @@ class FavoriteServiceTest {
         given(favoriteRepository.save(any())).willReturn(즐겨찾기);
 
         // when
-        FavoriteResponse favorite = favoriteService.save(로그인_사용자, new FavoriteRequest(1L, 2L));
+        FavoriteResponse favorite = favoriteService.createFavorite(로그인_사용자, new FavoriteRequest(1L, 2L));
 
         // then
         assertAll(
@@ -73,7 +73,7 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기를 조회한 결과 1개의 즐겨찾기가 반환된다")
     void findFavorites() {
         // given
-        given(favoriteRepository.findByMemberId(any())).willReturn(Collections.singletonList(즐겨찾기));
+        given(favoriteRepository.findAllByMemberId(any())).willReturn(Collections.singletonList(즐겨찾기));
 
         // when
         List<FavoriteResponse> favoriteResponseList = favoriteService.findFavorite(로그인_사용자);

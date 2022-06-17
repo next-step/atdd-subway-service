@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
-    List<Favorite> findByMemberId(Long memberId);
+    List<Favorite> findAllByMemberId(Long memberId);
 
     void deleteByMemberId(Long memberId);
 
