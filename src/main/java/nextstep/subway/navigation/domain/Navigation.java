@@ -10,6 +10,8 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 
+import static nextstep.subway.common.Messages.NOT_CONNECTED_SOURCE_TARGET_STATION;
+
 public class Navigation {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
@@ -26,9 +28,10 @@ public class Navigation {
 
     public NavigationResponse findShortest(Station sourceStation, Station targetStation) {
         path = new DijkstraShortestPath<>(graph).getPath(sourceStation, targetStation);
+        checkFindShortestPath(path);
+
         List<Station> vertexList = path.getVertexList();
         int distance = (int) path.getWeight();
-
         return NavigationResponse.of(vertexList, distance);
     }
 
@@ -41,5 +44,11 @@ public class Navigation {
             graph.addVertex(downStation);
             graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
         });
+    }
+
+    private void checkFindShortestPath(GraphPath<Station, DefaultWeightedEdge> path) {
+        if (path == null) {
+            throw new IllegalArgumentException(NOT_CONNECTED_SOURCE_TARGET_STATION);
+        }
     }
 }

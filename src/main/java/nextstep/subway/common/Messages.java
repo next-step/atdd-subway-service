@@ -10,4 +10,5 @@ public class Messages {
     public static final String DISTANCE_BETWEEN_STATION = "[ERROR] 역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
 
     public static final String SAME_SOURCE_TARGET_STATION = "[ERROR] 출발역과 도착역은 같을 수 없습니다.";
+    public static final String NOT_CONNECTED_SOURCE_TARGET_STATION = "[ERROR] 출발역과 도착역이 연결이 되어있지 않습니다.";
 }
