@@ -65,6 +65,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - 지하철역과 노선을 등록하고
   - 출발역과 도착역 사이의 경로를 조회하면
   - 최단경로와 최단거리가 조회된다
+  - 지하철 이용 요금도 조회된다
 - [x] 경로 조회 실패
   - 지하철역과 노선을 등록하고
   - 출발역과 도착역이 같으면
