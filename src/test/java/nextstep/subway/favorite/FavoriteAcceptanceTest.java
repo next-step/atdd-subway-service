@@ -117,6 +117,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_정상_확인(즐겨찾기_목록_조회(사용자정보), Collections.emptyList());
     }
 
+    /**
+     * When : 잘못된 즐겨찾기 id 로 요청 시
+     * Then : 에러가 발생한다.
+     */
+    @DisplayName("잘못된 즐겨찾기 id 로 요청 하기")
+    @Test
+    void invalidFavoriteDeleteWhenFavoriteIdIsInvalid() {
+        // When
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(사용자정보, 2);
+
+        // Then
+        즐겨찾기_삭제_실패(deleteResponse);
+    }
+
+    public  static void 즐겨찾기_삭제_실패(ExtractableResponse<Response> deleteResponse) {
+        assertThat(HttpStatus.valueOf(deleteResponse.statusCode())).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
     public static void 즐겨찾기_정상_삭제(ExtractableResponse<Response> deleteResponse) {
         assertThat(HttpStatus.valueOf(deleteResponse.statusCode())).isEqualTo(HttpStatus.NO_CONTENT);
     }
