@@ -19,10 +19,6 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();;
 
-    // TODO: 삭제
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sectionList = new ArrayList<>();
-
     public Line() {
     }
 
@@ -64,9 +60,5 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
-    }
-
-    public List<Section> getSections() {
-        return sectionList;
     }
 }
