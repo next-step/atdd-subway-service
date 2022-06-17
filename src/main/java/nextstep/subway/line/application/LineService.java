@@ -83,4 +83,8 @@ public class LineService {
         Station station = stationService.findStationById(stationId);
         line.remove(station);
     }
+
+    public List<Line> findAll() {
+        return lineRepository.findAll();
+    }
 }
