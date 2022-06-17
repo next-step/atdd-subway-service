@@ -19,7 +19,6 @@ public class Navigation {
 
     private Navigation(List<Line> persistLines) {
         persistLines.forEach(this::settingGraph);
-
     }
 
     public static Navigation of(List<Line> persistLines) {
