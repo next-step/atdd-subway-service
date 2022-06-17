@@ -6,7 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -18,16 +17,15 @@ public class Favorite {
     private Station sourceStation;
     @OneToOne
     private Station targetStation;
-    @OneToOne
-    private Member member;
+    private Long memberId;
 
     protected Favorite() {
     }
 
-    public Favorite(Station sourceStation, Station targetStation, Member member) {
+    public Favorite(Station sourceStation, Station targetStation, Long memberId) {
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
-        this.member = member;
+        this.memberId = memberId;
     }
 
     public Long getId() {
@@ -42,10 +40,6 @@ public class Favorite {
         return targetStation;
     }
 
-    public Member getMember() {
-        return member;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -56,11 +50,11 @@ public class Favorite {
         }
         Favorite favorite = (Favorite) o;
         return Objects.equals(sourceStation, favorite.sourceStation) && Objects.equals(targetStation,
-                favorite.targetStation);
+                favorite.targetStation) && Objects.equals(memberId, favorite.memberId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sourceStation, targetStation);
+        return Objects.hash(sourceStation, targetStation, memberId);
     }
 }

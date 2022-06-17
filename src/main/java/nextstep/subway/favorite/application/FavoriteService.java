@@ -32,10 +32,9 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse save(LoginMember loginMember, FavoriteRequest favoriteRequest) {
-        Member member = memberService.findByEmail(loginMember.getEmail());
         Station source = stationService.findStationById(favoriteRequest.getSource());
         Station target = stationService.findStationById(favoriteRequest.getTarget());
-        Favorite favorite = favoriteRepository.save(new Favorite(source, target, member));
+        Favorite favorite = favoriteRepository.save(new Favorite(source, target, loginMember.getId()));
         return FavoriteResponse.of(favorite);
     }
 
