@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.dto.MemberRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     /**
      * Feature: 로그인 기능
      *
-     *   Scenario: 로그인을 시도한다.
+     *   Scenario: 로그인을 성공한다.
      *     Given 회원 등록되어 있음
      *     When 로그인 요청
      *     Then 로그인 됨
@@ -41,7 +42,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     /**
      * Feature: 로그인 기능
      *
-     *   Scenario: 로그인을 시도한다.
+     *   Scenario: 로그인을 실패한다.
      *     Given 회원 등록되어 있음
      *     When 잘못된 로그인 요청
      *     Then 로그인 실패
@@ -60,9 +61,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Feature: 회원정보 조회 기능
+     * Feature: 내정보 조회 기능
      *
-     *   Scenario: 로그인을 시도한다.
+     *   Scenario: 내정보를 조회 한다
      *     Given 회원 등록되어 있음
      *     When 유효한 토큰 사용하여 회원정보 조회
      *     Then 회원정보 조회 성공
@@ -75,16 +76,16 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
         //When
-        ExtractableResponse<Response> response = 회원정보_조회_요청(tokenResponse.getAccessToken());
+        ExtractableResponse<Response> response = 내정보_조회_요청(tokenResponse.getAccessToken());
 
         //Then
-        회원정보_조회_성공(response);
+        내정보_조회됨(response);
     }
 
     /**
-     * Feature: 회원정보 조회 기능
+     * Feature: 내정보 조회 기능
      *
-     *   Scenario: 로그인을 시도한다.
+     *   Scenario: 내정보 조회를 실패한다.
      *     Given 회원 등록되어 있음
      *     When 유효하지 않은 토큰 사용하여 회원정보 조회
      *     Then 회원정보 조회 실패
@@ -97,13 +98,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
         //When
-        ExtractableResponse<Response> response = 회원정보_조회_요청("WRONG_TOKEN");
+        ExtractableResponse<Response> response = 내정보_조회_요청("WRONG_TOKEN");
 
         //Then
-        회원정보_조회_실패(response);
+        내정보_조회_실패(response);
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
 
         return RestAssured
@@ -115,31 +116,58 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 회원정보_조회_요청(String accessToken) {
+    public static ExtractableResponse<Response> 내정보_조회_요청(String accessToken) {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
                 .extract();
     }
 
-    private void 로그인_성공함(ExtractableResponse<Response> response) {
+    public static ExtractableResponse<Response> 내정보_수정_요청(String accessToken, MemberRequest memberRequest) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .body(memberRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내정보_삭제_요청(String accessToken) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    private static void 로그인_성공함(ExtractableResponse<Response> response) {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(TokenResponse.class).getAccessToken()).isNotBlank()
         );
     }
 
-    private void 로그인_실패함(ExtractableResponse<Response> response) {
+    private static void 로그인_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private void 회원정보_조회_성공(ExtractableResponse<Response> response) {
+    public static void 내정보_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 회원정보_조회_실패(ExtractableResponse<Response> response) {
+    public static void 내정보_조회_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    public static void 내정보_수정됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 내정보_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
