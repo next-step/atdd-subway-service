@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static nextstep.subway.common.Messages.SAME_SOURCE_TARGET_STATION;
+
 @Service
 public class PathService {
 
@@ -26,6 +28,8 @@ public class PathService {
     }
 
     public PathResponse findShortestDistance(PathRequest pathRequest) {
+        validateFindShortest(pathRequest);
+
         Station sourceStation = stationService.findStationById(pathRequest.getSource());
         Station targetStation = stationService.findStationById(pathRequest.getTarget());
         List<Line> persistLines = lineService.findPersistLines();
@@ -34,4 +38,9 @@ public class PathService {
         return PathResponse.of(navigationResponse.getStations(), navigationResponse.getDistance());
     }
 
+    private void validateFindShortest(PathRequest pathRequest) {
+        if (pathRequest.getSource().equals(pathRequest.getTarget())) {
+            throw new IllegalArgumentException(SAME_SOURCE_TARGET_STATION);
+        }
+    }
 }
