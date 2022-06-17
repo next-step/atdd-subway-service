@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -15,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.암호_이메일_입력;
@@ -74,16 +77,42 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성이_안됨(invalidResponse);
     }
 
+    /**
+     * Given : 즐겨찾기가 추가 되어 있고
+     * When: 즐겨찾기 목록 조회 요청을 하면
+     * Then : 즐겨찾기 목록을 정상적으로 가져온다.
+     */
+    @DisplayName("즐겨찾기가 추가 되어 있을경우 목록을 조회 요청시 정상적으로 가져온다.")
+    @Test
+    void getFavoriteMyList() {
+        // Given
+        ExtractableResponse<Response> createFavoritesResponse = 즐겨찾기_생성을_요청(사용자정보, 강남역, 광교역);
+
+        // When
+        ExtractableResponse<Response> myFavoriteListResponse = 즐겨찾기_목록_조회(사용자정보);
+
+        // Then
+        final long id = 즐겨찾기_등록번호_찾기(createFavoritesResponse);
+        즐겨찾기_목록_정상_확인(myFavoriteListResponse, Arrays.asList(new FavoriteResponse(id, 강남역, 광교역)));
+    }
+
+    public static void 즐겨찾기_목록_정상_확인(ExtractableResponse<Response> myFavoriteListResponse, List<FavoriteResponse> expectedResult) {
+        assertThat(Arrays.asList(myFavoriteListResponse.as(FavoriteResponse[].class))).containsExactlyElementsOf(expectedResult);
+    }
+
+    public static Long 즐겨찾기_등록번호_찾기(ExtractableResponse<Response> createFavoritesResponse) {
+        String location = createFavoritesResponse.header("location");
+        return Long.valueOf(location.substring(location.lastIndexOf("/")+1));
+    }
+
     public static void 즐겨찾기_생성이_안됨(ExtractableResponse<Response> invalidResponse) {
         assertThat(HttpStatus.valueOf(invalidResponse.statusCode())).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
         assertThat(response.header("Location")).isNotBlank();
         assertThat(HttpStatus.valueOf(response.statusCode())).isEqualTo(HttpStatus.CREATED);
     }
-
 
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(ExtractableResponse<Response> response, StationResponse startStation, StationResponse endStation)
     {
@@ -94,6 +123,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .when()
                 .post("/favorites")
                 .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회(ExtractableResponse<Response> response) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(토큰정보_획득(response).getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .get("/favorites")
+                .then()
+                .log().all()
                 .extract();
     }
 }

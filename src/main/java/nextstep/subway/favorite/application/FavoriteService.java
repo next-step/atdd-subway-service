@@ -11,6 +11,8 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
@@ -29,5 +31,12 @@ public class FavoriteService {
         return new FavoriteResponse(savedFavorite.getId(),
                 StationResponse.of(savedFavorite.getSource()),
                 StationResponse.of(savedFavorite.getDestination()));
+    }
+
+    public List<FavoriteResponse> findFavorite(LoginMember loginMember) {
+        List<Favorite> favorites = favoriteRepository.findFavoritesByLoginMemberId(loginMember.getId());
+        return favorites.stream()
+                .map(favorite -> new FavoriteResponse(favorite.getId(), StationResponse.of(favorite.getSource()), StationResponse.of(favorite.getDestination())))
+                .collect(Collectors.toList());
     }
 }

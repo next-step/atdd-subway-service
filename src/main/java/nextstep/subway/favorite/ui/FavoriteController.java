@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.net.URI;
+import java.util.List;
 
 @RestController
-@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/favorites" , produces = MediaType.APPLICATION_JSON_VALUE)
 public class FavoriteController {
     private final FavoriteService favoriteService;
 
@@ -21,10 +22,15 @@ public class FavoriteController {
         this.favoriteService = favoriteService;
     }
 
-    @PostMapping("/favorites")
+    @PostMapping
     public ResponseEntity createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest favoriteRequest) {
         FavoriteResponse favoriteResponse = favoriteService.saveFavorite(loginMember, favoriteRequest);
         return ResponseEntity.created(URI.create("/favorites/" + favoriteResponse.getId())).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok().body(favoriteService.findFavorite(loginMember));
     }
 
     @ExceptionHandler(value = {EntityNotFoundException.class})
