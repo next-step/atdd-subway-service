@@ -57,11 +57,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         서면역 = 지하철역_등록되어_있음("서면역").as(StationResponse.class);
         동래역 = 지하철역_등록되어_있음("동래역").as(StationResponse.class);
 
-        오호선 = 지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-red-600", 공덕역.getId(), 영등포구청역.getId(), 6)).as(LineResponse.class);
-        육호선 = 지하철_노선_등록되어_있음(new LineRequest("육호선", "bg-red-600", 합정역.getId(), 공덕역.getId(), 4)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 합정역.getId(), 영등포구청역.getId(), 8)).as(LineResponse.class);
+        오호선 = 지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-red-600", 공덕역.getId(), 영등포구청역.getId(), 8)).as(LineResponse.class);
+        육호선 = 지하철_노선_등록되어_있음(new LineRequest("육호선", "bg-red-600", 합정역.getId(), 공덕역.getId(), 6)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 합정역.getId(), 영등포구청역.getId(), 13)).as(LineResponse.class);
         부산일호선 = 지하철_노선_등록되어_있음(new LineRequest("부산일호선", "bg-red-600", 동래역.getId(), 서면역.getId(), 4)).as(LineResponse.class);
-        지하철_노선에_지하철역_등록_요청(이호선, 합정역, 당산역, 3);
+        지하철_노선에_지하철역_등록_요청(이호선, 합정역, 당산역, 5);
     }
 
     /**
@@ -75,13 +75,29 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * Scenario: 최단 경로 탐색
      * When 지하철 출발역과 도착역 사이 최단 경로 조회 요첨
      * Then 최단 경로 조회됨
+     * And 총 거리도 함께 응답함
+     * And 지하철 이용 요금도 함께 응답함
      */
     @Test
     @DisplayName("지하철 역과 역사이의 최단 경로를 탐색한다.")
     void shortestPath() {
+        //when
         ExtractableResponse<Response> 최단_경로_조회_결과 = 최단_경로_조회_요청(합정역, 영등포구청역);
+        //then
         최단_경로_조회됨(최단_경로_조회_결과);
         최단_경로에_지하철역_순서_정렬됨(최단_경로_조회_결과, Arrays.asList(합정역, 당산역, 영등포구청역));
+        최단_경로_총_거리_응답함(최단_경로_조회_결과, 13);
+        최단_경로_지하철_요금_응답함(최단_경로_조회_결과, 1350);
+    }
+
+    private void 최단_경로_지하철_요금_응답함(ExtractableResponse<Response> response, int fare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
+    }
+
+    private void 최단_경로_총_거리_응답함(ExtractableResponse<Response> response, int distance) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getDistance()).isEqualTo(distance);
     }
 
     /**
