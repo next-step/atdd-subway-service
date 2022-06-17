@@ -44,4 +44,9 @@ public class FavoriteService {
     public void deleteFavorite(Long favoriteId) {
         favoriteRepository.deleteById(favoriteId);
     }
+
+    @Transactional
+    public void deleteFavoriteByMemberId(Long memberId) {
+        favoriteRepository.deleteByMemberId(memberId);
+    }
 }

@@ -1,7 +1,7 @@
 package nextstep.subway.member.application;
 
 import nextstep.subway.common.NotFoundException;
-import nextstep.subway.favorite.domain.FavoriteRepository;
+import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -13,11 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    private final FavoriteRepository favoriteRepository;
+    private final FavoriteService favoriteService;
 
-    public MemberService(MemberRepository memberRepository, FavoriteRepository favoriteRepository) {
+    public MemberService(MemberRepository memberRepository, FavoriteService favoriteService) {
         this.memberRepository = memberRepository;
-        this.favoriteRepository = favoriteRepository;
+        this.favoriteService = favoriteService;
     }
 
     @Transactional
@@ -40,7 +40,7 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(Long id) {
-        favoriteRepository.deleteByMemberId(id);
+        favoriteService.deleteFavoriteByMemberId(id);
         memberRepository.deleteById(id);
     }
 

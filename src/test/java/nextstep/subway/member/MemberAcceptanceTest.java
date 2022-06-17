@@ -32,7 +32,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
     private StationResponse 강남역;
-    private StationResponse 삼성역;
     private StationResponse 잠실역;
     private LineResponse 이호선;
 
