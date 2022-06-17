@@ -71,7 +71,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> 최단_거리_조회 = 최단_거리_조회(pathRequest);
 
-        최단_거리_조회_동일한_역정보_조회_실패_됨(최단_거리_조회);
+        최단_거리_조회_역정보_조회_실패_됨(최단_거리_조회);
     }
 
     @Test
@@ -85,7 +85,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_거리_조회_미존재_역정보_조회_실패_됨(최단_거리_조회);
     }
 
-    void 최단_거리_조회_동일한_역정보_조회_실패_됨(ExtractableResponse<Response> response) {
+    @Test
+    @DisplayName("최단거리 조회시 출발역과 도착역이 연결이 되어 있지 않은 경우 실패 테스트")
+    void findShortestDistanceNotConnected() {
+        StationResponse 사당역 = 지하철역_등록되어_있음("사당역");
+        StationResponse 이수역 = 지하철역_등록되어_있음("이수역");
+        LineResponse 사호선 = 지하철_노선_등록되어_있음("사호선", "bg-blue-600", 사당역, 이수역, 5);
+
+        PathRequest pathRequest = PathRequest.of(강남역.getId(), 사당역.getId());
+
+        ExtractableResponse<Response> 최단_거리_조회 = 최단_거리_조회(pathRequest);
+
+        최단_거리_조회_역정보_조회_실패_됨(최단_거리_조회);
+    }
+
+    void 최단_거리_조회_역정보_조회_실패_됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
