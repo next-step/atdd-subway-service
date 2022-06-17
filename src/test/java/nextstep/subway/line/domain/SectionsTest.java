@@ -58,12 +58,11 @@ class SectionsTest {
 
         // when
         Section section2 = new Section(신분당선, 신논현역, 강남역, 3);
-        int expected = section1.getDistance() - section2.getDistance();
         sections.add(section2);
 
         // then
         assertAll(
-                () -> assertThat(section1.getDistance()).isEqualTo(expected),
+                () -> assertThat(section1.getDistance()).isEqualTo(new Distance(2)),
                 () -> assertThat(sections.getStationInOrder()).containsExactly(신논현역, 강남역, 양재역)
         );
     }
