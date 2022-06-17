@@ -1,10 +1,11 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.common.exception.EntityNotFoundException;
+import nextstep.subway.common.exception.ErrorCode;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.OneToMany;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -165,13 +166,13 @@ public class Sections {
     private Section getBeforeSection(Station station) {
         return sections.stream()
                 .filter(section -> section.isDownStation(station))
-                .findFirst().orElseThrow(EntityNotFoundException::new);
+                .findFirst().orElseThrow(() -> new EntityNotFoundException(ErrorCode.SECTION_NOT_FOUND));
     }
 
     private Section getAfterSection(Station station) {
         return sections.stream()
                 .filter(section -> section.isUpStation(station))
-                .findFirst().orElseThrow(EntityNotFoundException::new);
+                .findFirst().orElseThrow(() -> new EntityNotFoundException(ErrorCode.SECTION_NOT_FOUND));
     }
 
     private void addCombinationSection(final Section beforeSection, final Section afterSection) {

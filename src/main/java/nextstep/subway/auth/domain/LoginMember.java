@@ -1,5 +1,7 @@
 package nextstep.subway.auth.domain;
 
+import nextstep.subway.path.domain.AgeGroup;
+
 public class LoginMember {
     private Long id;
     private String email;
@@ -24,5 +26,17 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public double getDiscountPercent() {
+        return getAgeGroup().getDiscountPercent();
+    }
+
+    public boolean isLogin() {
+        return id != null;
+    }
+
+    private AgeGroup getAgeGroup() {
+        return AgeGroup.from(age);
     }
 }
