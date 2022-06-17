@@ -10,12 +10,14 @@ import java.util.*;
 @Embeddable
 public class Sections {
 
+    private static final int MIN_SECTION_NUMBER = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
     public void add(Section section) {
         if(!sections.isEmpty()) {
-            List<Station> stations = getStationInOrder();
+            List<Station> stations = getStationsInOrder();
             relocate(section, stations);
         }
         sections.add(section);
@@ -74,7 +76,7 @@ public class Sections {
         return sections;
     }
 
-    public List<Station> getStationInOrder() {
+    public List<Station> getStationsInOrder() {
         if (sections.isEmpty()) {
             return Collections.emptyList();
         }
@@ -109,6 +111,41 @@ public class Sections {
     private boolean isStartStation(Station upStation) {
         return sections.stream()
                 .noneMatch(section -> section.getDownStation().equals(upStation));
+    }
+
+    public void deleteStation(Station station, Line line) {
+        validateLastSection();
+
+        Optional<Section> upLineStation = sections.stream()
+                .filter(section -> section.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = sections.stream()
+                .filter(section -> section.getDownStation() == station)
+                .findFirst();
+
+        validatePresentStation(upLineStation, downLineStation);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            upLineStation.get().getDistance().plus(downLineStation.get().getDistance());
+            sections.add(new Section(line, newUpStation, newDownStation, upLineStation.get().getDistance().getValue()));
+        }
+
+        upLineStation.ifPresent(section -> sections.remove(section));
+        downLineStation.ifPresent(section -> sections.remove(section));
+    }
+
+    private void validateLastSection() {
+        if (sections.size() <= MIN_SECTION_NUMBER) {
+            throw new IllegalArgumentException("마지막 구간은 삭제할 수 없음");
+        }
+    }
+
+    private void validatePresentStation(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        if(!upLineStation.isPresent() && !downLineStation.isPresent()) {
+            throw new IllegalArgumentException("노선에 등록되어있지 않은 역입니다.");
+        }
     }
 
 }

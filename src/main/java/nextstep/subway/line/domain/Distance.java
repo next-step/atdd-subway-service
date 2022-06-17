@@ -24,6 +24,14 @@ public class Distance {
         this.value -= distance.value;
     }
 
+    public void plus(Distance distance) {
+        this.value += distance.value;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

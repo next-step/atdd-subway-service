@@ -35,7 +35,7 @@ class SectionsTest {
         sections.add(section2);
 
         // when
-        List<Station> actual = sections.getStationInOrder();
+        List<Station> actual = sections.getStationsInOrder();
 
         // then
         assertThat(actual).containsExactly(A, B, C);
@@ -63,7 +63,7 @@ class SectionsTest {
         // then
         assertAll(
                 () -> assertThat(section1.getDistance()).isEqualTo(new Distance(2)),
-                () -> assertThat(sections.getStationInOrder()).containsExactly(신논현역, 강남역, 양재역)
+                () -> assertThat(sections.getStationsInOrder()).containsExactly(신논현역, 강남역, 양재역)
         );
     }
 
@@ -79,7 +79,7 @@ class SectionsTest {
         sections.add(section2);
 
         // then
-        assertThat(sections.getStationInOrder()).containsExactly(신논현역, 강남역, 양재역);
+        assertThat(sections.getStationsInOrder()).containsExactly(신논현역, 강남역, 양재역);
     }
 
 
@@ -125,6 +125,71 @@ class SectionsTest {
         // when & then
         Section section3 = new Section(신분당선, 오금역, 송파역, 2);
         assertThatThrownBy(() -> sections.add(section3)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 종점이_제거될_경우_다음으로_오던_역이_종점이_됨() {
+        // given
+        Sections sections = new Sections();
+        Section section1 = new Section(신분당선, 신논현역, 강남역, 5);
+        Section section2 = new Section(신분당선, 강남역, 양재역, 3);
+        sections.add(section1);
+        sections.add(section2);
+
+        // when
+        sections.deleteStation(양재역, 신분당선);
+
+        // then
+        assertAll(
+                () -> assertThat(sections.getStationsInOrder()).containsExactly(신논현역, 강남역),
+                () -> assertThat(sections.getSections()).hasSize(1)
+        );
+    }
+
+    @Test
+    void 중간역이_제거될_경우_재배치를_함() {
+        // given
+        Sections sections = new Sections();
+        Section section1 = new Section(신분당선, 신논현역, 강남역, 5);
+        Section section2 = new Section(신분당선, 강남역, 양재역, 3);
+        sections.add(section1);
+        sections.add(section2);
+
+        // when
+        sections.deleteStation(강남역, 신분당선);
+
+        // then
+        assertAll(
+                () -> assertThat(sections.getStationsInOrder()).containsExactly(신논현역, 양재역),
+                () -> assertThat(sections.getSections()).hasSize(1)
+        );
+    }
+
+    @DisplayName("노선에 등록되어있지 않은 역을 제거")
+    @Test
+    void 구간_역_삭제_시_예외_케이스_1() {
+        // given
+        Sections sections = new Sections();
+        Section section1 = new Section(신분당선, 신논현역, 강남역, 5);
+        Section section2 = new Section(신분당선, 강남역, 양재역, 3);
+        sections.add(section1);
+        sections.add(section2);
+
+        // when & then
+        assertThatThrownBy(() -> sections.deleteStation(오금역, 신분당선)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("구간이 하나인 노선에서 마지막 구간을 제거")
+    @Test
+    void 구간_역_삭제_시_예외_케이스_2() {
+        // given
+        Sections sections = new Sections();
+        Section section = new Section(신분당선, 신논현역, 강남역, 5);
+        sections.add(section);
+
+        // when & then
+        assertThatThrownBy(() -> sections.deleteStation(신논현역, 신분당선)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> sections.deleteStation(강남역, 신분당선)).isInstanceOf(IllegalArgumentException.class);
     }
 
 }
