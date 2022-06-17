@@ -15,8 +15,7 @@ public class MemberService {
 
     private final FavoriteRepository favoriteRepository;
 
-    public MemberService(MemberRepository memberRepository,
-                         FavoriteRepository favoriteRepository) {
+    public MemberService(MemberRepository memberRepository, FavoriteRepository favoriteRepository) {
         this.memberRepository = memberRepository;
         this.favoriteRepository = favoriteRepository;
     }
@@ -41,12 +40,8 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(Long id) {
-        favoriteRepository.deleteByMember(findMemberById(id));
+        favoriteRepository.deleteByMemberId(id);
         memberRepository.deleteById(id);
-    }
-
-    public Member findByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(email));
     }
 
     private Member findMemberById(Long id) {
