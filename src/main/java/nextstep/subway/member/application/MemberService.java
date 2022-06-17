@@ -23,14 +23,18 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findMemberOrElseThrow(id);
         return MemberResponse.of(member);
     }
 
     @Transactional
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findMemberOrElseThrow(id);
         member.update(param.toMember());
+    }
+
+    public Member findMemberOrElseThrow(Long id) {
+        return memberRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     @Transactional
