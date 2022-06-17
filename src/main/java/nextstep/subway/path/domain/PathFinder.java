@@ -17,13 +17,17 @@ public class PathFinder {
     private WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     private final LineRepository lineRepository;
 
-    public PathFinder(List<Line> lines, LineRepository lineRepository) {
+    public PathFinder(LineRepository lineRepository) {
         this.lineRepository = lineRepository;
-        enrollInGraph(lines);
+        renew();
     }
 
     private void enrollInGraph(List<Line> lines) {
         lines.forEach(line -> line.enrollIn(graph));
+    }
+
+    public void addLines(List<Line> lines) {
+        enrollInGraph(lines);
     }
 
     public GraphPath<Station, DefaultWeightedEdge> getPath(Station source, Station target) {
