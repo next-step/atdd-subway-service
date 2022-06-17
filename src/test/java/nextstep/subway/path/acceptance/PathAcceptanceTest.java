@@ -5,23 +5,24 @@ import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하�
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 
 @DisplayName("지하철 경로 조회")
@@ -118,15 +119,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse sourceStationResponse, StationResponse targetStationResponse) {
-        return RestAssured
-                .given()
-                .queryParam("source", sourceStationResponse.getId())
-                .queryParam("target", targetStationResponse.getId())
-                .log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths")
-                .then().log().all()
-                .extract();
+        return sendGet("/paths?source={sourceId}&target={targetId}", sourceStationResponse.getId(), targetStationResponse.getId());
     }
 
     public static void 최단_경로_조회됨(ExtractableResponse<Response> response) {

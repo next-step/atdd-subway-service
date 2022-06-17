@@ -57,3 +57,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ## 📖 Mission
 [1단계 - 인수 테스트 기반 리팩토링](./docs/step1.md)
+[2단계 - 경로 조회 기능](./docs/step2.md)
+[3단계 - 인증을 통한 기능 구현](./docs/step3.md)
