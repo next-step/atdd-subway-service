@@ -46,7 +46,7 @@ public class Sections {
 
     private void validateAlreadyExists(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
     }
 
@@ -54,7 +54,7 @@ public class Sections {
         if (!stations.isEmpty()
                 && stations.stream().noneMatch(it -> it.equals(section.getDownStation()))
                 && stations.stream().noneMatch(it -> it.equals(section.getUpStation()))) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
     }
 
