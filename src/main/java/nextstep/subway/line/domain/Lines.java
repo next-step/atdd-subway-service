@@ -13,12 +13,17 @@ public class Lines {
         this.lines = lines;
     }
 
-    public DijkstraShortestPath createPath(SectionGraph graph) {
-
+    public void registerPath(SectionGraph graph) {
         for (Line line : lines) {
             line.registerPath(graph);
         }
+    }
 
-        return graph.getPath();
+    public DijkstraShortestPath createPath(SectionGraph graph) {
+        return graph.getPath(this);
+    }
+
+    public List<Line> getLines() {
+        return lines;
     }
 }

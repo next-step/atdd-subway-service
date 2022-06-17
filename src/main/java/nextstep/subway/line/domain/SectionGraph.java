@@ -14,22 +14,26 @@ public class SectionGraph implements PathFinderGraph {
     }
 
     @Override
+    public void addGraphComposition(Lines lines) {
+        lines.registerPath(this);
+    }
+
+    @Override
+    public DijkstraShortestPath getPath(Lines lines) {
+        addGraphComposition(lines);
+        return new DijkstraShortestPath(graph);
+    }
+
     public void addVertices(List<Station> stations) {
         stations.forEach(graph::addVertex);
     }
 
-    @Override
     public void addEdgeAndWeight(List<Section> sections) {
         sections.forEach(section -> {
             SectionGraphEdge sectionEdge = SectionGraphEdge.of(section);
             addEdge(section, graph, sectionEdge);
             addEdgeWeight(section.getDistance(), graph, sectionEdge);
         });
-    }
-
-    @Override
-    public DijkstraShortestPath getPath() {
-        return new DijkstraShortestPath(graph);
     }
 
     private void addEdgeWeight(int weight, WeightedMultigraph<Station, SectionGraphEdge> graph, SectionGraphEdge edge) {
