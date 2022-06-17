@@ -42,14 +42,15 @@ class RouteTest {
 
 
     /*
-    * When 시작역과 도착역을 입력하면
+    * Given 많은 지하철역이 저장되어 있고
+    * When 해당 지하철 노선 역중 시작역과 도착역을 입력하면
     * Then 최단 경로를 알수 있다.
     * */
     @DisplayName("시작역과 도착역을 입력하면 최단 경로를 찾을수 있다.")
     @Test
     void getShortestRouteTest() {
         // when
-        PathResponse pathResponse = PathResponse.of(new Route().getShortestRoute(교대역, 양재역));
+        PathResponse pathResponse = PathResponse.of(new Route().getShortestRoute(Arrays.asList(신분당선, 이호선, 삼호선),교대역, 양재역));
 
         // then
         List<String> responseStationNames = pathResponse.getStations().stream().map(StationResponse::getName).collect(Collectors.toList());

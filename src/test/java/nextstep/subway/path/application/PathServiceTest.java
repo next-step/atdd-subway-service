@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -26,6 +27,9 @@ class PathServiceTest {
 
     @Mock
     StationRepository stationRepository;
+
+    @Mock
+    LineRepository lineRepository;
 
     private Line 신분당선;
     private Line 이호선;
@@ -58,10 +62,11 @@ class PathServiceTest {
     @DisplayName("시작역과 도착역의 정보를 이용하여 최단 경로와 거리를 알수있다.")
     @Test
     void findShortestRouteTest() {
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
         when(stationRepository.findById(3L)).thenReturn(Optional.ofNullable(교대역));
         when(stationRepository.findById(2L)).thenReturn(Optional.ofNullable(양재역));
 
-        final PathService pathService = new PathService(stationRepository);
+        final PathService pathService = new PathService(lineRepository, stationRepository);
 
         // when
         final PathResponse pathResponse = pathService.findShortestRoute(교대역.getId(), 양재역.getId());
