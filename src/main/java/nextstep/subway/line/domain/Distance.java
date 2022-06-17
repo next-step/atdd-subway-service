@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Distance {
-    public static final int MIN = 0;
+    private static final int MIN = 0;
     @Column(nullable = false)
     private int distance;
 

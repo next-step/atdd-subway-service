@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.member.domain.Age;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -42,6 +43,6 @@ public class DataLoaderConfig implements CommandLineRunner {
 
         lineRepository.saveAll(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
-        memberRepository.save(new Member("probitanima11@gmail.com", "11", 10));
+        memberRepository.save(new Member("probitanima11@gmail.com", "11", Age.valueOf(10)));
     }
 }

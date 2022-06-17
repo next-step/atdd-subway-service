@@ -1,13 +1,13 @@
-package nextstep.subway.member;
+package nextstep.subway.member.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthRestAssured.로그인_되어_있음;
-import static nextstep.subway.member.MemberRestAssured.나의_정보_삭제_요청;
-import static nextstep.subway.member.MemberRestAssured.나의_정보_수정_요청;
-import static nextstep.subway.member.MemberRestAssured.나의_정보_조회_요청;
-import static nextstep.subway.member.MemberRestAssured.회원_삭제_요청;
-import static nextstep.subway.member.MemberRestAssured.회원_생성을_요청;
-import static nextstep.subway.member.MemberRestAssured.회원_정보_수정_요청;
-import static nextstep.subway.member.MemberRestAssured.회원_정보_조회_요청;
+import static nextstep.subway.member.acceptance.MemberRestAssured.나의_정보_삭제_요청;
+import static nextstep.subway.member.acceptance.MemberRestAssured.나의_정보_수정_요청;
+import static nextstep.subway.member.acceptance.MemberRestAssured.나의_정보_조회_요청;
+import static nextstep.subway.member.acceptance.MemberRestAssured.회원_삭제_요청;
+import static nextstep.subway.member.acceptance.MemberRestAssured.회원_생성을_요청;
+import static nextstep.subway.member.acceptance.MemberRestAssured.회원_정보_수정_요청;
+import static nextstep.subway.member.acceptance.MemberRestAssured.회원_정보_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;

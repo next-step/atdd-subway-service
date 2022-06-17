@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -26,14 +29,15 @@ public class PathService {
         this.entityManager = entityManager;
     }
 
-    public PathResponse findShortestPath(long sourceId, long targetId) {
+    public PathResponse findShortestPath(LoginMember loginMember, long sourceId, long targetId) {
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
         pathFinder.initGraph(findLines());
-        List<Station> path = pathFinder.shortestPathVertexList(source, target);
-        return PathResponse.of(path.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList()), pathFinder.shortestPathWeight(source, target));
+        Path path = pathFinder.shortestPath(source, target);
+        return PathResponse.of(path.stations().stream()
+                        .map(StationResponse::of)
+                        .collect(Collectors.toList()), path.distanceValue(),
+                FareCalculator.calculateFare(path, loginMember.getAge()).fare());
     }
 
     private Set<Line> findLines() {

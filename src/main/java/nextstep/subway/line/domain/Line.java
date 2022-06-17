@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -10,18 +11,22 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.NotFoundException;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 import org.apache.commons.lang3.StringUtils;
 
 @Entity
 public class Line extends BaseEntity {
+    public static final int MIN = 0;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
     private String name;
     private String color;
-
+    @Embedded
+    @AttributeOverride(name = "fare", column = @Column(name = "additional_fare"))
+    private Fare additionalFare;
     @Embedded
     private final Sections sections = new Sections();
 
@@ -32,6 +37,7 @@ public class Line extends BaseEntity {
         this.id = lineBuilder.id;
         this.name = lineBuilder.name;
         this.color = lineBuilder.color;
+        this.additionalFare = lineBuilder.additionalFare;
         sections.addSection(Section.builder(this, lineBuilder.upStation, lineBuilder.downStation, lineBuilder.distance)
                 .build());
     }
@@ -48,6 +54,7 @@ public class Line extends BaseEntity {
         private final Station upStation;
         private final Station downStation;
         private final Distance distance;
+        private Fare additionalFare;
 
         private LineBuilder(String name, String color, Station upStation, Station downStation, Distance distance) {
             validateParameter(name, color);
@@ -77,6 +84,11 @@ public class Line extends BaseEntity {
 
         public LineBuilder id(Long id) {
             this.id = id;
+            return this;
+        }
+
+        public LineBuilder additionalFare(Fare additionalFare) {
+            this.additionalFare = additionalFare;
             return this;
         }
 
@@ -116,6 +128,13 @@ public class Line extends BaseEntity {
 
     public String color() {
         return color;
+    }
+
+    public Fare additionalFare() {
+        if (Objects.isNull(additionalFare)) {
+            return Fare.valueOf(MIN);
+        }
+        return additionalFare;
     }
 
     @Override

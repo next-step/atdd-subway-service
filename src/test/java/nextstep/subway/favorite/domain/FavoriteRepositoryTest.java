@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import nextstep.subway.member.domain.Age;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -38,7 +39,7 @@ class FavoriteRepositoryTest {
                 .build());
         정자역 = stationRepository.save(Station.builder("정자역")
                 .build());
-        사용자 = memberRepository.save(new Member("email@email.com", "password", 20));
+        사용자 = memberRepository.save(new Member("email@email.com", "password", Age.valueOf(20)));
         즐겨찾기 = Favorite.builder(사용자, 강남역, 정자역)
                 .build();
     }
