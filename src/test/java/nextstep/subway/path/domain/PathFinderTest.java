@@ -8,14 +8,20 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class PathFinderTest {
     @Mock
     private LineRepository lineRepository;
@@ -32,6 +38,7 @@ class PathFinderTest {
     private Line 분당선;
     private Line 강릉선;
     private Line 당릉선;
+    private Line 동해선;
 
     @BeforeEach
     void beforeEach() {
@@ -45,19 +52,25 @@ class PathFinderTest {
         분당선 = new Line("분당선", "bg-yellow-400");
         강릉선 = new Line("강릉선", "bg-blue-600");
         당릉선 = new Line("당릉선", "bg-blue-600");
+        동해선 = new Line("동해선", "bg-white-400");
         분당선.addLineStation(new Section(분당선, 선릉역, 정자역, 40));
         분당선.addLineStation(new Section(분당선, 정자역, 수원역, 10));
         강릉선.addLineStation(new Section(강릉선, 정자역, 춘천역, 40));
         강릉선.addLineStation(new Section(강릉선, 춘천역, 강릉역, 20));
         당릉선.addLineStation(new Section(당릉선, 수원역, 춘천역, 10));
+        동해선.addLineStation(new Section(동해선, 경주역, 포항역, 20));
     }
 
     @Test
     void findPath_sameLine() {
+        // given
+        when(lineRepository.findAll()).thenReturn(Collections.singletonList(분당선));
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(선릉역));
+        when(stationRepository.findById(3L)).thenReturn(Optional.of(수원역));
+
         // when
         PathFinder pathFinder = new PathFinder(lineRepository, stationRepository);
-        pathFinder.addLineStation(분당선);
-        PathResponse result = pathFinder.findShortestPath(선릉역, 수원역);
+        PathResponse result = pathFinder.findShortestPath(1L, 3L);
 
         // then
         assertThat(result.getStations()).containsExactly(선릉역, 정자역, 수원역);
@@ -66,10 +79,14 @@ class PathFinderTest {
 
     @Test
     void findPath_differentLines() {
+        // given
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(분당선, 강릉선, 당릉선));
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(선릉역));
+        when(stationRepository.findById(5L)).thenReturn(Optional.of(강릉역));
+
         // when
         PathFinder pathFinder = new PathFinder(lineRepository, stationRepository);
-        pathFinder.addLineStations(Arrays.asList(분당선, 강릉선, 당릉선));
-        PathResponse result = pathFinder.findShortestPath(선릉역, 강릉역);
+        PathResponse result = pathFinder.findShortestPath(1L, 5L);
 
         // then
         assertThat(result.getStations()).containsExactly(선릉역, 정자역, 수원역, 춘천역, 강릉역);
@@ -78,38 +95,48 @@ class PathFinderTest {
 
     @Test
     void findPath_throwsException_ifStationsAreSame() {
+        // given
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(분당선, 강릉선, 당릉선));
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(선릉역));
+
         // when
         // then
-        assertThatThrownBy(() -> {
-            PathFinder pathFinder = new PathFinder(lineRepository, stationRepository);
-            pathFinder.addLineStations(Arrays.asList(분당선, 강릉선, 당릉선));
-            pathFinder.findShortestPath(선릉역, 선릉역);
-        }).isInstanceOf(RuntimeException.class);
+        PathFinder pathFinder = new PathFinder(lineRepository, stationRepository);
+
+        assertThatThrownBy(() -> pathFinder.findShortestPath(1L, 1L))
+                .isInstanceOf(RuntimeException.class);
     }
 
     @Test
     void findPath_throwsException_ifStationsAreNotConnected() {
         // given
-        Line 동해선 = new Line("동해선", "bg-white-400", 경주역, 포항역, 20);
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(분당선, 강릉선, 당릉선, 동해선));
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(선릉역));
+        when(stationRepository.findById(5L)).thenReturn(Optional.of(경주역));
 
         // when
         // then
         PathFinder pathFinder = new PathFinder(lineRepository, stationRepository);
-        pathFinder.addLineStations(Arrays.asList(분당선, 강릉선, 당릉선, 동해선));
-        assertThatThrownBy((() -> pathFinder.findShortestPath(선릉역, 경주역)))
+
+        assertThatThrownBy((() -> pathFinder.findShortestPath(1L, 6L)))
                 .isInstanceOf(RuntimeException.class);
     }
 
     @Test
     void findPath_throwsException_ifFromOrToNonExistentStation() {
+        // given
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(분당선, 강릉선, 당릉선));
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(선릉역));
+        when(stationRepository.findById(6L)).thenReturn(Optional.of(경주역));
+
         // when
         // then
         PathFinder pathFinder = new PathFinder(lineRepository, stationRepository);
-        pathFinder.addLineStations(Arrays.asList(분당선, 강릉선, 당릉선));
+
         assertAll(
-                () -> assertThatThrownBy((() -> pathFinder.findShortestPath(선릉역, 경주역)))
+                () -> assertThatThrownBy((() -> pathFinder.findShortestPath(1L, 6L)))
                         .isInstanceOf(RuntimeException.class),
-                () -> assertThatThrownBy((() -> pathFinder.findShortestPath(경주역, 선릉역)))
+                () -> assertThatThrownBy((() -> pathFinder.findShortestPath(6L, 1L)))
                         .isInstanceOf(RuntimeException.class)
         );
     }
