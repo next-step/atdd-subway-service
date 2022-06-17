@@ -22,6 +22,10 @@ public class Sections {
     public Sections() {
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     public void add(Section section) {
         boolean isUpStationExisted = isStationExisted(section.getUpStation());
         boolean isDownStationExisted = isStationExisted(section.getDownStation());

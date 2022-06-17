@@ -42,6 +42,10 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
+    public List<Line> findAllLines() {
+        return lineRepository.findAll();
+    }
+
     @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         return LineResponse.of(findLineById(id));
