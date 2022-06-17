@@ -83,6 +83,16 @@ class SectionsTest {
     }
 
     @Test
+    @DisplayName("기존 역 사이보다 긴 구간을 추가하려고 하면 예외를 발생시킨다.")
+    void addTooLongSection() {
+        모든구간.addLineStation(new Section(신분당선, 정자역, 강남역, 10000));
+
+        assertThatThrownBy(() -> 모든구간.addLineStation(new Section(신분당선, 광교역, 강남역, 20000)))
+                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    }
+
+    @Test
     @DisplayName("중복구간을 등록하려고 하면 예외를 발생시킨다.")
     void addDuplicateSection() {
         Section 정자역_강남역 = new Section(신분당선, 정자역, 강남역, 10000);
