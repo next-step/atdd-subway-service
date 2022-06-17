@@ -1,14 +1,10 @@
 package nextstep.subway.member.ui;
 
-import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.auth.application.AuthService;
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,11 +13,11 @@ import java.net.URI;
 @RestController
 public class MemberController {
     private final MemberService memberService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthService authService;
 
-    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+    public MemberController(MemberService memberService, AuthService authService) {
         this.memberService = memberService;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.authService = authService;
     }
 
     @PostMapping("/members")
@@ -50,21 +46,24 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(LoginMember loginMember, @RequestHeader("Authorization") String authorization) {
-        if (!jwtTokenProvider.validateToken(authorization)){
-            throw new AuthorizationException();
-        }
+        authorization = authorization.split(" ")[1];
+        loginMember = authService.findMemberByToken(authorization);
         MemberResponse member = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(LoginMember loginMember, @RequestBody MemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(LoginMember loginMember, @RequestHeader("Authorization") String authorization, @RequestBody MemberRequest param) {
+        authorization = authorization.split(" ")[1];
+        loginMember = authService.findMemberByToken(authorization);
         memberService.updateMember(loginMember.getId(), param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(LoginMember loginMember) {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(LoginMember loginMember, @RequestHeader("Authorization") String authorization) {
+        authorization = authorization.split(" ")[1];
+        loginMember = authService.findMemberByToken(authorization);
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
