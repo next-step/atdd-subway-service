@@ -17,7 +17,7 @@ public class Member extends BaseEntity {
     private Long id;
     private String email;
     private String password;
-    private Integer age;
+    private Age age;
 
     protected Member() {
     }
@@ -25,7 +25,7 @@ public class Member extends BaseEntity {
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
-        this.age = age;
+        this.age = new Age(age);
     }
 
     public Long getId() {
@@ -40,7 +40,7 @@ public class Member extends BaseEntity {
         return password;
     }
 
-    public Integer getAge() {
+    public Age getAge() {
         return age;
     }
 
