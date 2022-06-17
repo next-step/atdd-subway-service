@@ -96,6 +96,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제_됨(removeResponse);
     }
 
+    @Test
+    void 즐겨찾기는_중복_추가가_불가능하다() {
+        //when
+        ExtractableResponse<Response> addFavoriteResponse =
+                즐겨찾기_생성_요청(accessToken, new FavoriteRequest(강남역.getId(), 양재역.getId()));
+        //then
+        즐겨찾기_생성_됨(addFavoriteResponse);
+
+        //when
+        ExtractableResponse<Response> addFavoriteResponse2 =
+                즐겨찾기_생성_요청(accessToken, new FavoriteRequest(강남역.getId(), 양재역.getId()));
+        //then
+        즐겨찾기_생성_실패됨(addFavoriteResponse2);
+
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, FavoriteRequest favoriteRequest) {
         return RestAssured.given().log().all().auth().oauth2(accessToken).contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(favoriteRequest).when().post("/favorites").then().log().all().extract();
@@ -106,9 +122,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, long favoritesId) {
-        return RestAssured.given().log().all().auth().oauth2(accessToken).when().get("/favorites/{id}", favoritesId)
-                .then().log().all().extract();
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, long id) {
+        return RestAssured.given().log().all().auth().oauth2(accessToken).when().delete("/favorites/{id}", id).then()
+                .log().all().extract();
     }
 
     public static void 즐겨찾기_생성_됨(ExtractableResponse<Response> response) {
@@ -120,7 +136,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 즐겨찾기_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static void 즐겨찾기_목록_응답됨(ExtractableResponse<Response> response) {
