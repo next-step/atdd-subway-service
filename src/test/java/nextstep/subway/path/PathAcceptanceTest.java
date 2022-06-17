@@ -64,6 +64,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_거리_조회_됨(최단_거리_조회, 역_목록);
     }
 
+    @Test
+    @DisplayName("최단거리 조회시 동일한 역정보 실패 테스트")
+    void findShortestDistanceSameStation() {
+        PathRequest pathRequest = PathRequest.of(강남역.getId(), 강남역.getId());
+
+        ExtractableResponse<Response> 최단_거리_조회 = 최단_거리_조회(pathRequest);
+
+        최단_거리_조회_동일한_역정보_실패_됨(최단_거리_조회);
+    }
+
+    void 최단_거리_조회_동일한_역정보_실패_됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
     void 최단_거리_조회_됨(ExtractableResponse<Response> response, List<Station> stations) {
         Assertions.assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
