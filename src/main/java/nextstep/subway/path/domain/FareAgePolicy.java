@@ -5,15 +5,15 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public enum FareAgePolicy {
-    TEENAGER(13, 19, 350, 0.8),
-    CHILD(6, 13, 350, 0.5);
+    TEENAGER(age -> 13 <= age && age < 19, 350, 0.8),
+    CHILD(age -> 6 <= age && age < 13, 350, 0.5);
 
     private final Predicate<Integer> isValidate;
     private final int deduction;
     private final double discountFare;
 
-    FareAgePolicy(int min, int max, int deduction, double discountFare) {
-        this.isValidate = (num) -> num >= min && num < max;
+    FareAgePolicy(Predicate<Integer> isValidate, int deduction, double discountFare) {
+        this.isValidate = isValidate;
         this.deduction = deduction;
         this.discountFare = discountFare;
     }

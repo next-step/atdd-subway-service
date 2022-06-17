@@ -5,8 +5,8 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public enum FareDistancePolicy {
-    MORE_THAN_10_AND_LESS_THAN_50(10, 50, 5, 100),
-    MORE_THAN_50(50, Integer.MAX_VALUE, 8, 100);
+    MORE_THAN_10_AND_LESS_THAN_50(distance -> distance > 10 && distance <= 50, 5, 100),
+    MORE_THAN_50(distance -> distance > 50 && distance <= Integer.MAX_VALUE, 8, 100);
 
     public static final int BASIC_CHARGE = 1250;
 
@@ -14,8 +14,8 @@ public enum FareDistancePolicy {
     private final int overFare;
     private final int distanceStandardValue;
 
-    FareDistancePolicy(int min, int max, int distanceStandardValue, int overFare) {
-        this.isValidate = (num) -> num > min && num <= max;
+    FareDistancePolicy(Predicate<Integer> isValidate, int distanceStandardValue, int overFare) {
+        this.isValidate = isValidate;
         this.overFare = overFare;
         this.distanceStandardValue = distanceStandardValue;
     }
