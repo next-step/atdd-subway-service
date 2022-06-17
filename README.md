@@ -84,8 +84,20 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - 리팩토링
   - Transactional readOnly 옵션을 클래스 기본 레벨로 승격
   - ExceptionHandler 를 ControllerAdvice 에서 처리
-    - - @ControllerAdvice -> @RestControllerAdvice 변경
+    - @ControllerAdvice -> @RestControllerAdvice 변경
   - 객체지향 생활체조 Depth 1 준수
   
 
 - [코드리뷰 피드백](https://github.com/next-step/atdd-subway-service/pull/618) (리뷰어: 오태경 님)
+
+## 3단계 - 인증을 통한 기능 구현
+### 요구사항 
+- 토큰 발급 기능 (로그인) 인수 테스트 만들기
+- 인증 - 내 정보 조회 기능 완성하기
+- 인증 - 즐겨 찾기 기능 완성하기
+
+### 구현목록
+- 토큰 발급 인수테스트 작성
+- 인증 - 내 정보 조회 기능 완성하기
+  - 인수 테스트 작성
+- 즐겨찾기 기능 구현 및 인수테스트 작성
