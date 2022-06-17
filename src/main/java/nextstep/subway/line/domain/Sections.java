@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
+    private static final int MIN_SECTIONS_SIZE = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -116,5 +117,33 @@ public class Sections {
         return sections.stream()
                 .filter(it -> it.getDownStation().equals(station))
                 .findFirst();
+    }
+
+    public void removeLineStation(Line line, Station station) {
+        validateSectionRemovable();
+
+        Optional<Section> upSection = findSectionByUpStation(station);
+        Optional<Section> downSection = findSectionByDownStation(station);
+
+        if (upSection.isPresent() && downSection.isPresent()) {
+            connectUpDownStation(line, upSection.get(), downSection.get());
+        }
+
+        upSection.ifPresent(it -> sections.remove(it));
+        downSection.ifPresent(it -> sections.remove(it));
+    }
+
+    private void validateSectionRemovable() {
+        if (sections.size() <= MIN_SECTIONS_SIZE) {
+            throw new IllegalStateException("마지막 구간은 삭제할 수 없습니다.");
+        }
+    }
+
+    private void connectUpDownStation(Line line, Section upSection, Section downSection) {
+        Station newUpStation = downSection.getUpStation();
+        Station newDownStation = upSection.getDownStation();
+        int newDistance = upSection.getDistance() + downSection.getDistance();
+
+        sections.add(new Section(line, newUpStation, newDownStation, newDistance));
     }
 }
