@@ -87,4 +87,17 @@ public class SectionsTest {
             assertThat(section.getDistance()).isEqualTo(5);
         }
     }
+
+    @Test
+    void 지하철역_제외() {
+        //given 새로운 역 생성 후 역 추가
+        Station 삼성역 = new Station("삼성역");
+        지하철2호선.addSection(강남역, 삼성역, 5);
+
+        //when 새로 생성한 역 삭제
+        지하철2호선.removeSection(삼성역);
+
+        //then 지하철2호선의 역은 2개
+        assertThat(지하철2호선.getSections().size()).isEqualTo(2);
+    }
 }
