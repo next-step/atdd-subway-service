@@ -33,24 +33,24 @@ class SectionsTest {
     @DisplayName("강남역-역삼역 구간을 등록한다")
     void addBetweenStation() {
         sections.add(line, station1, station2, 40);
-        assertThat(sections.stations()).hasSize(3);
-        assertThat(sections.stations()).contains(station2);
+        assertThat(sections.orderedStations()).hasSize(3);
+        assertThat(sections.orderedStations()).contains(station2);
     }
 
     @Test
     @DisplayName("강남역 상행으로 서초역을 등록한다")
     void addUpStation() {
         sections.add(line, station0, station1, 40);
-        assertThat(sections.stations()).hasSize(3);
-        assertThat(sections.stations()).contains(station0);
+        assertThat(sections.orderedStations()).hasSize(3);
+        assertThat(sections.orderedStations()).contains(station0);
     }
 
     @Test
     @DisplayName("선릉역 하행으로 삼성역을 등록한다")
     void addDownStation() {
         sections.add(line, station3, station4, 40);
-        assertThat(sections.stations()).hasSize(3);
-        assertThat(sections.stations()).contains(station4);
+        assertThat(sections.orderedStations()).hasSize(3);
+        assertThat(sections.orderedStations()).contains(station4);
     }
 
     @Test
@@ -74,10 +74,10 @@ class SectionsTest {
     void stations() {
         sections.add(line, station1, station2, 40);
         sections.add(line, station3, station4, 40);
-        assertThat(sections.stations().get(0).getName()).isEqualTo("강남역");
-        assertThat(sections.stations().get(1).getName()).isEqualTo("력삼역");
-        assertThat(sections.stations().get(2).getName()).isEqualTo("선릉역");
-        assertThat(sections.stations().get(3).getName()).isEqualTo("삼성역");
+        assertThat(sections.orderedStations().get(0).getName()).isEqualTo("강남역");
+        assertThat(sections.orderedStations().get(1).getName()).isEqualTo("력삼역");
+        assertThat(sections.orderedStations().get(2).getName()).isEqualTo("선릉역");
+        assertThat(sections.orderedStations().get(3).getName()).isEqualTo("삼성역");
     }
 
     @Test

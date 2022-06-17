@@ -11,9 +11,14 @@ import java.util.*;
 @Embeddable
 public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    private List<Section> sections;
 
     public Sections() {
+        this(new ArrayList<>());
+    }
+
+    public Sections(List<Section> sections) {
+        this.sections = new ArrayList<>(sections);
     }
 
     public void add(Line line, Station upStation, Station downStation, int distance) {
@@ -25,6 +30,13 @@ public class Sections {
         updateUpStationIfPresent(upStation, downStation, distance);
         updateDownStationIfPresent(upStation, downStation, distance);
         sections.add(new Section(line, upStation, downStation, distance));
+    }
+
+    @SafeVarargs
+    public final void addAll(List<Section>... sections) {
+        for (List<Section> sectionList : sections) {
+            this.sections.addAll(new ArrayList<>(sectionList));
+        }
     }
 
     private void validateSections(Station upStation, Station downStation) {
@@ -42,7 +54,7 @@ public class Sections {
     }
 
     private boolean canAdd(Station upStation, Station downStation) {
-        return !stations().isEmpty() && !isPresentStation(upStation) && !isPresentStation(downStation);
+        return !orderedStations().isEmpty() && !isPresentStation(upStation) && !isPresentStation(downStation);
     }
 
     private void updateUpStationIfPresent(Station upStation, Station downStation, Distance distance) {
@@ -60,14 +72,25 @@ public class Sections {
     }
 
     private boolean isPresentStation(Station station) {
-        return stations().stream().anyMatch(it -> it == station);
+        return orderedStations().stream().anyMatch(it -> it == station);
     }
 
     public List<Section> getSections() {
         return Collections.unmodifiableList(sections);
     }
 
-    public List<Station> stations() {
+    public List<Station> allStations() {
+        HashSet<Station> stations = new HashSet<>();
+
+        for (Section s : sections) {
+            stations.add(s.getUpStation());
+            stations.add(s.getDownStation());
+        }
+
+        return new ArrayList<>(stations);
+    }
+
+    public List<Station> orderedStations() {
         if (sections.isEmpty()) {
             return Collections.emptyList();
         }
@@ -158,6 +181,31 @@ public class Sections {
         if (downLineStation != null) {
             sections.remove(downLineStation);
         }
+    }
+
+    public Sections filteredBy(List<Station> stations) {
+        Sections sections = new Sections();
+        int index = 0;
+        while (index < stations.size() - 1) {
+            sections.sections.add(getSection(this.sections, stations.get(index), stations.get(index + 1)));
+            index++;
+        }
+        return sections;
+    }
+
+    private Section getSection(List<Section> sections, Station station, Station nextStation) {
+        return sections.stream()
+                .filter(s -> s.containStations(station, nextStation))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다"));
+    }
+
+    public Distance totalDistance() {
+        Distance distance = new Distance();
+        for (Section section : sections) {
+            distance = distance.plus(section.getDistance());
+        }
+        return distance;
     }
 
     @Override

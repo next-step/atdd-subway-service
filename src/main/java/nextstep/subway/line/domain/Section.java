@@ -80,4 +80,9 @@ public class Section {
     public Distance plusDistance(Section section) {
         return this.distance.plus(section.distance);
     }
+
+    public boolean containStations(Station station, Station nextStation) {
+        return equalsUpStation(station) && equalsDownStation(nextStation)
+                || equalsUpStation(nextStation) && equalsDownStation(station);
+    }
 }
