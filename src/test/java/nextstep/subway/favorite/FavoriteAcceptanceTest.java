@@ -105,11 +105,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(Long source, Long target, String token) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("source", source);
-        params.put("target", target);
+        Map<String, Object> body = new HashMap<>();
+        body.put("source", source);
+        body.put("target", target);
 
-        return RestAssuredRequest.postRequest(PATH, params, Collections.emptyMap(), token);
+        return RestAssuredRequest.postRequest(PATH, Collections.emptyMap(), body, token);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String token) {

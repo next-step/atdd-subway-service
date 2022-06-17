@@ -5,7 +5,6 @@ import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,14 +20,12 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponse createMember(MemberRequest request) {
-        Member member = memberRepository.save(request.toMember());
-        return MemberResponse.of(member);
+    public Member createMember(MemberRequest request) {
+        return memberRepository.save(request.toMember());
     }
 
-    public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        return MemberResponse.of(member);
+    public Member findMember(Long id) {
+        return memberRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     @Transactional
