@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -32,6 +33,9 @@ public class Favorite extends BaseEntity {
     @JoinColumn(name = "target_station_id")
     private Station target;
 
+    @Column
+    private boolean deleted = false;
+
     protected Favorite() {
     }
 
@@ -39,6 +43,10 @@ public class Favorite extends BaseEntity {
         this.member = member;
         this.source = source;
         this.target = target;
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 
     public FavoriteResponse toFavoriteResponse() {

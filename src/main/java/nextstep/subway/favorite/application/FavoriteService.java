@@ -54,12 +54,11 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavoriteOfMine(Long memberId, Long favoriteId) {
-        final Member mine = memberService.findMemberById(memberId);
+        Optional<Favorite> optionalFavorite = favoriteRepository.findByIdAndMemberId(favoriteId, memberId);
 
-        Optional<Favorite> optionalFavorite = favoriteRepository.findByIdAndMemberId(favoriteId, mine.getId());
-        favoriteRepository.delete(
-                optionalFavorite.orElseThrow(() -> new NotExistException("해당 ID에 대한 즐겨찾기가 존재하지 않습니다."))
-        );
+        optionalFavorite
+                .orElseThrow(() -> new NotExistException("해당 ID에 대한 즐겨찾기가 존재하지 않습니다."))
+                .delete();
     }
 
     private void validateFavorite(Station source, Station target) {
