@@ -1,0 +1,126 @@
+package nextstep.subway.line.domain;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.Arrays;
+import java.util.List;
+import nextstep.subway.station.domain.Station;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class SectionsTest {
+    final String givenLineName = "신분당선";
+    final String givenLineColor = "red";
+    final String givenUpStationName = "강남역";
+    final String givenDownStationName = "판교역";
+    final int givenLineDistance = 30;
+
+    Line givenLine;
+    Station givenUpStation;
+    Station givenDownStation;
+    Sections givenSections;
+
+    @BeforeEach
+    void setUp() {
+        givenUpStation = new Station(givenUpStationName);
+        givenDownStation = new Station(givenDownStationName);
+        givenLine = new Line(givenLineName, givenLineColor);
+        givenSections = new Sections(Arrays.asList(new Section(givenLine, givenUpStation, givenDownStation, givenLineDistance)));
+    }
+
+    @Test
+    void 등록된_역_목록을_조회할_수_있어야_한다() {
+        // when
+        final List<Station> stations = givenSections.getStations();
+
+        // then
+        assertThat(stations).containsExactly(givenUpStation, givenDownStation);
+    }
+
+    @Test
+    void 등록된_역이_없으면_역_목록_조회_시_빈_목록이_반환되어야_한다() {
+        // given
+        final Sections emptySections = new Sections();
+
+        // when
+        final List<Station> stations = emptySections.getStations();
+
+        // then
+        assertThat(stations.isEmpty()).isTrue();
+    }
+
+    @Test
+    void 두_역이_이미_등록된_구간을_추가하면_에러가_발생해야_한다() {
+        // when and then
+        assertThatThrownBy(() -> givenSections.add(givenLine, givenUpStation, givenDownStation, givenLineDistance / 2))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void 두_역이_모두_등록되지_않은_구간을_추가하면_에러가_발생해야_한다() {
+        // when and then
+        assertThatThrownBy(() -> givenSections.add(givenLine, givenUpStation, givenDownStation, givenLineDistance / 2))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void 빈_노선에_구간을_추가할_수_있어야_한다() {
+        // given
+        final Line emptyLine = new Line("empty line", "black");
+
+        // when
+        givenSections.add(givenLine, givenUpStation, givenDownStation, givenLineDistance);
+
+        // then
+        assertThat(emptyLine.getSections().size()).isEqualTo(1);
+
+        final Section newSection = emptyLine.getSections().get(0);
+        assertThat(newSection.getUpStation().getName()).isEqualTo(givenUpStationName);
+        assertThat(newSection.getDownStation().getName()).isEqualTo(givenDownStationName);
+        assertThat(newSection.getDistance()).isEqualTo(givenLineDistance);
+    }
+
+    @Test
+    void 하행역이_신규_역인_구간을_추가할_수_있어야_한다() {
+        // given
+        final Station newDownStation = new Station("양재역");
+
+        // when
+        givenLine.addSection(givenUpStation, newDownStation, givenLineDistance / 2);
+
+        // then
+        assertThat(givenLine.getSections().size()).isEqualTo(2);
+
+        final Section newSection = givenLine.getSections().get(1);
+        assertThat(newSection.getUpStation().getName()).isEqualTo(givenUpStationName);
+        assertThat(newSection.getDownStation().getName()).isEqualTo(newDownStation.getName());
+        assertThat(newSection.getDistance()).isEqualTo(givenLineDistance / 2);
+    }
+
+    @Test
+    void 상행역이_신규_역인_구간을_추가할_수_있어야_한다() {
+        // given
+        final Station newUpStation = new Station("양재역");
+
+        // when
+        givenLine.addSection(newUpStation, givenDownStation, givenLineDistance / 2);
+
+        // then
+        assertThat(givenLine.getSections().size()).isEqualTo(2);
+
+        final Section newSection = givenLine.getSections().get(1);
+        assertThat(newSection.getUpStation().getName()).isEqualTo(newUpStation.getName());
+        assertThat(newSection.getDownStation().getName()).isEqualTo(givenDownStationName);
+        assertThat(newSection.getDistance()).isEqualTo(givenLineDistance / 2);
+    }
+
+    @Test
+    void 구간_추가_시_신규_구간이_삽입되는_기존_구간보다_거리가_짧지_않으면_에러가_발생해야_한다() {
+        // given
+        final Station newDownStation = new Station("양재역");
+
+        // when and then
+        assertThatThrownBy(() -> givenLine.addSection(givenUpStation, newDownStation, givenLineDistance));
+    }
+}
