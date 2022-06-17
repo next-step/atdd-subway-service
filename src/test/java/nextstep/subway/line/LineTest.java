@@ -6,13 +6,10 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SectionsTest {
+public class LineTest {
     private Line 지하철2호선;
     private Station 강남역;
     private Station 건대입구역;
@@ -98,6 +95,6 @@ public class SectionsTest {
         지하철2호선.removeSection(삼성역);
 
         //then 지하철2호선의 역은 2개
-        assertThat(지하철2호선.getSections().size()).isEqualTo(2);
+        assertThat(지하철2호선.getStations().size()).isEqualTo(2);
     }
 }
