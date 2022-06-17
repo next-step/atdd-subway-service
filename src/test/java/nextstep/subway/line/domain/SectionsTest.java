@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SectionsTest {
 
@@ -81,4 +82,27 @@ class SectionsTest {
                 .containsExactly(광교역, 정자역, 양재역, 강남역);
     }
 
+    @Test
+    @DisplayName("중복구간을 등록하려고 하면 예외를 발생시킨다.")
+    void addDuplicateSection() {
+        Section 정자역_강남역 = new Section(신분당선, 정자역, 강남역, 10000);
+        모든구간.addLineStation(정자역_강남역);
+
+        assertThatThrownBy(() -> 모든구간.addLineStation(정자역_강남역))
+                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessage("이미 등록된 구간 입니다.");
+    }
+
+    @Test
+    @DisplayName("상하행역이 모두 기존 구간에 없으면 예외를 발생시킨다.")
+    void addNotExistingUpDownStation() {
+        모든구간.addLineStation(new Section(신분당선, 광교역, 정자역, 20000));
+        Station 논현역 = new Station("논현역");
+        Station 신논현역 = new Station("신논현역");
+        Section 논현역_신논현역 = new Section(신분당선, 논현역, 신논현역, 5000);
+
+        assertThatThrownBy(() -> 모든구간.addLineStation(논현역_신논현역))
+                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessage("등록할 수 없는 구간 입니다.");
+    }
 }
