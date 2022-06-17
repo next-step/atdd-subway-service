@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Fare implements Comparable<Fare> {
-    private static final int MIN_NUM = 0;
+    private static final int MIN_FARE = 0;
     @Column
     private int fare;
 
@@ -23,7 +23,7 @@ public class Fare implements Comparable<Fare> {
     }
 
     private void validateFare(int fare) {
-        if (fare < MIN_NUM) {
+        if (fare < MIN_FARE) {
             throw new IllegalArgumentException("음수는 유효하지 않습니다.");
         }
     }
@@ -49,7 +49,7 @@ public class Fare implements Comparable<Fare> {
     }
 
     private boolean isZero(int number) {
-        return number == MIN_NUM;
+        return number == MIN_FARE;
     }
 
     public int fare() {
