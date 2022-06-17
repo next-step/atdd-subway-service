@@ -10,14 +10,17 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class PathFinderTest {
-
     private Station 선릉역;
     private Station 정자역;
     private Station 수원역;
     private Station 춘천역;
     private Station 강릉역;
+    private Station 경주역;
+    private Station 포항역;
     private Line 분당선;
     private Line 강릉선;
     private Line 당릉선;
@@ -29,6 +32,8 @@ class PathFinderTest {
         수원역 = new Station(3L, "수원역");
         춘천역 = new Station(4L, "춘천역");
         강릉역 = new Station(5L, "강릉역");
+        경주역 = new Station(6L, "경주역");
+        포항역 = new Station(7L, "포항역");
         분당선 = new Line("분당선", "bg-yellow-400");
         강릉선 = new Line("강릉선", "bg-blue-600");
         당릉선 = new Line("당릉선", "bg-blue-600");
@@ -61,5 +66,43 @@ class PathFinderTest {
         // then
         assertThat(result.getStations()).containsExactly(선릉역, 정자역, 수원역, 춘천역, 강릉역);
         assertThat(result.getDistance()).isEqualTo(80);
+    }
+
+    @Test
+    void findPath_throwsException_ifStationsAreSame() {
+        // when
+        // then
+        assertThatThrownBy(() -> {
+            PathFinder pathFinder = new PathFinder();
+            pathFinder.addLineStations(Arrays.asList(분당선, 강릉선, 당릉선));
+            pathFinder.findShortestPath(선릉역, 선릉역);
+        }).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void findPath_throwsException_ifStationsAreNotConnected() {
+        // given
+        Line 동해선 = new Line("동해선", "bg-white-400", 경주역, 포항역, 20);
+
+        // when
+        // then
+        PathFinder pathFinder = new PathFinder();
+        pathFinder.addLineStations(Arrays.asList(분당선, 강릉선, 당릉선, 동해선));
+        assertThatThrownBy((() -> pathFinder.findShortestPath(선릉역, 경주역)))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void findPath_throwsException_ifFromOrToNonExistentStation() {
+        // when
+        // then
+        PathFinder pathFinder = new PathFinder();
+        pathFinder.addLineStations(Arrays.asList(분당선, 강릉선, 당릉선));
+        assertAll(
+                () -> assertThatThrownBy((() -> pathFinder.findShortestPath(선릉역, 경주역)))
+                        .isInstanceOf(RuntimeException.class),
+                () -> assertThatThrownBy((() -> pathFinder.findShortestPath(경주역, 선릉역)))
+                        .isInstanceOf(RuntimeException.class)
+        );
     }
 }
