@@ -1,8 +1,8 @@
 package nextstep.subway.member.ui;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -50,9 +50,9 @@ public class MemberController {
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
-        memberService.updateMember(loginMember.getId(), param);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<TokenResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+        TokenResponse tokenResponse = memberService.updateMember(loginMember.getId(), param);
+        return ResponseEntity.ok().body(tokenResponse);
     }
 
     @DeleteMapping("/members/me")
