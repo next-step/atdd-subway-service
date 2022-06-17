@@ -30,6 +30,7 @@ public class Favorite extends BaseEntity {
     protected Favorite() {}
 
     public Favorite(Member member, Station sourceStation, Station targetStation) {
+        validateStation(sourceStation, targetStation);
         this.member = member;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
@@ -45,5 +46,11 @@ public class Favorite extends BaseEntity {
 
     public boolean isCreatedBy(Long memberId) {
         return Objects.equals(memberId, this.member.getId());
+    }
+
+    private void validateStation(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같으면 안됩니다.");
+        }
     }
 }

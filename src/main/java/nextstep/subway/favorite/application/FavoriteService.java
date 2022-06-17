@@ -1,6 +1,5 @@
 package nextstep.subway.favorite.application;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -34,17 +33,10 @@ public class FavoriteService {
     @Transactional
     public FavoriteResponse saveFavorite(Long memberId, FavoriteRequest favoriteRequest) {
         Member member = findMember(memberId);
-        validateRequest(favoriteRequest);
         Station sourceStation = findStation(favoriteRequest.getSourceId());
         Station targetStation = findStation(favoriteRequest.getTargetId());
         Favorite favorite = favoriteRepository.save(new Favorite(member, sourceStation, targetStation));
         return FavoriteResponse.of(favorite);
-    }
-
-    private void validateRequest(FavoriteRequest favoriteRequest) {
-        if (Objects.equals(favoriteRequest.getSourceId(), favoriteRequest.getTargetId())) {
-            throw new IllegalArgumentException("출발역과 도착역은 같을 수 없습니다.");
-        }
     }
 
     private Member findMember(Long memberId) {
