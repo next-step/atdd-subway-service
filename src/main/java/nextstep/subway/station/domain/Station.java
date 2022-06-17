@@ -16,8 +16,6 @@ public class Station extends BaseEntity {
     @Column(unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "downStation", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Section> sections = new ArrayList<>();
 
     protected Station() {
     }
@@ -39,9 +37,6 @@ public class Station extends BaseEntity {
         return name;
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -55,5 +50,13 @@ public class Station extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

@@ -68,7 +68,6 @@ public class Sections {
 
     public void removeSection(final Section section) {
         this.sections.remove(section);
-        section.remove();
     }
 
     private void insertSection(final Section section) {
