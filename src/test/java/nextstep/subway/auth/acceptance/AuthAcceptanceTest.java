@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -12,8 +13,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성됨;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -87,9 +87,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // Given
+        TokenResponse tokenResponse = new TokenResponse("abcd");
 
         // When
-        ExtractableResponse<Response> response = 변조된_인증_정보로_사용자_정보_요청("abcdefg");
+        ExtractableResponse<Response> response = 인증_정보로_사용자_정보_요청(tokenResponse);
 
         // Then
         인증_실패됨(response);
@@ -101,8 +103,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static void 로그인_됨(ExtractableResponse<Response> response) {
         assertThat(HttpStatus.valueOf(response.statusCode())).isEqualTo(HttpStatus.OK);
-        String accessToken = response.jsonPath().get("accessToken");
-        assertThat(accessToken).isNotBlank();
+        TokenResponse tokenResponse = response.as(TokenResponse.class);
+        assertThat(tokenResponse.getAccessToken()).isNotBlank();
     }
 
     public static ExtractableResponse<Response> 로그인_요청(Map<String, String> body) {
@@ -113,16 +115,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .post("/login/token")
                 .then()
                 .log().all()
-                .extract();
-    }
-    public static ExtractableResponse<Response> 변조된_인증_정보로_사용자_정보_요청(final String badToken) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(badToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.UNAUTHORIZED.value())
                 .extract();
     }
 
