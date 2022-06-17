@@ -7,7 +7,6 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
+import java.time.LocalDateTime;
+
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.암호_이메일_입력;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_생성_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.토큰정보_획득;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
@@ -58,7 +60,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(createFavoritesResponse);
     }
 
-    private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
+    /**
+     * When 저장되지 않는 지하철역 정보로 즐겨찾기 생성을 요청
+     * Then 즐겨찾기 생성이 안됨
+     */
+    @DisplayName("저장되지 않는 지하철역 정보로 즐겨찾기 생성시 생성이 되지 않는다.")
+    @Test
+    void favoriteSaveTestWhenNoSavedStation() {
+        // When
+        ExtractableResponse<Response> invalidResponse = 즐겨찾기_생성을_요청(사용자정보, new StationResponse(100L, "모르는역", LocalDateTime.now(), LocalDateTime.now()), 광교역);
+
+        // Them
+        즐겨찾기_생성이_안됨(invalidResponse);
+    }
+
+    public static void 즐겨찾기_생성이_안됨(ExtractableResponse<Response> invalidResponse) {
+        assertThat(HttpStatus.valueOf(invalidResponse.statusCode())).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
         assertThat(response.header("Location")).isNotBlank();
         assertThat(HttpStatus.valueOf(response.statusCode())).isEqualTo(HttpStatus.CREATED);
