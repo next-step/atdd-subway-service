@@ -1,5 +1,6 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.auth.domain.DiscountPolicy;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -19,13 +20,13 @@ public class PathResponse {
         this.distance = distance;
     }
 
-    public PathResponse(Path path) {
+    public PathResponse(Path path, DiscountPolicy discountPolicy) {
         this.stations = path.getStations()
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
         this.distance = path.getDistance().getDistance();
-        this.fare = path.getFare().getValue();
+        this.fare = discountPolicy.discount(path.getFare().getValue());
     }
 
     public List<StationResponse> getStations() {

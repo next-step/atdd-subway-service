@@ -27,6 +27,6 @@ public class PathService {
         Station target = stationService.findById(pathRequest.getTarget());
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
         Path path = pathFinder.findPath(source, target);
-        return new PathResponse(path);
+        return new PathResponse(path, loginMember.getDiscountPolicy());
     }
 }

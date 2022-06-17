@@ -1,5 +1,6 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.auth.domain.AdultDiscountPolicy;
 import nextstep.subway.auth.domain.DiscountPolicy;
 import nextstep.subway.auth.domain.DiscountType;
 import nextstep.subway.auth.domain.LoginMember;
@@ -30,7 +31,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            return new LoginMember(new AdultDiscountPolicy());
         }
 
         String email = jwtTokenProvider.getPayload(credentials);

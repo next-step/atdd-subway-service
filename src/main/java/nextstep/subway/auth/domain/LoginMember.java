@@ -9,6 +9,10 @@ public class LoginMember {
     public LoginMember() {
     }
 
+    public LoginMember(DiscountPolicy discountPolicy) {
+        this.discountPolicy = discountPolicy;
+    }
+
     public LoginMember(Long id, String email, Integer age, DiscountPolicy discountPolicy) {
         this.id = id;
         this.email = email;
@@ -26,5 +30,9 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public DiscountPolicy getDiscountPolicy() {
+        return discountPolicy;
     }
 }
