@@ -2,8 +2,14 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +22,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -50,7 +56,44 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
+    public Sections getSections() {
         return sections;
+    }
+
+    public List<Station> getStations() {
+        if (sections.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Stations stations = new Stations();
+        Station station = findUpStation();
+        stations.add(station);
+
+        while (sections.hasNextUpSection(station)) {
+            Section nextLineStation = sections.findSectionByUpStation(station);
+            station = nextLineStation.getDownStation();
+            stations.add(station);
+        }
+
+        return stations.getValues();
+    }
+
+    public void addSection(Station upStation, Station downStation, int distance) {
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public void removeSection(Station station) {
+        this.sections.cutOff(this, station);
+    }
+
+    private Station findUpStation() {
+        Station station = sections.getValues().get(0).getUpStation();
+
+        while (sections.hasNextDownSection(station)) {
+            Section section = sections.findSectionByDownStation(station);
+            station = section.getUpStation();
+        }
+
+        return station;
     }
 }
