@@ -11,7 +11,6 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -39,9 +38,6 @@ class FavoriteServiceTest {
     FavoriteRepository favoriteRepository;
 
     @Mock
-    MemberService memberService;
-
-    @Mock
     StationService stationService;
 
     @BeforeEach
@@ -60,7 +56,6 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기를 저장한다")
     void save() {
         // given
-        given(memberService.findByEmail(any())).willReturn(사용자);
         given(stationService.findStationById(any())).willReturn(강남역);
         given(stationService.findStationById(any())).willReturn(잠실역);
         given(favoriteRepository.save(any())).willReturn(즐겨찾기);
@@ -76,7 +71,6 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기를 조회한 결과 1개의 즐겨찾기가 반환된다")
     void findFavorites() {
         // given
-        given(memberService.findByEmail(any())).willReturn(사용자);
         given(favoriteRepository.findByMemberId(any())).willReturn(Collections.singletonList(즐겨찾기));
 
         // when
