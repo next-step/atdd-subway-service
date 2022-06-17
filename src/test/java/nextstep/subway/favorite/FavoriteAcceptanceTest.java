@@ -7,6 +7,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
@@ -96,6 +98,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_정상_확인(myFavoriteListResponse, Arrays.asList(new FavoriteResponse(id, 강남역, 광교역)));
     }
 
+    /**
+     * Given : 즐겨찾기에 추가 되어 있고
+     * When : 즐겨 찾기 삭제를 요청 하면
+     * Then : 즐겨찾기 목록에서 정상적으로 삭제 된다.
+     */
+    @DisplayName("즐겨찾기에 추가 되어 있고 삭제 요청시 정상적으로 삭제된다.")
+    @Test
+    void deleteFavorite() {
+        // Given
+        ExtractableResponse<Response> 생성_요청_결과 = 즐겨찾기_생성을_요청(사용자정보, 강남역, 광교역);
+
+        // When
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(사용자정보, 즐겨찾기_등록번호_찾기(생성_요청_결과));
+
+        // Then
+        즐겨찾기_정상_삭제(deleteResponse);
+        즐겨찾기_목록_정상_확인(즐겨찾기_목록_조회(사용자정보), Collections.emptyList());
+    }
+
+    public static void 즐겨찾기_정상_삭제(ExtractableResponse<Response> deleteResponse) {
+        assertThat(HttpStatus.valueOf(deleteResponse.statusCode())).isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
     public static void 즐겨찾기_목록_정상_확인(ExtractableResponse<Response> myFavoriteListResponse, List<FavoriteResponse> expectedResult) {
         assertThat(Arrays.asList(myFavoriteListResponse.as(FavoriteResponse[].class))).containsExactlyElementsOf(expectedResult);
     }
@@ -133,6 +158,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .get("/favorites")
                 .then()
                 .log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> 사용자정보, long id) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(토큰정보_획득(사용자정보).getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .delete("/favorites/"+id)
+                .then().log().all()
                 .extract();
     }
 }

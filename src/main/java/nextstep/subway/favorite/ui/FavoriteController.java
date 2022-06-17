@@ -33,6 +33,11 @@ public class FavoriteController {
         return ResponseEntity.ok().body(favoriteService.findFavorite(loginMember));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteFavorite(@PathVariable long id) {
+        favoriteService.deleteFavorite(id);
+        return ResponseEntity.noContent().build();
+    }
     @ExceptionHandler(value = {EntityNotFoundException.class})
     public ResponseEntity handleEntityNotFoundException(EntityNotFoundException e) {
         return ResponseEntity.badRequest().build();
