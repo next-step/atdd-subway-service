@@ -5,7 +5,7 @@ public class NotFoundException extends RuntimeException {
         super("[ERROR] 데이터를 찾을 수 없습니다.");
     }
 
-    public NotFoundException(Long data) {
+    public NotFoundException(Object data) {
         super("[ERROR] 데이터를 찾을 수 없습니다. [data = " + data + "]");
     }
 }
