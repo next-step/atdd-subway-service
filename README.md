@@ -64,7 +64,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
    * 객체지향 생활체조를 참고한다.
 2. Domain의 단위 테스트를 작성하기
    * 서비스 레이어에서 옮겨 올 로직의 기능을 테스트한다.
-3. 로직을 옮기기
+3. 로직 옮기기
    * 기존 로직을 지우지 말고 새로운 로직을 만들어 수행한다.
    * 정상 동작 확인 후 기존 로직을 제거한다.
 
