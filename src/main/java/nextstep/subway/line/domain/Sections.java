@@ -81,6 +81,34 @@ public class Sections {
         return stations;
     }
 
+    public void removeSection(Station deleteStation) {
+        checkDeletableSection();
+
+        Optional<Section> upLineStation = findSectionByUpStation(deleteStation);
+        Optional<Section> downLineStation = findSectionByDownStation(deleteStation);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            combineSection(upLineStation.get(), downLineStation.get());
+        }
+
+        upLineStation.ifPresent(sections::remove);
+        downLineStation.ifPresent(sections::remove);
+    }
+
+    private void combineSection(Section upLineStation, Section downLineStation) {
+        Station newUpStation = downLineStation.getUpStation();
+        Station newDownStation = upLineStation.getDownStation();
+        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+
+        sections.add(new Section(upLineStation.getLine(), newUpStation, newDownStation, newDistance));
+    }
+
+    private void checkDeletableSection() {
+        if (sections.size() <= 1) {
+            throw new RuntimeException(ErrorMessage.NOT_DELETABLE_SIZE_SECTION.getMessage());
+        }
+    }
+
     private void updateSectionByUpStation(Station oldStation, Station newStation, int newDistance) {
         Optional<Section> sectionForUpdate = findSectionByUpStation(oldStation);
         sectionForUpdate.ifPresent(it -> it.updateUpStation(newStation, newDistance));
