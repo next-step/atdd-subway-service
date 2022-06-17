@@ -6,6 +6,7 @@ import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
@@ -20,6 +21,7 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional(readOnly = true)
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
@@ -34,6 +36,7 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public Member findById(Long id) {
         return memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
     }

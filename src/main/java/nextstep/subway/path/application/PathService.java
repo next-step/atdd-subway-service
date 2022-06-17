@@ -22,6 +22,7 @@ public class PathService {
         this.stationService = stationService;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findShortestPath(LoginMember loginMember, PathRequest pathRequest) {
         Station source = stationService.findById(pathRequest.getSource());
         Station target = stationService.findById(pathRequest.getTarget());
