@@ -1,19 +1,30 @@
 package nextstep.subway.favorite.domain;
 
-import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
-public class Favorite {
+import javax.persistence.*;
+
+@Entity
+public class Favorite extends BaseEntity {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LoginMember loginMember;
+
+    private Long loginMemberId;
+
+    @OneToOne
+    @JoinColumn(name = "SOURCE_ID")
     private Station source;
+
+    @OneToOne
+    @JoinColumn(name = "DESTINATION_ID")
     private Station destination;
 
     protected Favorite() {
     }
 
-    public Favorite(LoginMember loginMember, Station source, Station destination) {
-        this.loginMember = loginMember;
+    public Favorite(Long loginMemberId, Station source, Station destination) {
+        this.loginMemberId = loginMemberId;
         this.source = source;
         this.destination = destination;
     }
@@ -22,8 +33,8 @@ public class Favorite {
         return id;
     }
 
-    public LoginMember getLoginMember() {
-        return loginMember;
+    public Long getLoginMemberId() {
+        return loginMemberId;
     }
 
     public Station getSource() {

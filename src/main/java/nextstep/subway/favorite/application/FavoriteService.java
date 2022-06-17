@@ -25,7 +25,7 @@ public class FavoriteService {
     public FavoriteResponse saveFavorite(final LoginMember loginMember, final FavoriteRequest favoriteRequest) {
         final Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(EntityNotFoundException::new);
         final Station destination = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(EntityNotFoundException::new);
-        final Favorite savedFavorite = favoriteRepository.save(new Favorite(loginMember, source, destination));
+        final Favorite savedFavorite = favoriteRepository.save(new Favorite(loginMember.getId(), source, destination));
         return new FavoriteResponse(savedFavorite.getId(),
                 StationResponse.of(savedFavorite.getSource()),
                 StationResponse.of(savedFavorite.getDestination()));

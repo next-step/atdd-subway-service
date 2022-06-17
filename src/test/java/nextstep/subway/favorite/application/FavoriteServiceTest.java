@@ -55,7 +55,7 @@ class FavoriteServiceTest {
         // Given
         when(stationRepository.findById(1L)).thenReturn(Optional.of(수원역));
         when(stationRepository.findById(2L)).thenReturn(Optional.of(병점역));
-        when(favoriteRepository.save(any())).thenReturn(new Favorite(loginMember, 수원역, 병점역));
+        when(favoriteRepository.save(any())).thenReturn(new Favorite(loginMember.getId(), 수원역, 병점역));
         FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
 
         // When
