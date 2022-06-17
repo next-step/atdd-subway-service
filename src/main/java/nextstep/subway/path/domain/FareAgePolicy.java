@@ -18,8 +18,16 @@ public enum FareAgePolicy {
         this.discountFare = discountFare;
     }
 
-    public static Optional<FareAgePolicy> findFarePolicyByAge(int age) {
+    private static Optional<FareAgePolicy> findFarePolicyByAge(int age) {
         return Arrays.stream(values()).filter(value -> value.isValidate.test(age)).findFirst();
+    }
+
+    public static int calculateDiscountFare(int fare, int age) {
+        Optional<FareAgePolicy> farePolicy = FareAgePolicy.findFarePolicyByAge(age);
+
+        return farePolicy
+                .map(fareAgePolicy -> (int) ((fare - fareAgePolicy.getDeduction()) * fareAgePolicy.getDiscountFare() + fareAgePolicy.getDeduction()))
+                .orElse(fare);
     }
 
     public int getDeduction() {

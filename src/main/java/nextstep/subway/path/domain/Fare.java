@@ -18,15 +18,11 @@ public class Fare {
 
     private static int calculateFare(Sections sections, TotalDistance totalDistance, MemberAge age) {
         int resultFare = BASIC_CHARGE + sections.findOverFareOfLine() + calculateDistanceOverFare(totalDistance);
-        return calculateAgeDiscountFare(resultFare, age);
+        return FareAgePolicy.calculateDiscountFare(resultFare, age.findAge());
     }
 
     private static int calculateDistanceOverFare(TotalDistance totalDistance) {
         return totalDistance.calculateOverFare();
-    }
-
-    private static int calculateAgeDiscountFare(int resultFare, MemberAge age) {
-        return age.calculateDiscountFare(resultFare);
     }
 
     public int getFare() {
