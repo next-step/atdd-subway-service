@@ -61,16 +61,33 @@ class PathAcceptanceTest extends AcceptanceTest {
     /**
      *  Given 지하철 노선에 지하철 역이 등록되어 있고
      *  When 연결되어 있는 출발, 도착역을 경로조회 하면
-     *  Then 최단거리 결과로 알려준다.
+     *  Then 최단거리와 지하철 요금을 알려준다
      */
     @Test
-    @DisplayName("정상적인 출발, 도착역을 경로조회하면 최단거리를 알려준다.")
-    void searchShortestPath() {
+    @DisplayName("정상적인 출발, 도착역을 경로조회하면 최단거리 및 지하철 요금을 알려준다.")
+    void searchShortestPathAndFee() {
         // when
         ExtractableResponse<Response> 지하철_경로_조회_요청_결과 = 지하철_경로_조회_요청(강남역, 남부터미널역);
 
         // then
-        최단_거리_확인(지하철_경로_조회_요청_결과, 12, Arrays.asList(강남역, 양재역, 남부터미널역));
+        최단_거리_및_요금_확인(지하철_경로_조회_요청_결과, 12, Arrays.asList(강남역, 양재역, 남부터미널역), 1350);
+    }
+
+    /**
+     *  Given 지하철 노선에 지하철 역이 등록되어 있고
+     *    And 사용자가 로그인되어 있으며
+     *   When 연결되어 있는 출발, 도착역을 경로조회 하면
+     *   Then 최단거리와 연령 정책에 맞는 지하철 요금을 알려준다
+     */
+    @Test
+    @DisplayName("로그인한 사용자가 정상적인 출발, 도착역을 경로조회하면 최단거리 및 정책에 맞는 지하철 요금을 알려준다.")
+    void searchShortestPathAndPolicyFee() {
+        // when
+        ExtractableResponse<Response> 지하철_경로_조회_요청_결과 = 지하철_경로_조회_요청(강남역, 남부터미널역);
+
+        // TODO : 로그인 정책에 맞게 수정 필요
+        // then
+        최단_거리_및_요금_확인(지하철_경로_조회_요청_결과, 12, Arrays.asList(강남역, 양재역, 남부터미널역), 1350);
     }
 
     /**
@@ -132,7 +149,8 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 최단_거리_확인(ExtractableResponse<Response> 지하철_경로_조회_요청_결과, int 거리, List<StationResponse> 역리스트) {
+    private void 최단_거리_및_요금_확인(ExtractableResponse<Response> 지하철_경로_조회_요청_결과, int 거리,
+                               List<StationResponse> 역리스트, int 요금) {
         PathResponse response = 지하철_경로_조회_요청_결과.as(PathResponse.class);
 
         List<Long> 응답_역_아이디_리스트 = response.getStations().stream()
@@ -145,7 +163,8 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         assertAll(
                 () -> assertThat(response.getDistance()).isEqualTo(거리),
-                () -> assertThat(응답_역_아이디_리스트).containsExactlyElementsOf(예상된_역_아이디_리스트)
+                () -> assertThat(응답_역_아이디_리스트).containsExactlyElementsOf(예상된_역_아이디_리스트),
+                () -> assertThat(response.getFee()).isEqualTo(요금)
         );
     }
 
