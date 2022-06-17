@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -11,7 +12,6 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +27,6 @@ class FavoriteServiceTest {
 
     private Station 강남역;
     private Station 잠실역;
-    private Member 사용자;
     private LoginMember 로그인_사용자;
     private Favorite 즐겨찾기;
 
@@ -46,7 +45,6 @@ class FavoriteServiceTest {
 
         잠실역 = new Station("잠실역");
 
-        사용자 = new Member("email@email.com", "email", 10);
         로그인_사용자 = new LoginMember(1L, "email@email.com", 20);
 
         즐겨찾기 = new Favorite(강남역, 잠실역, 로그인_사용자.getId());
@@ -56,15 +54,19 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기를 저장한다")
     void save() {
         // given
-        given(stationService.findStationById(any())).willReturn(강남역);
-        given(stationService.findStationById(any())).willReturn(잠실역);
+        given(stationService.findStationById(1L)).willReturn(강남역);
+        given(stationService.findStationById(2L)).willReturn(잠실역);
         given(favoriteRepository.save(any())).willReturn(즐겨찾기);
 
         // when
-        FavoriteResponse save = favoriteService.save(로그인_사용자, new FavoriteRequest(강남역.getId(), 잠실역.getId()));
+        FavoriteResponse favorite = favoriteService.save(로그인_사용자, new FavoriteRequest(1L, 2L));
 
         // then
-        assertThat(save).isNotNull();
+        assertAll(
+                () -> assertThat(favorite).isNotNull(),
+                () -> assertThat(favorite.getSource().getName()).isEqualTo("강남역"),
+                () -> assertThat(favorite.getTarget().getName()).isEqualTo("잠실역")
+        );
     }
 
     @Test
