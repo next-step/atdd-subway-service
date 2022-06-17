@@ -2,11 +2,13 @@ package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.line.exception.InvalidEntityValueException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -70,7 +72,7 @@ public class Sections {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return Collections.unmodifiableList(sections);
     }
 
     public List<Station> getStations() {
@@ -121,13 +123,14 @@ public class Sections {
         if(!stations.isEmpty()
             && stations.stream().noneMatch(it -> it.equals(upStation))
             && stations.stream().noneMatch(it -> it.equals(downStation))) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+
+            throw new InvalidEntityValueException("등록할 수 없는 구간 입니다.");
         }
     }
 
     private void validateDuplication(boolean isUpStationExisted, boolean isDownStationExisted) {
         if(isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new InvalidEntityValueException("이미 등록된 구간 입니다.");
         }
     }
 
