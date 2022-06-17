@@ -31,6 +31,10 @@ public class PathFinder {
             );
     }
 
+    public void addLineStations(List<Line> lines) {
+        lines.forEach(this::addLineStation);
+    }
+
     public PathResponse findShortestPath(Station source, Station target) {
         DijkstraShortestPath shortestPath = new DijkstraShortestPath(graph);
         List<Station> stations = shortestPath.getPath(source, target).getVertexList();
