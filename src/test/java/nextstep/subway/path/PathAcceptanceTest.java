@@ -71,11 +71,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> 최단_거리_조회 = 최단_거리_조회(pathRequest);
 
-        최단_거리_조회_동일한_역정보_실패_됨(최단_거리_조회);
+        최단_거리_조회_동일한_역정보_조회_실패_됨(최단_거리_조회);
     }
 
-    void 최단_거리_조회_동일한_역정보_실패_됨(ExtractableResponse<Response> response) {
+    @Test
+    @DisplayName("최단거리 조회시 존재하지 않는 역정보 실패 테스트")
+    void findShortestDistanceNotFindStation() {
+        Long 방배역_id = 999L;
+        PathRequest pathRequest = PathRequest.of(강남역.getId(), 방배역_id);
+
+        ExtractableResponse<Response> 최단_거리_조회 = 최단_거리_조회(pathRequest);
+
+        최단_거리_조회_미존재_역정보_조회_실패_됨(최단_거리_조회);
+    }
+
+    void 최단_거리_조회_동일한_역정보_조회_실패_됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    void 최단_거리_조회_미존재_역정보_조회_실패_됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     void 최단_거리_조회_됨(ExtractableResponse<Response> response, List<Station> stations) {
