@@ -1,12 +1,15 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,7 +18,20 @@ import java.util.List;
 public class PathFinder {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
-    public PathFinder() {
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
+
+    @Autowired
+    public PathFinder(LineRepository lineRepository, StationRepository stationRepository) {
+        this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
+    }
+
+    public PathResponse findShortestPath(Long source, Long target) {
+        addLineStations(lineRepository.findAll());
+        Station srcStation = stationRepository.findById(source).orElseThrow(IllegalAccessError::new);
+        Station tgtStation = stationRepository.findById(target).orElseThrow(IllegalAccessError::new);
+        return findShortestPath(srcStation, tgtStation);
     }
 
     public void addLineStation(Line line) {

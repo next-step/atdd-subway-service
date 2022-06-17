@@ -1,20 +1,20 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.application.StationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PathService {
-    private final StationService stationService;
+    private PathFinder pathFinder;
 
     @Autowired
-    public PathService(StationService stationService) {
-        this.stationService = stationService;
+    public PathService(PathFinder pathFinder) {
+        this.pathFinder = pathFinder;
     }
 
     public PathResponse findPath(Long source, Long target) {
-        return new PathResponse(stationService.findById(1L), 50);
+        return pathFinder.findShortestPath(source, target);
     }
 }

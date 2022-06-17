@@ -1,11 +1,14 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 
 import java.util.Arrays;
 
@@ -14,6 +17,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class PathFinderTest {
+    @Mock
+    private LineRepository lineRepository;
+    @Mock
+    private StationRepository stationRepository;
+
     private Station 선릉역;
     private Station 정자역;
     private Station 수원역;
@@ -47,7 +55,7 @@ class PathFinderTest {
     @Test
     void findPath_sameLine() {
         // when
-        PathFinder pathFinder = new PathFinder();
+        PathFinder pathFinder = new PathFinder(lineRepository, stationRepository);
         pathFinder.addLineStation(분당선);
         PathResponse result = pathFinder.findShortestPath(선릉역, 수원역);
 
@@ -59,7 +67,7 @@ class PathFinderTest {
     @Test
     void findPath_differentLines() {
         // when
-        PathFinder pathFinder = new PathFinder();
+        PathFinder pathFinder = new PathFinder(lineRepository, stationRepository);
         pathFinder.addLineStations(Arrays.asList(분당선, 강릉선, 당릉선));
         PathResponse result = pathFinder.findShortestPath(선릉역, 강릉역);
 
@@ -73,7 +81,7 @@ class PathFinderTest {
         // when
         // then
         assertThatThrownBy(() -> {
-            PathFinder pathFinder = new PathFinder();
+            PathFinder pathFinder = new PathFinder(lineRepository, stationRepository);
             pathFinder.addLineStations(Arrays.asList(분당선, 강릉선, 당릉선));
             pathFinder.findShortestPath(선릉역, 선릉역);
         }).isInstanceOf(RuntimeException.class);
@@ -86,7 +94,7 @@ class PathFinderTest {
 
         // when
         // then
-        PathFinder pathFinder = new PathFinder();
+        PathFinder pathFinder = new PathFinder(lineRepository, stationRepository);
         pathFinder.addLineStations(Arrays.asList(분당선, 강릉선, 당릉선, 동해선));
         assertThatThrownBy((() -> pathFinder.findShortestPath(선릉역, 경주역)))
                 .isInstanceOf(RuntimeException.class);
@@ -96,7 +104,7 @@ class PathFinderTest {
     void findPath_throwsException_ifFromOrToNonExistentStation() {
         // when
         // then
-        PathFinder pathFinder = new PathFinder();
+        PathFinder pathFinder = new PathFinder(lineRepository, stationRepository);
         pathFinder.addLineStations(Arrays.asList(분당선, 강릉선, 당릉선));
         assertAll(
                 () -> assertThatThrownBy((() -> pathFinder.findShortestPath(선릉역, 경주역)))
