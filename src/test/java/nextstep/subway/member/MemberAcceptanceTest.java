@@ -69,7 +69,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         token = 내_정보_수정_응답.as(TokenResponse.class).getAccessToken();
         ExtractableResponse<Response> 회원_정보 = 내_정보_조회(token);
         // then
-        회원_정보_수정됨(내_정보_수정_응답);
+        내_정보_수정됨(내_정보_수정_응답);
         회원_정보_조회됨(회원_정보, NEW_EMAIL, NEW_AGE);
 
         // when
@@ -171,6 +171,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 내_정보_수정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.body().jsonPath().getString("accessToken")).isNotNull();
     }
