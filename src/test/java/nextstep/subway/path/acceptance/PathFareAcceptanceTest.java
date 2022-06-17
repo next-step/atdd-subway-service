@@ -100,9 +100,31 @@ public class PathFareAcceptanceTest extends AcceptanceTest {
         최단경로_지하철목록_거리_비용_조회(어른_조회, Arrays.asList(종합운동장, 잠실새내), 10, 1250);
     }
 
-    @DisplayName("종합운동장 ~ 석촌 최단 경로, 거리, 비용 조회")
+    @DisplayName("[노선 추가 요금] 종합운동장 ~ 잠실새내 최단 경로, 거리, 비용 조회")
     @Test
     void testPathDistanceFare02() {
+        // given : 지하철역 등록되어 있음
+        종합운동장 = 지하철역_등록되어_있음("종합운동장").as(StationResponse.class);
+        잠실새내 = 지하철역_등록되어_있음("잠실새내").as(StationResponse.class);
+
+        // given : 지하철노선 등록되어 있음
+        LineRequest lineRequest = new LineRequest("2호선", "green", 종합운동장.getId(), 잠실새내.getId(), 10, 500);
+        이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+
+        // when : 출발역에서 도착역까지의 최단 거리 경로 조회
+        ExtractableResponse<Response> 어린이_조회 = 최단경로_조회(childTokenResponse, 종합운동장, 잠실새내);
+        ExtractableResponse<Response> 청소년_조회 = 최단경로_조회(youthTokenResponse, 종합운동장, 잠실새내);
+        ExtractableResponse<Response> 어른_조회 = 최단경로_조회(adultTokenResponse, 종합운동장, 잠실새내);
+
+        // then : 최단경로, 거리, 요금 조회
+        최단경로_지하철목록_거리_비용_조회(어린이_조회, Arrays.asList(종합운동장, 잠실새내), 10, 700);
+        최단경로_지하철목록_거리_비용_조회(청소년_조회, Arrays.asList(종합운동장, 잠실새내), 10, 1120);
+        최단경로_지하철목록_거리_비용_조회(어른_조회, Arrays.asList(종합운동장, 잠실새내), 10, 1750);
+    }
+
+    @DisplayName("종합운동장 ~ 석촌 최단 경로, 거리, 비용 조회")
+    @Test
+    void testPathDistanceFare03() {
         // given : 지하철역 등록되어 있음
         종합운동장 = 지하철역_등록되어_있음("종합운동장").as(StationResponse.class);
         잠실새내 = 지하철역_등록되어_있음("잠실새내").as(StationResponse.class);
@@ -130,9 +152,39 @@ public class PathFareAcceptanceTest extends AcceptanceTest {
         최단경로_지하철목록_거리_비용_조회(어른_조회, Arrays.asList(종합운동장, 잠실새내, 잠실, 석촌), 50, 2050);
     }
 
+    @DisplayName("[노선 추가 요금] 종합운동장 ~ 석촌 최단 경로, 거리, 비용 조회")
+    @Test
+    void testPathDistanceFare04() {
+        // given : 지하철역 등록되어 있음
+        종합운동장 = 지하철역_등록되어_있음("종합운동장").as(StationResponse.class);
+        잠실새내 = 지하철역_등록되어_있음("잠실새내").as(StationResponse.class);
+        잠실 = 지하철역_등록되어_있음("잠실").as(StationResponse.class);
+        석촌 = 지하철역_등록되어_있음("석촌").as(StationResponse.class);
+
+        // given : 지하철노선 등록되어 있음
+        LineRequest lineRequest = new LineRequest("2호선", "green", 종합운동장.getId(), 잠실새내.getId(), 10, 500);
+        이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+
+        lineRequest = new LineRequest("8호선", "pink", 잠실.getId(), 석촌.getId(), 20, 1000);
+        팔호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+
+        // given : 지하철구간 등록되어 있음
+        지하철_노선에_지하철역_등록_요청(이호선, 잠실새내, 잠실, 20);
+
+        // when : 출발역에서 도착역까지의 최단 거리 경로 조회
+        ExtractableResponse<Response> 어린이_조회 = 최단경로_조회(childTokenResponse, 종합운동장, 석촌);
+        ExtractableResponse<Response> 청소년_조회 = 최단경로_조회(youthTokenResponse, 종합운동장, 석촌);
+        ExtractableResponse<Response> 어른_조회 = 최단경로_조회(adultTokenResponse, 종합운동장, 석촌);
+
+        // then : 최단경로, 거리, 요금 조회
+        최단경로_지하철목록_거리_비용_조회(어린이_조회, Arrays.asList(종합운동장, 잠실새내, 잠실, 석촌), 50, 1350);
+        최단경로_지하철목록_거리_비용_조회(청소년_조회, Arrays.asList(종합운동장, 잠실새내, 잠실, 석촌), 50, 2160);
+        최단경로_지하철목록_거리_비용_조회(어른_조회, Arrays.asList(종합운동장, 잠실새내, 잠실, 석촌), 50, 3050);
+    }
+
     @DisplayName("종합운동장 ~ 오금 최단 경로, 거리, 비용 조회")
     @Test
-    void testPathDistanceFare03() {
+    void testPathDistanceFare05() {
         // given : 지하철역 등록되어 있음
         종합운동장 = 지하철역_등록되어_있음("종합운동장").as(StationResponse.class);
         잠실새내 = 지하철역_등록되어_있음("잠실새내").as(StationResponse.class);
