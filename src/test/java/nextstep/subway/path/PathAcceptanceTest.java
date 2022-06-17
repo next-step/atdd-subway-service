@@ -1,14 +1,24 @@
 package nextstep.subway.path;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathRequest;
+import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static nextstep.subway.path.factory.PathAcceptanceFactory.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -46,7 +56,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("최단거리 조회 테스트")
     void findShortestDistance() {
-        PathRequest pathRequest = PathRequest.of(1, 6);
-        최단_거리_조회(pathRequest);
+        PathRequest pathRequest = PathRequest.of(강남역.getId(), 교대역.getId());
+        List<Station> 역_목록 = Arrays.asList(new Station("강남역"), new Station("교대역"));
+
+        ExtractableResponse<Response> 최단_거리_조회 = 최단_거리_조회(pathRequest);
+
+        최단_거리_조회_됨(최단_거리_조회, 역_목록);
+    }
+
+    void 최단_거리_조회_됨(ExtractableResponse<Response> response, List<Station> stations) {
+        Assertions.assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(PathResponse.class).getStations()).isEqualTo(stations)
+        );
     }
 }

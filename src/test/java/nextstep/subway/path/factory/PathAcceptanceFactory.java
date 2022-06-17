@@ -43,7 +43,7 @@ public class PathAcceptanceFactory {
     }
 
     public static ExtractableResponse<Response> 최단_거리_조회(PathRequest pathRequest) {
-        Map<String, Integer> queryParams = new HashMap<>();
+        Map<String, Long> queryParams = new HashMap<>();
         queryParams.put("source", pathRequest.getSource());
         queryParams.put("target", pathRequest.getTarget());
 
