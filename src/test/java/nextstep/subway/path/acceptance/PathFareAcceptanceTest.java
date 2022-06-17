@@ -268,8 +268,8 @@ public class PathFareAcceptanceTest extends AcceptanceTest {
         최단경로_지하철목록_거리_비용_조회(청소년_조회, Arrays.asList(종합운동장, 잠실새내, 잠실, 석촌, 가락시장), 50, 1360);
         최단경로_지하철목록_거리_비용_조회(어른_조회, Arrays.asList(종합운동장, 잠실새내, 잠실, 석촌, 가락시장), 50, 2050);
 
-        // when: 최단 경로를 가지는 신규 노선 구간 등록 되어있음
-        지하철_노선_등록되어_있음(new LineRequest("최단경로노선", "bg-black-600", 종합운동장.getId(), 가락시장.getId(), 15)).as(LineResponse.class);
+        // when: 최단 경로를 가지는 신규 노선 구간 등록 되어있음 [노선 추가 요금]
+        지하철_노선_등록되어_있음(new LineRequest("최단경로노선", "bg-black-600", 종합운동장.getId(), 가락시장.getId(), 15, 1000)).as(LineResponse.class);
 
         // and: 최단 경로 조회 요청
         ExtractableResponse<Response> 최단경로노선_어린이_조회 = 최단경로_조회(childTokenResponse, 종합운동장, 가락시장);
@@ -277,9 +277,9 @@ public class PathFareAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 최단경로노선_어른_조회 = 최단경로_조회(adultTokenResponse, 종합운동장, 가락시장);
 
         // then: 최단 경로가 조회됨
-        최단경로_지하철목록_거리_비용_조회(최단경로노선_어린이_조회, Arrays.asList(종합운동장, 가락시장), 15, 500);
-        최단경로_지하철목록_거리_비용_조회(최단경로노선_청소년_조회, Arrays.asList(종합운동장, 가락시장), 15, 800);
-        최단경로_지하철목록_거리_비용_조회(최단경로노선_어른_조회, Arrays.asList(종합운동장, 가락시장), 15, 1350);
+        최단경로_지하철목록_거리_비용_조회(최단경로노선_어린이_조회, Arrays.asList(종합운동장, 가락시장), 15, 1000);
+        최단경로_지하철목록_거리_비용_조회(최단경로노선_청소년_조회, Arrays.asList(종합운동장, 가락시장), 15, 1600);
+        최단경로_지하철목록_거리_비용_조회(최단경로노선_어른_조회, Arrays.asList(종합운동장, 가락시장), 15, 2350);
 
         // when: 새로운 노선 등록됨
         StationResponse 김포공항 = 지하철역_등록되어_있음("김포공항").as(StationResponse.class);
