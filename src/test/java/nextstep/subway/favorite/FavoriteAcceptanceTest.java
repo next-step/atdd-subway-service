@@ -104,6 +104,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제_성공됨(result, myFavoriteIds, removeFavoriteId, myToken);
     }
 
+    @DisplayName("내가 생성한 즐겨찾기가 아닌 즐겨찾기를 제거 시 예외가 발생해야 한다")
+    @Test
+    void deleteFavoriteNotMineTest() {
+        // given
+        Long otherFavoriteId = extractIdByHeaderLocation(즐겨찾기_생성_요청(봉천역.getId(), 삼성역.getId(), otherToken));
+
+        // when
+        ExtractableResponse<Response> result = 즐겨찾기_삭제_요청(otherFavoriteId, myToken);
+
+        // then
+        즐겨찾기_삭제_실패됨(result);
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(Long source, Long target, String token) {
         Map<String, Object> body = new HashMap<>();
         body.put("source", source);
@@ -146,6 +159,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_NO_CONTENT);
         assertThat(favoriteIds).containsAll(containIds);
         assertThat(favoriteIds).doesNotContain(notContainId);
+    }
+
+    public static void 즐겨찾기_삭제_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_UNAUTHORIZED);
     }
 
     private static Long extractIdByHeaderLocation(ExtractableResponse<Response> response) {

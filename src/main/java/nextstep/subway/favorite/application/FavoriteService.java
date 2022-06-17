@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.domain.Favorites;
@@ -31,11 +32,19 @@ public class FavoriteService {
     }
 
     @Transactional
-    public Favorite saveFavorite(FavoriteRequest request, Long memberId) {
-        Member member = memberRepository.getById(memberId);
+    public Favorite saveFavorite(FavoriteRequest request, Long creatorId) {
+        Member member = memberRepository.getById(creatorId);
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
 
         return favoriteRepository.save(new Favorite(source, target, member));
+    }
+
+    @Transactional
+    public void deleteFavorite(Long id, Long creatorId) {
+        Favorite favorite = favoriteRepository.findByIdAndCreatorId(id, creatorId)
+                .orElseThrow(() -> new AuthorizationException("즐겨찾기에 접근할 수 없습니다."));
+
+        favoriteRepository.delete(favorite);
     }
 }
