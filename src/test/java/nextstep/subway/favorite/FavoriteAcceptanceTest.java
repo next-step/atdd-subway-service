@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
