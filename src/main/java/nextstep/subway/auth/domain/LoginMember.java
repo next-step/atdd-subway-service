@@ -32,6 +32,10 @@ public class LoginMember {
         return getAgeGroup().getDiscountPercent();
     }
 
+    public boolean isLogin() {
+        return id != null;
+    }
+
     private AgeGroup getAgeGroup() {
         return AgeGroup.from(age);
     }

@@ -31,7 +31,7 @@ public class PathService {
         Station sourceStation = getStation(request.getSource());
         Station targetStation = getStation(request.getTarget());
 
-        double discountPercent = loginMember != null ? loginMember.getDiscountPercent() : 0.0;
+        double discountPercent = loginMember.isLogin() ? loginMember.getDiscountPercent() : 0.0;
         Path path = pathFinder.getPath(sourceStation, targetStation, discountPercent);
         return new PathResponse(path);
     }
