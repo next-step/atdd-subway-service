@@ -10,6 +10,8 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 public class FavoriteService {
     private final StationRepository stationRepository;
@@ -21,8 +23,8 @@ public class FavoriteService {
     }
 
     public FavoriteResponse saveFavorite(final LoginMember loginMember, final FavoriteRequest favoriteRequest) {
-        final Station source = stationRepository.findById(favoriteRequest.getSource()).get();
-        final Station destination = stationRepository.findById(favoriteRequest.getTarget()).get();
+        final Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(EntityNotFoundException::new);
+        final Station destination = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(EntityNotFoundException::new);
         final Favorite savedFavorite = favoriteRepository.save(new Favorite(loginMember, source, destination));
         return new FavoriteResponse(savedFavorite.getId(),
                 StationResponse.of(savedFavorite.getSource()),
