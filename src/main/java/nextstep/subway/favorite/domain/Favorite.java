@@ -21,6 +21,9 @@ public class Favorite extends BaseEntity {
     @JoinColumn(name = "DESTINATION_ID", nullable = false)
     private Station destination;
 
+    @Enumerated(value = EnumType.STRING)
+    private DeletedState deleted = DeletedState.NO;
+
     protected Favorite() {
     }
 
@@ -44,5 +47,13 @@ public class Favorite extends BaseEntity {
 
     public Station getDestination() {
         return destination;
+    }
+
+    public boolean isDeleted() {
+        return deleted.isDeleted();
+    }
+
+    public void updateDeletedStateBy(final DeletedState state) {
+        this.deleted = state;
     }
 }
