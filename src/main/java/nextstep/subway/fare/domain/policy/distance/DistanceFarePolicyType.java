@@ -7,31 +7,30 @@ import nextstep.subway.fare.domain.policy.distance.impl.MiddleDistanceFarePolicy
 
 public enum DistanceFarePolicyType {
 
-    DEFAULT(DefaultDistanceFarePolicy.class),
-    BETWEEN_10KM_50KM(MiddleDistanceFarePolicy.class),
-    OVER_50KM(LongDistanceFarePolicy.class);
+    DEFAULT(DefaultDistanceFarePolicy.getInstance()),
+    Middle(MiddleDistanceFarePolicy.getInstance()),
+    Long(LongDistanceFarePolicy.getInstance());
 
-    private final Class<? extends DistanceFarePolicy> distanceFarePolicy;
-    DistanceFarePolicyType(Class<? extends DistanceFarePolicy> distanceFarePolicyClass) {
+    public static final int DEFAULT_DISTANCE_ADDITIONAL_FARE = 100;
+    public static final int DEFAULT_MAX_DISTANCE = 10;
+    public static final int MIDDLE_MAX_DISTANCE = 50;
+
+    private final DistanceFarePolicy distanceFarePolicy;
+
+    DistanceFarePolicyType(DistanceFarePolicy distanceFarePolicyClass) {
         this.distanceFarePolicy = distanceFarePolicyClass;
     }
 
     public static DistanceFarePolicy getDistanceFarePolicy(int distance) {
         return Arrays.stream(values())
-            .map(DistanceFarePolicyType::getDistanceFarePolicyInstance)
-            .filter(policy -> policy.isDistance(distance))
+            .filter(type -> type.distanceFarePolicy.includeDistance(distance))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("거리에 대한 요금정책이 존재하지 않습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("거리에 대한 요금정책이 존재하지 않습니다."))
+            .getDistanceFarePolicy();
     }
 
-    private static DistanceFarePolicy getDistanceFarePolicyInstance(DistanceFarePolicyType type) {
-        try {
-            return type.distanceFarePolicy.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+    public DistanceFarePolicy getDistanceFarePolicy() {
+        return distanceFarePolicy;
     }
 
 }

@@ -3,7 +3,6 @@ package nextstep.subway.fare.domain;
 import java.util.Objects;
 import nextstep.subway.fare.domain.policy.age.AgeFarePolicy;
 import nextstep.subway.fare.domain.policy.age.AgeFarePolicyType;
-import nextstep.subway.fare.domain.policy.age.impl.FreeAgeFarePolicy;
 import nextstep.subway.fare.domain.policy.distance.DistanceFarePolicy;
 import nextstep.subway.fare.domain.policy.distance.DistanceFarePolicyType;
 
@@ -17,7 +16,7 @@ public class Fare {
 
         int defaultAgeFare = ageFarePolicy.calculate();
         int additionalDistanceFare = distanceFarePolicy.calculate(distance, ageFarePolicy);
-        int lineFare = ageFarePolicy instanceof FreeAgeFarePolicy ? 0 : additionalLineFare;
+        int lineFare = ageFarePolicy.isFreeAge() ? 0 : additionalLineFare;
 
         this.value = defaultAgeFare + additionalDistanceFare + lineFare;
     }
