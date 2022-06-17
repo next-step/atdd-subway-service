@@ -105,4 +105,30 @@ class SectionsTest {
                 .isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessage("등록할 수 없는 구간 입니다.");
     }
+
+
+    @Test
+    @DisplayName("마지막 구간을 제거하려고 하면 예외를 발생시킨다.")
+    void removeLastSection() {
+        Section 광교역_정자역 = new Section(신분당선, 광교역, 정자역, 20000);
+        모든구간.addLineStation(광교역_정자역);
+
+        assertThatThrownBy(() -> 모든구간.removeLineStation(신분당선, 정자역))
+                .isExactlyInstanceOf(IllegalStateException.class)
+                .hasMessage("마지막 구간은 삭제할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("중간 역을 삭제하면 관련된 두 구간이 연결된다.")
+    void removeStation() {
+        Section 광교역_정자역 = new Section(신분당선, 광교역, 정자역, 20000);
+        Section 정자역_강남역 = new Section(신분당선, 정자역, 강남역, 10000);
+        모든구간.addLineStation(광교역_정자역);
+        모든구간.addLineStation(정자역_강남역);
+
+        모든구간.removeLineStation(신분당선, 정자역);
+
+        assertThat(모든구간.getStations())
+                .containsExactly(광교역, 강남역);
+    }
 }
