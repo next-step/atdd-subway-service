@@ -1,5 +1,7 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.auth.domain.DiscountPolicy;
+import nextstep.subway.auth.domain.DiscountType;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -33,6 +35,7 @@ public class AuthService {
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge().getValue());
+        DiscountPolicy discountPolicy = DiscountType.findDiscountPolicy(member.getAge());
+        return new LoginMember(member.getId(), member.getEmail(), member.getAge().getValue(), discountPolicy);
     }
 }

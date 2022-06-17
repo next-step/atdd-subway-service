@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
@@ -13,15 +14,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class PathService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
     public PathService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
     }
 
-    public PathResponse findShortestPath(PathRequest pathRequest) {
+    public PathResponse findShortestPath(LoginMember loginMember, PathRequest pathRequest) {
         Station source = stationService.findById(pathRequest.getSource());
         Station target = stationService.findById(pathRequest.getTarget());
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
