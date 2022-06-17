@@ -73,6 +73,7 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
+    // TODO :: 메서드 추출 및 도메인 로직으로 전환
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -114,6 +115,7 @@ public class LineService {
         }
     }
 
+    // TODO :: 메서드 추출 및 도메인 로직으로 전환
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
@@ -139,7 +141,7 @@ public class LineService {
         downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
 
-
+    // TODO :: 접근제한자 변경 및 도메인 로직으로 전환
     public List<Station> getStations(Line line) {
         if (line.getSections().isEmpty()) {
             return Arrays.asList();
@@ -164,6 +166,7 @@ public class LineService {
         return stations;
     }
 
+    // TODO :: 도메인 로직으로 전환
     private Station findUpStation(Line line) {
         Station downStation = line.getSections().get(0).getUpStation();
         while (downStation != null) {
