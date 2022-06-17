@@ -17,12 +17,10 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class PathService {
-    private final StationRepository stationRepository;
     private final LineService lineService;
     private final StationService stationService;
 
-    public PathService(StationRepository stationRepository, LineService lineService, StationService stationService) {
-        this.stationRepository = stationRepository;
+    public PathService(LineService lineService, StationService stationService) {
         this.lineService = lineService;
         this.stationService = stationService;
     }
