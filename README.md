@@ -73,3 +73,48 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - 경로 조회 실패한다
   - 출발역과 도착역이 이어져 있지 않으면
   - 경로 조회 실패한다
+
+## 로그인 기능
+- Feature: 로그인 기능
+  - Scenario: 로그인 성공
+    - Given: 회원 등록되어 있음
+    - When: 로그인 요청
+    - Then: 로그인 성공
+  - Scenario: 로그인 실패
+    - Given: 등록되지 않은 계정
+    - When: 로그인 요청
+    - Then: 로그인 실패
+  - Scenario: 유효하지 않은 토큰
+    - Given: 로그인 하지 않음
+    - When: 내 정보 조회
+    - Then: 조회 실패
+
+## 내 정보 조회 기능
+- Feature: 내 정보 조회 기능
+  - Scenario: 나의 정보를 관리한다
+    - Given: 회원 등록되어 있음
+    - And: 로그인 되어있음
+    - When: 내 정보 조회
+    - Then: 조회 성공
+    - When: 내 정보 변경
+    - Then: 변경 성공
+    - When: 변경된 정보로 로그인
+    - When: 회원 탈퇴
+    - Then: 탈퇴 성공
+    - When: 내 정보 조회
+    - Then: 조회 실패
+
+## 즐겨찾기 기능
+- Feature: 즐겨찾기 기능
+  - Scenario: 즐겨찾기를 관리한다
+    - Given: 지하철역 등록되어 있음
+    - And: 지하철 노선 등록되어 있음
+    - And: 지하철 노선에 지하철역 등록되어 있음
+    - And: 회원 등록되어 있음
+    - And: 로그인 되어있음
+    - When: 즐겨찾기 생성을 요청
+    - Then: 즐겨찾기 생성됨
+    - When: 즐겨찾기 목록 조회 요청
+    - Then: 즐겨찾기 목록 조회됨
+    - When: 즐겨찾기 삭제 요청
+    - Then: 즐겨찾기 삭제됨
