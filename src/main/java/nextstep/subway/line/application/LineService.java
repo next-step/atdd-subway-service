@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.*;
+
 @Service
 @Transactional
 public class LineService {
@@ -38,13 +40,8 @@ public class LineService {
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-                .map(line -> {
-                    List<StationResponse> stations = getStations(line).stream()
-                            .map(StationResponse::of)
-                            .collect(Collectors.toList());
-                    return LineResponse.of(line);
-                })
-                .collect(Collectors.toList());
+                .map(LineResponse::of)
+                .collect(toList());
     }
 
     public Line findLineById(Long id) {
@@ -53,14 +50,11 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        List<StationResponse> stations = getStations(persistLine).stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
         return LineResponse.of(persistLine);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = findLineById(id);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -99,9 +93,5 @@ public class LineService {
 //
 //        upLineStation.ifPresent(it -> line.getSections().remove(it));
 //        downLineStation.ifPresent(it -> line.getSections().remove(it));
-    }
-
-    public List<Station> getStations(Line line) {
-        return null;
     }
 }
