@@ -3,7 +3,6 @@ package nextstep.subway.fare.domain;
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Distance;
 
 public enum DistanceFarePolicy {
@@ -63,7 +62,7 @@ public enum DistanceFarePolicy {
                 .filter(distanceFarePolicy -> distanceFarePolicy.predicateByDistance
                         .test(distance))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException("해당하는 거리 요금 정책이 없습니다."));
+                .orElse(DistanceFarePolicy.BASIC_POLICY);
     }
 
     public Fare calculateFare(Distance distance) {
