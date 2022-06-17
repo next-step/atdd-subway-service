@@ -13,6 +13,8 @@ import java.util.Optional;
 
 @Embeddable
 public class Sections {
+    public static final int MINIMUM_SECTION_SIZE = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> elements = new ArrayList<>();
 
@@ -114,7 +116,7 @@ public class Sections {
             throw new IllegalStateException("구간 목록이 비어 있습니다.");
         }
 
-        if (elements.size() == 1) {
+        if (elements.size() == MINIMUM_SECTION_SIZE) {
             throw new IllegalStateException("구간이 하나뿐일 때는 삭제할 수 없습니다.");
         }
 

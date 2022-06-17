@@ -42,7 +42,7 @@ public class LineService {
                 )
         );
 
-        pathFinder.renew();
+        pathFinder.renewGraph();
 
         return LineResponse.of(persistLine);
     }
@@ -71,7 +71,7 @@ public class LineService {
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
 
-        pathFinder.renew();
+        pathFinder.renewGraph();
     }
 
     @Transactional
@@ -81,7 +81,7 @@ public class LineService {
         Station downStation = stationService.findStationById(request.getDownStationId());
         line.addSection(upStation, downStation, request.getDistance());
 
-        pathFinder.renew();
+        pathFinder.renewGraph();
     }
 
     @Transactional
@@ -90,7 +90,7 @@ public class LineService {
         Station station = stationService.findStationById(stationId);
         line.removeSection(station);
 
-        pathFinder.renew();
+        pathFinder.renewGraph();
     }
 
     private Line findLineById(Long id) {

@@ -19,15 +19,15 @@ public class PathFinder {
 
     public PathFinder(LineRepository lineRepository) {
         this.lineRepository = lineRepository;
-        renew();
+        renewGraph();
     }
 
-    private void enrollInGraph(List<Line> lines) {
+    private void enrollLinesInGraph(List<Line> lines) {
         lines.forEach(line -> line.enrollIn(graph));
     }
 
     public void addLines(List<Line> lines) {
-        enrollInGraph(lines);
+        enrollLinesInGraph(lines);
     }
 
     public GraphPath<Station, DefaultWeightedEdge> getPath(Station source, Station target) {
@@ -55,7 +55,7 @@ public class PathFinder {
         }
     }
 
-    public void renew() {
+    public void renewGraph() {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         lineRepository.findAll()
                 .forEach(line -> line.enrollIn(graph));
