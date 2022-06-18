@@ -82,7 +82,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
     
     @Test
-    void 경로_출발역과_도착역이_같은_경우() {
+    void 경로_출발역과_도착역이_같은_경우_BAD_REQUEST_반환() {
         PathRequest pathRequest = new PathRequest(교대역.getId(), 교대역.getId());
         ExtractableResponse<Response> response = 최단구간을_조회한다(pathRequest);
 
@@ -91,7 +91,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 경로_출발역과_도착역이_경로가_이어지지_않는_경우() {
+    void 경로_출발역과_도착역이_경로가_이어지지_않는_경우_BAD_REQUEST_반환() {
         PathRequest pathRequest = new PathRequest(교대역.getId(), 강남구청역.getId());
         ExtractableResponse<Response> response = 최단구간을_조회한다(pathRequest);
 
@@ -100,7 +100,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 출발역이나_도착역이_노선에_등록되어있지_않은_경우() {
+    void 출발역이나_도착역이_노선에_등록되어있지_않은_경우_BAD_REQUEST_반환() {
         PathRequest pathRequest = new PathRequest(교대역.getId(), 뚝섬유원지역.getId());
         ExtractableResponse<Response> response = 최단구간을_조회한다(pathRequest);
 
