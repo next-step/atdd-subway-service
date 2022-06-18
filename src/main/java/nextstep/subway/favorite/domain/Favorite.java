@@ -34,9 +34,16 @@ public class Favorite extends BaseEntity {
     }
 
     public Favorite(Member member, Station source, Station target) {
+        validate(source, target);
         this.member = member;
         this.source = source;
         this.target = target;
+    }
+
+    private void validate(Station source, Station target) {
+        if(Objects.equals(source, target)) {
+            throw new IllegalArgumentException("출발지와 도착지는 다른 역으로 등록해주세요.");
+        }
     }
 
     public Long getId() {
