@@ -8,15 +8,16 @@ import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
+import static nextstep.subway.member.MemberAcceptanceTest.토큰값으로_회원_정보_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성됨;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -36,7 +37,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> memberInfoResponse = 토큰값으로_회원_정보_요청(tokenResponse);
 
         // Then
-        토큰값으로_회원_정보_조회_성공(memberInfoResponse);
+        회원_정보_조회됨(memberInfoResponse, EMAIL, AGE);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -98,23 +99,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static void 로그인_요청_실패(ExtractableResponse<Response> tokenResponse) {
         assertThat(tokenResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    public static ExtractableResponse<Response> 토큰값으로_회원_정보_요청(ExtractableResponse<Response> response) {
-        TokenResponse tokenResponse = response.as(TokenResponse.class);
-        return 토큰값으로_회원_정보_요청(tokenResponse.getAccessToken());
-    }
-
-    public static ExtractableResponse<Response> 토큰값으로_회원_정보_요청(String token) {
-        return RestAssured.given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "bearer " + token)
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
-    }
-
-    public static void 토큰값으로_회원_정보_조회_성공(ExtractableResponse<Response> memberInfoResponse) {
-        assertThat(memberInfoResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 토큰값으로_회원_정보_조회_실패(ExtractableResponse<Response> memberInfoResponse) {
