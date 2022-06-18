@@ -1,7 +1,7 @@
 ## 요구사항
 
 - [x] LineService 리팩터링
-- [ ] LineSectionAcceptanceTest 리팩터링
+- [x] LineSectionAcceptanceTest 리팩터링
 
 ## 요구사항 설명
 
