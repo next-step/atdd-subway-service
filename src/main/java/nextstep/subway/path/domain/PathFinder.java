@@ -1,9 +1,11 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.domain.FareCalculator;
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;

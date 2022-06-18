@@ -1,9 +1,10 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.station.domain.Station;
 
 public class Path {

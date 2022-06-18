@@ -1,4 +1,4 @@
-package nextstep.subway.line.application;
+package nextstep.subway.path.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -9,11 +9,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Path;
-import nextstep.subway.line.domain.PathFinder;
-import nextstep.subway.line.dto.PathResponse;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.application.PathService;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;

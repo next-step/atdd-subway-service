@@ -1,4 +1,4 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,10 +11,13 @@ import nextstep.subway.fare.domain.DistanceFarePolicy;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.fare.domain.LineFarePolicy;
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 class PathFinderTest {
     private Station 강남역;

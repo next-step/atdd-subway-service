@@ -1,13 +1,10 @@
 package nextstep.subway.fare.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
-import java.util.Collections;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
