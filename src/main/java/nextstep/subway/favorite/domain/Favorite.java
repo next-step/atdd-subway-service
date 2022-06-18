@@ -53,7 +53,20 @@ public class Favorite {
         }
 
         public Favorite build() {
+            validateBuild();
             return new Favorite(member, target, source);
+        }
+
+        private void validateBuild() {
+            if (member == null) {
+                throw new IllegalArgumentException("즐겨찾기에 멤버는 필수 입니다");
+            }
+            if (source == null) {
+                throw new IllegalArgumentException("즐겨찾기에 출발역은 필수 입니다");
+            }
+            if (target == null) {
+                throw new IllegalArgumentException("즐겨찾기에 도착역은 필수 입니다");
+            }
         }
     }
 
