@@ -53,10 +53,14 @@ public class Sections {
 
     private void validateNotExists(List<Station> stations, Section section) {
         if (!stations.isEmpty()
-                && stations.stream().noneMatch(it -> it.equals(section.getDownStation()))
-                && stations.stream().noneMatch(it -> it.equals(section.getUpStation()))) {
+                && !hasCommonStation(stations, section)) {
             throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
+    }
+
+    private boolean hasCommonStation(List<Station> stations, Section section) {
+        return stations.stream()
+                .anyMatch(section::hasStation);
     }
 
     public List<Station> getStations() {
