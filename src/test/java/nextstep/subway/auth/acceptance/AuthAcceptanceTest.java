@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.MemberAcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,45 +13,48 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.member.MemberAcceptanceTest.AGE;
+import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
+import static nextstep.subway.member.MemberAcceptanceTest.NEW_EMAIL;
+import static nextstep.subway.member.MemberAcceptanceTest.NEW_PASSWORD;
+import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("로그인 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
-    @Test
     void init() {
-        MemberAcceptanceTest.회원_생성을_요청("a@b.c", "pwd", 3);
+        MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
     }
 
     /**
-     * Feature: 로그인 기능
-     *
-     *   Scenario: 로그인을 시도한다.
-     *     Given 회원 등록되어 있음
-     *     When 로그인 요청
-     *     Then 로그인됨
+     * Scenario: 로그인을 시도한다.
+     * Given 회원 등록되어 있음
+     * When 로그인 요청
+     * Then 로그인됨
      */
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
         // when
-        ExtractableResponse<Response> response = 로그인_요청("a@b.c", "pwd");
-        
+        ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
+
         // then
-        로그인되어_있음(response);
+        로그인되어_있음(loginResponse);
     }
 
     /**
      * Scenario: 로그인에 실패한다.
-     *   Given 회원 등록되어 있음
-     *   When 틀린 비밀번호로 로그인 요청
-     *   Then 로그인 실패
+     * Given 회원 등록되어 있음
+     * When 틀린 비밀번호로 로그인 요청
+     * Then 로그인 실패
      */
     @DisplayName("Bearer Auth 로그인 실패 - 틀린 비밀번호")
     @Test
     void myInfoWithBadBearerAuth() {
         // when
-        ExtractableResponse<Response> response = 로그인_요청("a@b.c", "123");
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, NEW_PASSWORD);
 
         // then
         로그인_실패(response);
@@ -58,15 +62,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     /**
      * Scenario: 로그인에 실패한다.
-     *   Given 회원 등록되어 있음
-     *   When 없는 이메일로 로그인 요청
-     *   Then 로그인 실패
+     * Given 회원 등록되어 있음
+     * When 없는 이메일로 로그인 요청
+     * Then 로그인 실패
      */
     @DisplayName("Bearer Auth 로그인 실패 - 없는 이메일")
     @Test
     void myInfoWithBadBearerAuth_2() {
         // when
-        ExtractableResponse<Response> response = 로그인_요청("z@x.y", "pwd");
+        ExtractableResponse<Response> response = 로그인_요청(NEW_EMAIL, PASSWORD);
 
         // then
         로그인_실패(response);
@@ -93,7 +97,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     public static String 로그인되어_있음(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        return response.jsonPath().getString("accessToken");
+        return response.as(TokenResponse.class)
+                .getAccessToken();
     }
 
     public static void 로그인_실패(ExtractableResponse<Response> response) {
