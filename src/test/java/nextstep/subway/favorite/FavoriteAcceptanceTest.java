@@ -75,7 +75,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> findResponse2 = 즐겨찾기_조회_요청();
         //then
         즐겨찾기_목록_사이즈_검증(findResponse2, 0);
-
     }
 
     private ExtractableResponse<Response> 즐겨찾기_추가_요청(Long source, Long target) {

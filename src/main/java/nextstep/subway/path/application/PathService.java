@@ -4,11 +4,9 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.strategy.Dijkstra;
-import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +24,8 @@ public class PathService {
     }
 
     public PathResponse findShortestDistancePath(Long sourceId, Long targetId) {
-        Station source = stationService.findStationById(sourceId);
-        Station target = stationService.findStationById(targetId);
+        Station source = stationService.findStationByIdOrElseThrow(sourceId);
+        Station target = stationService.findStationByIdOrElseThrow(targetId);
         Sections sections = lineService.findAllSections();
 
         List<Station> shortestStations = PathFinder.find(new Dijkstra(source, target, sections));
