@@ -33,13 +33,13 @@ public class FavoriteService {
         Station source = stationService.findStationById(favoriteRequest.getSourceStationId());
         Station target = stationService.findStationById(favoriteRequest.getTargetStationId());
         Favorite favorite = favoriteRepository.save(favoriteRequest.toFavorite(member, source, target));
-        return FavoriteResponse.of(favorite);
+        return FavoriteResponse.from(favorite);
     }
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findAllFavorites(Long memberId) {
         return favoriteRepository.findAllByMemberId(memberId).stream()
-                .map(FavoriteResponse::of)
+                .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
     }
 
