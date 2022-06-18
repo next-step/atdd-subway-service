@@ -1,5 +1,7 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.constant.ErrorMessage;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -47,7 +49,7 @@ public class LineService {
         return persistLines.stream()
                 .map(line -> {
                     List<StationResponse> stations = getStations(line).stream()
-                            .map(it -> StationResponse.of(it))
+                            .map(StationResponse::of)
                             .collect(Collectors.toList());
                     return LineResponse.of(line, stations);
                 })
@@ -55,14 +57,13 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_LINE));
     }
-
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         List<StationResponse> stations = getStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
         return LineResponse.of(persistLine, stations);
     }
