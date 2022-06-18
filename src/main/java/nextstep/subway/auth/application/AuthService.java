@@ -4,25 +4,29 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
 
 @Service
 public class AuthService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
-        this.memberRepository = memberRepository;
+    public AuthService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+        this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public TokenResponse login(TokenRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
-        member.checkPassword(request.getPassword());
+        try {
+            Member member = memberService.findMemberByEmail(request.getEmail());
+            member.checkPassword(request.getPassword());
+        } catch (NoSuchElementException e) {
+            throw new AuthorizationException("존재하지 않는 email입니다.");
+        }
 
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
@@ -34,7 +38,7 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
+        Member member = memberService.findMemberByEmail(email);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }
