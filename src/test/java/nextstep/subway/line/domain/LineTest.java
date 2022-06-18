@@ -1,7 +1,5 @@
 package nextstep.subway.line.domain;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +18,7 @@ class LineTest {
     @Test
     @DisplayName("해당 노선의 구간의 역들을 조회한다")
     void getStations() {
-        신분당선.getStations()
+        //신분당선.getStations()
 
     }
 }
