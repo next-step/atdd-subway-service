@@ -75,12 +75,7 @@ class LineTest {
         emptyLine.addSection(givenUpStation, givenDownStation, givenLineDistance);
 
         // then
-        assertThat(emptyLine.getSections().size()).isEqualTo(1);
-
-        final Section newSection = emptyLine.getSections().get(0);
-        assertThat(newSection.getUpStation().getName()).isEqualTo(givenUpStationName);
-        assertThat(newSection.getDownStation().getName()).isEqualTo(givenDownStationName);
-        assertThat(newSection.getDistance()).isEqualTo(givenLineDistance);
+        assertThat(givenLine.getStations()).containsExactly(givenUpStation, givenDownStation);
     }
 
     @Test
@@ -92,12 +87,7 @@ class LineTest {
         givenLine.addSection(givenUpStation, newDownStation, givenLineDistance / 2);
 
         // then
-        assertThat(givenLine.getSections().size()).isEqualTo(2);
-
-        final Section newSection = givenLine.getSections().get(1);
-        assertThat(newSection.getUpStation().getName()).isEqualTo(givenUpStationName);
-        assertThat(newSection.getDownStation().getName()).isEqualTo(newDownStation.getName());
-        assertThat(newSection.getDistance()).isEqualTo(givenLineDistance / 2);
+        assertThat(givenLine.getStations()).containsExactly(givenUpStation, newDownStation, givenDownStation);
     }
 
     @Test
@@ -109,12 +99,7 @@ class LineTest {
         givenLine.addSection(newUpStation, givenDownStation, givenLineDistance / 2);
 
         // then
-        assertThat(givenLine.getSections().size()).isEqualTo(2);
-
-        final Section newSection = givenLine.getSections().get(1);
-        assertThat(newSection.getUpStation().getName()).isEqualTo(newUpStation.getName());
-        assertThat(newSection.getDownStation().getName()).isEqualTo(givenDownStationName);
-        assertThat(newSection.getDistance()).isEqualTo(givenLineDistance / 2);
+        assertThat(givenLine.getStations()).containsExactly(givenUpStation, newUpStation, givenDownStation);
     }
 
     @Test
