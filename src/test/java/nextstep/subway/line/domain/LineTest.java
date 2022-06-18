@@ -22,7 +22,11 @@ class LineTest {
         // given
         this.upStation = Station.from("강남역");
         this.downStation = Station.from("선릉역");
-        this.line = Line.of("2호선", "GREEN", this.upStation, this.downStation, 10);
+        this.line = new Line.Builder("2호선", "GREEN")
+                .upStation(this.upStation)
+                .downStation(this.downStation)
+                .distance(10)
+                .build();
     }
 
     @DisplayName("노선의 이름과 색상으로 지하철 노선을 생성한다.")
@@ -30,7 +34,7 @@ class LineTest {
     @CsvSource(value = {"2호선,GREEN", "신분당선,RED"})
     void create_line(String name, String color) {
         // given & when
-        Line newLine = Line.of(name, color);
+        Line newLine = new Line.Builder(name, color).build();
 
         // then
         assertAll(
@@ -43,7 +47,7 @@ class LineTest {
     @Test
     void update_line() {
         // given
-        Line updateLine = Line.of("신분당선", "RED");
+        Line updateLine = new Line.Builder("신분당선", "RED").build();
 
         // when
         this.line.update(updateLine);
