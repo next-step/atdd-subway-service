@@ -16,7 +16,7 @@ import java.util.List;
 
 @Component
 public class PathFinder {
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    private WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
@@ -28,6 +28,7 @@ public class PathFinder {
     }
 
     public PathResponse findShortestPath(Long source, Long target) {
+        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         addLineStations(lineRepository.findAll());
         Station srcStation = stationRepository.findById(source).orElseThrow(IllegalAccessError::new);
         Station tgtStation = stationRepository.findById(target).orElseThrow(IllegalAccessError::new);
