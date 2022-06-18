@@ -46,8 +46,6 @@ class PathFinderTest {
      */
     @BeforeEach
     void init() {
-        pathFinder = new PathFinder();
-
         //7호선
         청담역 = new Station("청담역");
         뚝섬유원지역 = new Station("뚝섬유원지역");
@@ -80,14 +78,13 @@ class PathFinderTest {
 
         //3호선
         삼호선 = new Line("삼호선", "red", 중곡역, 구의역, 7);
+
+        pathFinder = new PathFinder(Arrays.asList(칠호선, 이호선, 오호선, 일호선, 삼호선));
     }
 
     @Test
     @DisplayName("주어진 지하철 노선에서, 여러 경로 중 최단 거리인 경로를 조회한다.(HappyPath)")
     void getShortestPath() {
-        //when
-        pathFinder.addPathForLines(Arrays.asList(칠호선, 이호선, 오호선, 일호선, 삼호선));
-
         //given
         Path path = pathFinder.getShortestPath(청담역, 강변역);
 
@@ -99,9 +96,6 @@ class PathFinderTest {
 
     @Test
     void 출발역과_도착역이_연결되어있지_않은경우() {
-        //when
-        pathFinder.addPathForLines(Arrays.asList(칠호선, 이호선, 오호선, 일호선, 삼호선));
-
         //then
         assertThatThrownBy(() -> {
             pathFinder.getShortestPath(청담역, 군자역);
@@ -111,9 +105,6 @@ class PathFinderTest {
 
     @Test
     void 출발역과_도착역이_같으면_조회되지_않는다() {
-        //when
-        pathFinder.addPathForLines(Arrays.asList(칠호선, 이호선, 오호선, 일호선, 삼호선));
-
         //then
         assertThatThrownBy(() -> {
             pathFinder.getShortestPath(청담역, 청담역);
@@ -123,9 +114,6 @@ class PathFinderTest {
 
     @Test
     void 출발역이나_도착역이_존재하지_않는_경우() {
-        //when
-        pathFinder.addPathForLines(Arrays.asList(칠호선, 이호선, 오호선, 일호선, 삼호선));
-
         //given
         assertThatThrownBy(() -> {
             pathFinder.getShortestPath(강남역, 청담역);
