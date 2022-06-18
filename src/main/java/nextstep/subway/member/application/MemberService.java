@@ -1,5 +1,6 @@
 package nextstep.subway.member.application;
 
+import nextstep.subway.line.consts.ErrorMessage;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -36,5 +37,12 @@ public class MemberService {
     @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format(ErrorMessage.ERROR_MEMBER_NOT_FOUND, id))
+                );
     }
 }

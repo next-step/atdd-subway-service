@@ -13,6 +13,10 @@ public class Favorite extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source_id")
     private Station source;
 
@@ -20,15 +24,25 @@ public class Favorite extends BaseEntity {
     @JoinColumn(name = "target_id")
     private Station target;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
     protected Favorite() {
+    }
+
+    public Favorite(Member member, Station source, Station target) {
+        this.member = member;
+        this.source = source;
+        this.target = target;
+    }
+
+    public static Favorite of(Member member, Station sourceStation, Station targetStation) {
+        return new Favorite(member, sourceStation, targetStation);
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     public Station getSource() {
@@ -37,9 +51,5 @@ public class Favorite extends BaseEntity {
 
     public Station getTarget() {
         return target;
-    }
-
-    public Member getMember() {
-        return member;
     }
 }
