@@ -28,6 +28,16 @@ public class Distance {
         return Distance.from(distance - target.distance);
     }
 
+    public int compareTo(Distance target) {
+        if (distance - target.distance > 0) {
+            return 1;
+        }
+        if (distance - target.distance < 0) {
+            return -1;
+        }
+        return 0;
+    }
+
     public int getValue() {
         return this.distance;
     }
