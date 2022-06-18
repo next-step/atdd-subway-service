@@ -1,7 +1,9 @@
 package nextstep.subway.fare.domain;
 
 import nextstep.subway.line.domain.Distance;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DistanceFarePolicy {
     private static final Fare BASIC_FARE = Fare.from(1250);
     private static final Distance BASIC_DISTANCE = Distance.from(10);

@@ -1,5 +1,8 @@
 package nextstep.subway.fare.domain;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class AgeFarePolicy {
     private static final Integer MIN_CHILDREN_AGE = 6;
     private static final Integer MAX_CHILDREN_AGE = 12;

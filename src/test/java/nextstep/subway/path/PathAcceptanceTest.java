@@ -1,7 +1,9 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.토큰_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -12,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.PathResponse;
@@ -68,6 +72,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * when 출발역, 도착역을 지정하여 최단 경로를 조회하면
      * <p>
      * then 최단경로가 조회됨
+     * <p>
+     * and 이용요금이 포함된다
      */
     @DisplayName("지하철 최단 경로를 조회한다")
     @Test
@@ -77,7 +83,36 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_거리_확인됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
+        이용_요금_포함됨(response, 1250);
     }
+
+    /**
+     * when 로그인을 하고
+     * <p>
+     * when 출발역, 도착역을 지정하여 최단 경로를 조회하면
+     * <p>
+     * then 최단경로가 조회됨
+     * <p>
+     * and 연령별 할인 정책이 추가 된 이용요금이 포함된다
+     */
+    @DisplayName("회원 지하철 최단 경로를 조회한다")
+    @Test
+    void findShortestPathWithLogin() {
+        // when
+        String email = "email@email.com";
+        String password = "password";
+        int age = 8;
+
+        회원_생성을_요청(email, password, age);
+        TokenResponse tokenResponse = 토큰_요청(new TokenRequest(email, password)).as(TokenResponse.class);
+
+        ExtractableResponse<Response> response = 회원_지하철_경로_조회_요청(교대역, 양재역, tokenResponse.getAccessToken());
+
+        // then
+        최단_거리_확인됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
+        이용_요금_포함됨(response, 800);
+    }
+
 
     /**
      * when 출발역과 도착역이 같게하여, 최단 경로를 조회하면
@@ -121,6 +156,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public ExtractableResponse<Response> 회원_지하철_경로_조회_요청(StationResponse 출발역, StationResponse 도착역, String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", 출발역.getId(), 도착역.getId())
+                .then().log().all()
+                .extract();
+    }
+
     public static void 최단_거리_확인됨(ExtractableResponse<Response> 지하철_경로_조회_결과, List<StationResponse> expectedStations,
                                  int expectedDistance) {
 
@@ -143,5 +188,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    public static void 이용_요금_포함됨(ExtractableResponse<Response> response, double expectedFare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+
+        assertThat(pathResponse.getFare()).isEqualTo(expectedFare);
     }
 }
