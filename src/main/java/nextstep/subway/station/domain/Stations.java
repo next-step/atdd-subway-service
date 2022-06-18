@@ -5,7 +5,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Stations {
-    private final List<Station> stations = new ArrayList<>();
+    private List<Station> stations = new ArrayList<>();
+
+    public Stations() {
+    }
+
+    private Stations(List<Station> stations) {
+        this.stations = stations;
+    }
 
     public void add(Station station) {
         stations.add(station);
@@ -23,5 +30,9 @@ public class Stations {
 
     public boolean isNotEmpty() {
         return !stations.isEmpty();
+    }
+
+    public static Stations of(List<Station> stations) {
+        return new Stations(stations);
     }
 }

@@ -134,7 +134,7 @@ class SectionsTest {
     void deleteSectionsNotFoundRemove() {
         Sections 지하철_구간_정보 = new Sections();
 
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> 지하철_구간_정보.removeSectionByStation(신도림역))
                 .withMessageContaining(LEAST_ONE_MUST_EXIST_REMOVE_STATION);
     }

@@ -74,7 +74,7 @@ class LineTest {
     @Test
     @DisplayName("지하철 노선내 구간 삭제시 구간이 없는 경우 실패 테스트")
     void removeLineStationMinimumSize() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> 지하철_2호선.removeLineStation(강남역))
                 .withMessageContaining(LEAST_ONE_MUST_EXIST_REMOVE_STATION);
     }
