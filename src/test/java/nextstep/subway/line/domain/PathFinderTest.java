@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.domain.AgeFarePolicy;
 import nextstep.subway.fare.domain.DistanceFarePolicy;
 import nextstep.subway.fare.domain.Fare;
@@ -26,7 +27,7 @@ class PathFinderTest {
     private Line 이호선;
     private Line 삼호선;
     private Line 연결안된노선;
-    private int age;
+    private LoginMember loginMember;
     private PathFinder pathFinder;
 
     @BeforeEach
@@ -66,7 +67,7 @@ class PathFinderTest {
                 .distance(Distance.from(5))
                 .build();
 
-        age = 25;
+        loginMember = new LoginMember(1L, "email@email.com", 25);
         pathFinder = new PathFinder(
                 new FareCalculator(new DistanceFarePolicy(), new LineFarePolicy(), new AgeFarePolicy()));
 
@@ -75,7 +76,7 @@ class PathFinderTest {
 
     @Test
     void 최단_경로() {
-        Path path = pathFinder.findShortestPath(교대역, 강남역, age);
+        Path path = pathFinder.findShortestPath(교대역, 강남역, loginMember);
 
         assertAll(
                 () -> assertThat(path.getDistance()).isEqualTo(Distance.from(10)),
@@ -87,7 +88,7 @@ class PathFinderTest {
     @Test
     void 없는_경로_예외() {
         assertThatThrownBy(
-                () -> pathFinder.findShortestPath(교대역, 주안역, age)
+                () -> pathFinder.findShortestPath(교대역, 주안역, loginMember)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -104,7 +105,7 @@ class PathFinderTest {
 
         pathFinder.addLine(추가노선);
 
-        Path path = pathFinder.findShortestPath(추가역1, 추가역2, age);
+        Path path = pathFinder.findShortestPath(추가역1, 추가역2, loginMember);
         assertAll(
                 () -> assertThat(path.getDistance()).isEqualTo(Distance.from(7)),
                 () -> assertThat(path.getStations()).containsExactly(추가역1, 추가역2)
@@ -115,7 +116,7 @@ class PathFinderTest {
     void 노선_삭제() {
         pathFinder.removeLine(연결안된노선);
         assertThatThrownBy(
-                () -> pathFinder.findShortestPath(교대역, 주안역, age)
+                () -> pathFinder.findShortestPath(교대역, 주안역, loginMember)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }

@@ -3,6 +3,7 @@ package nextstep.subway.fare.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
@@ -19,7 +20,9 @@ class FareCalculatorTest {
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
-    private int age;
+
+    private LoginMember loginMember;
+
 
     @BeforeEach
     void setUp() {
@@ -47,7 +50,10 @@ class FareCalculatorTest {
                 .extraFare(Fare.from(500))
                 .build();
 
+        loginMember = new LoginMember(1L, "email@email.com", 8);
+
         fareCalculator = new FareCalculator(new DistanceFarePolicy(), new LineFarePolicy(), new AgeFarePolicy());
+
     }
 
 
@@ -63,7 +69,7 @@ class FareCalculatorTest {
     @Test
     void 요금_계산() {
 
-        Fare actual = fareCalculator.calculate(Distance.from(30), Arrays.asList(신분당선, 이호선, 삼호선), 8);
+        Fare actual = fareCalculator.calculate(Distance.from(30), Arrays.asList(신분당선, 이호선, 삼호선), loginMember);
         Fare expected = Fare.from(1450);
 
         assertThat(actual).isEqualTo(expected);

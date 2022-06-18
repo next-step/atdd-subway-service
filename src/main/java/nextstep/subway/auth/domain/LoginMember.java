@@ -6,7 +6,6 @@ public class LoginMember {
     private Integer age;
 
     public LoginMember() {
-        this.age = 0;
     }
 
     public LoginMember(Long id, String email, Integer age) {
@@ -25,5 +24,9 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public boolean isLogin() {
+        return this.id != null;
     }
 }

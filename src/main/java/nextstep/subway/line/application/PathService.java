@@ -24,10 +24,10 @@ public class PathService {
         this.pathFinder.addLines(this.lineService.findLines());
     }
 
-    public PathResponse findShortestPath(int age, Long sourceStationId, Long targetStationId) {
+    public PathResponse findShortestPath(LoginMember loginMember, Long sourceStationId, Long targetStationId) {
         Station sourceStation = stationService.findStationById(sourceStationId);
         Station targetStation = stationService.findStationById(targetStationId);
 
-        return PathResponse.from(pathFinder.findShortestPath(sourceStation, targetStation, age));
+        return PathResponse.from(pathFinder.findShortestPath(sourceStation, targetStation, loginMember));
     }
 }

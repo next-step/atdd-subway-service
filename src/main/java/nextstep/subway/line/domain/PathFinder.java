@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -48,7 +49,7 @@ public class PathFinder {
                 });
     }
 
-    public Path findShortestPath(Station source, Station target, Integer age) {
+    public Path findShortestPath(Station source, Station target, LoginMember loginMember) {
         GraphPath<Station, SectionEdge> graphPath = findShortestGraphPath(
                 source, target);
 
@@ -56,7 +57,7 @@ public class PathFinder {
         Distance distance = Distance.from((int) graphPath.getWeight());
 
         return Path.of(graphPath.getVertexList(), distance,
-                fareCalculator.calculate(distance, lines, age));
+                fareCalculator.calculate(distance, lines, loginMember));
     }
 
     private GraphPath<Station, SectionEdge> findShortestGraphPath(Station source, Station target) {

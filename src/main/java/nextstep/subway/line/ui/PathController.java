@@ -24,6 +24,6 @@ public class PathController {
                                                          @RequestParam("source") Long sourceStationId,
                                                          @RequestParam("target") Long targetStationId) {
 
-        return ResponseEntity.ok(pathService.findShortestPath(loginMember.getAge(), sourceStationId, targetStationId));
+        return ResponseEntity.ok(pathService.findShortestPath(loginMember, sourceStationId, targetStationId));
     }
 }
