@@ -18,8 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
