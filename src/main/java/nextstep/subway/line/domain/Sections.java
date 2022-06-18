@@ -27,8 +27,68 @@ public class Sections {
     }
 
     public void addSection(Section section) {
+        validAddSection(section);
+        if (this.sectionElements.isEmpty()) {
+            sectionElements.add(section);
+            return;
+        }
+
+        if (isUpStationExisted(section)) {
+            upStationExistedAddSection(section);
+            return;
+        }
+        downStationExistedAddSection(section);
+    }
+
+    private void validAddSection(Section section) {
+        duplicateAddSectionValid(section);
+        existUpAndDownStationAddSectionValid(section);
+    }
+
+
+    private void upStationExistedAddSection(Section section) {
+        sectionElements.stream()
+                .filter(it -> it.getUpStation().equals(section.getUpStation()))
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
         sectionElements.add(section);
     }
+
+    private void downStationExistedAddSection(Section section) {
+        sectionElements.stream()
+                .filter(it -> it.getDownStation().equals(section.getDownStation()) )
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+
+        sectionElements.add(section);
+    }
+
+
+    private void existUpAndDownStationAddSectionValid(Section section) {
+        final boolean isValid = getStations().stream()
+                .anyMatch((station ->
+                        station.equals(section.getUpStation()) || station.equals(section.getDownStation()))
+                );
+
+        if (!isValid) {
+            throw new IllegalArgumentException("등록 할수 없는 구간입니다.");
+        }
+    }
+
+    private void duplicateAddSectionValid(Section section) {
+        if (isUpStationExisted(section) && isDownStationExisted(section)) {
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private boolean isDownStationExisted(Section section) {
+        return this.getSectionElements().stream().anyMatch(it -> it.getDownStation().equals(section.getDownStation()));
+    }
+
+    private boolean isUpStationExisted(Section section) {
+        return this.getSectionElements().stream().anyMatch(it -> it.getUpStation().equals(section.getUpStation()));
+    }
+
 
     public List<Section> getSectionElements() {
         return sectionElements;
