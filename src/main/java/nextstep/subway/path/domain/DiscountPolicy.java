@@ -1,7 +1,7 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.member.domain.Member;
+import nextstep.subway.auth.domain.LoginMember;
 
 public interface DiscountPolicy {
-    int calculate(Member member);
+    int calculate(int fare, LoginMember loginMember);
 }

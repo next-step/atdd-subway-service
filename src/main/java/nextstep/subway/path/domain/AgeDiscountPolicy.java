@@ -1,17 +1,11 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.member.domain.Member;
+import nextstep.subway.auth.domain.LoginMember;
 
 public class AgeDiscountPolicy implements DiscountPolicy {
-    private final int fare;
-
-    public AgeDiscountPolicy(int fare) {
-        this.fare = fare;
-    }
-
     @Override
-    public int calculate(Member member) {
-        AgeType ageType = AgeType.findByAge(member.getAge());
+    public int calculate(int fare, LoginMember loginMember) {
+        AgeType ageType = AgeType.findByAge(loginMember.getAge());
         return ageType.calculateDiscountFare(fare);
     }
 }
