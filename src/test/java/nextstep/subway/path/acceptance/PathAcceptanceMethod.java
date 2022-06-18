@@ -1,4 +1,4 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -30,18 +30,19 @@ public class PathAcceptanceMethod {
     }
 
     public static void 지하철_최단경로_포함됨(ExtractableResponse<Response> response, List<StationResponse> stationResponses) {
-        List<Long> expectedStationIds = stationResponses.stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
+        List<Long> expectedStationIds = getStationIds(stationResponses);
+        List<Long> resultStationIds = getStationIds(response.jsonPath().getList(".", StationResponse.class));
 
-        List<Long> resultStationIds = response.jsonPath().getList(".", StationResponse.class).stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
-
-        assertThat(resultStationIds).containsAll(expectedStationIds);
+        assertThat(resultStationIds).containsExactlyElementsOf(expectedStationIds);
     }
 
     public static void 지하철_최단경로_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static List<Long> getStationIds(List<StationResponse> stationResponses) {
+        return stationResponses.stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
     }
 }

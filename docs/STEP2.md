@@ -59,7 +59,7 @@ Connection: keep-alive
 - [ ] 최단 경로 조회 인수 테스트 작성(요구사항과 기능 전반에 대한 이해)
   - [x] PathAcceptanceTest 작성
   - [x] PathController 레이어 구현
-  - [ ] PathService 레이어 테스트 작성
+  - [x] PathService 레이어 테스트 작성
   - [ ] PathService 레이어 기능 구현
 - [ ] 경로 조회 도메인 구현
   - [ ] Path 도메인 테스트 작성
