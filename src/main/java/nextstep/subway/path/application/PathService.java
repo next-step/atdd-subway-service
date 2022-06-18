@@ -4,6 +4,8 @@ import nextstep.subway.error.ErrorCode;
 import nextstep.subway.error.ErrorCodeException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.Charges;
+import nextstep.subway.path.domain.DistanceSurcharge;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static nextstep.subway.error.ErrorCode.NO_EXISTS_STATION;
+import static nextstep.subway.path.domain.BaseCharge.BASE_CHARGE;
 
 @Service
 public class PathService {
@@ -34,6 +37,14 @@ public class PathService {
             throw new ErrorCodeException(ErrorCode.SOURCE_EQUALS_TARGET);
         }
         List<Line> lines = lineRepository.findAllWithSections();
-        return pathFinder.findPath(stations, lines, source, target);
+        PathResponse path = pathFinder.findPath(stations, lines, source, target);
+        path.setCharge(findCharge(path.getDistance()));
+        return path;
+    }
+
+    private int findCharge(int distance) {
+        return Charges.of(BASE_CHARGE, DistanceSurcharge.from(distance))
+                .sum()
+                .getValue();
     }
 }
