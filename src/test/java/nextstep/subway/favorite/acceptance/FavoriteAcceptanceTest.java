@@ -1,12 +1,15 @@
 package nextstep.subway.favorite.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -19,7 +22,8 @@ import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -64,29 +68,42 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *     Then 즐겨찾기 삭제됨
      */
     @DisplayName("즐겨찾기를 관리한다.")
-    @Test
-    void manageFavorite() {
+    @TestFactory
+    Stream<DynamicTest> findShortestPath() {
         //given
         String token = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD)
                 .as(TokenResponse.class)
                 .getAccessToken();
+        AtomicReference<ExtractableResponse<Response>> 즐겨찾기_전체조회_응답 = new AtomicReference<>();
+        AtomicReference<List<FavoriteResponse>> 즐겨찾기_전체목록 = new AtomicReference<>();
 
-        //when
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(token, 강남역.getId(), 광교역.getId());
-        //then
-        응답결과_확인(createResponse, HttpStatus.CREATED);
+        return Stream.of(
+                dynamicTest("교대역-양재역 최단 경로를 조회하면, 교대역-남부터미널역-양재역이 조회됨", () -> {
+                    //when
+                    ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(token, 강남역.getId(), 광교역.getId());
 
-        //when
-        ExtractableResponse<Response> findAllResponse = 즐겨찾기_목록_조회_요청(token);
-        List<FavoriteResponse> favoriteResponses = Arrays.asList(findAllResponse.body().as(FavoriteResponse[].class));
-        //then
-        응답결과_확인(findAllResponse, HttpStatus.OK);
-        즐겨찾기_목록_조회됨(favoriteResponses);
+                    //then
+                    응답결과_확인(createResponse, HttpStatus.CREATED);
+                }),
 
-        //when
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(token, favoriteResponses.get(0).getId());
-        //then
-        응답결과_확인(deleteResponse, HttpStatus.NO_CONTENT);
+                dynamicTest("교대역-양재역 최단 경로를 조회하면, 교대역-남부터미널역-양재역이 조회됨", () -> {
+                    //when
+                    즐겨찾기_전체조회_응답.set(즐겨찾기_목록_조회_요청(token));
+                    즐겨찾기_전체목록.set(Arrays.asList(즐겨찾기_전체조회_응답.get().body().as(FavoriteResponse[].class)));
+
+                    //then
+                    응답결과_확인(즐겨찾기_전체조회_응답.get(), HttpStatus.OK);
+                    즐겨찾기_목록_조회됨(즐겨찾기_전체목록.get());
+                }),
+
+                dynamicTest("남부터미널역-강남역 최단 경로를 조회하면, 남부터미널역-양재역-강남역이 조회됨", () -> {
+                    //when
+                    ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(token, 즐겨찾기_전체목록.get().get(0).getId());
+
+                    //then
+                    응답결과_확인(deleteResponse, HttpStatus.NO_CONTENT);
+                })
+        );
     }
 
     private void 즐겨찾기_목록_조회됨(List<FavoriteResponse> favoriteResponses) {
