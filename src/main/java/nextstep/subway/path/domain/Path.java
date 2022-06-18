@@ -1,26 +1,24 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.station.domain.Station;
-
 import java.util.List;
-import java.util.Objects;
 
 public class Path {
     private List<Station> stations;
     private int distance;
+    private int fare;
 
     protected Path() {}
 
-    private Path(List<Station> stations, int distance) {
+    private Path(List<Station> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = fare;
     }
 
-    public static Path of(List<Station> stations, int distance) {
-        if (Objects.isNull(stations)) {
-            throw new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
-        }
-        return new Path(stations, distance);
+    public static Path of(List<Station> stations, int distance, int fare) {
+        return new Path(stations, distance, fare);
     }
 
     public List<Station> getStations() {
@@ -29,5 +27,16 @@ public class Path {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
+    }
+
+    public void calculate(DiscountPolicy discountPolicy, LoginMember loginMember) {
+        FareType fareType = FareType.findByDistance(distance);
+        int fareByDistance = fareType.calculateByDistance(distance);
+        int discount = discountPolicy.calculate(fareByDistance, loginMember);
+        fare += (fareByDistance - discount);
     }
 }

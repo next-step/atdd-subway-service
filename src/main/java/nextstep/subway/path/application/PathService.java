@@ -1,9 +1,15 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.AgeDiscountPolicy;
+import nextstep.subway.path.domain.AgeType;
 import nextstep.subway.path.domain.DijkstraShortestPathStrategy;
+import nextstep.subway.path.domain.DiscountPolicy;
+import nextstep.subway.path.domain.FareType;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -25,12 +31,15 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
+    public PathResponse findShortestPath(LoginMember loginMember, Long sourceStationId, Long targetStationId) {
         Station sourceStation = stationService.findById(sourceStationId);
         Station targetStation = stationService.findById(targetStationId);
         List<Sections> sections = findAllSections();
         pathFinder.decideShortestPathStrategy(new DijkstraShortestPathStrategy());
-        return pathFinder.findShortestPath(sections, sourceStation, targetStation);
+        Path shortestPath = pathFinder.findShortestPath(sections, sourceStation, targetStation);
+        shortestPath.calculate(new AgeDiscountPolicy(), loginMember);
+
+        return PathResponse.of(shortestPath);
     }
 
     private List<Sections> findAllSections() {

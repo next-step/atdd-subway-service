@@ -53,9 +53,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         당산역 = 지하철역_등록되어_있음("당산역").as(StationResponse.class);
         합정역 = 지하철역_등록되어_있음("합정역").as(StationResponse.class);
 
-        오호선 = 지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-red-600", 공덕역.getId(), 영등포구청역.getId(), 6)).as(LineResponse.class);
-        육호선 = 지하철_노선_등록되어_있음(new LineRequest("육호선", "bg-red-600", 합정역.getId(), 공덕역.getId(), 4)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 합정역.getId(), 영등포구청역.getId(), 8)).as(LineResponse.class);
+        오호선 = 지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-red-600", 공덕역.getId(), 영등포구청역.getId(), 6, 0)).as(LineResponse.class);
+        육호선 = 지하철_노선_등록되어_있음(new LineRequest("육호선", "bg-red-600", 합정역.getId(), 공덕역.getId(), 4, 0)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 합정역.getId(), 영등포구청역.getId(), 8, 0)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(이호선, 합정역, 당산역, 3);
 

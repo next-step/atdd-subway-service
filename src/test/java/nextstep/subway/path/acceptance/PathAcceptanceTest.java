@@ -1,7 +1,12 @@
 package nextstep.subway.path.acceptance;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.AGE;
+import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
+import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,6 +32,10 @@ import org.springframework.http.HttpStatus;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
+    private static String EMAIL = "test@example.com";
+    private static String PASSWORD = "1234";
+    private static int AGE = 13;
+
     private LineResponse 오호선;
     private LineResponse 이호선;
     private LineResponse 육호선;
@@ -37,6 +46,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 당산역;
     private StationResponse 서면역;
     private StationResponse 동래역;
+    private String 사용자_인증_토큰;
 
     /**
      * 합정역      --- *6호선* ---         공덕역
@@ -57,11 +67,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         서면역 = 지하철역_등록되어_있음("서면역").as(StationResponse.class);
         동래역 = 지하철역_등록되어_있음("동래역").as(StationResponse.class);
 
-        오호선 = 지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-red-600", 공덕역.getId(), 영등포구청역.getId(), 6)).as(LineResponse.class);
-        육호선 = 지하철_노선_등록되어_있음(new LineRequest("육호선", "bg-red-600", 합정역.getId(), 공덕역.getId(), 4)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 합정역.getId(), 영등포구청역.getId(), 8)).as(LineResponse.class);
-        부산일호선 = 지하철_노선_등록되어_있음(new LineRequest("부산일호선", "bg-red-600", 동래역.getId(), 서면역.getId(), 4)).as(LineResponse.class);
-        지하철_노선에_지하철역_등록_요청(이호선, 합정역, 당산역, 3);
+        오호선 = 지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-red-600", 공덕역.getId(), 영등포구청역.getId(), 8, 100)).as(LineResponse.class);
+        육호선 = 지하철_노선_등록되어_있음(new LineRequest("육호선", "bg-red-600", 합정역.getId(), 공덕역.getId(), 6, 200)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 합정역.getId(), 영등포구청역.getId(), 15, 0)).as(LineResponse.class);
+        부산일호선 = 지하철_노선_등록되어_있음(new LineRequest("부산일호선", "bg-red-600", 동래역.getId(), 서면역.getId(), 4, 0)).as(LineResponse.class);
+        지하철_노선에_지하철역_등록_요청(이호선, 합정역, 당산역, 8);
+
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        사용자_인증_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
     }
 
     /**
@@ -71,17 +84,64 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * Given 지하철 역 등록되어 있음
      * And 지하철 노선 등록되어 있음
      * And 지하철 노선에 지하철 역 등록되어 있음
+     * And 회원 등록되어 있음
+     * And 로그인 되어 있음
      *
      * Scenario: 최단 경로 탐색
      * When 지하철 출발역과 도착역 사이 최단 경로 조회 요첨
      * Then 최단 경로 조회됨
+     * And 총 거리도 함께 응답함
+     * And 지하철 이용 요금도 함께 응답함
      */
     @Test
-    @DisplayName("지하철 역과 역사이의 최단 경로를 탐색한다.")
+    @DisplayName("로그인시, 최단 경로를 탐색하면 연령별 할인 정책이 적용된다.")
     void shortestPath() {
-        ExtractableResponse<Response> 최단_경로_조회_결과 = 최단_경로_조회_요청(합정역, 영등포구청역);
+        //when
+        ExtractableResponse<Response> 최단_경로_조회_결과 = 최단_경로_조회_요청(사용자_인증_토큰, 합정역, 영등포구청역);
+        //then
         최단_경로_조회됨(최단_경로_조회_결과);
-        최단_경로에_지하철역_순서_정렬됨(최단_경로_조회_결과, Arrays.asList(합정역, 당산역, 영등포구청역));
+        최단_경로에_지하철역_순서_정렬됨(최단_경로_조회_결과, Arrays.asList(합정역, 공덕역, 영등포구청역));
+        최단_경로_총_거리_응답함(최단_경로_조회_결과, 14);
+        최단_경로_지하철_요금_응답함(최단_경로_조회_결과, 1350);//거리별 운임(1350) - 연령별 할인(200) + 노선 추가요금(200)
+    }
+
+    /**
+     * Feature: 지하철 경로 관련 기능
+     *
+     * Background
+     * Given 지하철 역 등록되어 있음
+     * And 지하철 노선 등록되어 있음
+     * And 지하철 노선에 지하철 역 등록되어 있음
+     * And 로그인 안되어있음
+     *
+     * Scenario: 최단 경로 탐색
+     * When 지하철 출발역과 도착역 사이 최단 경로 조회 요첨
+     * Then 최단 경로 조회됨
+     * And 총 거리도 함께 응답함
+     * And 지하철 이용 요금도 함께 응답함
+     */
+    @Test
+    @DisplayName("비로그인시, 최단 경로를 탐색하면 연령별 할인 정책이 적용되지 않는다.")
+    void shortestPathWithoutAuth() {
+        //given
+        사용자_인증_토큰 = "sflsjfdlsfsdjlfjds";
+        //when
+        ExtractableResponse<Response> 최단_경로_조회_결과 = 최단_경로_조회_요청(사용자_인증_토큰, 합정역, 영등포구청역);
+        //then
+        최단_경로_조회됨(최단_경로_조회_결과);
+        최단_경로에_지하철역_순서_정렬됨(최단_경로_조회_결과, Arrays.asList(합정역, 공덕역, 영등포구청역));
+        최단_경로_총_거리_응답함(최단_경로_조회_결과, 14);
+        최단_경로_지하철_요금_응답함(최단_경로_조회_결과, 1550);//거리별 운임(1350) - 연령별 할인(0) + 노선 추가요금(200)
+    }
+
+    private void 최단_경로_지하철_요금_응답함(ExtractableResponse<Response> response, int fare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
+    }
+
+    private void 최단_경로_총_거리_응답함(ExtractableResponse<Response> response, int distance) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getDistance()).isEqualTo(distance);
     }
 
     /**
@@ -103,14 +163,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("최단 경로 탐색을 할 수 없다.")
     void shortestPathException() {
-        ExtractableResponse<Response> 최단_경로_조회_결과 = 최단_경로_조회_요청(합정역, 합정역);
+        ExtractableResponse<Response> 최단_경로_조회_결과 = 최단_경로_조회_요청(사용자_인증_토큰, 합정역, 합정역);
         최단_경로_조회_실패됨(최단_경로_조회_결과);
 
-        ExtractableResponse<Response> 연결되어_있지_않은_역_최단_경로_조회_결과 = 최단_경로_조회_요청(합정역, 서면역);
+        ExtractableResponse<Response> 연결되어_있지_않은_역_최단_경로_조회_결과 = 최단_경로_조회_요청(사용자_인증_토큰, 합정역, 서면역);
         최단_경로_조회_실패됨(연결되어_있지_않은_역_최단_경로_조회_결과);
 
         StationResponse 존재하지_않는_역 = new StationResponse(99L, "존재하지 않는 역", LocalDateTime.now(), LocalDateTime.now());
-        ExtractableResponse<Response> 존재하지_않는_역_최단_경로_조회_결과 = 최단_경로_조회_요청(존재하지_않는_역, 서면역);
+        ExtractableResponse<Response> 존재하지_않는_역_최단_경로_조회_결과 = 최단_경로_조회_요청(사용자_인증_토큰, 존재하지_않는_역, 서면역);
         최단_경로_조회_실패됨(존재하지_않는_역_최단_경로_조회_결과);
     }
 
@@ -118,8 +178,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
-    private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse sourceStationResponse, StationResponse targetStationResponse) {
-        return sendGet("/paths?source={sourceId}&target={targetId}", sourceStationResponse.getId(), targetStationResponse.getId());
+    private ExtractableResponse<Response> 최단_경로_조회_요청(String accessToken, StationResponse sourceStationResponse, StationResponse targetStationResponse) {
+        return sendGetWithAuth(accessToken,
+                "/paths?source={sourceId}&target={targetId}",
+                sourceStationResponse.getId(),
+                targetStationResponse.getId());
     }
 
     public static void 최단_경로_조회됨(ExtractableResponse<Response> response) {
