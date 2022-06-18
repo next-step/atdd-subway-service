@@ -73,7 +73,7 @@ class PathFinderTest {
         PathResponse result = pathFinder.findShortestPath(1L, 3L);
 
         // then
-        assertThat(result.getStations()).containsExactly(선릉역, 정자역, 수원역);
+        assertThat(result.toStations()).containsExactly(선릉역, 정자역, 수원역);
         assertThat(result.getDistance()).isEqualTo(50);
     }
 
@@ -89,7 +89,7 @@ class PathFinderTest {
         PathResponse result = pathFinder.findShortestPath(1L, 5L);
 
         // then
-        assertThat(result.getStations()).containsExactly(선릉역, 정자역, 수원역, 춘천역, 강릉역);
+        assertThat(result.toStations()).containsExactly(선릉역, 정자역, 수원역, 춘천역, 강릉역);
         assertThat(result.getDistance()).isEqualTo(80);
     }
 
