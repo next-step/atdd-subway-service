@@ -74,7 +74,7 @@ public class FavoriteServiceTest {
         favoriteService.saveFavorite(member.getId(), favoriteRequest2);
 
         //when
-        List<FavoriteResponse> favorites = favoriteService.findFavoritesByMemberId(member.getId());
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(member.getId());
         FavoriteResponse favorite1 = favorites.get(0);
         FavoriteResponse favorite2 = favorites.get(1);
 
@@ -98,7 +98,7 @@ public class FavoriteServiceTest {
 
         //when
         favoriteService.deleteFavorite(savedFavorite.getId(), member.getId());
-        List<FavoriteResponse> favorites = favoriteService.findFavoritesByMemberId(savedFavorite.getId());
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(savedFavorite.getId());
 
         //then
         assertThat(favorites.size()).isEqualTo(0);

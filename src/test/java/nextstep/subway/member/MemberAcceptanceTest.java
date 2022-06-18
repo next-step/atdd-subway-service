@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
+import static nextstep.subway.utils.RestAssuredMethods.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -144,6 +145,18 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 내정보_조회_요청(String accessToken) {
+        return getWithAuth(accessToken, "/members/me");
+    }
+
+    public static ExtractableResponse<Response> 내정보_수정_요청(String accessToken, MemberRequest memberRequest) {
+        return putWithAuth(accessToken, "/members/me", memberRequest);
+    }
+
+    public static ExtractableResponse<Response> 내정보_삭제_요청(String accessToken) {
+        return deleteWithAuth(accessToken, "/members/me");
+    }
+
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -160,6 +173,22 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 내정보_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 내정보_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    public static void 내정보_수정됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 내정보_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

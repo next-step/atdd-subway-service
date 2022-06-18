@@ -1,8 +1,5 @@
 package nextstep.subway.favorite.dto;
 
-import nextstep.subway.favorite.domain.Favorite;
-import nextstep.subway.station.domain.Station;
-
 public class FavoriteRequest {
     Long sourceStationId;
     Long targetStationId;

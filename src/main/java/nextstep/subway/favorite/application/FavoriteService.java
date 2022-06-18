@@ -5,7 +5,6 @@ import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.consts.ErrorMessage;
-import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
@@ -40,7 +39,7 @@ public class FavoriteService {
         return FavoriteResponse.from(favorite);
     }
 
-    public List<FavoriteResponse> findFavoritesByMemberId(Long memberId) {
+    public List<FavoriteResponse> findFavorites(Long memberId) {
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
         return favorites.stream()
                 .map(FavoriteResponse::from)

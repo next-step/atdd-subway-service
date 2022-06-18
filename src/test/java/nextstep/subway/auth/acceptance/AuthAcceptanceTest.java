@@ -7,12 +7,14 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
+import nextstep.subway.utils.RestAssuredMethods;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.utils.RestAssuredMethods.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -107,41 +109,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
-                .when().post("/login/token")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 내정보_조회_요청(String accessToken) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 내정보_수정_요청(String accessToken, MemberRequest memberRequest) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .body(memberRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().put("/members/me")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 내정보_삭제_요청(String accessToken) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/members/me")
-                .then().log().all()
-                .extract();
+        return post("/login/token", tokenRequest);
     }
 
     private static void 로그인_성공함(ExtractableResponse<Response> response) {
@@ -153,21 +121,5 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private static void 로그인_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    public static void 내정보_조회됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 내정보_조회_실패(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    }
-
-    public static void 내정보_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 내정보_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
