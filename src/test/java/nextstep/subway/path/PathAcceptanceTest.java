@@ -57,11 +57,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단거리 조회 테스트")
     void findShortestDistance() {
         PathRequest pathRequest = PathRequest.of(강남역.getId(), 교대역.getId());
-        List<Station> 역_목록 = Arrays.asList(new Station("강남역"), new Station("교대역"));
+        List<Station> 역_목록_조회_결과 = Arrays.asList(new Station("강남역"), new Station("교대역"));
 
         ExtractableResponse<Response> 최단_거리_조회 = 최단_거리_조회(pathRequest);
 
-        최단_거리_조회_됨(최단_거리_조회, 역_목록);
+        최단_거리_조회_됨(최단_거리_조회, 역_목록_조회_결과);
     }
 
     @Test
