@@ -1,17 +1,20 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
 @Entity
 public class Favorite extends BaseEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "USER_ID", nullable = false)
-    private Long loginMemberId;
+    @ManyToOne
+    @JoinColumn(name = "USER_ID", nullable = false)
+    private Member member;
 
     @OneToOne
     @JoinColumn(name = "SOURCE_ID", nullable = false)
@@ -27,18 +30,19 @@ public class Favorite extends BaseEntity {
     protected Favorite() {
     }
 
-    public Favorite(Long loginMemberId, Station source, Station destination) {
-        this.loginMemberId = loginMemberId;
+    public Favorite(Member member, Station source, Station destination) {
+        this.member = member;
         this.source = source;
         this.destination = destination;
+        addMember(member);
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getLoginMemberId() {
-        return loginMemberId;
+    public Member getMember() {
+        return member;
     }
 
     public Station getSource() {
@@ -53,6 +57,12 @@ public class Favorite extends BaseEntity {
         return deleted.isDeleted();
     }
 
+    public void addMember(final Member member) {
+        this.member = member;
+        if (!member.isContain(this)) {
+            member.addFavorite(this);
+        }
+    }
     public void updateDeletedStateBy(final DeletedState state) {
         this.deleted = state;
     }

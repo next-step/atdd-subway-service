@@ -5,6 +5,8 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +32,9 @@ class FavoriteServiceTest {
     @Mock
     private StationRepository stationRepository;
 
+    @Mock
+    private MemberRepository memberRepository;
+
     private FavoriteService favoriteService;
 
     private Station 수원역;
@@ -38,7 +43,7 @@ class FavoriteServiceTest {
 
     @BeforeEach
     void setUp() {
-        favoriteService = new FavoriteService(stationRepository, favoriteRepository);
+        favoriteService = new FavoriteService(stationRepository, favoriteRepository, memberRepository);
         수원역 = new Station(1L, "수원역");
         병점역 = new Station(2L, "병점역");
         loginMember = new LoginMember(1L, "email@email.com", 20);
@@ -53,9 +58,12 @@ class FavoriteServiceTest {
     @Test
     void createTest() {
         // Given
+        Member savedMember = new Member(loginMember.getEmail(), "password", loginMember.getAge());
         when(stationRepository.findById(1L)).thenReturn(Optional.of(수원역));
         when(stationRepository.findById(2L)).thenReturn(Optional.of(병점역));
-        when(favoriteRepository.save(any())).thenReturn(new Favorite(loginMember.getId(), 수원역, 병점역));
+        when(memberRepository.findByEmail(eq(loginMember.getEmail()))).thenReturn(Optional.of(savedMember));
+        when(favoriteRepository.save(any())).thenReturn(new Favorite(savedMember, 수원역, 병점역));
+
         FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
 
         // When
