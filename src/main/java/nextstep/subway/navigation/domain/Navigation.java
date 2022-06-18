@@ -17,10 +17,6 @@ public class Navigation {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     private GraphPath<Station, DefaultWeightedEdge> path;
 
-    private Navigation(List<Line> persistLines) {
-        persistLines.forEach(this::settingGraph);
-    }
-
     public static Navigation of(List<Line> persistLines) {
         return new Navigation(persistLines);
     }
@@ -34,7 +30,10 @@ public class Navigation {
         return NavigationResponse.of(vertexList, distance);
     }
 
-    // graph 등록해야함.
+    private Navigation(List<Line> persistLines) {
+        persistLines.forEach(this::settingGraph);
+    }
+    
     private void settingGraph(Line line) {
         line.getSections().getSections().forEach(section -> {
             Station upStation = section.getUpStation();
