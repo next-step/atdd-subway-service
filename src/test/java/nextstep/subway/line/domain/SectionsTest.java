@@ -113,4 +113,24 @@ class SectionsTest {
         // when and then
         assertThatThrownBy(() -> givenSections.add(givenLine, givenUpStation, newDownStation, givenLineDistance));
     }
+
+    @Test
+    void 등록된_역을_삭제할_수_있어야_한다() {
+        // given
+        final Station newDownStation = new Station("양재역");
+        givenSections.add(givenLine, givenUpStation, newDownStation, givenLineDistance / 2);
+
+        // when
+        givenSections.removeStation(givenLine, newDownStation);
+
+        // then
+        assertThat(givenSections.getStations()).containsExactly(givenUpStation, givenDownStation);
+    }
+
+    @Test
+    void 등록된_역이_2개일_때_역을_삭제하면_에러가_발생해야_한다() {
+        // when and then
+        assertThatThrownBy(() -> givenSections.removeStation(givenLine, givenUpStation))
+                .isInstanceOf(RuntimeException.class);
+    }
 }
