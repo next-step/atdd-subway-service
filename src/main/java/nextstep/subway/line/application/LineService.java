@@ -37,6 +37,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -44,13 +45,13 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
-
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         return LineResponse.of(findLineById(id));
+    }
+
+    private Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
