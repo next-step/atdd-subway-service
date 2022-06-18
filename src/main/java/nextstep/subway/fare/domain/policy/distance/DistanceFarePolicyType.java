@@ -9,7 +9,7 @@ public enum DistanceFarePolicyType {
 
     DEFAULT(DefaultDistanceFarePolicy.getInstance()),
     Middle(MiddleDistanceFarePolicy.getInstance()),
-    Long(LongDistanceFarePolicy.getInstance());
+    LONG(LongDistanceFarePolicy.getInstance());
 
     public static final int DEFAULT_DISTANCE_ADDITIONAL_FARE = 100;
     public static final int DEFAULT_MAX_DISTANCE = 10;
