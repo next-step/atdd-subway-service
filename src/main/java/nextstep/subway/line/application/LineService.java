@@ -38,7 +38,7 @@ public class LineService {
                 upStation,
                 downStation,
                 Distance.from(request.getDistance()),
-                0));
+                request.getFare()));
         return LineResponse.of(line);
     }
 
