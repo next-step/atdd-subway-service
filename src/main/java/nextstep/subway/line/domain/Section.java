@@ -1,11 +1,16 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import nextstep.subway.station.domain.Station;
-
 import javax.persistence.*;
 
 @Entity
 public class Section {
+
+    private static final String INVALID_LINE_MESSAGE = "노선 정보가 없습니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,16 +27,21 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    private Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section of(Line line, Station upStation, Station downStation, Distance distance) {
+        return new Section(line, upStation, downStation, distance);
     }
 
     public Long getId() {
@@ -50,23 +60,72 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public void update(Section target) {
+        if (this.upStation.equals(target.upStation)) {
+            this.upStation = target.downStation;
+            this.distance = subtractDistance(target);
         }
-        this.upStation = station;
-        this.distance -= newDistance;
+        if (this.downStation.equals(target.downStation)) {
+            this.downStation = target.upStation;
+            this.distance = subtractDistance(target);
+        }
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    private Distance subtractDistance(Section target) {
+        return this.distance.subtract(target.distance);
+    }
+
+    public boolean isSameStationPair(Section target) {
+        return this.upStation.equals(target.upStation)
+            && this.downStation.equals(target.downStation);
+    }
+
+    public List<Station> getStationPair() {
+        return Arrays.asList(this.upStation, this.downStation);
+    }
+
+    public void setLine(Line line) {
+        validateLineNotNull(line);
+        this.line = line;
+    }
+
+    private void validateLineNotNull(Line line) {
+        if (Objects.isNull(line)) {
+            throw new IllegalArgumentException(INVALID_LINE_MESSAGE);
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+    }
+
+    public boolean equalsUpStation(Station target) {
+        return this.upStation.equals(target);
+    }
+
+    public boolean equalsDownStation(Station target) {
+        return this.downStation.equals(target);
+    }
+
+    public static Distance newDistance(Section upSection, Section downSection) {
+        return upSection.distance
+            .add(downSection.distance);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Section section = (Section) o;
+        return Objects.equals(id, section.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
