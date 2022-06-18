@@ -6,6 +6,8 @@ import java.util.Objects;
 
 @Embeddable
 public class Distance {
+    public static final int MINIMUM_DISTANCE = 1;
+    
     @Column(name = "distance")
     private int value;
 
@@ -18,21 +20,29 @@ public class Distance {
     }
 
     private void validate(int value) {
-        if (value < 1) {
+        if (value < MINIMUM_DISTANCE) {
             throw new IllegalArgumentException("구간 길이는 0보다 커야 합니다.");
         }
+    }
+
+    public int getValue() {
+        return value;
     }
 
     public boolean isNotLargerThan(Distance distanceNew) {
         return value <= distanceNew.value;
     }
 
-    public void minus(Distance distance) {
+    public Distance plus(Distance distanceNew) {
+        return new Distance(value + distanceNew.value);
+    }
+    
+    public Distance minus(Distance distance) {
         if (this.isNotLargerThan(distance)) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
 
-        this.value -= distance.value;
+        return new Distance(this.value - distance.value);
     }
 
     @Override
@@ -46,13 +56,5 @@ public class Distance {
     @Override
     public int hashCode() {
         return Objects.hash(value);
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void plus(Distance distanceNew) {
-        value += distanceNew.value;
     }
 }

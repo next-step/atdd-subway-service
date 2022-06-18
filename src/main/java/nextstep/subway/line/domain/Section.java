@@ -2,7 +2,14 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.util.Objects;
 
 @Entity
@@ -61,7 +68,7 @@ public class Section {
             throw new IllegalArgumentException("상행 역이 일치하는 구간을 입력해주세요.");
         }
 
-        this.distance.minus(newSection.distance);
+        this.distance = this.distance.minus(newSection.distance);
         this.upStation = newSection.downStation;
     }
 
@@ -70,19 +77,19 @@ public class Section {
             throw new IllegalArgumentException("하행 역이 일치하는 구간을 입력해주세요.");
         }
 
-        this.distance.minus(newSection.distance);
+        this.distance = this.distance.minus(newSection.distance);
         this.downStation = newSection.upStation;
     }
 
     public Section merge(Section other) {
-        distance.plus(other.distance);
+        Distance sum = distance.plus(other.distance);
 
         if (downStation.equals(other.upStation)) {
-            return new Section(line, upStation, other.downStation, distance.getValue());
+            return new Section(line, upStation, other.downStation, sum.getValue());
         }
 
         if (upStation.equals(other.downStation)) {
-            return new Section(line, other.upStation, downStation, distance.getValue());
+            return new Section(line, other.upStation, downStation, sum.getValue());
         }
 
         throw new IllegalArgumentException("구간을 합칠 수 없습니다.");

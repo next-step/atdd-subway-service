@@ -5,9 +5,9 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +20,12 @@ import java.util.stream.Collectors;
 public class LineService {
     private final LineRepository lineRepository;
     private final StationService stationService;
+    private final PathFinder pathFinder;
 
-    public LineService(LineRepository lineRepository, StationService stationService) {
+    public LineService(LineRepository lineRepository, StationService stationService, PathFinder pathFinder) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
+        this.pathFinder = pathFinder;
     }
 
     @Transactional
@@ -39,6 +41,8 @@ public class LineService {
                         request.getDistance()
                 )
         );
+
+        pathFinder.renewGraph();
 
         return LineResponse.of(persistLine);
     }
@@ -66,6 +70,8 @@ public class LineService {
     @Transactional
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
+
+        pathFinder.renewGraph();
     }
 
     @Transactional
@@ -74,6 +80,8 @@ public class LineService {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         line.addSection(upStation, downStation, request.getDistance());
+
+        pathFinder.renewGraph();
     }
 
     @Transactional
@@ -81,6 +89,8 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeSection(station);
+
+        pathFinder.renewGraph();
     }
 
     private Line findLineById(Long id) {

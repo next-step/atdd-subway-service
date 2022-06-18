@@ -1,17 +1,20 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Embeddable
 public class Sections {
+    public static final int MINIMUM_SECTION_SIZE = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> elements = new ArrayList<>();
 
@@ -21,7 +24,7 @@ public class Sections {
 
     public List<Station> getStationsInOrder() {
         if (elements.isEmpty()) {
-            return Collections.emptyList();
+            throw new IllegalStateException("구간 목록이 비어 있습니다.");
         }
 
         List<Station> stations = new ArrayList<>();
@@ -40,7 +43,7 @@ public class Sections {
 
     public Section findFirstSection() {
         if (elements.isEmpty()) {
-            throw new IllegalStateException("구간 목록이 비어 있음");
+            throw new IllegalStateException("구간 목록이 비어 있습니다.");
         }
 
         Section currentSection = elements.get(0);
@@ -78,11 +81,11 @@ public class Sections {
         }
 
         if (isDuplicated(section)) {
-            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException("이미 등록된 구간입니다.");
         }
 
-        if (hasValidStation(section)) {
-            throw new IllegalArgumentException("일치하는 역이 없어 등록할 수 없는 구간 입니다.");
+        if (!hasValidStation(section)) {
+            throw new IllegalArgumentException("일치하는 역이 없어 등록할 수 없는 구간입니다.");
         }
     }
 
@@ -93,29 +96,27 @@ public class Sections {
 
     private boolean hasValidStation(Section newSection) {
         return elements.stream()
-                .noneMatch(section -> section.hasAtLeastOneSameStationOf(newSection));
+                .anyMatch(section -> section.hasAtLeastOneSameStationOf(newSection));
     }
 
     private void rearrangeElementsFor(Section newSection) {
         elements.stream()
                 .filter(section -> section.hasSameUpStationAs(newSection))
                 .findFirst()
-                .ifPresent(section -> {
-                    section.updateUpStationAndDistanceFor(newSection);
-                    return;
-                });
+                .ifPresent(section -> section.updateUpStationAndDistanceFor(newSection));
 
         elements.stream()
                 .filter(section -> section.hasSameDownStationAs(newSection))
                 .findFirst()
-                .ifPresent(section -> {
-                    section.updateDownStationAndDistanceFor(newSection);
-                    return;
-                });
+                .ifPresent(section -> section.updateDownStationAndDistanceFor(newSection));
     }
 
     public void removeStation(Station station) {
-        if (elements.size() <= 1) {
+        if (elements.isEmpty()) {
+            throw new IllegalStateException("구간 목록이 비어 있습니다.");
+        }
+
+        if (elements.size() == MINIMUM_SECTION_SIZE) {
             throw new IllegalStateException("구간이 하나뿐일 때는 삭제할 수 없습니다.");
         }
 
@@ -140,5 +141,13 @@ public class Sections {
         return elements.stream()
                 .filter(section -> section.hasDownStationSameAs(station))
                 .findFirst();
+    }
+
+    public void enrollIn(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        graph.addVertex(findFirstSection().getUpStation());
+        elements.forEach(section -> graph.addVertex(section.getDownStation()));
+        elements.forEach(section -> graph.setEdgeWeight(
+                graph.addEdge(section.getUpStation(), section.getDownStation()),
+                section.getDistance()));
     }
 }
