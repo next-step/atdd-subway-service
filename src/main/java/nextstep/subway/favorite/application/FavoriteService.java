@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private MemberRepository memberRepository;
@@ -27,7 +28,6 @@ public class FavoriteService {
         this.stationService = stationService;
     }
 
-    @Transactional
     public FavoriteResponse saveFavorite(Long memberId, FavoriteRequest favoriteRequest) {
         Member member = findMemberById(memberId);
         Station source = stationService.findStationById(favoriteRequest.getSourceStationId());
@@ -43,7 +43,6 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public void deleteFavoriteById(Long memberId, Long favoriteId) {
         Favorite favorite = favoriteRepository.findById(favoriteId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 즐겨찾기입니다."));
