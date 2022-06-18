@@ -9,7 +9,6 @@ import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -147,7 +146,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = response.as(TokenResponse.class);
         return RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "bearer " + tokenResponse.getAccessToken())
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .when().delete("/members/me")
                 .then().log().all()
                 .extract();
@@ -160,7 +159,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "bearer " + tokenResponse.getAccessToken())
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .body(memberRequest)
                 .when().put("/members/me")
                 .then().log().all()
@@ -174,7 +173,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 토큰값으로_회원_정보_요청(String token) {
         return RestAssured.given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "bearer " + token)
+                .auth().oauth2(token)
                 .when().get("/members/me")
                 .then().log().all()
                 .extract();
