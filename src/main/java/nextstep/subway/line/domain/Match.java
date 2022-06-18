@@ -1,15 +1,13 @@
 package nextstep.subway.line.domain;
 
-import java.util.Objects;
-
 public enum Match {
     UP, DOWN;
 
-    public static boolean isUP(final Match match) {
-        return Objects.equals(UP, match);
+    public boolean isUp() {
+        return this == UP;
     }
 
-    public static boolean isDOWN(final Match match) {
-        return Objects.equals(DOWN, match);
+    public boolean isDown() {
+        return this == DOWN;
     }
 }

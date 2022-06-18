@@ -73,11 +73,11 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(final Section section) {
-        if (!Objects.equals(this, section.getLine())) {
-            section.updateLineBy(this);
-        }
         if (!sections.isContains(section)) {
             sections.addSection(section);
+        }
+        if (!Objects.equals(this, section.getLine())) {
+            section.updateLineBy(this);
         }
     }
 
@@ -95,24 +95,27 @@ public class Line extends BaseEntity {
     }
 
     private void removeSectionBy(Station station) {
-        final Optional<Section> upLineStation =
+        final Optional<Section> isSectionMatchesUpStation =
                 sections.getSections().stream()
                         .filter(it -> it.isMatchUpStation(station))
                         .findFirst();
 
-        final Optional<Section> downLineStation =
+        final Optional<Section> isSectionMatchesDownStation =
                 sections.getSections().stream()
                         .filter(it -> it.isMatchDownStation(station))
                         .findFirst();
 
-        upLineStation.ifPresent(this::removeSection);
-        downLineStation.ifPresent(this::removeSection);
+        isSectionMatchesUpStation.ifPresent(this::removeSection);
+        isSectionMatchesDownStation.ifPresent(this::removeSection);
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            this.addSection(new Section(this, newUpStation, newDownStation, newDistance));
+        if (isSectionMatchesUpStation.isPresent() && isSectionMatchesDownStation.isPresent()) {
+            final Section sectionMatchesDownStation = isSectionMatchesDownStation.orElseThrow(EntityNotFoundException::new);
+            final Section sectionMatchesUpStation = isSectionMatchesUpStation.orElseThrow(EntityNotFoundException::new);
+            this.addSection(
+                    new Section(
+                            this, sectionMatchesDownStation.getUpStation(),
+                            sectionMatchesUpStation.getDownStation(),
+                            sectionMatchesUpStation.getDistance().plus(sectionMatchesDownStation.getDistance())));
         }
     }
 

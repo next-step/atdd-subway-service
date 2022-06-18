@@ -1,8 +1,11 @@
 package nextstep.subway.station.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.domain.Section;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -13,7 +16,13 @@ public class Station extends BaseEntity {
     @Column(unique = true)
     private String name;
 
-    public Station() {
+
+    protected Station() {
+    }
+
+    public Station(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public Station(String name) {
@@ -28,6 +37,7 @@ public class Station extends BaseEntity {
         return name;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -40,5 +50,13 @@ public class Station extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

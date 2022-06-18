@@ -68,21 +68,18 @@ public class Sections {
 
     public void removeSection(final Section section) {
         this.sections.remove(section);
-        if (section.getLine().isContains(section)) {
-            section.getLine().removeSection(section);
-        }
     }
 
     private void insertSection(final Section section) {
         if (sections.isEmpty()) {
             return;
         }
-        Match match = findInsertSomePlace(section);
-        if (Match.isUP(match)) {
+        final Match match = findInsertSomePlace(section);
+        if (match.isUp()) {
             findPreSectionBy(section.getUpStation())
                     .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
         }
-        if (Match.isDOWN(match)) {
+        if (match.isDown()) {
             findDownSectionBy(section.getDownStation())
                     .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
         }
