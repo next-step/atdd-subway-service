@@ -22,12 +22,6 @@ public class PathResponse {
         this.charge = path.findCharge().getValue();
     }
 
-    public PathResponse(List<StationResponse> stations, int distance, int charge) {
-        this.stations = stations;
-        this.distance = distance;
-        this.charge = charge;
-    }
-
     public List<StationResponse> getStations() {
         return stations;
     }
@@ -38,9 +32,5 @@ public class PathResponse {
 
     public int getCharge() {
         return charge;
-    }
-
-    public void setCharge(int charge) {
-        this.charge = charge;
     }
 }
