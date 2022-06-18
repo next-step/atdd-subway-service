@@ -45,10 +45,10 @@ public class PathFinderTest {
         동래역 = new Station("동래역");
         서면역 = new Station("서면역");
 
-        Line 육호선 = Line.of("6호선", "bg-red-600", 합정역, 공덕역, Distance.from(4));
-        Line 이호선 = Line.of("2호선", "bg-red-600", 합정역, 영등포구청역, Distance.from(8));
-        Line 오호선 = Line.of("5호선", "bg-red-600", 공덕역, 영등포구청역, Distance.from(6));
-        Line 부산일호선 = Line.of("부산1호선", "bg-orange-600", 동래역, 서면역, Distance.from(7));
+        Line 육호선 = Line.of("6호선", "bg-red-600", 합정역, 공덕역, Distance.from(4), 0);
+        Line 이호선 = Line.of("2호선", "bg-red-600", 합정역, 영등포구청역, Distance.from(8), 0);
+        Line 오호선 = Line.of("5호선", "bg-red-600", 공덕역, 영등포구청역, Distance.from(6), 0);
+        Line 부산일호선 = Line.of("부산1호선", "bg-orange-600", 동래역, 서면역, Distance.from(7), 0);
         이호선.addSection(Section.of(이호선, 당산역, 영등포구청역, Distance.from(5)));
         List<Line> lines = Arrays.asList(육호선, 이호선, 오호선, 부산일호선);
         sections = lines.stream()
