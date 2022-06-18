@@ -1,7 +1,10 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.constant.ErrorMessage;
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.*;
 import java.util.*;
@@ -59,6 +62,53 @@ public class Line extends BaseEntity {
         }
 
         return findStations();
+    }
+
+    public void addLineStation(Station upStation, Station downStation, int distance) {
+        Stations stations = new Stations(getStations());
+        boolean isUpStationExisted = stations.isContainStations(upStation);
+        boolean isDownStationExisted = stations.isContainStations(downStation);
+
+        validateAddLineStations(stations, isUpStationExisted, isDownStationExisted);
+
+        addSections(upStation, downStation, distance, stations, isUpStationExisted, isDownStationExisted);
+    }
+
+    private void validateAddLineStations(Stations stations, boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new BadRequestException(ErrorMessage.ALREADY_EXIST_SECTION);
+        }
+
+        if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+            throw new BadRequestException(ErrorMessage.CAN_NOT_ADD_SECTION);
+        }
+
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new BadRequestException(ErrorMessage.NOT_FOUND_SECTION_STATION);
+        }
+    }
+
+    private void addSections(Station upStation, Station downStation, int distance, Stations stations, boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (stations.isEmpty()) {
+            sections.add(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        if (isUpStationExisted) {
+            sections.stream()
+                    .filter(it -> it.getUpStation() == upStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+            sections.add(new Section(this, upStation, downStation, distance));
+        } else if (isDownStationExisted) {
+            sections.stream()
+                    .filter(it -> it.getDownStation() == downStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+            sections.add(new Section(this, upStation, downStation, distance));
+        }
     }
 
     private List<Station> findStations() {
