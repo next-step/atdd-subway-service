@@ -23,6 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("로그인 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
 
+    public static final String INVALID_TOKEN = "invalid token";
+
     @BeforeEach
     void init() {
         MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
@@ -79,6 +81,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        ExtractableResponse<Response> response = MemberAcceptanceTest.내_정보_조회_요청(INVALID_TOKEN);
+
+        유효하지_않은_토큰(response);
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
@@ -103,5 +108,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static void 로그인_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static void 유효하지_않은_토큰(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 }
