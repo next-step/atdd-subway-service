@@ -22,15 +22,18 @@ public enum AgeFarePolicyType {
         this.ageFarePolicy = ageFarePolicy;
     }
 
-    public static AgeFarePolicy getAgeFarePolicy(int age) {
+    public static AgeFarePolicyType getAgeFarePolicyType(int age) {
         return Arrays.stream(values())
             .filter(type -> type.ageFarePolicy.includeAge(age))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("나이에 대한 요금정책이 존재하지 않습니다."))
-            .getAgeFarePolicy();
+            .orElseThrow(() -> new IllegalArgumentException("나이에 대한 요금정책이 존재하지 않습니다."));
     }
 
-    public AgeFarePolicy getAgeFarePolicy() {
+    public boolean isFreeAgeFare() {
+        return this.ageFarePolicy.equals(FreeAgeFarePolicy.getInstance());
+    }
+
+    public AgeFarePolicy getPolicy() {
         return ageFarePolicy;
     }
 

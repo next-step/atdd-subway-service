@@ -12,11 +12,13 @@ public class Fare {
 
     public Fare(int distance, int additionalLineFare, int age) {
         DistanceFarePolicy distanceFarePolicy = DistanceFarePolicyType.getDistanceFarePolicy(distance);
-        AgeFarePolicy ageFarePolicy = AgeFarePolicyType.getAgeFarePolicy(age);
+        AgeFarePolicyType ageFarePolicyType = AgeFarePolicyType.getAgeFarePolicyType(age);
+
+        AgeFarePolicy ageFarePolicy = ageFarePolicyType.getPolicy();
 
         int defaultAgeFare = ageFarePolicy.calculate();
         int additionalDistanceFare = distanceFarePolicy.calculate(distance, ageFarePolicy);
-        int lineFare = ageFarePolicy.isFreeAge() ? 0 : additionalLineFare;
+        int lineFare = ageFarePolicyType.isFreeAgeFare() ? 0 : additionalLineFare;
 
         this.value = defaultAgeFare + additionalDistanceFare + lineFare;
     }

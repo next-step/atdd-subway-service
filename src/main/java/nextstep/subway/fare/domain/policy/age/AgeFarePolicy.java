@@ -8,8 +8,4 @@ public interface AgeFarePolicy {
 
     int getDiscountRate();
 
-    default boolean isFreeAge() {
-        return false;
-    }
-
 }

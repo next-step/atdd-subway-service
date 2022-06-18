@@ -18,7 +18,7 @@ class AgeFarePolicyTest {
     @DisplayName("나이에 따른 요금정책 클래스를 리턴한다.")
     @MethodSource("providerGetAgeFarePolicy_successCase")
     void getAgeFarePolicy(int age, Class<? extends AgeFarePolicy> ageFarePolicyClass) {
-        AgeFarePolicy ageFarePolicy = AgeFarePolicyType.getAgeFarePolicy(age);
+        AgeFarePolicy ageFarePolicy = AgeFarePolicyType.getAgeFarePolicyType(age).getPolicy();
         assertThat(ageFarePolicy).isInstanceOf(ageFarePolicyClass);
     }
 

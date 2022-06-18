@@ -28,11 +28,6 @@ public class FreeAgeFarePolicy implements AgeFarePolicy {
     }
 
     @Override
-    public boolean isFreeAge() {
-        return true;
-    }
-
-    @Override
     public int getDiscountRate() {
         return discountRate;
     }
