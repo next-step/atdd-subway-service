@@ -28,7 +28,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
      *   Scenario: 로그인을 시도한다.
      *     Given 회원 등록되어 있음
      *     When 로그인 요청
-     *     Then 로그인 됨
+     *     Then 로그인됨
      */
     @DisplayName("Bearer Auth")
     @Test
@@ -40,9 +40,36 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인되어_있음(response);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
+    /**
+     * Scenario: 로그인에 실패한다.
+     *   Given 회원 등록되어 있음
+     *   When 틀린 비밀번호로 로그인 요청
+     *   Then 로그인 실패
+     */
+    @DisplayName("Bearer Auth 로그인 실패 - 틀린 비밀번호")
     @Test
     void myInfoWithBadBearerAuth() {
+        // when
+        ExtractableResponse<Response> response = 로그인_요청("a@b.c", "123");
+
+        // then
+        로그인_실패(response);
+    }
+
+    /**
+     * Scenario: 로그인에 실패한다.
+     *   Given 회원 등록되어 있음
+     *   When 없는 이메일로 로그인 요청
+     *   Then 로그인 실패
+     */
+    @DisplayName("Bearer Auth 로그인 실패 - 없는 이메일")
+    @Test
+    void myInfoWithBadBearerAuth_2() {
+        // when
+        ExtractableResponse<Response> response = 로그인_요청("z@x.y", "pwd");
+
+        // then
+        로그인_실패(response);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -67,5 +94,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         return response.jsonPath().getString("accessToken");
+    }
+
+    public static void 로그인_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
