@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Embeddable
@@ -92,7 +93,7 @@ public class Sections {
 
     public void confirmStationIsOnLine(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
     }
 
@@ -100,7 +101,7 @@ public class Sections {
         if (!stations.isEmpty()
                 && stations.stream().noneMatch(section::containsUpStation)
                 && stations.stream().noneMatch(section::containsDownStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
     }
 
@@ -120,10 +121,10 @@ public class Sections {
 
     public void removeSection(Station station) {
         if (sections.size() == 1) {
-            throw new RuntimeException("마지막 구간은 삭제할 수 없습니다.");
+            throw new IllegalArgumentException("마지막 구간은 삭제할 수 없습니다.");
         }
         if (getStations().stream().noneMatch(st -> st.equals(station))) {
-            throw new RuntimeException(String.format("%s 역은 노선에 존재하지 않습니다.", station.getName()));
+            throw new IllegalArgumentException(String.format("%s 역은 노선에 존재하지 않습니다.", station.getName()));
         }
 
         if (isUpStationInSection(station)) {
@@ -140,7 +141,7 @@ public class Sections {
     public void updateDownStationIncreasedDistance(Station station) {
         Section section = sections.stream()
                                   .filter(sec -> sec.containsUpStation(station))
-                                  .findFirst().orElseThrow(RuntimeException::new);
+                                  .findFirst().orElseThrow(NoSuchElementException::new);
         sections.stream()
                 .filter(sec -> sec.containsDownStation(station))
                 .findFirst()
@@ -151,7 +152,7 @@ public class Sections {
     public void updateUpStationIncreasedDistance(Station station) {
         Section section = sections.stream()
                                   .filter(sec -> sec.containsDownStation(station))
-                                  .findFirst().orElseThrow(RuntimeException::new);
+                                  .findFirst().orElseThrow(NoSuchElementException::new);
         sections.stream()
                 .filter(sec -> sec.containsUpStation(station))
                 .findFirst()

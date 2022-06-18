@@ -65,19 +65,19 @@ public class PathFinder {
 
     public void confirmSelectSameStation(Station source, Station target) {
         if (source.getId().equals(target.getId())) {
-            throw new RuntimeException("출발역과 도착역이 동일합니다.");
+            throw new IllegalArgumentException("출발역과 도착역이 동일합니다.");
         }
     }
 
     public void confirmNonShortestPath(GraphPath path) {
         if (path == null) {
-            throw new RuntimeException("출발역과 도착역이 연결이 되어 있지 않습니다.");
+            throw new IllegalArgumentException("출발역과 도착역이 연결이 되어 있지 않습니다.");
         }
     }
 
     public void confirmStationIsOnLine(Station source, Station target) {
         if (!graph.containsVertex(source) || !graph.containsVertex(target)) {
-            throw new RuntimeException("존재하지 않은 지하철역을 선택했습니다.");
+            throw new IllegalArgumentException("존재하지 않은 지하철역을 선택했습니다.");
         }
     }
 }
