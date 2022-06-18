@@ -4,7 +4,7 @@ public class PathRequest {
     private Long source;
     private Long target;
 
-    protected PathRequest() {
+    private PathRequest() {
     }
 
     public PathRequest(Long source, Long target) {
