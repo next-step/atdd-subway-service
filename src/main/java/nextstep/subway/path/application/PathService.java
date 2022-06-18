@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
@@ -27,6 +28,6 @@ public class PathService {
         Station targetStation = stationService.findStationById(pathRequest.getTargetStationId());
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
         GraphPath<Station, DefaultWeightedEdge> path = pathFinder.getShortestPath(sourceStation, targetStation);
-        return PathResponse.of(path.getVertexList(), path.getWeight());
+        return PathResponse.of(path.getVertexList(), path.getWeight(), Fare.calculateFare((int)path.getWeight()));
     }
 }
