@@ -9,7 +9,6 @@ import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +19,7 @@ import org.springframework.http.MediaType;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인을_요청_한다;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
@@ -27,6 +27,7 @@ import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
@@ -39,9 +40,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     public void setUp() {
+        super.setUp();
+
         // Given 지하철역 등록되어 있음
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
 
         // And 지하철 노선 등록되어 있음
         // And 지하철 노선에 지하철역 등록되어 있음
@@ -103,16 +106,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, List<StationResponse> sourceStations, List<StationResponse> targetStations) {
         List<FavoriteResponse> expectedFavoriteResponses = response.jsonPath().getList(".", FavoriteResponse.class);
 
-        List<StationResponse> expectedSourceStations = expectedFavoriteResponses.stream()
+        List<Long> expectedSourceStationIds = convertToIds(sourceStations.stream());
+        List<Long> expectedTargetStationIds = convertToIds(targetStations.stream());
+
+        List<Long> resultSourceStationIds = convertToIds(expectedFavoriteResponses
+                .stream()
                 .map(FavoriteResponse::getSource)
-                .collect(Collectors.toList());
+        );
 
-        List<StationResponse> expectedTargetStations = expectedFavoriteResponses.stream()
+        List<Long> expectedTargetStations = convertToIds(expectedFavoriteResponses
+                .stream()
                 .map(FavoriteResponse::getTarget)
-                .collect(Collectors.toList());
+        );
 
-        assertThat(expectedSourceStations).containsAll(sourceStations);
-        assertThat(expectedTargetStations).containsAll(targetStations);
+        assertThat(resultSourceStationIds).containsAll(expectedSourceStationIds);
+        assertThat(expectedTargetStations).containsAll(expectedTargetStationIds);
+    }
+
+    private static List<Long> convertToIds(Stream<StationResponse> sourceStations) {
+        return sourceStations
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse tokenResponse, ExtractableResponse<Response> response) {
