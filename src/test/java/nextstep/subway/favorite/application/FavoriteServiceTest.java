@@ -6,7 +6,6 @@ import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -111,7 +111,7 @@ public class FavoriteServiceTest {
         favoriteService.saveFavorite(member.getId(), favoriteRequest1);
 
         //then
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(DataIntegrityViolationException.class,
                 () -> favoriteService.saveFavorite(member.getId(), favoriteRequest1));
     }
 
