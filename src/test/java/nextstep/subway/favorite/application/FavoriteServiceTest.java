@@ -6,6 +6,7 @@ import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class FavoriteServiceTest {
@@ -99,5 +101,29 @@ public class FavoriteServiceTest {
 
         //then
         assertThat(favorites.size()).isEqualTo(0);
+    }
+
+    @DisplayName("즐겨찾기 중복 생성 불가")
+    @Test
+    @Transactional
+    void 즐겨찾기_중복_생성_불가(){
+        //when
+        favoriteService.saveFavorite(member.getId(), favoriteRequest1);
+
+        //then
+        assertThrows(IllegalArgumentException.class,
+                () -> favoriteService.saveFavorite(member.getId(), favoriteRequest1));
+    }
+
+    @DisplayName("즐겨찾기 존재하지않는 역으로 생성 불가")
+    @Test
+    @Transactional
+    void 즐겨찾기_존재하지않는역으로_생성_불가(){
+        //when
+        FavoriteRequest illegalFavoriteRequest = new FavoriteRequest(-1L, 도착역.getId());
+
+        //then
+        assertThrows(IllegalArgumentException.class,
+                () -> favoriteService.saveFavorite(member.getId(), illegalFavoriteRequest));
     }
 }
