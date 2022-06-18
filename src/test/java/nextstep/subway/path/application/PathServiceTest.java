@@ -3,9 +3,11 @@ package nextstep.subway.path.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -38,7 +40,6 @@ class PathServiceTest {
     private Long targetId;
     private Station source;
     private Station target;
-    private PathResponse pathResponse;
 
     @Test
     @DisplayName("지하철 출발역과 도착역 사이 최단 경로를 탐색한다.")
@@ -47,25 +48,22 @@ class PathServiceTest {
         stubStationService();
         stubLineRepository();
         stubPathFinder();
+        LoginMember loginMember = new LoginMember(1L, "test@example.com", 10);
 
         //when
         PathService pathService = new PathService(stationService, lineRepository, pathFinder);
-        PathResponse actual = pathService.findShortestPath(sourceId, targetId);
+        PathResponse actual = pathService.findShortestPath(loginMember, sourceId, targetId);
 
         //then
         assertThat(actual).isNotNull();
         assertThat(actual.getStations()).isNotNull();
-        assertThat(actual.getStations()).containsExactlyElementsOf(pathResponse.getStations());
     }
 
     private void stubPathFinder() {
         Station stopover = new Station("당산역");
-        pathResponse = new PathResponse(Arrays.asList(
-                StationResponse.of(source),
-                StationResponse.of(stopover),
-                StationResponse.of(target)), 8);
         List<Sections> sections = Collections.emptyList();
-        when(pathFinder.findShortestPath(sections, source, target)).thenReturn(pathResponse);
+        Path path = Path.of(Arrays.asList(source, stopover, target), 8, 900);
+        when(pathFinder.findShortestPath(sections, source, target)).thenReturn(path);
     }
 
     private void stubLineRepository() {

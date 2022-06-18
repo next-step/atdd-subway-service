@@ -11,9 +11,7 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -63,22 +61,22 @@ public class PathFinderTest {
     @DisplayName("지하철 출발역과 도착역 사이의 최단 경로를 탐색한다.")
     void findShortestPath() {
         //when
-        PathResponse pathResponse = pathFinder.findShortestPath(sections, 합정역, 영등포구청역);
-        List<StationResponse> stations = pathResponse.getStations();
+        Path path = pathFinder.findShortestPath(sections, 합정역, 영등포구청역);
+        List<Station> stations = path.getStations();
         List<String> stationNames = stations.stream()
-                .map(StationResponse::getName)
+                .map(Station::getName)
                 .collect(Collectors.toList());
 
         //then
         assertThat(stationNames).containsExactly("합정역", "당산역", "영등포구청역");
-        assertThat(pathResponse.getDistance()).isEqualTo(8);
+        assertThat(path.getDistance()).isEqualTo(8);
     }
 
     @Test
     @DisplayName("출발역과 도착역이 같은 경우, 최단 경로를 구할 수 없다.")
     void findShortestPathBetweenSameStations() {
         assertThatThrownBy(() -> {
-            PathResponse pathResponse = pathFinder.findShortestPath(sections, 합정역, 합정역);
+            Path path = pathFinder.findShortestPath(sections, 합정역, 합정역);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -86,7 +84,7 @@ public class PathFinderTest {
     @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우, 최단 경로를 구할 수 없다.")
     void findShortestPathBetweenNotConnectedStations() {
         assertThatThrownBy(() -> {
-            PathResponse pathResponse = pathFinder.findShortestPath(sections, 합정역, 동래역);
+            Path path = pathFinder.findShortestPath(sections, 합정역, 동래역);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -95,7 +93,7 @@ public class PathFinderTest {
     void findShortestPathBetweenNotExistingStations() {
         assertThatThrownBy(() -> {
             Station 존재하지_않는_역 = new Station("LA");
-            PathResponse pathResponse = pathFinder.findShortestPath(sections, 합정역, 존재하지_않는_역);
+            Path path = pathFinder.findShortestPath(sections, 합정역, 존재하지_않는_역);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 }
