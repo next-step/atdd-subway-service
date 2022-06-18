@@ -84,6 +84,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * Given 지하철 역 등록되어 있음
      * And 지하철 노선 등록되어 있음
      * And 지하철 노선에 지하철 역 등록되어 있음
+     * And 회원 등록되어 있음
+     * And 로그인 되어 있음
      *
      * Scenario: 최단 경로 탐색
      * When 지하철 출발역과 도착역 사이 최단 경로 조회 요첨
@@ -92,7 +94,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * And 지하철 이용 요금도 함께 응답함
      */
     @Test
-    @DisplayName("지하철 역과 역사이의 최단 경로를 탐색한다.")
+    @DisplayName("로그인시, 최단 경로를 탐색하면 연령별 할인 정책이 적용된다.")
     void shortestPath() {
         //when
         ExtractableResponse<Response> 최단_경로_조회_결과 = 최단_경로_조회_요청(사용자_인증_토큰, 합정역, 영등포구청역);
@@ -100,7 +102,36 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회됨(최단_경로_조회_결과);
         최단_경로에_지하철역_순서_정렬됨(최단_경로_조회_결과, Arrays.asList(합정역, 공덕역, 영등포구청역));
         최단_경로_총_거리_응답함(최단_경로_조회_결과, 14);
-        최단_경로_지하철_요금_응답함(최단_경로_조회_결과, 1350);
+        최단_경로_지하철_요금_응답함(최단_경로_조회_결과, 1350);//거리별 운임(1350) - 연령별 할인(200) + 노선 추가요금(200)
+    }
+
+    /**
+     * Feature: 지하철 경로 관련 기능
+     *
+     * Background
+     * Given 지하철 역 등록되어 있음
+     * And 지하철 노선 등록되어 있음
+     * And 지하철 노선에 지하철 역 등록되어 있음
+     * And 로그인 안되어있음
+     *
+     * Scenario: 최단 경로 탐색
+     * When 지하철 출발역과 도착역 사이 최단 경로 조회 요첨
+     * Then 최단 경로 조회됨
+     * And 총 거리도 함께 응답함
+     * And 지하철 이용 요금도 함께 응답함
+     */
+    @Test
+    @DisplayName("비로그인시, 최단 경로를 탐색하면 연령별 할인 정책이 적용되지 않는다.")
+    void shortestPathWithoutAuth() {
+        //given
+        사용자_인증_토큰 = "sflsjfdlsfsdjlfjds";
+        //when
+        ExtractableResponse<Response> 최단_경로_조회_결과 = 최단_경로_조회_요청(사용자_인증_토큰, 합정역, 영등포구청역);
+        //then
+        최단_경로_조회됨(최단_경로_조회_결과);
+        최단_경로에_지하철역_순서_정렬됨(최단_경로_조회_결과, Arrays.asList(합정역, 공덕역, 영등포구청역));
+        최단_경로_총_거리_응답함(최단_경로_조회_결과, 14);
+        최단_경로_지하철_요금_응답함(최단_경로_조회_결과, 1550);//거리별 운임(1350) - 연령별 할인(0) + 노선 추가요금(200)
     }
 
     private void 최단_경로_지하철_요금_응답함(ExtractableResponse<Response> response, int fare) {
