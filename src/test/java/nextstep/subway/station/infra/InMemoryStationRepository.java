@@ -1,5 +1,7 @@
-package nextstep.subway.station.domain;
+package nextstep.subway.station.infra;
 
+import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.*;

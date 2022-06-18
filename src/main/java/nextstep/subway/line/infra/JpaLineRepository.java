@@ -1,5 +1,7 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.line.infra;
 
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

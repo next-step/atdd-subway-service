@@ -1,9 +1,9 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.line.infra;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.station.domain.InMemoryStationRepository;
+import nextstep.subway.station.infra.InMemoryStationRepository;
 import nextstep.subway.station.domain.Station;
 import org.springframework.test.util.ReflectionTestUtils;
 
