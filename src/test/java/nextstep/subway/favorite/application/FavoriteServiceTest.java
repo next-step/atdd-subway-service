@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -50,16 +51,17 @@ class FavoriteServiceTest {
         강남역 = new Station("강남역");
         광교역 = new Station("광교역");
         즐겨찾기 = new Favorite(사용자, 강남역, 광교역);
-
-        given(memberRepository.findById(사용자_ID)).willReturn(Optional.of(사용자));
-        given(stationService.findStationById(강남역_ID)).willReturn(강남역);
-        given(stationService.findStationById(광교역_ID)).willReturn(광교역);
-        given(favoriteRepository.save(any())).willReturn(즐겨찾기);
     }
 
     @DisplayName("강남역-광교역 즐겨찾기 등록을 요청하면, 사용자의 즐겨찾기로 등록된다.")
     @Test
     void saveFavorite() {
+        //given
+        given(memberRepository.findById(사용자_ID)).willReturn(Optional.of(사용자));
+        given(stationService.findStationById(강남역_ID)).willReturn(강남역);
+        given(stationService.findStationById(광교역_ID)).willReturn(광교역);
+        given(favoriteRepository.save(any())).willReturn(즐겨찾기);
+
         //when
         FavoriteResponse favoriteResponse = 즐겨찾기_등록_요청(사용자_ID, new FavoriteRequest(강남역_ID, 광교역_ID));
 
@@ -67,12 +69,30 @@ class FavoriteServiceTest {
         즐겨찾기_등록됨(favoriteResponse);
     }
 
+    @DisplayName("강남역-강남역 즐겨찾기 등록을 요청하면, IllegalArgumentException 이 발생한다.")
+    @Test
+    void invalid_saveFavorite() {
+        //given
+        given(memberRepository.findById(사용자_ID)).willReturn(Optional.of(사용자));
+        given(stationService.findStationById(강남역_ID)).willReturn(강남역);
+
+        //when & then
+        assertThatThrownBy(() -> {
+            즐겨찾기_등록_요청(사용자_ID, new FavoriteRequest(강남역_ID, 강남역_ID));
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("출발지와 도착지는 다른 역으로 등록해주세요.");
+    }
+
     @DisplayName("사용자의 즐겨찾기 조회를 요청하면, 사용자의 모든 즐겨찾기가 조회된다.")
     @Test
     void findAllFavorites() {
         //given
-        즐겨찾기_등록_요청(사용자_ID, new FavoriteRequest(강남역_ID, 광교역_ID));
+        given(memberRepository.findById(사용자_ID)).willReturn(Optional.of(사용자));
+        given(stationService.findStationById(강남역_ID)).willReturn(강남역);
+        given(stationService.findStationById(광교역_ID)).willReturn(광교역);
+        given(favoriteRepository.save(any())).willReturn(즐겨찾기);
         given(favoriteRepository.findAllByMemberId(any())).willReturn(Arrays.asList(즐겨찾기));
+        즐겨찾기_등록_요청(사용자_ID, new FavoriteRequest(강남역_ID, 광교역_ID));
 
         //when
         List<FavoriteResponse> favoriteResponses = 즐겨찾기_전체조회_요청(사용자_ID);
@@ -81,18 +101,49 @@ class FavoriteServiceTest {
         즐겨찾기_전체조회됨(favoriteResponses);
     }
 
+    @DisplayName("존재하지 않는 사용자의 즐겨찾기 조회를 요청하면, IllegalArgumentException 이 발생한다.")
+    @Test
+    void invalid_findAllFavorites() {
+        //given
+        Long 존재하지_않는_사용자_아이디 = 99L;
+        given(memberRepository.findById(존재하지_않는_사용자_아이디)).willReturn(Optional.empty());
+
+        //when & & then
+        assertThatThrownBy(() -> {
+            즐겨찾기_전체조회_요청(존재하지_않는_사용자_아이디);
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("존재하지 않는 회원입니다.");
+    }
+
     @DisplayName("강남역-광교역 즐겨찾기 삭제를 요청하면, 사용자의 즐겨찾기 중 강남역-광교역 즐겨찾기가 삭제된다.")
     @Test
     void deleteFavoriteById() {
         //given
-        FavoriteResponse favoriteResponse = 즐겨찾기_등록_요청(사용자_ID, new FavoriteRequest(강남역_ID, 광교역_ID));
+        given(memberRepository.findById(사용자_ID)).willReturn(Optional.of(사용자));
+        given(stationService.findStationById(강남역_ID)).willReturn(강남역);
+        given(stationService.findStationById(광교역_ID)).willReturn(광교역);
+        given(favoriteRepository.save(any())).willReturn(즐겨찾기);
         given(favoriteRepository.findById(any())).willReturn(Optional.of(즐겨찾기));
+        FavoriteResponse favoriteResponse = 즐겨찾기_등록_요청(사용자_ID, new FavoriteRequest(강남역_ID, 광교역_ID));
 
         //when
-        즐겨찾기_삭제_요청(사용자_ID, favoriteResponse.getId());
+        즐겨찾기_삭제_요청(favoriteResponse.getId());
 
         //then
         즐겨찾기_삭제됨(사용자_ID);
+    }
+
+    @DisplayName("존재하지 않는 즐겨찾기 삭제를 요청하면, IllegalArgumentException 이 발생한다.")
+    @Test
+    void invalid_deleteFavoriteById() {
+        //given
+        Long 존재하지_않는_즐겨찾기_아이디 = 99L;
+
+        //when & & then
+        assertThatThrownBy(() -> {
+            즐겨찾기_삭제_요청(존재하지_않는_즐겨찾기_아이디);
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("존재하지 않는 즐겨찾기입니다.");
     }
 
     private FavoriteResponse 즐겨찾기_등록_요청(Long memberId, FavoriteRequest favoriteRequest) {
@@ -103,8 +154,8 @@ class FavoriteServiceTest {
         return favoriteService.findAllFavorites(memberId);
     }
 
-    private void 즐겨찾기_삭제_요청(Long memberId, Long favoriteId) {
-        favoriteService.deleteFavoriteById(memberId, favoriteId);
+    private void 즐겨찾기_삭제_요청(Long favoriteId) {
+        favoriteService.deleteFavoriteById(favoriteId);
     }
 
     private void 즐겨찾기_등록됨(FavoriteResponse favoriteResponse) {

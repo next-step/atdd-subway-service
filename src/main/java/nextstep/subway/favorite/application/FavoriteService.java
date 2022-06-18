@@ -38,12 +38,13 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findAllFavorites(Long memberId) {
-        return favoriteRepository.findAllByMemberId(memberId).stream()
+        Member member = findMemberById(memberId);
+        return favoriteRepository.findAllByMemberId(member.getId()).stream()
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavoriteById(Long memberId, Long favoriteId) {
+    public void deleteFavoriteById(Long favoriteId) {
         Favorite favorite = favoriteRepository.findById(favoriteId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 즐겨찾기입니다."));
         favoriteRepository.delete(favorite);
