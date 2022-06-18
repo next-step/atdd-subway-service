@@ -57,7 +57,7 @@ Connection: keep-alive
 
 ### 요구사항 구현
 - [ ] 최단 경로 조회 인수 테스트 작성(요구사항과 기능 전반에 대한 이해)
-  - [ ] PathAcceptanceTest 작성
+  - [x] PathAcceptanceTest 작성
   - [ ] 컨트롤러 레이어 구현
   - [ ] 서비스 레이어 테스트 작성
   - [ ] 서비스 레이어 기능 구현
