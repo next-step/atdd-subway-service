@@ -72,7 +72,7 @@ public class Sections {
     }
 
     private void updateAdjacentSection(Section sectionToAdd) {
-        sections.stream().forEach(section -> section.updateWith(sectionToAdd));
+        sections.forEach(section -> section.updateWith(sectionToAdd));
     }
 
     public void removeStation(Station station) {

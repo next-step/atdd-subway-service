@@ -37,6 +37,8 @@ public class StationService {
 
     public Station findStationById(Long id) {
         return stationRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(String.format(ErrorMessage.ERROR_STATION_NOT_FOUND, id)));
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format(ErrorMessage.ERROR_STATION_NOT_FOUND, id))
+                );
     }
 }
