@@ -20,6 +20,10 @@ public class Fare implements Comparable<Fare> {
         return new Fare(BigDecimal.valueOf(value));
     }
 
+    public Fare add(Fare target) {
+        return new Fare(value.add(target.value));
+    }
+
     public BigDecimal getValue() {
         return value;
     }
