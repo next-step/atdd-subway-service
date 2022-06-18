@@ -14,13 +14,13 @@ public class Dijkstra implements PathStrategy {
     private final List<Station> stations;
     private final Sections sections;
 
-    public Dijkstra(Station source, Station target, List<Station> stations, Sections sections) {
+    public Dijkstra(Station source, Station target, Sections sections) {
         if (source == target) {
             throw new IllegalArgumentException("시작역과 종료역은 같을 수 없습니다.");
         }
         this.source = source;
         this.target = target;
-        this.stations = stations;
+        this.stations = sections.allStations();
         this.sections = sections;
     }
 

@@ -29,9 +29,8 @@ public class PathService {
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
         Sections sections = lineService.findAllSections();
-        List<Station> stations = sections.allStations();
 
-        List<Station> shortestStations = PathFinder.find(new Dijkstra(source, target, stations, sections));
+        List<Station> shortestStations = PathFinder.find(new Dijkstra(source, target, sections));
         Sections filteredSections = sections.filteredBy(shortestStations);
 
         return PathResponse.of(shortestStations, filteredSections.totalDistance());
