@@ -83,12 +83,30 @@ class FavoriteServiceTest {
         즐겨찾기_전체조회됨(favoriteResponses);
     }
 
+    @DisplayName("강남역-광교역 즐겨찾기 삭제를 요청하면, 사용자의 즐겨찾기 중 강남역-광교역 즐겨찾기가 삭제된다.")
+    @Test
+    void deleteFavoriteById() {
+        //given
+        FavoriteResponse favoriteResponse = 즐겨찾기_등록_요청(사용자_ID, new FavoriteRequest(강남역_ID, 광교역_ID));
+        given(favoriteRepository.findById(any())).willReturn(Optional.of(즐겨찾기));
+
+        //when
+        즐겨찾기_삭제_요청(사용자_ID, favoriteResponse.getId());
+
+        //then
+        즐겨찾기_삭제됨(사용자_ID);
+    }
+
     private FavoriteResponse 즐겨찾기_등록_요청(Long memberId, FavoriteRequest favoriteRequest) {
         return favoriteService.saveFavorite(memberId, favoriteRequest);
     }
 
     private List<FavoriteResponse> 즐겨찾기_전체조회_요청(Long memberId) {
         return favoriteService.findAllFavorites(memberId);
+    }
+
+    private void 즐겨찾기_삭제_요청(Long memberId, Long favoriteId) {
+        favoriteService.deleteFavoriteById(memberId, favoriteId);
     }
 
     private void 즐겨찾기_등록됨(FavoriteResponse favoriteResponse) {
@@ -100,5 +118,10 @@ class FavoriteServiceTest {
     private void 즐겨찾기_전체조회됨(List<FavoriteResponse> favoriteResponses) {
         assertThat(favoriteResponses).hasSize(1);
         즐겨찾기_등록됨(favoriteResponses.get(0));
+    }
+
+    private void 즐겨찾기_삭제됨(Long memberId) {
+        List<FavoriteResponse> favoriteResponses = 즐겨찾기_전체조회_요청(memberId);
+        assertThat(favoriteResponses).hasSize(0);
     }
 }

@@ -39,10 +39,6 @@ public class Favorite extends BaseEntity {
         this.target = target;
     }
 
-    public boolean isCreateBy(Long memberId) {
-        return member.getId().equals(memberId);
-    }
-
     public Long getId() {
         return id;
     }

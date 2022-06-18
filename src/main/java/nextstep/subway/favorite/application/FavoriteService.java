@@ -47,11 +47,6 @@ public class FavoriteService {
     public void deleteFavoriteById(Long memberId, Long favoriteId) {
         Favorite favorite = favoriteRepository.findById(favoriteId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 즐겨찾기입니다."));
-
-        if(!favorite.isCreateBy(memberId)) {
-            throw new AuthorizationException("삭제 권한이 없습니다.");
-        }
-
         favoriteRepository.delete(favorite);
     }
 
