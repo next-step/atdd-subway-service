@@ -4,6 +4,8 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.line.consts.ErrorMessage;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -23,6 +25,7 @@ public class Favorite extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
