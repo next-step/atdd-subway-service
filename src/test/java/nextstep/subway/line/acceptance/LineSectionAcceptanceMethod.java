@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineSectionAcceptanceMethod {
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
-        SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
+        SectionRequest sectionRequest = SectionRequest.of(upStation.getId(), downStation.getId(), distance);
 
         return RestAssured
                 .given().log().all()
