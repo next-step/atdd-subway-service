@@ -3,7 +3,7 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,9 @@ class SectionsTest {
         givenUpStation = new Station(givenUpStationName);
         givenDownStation = new Station(givenDownStationName);
         givenLine = new Line(givenLineName, givenLineColor);
-        givenSections = new Sections(Arrays.asList(new Section(givenLine, givenUpStation, givenDownStation, givenLineDistance)));
+        final List<Section> sectionList = new ArrayList<>();
+        sectionList.add(new Section(givenLine, givenUpStation, givenDownStation, givenLineDistance));
+        givenSections = new Sections(sectionList);
     }
 
     @Test
@@ -67,18 +69,14 @@ class SectionsTest {
     @Test
     void 빈_노선에_구간을_추가할_수_있어야_한다() {
         // given
-        final Line emptyLine = new Line("empty line", "black");
+        final Sections emptySections = new Sections();
 
         // when
-        givenSections.add(givenLine, givenUpStation, givenDownStation, givenLineDistance);
+        emptySections.add(new Line(), givenUpStation, givenDownStation, givenLineDistance);
 
         // then
-        assertThat(emptyLine.getSections().size()).isEqualTo(1);
-
-        final Section newSection = emptyLine.getSections().get(0);
-        assertThat(newSection.getUpStation().getName()).isEqualTo(givenUpStationName);
-        assertThat(newSection.getDownStation().getName()).isEqualTo(givenDownStationName);
-        assertThat(newSection.getDistance()).isEqualTo(givenLineDistance);
+        final List<Station> stations = givenSections.getStations();
+        assertThat(stations).containsExactly(givenUpStation, givenDownStation);
     }
 
     @Test
@@ -87,15 +85,11 @@ class SectionsTest {
         final Station newDownStation = new Station("양재역");
 
         // when
-        givenLine.addSection(givenUpStation, newDownStation, givenLineDistance / 2);
+        givenSections.add(givenLine, givenUpStation, newDownStation, givenLineDistance / 2);
 
         // then
-        assertThat(givenLine.getSections().size()).isEqualTo(2);
-
-        final Section newSection = givenLine.getSections().get(1);
-        assertThat(newSection.getUpStation().getName()).isEqualTo(givenUpStationName);
-        assertThat(newSection.getDownStation().getName()).isEqualTo(newDownStation.getName());
-        assertThat(newSection.getDistance()).isEqualTo(givenLineDistance / 2);
+        final List<Station> stations = givenSections.getStations();
+        assertThat(stations).containsExactly(givenUpStation, newDownStation, givenDownStation);
     }
 
     @Test
@@ -104,15 +98,11 @@ class SectionsTest {
         final Station newUpStation = new Station("양재역");
 
         // when
-        givenLine.addSection(newUpStation, givenDownStation, givenLineDistance / 2);
+        givenSections.add(givenLine, newUpStation, givenUpStation, givenLineDistance / 2);
 
         // then
-        assertThat(givenLine.getSections().size()).isEqualTo(2);
-
-        final Section newSection = givenLine.getSections().get(1);
-        assertThat(newSection.getUpStation().getName()).isEqualTo(newUpStation.getName());
-        assertThat(newSection.getDownStation().getName()).isEqualTo(givenDownStationName);
-        assertThat(newSection.getDistance()).isEqualTo(givenLineDistance / 2);
+        final List<Station> stations = givenSections.getStations();
+        assertThat(stations).containsExactly(newUpStation, givenUpStation, givenDownStation);
     }
 
     @Test
@@ -121,6 +111,6 @@ class SectionsTest {
         final Station newDownStation = new Station("양재역");
 
         // when and then
-        assertThatThrownBy(() -> givenLine.addSection(givenUpStation, newDownStation, givenLineDistance));
+        assertThatThrownBy(() -> givenSections.add(givenLine, givenUpStation, newDownStation, givenLineDistance));
     }
 }
