@@ -2,10 +2,8 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
@@ -13,22 +11,21 @@ import java.util.List;
 
 @Component
 public class PathFinder {
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> path;
+    private final WeightedMultigraph<Station, SectionEdge> path;
     private ShortestPathStrategy strategy;
 
     public PathFinder() {
-        path = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        path = new WeightedMultigraph<>(SectionEdge.class);
     }
 
     public void decideShortestPathStrategy(ShortestPathStrategy strategy) {
         this.strategy = strategy;
     }
 
-    public PathResponse findShortestPath(List<Sections> allSections, Station source, Station target) {
+    public Path findShortestPath(List<Sections> allSections, Station source, Station target) {
         drawPath(allSections);
         validateStation(source, target);
-        Path shortestPath = strategy.findShortestPath(path, source, target);
-        return PathResponse.of(shortestPath);
+        return strategy.findShortestPath(path, source, target);
     }
 
     private void validateStation(Station source, Station target) {
@@ -60,9 +57,9 @@ public class PathFinder {
     }
 
     private void addSectionToEdge(Section section) {
-        path.setEdgeWeight(
-                path.addEdge(section.getUpStation(), section.getDownStation()),
-                section.getDistance());
+        SectionEdge sectionEdge = new SectionEdge(section);
+        path.addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
+        path.setEdgeWeight(sectionEdge, section.getDistance());
     }
 
     private void addStations(List<Station> allStations) {
