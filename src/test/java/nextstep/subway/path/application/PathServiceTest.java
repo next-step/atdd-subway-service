@@ -2,11 +2,11 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("경로 조회 서비스")
 @SpringBootTest
-public class PathServiceTest {
+class PathServiceTest {
     @Autowired
     PathService pathService;
     @MockBean
@@ -41,7 +41,7 @@ public class PathServiceTest {
     Station mid;
     List<Station> stations;
     List<Line> lines;
-    PathResponse pathResponse;
+    Path path;
 
     @BeforeEach
     void setUp() {
@@ -68,17 +68,18 @@ public class PathServiceTest {
     }
 
     void stubPathFinder() {
-        pathResponse = new PathResponse(Arrays.asList(StationResponse.of(source), StationResponse.of(mid), StationResponse.of(target)), 19);
-        when(pathFinder.findPath(stations, lines, source, target)).thenReturn(pathResponse);
+        path = new Path(Arrays.asList(source, mid, target), 19, lines);
+        when(pathFinder.findPath(stations, lines, source, target)).thenReturn(path);
     }
 
     @DisplayName("최단 경로를 조회한다")
     @Test
     void findPath() {
         PathResponse actual = pathService.findPath(sourceId, targetId);
+        PathResponse expected = new PathResponse(path);
         assertSoftly(softAssertions -> {
-            softAssertions.assertThat(actual.getStations()).containsExactlyElementsOf(pathResponse.getStations());
-            softAssertions.assertThat(actual.getDistance()).isEqualTo(pathResponse.getDistance());
+            softAssertions.assertThat(actual.getStations()).containsExactlyElementsOf(expected.getStations());
+            softAssertions.assertThat(actual.getDistance()).isEqualTo(expected.getDistance());
         });
     }
 }
