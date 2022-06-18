@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,22 +43,21 @@ public class FavoriteService {
 
     public List<FavoriteResponse> findFavorites(Long memberId) {
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
-        Set<Station> stations = stationRepository.findFavoriteStationByMemberId(memberId);
+        Map<Long, Station> stations = getStationById(memberId);
 
         return favorites.stream()
                 .map(f -> FavoriteResponse.of(
                         f.getId(),
-                        getStationById(stations, f.getSourceStationId()),
-                        getStationById(stations, f.getTargetStationId())
+                        stations.get(f.getSourceStationId()),
+                        stations.get(f.getTargetStationId())
                        ))
                 .collect(Collectors.toList());
     }
 
-    private Station getStationById(Set<Station> stations, Long id) {
-        return stations.stream()
-                .filter(s -> s.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다"));
+    private Map<Long, Station> getStationById(Long memberId) {
+        return stationRepository.findFavoriteStationByMemberId(memberId)
+                .stream()
+                .collect(Collectors.toMap(Station::getId, Function.identity()));
     }
 
     @Transactional
