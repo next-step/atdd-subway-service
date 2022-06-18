@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,7 +92,21 @@ class LineTest {
     @Test
     @DisplayName("역이 삭제된다.")
     void removeStation() {
-        신분당선.removeStation(판교역);
-        assertThat(신분당선.getStations()).containsExactly(강남역, 광교역);
+        신분당선.removeStation(광교역);
+        assertAll(
+                () -> assertThat(신분당선.getStations()).containsExactly(강남역, 판교역),
+                () -> assertThat(신분당선.getSections().get(0).getDistance()).isEqualTo(20)
+        );
+
+    }
+
+    @Test
+    @DisplayName("종점역이 삭제된다.")
+    void removeStation2() {
+        신분당선.removeStation(강남역);
+        assertAll(
+                () -> assertThat(신분당선.getStations()).containsExactly(광교역,판교역),
+                () -> assertThat(신분당선.getSections().get(0).getDistance()).isEqualTo(10)
+        );
     }
 }

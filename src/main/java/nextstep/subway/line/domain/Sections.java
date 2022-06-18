@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -24,6 +25,20 @@ public class Sections {
     }
 
     public List<Station> getStations() {
+        if (sectionElements.size() == 1) {
+            return oneSizeStations();
+        }
+        return getOrderStations();
+    }
+
+    private List<Station> oneSizeStations() {
+        List<Station> stations  = new ArrayList<>();
+        stations.add(sectionElements.get(0).getUpStation());
+        stations.add(sectionElements.get(0).getDownStation());
+        return stations;
+    }
+
+    private List<Station> getOrderStations() {
         List<Station> stations = new ArrayList<>();
         Station station = findFinalUpStation();
         while (station != null) {
@@ -103,7 +118,6 @@ public class Sections {
                 .anyMatch((station ->
                         station.equals(section.getUpStation()) || station.equals(section.getDownStation()))
                 );
-
         if (!isValid) {
             throw new IllegalArgumentException("등록 할수 없는 구간입니다.");
         }
@@ -124,12 +138,13 @@ public class Sections {
         Optional<Section> upLineStation = findSectionByDownStation(station);
         Optional<Section> downLineStation = findSectionByUpStation(station);
 
-        upLineStation.ifPresent(it -> sectionElements.remove(it));
-        downLineStation.ifPresent(it -> sectionElements.remove(it));
-
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             mergeSection(upLineStation.get(), downLineStation.get());
         }
+
+        upLineStation.ifPresent(it -> sectionElements.remove(it));
+        downLineStation.ifPresent(it -> sectionElements.remove(it));
+
     }
 
     private void validRemoveStation() {
@@ -154,6 +169,11 @@ public class Sections {
         Station newUpStation = downLineStation.getUpStation();
         Station newDownStation = upLineStation.getDownStation();
         int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
-        addSection(new Section(downLineStation.getLine(), newUpStation, newDownStation, newDistance));
+        sectionElements.add(new Section(downLineStation.getLine(), newUpStation, newDownStation, newDistance));
+    }
+
+    public List<Section> getSectionElements() {
+        return Collections.unmodifiableList(sectionElements);
+
     }
 }

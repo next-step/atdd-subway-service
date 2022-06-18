@@ -59,7 +59,6 @@ public class Line extends BaseEntity {
         sections.addSection(section);
     }
 
-
     public void removeStation(Station station) {
         sections.removeStation(station);
     }
@@ -67,6 +66,11 @@ public class Line extends BaseEntity {
     public List<Station> getStations() {
         return sections.getStations();
     }
+
+    public List<Section> getSections() {
+        return sections.getSectionElements();
+    }
+
 
     @Override
     public boolean equals(Object o) {
