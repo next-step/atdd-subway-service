@@ -25,42 +25,33 @@ public class Sections {
         if (sections.isEmpty()) {
             return Arrays.asList();
         }
-
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections
-                    .stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
+        final List<Station> stations = new ArrayList<>();
+        final Station finalUpStation = getFinalUpStation();
+        stations.add(finalUpStation);
+        return getOrderedStations(stations, finalUpStation);
     }
 
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections
-                    .stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
+    private Station getFinalUpStation() {
+        final Station oneDownStation = sections.get(0).getUpStation();
+        return findFinalUpStation(oneDownStation);
+    }
 
-        return downStation;
+    private Station findFinalUpStation(final Station currentDownStation) {
+        final Optional<Section> nextLineStation = getSectionByDownStation(currentDownStation);
+        if (!nextLineStation.isPresent()) {
+            return currentDownStation;
+        }
+        return findFinalUpStation(nextLineStation.get().getUpStation());
+    }
+
+    private List<Station> getOrderedStations(final List<Station> stations, final Station currentUpStation) {
+        final Optional<Section> nextSection = getSectionByUpStation(currentUpStation);
+        if (!nextSection.isPresent()) {
+            return stations;
+        }
+        final Station nextUpStation = nextSection.get().getDownStation();
+        stations.add(nextUpStation);
+        return getOrderedStations(stations, nextUpStation);
     }
 
     public void add(final Line line, final Station upStation, final Station downStation, final int distance) {
