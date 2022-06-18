@@ -114,7 +114,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //When
         ExtractableResponse<Response> sameStationCreateResponse = 즐겨찾기_생성_요청(token, 강남역.getId(), 강남역.getId());
         //Then
-        즐겨찾기_생성됨(sameStationCreateResponse);
+        즐겨찾기_생성_실패(sameStationCreateResponse);
 
         //When
         ExtractableResponse<Response> createFailResponse = 즐겨찾기_생성_요청("invalidToken", 강남역.getId(), 광교역.getId());
@@ -122,7 +122,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_실패(createFailResponse);
 
         //When
-        ExtractableResponse<Response> deleteFailResponse = 즐겨찾기_삭제_요청("invalidToken", sameStationCreateResponse);
+        ExtractableResponse<Response> deleteFailResponse = 즐겨찾기_삭제_요청("invalidToken", createResponse);
         //Then
         즐겨찾기_삭제_실패(deleteFailResponse);
     }

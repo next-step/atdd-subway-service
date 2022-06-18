@@ -54,4 +54,9 @@ public class FavoriteService {
         );
         favoriteRepository.delete(favorite);
     }
+
+    public void deleteFavoriteByMemberId(Long memberId) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
+        favoriteRepository.deleteAll(favorites);
+    }
 }

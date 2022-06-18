@@ -14,4 +14,5 @@ public class ErrorMessage {
     public static final String ERROR_PATH_SAME_SOURCE_TARGET = "[ERROR] 경로탐색 시 출발역과 도착역이 같을 수 없습니다.";
     public static final String ERROR_MEMBER_NOT_FOUND = "[ERROR] 회원이 존재하지 않습니다. (id: %d)";
     public static final String ERROR_FAVORITE_NOT_FOUND = "[ERROR] 즐겨찾기가 존재하지 않습니다. (member id: %d, 즐겨찾기 id: %d)";
+    public static final String ERROR_FAVORITE_SAME_SOURCE_TARGET = "[ERROR] 즐겨찾기의 출발역과 도착역이 같을 수 없습니다.";
 }
