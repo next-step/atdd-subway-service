@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -18,16 +19,22 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "extra_fare"))
+    private Fare extraFare;
+
     public static class Builder {
         private String name;
         private String color;
         private Station upStation;
         private Station downStation;
         private Distance distance;
+        private Fare extraFare;
 
         public Builder(String name, String color) {
             this.name = name;
             this.color = color;
+            this.extraFare = Fare.from(0);
         }
 
         public Builder upStation(Station station) {
@@ -45,8 +52,13 @@ public class Line extends BaseEntity {
             return this;
         }
 
+        public Builder extraFare(Fare extraFare) {
+            this.extraFare = extraFare;
+            return this;
+        }
+
         public Line build() {
-            return new Line(name, color, upStation, downStation, distance);
+            return new Line(name, color, upStation, downStation, distance, extraFare);
         }
     }
 
@@ -59,9 +71,25 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    public Line(String name, String color, Station upStation, Station downStation, Distance distance, Fare extraFare) {
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+        sections.add(
+                new Section.Builder()
+                        .line(this)
+                        .upStation(upStation)
+                        .downStation(downStation)
+                        .distance(distance)
+                        .build()
+        );
+    }
+
+
     public Line(String name, String color, Station upStation, Station downStation, Distance distance) {
         this.name = name;
         this.color = color;
+        this.extraFare = Fare.from(0);
 
         sections.add(
                 new Section.Builder()
@@ -111,5 +139,9 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public Fare getExtraFare() {
+        return extraFare;
     }
 }
