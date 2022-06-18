@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.List;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,7 @@ class PathTest {
         List<Station> stations = Arrays.asList(new Station("역1"), new Station("역2"));
 
         assertThatThrownBy(
-                () -> Path.of(stations, 0)
+                () -> Path.of(stations, Distance.from(0), Fare.from(1250))
         ).isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -25,7 +26,7 @@ class PathTest {
         List<Station> stations = Arrays.asList(station, station);
 
         assertThatThrownBy(
-                () -> Path.of(stations, 5)
+                () -> Path.of(stations, Distance.from(5), Fare.from(1250))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -36,7 +37,7 @@ class PathTest {
         List<Station> stations = Arrays.asList(station);
 
         assertThatThrownBy(
-                () -> Path.of(stations, 5)
+                () -> Path.of(stations, Distance.from(5), Fare.from(1250))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }

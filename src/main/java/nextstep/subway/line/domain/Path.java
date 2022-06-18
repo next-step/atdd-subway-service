@@ -3,22 +3,24 @@ package nextstep.subway.line.domain;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
-    private static final int MIN_DISTANCE = 1;
     private static final int MIN_STATION_SIZE = 2;
     private final List<Station> stations;
     private final Distance distance;
+    private final Fare fare;
 
-    private Path(List<Station> stations, Distance distance) {
+    private Path(List<Station> stations, Distance distance, Fare fare) {
         validateStations(stations);
         this.stations = stations;
         this.distance = distance;
+        this.fare = fare;
     }
 
-    public static Path of(List<Station> stations, int distance) {
-        return new Path(stations, Distance.from(distance));
+    public static Path of(List<Station> stations, Distance distance, Fare fare) {
+        return new Path(stations, distance, fare);
     }
 
     public List<Station> getStations() {
@@ -27,6 +29,10 @@ public class Path {
 
     public Distance getDistance() {
         return distance;
+    }
+
+    public Fare getFare() {
+        return fare;
     }
 
     private void validateStations(List<Station> stations) {

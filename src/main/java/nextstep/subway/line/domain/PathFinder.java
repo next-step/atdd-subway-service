@@ -1,21 +1,24 @@
 package nextstep.subway.line.domain;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PathFinder {
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private final WeightedMultigraph<Station, SectionEdge> graph;
+    private final DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath;
+    private final FareCalculator fareCalculator;
 
-    public PathFinder() {
-        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    public PathFinder(FareCalculator fareCalculator) {
+        graph = new WeightedMultigraph<>(SectionEdge.class);
         dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        this.fareCalculator = fareCalculator;
     }
 
     public void addLines(List<Line> lines) {
@@ -37,21 +40,27 @@ public class PathFinder {
 
     private void addEdgeWeight(Line line) {
         line.getSections()
-                .forEach(section -> graph.setEdgeWeight(
-                        graph.addEdge(section.getUpStation(), section.getDownStation()),
-                        section.getDistance().getValue())
-                );
+                .stream()
+                .map(section -> new SectionEdge(section))
+                .forEach(edge -> {
+                    graph.addEdge((Station) edge.getSource(), (Station) edge.getTarget(), edge);
+                    graph.setEdgeWeight(edge, edge.getWeight());
+                });
     }
 
-    public Path findShortestPath(Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> graphPath = findShortestGraphPath(
+    public Path findShortestPath(Station source, Station target, Integer age) {
+        GraphPath<Station, SectionEdge> graphPath = findShortestGraphPath(
                 source, target);
 
-        return Path.of(graphPath.getVertexList(), (int) graphPath.getWeight());
+        List<Line> lines = graphPath.getEdgeList().stream().map(SectionEdge::getLine).collect(Collectors.toList());
+        Distance distance = Distance.from((int) graphPath.getWeight());
+
+        return Path.of(graphPath.getVertexList(), distance,
+                fareCalculator.calculate(distance, lines, age));
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> findShortestGraphPath(Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
+    private GraphPath<Station, SectionEdge> findShortestGraphPath(Station source, Station target) {
+        GraphPath<Station, SectionEdge> graphPath = dijkstraShortestPath.getPath(source, target);
 
         if (graphPath == null) {
             throw new IllegalArgumentException("경로가 없습니다.");

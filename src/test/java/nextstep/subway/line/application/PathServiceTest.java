@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Path;
@@ -54,10 +55,11 @@ class PathServiceTest {
         when(stationService.findStationById(1L)).thenReturn(강남역);
         when(stationService.findStationById(2L)).thenReturn(양재역);
 
-        when(pathFinder.findShortestPath(강남역, 양재역)).thenReturn(Path.of(Arrays.asList(강남역, 양재역), 5));
+        when(pathFinder.findShortestPath(강남역, 양재역, 25))
+                .thenReturn(Path.of(Arrays.asList(강남역, 양재역), Distance.from(5), Fare.from(1250)));
 
         // when
-        PathResponse response = pathService.findShortestPath(1L, 2L);
+        PathResponse response = pathService.findShortestPath(25, 1L, 2L);
 
         // then
         List<String> stationNames = response.getStations().stream().map(StationResponse::getName)
