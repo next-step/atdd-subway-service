@@ -40,9 +40,17 @@ npm run dev
 
 ## 요구사항
 
+<details markdown="1">
+<summary> 🚀 Step1 - 인수 테스트 기반 리팩터링 </summary>
+
 * 1단계
 - [x] LineService 리팩터링
 - [x] (선택) LineSectionAcceptanceTest 리팩터링
+
+</details>
+
+<details markdown="2">
+<summary> 🚀 Step2 - 경로 조회 기능 </summary>
 
 * 2단계
 - [x] 최단 경로 조회 인수 테스트 만들기
@@ -50,7 +58,6 @@ npm run dev
   - [x] 출발역과 도착역이 같은 경우 예외
   - [x] 출발역과 도착역이 연결이 되어 있지 않은 경우 예외
   - [x] 존재하지 않은 출발역이나 도착역을 조회 할 경우 예외
-
 
 ```http request
 HTTP/1.1 200 
@@ -99,6 +106,133 @@ Connection: keep-alive
     "distance": 40
 }
 ```
+
+</details>
+
+<details markdown="2">
+<summary> 🚀 Step3 - 인증을 통한 기능 구현 </summary>
+
+* 3단계
+- [ ] 토큰 발급 기능 (로그인) 인수 테스트 만들기
+- [ ] 인증 - 내 정보 조회 기능 완성하기
+- [ ] 인증 - 즐겨 찾기 기능 완성하기
+
+#### 토큰 발급 인수 테스트
+
+```http request
+POST /login/token HTTP/1.1
+
+content-type: application/json; charset=UTF-8
+accept: application/json
+{
+    "password": "password",
+    "email": "email@email.com"
+}
+```
+
+```http request
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY"
+}
+```
+
+#### 즐겨 찾기 기능 구현하기
+
+```http request
+POST /favorites HTTP/1.1
+
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
+accept: */*
+content-type: application/json; charset=UTF-8
+content-length: 27
+host: localhost:50336
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
+accept-encoding: gzip,deflate
+{
+    "source": "1",
+    "target": "3"
+}
+```
+
+```http request
+HTTP/1.1 201 Created
+Keep-Alive: timeout=60
+Connection: keep-alive
+Content-Length: 0
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+Location: /favorites/1
+```
+
+
+#### 목록 조회 요청/응답
+
+```http request
+GET /favorites HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
+accept: application/json
+host: localhost:50336
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
+accept-encoding: gzip,deflate
+```
+
+```http request
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+[
+    {
+        "id": 1,
+        "source": {
+            "id": 1,
+            "name": "강남역",
+            "createdDate": "2020-12-27T13:32:26.364439",
+            "modifiedDate": "2020-12-27T13:32:26.364439"
+        },
+        "target": {
+            "id": 3,
+            "name": "정자역",
+            "createdDate": "2020-12-27T13:32:26.486256",
+            "modifiedDate": "2020-12-27T13:32:26.486256"
+        }
+    }
+]
+```
+
+#### 삭제 요청/응답
+
+```http request
+DELETE /favorites/1 HTTP/1.1
+
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
+accept: */*
+host: localhost:50336
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
+accept-encoding: gzip,deflate
+```
+
+```http request
+HTTP/1.1 204 No Content
+Keep-Alive: timeout=60
+Connection: keep-alive
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+```
+
+
+</details>
 
 
 ## ✏️ Code Review Process
