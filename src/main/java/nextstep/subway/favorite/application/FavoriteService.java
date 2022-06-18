@@ -32,7 +32,7 @@ public class FavoriteService {
         Member member = findMemberById(memberId);
         Station source = stationService.findStationById(favoriteRequest.getSourceStationId());
         Station target = stationService.findStationById(favoriteRequest.getTargetStationId());
-        Favorite favorite = favoriteRepository.save(favoriteRequest.toFavorite(member, source, target));
+        Favorite favorite = favoriteRepository.save(new Favorite(member, source, target));
         return FavoriteResponse.from(favorite);
     }
 
