@@ -89,6 +89,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *     Then 두 번째 즐겨찾기 생성은 실패
      *     When 존재하지 않는 역으로 즐겨찾기 생성 요청
      *     Then 즐겨찾기 생성 실패
+     *     When 동일한 역을 출발지/목적지로 즐겨찾기 생성 요청
+     *     Then 즐겨찾기 생성 실패
      *     When 잘못된 토큰으로 즐겨찾기 생성 요청
      *     Then 즐겨찾기 생성 실패
      *     When 잘못된 토큰으로 즐겨찾기 삭제 요청
@@ -99,9 +101,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void 즐겨찾기_관리_비정상_시나리오() {
         //When
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(token, 강남역.getId(), 광교역.getId());
-        ExtractableResponse<Response> createResponse2 = 즐겨찾기_생성_요청(token, 강남역.getId(), 광교역.getId());
+        ExtractableResponse<Response> createResponseDup = 즐겨찾기_생성_요청(token, 강남역.getId(), 광교역.getId());
         //Then
-        즐겨찾기_생성_실패(createResponse2);
+        즐겨찾기_생성_실패(createResponseDup);
 
         //When
         Station 존재하지않는역 = Station.from("존재하지않는역");
@@ -110,12 +112,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_실패(unknownCreateResponse);
 
         //When
+        ExtractableResponse<Response> sameStationCreateResponse = 즐겨찾기_생성_요청(token, 강남역.getId(), 강남역.getId());
+        //Then
+        즐겨찾기_생성됨(sameStationCreateResponse);
+
+        //When
         ExtractableResponse<Response> createFailResponse = 즐겨찾기_생성_요청("invalidToken", 강남역.getId(), 광교역.getId());
         //Then
         즐겨찾기_생성_실패(createFailResponse);
 
         //When
-        ExtractableResponse<Response> deleteFailResponse = 즐겨찾기_삭제_요청("invalidToken", createResponse);
+        ExtractableResponse<Response> deleteFailResponse = 즐겨찾기_삭제_요청("invalidToken", sameStationCreateResponse);
         //Then
         즐겨찾기_삭제_실패(deleteFailResponse);
     }

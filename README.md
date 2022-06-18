@@ -99,6 +99,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] 예외 시나리오
       - [X] 즐겨찾기 생성을 중복 요청시 실패
       - [X] 존재하지 않는 역으로 즐겨찾기 생성시 실패
+      - [X] 동일한 역을 출발지와 목적지로 즐겨찾기 생성시 실패
       - [X] 잘못된 토큰으로 즐겨찾기 생성/삭제시 실패
   - [X] 기능 목록
     - [X] 즐겨찾기 생성

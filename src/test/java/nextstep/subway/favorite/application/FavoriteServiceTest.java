@@ -127,4 +127,16 @@ public class FavoriteServiceTest {
         assertThrows(IllegalArgumentException.class,
                 () -> favoriteService.saveFavorite(member.getId(), illegalFavoriteRequest));
     }
+
+    @DisplayName("즐겨찾기 출발지와 목적지 동일한 역으로 생성 불가")
+    @Test
+    @Transactional
+    void 즐겨찾기_출발지_목적지_동일한_역으로_생성_불가(){
+        //when
+        FavoriteRequest illegalFavoriteRequest = new FavoriteRequest(도착역.getId(), 도착역.getId());
+
+        //then
+        assertThrows(IllegalArgumentException.class,
+                () -> favoriteService.saveFavorite(member.getId(), illegalFavoriteRequest));
+    }
 }
