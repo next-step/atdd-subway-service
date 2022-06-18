@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -85,13 +86,47 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *     And 로그인 되어있음
      *
      *   Scenario: 즐겨찾기를 관리
-     *     When 즐겨찾기 생성을 요청
-     *     Then 즐겨찾기 생성됨
-     *     When 즐겨찾기 목록 조회 요청
-     *     Then 즐겨찾기 목록 조회됨
-     *     When 즐겨찾기 삭제 요청
-     *     Then 즐겨찾기 삭제됨
+     *     When 즐겨찾기 생성을 두 번 요청
+     *     Then 두 번째 즐겨찾기 생성은 실패
+     *     When 존재하지 않는 역으로 즐겨찾기 생성 요청
+     *     Then 즐겨찾기 생성 실패
+     *     When 잘못된 토큰으로 즐겨찾기 생성 요청
+     *     Then 즐겨찾기 생성 실패
+     *     When 잘못된 토큰으로 즐겨찾기 목록 조회 요청
+     *     Then 즐겨찾기 목록 조회 실패
+     *     When 잘못된 토큰으로 즐겨찾기 삭제 요청
+     *     Then 즐겨찾기 삭제 실패
      */
+    @DisplayName("즐겨찾기 관리를 실패한다.")
+    @Test
+    void 즐겨찾기_관리_비정상_시나리오() {
+        //When
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(token, 강남역.getId(), 광교역.getId());
+        ExtractableResponse<Response> createResponse2 = 즐겨찾기_생성_요청(token, 강남역.getId(), 광교역.getId());
+        //Then
+        즐겨찾기_생성_실패(createResponse2);
+
+        //When
+        Station 존재하지않는역 = Station.from("존재하지않는역");
+        ExtractableResponse<Response> unknownCreateResponse = 즐겨찾기_생성_요청(token, 존재하지않는역.getId(), 광교역.getId());
+        //Then
+        즐겨찾기_생성_실패(unknownCreateResponse);
+
+        //When
+        ExtractableResponse<Response> createFailResponse = 즐겨찾기_생성_요청(token, 강남역.getId(), 광교역.getId());
+        //Then
+        즐겨찾기_생성_실패(createFailResponse);
+
+        //When
+        ExtractableResponse<Response> findFailResponse = 즐겨찾기_목록_조회_요청(token);
+        //Then
+        즐겨찾기_목록_조회_실패(findFailResponse);
+
+        //When
+        ExtractableResponse<Response> deleteFailResponse = 즐겨찾기_삭제_요청(token, createResponse);
+        //Then
+        즐겨찾기_삭제_실패(deleteFailResponse);
+    }
 
     private static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long sourceStationId, Long targetStationId) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(sourceStationId, targetStationId);
@@ -134,5 +169,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 즐겨찾기_생성_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void 즐겨찾기_목록_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void 즐겨찾기_삭제_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

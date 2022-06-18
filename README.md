@@ -74,7 +74,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [X] 최단 경로 거리 조회
 
 ###Step 2. 인증을 통한 기능
-- [ ] 토큰 발급 기능 (로그인)
+- [X] 토큰 발급 기능 (로그인)
   - [X] 인수 테스트
     - [X] 정상 시나리오 
       - [X] 로그인 성공
@@ -82,23 +82,22 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] 예외 시나리오
       - [X] 사용자 정보 맞지 않아 로그인 실패
       - [X] 유효하지 않은 토큰으로 회원정보 조회
-  - [ ] 기능 목록
-    - [ ] 이메일과 패스워드를 이용하여 요청 시 access token을 응답
+  - [X] 기능 목록
+    - [X] 이메일과 패스워드를 이용하여 요청 시 access token을 응답
 - [ ] 내 정보 관리 기능
   - [X] 인수 테스트
     - [X] 회원 정보 조회 시나리오 : 생성/조회/수정/삭제
     - [X] 내정보 조회 시나리오 : 조회/수정/삭제
-  - [ ] 기능 목록
-    - [ ] 정보 조회
-    - [ ] 정보 수정
-    - [ ] 정보 삭제
-    - [ ] /members/me 요청 시 토큰을 확인하여 정보 처리
-    - [ ] @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용
+  - [X] 기능 목록
+    - [X] 정보 조회
+    - [X] 정보 수정
+    - [X] 정보 삭제
+    - [X] /members/me 요청 시 토큰을 확인하여 정보 처리
 - [ ] 즐겨찾기 기능
   - [ ] 인수 테스트
-    - [ ] 정상 시나리오 : 생성/조회/삭제
+    - [X] 정상 시나리오 : 생성/조회/삭제
     - [ ] 예외 시나리오
   - [ ] 기능 목록
-    - [ ] 즐겨찾기 생성
-    - [ ] 즐겨찾기 조회
-    - [ ] 즐겨찾기 삭제
+    - [X] 즐겨찾기 생성
+    - [X] 즐겨찾기 조회
+    - [X] 즐겨찾기 삭제
