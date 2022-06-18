@@ -7,7 +7,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "favorite", indexes = @Index(name = "idx_member_source_target", columnList = "member_id, source_station_id, target_station_id"))
+@Table(name = "favorite", indexes = @Index(name = "idx_member", columnList = "member_id"))
 public class Favorite extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

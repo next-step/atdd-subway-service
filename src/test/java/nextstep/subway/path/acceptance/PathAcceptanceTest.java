@@ -19,9 +19,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.getAccessToken;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 @DisplayName("지하철 경로 조회")
@@ -36,6 +40,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
     private StationResponse 혜화역;
     private StationResponse 사당역;
+    private String token;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -61,6 +66,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         사호선 = 지하철_노선_등록되어_있음(new LineRequest("사호선", "bg-red-600", 혜화역.getId(), 사당역.getId(), 20)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        token = getAccessToken(로그인_요청(EMAIL, PASSWORD));
     }
 
     // 최단경로 조회
@@ -72,7 +80,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단경로_조회됨(최단경로_조회_결과);
-        최단경로_지하철역_목록과_거리_조회됨(최단경로_조회_결과, new PathResponse(Arrays.asList(교대역, 남부터미널역, 양재역), 5));
+        최단경로_지하철역_목록과_거리_요금_조회됨(최단경로_조회_결과, new PathResponse(Arrays.asList(교대역, 남부터미널역, 양재역), 5, 1250));
 
     }
 
@@ -101,6 +109,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private  ExtractableResponse<Response> 최단경로_조회(StationResponse 출발역, StationResponse 도착역) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={source}&target={target}", 출발역.getId(), 도착역.getId())
                 .then().log().all()
@@ -111,7 +120,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 최단경로_지하철역_목록과_거리_조회됨(ExtractableResponse<Response> response, PathResponse expectedPath) {
+    private void 최단경로_지하철역_목록과_거리_요금_조회됨(ExtractableResponse<Response> response, PathResponse expectedPath) {
         PathResponse path = response.as(PathResponse.class);
 
         List<Long> stationIds = path.getStations().stream()
@@ -122,8 +131,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
-        assertThat(stationIds).isEqualTo(expectedStationIds);
-        assertThat(path.getDistance()).isEqualTo(expectedPath.getDistance());
+        assertAll(
+                () -> assertThat(stationIds).isEqualTo(expectedStationIds),
+                () -> assertThat(path.getDistance()).isEqualTo(expectedPath.getDistance()),
+                () -> assertThat(path.getFare()).isEqualTo(expectedPath.getFare())
+        );
     }
 
     private void 최단경로_조회_실패됨(ExtractableResponse<Response> response) {

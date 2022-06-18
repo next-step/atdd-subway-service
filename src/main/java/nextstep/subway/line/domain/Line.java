@@ -2,8 +2,6 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.*;
 import java.util.List;
@@ -17,28 +15,40 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    private int overFare;
 
     @Embedded
     private final Sections sections;
 
     public Line() {
-        this(null, null);
+        this(null, null, 0);
     }
 
     public Line(String name, String color) {
+        this(name, color, 0);
+    }
+
+    public Line(String name, String color, Integer overFare) {
         this.name = name;
         this.color = color;
+        this.overFare = overFare;
         this.sections = new Sections();
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this(name, color);
+        this(name, color, 0);
+        addSection(upStation, downStation, distance);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int overFare) {
+        this(name, color, overFare);
         addSection(upStation, downStation, distance);
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+        this.overFare = line.getOverFare();
     }
 
     public void removeSection(Section section) {
@@ -82,7 +92,7 @@ public class Line extends BaseEntity {
 
     public void registerPath(SectionGraph graph) {
         graph.addVertices(findStations());
-        graph.addEdges(getSections().getSections());
+        graph.addEdgeAndWeight(getSections().getSections());
     }
 
     public Long getId() {
@@ -99,5 +109,9 @@ public class Line extends BaseEntity {
 
     public Sections getSections() {
         return sections;
+    }
+
+    public Integer getOverFare() {
+        return overFare;
     }
 }

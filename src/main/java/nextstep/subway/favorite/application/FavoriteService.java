@@ -8,6 +8,7 @@ import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +51,7 @@ public class FavoriteService {
     public void deleteFavoriteById(Long id) {
         try {
             favoriteRepository.deleteById(id);
-        }catch (Exception e) {
+        } catch (EmptyResultDataAccessException e) {
             throw new IllegalArgumentException("삭제할 즐겨찾기 정보가 존재하지 않습니다");
         }
     }

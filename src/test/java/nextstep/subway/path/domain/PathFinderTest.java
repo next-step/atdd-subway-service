@@ -2,6 +2,8 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.SectionGraph;
+import nextstep.subway.member.domain.MemberAge;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -10,11 +12,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class PathFinderTest {
     private Station 강남역;
@@ -34,18 +37,33 @@ class PathFinderTest {
     @Test
     public void createPathFinder() throws Exception {
         // given
-        Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, 5);
-        Line 이호선 = new Line("이호선", "green", 교대역, 강남역, 10);
-        Line 삼호선 = new Line("삼호선", "orange", 교대역, 양재역, 5);
+        Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, 5, 500);
+        Line 이호선 = new Line("이호선", "green", 교대역, 강남역, 10, 500);
+        Line 삼호선 = new Line("삼호선", "orange", 교대역, 양재역, 20, 0);
         삼호선.addSection(교대역, 남부터미널역, 2);
         Lines lines  = new Lines(Arrays.asList(신분당선, 이호선, 삼호선));
 
         // when
-        PathFinder pathFinder = new PathFinder(lines.createPath());
+        SectionGraph graph = new SectionGraph();
+        PathFinder pathFinder = new PathFinder(lines.createPath(graph));
+        Path 교대역_양재역_경로조회_결과 = pathFinder.findPath(교대역, 양재역, new MemberAge(20));
+        Path 강남역_양재역_경로조회_결과 = pathFinder.findPath(강남역, 양재역, new MemberAge(20));
+        Path 강남역_양재역_어린이_경로조회_결과 = pathFinder.findPath(강남역, 양재역, new MemberAge(12));
+        Path 강남역_양재역_청소년_경로조회_결과 = pathFinder.findPath(강남역, 양재역, new MemberAge(13));
 
         // then
-        assertThat(pathFinder.findPath(교대역, 양재역).getStations()).containsExactly(교대역, 남부터미널역, 양재역);
-        assertThat(pathFinder.findPath(교대역, 양재역).getDistance()).isEqualTo(5);
+        assertAll(
+                () -> assertThat(지하철역_이름_조회(교대역_양재역_경로조회_결과.getStations())).containsExactly("교대역", "강남역", "양재역"),
+                () -> assertThat(교대역_양재역_경로조회_결과.getDistance()).isEqualTo(15),
+                () -> assertThat(교대역_양재역_경로조회_결과.getFare()).isEqualTo(1250 + 300 + 1000),
+                () -> assertThat(강남역_양재역_경로조회_결과.getFare()).isEqualTo(1250 + 500),
+                () -> assertThat(강남역_양재역_어린이_경로조회_결과.getFare()).isEqualTo((int) ((1250 + 500 - 350) * 0.5 + 350)),
+                () -> assertThat(강남역_양재역_청소년_경로조회_결과.getFare()).isEqualTo((int) ((1250 + 500 - 350) * 0.8 + 350))
+        );
+    }
+
+    private List<String> 지하철역_이름_조회(List<Station> stations) {
+        return stations.stream().map(Station::getName).collect(Collectors.toList());
     }
 
     @DisplayName("jgrapht 라이브러리 테스트")

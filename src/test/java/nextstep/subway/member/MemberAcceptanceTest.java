@@ -66,7 +66,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         나의_정보_수정됨(나의_정보_수정_결과);
 
         // when
-        ExtractableResponse<Response> 나의_정보_삭제_결과 = 나의_정보_삭제_요청(token);
+        String newToken = getAccessToken(로그인_요청(NEW_EMAIL, NEW_PASSWORD));
+        ExtractableResponse<Response> 나의_정보_삭제_결과 = 나의_정보_삭제_요청(newToken);
         // then
         나의_정보_삭제됨(나의_정보_삭제_결과);
     }
