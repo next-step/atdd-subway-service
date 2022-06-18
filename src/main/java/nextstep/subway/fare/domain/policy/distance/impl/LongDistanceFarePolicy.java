@@ -12,6 +12,9 @@ public class LongDistanceFarePolicy implements DistanceFarePolicy {
         private static final LongDistanceFarePolicy instance = new LongDistanceFarePolicy();
     }
 
+    private LongDistanceFarePolicy() {
+    }
+
     public static LongDistanceFarePolicy getInstance() {
         return InstanceHolder.instance;
     }
@@ -24,7 +27,7 @@ public class LongDistanceFarePolicy implements DistanceFarePolicy {
             return 0;
         }
 
-        int middleAdditionalDistanceFare = new MiddleDistanceFarePolicy().calculate(50, ageFarePolicy);
+        int middleAdditionalDistanceFare = MiddleDistanceFarePolicy.getInstance().calculate(50, ageFarePolicy);
         int longMiddleAdditionalDistanceFare = (int) ((Math.ceil((additionalDistance - 1) / 8) + 1) * (DEFAULT_DISTANCE_ADDITIONAL_FARE - discountRate));
 
         return middleAdditionalDistanceFare + longMiddleAdditionalDistanceFare;

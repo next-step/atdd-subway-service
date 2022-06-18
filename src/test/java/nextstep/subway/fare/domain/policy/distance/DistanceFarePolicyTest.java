@@ -26,7 +26,7 @@ class DistanceFarePolicyTest {
     @DisplayName("성인 기준, 거리에 따른 추가 요금을 계산한다.")
     @MethodSource("providerCalculate_successCase")
     void calculate(int distance, DistanceFarePolicy distanceFarePolicy, int expectedFare) {
-        assertThat(distanceFarePolicy.calculate(distance, new AdultAgeFarePolicy())).isEqualTo(expectedFare);
+        assertThat(distanceFarePolicy.calculate(distance, AdultAgeFarePolicy.getInstance())).isEqualTo(expectedFare);
     }
 
     private static Stream<Arguments> providerGetDistanceFarePolicy_successCase() {
@@ -39,9 +39,9 @@ class DistanceFarePolicyTest {
 
     private static Stream<Arguments> providerCalculate_successCase() {
         return Stream.of(
-            Arguments.of(5, new DefaultDistanceFarePolicy(), 0),
-            Arguments.of(25, new MiddleDistanceFarePolicy(), 300),
-            Arguments.of(70, new LongDistanceFarePolicy(), 1100)
+            Arguments.of(5, DefaultDistanceFarePolicy.getInstance(), 0),
+            Arguments.of(25, MiddleDistanceFarePolicy.getInstance(), 300),
+            Arguments.of(70, LongDistanceFarePolicy.getInstance(), 1100)
         );
     }
 

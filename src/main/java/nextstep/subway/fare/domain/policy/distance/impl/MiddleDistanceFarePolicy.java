@@ -13,6 +13,9 @@ public class MiddleDistanceFarePolicy implements DistanceFarePolicy {
         private static final MiddleDistanceFarePolicy instance = new MiddleDistanceFarePolicy();
     }
 
+    private MiddleDistanceFarePolicy() {
+    }
+
     public static MiddleDistanceFarePolicy getInstance() {
         return InstanceHolder.instance;
     }

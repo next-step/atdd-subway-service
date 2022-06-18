@@ -11,6 +11,9 @@ public class DefaultDistanceFarePolicy implements DistanceFarePolicy {
         private static final DefaultDistanceFarePolicy instance = new DefaultDistanceFarePolicy();
     }
 
+    private DefaultDistanceFarePolicy() {
+    }
+
     public static DefaultDistanceFarePolicy getInstance() {
         return InstanceHolder.instance;
     }

@@ -10,6 +10,9 @@ public class FreeAgeFarePolicy implements AgeFarePolicy {
         private static final FreeAgeFarePolicy instance = new FreeAgeFarePolicy();
     }
 
+    private FreeAgeFarePolicy() {
+    }
+
     public static FreeAgeFarePolicy getInstance() {
         return InstanceHolder.instance;
     }

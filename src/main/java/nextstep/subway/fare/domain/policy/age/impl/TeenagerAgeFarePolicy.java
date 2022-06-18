@@ -13,6 +13,9 @@ public class TeenagerAgeFarePolicy implements AgeFarePolicy {
         private static final TeenagerAgeFarePolicy instance = new TeenagerAgeFarePolicy();
     }
 
+    private TeenagerAgeFarePolicy() {
+    }
+
     public static TeenagerAgeFarePolicy getInstance() {
         return InstanceHolder.instance;
     }

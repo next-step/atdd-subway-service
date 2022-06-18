@@ -12,6 +12,9 @@ public class AdultAgeFarePolicy implements AgeFarePolicy {
         private static final AdultAgeFarePolicy instance = new AdultAgeFarePolicy();
     }
 
+    private AdultAgeFarePolicy() {
+    }
+
     public static AdultAgeFarePolicy getInstance() {
         return InstanceHolder.instance;
     }

@@ -41,10 +41,10 @@ class AgeFarePolicyTest {
 
     private static Stream<Arguments> providerCalculate_successCase() {
         return Stream.of(
-            Arguments.of("우대나이", new FreeAgeFarePolicy(), 0),
-            Arguments.of("어린이", new ChildAgeFarePolicy(), 450),
-            Arguments.of("청소년", new TeenagerAgeFarePolicy(), 720),
-            Arguments.of("성인", new AdultAgeFarePolicy(), 1250)
+            Arguments.of("우대나이", FreeAgeFarePolicy.getInstance(), 0),
+            Arguments.of("어린이", ChildAgeFarePolicy.getInstance(), 450),
+            Arguments.of("청소년", TeenagerAgeFarePolicy.getInstance(), 720),
+            Arguments.of("성인", AdultAgeFarePolicy.getInstance(), 1250)
         );
     }
 
