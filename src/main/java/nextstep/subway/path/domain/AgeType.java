@@ -7,7 +7,7 @@ import java.util.stream.IntStream;
 public enum AgeType {
     CHILD(6, 12, value -> calculateDiscount(value, AgeTypeConstants.CHILD_RATE)),
     TEENAGER(13, 18, value -> calculateDiscount(value, AgeTypeConstants.TEENAGER_RATE)),
-    NONE(18, Integer.MAX_VALUE, value -> 0);
+    NONE(18, 100, value -> 0);
 
     private final int startRange;
     private final int endRange;

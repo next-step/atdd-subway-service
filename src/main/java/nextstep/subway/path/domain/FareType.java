@@ -7,7 +7,7 @@ import java.util.stream.IntStream;
 public enum FareType {
     BASIC(0, 10, value -> FareTypeConstants.DEFAULT_FARE),
     MIDDLE(11, 50, value -> FareTypeConstants.DEFAULT_FARE + calculateFare(value, BASIC.endRange, 5)),
-    ETC(51, Integer.MAX_VALUE, value -> FareTypeConstants.MIDDLE_FARE + calculateFare(value, MIDDLE.endRange, 8)),
+    ETC(51, 178, value -> FareTypeConstants.MIDDLE_FARE + calculateFare(value, MIDDLE.endRange, 8)),
     NONE(0, 0, value -> 0);
 
     private final int startRange;
