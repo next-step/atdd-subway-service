@@ -46,7 +46,6 @@ public class FavoriteService {
     public List<FavoriteResponse> findFavorite(LoginMember loginMember) {
         final Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(EntityNotFoundException::new);
         return member.getFavorites().stream()
-                .filter(favorite -> !favorite.isDeleted())
                 .map(favorite -> new FavoriteResponse(favorite.getId(), StationResponse.of(favorite.getSource()), StationResponse.of(favorite.getDestination())))
                 .collect(Collectors.toList());
     }
