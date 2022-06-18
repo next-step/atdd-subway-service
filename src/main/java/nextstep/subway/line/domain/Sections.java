@@ -109,25 +109,43 @@ public class Sections {
     }
 
     public void removeStation(final Line line, final Station station) {
+        validateSectionsToRemoveStation();
+
+        Optional<Section> sectionToRemoveUpStation = getSectionByUpStation(station);
+        Optional<Section> sectionToRemoveDownStation = getSectionByDownStation(station);
+
+        if (sectionToRemoveUpStation.isPresent() && sectionToRemoveDownStation.isPresent()) {
+            attachRemainingStations(line, sectionToRemoveUpStation.get(), sectionToRemoveDownStation.get());
+        }
+
+        sectionToRemoveUpStation.ifPresent(it -> sections.remove(it));
+        sectionToRemoveDownStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private void validateSectionsToRemoveStation() {
         if (sections.size() <= 1) {
             throw new RuntimeException();
         }
+    }
 
-        Optional<Section> upLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == station)
+    private Optional<Section> getSectionByUpStation(final Station upStation) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == upStation)
                 .findFirst();
-        Optional<Section> downLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == station)
+    }
+
+    private Optional<Section> getSectionByDownStation(final Station downStation) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() == downStation)
                 .findFirst();
+    }
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+    private void attachRemainingStations(final Line line,
+                                         final Section sectionToRemoveUpStation,
+                                         final Section sectionToRemoveDownStation) {
+        final Station newUpStation = sectionToRemoveDownStation.getUpStation();
+        final Station newDownStation = sectionToRemoveUpStation.getDownStation();
+        int newDistance = sectionToRemoveUpStation.getDistance() + sectionToRemoveDownStation.getDistance();
+        sections.add(new Section(line, newUpStation, newDownStation, newDistance));
     }
 }
