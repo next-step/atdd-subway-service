@@ -18,13 +18,15 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("Bearer Auth 인증 관련 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
-    private TokenRequest tokenRequest;
+    private TokenRequest 정상요청;
+    private TokenRequest 비밀번호_불일치_요청;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+        정상요청 = new TokenRequest(EMAIL, PASSWORD);
+        비밀번호_불일치_요청 = new TokenRequest(EMAIL, NEW_PASSWORD);
     }
 
     @TestFactory
@@ -40,14 +42,21 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private void 로그인을_성공한다() {
         // given
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
         // when
-        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(tokenRequest);
+        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(정상요청);
+
         // then
         로그인_됨(로그인_요청_응답);
     }
 
     @Test
     private void 비밀번호가_일치하지_않으면_로그인에_실패한다() {
+        // when
+        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(비밀번호_불일치_요청);
+
+        // then
+        로그인_실패(로그인_요청_응답);
     }
 
     @Test
@@ -67,5 +76,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static void 로그인_됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(TokenResponse.class).getAccessToken()).isNotNull();
+    }
+
+    private static void 로그인_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
