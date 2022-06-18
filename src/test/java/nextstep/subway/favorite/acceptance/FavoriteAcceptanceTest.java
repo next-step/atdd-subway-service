@@ -76,7 +76,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 
     /**
-     * Feature: 즐겨찾기를 관리한다.
+     * Feature: 즐겨찾기 관리를 실패한다.
      *
      *   Background
      *     Given 지하철역 등록되어 있음
@@ -85,15 +85,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *     And 회원 등록되어 있음
      *     And 로그인 되어있음
      *
-     *   Scenario: 즐겨찾기를 관리
+     *   Scenario: 즐겨찾기 관리를 실패
      *     When 즐겨찾기 생성을 두 번 요청
      *     Then 두 번째 즐겨찾기 생성은 실패
      *     When 존재하지 않는 역으로 즐겨찾기 생성 요청
      *     Then 즐겨찾기 생성 실패
      *     When 잘못된 토큰으로 즐겨찾기 생성 요청
      *     Then 즐겨찾기 생성 실패
-     *     When 잘못된 토큰으로 즐겨찾기 목록 조회 요청
-     *     Then 즐겨찾기 목록 조회 실패
      *     When 잘못된 토큰으로 즐겨찾기 삭제 요청
      *     Then 즐겨찾기 삭제 실패
      */
@@ -113,17 +111,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_실패(unknownCreateResponse);
 
         //When
-        ExtractableResponse<Response> createFailResponse = 즐겨찾기_생성_요청(token, 강남역.getId(), 광교역.getId());
+        ExtractableResponse<Response> createFailResponse = 즐겨찾기_생성_요청("invalidToken", 강남역.getId(), 광교역.getId());
         //Then
         즐겨찾기_생성_실패(createFailResponse);
 
         //When
-        ExtractableResponse<Response> findFailResponse = 즐겨찾기_목록_조회_요청(token);
-        //Then
-        즐겨찾기_목록_조회_실패(findFailResponse);
-
-        //When
-        ExtractableResponse<Response> deleteFailResponse = 즐겨찾기_삭제_요청(token, createResponse);
+        ExtractableResponse<Response> deleteFailResponse = 즐겨찾기_삭제_요청("invalidToken", createResponse);
         //Then
         즐겨찾기_삭제_실패(deleteFailResponse);
     }
@@ -172,14 +165,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_생성_실패(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    private void 즐겨찾기_목록_조회_실패(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     private void 즐겨찾기_삭제_실패(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

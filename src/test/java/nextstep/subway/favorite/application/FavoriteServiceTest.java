@@ -67,6 +67,7 @@ public class FavoriteServiceTest {
 
     @DisplayName("즐겨찾기 조회")
     @Test
+    @Transactional
     void 즐겨찾기_조회(){
         //given
         favoriteService.saveFavorite(member.getId(), favoriteRequest1);
