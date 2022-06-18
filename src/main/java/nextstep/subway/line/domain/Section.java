@@ -70,7 +70,15 @@ public class Section {
         this.distance -= newDistance;
     }
 
-    public boolean hasStation(Station station) {
+    public boolean matchUpOrDownStation(Station station) {
         return upStation.equals(station) || downStation.equals(station);
+    }
+
+    public boolean matchUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean matchDownStation(Station station) {
+        return downStation.equals(station);
     }
 }

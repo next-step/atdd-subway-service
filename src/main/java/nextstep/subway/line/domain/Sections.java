@@ -60,7 +60,7 @@ public class Sections {
 
     private boolean hasCommonStation(List<Station> stations, Section section) {
         return stations.stream()
-                .anyMatch(section::hasStation);
+                .anyMatch(section::matchUpOrDownStation);
     }
 
     public List<Station> getStations() {
@@ -105,7 +105,7 @@ public class Sections {
 
     private Station findNextStation(Station station) {
         return sections.stream()
-                .filter(section -> section.getUpStation().equals(station))
+                .filter(section -> section.matchUpStation(station))
                 .findFirst()
                 .orElse(new Section())
                 .getDownStation();
@@ -113,13 +113,13 @@ public class Sections {
 
     private Optional<Section> findSectionByUpStation(Station station) {
         return sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
+                .filter(section -> section.matchUpStation(station))
                 .findFirst();
     }
 
     private Optional<Section> findSectionByDownStation(Station station) {
         return sections.stream()
-                .filter(it -> it.getDownStation().equals(station))
+                .filter(section -> section.matchDownStation(station))
                 .findFirst();
     }
 
