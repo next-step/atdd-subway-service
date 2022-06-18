@@ -13,12 +13,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class FavoriteServiceTest {
@@ -50,6 +50,7 @@ public class FavoriteServiceTest {
 
     @DisplayName("즐겨찾기 생성")
     @Test
+    @Transactional
     void 즐겨찾기_생성(){
         //when
         FavoriteResponse savedFavorite = favoriteService.saveFavorite(member.getId(), favoriteRequest1);
@@ -87,18 +88,16 @@ public class FavoriteServiceTest {
 
     @DisplayName("즐겨찾기 삭제")
     @Test
+    @Transactional
     void 즐겨찾기_삭제(){
         //given
-        MemberResponse member = memberService.createMember(new MemberRequest("email", "password", 10));
-        StationResponse 출발역 = stationService.saveStation(new StationRequest("출발역"));
-        StationResponse 도착역 = stationService.saveStation(new StationRequest("도착역"));
-        FavoriteRequest request = new FavoriteRequest(출발역.getId(), 도착역.getId());
-        FavoriteResponse savedFavorite = favoriteService.saveFavorite(member.getId(), request);
+        FavoriteResponse savedFavorite = favoriteService.saveFavorite(member.getId(), favoriteRequest1);
 
         //when
-        favoriteService.deleteFavorite(savedFavorite.getId());
+        favoriteService.deleteFavorite(savedFavorite.getId(), member.getId());
+        List<FavoriteResponse> favorites = favoriteService.findFavoritesByMemberId(savedFavorite.getId());
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> favoriteService.findFavoritesByMemberId(savedFavorite.getId()));
+        assertThat(favorites.size()).isEqualTo(0);
     }
 }

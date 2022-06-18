@@ -4,6 +4,7 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.line.consts.ErrorMessage;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
@@ -47,7 +48,11 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void deleteFavorite(Long id) {
-
+    public void deleteFavorite(Long id, Long memberId) {
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(id, memberId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                String.format(ErrorMessage.ERROR_FAVORITE_NOT_FOUND, memberId, id))
+        );
+        favoriteRepository.delete(favorite);
     }
 }

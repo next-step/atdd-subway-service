@@ -118,6 +118,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String uri = response.header("Location");
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().delete(uri)
                 .then().log().all()
                 .extract();
