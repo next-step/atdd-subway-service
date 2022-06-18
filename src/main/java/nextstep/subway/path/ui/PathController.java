@@ -2,6 +2,7 @@ package nextstep.subway.path.ui;
 
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.PathException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,7 +19,7 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity getShortestPath(@RequestBody PathRequest pathRequest) {
+    public ResponseEntity<PathResponse> getShortestPath(@RequestBody PathRequest pathRequest) {
         return ResponseEntity.ok(pathService.getShortestPath(pathRequest.getSource(), pathRequest.getTarget()));
     }
 
