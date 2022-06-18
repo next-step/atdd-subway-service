@@ -1,5 +1,8 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.auth.domain.AdultDiscountPolicy;
+import nextstep.subway.auth.domain.DiscountPolicy;
+import nextstep.subway.auth.domain.DiscountType;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -10,9 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class AuthService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
@@ -27,13 +31,15 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
+    @Transactional(readOnly = true)
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            return new LoginMember(new AdultDiscountPolicy());
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+        DiscountPolicy discountPolicy = DiscountType.findDiscountPolicy(member.getAge());
+        return new LoginMember(member.getId(), member.getEmail(), member.getAge().getValue(), discountPolicy);
     }
 }

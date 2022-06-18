@@ -1,27 +1,43 @@
 package nextstep.subway.path.dto;
 
-import nextstep.subway.line.domain.Distance;
+import nextstep.subway.auth.domain.DiscountPolicy;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PathResponse {
     private List<StationResponse> stations;
-    private int distance;
+    private Integer distance;
+    private Integer fare;
 
     public PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> stations, int distance) {
+    public PathResponse(List<StationResponse> stations, Integer distance) {
         this.stations = stations;
         this.distance = distance;
+    }
+
+    public PathResponse(Path path, DiscountPolicy discountPolicy) {
+        this.stations = path.getStations()
+                .stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+        this.distance = path.getDistance().getDistance();
+        this.fare = discountPolicy.discount(path.getFare().getValue());
     }
 
     public List<StationResponse> getStations() {
         return stations;
     }
 
-    public int getDistance() {
+    public Integer getDistance() {
         return distance;
+    }
+
+    public Integer getFare() {
+        return fare;
     }
 }

@@ -89,6 +89,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(response);
     }
 
+    @DisplayName("다른 사람이 추가한 즐겨찾기 삭제 불가")
+    @Test
+    void deleteFavoriteException() {
+        // given
+        ExtractableResponse<Response> 즐겨찾기_생성됨 = 즐겨찾기_등록되어_있음(tokenResponse, 강남역, 잠실역);
+
+        String NEW_EMAIL = "nextstep@test.com";
+        String NEW_PASSWORD = "nextstep";
+        회원_생성을_요청(NEW_EMAIL, NEW_PASSWORD, AGE);
+        TokenResponse 다른계정_로그인 = 로그인_성공(로그인_요청(new TokenRequest(NEW_EMAIL, NEW_PASSWORD)));
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_제거_요청(다른계정_로그인, 즐겨찾기_생성됨);
+
+        // then
+        즐겨찾기_삭제실패함(response);
+    }
+
     @DisplayName("시나리오 기반 인수테스트")
     @Test
     void scenario1() {
@@ -189,5 +207,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 즐겨찾기_삭제실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

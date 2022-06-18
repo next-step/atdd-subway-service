@@ -48,7 +48,7 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(createLines());
 
         // when
-        List<Station> stations = pathFinder.findShortestStationList(종합운동장, 석촌);
+        List<Station> stations = pathFinder.findPathStations(종합운동장, 석촌);
 
         // then
         assertThat(stations).hasSize(4);
@@ -62,7 +62,7 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(createLines());
 
         // when
-        double length = pathFinder.findShortestPathLength(종합운동장, 석촌);
+        int length = pathFinder.findPathDistance(종합운동장, 석촌);
 
         // then
         assertThat(length).isEqualTo(30);
@@ -76,7 +76,7 @@ class PathFinderTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            pathFinder.findShortestStationList(종합운동장, 종합운동장);
+            pathFinder.findPathStations(종합운동장, 종합운동장);
         }).isInstanceOf(InvalidPathException.class);
     }
 
@@ -88,7 +88,7 @@ class PathFinderTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            pathFinder.findShortestStationList(종합운동장, 광교);
+            pathFinder.findPathStations(종합운동장, 광교);
         }).isInstanceOf(InvalidPathException.class);
     }
 
@@ -99,11 +99,50 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(createLines());
 
         // when, then
-        List<Station> stations = pathFinder.findShortestStationList(종합운동장, 오금);
+        List<Station> stations = pathFinder.findPathStations(종합운동장, 오금);
 
         // then
         assertThat(stations).hasSize(6);
         assertThat(stations).containsExactly(종합운동장, 잠실새내, 잠실, 석촌, 가락시장, 오금);
+    }
+
+    @DisplayName("2호선 구간 추가 요금 구하기")
+    @Test
+    void line2_surcharge() {
+        // given
+        PathFinder pathFinder = new PathFinder(createLines());
+
+        // when
+        Integer surcharge = pathFinder.findPathSurcharge(종합운동장, 잠실);
+
+        // then
+        assertThat(surcharge).isEqualTo(이호선.getSurcharge().getValue());
+    }
+
+    @DisplayName("2,8호선 포함 구간 추가 요금 구하기")
+    @Test
+    void line2_8_surcharge() {
+        // given
+        PathFinder pathFinder = new PathFinder(createLines());
+
+        // when (2호선) 종합운동장 - 잠실 (8호선) 잠실 - 석촌
+        Integer surcharge = pathFinder.findPathSurcharge(종합운동장, 석촌);
+
+        // then
+        assertThat(surcharge).isEqualTo(팔호선.getSurcharge().getValue());
+    }
+
+    @DisplayName("2,3,8호선 포함 구간 추가 요금 구하기")
+    @Test
+    void line2_3_8_surcharge() {
+        // given
+        PathFinder pathFinder = new PathFinder(createLines());
+
+        // when (2호선) 종합운동장 - 잠실 (8호선) 잠실 - 가락시장 (3호선) 가락시장 - 오금
+        Integer surcharge = pathFinder.findPathSurcharge(종합운동장, 오금);
+
+        // then
+        assertThat(surcharge).isEqualTo(팔호선.getSurcharge().getValue());
     }
 
     private List<Line> createLines() {
@@ -118,19 +157,19 @@ class PathFinderTest {
         강남 = new Station(9L, "강남");
         광교 = new Station(10L, "광교");
 
-        이호선 = new Line("2호선", "green", 종합운동장, 잠실새내, 10);
+        이호선 = new Line("2호선", "green", 종합운동장, 잠실새내, 10, 200);
         이호선.addSection(new Section(잠실새내, 잠실, 10));
 
-        삼호선 = new Line("3호선", "orange", 가락시장, 오금, 20);
+        삼호선 = new Line("3호선", "orange", 가락시장, 오금, 20, 300);
 
-        오호선 = new Line("5호선", "purple", 천호, 마천, 90);
+        오호선 = new Line("5호선", "purple", 천호, 마천, 90, 500);
         오호선.addSection(new Section(천호, 오금, 50));
 
-        팔호선 = new Line("8호선", "pink", 잠실, 석촌, 10);
+        팔호선 = new Line("8호선", "pink", 잠실, 석촌, 10, 800);
         팔호선.addSection(new Section(석촌, 가락시장, 20));
         팔호선.addSection(new Section(천호, 잠실, 30));
 
-        신분당선 = new Line("신분당선", "red", 강남, 광교, 120);
+        신분당선 = new Line("신분당선", "red", 강남, 광교, 120, 1000);
 
         return Arrays.asList(이호선, 삼호선, 오호선, 팔호선, 신분당선);
     }

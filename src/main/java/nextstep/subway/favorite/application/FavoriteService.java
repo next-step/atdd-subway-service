@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.FavoriteDeleteException;
 import nextstep.subway.exception.FavoriteNotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -11,11 +12,13 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private StationService stationService;
@@ -35,6 +38,7 @@ public class FavoriteService {
         return FavoriteResponse.of(favorite);
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorties(LoginMember loginMember) {
         Member member = memberService.findById(loginMember.getId());
         List<Favorite> favorites = favoriteRepository.findAllByMember(member);
@@ -45,8 +49,9 @@ public class FavoriteService {
 
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(FavoriteNotFoundException::new);
-        if (favorite.isRegisteredBy(loginMember)) {
-            favoriteRepository.deleteById(id);
+        if (!favorite.isRegisteredBy(loginMember)) {
+            throw new FavoriteDeleteException("본인의 즐겨찾기만 삭제할 수 있습니다.");
         }
+        favoriteRepository.deleteById(id);
     }
 }
