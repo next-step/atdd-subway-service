@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -22,9 +23,42 @@ public class Sections {
         sectionElements.add(section);
     }
 
-    public int size() {
-        return sectionElements.size();
+    public List<Station> getStations() {
+        List<Station> stations = new ArrayList<>();
+        Station station = findFinalUpStation();
+        while (station != null) {
+            stations.add(station);
+            station = nextStation(station);
+        }
+        return stations;
     }
+
+    private Station nextStation(Station station) {
+        return this.sectionElements.stream()
+                .filter((section -> section.getUpStation().equals(station)))
+                .findFirst()
+                .map(Section::getDownStation)
+                .orElse(null);
+    }
+
+    private Station findFinalUpStation() {
+        List<Station> downStations = downStations();
+        List<Station> upStations = upStations();
+
+        return upStations.stream()
+                .filter((upStation) -> !downStations.contains(upStation))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("하행 종점을 찾을수 없습니다."));
+    }
+
+    private List<Station> downStations() {
+        return sectionElements.stream().map(Section::getDownStation).collect(Collectors.toList());
+    }
+
+    private List<Station> upStations() {
+        return sectionElements.stream().map(Section::getUpStation).collect(Collectors.toList());
+    }
+
 
     public void addSection(Section section) {
         validAddSection(section);
@@ -76,65 +110,50 @@ public class Sections {
     }
 
     private void duplicateAddSectionValid(Section section) {
-        if (isUpStationExisted(section) && isDownStationExisted(section)) {
+        if (sectionElements.contains(section)) {
             throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
     }
 
-    private boolean isDownStationExisted(Section section) {
-        return this.getSectionElements().stream().anyMatch(it -> it.getDownStation().equals(section.getDownStation()));
-    }
-
     private boolean isUpStationExisted(Section section) {
-        return this.getSectionElements().stream().anyMatch(it -> it.getUpStation().equals(section.getUpStation()));
+        return sectionElements.stream().anyMatch(it -> it.getUpStation().equals(section.getUpStation()));
     }
 
+    public void removeStation(Station station) {
+        validRemoveStation();
+        Optional<Section> upLineStation = findSectionByDownStation(station);
+        Optional<Section> downLineStation = findSectionByUpStation(station);
 
-    public List<Section> getSectionElements() {
-        return sectionElements;
-    }
+        upLineStation.ifPresent(it -> sectionElements.remove(it));
+        downLineStation.ifPresent(it -> sectionElements.remove(it));
 
-    public List<Station> getStations() {
-        List<Station> stations = new ArrayList<>();
-        Station station = findFinalUpStation();
-        while (station != null) {
-            stations.add(station);
-            station = nextStation(station);
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            mergeSection(upLineStation.get(), downLineStation.get());
         }
-        return stations;
     }
 
-    private Station nextStation(Station station) {
-        return this.sectionElements.stream()
-                .filter((section -> section.getUpStation().equals(station)))
-                .findFirst()
-                .map(Section::getDownStation)
-                .orElse(null);
+    private void validRemoveStation() {
+        if (this.sectionElements.size() <= 1) {
+            throw new IllegalArgumentException("구간은 꼭 하나만 있어야 합니다.");
+        }
     }
 
-    private Station findFinalUpStation() {
-        List<Station> downStations = downStations();
-        List<Station> upStations = upStations();
-
-        return upStations.stream()
-                .filter((upStation) -> !downStations.contains(upStation))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("하행 종점을 찾을수 없습니다."));
+    private Optional<Section> findSectionByDownStation(Station station) {
+        return sectionElements.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
     }
 
-    private List<Station> downStations() {
-        return sectionElements.stream().map(Section::getDownStation).collect(Collectors.toList());
+    private Optional<Section> findSectionByUpStation(Station station) {
+        return sectionElements.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
     }
 
-    private List<Station> upStations() {
-        return sectionElements.stream().map(Section::getUpStation).collect(Collectors.toList());
+    private void mergeSection(Section upLineStation, Section downLineStation) {
+        Station newUpStation = downLineStation.getUpStation();
+        Station newDownStation = upLineStation.getDownStation();
+        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+        addSection(new Section(downLineStation.getLine(), newUpStation, newDownStation, newDistance));
     }
-
-
-
-//    public List<Station> getStations() {
-//
-//    }
-
-
 }

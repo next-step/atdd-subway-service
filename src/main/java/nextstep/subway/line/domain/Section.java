@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import java.util.Objects;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -69,4 +70,23 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Section)) {
+            return false;
+        }
+        Section section = (Section) o;
+        return Objects.equals(getLine(), section.getLine()) && Objects.equals(getUpStation(),
+                section.getUpStation()) && Objects.equals(getDownStation(), section.getDownStation());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getLine(), getUpStation(), getDownStation());
+    }
 }
+

@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -58,14 +59,29 @@ public class Line extends BaseEntity {
         sections.addSection(section);
     }
 
-    public List<Section> sectionList() {
-        return sections.getSectionElements();
-    }
-    public Sections getSections() {
-        return sections;
+
+    public void removeStation(Station station) {
+        sections.removeStation(station);
     }
 
     public List<Station> getStations() {
         return sections.getStations();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Line)) {
+            return false;
+        }
+        Line line = (Line) o;
+        return Objects.equals(getName(), line.getName()) && Objects.equals(getColor(), line.getColor());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getColor());
     }
 }
