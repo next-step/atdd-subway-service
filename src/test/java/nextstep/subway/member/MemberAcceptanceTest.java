@@ -72,7 +72,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_수정됨(updateResponse);
 
         // when
-        ExtractableResponse<Response> deleteResponse = 토큰값으로_회원_삭제_요청(tokenResponse);
+        ExtractableResponse<Response> newTokenResponse = 로그인을_요청_한다(NEW_EMAIL, NEW_PASSWORD);
+        // then
+        로그인_요청_성공(newTokenResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 토큰값으로_회원_삭제_요청(newTokenResponse);
         // then
         회원_삭제됨(deleteResponse);
 
