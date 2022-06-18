@@ -28,7 +28,7 @@ public class PathService {
     }
 
     public PathResponse findShortestDistance(PathRequest pathRequest) {
-        validateFindShortest(pathRequest);
+        validateSameStation(pathRequest);
 
         Station sourceStation = stationService.findStationById(pathRequest.getSource());
         Station targetStation = stationService.findStationById(pathRequest.getTarget());
@@ -38,7 +38,7 @@ public class PathService {
         return PathResponse.of(navigationResponse.getStations(), navigationResponse.getDistance());
     }
 
-    private void validateFindShortest(PathRequest pathRequest) {
+    private void validateSameStation(PathRequest pathRequest) {
         if (pathRequest.getSource().equals(pathRequest.getTarget())) {
             throw new IllegalArgumentException(SAME_SOURCE_TARGET_STATION);
         }
