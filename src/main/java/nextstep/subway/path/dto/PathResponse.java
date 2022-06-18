@@ -19,7 +19,7 @@ public class PathResponse {
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
         this.distance = path.getDistance();
-        this.charge = path.findCharge().getValue();
+        this.charge = path.getCharge().getValue();
     }
 
     public List<StationResponse> getStations() {

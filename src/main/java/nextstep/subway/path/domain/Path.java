@@ -10,14 +10,15 @@ import static nextstep.subway.path.domain.BaseCharge.BASE_CHARGE;
 public class Path {
     private final List<Station> stations;
     private final int distance;
-    private List<Line> lines;
+    private Charge charge;
 
     public Path(List<Station> stations, int distance, List<Line> allLines) {
         this.stations = stations;
         this.distance = distance;
+        this.charge = findCharge();
     }
 
-    public Charge findCharge() {
+    private Charge findCharge() {
         return Charges.of(BASE_CHARGE, DistanceSurcharge.from(distance))
                 .sum();
     }
@@ -28,5 +29,9 @@ public class Path {
 
     public int getDistance() {
         return distance;
+    }
+
+    public Charge getCharge() {
+        return charge;
     }
 }
