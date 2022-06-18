@@ -1,22 +1,22 @@
 package nextstep.subway.favorite.dto;
 
 public class FavoriteRequest {
-    Long sourceStationId;
-    Long targetStationId;
+    Long source;
+    Long target;
 
     public FavoriteRequest(Long sourceStationId, Long targetStationId) {
-        this.sourceStationId = sourceStationId;
-        this.targetStationId = targetStationId;
+        this.source = sourceStationId;
+        this.target = targetStationId;
     }
 
     protected FavoriteRequest() {
     }
 
-    public Long getSourceStationId() {
-        return sourceStationId;
+    public Long getSource() {
+        return source;
     }
 
-    public Long getTargetStationId() {
-        return targetStationId;
+    public Long getTarget() {
+        return target;
     }
 }
