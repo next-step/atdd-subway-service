@@ -24,9 +24,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-        정상요청 = new TokenRequest(EMAIL, PASSWORD);
-        비밀번호_불일치_요청 = new TokenRequest(EMAIL, NEW_PASSWORD);
     }
 
     @TestFactory
@@ -44,7 +41,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
 
         // when
-        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(정상요청);
+        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(EMAIL, PASSWORD);
 
         // then
         로그인_됨(로그인_요청_응답);
@@ -53,7 +50,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     private void 비밀번호가_일치하지_않으면_로그인에_실패한다() {
         // when
-        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(비밀번호_불일치_요청);
+        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(EMAIL, NEW_PASSWORD);
 
         // then
         로그인_실패(로그인_요청_응답);
@@ -63,7 +60,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private void 유효하지_않은_토큰으로_api를_호출하면_예외가_발생한다() {
     }
 
-    private static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        TokenRequest tokenRequest = new TokenRequest(email, password);
+
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
