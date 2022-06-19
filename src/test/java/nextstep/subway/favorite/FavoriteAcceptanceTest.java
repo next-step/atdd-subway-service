@@ -4,14 +4,16 @@ import static nextstep.subway.auth.acceptance.AuthAcceptanceSteps.로그인_요�
 import static nextstep.subway.favorite.FavoriteAcceptanceSteps.*;
 import static nextstep.subway.line.acceptance.LineAcceptanceSteps.지하철_노선_등록되어_있음;
 import static nextstep.subway.member.MemberAcceptanceSteps.회원_생성을_요청;
+import static nextstep.subway.station.StationAcceptanceSteps.지하철역_등록되어_있음;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,11 +44,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      */
     @BeforeEach
     public void setUp() {
+        super.setUp();
+
         // given
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class).getId();
-        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class).getId();
-        정자역 = StationAcceptanceTest.지하철역_등록되어_있음("정자역").as(StationResponse.class).getId();
-        광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class).getId();
+        강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class).getId();
+        양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class).getId();
+        정자역 = 지하철역_등록되어_있음("정자역").as(StationResponse.class).getId();
+        광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class).getId();
         신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역, 광교역, 10)).as(LineResponse.class).getId();
 
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
@@ -76,7 +80,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_조회_요청됨(즐겨찾기_조회_응답);
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제를_요청(사용자, 강남역);
+        List<Long> 즐겨찾기_목록 = 즐겨찾기_조회_응답.jsonPath().getList("id", Long.class);
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제를_요청(사용자, 즐겨찾기_목록.get(0).longValue());
         // then
         즐겨찾기_삭제_요청됨(즐겨찾기_삭제_응답);
     }

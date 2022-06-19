@@ -2,7 +2,6 @@ package nextstep.subway.member;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceSteps.로그인_요청;
 import static nextstep.subway.member.MemberAcceptanceSteps.*;
-import static nextstep.subway.member.MemberAcceptanceSteps.내_회원_정보_수정_요청;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -10,7 +9,6 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";

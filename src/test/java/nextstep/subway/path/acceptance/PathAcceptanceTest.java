@@ -3,6 +3,7 @@ package nextstep.subway.path.acceptance;
 import static nextstep.subway.line.acceptance.LineAcceptanceSteps.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceSteps.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.path.acceptance.PathAcceptanceSteps.*;
+import static nextstep.subway.station.StationAcceptanceSteps.지하철역_등록되어_있음;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -38,10 +39,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
-        교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
-        남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
+        남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
@@ -76,8 +77,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우 {INTERNAL_SERVER_ERROR}")
     public void notConnectSourceAndTarget() {
         // given
-        StationResponse 서울역 = StationAcceptanceTest.지하철역_등록되어_있음("서울역").as(StationResponse.class);
-        StationResponse 삼각지역 = StationAcceptanceTest.지하철역_등록되어_있음("삼각지역").as(StationResponse.class);
+        StationResponse 서울역 = 지하철역_등록되어_있음("서울역").as(StationResponse.class);
+        StationResponse 삼각지역 = 지하철역_등록되어_있음("삼각지역").as(StationResponse.class);
         LineResponse 사호선 = 지하철_노선_등록되어_있음(new LineRequest("4호선", "bg-blue-600", 서울역.getId(), 삼각지역.getId(), 8)).as(LineResponse.class);
 
         // when
