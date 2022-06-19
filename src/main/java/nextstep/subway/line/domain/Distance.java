@@ -30,8 +30,30 @@ public class Distance {
         this.value -= distance.value;
     }
 
+    public Distance subtractThenReturnResult(Distance distance) {
+        Distance result = new Distance(this.value);
+        result.subtract(distance);
+
+        return result;
+    }
+
+    public int calculateDistanceRatio(Distance distance) {
+        if (distance.value < MIN_VALUE) {
+            throw new IllegalArgumentException("0보다 작은 거리로 비율을 계산할 수 없습니다.");
+        }
+
+        return this.value / distance.value + ratioRemainder(distance);
+    }
+
     public boolean isLessThanOrEqualTo(Distance distance) {
         return this.value <= distance.value;
+    }
+
+    public Distance getMinimumDistance(Distance distance) {
+        if (this.value > distance.value) {
+            return distance;
+        }
+        return this;
     }
 
     public int getValue() {
@@ -42,5 +64,12 @@ public class Distance {
         if (value < MIN_VALUE) {
             throw new IllegalArgumentException("거리는 0 보다 작을 수 없습니다.");
         }
+    }
+
+    private int ratioRemainder(Distance distance) {
+        if (this.value % distance.value > 0) {
+            return 1;
+        }
+        return 0;
     }
 }
