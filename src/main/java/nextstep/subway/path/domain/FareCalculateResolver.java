@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class FareResolver {
+public class FareCalculateResolver {
     private final List<FareCalculator> fareCalculators;
 
-    public FareResolver(List<FareCalculator> fareCalculators) {
+    public FareCalculateResolver(List<FareCalculator> fareCalculators) {
         this.fareCalculators = fareCalculators;
     }
 
