@@ -217,7 +217,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * When 교대역-정자역 경로 요금 조회
      * Then 2550원 (거리 25, 신분당선 1000원)
      * When 교대역-청량리역 경로 요금 조회
-     * Then 3350원 (거리 75, 신분당선 1000원, 분당선 500원)
+     * Then 3450원 (거리 75, 신분당선 1000원, 분당선 500원)
      */
     @Test
     void 지하철_거리별_요금_조회() {
@@ -240,18 +240,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단경로_응답됨(조회_응답3);
-        최단경로_요금_일치함(조회_응답3, 3350);
+        최단경로_요금_일치함(조회_응답3, 3450);
     }
 
     /**
      * When 교대역-청량리역 경로 요금 조회
-     * Then 3350원 (거리 75, 신분당선 1000원, 분당선 500원)
+     * Then 3450원 (거리 75, 신분당선 1000원, 분당선 500원)
      * When 청소년(13세~18세) 로그인 되어있음
      * When 교대역-청량리역 경로 요금 조회
-     * Then 2400원 (350원 할인 후 20% 추가할인)
+     * Then 2480원 (350원 할인 후 20% 추가할인)
      * When 어린이(6세~12세) 로그인 되어있음
      * When 교대역-청량리역 경로 요금 조회
-     * Then 1500원 (350원 할인 후 50% 추가할인)
+     * Then 1550원 (350원 할인 후 50% 추가할인)
      */
     @Test
     void 지하철_연령별_요금_조회() {
@@ -260,7 +260,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단경로_응답됨(조회_응답);
-        최단경로_요금_일치함(조회_응답, 3350);
+        최단경로_요금_일치함(조회_응답, 3450);
 
         // when
         String 청소년 = 로그인_되어있음(청소년_아이디, 청소년_패스워드);
@@ -268,7 +268,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단경로_응답됨(청소년_조회_응답);
-        최단경로_요금_일치함(청소년_조회_응답, 2400);
+        최단경로_요금_일치함(청소년_조회_응답, 2480);
 
         // when
         String 어린이 = 로그인_되어있음(어린이_아이디, 어린이_패스워드);
@@ -276,7 +276,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단경로_응답됨(어린이_조회_응답);
-        최단경로_요금_일치함(어린이_조회_응답, 1500);
+        최단경로_요금_일치함(어린이_조회_응답, 1550);
     }
 
     public static void 최단경로_응답됨(ExtractableResponse<Response> response) {

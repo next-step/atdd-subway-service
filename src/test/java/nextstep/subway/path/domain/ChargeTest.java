@@ -23,7 +23,7 @@ class ChargeTest {
 
     @DisplayName("거리별 추가요금")
     @ParameterizedTest
-    @CsvSource(value = {"5,0", "25,300", "75,1100"})
+    @CsvSource(value = {"10,0", "11,100", "16,200", "46,800", "51,900", "58,900", "59,1000"})
     void distanceSurcharge(int distance, int surcharge) {
         Charge actual = DistanceSurcharge.from(distance);
         Charge expected = new Charge(surcharge);

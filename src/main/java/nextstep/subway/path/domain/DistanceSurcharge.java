@@ -1,38 +1,40 @@
 package nextstep.subway.path.domain;
 
+import static java.lang.Math.floor;
+
 public class DistanceSurcharge extends Charge {
-    private static final int FIRST_SURCHARGE_DISTANCE = 10;
-    private static final int SECOND_SURCHARGE_DISTANCE = 50;
+    private static final int BOUNDARY_1ST_SURCHARGE = 10;
+    private static final int BOUNDARY_2ND_SURCHARGE = 50;
 
     private DistanceSurcharge(int value) {
         super(value);
     }
 
     public static DistanceSurcharge from(int distance) {
-        if (is10to50(distance)) {
-            return new DistanceSurcharge(surcharge10to50(distance));
+        if (is1stSurcharge(distance)) {
+            return new DistanceSurcharge(surcharge1st(distance));
         }
-        if (is50over(distance)) {
-            return new DistanceSurcharge(surcharge50over(distance));
+        if (is2ndSurcharge(distance)) {
+            return new DistanceSurcharge(surcharge2nd(distance));
         }
         return new DistanceSurcharge(0);
     }
 
-    private static boolean is10to50(int distance) {
-        return distance > FIRST_SURCHARGE_DISTANCE && distance <= SECOND_SURCHARGE_DISTANCE;
+    private static boolean is1stSurcharge(int distance) {
+        return distance > BOUNDARY_1ST_SURCHARGE && distance <= BOUNDARY_2ND_SURCHARGE;
     }
 
-    private static int surcharge10to50(int distance) {
-        int c = (distance - FIRST_SURCHARGE_DISTANCE) / 5;
-        return 100 * c;
+    private static int surcharge1st(int distance) {
+        int over = distance - BOUNDARY_1ST_SURCHARGE;
+        return (int) ((floor((over - 1) / 5.0) + 1) * 100);
     }
 
-    private static boolean is50over(int distance) {
-        return distance > SECOND_SURCHARGE_DISTANCE;
+    private static boolean is2ndSurcharge(int distance) {
+        return distance > BOUNDARY_2ND_SURCHARGE;
     }
 
-    private static int surcharge50over(int distance) {
-        int d = (distance - SECOND_SURCHARGE_DISTANCE) / 8;
-        return surcharge10to50(50) + 100 * d;
+    private static int surcharge2nd(int distance) {
+        int over = distance - BOUNDARY_2ND_SURCHARGE;
+        return surcharge1st(BOUNDARY_2ND_SURCHARGE) + (int) ((floor((over - 1) / 8.0) + 1) * 100);
     }
 }
