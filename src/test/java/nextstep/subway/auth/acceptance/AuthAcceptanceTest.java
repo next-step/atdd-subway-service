@@ -4,15 +4,19 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.member.MemberAcceptanceTest.내_정보_조회_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     public static final String MEMBER_EMAIL = "abc@com";
@@ -51,9 +55,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_로그인_실패확인(response);
     }
 
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @DisplayName("Bearer Auth 유효하지 않은 토큰 (유효하지 않은 토큰 정보로 인증을 하면 요청을 실패)")
     @Test
     void myInfoWithWrongBearerAuth() {
+        //given
+        ExtractableResponse<Response> response = 내_정보_조회_요청(new TokenResponse("InvalidToken"));
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     public static ExtractableResponse<Response> 회원_로그인을_시도한다(String email, String password) {
