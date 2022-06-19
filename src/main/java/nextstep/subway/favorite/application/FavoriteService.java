@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,11 +37,25 @@ public class FavoriteService {
         return saved.getId();
     }
 
-    public List<FavoriteResponse> findFavorites(Long id) {
-        Member member = memberService.findById(id);
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        Member member = memberService.findById(memberId);
         return favoriteRepository.findAllByMember(member)
                 .stream()
                 .map(FavoriteResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        Member member = memberService.findById(memberId);
+        Favorite favorite = findById(favoriteId);
+        favorite.validateOwner(member);
+
+        favoriteRepository.deleteById(favoriteId);
+    }
+
+    public Favorite findById(Long favoriteId) {
+        return favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new NoSuchElementException("즐겨찾기를 찾을 수 없습니다."));
     }
 }

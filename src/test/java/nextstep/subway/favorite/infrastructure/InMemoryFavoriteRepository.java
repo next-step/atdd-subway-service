@@ -11,6 +11,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class InMemoryFavoriteRepository implements FavoriteRepository {
@@ -44,5 +45,15 @@ public class InMemoryFavoriteRepository implements FavoriteRepository {
                 .stream()
                 .filter(favorite -> favorite.isOwner(member))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Favorite> findById(Long favoriteId) {
+        return Optional.ofNullable(elements.get(favoriteId));
+    }
+
+    @Override
+    public void deleteById(Long favoriteId) {
+        elements.remove(favoriteId);
     }
 }

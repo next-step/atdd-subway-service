@@ -13,8 +13,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class FavoriteServiceTest {
     private FavoriteService favoriteService;
@@ -62,6 +64,8 @@ class FavoriteServiceTest {
         favoriteService.deleteFavorite(member.getId(), 1L);
 
         // then
-        assertThat(favoriteService.findFavorites(member.getId())).hasSize(1);
+        assertThatThrownBy(() ->
+                favoriteService.findById(member.getId())
+        ).isInstanceOf(NoSuchElementException.class);
     }
 }
