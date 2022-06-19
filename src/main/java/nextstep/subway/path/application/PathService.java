@@ -1,6 +1,9 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.path.domain.Fee;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -20,11 +23,13 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse searchShortestPath(Long source, Long target) {
+    public PathResponse searchShortestPath(LoginMember loginMember, Long source, Long target) {
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
 
         pathFinder.init(lineService.findAllLines());
-        return pathFinder.getDijkstraPath(sourceStation, targetStation).toPathResponse();
+        Path resultPath = pathFinder.getDijkstraPath(sourceStation, targetStation);
+        resultPath.calculateFee(loginMember);
+        return resultPath.toPathResponse();
     }
 }

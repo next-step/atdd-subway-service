@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -12,6 +13,7 @@ public class Path {
     private List<Station> stations;
     private int distance;
     private Set<Line> lines;
+    private Fee fee;
 
     public Path(List<Station> stations, int distance) {
         this(stations, distance, null);
@@ -23,10 +25,14 @@ public class Path {
         this.lines = lines;
     }
 
+    public void calculateFee(LoginMember member) {
+        this.fee = FeeDiscountPolicy.discount(Fee.of(this.distance, this.lines), member.getAge());
+    }
+
     public PathResponse toPathResponse() {
         List<StationResponse> stationsResponse = this.stations.stream()
                 .map(StationResponse::of).collect(Collectors.toList());
-        return new PathResponse(stationsResponse, this.distance, Fee.of(this.distance, this.lines).getFee());
+        return new PathResponse(stationsResponse, this.distance, this.fee);
     }
 
     public List<Station> throughStations() {
@@ -39,5 +45,9 @@ public class Path {
 
     public Set<Line> throughLines() {
         return lines;
+    }
+
+    public Fee charge() {
+        return fee;
     }
 }

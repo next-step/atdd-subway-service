@@ -7,6 +7,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.NotExistException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
@@ -57,23 +60,24 @@ class PathServiceTest {
         멀리있는역 = new Station("멀리있는역");
         신분당선 = new Line("신분당선", "빨강", 강남역, 양재역, Distance.of(25));
         이호선 = new Line("이호선", "초록", 교대역, 강남역, Distance.of(8));
-        삼호선 = new Line("삼호선", "주황", 교대역, 양재역, Distance.of(15));
+        삼호선 = new Line("삼호선", "주황", 500, 교대역, 양재역, Distance.of(15));
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, Distance.of(10)));
         삼호선.addSection(new Section(삼호선, 양재역, 멀리있는역, Distance.of(70)));
-
-        when(lineService.findAllLines()).thenReturn(Arrays.asList(이호선, 신분당선, 삼호선));
     }
 
     @Test
     @DisplayName("경로 조회시 최단거리 및 기본요금 결과 반환")
     void searchBasicFeeAndShortestPath() {
         // given
+        Set<Line> throughLine = new HashSet<>(Collections.singletonList(이호선));
         when(stationService.findStationById(1L)).thenReturn(강남역);
         when(stationService.findStationById(2L)).thenReturn(교대역);
-        when(pathFinder.getDijkstraPath(강남역, 교대역)).thenReturn(new Path(Arrays.asList(강남역, 교대역), 8));
+        when(lineService.findAllLines()).thenReturn(Arrays.asList(이호선, 신분당선, 삼호선));
+        when(pathFinder.getDijkstraPath(강남역, 교대역))
+                .thenReturn(new Path(Arrays.asList(강남역, 교대역), 8, throughLine));
 
         // when
-        PathResponse pathResponse = pathService.searchShortestPath(1L, 2L);
+        PathResponse pathResponse = pathService.searchShortestPath(LoginMember.guest(), 1L, 2L);
 
         // then
         assertAll(
@@ -87,12 +91,15 @@ class PathServiceTest {
     @DisplayName("경로 조회시 최단거리(10km ~ 50km 이내) 및 추가요금이 포함된 결과 반환")
     void searchExtraFeeLessThan50KmAndShortestPath() {
         // given
+        Set<Line> throughLine = new HashSet<>(Collections.singletonList(신분당선));
         when(stationService.findStationById(1L)).thenReturn(강남역);
         when(stationService.findStationById(3L)).thenReturn(양재역);
-        when(pathFinder.getDijkstraPath(강남역, 양재역)).thenReturn(new Path(Arrays.asList(강남역, 양재역), 25));
+        when(lineService.findAllLines()).thenReturn(Arrays.asList(이호선, 신분당선, 삼호선));
+        when(pathFinder.getDijkstraPath(강남역, 양재역))
+                .thenReturn(new Path(Arrays.asList(강남역, 양재역), 25, throughLine));
 
         // when
-        PathResponse pathResponse = pathService.searchShortestPath(1L, 3L);
+        PathResponse pathResponse = pathService.searchShortestPath(LoginMember.guest(), 1L, 3L);
 
         // then
         assertAll(
@@ -106,18 +113,21 @@ class PathServiceTest {
     @DisplayName("경로 조회시 최단거리(50km 초과) 및 추가요금이 포함된 결과 반환")
     void searchExtraFeeMoreThan50KmAndShortestPath() {
         // given
+        Set<Line> throughLine = new HashSet<>(Arrays.asList(신분당선, 삼호선));
         when(stationService.findStationById(1L)).thenReturn(강남역);
         when(stationService.findStationById(10L)).thenReturn(멀리있는역);
-        when(pathFinder.getDijkstraPath(강남역, 멀리있는역)).thenReturn(new Path(Arrays.asList(강남역, 양재역, 멀리있는역), 95));
+        when(lineService.findAllLines()).thenReturn(Arrays.asList(이호선, 신분당선, 삼호선));
+        when(pathFinder.getDijkstraPath(강남역, 멀리있는역))
+                .thenReturn(new Path(Arrays.asList(강남역, 양재역, 멀리있는역), 95, throughLine));
 
         // when
-        PathResponse pathResponse = pathService.searchShortestPath(1L, 10L);
+        PathResponse pathResponse = pathService.searchShortestPath(LoginMember.guest(), 1L, 10L);
 
         // then
         assertAll(
                 () -> assertThat(pathResponse.getStations()).hasSize(3),
-                () -> assertThat(pathResponse.getDistance()).isEqualTo(75),
-                () -> assertThat(pathResponse.getFee()).isEqualTo(2350) // 1250 + 800 + 300
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(95),
+                () -> assertThat(pathResponse.getFee()).isEqualTo(3150) // 1250 + 800 + 600 + 500
         );
     }
 
@@ -129,6 +139,6 @@ class PathServiceTest {
 
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> pathService.searchShortestPath(99L, 10L));
+                .isThrownBy(() -> pathService.searchShortestPath(LoginMember.guest(), 99L, 10L));
     }
 }

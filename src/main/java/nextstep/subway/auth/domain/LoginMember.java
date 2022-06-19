@@ -15,7 +15,7 @@ public class LoginMember {
     }
 
     public static LoginMember guest() {
-        return new LoginMember();
+        return new LoginMember(null, null, 0);
     }
 
     public Long getId() {
