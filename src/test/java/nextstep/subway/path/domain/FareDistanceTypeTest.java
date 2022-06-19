@@ -28,9 +28,9 @@ public class FareDistanceTypeTest {
 
     private static Stream<Arguments> provideParametersForFareDistanceTypeCreate() {
         return Stream.of(
-                Arguments.of(10, FareDistanceType.BASIC_TYPE),
-                Arguments.of(50, FareDistanceType.DISTANCE_TYPE_1),
-                Arguments.of(100, FareDistanceType.DISTANCE_TYPE_2)
+                Arguments.of(10, FareDistanceType.BASIC_DISTANCE),
+                Arguments.of(50, FareDistanceType.MIDDLE_DISTANCE),
+                Arguments.of(100, FareDistanceType.LONG_DISTANCE)
         );
     }
 

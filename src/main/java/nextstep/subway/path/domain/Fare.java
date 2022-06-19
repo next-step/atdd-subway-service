@@ -9,12 +9,15 @@ import java.util.stream.Collectors;
 public class Fare {
     private int value;
 
-    private Fare(Path path) {
+    private Fare(Path path, Integer age) {
         value = calculateDistanceFare(path.getDistance()) + calculateLineFare(path.getSections());
+        if (age != null) {
+            discountFareWithAge(age);
+        }
     }
 
-    public static Fare from(Path path) {
-        return new Fare(path);
+    public static Fare of(Path path, Integer age) {
+        return new Fare(path, age);
     }
 
     private int calculateDistanceFare(int distance) {
@@ -31,6 +34,11 @@ public class Fare {
                 .map(line -> line.getAdditionalFare())
                 .max(Integer::compareTo)
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private void discountFareWithAge(int age) {
+        FareAgeType type = FareAgeType.typeOf(age);
+        value = type.discountFare(value);
     }
 
     public int getValue() {

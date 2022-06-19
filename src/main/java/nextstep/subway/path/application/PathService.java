@@ -33,7 +33,7 @@ public class PathService {
         Station targetStation = stationService.findStationById(targetStationId);
 
         Path path = pathFinder.findShortestPath(sections, sourceStation, targetStation);
-        Fare fare = Fare.from(path);
+        Fare fare = Fare.of(path, loginMember.getAge());
         return PathResponse.of(path, fare);
     }
 }

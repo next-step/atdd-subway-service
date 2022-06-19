@@ -1,9 +1,9 @@
 package nextstep.subway.path.domain;
 
 public enum FareDistanceType {
-    BASIC_TYPE(0, 0, 1250),
-    DISTANCE_TYPE_1(10, 5, 1250),
-    DISTANCE_TYPE_2(50, 8, 2050);
+    BASIC_DISTANCE(0, 0, 1250),
+    MIDDLE_DISTANCE(10, 5, 1250),
+    LONG_DISTANCE(50, 8, 2050);
 
     private static int ADDITIONAL_FARE_PER_UNIT = 100;
 
@@ -18,17 +18,17 @@ public enum FareDistanceType {
     }
 
     public static FareDistanceType typeOf(int distance) {
-        if (DISTANCE_TYPE_2.minDistance < distance) {
-            return DISTANCE_TYPE_2;
+        if (LONG_DISTANCE.minDistance < distance) {
+            return LONG_DISTANCE;
         }
-        if (DISTANCE_TYPE_1.minDistance < distance) {
-            return DISTANCE_TYPE_1;
+        if (MIDDLE_DISTANCE.minDistance < distance) {
+            return MIDDLE_DISTANCE;
         }
-        return BASIC_TYPE;
+        return BASIC_DISTANCE;
     }
 
     public int calculateFare(int distance) {
-        if(this == BASIC_TYPE){
+        if(this == BASIC_DISTANCE){
             return basicFare;
         }
         return basicFare +
