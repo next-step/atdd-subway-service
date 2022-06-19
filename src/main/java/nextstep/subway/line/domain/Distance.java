@@ -33,6 +33,10 @@ public class Distance {
         return distance;
     }
 
+    public int calculateFare() {
+        return DistanceType.of(this).calculateDistanceFare(distance);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

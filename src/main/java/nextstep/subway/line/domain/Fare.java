@@ -13,13 +13,9 @@ public class Fare {
 
     public static Fare calculate(Distance distance, Integer age, int surcharge) {
         int fare = DEFAULT_FARE + surcharge;
-        fare += calculateDistanceFare(distance);
+        fare += distance.calculateFare();
         fare = calculateDiscount(age, fare);
         return new Fare(fare);
-    }
-
-    private static int calculateDistanceFare(Distance distance) {
-        return DistanceType.of(distance).calculateDistanceFare(distance.toInt());
     }
 
     private static int calculateDiscount(Integer age, int fare) {
