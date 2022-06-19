@@ -36,6 +36,7 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        return stationRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new);
     }
 }

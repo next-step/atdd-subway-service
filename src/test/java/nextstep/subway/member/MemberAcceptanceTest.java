@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +22,19 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
 
+    /**
+     * Feature: 회원 정보를 관리한다.
+     *
+     *   Scenario: 회원 정보를 관리
+     *     When 회원 생성을 요청
+     *     Then 회원 생성됨
+     *     When 회원 정보 조회 요청
+     *     Then 회원 정보 조회됨
+     *     When 회원 정보 수정 요청
+     *     Then 회원 정보 수정됨
+     *     When 회원 정보 삭제 요청
+     *     Then 회원 삭제됨
+     */
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
@@ -45,10 +59,43 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    /**
+     * Feature: 내 정보를 관리한다.
+     *
+     *   Background
+     *     Given 회원 생성되어 있음
+     *     And 로그인되어 있음
+     *
+     *   Scenario: 내 정보를 관리
+     *     When 내 정보 조회 요청
+     *     Then 내 정보 조회됨
+     *     When 내 정보 수정 요청
+     *     Then 내 정보 수정됨(이메일 이외의 정보)
+     *     When 내 정보 삭제 요청
+     *     Then 내 정보 삭제됨
+     */
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        // and
+        String token = AuthAcceptanceTest.로그인되어_있음(EMAIL, PASSWORD);
 
+        // when
+        ExtractableResponse<Response> findResponse = 내_정보_조회_요청(token);
+        // then
+        회원_정보_조회됨(findResponse, EMAIL, AGE);
+
+        // when
+        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(token, EMAIL, NEW_PASSWORD, NEW_AGE);
+        // then
+        회원_정보_수정됨(updateResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(token);
+        // then
+        회원_삭제됨(deleteResponse);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -92,6 +139,38 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_수정_요청(String token, String email, String password, Integer age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_삭제_요청(String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .when().delete("/members/me")
                 .then().log().all()
                 .extract();
     }

@@ -1,30 +1,23 @@
 package nextstep.subway.path;
 
-import com.google.common.collect.Lists;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
+import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class PathFinderTest {
-
-    @Mock
-    LineRepository lineRepository;
 
     Station 강남역;
     Station 양재역;
@@ -65,39 +58,23 @@ public class PathFinderTest {
     @Test
     void 경로_조회_초기_상태() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(신분당선, 이호선, 삼호선));
-        PathFinder pathFinder = new PathFinder(lineRepository);
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
         // when
-        GraphPath<Station, DefaultWeightedEdge> path = pathFinder.getPath(강남역, 남부터미널역);
+        PathResponse path = pathFinder.getPath(강남역, 남부터미널역);
 
         // then
-        assertThat(path.getVertexList()).containsExactly(강남역, 양재역, 남부터미널역);
-        assertThat(path.getWeight()).isEqualTo(12);
-    }
-
-    @DisplayName("노선 추가 후 최단 경로를 조회한다.")
-    @Test
-    void 노선_추가_후_경로_조회() {
-        // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(신분당선, 삼호선));
-        PathFinder pathFinder = new PathFinder(lineRepository);
-
-        // when
-        pathFinder.addLines(Arrays.asList(이호선));
-        GraphPath<Station, DefaultWeightedEdge> path = pathFinder.getPath(강남역, 교대역);
-
-        // then
-        assertThat(path.getVertexList()).containsExactly(강남역, 교대역);
-        assertThat(path.getWeight()).isEqualTo(10);
+        assertThat(path.getStations().stream()
+                .map(StationResponse::getName))
+                .containsExactly(강남역.getName(), 양재역.getName(), 남부터미널역.getName());
+        assertThat(path.getDistance()).isEqualTo(12);
     }
 
     @DisplayName("출발역과 도착역에 같은 역을 입력한다.")
     @Test
     void 경로_조회_예외_1() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(신분당선, 이호선, 삼호선));
-        PathFinder pathFinder = new PathFinder(lineRepository);
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선));
 
         // when
         assertThatThrownBy(() -> pathFinder.getPath(강남역, 강남역))
@@ -107,8 +84,7 @@ public class PathFinderTest {
     @DisplayName("연결되어 있지 않은 출발역과 도착역을 입력한다.")
     @Test
     void 경로_조회_예외_2() {
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(신분당선, 이호선, 삼호선));
-        PathFinder pathFinder = new PathFinder(lineRepository);
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 사호선));
 
         assertThatThrownBy(() -> pathFinder.getPath(강남역, 사당역))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -117,8 +93,7 @@ public class PathFinderTest {
     @DisplayName("존재하지 않는 출발역이나 도착역을 입력한다.")
     @Test
     void 경로_조회_예외_3() {
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(신분당선, 이호선, 삼호선));
-        PathFinder pathFinder = new PathFinder(lineRepository);
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선));
 
         assertThatThrownBy(() -> pathFinder.getPath(강남역, 사당역))
                 .isInstanceOf(IllegalArgumentException.class);
