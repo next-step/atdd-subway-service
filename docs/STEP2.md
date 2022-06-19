@@ -65,4 +65,4 @@ Connection: keep-alive
   - [x] Path 도메인 구현
   - [x] PathResponse 도메인 구현
   - [x] PathFinder 도메인 테스트 작성
-  - [ ] PathFinder 도메인 기능 구현
+  - [x] PathFinder 도메인 기능 구현
