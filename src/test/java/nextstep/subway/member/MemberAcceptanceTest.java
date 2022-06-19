@@ -6,12 +6,14 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.stream.Stream;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -21,26 +23,50 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
 
-    @DisplayName("회원 정보를 관리한다.")
-    @Test
-    void manageMember() {
-        // when
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        // then
-        회원_생성됨(createResponse);
+    private ExtractableResponse<Response> 회원_생성_요청_응답;
 
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+
+        회원_생성_요청_응답 = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+    }
+
+    @TestFactory
+    Stream<DynamicTest> 회원_정보_관리_시나리오() {
+        return Stream.of(
+                dynamicTest("회원 생성을 확인한다.", this::회원_생성을_확인한다),
+                dynamicTest("회원 정보 조회를 요청한다.", this::회원_정보_조회를_요청한다),
+                dynamicTest("회원 정보 수정을 요청한다.", this::회원_정보_수정을_요청한다),
+                dynamicTest("회원 삭제를 요청한다.", this::회원_삭제를_요청한다)
+        );
+    }
+
+    private void 회원_생성을_확인한다() {
+        // then
+        회원_생성됨(회원_생성_요청_응답);
+    }
+
+    private void 회원_정보_조회를_요청한다() {
         // when
-        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
+        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(회원_생성_요청_응답);
+
         // then
         회원_정보_조회됨(findResponse, EMAIL, AGE);
+    }
 
+    private void 회원_정보_수정을_요청한다() {
         // when
-        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(회원_생성_요청_응답, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
         // then
         회원_정보_수정됨(updateResponse);
+    }
 
+    private void 회원_삭제를_요청한다() {
         // when
-        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
+        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(회원_생성_요청_응답);
+
         // then
         회원_삭제됨(deleteResponse);
     }
