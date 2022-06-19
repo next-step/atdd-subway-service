@@ -75,7 +75,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // When
         ExtractableResponse<Response> invalidResponse = 즐겨찾기_생성을_요청(사용자정보, new StationResponse(100L, "모르는역", LocalDateTime.now(), LocalDateTime.now()), 광교역);
 
-        // Them
+        // The�n
         즐겨찾기_생성이_안됨(invalidResponse);
     }
 
