@@ -1,10 +1,13 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.PathMap;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,8 +52,9 @@ class PathServiceTest {
         when(stationRepository.findById(3L)).thenReturn(Optional.of(수원역));
 
         // when
-        PathFinder parPathFinder = new PathFinder(lineRepository, stationRepository);
-        PathService pathService = new PathService(parPathFinder);
+        StationService stationService = new StationService(stationRepository);
+        LineService lineService = new LineService(lineRepository, stationService);
+        PathService pathService = new PathService(new PathFinder(), new PathMap(), stationService, lineService);
         PathResponse result = pathService.findShortestPath(1L, 3L);
 
         // then

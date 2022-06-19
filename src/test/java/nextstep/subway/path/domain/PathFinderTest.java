@@ -6,6 +6,8 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -69,8 +71,10 @@ class PathFinderTest {
         when(stationRepository.findById(3L)).thenReturn(Optional.of(수원역));
 
         // when
-        PathFinder pathFinder = new PathFinder(lineRepository, stationRepository);
-        PathResponse result = pathFinder.findShortestPath(1L, 3L);
+        Station source = stationRepository.findById(1L).get();
+        Station target = stationRepository.findById(3L).get();
+        WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
+        PathResponse result = new PathFinder().findShortestPath(map, source, target);
 
         // then
         assertThat(result.toStations()).containsExactly(선릉역, 정자역, 수원역);
@@ -85,8 +89,10 @@ class PathFinderTest {
         when(stationRepository.findById(5L)).thenReturn(Optional.of(강릉역));
 
         // when
-        PathFinder pathFinder = new PathFinder(lineRepository, stationRepository);
-        PathResponse result = pathFinder.findShortestPath(1L, 5L);
+        Station source = stationRepository.findById(1L).get();
+        Station target = stationRepository.findById(5L).get();
+        WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
+        PathResponse result = new PathFinder().findShortestPath(map, source, target);
 
         // then
         assertThat(result.toStations()).containsExactly(선릉역, 정자역, 수원역, 춘천역, 강릉역);
@@ -101,9 +107,11 @@ class PathFinderTest {
 
         // when
         // then
-        PathFinder pathFinder = new PathFinder(lineRepository, stationRepository);
+        Station source = stationRepository.findById(1L).get();
+        Station target = stationRepository.findById(1L).get();
+        WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
 
-        assertThatThrownBy(() -> pathFinder.findShortestPath(1L, 1L))
+        assertThatThrownBy(() -> new PathFinder().findShortestPath(map, source, target))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -112,13 +120,15 @@ class PathFinderTest {
         // given
         when(lineRepository.findAll()).thenReturn(Arrays.asList(분당선, 강릉선, 당릉선, 동해선));
         when(stationRepository.findById(1L)).thenReturn(Optional.of(선릉역));
-        when(stationRepository.findById(5L)).thenReturn(Optional.of(경주역));
+        when(stationRepository.findById(6L)).thenReturn(Optional.of(경주역));
 
         // when
         // then
-        PathFinder pathFinder = new PathFinder(lineRepository, stationRepository);
+        Station source = stationRepository.findById(1L).get();
+        Station target = stationRepository.findById(6L).get();
+        WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
 
-        assertThatThrownBy((() -> pathFinder.findShortestPath(1L, 6L)))
+        assertThatThrownBy((() -> new PathFinder().findShortestPath(map, source, target)))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -131,12 +141,14 @@ class PathFinderTest {
 
         // when
         // then
-        PathFinder pathFinder = new PathFinder(lineRepository, stationRepository);
+        Station source = stationRepository.findById(1L).get();
+        Station target = stationRepository.findById(6L).get();
+        WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
 
         assertAll(
-                () -> assertThatThrownBy((() -> pathFinder.findShortestPath(1L, 6L)))
+                () -> assertThatThrownBy((() -> new PathFinder().findShortestPath(map, source, target)))
                         .isInstanceOf(RuntimeException.class),
-                () -> assertThatThrownBy((() -> pathFinder.findShortestPath(6L, 1L)))
+                () -> assertThatThrownBy((() -> new PathFinder().findShortestPath(map, target, source)))
                         .isInstanceOf(RuntimeException.class)
         );
     }
