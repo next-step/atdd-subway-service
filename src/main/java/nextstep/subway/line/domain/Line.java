@@ -68,7 +68,18 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections.getSections();
+    public boolean emptySections() {
+        return sections.getSections().isEmpty();
+    }
+
+    public int sizeSections() {
+        return sections.getSections().size();
+    }
+    public Section getSection(int index) {
+        return sections.getSections().get(index);
+    }
+
+    public Sections getSections() {
+        return sections;
     }
 }

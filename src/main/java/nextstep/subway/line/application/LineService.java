@@ -38,8 +38,12 @@ public class LineService {
         return createLineResponse(persistLine);
     }
 
+    public List<Line> findAll() {
+        return lineRepository.findAll();
+    }
+
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
+        List<Line> persistLines = findAll();
         return persistLines.stream()
                 .map(line -> createLineResponse(line))
                 .collect(Collectors.toList());
@@ -104,14 +108,14 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
 
-        if (line.getSections().size() <= 1) {
+        if (line.sizeSections() <= 1) {
             throw new RemoveSectionFail("구간의 길이가 1개 이하이므로 삭제할 수 없습니다.");
         }
 
-        Optional<Section> upLineStation = line.getSections().stream()
+        Optional<Section> upLineStation = line.getSections().getSections().stream()
                 .filter(it -> it.getUpStation() == station)
                 .findFirst();
-        Optional<Section> downLineStation = line.getSections().stream()
+        Optional<Section> downLineStation = line.getSections().getSections().stream()
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();
 
@@ -139,7 +143,7 @@ public class LineService {
     }
 
     public static List<Station> getStations(Line line) {
-        if (line.getSections().isEmpty()) {
+        if (line.emptySections()) {
             return Arrays.asList();
         }
 
@@ -149,7 +153,7 @@ public class LineService {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = line.getSections().stream()
+            Optional<Section> nextLineStation = line.getSections().getSections().stream()
                     .filter(it -> it.getUpStation() == finalDownStation)
                     .findFirst();
             if (!nextLineStation.isPresent()) {
@@ -163,10 +167,10 @@ public class LineService {
     }
 
     private static Station findUpStation(Line line) {
-        Station downStation = line.getSections().get(0).getUpStation();
+        Station downStation = line.getSections().getSections().get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = line.getSections().stream()
+            Optional<Section> nextLineStation = line.getSections().getSections().stream()
                     .filter(it -> it.getDownStation() == finalDownStation)
                     .findFirst();
             if (!nextLineStation.isPresent()) {

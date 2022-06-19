@@ -37,9 +37,9 @@ public class LineTest {
         assertAll(
                 () -> assertEquals(line.getName(), "2호선"),
                 () -> assertEquals(line.getColor(), "초록색"),
-                () -> assertEquals(line.getSections().get(0).getUpStation(), 강남역),
-                () -> assertEquals(line.getSections().get(0).getDownStation(), 역삼역),
-                () -> assertEquals(line.getSections().get(0).getDistance(), 15)
+                () -> assertEquals(line.getSections().getSections().get(0).getUpStation(), 강남역),
+                () -> assertEquals(line.getSections().getSections().get(0).getDownStation(), 역삼역),
+                () -> assertEquals(line.getSections().getSections().get(0).getDistance(), 15)
         );
     }
 
@@ -68,9 +68,9 @@ public class LineTest {
         // when
         line.addDownStationExisted(new Section(line, 교대역, 강남역, 11));
         assertAll(
-                () -> assertEquals(line.getSections().size(), 2),
-                () -> equalsSection(line.getSections().get(0), 강남역, 역삼역, 15),
-                () -> equalsSection(line.getSections().get(1), 교대역, 강남역, 11)
+                () -> assertEquals(line.sizeSections(), 2),
+                () -> equalsSection(line.getSections().getSections().get(0), 강남역, 역삼역, 15),
+                () -> equalsSection(line.getSections().getSections().get(1), 교대역, 강남역, 11)
         );
     }
 
@@ -83,9 +83,9 @@ public class LineTest {
         // when
         line.addUpStationExisted(new Section(line, 역삼역, 선릉역, 11));
         assertAll(
-                () -> assertEquals(line.getSections().size(), 2),
-                () -> equalsSection(line.getSections().get(0), 강남역, 역삼역, 15),
-                () -> equalsSection(line.getSections().get(1), 역삼역, 선릉역, 11)
+                () -> assertEquals(line.sizeSections(), 2),
+                () -> equalsSection(line.getSections().getSections().get(0), 강남역, 역삼역, 15),
+                () -> equalsSection(line.getSections().getSections().get(1), 역삼역, 선릉역, 11)
         );
     }
 
@@ -97,8 +97,6 @@ public class LineTest {
         Station 선릉역 = stationRepository.save(new Station("선릉역"));
         Station 삼성역 = stationRepository.save(new Station("삼성역"));
         Station 종합운동장역 = stationRepository.save(new Station("종합운동장역"));
-        Station 신도림역 = stationRepository.save(new Station("신도림역"));
-        Station 대림역 = stationRepository.save(new Station("대림역"));
 
         // when
         // 교대역-11-강남역-15-역삼역-7-선릉역-14-삼성역-9-종합운동장역
@@ -109,12 +107,12 @@ public class LineTest {
 
         // then
         assertAll(
-                () -> assertEquals(line.getSections().size(), 5),
-                () -> equalsSection(line.getSections().get(0), 강남역, 역삼역, 15),
-                () -> equalsSection(line.getSections().get(1), 선릉역, 삼성역, 14),
-                () -> equalsSection(line.getSections().get(2), 삼성역, 종합운동장역, 9),
-                () -> equalsSection(line.getSections().get(3), 역삼역, 선릉역, 7),
-                () -> equalsSection(line.getSections().get(4), 교대역, 강남역, 11)
+                () -> assertEquals(line.sizeSections(), 5),
+                () -> equalsSection(line.getSection(0), 강남역, 역삼역, 15),
+                () -> equalsSection(line.getSection(1), 선릉역, 삼성역, 14),
+                () -> equalsSection(line.getSection(2), 삼성역, 종합운동장역, 9),
+                () -> equalsSection(line.getSection(3), 역삼역, 선릉역, 7),
+                () -> equalsSection(line.getSection(4), 교대역, 강남역, 11)
         );
     }
 
@@ -129,7 +127,7 @@ public class LineTest {
         line.removeLineStation(newSection);
 
         // then
-        equalsSection(line.getSections().get(0), 강남역, 역삼역, 15);
+        equalsSection(line.getSection(0), 강남역, 역삼역, 15);
     }
 
     private void equalsSection(Section section, Station upStation, Station downStation, int distance) {

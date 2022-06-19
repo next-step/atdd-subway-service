@@ -80,7 +80,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("역과 역사이의 최단거리 조회 테스트")
     void findShortDistance() {
-        ExtractableResponse<Response> response = 출발역_도착역_최단거리_조회(1l, 2l);
+        //3호선이 출력되어야 함
+        ExtractableResponse<Response> response = 출발역_도착역_최단거리_조회(교대역.getId(), 양재역.getId());
+        System.out.println("-=----------------------");
+        System.out.println(response.jsonPath());
+
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
