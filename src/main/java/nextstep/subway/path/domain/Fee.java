@@ -12,9 +12,9 @@ public class Fee {
     private static final int DEFAULT_FEE = 1250;
     private static final int EXTRA_CHARGE = 100;
 
-    protected int fee;
+    private int fee;
 
-    private Fee(int fee) {
+    protected Fee(int fee) {
         this.fee = fee;
     }
 
