@@ -7,7 +7,10 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -162,14 +165,14 @@ public class Line extends BaseEntity {
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();
 
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
             addSection(newUpStation, newDownStation, newDistance);
         }
-
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
     }
 }
