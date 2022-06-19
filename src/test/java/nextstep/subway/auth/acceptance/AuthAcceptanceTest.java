@@ -18,8 +18,6 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("Bearer Auth 인증 관련 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
-    private TokenRequest 정상요청;
-    private TokenRequest 비밀번호_불일치_요청;
 
     @BeforeEach
     public void setUp() {

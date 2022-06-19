@@ -32,6 +32,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 정자역;
 
     private TokenResponse 사용자;
+    private ExtractableResponse<Response> 즐겨찾기_생성_응답;
 
     @BeforeEach
     public void setUp() {
@@ -46,6 +47,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
         사용자 = 로그인_되어_있음(EMAIL, PASSWORD);
+
+        즐겨찾기_생성_응답 = 즐겨찾기_생성을_요청(사용자, 강남역, 정자역);
     }
 
     @TestFactory
@@ -58,9 +61,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기를_생성한다() {
-        // when
-        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성을_요청(사용자, 강남역, 정자역);
-
         // then
         즐겨찾기_생성됨(즐겨찾기_생성_응답);
     }
@@ -74,7 +74,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기를_삭제한다() {
+        // when
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(사용자, 즐겨찾기_생성_응답);
 
+        // then
+        즐겨찾기_삭제됨(즐겨찾기_삭제_응답);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(TokenResponse tokenResponse, StationResponse source, StationResponse target) {
@@ -107,5 +111,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse tokenResponse, ExtractableResponse<Response> createResponse) {
+        String uri = createResponse.header("Location");
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
