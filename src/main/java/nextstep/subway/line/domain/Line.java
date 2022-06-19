@@ -28,7 +28,7 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, Station upStation, Station downStation, Distance distance) {
         this.name = name;
         this.color = color;
 
@@ -60,7 +60,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public void addLineSection(Station upStation, Station downStation, int distance) {
+    public void addLineSection(Station upStation, Station downStation, Distance distance) {
         boolean isUpStationExisted = sections.isExisted(upStation);
         boolean isDownStationExisted = sections.isExisted(downStation);
 
@@ -93,6 +93,6 @@ public class Line extends BaseEntity {
         Station newUpStation = downLineStation.getUpStation();
         Station newDownStation = upLineStation.getDownStation();
         int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
-        sections.addSection(new Section(this, newUpStation, newDownStation, newDistance));
+        sections.addSection(new Section(this, newUpStation, newDownStation, new Distance(newDistance)));
     }
 }

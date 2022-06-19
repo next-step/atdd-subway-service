@@ -41,14 +41,14 @@ public class Sections {
 
     }
 
-    public void updateDownStation(Station upStation, Station downStation, int distance) {
+    public void updateDownStation(Station upStation, Station downStation, Distance distance) {
         values.stream()
                 .filter(it -> it.getDownStation() == downStation)
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
     }
 
-    public void updateUpStation(Station upStation, Station downStation, int distance) {
+    public void updateUpStation(Station upStation, Station downStation, Distance distance) {
         values.stream()
                 .filter(it -> it.getUpStation() == upStation)
                 .findFirst()
@@ -118,7 +118,7 @@ public class Sections {
     public boolean isEmpty() {
         return this.values.isEmpty();
     }
-    
+
     public void remove(Section section) {
         if (values.size() <= 1) {
             throw new IllegalArgumentException("라인에서 역을 제거할 수 없습니다.");
