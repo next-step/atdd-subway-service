@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
+
 import java.util.Objects;
 
 public class Charge {
@@ -12,6 +14,24 @@ public class Charge {
 
     public Charge add(Charge charge) {
         return new Charge(this.value + charge.value);
+    }
+
+    private Charge minus(int value) {
+        return new Charge(this.value - value);
+    }
+
+    private Charge multiply(double rate) {
+        return new Charge((int) Math.ceil(this.value * rate));
+    }
+
+    public Charge discountBy(LoginMember loginMember) {
+        if (loginMember.isTeenager()) {
+            return minus(350).multiply(0.8);
+        }
+        if (loginMember.isChildren()) {
+            return minus(350).multiply(0.5);
+        }
+        return this;
     }
 
     public int getValue() {

@@ -75,7 +75,7 @@ class PathServiceTest {
     @DisplayName("최단 경로를 조회한다")
     @Test
     void findPath() {
-        PathResponse actual = pathService.findPath(sourceId, targetId);
+        PathResponse actual = pathService.findPath(sourceId, targetId, null);
         PathResponse expected = new PathResponse(path);
         assertSoftly(softAssertions -> {
             softAssertions.assertThat(actual.getStations()).containsExactlyElementsOf(expected.getStations());

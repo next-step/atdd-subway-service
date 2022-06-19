@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -30,6 +31,10 @@ public class Path {
         return sections.stream()
                 .map(Section::getLine)
                 .collect(toSet());
+    }
+
+    public void discountBy(LoginMember loginMember) {
+        charge = charge.discountBy(loginMember);
     }
 
     public List<Station> getStations() {

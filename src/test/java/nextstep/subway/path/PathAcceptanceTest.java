@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어있음;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_등록되어_있음;
@@ -242,6 +243,42 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_요금_일치함(조회_응답3, 3350);
     }
 
+    /**
+     * When 교대역-청량리역 경로 요금 조회
+     * Then 3350원 (거리 75, 신분당선 1000원, 분당선 500원)
+     * When 청소년(13세~18세) 로그인 되어있음
+     * When 교대역-청량리역 경로 요금 조회
+     * Then 2400원 (350원 할인 후 20% 추가할인)
+     * When 어린이(6세~12세) 로그인 되어있음
+     * When 교대역-청량리역 경로 요금 조회
+     * Then 1500원 (350원 할인 후 50% 추가할인)
+     */
+    @Test
+    void 지하철_연령별_요금_조회() {
+        // when
+        ExtractableResponse<Response> 조회_응답 = 최단경로_조회_요청(교대역, 청량리역);
+
+        // then
+        최단경로_응답됨(조회_응답);
+        최단경로_요금_일치함(조회_응답, 3350);
+
+        // when
+        String 청소년 = 로그인_되어있음(청소년_아이디, 청소년_패스워드);
+        ExtractableResponse<Response> 청소년_조회_응답 = 최단경로_조회_요청(청소년, 교대역, 청량리역);
+
+        // then
+        최단경로_응답됨(청소년_조회_응답);
+        최단경로_요금_일치함(청소년_조회_응답, 2400);
+
+        // when
+        String 어린이 = 로그인_되어있음(어린이_아이디, 어린이_패스워드);
+        ExtractableResponse<Response> 어린이_조회_응답 = 최단경로_조회_요청(어린이, 교대역, 청량리역);
+
+        // then
+        최단경로_응답됨(어린이_조회_응답);
+        최단경로_요금_일치함(어린이_조회_응답, 1500);
+    }
+
     public static void 최단경로_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
@@ -274,6 +311,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 최단경로_조회_요청(StationResponse sourceStation, StationResponse targetStation) {
         return RestAssured
                 .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .param("source", sourceStation.getId())
+                .param("target", targetStation.getId())
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 최단경로_조회_요청(String accessToken, StationResponse sourceStation, StationResponse targetStation) {
+        return RestAssured
+                .given().log().all()
+                .auth()
+                .oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .param("source", sourceStation.getId())
                 .param("target", targetStation.getId())
