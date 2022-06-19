@@ -59,13 +59,13 @@ public class Sections {
 
     private void addBeforeExistingSection(Section section) {
         findSectionWithCommonUpStation(section)
-                .ifPresent(it -> it.connectUpStationWith(section));
+                .ifPresent(it -> it.connectDownStationWith(section));
         sections.add(section);
     }
 
     private void addAfterExistingSection(Section section) {
         findSectionWithCommonDownStation(section)
-                .ifPresent(it -> it.connectDownStationWith(section));
+                .ifPresent(it -> it.connectUpStationWith(section));
         sections.add(section);
     }
 
