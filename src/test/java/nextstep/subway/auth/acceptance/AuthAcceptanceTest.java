@@ -83,7 +83,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private static void 로그인_실패(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private static void 인증에_실패함(ExtractableResponse<Response> response) {
