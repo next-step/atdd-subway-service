@@ -1,10 +1,11 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.*;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Section {
@@ -37,6 +38,13 @@ public class Section {
         this.distance = new Distance(distance);
     }
 
+    public static Section merge(Line line, Section sectionContainUpStation, Section sectionContainDownStation) {
+        Station newUpStation = sectionContainUpStation.getUpStation();
+        Station newDownStation = sectionContainDownStation.getDownStation();
+        Distance newDistance = Distance.sum(sectionContainUpStation.getDistance(), sectionContainDownStation.getDistance());
+        return new Section(line, newUpStation, newDownStation, newDistance.getValue());
+    }
+
     public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
         this.distance.minus(newDistance);
@@ -51,8 +59,8 @@ public class Section {
         return getSectionStations().contains(station);
     }
 
-    private List<Station> getSectionStations() {
-        return Arrays.asList(upStation, downStation);
+    private Stations getSectionStations() {
+        return new Stations(Arrays.asList(upStation, downStation));
     }
 
     public boolean isSameUpStation(Station station) {
@@ -81,6 +89,19 @@ public class Section {
 
     public Distance getDistance() {
         return distance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Section section = (Section) o;
+        return Objects.equals(id, section.id) && Objects.equals(line, section.line) && Objects.equals(upStation, section.upStation) && Objects.equals(downStation, section.downStation) && Objects.equals(distance, section.distance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, line, upStation, downStation, distance);
     }
 
 }

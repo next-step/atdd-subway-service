@@ -3,17 +3,12 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class SectionsTest {
 
@@ -24,29 +19,20 @@ class SectionsTest {
     private final static Station 오금역 = new Station("오금역");
     private final static Station 송파역 = new Station("송파역");
 
-    @ParameterizedTest
-    @MethodSource("정렬된_역_반환_파라미터")
-    void 정렬된_역_반환(Station A, Station B, Station C) {
+    @Test
+    void 정렬된_역_반환() {
         // given
         Sections sections = new Sections();
-        Section section1 = new Section(신분당선, A, B, 5);
-        Section section2 = new Section(신분당선, B, C, 5);
+        Section section1 = new Section(신분당선, 신논현역, 강남역, 5);
+        Section section2 = new Section(신분당선, 강남역, 양재역, 3);
         sections.add(section1);
         sections.add(section2);
 
         // when
-        List<Station> actual = sections.getStationsInOrder();
+        List<Station> actual = sections.getStations();
 
         // then
-        assertThat(actual).containsExactly(A, B, C);
-    }
-
-    private static Stream<Arguments> 정렬된_역_반환_파라미터() {
-        return Stream.of(
-                arguments(신논현역, 강남역, 양재역),
-                arguments(강남역, 신논현역, 양재역),
-                arguments(양재역, 강남역, 신논현역)
-        );
+        assertThat(actual).containsExactly(신논현역, 강남역, 양재역);
     }
 
     @Test
@@ -63,7 +49,7 @@ class SectionsTest {
         // then
         assertAll(
                 () -> assertThat(section1.getDistance()).isEqualTo(new Distance(2)),
-                () -> assertThat(sections.getStationsInOrder()).containsExactly(신논현역, 강남역, 양재역)
+                () -> assertThat(sections.getStations()).containsExactly(신논현역, 강남역, 양재역)
         );
     }
 
@@ -79,7 +65,7 @@ class SectionsTest {
         sections.add(section2);
 
         // then
-        assertThat(sections.getStationsInOrder()).containsExactly(신논현역, 강남역, 양재역);
+        assertThat(sections.getStations()).containsExactly(신논현역, 강남역, 양재역);
     }
 
 
@@ -141,7 +127,7 @@ class SectionsTest {
 
         // then
         assertAll(
-                () -> assertThat(sections.getStationsInOrder()).containsExactly(신논현역, 강남역),
+                () -> assertThat(sections.getStations()).containsExactly(신논현역, 강남역),
                 () -> assertThat(sections.getSections()).hasSize(1)
         );
     }
@@ -160,7 +146,7 @@ class SectionsTest {
 
         // then
         assertAll(
-                () -> assertThat(sections.getStationsInOrder()).containsExactly(신논현역, 양재역),
+                () -> assertThat(sections.getStations()).containsExactly(신논현역, 양재역),
                 () -> assertThat(sections.getSections()).hasSize(1)
         );
     }
