@@ -90,7 +90,7 @@ public class Line extends BaseEntity {
 
     private void addSections(Station upStation, Station downStation, int distance, Stations stations, boolean isUpStationExisted, boolean isDownStationExisted) {
         if (stations.isEmpty()) {
-            sections.add(new Section(this, upStation, downStation, distance));
+            addSection(upStation, downStation, distance);
             return;
         }
 
@@ -100,15 +100,19 @@ public class Line extends BaseEntity {
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(downStation, distance));
 
-            sections.add(new Section(this, upStation, downStation, distance));
+            addSection(upStation, downStation, distance);
         } else if (isDownStationExisted) {
             sections.stream()
                     .filter(it -> it.getDownStation() == downStation)
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(upStation, distance));
 
-            sections.add(new Section(this, upStation, downStation, distance));
+            addSection(upStation, downStation, distance);
         }
+    }
+
+    private void addSection(Station upStation, Station downStation, int distance) {
+        sections.add(new Section(this, upStation, downStation, distance));
     }
 
     private List<Station> findStations() {
@@ -148,5 +152,24 @@ public class Line extends BaseEntity {
         }
 
         return downStation;
+    }
+
+    public void removeLineStation(Station station) {
+        Optional<Section> upLineStation = sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            addSection(newUpStation, newDownStation, newDistance);
+        }
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
     }
 }
