@@ -146,11 +146,11 @@ public class Sections {
     public void removeLineStation(Line line, Station station) {
         validateSectionRemovable();
 
-        Optional<Section> upSection = findSectionByUpStation(station);
-        Optional<Section> downSection = findSectionByDownStation(station);
+        Optional<Section> upSection = findSectionByDownStation(station);
+        Optional<Section> downSection = findSectionByUpStation(station);
 
         if (upSection.isPresent() && downSection.isPresent()) {
-            connectUpDownStation(line, upSection.get(), downSection.get());
+            addLineSection(line, upSection.get(), downSection.get());
         }
 
         upSection.ifPresent(it -> sections.remove(it));
@@ -163,11 +163,7 @@ public class Sections {
         }
     }
 
-    private void connectUpDownStation(Line line, Section upSection, Section downSection) {
-        Station newUpStation = downSection.getUpStation();
-        Station newDownStation = upSection.getDownStation();
-        int newDistance = upSection.getDistance() + downSection.getDistance();
-
-        sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+    private void addLineSection(Line line, Section upSection, Section downSection) {
+        sections.add(new Section(line, upSection, downSection));
     }
 }

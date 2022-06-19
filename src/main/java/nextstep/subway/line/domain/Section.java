@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Section {
@@ -32,6 +33,13 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public Section(Line line, Section upSection, Section downSection) {
+        this.line = line;
+        this.upStation = upSection.upStation;
+        this.downStation = downSection.downStation;
+        this.distance = upSection.distance + downSection.distance;
     }
 
     public Long getId() {
