@@ -11,7 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.auth.factory.AuthAcceptanceFactory.로그인_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_등록되어_있음;
+import static nextstep.subway.member.factory.MemberAcceptanceFactory.내_정보_조회_요청;
+import static nextstep.subway.member.factory.MemberAcceptanceFactory.회원_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -48,10 +49,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_실패됨(로그인_요청_결과);
     }
 
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @DisplayName("유효하지 않은 Bearer Auth 토큰으로 정보 조회 실패 테스트")
     @Test
     void myInfoWithWrongBearerAuth() {
-        // TODO 마이페이지 조회 후 검증해야함.
+        String 잘못된_토큰 = "accessToken";
+
+        ExtractableResponse<Response> 내_정보_조회_요청_결과 = 내_정보_조회_요청(잘못된_토큰);
+
+        로그인_실패됨(내_정보_조회_요청_결과);
     }
 
     void 로그인_성공됨(ExtractableResponse<Response> response) {
