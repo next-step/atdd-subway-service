@@ -25,7 +25,48 @@ public class Sections {
     }
 
     public void add(Section section) {
-        sectionList.add(section);
+        validateNewSection(section);
+
+        List<Station> stations = getStations();
+        if (stations.isEmpty()) {
+            sectionList.add(section);
+            return;
+        }
+
+        boolean isUpStationExisted = hasStation(section.getUpStation());
+        boolean isDownStationExisted = hasStation(section.getDownStation());
+
+        if (isUpStationExisted) {
+            sectionList.stream()
+                    .filter(it -> it.getUpStation() == section.getUpStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+
+            sectionList.add(section);
+        } else if (isDownStationExisted) {
+            sectionList.stream()
+                    .filter(it -> it.getDownStation() == section.getDownStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+
+            sectionList.add(section);
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    private void validateNewSection(Section section) {
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
+                stations.stream().noneMatch(it -> it == section.getDownStation())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
     }
 
     public void remove(Section section) {
@@ -54,6 +95,10 @@ public class Sections {
         }
 
         return stations;
+    }
+
+    private boolean hasStation(Station station) {
+        return getStations().stream().anyMatch(it -> it == station);
     }
 
     private Station findUpStation() {
