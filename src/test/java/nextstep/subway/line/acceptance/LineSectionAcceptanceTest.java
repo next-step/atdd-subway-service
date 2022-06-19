@@ -74,7 +74,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 광교역, 3);
 
         // then
-        지하철_노선에_지하철역_등록_실패됨(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
@@ -84,7 +84,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 양재역, 3);
 
         // then
-        지하철_노선에_지하철역_등록_실패됨(response);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
@@ -110,7 +110,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
 
         // then
-        지하철_노선에_지하철역_제외_실패됨(removeResponse);
+        assertThat(removeResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
