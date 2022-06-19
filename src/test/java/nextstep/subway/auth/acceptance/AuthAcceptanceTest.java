@@ -3,17 +3,13 @@ package nextstep.subway.auth.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.dto.TokenResponse;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.auth.factory.AuthAcceptanceFactory.로그인_요청;
+import static nextstep.subway.auth.factory.AuthAcceptanceFactory.*;
 import static nextstep.subway.member.factory.MemberAcceptanceFactory.내_정보_조회_요청;
 import static nextstep.subway.member.factory.MemberAcceptanceFactory.회원_등록되어_있음;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     private String 이메일;
@@ -57,16 +53,5 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 내_정보_조회_요청_결과 = 내_정보_조회_요청(잘못된_토큰);
 
         로그인_실패됨(내_정보_조회_요청_결과);
-    }
-
-    void 로그인_성공됨(ExtractableResponse<Response> response) {
-        Assertions.assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(TokenResponse.class).getAccessToken()).isNotNull()
-        );
-    }
-
-    void 로그인_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
