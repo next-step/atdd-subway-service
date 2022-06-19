@@ -45,6 +45,10 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    public List<Line> findAllLines() {
+        return lineRepository.findAll();
+    }
+
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
