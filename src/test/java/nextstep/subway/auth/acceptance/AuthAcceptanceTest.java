@@ -1,5 +1,6 @@
 package nextstep.subway.auth.acceptance;
 
+import static nextstep.subway.member.MemberAcceptanceTest.내_정보_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,13 +23,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     public static final String 패스워드 = "password";
     public static final int 나이 = 20;
 
-    private Long 회원_ID;
-
     @BeforeEach
     public void setUp() {
         super.setUp();
-        ExtractableResponse<Response> 회원_생성_결과 = 회원_생성을_요청(이메일, 패스워드, 나이);
-        회원_ID = 아이디_추출(회원_생성_결과);
+        회원_생성을_요청(이메일, 패스워드, 나이);
     }
 
     @DisplayName("로그인을 할 경우 액세스 토큰이 발급 된다.")
@@ -49,7 +47,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         액세스_토큰_확인(액세스_토큰);
 
         //when
-        final ExtractableResponse<Response> 내_정보 = 내_정보_요청(액세스_토큰, 회원_ID);
+        final ExtractableResponse<Response> 내_정보 = 내_정보_요청(액세스_토큰);
 
         //then
         내_정보_확인(내_정보, 이메일, 나이);
@@ -75,7 +73,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         final String 유효하지_않은_토큰 = "notvalidtoken";
 
         //when
-        final ExtractableResponse<Response> 결과 = 내_정보_요청(유효하지_않은_토큰, 회원_ID);
+        final ExtractableResponse<Response> 결과 = 내_정보_요청(유효하지_않은_토큰);
 
         //then
         내_정보_확인_실패(결과);
@@ -85,25 +83,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(accessToken).isNotBlank();
     }
 
-    private Long 아이디_추출(final ExtractableResponse<Response> response) {
+    public static Long 아이디_추출(final ExtractableResponse<Response> response) {
         return Long.valueOf(response.header("Location").substring("/members/".length()));
     }
 
-    public static ExtractableResponse<Response> 내_정보_요청(
-            final String accessToken,
-            final Long id
-    ) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .param("id", id)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
-    }
-
-    private void 내_정보_확인(final ExtractableResponse<Response> response, final String email, final int age) {
+    public static void 내_정보_확인(final ExtractableResponse<Response> response, final String email, final int age) {
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
