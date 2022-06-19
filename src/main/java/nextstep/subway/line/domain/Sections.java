@@ -12,6 +12,10 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+    }
+
     public List<Station> getStations() {
         return null;
     }
