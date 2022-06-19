@@ -1,24 +1,67 @@
 package nextstep.subway.auth.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+
+import static nextstep.subway.auth.factory.AuthAcceptanceFactory.로그인_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_등록되어_있음;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
+    private String 이메일;
+    private String 패스워드;
+    private int 나이;
 
-    @DisplayName("Bearer Auth")
-    @Test
-    void myInfoWithBearerAuth() {
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+
+        이메일 = "14km@github.com";
+        패스워드 = "a1s2d3f4!@#$";
+        나이 = 20;
+
+        회원_등록되어_있음(이메일, 패스워드, 나이);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
     @Test
+    @DisplayName("로그인 요청 정상 응답 테스트")
+    void myInfoWithBearerAuth() {
+        ExtractableResponse<Response> 로그인_요청_결과 = 로그인_요청(이메일, 패스워드);
+
+        로그인_성공됨(로그인_요청_결과);
+    }
+
+    @Test
+    @DisplayName("로그인 요청 잘못된 패스워드 실패 테스트")
     void myInfoWithBadBearerAuth() {
+        String 잘못된_패스워드 = "1234";
+
+        ExtractableResponse<Response> 로그인_요청_결과 = 로그인_요청(이메일, 잘못된_패스워드);
+
+        로그인_실패됨(로그인_요청_결과);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // TODO 마이페이지 조회 후 검증해야함.
     }
 
+    void 로그인_성공됨(ExtractableResponse<Response> response) {
+        Assertions.assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(TokenResponse.class).getAccessToken()).isNotNull()
+        );
+    }
+
+    void 로그인_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }
