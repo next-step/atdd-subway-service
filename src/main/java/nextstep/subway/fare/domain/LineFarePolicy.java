@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class LineFarePolicy {
     public Fare calculate(List<Line> lines) {
-        return lines.stream().map(Line::getExtraFare).max(Fare::compareTo).orElseThrow(RuntimeException::new);
+        return lines.stream()
+                .map(Line::getExtraFare)
+                .max(Fare::compareTo)
+                .orElseThrow(RuntimeException::new);
     }
 }
