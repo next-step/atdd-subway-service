@@ -21,7 +21,7 @@ public class Sections {
     public static Sections create() {
         return new Sections();
     }
-    
+
     public void addSection(Section section) {
         values.add(section);
     }
@@ -54,7 +54,6 @@ public class Sections {
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
     }
-
 
     public List<Station> orderBySection() {
         List<Station> stations = new ArrayList<>();
@@ -119,11 +118,7 @@ public class Sections {
     public boolean isEmpty() {
         return this.values.isEmpty();
     }
-
-    public List<Section> getValues() {
-        return values;
-    }
-
+    
     public void remove(Section section) {
         if (values.size() <= 1) {
             throw new IllegalArgumentException("라인에서 역을 제거할 수 없습니다.");
