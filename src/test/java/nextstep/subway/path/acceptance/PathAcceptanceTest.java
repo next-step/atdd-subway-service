@@ -78,10 +78,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void 지하철_경로_탐색_정상_시나리오() {
         ExtractableResponse<Response> 교대역_양재역_조회 = 최단경로_조회_요청(교대역, 양재역);
         최단경로_조회됨(교대역_양재역_조회);
+        최단경로_거리_조회됨(교대역_양재역_조회, 5);
+        최단경로_요금_조회됨(교대역_양재역_조회, 1250);
         최단경로_결과_정렬됨(교대역_양재역_조회, Arrays.asList(교대역, 남부터미널역, 양재역));
 
         ExtractableResponse<Response> 강남역_남부터미널역_조회 = 최단경로_조회_요청(강남역, 남부터미널역);
         최단경로_조회됨(강남역_남부터미널역_조회);
+        최단경로_거리_조회됨(강남역_남부터미널역_조회, 12);
+        최단경로_요금_조회됨(강남역_남부터미널역_조회, 1350);
         최단경로_결과_정렬됨(강남역_남부터미널역_조회, Arrays.asList(강남역, 양재역, 남부터미널역));
     }
 
@@ -142,6 +146,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+    }
+
+    private void 최단경로_거리_조회됨(ExtractableResponse<Response> response, int distance) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getDistance()).isEqualTo(distance);
+    }
+
+    private void 최단경로_요금_조회됨(ExtractableResponse<Response> response, int fare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 
     private static void 최단경로_조회_실패됨(ExtractableResponse<Response> response) {
