@@ -18,6 +18,15 @@ public class Sections {
     }
 
     public void add(Section section) {
+        if (sections.isEmpty()) {
+            addSection(section);
+            return;
+        }
+
+        sections.add(section);
+    }
+
+    private void addSection(Section section) {
         sections.add(section);
     }
 
@@ -55,7 +64,7 @@ public class Sections {
 
     private Station findUpStation() {
         List<Station> upStations = this.sections.stream()
-                .map(Section::getDownStation)
+                .map(Section::getUpStation)
                 .collect(Collectors.toList());
 
         return upStations.stream()
