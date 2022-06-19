@@ -76,7 +76,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 토큰_확인_요청("잘못된_토큰");
 
         //then
-        응답결과_확인(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        응답결과_확인(response, HttpStatus.UNAUTHORIZED);
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
