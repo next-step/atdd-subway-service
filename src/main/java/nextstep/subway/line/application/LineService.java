@@ -38,7 +38,7 @@ public class LineService {
     public List<LineResponse> findLines() {
         return lineRepository.findAll()
                 .stream()
-                .map(LineResponse::of)
+                .map(LineResponse::from)
                 .collect(Collectors.toList());
     }
 
@@ -50,7 +50,7 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
-        return LineResponse.of(findLineById(id));
+        return LineResponse.from(findLineById(id));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {

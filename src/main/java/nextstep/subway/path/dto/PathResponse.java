@@ -21,7 +21,7 @@ public class PathResponse {
 
     private List<StationResponse> mapToStationResponse(List<Station> stations) {
         return stations.stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(toList());
     }
 
