@@ -3,10 +3,15 @@ package nextstep.subway.favorite.dto;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.station.dto.StationResponse;
 
+import java.util.Objects;
+
 public class FavoriteResponse {
     private Long id;
     private StationResponse source;
     private StationResponse target;
+
+    protected FavoriteResponse() {
+    }
 
     public FavoriteResponse(Long id, StationResponse source, StationResponse target) {
         this.id = id;
@@ -31,5 +36,29 @@ public class FavoriteResponse {
 
     public StationResponse getTarget() {
         return target;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FavoriteResponse that = (FavoriteResponse) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(source, that.source) &&
+                Objects.equals(target, that.target);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, source, target);
+    }
+
+    @Override
+    public String toString() {
+        return "FavoriteResponse{" +
+                "id=" + id +
+                ", source=" + source +
+                ", target=" + target +
+                '}';
     }
 }
