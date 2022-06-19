@@ -10,10 +10,14 @@ public class Fare {
     private int value;
 
     private Fare(Path path) {
-        this.value = calculateOverFare(path.getDistance()) + calculateLineFare(path.getSections());
+        value = calculateDistanceFare(path.getDistance()) + calculateLineFare(path.getSections());
     }
 
-    private int calculateOverFare(int distance) {
+    public static Fare from(Path path) {
+        return new Fare(path);
+    }
+
+    private int calculateDistanceFare(int distance) {
         FareDistanceType distanceType = FareDistanceType.typeOf(distance);
         return distanceType.calculateFare(distance);
     }
@@ -27,10 +31,6 @@ public class Fare {
                 .map(line -> line.getAdditionalFare())
                 .max(Integer::compareTo)
                 .orElseThrow(IllegalArgumentException::new);
-    }
-
-    public static Fare from(Path path) {
-        return new Fare(path);
     }
 
     public int getValue() {
