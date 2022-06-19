@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.auth.application.AuthorizationException;
@@ -41,8 +42,12 @@ public class FavoriteService {
     @Transactional
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
         Member member = this.memberService.findMemberById(loginMember.getId());
-        Station sourceStation = this.stationService.findStationById(favoriteRequest.getSource());
-        Station targetStation = this.stationService.findStationById(favoriteRequest.getTarget());
+
+        List<Station> stations = this.stationService.findAllStationsById(
+            Arrays.asList(favoriteRequest.getSource(), favoriteRequest.getTarget()));
+
+        Station sourceStation = findStationInList(stations, favoriteRequest.getSource());
+        Station targetStation = findStationInList(stations, favoriteRequest.getTarget());
 
         Favorite favorite = new Favorite(member, sourceStation, targetStation);
         favoriteRepository.save(favorite);
@@ -63,6 +68,12 @@ public class FavoriteService {
     public Favorite findFavoriteById(Long id) {
         return this.favoriteRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("즐겨찾기가 존재하지 않습니다."));
+    }
+
+    private Station findStationInList(List<Station> stations, Long id) {
+        return stations.stream()
+            .filter(station -> station.getId().equals(id))
+            .findFirst().orElseThrow(() -> new IllegalArgumentException("지하철역이 존재하지 않습니다."));
     }
 
 }

@@ -5,13 +5,12 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class StationPathGraph extends WeightedMultigraph<Station, DefaultWeightedEdge> {
+public class StationPathGraph extends WeightedMultigraph<Station, SectionEdge> {
 
     public StationPathGraph(List<Line> lines) {
-        super(DefaultWeightedEdge.class);
+        super(SectionEdge.class);
         lines.forEach(this::addLine);
     }
 
@@ -29,7 +28,10 @@ public class StationPathGraph extends WeightedMultigraph<Station, DefaultWeighte
     }
 
     private void addEdgeWeight(Section section) {
-        setEdgeWeight(addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().getValue());
+        SectionEdge sectionEdge = addEdge(section.getUpStation(), section.getDownStation());
+        sectionEdge.addSection(section);
+
+        setEdgeWeight(sectionEdge, section.getDistance().getValue());
     }
 
 }

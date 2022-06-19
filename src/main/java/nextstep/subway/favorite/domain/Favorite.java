@@ -6,13 +6,16 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 @Entity
+@Table(indexes = @Index(name = "idx_member_id", columnList = "member_id"))
 public class Favorite extends BaseEntity {
 
     @Id
