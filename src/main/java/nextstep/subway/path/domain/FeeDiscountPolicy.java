@@ -13,8 +13,8 @@ public class FeeDiscountPolicy {
     private static final int MAX_TEEN_AGE = 18;
 
     private int fee;
-    
-    protected FeeDiscountPolicy(int beforeDiscountFee, int age) {
+
+    public FeeDiscountPolicy(int beforeDiscountFee, int age) {
         this.fee = calculateDiscountFee(beforeDiscountFee, age);
     }
 
