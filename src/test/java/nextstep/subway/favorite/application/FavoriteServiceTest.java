@@ -55,4 +55,13 @@ class FavoriteServiceTest {
         // then
         assertThat(result).hasSize(2);
     }
+
+    @Test
+    void 즐겨찾기를_삭제한다() {
+        // when
+        favoriteService.deleteFavorite(member.getId(), 1L);
+
+        // then
+        assertThat(favoriteService.findFavorites(member.getId())).hasSize(1);
+    }
 }
