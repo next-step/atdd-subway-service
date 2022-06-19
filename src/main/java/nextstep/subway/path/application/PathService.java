@@ -1,28 +1,40 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.PathResponse;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
 
 @Service
 public class PathService {
-    private final StationService stationService;
-    private final LineService lineService;
+    private final StationRepository stationRepository;
+    private final LineRepository lineRepository;
     private final PathFinder pathFinder;
 
-    public PathService(StationService stationService, LineService lineService, PathFinder pathFinder) {
-        this.stationService = stationService;
+    public PathService(StationRepository stationRepository, LineRepository lineRepository, PathFinder pathFinder) {
+        this.stationRepository = stationRepository;
+        this.lineRepository = lineRepository;
         this.pathFinder = pathFinder;
-        this.lineService = lineService;
     }
 
     public PathResponse get(long sourceStationId, long targetStationId) {
-        Station source = stationService.findStationById(sourceStationId);
-        Station target = stationService.findStationById(targetStationId);
-        return pathFinder.getShortestPath(new PathRequest(lineService.findLines(), source, target));
+        Station source = findStationById(sourceStationId);
+        Station target = findStationById(targetStationId);
+        return pathFinder.getShortestPath(new PathRequest(findLines(), source, target));
     }
+
+    private Station findStationById(long stationId) {
+        return stationRepository.findById(stationId).orElseThrow(NoSuchElementException::new);
+    }
+
+    private Lines findLines() {
+        return new Lines(lineRepository.findAll());
+    }
+
 }

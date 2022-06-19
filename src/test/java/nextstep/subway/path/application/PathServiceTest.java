@@ -1,16 +1,18 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.PathResponse;
 import nextstep.subway.path.domain.PathFinder;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Collections;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,18 +23,18 @@ class PathServiceTest {
     @Mock
     private PathFinder pathFinder;
     @Mock
-    private StationService stationService;
+    private StationRepository stationRepository;
     @Mock
-    private LineService lineService;
+    private LineRepository lineRepository;
     @InjectMocks
     private PathService pathService;
 
     @Test
     void 최단_경로를_찾을_수_있다() {
         //given
-        given(stationService.findStationById(1L)).willReturn(new Station("강남역"));
-        given(stationService.findStationById(2L)).willReturn(new Station("양재역"));
-        given(lineService.findLines()).willReturn(new Lines());
+        given(stationRepository.findById(1L)).willReturn(Optional.of(new Station("강남역")));
+        given(stationRepository.findById(2L)).willReturn(Optional.of(new Station("양재역")));
+        given(lineRepository.findAll()).willReturn(Collections.emptyList());
         given(pathFinder.getShortestPath(any())).willReturn(new PathResponse());
 
         //when

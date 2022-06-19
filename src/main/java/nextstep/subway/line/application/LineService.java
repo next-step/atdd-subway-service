@@ -6,13 +6,14 @@ import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -20,21 +21,25 @@ import java.util.stream.StreamSupport;
 @Transactional
 public class LineService {
     private LineRepository lineRepository;
-    private StationService stationService;
+    private StationRepository stationService;
 
-    public LineService(LineRepository lineRepository, StationService stationService) {
+    public LineService(LineRepository lineRepository, StationRepository stationService) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = findStationById(request.getUpStationId());
+        Station downStation = findStationById(request.getDownStationId());
         Line persistLine = lineRepository.save(
                 new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         List<StationResponse> stations =
                 persistLine.getStations().stream().map(StationResponse::of).collect(Collectors.toList());
         return LineResponse.of(persistLine, stations);
+    }
+
+    private Station findStationById(long stationId) {
+        return stationService.findById(stationId).orElseThrow(NoSuchElementException::new);
     }
 
     public List<LineResponse> findAllLineResponse() {
@@ -72,14 +77,14 @@ public class LineService {
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Station upStation = findStationById(request.getUpStationId());
+        Station downStation = findStationById(request.getDownStationId());
         line.addLineStation(upStation, downStation, request.getDistance());
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
+        Station station = findStationById(stationId);
         line.removeLineStation(station);
     }
 }
