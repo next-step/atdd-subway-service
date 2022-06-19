@@ -70,7 +70,31 @@ public class Sections {
         }
     }
 
-    public void remove(Section section) {
+    public void removeSectionByStation(Station station) {
+        if (sectionList.size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = sectionList.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = sectionList.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        upLineStation.ifPresent(it -> remove(it));
+        downLineStation.ifPresent(it -> remove(it));
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            Line line = upLineStation.get().getLine();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+    }
+
+    private void remove(Section section) {
         sectionList.remove(section);
     }
 
