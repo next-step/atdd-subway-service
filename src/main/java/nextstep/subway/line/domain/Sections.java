@@ -8,9 +8,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Embeddable
 public class Sections {
@@ -62,11 +60,11 @@ public class Sections {
     }
 
     public List<Station> getOrderdStations() {
-        List<Station> stations = new ArrayList<>();
         if (getSections().isEmpty()) {
-            return stations;
+            return Collections.emptyList();
         }
 
+        List<Station> stations = new ArrayList<>();
         Station station = getFirstStation();
         stations.add(station);
 
