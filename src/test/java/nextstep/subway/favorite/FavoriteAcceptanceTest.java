@@ -66,6 +66,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_목록을_조회한다() {
+        // when
+        ExtractableResponse<Response> 즐겨찾기_목록_조회_응답 = 즐겨찾기_목록_조회_요청(사용자);
+
+        // then
+        즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_응답);
     }
 
     private void 즐겨찾기를_삭제한다() {
@@ -88,5 +93,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
