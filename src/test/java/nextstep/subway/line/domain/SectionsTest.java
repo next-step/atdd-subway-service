@@ -15,7 +15,6 @@ class SectionsTest {
     int 강남역에서_양재역_거리;
     Section 강남역에서_양재역;
 
-
     @BeforeEach
     void setUp() {
         신분당선 = new Line("신분당선", "bg-red-300");

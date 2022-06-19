@@ -57,8 +57,9 @@ public class Sections {
 
     private void validateNewSection(Section section) {
         List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+        boolean isUpStationExisted = hasStation(section.getUpStation());
+        boolean isDownStationExisted = hasStation(section.getDownStation());
+
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
