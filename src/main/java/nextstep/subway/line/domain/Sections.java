@@ -50,7 +50,7 @@ public class Sections {
 
     private Station nextStation(Station station) {
         return this.sectionElements.stream()
-                .filter((section -> section.getUpStation().equals(station)))
+                .filter((section -> section.isUpStation(station)))
                 .findFirst()
                 .map(Section::getDownStation)
                 .orElse(null);
@@ -97,15 +97,16 @@ public class Sections {
 
     private void upStationExistedAddSection(Section section) {
         sectionElements.stream()
-                .filter(it -> it.getUpStation().equals(section.getUpStation()))
+                .filter(it -> it.isUpStation(section.getUpStation()))
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+
         sectionElements.add(section);
     }
 
     private void downStationExistedAddSection(Section section) {
         sectionElements.stream()
-                .filter(it -> it.getDownStation().equals(section.getDownStation()) )
+                .filter(it -> it.isDownStation(section.getDownStation()))
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
 
@@ -114,10 +115,10 @@ public class Sections {
 
 
     private void existUpAndDownStationAddSectionValid(Section section) {
-        final boolean isValid = getStations().stream()
-                .anyMatch((station ->
-                        station.equals(section.getUpStation()) || station.equals(section.getDownStation()))
-                );
+        final boolean isValid = getStations()
+                .stream()
+                .anyMatch(section::isContainStation);
+
         if (!isValid) {
             throw new IllegalArgumentException("등록 할수 없는 구간입니다.");
         }
