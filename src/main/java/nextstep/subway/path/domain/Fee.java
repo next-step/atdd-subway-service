@@ -1,6 +1,8 @@
 package nextstep.subway.path.domain;
 
 import java.util.Objects;
+import java.util.Set;
+import nextstep.subway.line.domain.Line;
 
 public class Fee {
     private static final int FIRST_SECTION_EXTRA_STANDARD = 10;
@@ -23,6 +25,14 @@ public class Fee {
         return new Fee(fee);
     }
 
+    public static Fee of(int distance, Set<Line> lines) {
+        int fee = DEFAULT_FEE;
+        fee += calculateOverFirstSection(Math.min(distance, SECOND_SECTION_EXTRA_STANDARD));
+        fee += calculateOverSecondSection(distance);
+        fee += calculateLineExtraCharge(lines);
+        return new Fee(fee);
+    }
+
     private static int calculateOverFirstSection(int distance) {
         return calculateExtraCharge(distance, FIRST_SECTION_EXTRA_STANDARD, FIRST_SECTION_DISTANCE_STANDARD);
     }
@@ -37,6 +47,14 @@ public class Fee {
         }
         distance -= extraStandard;
         return (int) (Math.ceil((distance - 1) / distanceStandard) + 1) * EXTRA_CHARGE;
+    }
+
+    private static int calculateLineExtraCharge(Set<Line> lines) {
+        int extraCharge = 0;
+        for (Line line : lines) {
+            extraCharge = Math.max(extraCharge, line.getExtraCharge());
+        }
+        return extraCharge;
     }
 
     public int getFee() {

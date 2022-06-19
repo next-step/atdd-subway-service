@@ -2,6 +2,9 @@ package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import nextstep.subway.line.domain.Line;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,5 +34,13 @@ class FeeTest {
     @CsvSource(value = {"51:2150", "58:2150", "59:2250"}, delimiter = ':')
     void calculateFeeOfSecondSectionDistance(int distance, int expectedFee) {
         assertThat(Fee.of(distance).getFee()).isEqualTo(expectedFee);
+    }
+
+    @Test
+    @DisplayName("추가요금을 가지고 있는 노선이 포함된 가장 큰 추가요금이 포함되는지 검증")
+    void calculateFeeOfMaxLineExtraCharge() {
+        Line 신분당선 = new Line("신분당선", "빨간색", 1000);
+        Line 이호선 = new Line("이호선", "초록색", 0);
+        assertThat(Fee.of(10, new HashSet<>(Arrays.asList(신분당선, 이호선))).getFee()).isEqualTo(2250);
     }
 }

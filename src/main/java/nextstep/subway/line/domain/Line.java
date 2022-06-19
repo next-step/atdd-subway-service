@@ -59,6 +59,10 @@ public class Line extends BaseEntity {
         return this.sections;
     }
 
+    public int getExtraCharge() {
+        return this.extraCharge;
+    }
+
     public void addSection(Section section) {
         if (this.sections.isEmpty()) {
             this.sections.initSection(section);
