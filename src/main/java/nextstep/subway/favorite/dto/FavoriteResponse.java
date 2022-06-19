@@ -15,11 +15,11 @@ public class FavoriteResponse {
         this.target = target;
     }
 
-    public static FavoriteResponse of(Favorite favoriteResult) {
-        StationResponse sourceStationResponse = StationResponse.of(favoriteResult.getSourceStation());
-        StationResponse targetStationResponse = StationResponse.of(favoriteResult.getTargetStation());
+    public static FavoriteResponse of(Favorite favorite) {
+        StationResponse sourceStationResponse = StationResponse.of(favorite.getSourceStation());
+        StationResponse targetStationResponse = StationResponse.of(favorite.getTargetStation());
 
-        return new FavoriteResponse(favoriteResult.getId(), sourceStationResponse, targetStationResponse);
+        return new FavoriteResponse(favorite.getId(), sourceStationResponse, targetStationResponse);
     }
 
     public Long getId() {
