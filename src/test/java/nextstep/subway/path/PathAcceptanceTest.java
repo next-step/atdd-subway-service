@@ -8,7 +8,9 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -80,12 +82,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("역과 역사이의 최단거리 조회 테스트")
     void findShortDistance() {
-        //3호선이 출력되어야 함
+        //when
         ExtractableResponse<Response> response = 출발역_도착역_최단거리_조회(교대역.getId(), 양재역.getId());
-        System.out.println("-=----------------------");
-        System.out.println(response.jsonPath());
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        //then
+        출발역_도착역_최단거리_비교하기(response.as(PathResponse.class).getStations(), Arrays.asList(교대역, 남부터미널역, 양재역));
+    }
+
+    private void 출발역_도착역_최단거리_비교하기(List<StationResponse> stations, List<StationResponse> expectedStations) {
+        List<Long> stationIds = stations.stream()
+                .map(it -> it.getId())
+                .collect(Collectors.toList());
+
+        List<Long> expectedStationIds = expectedStations.stream()
+                .map(it -> it.getId())
+                .collect(Collectors.toList());
+
+        assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
