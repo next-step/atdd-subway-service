@@ -34,7 +34,7 @@ public class MemberService {
         member.update(param.toMember());
     }
 
-    private Member findById(Long id) {
+    public Member findById(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("멤버를 찾을 수 없습니다."));
     }
