@@ -1,8 +1,11 @@
 package nextstep.subway.path.acceptance;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static nextstep.subway.utils.AuthPrefixHelper.addAuthPrefix;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -16,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -23,6 +28,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -30,6 +36,7 @@ import org.springframework.http.MediaType;
 class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선, 이호선, 삼호선, 일호선;
     private StationResponse 강남역, 양재역, 교대역, 남부터미널역, 용산역, 서울역, 없는역;
+    private TokenResponse 청소년, 어린이, 성인;
 
     /**
      * 교대역    --- *2호선* ---   강남역         서울역 --- *1호선* --- 용산역
@@ -56,6 +63,14 @@ class PathAcceptanceTest extends AcceptanceTest {
         일호선 = 지하철_노선_등록되어_있음(new LineRequest("일호선", "bg-blue-100", 서울역.getId(), 용산역.getId(), 7)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+
+        회원_생성을_요청("teen@teen.com", "teen", 13);
+        회원_생성을_요청("child@child.com", "child", 6);
+        회원_생성을_요청("adult@adult.com", "adult", 20);
+
+        청소년 = 로그인_요청(new TokenRequest("teen@teen.com", "teen")).as(TokenResponse.class);
+        어린이 = 로그인_요청(new TokenRequest("child@child.com", "child")).as(TokenResponse.class);
+        성인 = 로그인_요청(new TokenRequest("adult@adult.com", "adult")).as(TokenResponse.class);
     }
 
     /**
@@ -67,7 +82,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("정상적인 출발, 도착역을 경로조회하면 최단거리 및 지하철 요금을 알려준다.")
     void searchShortestPathAndFee() {
         // when
-        ExtractableResponse<Response> 지하철_경로_조회_요청_결과 = 지하철_경로_조회_요청(강남역, 남부터미널역);
+        ExtractableResponse<Response> 지하철_경로_조회_요청_결과 = 지하철_경로_조회_요청(null, 강남역, 남부터미널역);
 
         // then
         최단_거리_및_요금_확인(지하철_경로_조회_요청_결과, 12, Arrays.asList(강남역, 양재역, 남부터미널역), 1350);
@@ -83,11 +98,16 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인한 사용자가 정상적인 출발, 도착역을 경로조회하면 최단거리 및 정책에 맞는 지하철 요금을 알려준다.")
     void searchShortestPathAndPolicyFee() {
         // when
-        ExtractableResponse<Response> 지하철_경로_조회_요청_결과 = 지하철_경로_조회_요청(강남역, 남부터미널역);
+        ExtractableResponse<Response> 청소년_지하철_경로_조회_요청_결과 = 지하철_경로_조회_요청(청소년, 강남역, 남부터미널역);
+        ExtractableResponse<Response> 어린이_지하철_경로_조회_요청_결과 = 지하철_경로_조회_요청(어린이, 강남역, 남부터미널역);
+        ExtractableResponse<Response> 성인_지하철_경로_조회_요청_결과 = 지하철_경로_조회_요청(성인, 강남역, 남부터미널역);
 
-        // TODO : 로그인 정책에 맞게 수정 필요
         // then
-        최단_거리_및_요금_확인(지하철_경로_조회_요청_결과, 12, Arrays.asList(강남역, 양재역, 남부터미널역), 1350);
+        assertAll(
+                () -> 최단_거리_및_요금_확인(청소년_지하철_경로_조회_요청_결과, 12, Arrays.asList(강남역, 양재역, 남부터미널역), 800),
+                () -> 최단_거리_및_요금_확인(어린이_지하철_경로_조회_요청_결과, 12, Arrays.asList(강남역, 양재역, 남부터미널역), 500),
+                () -> 최단_거리_및_요금_확인(성인_지하철_경로_조회_요청_결과, 12, Arrays.asList(강남역, 양재역, 남부터미널역), 1350)
+        );
     }
 
     /**
@@ -99,7 +119,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("연결되어 있지 않은 출발, 도착역은 경로조회 할 수 없다.")
     void searchNotLinkedPath() {
         // when
-        ExtractableResponse<Response> 올바르지_않은_지하철_경로_조회_결과 = 지하철_경로_조회_요청(강남역, 서울역);
+        ExtractableResponse<Response> 올바르지_않은_지하철_경로_조회_결과 = 지하철_경로_조회_요청(null, 강남역, 서울역);
 
         // then
         경로_조회_결과_실패(올바르지_않은_지하철_경로_조회_결과);
@@ -114,7 +134,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발, 도착역이 동일하면 경로조회 할 수 없다.")
     void searchSameStationPath() {
         // when
-        ExtractableResponse<Response> 동일한_지하철_경로_조회_결과 = 지하철_경로_조회_요청(강남역, 강남역);
+        ExtractableResponse<Response> 동일한_지하철_경로_조회_결과 = 지하철_경로_조회_요청(null, 강남역, 강남역);
 
         // then
         경로_조회_결과_실패(동일한_지하철_경로_조회_결과);
@@ -129,19 +149,20 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 역은 경로조회 할 수 없다.")
     void searchNotExistStationPath() {
         // when
-        ExtractableResponse<Response> 없는역_지하철_경로_조회_결과 = 지하철_경로_조회_요청(없는역, 강남역);
+        ExtractableResponse<Response> 없는역_지하철_경로_조회_결과 = 지하철_경로_조회_요청(null, 없는역, 강남역);
 
         // then
         경로_조회_결과_실패(없는역_지하철_경로_조회_결과);
     }
 
-    private ExtractableResponse<Response> 지하철_경로_조회_요청(StationResponse 출발역, StationResponse 도착역) {
+    private ExtractableResponse<Response> 지하철_경로_조회_요청(TokenResponse 토큰, StationResponse 출발역, StationResponse 도착역) {
         Map<String, Long> params = new HashMap<>();
         params.put("source", 출발역.getId());
         params.put("target", 도착역.getId());
 
         return RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, addAuthPrefix(토큰))
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .params(params)
                 .when().get("/paths")

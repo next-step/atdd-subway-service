@@ -9,6 +9,9 @@ public final class AuthPrefixHelper {
     }
 
     public static String addAuthPrefix(TokenResponse tokenResponse) {
+        if (tokenResponse == null) {
+            return "";
+        }
         return PREFIX + tokenResponse.getAccessToken();
     }
 }
