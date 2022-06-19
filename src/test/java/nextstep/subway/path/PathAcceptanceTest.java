@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_등록되어_있음;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,17 +31,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 분당선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 정자역;
+    private StationResponse 청량리역;
+    private String 청소년_아이디 = "student@gmail.com";
+    private String 청소년_패스워드 = "1234";
+    private String 어린이_아이디 = "child@gmail.com";
+    private String 어린이_패스워드 = "1234";
 
     /**
      * 교대역    --- *2호선* ---   강남역
      * |                        |
      * *3호선*                   *신분당선*
      * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
+     * 남부터미널역  --- *3호선* ---   양재    --- *신분당선* ---   정자역    --- *분당선* ---   청량리역
      */
     @BeforeEach
     public void setUp() {
@@ -50,12 +58,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        정자역 = 지하철역_등록되어_있음("정자역").as(StationResponse.class);
+        청량리역 = 지하철역_등록되어_있음("청량리역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 1000)).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        분당선 = 지하철_노선_등록되어_있음(new LineRequest("분당선", "bg-yellow-600", 정자역.getId(), 청량리역.getId(), 50, 500)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+        지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 20);
+
+        회원_등록되어_있음(청소년_아이디, 청소년_패스워드, 13);
+        회원_등록되어_있음(어린이_아이디, 어린이_패스워드, 12);
     }
 
     /**
@@ -195,6 +210,38 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_응답_실패(조회_응답);
     }
 
+    /**
+     * When 교대역-양재역 경로 요금 조회
+     * Then 1250원 (거리 5)
+     * When 교대역-정자역 경로 요금 조회
+     * Then 2550원 (거리 25, 신분당선 1000원)
+     * When 교대역-청량리역 경로 요금 조회
+     * Then 3350원 (거리 75, 신분당선 1000원, 분당선 500원)
+     */
+    @Test
+    void 지하철_거리별_요금_조회() {
+        // when
+        ExtractableResponse<Response> 조회_응답 = 최단경로_조회_요청(교대역, 양재역);
+
+        // then
+        최단경로_응답됨(조회_응답);
+        최단경로_요금_일치함(조회_응답, 1250);
+
+        // when
+        ExtractableResponse<Response> 조회_응답2 = 최단경로_조회_요청(교대역, 정자역);
+
+        // then
+        최단경로_응답됨(조회_응답2);
+        최단경로_요금_일치함(조회_응답2, 2550);
+
+        // when
+        ExtractableResponse<Response> 조회_응답3 = 최단경로_조회_요청(교대역, 청량리역);
+
+        // then
+        최단경로_응답됨(조회_응답3);
+        최단경로_요금_일치함(조회_응답3, 3350);
+    }
+
     public static void 최단경로_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
@@ -217,6 +264,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static void 최단경로_거리_일치함(ExtractableResponse<Response> response, int expected) {
         PathResponse path = response.as(PathResponse.class);
         assertThat(path.getDistance()).isEqualTo(expected);
+    }
+
+    public static void 최단경로_요금_일치함(ExtractableResponse<Response> response, int expected) {
+        PathResponse path = response.as(PathResponse.class);
+        assertThat(path.getCharge()).isEqualTo(expected);
     }
 
     public static ExtractableResponse<Response> 최단경로_조회_요청(StationResponse sourceStation, StationResponse targetStation) {

@@ -15,10 +15,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.Mockito.when;
 
@@ -63,12 +63,12 @@ class PathServiceTest {
     }
 
     void stubLineService() {
-        lines = Collections.emptyList();
+        lines = emptyList();
         when(lineRepository.findAllWithSections()).thenReturn(lines);
     }
 
     void stubPathFinder() {
-        path = new Path(Arrays.asList(source, mid, target), 19, lines);
+        path = new Path(Arrays.asList(source, mid, target), 19, emptyList());
         when(pathFinder.findPath(stations, lines, source, target)).thenReturn(path);
     }
 
@@ -80,6 +80,7 @@ class PathServiceTest {
         assertSoftly(softAssertions -> {
             softAssertions.assertThat(actual.getStations()).containsExactlyElementsOf(expected.getStations());
             softAssertions.assertThat(actual.getDistance()).isEqualTo(expected.getDistance());
+            softAssertions.assertThat(actual.getCharge()).isEqualTo(expected.getCharge());
         });
     }
 }
