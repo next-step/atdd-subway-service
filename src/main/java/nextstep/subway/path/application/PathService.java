@@ -20,6 +20,6 @@ public class PathService {
     public PathResponse getPath(Long sourceId, Long targetId) {
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
-        return PathResponse.of(pathFinder.getPath(source, target));
+        return pathFinder.getPath(source, target);
     }
 }

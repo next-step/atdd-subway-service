@@ -2,8 +2,6 @@ package nextstep.subway.path.dto;
 
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,17 +10,20 @@ public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
 
+    protected PathResponse() {
+    }
+
     public PathResponse(List<StationResponse> stations, int distance) {
         this.stations = stations;
         this.distance = distance;
     }
 
-    public static PathResponse of(GraphPath<Station, DefaultWeightedEdge> path) {
+    public static PathResponse of(List<Station> stations, double weight) {
         return new PathResponse(
-                path.getVertexList().stream()
+                stations.stream()
                         .map(station -> StationResponse.of(station))
                         .collect(Collectors.toList()),
-                (int) path.getWeight());
+                (int) weight);
     }
 
     public List<StationResponse> getStations() {

@@ -1,12 +1,14 @@
-package nextstep.subway;
+package nextstep.subway.path;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,8 +68,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void 경로_조회_1() {
         ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(강남역, 남부터미널역);
 
-        assertThat(response.jsonPath().getList("stations")).hasSize(3);
-        assertThat(response.jsonPath().getInt("distance")).isEqualTo(12);
+        PathResponse path = response.as(PathResponse.class);
+        assertThat(path.getStations()).hasSize(3);
+        assertThat(path.getDistance()).isEqualTo(12);
     }
 
     /**
@@ -82,8 +85,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(강남역, 남부터미널역);
 
-        assertThat(response.jsonPath().getList("stations")).hasSize(3);
-        assertThat(response.jsonPath().getInt("distance")).isEqualTo(12);
+        PathResponse path = response.as(PathResponse.class);
+        assertThat(path.getStations()).hasSize(3);
+        assertThat(path.getDistance()).isEqualTo(12);
     }
 
     private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
