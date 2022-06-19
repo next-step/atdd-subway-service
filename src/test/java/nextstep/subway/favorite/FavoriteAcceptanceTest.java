@@ -1,22 +1,18 @@
 package nextstep.subway.favorite;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import static nextstep.subway.auth.factory.AuthAcceptanceFactory.로그인_되어_있음;
+import static nextstep.subway.favorite.factory.FavoriteAcceptanceFactory.*;
 import static nextstep.subway.member.factory.MemberAcceptanceFactory.회원_생성을_요청;
 import static nextstep.subway.path.factory.PathAcceptanceFactory.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -46,31 +42,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         사용자_토큰 = 로그인_되어_있음(이메일, 패스워드);
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_추가(String accessToken, Long source, Long target) {
-        FavoriteRequest favoriteRequest = FavoriteRequest.of(source, target);
+    @Test
+    @DisplayName("즐겨찾기 신규 추가 성공 테스트")
+    void createFavorites() {
+        ExtractableResponse<Response> 즐겨찾기_추가_결과 = 즐겨찾기_추가(사용자_토큰, 역삼역, 교대역);
 
-        return RestAssured
-                .given().log().all()
-                .body(favoriteRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(accessToken)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
-    }
-
-    public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        즐겨찾기_생성됨(즐겨찾기_추가_결과);
     }
 
     @Test
-    @DisplayName("즐겨찾기 신규 추가")
-    void createFavorites() {
-        Long 역삼역_ID = 역삼역.getId();
-        Long 교대역_ID = 교대역.getId();
-
-        ExtractableResponse<Response> 즐겨찾기_추가_결과 = 즐겨찾기_추가(사용자_토큰, 역삼역_ID, 교대역_ID);
+    @DisplayName("즐겨찾기 조회 성공 테스트")
+    void findFavorites() {
+        ExtractableResponse<Response> 즐겨찾기_추가_결과 = 즐겨찾기_추가(사용자_토큰, 역삼역, 교대역);
 
         즐겨찾기_생성됨(즐겨찾기_추가_결과);
+
+        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_조회(사용자_토큰);
+
+        즐겨찾기_조회됨(즐겨찾기_조회_결과);
     }
 }
