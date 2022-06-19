@@ -26,14 +26,6 @@ public class Fare {
         return Discount.of(age).calculate(fare);
     }
 
-    private static int calculateOverFareAbove50(int distance) {
-        if (distance <= 50) {
-            return 0;
-        }
-        distance = distance - 50;
-        return (int) ((Math.ceil((distance - 1) / 8) + 1) * 100);
-    }
-
     public int toInt() {
         return fare;
     }
