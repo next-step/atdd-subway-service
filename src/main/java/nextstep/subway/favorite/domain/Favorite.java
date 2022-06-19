@@ -53,4 +53,8 @@ public class Favorite {
     public Station getTarget() {
         return target;
     }
+
+    public boolean isOwnedBy(Member member) {
+        return this.member.equals(member);
+    }
 }

@@ -68,7 +68,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * When 즐겨찾기 삭제 요청
      * Then 즐겨찾기 삭제됨
      */
-    @DisplayName("")
+    @DisplayName("즐겨찾기를 관리한다.")
     @Test
     void manageFavorite() {
         // when
