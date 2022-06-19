@@ -96,7 +96,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     private void 나의_정보를_수정한다() {
+        // given
+        ExtractableResponse<Response> 로그인_정보 = 로그인_요청(EMAIL, PASSWORD);
 
+        // when
+        ExtractableResponse<Response> 나의_정보_수정_응답 = 나의_정보_수정_요청(로그인_정보, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        // then
+        나의_정보_수정됨(나의_정보_수정_응답);
     }
 
     private void 나의_정보를_삭제한다() {
@@ -183,5 +190,24 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .when().get("/members/me")
                 .then().log().all()
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 나의_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, int age) {
+        TokenResponse tokenResponse = response.as(TokenResponse.class);
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 나의_정보_수정됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
