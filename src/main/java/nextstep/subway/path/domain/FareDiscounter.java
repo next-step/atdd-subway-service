@@ -15,6 +15,8 @@ public interface FareDiscounter {
 
 @Component
 class ChildrenFareDiscounter implements FareDiscounter {
+    private static final double RATIO = 0.5;
+
     @Override
     public boolean canDiscount(LoginMember loginMember) {
         return loginMember.isChildren();
@@ -22,13 +24,15 @@ class ChildrenFareDiscounter implements FareDiscounter {
 
     @Override
     public Fare discount(Fare fare) {
-        return new Fare((long) ((fare.getWon() - DEDUCTION) * 0.5));
+        return new Fare((long) ((fare.getWon() - DEDUCTION) * RATIO));
     }
 }
 
 
 @Component
 class YouthFareDiscounter implements FareDiscounter {
+    private static final double RATIO = 0.8;
+
     @Override
     public boolean canDiscount(LoginMember loginMember) {
         return loginMember.isYouth();
@@ -36,6 +40,6 @@ class YouthFareDiscounter implements FareDiscounter {
 
     @Override
     public Fare discount(Fare fare) {
-        return new Fare((long) (((fare.getWon()) - DEDUCTION) * 0.8));
+        return new Fare((long) (((fare.getWon()) - DEDUCTION) * RATIO));
     }
 }

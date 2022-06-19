@@ -17,7 +17,7 @@ class YouthFareDiscounterTest {
     }
 
     @Test
-    @DisplayName("운임에서 350원을 공제한 금액의 20%할인")
+    @DisplayName("운임에서 350원을 공제한 금액의 20% 할인")
     void discount() {
         assertThat(discounter.discount(new Fare(1350))).isEqualTo(new Fare(800));
     }

@@ -63,8 +63,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         사호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("사호선", "bg-red-600", 길음역.getId(), 사당역.getId(), 50))
                 .as(LineResponse.class);
-        LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 6));
-        LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10));
+        LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 6, 200));
+        LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 1000));
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 300))
                 .as(LineResponse.class);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 교대역, 3);
@@ -77,7 +77,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         최단_경로에_지하철역_순서_정렬됨(response, Arrays.asList(남부터미널역, 교대역, 강남역));
         최단_경로_총_거리값_확인됨(response, 13);
-        최단_경로_총_지하철_요금_정보_확인됨(response, 650);
+        최단_경로_총_지하철_요금_정보_확인됨(response, 1000);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         최단_경로에_지하철역_순서_정렬됨(response, Arrays.asList(남부터미널역, 교대역, 강남역));
         최단_경로_총_거리값_확인됨(response, 13);
-        최단_경로_총_지하철_요금_정보_확인됨(response, 1040);
+        최단_경로_총_지하철_요금_정보_확인됨(response, 1600);
     }
 
     @Test
@@ -97,7 +97,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         최단_경로에_지하철역_순서_정렬됨(response, Arrays.asList(남부터미널역, 교대역, 강남역));
         최단_경로_총_거리값_확인됨(response, 13);
-        최단_경로_총_지하철_요금_정보_확인됨(response, 1650);
+        최단_경로_총_지하철_요금_정보_확인됨(response, 2350);
     }
 
     @Test
