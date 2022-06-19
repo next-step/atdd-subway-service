@@ -1,7 +1,6 @@
 package study.unit;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,15 +13,14 @@ public class UnitTest {
         // given
         String newName = "구분당선";
 
-        Station upStation = new Station("강남역");
-        Station downStation = new Station("광교역");
-        Line line = new Line("신분당선", "RED", upStation, downStation, 10);
-        Line newLine = new Line(newName, "GREEN");
+        Line line = new Line("신분당선", "RED", 0);
+        Line newLine = new Line(newName, "GREEN", 10);
 
         // when
         line.update(newLine);
 
         // then
         assertThat(line.getName()).isEqualTo(newName);
+        assertThat(line.getExtraFare()).isEqualTo(10);
     }
 }

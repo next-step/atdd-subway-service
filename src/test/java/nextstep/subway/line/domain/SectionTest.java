@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SectionTest {
-    private Line line = new Line("3호선", "orange darken-1");
+    private Line line = new Line("3호선", "orange darken-1", 0);
     private Station 교대역 = new Station("교대역");
     private Station 양재역 = new Station("양재역");
     private Station 고속터미널역 = new Station("고속터미널역");

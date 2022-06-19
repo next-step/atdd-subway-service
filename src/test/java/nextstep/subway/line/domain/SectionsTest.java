@@ -21,7 +21,7 @@ class SectionsTest {
         양재역 = new Station("양재역");
         남부터미널역 = new Station("남부터미널역");
         고속터미널역 = new Station("고속터미널역");
-        삼호선 = new Line("3호선", "orange darken-1");
+        삼호선 = new Line("3호선", "orange darken-1", 0);
         sections = new Sections();
         sections.add(new Section(삼호선, 교대역, 양재역, 10));
     }

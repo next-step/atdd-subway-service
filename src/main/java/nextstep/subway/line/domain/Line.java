@@ -16,26 +16,35 @@ public class Line extends BaseEntity {
     private String name;
     @Column(nullable = false)
     private String color;
+    @Column(nullable = false)
+    private long extraFare;
     @Embedded
     private Sections sections = new Sections();
 
     protected Line() {
     }
 
-    public Line(String name, String color) {
+    public Line(String name, String color, long extraFare) {
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, long extraFare) {
         this.name = name;
         this.color = color;
         this.sections.add(new Section(this, upStation, downStation, distance));
+        this.extraFare = extraFare;
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+        this.extraFare = line.getExtraFare();
+    }
+
+    public long getExtraFare() {
+        return this.extraFare;
     }
 
     public Long getId() {
