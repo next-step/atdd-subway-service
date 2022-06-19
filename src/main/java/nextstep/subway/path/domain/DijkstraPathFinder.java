@@ -5,7 +5,6 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
@@ -18,24 +17,24 @@ public class DijkstraPathFinder implements PathFinder{
     @Override
     public Path findShortestPath(List<Section> sections, Station sourceStation, Station targetStation) {
         validateInputStations(sourceStation, targetStation);
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = buildDijkstraPath(sections);
-        GraphPath<Station, DefaultWeightedEdge> resultPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        DijkstraShortestPath<Station, SectionWeightedEdge> dijkstraShortestPath = buildDijkstraPath(sections);
+        GraphPath<Station, SectionWeightedEdge> resultPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         validateResult(resultPath);
-        return Path.of(resultPath.getVertexList(), (int) resultPath.getWeight());
+        return Path.of(collectSections(resultPath), (int) resultPath.getWeight());
     }
 
     private DijkstraShortestPath buildDijkstraPath(List<Section> sections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, SectionWeightedEdge> graph = new WeightedMultigraph<>(SectionWeightedEdge.class);
         registerSections(graph, sections);
         return new DijkstraShortestPath(graph);
     }
 
-    private void registerSections(WeightedMultigraph<Station, DefaultWeightedEdge> routeGraph, List<Section> sections) {
+    private void registerSections(WeightedMultigraph<Station, SectionWeightedEdge> routeGraph, List<Section> sections) {
         addVertexes(routeGraph, sections);
         addWeightedEdges(routeGraph, sections);
     }
 
-    private void addVertexes(WeightedMultigraph<Station, DefaultWeightedEdge> routeGraph, List<Section> sections) {
+    private void addVertexes(WeightedMultigraph<Station, SectionWeightedEdge> routeGraph, List<Section> sections) {
         List<Station> stations = sections.stream()
                 .map(Section::getStations)
                 .flatMap(Collection::stream)
@@ -44,13 +43,16 @@ public class DijkstraPathFinder implements PathFinder{
         stations.forEach(station -> routeGraph.addVertex(station));
     }
 
-    private void addWeightedEdges(WeightedMultigraph<Station, DefaultWeightedEdge> routeGraph, List<Section> sections) {
-        sections.forEach(section -> routeGraph.setEdgeWeight(
-                addEdge(routeGraph, section), section.getDistance().value())
+    private void addWeightedEdges(WeightedMultigraph<Station, SectionWeightedEdge> routeGraph, List<Section> sections) {
+        sections.forEach(section -> {
+                    SectionWeightedEdge edge = addEdge(routeGraph, section);
+                    routeGraph.setEdgeWeight(edge, section.getDistance().value());
+                    edge.registerSection(section);
+                }
         );
     }
 
-    private DefaultWeightedEdge addEdge(WeightedMultigraph<Station, DefaultWeightedEdge> routeGraph, Section section) {
+    private SectionWeightedEdge addEdge(WeightedMultigraph<Station, SectionWeightedEdge> routeGraph, Section section) {
         return routeGraph.addEdge(section.getUpStation(), section.getDownStation());
     }
 
@@ -60,9 +62,16 @@ public class DijkstraPathFinder implements PathFinder{
         }
     }
 
-    private void validateResult(GraphPath<Station, DefaultWeightedEdge> path) {
+    private void validateResult(GraphPath<Station, SectionWeightedEdge> path) {
         if (path == null) {
             throw new IllegalArgumentException(ErrorMessage.ERROR_PATH_NOT_FOUND);
         }
+    }
+
+    private List<Section> collectSections(GraphPath<Station, SectionWeightedEdge> resultPath) {
+        return resultPath.getEdgeList()
+                .stream()
+                .map(edge -> edge.getSection())
+                .collect(Collectors.toList());
     }
 }
