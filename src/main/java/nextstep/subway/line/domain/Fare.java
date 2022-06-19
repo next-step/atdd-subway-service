@@ -13,28 +13,17 @@ public class Fare {
 
     public static Fare calculate(Distance distance, Integer age, int surcharge) {
         int fare = DEFAULT_FARE + surcharge;
-        fare += calculateOverFare(distance.toInt());
+        fare += calculateDistanceFare(distance);
         fare = calculateDiscount(age, fare);
         return new Fare(fare);
     }
 
+    private static int calculateDistanceFare(Distance distance) {
+        return DistanceType.of(distance).calculateDistanceFare(distance.toInt());
+    }
+
     private static int calculateDiscount(Integer age, int fare) {
         return Discount.of(age).calculate(fare);
-    }
-
-    private static int calculateOverFare(int distance) {
-        return calculateOverFareLess50(distance) + calculateOverFareAbove50(distance);
-    }
-
-    private static int calculateOverFareLess50(int distance) {
-        if (distance <= 10) {
-            return 0;
-        }
-        distance -= 10;
-        if (distance > 40) {
-            distance = 40;
-        }
-        return (int) ((Math.ceil((distance - 1) / 5) + 1) * 100);
     }
 
     private static int calculateOverFareAbove50(int distance) {
