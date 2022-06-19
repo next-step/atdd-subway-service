@@ -62,4 +62,21 @@ public class Line extends BaseEntity {
     public List<Section> getSections() {
         return sections.getValues();
     }
+
+    public void addLineSection(Station upStation, Station downStation, int distance) {
+        boolean isUpStationExisted = sections.isExisted(upStation);
+        boolean isDownStationExisted = sections.isExisted(downStation);
+
+        sections.valid(isUpStationExisted, isDownStationExisted);
+
+        if (isUpStationExisted) {
+            sections.updateUpStation(upStation, downStation, distance);
+        }
+
+        if (isDownStationExisted) {
+            sections.updateDownStation(upStation, downStation, distance);
+        }
+
+        sections.addSection(new Section(this, upStation, downStation, distance));
+    }
 }

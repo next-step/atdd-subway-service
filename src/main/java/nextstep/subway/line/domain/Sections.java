@@ -5,7 +5,8 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Embeddable
 public class Sections {
@@ -21,19 +22,14 @@ public class Sections {
     }
 
     public void addSection(Section section) {
-        boolean isUpStationExisted = isExisted(section.getUpStation());
-        boolean isDownStationExisted = isExisted(section.getDownStation());
-
-        valid(isUpStationExisted, isDownStationExisted);
-
         values.add(section);
     }
 
-    private boolean isExisted(Station upStation) {
-        return orderBySection().stream().anyMatch(it -> it == upStation);
+    public boolean isExisted(Station station) {
+        return orderBySection().stream().anyMatch(it -> it == station);
     }
 
-    private void valid(boolean isUpStationExisted, boolean isDownStationExisted) {
+    public void valid(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
             throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
@@ -41,7 +37,23 @@ public class Sections {
         if (!isEmpty() && !isUpStationExisted && !isDownStationExisted) {
             throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
+
     }
+
+    public void updateDownStation(Station upStation, Station downStation, int distance) {
+        values.stream()
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
+    }
+
+    public void updateUpStation(Station upStation, Station downStation, int distance) {
+        values.stream()
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
+    }
+
 
     public List<Station> orderBySection() {
         List<Station> stations = new ArrayList<>();
