@@ -10,8 +10,13 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
@@ -53,8 +58,30 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void test() {
-        assertThat(true);
+    @DisplayName("jgrapht문법 테스트")
+    public void getDijkstraShortestPath() {
+        WeightedMultigraph<String, DefaultWeightedEdge> graph
+                = new WeightedMultigraph(DefaultWeightedEdge.class);
+        graph.addVertex("v1");
+        graph.addVertex("v2");
+        graph.addVertex("v3");
+        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
+        graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
+        graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
+
+        DijkstraShortestPath dijkstraShortestPath
+                = new DijkstraShortestPath(graph);
+        List<String> shortestPath
+                = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
+
+        assertThat(shortestPath.size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("역과 역사이의 최단거리 조회 테스트")
+    void findShortDistance() {
+        ExtractableResponse<Response> response = 출발역_도착역_최단거리_조회(1l, 2l);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
@@ -84,6 +111,27 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선에_지하철역_확인(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
+        LineResponse line = response.as(LineResponse.class);
+        List<Long> stationIds = line.getStations().stream()
+                .map(it -> it.getId())
+                .collect(Collectors.toList());
+
+        List<Long> expectedStationIds = expectedStations.stream()
+                .map(it -> it.getId())
+                .collect(Collectors.toList());
+
+        assertThat(stationIds).containsAll(expectedStationIds);
+    }
+
+    public static ExtractableResponse<Response> 출발역_도착역_최단거리_조회(Long source, Long target) {
+        return RestAssured
+                .given().log().all()
+                .when().get("/paths?source={source}&target={target}", source, target)
+                .then().log().all().
+                extract();
+    }
+
+    public static void 최단거리(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         LineResponse line = response.as(LineResponse.class);
         List<Long> stationIds = line.getStations().stream()
                 .map(it -> it.getId())
