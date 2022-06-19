@@ -1,6 +1,8 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.exception.ErrorMessage;
+import nextstep.subway.exception.IllegalArgumentException;
+import nextstep.subway.exception.NoSuchElementFoundException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -23,17 +25,17 @@ public class Sections {
     }
 
     public void addSection(Section section) {
-        List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
-
-        checkAlreadyRegisteredStation(isUpStationExisted, isDownStationExisted);
-        checkValidSection(section);
-
+        List<Station> stations = getOrderdStations();
         if (stations.isEmpty()) {
             sections.add(section);
             return;
         }
+
+        boolean isUpStationExisted = stations.stream().anyMatch(station -> station.getName().equals(section.getUpStation().getName()));
+        boolean isDownStationExisted = stations.stream().anyMatch(station -> station.getName().equals(section.getDownStation().getName()));
+
+        checkAlreadyRegisteredStation(isUpStationExisted, isDownStationExisted);
+        checkContainStation(isUpStationExisted, isDownStationExisted);
 
         if (isUpStationExisted) {
             updateSectionByUpStation(section.getUpStation(), section.getDownStation(), section.getDistance());
@@ -48,20 +50,18 @@ public class Sections {
 
     private void checkAlreadyRegisteredStation(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException(ErrorMessage.ALREADY_REGISTERED_LINE.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.ALREADY_REGISTERED_LINE);
         }
     }
 
-    private void checkValidSection(Section section) {
-        List<Station> stations = getStations();
+    private void checkContainStation(boolean isUpStationExisted, boolean isDownStationExisted) {
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
-                stations.stream().noneMatch(it -> it == section.getDownStation())) {
-            throw new RuntimeException(ErrorMessage.NOT_FOUND_STATIONS_FOR_SECTION.getMessage());
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new NoSuchElementFoundException(ErrorMessage.NOT_FOUND_STATIONS_FOR_SECTION);
         }
     }
 
-    public List<Station> getStations() {
+    public List<Station> getOrderdStations() {
         List<Station> stations = new ArrayList<>();
         if (getSections().isEmpty()) {
             return stations;
@@ -104,28 +104,29 @@ public class Sections {
     }
 
     private void checkDeletableSection() {
-        if (sections.size() <= 1) {
-            throw new RuntimeException(ErrorMessage.NOT_DELETABLE_SIZE_SECTION.getMessage());
+        int DELETABLE_SIZE = 1;
+        if (sections.size() <= DELETABLE_SIZE) {
+            throw new IllegalArgumentException(ErrorMessage.NOT_DELETABLE_SIZE_SECTION);
         }
     }
 
     private void updateSectionByUpStation(Station oldStation, Station newStation, int newDistance) {
         Optional<Section> sectionForUpdate = findSectionByUpStation(oldStation);
-        sectionForUpdate.ifPresent(it -> it.updateUpStation(newStation, newDistance));
+        sectionForUpdate.ifPresent(section -> section.updateUpStation(newStation, newDistance));
     }
 
     private void updateSectionByDownStation(Station oldStation, Station newStation, int newDistance) {
         Optional<Section> sectionForUpdate = findSectionByDownStation(oldStation);
-        sectionForUpdate.ifPresent(it -> it.updateDownStation(newStation, newDistance));
+        sectionForUpdate.ifPresent(section -> section.updateDownStation(newStation, newDistance));
     }
 
     private Optional<Section> findSectionByUpStation(Station station) {
-        return sections.stream().filter(it -> it.getUpStation() == station)
+        return sections.stream().filter(section -> section.getUpStation().getName().equals(station.getName()))
                 .findFirst();
     }
 
     private Optional<Section> findSectionByDownStation(Station station) {
-        return sections.stream().filter(it -> it.getDownStation() == station)
+        return sections.stream().filter(section -> section.getDownStation().getName().equals(station.getName()))
                 .findFirst();
     }
 
