@@ -8,12 +8,12 @@ public enum FareDistanceType {
     private static int ADDITIONAL_FARE_PER_UNIT = 100;
 
     private final int minDistance;
-    private final int fareAddUnitDistance;
+    private final int unitDistance;
     private final int basicFare;
 
-    FareDistanceType(int minDistance, int fareAddUnitDistance, int basicFare) {
+    FareDistanceType(int minDistance, int unitDistance, int basicFare) {
         this.minDistance = minDistance;
-        this.fareAddUnitDistance = fareAddUnitDistance;
+        this.unitDistance = unitDistance;
         this.basicFare = basicFare;
     }
 
@@ -32,6 +32,7 @@ public enum FareDistanceType {
             return basicFare;
         }
         return basicFare +
-                (int) ((Math.ceil((distance - minDistance - 1) / fareAddUnitDistance) + 1) * ADDITIONAL_FARE_PER_UNIT);
+                (int) ((Math.ceil((distance - minDistance - 1) / unitDistance) + 1)
+                        * ADDITIONAL_FARE_PER_UNIT);
     }
 }

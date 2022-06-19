@@ -53,9 +53,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 700)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 500)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 100)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -79,13 +79,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 교대역_양재역_조회 = 최단경로_조회_요청(교대역, 양재역);
         최단경로_조회됨(교대역_양재역_조회);
         최단경로_거리_조회됨(교대역_양재역_조회, 5);
-        최단경로_요금_조회됨(교대역_양재역_조회, 1250);
+        최단경로_요금_조회됨(교대역_양재역_조회, 1350);
         최단경로_결과_정렬됨(교대역_양재역_조회, Arrays.asList(교대역, 남부터미널역, 양재역));
 
         ExtractableResponse<Response> 강남역_남부터미널역_조회 = 최단경로_조회_요청(강남역, 남부터미널역);
         최단경로_조회됨(강남역_남부터미널역_조회);
         최단경로_거리_조회됨(강남역_남부터미널역_조회, 12);
-        최단경로_요금_조회됨(강남역_남부터미널역_조회, 1350);
+        최단경로_요금_조회됨(강남역_남부터미널역_조회, 2050);
         최단경로_결과_정렬됨(강남역_남부터미널역_조회, Arrays.asList(강남역, 양재역, 남부터미널역));
     }
 
