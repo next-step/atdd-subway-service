@@ -50,6 +50,12 @@ public class Favorite extends BaseEntity {
         return this.member.equals(member);
     }
 
+    public void validateOwner(Member member) {
+        if (!isOwner(member)) {
+            throw new IllegalArgumentException("내 즐겨찾기가 아닙니다.");
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
