@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -31,6 +32,7 @@ public class PathService {
         Station targetStation = stationService.findStationById(targetStationId);
 
         Path path = pathFinder.findShortestPath(sections, sourceStation, targetStation);
-        return PathResponse.from(path);
+        Fare fare = Fare.from(path);
+        return PathResponse.of(path, fare);
     }
 }
