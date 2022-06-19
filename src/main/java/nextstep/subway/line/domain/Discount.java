@@ -5,9 +5,9 @@ import java.util.function.Predicate;
 
 public enum Discount {
     ADULT(0, 0, n -> n == null || n >= 19),
-    CHILD(50, 350, s -> s >= 6 && s < 13),
+    CHILD(50, 350, n -> n >= 6 && n < 13),
     TEENAGER(20, 350, n -> n >= 13 && n < 19),
-    FREE(100, 0, s -> s < 6);
+    FREE(100, 0, n -> n < 6);
 
     private final int discountRate;
     private final int discount;

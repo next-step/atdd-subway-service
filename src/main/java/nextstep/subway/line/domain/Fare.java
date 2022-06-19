@@ -3,7 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.Objects;
 
 public class Fare {
-    private static final int DEFAULT_FARE = 1250;
+    private static final int DEFAULT_FARE = 1_250;
 
     private final int fare;
 
