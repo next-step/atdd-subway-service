@@ -6,7 +6,13 @@ import java.util.Objects;
 
 @Embeddable
 public class Distance {
-    public static final int MIN_DISTANCE = 0;
+    private static final int BASIC_FARE = 1250;
+    private static final int MIN_DISTANCE = 0;
+    private static final int FIRST_OVER_FARE_PER_VALUE = 5;
+    private static final int SECOND_OVER_FARE_PER_VALUE = 8;
+    private static final int FIRST_OVER_FARE_MIN_DISTANCE = 10;
+    private static final int SECOND_OVER_FARE_MIN_DISTANCE = 50;
+    private static final int PER_FARE = 100;
 
     @Column
     private final int distance;
@@ -32,6 +38,26 @@ public class Distance {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getDistanceFare() {
+        return BASIC_FARE + getOverFare();
+    }
+
+    private int getOverFare() {
+        if (distance <= FIRST_OVER_FARE_MIN_DISTANCE) {
+            return 0;
+        }
+        if (distance <= SECOND_OVER_FARE_MIN_DISTANCE) {
+            return calculateOverFare(distance - FIRST_OVER_FARE_MIN_DISTANCE, FIRST_OVER_FARE_PER_VALUE);
+        }
+        int firstValue = calculateOverFare(SECOND_OVER_FARE_MIN_DISTANCE - FIRST_OVER_FARE_MIN_DISTANCE, FIRST_OVER_FARE_PER_VALUE);
+        int secondValue = calculateOverFare(distance - SECOND_OVER_FARE_MIN_DISTANCE, SECOND_OVER_FARE_PER_VALUE);
+        return firstValue + secondValue;
+    }
+
+    private int calculateOverFare(int distance, int perValue) {
+        return (int) ((Math.ceil((distance - 1) / perValue) + 1) * PER_FARE);
     }
 
     @Override
