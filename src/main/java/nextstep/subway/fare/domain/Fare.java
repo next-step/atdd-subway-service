@@ -30,8 +30,10 @@ public class Fare implements Comparable<Fare> {
     }
 
     public Fare minus(Fare target) {
+        validateMinus(target);
         return new Fare(value.subtract(target.value));
     }
+
 
     public Fare getRateFare(Double rate) {
         return new Fare(value.multiply(BigDecimal.valueOf(rate / 100)));
@@ -48,6 +50,12 @@ public class Fare implements Comparable<Fare> {
     private void validate(BigDecimal value) {
         if (value.compareTo(BigDecimal.ZERO) == -1) {
             throw new IllegalArgumentException("운임요금은 0보다 작을 수 없습니다.");
+        }
+    }
+
+    private void validateMinus(Fare target) {
+        if (value.compareTo(target.value) == -1) {
+            throw new IllegalArgumentException("운임요금은 더 큰 요금으로 뺄 수 없습니다.");
         }
     }
 
