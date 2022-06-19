@@ -32,33 +32,40 @@ class LineTest {
     @Test
     @DisplayName("순서에 맞게 역을 조회한다.")
     void searchStation() {
-        assertThat(신분당선.getStations()).containsExactly(강남역, 광교역, 판교역);
+        assertThat(신분당선.getStationElements()).containsExactly(강남역, 광교역, 판교역);
     }
 
     @Test
     @DisplayName("이미 추가할 구간에 상행역과 하행역이 존재하면 추가를 할 수 없다.")
     void addSectionValid() {
+        //given
         final Section section = new Section(신분당선, 강남역, 판교역, 10);
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> 신분당선.addSection(section)
+
+        //when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> 신분당선.addSection(section)
         );
     }
 
     @Test
     @DisplayName("이미 추가할 구간에 상행역과 하행역이 존재하지 않으면 추가를 할 수 없다.")
     void addSectionExistValid() {
+        //given
         final Section section = new Section(신분당선, 성수역, new Station("가로숲역"), 10);
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> 신분당선.addSection(section)
+
+        //when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> 신분당선.addSection(section)
         );
     }
 
     @Test
     @DisplayName("이미 추가할 구간에 거리보다 추가할 거리가 크면 추가 할수 없다.")
     void addSectionDistanceOver() {
+        //given
         final Section section = new Section(신분당선, 성수역, 판교역, 10);
 
-
+        //when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> 신분당선.addSection(section)
         );
@@ -67,25 +74,40 @@ class LineTest {
     @Test
     @DisplayName("가운대 구간이 추가된다")
     void addSection() {
+        //given
         final Section section = new Section(신분당선, 성수역, 판교역, 2);
+
+        //when
         신분당선.addSection(section);
-        assertThat(신분당선.getStations()).containsExactly(강남역, 광교역, 성수역, 판교역);
+
+        //then
+        assertThat(신분당선.getStationElements()).containsExactly(강남역, 광교역, 성수역, 판교역);
     }
 
     @Test
     @DisplayName("하행역 구간이 추가된다")
     void addDownSection() {
+        //given
         final Section section = new Section(신분당선, 판교역, 성수역, 2);
+
+        //when
         신분당선.addSection(section);
-        assertThat(신분당선.getStations()).containsExactly(강남역, 광교역, 판교역, 성수역);
+
+        //then
+        assertThat(신분당선.getStationElements()).containsExactly(강남역, 광교역, 판교역, 성수역);
     }
 
     @Test
     @DisplayName("상행역 구간이 추가된다")
     void addUpSection() {
+        //given
         final Section section = new Section(신분당선, 성수역, 강남역, 2);
+
+        //when
         신분당선.addSection(section);
-        assertThat(신분당선.getStations()).containsExactly(성수역, 강남역, 광교역, 판교역);
+
+        //then
+        assertThat(신분당선.getStationElements()).containsExactly(성수역, 강남역, 광교역, 판교역);
     }
 
 
@@ -97,8 +119,8 @@ class LineTest {
 
         //then
         assertAll(
-                () -> assertThat(신분당선.getStations()).containsExactly(강남역, 판교역),
-                () -> assertThat(신분당선.getSections().get(0).getDistance()).isEqualTo(Distance.of(20))
+                () -> assertThat(신분당선.getStationElements()).containsExactly(강남역, 판교역),
+                () -> assertThat(신분당선.getSectionElements().get(0).getDistance()).isEqualTo(Distance.of(20))
         );
 
     }
@@ -111,8 +133,9 @@ class LineTest {
 
         //then
         assertAll(
-                () -> assertThat(신분당선.getStations()).containsExactly(광교역,판교역),
-                () -> assertThat(신분당선.getSections().get(0).getDistance()).isEqualTo(Distance.of(10))
+                () -> assertThat(신분당선.getStationElements()).containsExactly(광교역,판교역),
+                () -> assertThat(신분당선.getSectionElements().get(0).getDistance()).isEqualTo(Distance.of(10))
         );
     }
+
 }

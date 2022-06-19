@@ -85,7 +85,7 @@ public class Section {
     }
 
     private void validUpdateDistance(Distance newDistance) {
-        if (distance.isLess(newDistance)) {
+        if (distance.isEqualAndLess(newDistance)) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
     }

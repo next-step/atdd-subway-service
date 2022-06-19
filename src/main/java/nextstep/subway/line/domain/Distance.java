@@ -24,7 +24,7 @@ public class Distance {
         return new Distance(distance);
     }
 
-    public boolean isLess(Distance compareSource) {
+    public boolean isEqualAndLess(Distance compareSource) {
         return this.value() <= compareSource.value();
     }
 

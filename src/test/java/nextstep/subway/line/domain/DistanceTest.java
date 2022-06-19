@@ -21,10 +21,10 @@ class DistanceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("거리가 작음을 판단 한다")
+    @DisplayName("거리가 작고 같음 판단 한다")
     @MethodSource("lessParam")
     void isLess(Distance source, Distance target, boolean result) {
-        assertThat(source.isLess(target)).isEqualTo(result);
+        assertThat(source.isEqualAndLess(target)).isEqualTo(result);
     }
 
 
@@ -46,7 +46,7 @@ class DistanceTest {
     private static Stream<Arguments> lessParam() {
         return Stream.of(
                 Arguments.of(Distance.of(3), Distance.of(5), true),
-                Arguments.of(Distance.of(3), Distance.of(3), false),
+                Arguments.of(Distance.of(3), Distance.of(3), true),
                 Arguments.of(Distance.of(3), Distance.of(1), false)
         );
     }

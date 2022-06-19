@@ -63,14 +63,22 @@ public class Line extends BaseEntity {
         sections.removeStation(station);
     }
 
-    public List<Station> getStations() {
-        return sections.getStations();
+    public Stations getStations() {
+        return Stations.of(sections.getOrderStations());
     }
 
-    public List<Section> getSections() {
+    public List<Station> getStationElements() {
+        return sections.getOrderStations();
+    }
+
+
+    public List<Section> getSectionElements() {
         return sections.getSectionElements();
     }
 
+    public Sections getSections() {
+        return sections;
+    }
 
     @Override
     public boolean equals(Object o) {

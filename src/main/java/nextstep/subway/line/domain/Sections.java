@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -16,6 +15,8 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sectionElements = new ArrayList<>();
 
+    private static final int ESSENTIAL_SECTION_QTY = 1;
+
     protected Sections() {
 
     }
@@ -24,28 +25,16 @@ public class Sections {
         sectionElements.add(section);
     }
 
-    public List<Station> getStations() {
-        if (sectionElements.size() == 1) {
-            return oneSizeStations();
-        }
-        return getOrderStations();
-    }
-
-    private List<Station> oneSizeStations() {
-        List<Station> stations  = new ArrayList<>();
-        stations.add(sectionElements.get(0).getUpStation());
-        stations.add(sectionElements.get(0).getDownStation());
-        return stations;
-    }
-
-    private List<Station> getOrderStations() {
+    public List<Station> getOrderStations() {
         List<Station> stations = new ArrayList<>();
         Station station = findFinalUpStation();
-        while (station != null) {
+
+        while (existNextStation(station)) {
             stations.add(station);
             station = nextStation(station);
         }
-        return stations;
+
+        return Collections.unmodifiableList(stations);
     }
 
     private Station nextStation(Station station) {
@@ -57,21 +46,16 @@ public class Sections {
     }
 
     private Station findFinalUpStation() {
-        List<Station> downStations = downStations();
-        List<Station> upStations = upStations();
+        Stations downStations = Stations.createDownStations(this);
+        Stations upStations = Stations.createUpStations(this);
 
-        return upStations.stream()
-                .filter((upStation) -> !downStations.contains(upStation))
-                .findFirst()
+        return upStations
+                .isNotContainsFirstStation(downStations)
                 .orElseThrow(() -> new NoSuchElementException("하행 종점을 찾을수 없습니다."));
     }
 
-    private List<Station> downStations() {
-        return sectionElements.stream().map(Section::getDownStation).collect(Collectors.toList());
-    }
-
-    private List<Station> upStations() {
-        return sectionElements.stream().map(Section::getUpStation).collect(Collectors.toList());
+    private boolean existNextStation(Station station) {
+        return !Station.isEmpty(station) ;
     }
 
 
@@ -115,7 +99,7 @@ public class Sections {
 
 
     private void existUpAndDownStationAddSectionValid(Section section) {
-        final boolean isValid = getStations()
+        final boolean isValid = getOrderStations()
                 .stream()
                 .anyMatch(section::isContainStation);
 
@@ -145,31 +129,31 @@ public class Sections {
 
         upLineStation.ifPresent(it -> sectionElements.remove(it));
         downLineStation.ifPresent(it -> sectionElements.remove(it));
-
     }
 
     private void validRemoveStation() {
-        if (this.sectionElements.size() <= 1) {
+        if (this.sectionElements.size() <= ESSENTIAL_SECTION_QTY) {
             throw new IllegalArgumentException("구간은 꼭 하나만 있어야 합니다.");
         }
     }
 
     private Optional<Section> findSectionByDownStation(Station station) {
         return sectionElements.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(it -> it.isUpStation(station))
                 .findFirst();
     }
 
     private Optional<Section> findSectionByUpStation(Station station) {
         return sectionElements.stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(it -> it.isDownStation(station))
                 .findFirst();
     }
 
     private void mergeSection(Section upLineStation, Section downLineStation) {
         Station newUpStation = downLineStation.getUpStation();
         Station newDownStation = upLineStation.getDownStation();
-        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+        Distance newDistance = Distance.sumDistance(upLineStation.getDistance(), downLineStation.getDistance());
+
         sectionElements.add(new Section(downLineStation.getLine(), newUpStation, newDownStation, newDistance));
     }
 

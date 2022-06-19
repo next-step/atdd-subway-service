@@ -5,12 +5,12 @@ import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Stations;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,10 +30,7 @@ public class LineService {
         final Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
 
-        List<StationResponse> stations = persistLine.getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-
+        Stations stations = persistLine.getStations();
         return LineResponse.of(persistLine, stations);
     }
 
@@ -41,12 +38,7 @@ public class LineService {
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-                .map(line -> {
-                    List<StationResponse> stations = line.getStations().stream()
-                            .map(StationResponse::of)
-                            .collect(Collectors.toList());
-                    return LineResponse.of(line, stations);
-                })
+                .map(line -> LineResponse.of(line, line.getStations()))
                 .collect(Collectors.toList());
     }
     @Transactional(readOnly = true)
@@ -57,9 +49,8 @@ public class LineService {
     @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        List<StationResponse> stations = persistLine.getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        Stations stations = persistLine.getStations();
+
         return LineResponse.of(persistLine, stations);
     }
 

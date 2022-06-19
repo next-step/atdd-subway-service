@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
+import org.springframework.util.ObjectUtils;
 
 @Entity
 public class Station extends BaseEntity {
@@ -15,6 +16,13 @@ public class Station extends BaseEntity {
     private Long id;
     @Column(unique = true)
     private String name;
+
+    public static boolean isEmpty(Station station) {
+        if (station == null) {
+            return true;
+        }
+        return ObjectUtils.isEmpty(station.getName());
+    }
 
     public Station() {
     }
