@@ -15,10 +15,6 @@ public class Path {
     private Set<Line> lines;
     private Fee fee;
 
-    public Path(List<Station> stations, int distance) {
-        this(stations, distance, null);
-    }
-
     public Path(List<Station> stations, int distance, Set<Line> lines) {
         this.stations = stations;
         this.distance = distance;
@@ -26,7 +22,8 @@ public class Path {
     }
 
     public void calculateFee(LoginMember member) {
-        this.fee = FeeDiscountPolicy.discount(Fee.of(this.distance, this.lines), member.getAge());
+        Fee originFee = Fee.of(this.distance, this.lines);
+        this.fee = FeeDiscountPolicy.discount(originFee, member.getAge());
     }
 
     public PathResponse toPathResponse() {
@@ -45,9 +42,5 @@ public class Path {
 
     public Set<Line> throughLines() {
         return lines;
-    }
-
-    public Fee charge() {
-        return fee;
     }
 }
