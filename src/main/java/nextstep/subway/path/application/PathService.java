@@ -1,12 +1,16 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.DijkstraShortestPathFinder;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,7 +24,13 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public List<StationResponse> findShortestPath(Long sourceId, Long targetId) {
-        return new ArrayList<>();
+    public PathResponse findShortestPath(Long sourceId, Long targetId) {
+        List<Line> allLines = lineService.findAll();
+        Station source = stationService.findStationById(sourceId);
+        Station target = stationService.findStationById(targetId);
+
+        PathFinder pathFinder = new DijkstraShortestPathFinder(allLines);
+        Path path = pathFinder.findShortestPath(source, target);
+        return PathResponse.from(path);
     }
 }

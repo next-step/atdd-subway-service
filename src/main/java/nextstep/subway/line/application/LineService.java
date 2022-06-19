@@ -39,10 +39,13 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    public List<Line> findAll() {
+        return lineRepository.findAll();
+    }
+
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
-                .map(line -> LineResponse.of(line))
+        return findAll().stream()
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
