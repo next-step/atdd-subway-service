@@ -65,7 +65,7 @@ public class Section {
 
     public void updateUpStationReducedDistance(Section section) {
         if (this.distance <= section.getDistance()) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.upStation = section.getDownStation();
         this.distance -= section.getDistance();
@@ -73,7 +73,7 @@ public class Section {
 
     public void updateDownStationReducedDistance(Section section) {
         if (this.distance <= section.getDistance()) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.downStation = section.getUpStation();
         this.distance -= section.getDistance();

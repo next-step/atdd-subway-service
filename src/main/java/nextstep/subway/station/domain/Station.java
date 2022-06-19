@@ -1,6 +1,7 @@
 package nextstep.subway.station.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -13,7 +14,16 @@ public class Station extends BaseEntity {
     @Column(unique = true)
     private String name;
 
+    public static Station of(StationResponse response) {
+        return new Station(response.getId(), response.getName());
+    }
+
     public Station() {
+    }
+
+    public Station(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public Station(String name) {
@@ -40,5 +50,13 @@ public class Station extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
