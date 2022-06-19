@@ -102,6 +102,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 토큰값으로_회원_정보_조회_실패(ExtractableResponse<Response> memberInfoResponse) {
-        assertThat(memberInfoResponse.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(memberInfoResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
