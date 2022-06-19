@@ -1,6 +1,5 @@
 package nextstep.subway.path.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -8,12 +7,10 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
-import nextstep.subway.utils.RestAssuredMethods;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -23,7 +20,7 @@ import java.util.stream.Collectors;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
-import static nextstep.subway.utils.RestAssuredMethods.*;
+import static nextstep.subway.utils.RestAssuredMethods.get;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -69,9 +66,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *
      *   Scenario: 지하철 최단경로 탐색
      *     When 교대역-양재역 최단경로 조회
-     *     Then 교대역-남부터미널역-양재역 경로 조회됨
+     *     Then 교대역-남부터미널역-양재역 최단 경로 조회됨
+     *     Then 교대역-남부터미널역-양재역 최단 거리 조회됨
+     *     Then 교대역-남부터미널역-양재역 요금 조회됨
      *     When 강남역-남부터미널역 최단경로 조회
      *     Then 강남역-양재역-남부터미널역 최단 경로 조회됨
+     *     Then 강남역-양재역-남부터미널역 최단 거리 조회됨
+     *     Then 강남역-양재역-남부터미널역 요금 조회됨
      */
     @DisplayName("지하철 경로를 탐색한다.")
     @Test
@@ -86,6 +87,76 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_조회됨(강남역_남부터미널역_조회);
         최단경로_거리_조회됨(강남역_남부터미널역_조회, 12);
         최단경로_요금_조회됨(강남역_남부터미널역_조회, 2050);
+        최단경로_결과_정렬됨(강남역_남부터미널역_조회, Arrays.asList(강남역, 양재역, 남부터미널역));
+    }
+
+    /**
+     * Feature: 청소년 지하철 경로 관련 기능
+     *
+     *   Background
+     *     Given 지하철역 등록되어 있음 (강남역, 양재역, 교대역, 남부터미널역)
+     *     Given 노선 등록되어 있음 (신분당선, 이호선, 삼호선)
+     *     Given 청소년 사용자 등록되어 있음
+     *     Given 로그인 되어있음
+     *
+     *   Scenario: 지하철 최단경로 탐색
+     *     When 교대역-양재역 최단경로 조회
+     *     Then 교대역-남부터미널역-양재역 최단 경로 조회됨
+     *     Then 교대역-남부터미널역-양재역 최단 거리 조회됨
+     *     Then 교대역-남부터미널역-양재역 요금 조회됨 (청소년 요금)
+     *     When 강남역-남부터미널역 최단경로 조회
+     *     Then 강남역-양재역-남부터미널역 최단 경로 조회됨
+     *     Then 강남역-양재역-남부터미널역 최단 거리 조회됨
+     *     Then 강남역-양재역-남부터미널역 요금 조회됨 (청소년 요금)
+     */
+    @DisplayName("청소년 요금으로 지하철 경로를 탐색한다.")
+    @Test
+    void 지하철_경로_탐색_정상_시나리오_청소년() {
+        ExtractableResponse<Response> 교대역_양재역_조회 = 최단경로_조회_요청(교대역, 양재역);
+        최단경로_조회됨(교대역_양재역_조회);
+        최단경로_거리_조회됨(교대역_양재역_조회, 5);
+        최단경로_요금_조회됨(교대역_양재역_조회, 800);
+        최단경로_결과_정렬됨(교대역_양재역_조회, Arrays.asList(교대역, 남부터미널역, 양재역));
+
+        ExtractableResponse<Response> 강남역_남부터미널역_조회 = 최단경로_조회_요청(강남역, 남부터미널역);
+        최단경로_조회됨(강남역_남부터미널역_조회);
+        최단경로_거리_조회됨(강남역_남부터미널역_조회, 12);
+        최단경로_요금_조회됨(강남역_남부터미널역_조회, 1360);
+        최단경로_결과_정렬됨(강남역_남부터미널역_조회, Arrays.asList(강남역, 양재역, 남부터미널역));
+    }
+
+    /**
+     * Feature: 어린이 지하철 경로 관련 기능
+     *
+     *   Background
+     *     Given 지하철역 등록되어 있음 (강남역, 양재역, 교대역, 남부터미널역)
+     *     Given 노선 등록되어 있음 (신분당선, 이호선, 삼호선)
+     *     Given 청소년 사용자 등록되어 있음
+     *     Given 로그인 되어있음
+     *
+     *   Scenario: 지하철 최단경로 탐색
+     *     When 교대역-양재역 최단경로 조회
+     *     Then 교대역-남부터미널역-양재역 최단 경로 조회됨
+     *     Then 교대역-남부터미널역-양재역 최단 거리 조회됨
+     *     Then 교대역-남부터미널역-양재역 요금 조회됨 (어린이 요금)
+     *     When 강남역-남부터미널역 최단경로 조회
+     *     Then 강남역-양재역-남부터미널역 최단 경로 조회됨
+     *     Then 강남역-양재역-남부터미널역 최단 거리 조회됨
+     *     Then 강남역-양재역-남부터미널역 요금 조회됨 (어린이 요금)
+     */
+    @DisplayName("어린이 요금으로 지하철 경로를 탐색한다.")
+    @Test
+    void 지하철_경로_탐색_정상_시나리오_어린이() {
+        ExtractableResponse<Response> 교대역_양재역_조회 = 최단경로_조회_요청(교대역, 양재역);
+        최단경로_조회됨(교대역_양재역_조회);
+        최단경로_거리_조회됨(교대역_양재역_조회, 5);
+        최단경로_요금_조회됨(교대역_양재역_조회, 500);
+        최단경로_결과_정렬됨(교대역_양재역_조회, Arrays.asList(교대역, 남부터미널역, 양재역));
+
+        ExtractableResponse<Response> 강남역_남부터미널역_조회 = 최단경로_조회_요청(강남역, 남부터미널역);
+        최단경로_조회됨(강남역_남부터미널역_조회);
+        최단경로_거리_조회됨(강남역_남부터미널역_조회, 12);
+        최단경로_요금_조회됨(강남역_남부터미널역_조회, 850);
         최단경로_결과_정렬됨(강남역_남부터미널역_조회, Arrays.asList(강남역, 양재역, 남부터미널역));
     }
 
