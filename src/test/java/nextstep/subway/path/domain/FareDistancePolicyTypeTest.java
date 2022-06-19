@@ -9,28 +9,28 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FareDistanceTypeTest {
+public class FareDistancePolicyTypeTest {
     @DisplayName("올바른 Type 생성 테스트")
     @ParameterizedTest(name = "올바른 Type 생성: distance = {0}, 생성타입 = {1}")
     @MethodSource("provideParametersForFareDistanceTypeCreate")
-    void FareDistanceType_생성(int distance, FareDistanceType type){
-        FareDistanceType createdType = FareDistanceType.typeOf(distance);
+    void FareDistancePolicyType_생성(int distance, FareDistancePolicyType type){
+        FareDistancePolicyType createdType = FareDistancePolicyType.of(distance);
         assertThat(createdType.equals(type)).isTrue();
     }
 
     @DisplayName("Type 별 요금 계산 테스트")
     @ParameterizedTest(name = "Type 별 요금 계산: distance = {0}, 요금 = {1}")
     @MethodSource("provideParametersForFareDistanceTypeCalculate")
-    void FareDistanceType_요금_계산(int distance, int fare){
-        int calculatedFare = FareDistanceType.typeOf(distance).calculateFare(distance);
+    void FareDistancePolicyType_요금_계산(int distance, int fare){
+        int calculatedFare = FareDistancePolicyType.of(distance).calculateFare(distance);
         assertThat(calculatedFare).isEqualTo(fare);
     }
 
     private static Stream<Arguments> provideParametersForFareDistanceTypeCreate() {
         return Stream.of(
-                Arguments.of(10, FareDistanceType.BASIC_DISTANCE),
-                Arguments.of(50, FareDistanceType.MIDDLE_DISTANCE),
-                Arguments.of(100, FareDistanceType.LONG_DISTANCE)
+                Arguments.of(10, FareDistancePolicyType.BASIC_DISTANCE),
+                Arguments.of(50, FareDistancePolicyType.MIDDLE_DISTANCE),
+                Arguments.of(100, FareDistancePolicyType.LONG_DISTANCE)
         );
     }
 

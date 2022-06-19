@@ -21,8 +21,8 @@ public class Fare {
     }
 
     private int calculateDistanceFare(int distance) {
-        FareDistanceType distanceType = FareDistanceType.typeOf(distance);
-        return distanceType.calculateFare(distance);
+        FareDistancePolicyType policy = FareDistancePolicyType.of(distance);
+        return policy.calculateFare(distance);
     }
 
     private int calculateLineFare(List<Section> sections) {
@@ -37,8 +37,8 @@ public class Fare {
     }
 
     private void discountFareWithAge(int age) {
-        FareAgeType type = FareAgeType.typeOf(age);
-        value = type.discountFare(value);
+        FareAgePolicyType policy = FareAgePolicyType.of(age);
+        value = policy.discountFare(value);
     }
 
     public int getValue() {
