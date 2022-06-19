@@ -92,10 +92,13 @@ class LineTest {
     @Test
     @DisplayName("역이 삭제된다.")
     void removeStation() {
+        //when
         신분당선.removeStation(광교역);
+
+        //then
         assertAll(
                 () -> assertThat(신분당선.getStations()).containsExactly(강남역, 판교역),
-                () -> assertThat(신분당선.getSections().get(0).getDistance()).isEqualTo(20)
+                () -> assertThat(신분당선.getSections().get(0).getDistance()).isEqualTo(Distance.of(20))
         );
 
     }
@@ -103,10 +106,13 @@ class LineTest {
     @Test
     @DisplayName("종점역이 삭제된다.")
     void removeStation2() {
+        //when
         신분당선.removeStation(강남역);
+
+        //then
         assertAll(
                 () -> assertThat(신분당선.getStations()).containsExactly(광교역,판교역),
-                () -> assertThat(신분당선.getSections().get(0).getDistance()).isEqualTo(10)
+                () -> assertThat(신분당선.getSections().get(0).getDistance()).isEqualTo(Distance.of(10))
         );
     }
 }

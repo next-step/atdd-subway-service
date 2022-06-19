@@ -23,16 +23,21 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public Section(Line line, Station upStation, Station downStation, int distance) {
+        this(line, upStation, downStation, Distance.of(distance));
     }
 
     public Long getId() {
@@ -51,25 +56,40 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+    public void updateUpStation(Station station, Distance newDistance) {
+        validUpdateDistance(newDistance);
         this.upStation = station;
-        this.distance -= newDistance;
+        distance.minusDistance(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public void updateDownStation(Station station, Distance newDistance) {
+        validUpdateDistance(newDistance);
+        this.downStation = station;
+        distance.minusDistance(newDistance);
+    }
+
+    public boolean isContainStation(Station station) {
+        return isUpStation(station) || isDownStation(station);
+    }
+
+    public boolean isUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean isDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
+    private void validUpdateDistance(Distance newDistance) {
+        if (distance.isLess(newDistance)) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance -= newDistance;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -88,5 +108,7 @@ public class Section {
     public int hashCode() {
         return Objects.hash(getLine(), getUpStation(), getDownStation());
     }
+
+
 }
 
