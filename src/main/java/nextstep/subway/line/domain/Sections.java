@@ -117,6 +117,12 @@ public class Sections {
                 .findFirst();
     }
 
+    public Optional<Section> findSection(Station upStation, Station downStation) {
+        return this.sections.stream()
+                .filter(it -> it.upStation() == upStation && it.downStation() == downStation)
+                .findFirst();
+    }
+
     public List<Section> getSections() {
         return this.sections;
     }

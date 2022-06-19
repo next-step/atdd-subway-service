@@ -1,7 +1,12 @@
 package nextstep.subway.path.domain;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import nextstep.subway.exception.NotExistException;
 import nextstep.subway.exception.NotLinkedPathException;
 import nextstep.subway.exception.SamePathException;
 import nextstep.subway.line.domain.Distance;
@@ -20,14 +25,21 @@ public class PathFinder {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
             DefaultWeightedEdge.class);
     private DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = null;
+    private Set<Section> sections;
 
     public void init(List<Line> lines) {
+        this.sections = new HashSet<>();
         lines.forEach(this::addVertexAndEdge);
     }
 
     private void addVertexAndEdge(Line line) {
+        addSections(line.getSections());
         addVertex(line.getSections());
         addEdgeWeight(line.getSections());
+    }
+
+    private void addSections(Sections sections) {
+        this.sections.addAll(sections.getSections());
     }
 
     private void addVertex(Sections sections) {
@@ -52,7 +64,23 @@ public class PathFinder {
         validateSameSourceAndTarget(source, target);
         GraphPath<Station, DefaultWeightedEdge> graphPath = getOptionalDijkstraPath(source, target)
                 .orElseThrow(NotLinkedPathException::new);
-        return new Path(graphPath.getVertexList(), (int) graphPath.getWeight());
+        List<Station> stations = graphPath.getVertexList();
+        return new Path(stations, (int) graphPath.getWeight(), findPathLines(stations));
+    }
+
+    private Set<Line> findPathLines(List<Station> stations) {
+        return IntStream.range(0, stations.size() - 1)
+                .mapToObj(idx -> findLineBySection(stations.get(idx), stations.get(idx + 1)))
+                .collect(Collectors.toSet());
+    }
+
+    private Line findLineBySection(Station upStation, Station downStation) {
+        return this.sections.stream()
+                .filter(it -> it.containUpStation(upStation, downStation))
+                .filter(it -> it.containDownStation(upStation, downStation))
+                .findFirst()
+                .orElseThrow(NotExistException::new)
+                .getLine();
     }
 
     public void validatePath(Station source, Station target) {

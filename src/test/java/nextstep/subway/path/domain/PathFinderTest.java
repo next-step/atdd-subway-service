@@ -39,13 +39,14 @@ class PathFinderTest {
     }
 
     @Test
-    @DisplayName("최단 거리 경로, 거리 확인")
+    @DisplayName("최단 거리 경로, 거리, 해당 노선 확인")
     void verifyShortestPathAndDistance() {
         Path dijkstraPath = pathFinder.getDijkstraPath(강남역, 남부터미널역);
 
         assertAll(
-                () -> assertThat(dijkstraPath.getDistance()).isEqualTo(12),
-                () -> assertThat(dijkstraPath.getStations()).containsExactly(강남역, 양재역, 남부터미널역)
+                () -> assertThat(dijkstraPath.totalDistance()).isEqualTo(12),
+                () -> assertThat(dijkstraPath.throughStations()).containsExactly(강남역, 양재역, 남부터미널역),
+                () -> assertThat(dijkstraPath.throughLines()).contains(신분당선, 삼호선)
         );
     }
 
