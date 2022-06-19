@@ -67,6 +67,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         최단_경로에_지하철역_순서_정렬됨(response, Arrays.asList(남부터미널역, 교대역, 강남역));
         최단_경로_총_거리값_확인됨(response, 13);
+        최단_경로_총_지하철_요금_정보_확인됨(response, 2000);
     }
 
     @Test
@@ -100,6 +101,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 최단_경로_총_거리값_확인됨(ExtractableResponse<Response> response, long distance) {
         assertThat(response.jsonPath().getLong("distance")).isEqualTo(distance);
+    }
+
+    public static void 최단_경로_총_지하철_요금_정보_확인됨(ExtractableResponse<Response> response, long fare) {
+        assertThat(response.jsonPath().getLong("fare")).isEqualTo(fare);
     }
 
     public static void 최단_경로에_지하철역_순서_정렬됨(
