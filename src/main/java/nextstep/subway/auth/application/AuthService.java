@@ -31,7 +31,7 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new AuthorizationException("정상적인 토큰이 아닙니다.");
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
