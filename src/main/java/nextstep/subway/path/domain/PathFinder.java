@@ -51,15 +51,14 @@ public class PathFinder {
                 });
     }
 
-    public Path findShortestPath(Station source, Station target, LoginMember loginMember) {
+    public Path findShortestPath(Station source, Station target) {
         GraphPath<Station, SectionEdge> graphPath = findShortestGraphPath(
                 source, target);
 
         List<Line> lines = graphPath.getEdgeList().stream().map(SectionEdge::getLine).collect(Collectors.toList());
         Distance distance = Distance.from((int) graphPath.getWeight());
 
-        return Path.of(graphPath.getVertexList(), distance,
-                fareCalculator.calculate(distance, lines, loginMember));
+        return Path.of(graphPath.getVertexList(), distance, fareCalculator.calculate(distance, lines));
     }
 
     private GraphPath<Station, SectionEdge> findShortestGraphPath(Station source, Station target) {

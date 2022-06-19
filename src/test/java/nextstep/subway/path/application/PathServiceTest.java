@@ -60,7 +60,7 @@ class PathServiceTest {
         when(stationService.findStationById(1L)).thenReturn(강남역);
         when(stationService.findStationById(2L)).thenReturn(양재역);
 
-        when(pathFinder.findShortestPath(강남역, 양재역, loginMember))
+        when(pathFinder.findShortestPath(강남역, 양재역))
                 .thenReturn(Path.of(Arrays.asList(강남역, 양재역), Distance.from(5), Fare.from(1250)));
 
         // when

@@ -25,16 +25,16 @@ class AgeFarePolicyTest {
 
     @Test
     void 어린이_요금_할인() {
-        assertThat(ageFarePolicy.calculate(originFare, childAge)).isEqualTo(Fare.from(850));
+        assertThat(ageFarePolicy.discount(originFare, childAge)).isEqualTo(Fare.from(850));
     }
 
     @Test
     void 청소년_요금_할인() {
-        assertThat(ageFarePolicy.calculate(originFare, teenagerAge)).isEqualTo(Fare.from(1150));
+        assertThat(ageFarePolicy.discount(originFare, teenagerAge)).isEqualTo(Fare.from(1150));
     }
 
     @Test
     void 일반_요금_할인() {
-        assertThat(ageFarePolicy.calculate(originFare, normalAge)).isEqualTo(originFare);
+        assertThat(ageFarePolicy.discount(originFare, normalAge)).isEqualTo(originFare);
     }
 }

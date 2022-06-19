@@ -4,10 +4,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 @Embeddable
 public class Fare implements Comparable<Fare> {
     private final BigDecimal value;
+    @Transient
+    private final AgeFarePolicy ageFarePolicy = new AgeFarePolicy();
 
     protected Fare() {
         this.value = BigDecimal.ZERO;
@@ -32,6 +35,10 @@ public class Fare implements Comparable<Fare> {
 
     public Fare getRateFare(Double rate) {
         return new Fare(value.multiply(BigDecimal.valueOf(rate / 100)));
+    }
+
+    public Fare discount(Integer age) {
+        return ageFarePolicy.discount(this, age);
     }
 
     public BigDecimal getValue() {

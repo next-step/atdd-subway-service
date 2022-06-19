@@ -11,7 +11,7 @@ public class Path {
     private static final int MIN_STATION_SIZE = 2;
     private final List<Station> stations;
     private final Distance distance;
-    private final Fare fare;
+    private Fare fare;
 
     private Path(List<Station> stations, Distance distance, Fare fare) {
         validateStations(stations);
@@ -34,6 +34,11 @@ public class Path {
 
     public Fare getFare() {
         return fare;
+    }
+
+    public void discountFare(Integer age) {
+        Fare discountedFare = fare.discount(age);
+        this.fare = discountedFare;
     }
 
     private void validateStations(List<Station> stations) {

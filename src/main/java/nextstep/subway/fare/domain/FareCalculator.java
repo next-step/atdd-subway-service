@@ -10,22 +10,15 @@ import org.springframework.stereotype.Component;
 public class FareCalculator {
     private final DistanceFarePolicy distanceFarePolicy;
     private final LineFarePolicy lineFarePolicy;
-    private final AgeFarePolicy ageFarePolicy;
 
-    public FareCalculator(DistanceFarePolicy distanceFarePolicy, LineFarePolicy lineFarePolicy,
-                          AgeFarePolicy ageFarePolicy) {
+    public FareCalculator(DistanceFarePolicy distanceFarePolicy, LineFarePolicy lineFarePolicy) {
         this.distanceFarePolicy = distanceFarePolicy;
         this.lineFarePolicy = lineFarePolicy;
-        this.ageFarePolicy = ageFarePolicy;
     }
 
-    public Fare calculate(Distance distance, List<Line> lines, LoginMember loginMember) {
-
+    public Fare calculate(Distance distance, List<Line> lines) {
         Fare distanceFare = distanceFarePolicy.calculate(distance);
         Fare lineFare = lineFarePolicy.calculate(lines);
-        if (!loginMember.isLogin()) {
-            return distanceFare.add(lineFare);
-        }
-        return ageFarePolicy.calculate(distanceFare.add(lineFare), loginMember.getAge());
+        return distanceFare.add(lineFare);
     }
 }

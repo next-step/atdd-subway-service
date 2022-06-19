@@ -14,7 +14,7 @@ public class AgeFarePolicy {
     private static final Fare TEENAGER_DEDUCTED_FARE = Fare.from(350);
     private static final Double TEENAGER_DISCOUNT_RATE = new Double(20);
 
-    public Fare calculate(Fare fare, Integer age) {
+    public Fare discount(Fare fare, Integer age) {
         if (isChildren(age)) {
             return fare.minus(fare.minus(CHILDREN_DEDUCTED_FARE).getRateFare(CHILDREN_DISCOUNT_RATE));
         }

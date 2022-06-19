@@ -21,9 +21,6 @@ class FareCalculatorTest {
     private Station 교대역;
     private Station 남부터미널역;
 
-    private LoginMember loginMember;
-
-
     @BeforeEach
     void setUp() {
         강남역 = new Station("강남역");
@@ -50,9 +47,7 @@ class FareCalculatorTest {
                 .extraFare(Fare.from(500))
                 .build();
 
-        loginMember = new LoginMember(1L, "email@email.com", 8);
-
-        fareCalculator = new FareCalculator(new DistanceFarePolicy(), new LineFarePolicy(), new AgeFarePolicy());
+        fareCalculator = new FareCalculator(new DistanceFarePolicy(), new LineFarePolicy());
 
     }
 
@@ -64,13 +59,13 @@ class FareCalculatorTest {
      * <p>
      * And 어린이 이면
      * <p>
-     * Then (1650 + 900) - (1650 + 900 - 350) * 0.5 의 요금이 나온다
+     * Then (1650 + 900)의 요금이 나온다
      */
     @Test
     void 요금_계산() {
 
-        Fare actual = fareCalculator.calculate(Distance.from(30), Arrays.asList(신분당선, 이호선, 삼호선), loginMember);
-        Fare expected = Fare.from(1450);
+        Fare actual = fareCalculator.calculate(Distance.from(30), Arrays.asList(신분당선, 이호선, 삼호선));
+        Fare expected = Fare.from(2550);
 
         assertThat(actual).isEqualTo(expected);
     }
