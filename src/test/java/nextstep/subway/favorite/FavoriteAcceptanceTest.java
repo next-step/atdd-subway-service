@@ -10,11 +10,13 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.auth.factory.AuthAcceptanceFactory.로그인_되어_있음;
 import static nextstep.subway.member.factory.MemberAcceptanceFactory.회원_생성을_요청;
 import static nextstep.subway.path.factory.PathAcceptanceFactory.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -44,16 +46,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         사용자_토큰 = 로그인_되어_있음(이메일, 패스워드);
     }
 
-    @Test
-    @DisplayName("즐겨찾기 신규 추가")
-    void createFavorites() {
-        Long 역삼역_ID = 역삼역.getId();
-        Long 교대역_ID = 교대역.getId();
-
-        즐겨찾기_추가(사용자_토큰, 역삼역_ID, 교대역_ID);
-    }
-
-    public ExtractableResponse<Response> 즐겨찾기_추가(String accessToken, Long source, Long target) {
+    public static ExtractableResponse<Response> 즐겨찾기_추가(String accessToken, Long source, Long target) {
         FavoriteRequest favoriteRequest = FavoriteRequest.of(source, target);
 
         return RestAssured
@@ -64,5 +57,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .when().post("/favorites")
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 신규 추가")
+    void createFavorites() {
+        Long 역삼역_ID = 역삼역.getId();
+        Long 교대역_ID = 교대역.getId();
+
+        ExtractableResponse<Response> 즐겨찾기_추가_결과 = 즐겨찾기_추가(사용자_토큰, 역삼역_ID, 교대역_ID);
+
+        즐겨찾기_생성됨(즐겨찾기_추가_결과);
     }
 }
