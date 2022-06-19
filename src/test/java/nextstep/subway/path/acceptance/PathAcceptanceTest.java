@@ -32,7 +32,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * |                            |
      * *3호선*(3)                   *신분당선*(10)
      * |                            |
-     * 남부터미널역 --- *3호선*(2) --- 양재
+     * 남부터미널역 --- *3호선*(2) --- 양재역
      */
     @BeforeEach
     public void setUp() {
@@ -95,7 +95,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given 신규 지하철역을 생성하고 (건대입구역)
+     * Given 신규 지하철 노선을 생성하고 (7호선: 뚝섬유원지역-건대입구역)
      * When 출발역과 도착역이 연결되어 있지 않은 최단 경로를 조회하면 (건대입구역 -> 강남역)
      * Then 경로를 조회할 수 없다
      */
@@ -103,7 +103,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void no_connect_source_target() {
         // given
+        StationResponse 뚝섬유원지역 = 지하철역_등록되어_있음("뚝섬유원지역").as(StationResponse.class);
         StationResponse 건대입구역 = 지하철역_등록되어_있음("건대입구역").as(StationResponse.class);
+        지하철_노선_등록되어_있음(LineRequest.of("7호선", "bg-olive-600", 뚝섬유원지역.getId(), 건대입구역.getId(), 8)).as(LineResponse.class);
 
         // when
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(건대입구역.getId(), 강남역.getId());

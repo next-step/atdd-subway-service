@@ -31,13 +31,13 @@ public class PathAcceptanceMethod {
 
     public static void 지하철_최단경로_포함됨(ExtractableResponse<Response> response, List<StationResponse> stationResponses) {
         List<Long> expectedStationIds = getStationIds(stationResponses);
-        List<Long> resultStationIds = getStationIds(response.jsonPath().getList(".", StationResponse.class));
+        List<Long> resultStationIds = getStationIds(response.jsonPath().getList("stations", StationResponse.class));
 
         assertThat(resultStationIds).containsExactlyElementsOf(expectedStationIds);
     }
 
     public static void 지하철_최단경로_조회_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static List<Long> getStationIds(List<StationResponse> stationResponses) {
