@@ -7,6 +7,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Embeddable
 public class Sections {
@@ -200,12 +202,24 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다"));
     }
 
+    public Fare fare(Integer age) {
+        return Fare.calculate(totalDistance(), age, maxSurcharge());
+    }
+
     public Distance totalDistance() {
         Distance distance = new Distance();
         for (Section section : sections) {
             distance = distance.plus(section.getDistance());
         }
         return distance;
+    }
+
+    int maxSurcharge() {
+        return this.sections.stream()
+                .map(s -> s.getLine().getSurcharge())
+                .filter(Objects::nonNull)
+                .max(Comparator.comparingInt(discharge -> discharge))
+                .orElse(0);
     }
 
     @Override

@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.*;
@@ -17,19 +18,31 @@ public class Line extends BaseEntity {
     private String color;
     @Embedded
     private final Sections sections = new Sections();
+    @ColumnDefault("0")
+    private Integer surcharge;
 
     public Line() {
     }
 
     public Line(String name, String color) {
+        this(name, color, null);
+    }
+
+    public Line(String name, String color, Integer surcharge) {
         this.name = name;
         this.color = color;
+        this.surcharge = surcharge;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this(name, color, upStation, downStation, distance, null);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, Integer surcharge) {
         this.name = name;
         this.color = color;
         this.sections.add(this, upStation, downStation, distance);
+        this.surcharge = surcharge;
     }
 
     public void update(Line line) {
@@ -55,6 +68,10 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections.getSections();
+    }
+
+    public Integer getSurcharge() {
+        return surcharge;
     }
 
     public void addLineStation(Station upStation, Station downStation, int distance) {
