@@ -31,13 +31,8 @@ public class DistanceFarePolicy {
     }
 
     private Fare getPremiumFare(Distance distance) {
-
-        Fare standardFullFare = Fare.from(
-                (Math.ceil((PREMIUM_DISTANCE.minus(BASIC_DISTANCE).getValue() - 1) / 5) + 1) * 100
-                        + BASIC_FARE.getValue().doubleValue()
-        );
-
-        Distance extraDistance = distance.minus(Distance.from(50));
+        Fare standardFullFare = getStandardFare(PREMIUM_DISTANCE);
+        Distance extraDistance = distance.minus(PREMIUM_DISTANCE);
 
         return Fare.from(
                 (Math.ceil((extraDistance.getValue() - 1) / 8) + 1) * 100 + standardFullFare.getValue().doubleValue()
