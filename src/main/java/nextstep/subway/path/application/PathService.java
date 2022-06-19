@@ -4,6 +4,7 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.FareResolver;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.dto.Fare;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.ShortestPath;
@@ -33,7 +34,9 @@ public class PathService {
         Station source = findStationById(sourceStationId);
         Station target = findStationById(targetStationId);
         ShortestPath shortestPath = pathFinder.getShortestPath(new PathRequest(findLines(), source, target));
-        return PathResponse.of(shortestPath, fareResolver.resolve(shortestPath.getDistance()));
+        Fare fare = fareResolver.resolve(shortestPath.getDistance());
+        fare.add(shortestPath.mostExpensive());
+        return PathResponse.of(shortestPath, fare);
     }
 
     private Station findStationById(long stationId) {

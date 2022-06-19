@@ -1,6 +1,8 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.FareResolver;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.Fare;
@@ -41,7 +43,8 @@ class PathServiceTest {
         given(stationRepository.findById(1L)).willReturn(Optional.of(new Station("강남역")));
         given(stationRepository.findById(2L)).willReturn(Optional.of(new Station("양재역")));
         given(lineRepository.findAll()).willReturn(Collections.emptyList());
-        given(pathFinder.getShortestPath(any())).willReturn(new ShortestPath(Collections.emptyList(), 0));
+        given(pathFinder.getShortestPath(any())).willReturn(new ShortestPath(Collections.emptyList(),
+                new Lines(Collections.singletonList(new Line("신분당선", "", 10))), 0));
         given(fareResolver.resolve(anyLong())).willReturn(new Fare(1000));
 
         //when
@@ -50,6 +53,6 @@ class PathServiceTest {
         //then
         assertThat(pathResponse.getDistance()).isZero();
         assertThat(pathResponse.getStations()).isEmpty();
-        assertThat(pathResponse.getFare()).isEqualTo(1000);
+        assertThat(pathResponse.getFare()).isEqualTo(1010);
     }
 }
