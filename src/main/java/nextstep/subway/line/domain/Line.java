@@ -9,10 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -66,42 +63,10 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getOrderedStations() {
-        if (sections.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextSection = sections.getNextSectionByEqualUpStation(finalDownStation);
-            if (!nextSection.isPresent()) {
-                break;
-            }
-            downStation = nextSection.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
-    }
-
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextSection = sections.getNextSectionByEqualDownStation(finalDownStation);
-            if (!nextSection.isPresent()) {
-                break;
-            }
-            downStation = nextSection.get().getUpStation();
-        }
-
-        return downStation;
+        return sections.getOrderedStations();
     }
 
     public void removeLineStation(Station station) {
-        sections.remove(this, station);
+        sections.remove(station);
     }
 }

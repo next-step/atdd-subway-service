@@ -26,8 +26,8 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, new Distance(request.getDistance())));
 
         return LineResponse.of(persistLine);
@@ -40,6 +40,10 @@ public class LineService {
 
     private Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(NotFoundException::new);
+    }
+
+    public List<Line> findAllLines() {
+        return lineRepository.findAll();
     }
 
     @Transactional(readOnly = true)

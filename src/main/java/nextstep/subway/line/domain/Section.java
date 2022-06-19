@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.util.Objects;
 
 @Entity
 public class Section {
@@ -70,5 +71,21 @@ public class Section {
     public void updateDownStation(Station station, Distance newDistance) {
         this.distance = this.distance.minus(newDistance);
         this.downStation = station;
+    }
+
+    public Section combine(Section downStationSection) {
+        return new Section(line, upStation, downStationSection.getDownStation(), distance.plus(downStationSection.distance));
+    }
+
+    public boolean isStationExisted(Station station) {
+        return Objects.equals(station, upStation) || Objects.equals(station, downStation);
+    }
+
+    public boolean equalsUpStation(Station station) {
+        return Objects.equals(station, upStation);
+    }
+
+    public boolean equalsDownStation(Station station) {
+        return Objects.equals(station, downStation);
     }
 }
