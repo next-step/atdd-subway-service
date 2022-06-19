@@ -15,33 +15,40 @@ import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요�
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
-    private final String memberEmail = "abc@com";
-    private final String passString = "1234";
+    public static final String MEMBER_EMAIL = "abc@com";
+    public static final String PASSWORD = "1234";
 
     @BeforeEach
     void init() {
-        회원_생성을_요청(memberEmail, passString, 20);
+        //when
+        회원_생성을_요청(MEMBER_EMAIL, PASSWORD, 20);
     }
 
-    @DisplayName("Bearer Auth")
+    @DisplayName("Bearer Auth (정상적인 이메일, 비밀번호로 로그인요청하면 정상 로그인)")
     @Test
     void myInfoWithBearerAuth() {
-        ExtractableResponse<Response> response = 회원_로그인을_시도한다(memberEmail, passString);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        //given
+        ExtractableResponse<Response> response = 회원_로그인을_시도한다(MEMBER_EMAIL, PASSWORD);
+        //then
+        회원_로그인_성공확인(response);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패 (이메일 오류)")
+    @DisplayName("Bearer Auth 로그인 실패 (존재하지않는 이메일로 로그인 요청하면 로그인 실패)")
     @Test
     void myInfoWithBadBearerAuthFailEmail() {
-        ExtractableResponse<Response> response = 회원_로그인을_시도한다("empty@com", passString);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        //given
+        ExtractableResponse<Response> response = 회원_로그인을_시도한다("empty@com", PASSWORD);
+        //then
+        회원_로그인_실패확인(response);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패 (암호 오류)")
+    @DisplayName("Bearer Auth 로그인 실패 (틀린 비밀번호로 로그인 요청하면 로그인 실패)")
     @Test
     void myInfoWithBadBearerAuthFailPassWord() {
-        ExtractableResponse<Response> response = 회원_로그인을_시도한다(memberEmail, "empty");
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        //given
+        ExtractableResponse<Response> response = 회원_로그인을_시도한다(MEMBER_EMAIL, "empty");
+        //then
+        회원_로그인_실패확인(response);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -59,5 +66,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .when().post("/login/token")
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 회원_로그인_성공확인(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 회원_로그인_실패확인(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
