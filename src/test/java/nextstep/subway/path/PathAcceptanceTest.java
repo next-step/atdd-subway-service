@@ -8,6 +8,7 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,7 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         최단_경로에_지하철역_순서_정렬됨(response, Arrays.asList(남부터미널역, 교대역, 강남역));
         최단_경로_총_거리값_확인됨(response, 13);
-        최단_경로_총_지하철_요금_정보_확인됨(response, 2000);
+        최단_경로_총_지하철_요금_정보_확인됨(response, 1350);
     }
 
     @Test
