@@ -26,9 +26,6 @@ public class LineTest {
     @DisplayName("노선내의 역 목록 조회")
     @Test
     void getStations() {
-        Station newDownStation = new Station("수원역");
-        testLine.addStation(testDownStation, newDownStation, 7);
-
         assertThat(testLine.getStations()).containsExactly(testUpStation, testDownStation);
     }
 
