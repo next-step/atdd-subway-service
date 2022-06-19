@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Embeddable
 public class Sections {
@@ -20,7 +21,7 @@ public class Sections {
     public static Sections create() {
         return new Sections();
     }
-
+    
     public void addSection(Section section) {
         values.add(section);
     }
@@ -103,11 +104,31 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException("다음 구간이 없습니다."));
     }
 
+    public Optional<Section> findUpStation(Long stationId) {
+        return values.stream()
+                .filter(it -> it.equalUpStation(stationId))
+                .findFirst();
+    }
+
+    public Optional<Section> findDownStation(Long stationId) {
+        return values.stream()
+                .filter(it -> it.equalDownStation(stationId))
+                .findFirst();
+    }
+
     public boolean isEmpty() {
         return this.values.isEmpty();
     }
 
     public List<Section> getValues() {
         return values;
+    }
+
+    public void remove(Section section) {
+        if (values.size() <= 1) {
+            throw new IllegalArgumentException("라인에서 역을 제거할 수 없습니다.");
+        }
+
+        values.remove(section);
     }
 }

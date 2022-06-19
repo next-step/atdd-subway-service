@@ -6,6 +6,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.*;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -59,10 +60,6 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections.getValues();
-    }
-
     public void addLineSection(Station upStation, Station downStation, int distance) {
         boolean isUpStationExisted = sections.isExisted(upStation);
         boolean isDownStationExisted = sections.isExisted(downStation);
@@ -78,5 +75,24 @@ public class Line extends BaseEntity {
         }
 
         sections.addSection(new Section(this, upStation, downStation, distance));
+    }
+
+    public void removeStation(Long stationId) {
+        Optional<Section> upLineStation = sections.findUpStation(stationId);
+        Optional<Section> downLineStation = sections.findDownStation(stationId);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            createSection(upLineStation.get(), downLineStation.get());
+        }
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private void createSection(Section upLineStation, Section downLineStation) {
+        Station newUpStation = downLineStation.getUpStation();
+        Station newDownStation = upLineStation.getDownStation();
+        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+        sections.addSection(new Section(this, newUpStation, newDownStation, newDistance));
     }
 }
