@@ -71,6 +71,7 @@ class PathServiceTest {
         //then
         PathTestUtils.경유지_확인(path, Arrays.asList(교대역, 남부터미널역, 양재역));
         PathTestUtils.경유거리_확인(path, 5);
+        PathTestUtils.이용요금_확인(path, 1250);
     }
 
     private Path 최단_경로_조회함(Long sourceStationId, Long targetStationId) {

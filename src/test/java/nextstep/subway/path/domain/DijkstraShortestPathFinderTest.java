@@ -45,14 +45,13 @@ class DijkstraShortestPathFinderTest {
     @DisplayName("교대역에서 양재역까지 최단 경로 조회를 요청하면, 최단 경로가 조회된다.")
     @Test
     void getPath() {
-        //given
-
         //when
         Path path = 최단_경로_조회함(교대역, 양재역);
 
         //then
         PathTestUtils.경유지_확인(path, Arrays.asList(교대역, 남부터미널역, 양재역));
         PathTestUtils.경유거리_확인(path, 5);
+        PathTestUtils.이용요금_확인(path, 1250);
     }
 
     private Path 최단_경로_조회함(Station source, Station target) {

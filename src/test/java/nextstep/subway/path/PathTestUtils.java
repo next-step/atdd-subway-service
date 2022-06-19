@@ -16,4 +16,8 @@ public class PathTestUtils {
         assertThat(actualStations).isEqualTo(expectedStations);
         assertThat(actualStations).hasSize(3);
     }
+
+    public static void 이용요금_확인(Path path, int expectedFare) {
+        assertThat(path.getFare()).isEqualTo(expectedFare);
+    }
 }

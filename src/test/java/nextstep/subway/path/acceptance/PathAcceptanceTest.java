@@ -79,8 +79,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *   Scenario: 최단 경로를 조회한다.
      *     When 교대역-양재역 최단 경로를 조회하면,
      *     Then 교대역-남부터미널역-양재역이 조회됨
+     *     AND 경유지, 경유거리, 이용요금을 응답
      *     When 남부터미널역-강남역 최단 경로를 조회하면,
      *     Then 남부터미널역-양재역-강남역이 조회됨
+     *     AND 경유지, 경유거리, 이용요금을 응답
      */
     @TestFactory
     Stream<DynamicTest> findShortestPath() {
@@ -94,6 +96,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                     List<StationResponse> stations = Arrays.asList(교대역, 남부터미널역, 양재역);
                     경유지_확인(response, stations);
                     경유거리_확인(response, 5);
+                    이용요금_확인(response, 1250);
                 }),
 
                 dynamicTest("남부터미널역-강남역 최단 경로를 조회하면, 남부터미널역-양재역-강남역이 조회됨", () -> {
@@ -107,6 +110,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
                     경유거리_확인(response, 12);
                 })
         );
+    }
+
+    private void 이용요금_확인(ExtractableResponse<Response> response, int expectedFare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(expectedFare);
     }
 
     private ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceStationId, Long targetStationId) {
