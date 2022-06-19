@@ -86,7 +86,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     private void 나의_정보를_조회한다() {
         // given
-        ExtractableResponse<Response> 로그인_정보 = 로그인_요청(EMAIL, PASSWORD);
+        TokenResponse 로그인_정보 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
         // when
         ExtractableResponse<Response> 나의_정보_응답 = 나의_정보_조회_요청(로그인_정보);
@@ -97,7 +97,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     private void 나의_정보를_수정한다() {
         // given
-        ExtractableResponse<Response> 로그인_정보 = 로그인_요청(EMAIL, PASSWORD);
+        TokenResponse 로그인_정보 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
         // when
         ExtractableResponse<Response> 나의_정보_수정_응답 = 나의_정보_수정_요청(로그인_정보, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
@@ -108,7 +108,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     private void 나의_정보를_삭제한다() {
         // given
-        ExtractableResponse<Response> 로그인_정보 = 로그인_요청(NEW_EMAIL, NEW_PASSWORD);
+        TokenResponse 로그인_정보 = 로그인_요청(NEW_EMAIL, NEW_PASSWORD).as(TokenResponse.class);
 
         // when
         ExtractableResponse<Response> 나의_정보_삭제_응답 = 나의_정보_삭제_요청(로그인_정보);
@@ -187,9 +187,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getEmail()).isEqualTo(email);
     }
 
-    public static ExtractableResponse<Response> 나의_정보_조회_요청(ExtractableResponse<Response> response) {
-        TokenResponse tokenResponse = response.as(TokenResponse.class);
-
+    public static ExtractableResponse<Response> 나의_정보_조회_요청(TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
@@ -199,8 +197,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 나의_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, int age) {
-        TokenResponse tokenResponse = response.as(TokenResponse.class);
+    public static ExtractableResponse<Response> 나의_정보_수정_요청(TokenResponse tokenResponse, String email, String password, int age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
@@ -218,9 +215,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> 나의_정보_삭제_요청(ExtractableResponse<Response> response) {
-        TokenResponse tokenResponse = response.as(TokenResponse.class);
-
+    private ExtractableResponse<Response> 나의_정보_삭제_요청(TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())

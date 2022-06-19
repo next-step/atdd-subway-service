@@ -35,7 +35,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @Test
     private void 로그인을_성공한다() {
         // given
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
@@ -47,7 +46,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_됨(로그인_요청_응답);
     }
 
-    @Test
     private void 비밀번호가_일치하지_않으면_로그인에_실패한다() {
         // when
         ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(EMAIL, NEW_PASSWORD);
@@ -56,8 +54,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_실패(로그인_요청_응답);
     }
 
-    @Test
     private void 유효하지_않은_토큰으로_api를_호출하면_예외가_발생한다() {
+        // given
+        TokenResponse 유효하지_않은_토큰 = new TokenResponse("invalidToken");
+
+        // when
+        ExtractableResponse<Response> 나의_정보_조회_응답 = 나의_정보_조회_요청(유효하지_않은_토큰);
+
+        // then
+        인증에_실패함(나의_정보_조회_응답);
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
@@ -79,5 +84,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private static void 로그인_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    private static void 인증에_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
