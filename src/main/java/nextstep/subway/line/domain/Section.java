@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Section {
@@ -50,6 +51,22 @@ public class Section {
         return downStation;
     }
 
+    public Boolean equalUpStation(Long stationId) {
+        return Objects.equals(this.upStation.getId(), stationId);
+    }
+
+    public Boolean equalUpStation(Station station) {
+        return Objects.equals(this.upStation, station);
+    }
+
+    public Boolean equalDownStation(Long stationId) {
+        return Objects.equals(this.downStation.getId(), stationId);
+    }
+
+    public Boolean equalDownStation(Station station) {
+        return Objects.equals(this.downStation, station);
+    }
+
     public int getDistance() {
         return distance;
     }
@@ -68,5 +85,13 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public boolean existDownStation() {
+        return this.downStation != null;
+    }
+
+    public boolean existUpStation() {
+        return this.upStation != null;
     }
 }
