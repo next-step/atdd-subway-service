@@ -22,20 +22,21 @@ public class Sections {
         }
 
         List<Station> stations = getStations();
-        boolean isUpStationExisted = isUpStationExisted(stations, section.getUpStation());
-        boolean isDownStationExisted = isDownStationExisted(stations, section.getDownStation());
 
-        validateAlreadyExists(isUpStationExisted, isDownStationExisted);
+        boolean hasCommonUpStation = hasCommonUpStation(stations, section);
+        boolean hasCommonDownStation = hasCommonDownStation(stations, section);
+
+        validateAlreadyExists(hasCommonUpStation, hasCommonDownStation);
         validateNotExists(stations, section);
 
-        if (isUpStationExisted) {
+        if (hasCommonUpStation) {
             findSectionByUpStation(section.getUpStation())
                     .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
             sections.add(section);
             return;
         }
 
-        if (isDownStationExisted) {
+        if (hasCommonDownStation) {
             findSectionByDownStation(section.getDownStation())
                     .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
             sections.add(section);
@@ -45,8 +46,8 @@ public class Sections {
         throw new RuntimeException();
     }
 
-    private void validateAlreadyExists(boolean isUpStationExisted, boolean isDownStationExisted) {
-        if (isUpStationExisted && isDownStationExisted) {
+    private void validateAlreadyExists(boolean hasCommonUpStation, boolean hasCommonDownStation) {
+        if (hasCommonUpStation && hasCommonDownStation) {
             throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
     }
@@ -71,12 +72,14 @@ public class Sections {
         return getStationsInOrder();
     }
 
-    private boolean isUpStationExisted(List<Station> stations, Station station) {
-        return stations.stream().anyMatch(it -> it.equals(station));
+    private boolean hasCommonUpStation(List<Station> stations, Section section) {
+        return stations.stream()
+                .anyMatch(section::matchUpStation);
     }
 
-    private boolean isDownStationExisted(List<Station> stations, Station station) {
-        return stations.stream().anyMatch(it -> it.equals(station));
+    private boolean hasCommonDownStation(List<Station> stations, Section section) {
+        return stations.stream()
+                .anyMatch(section::matchDownStation);
     }
 
     private List<Station> getStationsInOrder() {
