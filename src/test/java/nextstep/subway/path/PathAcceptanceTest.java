@@ -101,6 +101,39 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }
 
+    @Test
+    @DisplayName("존재하지 않는 역에 대한 경로를 검색하려는 경우 실패하는 테스트")
+    void findShortDistanceFail1() {
+        //when
+        ExtractableResponse<Response> response = 출발역_도착역_최단거리_조회(교대역.getId(), 1234L);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("같은 역에 대한 경로를 검색하려는 경우 실패하는 테스트")
+    void findShortDistanceFail2() {
+        //when
+        ExtractableResponse<Response> response = 출발역_도착역_최단거리_조회(교대역.getId(), 교대역.getId());
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("경로가 존재하지 않는 경우 실패하는 테스트")
+    void findShortDistanceFail3() {
+        //given
+        StationResponse 신도림역 = StationAcceptanceTest.지하철역_등록되어_있음("신도림역").as(StationResponse.class);
+
+        //when
+        ExtractableResponse<Response> response = 출발역_도착역_최단거리_조회(교대역.getId(), 신도림역.getId());
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
         return 지하철_노선_생성_요청(name, color, upStation, downStation, distance);
     }
