@@ -8,7 +8,6 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Embeddable
@@ -57,7 +56,7 @@ public class Sections {
 
     private boolean isStationExisted(Station station) {
         return sections.stream()
-                .anyMatch(it -> Objects.equals(station, it.getUpStation()) || Objects.equals(station, it.getDownStation()));
+                .anyMatch(it -> it.isStationExisted(station));
     }
 
     private void raiseIfNotValidAddSection(boolean isUpStationExisted, boolean isDownStationExisted) {
@@ -76,13 +75,13 @@ public class Sections {
 
     public Optional<Section> getNextSectionByEqualUpStation(Station station) {
         return sections.stream()
-                .filter(it -> Objects.equals(station, it.getUpStation()))
+                .filter(it -> it.equalsUpStation(station))
                 .findFirst();
     }
 
     public Optional<Section> getNextSectionByEqualDownStation(Station station) {
         return sections.stream()
-                .filter(it -> Objects.equals(it.getDownStation(), station))
+                .filter(it -> it.equalsDownStation(station))
                 .findFirst();
     }
 

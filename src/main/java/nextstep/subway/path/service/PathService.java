@@ -2,11 +2,10 @@ package nextstep.subway.path.service;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +26,9 @@ public class PathService {
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
 
-        Path path = new Path(lineService.findAllLines());
-        GraphPath<Station, DefaultWeightedEdge> graphPath = path.findPath(sourceStation, targetStation);
+        PathFinder pathFinder = new PathFinder(lineService.findAllLines());
+        Path path = pathFinder.findPath(sourceStation, targetStation);
 
-        return PathResponse.of(graphPath.getVertexList(), (int) graphPath.getWeight());
+        return PathResponse.of(path.getStations(), path.getDistance());
     }
 }

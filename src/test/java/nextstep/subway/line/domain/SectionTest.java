@@ -31,4 +31,29 @@ class SectionTest {
         assertThat(newSection.getDownStation()).isEqualTo(신논현역);
     }
 
+    @Test
+    void 역이_포함된_여부를_확인할_수_있다() {
+        Section section = new Section(신분당선, 강남역, 양재역, new Distance(10));
+
+        assertThat(section.isStationExisted(강남역)).isTrue();
+        assertThat(section.isStationExisted(양재역)).isTrue();
+        assertThat(section.isStationExisted(신논현역)).isFalse();
+    }
+
+    @Test
+    void 상행역이_맞는지_확인할_수_있다() {
+        Section section = new Section(신분당선, 강남역, 양재역, new Distance(10));
+
+        assertThat(section.equalsUpStation(강남역)).isTrue();
+        assertThat(section.equalsUpStation(양재역)).isFalse();
+    }
+
+    @Test
+    void 하행역이_맞는지_확인할_수_있다() {
+        Section section = new Section(신분당선, 강남역, 양재역, new Distance(10));
+
+        assertThat(section.equalsDownStation(강남역)).isFalse();
+        assertThat(section.equalsDownStation(양재역)).isTrue();
+    }
+
 }
