@@ -58,14 +58,14 @@ public class Sections {
     }
 
     private void addBeforeExistingSection(Section section) {
-        findSectionByUpStation(section.getUpStation())
-                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+        findSectionWithCommonUpStation(section)
+                .ifPresent(it -> it.connectUpStationWith(section));
         sections.add(section);
     }
 
     private void addAfterExistingSection(Section section) {
-        findSectionByDownStation(section.getDownStation())
-                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+        findSectionWithCommonDownStation(section)
+                .ifPresent(it -> it.connectDownStationWith(section));
         sections.add(section);
     }
 
@@ -128,6 +128,18 @@ public class Sections {
     private Optional<Section> findSectionByDownStation(Station station) {
         return sections.stream()
                 .filter(section -> section.matchDownStation(station))
+                .findFirst();
+    }
+
+    private Optional<Section> findSectionWithCommonUpStation(Section section) {
+        return sections.stream()
+                .filter(it -> it.matchUpStation(section))
+                .findFirst();
+    }
+
+    private Optional<Section> findSectionWithCommonDownStation(Section section) {
+        return sections.stream()
+                .filter(it -> it.matchDownStation(section))
                 .findFirst();
     }
 
