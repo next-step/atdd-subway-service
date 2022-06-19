@@ -1,12 +1,18 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.line.domain.Line;
+
 import java.util.Objects;
 
 public class Fare {
-    private final long won;
+    private long won;
 
     public Fare(long won) {
         this.won = won;
+    }
+
+    public void add(Line line) {
+        won += line.getExtraFare();
     }
 
     public long getWon() {
