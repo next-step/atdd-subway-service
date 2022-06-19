@@ -3,6 +3,7 @@ package nextstep.subway.member.infrastructure;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,8 @@ public class InMemoryMemberRepository implements MemberRepository {
 
     @Override
     public Member save(Member member) {
-        elements.put(++memberId, member);
+        ReflectionTestUtils.setField(member, "id", ++memberId);
+        elements.put(memberId, member);
         return member;
     }
 
