@@ -33,26 +33,17 @@ public class Sections {
             return;
         }
 
-        boolean isUpStationExisted = hasStation(section.getUpStation());
-        boolean isDownStationExisted = hasStation(section.getDownStation());
-
-        if (isUpStationExisted) {
-            sectionList.stream()
-                    .filter(it -> it.getUpStation() == section.getUpStation())
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
-            sectionList.add(section);
-        } else if (isDownStationExisted) {
-            sectionList.stream()
-                    .filter(it -> it.getDownStation() == section.getDownStation())
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-
-            sectionList.add(section);
-        } else {
-            throw new RuntimeException();
+        Section upLineSection = findUpLineStation(section.getUpStation());
+        if (upLineSection != null) {
+            upLineSection.updateUpStation(section.getDownStation(), section.getDistance());
         }
+
+        Section downLineSection = findDownLineStation(section.getDownStation());
+        if (downLineSection != null) {
+            downLineSection.updateDownStation(section.getUpStation(), section.getDistance());
+        }
+
+        sectionList.add(section);
     }
 
     private void validateNewSection(Section section) {
@@ -61,41 +52,51 @@ public class Sections {
         boolean isDownStationExisted = hasStation(section.getDownStation());
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
                 stations.stream().noneMatch(it -> it == section.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
     }
 
     public void removeSectionByStation(Station station) {
-        if (sectionList.size() <= 1) {
-            throw new RuntimeException();
+        validateNotLastSection();
+
+        Section upLineStation = findUpLineStation(station);
+        Section downLineStation = findDownLineStation(station);
+
+        if (upLineStation != null && downLineStation != null) {
+            Station newUpStation = downLineStation.getUpStation();
+            Station newDownStation = upLineStation.getDownStation();
+            Line line = upLineStation.getLine();
+            int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+            sectionList.add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 
-        Optional<Section> upLineStation = sectionList.stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = sectionList.stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+        sectionList.remove(upLineStation);
+        sectionList.remove(downLineStation);
+    }
 
-        upLineStation.ifPresent(it -> remove(it));
-        downLineStation.ifPresent(it -> remove(it));
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            Line line = upLineStation.get().getLine();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            add(new Section(line, newUpStation, newDownStation, newDistance));
+    private void validateNotLastSection() {
+        if (sectionList.size() <= 1) {
+            throw new IllegalStateException();
         }
     }
 
-    private void remove(Section section) {
-        sectionList.remove(section);
+    private Section findUpLineStation(Station upStation) {
+        return sectionList.stream()
+                .filter(it -> it.hasSameUpStation(upStation))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private Section findDownLineStation(Station downStation) {
+        return sectionList.stream()
+                .filter(it -> it.hasSameDownStation(downStation))
+                .findFirst()
+                .orElse(null);
     }
 
     public List<Station> getStations() {
