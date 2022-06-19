@@ -3,11 +3,10 @@ package nextstep.subway.member;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.auth.factory.AuthAcceptanceFactory.로그인_되어있음;
+import static nextstep.subway.auth.factory.AuthAcceptanceFactory.로그인_되어_있음;
 import static nextstep.subway.member.factory.MemberAcceptanceFactory.*;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -50,10 +49,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_생성됨(회원_생성_결과);
 
-        // when
-        TokenResponse 로그인_요청_결과 = 로그인_되어있음(이메일, 패스워드);
-        // then
-        String 로그인_토큰 = 로그인_요청_결과.getAccessToken();
+        String 로그인_토큰 = 로그인_되어_있음(이메일, 패스워드);
 
         // when
         ExtractableResponse<Response> 내_정보_조회_요청_결과 = 내_정보_조회_요청(로그인_토큰);

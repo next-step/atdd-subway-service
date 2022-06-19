@@ -26,8 +26,8 @@ public class AuthAcceptanceFactory {
                 .extract();
     }
 
-    public static TokenResponse 로그인_되어있음(String name, String email) {
-        return 로그인_요청(name, email).as(TokenResponse.class);
+    public static String 로그인_되어_있음(String name, String email) {
+        return 로그인_요청(name, email).as(TokenResponse.class).getAccessToken();
     }
 
     public static void 로그인_성공됨(ExtractableResponse<Response> response) {
