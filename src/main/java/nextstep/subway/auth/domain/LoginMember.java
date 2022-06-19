@@ -5,7 +5,11 @@ public class LoginMember {
     private String email;
     private Integer age;
 
-    public LoginMember() {
+    private LoginMember() {
+    }
+
+    public LoginMember(String email, Integer age) {
+        this(null, email, age);
     }
 
     public LoginMember(Long id, String email, Integer age) {

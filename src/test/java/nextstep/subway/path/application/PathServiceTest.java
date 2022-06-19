@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.NotExistException;
 import nextstep.subway.line.application.LineService;
@@ -24,6 +25,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -65,9 +69,9 @@ class PathServiceTest {
         삼호선.addSection(new Section(삼호선, 양재역, 멀리있는역, Distance.of(70)));
     }
 
-    @Test
-    @DisplayName("경로 조회시 최단거리 및 기본요금 결과 반환")
-    void searchBasicFeeAndShortestPath() {
+    @ParameterizedTest(name = "경로 조회시 최단거리 및 기본요금 결과 반환")
+    @MethodSource("basicMemberAndExpectedFee")
+    void searchBasicFeeAndShortestPath(LoginMember loginMember, int expectedFee) {
         // given
         Set<Line> throughLine = new HashSet<>(Collections.singletonList(이호선));
         when(stationService.findStationById(1L)).thenReturn(강남역);
@@ -77,19 +81,28 @@ class PathServiceTest {
                 .thenReturn(new Path(Arrays.asList(강남역, 교대역), 8, throughLine));
 
         // when
-        PathResponse pathResponse = pathService.searchShortestPath(LoginMember.guest(), 1L, 2L);
+        PathResponse pathResponse = pathService.searchShortestPath(loginMember, 1L, 2L);
 
         // then
         assertAll(
                 () -> assertThat(pathResponse.getStations()).hasSize(2),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(8),
-                () -> assertThat(pathResponse.getFee()).isEqualTo(1250)
+                () -> assertThat(pathResponse.getFee()).isEqualTo(expectedFee)
         );
     }
 
-    @Test
-    @DisplayName("경로 조회시 최단거리(10km ~ 50km 이내) 및 추가요금이 포함된 결과 반환")
-    void searchExtraFeeLessThan50KmAndShortestPath() {
+    public static Stream<Arguments> basicMemberAndExpectedFee() {
+        return Stream.of(
+                Arguments.of(LoginMember.guest(), 1250),
+                Arguments.of(new LoginMember("mond@mond.com", 6), 450),
+                Arguments.of(new LoginMember("mond@mond.com", 13), 720),
+                Arguments.of(new LoginMember("mond@mond.com", 20), 1250)
+        );
+    }
+
+    @ParameterizedTest(name = "경로 조회시 최단거리(10km ~ 50km 이내) 및 추가요금이 포함된 결과 반환")
+    @MethodSource("lessThan50KmMemberAndExpectedFee")
+    void searchExtraFeeLessThan50KmAndShortestPath(LoginMember loginMember, int expectedFee) {
         // given
         Set<Line> throughLine = new HashSet<>(Collections.singletonList(신분당선));
         when(stationService.findStationById(1L)).thenReturn(강남역);
@@ -99,19 +112,28 @@ class PathServiceTest {
                 .thenReturn(new Path(Arrays.asList(강남역, 양재역), 25, throughLine));
 
         // when
-        PathResponse pathResponse = pathService.searchShortestPath(LoginMember.guest(), 1L, 3L);
+        PathResponse pathResponse = pathService.searchShortestPath(loginMember, 1L, 3L);
 
         // then
         assertAll(
                 () -> assertThat(pathResponse.getStations()).hasSize(2),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(25),
-                () -> assertThat(pathResponse.getFee()).isEqualTo(1550) // 1250 + 300
+                () -> assertThat(pathResponse.getFee()).isEqualTo(expectedFee)
         );
     }
 
-    @Test
-    @DisplayName("경로 조회시 최단거리(50km 초과) 및 추가요금이 포함된 결과 반환")
-    void searchExtraFeeMoreThan50KmAndShortestPath() {
+    public static Stream<Arguments> lessThan50KmMemberAndExpectedFee() {
+        return Stream.of(
+                Arguments.of(LoginMember.guest(), 1550), // 1250 + 300
+                Arguments.of(new LoginMember("mond@mond.com", 6), 600),
+                Arguments.of(new LoginMember("mond@mond.com", 13), 960),
+                Arguments.of(new LoginMember("mond@mond.com", 20), 1550)
+        );
+    }
+
+    @ParameterizedTest(name = "경로 조회시 최단거리(50km 초과) 및 추가요금이 포함된 결과 반환")
+    @MethodSource("moreThan50KmMemberAndExpectedFee")
+    void searchExtraFeeMoreThan50KmAndShortestPath(LoginMember loginMember, int expectedFee) {
         // given
         Set<Line> throughLine = new HashSet<>(Arrays.asList(신분당선, 삼호선));
         when(stationService.findStationById(1L)).thenReturn(강남역);
@@ -121,13 +143,22 @@ class PathServiceTest {
                 .thenReturn(new Path(Arrays.asList(강남역, 양재역, 멀리있는역), 95, throughLine));
 
         // when
-        PathResponse pathResponse = pathService.searchShortestPath(LoginMember.guest(), 1L, 10L);
+        PathResponse pathResponse = pathService.searchShortestPath(loginMember, 1L, 10L);
 
         // then
         assertAll(
                 () -> assertThat(pathResponse.getStations()).hasSize(3),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(95),
-                () -> assertThat(pathResponse.getFee()).isEqualTo(3150) // 1250 + 800 + 600 + 500
+                () -> assertThat(pathResponse.getFee()).isEqualTo(expectedFee)
+        );
+    }
+
+    public static Stream<Arguments> moreThan50KmMemberAndExpectedFee() {
+        return Stream.of(
+                Arguments.of(LoginMember.guest(), 3150), // 1250 + 800 + 600 + 500
+                Arguments.of(new LoginMember("mond@mond.com", 6), 1400),
+                Arguments.of(new LoginMember("mond@mond.com", 13), 2240),
+                Arguments.of(new LoginMember("mond@mond.com", 20), 3150)
         );
     }
 
