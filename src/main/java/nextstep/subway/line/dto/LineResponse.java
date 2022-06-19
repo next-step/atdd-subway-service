@@ -29,14 +29,22 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-        if(isEmpty(line)) {
-            return new LineResponse(line.getId(), line.getName(), line.getColor(), new ArrayList(), line.getCreatedDate(), line.getModifiedDate());
+        if (isEmpty(line)) {
+            return new LineResponse(
+                    line.getId(),
+                    line.getName().getValue(),
+                    line.getColor().getValue(),
+                    new ArrayList(),
+                    line.getCreatedDate(),
+                    line.getModifiedDate());
         }
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), assembleStations(line), line.getCreatedDate(), line.getModifiedDate());
-    }
-
-    public static LineResponse of(Line line, List<StationResponse> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
+        return new LineResponse(
+                line.getId(),
+                line.getName().getValue(),
+                line.getColor().getValue(),
+                assembleStations(line),
+                line.getCreatedDate(),
+                line.getModifiedDate());
     }
 
     private static boolean isEmpty(Line line) {
