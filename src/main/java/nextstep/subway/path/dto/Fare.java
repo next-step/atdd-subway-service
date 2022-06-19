@@ -11,8 +11,9 @@ public class Fare {
         this.won = won;
     }
 
-    public void add(Line line) {
+    public Fare add(Line line) {
         won += line.getExtraFare();
+        return this;
     }
 
     public long getWon() {
