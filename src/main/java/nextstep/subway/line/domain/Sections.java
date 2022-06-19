@@ -22,7 +22,6 @@ public class Sections {
         }
 
         List<Station> stations = getStations();
-
         boolean hasCommonUpStation = hasCommonUpStation(stations, section);
         boolean hasCommonDownStation = hasCommonDownStation(stations, section);
 
@@ -30,19 +29,13 @@ public class Sections {
         validateNotExists(stations, section);
 
         if (hasCommonUpStation) {
-            findSectionByUpStation(section.getUpStation())
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-            sections.add(section);
+            addBeforeExistingSection(section);
             return;
         }
-
         if (hasCommonDownStation) {
-            findSectionByDownStation(section.getDownStation())
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-            sections.add(section);
+            addAfterExistingSection(section);
             return;
         }
-
         throw new RuntimeException();
     }
 
@@ -62,6 +55,18 @@ public class Sections {
     private boolean hasCommonStation(List<Station> stations, Section section) {
         return stations.stream()
                 .anyMatch(section::matchUpOrDownStation);
+    }
+
+    private void addBeforeExistingSection(Section section) {
+        findSectionByUpStation(section.getUpStation())
+                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+        sections.add(section);
+    }
+
+    private void addAfterExistingSection(Section section) {
+        findSectionByDownStation(section.getDownStation())
+                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+        sections.add(section);
     }
 
     public List<Station> getStations() {
