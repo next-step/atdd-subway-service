@@ -31,7 +31,7 @@ public class Fare {
                 .distinct()
                 .collect(Collectors.toList());
         return lines.stream()
-                .map(line -> line.getAdditionalFare())
+                .map(line -> line.getAdditionalFare().getValue())
                 .max(Integer::compareTo)
                 .orElseThrow(IllegalArgumentException::new);
     }

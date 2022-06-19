@@ -18,8 +18,8 @@ public class Line extends BaseEntity {
     @Column(nullable = false)
     private String color;
 
-    @Column(nullable = false)
-    private int additionalFare;
+    @Embedded
+    private AdditionalFare additionalFare;
 
     @Embedded
     private Sections sections = new Sections();
@@ -35,7 +35,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance, int additionalFare) {
         this.name = name;
         this.color = color;
-        this.additionalFare = additionalFare;
+        this.additionalFare = AdditionalFare.from(additionalFare);
         this.sections = Sections.from(Section.of(this, upStation, downStation, distance));
     }
 
@@ -76,7 +76,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public int getAdditionalFare() {
+    public AdditionalFare getAdditionalFare() {
         return additionalFare;
     }
 
