@@ -26,7 +26,7 @@ public class Path {
     public PathResponse toPathResponse() {
         List<StationResponse> stationsResponse = this.stations.stream()
                 .map(StationResponse::of).collect(Collectors.toList());
-        return new PathResponse(stationsResponse, this.distance, 0);
+        return new PathResponse(stationsResponse, this.distance, Fee.of(this.distance, this.lines).getFee());
     }
 
     public List<Station> throughStations() {
