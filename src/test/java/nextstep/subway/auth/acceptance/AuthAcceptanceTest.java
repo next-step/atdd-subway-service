@@ -1,6 +1,7 @@
 package nextstep.subway.auth.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceSteps.*;
+import static nextstep.subway.member.MemberAcceptanceSteps.내_회원_정보_조회_요청;
 import static nextstep.subway.member.MemberAcceptanceSteps.회원_생성을_요청;
 
 import io.restassured.response.ExtractableResponse;
@@ -15,6 +16,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private final String INVALID_EMAIL = "INVALID_EMAIL";
     private final String PASSWORD = "password";
     private final Integer AGE = 20;
+    private final String INVALID_TOKEN = "INVALID_TOKEN";
 
     /**
      * Feature: 로그인 기능
@@ -49,5 +51,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     void myInfoWithWrongBearerAuth() {
+        // when
+        ExtractableResponse<Response> response = 내_회원_정보_조회_요청(INVALID_TOKEN);
+
+        // then
+        로그인_정보_조회_실패됨(response);
     }
 }
