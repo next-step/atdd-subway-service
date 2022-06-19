@@ -13,4 +13,5 @@ public class Messages {
     public static final String NOT_CONNECTED_SOURCE_TARGET_STATION = "[ERROR] 출발역과 도착역이 연결이 되어있지 않습니다.";
 
     public static final String INVALID_TOKEN = "[ERROR] 유효하지 않은 토큰 정보입니다.";
+    public static final String NOT_EQUALS_MEMBER = "[ERROR] 동일한 회원의 정보가 아닙니다.";
 }
