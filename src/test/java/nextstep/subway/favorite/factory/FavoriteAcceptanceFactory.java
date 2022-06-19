@@ -39,6 +39,18 @@ public class FavoriteAcceptanceFactory {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_삭제(String accessToken, ExtractableResponse<Response> response) {
+        String uri = response.header("Location");
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(accessToken)
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -47,4 +59,7 @@ public class FavoriteAcceptanceFactory {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 }

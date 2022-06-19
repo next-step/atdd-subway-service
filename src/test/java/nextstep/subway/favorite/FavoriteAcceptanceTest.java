@@ -61,4 +61,35 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         즐겨찾기_조회됨(즐겨찾기_조회_결과);
     }
+
+    @Test
+    @DisplayName("즐겨찾기 삭제 성공 테스트")
+    void deleteFavorites() {
+        ExtractableResponse<Response> 즐겨찾기_추가_결과 = 즐겨찾기_추가(사용자_토큰, 역삼역, 교대역);
+
+        즐겨찾기_생성됨(즐겨찾기_추가_결과);
+
+        ExtractableResponse<Response> 즐겨찾기_삭제_결과 = 즐겨찾기_삭제(사용자_토큰, 즐겨찾기_추가_결과);
+
+        즐겨찾기_삭제됨(즐겨찾기_삭제_결과);
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 관리 테스트")
+    void manageMemberFavorite() {
+        // given
+        ExtractableResponse<Response> 즐겨찾기_추가_결과 = 즐겨찾기_추가(사용자_토큰, 역삼역, 교대역);
+        // when
+        즐겨찾기_생성됨(즐겨찾기_추가_결과);
+
+        // given
+        ExtractableResponse<Response> 즐겨찾기_조회_결과 = 즐겨찾기_조회(사용자_토큰);
+        // when
+        즐겨찾기_조회됨(즐겨찾기_조회_결과);
+
+        // given
+        ExtractableResponse<Response> 즐겨찾기_삭제_결과 = 즐겨찾기_삭제(사용자_토큰, 즐겨찾기_추가_결과);
+        // when
+        즐겨찾기_삭제됨(즐겨찾기_삭제_결과);
+    }
 }
