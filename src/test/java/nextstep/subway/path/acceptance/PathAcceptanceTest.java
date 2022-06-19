@@ -112,7 +112,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //given
         StationResponse 부평역 = 지하철역_등록되어_있음("부평역").as(StationResponse.class);
         StationResponse 인천시청역 = 지하철역_등록되어_있음("인천시청역").as(StationResponse.class);
-        LineResponse 인천호선 = 지하철_노선_등록되어_있음(new LineRequest("인천호선", "bg-skyblue-600", 부평역.getId(), 인천시청역.getId(), 10)).as(LineResponse.class);
+        LineResponse 인천호선 = 지하철_노선_등록되어_있음(new LineRequest("인천호선", "bg-skyblue-600", 부평역.getId(), 인천시청역.getId(), 10, 0)).as(LineResponse.class);
 
         ExtractableResponse<Response> 교대역_교대역_조회 = 최단경로_조회_요청(교대역, 교대역);
         최단경로_조회_실패됨(교대역_교대역_조회);

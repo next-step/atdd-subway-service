@@ -14,14 +14,6 @@ public class LineRequest {
     public LineRequest() {
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
-        this.name = name;
-        this.color = color;
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
-        this.distance = distance;
-    }
-
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int fare) {
         this.name = name;
         this.color = color;
@@ -56,6 +48,6 @@ public class LineRequest {
     }
 
     public Line toLine(Station upStation, Station downStation) {
-        return Line.of(name, color, upStation, downStation, distance);
+        return Line.of(name, color, upStation, downStation, distance, fare);
     }
 }

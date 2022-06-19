@@ -13,7 +13,7 @@ public class FactoryMethods {
         return Section.of(upStation, downStation, distance);
     }
 
-    public static Line createLine(String name, String color, Station upStation, Station downStation, int distance) {
-        return new Line(name, color, upStation, downStation, distance);
+    public static Line createLine(String name, String color, Station upStation, Station downStation, int distance, int additionalFare) {
+        return new Line(name, color, upStation, downStation, distance, additionalFare);
     }
 }
