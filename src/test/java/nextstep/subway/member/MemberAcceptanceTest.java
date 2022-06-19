@@ -79,8 +79,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void manageMyInfo() {
         // given
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        ExtractableResponse<Response> loginResponse = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD);
-        String token = AuthAcceptanceTest.로그인되어_있음(loginResponse);
+        // and
+        String token = AuthAcceptanceTest.로그인되어_있음(EMAIL, PASSWORD);
 
         // when
         ExtractableResponse<Response> findResponse = 내_정보_조회_요청(token);

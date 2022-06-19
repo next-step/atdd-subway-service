@@ -43,7 +43,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
 
         // then
-        로그인되어_있음(loginResponse);
+        로그인됨(loginResponse);
     }
 
     /**
@@ -86,7 +86,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         유효하지_않은_토큰(response);
     }
 
-    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    private static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
 
         return RestAssured
@@ -99,11 +99,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     }
 
-    public static String 로그인되어_있음(ExtractableResponse<Response> response) {
+    public static String 로그인되어_있음(String email, String password) {
+        ExtractableResponse<Response> response = 로그인_요청(email, password);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        return response.as(TokenResponse.class)
-                .getAccessToken();
+        return response.as(TokenResponse.class).getAccessToken();
+    }
+
+    public static void 로그인됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 로그인_실패(ExtractableResponse<Response> response) {
