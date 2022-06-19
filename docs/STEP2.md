@@ -62,7 +62,7 @@ Connection: keep-alive
   - [x] PathService 레이어 테스트 작성
   - [ ] PathService 레이어 기능 구현
 - [ ] 경로 조회 도메인 구현
-  - [ ] Path 도메인 테스트 작성
-  - [ ] Path 도메인 기능 구현
+  - [x] Path 도메인 구현
+  - [x] PathResponse 도메인 구현
   - [ ] PathFinder 도메인 테스트 작성
   - [ ] PathFinder 도메인 기능 구현
