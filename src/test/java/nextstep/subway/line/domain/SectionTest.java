@@ -21,21 +21,23 @@ class SectionTest {
         정자역_강남역 = new Section(신분당선, 정자역, 강남역, 10000);
     }
     @Test
-    @DisplayName("입력된 상행역이 너무 긴 경우 에러를 발생시킨다.")
-    void updateTooLongUpStation() {
+    @DisplayName("추가할 구간 너무 긴 경우 에러를 발생시킨다.")
+    void throwExceptionWhenConnectUpStation() {
         Station 양재역 = new Station("양재역");
+        Section 정자역_양재역 = new Section(신분당선, 정자역, 양재역, 20000);
 
-        assertThatThrownBy(() -> 정자역_강남역.updateUpStation(양재역, 20000))
+        assertThatThrownBy(() -> 정자역_강남역.connectUpStationWith(정자역_양재역))
                 .isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 
     @Test
-    @DisplayName("입력된 하행역이 너무 긴 경우 에러를 발생시킨다.")
-    void updateTooLongDownStation() {
+    @DisplayName("추가할 구간 너무 긴 경우 에러를 발생시킨다.")
+    void throwExceptionWhenConnectDownStation() {
         Station 양재역 = new Station("양재역");
+        Section 양재역_강남역 = new Section(신분당선, 양재역, 강남역, 20000);
 
-        assertThatThrownBy(() -> 정자역_강남역.updateDownStation(양재역, 20000))
+        assertThatThrownBy(() -> 정자역_강남역.connectDownStationWith(양재역_강남역))
                 .isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
