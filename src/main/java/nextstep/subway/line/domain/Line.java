@@ -21,8 +21,8 @@ public class Line extends BaseEntity {
     @Column
     private String color;
 
-    @Column
-    private int extraCharge;
+    @Embedded
+    private ExtraCharge extraCharge;
 
     @Embedded
     private Sections sections = new Sections();
@@ -37,7 +37,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, int extraCharge) {
         this.name = name;
         this.color = color;
-        this.extraCharge = extraCharge;
+        this.extraCharge = ExtraCharge.of(extraCharge);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, Distance distance) {
@@ -59,7 +59,7 @@ public class Line extends BaseEntity {
         return this.sections;
     }
 
-    public int getExtraCharge() {
+    public ExtraCharge getExtraCharge() {
         return this.extraCharge;
     }
 

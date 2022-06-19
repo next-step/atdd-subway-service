@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import java.util.Objects;
 import java.util.Set;
+import nextstep.subway.line.domain.ExtraCharge;
 import nextstep.subway.line.domain.Line;
 
 public class Fee {
@@ -50,11 +51,11 @@ public class Fee {
     }
 
     private static int calculateLineExtraCharge(Set<Line> lines) {
-        int extraCharge = 0;
+        ExtraCharge extraCharge = ExtraCharge.of(0);
         for (Line line : lines) {
-            extraCharge = Math.max(extraCharge, line.getExtraCharge());
+            extraCharge = ExtraCharge.max(extraCharge, line.getExtraCharge());
         }
-        return extraCharge;
+        return extraCharge.getExtraCharge();
     }
 
     public int getFee() {
