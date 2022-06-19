@@ -10,7 +10,7 @@ import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.application.PathService;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -20,14 +20,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class FavoriteService {
     private final StationService stationService;
     private final MemberService memberService;
-    private final PathFinder pathFinder;
+    private final PathService pathService;
     private final FavoriteRepository favoriteRepository;
 
     public FavoriteService(StationService stationService, MemberService memberService,
-                           PathFinder pathFinder, FavoriteRepository favoriteRepository) {
+                           PathService pathService, FavoriteRepository favoriteRepository) {
         this.stationService = stationService;
         this.memberService = memberService;
-        this.pathFinder = pathFinder;
+        this.pathService = pathService;
         this.favoriteRepository = favoriteRepository;
     }
 
@@ -46,7 +46,7 @@ public class FavoriteService {
     public List<FavoriteResponse> findFavoriteOfMine(Long memberId) {
         final Member mine = memberService.findMemberById(memberId);
 
-        List<Favorite> favorites = favoriteRepository.findAllByMemberId(mine.getId());
+        List<Favorite> favorites = favoriteRepository.findAllByMemberIdAndDeletedFalse(mine.getId());
         return favorites.stream()
                 .map(Favorite::toFavoriteResponse)
                 .collect(Collectors.toList());
@@ -62,6 +62,6 @@ public class FavoriteService {
     }
 
     private void validateFavorite(Station source, Station target) {
-        pathFinder.validatePath(source, target);
+        pathService.validatePath(source, target);
     }
 }

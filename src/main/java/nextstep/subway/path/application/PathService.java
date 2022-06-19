@@ -2,7 +2,6 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
-import nextstep.subway.path.domain.Fee;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -31,5 +30,10 @@ public class PathService {
         Path resultPath = pathFinder.getDijkstraPath(sourceStation, targetStation);
         resultPath.calculateFee(loginMember);
         return resultPath.toPathResponse();
+    }
+
+    public void validatePath(Station source, Station target) {
+        pathFinder.init(lineService.findAllLines());
+        pathFinder.validatePath(source, target);
     }
 }

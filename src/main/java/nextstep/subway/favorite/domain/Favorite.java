@@ -33,7 +33,7 @@ public class Favorite extends BaseEntity {
     @JoinColumn(name = "target_station_id")
     private Station target;
 
-    @Column
+    @Column()
     private boolean deleted = false;
 
     protected Favorite() {

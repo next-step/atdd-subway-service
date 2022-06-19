@@ -25,16 +25,21 @@ public class PathFinder {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
             DefaultWeightedEdge.class);
     private DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = null;
-    private Sections sections;
+    private Set<Section> sections;
 
     public void init(List<Line> lines) {
+        this.sections = new HashSet<>();
         lines.forEach(this::addVertexAndEdge);
     }
 
     private void addVertexAndEdge(Line line) {
-        this.sections = line.getSections();
+        addSections(line.getSections());
         addVertex(line.getSections());
         addEdgeWeight(line.getSections());
+    }
+
+    private void addSections(Sections sections) {
+        this.sections.addAll(sections.getSections());
     }
 
     private void addVertex(Sections sections) {
@@ -70,8 +75,11 @@ public class PathFinder {
     }
 
     private Line findLineBySection(Station upStation, Station downStation) {
-        return this.sections.findSection(upStation, downStation)
-                .orElseThrow(() -> new NotExistException("존재하지 않은 구간입니다."))
+        return this.sections.stream()
+                .filter(it -> it.containUpStation(upStation, downStation))
+                .filter(it -> it.containDownStation(upStation, downStation))
+                .findFirst()
+                .orElseThrow(NotExistException::new)
                 .getLine();
     }
 
