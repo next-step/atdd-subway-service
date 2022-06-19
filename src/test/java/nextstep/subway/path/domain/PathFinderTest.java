@@ -29,9 +29,9 @@ class PathFinderTest {
         남부터미널역 = new Station("남부터미널역");
         서초역 = new Station("서초역");
         교대역 = new Station("교대역");
-        신분당선 = new Line("신분당선", "red", 강남역, 양재역, new Distance(10));
-        삼호선 = new Line("신분당선", "red", 양재역, 남부터미널역, new Distance(7));
-        이호선 = new Line("신분당선", "red", 서초역, 교대역, new Distance(15));
+        신분당선 = new Line("신분당선", "red", 0, 강남역, 양재역, new Distance(10));
+        삼호선 = new Line("신분당선", "red", 500, 양재역, 남부터미널역, new Distance(7));
+        이호선 = new Line("신분당선", "red", 900, 서초역, 교대역, new Distance(15));
     }
 
     @Test
