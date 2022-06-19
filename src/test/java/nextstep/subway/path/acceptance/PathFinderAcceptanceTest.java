@@ -65,7 +65,7 @@ class PathFinderAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 경로_조회_요청(교대역, 양재역);
 
         // then
-        경로_조회가_최적거리로_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
+        경로_조회가_최적거리로_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역));
     }
 
     @Test
@@ -74,7 +74,7 @@ class PathFinderAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 경로_조회_요청(강남역, 남부터미널역);
 
         // then
-        경로_조회가_최적거리로_조회됨(response, Arrays.asList(강남역, 양재역, 남부터미널역), 12);
+        경로_조회가_최적거리로_조회됨(response, Arrays.asList(강남역, 양재역, 남부터미널역));
     }
 
     @Test
@@ -98,6 +98,26 @@ class PathFinderAcceptanceTest extends AcceptanceTest {
         역을_찾지_못하여_경로조회를_실패함(response);
     }
 
+    @Test
+    void 두_역의_최단_거리_경로를_조회() {
+        // when
+        ExtractableResponse<Response> response = 경로_조회_요청(강남역, 남부터미널역);
+
+        // then
+        경로_조회가_최적거리로_조회됨(response, Arrays.asList(강남역, 양재역, 남부터미널역));
+
+        // then
+        경로_조회시_총_거리도_조회됨(response, 12);
+
+        // then
+        지하철_이용_요금도_조회됨(response, 2000);
+    }
+
+    private void 지하철_이용_요금도_조회됨(ExtractableResponse<Response> response, int fee) {
+        PathResponse path = response.as(PathResponse.class);
+        assertThat(path.getFee()).isEqualTo(fee);
+    }
+
     private ExtractableResponse<Response> 경로_조회_요청(StationResponse sourceResponse, StationResponse targetResponse) {
         return RestAssured
                 .given().log().all()
@@ -107,7 +127,7 @@ class PathFinderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 경로_조회가_최적거리로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations, int distance) {
+    private void 경로_조회가_최적거리로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         PathResponse path = response.as(PathResponse.class);
 
         List<Long> stationIds = path.getStations().stream()
@@ -119,6 +139,10 @@ class PathFinderAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+    }
+
+    private void 경로_조회시_총_거리도_조회됨(ExtractableResponse<Response> response, int distance) {
+        PathResponse path = response.as(PathResponse.class);
         assertThat(path.getDistance()).isEqualTo(distance);
     }
 
