@@ -92,6 +92,10 @@ public class Section {
         return this.downStation;
     }
 
+    public int getDistance() {
+        return this.distance.get();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
