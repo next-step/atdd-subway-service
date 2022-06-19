@@ -51,7 +51,7 @@ class PathServiceTest {
         // when
         PathFinder parPathFinder = new PathFinder(lineRepository, stationRepository);
         PathService pathService = new PathService(parPathFinder);
-        PathResponse result = pathService.findPath(1L, 3L);
+        PathResponse result = pathService.findShortestPath(1L, 3L);
 
         // then
         assertThat(result.toStations()).containsExactly(선릉역, 정자역, 수원역);

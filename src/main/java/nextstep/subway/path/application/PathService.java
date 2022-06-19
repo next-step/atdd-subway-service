@@ -14,7 +14,7 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findShortestPath(Long source, Long target) {
         return pathFinder.findShortestPath(source, target);
     }
 }
