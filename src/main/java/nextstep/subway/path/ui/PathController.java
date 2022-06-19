@@ -1,7 +1,7 @@
 package nextstep.subway.path.ui;
 
-import nextstep.subway.path.PathResponse;
 import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
