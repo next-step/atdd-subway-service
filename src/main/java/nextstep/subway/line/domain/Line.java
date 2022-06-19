@@ -53,4 +53,20 @@ public class Line extends BaseEntity {
     public List<Section> getSections() {
         return sections;
     }
+
+    public List<Station> getStations() {
+        return null;
+    }
+
+    public void addStation(Station upStation, Station downStation, int distance) {
+
+    }
+
+    public void removeStation(Station station) {
+
+    }
+
+    public Station findUpStation() {
+        return null;
+    }
 }
