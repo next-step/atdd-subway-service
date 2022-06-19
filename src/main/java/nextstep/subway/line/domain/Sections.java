@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
-    private static final int MIN_SECTIONS_SIZE = 1;
+    private static final int MIN_SIZE = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -158,7 +158,7 @@ public class Sections {
     }
 
     private void validateSectionRemovable() {
-        if (sections.size() <= MIN_SECTIONS_SIZE) {
+        if (sections.size() <= MIN_SIZE) {
             throw new IllegalStateException("마지막 구간은 삭제할 수 없습니다.");
         }
     }
