@@ -39,7 +39,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("Bearer Auth 로그인 실패")
+    @DisplayName("유효하지 않은 이메일 - Bearer Auth 로그인 실패")
     void myInfoWithBadBearerAuth() {
         // when
         ExtractableResponse<Response> response = 로그인_요청(INVALID_EMAIL, PASSWORD);
@@ -49,7 +49,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @DisplayName("유효하지 않은 토큰 - Bearer Auth 조회 실패")
     void myInfoWithWrongBearerAuth() {
         // when
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(INVALID_TOKEN);
