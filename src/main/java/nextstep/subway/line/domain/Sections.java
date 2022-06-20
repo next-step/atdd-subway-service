@@ -108,7 +108,7 @@ public class Sections {
                 .collect(Collectors.toList());
 
         return upStations.stream()
-                .filter(station -> isNotContainsDownStation(station))
+                .filter(this::isNotContainsDownStation)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("노선의 역을 찾을 수 없습니다."));
     }
