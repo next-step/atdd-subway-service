@@ -12,6 +12,8 @@ import java.util.*;
 
 @Embeddable
 public class Sections {
+    private static final int DELETABLE_SIZE = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
@@ -60,7 +62,7 @@ public class Sections {
     }
 
     public List<Station> getOrderdStations() {
-        if (getSections().isEmpty()) {
+        if (sections.isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -102,7 +104,6 @@ public class Sections {
     }
 
     private void checkDeletableSection() {
-        int DELETABLE_SIZE = 1;
         if (sections.size() <= DELETABLE_SIZE) {
             throw new IllegalArgumentException(ErrorMessage.NOT_DELETABLE_SIZE_SECTION);
         }
@@ -119,12 +120,12 @@ public class Sections {
     }
 
     private Optional<Section> findSectionByUpStation(Station station) {
-        return sections.stream().filter(section -> section.getUpStation().getName().equals(station.getName()))
+        return sections.stream().filter(section -> section.getUpStation().equals(station))
                 .findFirst();
     }
 
     private Optional<Section> findSectionByDownStation(Station station) {
-        return sections.stream().filter(section -> section.getDownStation().getName().equals(station.getName()))
+        return sections.stream().filter(section -> section.getDownStation().equals(station))
                 .findFirst();
     }
 
