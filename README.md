@@ -61,8 +61,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [X] LineService의 비즈니스 로직을 도메인으로 옮기기 
   - [X] domain의 단위 테스트를 작성하기
   
-- [ ] (선택) LineSectionAcceptanceTest 리팩터링
-  - [ ] API를 검증하기 보다는 시나리오, 흐름을 검증하는 테스트로 리팩터링 하기
+- [X] (선택) LineSectionAcceptanceTest 리팩터링
+  - [X] API를 검증하기 보다는 시나리오, 흐름을 검증하는 테스트로 리팩터링 하기
   
     ```text
       Feature: 지하철 구간 관련 기능
@@ -93,3 +93,64 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 3. 로직을 옮기기
    기존 로직을 지우지 말고 새로운 로직을 만들어 수행
    정상 동작 확인 후 기존 로직 제거
+
+
+2단계 - 경로 조회 기능 
+
+- [ ] 최단 경로 조회 인수 테스트 만들기
+- [ ] 최단 경로 조회 기능 구현하기
+
+- 요청 포멧 
+  - Request 
+    ```text
+    HTTP/1.1 200 
+    Request method:	GET
+    Request URI:	http://localhost:55494/paths?source=1&target=6
+    Headers: 	Accept=application/json
+    Content-Type=application/json; charset=UTF-8
+    
+    ```
+  - Response
+    ```text
+    HTTP/1.1 200 
+    Content-Type: application/json
+    Transfer-Encoding: chunked
+    Date: Sat, 09 May 2020 14:54:11 GMT
+    Keep-Alive: timeout=60
+    Connection: keep-alive
+    
+    {
+    "stations": [
+        {
+        "id": 5,
+        "name": "양재시민의숲역",
+        "createdAt": "2020-05-09T23:54:12.007"
+        },
+        {
+        "id": 4,
+        "name": "양재역",
+        "createdAt": "2020-05-09T23:54:11.995"
+        },
+        {
+        "id": 1,
+        "name": "강남역",
+        "createdAt": "2020-05-09T23:54:11.855"
+        },
+        {
+        "id": 2,
+        "name": "역삼역",
+        "createdAt": "2020-05-09T23:54:11.876"
+        },
+        {
+        "id": 3,
+        "name": "선릉역",
+        "createdAt": "2020-05-09T23:54:11.893"
+        }
+    ],
+    "distance": 40
+    }
+    ```
+  * 예외 사항
+    * 출발역과 도착역이 같은 경우
+    * 출발역과 도착역이 연결이 되어 있지 않은 경우
+    * 의존재하지 않은 출발역이나 도착역을 조회 할 경우
