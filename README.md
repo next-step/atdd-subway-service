@@ -116,4 +116,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### to-do list
 - [ ] 최단 경로 조회 인수 테스트 만들기
+    - [X] 최단거리 조회 성공 케이스 추가
 - [ ] 최단 경로 조회 기능 구현하기
