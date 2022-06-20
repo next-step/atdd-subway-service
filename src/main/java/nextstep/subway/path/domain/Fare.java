@@ -26,14 +26,18 @@ public class Fare {
     }
 
     private int calculateLineFare(List<Section> sections) {
-        List<Line> lines = sections.stream()
-                .map(section -> section.getLine())
-                .distinct()
-                .collect(Collectors.toList());
+        List<Line> lines = findDistinctLines(sections);
         return lines.stream()
                 .map(line -> line.getAdditionalFare().getValue())
                 .max(Integer::compareTo)
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private List<Line> findDistinctLines(List<Section> sections) {
+        return sections.stream()
+                .map(section -> section.getLine())
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     private void discountFareWithAge(int age) {
