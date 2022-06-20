@@ -26,6 +26,17 @@ public class SectionsTest {
         광교역 = new Station("광교역");
     }
 
+    @DisplayName("잘못된 구간 값을 추가하면 실패한다.")
+    @Test
+    public void addSectionWithNull() {
+        //given
+        Sections sections = new Sections();
+        //when
+        //then
+        assertThatThrownBy(() -> sections.add(null))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
     @DisplayName("구간의 모든 역을 가져온다")
     @Test
     public void getAllStation() {
@@ -76,6 +87,18 @@ public class SectionsTest {
         List<Station> stations = sections.orderedStations();
         //then
         assertThat(stations).containsExactly(양재역, 판교역, 광교역);
+    }
+
+    @DisplayName("역 사이에 새로운 역을 등록할 경우 기존 역 사이 길이보다 크거나 같으면 등록을 할 수 없음.")
+    @Test
+    public void addSectionWithLongerDistance() {
+        //given
+        Sections sections = new Sections(new Section(강남역, 판교역, 10));
+        Section section = new Section(강남역, 양재역, 20);
+        //when
+        //then
+        assertThatThrownBy(() -> sections.updateSection(section))
+            .isInstanceOf(RuntimeException.class);
     }
 
     @DisplayName("지하철 노선의 중간 역을 삭제한다.")

@@ -3,7 +3,6 @@ package nextstep.subway.sections.application;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.sections.domain.Section;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,7 @@ public class SectionService {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
 
-        line.updateSection(new Section(upStation, downStation, request.getDistance()));
+        line.updateSection(upStation, downStation, request.getDistance());
     }
 
     @Transactional

@@ -27,7 +27,14 @@ public class Sections {
     }
 
     public void add(Section section) {
+        validate(section);
         sections.add(section);
+    }
+
+    private void validate(Section section) {
+        if (section == null || section.getDownStation() == null || section.getUpStation() == null) {
+            throw new IllegalArgumentException("구간 정보를 정확하게 입력하세요");
+        }
     }
 
     public void updateSection(Section requestSection) {
@@ -47,23 +54,30 @@ public class Sections {
     private void updateSection(Section requestSection, Station sameUpStation,
         Station sameDownStation) {
         if (sameUpStation != null) {
-            updateStation(requestSection.getDownStation(), sameUpStation,
+            updateUpStation(requestSection.getDownStation(), sameUpStation,
                 requestSection.getDistance());
             sections.add(requestSection);
         }
 
         if (sameDownStation != null) {
-            updateStation(requestSection.getUpStation(), sameUpStation,
+            updateDownStation(requestSection.getUpStation(), sameUpStation,
                 requestSection.getDistance());
             sections.add(requestSection);
         }
     }
 
-    private void updateStation(Station station, Station sameUpStation, int distance) {
+    private void updateUpStation(Station station, Station sameStation, int distance) {
         sections.stream()
-            .filter(it -> it.getUpStation().equals(sameUpStation))
+            .filter(it -> it.getUpStation().equals(sameStation))
             .findFirst()
             .ifPresent(it -> it.updateUpStation(station, distance));
+    }
+
+    private void updateDownStation(Station station, Station sameStation, int distance) {
+        sections.stream()
+            .filter(it -> it.getUpStation().equals(sameStation))
+            .findFirst()
+            .ifPresent(it -> it.updateDownStation(station, distance));
     }
 
     private void validate(Station sameUpStation, Station sameDownStation) {
@@ -151,18 +165,25 @@ public class Sections {
 
 
     private Section findHasSameUpStationSection(Station station) {
-        return sections.stream().filter(it -> it.getUpStation().equals(station)).findFirst()
+        return sections.stream()
+            .filter(it -> it.getUpStation().equals(station))
+            .findFirst()
             .orElse(null);
     }
 
     private Section findHasSameDownStationSection(Station station) {
-        return sections.stream().filter(it -> it.getDownStation().equals(station)).findFirst()
+        return sections.stream()
+            .filter(it -> it.getDownStation().equals(station))
+            .findFirst()
             .orElse(null);
     }
 
     private Station findSameStation(Station station) {
 
-        return orderedStations().stream().filter(it -> it.equals(station)).findFirst().orElse(null);
+        return orderedStations().stream()
+            .filter(it -> it.equals(station))
+            .findFirst()
+            .orElse(null);
     }
 
 

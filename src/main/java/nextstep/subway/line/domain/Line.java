@@ -27,21 +27,19 @@ public class Line extends BaseEntity {
     public Line() {
     }
 
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
-
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
+        this(name, color);
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
     public Line(String name, String color, Section section) {
+        this(name, color);
+        sections.add(section);
+    }
+
+    public Line(String name, String color) {
         this.name = name;
         this.color = color;
-        sections.add(section);
     }
 
     public void update(Line line) {
@@ -69,7 +67,8 @@ public class Line extends BaseEntity {
         return sections.orderedStations();
     }
 
-    public void updateSection(Section section) {
+    public void updateSection(Station upStation, Station downStation, int distance) {
+        Section section = new Section(upStation, downStation, distance);
         section.setLine(this);
         sections.updateSection(section);
     }

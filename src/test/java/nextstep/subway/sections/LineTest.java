@@ -32,8 +32,7 @@ public class LineTest {
     @Test
     public void getAllStation() {
         //given
-        Section section = new Section(판교역, 광교역, 10);
-        일호선.updateSection(section);
+        일호선.updateSection(판교역, 광교역, 10);
         //when
         List<Station> stations = 일호선.orderedStations();
         //then
@@ -46,7 +45,7 @@ public class LineTest {
         //given
         Line line = new Line("1호선", "red", new Section(강남역, 판교역, 10));
         //when
-        line.updateSection(new Section(강남역, 양재역, 5));
+        line.updateSection(강남역, 양재역, 5);
         List<Station> stations = line.orderedStations();
         //then
         assertThat(stations).containsExactly(강남역, 양재역, 판교역);
@@ -58,7 +57,7 @@ public class LineTest {
         //given
         Line line = new Line("1호선", "red", new Section(양재역, 판교역, 10));
         //when
-        line.updateSection(new Section(강남역, 양재역, 5));
+        line.updateSection(강남역, 양재역, 5);
         List<Station> stations = line.orderedStations();
         //then
         assertThat(stations).containsExactly(강남역, 양재역, 판교역);
@@ -70,7 +69,7 @@ public class LineTest {
         //given
         Line line = new Line("1호선", "red", new Section(강남역, 양재역, 10));
         //when
-        line.updateSection(new Section(양재역, 광교역, 5));
+        line.updateSection(양재역, 광교역, 5);
         List<Station> stations = line.orderedStations();
         //then
         assertThat(stations).containsExactly(강남역, 양재역, 광교역);
@@ -81,7 +80,7 @@ public class LineTest {
     public void removeSection() {
         //given
         Line line = new Line("1호선", "red", new Section(강남역, 양재역, 10));
-        line.updateSection(new Section(양재역, 광교역, 5));
+        line.updateSection(양재역, 광교역, 5);
         //when
         line.removeSectionByStation(양재역);
         List<Station> stations = line.orderedStations();
