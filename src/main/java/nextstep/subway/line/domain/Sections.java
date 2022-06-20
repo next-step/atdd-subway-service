@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -54,8 +55,8 @@ public class Sections {
     }
 
     private Station findFinalUpStation() {
-        Stations downStations = Stations.createDownStations(this);
-        Stations upStations = Stations.createUpStations(this);
+        Stations downStations = Stations.of(downStations());
+        Stations upStations = Stations.of(upStations());
 
         return upStations.isNotContainsFirstStation(downStations)
                 .orElseThrow(() -> new NoSuchElementException("하행 종점을 찾을수 없습니다."));
@@ -168,4 +169,19 @@ public class Sections {
         return Collections.unmodifiableList(sectionElements);
 
     }
+
+    private List<Station> upStations() {
+        return sectionElements
+                .stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toList());
+    }
+
+    private List<Station> downStations() {
+        return sectionElements
+                .stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
+    }
+
 }

@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,23 +19,6 @@ public class Stations {
         return new Stations(stationElements);
     }
 
-    public static Stations createUpStations(Sections sections) {
-        return new Stations(sections.getSectionElements()
-                .stream()
-                .map(Section::getUpStation)
-                .collect(Collectors.toList()));
-    }
-
-    public static Stations createDownStations(Sections sections) {
-        return new Stations(sections.getSectionElements()
-                .stream()
-                .map(Section::getDownStation)
-                .collect(Collectors.toList()));
-    }
-
-    public List<Station> getStationElements() {
-        return Collections.unmodifiableList(stationElements);
-    }
 
     public Optional<Station> isNotContainsFirstStation(Stations target) {
         return this.stationElements.stream()
