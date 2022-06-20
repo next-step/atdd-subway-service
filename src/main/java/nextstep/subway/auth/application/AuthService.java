@@ -25,7 +25,7 @@ public class AuthService {
             Member member = memberService.findMemberByEmail(request.getEmail());
             member.checkPassword(request.getPassword());
         } catch (NoSuchElementException e) {
-            throw new AuthorizationException("존재하지 않는 email입니다.");
+            throw new AuthorizationException("로그인 실패");
         }
 
         String token = jwtTokenProvider.createToken(request.getEmail());

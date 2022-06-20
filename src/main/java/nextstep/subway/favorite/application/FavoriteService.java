@@ -41,7 +41,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(Long memberId) {
-        List<Favorite> favorites = favoriteRepository.findAllByMember_Id(memberId);
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
 
         return favorites.stream()
                 .map(favorite -> FavoriteResponse.of(favorite))
