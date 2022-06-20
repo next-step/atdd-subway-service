@@ -88,7 +88,7 @@ public class LineTest {
         assertThat(stations).containsExactly(강남역, 광교역);
     }
 
-    @DisplayName("구간이 하나인 노선에서 마지막 역을 삭제한다.")
+    @DisplayName("구간이 하나인 노선에서 역을 삭제할 수 없다.")
     @Test
     public void removeOnlySection() {
         //given
