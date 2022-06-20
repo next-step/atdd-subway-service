@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 import nextstep.subway.fare.domain.DiscountByAge;
@@ -92,6 +93,7 @@ class ShortestPathTest {
         // when
         int fare = path.getFare(new FareByDistance(), new DiscountByAge(20));
 
+        // then
         assertThat(fare).isEqualTo(2250);
     }
 
@@ -105,6 +107,7 @@ class ShortestPathTest {
         // when
         int fare = path.getFare(new FareByDistance(), new DiscountByAge(13));
 
+        // then
         assertThat(fare).isEqualTo(800);
     }
 
@@ -129,10 +132,13 @@ class ShortestPathTest {
         ShortestPath path = pathFinder.getShortestPath(교대역, 잠실역);
 
         // when
-        int fare = path.getFare(new FareByDistance(), new DiscountByAge(70));
-        int fare2 = path.getFare(new FareByDistance(), new DiscountByAge(2));
+        int seniorFare = path.getFare(new FareByDistance(), new DiscountByAge(70));
+        int babyFare = path.getFare(new FareByDistance(), new DiscountByAge(2));
 
-        assertThat(fare).isZero();
-        assertThat(fare2).isZero();
+        // then
+        assertAll(
+                () -> assertThat(seniorFare).isZero(),
+                () -> assertThat(babyFare).isZero()
+        );
     }
 }
