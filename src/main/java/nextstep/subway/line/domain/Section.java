@@ -1,11 +1,19 @@
 package nextstep.subway.line.domain;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
 
 @Entity
 public class Section {
+    private static final String ERROR_MESSAGE_STATIONS_NULL = "상행역 또는 하행역은 null 이 될 수 없습니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,6 +37,8 @@ public class Section {
     }
 
     public Section(Station upStation, Station downStation, int distance) {
+        validateStationsNull(upStation, downStation);
+
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = new Distance(distance);
@@ -37,6 +47,12 @@ public class Section {
     public Section(Line line, Station upStation, Station downStation, int distance) {
         this(upStation, downStation, distance);
         this.line = line;
+    }
+
+    private void validateStationsNull(Station upStation, Station downStation) {
+        if (upStation == null || downStation == null) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_STATIONS_NULL);
+        }
     }
 
     public Long getId() {
