@@ -1,7 +1,8 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
-import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.fare.domain.DiscountPolicy;
+import nextstep.subway.fare.domain.FarePolicy;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 
@@ -20,12 +21,12 @@ public class ShortestPath {
         return shortestPath.getVertexList();
     }
 
-    public double getShortestDistance() {
-        return shortestPath.getWeight();
+    public int getShortestDistance() {
+        return (int) shortestPath.getWeight();
     }
 
-    public int getFare() {
-        return Fare.calculateFare((int) shortestPath.getWeight(), getExtraFare());
+    public int getFare(FarePolicy farePolicy, DiscountPolicy discountPolicy) {
+        return discountPolicy.discountFare(farePolicy.calculateFare(getShortestDistance()) + getExtraFare());
     }
 
     private int getExtraFare() {
