@@ -284,3 +284,43 @@ Feature: 로그인 기능
     - FavoriteRepository 
       - Long id, Long LoginMember_id, Station 가 OneToOne 관계인 source , OneToOne 관계인 destination
     
+
+--------------
+--------------
+
+## 4단계 - 요금 조회
+
+#### 요구사항
+- [ ] 경로 조회 시 거리 기준 요금 정보 포함하기
+- [ ] 노선별 추가 요금 정책 추가
+- [ ] 연령별 할인 정책 추가 
+
+- 요구 사항 설명
+  - 거리별 요금 정책
+    - 기본운임(10km 이내) : 기본운임 1,250원 
+    - 이용 거리 초과 시 추가운임 부과 
+      - 10km ~ 50km (5km 100원)
+      - 50km 초과시 (8km 마다 100원)
+  - 수정된 인수 조건
+  ```text
+     Feature: 지하철 경로 검색
+
+     Scenario: 두 역의 최단 거리 경로를 조회
+       Given 지하철역이 등록되어있음
+       And 지하철 노선이 등록되어있음
+       And 지하철 노선에 지하철역이 등록되어있음
+       When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+       Then 최단 거리 경로를 응답
+       And 총 거리도 함께 응답함
+       And ** 지하철 이용 요금도 함께 응답함 **
+  ```
+  - Class 역할
+    - Price 
+      - VO class 이며 add, minus, discount 메소드를 가진다.
+      - add 메소드는 입력 받은 금액을 기존 금액과 합산하여 금액을 반환한다.
+      - minus 메소드는 입력 받은 금액만큼 기존 금액에서 제외하고 금액을 반환한다.
+      - discount 메소드는 discount 정책을 입력 받아서 discount 정책 결과 금액 만큼 기존 금액에서 할인해서 금액을 반환한다.
+      
+    - Distance
+      - calculatePrice 메소드를 가지며, 입력받은 정책에 따라서 거리별에 따른 금액을 반환한다.
+    
