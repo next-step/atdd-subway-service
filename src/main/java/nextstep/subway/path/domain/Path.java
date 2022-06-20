@@ -10,9 +10,13 @@ public class Path {
 
     private int distance;
 
-    public Path(List<Station> stations, int distance) {
+    private Path (List<Station> stations, int distance) {
         this.stations = stations;
         this.distance = distance;
+    }
+
+    public static Path of(List<Station> stations, int distance) {
+        return new Path(stations, distance);
     }
 
     @Override
