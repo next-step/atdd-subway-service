@@ -22,6 +22,9 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("회원번호가 입력되지 않았습니다.");
+        }
         Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
         return MemberResponse.of(member);
     }

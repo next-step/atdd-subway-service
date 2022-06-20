@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     private static final MemberRequest 회원가입 = new MemberRequest("tasklet1579@next.co.kr", "test1234", 30);
+    private static final LoginMember 로그인_회원 = new LoginMember(1L, "tasklet1579@next.co.kr", 30);
     private static final TokenRequest 로그인 = new TokenRequest("tasklet1579@next.co.kr", "test1234");
     private static final TokenRequest 없는_아이디 = new TokenRequest("tasklet1571@next.co.kr", "test1234");
     private static final TokenRequest 비밀번호_틀림 = new TokenRequest("tasklet1579@next.co.kr", "test1231");
@@ -63,7 +65,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // given
+        ExtractableResponse<Response> 회원가입_결과 = 회원가입_요청(회원가입);
+        ExtractableResponse<Response> 로그인_결과 = 로그인_요청(로그인);
 
+        // when
+        ExtractableResponse<Response> 나의_정보_조회_결과 = 나의_정보_조회_요청(로그인_토큰(로그인_결과) + "disable");
+
+        // then
+        나의_정보_조회_실패(나의_정보_조회_결과);
     }
 
     public static ExtractableResponse<Response> 회원가입_요청(MemberRequest request) {
@@ -91,5 +101,21 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static void 로그인_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static String 로그인_토큰(ExtractableResponse<Response> response) {
+        return response.as(TokenResponse.class).getAccessToken();
+    }
+
+    public static ExtractableResponse<Response> 나의_정보_조회_요청(String accessToken) {
+        return RestAssured.given().header("Authorization", "Bearer " + accessToken).log().all()
+                          .accept(MediaType.APPLICATION_JSON_VALUE)
+                          .when().get("/members/me")
+                          .then().log().all()
+                          .extract();
+    }
+
+    public static void 나의_정보_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
