@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.member.domain.AgeGroup;
 import nextstep.subway.path.dto.PathStation;
 import nextstep.subway.path.dto.ShortestPathResponse;
 import nextstep.subway.station.domain.Station;
@@ -97,7 +98,7 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(라인_목록_생성(이호선));
 
         // when
-        ShortestPathResponse stations = pathFinder.findShortestPath(교대역, 선릉역);
+        ShortestPathResponse stations = pathFinder.findShortestPath(교대역, 선릉역, AgeGroup.ADULT);
 
         // then
         최소_노선_경로_일치됨(stations, 교대역, 강남역, 역삼역, 선릉역);
@@ -111,7 +112,7 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(라인_목록_생성(이호선, 신분당선));
 
         // when
-        ShortestPathResponse stations = pathFinder.findShortestPath(교대역, 양재역);
+        ShortestPathResponse stations = pathFinder.findShortestPath(교대역, 양재역, AgeGroup.ADULT);
 
         // then
         최소_노선_경로_일치됨(stations, 교대역, 강남역, 양재역);
@@ -125,7 +126,7 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(라인_목록_생성(이호선, 삼호선, 신분당선, 수인분당선));
 
         // when
-        ShortestPathResponse stations = pathFinder.findShortestPath(교대역, 도곡역);
+        ShortestPathResponse stations = pathFinder.findShortestPath(교대역, 도곡역, AgeGroup.ADULT);
 
         // then
         최소_노선_경로_일치됨(stations, 교대역, 강남역, 양재역, 매봉역, 도곡역);
@@ -139,7 +140,7 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(라인_목록_생성(이호선));
 
         // then
-        assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(교대역, 교대역));
+        assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(교대역, 교대역, AgeGroup.ADULT));
     }
 
     @DisplayName("도달할 수 없는 경로를 조회하면 예외가 발생해야 한다")
@@ -149,8 +150,8 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(라인_목록_생성(신분당선, 수인분당선));
 
         // then
-        assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(강남역, 도곡역));
-        assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(한티역, 강남역));
+        assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(강남역, 도곡역, AgeGroup.ADULT));
+        assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(한티역, 강남역, AgeGroup.ADULT));
     }
 
     @DisplayName("기본 운임 비용 노선의 경로 조회 시 거리에 따른 요금이 정상 계산되어야 한다")
@@ -160,12 +161,12 @@ class PathFinderTest {
         PathFinder defaultFareFinder = new PathFinder((라인_목록_생성(신분당선)));
 
         // when
-        ShortestPathResponse defaultFareFinderPath = defaultFareFinder.findShortestPath(양재역, 양재시민의숲역);
-        ShortestPathResponse defaultAdditionalFarePathByMinDistance = defaultFareFinder.findShortestPath(양재역, 청계산입구역);
-        ShortestPathResponse defaultAdditionalFarePathByMaxDistance = defaultFareFinder.findShortestPath(양재역, 판교역);
-        ShortestPathResponse defaultLongerFarePathByMinDistance = defaultFareFinder.findShortestPath(양재역, 정자역);
-        ShortestPathResponse defaultLongerFarePathByMoreDistance = defaultFareFinder.findShortestPath(양재역, 미금역);
-        ShortestPathResponse defaultLongerFarePathByMoreDistance2 = defaultFareFinder.findShortestPath(양재역, 동천역);
+        ShortestPathResponse defaultFareFinderPath = defaultFareFinder.findShortestPath(양재역, 양재시민의숲역, AgeGroup.ADULT);
+        ShortestPathResponse defaultAdditionalFarePathByMinDistance = defaultFareFinder.findShortestPath(양재역, 청계산입구역, AgeGroup.ADULT);
+        ShortestPathResponse defaultAdditionalFarePathByMaxDistance = defaultFareFinder.findShortestPath(양재역, 판교역, AgeGroup.ADULT);
+        ShortestPathResponse defaultLongerFarePathByMinDistance = defaultFareFinder.findShortestPath(양재역, 정자역, AgeGroup.ADULT);
+        ShortestPathResponse defaultLongerFarePathByMoreDistance = defaultFareFinder.findShortestPath(양재역, 미금역, AgeGroup.ADULT);
+        ShortestPathResponse defaultLongerFarePathByMoreDistance2 = defaultFareFinder.findShortestPath(양재역, 동천역, AgeGroup.ADULT);
 
         // then
         노선_요금_일치됨(defaultFareFinderPath, 1_250);                    // 10 km
@@ -183,11 +184,11 @@ class PathFinderTest {
         PathFinder defaultFareFinder = new PathFinder((라인_목록_생성(사호선)));
 
         // when
-        ShortestPathResponse defaultFareFinderPath = defaultFareFinder.findShortestPath(오이도역, 정왕역);
-        ShortestPathResponse defaultAdditionalFarePathByMinDistance = defaultFareFinder.findShortestPath(오이도역, 신길온천역);
-        ShortestPathResponse defaultAdditionalFarePathByMaxDistance = defaultFareFinder.findShortestPath(오이도역, 안산역);
-        ShortestPathResponse defaultLongerFarePathByMinDistance = defaultFareFinder.findShortestPath(오이도역, 초지역);
-        ShortestPathResponse defaultLongerFarePathByMoreDistance = defaultFareFinder.findShortestPath(오이도역, 고잔역);
+        ShortestPathResponse defaultFareFinderPath = defaultFareFinder.findShortestPath(오이도역, 정왕역, AgeGroup.ADULT);
+        ShortestPathResponse defaultAdditionalFarePathByMinDistance = defaultFareFinder.findShortestPath(오이도역, 신길온천역, AgeGroup.ADULT);
+        ShortestPathResponse defaultAdditionalFarePathByMaxDistance = defaultFareFinder.findShortestPath(오이도역, 안산역, AgeGroup.ADULT);
+        ShortestPathResponse defaultLongerFarePathByMinDistance = defaultFareFinder.findShortestPath(오이도역, 초지역, AgeGroup.ADULT);
+        ShortestPathResponse defaultLongerFarePathByMoreDistance = defaultFareFinder.findShortestPath(오이도역, 고잔역, AgeGroup.ADULT);
 
         // then
         노선_요금_일치됨(defaultFareFinderPath, 1_250 + ADDITIONAL_LINE_FARE);                     // 10 km
@@ -204,10 +205,27 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder((라인_목록_생성(신분당선, 경강선)));
 
         // when
-        ShortestPathResponse stations = pathFinder.findShortestPath(판교역, 이매역);
+        ShortestPathResponse stations = pathFinder.findShortestPath(판교역, 이매역, AgeGroup.ADULT);
 
         // then
         노선_요금_일치됨(stations, 1_250 + ADDITIONAL_LINE_FARE);
+    }
+
+    @DisplayName("경로 조회 시 연령별 할인율이 적용되어 계산되어야 한다")
+    @Test
+    void findShortestPathWithAgeGroupTest() {
+        // given
+        PathFinder pathFinder = new PathFinder((라인_목록_생성(신분당선, 경강선)));
+
+        // when
+        ShortestPathResponse stationsByAdult = pathFinder.findShortestPath(판교역, 이매역, AgeGroup.ADULT);
+        ShortestPathResponse stationsByTeenager = pathFinder.findShortestPath(판교역, 이매역, AgeGroup.TEENAGER);
+        ShortestPathResponse stationsByChild = pathFinder.findShortestPath(판교역, 이매역, AgeGroup.CHILD);
+
+        // then
+        노선_요금_일치됨(stationsByAdult, 1_250 + ADDITIONAL_LINE_FARE);
+        노선_요금_일치됨(stationsByTeenager, (int) ((1_250 + ADDITIONAL_LINE_FARE - 350) * 0.8));
+        노선_요금_일치됨(stationsByChild, (int) ((1_250 + ADDITIONAL_LINE_FARE - 350) * 0.5));
     }
 
     private void 최소_노선_경로_일치됨(ShortestPathResponse source, Station... target) {

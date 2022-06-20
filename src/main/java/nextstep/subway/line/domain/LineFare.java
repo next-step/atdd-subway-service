@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.member.domain.AgeGroup;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -29,10 +31,12 @@ public class LineFare {
         return this.fare;
     }
 
-    public int calculateTotalFare(Distance totalDistance) {
-        return fare + DEFAULT_FARE
+    public int calculateTotalFare(Distance totalDistance, AgeGroup ageGroup) {
+        int calculatedTotalLineFare = fare + DEFAULT_FARE
                 + calculateDefaultAdditionalFare(totalDistance)
                 + calculateLongerAdditionalFare(totalDistance);
+
+        return ageGroup.discountLineFare(calculatedTotalLineFare);
     }
 
     private void validateFare(int fare) {

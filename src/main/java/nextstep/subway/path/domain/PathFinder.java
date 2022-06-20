@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.member.domain.AgeGroup;
 import nextstep.subway.path.dto.ShortestPathResponse;
 import nextstep.subway.station.domain.Station;
 
@@ -11,7 +12,7 @@ public class PathFinder {
         graph = new LineDijkstraShortestPath(lines);
     }
 
-    public ShortestPathResponse findShortestPath(Station source, Station target) {
-        return this.graph.getShortestPathResponse(source, target);
+    public ShortestPathResponse findShortestPath(Station source, Station target, AgeGroup ageGroup) {
+        return this.graph.getShortestPathResponse(source, target, ageGroup);
     }
 }

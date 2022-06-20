@@ -4,6 +4,7 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.member.domain.AgeGroup;
 import nextstep.subway.path.dto.ShortestPathResponse;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -23,7 +24,7 @@ public class LineDijkstraShortestPath {
         lines.forEach(this::registerLine);
     }
 
-    public ShortestPathResponse getShortestPathResponse(Station source, Station target) {
+    public ShortestPathResponse getShortestPathResponse(Station source, Station target, AgeGroup ageGroup) {
         GraphPath<Station, SectionEdge> result = findShortestPath(source, target);
         Lines shortestPathLines = new Lines(getLinesInSectionEdge(result.getEdgeList()));
         Distance totalDistance = new Distance((int) result.getWeight());
@@ -31,7 +32,7 @@ public class LineDijkstraShortestPath {
         return new ShortestPathResponse(
                 result.getVertexList(),
                 totalDistance.getValue(),
-                shortestPathLines.getMaxAdditionalFare().calculateTotalFare(totalDistance)
+                shortestPathLines.getMaxAdditionalFare().calculateTotalFare(totalDistance, ageGroup)
         );
     }
 

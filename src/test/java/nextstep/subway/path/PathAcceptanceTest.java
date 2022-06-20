@@ -20,14 +20,20 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.신규_회원가입_후_로그인_토큰_추출;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
+    private static final String PATH = "/paths";
+    private static final String MY_EMAIL = "test@test.com";
+    private static final String MY_PASSWORD = "1234";
+    private static final int MY_AGE = 20;
 
-    private static String PATH = "/paths";
     private StationResponse 강남구청역, 선정릉역, 선릉역, 연주역, 삼성중앙역, 봉은사역, 종합운동장역, 교대역, 강남역, 삼성역, 광교역, 광교중앙역, 상현역, 성복역;
     private LineResponse 수인분당선, 구호선, 이호선, 신분당선;
+
+    private String myToken;
 
     /**
      *                                     선정릉역--(9호선, 3)--삼성중앙역--(9호선, 3)--봉은사역--(9호선, 2)
@@ -42,6 +48,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     void setUpTest() {
         super.setUp();
+
+        myToken = 신규_회원가입_후_로그인_토큰_추출(MY_EMAIL, MY_PASSWORD, MY_AGE);
 
         강남구청역 = StationAcceptanceTest.지하철역_등록되어_있음("강남구청역").as(StationResponse.class);
         선정릉역 = StationAcceptanceTest.지하철역_등록되어_있음("선정릉역").as(StationResponse.class);
@@ -83,7 +91,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByOneLine() {
         // when
-        ExtractableResponse<Response> response = 노선_경로_조회(교대역, 선릉역);
+        ExtractableResponse<Response> response = 노선_경로_조회(교대역, 선릉역, myToken);
 
         // then
         노선_경로_조회_성공됨(response);
@@ -99,7 +107,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByMultipleLine() {
         // when
-        ExtractableResponse<Response> response = 노선_경로_조회(교대역, 종합운동장역);
+        ExtractableResponse<Response> response = 노선_경로_조회(교대역, 종합운동장역, myToken);
 
         // then
         노선_경로_조회_성공됨(response);
@@ -114,7 +122,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathBySameStartAndEndStation() {
         // when
-        ExtractableResponse<Response> response = 노선_경로_조회(교대역, 교대역);
+        ExtractableResponse<Response> response = 노선_경로_조회(교대역, 교대역, myToken);
 
         // then
         노선_경로_조회_실패됨(response);
@@ -128,8 +136,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByUnregisteredStartOrEndStation() {
         // when
-        ExtractableResponse<Response> failByUnregisteredStartStation = 노선_경로_조회(연주역, 선정릉역);
-        ExtractableResponse<Response> failByUnregisteredEndStation = 노선_경로_조회(선정릉역, 강남구청역);
+        ExtractableResponse<Response> failByUnregisteredStartStation = 노선_경로_조회(연주역, 선정릉역, myToken);
+        ExtractableResponse<Response> failByUnregisteredEndStation = 노선_경로_조회(선정릉역, 강남구청역, myToken);
 
         // then
         노선_경로_조회_실패됨(failByUnregisteredStartStation);
@@ -144,7 +152,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByNotConnectedStations() {
         // when
-        ExtractableResponse<Response> response = 노선_경로_조회(광교역, 강남역);
+        ExtractableResponse<Response> response = 노선_경로_조회(광교역, 강남역, myToken);
 
         // then
         노선_경로_조회_실패됨(response);
@@ -159,7 +167,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathMinimumDistanceTest() {
         // when
-        ExtractableResponse<Response> response = 노선_경로_조회(광교역, 광교중앙역);
+        ExtractableResponse<Response> response = 노선_경로_조회(광교역, 광교중앙역, myToken);
 
         // then
         노선_경로_비용_정상_조회됨(response, 1_250);
@@ -174,7 +182,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findDefaultAdditionalDistanceTest() {
         // when
-        ExtractableResponse<Response> response = 노선_경로_조회(광교역, 상현역);
+        ExtractableResponse<Response> response = 노선_경로_조회(광교역, 상현역, myToken);
 
         // then
         노선_경로_비용_정상_조회됨(response, 2_050);
@@ -189,7 +197,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findLongerDistanceTest() {
         // when
-        ExtractableResponse<Response> response = 노선_경로_조회(광교역, 성복역);
+        ExtractableResponse<Response> response = 노선_경로_조회(광교역, 성복역, myToken);
 
         // then
         노선_경로_비용_정상_조회됨(response, 2_150);
@@ -200,12 +208,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
-    private ExtractableResponse<Response> 노선_경로_조회(StationResponse source, StationResponse target) {
+    private ExtractableResponse<Response> 노선_경로_조회(StationResponse source, StationResponse target, String token) {
         Map<String, Object> params = new HashMap<>();
         params.put("source", source.getId());
         params.put("target", target.getId());
 
-        return RestAssuredRequest.getRequest(PATH, params, null);
+        return RestAssuredRequest.getRequest(PATH, params, myToken);
     }
 
     private void 노선_경로_조회_성공됨(ExtractableResponse<Response> response) {
