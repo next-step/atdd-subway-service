@@ -21,8 +21,8 @@ public class PathAcceptanceMethod {
                 .param("source", sourceId)
                 .param("target", targetId)
                 .when().get("/paths")
-                .then().log().all().
-                extract();
+                .then().log().all()
+                .extract();
     }
 
     public static void 지하철_최단경로_응답됨(ExtractableResponse<Response> response) {
