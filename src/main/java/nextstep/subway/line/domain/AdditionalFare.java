@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class AdditionalFare {
-    private static int MINIMUM_ADDITIONAL_FARE = 0;
+    private static final int MINIMUM_ADDITIONAL_FARE = 0;
 
     @Column(name = "additional_fare", nullable = false)
     private int value;

@@ -5,8 +5,8 @@ public enum FareDistancePolicyType {
     MIDDLE_DISTANCE(10, 5),
     LONG_DISTANCE(50, 8);
 
-    private static int BASIC_FARE = 1250;
-    private static int ADDITIONAL_FARE_PER_UNIT = 100;
+    private final static int BASIC_FARE = 1250;
+    private final static int ADDITIONAL_FARE_PER_UNIT = 100;
 
     private final int minDistance;
     private final int unitDistance;
