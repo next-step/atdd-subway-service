@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 
 public enum DistanceType {
     BASIC(distance -> distance <= Base.FIRST_SURCHARGE_SECTION,
-            distance -> 0),
+            distance -> Base.DEFAULT),
     MIDDLE(distance -> distance > Base.FIRST_SURCHARGE_SECTION && distance <= Base.SECOND_SURCHARGE_SECTION,
             distance -> calculate(distance, Base.FIRST_SURCHARGE_SECTION, Base.FIRST_SURCHARGE_PER_DISTANCE)),
     LONG(distance -> distance > Base.SECOND_SURCHARGE_SECTION,
@@ -38,6 +38,7 @@ public enum DistanceType {
     }
 
     static class Base {
+        public static final int DEFAULT = 0;
         public static final int FIRST_SURCHARGE_SECTION = 10;
         public static final int SECOND_SURCHARGE_SECTION = 50;
         public static final int FIRST_SURCHARGE_PER_DISTANCE = 5;

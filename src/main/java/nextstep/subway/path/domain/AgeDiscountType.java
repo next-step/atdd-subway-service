@@ -10,12 +10,12 @@ public enum AgeDiscountType {
     FREE(100, 0, age -> age < 6);
 
     private final int discountRate;
-    private final int discount;
+    private final int discountFare;
     private final Predicate<Integer> ageMatchingExp;
 
-    AgeDiscountType(int discountRate, int discount, Predicate<Integer> ageMatchingExp) {
+    AgeDiscountType(int discountRate, int discountFare, Predicate<Integer> ageMatchingExp) {
         this.discountRate = discountRate;
-        this.discount = discount;
+        this.discountFare = discountFare;
         this.ageMatchingExp = ageMatchingExp;
     }
 
@@ -27,6 +27,6 @@ public enum AgeDiscountType {
     }
 
     public int calculate(int fare) {
-        return (int) ((fare - discount) * (1 - (discountRate * 0.01)));
+        return (int) ((fare - discountFare) * (1 - (discountRate * 0.01)));
     }
 }
