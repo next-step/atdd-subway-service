@@ -7,10 +7,13 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,20 +39,24 @@ class PathFinderTest {
 
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, Distance.of(3)));
 
-        pathFinder = new PathFinder();
+        pathFinder = PathFinder.create();
         pathFinder.init(Arrays.asList(신분당선, 이호선, 삼호선, 일호선));
     }
 
     @Test
     @DisplayName("최단 거리 경로, 거리, 해당 노선 확인")
     void verifyShortestPathAndDistance() {
-        Path dijkstraPath = pathFinder.getDijkstraPath(강남역, 남부터미널역);
+        final GraphPath<Station, SectionWeightedEdge> dijkstraPath = pathFinder.getDijkstraPath(강남역, 남부터미널역);
 
         assertAll(
-                () -> assertThat(dijkstraPath.totalDistance()).isEqualTo(7),
-                () -> assertThat(dijkstraPath.throughStations()).containsExactly(강남역, 양재역, 남부터미널역),
-                () -> assertThat(dijkstraPath.throughLines()).contains(신분당선, 삼호선)
+                () -> assertThat(dijkstraPath.getWeight()).isEqualTo(7),
+                () -> assertThat(dijkstraPath.getVertexList()).containsExactly(강남역, 양재역, 남부터미널역),
+                () -> assertThat(getLines(dijkstraPath)).contains(신분당선, 삼호선)
         );
+    }
+
+    private List<Line> getLines(GraphPath<Station, SectionWeightedEdge> dijkstraPath) {
+        return dijkstraPath.getEdgeList().stream().map(SectionWeightedEdge::getLine).collect(Collectors.toList());
     }
 
     @Test

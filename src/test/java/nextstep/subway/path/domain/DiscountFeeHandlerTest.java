@@ -12,7 +12,7 @@ class DiscountFeeHandlerTest {
 
     @BeforeEach
     void setUp() {
-        fee = new Fee();
+        fee = Fee.defaultFee();
     }
 
     @ParameterizedTest(name = "청소년({0}) 요금할인이 잘 적용되는지 검증")

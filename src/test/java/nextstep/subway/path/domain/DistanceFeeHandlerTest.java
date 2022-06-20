@@ -14,7 +14,7 @@ class DistanceFeeHandlerTest {
 
     @BeforeEach
     void setUp() {
-        fee = new Fee();
+        fee = Fee.defaultFee();
     }
 
     @Test

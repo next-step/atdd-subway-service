@@ -11,13 +11,13 @@ class FeeTest {
 
     @BeforeEach
     void setUp() {
-        fee = new Fee();
+        fee = Fee.defaultFee();
     }
 
     @Test
     @DisplayName("요금 객체가 같은지 검증")
     void verifySameFee() {
-        assertThat(fee).isEqualTo(new Fee());
+        assertThat(fee).isEqualTo(Fee.defaultFee());
     }
 
     @Test

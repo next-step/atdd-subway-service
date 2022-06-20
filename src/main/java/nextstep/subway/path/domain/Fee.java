@@ -7,8 +7,12 @@ public class Fee {
 
     private int fee;
 
-    public Fee() {
+    private Fee() {
         this.fee = DEFAULT_FEE;
+    }
+
+    public static Fee defaultFee() {
+        return new Fee();
     }
 
     public int getFee() {

@@ -18,7 +18,7 @@ class LineExtraFeeHandlerTest {
     @BeforeEach
     void setUp() {
         final List<Line> lines = Arrays.asList(라인_생성("이호선", "초록색", 500), 라인_생성("칠호선", "국방색", 0));
-        fee = new Fee();
+        fee = Fee.defaultFee();
         feeHandler = new LineExtraFeeHandler(null, new HashSet<>(lines));
     }
 

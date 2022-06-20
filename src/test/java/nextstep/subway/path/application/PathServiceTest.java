@@ -18,8 +18,6 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -39,13 +37,10 @@ class PathServiceTest {
     private Line 신분당선, 이호선, 삼호선;
     private Station 강남역, 양재역, 교대역, 남부터미널역, 멀리있는역;
 
-
     @Mock
     private StationService stationService;
     @Mock
     private LineService lineService;
-    @Mock
-    private PathFinder pathFinder;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -56,7 +51,7 @@ class PathServiceTest {
      */
     @BeforeEach
     void setUp() {
-        pathService = new PathService(stationService, lineService, pathFinder);
+        pathService = new PathService(stationService, lineService);
 
         // given
         강남역 = 지하철역_생성("강남역");
@@ -79,8 +74,6 @@ class PathServiceTest {
         when(stationService.findStationById(1L)).thenReturn(강남역);
         when(stationService.findStationById(2L)).thenReturn(교대역);
         when(lineService.findAllLines()).thenReturn(Arrays.asList(이호선, 신분당선, 삼호선));
-        when(pathFinder.getDijkstraPath(강남역, 교대역))
-                .thenReturn(new Path(Arrays.asList(강남역, 교대역), 8, throughLine));
 
         // when
         PathResponse pathResponse = pathService.searchShortestPath(loginMember, 1L, 2L);
@@ -106,30 +99,27 @@ class PathServiceTest {
     @MethodSource("lessThan50KmMemberAndExpectedFee")
     void searchExtraFeeLessThan50KmAndShortestPath(LoginMember loginMember, int expectedFee) {
         // given
-        Set<Line> throughLine = new HashSet<>(Collections.singletonList(신분당선));
         when(stationService.findStationById(1L)).thenReturn(강남역);
         when(stationService.findStationById(3L)).thenReturn(양재역);
         when(lineService.findAllLines()).thenReturn(Arrays.asList(이호선, 신분당선, 삼호선));
-        when(pathFinder.getDijkstraPath(강남역, 양재역))
-                .thenReturn(new Path(Arrays.asList(강남역, 양재역), 25, throughLine));
 
         // when
         PathResponse pathResponse = pathService.searchShortestPath(loginMember, 1L, 3L);
 
         // then
         assertAll(
-                () -> assertThat(pathResponse.getStations()).hasSize(2),
-                () -> assertThat(pathResponse.getDistance()).isEqualTo(25),
+                () -> assertThat(pathResponse.getStations()).hasSize(4),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(23),
                 () -> assertThat(pathResponse.getFee()).isEqualTo(expectedFee)
         );
     }
 
     public static Stream<Arguments> lessThan50KmMemberAndExpectedFee() {
         return Stream.of(
-                Arguments.of(LoginMember.guest(), 1550), // 1250 + 300
-                Arguments.of(new LoginMember("mond@mond.com", 6), 600),
-                Arguments.of(new LoginMember("mond@mond.com", 13), 960),
-                Arguments.of(new LoginMember("mond@mond.com", 20), 1550)
+                Arguments.of(LoginMember.guest(), 2050), // 1250 + 300 + 500
+                Arguments.of(new LoginMember("mond@mond.com", 6), 850),
+                Arguments.of(new LoginMember("mond@mond.com", 13), 1360),
+                Arguments.of(new LoginMember("mond@mond.com", 20), 2050)
         );
     }
 
@@ -137,20 +127,17 @@ class PathServiceTest {
     @MethodSource("moreThan50KmMemberAndExpectedFee")
     void searchExtraFeeMoreThan50KmAndShortestPath(LoginMember loginMember, int expectedFee) {
         // given
-        Set<Line> throughLine = new HashSet<>(Arrays.asList(신분당선, 삼호선));
         when(stationService.findStationById(1L)).thenReturn(강남역);
         when(stationService.findStationById(10L)).thenReturn(멀리있는역);
         when(lineService.findAllLines()).thenReturn(Arrays.asList(이호선, 신분당선, 삼호선));
-        when(pathFinder.getDijkstraPath(강남역, 멀리있는역))
-                .thenReturn(new Path(Arrays.asList(강남역, 양재역, 멀리있는역), 95, throughLine));
 
         // when
         PathResponse pathResponse = pathService.searchShortestPath(loginMember, 1L, 10L);
 
         // then
         assertAll(
-                () -> assertThat(pathResponse.getStations()).hasSize(3),
-                () -> assertThat(pathResponse.getDistance()).isEqualTo(95),
+                () -> assertThat(pathResponse.getStations()).hasSize(5),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(93),
                 () -> assertThat(pathResponse.getFee()).isEqualTo(expectedFee)
         );
     }
