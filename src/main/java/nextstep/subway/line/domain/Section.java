@@ -130,6 +130,10 @@ public class Section {
                 downStation.equals(other.downStation);
     }
 
+    public int getLineExtraFare() {
+        return line.getExtraFare();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -50,10 +50,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         사당역 = StationAcceptanceTest.지하철역_등록되어_있음("사당역").as(StationResponse.class);
         동작역 = StationAcceptanceTest.지하철역_등록되어_있음("동작역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
-        사호선 = 지하철_노선_등록되어_있음("사호선", "bg-red-600", 사당역, 동작역, 4);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 900);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 200);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 300);
+        사호선 = 지하철_노선_등록되어_있음("사호선", "bg-red-600", 사당역, 동작역, 4, 400);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -90,8 +90,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(path.getDistance()).isEqualTo(12);
     }
 
-    private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        return LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance)).as(LineResponse.class);
+    private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int extraFare) {
+        return LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare)).as(LineResponse.class);
     }
 
     public static ExtractableResponse<Response> 지하철_최단_경로_조회_요청(StationResponse source, StationResponse target) {

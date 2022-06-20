@@ -32,7 +32,7 @@ public class SpringExtensionTest {
     void findAllLines() {
         // given
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(
-                new Line("사호선", "파랑", new Station("사당역"), new Station("동작역"), 3)));
+                new Line("사호선", "파랑", new Station("사당역"), new Station("동작역"), 3, 400)));
         LineService lineService = new LineService(lineRepository, stationService, pathFinder);
 
         // when

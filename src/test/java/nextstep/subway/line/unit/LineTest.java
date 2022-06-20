@@ -30,7 +30,7 @@ public class LineTest {
 
         왕십리_선릉_길이 = 7;
 
-        분당선 = new Line("분당선", "bg-yellow-600", 왕십리역, 선릉역, 왕십리_선릉_길이);
+        분당선 = new Line("분당선", "bg-yellow-600", 왕십리역, 선릉역, 왕십리_선릉_길이, 500);
     }
 
     @Test
