@@ -8,7 +8,7 @@ import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.infrastructure.InMemoryMemberRepository;
 import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.infra.InMemoryStationRepository;
+import nextstep.subway.station.infrastructure.InMemoryStationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

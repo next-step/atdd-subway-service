@@ -5,7 +5,7 @@ import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.infrastructure.InMemoryMemberRepository;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.infra.InMemoryStationRepository;
+import nextstep.subway.station.infrastructure.InMemoryStationRepository;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package nextstep.subway.line.infra;
+package nextstep.subway.line.infrastructure;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;

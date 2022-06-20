@@ -1,4 +1,4 @@
-package nextstep.subway.station.infra;
+package nextstep.subway.station.infrastructure;
 
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
