@@ -32,4 +32,10 @@ class DistanceTest {
     void minusTest() {
         assertThat(new Distance(5).minus(new Distance(3))).isEqualTo(new Distance(2));
     }
+
+    @DisplayName("거리에 따른 금액을 반환한다.")
+    @Test
+    void calculatorPriceTest() {
+        assertThat(new Distance(14).calculate()).isEqualTo(new Price(1350));
+    }
 }

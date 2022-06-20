@@ -31,6 +31,11 @@ public class Distance {
         return this.distance;
     }
 
+    public Price calculate() {
+        final Price basicPrice = OperationCostPolicy.basicDistancePrice();
+        return basicPrice.plus(OperationCostPolicy.overDistancePrice(distance));
+    }
+
     private Distance plus(final long source) {
         return new Distance(source + distance);
     }
