@@ -132,6 +132,35 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @Test
+    void 내_즐겨찾기를_삭제요청하면_즐겨찾기가_삭제된다() {
+        즐겨찾기_등록_요청(loginToken, 청담역.getId(), 건대입구역.getId());
+        즐겨찾기_등록_요청(loginToken, 뚝섬유원지역.getId(), 건대입구역.getId());
+
+        ExtractableResponse<Response> response = 내_즐겨찾기_목록을_조회한다(loginToken);
+        List<FavoriteResponse> resultFavorites = response.jsonPath().getList(".", FavoriteResponse.class).stream().collect(Collectors.toList());
+
+        FavoriteResponse favoriteResponse = resultFavorites.get(0);
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(loginToken, favoriteResponse.getId());
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+
+        ExtractableResponse<Response> newResponse = 내_즐겨찾기_목록을_조회한다(loginToken);
+        즐겨찾기가_정상적으로_조회(newResponse, Arrays.asList(뚝섬유원지역), Arrays.asList(건대입구역));
+    }
+
+    @Test
+    void 유효하지_않는_로그인으로_즐겨찾기를_삭제하면_삭제되지_않는다() {
+        즐겨찾기_등록_요청(loginToken, 청담역.getId(), 건대입구역.getId());
+        즐겨찾기_등록_요청(loginToken, 뚝섬유원지역.getId(), 건대입구역.getId());
+
+        ExtractableResponse<Response> response = 내_즐겨찾기_목록을_조회한다(loginToken);
+        List<FavoriteResponse> resultFavorites = response.jsonPath().getList(".", FavoriteResponse.class).stream().collect(Collectors.toList());
+
+        FavoriteResponse favoriteResponse = resultFavorites.get(0);
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(new TokenResponse(INVALID_ACCESS_TOKEN), favoriteResponse.getId());
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_등록_요청(TokenResponse tokenResponse, Long source, Long target) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(source, target);
         return RestAssured
@@ -171,5 +200,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                     assertThat(resultFavorites.stream().map(FavoriteResponse::getSource).collect(Collectors.toList())).containsExactlyInAnyOrderElementsOf(sources);
                     assertThat(resultFavorites.stream().map(FavoriteResponse::getTarget).collect(Collectors.toList())).containsExactlyInAnyOrderElementsOf(targets);
                 });
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse tokenResponse, Long favoriteId) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/favorites/{favoriteId}", favoriteId)
+                .then().log().all().
+                extract();
     }
 }

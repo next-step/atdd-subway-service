@@ -39,8 +39,14 @@ public class FavoriteService {
 
     public List<FavoriteResponse> findByMemnseberId(LoginMember loginMember) {
         Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NoSuchElementException::new);
-        List<Favorite> favoriteList = favoriteRepository.findByMemberId(loginMember.getId());
+        List<Favorite> favoriteList = favoriteRepository.findByMemberId(member.getId());
         return toFavoriteResponses(favoriteList);
+    }
+
+    public void delete(LoginMember loginMember, Long favoriteId) {
+        Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NoSuchElementException::new);
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, member.getId()).orElseThrow(NoSuchElementException::new);
+        favoriteRepository.delete(favorite);
     }
 
     private List<FavoriteResponse> toFavoriteResponses (List<Favorite> favorites) {

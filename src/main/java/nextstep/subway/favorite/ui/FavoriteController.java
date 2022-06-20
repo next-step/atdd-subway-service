@@ -34,6 +34,13 @@ public class FavoriteController {
         return ResponseEntity.ok(favorites);
     }
 
+    @DeleteMapping("/{favoriteId}")
+    public ResponseEntity deleteFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long favoriteId) {
+        favoriteService.delete(loginMember, favoriteId);
+        return ResponseEntity.noContent().build();
+    }
+
+
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity handleNoSuchElementException(Exception e) {
         return ResponseEntity.badRequest().build();
