@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import static nextstep.subway.station.StationAcceptanceTest.지하철역_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -33,8 +34,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class FavoriteServiceTest {
     private final Member mond = new Member(1L, "mond@mond.com", "mond", 10);
     final FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
-    private final Station gangNam = new Station(1L, "강남역");
-    private final Station gyoDae = new Station(2L, "교대역");
+    private final Station gangNam = 지하철역_생성(1L, "강남역");
+    private final Station gyoDae = 지하철역_생성(2L, "교대역");
 
     private FavoriteService favoriteService;
     @Mock

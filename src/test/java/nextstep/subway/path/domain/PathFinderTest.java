@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import static nextstep.subway.line.domain.LineTest.라인_생성;
+import static nextstep.subway.station.StationAcceptanceTest.지하철역_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -21,12 +22,12 @@ class PathFinderTest {
 
     @BeforeEach
     void setUp() {
-        강남역 = new Station("강남역");
-        양재역 = new Station("양재역");
-        교대역 = new Station("교대역");
-        남부터미널역 = new Station("남부터미널역");
-        서울역 = new Station("서울역");
-        용산역 = new Station("용산역");
+        강남역 = 지하철역_생성("강남역");
+        양재역 = 지하철역_생성("양재역");
+        교대역 = 지하철역_생성("교대역");
+        남부터미널역 = 지하철역_생성("남부터미널역");
+        서울역 = 지하철역_생성("서울역");
+        용산역 = 지하철역_생성("용산역");
 
         신분당선 = 라인_생성("신분당선", "red", 강남역, 양재역, Distance.of(5));
         이호선 = 라인_생성("이호선", "green", 교대역, 강남역, Distance.of(10));
