@@ -12,11 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class LineService {
     private static final String NOT_FOUND_LINE = "지하철 노선을 찾을 수 없습니다.";
 
@@ -28,17 +27,25 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        Line persistLine = lineRepository.save(Line.of(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        return LineResponse.of(persistLine, persistLine.getStations());
+        Line persistLine = lineRepository.save(new Line.Builder(request.getName(), request.getColor())
+                .upStation(upStation)
+                .downStation(downStation)
+                .distance(request.getDistance())
+                .build());
+        return LineResponse.of(persistLine);
+    }
+
+    public List<Line> findAll() {
+        return lineRepository.findAll();
     }
 
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
-                .map(line -> LineResponse.of(line, line.getStations()))
+        return findAll().stream()
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -49,18 +56,21 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine, persistLine.getStations());
+        return LineResponse.of(persistLine);
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = findLineById(id);
-        persistLine.update(Line.of(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(new Line.Builder(lineUpdateRequest.getName(), lineUpdateRequest.getColor()).build());
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -69,6 +79,7 @@ public class LineService {
         line.addSection(Section.of(upStation, downStation, request.getDistance()));
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);

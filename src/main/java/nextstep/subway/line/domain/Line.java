@@ -18,29 +18,52 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = Sections.empty();
 
+    public static class Builder {
+        private String name;
+        private String color;
+        private Station upStation;
+        private Station downStation;
+        private int distance;
+
+        public Builder(String name, String color) {
+            this.name = name;
+            this.color = color;
+        }
+
+        public Builder upStation(Station upStation) {
+            this.upStation = upStation;
+            return this;
+        }
+
+        public Builder downStation(Station downStation) {
+            this.downStation = downStation;
+            return this;
+        }
+
+        public Builder distance(int distance) {
+            this.distance = distance;
+            return this;
+        }
+
+        public Line build() {
+            return new Line(this);
+        }
+    }
+
     protected Line() {}
 
-    private Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+    private Line(Builder builder) {
+        this.name = builder.name;
+        this.color = builder.color;
+        if (isAddedSection(builder)) {
+            this.addSection(Section.of(builder.upStation, builder.downStation, builder.distance));
+        }
     }
 
-    private Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
-        this.addSection(Section.of(upStation, downStation, distance));
-    }
-
-    public static Line empty() {
-        return new Line();
-    }
-
-    public static Line of(String name, String color) {
-        return new Line(name, color);
-    }
-
-    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
-        return new Line(name, color, upStation, downStation, distance);
+    private boolean isAddedSection(Builder builder) {
+        return !Objects.isNull(builder.upStation)
+                && !Objects.isNull(builder.downStation)
+                && builder.distance > 0;
     }
 
     public void update(Line line) {

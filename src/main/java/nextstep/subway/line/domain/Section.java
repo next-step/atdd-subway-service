@@ -25,29 +25,19 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     protected Section() {}
 
-    private Section(Line line, Station upStation, Station downStation, int distance) {
-        this.line = line;
+    private Section(Station upStation, Station downStation, Distance distance) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
-    }
-
-    private Section(Station upStation, Station downStation, int distance) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
-    }
-
-    public static Section of(Line line, Station upStation, Station downStation, int distance) {
-        return new Section(line, upStation, downStation, distance);
     }
 
     public static Section of(Station upStation, Station downStation, int distance) {
-        return new Section(upStation, downStation, distance);
+        return new Section(upStation, downStation, Distance.from(distance));
     }
 
     public void assignLine(Line line) {
@@ -63,8 +53,12 @@ public class Section {
     }
 
     public Section mergeSection(Section section) {
-        int newDistance = this.distance + section.distance;
-        return new Section(this.line, this.upStation, section.downStation, newDistance);
+        Distance newDistance = Distance.from(this.distance);
+        newDistance.increase(section.distance);
+
+        Section mergeSection = new Section(this.upStation, section.downStation, newDistance);
+        mergeSection.assignLine(this.line);
+        return mergeSection;
     }
 
     public void updateSection(Section addedSection) {
@@ -76,20 +70,14 @@ public class Section {
         }
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException(LESS_THEN_ALREADY_DISTANCE);
-        }
+    private void updateUpStation(Station station, Distance newDistance) {
+        this.distance.decrease(newDistance);
         this.upStation = station;
-        this.distance -= newDistance;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException(LESS_THEN_ALREADY_DISTANCE);
-        }
+    private void updateDownStation(Station station, Distance newDistance) {
+        this.distance.decrease(newDistance);
         this.downStation = station;
-        this.distance -= newDistance;
     }
 
     public Long getId() {
@@ -105,7 +93,7 @@ public class Section {
     }
 
     public int getDistance() {
-        return this.distance;
+        return this.distance.get();
     }
 
     @Override

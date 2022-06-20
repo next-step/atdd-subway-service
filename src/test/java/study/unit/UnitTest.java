@@ -16,8 +16,12 @@ public class UnitTest {
 
         Station upStation = Station.from("강남역");
         Station downStation = Station.from("광교역");
-        Line line = Line.of("신분당선", "RED", upStation, downStation, 10);
-        Line newLine = Line.of(newName, "GREEN");
+        Line line = new Line.Builder("신분당선", "RED")
+                .upStation(upStation)
+                .downStation(downStation)
+                .distance(10)
+                .build();
+        Line newLine = new Line.Builder(newName, "GREEN").build();
 
         // when
         line.update(newLine);

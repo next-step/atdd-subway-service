@@ -5,13 +5,16 @@ public class SectionRequest {
     private Long downStationId;
     private int distance;
 
-    public SectionRequest() {
-    }
+    private SectionRequest() {}
 
-    public SectionRequest(Long upStationId, Long downStationId, int distance) {
+    private SectionRequest(Long upStationId, Long downStationId, int distance) {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    public static SectionRequest of(Long upStationId, Long downStationId, int distance) {
+        return new SectionRequest(upStationId, downStationId, distance);
     }
 
     public Long getUpStationId() {
