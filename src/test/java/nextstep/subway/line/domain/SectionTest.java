@@ -4,6 +4,7 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class SectionTest {
 
@@ -24,6 +25,72 @@ class SectionTest {
 
         // then
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 상행역을_수정한다() {
+        // given
+        Section section = new Section(신분당선, 신논현역, 강남역, 5);
+
+        // when
+        section.updateUpStation(양재역, new Distance(3));
+
+        // then
+        assertAll(
+                () -> assertThat(section.getUpStation()).isEqualTo(양재역),
+                () -> assertThat(section.getDistance()).isEqualTo(new Distance(2))
+        );
+    }
+
+    @Test
+    void 하행역을_수정한다() {
+        // given
+        Section section = new Section(신분당선, 신논현역, 강남역, 5);
+
+        // when
+        section.updateDownStation(양재역, new Distance(3));
+
+        // then
+        assertAll(
+                () -> assertThat(section.getDownStation()).isEqualTo(양재역),
+                () -> assertThat(section.getDistance()).isEqualTo(new Distance(2))
+        );
+    }
+
+    @Test
+    void 해당역이_상행역_하행역에_일치하는지_확인() {
+        // given
+        Section section = new Section(신분당선, 신논현역, 강남역, 5);
+
+        // when
+        boolean actual = section.isSameAnyStation(신논현역);
+
+        // then
+        assertThat(actual).isTrue();
+    }
+
+    @Test
+    void 해당역이_상행역에_일치하는지_확인() {
+        // given
+        Section section = new Section(신분당선, 신논현역, 강남역, 5);
+
+        // when
+        boolean actual = section.isSameUpStation(신논현역);
+
+        // then
+        assertThat(actual).isTrue();
+    }
+
+    @Test
+    void 해당역이_하행역에_일치하는지_확인() {
+        // given
+        Section section = new Section(신분당선, 신논현역, 강남역, 5);
+
+        // when
+        boolean actual = section.isSameDownStation(강남역);
+
+        // then
+        assertThat(actual).isTrue();
     }
 
 }

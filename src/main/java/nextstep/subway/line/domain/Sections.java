@@ -7,10 +7,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Embeddable
@@ -88,6 +85,9 @@ public class Sections {
 
     private Stations getStationsInOrder() {
         Stations stations = new Stations();
+        if (sections.isEmpty()) {
+            return stations;
+        }
         Station station = findFirstUpStation();
 
         Map<Station, Station> map = sections.stream()
@@ -135,13 +135,13 @@ public class Sections {
 
     private Optional<Section> findSectionContainDownStation(Station station) {
         return sections.stream()
-                .filter(section -> section.getDownStation() == station)
+                .filter(section -> section.isSameDownStation(station))
                 .findFirst();
     }
 
     private Optional<Section> findSectionContainUpStation(Station station) {
         return sections.stream()
-                .filter(section -> section.getUpStation() == station)
+                .filter(section -> section.isSameUpStation(station))
                 .findFirst();
     }
 
