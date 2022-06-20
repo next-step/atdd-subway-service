@@ -1,20 +1,18 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.auth.domain.LoginMember.CHILD_DISCOUNT_RATE;
+import static nextstep.subway.auth.domain.LoginMember.DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY;
+import static nextstep.subway.auth.domain.LoginMember.TEEN_DISCOUNT_RATE;
 import static nextstep.subway.behaviors.MemberBehaviors.로그인_되어있음;
 import static nextstep.subway.behaviors.MemberBehaviors.회원_생성을_요청;
 import static nextstep.subway.behaviors.SubwayBehaviors.로그인_상태에서_최단경로_및_요금을_조회한다;
 import static nextstep.subway.behaviors.SubwayBehaviors.로그인정보없이_최단경로_및_요금을_조회한다;
-import static nextstep.subway.behaviors.SubwayBehaviors.어린이_연령대인지_확인;
 import static nextstep.subway.behaviors.SubwayBehaviors.지하철_노선_등록되어_있음;
 import static nextstep.subway.behaviors.SubwayBehaviors.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.behaviors.SubwayBehaviors.지하철역_등록되어_있음;
 import static nextstep.subway.behaviors.SubwayBehaviors.지하철요금_확인;
-import static nextstep.subway.behaviors.SubwayBehaviors.청소년_연령대인지_확인;
 import static nextstep.subway.behaviors.SubwayBehaviors.최단경로_확인;
 import static nextstep.subway.behaviors.SubwayBehaviors.최단경로거리_확인;
-import static nextstep.subway.path.domain.OverFareCalculator.CHILD_DISCOUNT_RATE;
-import static nextstep.subway.path.domain.OverFareCalculator.DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY;
-import static nextstep.subway.path.domain.OverFareCalculator.TEEN_DISCOUNT_RATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -110,7 +108,6 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 로그인_상태에서_최단경로_및_요금을_조회한다(사용자토큰, 출발역, 도착역);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        어린이_연령대인지_확인(age);
 
         PathResponse pathResponse = response.as(PathResponse.class);
         최단경로거리_확인(pathResponse, 5);
@@ -133,7 +130,6 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 로그인_상태에서_최단경로_및_요금을_조회한다(사용자토큰, 출발역, 도착역);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        청소년_연령대인지_확인(age);
 
         PathResponse pathResponse = response.as(PathResponse.class);
         최단경로거리_확인(pathResponse, 5);
@@ -145,7 +141,10 @@ class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * 교대역    --- *2호선* ---   강남역 |                        | *3호선*                   *신분당선* |                        |
+     * 교대역    --- *2호선* ---   강남역
+     * |                        |
+     * *3호선*                   *신분당선*
+     * |                        |
      * 남부터미널역  --- *3호선* ---   양재
      */
     private void 노선_추가요금_없는_테스트경로_세팅() {
@@ -156,8 +155,11 @@ class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * 교대역    --- *2호선*(100)  ---   강남역 |                                 | *3호선*(3)                      *신분당선*(5) |
-     * | 남부터미널역  --- *3호선*(1) ---    양재
+     * 교대역    --- *2호선*(100)  ---   강남역
+     * |                                 |
+     * *3호선*(3)                      *신분당선*(5)
+     * |                                 |
+     * 남부터미널역  --- *3호선*(1) ---    양재
      */
     private void 노선_추가요금_있는_테스트경로_세팅() {
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 5, 1000);

@@ -94,3 +94,14 @@
   - [X] JGraphPathFindService에서 Repository 의존성 제거
   - [X] PathService에서 타 도메인의 Service를 사용하도록 변경(Repository에 대한 의존성 제거)
   - [X] lines, graph 캐시 도입 
+
+## 3단계 
+  - [X] FavoriteService stream 줄 나눔
+  - [X] 변수명에 포함된 자료구조 표현 제거ㅣ
+  - [X] 필요없는 주석 제거
+  - [X] Object isNull 제거
+  - [X] 인수테스트시 실제 요청을 담당하는 클래스 추가 및 리팩토링
+
+## 4단계
+  - [X] LoginMember로 연령별 할인 역할 이동
+  - [ ] PathFindResult로 거리 및 노선별 할인 역할 이동 

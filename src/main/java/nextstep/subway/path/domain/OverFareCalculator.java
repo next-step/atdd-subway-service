@@ -16,9 +16,6 @@ public class OverFareCalculator {
 
     private static final int NO_OVER_FARE = 0;
 
-    public static final int DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY = 350;
-    public static final int CHILD_DISCOUNT_RATE = 50;
-    public static final int TEEN_DISCOUNT_RATE = 20;
 
     private OverFareCalculator() {
     }
@@ -57,27 +54,5 @@ public class OverFareCalculator {
                 .mapToInt(Line::getExtraCharge)
                 .max()
                 .getAsInt();
-    }
-
-    public static int calculateDiscountedFareByAge(SubwayFare beforeDiscount, int age) {
-        if (isChild(age)) {
-            return beforeDiscount.subtract(DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY)
-                    .discountedByPercent(CHILD_DISCOUNT_RATE)
-                    .getValue();
-        }
-        if (isTeen(age)) {
-            return beforeDiscount.subtract(DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY)
-                    .discountedByPercent(TEEN_DISCOUNT_RATE)
-                    .getValue();
-        }
-        return beforeDiscount.getValue();
-    }
-
-    private static boolean isChild(int age) {
-        return age >= 6 && age < 13;
-    }
-
-    private static boolean isTeen(int age) {
-        return age >= 13 && age < 19;
     }
 }

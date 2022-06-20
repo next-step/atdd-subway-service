@@ -371,14 +371,4 @@ public class SubwayBehaviors {
     public static void 지하철요금_확인(PathResponse pathResponse, SubwayFare fare) {
         assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
-
-    public static void 어린이_연령대인지_확인(int age) {
-        boolean isChild = age >= 6 && age < 13;
-        assertThat(isChild).isTrue();
-    }
-
-    public static void 청소년_연령대인지_확인(int age) {
-        boolean isTeen = age >= 13 && age < 19;
-        assertThat(isTeen).isTrue();
-    }
 }
