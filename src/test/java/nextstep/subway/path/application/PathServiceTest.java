@@ -7,6 +7,7 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.section.application.SectionService;
 import nextstep.subway.section.domain.SectionRepository;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,8 +24,9 @@ class PathServiceTest {
     @Autowired
     private SectionRepository sectionRepository;
 
-    private SectionService sectionService = new SectionService(sectionRepository);
-    private PathService pathService = new PathService(sectionService);
+    private SectionService sectionService;
+    private StationService stationService;
+    private PathService pathService;
 
     private Station 강남역;
     private Station 양재역;
@@ -45,6 +47,10 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
+        sectionService = new SectionService(sectionRepository);
+        stationService = new StationService(stationRepository);
+        pathService = new PathService(sectionService, stationService);
+
         강남역 = stationRepository.save(new Station("강남역"));
         양재역 = stationRepository.save(new Station("양재역"));
         교대역 = stationRepository.save(new Station("교대역"));
@@ -63,6 +69,8 @@ class PathServiceTest {
 
     @Test
     void 최단_경로를_구할_수_있다() {
+        System.out.println(stationRepository.findAll());
+
         // when
         final PathResponse path = pathService.findShortestPath(강남역.getId(), 남부터미널역.getId());
 

@@ -2,6 +2,7 @@ package nextstep.subway.station.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.path.dto.PathStationResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
@@ -45,6 +46,13 @@ public class StationService {
         return stations
                 .stream()
                 .map(StationResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public List<PathStationResponse> convertToPathStationResponses(final List<Station> stations) {
+        return stations
+                .stream()
+                .map(PathStationResponse::of)
                 .collect(Collectors.toList());
     }
 }
