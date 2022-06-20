@@ -42,11 +42,15 @@ public class Distance {
             throw new IllegalArgumentException("0보다 작은 거리로 비율을 계산할 수 없습니다.");
         }
 
-        return this.value / distance.value + ratioRemainder(distance);
+        return this.value / distance.value + 1;
     }
 
     public boolean isLessThanOrEqualTo(Distance distance) {
         return this.value <= distance.value;
+    }
+
+    public boolean isLessThan(Distance distance) {
+        return this.value < distance.value;
     }
 
     public Distance getMinimumDistance(Distance distance) {
@@ -64,12 +68,5 @@ public class Distance {
         if (value < MIN_VALUE) {
             throw new IllegalArgumentException("거리는 0 보다 작을 수 없습니다.");
         }
-    }
-
-    private int ratioRemainder(Distance distance) {
-        if (this.value % distance.value > 0) {
-            return 1;
-        }
-        return 0;
     }
 }

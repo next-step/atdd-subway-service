@@ -77,4 +77,8 @@ public class Line extends BaseEntity {
     public List<Station> getStations() {
         return this.sections.getStations();
     }
+
+    public LineFare getAdditionalFare() {
+        return this.additionalFare;
+    }
 }

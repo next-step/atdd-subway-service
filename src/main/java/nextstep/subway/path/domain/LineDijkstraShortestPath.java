@@ -3,17 +3,19 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.dto.ShortestPathResponse;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class LineDijkstraShortestPath {
-    private WeightedMultigraph<Station, DefaultWeightedEdge> graph =
-            new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
 
     public LineDijkstraShortestPath(Lines lines) {
         validationLines(lines);
@@ -21,12 +23,16 @@ public class LineDijkstraShortestPath {
         lines.forEach(this::registerLine);
     }
 
-    public List<Station> getShortestStationPath(Station source, Station target) {
-        return findShortestPath(source, target).getVertexList();
-    }
+    public ShortestPathResponse getShortestPathResponse(Station source, Station target) {
+        GraphPath<Station, SectionEdge> result = findShortestPath(source, target);
+        Lines shortestPathLines = new Lines(getLinesInSectionEdge(result.getEdgeList()));
+        Distance totalDistance = new Distance((int) result.getWeight());
 
-    public int getShortestPathStationDistance(Station source, Station target) {
-        return (int) findShortestPath(source, target).getWeight();
+        return new ShortestPathResponse(
+                result.getVertexList(),
+                totalDistance.getValue(),
+                shortestPathLines.getMaxAdditionalFare().calculateTotalFare(totalDistance)
+        );
     }
 
     private void validationLines(Lines lines) {
@@ -49,10 +55,7 @@ public class LineDijkstraShortestPath {
 
     private void registerLine(Line line) {
         line.getStations().forEach(this::addStationVertex);
-
-        line.getSections().forEach(section -> {
-            addEdgeWithWeight(section.getUpStation(), section.getDownStation(), section.getDistance());
-        });
+        line.getSections().forEach(this::addEdge);
     }
 
     private void addStationVertex(Station station) {
@@ -65,29 +68,30 @@ public class LineDijkstraShortestPath {
         return !this.graph.containsVertex(station);
     }
 
-    private void addEdgeWithWeight(Station upStation, Station downStation, Distance weightDistance) {
-        if (isNotHasEdge(upStation, downStation)) {
-            DefaultWeightedEdge edge = this.graph.addEdge(upStation, downStation);
-            this.graph.setEdgeWeight(edge, weightDistance.getValue());
-        }
+    private void addEdge(Section section) {
+        SectionEdge sectionEdge = new SectionEdge(section);
+
+        this.graph.addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
+        this.graph.setEdgeWeight(sectionEdge, section.getDistance().getValue());
     }
 
-    private boolean isNotHasEdge(Station upStation, Station downStation) {
-        return !this.graph.containsEdge(upStation, downStation);
-    }
-
-    private GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target) {
+    private GraphPath<Station, SectionEdge> findShortestPath(Station source, Station target) {
         validationFindPathStation(source, target);
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath =
-                new DijkstraShortestPath<>(graph);
+        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
-        GraphPath<Station, DefaultWeightedEdge> result = dijkstraShortestPath.getPath(source, target);
+        GraphPath<Station, SectionEdge> result = dijkstraShortestPath.getPath(source, target);
 
         if (result == null) {
             throw new IllegalArgumentException("경로를 찾을 수 없습니다.");
         }
 
         return result;
+    }
+
+    private Set<Line> getLinesInSectionEdge(List<SectionEdge> target) {
+        return target.stream()
+                .map(SectionEdge::getLine)
+                .collect(Collectors.toSet());
     }
 }

@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 class PathFinderTest {
 
-    private Station 교대역, 강남역, 역삼역, 선릉역, 한티역, 남부터미널역, 양재역, 매봉역, 도곡역, 양재시민의숲역, 청계산입구역, 판교역, 정자역, 미금역, 이매역, 오이도역, 정왕역, 신길온천역, 안산역, 초지역, 고잔역;
+    private Station 교대역, 강남역, 역삼역, 선릉역, 한티역, 남부터미널역, 양재역, 매봉역, 도곡역, 양재시민의숲역, 청계산입구역, 판교역, 정자역, 미금역, 동천역, 이매역, 오이도역, 정왕역, 신길온천역, 안산역, 초지역, 고잔역;
     private Line 이호선, 삼호선, 사호선, 신분당선, 수인분당선, 경강선;
     private final int ADDITIONAL_LINE_FARE = 300;
 
@@ -28,12 +28,12 @@ class PathFinderTest {
      *  (3호선, 5)          (신분당, 3)                             한티역
      *     |                    |                               (수인분당, 3)
      *  남부터미널역--(3호선, 3)--양재역--(3호선, 3)--매봉역--(3호선, 3)--도곡역
-     *                     (신분당, 9)
-     *                    양재시민의숲역--(신분당선, 1)--청계산입구역--(신분당선, 39)--판교역--(신분당선, 1)--정자역--(신분당선, 8)--미금역
+     *                     (신분당, 10)
+     *                    양재시민의숲역--(신분당선, 1)--청계산입구역--(신분당선, 39)--판교역--(신분당선, 1)--정자역--(신분당선, 7)--미금역--(신분당선, 1)--동천역
      *                                                    (경강선, 1)
      *                                                      이매역
      *
-     * 오이도역--(4호선, 9)--정왕역--(4호선, 1)--신길온천역--(4호선, 39)--안산역--(4호선, 1)--초지역--(4호선, 8)--고잔역
+     * 오이도역--(4호선, 10)--정왕역--(4호선, 1)--신길온천역--(4호선, 39)--안산역--(4호선, 1)--초지역--(4호선, 8)--고잔역
      */
 
     @BeforeEach
@@ -52,6 +52,7 @@ class PathFinderTest {
         판교역 = 지하철_생성("판교역");
         정자역 = 지하철_생성("정자역");
         미금역 = 지하철_생성("미금역");
+        동천역 = 지하철_생성("동천역");
         이매역 = 지하철_생성("이매역");
         오이도역 = 지하철_생성("오이도역");
         정왕역 = 지하철_생성("정왕역");
@@ -70,18 +71,19 @@ class PathFinderTest {
         삼호선.addSection(매봉역, 도곡역, 3);
 
         신분당선 = 노선_생성("신분당선", "bg-red-color", 강남역, 양재역, 3);
-        신분당선.addSection(양재역, 양재시민의숲역, 9);
+        신분당선.addSection(양재역, 양재시민의숲역, 10);
         신분당선.addSection(양재시민의숲역, 청계산입구역, 1);
         신분당선.addSection(청계산입구역, 판교역, 39);
         신분당선.addSection(판교역, 정자역, 1);
-        신분당선.addSection(정자역, 미금역, 8);
+        신분당선.addSection(정자역, 미금역, 7);
+        신분당선.addSection(미금역, 동천역, 1);
 
         수인분당선 = 노선_생성("수인분당선", "bg-yellow-color", 선릉역, 한티역, 3);
         수인분당선.addSection(한티역, 도곡역, 3);
 
         경강선 = 노선_생성("경강선", "bg-blue-color", 판교역, 이매역, 1, ADDITIONAL_LINE_FARE);
 
-        사호선 = 노선_생성("사호선", "bg-sky-color", 오이도역, 정왕역, 9, ADDITIONAL_LINE_FARE);
+        사호선 = 노선_생성("사호선", "bg-sky-color", 오이도역, 정왕역, 10, ADDITIONAL_LINE_FARE);
         사호선.addSection(정왕역, 신길온천역, 1);
         사호선.addSection(신길온천역, 안산역, 39);
         사호선.addSection(안산역, 초지역, 1);
@@ -163,13 +165,15 @@ class PathFinderTest {
         ShortestPathResponse defaultAdditionalFarePathByMaxDistance = defaultFareFinder.findShortestPath(양재역, 판교역);
         ShortestPathResponse defaultLongerFarePathByMinDistance = defaultFareFinder.findShortestPath(양재역, 정자역);
         ShortestPathResponse defaultLongerFarePathByMoreDistance = defaultFareFinder.findShortestPath(양재역, 미금역);
+        ShortestPathResponse defaultLongerFarePathByMoreDistance2 = defaultFareFinder.findShortestPath(양재역, 동천역);
 
         // then
-        노선_요금_일치됨(defaultFareFinderPath, 1_250);
-        노선_요금_일치됨(defaultAdditionalFarePathByMinDistance, 1_350);
-        노선_요금_일치됨(defaultAdditionalFarePathByMaxDistance, 2_050);
-        노선_요금_일치됨(defaultLongerFarePathByMinDistance, 2_150);
-        노선_요금_일치됨(defaultLongerFarePathByMoreDistance, 2_250);
+        노선_요금_일치됨(defaultFareFinderPath, 1_250);                    // 10 km
+        노선_요금_일치됨(defaultAdditionalFarePathByMinDistance, 1_350);   // 11 km
+        노선_요금_일치됨(defaultAdditionalFarePathByMaxDistance, 2_050);   // 50 km
+        노선_요금_일치됨(defaultLongerFarePathByMinDistance, 2_150);       // 51 km
+        노선_요금_일치됨(defaultLongerFarePathByMoreDistance, 2_150);      // 58 km
+        노선_요금_일치됨(defaultLongerFarePathByMoreDistance2, 2_250);     // 59 km
     }
 
     @DisplayName("추가 요금이 존재하는 노선의 경로 조회 시 거리에 따른 요금과 추가 요금이 정상 계산되어야 한다")
@@ -186,11 +190,11 @@ class PathFinderTest {
         ShortestPathResponse defaultLongerFarePathByMoreDistance = defaultFareFinder.findShortestPath(오이도역, 고잔역);
 
         // then
-        노선_요금_일치됨(defaultFareFinderPath, 1_250 + ADDITIONAL_LINE_FARE);
-        노선_요금_일치됨(defaultAdditionalFarePathByMinDistance, 1_350+ ADDITIONAL_LINE_FARE);
-        노선_요금_일치됨(defaultAdditionalFarePathByMaxDistance, 2_050+ ADDITIONAL_LINE_FARE);
-        노선_요금_일치됨(defaultLongerFarePathByMinDistance, 2_150+ ADDITIONAL_LINE_FARE);
-        노선_요금_일치됨(defaultLongerFarePathByMoreDistance, 2_250+ ADDITIONAL_LINE_FARE);
+        노선_요금_일치됨(defaultFareFinderPath, 1_250 + ADDITIONAL_LINE_FARE);                     // 10 km
+        노선_요금_일치됨(defaultAdditionalFarePathByMinDistance, 1_350 + ADDITIONAL_LINE_FARE);    // 11 km
+        노선_요금_일치됨(defaultAdditionalFarePathByMaxDistance, 2_050 + ADDITIONAL_LINE_FARE);    // 50 km
+        노선_요금_일치됨(defaultLongerFarePathByMinDistance, 2_150 + ADDITIONAL_LINE_FARE);        // 51 km
+        노선_요금_일치됨(defaultLongerFarePathByMoreDistance, 2_250 + ADDITIONAL_LINE_FARE);       // 59 km
     }
 
     @DisplayName("경로 조회 시 여러개의 노선이 존재하면 해당 노선 중 가장 비싼 노선의 운임 비용으로 요금이 정상 계산되어야 한다")
@@ -221,6 +225,6 @@ class PathFinderTest {
     }
 
     private void 노선_요금_일치됨(ShortestPathResponse source, int expectedFare) {
-        assertThat(source.getTotalFare(), expectedFare);
+        assertThat(source.getTotalFare()).isEqualTo(expectedFare);
     }
 }

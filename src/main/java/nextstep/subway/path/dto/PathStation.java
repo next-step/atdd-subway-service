@@ -5,9 +5,11 @@ import nextstep.subway.station.domain.Station;
 import java.time.LocalDateTime;
 
 public class PathStation {
-    private final Long id;
-    private final String name;
-    private final LocalDateTime createdAt;
+    private Long id;
+    private String name;
+    private LocalDateTime createdAt;
+
+    public PathStation() {}
 
     public PathStation(Long id, String name, LocalDateTime createdAt) {
         this.id = id;

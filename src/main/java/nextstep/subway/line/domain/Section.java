@@ -74,4 +74,8 @@ public class Section {
     public Distance getDistance() {
         return distance;
     }
+
+    public Line getLine() {
+        return this.line;
+    }
 }

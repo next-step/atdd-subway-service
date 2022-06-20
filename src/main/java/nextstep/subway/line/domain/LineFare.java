@@ -7,15 +7,17 @@ import javax.persistence.Embeddable;
 public class LineFare {
     private static final int DEFAULT_FARE = 1_250;
     private static final int ADDITIONAL_FARE_UNIT = 100;
-    private static final Distance MINIMUM_DEFAULT_ADDITIONAL_DISTANCE = new Distance(10);
+    private static final Distance MINIMUM_DEFAULT_ADDITIONAL_DISTANCE = new Distance(11);
+    private static final Distance MAX_DEFAULT_ADDITIONAL_DISTANCE = new Distance(50);
     private static final Distance DEFAULT_ADDITIONAL_DISTANCE_UNIT = new Distance(5);
-    private static final Distance MINIMUM_LONGER_ADDITIONAL_DISTANCE = new Distance(50);
+    private static final Distance MINIMUM_LONGER_ADDITIONAL_DISTANCE = new Distance(51);
     private static final Distance LONGER_ADDITIONAL_DISTANCE_UNIT = new Distance(8);
 
     @Column(nullable = false)
     private final int fare;
 
     public LineFare(int fare) {
+        validateFare(fare);
         this.fare = fare;
     }
 
@@ -40,17 +42,17 @@ public class LineFare {
     }
 
     private int calculateDefaultAdditionalFare(Distance totalDistance) {
-        if (totalDistance.isLessThanOrEqualTo(MINIMUM_DEFAULT_ADDITIONAL_DISTANCE)) {
+        if (totalDistance.isLessThan(MINIMUM_DEFAULT_ADDITIONAL_DISTANCE)) {
             return 0;
         }
 
-        return totalDistance.getMinimumDistance(MINIMUM_LONGER_ADDITIONAL_DISTANCE)
+        return totalDistance.getMinimumDistance(MAX_DEFAULT_ADDITIONAL_DISTANCE)
                 .subtractThenReturnResult(MINIMUM_DEFAULT_ADDITIONAL_DISTANCE)
                 .calculateDistanceRatio(DEFAULT_ADDITIONAL_DISTANCE_UNIT) * ADDITIONAL_FARE_UNIT;
     }
 
     private int calculateLongerAdditionalFare(Distance totalDistance) {
-        if (totalDistance.isLessThanOrEqualTo(MINIMUM_LONGER_ADDITIONAL_DISTANCE)) {
+        if (totalDistance.isLessThan(MINIMUM_LONGER_ADDITIONAL_DISTANCE)) {
             return 0;
         }
 

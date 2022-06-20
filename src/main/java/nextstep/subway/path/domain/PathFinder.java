@@ -12,9 +12,6 @@ public class PathFinder {
     }
 
     public ShortestPathResponse findShortestPath(Station source, Station target) {
-        return new ShortestPathResponse(
-                this.graph.getShortestStationPath(source, target),
-                this.graph.getShortestPathStationDistance(source, target)
-        );
+        return this.graph.getShortestPathResponse(source, target);
     }
 }
