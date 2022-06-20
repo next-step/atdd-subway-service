@@ -30,6 +30,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
 
+    /**
+     * 교대역    --- *2호선* (10) ---   강남역
+     * |                        |
+     * *3호선* (5)                   *신분당선* (10)
+     * |                        |
+     * 남부터미널역  --- *3호선* (3) ---   양재역
+     */
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -42,9 +49,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
         신분당선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-orange-600", 남부터미널역.getId(), 양재역.getId(), 3)).as(LineResponse.class);
 
-        지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+        지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 5);
     }
 
     /**
@@ -57,11 +64,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void 최단경로_조회_성공() {
         Map<String, String> params = new HashMap<>();
         params.put("source", 교대역.getId().toString());
-        params.put("target", 교대역.getId().toString());
+        params.put("target", 양재역.getId().toString());
 
         ExtractableResponse<Response> response = 최단경로_조회(params);
 
-        최단경로_조회_성공(response);
+        최단경로_조회_성공(response, 8);
     }
 
     private ExtractableResponse<Response> 최단경로_조회(Map<String, String> params) {
@@ -72,7 +79,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 최단경로_조회_성공(ExtractableResponse<Response> response) {
+    private void 최단경로_조회_성공(ExtractableResponse<Response> response, int distance) {
+        int resulDistance = response.jsonPath().get("distance");
+        assertThat(resulDistance).isEqualTo(distance);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
