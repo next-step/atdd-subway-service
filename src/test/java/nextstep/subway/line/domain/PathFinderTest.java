@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.dto.PathResponse;
+import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

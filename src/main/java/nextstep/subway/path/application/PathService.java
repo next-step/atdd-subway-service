@@ -1,9 +1,10 @@
-package nextstep.subway.line.application;
+package nextstep.subway.path.application;
 
 import nextstep.subway.exception.SameOriginDestinationException;
+import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.PathFinder;
-import nextstep.subway.line.dto.PathResponse;
+import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
