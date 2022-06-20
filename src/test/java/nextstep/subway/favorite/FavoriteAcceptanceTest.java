@@ -33,6 +33,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 청담역;
     private StationResponse 뚝섬유원지역;
     private StationResponse 건대입구역;
+    private StationResponse 군자역;
     private LineRequest 칠호선Request;
 
     /**
@@ -62,6 +63,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         청담역 = StationAcceptanceTest.지하철역_등록되어_있음("청담역").as(StationResponse.class);
         뚝섬유원지역 = StationAcceptanceTest.지하철역_등록되어_있음("뚝섬유원지역").as(StationResponse.class);
         건대입구역 = StationAcceptanceTest.지하철역_등록되어_있음("건대입구역").as(StationResponse.class);
+        군자역 = new StationResponse(10L, "군자역");
 
         칠호선Request = new LineRequest("신분당선", "bg-red-600", 청담역.getId(), 뚝섬유원지역.getId(), 20);
 
@@ -93,6 +95,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 존재하지_않는_역을_즐겨찾기하면_등록되지_않는다() {
+        ExtractableResponse<Response> response = 즐겨찾기_등록_요청(loginToken, 청담역.getId(), 군자역.getId());
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
     }
 
