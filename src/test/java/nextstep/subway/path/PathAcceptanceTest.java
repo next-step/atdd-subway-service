@@ -90,38 +90,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회_확인(지하철_경로_조회_요청_결과, 12, Arrays.asList(강남역, 양재역, 남부터미널역));
     }
 
-    private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse target) {
-        Map<String, Long> params = new HashMap<>();
-        params.put("source", source.getId());
-        params.put("target", target.getId());
-
-        return RestAssured
-            .given().log().all()
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .params(params)
-            .when().get("/paths")
-            .then().log().all()
-            .extract();
-    }
-
-    private void 최단_경로_조회_확인(ExtractableResponse<Response> response, int distance, List<StationResponse> expectedStations) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-
-        List<Long> stationIds = pathResponse.getStations()
-            .stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
-
-        List<Long> expectedStationIds = expectedStations.stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
-
-        assertAll(
-            () -> assertThat(pathResponse.getDistance()).isEqualTo(distance),
-            () -> assertThat(stationIds).containsExactlyElementsOf(expectedStationIds)
-        );
-    }
-
     /**
      * Background
      *
@@ -155,5 +123,37 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 최단_경로_조회_불가(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse target) {
+        Map<String, Long> params = new HashMap<>();
+        params.put("source", source.getId());
+        params.put("target", target.getId());
+
+        return RestAssured
+            .given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .params(params)
+            .when().get("/paths")
+            .then().log().all()
+            .extract();
+    }
+
+    private void 최단_경로_조회_확인(ExtractableResponse<Response> response, int distance, List<StationResponse> expectedStations) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+
+        List<Long> stationIds = pathResponse.getStations()
+            .stream()
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
+
+        List<Long> expectedStationIds = expectedStations.stream()
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
+
+        assertAll(
+            () -> assertThat(pathResponse.getDistance()).isEqualTo(distance),
+            () -> assertThat(stationIds).containsExactlyElementsOf(expectedStationIds)
+        );
     }
 }
