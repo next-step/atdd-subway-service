@@ -1,9 +1,11 @@
 package nextstep.subway.line.application;
 
+import java.util.Collection;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -75,11 +77,21 @@ public class LineService {
         line.addSection(Section.of(line, upStation, downStation, Distance.from(request.getDistance())));
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
 
         line.deleteSection(station);
+    }
+
+    public List<Section> findAllSections() {
+        return lineRepository.findAll().stream()
+            .map(Line::getSections)
+            .map(Sections::getSections)
+            .flatMap(Collection::stream)
+            .distinct()
+            .collect(Collectors.toList());
     }
 
 }
