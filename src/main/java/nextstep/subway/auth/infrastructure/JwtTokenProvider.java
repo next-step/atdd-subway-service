@@ -28,26 +28,24 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getPayload(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-    }
-
-    public boolean validateToken(String token) {
+    public String getPayloadForNotTolerateException(String token) {
         try {
-            validateGuest(token);
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (JwtException e) {
+            return Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token).getBody()
+                    .getSubject();
+        } catch (JwtException | IllegalArgumentException e) {
             throw new AuthorizationException();
-        } catch (IllegalArgumentException e) {
-            return false;
         }
     }
 
-    private void validateGuest(String token) {
-        if (token == null || token.isEmpty() || "null".equals(token)) {
-            throw new NotExistException();
+    public boolean validateTokenForTolerateException(String token) {
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
         }
     }
 }

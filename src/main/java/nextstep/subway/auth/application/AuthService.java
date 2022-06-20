@@ -26,13 +26,17 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
+    public LoginMember findMemberNonRequiredToken(String credentials) {
+        if (!jwtTokenProvider.validateTokenForTolerateException(credentials)) {
             return LoginMember.guest();
         }
+        return findMemberByCredentials(credentials);
+    }
 
-        String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+    public LoginMember findMemberByCredentials(String credentials) {
+        String email = jwtTokenProvider.getPayloadForNotTolerateException(credentials);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(RuntimeException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

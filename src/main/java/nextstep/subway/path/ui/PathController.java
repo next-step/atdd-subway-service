@@ -20,7 +20,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> searchShortestPath(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<PathResponse> searchShortestPath(@AuthenticationPrincipal(required = false) LoginMember loginMember,
                                                            @RequestParam("source") Long source,
                                                            @RequestParam("target") Long target) {
         return ResponseEntity
