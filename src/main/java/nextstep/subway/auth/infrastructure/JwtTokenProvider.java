@@ -46,7 +46,7 @@ public class JwtTokenProvider {
     }
 
     private void validateGuest(String token) {
-        if (token == null || token.isEmpty()) {
+        if (token == null || token.isEmpty() || "null".equals(token)) {
             throw new NotExistException();
         }
     }
