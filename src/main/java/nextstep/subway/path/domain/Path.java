@@ -7,7 +7,6 @@ import java.util.Objects;
 
 public class Path {
     private List<Station> stations;
-
     private int distance;
 
     private Path (List<Station> stations, int distance) {

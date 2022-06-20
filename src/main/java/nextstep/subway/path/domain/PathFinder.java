@@ -14,10 +14,8 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
 
-
 public class PathFinder {
     private WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph;
-
     private Map<Long, Station> stationsCache;
 
     private PathFinder(WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph, Map<Long, Station> stationsCache) {
