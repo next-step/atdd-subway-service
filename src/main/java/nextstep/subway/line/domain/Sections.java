@@ -163,11 +163,7 @@ public class Sections {
             throw new IllegalArgumentException("노선에 등록된 역이 아닙니다.");
         }
 
-        if (upSection.isEmpty() || downSection.isEmpty()) {
-            return false;
-        }
-
-        return true;
+        return !upSection.isEmpty() && !downSection.isEmpty();
     }
 
     private void createSection(Section upSection, Section downSection) {
