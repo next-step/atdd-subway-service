@@ -54,6 +54,7 @@ public class FavoriteService {
         favoriteRepository.deleteById(favoriteId);
     }
 
+    @Transactional(readOnly = true)
     public Favorite findById(Long favoriteId) {
         return favoriteRepository.findById(favoriteId)
                 .orElseThrow(() -> new NoSuchElementException("즐겨찾기를 찾을 수 없습니다."));

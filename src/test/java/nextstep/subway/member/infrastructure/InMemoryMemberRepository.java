@@ -17,6 +17,7 @@ public class InMemoryMemberRepository implements MemberRepository {
 
     public InMemoryMemberRepository() {
         save(new Member(EMAIL, PASSWORD, AGE));
+        save(new Member(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
     }
 
     @Override

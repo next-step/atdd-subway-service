@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class FavoriteServiceTest {
     private FavoriteService favoriteService;
     private Member member;
+    private Member member2;
     private Long source;
     private Long target;
 
@@ -31,6 +32,7 @@ class FavoriteServiceTest {
 
         MemberService memberService = new MemberService(new InMemoryMemberRepository());
         member = memberService.findById(1L);
+        member2 = memberService.findById(2L);
 
         StationService stationService = new StationService(new InMemoryStationRepository());
         FavoriteRepository favoriteRepository = new InMemoryFavoriteRepository();
@@ -67,5 +69,13 @@ class FavoriteServiceTest {
         assertThatThrownBy(() ->
                 favoriteService.findById(member.getId())
         ).isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    void 다른사람의_즐겨찾기는_삭제할_수_없다() {
+        // when & then
+        assertThatThrownBy(() ->
+                favoriteService.deleteFavorite(member2.getId(), 1L)
+        ).isInstanceOf(IllegalArgumentException.class);
     }
 }
