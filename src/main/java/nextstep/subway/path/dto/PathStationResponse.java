@@ -14,6 +14,9 @@ public class PathStationResponse {
         return new PathStationResponse(station.getId(), station.getName(), station.getCreatedDate());
     }
 
+    public PathStationResponse() {
+    }
+
     public PathStationResponse(final Long id, final String name, final LocalDateTime createdAt) {
         this.id = id;
         this.name = name;

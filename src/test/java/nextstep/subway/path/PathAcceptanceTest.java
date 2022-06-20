@@ -127,6 +127,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void 경로_조회_실패됨(final ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

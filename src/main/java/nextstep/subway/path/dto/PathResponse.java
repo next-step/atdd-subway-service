@@ -8,6 +8,9 @@ public class PathResponse {
 
     private int distance;
 
+    public PathResponse() {
+    }
+
     public PathResponse(final List<PathStationResponse> stations, final int distance) {
         this.stations = stations;
         this.distance = distance;
