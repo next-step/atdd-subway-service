@@ -122,7 +122,7 @@ public class Sections {
     }
 
     private boolean isUpStationExisted(Section section) {
-        return sectionElements.stream().anyMatch(it -> it.getUpStation().equals(section.getUpStation()));
+        return sectionElements.stream().anyMatch(it -> it.isUpStation(section.getUpStation()));
     }
 
     public void removeStation(Station station) {
