@@ -94,8 +94,7 @@ public class Sections {
 
         if (previousSection.isPresent() && nextSection.isPresent()) {
             Station newDownStation = nextSection.get().getDownStation();
-            int newDistance = previousSection.get().getDistance() + nextSection.get().getDistance();
-            previousSection.get().updateDownStation(newDownStation, newDistance);
+            previousSection.get().updateForCombine(newDownStation, nextSection.get().getDistance());
             sections.remove(nextSection.get());
             return;
         }
