@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.exception.SameSourceAndTargetException;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -12,6 +13,8 @@ import java.util.List;
 
 public class PathFinder {
     public Path getShortestDistance(Lines lines, Station source, Station target) {
+        validateSameSourceAndTarget(source, target);
+
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         DijkstraShortestPath path = new DijkstraShortestPath(graph);
 
@@ -35,6 +38,12 @@ public class PathFinder {
             graph.addVertex(downStation);
 
             graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
+        }
+    }
+
+    private void validateSameSourceAndTarget(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new SameSourceAndTargetException();
         }
     }
 }

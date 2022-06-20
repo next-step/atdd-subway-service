@@ -71,6 +71,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_조회_성공(response, 8);
     }
 
+    /**
+     * GIVEN 노선에 지하철역이 등록되어 있고,
+     * WHEN 출발지와 도착지가 같다면,
+     * THEN 예외를 던진다
+     */
+    @Test
+    void 최단경로_조회_출발지_도착지_일치_실패() {
+        Map<String, String> params = new HashMap<>();
+        params.put("source", 교대역.getId().toString());
+        params.put("target", 교대역.getId().toString());
+
+        ExtractableResponse<Response> response = 최단경로_조회(params);
+
+        최단경로_조회_실패(response, HttpStatus.BAD_REQUEST.value());
+    }
+
     private ExtractableResponse<Response> 최단경로_조회(Map<String, String> params) {
         return RestAssured.given().log().all()
                 .queryParams(params)
@@ -83,5 +99,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         int resulDistance = response.jsonPath().get("distance");
         assertThat(resulDistance).isEqualTo(distance);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 최단경로_조회_실패(ExtractableResponse<Response> response, int httpStatus) {
+        assertThat(response.statusCode()).isEqualTo(httpStatus);
     }
 }
