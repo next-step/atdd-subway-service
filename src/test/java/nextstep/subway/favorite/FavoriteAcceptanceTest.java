@@ -34,9 +34,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+    public static final String ANOTHER_EMAIL = "anotheremail@email.com";
+    public static final String ANOTHER_PASSWORD = "anotherpassword";
+    public static final int ANOTHER_AGE = 21;
+
     public static final String INVALID_ACCESS_TOKEN = "Invalid AccessToken";
 
     private TokenResponse loginToken;
+    private TokenResponse anotherLoginToken;
+
     private StationResponse 청담역;
     private StationResponse 뚝섬유원지역;
     private StationResponse 건대입구역;
@@ -90,6 +96,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_로그인_성공확인(loginResponse);
 
         loginToken = loginResponse.as(TokenResponse.class);
+
+        //given 다른 회원이 생성
+        ExtractableResponse<Response> anotherMember = 회원_생성을_요청(ANOTHER_EMAIL,
+                ANOTHER_PASSWORD,
+                ANOTHER_AGE);
+        회원_생성됨(anotherMember);
+
+        ExtractableResponse<Response> anotherLoginResponse = 회원_로그인을_시도한다(ANOTHER_EMAIL, ANOTHER_PASSWORD);
+        회원_로그인_성공확인(anotherLoginResponse);
+
+        anotherLoginToken = anotherLoginResponse.as(TokenResponse.class);
     }
 
     @Test
@@ -118,6 +135,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         //then 즐겨찾기가 생성된다.
         즐겨찾기가_정상적으로_등록(response, 뚝섬유원지역.getId(), 건대입구역.getId());
+        
+        //when 다른 회원 즐겨찾기 생성
+        response = 즐겨찾기_등록_요청(anotherLoginToken, 건대입구역.getId(), 뚝섬유원지역.getId());
+        FavoriteResponse anotherFavoriteResponse = response.as(FavoriteResponse.class);
+        
+        //then 즐겨찾기가 생성
+        즐겨찾기가_정상적으로_등록(response, 건대입구역.getId(), 뚝섬유원지역.getId());
 
         //when 유효하지 않은 로그인 토큰으로 즐겨찾기 목록을 조회하면
         response = 내_즐겨찾기_목록을_조회한다(new TokenResponse(INVALID_ACCESS_TOKEN));
@@ -144,6 +168,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         //then 즐겨찾기가 삭제되지 않는다.
         유효하지않은_로그인_토큰(response);
+        
+        //when 다른 사람의 즐겨찾기를 삭제하면
+        response = 즐겨찾기_삭제_요청(loginToken, anotherFavoriteResponse.getId());
+
+        //then 삭제되지 않는다.
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
         //when 내 즐겨찾기를 삭제하면
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(loginToken, favoriteResponse.getId());
