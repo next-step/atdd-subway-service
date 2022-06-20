@@ -1,6 +1,7 @@
 package nextstep.subway.auth.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -13,6 +14,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -111,6 +115,29 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return RestAssured.given().header("Authorization", "Bearer " + accessToken).log().all()
                           .accept(MediaType.APPLICATION_JSON_VALUE)
                           .when().get("/members/me")
+                          .then().log().all()
+                          .extract();
+    }
+
+    public static ExtractableResponse<Response> 나의_정보_수정_요청(String accessToken, MemberRequest request) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("email", request.getEmail());
+        data.put("password", request.getPassword());
+        data.put("age", request.getAge());
+
+        return RestAssured.given().header("Authorization", "Bearer " + accessToken).log().all()
+                          .accept(ContentType.JSON)
+                          .contentType(ContentType.JSON)
+                          .body(request)
+                          .when().put("/members/me")
+                          .then().log().all()
+                          .extract();
+    }
+
+    public static ExtractableResponse<Response> 나의_정보_삭제_요청(String accessToken) {
+        return RestAssured.given().header("Authorization", "Bearer " + accessToken).log().all()
+                          .accept(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                          .when().delete("/members/me")
                           .then().log().all()
                           .extract();
     }

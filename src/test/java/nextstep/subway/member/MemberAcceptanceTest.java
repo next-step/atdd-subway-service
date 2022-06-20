@@ -4,8 +4,11 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -20,6 +23,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
+
+    @BeforeEach
+    void beforeEach() {
+        setUp();
+    }
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -48,7 +56,23 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // given
+        ExtractableResponse<Response> 회원가입_결과 = AuthAcceptanceTest.회원가입_요청(new MemberRequest(EMAIL, PASSWORD, AGE));
+        String 로그인_토큰 = AuthAcceptanceTest.로그인_토큰(AuthAcceptanceTest.로그인_요청(new TokenRequest(EMAIL, PASSWORD)));
 
+        // 조회
+        MemberResponse 나의_정보 = 나의_정보_확인(AuthAcceptanceTest.나의_정보_조회_요청(로그인_토큰));
+        assertThat(나의_정보.getId()).isNotNull();
+
+        // 수정
+        AuthAcceptanceTest.나의_정보_수정_요청(로그인_토큰, new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
+        나의_정보 = 나의_정보_확인(회원_정보_조회_요청(회원가입_결과));
+        assertThat(나의_정보.getEmail()).isEqualTo(NEW_EMAIL);
+        assertThat(나의_정보.getAge()).isEqualTo(NEW_AGE);
+
+        // 삭제
+        AuthAcceptanceTest.나의_정보_삭제_요청(로그인_토큰);
+        assertThat(AuthAcceptanceTest.나의_정보_조회_요청(로그인_토큰).statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -113,5 +137,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static MemberResponse 나의_정보_확인(ExtractableResponse<Response> response) {
+        return response.as(MemberResponse.class);
     }
 }
