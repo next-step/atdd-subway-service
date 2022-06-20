@@ -159,75 +159,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기가_정상적으로_조회(newResponse, Arrays.asList(뚝섬유원지역), Arrays.asList(건대입구역));
     }
 
-    @Test
-    @DisplayName("등록되어있는_출발역_도착역으로_즐겨찾기를_등록하면_등록된다(HappyPath)")
-    void 즐겨찾기를_등록하면_즐겨찾기가_정상적으로_등록된다() {
-        ExtractableResponse<Response> response = 즐겨찾기_등록_요청(loginToken, 청담역.getId(), 건대입구역.getId());
-
-        즐겨찾기가_정상적으로_등록(response, 청담역.getId(), 건대입구역.getId());
-    }
-
-    @Test
-    void 존재하지_않는_역을_즐겨찾기하면_등록되지_않는다() {
-        ExtractableResponse<Response> response = 즐겨찾기_등록_요청(loginToken, 청담역.getId(), 군자역.getId());
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @Test
-    void 유효하지_않는_로그인으로_즐겨찾기를_등록하면_등록되지_않는다() {
-        ExtractableResponse<Response> response = 즐겨찾기_등록_요청(new TokenResponse(INVALID_ACCESS_TOKEN), 청담역.getId(), 건대입구역.getId());
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    @Test
-    @DisplayName("등록되어있는_출발역_도착역으로_즐겨찾기를_등록하면_등록된다(HappyPath)")
-    void 즐겨찾기를_조회하면_내_즐겨찾기가_정상적으로_조회된다() {
-        즐겨찾기_등록_요청(loginToken, 청담역.getId(), 건대입구역.getId());
-        즐겨찾기_등록_요청(loginToken, 뚝섬유원지역.getId(), 건대입구역.getId());
-
-        ExtractableResponse<Response> response = 내_즐겨찾기_목록을_조회한다(loginToken);
-
-        즐겨찾기가_정상적으로_조회(response, Arrays.asList(청담역, 뚝섬유원지역), Arrays.asList(건대입구역, 건대입구역));
-    }
-
-    @Test
-    void 유효하지_않는_로그인으로_즐겨찾기를_조회하면_조회되지_않는다() {
-        ExtractableResponse<Response> response = 내_즐겨찾기_목록을_조회한다(new TokenResponse(INVALID_ACCESS_TOKEN));
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    @Test
-    void 내_즐겨찾기를_삭제요청하면_즐겨찾기가_삭제된다() {
-        즐겨찾기_등록_요청(loginToken, 청담역.getId(), 건대입구역.getId());
-        즐겨찾기_등록_요청(loginToken, 뚝섬유원지역.getId(), 건대입구역.getId());
-
-        ExtractableResponse<Response> response = 내_즐겨찾기_목록을_조회한다(loginToken);
-        List<FavoriteResponse> resultFavorites = response.jsonPath().getList(".", FavoriteResponse.class).stream().collect(Collectors.toList());
-
-        FavoriteResponse favoriteResponse = resultFavorites.get(0);
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(loginToken, favoriteResponse.getId());
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-
-        ExtractableResponse<Response> newResponse = 내_즐겨찾기_목록을_조회한다(loginToken);
-        즐겨찾기가_정상적으로_조회(newResponse, Arrays.asList(뚝섬유원지역), Arrays.asList(건대입구역));
-    }
-
-    @Test
-    void 유효하지_않는_로그인으로_즐겨찾기를_삭제하면_삭제되지_않는다() {
-        즐겨찾기_등록_요청(loginToken, 청담역.getId(), 건대입구역.getId());
-        즐겨찾기_등록_요청(loginToken, 뚝섬유원지역.getId(), 건대입구역.getId());
-
-        ExtractableResponse<Response> response = 내_즐겨찾기_목록을_조회한다(loginToken);
-        List<FavoriteResponse> resultFavorites = response.jsonPath().getList(".", FavoriteResponse.class).stream().collect(Collectors.toList());
-
-        FavoriteResponse favoriteResponse = resultFavorites.get(0);
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(new TokenResponse(INVALID_ACCESS_TOKEN), favoriteResponse.getId());
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
     public static ExtractableResponse<Response> 즐겨찾기_등록_요청(TokenResponse tokenResponse, Long source, Long target) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(source, target);
         return RestAssured
@@ -263,9 +194,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response).isNotNull()
                 .satisfies(response1 -> {
                     assertThat(response1.statusCode()).isEqualTo(HttpStatus.OK.value());
-                    List<FavoriteResponse> resultFavorites = response1.jsonPath().getList(".", FavoriteResponse.class).stream().collect(Collectors.toList());
-                    assertThat(resultFavorites.stream().map(FavoriteResponse::getSource).collect(Collectors.toList())).containsExactlyInAnyOrderElementsOf(sources);
-                    assertThat(resultFavorites.stream().map(FavoriteResponse::getTarget).collect(Collectors.toList())).containsExactlyInAnyOrderElementsOf(targets);
+                    List<FavoriteResponse> resultFavorites = response1.jsonPath()
+                                                                    .getList(".", FavoriteResponse.class)
+                                                                    .stream()
+                                                                    .collect(Collectors.toList());
+                    assertThat(resultFavorites.stream()
+                                            .map(FavoriteResponse::getSource)
+                                            .collect(Collectors.toList()))
+                                            .containsExactlyInAnyOrderElementsOf(sources);
+                    assertThat(resultFavorites.stream()
+                                            .map(FavoriteResponse::getTarget)
+                                            .collect(Collectors.toList()))
+                                            .containsExactlyInAnyOrderElementsOf(targets);
                 });
     }
 
