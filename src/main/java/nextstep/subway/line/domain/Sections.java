@@ -37,12 +37,11 @@ public class Sections {
     public List<Station> getOrderStations() {
         List<Station> stations = new ArrayList<>();
         Station station = findFinalUpStation();
-
+        stations.add(station);
         while (existNextStation(station)) {
-            stations.add(station);
             station = nextStation(station);
+            stations.add(station);
         }
-
         return Collections.unmodifiableList(stations);
     }
 
@@ -54,6 +53,12 @@ public class Sections {
                 .orElse(null);
     }
 
+    private boolean existNextStation(Station station) {
+        return this.sectionElements.stream()
+                .anyMatch((section -> section.isUpStation(station)));
+    }
+
+
     private Station findFinalUpStation() {
         Stations downStations = Stations.of(downStations());
         Stations upStations = Stations.of(upStations());
@@ -61,11 +66,6 @@ public class Sections {
         return upStations.isNotContainsFirstStation(downStations)
                 .orElseThrow(() -> new NoSuchElementException("하행 종점을 찾을수 없습니다."));
     }
-
-    private boolean existNextStation(Station station) {
-        return !Station.isEmpty(station) ;
-    }
-
 
     public void addSection(Section section) {
         validAddSection(section);
