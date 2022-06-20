@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "line", fetch = FetchType.LAZY)
     private List<Section> sections = new ArrayList<>();
 
     public Sections(){
@@ -23,7 +23,56 @@ public class Sections {
             return;
         }
 
-        sections.add(section);
+        if (isValidAndUpStationOrDownStation(section)) {
+            addSection(section);
+            return;
+        }
+
+        updateExitSection(section);
+        addSection(section);
+    }
+
+    private boolean isValidAndUpStationOrDownStation(Section section) {
+        boolean isUpStationContains = isContains(section.getUpStation());
+        boolean isDownStationContains = isContains(section.getDownStation());
+
+        validContains(isUpStationContains, isDownStationContains);
+        return isUpStationContains && isDownStationContains;
+    }
+
+    private void validContains(boolean isUpStationContains, boolean isDownStationContains) {
+        if (isUpStationContains && isDownStationContains) {
+            throw new IllegalArgumentException("상행역과 하행역이 모두 등록되어 있으면 추가할 수 없습니다.");
+        }
+
+        if (!isUpStationContains && !isDownStationContains) {
+            throw new IllegalArgumentException("상행역과 하행역 중 하나는 포함되어야 합니다.");
+        }
+    }
+
+    private boolean isContains(Station station) {
+        return this.sections.stream()
+                .anyMatch(section -> section.isContains(station));
+    }
+
+    private void updateExitSection(Section newSection) {
+        Optional<Section> optionalSection = this.sections.stream()
+                .filter(section -> section.isContains(newSection.getUpStation()) || section.isContains(newSection.getDownStation()))
+                .findFirst();
+
+        Section exitSection = optionalSection.get();
+        validDistance(newSection.getDistance(), exitSection.getDistance());
+
+        this.sections = this.sections.stream()
+                .filter(section -> section.equals(exitSection))
+                .map(section -> {section.updateSection(newSection); return section;})
+                .collect(Collectors.toList());
+    }
+
+    private void validDistance(int newDistance, int exitDistance) {
+        if (exitDistance <= newDistance) {
+            throw new IllegalArgumentException("신규 구간 입력 시 기존 구간보다 길이가 작아야합니다.");
+        }
     }
 
     private void addSection(Section section) {

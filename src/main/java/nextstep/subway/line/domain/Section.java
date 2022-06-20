@@ -69,4 +69,18 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+    public boolean isContains(Station station) {
+        return upStation == station || downStation == station;
+    }
+
+    public void updateSection(Section newSection) {
+        if (this.upStation.equals(newSection.getUpStation())) {
+            updateUpStation(newSection.getDownStation(), newSection.getDistance());
+        }
+
+        if (this.getDownStation().equals(newSection.getDownStation())) {
+            updateDownStation(newSection.getUpStation(), newSection.getDistance());
+        }
+    }
 }
