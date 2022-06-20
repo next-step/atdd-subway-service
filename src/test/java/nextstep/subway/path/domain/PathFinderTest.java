@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import static nextstep.subway.line.domain.LineTest.라인_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -27,10 +28,10 @@ class PathFinderTest {
         서울역 = new Station("서울역");
         용산역 = new Station("용산역");
 
-        신분당선 = new Line("신분당선", "red", 강남역, 양재역, Distance.of(10));
-        이호선 = new Line("이호선", "green", 교대역, 강남역, Distance.of(10));
-        삼호선 = new Line("삼호선", "yellow", 교대역, 양재역, Distance.of(5));
-        일호선 = new Line("일호선", "blue", 서울역, 용산역, Distance.of(7));
+        신분당선 = 라인_생성("신분당선", "red", 강남역, 양재역, Distance.of(5));
+        이호선 = 라인_생성("이호선", "green", 교대역, 강남역, Distance.of(10));
+        삼호선 = 라인_생성("삼호선", "yellow", 교대역, 양재역, Distance.of(5));
+        일호선 = 라인_생성("일호선", "blue", 서울역, 용산역, Distance.of(7));
 
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, Distance.of(3)));
 
@@ -44,7 +45,7 @@ class PathFinderTest {
         Path dijkstraPath = pathFinder.getDijkstraPath(강남역, 남부터미널역);
 
         assertAll(
-                () -> assertThat(dijkstraPath.totalDistance()).isEqualTo(12),
+                () -> assertThat(dijkstraPath.totalDistance()).isEqualTo(7),
                 () -> assertThat(dijkstraPath.throughStations()).containsExactly(강남역, 양재역, 남부터미널역),
                 () -> assertThat(dijkstraPath.throughLines()).contains(신분당선, 삼호선)
         );
