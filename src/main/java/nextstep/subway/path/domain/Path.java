@@ -1,0 +1,31 @@
+package nextstep.subway.path.domain;
+
+import nextstep.subway.station.domain.Station;
+
+import java.util.List;
+import java.util.Objects;
+
+public class Path {
+    private List<Station> stations;
+
+    private int distance;
+
+    public Path(List<Station> stations, int distance) {
+        this.stations = stations;
+        this.distance = distance;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Path path = (Path) obj;
+        return Objects.equals(stations, path.stations)
+                && distance == path.distance;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stations, distance);
+    }
+}
