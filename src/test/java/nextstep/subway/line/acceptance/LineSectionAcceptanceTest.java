@@ -113,6 +113,18 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+        SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionRequest)
+                .when().post("/lines/{lineId}/sections", line.getId())
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
