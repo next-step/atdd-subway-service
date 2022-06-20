@@ -69,8 +69,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
    - 정상 동작 확인 후 기존 로직 제거
 4. 인수테스트 통합
 
-
-- [코드리뷰 피드백](https://github.com/next-step/atdd-subway-service/pull/618) (리뷰어: 오태경 님)
+### 피드백 (리뷰어: [오태경](https://github.com/ohtaeg) 님)
+- [1단계 코드리뷰](https://github.com/next-step/atdd-subway-service/pull/591)
 
 ## 2단계 - 경로 조회 기능
 ### 요구사항
@@ -86,9 +86,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - ExceptionHandler 를 ControllerAdvice 에서 처리
     - @ControllerAdvice -> @RestControllerAdvice 변경
   - 객체지향 생활체조 Depth 1 준수
-  
 
-- [코드리뷰 피드백](https://github.com/next-step/atdd-subway-service/pull/618) (리뷰어: 오태경 님)
+### 피드백 (리뷰어: [오태경](https://github.com/ohtaeg) 님)
+- [2단계 코드리뷰](https://github.com/next-step/atdd-subway-service/pull/618)
 
 ## 3단계 - 인증을 통한 기능 구현
 ### 요구사항 
@@ -101,3 +101,41 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - 인증 - 내 정보 조회 기능 완성하기
   - 인수 테스트 작성
 - 즐겨찾기 기능 구현 및 인수테스트 작성
+
+### 피드백 (리뷰어: [오태경](https://github.com/ohtaeg) 님)
+- [3단계 코드리뷰](https://github.com/next-step/atdd-subway-service/pull/634)
+
+## 4단계 - 요금조회
+### 요구사항
+#### 거리별 요금 정책
+- 기본운임(10㎞ 이내) : 기본운임 1,250원
+- 이용 거리초과 시 추가운임 부과
+  - 10km초과∼50km까지(5km마다 100원)
+  - 50km초과 시 (8km마다 100원)
+
+#### 노선별 추가 요금 정책
+- 노선에 추가 요금 필드를 추가
+- 추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가
+  - ex) 900원 추가 요금이 있는 노선 8km 이용 시 1,250원 -> 2,150원
+  - ex) 900원 추가 요금이 있는 노선 12km 이용 시 1,350원 -> 2,250원
+- 경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용
+  - ex) 0원, 500원, 900원의 추가 요금이 있는 노선들을 경유하여 8km 이용 시 1,250원 -> 2,150원
+
+#### 로그인 사용자의 경우 연령별 요금 할인 적용
+- 청소년: 운임에서 350원을 공제한 금액의 20%할인
+- 어린이: 운임에서 350원을 공제한 금액의 50%할인
+```
+- 청소년: 13세 이상~19세 미만
+- 어린이: 6세 이상~ 13세 미만
+```
+
+### 구현
+- 라인 추가요금 필드 추가
+- 계산 로직
+  1. 기본요금과 추가요금을 합한다
+  2. 거리요금을 구하여 1을 합한다 -> DistanceType enum 으로 구현
+  3. 연령별 할인율을 구하여 2와 합한다 -> AgeDiscountType enum 으로 구현
+- 인수 테스트 및 도메인 테스트 추가
+
+### 피드백 (리뷰어: [오태경](https://github.com/ohtaeg) 님)
+- [4단계 코드리뷰](https://github.com/next-step/atdd-subway-service/pull/652)

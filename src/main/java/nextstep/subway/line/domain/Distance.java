@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.path.domain.DistanceType;
+
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
@@ -31,6 +33,10 @@ public class Distance {
 
     public int toInt() {
         return distance;
+    }
+
+    public int calculateFare() {
+        return DistanceType.of(this).calculateDistanceFare(distance);
     }
 
     @Override

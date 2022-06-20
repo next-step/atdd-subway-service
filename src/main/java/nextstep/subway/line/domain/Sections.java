@@ -7,6 +7,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Embeddable
 public class Sections {
@@ -206,6 +208,14 @@ public class Sections {
             distance = distance.plus(section.getDistance());
         }
         return distance;
+    }
+
+    public int maxSurcharge() {
+        return this.sections.stream()
+                .map(s -> s.getLine().getSurcharge())
+                .filter(Objects::nonNull)
+                .max(Comparator.comparingInt(discharge -> discharge))
+                .orElse(0);
     }
 
     @Override
