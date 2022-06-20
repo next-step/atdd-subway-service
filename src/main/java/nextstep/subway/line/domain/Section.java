@@ -58,6 +58,14 @@ public class Section {
         this.distance -= newDistance;
     }
 
+    public Section deleteStation(final Section downSection) {
+        final Station newUpStation = downSection.upStation;
+        final Station newDownStation = downStation;
+        final int newDistance = distance - downSection.distance;
+
+        return new Section(line, newUpStation, newDownStation, newDistance);
+    }
+
     public Long getId() {
         return id;
     }
@@ -77,4 +85,5 @@ public class Section {
     public int getDistance() {
         return distance;
     }
+
 }

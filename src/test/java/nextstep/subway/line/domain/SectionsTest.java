@@ -61,4 +61,37 @@ public class SectionsTest {
         assertThatThrownBy(() -> sections.add(newSection))
                 .isInstanceOf(LineException.class);
     }
+
+    @Test
+    @DisplayName("등록된 Section이 1개일때 삭제 오류")
+    void delete_one_section() {
+        // then
+        assertThatThrownBy(() -> sections.delete(new Station("강남역")))
+                .isInstanceOf(LineException.class);
+    }
+
+    @Test
+    @DisplayName("종착역 삭제")
+    void delete_end_station() {
+        // given
+        sections.add(new Section(line, new Station("강남역"), new Station("방배역"), 5));
+        // when
+        sections.delete(new Station("강남역"));
+        // then
+        assertThat(sections.getAllStations()).hasSize(2);
+        assertThat(sections.getAllStations()).doesNotContain(new Station("강남역"));
+    }
+    
+    @Test
+    @DisplayName("중간역 삭제")
+    void delete_middle_station() {
+        // given
+        sections.add(new Section(line, new Station("강남역"), new Station("방배역"), 5));
+        // when
+        sections.delete(new Station("방배역"));
+        // then
+        assertThat(sections.getAllStations()).hasSize(2);
+        assertThat(sections.getAllStations()).doesNotContain(new Station("보라매역"));
+    }
+
 }

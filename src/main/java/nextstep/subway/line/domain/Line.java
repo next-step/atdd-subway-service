@@ -41,6 +41,10 @@ public class Line extends BaseEntity {
         sections.add(section);
     }
 
+    public void deleteStation(final Station station) {
+        sections.delete(station);
+    }
+
     public List<Station> getAllStations() {
         return sections.getAllStations();
     }

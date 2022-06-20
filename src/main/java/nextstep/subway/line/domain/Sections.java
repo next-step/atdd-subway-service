@@ -8,10 +8,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
+    private static final int MIN_SECTION = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> list;
 
@@ -91,6 +92,43 @@ public class Sections {
                     .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
 
         }
+    }
+
+    public void delete(final Station station) {
+        deletionValidation();
+
+        final Optional<Section> upLineStation = getUpLineStation(station);
+        upLineStation.ifPresent(list::remove);
+
+        final Optional<Section> downLineStation = getDownLineStation(station);
+        downLineStation.ifPresent(list::remove);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            final Section deleteNewSection = upLineStation.get().deleteStation(downLineStation.get());
+            add(deleteNewSection);
+        }
+    }
+
+    private void deletionValidation() {
+        minSectionValidation();
+    }
+
+    private void minSectionValidation() {
+        if (list.size() <= MIN_SECTION) {
+            throw new LineException(LineExceptionType.MIN_SECTION_DELETION);
+        }
+    }
+
+    private Optional<Section> getUpLineStation(final Station station) {
+        return list.stream()
+                .filter(it -> it.equalsUpStation(station))
+                .findFirst();
+    }
+
+    private Optional<Section> getDownLineStation(final Station station) {
+        return list.stream()
+                .filter(it -> it.equalsDownStation(station))
+                .findFirst();
     }
 
     public List<Section> getSections() {

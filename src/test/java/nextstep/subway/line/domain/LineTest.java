@@ -16,7 +16,7 @@ public class LineTest {
     }
 
     @Test
-    @DisplayName("라인 업데이트")
+    @DisplayName("line 수정")
     void update() {
         // when
         line.update(new Line("2호선", "bg-red-400"));
@@ -35,4 +35,16 @@ public class LineTest {
         assertThat(line.getSections()).contains(newSection);
     }
 
+    @Test
+    @DisplayName("station 삭제")
+    void deleteStation() {
+        // given
+        Section newSection = new Section(line, new Station("강남역"), new Station("신림역"), 5);
+        line.addSection(newSection);
+        // when
+        line.deleteStation(new Station("신림역"));
+        //
+        assertThat(line.getAllStations()).doesNotContain(new Station("신림역"));
+        assertThat(line.getAllStations()).hasSize(2);
+    }
 }
