@@ -1,32 +1,29 @@
 package nextstep.subway.path.domain;
 
-public enum FareAgePolicyType {
-    BABY_AGE(0, 0, 1),
-    CHILD_AGE(6, 350, 0.5),
-    TEENAGER_AGE(13, 350, 0.2),
-    ADULT_AGE(19, 0, 0);
+import java.util.Arrays;
+import java.util.function.Predicate;
 
-    private final int minAge;
+public enum FareAgePolicyType {
+    BABY_AGE(age -> 0 <= age &&  age < 6, 0, 1),
+    CHILD_AGE(age -> 6 <= age &&  age < 13, 350, 0.5),
+    TEENAGER_AGE(age -> 13 <= age &&  age < 19, 350, 0.2),
+    ADULT_AGE(age -> 19 <= age, 0, 0);
+
+    private final Predicate<Integer> condition;
     private final int discountAmount;
     private final double discountRate;
 
-    FareAgePolicyType(int minAge, int discountAmount, double discountRate) {
-        this.minAge = minAge;
+    FareAgePolicyType(Predicate<Integer> condition, int discountAmount, double discountRate) {
+        this.condition = condition;
         this.discountAmount = discountAmount;
         this.discountRate = discountRate;
     }
 
     public static FareAgePolicyType of(int age) {
-        if(ADULT_AGE.minAge <= age) {
-            return ADULT_AGE;
-        }
-        if (TEENAGER_AGE.minAge <= age) {
-            return TEENAGER_AGE;
-        }
-        if (CHILD_AGE.minAge <= age) {
-            return CHILD_AGE;
-        }
-        return BABY_AGE;
+        return Arrays.stream(values())
+                .filter(value -> value.condition.test(age))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     public int discountFare(int fare) {
