@@ -1,5 +1,7 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.NotFoundException;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
@@ -23,8 +25,8 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findShortestPath(PathRequest pathRequest) {
-        return ResponseEntity.ok().body(pathService.findPath(pathRequest));
+    public ResponseEntity<PathResponse> findShortestPath(@AuthenticationPrincipal LoginMember loginMember, PathRequest pathRequest) {
+        return ResponseEntity.ok().body(pathService.findPath(loginMember, pathRequest));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

@@ -1,13 +1,19 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.AGE;
+import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
+import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -19,7 +25,7 @@ import org.springframework.http.MediaType;
 
 
 @DisplayName("지하철 경로 조회")
-public class PathAcceptanceTest extends AcceptanceTest {
+class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -28,6 +34,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private StationResponse 잠실역;
+    private String 로그인_토큰;
 
     /**
      * 교대역    --- *2호선* ---   강남역 --- 잠실역
@@ -52,6 +59,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
         지하철_노선에_지하철역_등록_요청(이호선, 강남역, 잠실역, 10);
+
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        로그인_토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
     }
 
     @Test
@@ -81,9 +91,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.jsonPath().getInt("fare")).isEqualTo(1450);
     }
 
-    public static ExtractableResponse<Response> 지하철_최단_거리_조회_요청(StationResponse upStation, StationResponse downStation) {
+    public ExtractableResponse<Response> 지하철_최단_거리_조회_요청(StationResponse upStation, StationResponse downStation) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(로그인_토큰)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={source}&target={target}", upStation.getId(), downStation.getId())
                 .then().log().all()

@@ -1,5 +1,8 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.domain.DiscountByAge;
+import nextstep.subway.fare.domain.FareByDistance;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.ShortestPath;
@@ -21,7 +24,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(PathRequest pathRequest) {
+    public PathResponse findPath(LoginMember loginMember, PathRequest pathRequest) {
         Station sourceStation = stationService.findStationById(pathRequest.getSourceStationId());
         Station targetStation = stationService.findStationById(pathRequest.getTargetStationId());
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());

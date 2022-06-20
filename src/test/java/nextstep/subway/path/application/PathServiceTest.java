@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -31,6 +32,7 @@ class PathServiceTest {
     private Line 이호선;
     private Line 삼호선;
     private Line 신분당선;
+    private LoginMember 로그인_사용자;
 
     @InjectMocks
     private PathService pathService;
@@ -59,6 +61,8 @@ class PathServiceTest {
         이호선 = new Line("이호선", "green", 교대역, 강남역, 5, 0);
         삼호선 = new Line("삼호선", "orange", 교대역, 양재역, 5, 0);
         삼호선.addSection(new Section(삼호선, 남부터미널역, 양재역, 2));
+
+        로그인_사용자 = new LoginMember(1L, "email@email.com", 20);
     }
 
     @Test
@@ -70,7 +74,7 @@ class PathServiceTest {
         given(lineRepository.findAll()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
 
         // when
-        PathResponse pathResponse = pathService.findPath(new PathRequest(1L, 4L));
+        PathResponse pathResponse = pathService.findPath(로그인_사용자, new PathRequest(1L, 4L));
 
         // then
         assertAll(
@@ -89,7 +93,7 @@ class PathServiceTest {
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> pathService.findPath(new PathRequest(1L, 1L))
+                () -> pathService.findPath(로그인_사용자, new PathRequest(1L, 1L))
         ).withMessageContaining("출발역과 도착역은 다른 역으로 지정되어야 합니다.");
     }
 
@@ -106,7 +110,7 @@ class PathServiceTest {
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> pathService.findPath(new PathRequest(5L, 3L))
+                () -> pathService.findPath(로그인_사용자, new PathRequest(5L, 3L))
         ).withMessageContaining("출발역과 도착역은 서로 연결이 되어있어야 합니다.");
     }
 
@@ -122,10 +126,10 @@ class PathServiceTest {
         // when & then
         assertAll(
                 () -> assertThatIllegalArgumentException().isThrownBy(
-                        () -> pathService.findPath(new PathRequest(5L, 3L))
+                        () -> pathService.findPath(로그인_사용자, new PathRequest(5L, 3L))
                 ).withMessageContaining("graph must contain"),
                 () -> assertThatIllegalArgumentException().isThrownBy(
-                        () -> pathService.findPath(new PathRequest(3L, 5L))
+                        () -> pathService.findPath(로그인_사용자, new PathRequest(3L, 5L))
                 ).withMessageContaining("graph must contain")
         );
     }
