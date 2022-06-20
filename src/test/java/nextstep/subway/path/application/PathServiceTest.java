@@ -44,19 +44,13 @@ class PathServiceTest {
         남부터미널역 = Station.of(4L, "남부터미널역");
 
         신분당선 = new Line.Builder("신분당선", "bg-red-600")
-                .upStation(강남역)
-                .downStation(양재역)
-                .distance(10)
+                .section(Section.of(강남역, 양재역, 10))
                 .build();
         이호선 = new Line.Builder("이호선", "bg-green-600")
-                .upStation(교대역)
-                .downStation(강남역)
-                .distance(10)
+                .section(Section.of(교대역, 강남역, 10))
                 .build();
         삼호선 = new Line.Builder("삼호선", "bg-orange-600")
-                .upStation(교대역)
-                .downStation(양재역)
-                .distance(5)
+                .section(Section.of(교대역, 양재역, 5))
                 .build();
 
         Section section = Section.of(교대역, 남부터미널역, 3);

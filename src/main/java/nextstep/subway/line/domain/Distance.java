@@ -11,16 +11,14 @@ public class Distance {
     private static final String LESS_THEN_ALREADY_DISTANCE = "기존 역 사이의 길이보다 크거나 같을 수 없습니다.";
 
     @Column(nullable = false)
-    private int distance;
+    private final int distance;
 
-    protected Distance() {}
+    protected Distance() {
+        this.distance = 0;
+    }
 
     private Distance(int distance) {
         this.distance = distance;
-    }
-
-    public static Distance from(Distance distance) {
-        return new Distance(distance.distance);
     }
 
     public static Distance from(int distance) {
@@ -30,15 +28,15 @@ public class Distance {
         return new Distance(distance);
     }
 
-    public void decrease(Distance distance) {
+    public Distance decrease(Distance distance) {
         if (this.distance <= distance.distance) {
             throw new IllegalArgumentException(LESS_THEN_ALREADY_DISTANCE);
         }
-        this.distance -= distance.distance;
+        return new Distance(this.distance - distance.distance);
     }
 
-    public void increase(Distance distance) {
-        this.distance += distance.distance;
+    public Distance increase(Distance distance) {
+        return new Distance(this.distance + distance.distance);
     }
 
     public int get() {

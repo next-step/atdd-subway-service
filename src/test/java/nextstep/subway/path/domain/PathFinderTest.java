@@ -33,19 +33,13 @@ class PathFinderTest {
         남부터미널역 = Station.from("남부터미널역");
 
         신분당선 = new Line.Builder("신분당선", "bg-red-600")
-                .upStation(강남역)
-                .downStation(양재역)
-                .distance(10)
+                .section(Section.of(강남역, 양재역, 10))
                 .build();
         이호선 = new Line.Builder("이호선", "bg-green-600")
-                .upStation(교대역)
-                .downStation(강남역)
-                .distance(10)
+                .section(Section.of(교대역, 강남역, 10))
                 .build();
         삼호선 = new Line.Builder("삼호선", "bg-orange-600")
-                .upStation(교대역)
-                .downStation(양재역)
-                .distance(5)
+                .section(Section.of(교대역, 양재역, 5))
                 .build();
 
         Section section = Section.of(교대역, 남부터미널역, 3);
@@ -95,9 +89,7 @@ class PathFinderTest {
         Station 뚝섬유원지역 = Station.from("뚝섬유원지역");
         Station 건대입구역 = Station.from("건대입구역");
         Line 칠호선 = new Line.Builder("7호선", "bg-olive-600")
-                .upStation(뚝섬유원지역)
-                .downStation(건대입구역)
-                .distance(8)
+                .section(Section.of(뚝섬유원지역, 건대입구역, 8))
                 .build();
         PathFinder pathFinder = new DijkstraShortestPathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 칠호선));
 
