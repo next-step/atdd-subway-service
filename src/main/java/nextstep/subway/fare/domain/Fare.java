@@ -22,8 +22,8 @@ public enum Fare {
         return criteria;
     }
 
-    public static int calculateFare(int distance) {
-        int fare = DEFAULT_CHARGE;
+    public static int calculateFare(int distance, int extraFare) {
+        int fare = DEFAULT_CHARGE + extraFare;
 
         if (distance > ADDITIONAL.distance) {
             fare += calculateOverFare(distance - ADDITIONAL.distance, ADDITIONAL.criteria);
