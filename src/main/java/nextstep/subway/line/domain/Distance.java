@@ -12,6 +12,9 @@ public class Distance {
     @Column(name = "distance")
     private int distance;
 
+    protected Distance() {
+    }
+
     public Distance(int distance) {
         validatePositive(distance);
         this.distance = distance;
