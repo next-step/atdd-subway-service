@@ -3,8 +3,8 @@ package nextstep.subway.line;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
@@ -15,17 +15,20 @@ import org.junit.jupiter.api.Test;
 
 public class SectionsTest {
 
+    private Line testLine;
     private Sections testSections;
     private Station testUpStation;
     private Station testDownStation;
 
     @BeforeEach
     void makeDefaultLine() {
+        testLine = new Line("1호선", "navy");
         testUpStation = new Station("서울역");
         testDownStation = new Station("금정역");
-        Section section = new Section(null, testUpStation, testDownStation, 10);
-
-        testSections = new Sections(Collections.singletonList(section));
+        Section section = new Section(testLine, testUpStation, testDownStation, 10);
+        List<Section> sectionList = new ArrayList<>();
+        sectionList.add(section);
+        testSections = new Sections(sectionList);
     }
 
     @DisplayName("노선내의 역 목록 조회")
@@ -38,7 +41,8 @@ public class SectionsTest {
     @Test
     void addUpStation() {
         Station newUpStation = new Station("의정부");
-        testSections.addSection(newUpStation, testUpStation, 7);
+        Section newSection = new Section(testLine, newUpStation, testUpStation, 7);
+        testSections.addSection(newSection);
 
         assertThat(testSections.getStations()).containsExactly(newUpStation, testUpStation, testDownStation);
     }
@@ -47,7 +51,8 @@ public class SectionsTest {
     @Test
     void addDownStation() {
         Station newDownStation = new Station("수원역");
-        testSections.addSection(testDownStation, newDownStation, 7);
+        Section newSection = new Section(testDownStation, newDownStation, 7);
+        testSections.addSection(newSection);
 
         assertThat(testSections.getStations()).containsExactly(testUpStation, testDownStation, newDownStation);
     }
@@ -56,7 +61,8 @@ public class SectionsTest {
     @Test
     void addMidStation() {
         Station newMidStation = new Station("안양역");
-        testSections.addSection(newMidStation, testDownStation, 7);
+        Section newSection = new Section(newMidStation, testDownStation, 7);
+        testSections.addSection(newSection);
 
         assertThat(testSections.getStations()).containsExactly(testUpStation, newMidStation, testDownStation);
     }
@@ -65,8 +71,9 @@ public class SectionsTest {
     @Test
     void addOverDistanceStation() {
         Station newMidStation = new Station("안양역");
+        Section newSection = new Section(newMidStation, testDownStation, 15);
 
-        assertThatThrownBy(() -> testSections.addSection(newMidStation, testDownStation, 15))
+        assertThatThrownBy(() -> testSections.addSection(newSection))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -74,7 +81,8 @@ public class SectionsTest {
     @Test
     void removeLineStation() {
         Station newDownStation = new Station("수원역");
-        testSections.addSection(testDownStation, newDownStation, 7);
+        Section newSection = new Section(testDownStation, newDownStation, 7);
+        testSections.addSection(newSection);
         testSections.removeSection(testUpStation);
 
         assertThat(testSections.getStations()).containsExactly(testDownStation, newDownStation);
