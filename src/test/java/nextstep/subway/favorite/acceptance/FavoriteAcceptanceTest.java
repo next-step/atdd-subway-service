@@ -9,13 +9,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-import org.assertj.core.api.AbstractIntegerAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -88,8 +90,42 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_성공(즐겨찾기_생성_결과);
     }
 
-    private AbstractIntegerAssert<?> 즐겨찾기_생성_성공(final ExtractableResponse<Response> response) {
-        return assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    @DisplayName("즐겨찾기 목록 조회 시 등록된 리스트를 반환한다.")
+    @Test
+    void findFavorites() {
+        //given
+        즐겨찾기_생성_요청(액세스_토큰, 노량진역, 여의도역);
+        즐겨찾기_생성_요청(액세스_토큰, 신길역, 여의나루역);
+
+        //when
+        final ExtractableResponse<Response> 즐겨찾기_목록 = 즐겨찾기_목록_조회_요청(액세스_토큰);
+
+        //then
+        즐겨찾기_목록_갯수_확인(즐겨찾기_목록, 2);
+        즐겨찾기_목록_역_확인(즐겨찾기_목록, 노량진역);
+        즐겨찾기_목록_역_확인(즐겨찾기_목록, 여의도역);
+        즐겨찾기_목록_역_확인(즐겨찾기_목록, 신길역);
+        즐겨찾기_목록_역_확인(즐겨찾기_목록, 여의나루역);
+    }
+
+    private void 즐겨찾기_생성_성공(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private void 즐겨찾기_목록_갯수_확인(final ExtractableResponse<Response> response, final int expectedSize) {
+        assertThat(response.jsonPath().getList(".", FavoriteResponse.class)).hasSize(expectedSize);
+    }
+
+    private void 즐겨찾기_목록_역_확인(final ExtractableResponse<Response> response, final StationResponse station) {
+        final List<FavoriteResponse> favoriteResponses = response.jsonPath().getList(".", FavoriteResponse.class);
+        final List<StationResponse> sources = favoriteResponses.stream()
+                .map(FavoriteResponse::getSource)
+                .collect(Collectors.toList());
+        final List<StationResponse> targets = favoriteResponses.stream()
+                .map(FavoriteResponse::getTarget)
+                .collect(Collectors.toList());
+        final boolean containStation = sources.contains(station) || targets.contains(station);
+        assertThat(containStation).isTrue();
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(
@@ -107,5 +143,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(final String accessToken) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
 }
