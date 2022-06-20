@@ -67,14 +67,14 @@ public class Line extends BaseEntity {
         return findStations();
     }
 
-    public void addLineStation(Station upStation, Station downStation, int distance) {
+    public void addLineStation(Section section) {
         Stations stations = new Stations(getStations());
-        boolean isUpStationExisted = stations.isContainStations(upStation);
-        boolean isDownStationExisted = stations.isContainStations(downStation);
+        boolean isUpStationExisted = stations.isContainStations(section.getUpStation());
+        boolean isDownStationExisted = stations.isContainStations(section.getDownStation());
 
         validateAddLineStations(stations, isUpStationExisted, isDownStationExisted);
 
-        addSections(upStation, downStation, distance, stations, isUpStationExisted, isDownStationExisted);
+        addSections(section.getUpStation(), section.getDownStation(), section.getDistance(), stations, isUpStationExisted, isDownStationExisted);
     }
 
     private void validateAddLineStations(Stations stations, boolean isUpStationExisted, boolean isDownStationExisted) {

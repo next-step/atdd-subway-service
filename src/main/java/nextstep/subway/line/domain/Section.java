@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -34,6 +35,10 @@ public class Section {
         this.distance = distance;
     }
 
+    public Section(Station upStation, Station downStation, int distance) {
+        this(null, upStation, downStation, distance);
+    }
+
     public Long getId() {
         return id;
     }
@@ -56,7 +61,7 @@ public class Section {
 
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new BadRequestException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.upStation = station;
         this.distance -= newDistance;
@@ -64,7 +69,7 @@ public class Section {
 
     public void updateDownStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new BadRequestException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.downStation = station;
         this.distance -= newDistance;
