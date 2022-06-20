@@ -14,17 +14,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class PathService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
     public PathService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
     }
 
-    @Transactional(readOnly = true)
     public PathResponse findShortestPath(Long sourceId, Long targetId) {
         List<Line> lines = lineRepository.findAll();
         Station source = stationService.findStationById(sourceId);
