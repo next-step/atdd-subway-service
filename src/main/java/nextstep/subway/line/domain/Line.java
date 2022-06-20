@@ -1,11 +1,14 @@
 package nextstep.subway.line.domain;
 
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Line extends BaseEntity {
@@ -16,10 +19,10 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections;
 
-    public Line() {
+    protected Line() {
     }
 
     public Line(String name, String color) {
@@ -30,7 +33,8 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        final Section section = new Section(this, upStation, downStation, distance);
+        sections = new Sections(section);
     }
 
     public void update(Line line) {
@@ -50,7 +54,36 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
+    public void addSection(Section section) {
+        sections.addSection(section);
+    }
+
+    public void removeStation(Station station) {
+        sections.removeStation(station);
+    }
+
+    public Stations getStations() {
+        return Stations.of(sections.getOrderStations());
+    }
+
+    public Sections getSections() {
         return sections;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Line)) {
+            return false;
+        }
+        Line line = (Line) o;
+        return Objects.equals(getName(), line.getName()) && Objects.equals(getColor(), line.getColor());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getColor());
     }
 }
