@@ -3,7 +3,6 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import nextstep.subway.generic.domain.Distance;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,8 +37,8 @@ class SectionTest {
 
         // when & then
         assertAll(
-            () -> assertThat(기존구간.hasUpStation(강남역)).isTrue(),
-            () -> assertThat(기존구간.hasUpStation(광교역)).isFalse()
+            () -> assertThat(기존구간.equalsUpStation(강남역)).isTrue(),
+            () -> assertThat(기존구간.equalsUpStation(광교역)).isFalse()
         );
     }
 
@@ -51,8 +50,8 @@ class SectionTest {
 
         // when & then
         assertAll(
-                () -> assertThat(기존구간.hasDownStation(광교역)).isTrue(),
-                () -> assertThat(기존구간.hasDownStation(강남역)).isFalse()
+                () -> assertThat(기존구간.equalsDownStation(광교역)).isTrue(),
+                () -> assertThat(기존구간.equalsDownStation(강남역)).isFalse()
         );
     }
 
@@ -104,8 +103,8 @@ class SectionTest {
 
         // when & then
         assertAll(
-                () -> assertThat(기존구간.hasUpStation(상행역이_같은구간)).isTrue(),
-                () -> assertThat(기존구간.hasUpStation(상행역이_다른구간)).isFalse()
+                () -> assertThat(기존구간.equalsUpStation(상행역이_같은구간)).isTrue(),
+                () -> assertThat(기존구간.equalsUpStation(상행역이_다른구간)).isFalse()
         );
     }
 
@@ -120,8 +119,8 @@ class SectionTest {
 
         // when & then
         assertAll(
-                () -> assertThat(기존구간.hasDownStation(하행역이_같은_추가구간)).isTrue(),
-                () -> assertThat(기존구간.hasDownStation(상행역이_같은_추가구간)).isFalse()
+                () -> assertThat(기존구간.equalsDownStation(하행역이_같은_추가구간)).isTrue(),
+                () -> assertThat(기존구간.equalsDownStation(상행역이_같은_추가구간)).isFalse()
         );
     }
 
