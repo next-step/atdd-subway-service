@@ -31,4 +31,8 @@ public class MemberRequest {
     public Member toMember() {
         return new Member(email, password, age);
     }
+
+    public static MemberRequest of(String email, String password, Integer age) {
+        return new MemberRequest(email, password, age);
+    }
 }

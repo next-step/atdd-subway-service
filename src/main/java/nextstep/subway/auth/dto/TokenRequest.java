@@ -4,7 +4,7 @@ public class TokenRequest {
     private String email;
     private String password;
 
-    public TokenRequest() {
+    protected TokenRequest() {
     }
 
     public TokenRequest(String email, String password) {
@@ -18,5 +18,9 @@ public class TokenRequest {
 
     public String getPassword() {
         return password;
+    }
+
+    public static TokenRequest of(String email, String password) {
+        return new TokenRequest(email, password);
     }
 }
