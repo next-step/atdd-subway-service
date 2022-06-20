@@ -12,6 +12,10 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 public class FavoriteService {
@@ -28,8 +32,18 @@ public class FavoriteService {
     public FavoriteResponse saveFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
         Station source = stationService.findById(favoriteRequest.getSource());
         Station target = stationService.findById(favoriteRequest.getTarget());
-        Member member = memberRepository.findById(loginMember.getId()).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NoSuchElementException::new);
         Favorite favorite = favoriteRepository.save(new Favorite(member, source, target));
-        return FavoriteResponse.of(favorite);
+        return FavoriteResponse.from(favorite);
+    }
+
+    public List<FavoriteResponse> findByMemnseberId(LoginMember loginMember) {
+        Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NoSuchElementException::new);
+        List<Favorite> favoriteList = favoriteRepository.findByMemberId(loginMember.getId());
+        return toFavoriteResponses(favoriteList);
+    }
+
+    private List<FavoriteResponse> toFavoriteResponses (List<Favorite> favorites) {
+        return favorites.stream().map(FavoriteResponse::from).collect(Collectors.toList());
     }
 }

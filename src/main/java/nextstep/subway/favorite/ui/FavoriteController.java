@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -25,6 +26,12 @@ public class FavoriteController {
                                          @RequestBody FavoriteRequest favoriteRequest) {
         FavoriteResponse favorite = favoriteService.saveFavorite(loginMember, favoriteRequest);
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).body(favorite);
+    }
+
+    @GetMapping
+    public ResponseEntity myFavorite(@AuthenticationPrincipal LoginMember loginMember) {
+        List<FavoriteResponse> favorites = favoriteService.findByMemnseberId(loginMember);
+        return ResponseEntity.ok(favorites);
     }
 
     @ExceptionHandler(NoSuchElementException.class)

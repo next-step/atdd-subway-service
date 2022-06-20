@@ -1,5 +1,6 @@
 package nextstep.subway.favorite;
 
+import com.google.common.collect.Lists;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -18,6 +19,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.회원_로그인_성공확인;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.회원_로그인을_시도한다;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_생성_요청;
@@ -29,7 +34,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
-    TokenResponse loginToken;
+    public static final String INVALID_ACCESS_TOKEN = "Invalid AccessToken";
+
+    private TokenResponse loginToken;
     private StationResponse 청담역;
     private StationResponse 뚝섬유원지역;
     private StationResponse 건대입구역;
@@ -98,7 +105,31 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_등록_요청(loginToken, 청담역.getId(), 군자역.getId());
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 
+    @Test
+    void 유효하지_않는_로그인으로_즐겨찾기를_등록하면_등록되지_않는다() {
+        ExtractableResponse<Response> response = 즐겨찾기_등록_요청(new TokenResponse(INVALID_ACCESS_TOKEN), 청담역.getId(), 건대입구역.getId());
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    @DisplayName("등록되어있는_출발역_도착역으로_즐겨찾기를_등록하면_등록된다(HappyPath)")
+    void 즐겨찾기를_조회하면_내_즐겨찾기가_정상적으로_조회된다() {
+        즐겨찾기_등록_요청(loginToken, 청담역.getId(), 건대입구역.getId());
+        즐겨찾기_등록_요청(loginToken, 뚝섬유원지역.getId(), 건대입구역.getId());
+
+        ExtractableResponse<Response> response = 내_즐겨찾기_목록을_조회한다(loginToken);
+
+        즐겨찾기가_정상적으로_조회(response, Arrays.asList(청담역, 뚝섬유원지역), Arrays.asList(건대입구역, 건대입구역));
+    }
+
+    @Test
+    void 유효하지_않는_로그인으로_즐겨찾기를_조회하면_조회되지_않는다() {
+        ExtractableResponse<Response> response = 내_즐겨찾기_목록을_조회한다(new TokenResponse(INVALID_ACCESS_TOKEN));
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_등록_요청(TokenResponse tokenResponse, Long source, Long target) {
@@ -119,6 +150,26 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                     assertThat(response1.statusCode()).isEqualTo(HttpStatus.CREATED.value());
                     assertThat(response1.as(FavoriteResponse.class).getSource().getId()).isEqualTo(source);
                     assertThat(response1.as(FavoriteResponse.class).getTarget().getId()).isEqualTo(target);
+                });
+    }
+
+    public static ExtractableResponse<Response> 내_즐겨찾기_목록을_조회한다(TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all().
+                extract();
+    }
+
+    public static void 즐겨찾기가_정상적으로_조회(ExtractableResponse<Response> response, List<StationResponse> sources, List<StationResponse> targets) {
+        assertThat(response).isNotNull()
+                .satisfies(response1 -> {
+                    assertThat(response1.statusCode()).isEqualTo(HttpStatus.OK.value());
+                    List<FavoriteResponse> resultFavorites = response1.jsonPath().getList(".", FavoriteResponse.class).stream().collect(Collectors.toList());
+                    assertThat(resultFavorites.stream().map(FavoriteResponse::getSource).collect(Collectors.toList())).containsExactlyInAnyOrderElementsOf(sources);
+                    assertThat(resultFavorites.stream().map(FavoriteResponse::getTarget).collect(Collectors.toList())).containsExactlyInAnyOrderElementsOf(targets);
                 });
     }
 }

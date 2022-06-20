@@ -18,7 +18,7 @@ public class FavoriteResponse {
         this.target = target;
     }
 
-    public static FavoriteResponse of(Favorite favorite) {
+    public static FavoriteResponse from(Favorite favorite) {
         return new FavoriteResponse(favorite.getId(),
                                     StationResponse.of(favorite.getSource()),
                                     StationResponse.of(favorite.getTarget()));
