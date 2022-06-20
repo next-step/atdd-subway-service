@@ -4,12 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class LineTest {
+class LineTest {
 
     private Line testLine;
     private Station testUpStation;
@@ -33,7 +34,8 @@ public class LineTest {
     @Test
     void addUpStation() {
         Station newUpStation = new Station("의정부");
-        testLine.addStation(newUpStation, testUpStation, 7);
+        Section section = new Section(newUpStation, testUpStation, 7);
+        testLine.addSection(section);
 
         assertThat(testLine.getStations()).containsExactly(newUpStation, testUpStation, testDownStation);
     }
@@ -42,7 +44,8 @@ public class LineTest {
     @Test
     void addDownStation() {
         Station newDownStation = new Station("수원역");
-        testLine.addStation(testDownStation, newDownStation, 7);
+        Section section = new Section(testDownStation, newDownStation, 7);
+        testLine.addSection(section);
 
         assertThat(testLine.getStations()).containsExactly(testUpStation, testDownStation, newDownStation);
     }
@@ -51,7 +54,8 @@ public class LineTest {
     @Test
     void addMidStation() {
         Station newMidStation = new Station("안양역");
-        testLine.addStation(newMidStation, testDownStation, 7);
+        Section section = new Section(newMidStation, testDownStation, 7);
+        testLine.addSection(section);
 
         assertThat(testLine.getStations()).containsExactly(testUpStation, newMidStation, testDownStation);
     }
@@ -60,8 +64,9 @@ public class LineTest {
     @Test
     void addOverDistanceStation() {
         Station newMidStation = new Station("안양역");
+        Section section = new Section(newMidStation, testDownStation, 15);
 
-        assertThatThrownBy(() -> testLine.addStation(newMidStation, testDownStation, 15))
+        assertThatThrownBy(() -> testLine.addSection(section))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -69,8 +74,9 @@ public class LineTest {
     @Test
     void removeLineStation() {
         Station newDownStation = new Station("수원역");
-        testLine.addStation(testDownStation, newDownStation, 7);
-        testLine.removeStation(testUpStation);
+        Section section = new Section(testDownStation, newDownStation, 7);
+        testLine.addSection(section);
+        testLine.removeSection(testUpStation);
 
         assertThat(testLine.getStations()).containsExactly(testDownStation, newDownStation);
     }
@@ -80,12 +86,6 @@ public class LineTest {
     void removeNotExistsStation() {
         Station otherStation = new Station("수원역");
 
-        assertThatThrownBy(() -> testLine.removeStation(otherStation)).isInstanceOf(RuntimeException.class);
-    }
-
-    @DisplayName("노선 상행종점 조회")
-    @Test
-    void findUpStation() {
-        assertThat(testLine.findUpStation()).isEqualTo(testUpStation);
+        assertThatThrownBy(() -> testLine.removeSection(otherStation)).isInstanceOf(RuntimeException.class);
     }
 }

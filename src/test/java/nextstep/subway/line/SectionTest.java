@@ -3,6 +3,7 @@ package nextstep.subway.line;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +27,7 @@ class SectionTest {
     @Test
     void constructSectionWithNegative() {
         assertThatThrownBy(() -> new Section(testUpStation, testDownStation, -10))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("Section 생성시 역을 null 로 입력")
@@ -40,10 +41,10 @@ class SectionTest {
     @Test
     void updateUpStation() {
         Station upStation = new Station("소요산역");
-        testSection.updateUpStation(upStation, 4);
+        testSection.updateUpStation(upStation, new Distance(4));
 
         assertThat(testSection.getUpStation()).isEqualTo(upStation);
-        assertThat(testSection.getDistance()).isEqualTo(6);
+        assertThat(testSection.getDistance()).isEqualTo(new Distance(6));
     }
 
     @DisplayName("Section 상행역 업데이트 시 distance 를 기존 구간 길이보다 길게 입력")
@@ -51,18 +52,18 @@ class SectionTest {
     void updateUpStationWithOverDistance() {
         Station upStation = new Station("소요산역");
 
-        assertThatThrownBy(() -> testSection.updateUpStation(upStation, 11))
-                .isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> testSection.updateUpStation(upStation, new Distance(11)))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("Section 하행역 업데이트")
     @Test
     void updateDownStation() {
         Station downStation = new Station("동탄역");
-        testSection.updateDownStation(downStation, 3);
+        testSection.updateDownStation(downStation, new Distance(3));
 
         assertThat(testSection.getDownStation()).isEqualTo(downStation);
-        assertThat(testSection.getDistance()).isEqualTo(7);
+        assertThat(testSection.getDistance()).isEqualTo(new Distance(7));
     }
 
     @DisplayName("Section 하행역 업데이트 시 distance 를 기존 구간 길이보다 길게 입력")
@@ -70,8 +71,8 @@ class SectionTest {
     void updateDownStationWithOverDistance() {
         Station downStation = new Station("동탄역");
 
-        assertThatThrownBy(() -> testSection.updateDownStation(downStation, 12))
-                .isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> testSection.updateDownStation(downStation, new Distance(12)))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("Section 에 특정 Station 이 포함되어 있는지 확인")
