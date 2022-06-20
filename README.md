@@ -69,7 +69,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
    - 정상 동작 확인 후 기존 로직 제거
 4. 인수테스트 통합
 
-### 피드백 (리뷰어: [오경태](https://github.com/ohtaeg) 님)
+### 피드백 (리뷰어: [오태경](https://github.com/ohtaeg) 님)
 - [1단계 코드리뷰](https://github.com/next-step/atdd-subway-service/pull/591)
 
 ## 2단계 - 경로 조회 기능
@@ -87,7 +87,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - @ControllerAdvice -> @RestControllerAdvice 변경
   - 객체지향 생활체조 Depth 1 준수
 
-### 피드백 (리뷰어: [오경태](https://github.com/ohtaeg) 님)
+### 피드백 (리뷰어: [오태경](https://github.com/ohtaeg) 님)
 - [2단계 코드리뷰](https://github.com/next-step/atdd-subway-service/pull/618)
 
 ## 3단계 - 인증을 통한 기능 구현
@@ -102,7 +102,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - 인수 테스트 작성
 - 즐겨찾기 기능 구현 및 인수테스트 작성
 
-### 피드백 (리뷰어: [오경태](https://github.com/ohtaeg) 님)
+### 피드백 (리뷰어: [오태경](https://github.com/ohtaeg) 님)
 - [3단계 코드리뷰](https://github.com/next-step/atdd-subway-service/pull/634)
 
 ## 4단계 - 요금조회
@@ -137,5 +137,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   3. 연령별 할인율을 구하여 2와 합한다 -> AgeDiscountType enum 으로 구현
 - 인수 테스트 및 도메인 테스트 추가
 
-### 피드백 (리뷰어: [오경태](https://github.com/ohtaeg) 님)
+### 피드백 (리뷰어: [오태경](https://github.com/ohtaeg) 님)
 - [4단계 코드리뷰](https://github.com/next-step/atdd-subway-service/pull/652)
