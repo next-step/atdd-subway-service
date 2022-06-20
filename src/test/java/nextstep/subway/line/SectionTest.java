@@ -34,7 +34,7 @@ class SectionTest {
     @Test
     void constructSectionWithNull() {
         assertThatThrownBy(() -> new Section(testUpStation, null, 5))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("Section 상행역 업데이트")
