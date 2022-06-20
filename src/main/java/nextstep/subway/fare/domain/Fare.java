@@ -1,6 +1,7 @@
 package nextstep.subway.fare.domain;
 
 public enum Fare {
+
     BASIC(10, 5),
     ADDITIONAL(50, 8);
 
@@ -22,8 +23,8 @@ public enum Fare {
         return criteria;
     }
 
-    public static int calculateFare(int distance, int extraFare) {
-        int fare = DEFAULT_CHARGE + extraFare;
+    public static int calculateFare(int distance) {
+        int fare = DEFAULT_CHARGE;
 
         if (distance > ADDITIONAL.distance) {
             fare += calculateOverFare(distance - ADDITIONAL.distance, ADDITIONAL.criteria);
@@ -35,7 +36,7 @@ public enum Fare {
         return fare;
     }
 
-    private static int calculateOverFare(int distance, int distancePolicy) {
-        return (int) ((Math.ceil((distance - 1) / distancePolicy) + 1) * ADDITIONAL_CHARGE);
+    private static int calculateOverFare(int distance, int criteria) {
+        return (int) ((Math.ceil((distance - 1) / criteria) + 1) * ADDITIONAL_CHARGE);
     }
 }
