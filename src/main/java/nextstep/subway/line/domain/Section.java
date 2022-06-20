@@ -74,11 +74,24 @@ public class Section {
         this.distance -= newDistance;
     }
 
+    public void updateForCombine(Station downStation, int distance) {
+        this.downStation = downStation;
+        this.distance = distance;
+    }
+
     public void updateLine(Line line) {
         this.line = line;
     }
 
     public boolean hasStation(Station station) {
-        return upStation.equals(station) || downStation.equals(station);
+        return equalUpStation(station) || equalDownStation(station);
+    }
+
+    public boolean equalUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean equalDownStation(Station station) {
+        return downStation.equals(station);
     }
 }
