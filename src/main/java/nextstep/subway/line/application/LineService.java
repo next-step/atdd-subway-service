@@ -54,7 +54,7 @@ public class LineService {
         Optional<Line> lineByColor = lineRepository.findByColor(new LineColor(color));
 
         lineByColor.ifPresent(line -> {
-            throw new IllegalArgumentException("중복된 지하철 노선 이름입니다.");
+            throw new IllegalArgumentException("중복된 지하철 노선 색갈입니다.");
         });
     }
 
