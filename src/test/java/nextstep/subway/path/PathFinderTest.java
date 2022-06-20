@@ -1,10 +1,9 @@
 package nextstep.subway.path;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,11 +60,11 @@ public class PathFinderTest {
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
         // when
-        PathResponse path = pathFinder.getPath(강남역, 남부터미널역);
+        Path path = pathFinder.getPath(강남역, 남부터미널역);
 
         // then
         assertThat(path.getStations().stream()
-                .map(StationResponse::getName))
+                .map(Station::getName))
                 .containsExactly(강남역.getName(), 양재역.getName(), 남부터미널역.getName());
         assertThat(path.getDistance()).isEqualTo(12);
     }

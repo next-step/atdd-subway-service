@@ -9,6 +9,10 @@ public class Fare {
         this.value = value;
     }
 
+    public int getValue() {
+        return value;
+    }
+
     public static Fare of(int baseFare) {
         return new Fare(baseFare);
     }
@@ -16,7 +20,7 @@ public class Fare {
     public Fare addExtraOf(int distance) {
         Fare result = this;
         for (DistanceExtraFare distanceExtraFare : DistanceExtraFare.values()) {
-            result = result.plus(getExtra(distance, distanceExtraFare));
+            result = result.plus(getExtraFare(distance, distanceExtraFare));
         }
 
         return result;
@@ -26,15 +30,15 @@ public class Fare {
         return new Fare(this.value + extra.value);
     }
 
-    private Fare getExtra(int distance, DistanceExtraFare distanceExtraFare) {
+    private Fare getExtraFare(int distance, DistanceExtraFare distanceExtraFare) {
         if (distance < distanceExtraFare.getFrom()) {
             return new Fare(0);
         }
-        int additionalDistance = Math.min(distance, distanceExtraFare.getTo()) - distanceExtraFare.getFrom() + 1;
-        return new Fare(getValue(additionalDistance, distanceExtraFare));
+        int extraDistance = Math.min(distance, distanceExtraFare.getTo()) - distanceExtraFare.getFrom() + 1;
+        return new Fare(calculateExtraFare(extraDistance, distanceExtraFare));
     }
 
-    private int getValue(int additionalDistance, DistanceExtraFare distanceExtraFare) {
+    private int calculateExtraFare(int additionalDistance, DistanceExtraFare distanceExtraFare) {
         return (int) ((Math.ceil((additionalDistance - 1) / distanceExtraFare.getUnitDistance()) + 1) * distanceExtraFare.getUnitExtra());
     }
 

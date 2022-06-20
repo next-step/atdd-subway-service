@@ -31,13 +31,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 사당역;
     private StationResponse 동작역;
 
-    /**               10m
-     * 교대역     --- *2호선* ---  강남역
-     *  |                         |
-     * *3호선*  3m              *신분당선* 10m
-     *  |                         |
-     * 남부터미널역 --- *3호선* ---  양재
-     *               2m
+    /**
+     * 교대역   --- *2호선* 10km ---   강남역
+     * |                             |
+     * *3호선* 3km                *신분당선* 10km
+     * |                             |
+     * 남부터미널역 --- *3호선* 2km ---  양재
      */
     @BeforeEach
     public void setUp() {
@@ -59,9 +58,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given 지하철 역과 함께 노선들이 등록되어 있을 때
-     * When 출발역부터 도착역까지의 최단 경로를 조회하면
-     * Then 최단 경로의 지하철역들과 총 거리를 응답받을 수 있다
+     * Feature: 지하철 경로 검색
+     * <p>
+     * Scenario: 두 역의 최단 거리 경로를 조회
+     * Given 지하철역이 등록되어있음
+     * And 지하철 노선이 등록되어있음
+     * And 지하철 노선에 지하철역이 등록되어있음
+     * When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+     * Then 최단 거리 경로를 응답
+     * And 총 거리도 함께 응답
+     * And 지하철 이용 요금도 함께 응답
      */
     @DisplayName("최단 경로를 조회한다.")
     @Test
@@ -71,6 +77,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse path = response.as(PathResponse.class);
         assertThat(path.getStations()).hasSize(3);
         assertThat(path.getDistance()).isEqualTo(12);
+        assertThat(path.getFare()).isEqualTo(1350);
     }
 
     /**

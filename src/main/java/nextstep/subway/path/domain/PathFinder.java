@@ -2,7 +2,6 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -32,7 +31,7 @@ public class PathFinder {
         lines.forEach(line -> line.enrollIn(graph));
     }
 
-    public PathResponse getPath(Station source, Station target) {
+    public Path getPath(Station source, Station target) {
         if (graph.vertexSet().isEmpty()) {
             renewGraph();
         }
@@ -46,7 +45,7 @@ public class PathFinder {
             throw new IllegalArgumentException("출발역과 도착역은 연결되어 있어야 합니다.");
         }
 
-        return PathResponse.of(path.getVertexList(), path.getWeight());
+        return new Path(path.getVertexList(), (int) path.getWeight());
     }
 
     public void renewGraph() {
