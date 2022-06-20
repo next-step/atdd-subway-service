@@ -24,11 +24,16 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findShortestPath(final Long upStationId, final Long downStationId) {
-        final WeightedMultigraph<Long, DefaultWeightedEdge> subwayGraph = getSubwayGraph();
-        final DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(subwayGraph);
-        final GraphPath graphPath = dijkstraShortestPath.getPath(upStationId, downStationId);
+    public PathResponse findShortestPath(final Long sourceStationId, final Long targetStationId) {
+        validateStationIds(sourceStationId, targetStationId);
+        final GraphPath graphPath = getGraphPath(getSubwayGraph(), sourceStationId, targetStationId);
         return getPathResponseByGraphPath(graphPath);
+    }
+
+    private void validateStationIds(final Long sourceStationId, final Long targetStationId) {
+        if (sourceStationId == targetStationId) {
+            throw new RuntimeException("출발역과 도착역은 같을 수 없습니다.");
+        }
     }
 
     private WeightedMultigraph<Long, DefaultWeightedEdge> getSubwayGraph() {
@@ -54,6 +59,17 @@ public class PathService {
                             section.getDownStation().getId()),
                     section.getDistance());
         });
+    }
+
+    private GraphPath getGraphPath(WeightedMultigraph<Long, DefaultWeightedEdge> subwayGraph,
+                                   final Long sourceStationId,
+                                   final Long targetStationId) {
+        final DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(subwayGraph);
+        final GraphPath graphPath = dijkstraShortestPath.getPath(sourceStationId, targetStationId);
+        if (null == graphPath) {
+            throw new RuntimeException("경로가 존재하지 않습니다.");
+        }
+        return graphPath;
     }
 
     private PathResponse getPathResponseByGraphPath(final GraphPath graphPath) {

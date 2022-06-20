@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -69,12 +70,24 @@ class PathServiceTest {
 
     @Test
     void 최단_경로를_구할_수_있다() {
-        System.out.println(stationRepository.findAll());
-
         // when
         final PathResponse path = pathService.findShortestPath(강남역.getId(), 남부터미널역.getId());
 
         // then
         assertThat(path.getDistance()).isEqualTo(교대_강남 + 교대_남부터미널);
+    }
+
+    @Test
+    void 출발역과_도착역이_같으면_에러가_발생해야_한다() {
+        // when and then
+        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 강남역.getId()))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void 경로가_없으면_에러가_발생해야_한다() {
+        // when and then
+        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 여의도역.getId()))
+                .isInstanceOf(RuntimeException.class);
     }
 }
