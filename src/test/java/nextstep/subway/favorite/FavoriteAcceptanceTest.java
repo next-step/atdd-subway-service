@@ -93,6 +93,73 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("나의 즐겨찾기를 관리한다.")
+    void manageFavorites() {
+        //when 유효하지 않는 로그인 토큰으로 즐겨찾기 등록
+        ExtractableResponse<Response> response = 즐겨찾기_등록_요청(new TokenResponse(INVALID_ACCESS_TOKEN), 청담역.getId(), 건대입구역.getId());
+
+        //then 즐겨찾기가 등록되지 않는다.
+        유효하지않은_로그인_토큰(response);
+
+        //when 존재하지 않는 역을 즐겨찾기하면
+        response = 즐겨찾기_등록_요청(loginToken, 청담역.getId(), 군자역.getId());
+
+        //then 즐겨찾기가 등록되지 않는다.
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+        //when 즐겨찾기 생성을 요청
+        response = 즐겨찾기_등록_요청(loginToken, 청담역.getId(), 건대입구역.getId());
+
+        //then 즐겨찾기가 생성된다.
+        즐겨찾기가_정상적으로_등록(response, 청담역.getId(), 건대입구역.getId());
+
+        //when 즐겨찾기 추가 생성을 요청
+        response = 즐겨찾기_등록_요청(loginToken, 뚝섬유원지역.getId(), 건대입구역.getId());
+
+        //then 즐겨찾기가 생성된다.
+        즐겨찾기가_정상적으로_등록(response, 뚝섬유원지역.getId(), 건대입구역.getId());
+
+        //when 유효하지 않은 로그인 토큰으로 즐겨찾기 목록을 조회하면
+        response = 내_즐겨찾기_목록을_조회한다(new TokenResponse(INVALID_ACCESS_TOKEN));
+
+        //then 즐겨찾기가 조회되지 않는다.
+        유효하지않은_로그인_토큰(response);
+
+        //when 내 즐겨찾기 목록을 조회하면
+        response = 내_즐겨찾기_목록을_조회한다(loginToken);
+        List<FavoriteResponse> resultFavorites = response.jsonPath()
+                                                        .getList(".", FavoriteResponse.class)
+                                                        .stream()
+                                                        .collect(Collectors.toList());
+
+        //given 내 즐겨찾기 목록이 조회된다.
+        즐겨찾기가_정상적으로_조회(response, Arrays.asList(청담역, 뚝섬유원지역), Arrays.asList(건대입구역, 건대입구역));
+
+        //when 유효하지 않은 로그인 토큰으로 즐겨찾기를 삭제하면
+        FavoriteResponse favoriteResponse = resultFavorites.stream()
+                                                            .filter(favorite -> favorite.getSource().equals(청담역))
+                                                            .findFirst()
+                                                            .get();
+        response = 즐겨찾기_삭제_요청(new TokenResponse(INVALID_ACCESS_TOKEN), favoriteResponse.getId());
+
+        //then 즐겨찾기가 삭제되지 않는다.
+        유효하지않은_로그인_토큰(response);
+
+        //when 내 즐겨찾기를 삭제하면
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(loginToken, favoriteResponse.getId());
+
+        //then 즐겨찾기가 삭제된다.
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+
+        //when 새로 즐겨찾기를 조회하면
+        ExtractableResponse<Response> newResponse = 내_즐겨찾기_목록을_조회한다(loginToken);
+        List<FavoriteResponse> newFavorites = newResponse.jsonPath().getList(".", FavoriteResponse.class).stream().collect(Collectors.toList());
+
+        //then 삭제된 즐겨찾기를 조회하고 즐겨찾기가 조회된다.
+        즐겨찾기가_정상적으로_조회(newResponse, Arrays.asList(뚝섬유원지역), Arrays.asList(건대입구역));
+    }
+
+    @Test
     @DisplayName("등록되어있는_출발역_도착역으로_즐겨찾기를_등록하면_등록된다(HappyPath)")
     void 즐겨찾기를_등록하면_즐겨찾기가_정상적으로_등록된다() {
         ExtractableResponse<Response> response = 즐겨찾기_등록_요청(loginToken, 청담역.getId(), 건대입구역.getId());
@@ -210,5 +277,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .when().delete("/favorites/{favoriteId}", favoriteId)
                 .then().log().all().
                 extract();
+    }
+
+    public static void 유효하지않은_로그인_토큰(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
