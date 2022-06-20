@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Section {
@@ -34,6 +35,13 @@ public class Section {
         this.distance = distance;
     }
 
+    public Section(Line line, Section upSection, Section downSection) {
+        this.line = line;
+        this.upStation = upSection.upStation;
+        this.downStation = downSection.downStation;
+        this.distance = upSection.distance + downSection.distance;
+    }
+
     public Long getId() {
         return id;
     }
@@ -54,19 +62,39 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public void connectDownStationWith(Section section) {
+        if (this.distance <= section.distance) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.upStation = station;
-        this.distance -= newDistance;
+        this.upStation = section.downStation;
+        this.distance -= section.distance;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public void connectUpStationWith(Section section) {
+        if (this.distance <= section.distance) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+        this.downStation = section.upStation;
+        this.distance -= section.distance;
+    }
+
+    public boolean matchUpOrDownStation(Station station) {
+        return upStation.equals(station) || downStation.equals(station);
+    }
+
+    public boolean matchUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean matchUpStation(Section section) {
+        return upStation.equals(section.upStation);
+    }
+
+    public boolean matchDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
+    public boolean matchDownStation(Section section) {
+        return downStation.equals(section.downStation);
     }
 }
