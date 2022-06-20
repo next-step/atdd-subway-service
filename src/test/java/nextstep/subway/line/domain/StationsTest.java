@@ -57,7 +57,6 @@ class StationsTest {
         Stations soruce = Stations.of(Arrays.asList(광교역, 판교역));
         Stations target = Stations.of(Arrays.asList(판교역, 강남역));
 
-
         //when
         final Optional<Station> notContainsFirstStation = soruce.isNotContainsFirstStation(target);
 

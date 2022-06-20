@@ -12,18 +12,26 @@ import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
+    private static final int ESSENTIAL_SECTION_QTY = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sectionElements = new ArrayList<>();
-
-    private static final int ESSENTIAL_SECTION_QTY = 1;
 
     protected Sections() {
 
     }
 
     public Sections(Section section) {
+        valid(section);
         sectionElements.add(section);
     }
+
+    private void valid(Section section) {
+        if (section == null) {
+            throw new IllegalArgumentException("하나의 구간은 꼭 필요합니다.");
+        }
+    }
+
 
     public List<Station> getOrderStations() {
         List<Station> stations = new ArrayList<>();
@@ -49,8 +57,7 @@ public class Sections {
         Stations downStations = Stations.createDownStations(this);
         Stations upStations = Stations.createUpStations(this);
 
-        return upStations
-                .isNotContainsFirstStation(downStations)
+        return upStations.isNotContainsFirstStation(downStations)
                 .orElseThrow(() -> new NoSuchElementException("하행 종점을 찾을수 없습니다."));
     }
 
