@@ -81,7 +81,7 @@ class PathAcceptanceTest extends AcceptanceTest {
      *     And ** 지하철 이용 요금도 함께 응답함 **
      */
     @Test
-    @DisplayName("교대역에서 잠실역의 최단 거리 경로와 이용요을 조회한다")
+    @DisplayName("교대역에서 잠실역의 최단 거리 경로와 이용요금을 조회한다")
     void 최단거리와_이용요금을_구한다() {
         // given & when
         ExtractableResponse<Response> response = 지하철_최단_거리_조회_요청(교대역, 잠실역);
