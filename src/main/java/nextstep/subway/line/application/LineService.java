@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
+    private static final String ERR_NO_SEARCH_LINE = "존재하지 않는 라인입니다.";
     private LineRepository lineRepository;
     private StationService stationService;
 
@@ -39,7 +40,7 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 라인입니다."));
+        return lineRepository.findById(id).orElseThrow(() -> new NoSuchElementException(ERR_NO_SEARCH_LINE));
     }
 
 
@@ -49,7 +50,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 라인입니다."));
+        Line persistLine = lineRepository.findById(id).orElseThrow(() -> new NoSuchElementException(ERR_NO_SEARCH_LINE));
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
