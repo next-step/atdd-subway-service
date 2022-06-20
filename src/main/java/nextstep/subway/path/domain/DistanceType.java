@@ -7,9 +7,12 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public enum DistanceType {
-    BASIC(distance -> distance <= 10, distance -> 0),
-    MIDDLE(distance -> distance > 10 && distance <= 50, distance -> calculate(distance, 10, 5)),
-    LONG(distance -> distance > 50, distance -> calculate(distance, 50, 8) + MIDDLE.calculateDistanceFare(50));
+    BASIC(distance -> distance <= Base.FIRST_SURCHARGE_SECTION,
+            distance -> 0),
+    MIDDLE(distance -> distance > Base.FIRST_SURCHARGE_SECTION && distance <= Base.SECOND_SURCHARGE_SECTION,
+            distance -> calculate(distance, Base.FIRST_SURCHARGE_SECTION, Base.FIRST_SURCHARGE_PER_DISTANCE)),
+    LONG(distance -> distance > Base.SECOND_SURCHARGE_SECTION,
+            distance -> calculate(distance, Base.SECOND_SURCHARGE_SECTION, Base.SECOND_SURCHARGE_PER_DISTANCE) + MIDDLE.calculateDistanceFare(Base.SECOND_SURCHARGE_SECTION));
 
     private final Predicate<Integer> distanceMatchingExp;
     private final Function<Integer, Integer> distanceCalculateFunc;
@@ -30,9 +33,15 @@ public enum DistanceType {
         return distanceCalculateFunc.apply(distance);
     }
 
-    private static int calculate(int distance, int basedDistance, int fareDistance) {
-        return (int) ((Math.ceil((distance - basedDistance - 1) / fareDistance) + 1) * 100);
+    private static int calculate(int distance, int basedSurchargeSectionDistance, int perDistance) {
+        return (int) ((Math.ceil((distance - basedSurchargeSectionDistance - 1) / perDistance) + 1) * 100);
     }
 
+    static class Base {
+        public static final int FIRST_SURCHARGE_SECTION = 10;
+        public static final int SECOND_SURCHARGE_SECTION = 50;
+        public static final int FIRST_SURCHARGE_PER_DISTANCE = 5;
+        public static final int SECOND_SURCHARGE_PER_DISTANCE = 8;
+    }
 
 }
