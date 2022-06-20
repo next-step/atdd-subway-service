@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.exception.NotConnectedException;
 import nextstep.subway.path.exception.SameSourceAndTargetException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PathFinderTest {
+    private Station 잠실역;
     private Station 교대역;
     private Station 강남역;
     private Station 양재역;
@@ -31,6 +33,8 @@ class PathFinderTest {
      */
     @BeforeEach
     void setUp() {
+        잠실역 = new Station("잠실역");
+
         교대역 = new Station("교대역");
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
@@ -61,5 +65,12 @@ class PathFinderTest {
         assertThatThrownBy(() -> {
             pathFinder.getShortestDistance(new Lines(Arrays.asList(이호선, 삼호선, 신분당선)), 교대역, 교대역);
         }).isInstanceOf(SameSourceAndTargetException.class);
+    }
+
+    @Test
+    void getShortestDistanceWithNotExistenceStationsInSections() {
+        assertThatThrownBy(() -> {
+            pathFinder.getShortestDistance(new Lines(Arrays.asList(이호선, 삼호선, 신분당선)), 교대역, 잠실역);
+        }).isInstanceOf(NotConnectedException.class);
     }
 }

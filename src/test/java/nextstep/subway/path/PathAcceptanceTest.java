@@ -25,6 +25,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private StationResponse 잠실역;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
@@ -41,6 +42,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
+        잠실역 = StationAcceptanceTest.지하철역_등록되어_있음("잠실역").as(StationResponse.class);
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
@@ -81,6 +83,38 @@ public class PathAcceptanceTest extends AcceptanceTest {
         Map<String, String> params = new HashMap<>();
         params.put("source", 교대역.getId().toString());
         params.put("target", 교대역.getId().toString());
+
+        ExtractableResponse<Response> response = 최단경로_조회(params);
+
+        최단경로_조회_실패(response, HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * GIVEN 노선에 지하철역이 등록되어 있고,
+     * WHEN 존재하지 않는 역이라면
+     * THEN 예외를 던진다
+     */
+    @Test
+    void 최단경로_조회_존재_안함_실패() {
+        Map<String, String> params = new HashMap<>();
+        params.put("source", 교대역.getId().toString());
+        params.put("target", "10");
+
+        ExtractableResponse<Response> response = 최단경로_조회(params);
+
+        최단경로_조회_실패(response, HttpStatus.NOT_FOUND.value());
+    }
+
+    /**
+     * GIVEN 노선에 지하철역이 등록되어 있고,
+     * WHEN 연결되지 않은 역이라면,
+     * THEN 예외를 던진다
+     */
+    @Test
+    void 최단경로_조회_연결_안됨_실패() {
+        Map<String, String> params = new HashMap<>();
+        params.put("source", 교대역.getId().toString());
+        params.put("target", 잠실역.getId().toString());
 
         ExtractableResponse<Response> response = 최단경로_조회(params);
 

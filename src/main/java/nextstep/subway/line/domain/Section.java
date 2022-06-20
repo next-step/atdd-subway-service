@@ -85,6 +85,10 @@ public class Section {
         return upStation.equals(station);
     }
 
+    public boolean hasStation(Station station) {
+        return isEqualsUpStation(station) || isEqualsDownStation(station);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

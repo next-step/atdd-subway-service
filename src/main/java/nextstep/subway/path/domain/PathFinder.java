@@ -2,6 +2,8 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.exception.NotConnectedException;
 import nextstep.subway.path.exception.SameSourceAndTargetException;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -13,12 +15,14 @@ import java.util.List;
 
 public class PathFinder {
     public Path getShortestDistance(Lines lines, Station source, Station target) {
+        List<Section> sections = lines.getAllSections();
+
         validateSameSourceAndTarget(source, target);
+        validateStationExistence(sections, source, target);
 
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         DijkstraShortestPath path = new DijkstraShortestPath(graph);
 
-        List<Section> sections = lines.getAllSections();
         generateGraph(sections, graph);
 
         GraphPath graphPath = path.getPath(source, target);
@@ -44,6 +48,13 @@ public class PathFinder {
     private void validateSameSourceAndTarget(Station source, Station target) {
         if (source.equals(target)) {
             throw new SameSourceAndTargetException();
+        }
+    }
+
+    private void validateStationExistence(List<Section> sectionList, Station source, Station target) {
+        Sections sections = new Sections(sectionList);
+        if (!sections.hasStation(source) || !sections.hasStation(target)) {
+            throw new NotConnectedException();
         }
     }
 }
