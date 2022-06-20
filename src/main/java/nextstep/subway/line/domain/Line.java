@@ -19,6 +19,9 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
+    private AdditionalFare additionalFare;
+
+    @Embedded
     private Sections sections = new Sections();
 
     public Line() {
@@ -29,9 +32,10 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int additionalFare) {
         this.name = name;
         this.color = color;
+        this.additionalFare = AdditionalFare.from(additionalFare);
         this.sections = Sections.from(Section.of(this, upStation, downStation, distance));
     }
 
@@ -39,8 +43,8 @@ public class Line extends BaseEntity {
         return new Line(name, color);
     }
 
-    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
-        return new Line(name, color, upStation, downStation, distance);
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance, int additionalFare) {
+        return new Line(name, color, upStation, downStation, distance, additionalFare);
     }
 
     public void addSection(Section sectionToAdd) {
@@ -70,6 +74,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public AdditionalFare getAdditionalFare() {
+        return additionalFare;
     }
 
     public List<Section> getSections() {

@@ -1,29 +1,32 @@
 package nextstep.subway.path.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
-import nextstep.subway.utils.RestAssuredMethods;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
-import static nextstep.subway.utils.RestAssuredMethods.*;
+import static nextstep.subway.utils.RestAssuredMethods.get;
+import static nextstep.subway.utils.RestAssuredMethods.getWithAuth;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -53,9 +56,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 700)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 500)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 100)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -69,19 +72,203 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *
      *   Scenario: 지하철 최단경로 탐색
      *     When 교대역-양재역 최단경로 조회
-     *     Then 교대역-남부터미널역-양재역 경로 조회됨
+     *     Then 교대역-남부터미널역-양재역 최단 경로 조회됨
+     *     Then 교대역-남부터미널역-양재역 최단 거리 조회됨
+     *     Then 교대역-남부터미널역-양재역 요금 조회됨
      *     When 강남역-남부터미널역 최단경로 조회
      *     Then 강남역-양재역-남부터미널역 최단 경로 조회됨
+     *     Then 강남역-양재역-남부터미널역 최단 거리 조회됨
+     *     Then 강남역-양재역-남부터미널역 요금 조회됨
      */
     @DisplayName("지하철 경로를 탐색한다.")
     @Test
-    void 지하철_경로_탐색_정상_시나리오() {
+    void 지하철_경로_탐색_정상_시나리오_비회원() {
+        //when
         ExtractableResponse<Response> 교대역_양재역_조회 = 최단경로_조회_요청(교대역, 양재역);
+        //then
         최단경로_조회됨(교대역_양재역_조회);
+        최단경로_거리_조회됨(교대역_양재역_조회, 5);
+        최단경로_요금_조회됨(교대역_양재역_조회, 1350);
         최단경로_결과_정렬됨(교대역_양재역_조회, Arrays.asList(교대역, 남부터미널역, 양재역));
 
+        //when
         ExtractableResponse<Response> 강남역_남부터미널역_조회 = 최단경로_조회_요청(강남역, 남부터미널역);
+        //then
         최단경로_조회됨(강남역_남부터미널역_조회);
+        최단경로_거리_조회됨(강남역_남부터미널역_조회, 12);
+        최단경로_요금_조회됨(강남역_남부터미널역_조회, 2050);
+        최단경로_결과_정렬됨(강남역_남부터미널역_조회, Arrays.asList(강남역, 양재역, 남부터미널역));
+    }
+
+    /**
+     * Feature: 일반인 지하철 경로 관련 기능
+     *
+     *   Background
+     *     Given 지하철역 등록되어 있음 (강남역, 양재역, 교대역, 남부터미널역)
+     *     Given 노선 등록되어 있음 (신분당선, 이호선, 삼호선)
+     *     Given 일반인 사용자 등록되어 있음
+     *     Given 로그인 되어있음
+     *
+     *   Scenario: 지하철 최단경로 탐색
+     *     When 교대역-양재역 최단경로 조회
+     *     Then 교대역-남부터미널역-양재역 최단 경로 조회됨
+     *     Then 교대역-남부터미널역-양재역 최단 거리 조회됨
+     *     Then 교대역-남부터미널역-양재역 요금 조회됨 (일반인 요금)
+     *     When 강남역-남부터미널역 최단경로 조회
+     *     Then 강남역-양재역-남부터미널역 최단 경로 조회됨
+     *     Then 강남역-양재역-남부터미널역 최단 거리 조회됨
+     *     Then 강남역-양재역-남부터미널역 요금 조회됨 (일반인 요금)
+     */
+    @DisplayName("일반인 요금으로 지하철 경로를 탐색한다.")
+    @Test
+    void 지하철_경로_탐색_정상_시나리오_일반인() {
+        //given
+        회원_생성을_요청(EMAIL, PASSWORD, 45);
+        String 청소년_token = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
+
+        //when
+        ExtractableResponse<Response> 교대역_양재역_조회 = 회원_최단경로_조회_요청(교대역, 양재역, 청소년_token);
+        //then
+        최단경로_조회됨(교대역_양재역_조회);
+        최단경로_거리_조회됨(교대역_양재역_조회, 5);
+        최단경로_요금_조회됨(교대역_양재역_조회, 1350);
+        최단경로_결과_정렬됨(교대역_양재역_조회, Arrays.asList(교대역, 남부터미널역, 양재역));
+
+        //when
+        ExtractableResponse<Response> 강남역_남부터미널역_조회 = 회원_최단경로_조회_요청(강남역, 남부터미널역, 청소년_token);
+        //then
+        최단경로_조회됨(강남역_남부터미널역_조회);
+        최단경로_거리_조회됨(강남역_남부터미널역_조회, 12);
+        최단경로_요금_조회됨(강남역_남부터미널역_조회, 2050);
+        최단경로_결과_정렬됨(강남역_남부터미널역_조회, Arrays.asList(강남역, 양재역, 남부터미널역));
+    }
+
+    /**
+     * Feature: 청소년 지하철 경로 관련 기능
+     *
+     *   Background
+     *     Given 지하철역 등록되어 있음 (강남역, 양재역, 교대역, 남부터미널역)
+     *     Given 노선 등록되어 있음 (신분당선, 이호선, 삼호선)
+     *     Given 청소년 사용자 등록되어 있음
+     *     Given 로그인 되어있음
+     *
+     *   Scenario: 지하철 최단경로 탐색
+     *     When 교대역-양재역 최단경로 조회
+     *     Then 교대역-남부터미널역-양재역 최단 경로 조회됨
+     *     Then 교대역-남부터미널역-양재역 최단 거리 조회됨
+     *     Then 교대역-남부터미널역-양재역 요금 조회됨 (청소년 요금)
+     *     When 강남역-남부터미널역 최단경로 조회
+     *     Then 강남역-양재역-남부터미널역 최단 경로 조회됨
+     *     Then 강남역-양재역-남부터미널역 최단 거리 조회됨
+     *     Then 강남역-양재역-남부터미널역 요금 조회됨 (청소년 요금)
+     */
+    @DisplayName("청소년 요금으로 지하철 경로를 탐색한다.")
+    @Test
+    void 지하철_경로_탐색_정상_시나리오_청소년() {
+        //given
+        회원_생성을_요청(EMAIL, PASSWORD, 15);
+        String 청소년_token = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
+
+        //when
+        ExtractableResponse<Response> 교대역_양재역_조회 = 회원_최단경로_조회_요청(교대역, 양재역, 청소년_token);
+        //then
+        최단경로_조회됨(교대역_양재역_조회);
+        최단경로_거리_조회됨(교대역_양재역_조회, 5);
+        최단경로_요금_조회됨(교대역_양재역_조회, 800);
+        최단경로_결과_정렬됨(교대역_양재역_조회, Arrays.asList(교대역, 남부터미널역, 양재역));
+
+        //when
+        ExtractableResponse<Response> 강남역_남부터미널역_조회 = 회원_최단경로_조회_요청(강남역, 남부터미널역, 청소년_token);
+        //then
+        최단경로_조회됨(강남역_남부터미널역_조회);
+        최단경로_거리_조회됨(강남역_남부터미널역_조회, 12);
+        최단경로_요금_조회됨(강남역_남부터미널역_조회, 1360);
+        최단경로_결과_정렬됨(강남역_남부터미널역_조회, Arrays.asList(강남역, 양재역, 남부터미널역));
+    }
+
+    /**
+     * Feature: 어린이 지하철 경로 관련 기능
+     *
+     *   Background
+     *     Given 지하철역 등록되어 있음 (강남역, 양재역, 교대역, 남부터미널역)
+     *     Given 노선 등록되어 있음 (신분당선, 이호선, 삼호선)
+     *     Given 어린이 사용자 등록되어 있음
+     *     Given 로그인 되어있음
+     *
+     *   Scenario: 지하철 최단경로 탐색
+     *     When 교대역-양재역 최단경로 조회
+     *     Then 교대역-남부터미널역-양재역 최단 경로 조회됨
+     *     Then 교대역-남부터미널역-양재역 최단 거리 조회됨
+     *     Then 교대역-남부터미널역-양재역 요금 조회됨 (어린이 요금)
+     *     When 강남역-남부터미널역 최단경로 조회
+     *     Then 강남역-양재역-남부터미널역 최단 경로 조회됨
+     *     Then 강남역-양재역-남부터미널역 최단 거리 조회됨
+     *     Then 강남역-양재역-남부터미널역 요금 조회됨 (어린이 요금)
+     */
+    @DisplayName("어린이 요금으로 지하철 경로를 탐색한다.")
+    @Test
+    void 지하철_경로_탐색_정상_시나리오_어린이() {
+        //given
+        회원_생성을_요청(EMAIL, PASSWORD, 8);
+        String 어린이_token = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
+
+        //when
+        ExtractableResponse<Response> 교대역_양재역_조회 = 회원_최단경로_조회_요청(교대역, 양재역, 어린이_token);
+        //then
+        최단경로_조회됨(교대역_양재역_조회);
+        최단경로_거리_조회됨(교대역_양재역_조회, 5);
+        최단경로_요금_조회됨(교대역_양재역_조회, 500);
+        최단경로_결과_정렬됨(교대역_양재역_조회, Arrays.asList(교대역, 남부터미널역, 양재역));
+
+        //when
+        ExtractableResponse<Response> 강남역_남부터미널역_조회 = 회원_최단경로_조회_요청(강남역, 남부터미널역, 어린이_token);
+        //then
+        최단경로_조회됨(강남역_남부터미널역_조회);
+        최단경로_거리_조회됨(강남역_남부터미널역_조회, 12);
+        최단경로_요금_조회됨(강남역_남부터미널역_조회, 850);
+        최단경로_결과_정렬됨(강남역_남부터미널역_조회, Arrays.asList(강남역, 양재역, 남부터미널역));
+    }
+
+    /**
+     * Feature: 영유아 지하철 경로 관련 기능
+     *
+     *   Background
+     *     Given 지하철역 등록되어 있음 (강남역, 양재역, 교대역, 남부터미널역)
+     *     Given 노선 등록되어 있음 (신분당선, 이호선, 삼호선)
+     *     Given 영유아 사용자 등록되어 있음
+     *     Given 로그인 되어있음
+     *
+     *   Scenario: 지하철 최단경로 탐색
+     *     When 교대역-양재역 최단경로 조회
+     *     Then 교대역-남부터미널역-양재역 최단 경로 조회됨
+     *     Then 교대역-남부터미널역-양재역 최단 거리 조회됨
+     *     Then 교대역-남부터미널역-양재역 요금 조회됨 (어린이 요금)
+     *     When 강남역-남부터미널역 최단경로 조회
+     *     Then 강남역-양재역-남부터미널역 최단 경로 조회됨
+     *     Then 강남역-양재역-남부터미널역 최단 거리 조회됨
+     *     Then 강남역-양재역-남부터미널역 요금 조회됨 (어린이 요금)
+     */
+    @DisplayName("영유아 요금으로 지하철 경로를 탐색한다.")
+    @Test
+    void 지하철_경로_탐색_정상_시나리오_영유아() {
+        //given
+        회원_생성을_요청(EMAIL, PASSWORD, 0);
+        String 영유아_token = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
+
+        //when
+        ExtractableResponse<Response> 교대역_양재역_조회 = 회원_최단경로_조회_요청(교대역, 양재역, 영유아_token);
+        //then
+        최단경로_조회됨(교대역_양재역_조회);
+        최단경로_거리_조회됨(교대역_양재역_조회, 5);
+        최단경로_요금_조회됨(교대역_양재역_조회, 0);
+        최단경로_결과_정렬됨(교대역_양재역_조회, Arrays.asList(교대역, 남부터미널역, 양재역));
+
+        //when
+        ExtractableResponse<Response> 강남역_남부터미널역_조회 = 회원_최단경로_조회_요청(강남역, 남부터미널역, 영유아_token);
+        //then
+        최단경로_조회됨(강남역_남부터미널역_조회);
+        최단경로_거리_조회됨(강남역_남부터미널역_조회, 12);
+        최단경로_요금_조회됨(강남역_남부터미널역_조회, 0);
         최단경로_결과_정렬됨(강남역_남부터미널역_조회, Arrays.asList(강남역, 양재역, 남부터미널역));
     }
 
@@ -108,23 +295,35 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //given
         StationResponse 부평역 = 지하철역_등록되어_있음("부평역").as(StationResponse.class);
         StationResponse 인천시청역 = 지하철역_등록되어_있음("인천시청역").as(StationResponse.class);
-        LineResponse 인천호선 = 지하철_노선_등록되어_있음(new LineRequest("인천호선", "bg-skyblue-600", 부평역.getId(), 인천시청역.getId(), 10)).as(LineResponse.class);
+        LineResponse 인천호선 = 지하철_노선_등록되어_있음(new LineRequest("인천호선", "bg-skyblue-600", 부평역.getId(), 인천시청역.getId(), 10, 0)).as(LineResponse.class);
 
+        //when
         ExtractableResponse<Response> 교대역_교대역_조회 = 최단경로_조회_요청(교대역, 교대역);
+        //then
         최단경로_조회_실패됨(교대역_교대역_조회);
 
+        //when
         ExtractableResponse<Response> 교대역_부평역_조회 = 최단경로_조회_요청(교대역, 부평역);
+        //then
         최단경로_조회_실패됨(교대역_부평역_조회);
 
+        //when
         ExtractableResponse<Response> 교대역_존재하지않는역_조회 = 최단경로_조회_요청(교대역, new StationResponse(0L, "존재하지않는역", LocalDateTime.now(), LocalDateTime.now()));
+        //then
         최단경로_조회_실패됨(교대역_존재하지않는역_조회);
 
+        //when
         ExtractableResponse<Response> 존재하지않는역_교대역_조회 = 최단경로_조회_요청(new StationResponse(0L, "존재하지않는역", LocalDateTime.now(), LocalDateTime.now()), 교대역);
+        //then
         최단경로_조회_실패됨(존재하지않는역_교대역_조회);
     }
 
     private static ExtractableResponse<Response> 최단경로_조회_요청(StationResponse sourceStation, StationResponse targetStation) {
         return 최단경로_조회_요청(String.format("/paths?source=%d&target=%d", sourceStation.getId(), targetStation.getId()));
+    }
+
+    private static ExtractableResponse<Response> 회원_최단경로_조회_요청(StationResponse sourceStation, StationResponse targetStation, String accessToken) {
+        return 회원_최단경로_조회_요청(String.format("/paths?source=%d&target=%d", sourceStation.getId(), targetStation.getId()), accessToken);
     }
 
     public static void 최단경로_조회됨(ExtractableResponse<Response> response) {
@@ -144,11 +343,25 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }
 
+    private void 최단경로_거리_조회됨(ExtractableResponse<Response> response, int distance) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getDistance()).isEqualTo(distance);
+    }
+
+    private void 최단경로_요금_조회됨(ExtractableResponse<Response> response, int fare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
+    }
+
     private static void 최단경로_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     private static ExtractableResponse<Response> 최단경로_조회_요청(String uri) {
         return get(uri);
+    }
+
+    private static ExtractableResponse<Response> 회원_최단경로_조회_요청(String uri, String accessToken) {
+        return getWithAuth(accessToken, uri);
     }
 }

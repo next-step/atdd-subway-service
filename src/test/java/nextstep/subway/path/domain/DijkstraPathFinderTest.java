@@ -41,9 +41,9 @@ public class DijkstraPathFinderTest {
         교대역 = createStation("교대역");
         남부터미널역 = createStation("남부터미널역");
 
-        신분당선 = createLine("신분당선", "rbg-red-600", 강남역, 양재역, 10);
-        이호선 = createLine("이호선", "rbg-red-600", 교대역, 강남역, 10);
-        삼호선 = createLine("삼호선", "rbg-red-600", 교대역, 양재역, 5);
+        신분당선 = createLine("신분당선", "rbg-red-600", 강남역, 양재역, 10, 0);
+        이호선 = createLine("이호선", "rbg-red-600", 교대역, 강남역, 10, 0);
+        삼호선 = createLine("삼호선", "rbg-red-600", 교대역, 양재역, 5, 0);
         삼호선.addSection(createSection(교대역, 남부터미널역, 2));
 
         dijkstraPathFinder = new DijkstraPathFinder();
@@ -79,7 +79,7 @@ public class DijkstraPathFinderTest {
         //given
         Station 부평역 = createStation("부평역");
         Station 인천시청역 = createStation("인천시청역");
-        Line 인천선 = createLine("신분당선", "rbg-red-600", 부평역, 인천시청역, 10);
+        Line 인천선 = createLine("신분당선", "rbg-red-600", 부평역, 인천시청역, 10, 0);
         List<Section> sections = getSections(Arrays.asList(신분당선, 이호선, 삼호선, 인천선));
 
         //then

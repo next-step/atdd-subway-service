@@ -2,12 +2,14 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.line.consts.ErrorMessage;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class Distance {
     public static final int MINIMUM_DISTANCE = 1;
 
+    @Column(name = "distance")
     private int value;
 
     protected Distance() {
