@@ -4,7 +4,6 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,7 +15,7 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
     @Embedded
-    private Sections sections = Sections.instance();
+    private final Sections sections = Sections.instance();
 
     public Line() {
     }
@@ -45,7 +44,6 @@ public class Line extends BaseEntity {
     public List<Station> getAllStations() {
         return sections.getAllStations();
     }
-
 
     public Long getId() {
         return id;
