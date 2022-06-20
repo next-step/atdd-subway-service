@@ -79,34 +79,34 @@ public class Section {
         return distance;
     }
 
-    public boolean hasUpStation(final Station upStation) {
+    public boolean equalsUpStation(final Station upStation) {
         return this.upStation.equals(upStation);
     }
 
-    public boolean hasDownStation(final Station downStation) {
+    public boolean equalsDownStation(final Station downStation) {
         return this.downStation.equals(downStation);
     }
 
     public boolean intersects(final Section section) {
-        return hasUpStation(section) || hasDownStation(section);
+        return equalsUpStation(section) || equalsDownStation(section);
     }
 
     public boolean equalsStations(final Section section) {
-        return hasUpStation(section) && hasDownStation(section);
+        return equalsUpStation(section) && equalsDownStation(section);
     }
 
-    public boolean hasUpStation(final Section section) {
+    public boolean equalsUpStation(final Section section) {
         return this.upStation.equals(section.upStation);
     }
 
-    public boolean hasDownStation(final Section section) {
+    public boolean equalsDownStation(final Section section) {
         return this.downStation.equals(section.downStation);
     }
 
     public void rearrange(final Section section) {
         validateDistance(section);
 
-        if (section.hasUpStation(this)) {
+        if (section.equalsUpStation(this)) {
             this.upStation = section.downStation;
             this.distance = distance.minus(section.distance);
             return;

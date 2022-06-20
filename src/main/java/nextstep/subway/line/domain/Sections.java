@@ -96,7 +96,7 @@ public class Sections {
 
     private Section getNextSectionByUpStation(final Station downStation) {
         return sections.stream()
-                .filter(it -> it.hasUpStation(downStation))
+                .filter(it -> it.equalsUpStation(downStation))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
@@ -169,7 +169,7 @@ public class Sections {
 
     private Section findSectionByUpStation(final Station upStation) {
         return sections.stream()
-                .filter(section -> section.hasUpStation(upStation))
+                .filter(section -> section.equalsUpStation(upStation))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
@@ -182,7 +182,7 @@ public class Sections {
 
     private Section findSectionByDownStation(final Station downStation) {
         return sections.stream()
-                .filter(section -> section.hasDownStation(downStation))
+                .filter(section -> section.equalsDownStation(downStation))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
