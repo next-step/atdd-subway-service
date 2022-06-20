@@ -108,6 +108,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_역_확인(즐겨찾기_목록, 여의나루역);
     }
 
+    @DisplayName("즐겨찾기 목록 삭제 기능")
+    @Test
+    void deleteFavorite() {
+        //given
+        즐겨찾기_생성_요청(액세스_토큰, 노량진역, 여의도역);
+        즐겨찾기_생성_요청(액세스_토큰, 신길역, 여의나루역);
+        final List<Long> 즐겨찾기_아이디_목록 = 즐겨찾기_목록_조회_요청(액세스_토큰).jsonPath()
+                .getList(".", FavoriteResponse.class)
+                .stream()
+                .map(FavoriteResponse::getId)
+                .collect(Collectors.toList());
+
+        //when
+        final ExtractableResponse<Response> 즐겨찾기_삭제_결과 = 즐겨찾기_삭제_요청(액세스_토큰, 즐겨찾기_아이디_목록.get(0));
+
+        //then
+        즐겨찾기_삭제_성공(즐겨찾기_삭제_결과);
+        final ExtractableResponse<Response> 즐겨찾기_목록 = 즐겨찾기_목록_조회_요청(액세스_토큰);
+        즐겨찾기_목록_갯수_확인(즐겨찾기_목록, 1);
+    }
+
     private void 즐겨찾기_생성_성공(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -126,6 +147,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
         final boolean containStation = sources.contains(station) || targets.contains(station);
         assertThat(containStation).isTrue();
+    }
+
+    private void 즐겨찾기_삭제_성공(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(
@@ -148,6 +173,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(final String accessToken, final Long favoriteId) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .pathParam("favoriteId", favoriteId)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/favorites/{favoriteId}")
                 .then().log().all()
                 .extract();
     }
