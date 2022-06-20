@@ -4,15 +4,13 @@ import java.util.List;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private final WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
+    private final DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath;
 
     public PathFinder(final List<Line> lines) {
         for (Line line : lines) {
@@ -23,13 +21,9 @@ public class PathFinder {
         dijkstraShortestPath = new DijkstraShortestPath<>(graph);
     }
 
-    public GraphPath<Station, DefaultWeightedEdge> getShortestPath(final Station sourceStation, final Station targetStation) {
+    public ShortestPath getShortestPath(final Station sourceStation, final Station targetStation) {
         validInputCheck(sourceStation, targetStation);
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
-        if (shortestPath == null) {
-            throw new IllegalArgumentException("출발역과 도착역은 서로 연결이 되어있어야 합니다.");
-        }
-        return shortestPath;
+        return new ShortestPath(dijkstraShortestPath.getPath(sourceStation, targetStation));
     }
 
     private void addStationToGraphVertex(final List<Station> stations) {
@@ -40,7 +34,9 @@ public class PathFinder {
 
     private void addSectionToEdgeAndSetWeight(final List<Section> sections) {
         for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+            SectionEdge sectionEdge = new SectionEdge(section);
+            graph.addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
+            graph.setEdgeWeight(sectionEdge, section.getDistance());
         }
     }
 
