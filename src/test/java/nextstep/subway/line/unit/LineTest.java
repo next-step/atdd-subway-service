@@ -1,6 +1,7 @@
 package nextstep.subway.line.unit;
 
 import io.restassured.RestAssured;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.domain.Station;
@@ -66,7 +67,7 @@ public class LineTest {
         Station 양재역 = new Station(3L, "양재역");
 
         // when
-        line.addLineStation(new SectionRequest().toSection(강남역, 양재역, 5));
+        line.addLineStation(new SectionRequest().toSection(강남역, 양재역, new Distance(5)));
 
         // then
         assertAll(
@@ -82,7 +83,7 @@ public class LineTest {
         // given
         Line line = new Line("신분당선", "bg-red-600", 강남역, 판교역, 15);
         Station 양재역 = new Station(3L, "양재역");
-        line.addLineStation(new SectionRequest().toSection(강남역, 양재역, 5));
+        line.addLineStation(new SectionRequest().toSection(강남역, 양재역, new Distance(5)));
 
         // when
         line.removeLineStation(양재역);
@@ -100,7 +101,7 @@ public class LineTest {
         // given
         Line line = new Line("신분당선", "bg-red-600", 강남역, 판교역, 15);
         Station 양재역 = new Station(3L, "양재역");
-        line.addLineStation(new SectionRequest().toSection(강남역, 양재역, 5));
+        line.addLineStation(new SectionRequest().toSection(강남역, 양재역, new Distance(5)));
 
         // when
         line.removeLineStation(강남역);

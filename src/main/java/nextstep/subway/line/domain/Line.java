@@ -35,7 +35,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        sections.add(new Section(this, upStation, downStation, new Distance(distance)));
     }
 
     public void update(Line line) {
@@ -91,7 +91,7 @@ public class Line extends BaseEntity {
         }
     }
 
-    private void addSections(Station upStation, Station downStation, int distance, Stations stations, boolean isUpStationExisted, boolean isDownStationExisted) {
+    private void addSections(Station upStation, Station downStation, Distance distance, Stations stations, boolean isUpStationExisted, boolean isDownStationExisted) {
         if (stations.isEmpty()) {
             addSection(upStation, downStation, distance);
             return;
@@ -114,7 +114,7 @@ public class Line extends BaseEntity {
         }
     }
 
-    private void addSection(Station upStation, Station downStation, int distance) {
+    private void addSection(Station upStation, Station downStation, Distance distance) {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
@@ -171,8 +171,8 @@ public class Line extends BaseEntity {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            addSection(newUpStation, newDownStation, newDistance);
+            int newDistance = upLineStation.get().getDistance().toInt() + downLineStation.get().getDistance().toInt();
+            addSection(newUpStation, newDownStation, new Distance(newDistance));
         }
     }
 }
