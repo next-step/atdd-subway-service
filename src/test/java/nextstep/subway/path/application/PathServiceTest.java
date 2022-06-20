@@ -1,4 +1,4 @@
-package nextstep.subway.line.application;
+package nextstep.subway.path.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -7,11 +7,15 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Path;
-import nextstep.subway.line.domain.PathFinder;
-import nextstep.subway.line.dto.PathResponse;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.application.PathService;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -34,6 +38,7 @@ class PathServiceTest {
     private PathFinder pathFinder;
     private Station 강남역;
     private Station 양재역;
+    private LoginMember loginMember;
 
     @BeforeEach
     void setUp() {
@@ -45,6 +50,7 @@ class PathServiceTest {
         when(lineService.findLines()).thenReturn(Lists.newArrayList(이호선));
 
         pathService = new PathService(stationService, lineService, pathFinder);
+        loginMember = new LoginMember(1L, "email@email.com", 25);
 
     }
 
@@ -54,10 +60,11 @@ class PathServiceTest {
         when(stationService.findStationById(1L)).thenReturn(강남역);
         when(stationService.findStationById(2L)).thenReturn(양재역);
 
-        when(pathFinder.findShortestPath(강남역, 양재역)).thenReturn(Path.of(Arrays.asList(강남역, 양재역), 5));
+        when(pathFinder.findShortestPath(강남역, 양재역))
+                .thenReturn(Path.of(Arrays.asList(강남역, 양재역), Distance.from(5), Fare.from(1250)));
 
         // when
-        PathResponse response = pathService.findShortestPath(1L, 2L);
+        PathResponse response = pathService.findShortestPath(loginMember, 1L, 2L);
 
         // then
         List<String> stationNames = response.getStations().stream().map(StationResponse::getName)

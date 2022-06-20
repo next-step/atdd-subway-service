@@ -1,9 +1,10 @@
-package nextstep.subway.line.application;
+package nextstep.subway.path.application;
 
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.PathFinder;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.dto.PathResponse;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.application.LineService;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -23,10 +24,13 @@ public class PathService {
         this.pathFinder.addLines(this.lineService.findLines());
     }
 
-    public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
+    public PathResponse findShortestPath(LoginMember loginMember, Long sourceStationId, Long targetStationId) {
         Station sourceStation = stationService.findStationById(sourceStationId);
         Station targetStation = stationService.findStationById(targetStationId);
-
-        return PathResponse.from(pathFinder.findShortestPath(sourceStation, targetStation));
+        Path path = pathFinder.findShortestPath(sourceStation, targetStation);
+        if (loginMember.isLogin()) {
+            path.discountFare(loginMember.getAge());
+        }
+        return PathResponse.from(path);
     }
 }

@@ -1,10 +1,20 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.domain.AgeFarePolicy;
+import nextstep.subway.fare.domain.DistanceFarePolicy;
+import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.fare.domain.FareCalculator;
+import nextstep.subway.fare.domain.LineFarePolicy;
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,19 +43,22 @@ class PathFinderTest {
                 .upStation(강남역)
                 .downStation(양재역)
                 .distance(Distance.from(10))
+                .extraFare(Fare.from(900))
                 .build();
         이호선 = new Line.Builder("이호선", "bg-red-600")
                 .upStation(교대역)
                 .downStation(강남역)
                 .distance(Distance.from(10))
+                .extraFare(Fare.from(500))
                 .build();
         삼호선 = new Line.Builder("삼호선", "bg-red-600")
                 .upStation(교대역)
                 .downStation(양재역)
                 .distance(Distance.from(5))
+                .extraFare(Fare.from(0))
                 .build();
 
-        삼호선.addSection(교대역, 남부터미널역, Distance.from(3));
+        이호선.addSection(교대역, 남부터미널역, Distance.from(3));
 
         주안역 = new Station("주안역");
         인하대역 = new Station("인하대역");
@@ -56,17 +69,20 @@ class PathFinderTest {
                 .distance(Distance.from(5))
                 .build();
 
-        pathFinder = new PathFinder();
-        pathFinder.addLines(Arrays.asList(신분당선, 이호선, 삼호선, 연결안된노선));
+        pathFinder = new PathFinder(
+                new FareCalculator(new DistanceFarePolicy(), new LineFarePolicy()));
+
+        this.pathFinder.addLines(Arrays.asList(신분당선, 이호선, 삼호선, 연결안된노선));
     }
 
     @Test
     void 최단_경로() {
-        Path path = pathFinder.findShortestPath(교대역, 양재역);
+        Path path = pathFinder.findShortestPath(교대역, 강남역);
 
         assertAll(
-                () -> assertThat(path.getDistance()).isEqualTo(Distance.from(5)),
-                () -> assertThat(path.getStations()).containsExactly(교대역, 남부터미널역, 양재역)
+                () -> assertThat(path.getDistance()).isEqualTo(Distance.from(10)),
+                () -> assertThat(path.getStations()).containsExactly(교대역, 남부터미널역, 강남역),
+                () -> assertThat(path.getFare()).isEqualTo(Fare.from(1750))
         );
     }
 
