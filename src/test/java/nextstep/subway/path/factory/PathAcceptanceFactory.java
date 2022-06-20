@@ -27,9 +27,10 @@ public class PathAcceptanceFactory {
             String color,
             StationResponse upStation,
             StationResponse downStation,
-            int distance
+            int distance,
+            int extraFare
     ) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
         return LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 

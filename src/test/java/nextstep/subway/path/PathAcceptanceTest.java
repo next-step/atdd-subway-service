@@ -31,7 +31,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
 
     /**
-     * 교대역    --- *2호선* ---   강남역
+     * 교대역    --- *2호선* ---   강남역 --- 역삼역 --- 선릉역
      * |                        |
      * *3호선*                   *신분당선*
      * |                        |
@@ -46,9 +46,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = 지하철역_등록되어_있음("교대역");
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역");
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-green-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-orange-600", 교대역, 양재역, 5);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 1000);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-green-600", 교대역, 강남역, 10, 500);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-orange-600", 교대역, 양재역, 5, 0);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -90,7 +90,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findShortestDistanceNotConnected() {
         StationResponse 사당역 = 지하철역_등록되어_있음("사당역");
         StationResponse 이수역 = 지하철역_등록되어_있음("이수역");
-        LineResponse 사호선 = 지하철_노선_등록되어_있음("사호선", "bg-blue-600", 사당역, 이수역, 5);
+        LineResponse 사호선 = 지하철_노선_등록되어_있음("사호선", "bg-blue-600", 사당역, 이수역, 5, 0);
 
         PathRequest pathRequest = PathRequest.of(강남역.getId(), 사당역.getId());
 
