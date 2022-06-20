@@ -74,13 +74,20 @@ public class Section {
         return upStation == station || downStation == station;
     }
 
-    public void updateSection(Section newSection) {
-        if (this.upStation.equals(newSection.getUpStation())) {
-            updateUpStation(newSection.getDownStation(), newSection.getDistance());
+    public static Section empty() {
+        return new Section();
+    }
+
+    public boolean isEmpty() {
+        if (this.id == null &&
+                this.upStation == null &&
+                this.downStation == null &&
+                this.line == null &&
+                this.distance == 0) {
+
+            return true;
         }
 
-        if (this.getDownStation().equals(newSection.getDownStation())) {
-            updateDownStation(newSection.getUpStation(), newSection.getDistance());
-        }
+        return false;
     }
 }
