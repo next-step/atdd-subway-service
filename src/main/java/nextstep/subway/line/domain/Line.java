@@ -15,28 +15,37 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections = Sections.instance();
 
     public Line() {
     }
 
-    public Line(String name, String color) {
+    public Line(final String name, final String color) {
         this.name = name;
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(final String name, final String color, final Station upStation,
+                final Station downStation, final int distance) {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
-    public void update(Line line) {
+    public void update(final Line line) {
         this.name = line.getName();
         this.color = line.getColor();
     }
+
+    public void addSection(final Section section) {
+        sections.add(section);
+    }
+
+    public List<Station> getAllStations() {
+        return sections.getAllStations();
+    }
+
 
     public Long getId() {
         return id;
@@ -51,6 +60,6 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return sections.getSections();
     }
 }
