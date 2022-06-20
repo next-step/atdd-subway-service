@@ -52,10 +52,24 @@ public class PathFinder {
     }
 
     public Path findShortestPath(Long sourceStationId, Long targetStationId) {
+        validateSourceTarget(sourceStationId, targetStationId);
         GraphPath<Long, DefaultWeightedEdge> shortestPath = findGraphPath(sourceStationId, targetStationId);
-        List<Long> stationsIds = shortestPath.getVertexList();
+        validateConnection(shortestPath);
 
+        List<Long> stationsIds = shortestPath.getVertexList();
         return Path.of(getStationsByIds(stationsIds), (int)shortestPath.getWeight());
+    }
+
+    private void validateSourceTarget(Long sourceStationId, Long targetStationId) {
+        if (sourceStationId.equals(targetStationId)) {
+            throw new IllegalArgumentException("출발역과 도착역은 같을 수 없습니다.");
+        }
+    }
+
+    private void validateConnection(GraphPath<Long, DefaultWeightedEdge> graph) {
+        if (graph == null) {
+            throw new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
+        }
     }
 
     private GraphPath<Long, DefaultWeightedEdge> findGraphPath(Long sourceStationId, Long targetStationId) {
