@@ -3,6 +3,8 @@ package nextstep.subway.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.util.function.Supplier;
+
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class NoSuchElementFoundException extends RuntimeException{
     private String message;
@@ -15,4 +17,9 @@ public class NoSuchElementFoundException extends RuntimeException{
         super(message.getMessage());
         this.message = message.getMessage();
     }
+
+    public static Supplier<NoSuchElementFoundException> exceptionSupplier(ErrorMessage message) {
+        return () -> new NoSuchElementFoundException(message);
+    }
+
 }
