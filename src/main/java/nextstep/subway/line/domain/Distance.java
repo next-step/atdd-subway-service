@@ -28,4 +28,19 @@ public class Distance {
     public Distance substract(Distance distance) {
         return new Distance(value - distance.getValue());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Distance distance = (Distance) o;
+
+        return value == distance.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return value;
+    }
 }
