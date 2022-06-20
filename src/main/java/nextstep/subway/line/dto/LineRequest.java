@@ -8,16 +8,16 @@ public class LineRequest {
     private Long upStationId;
     private Long downStationId;
     private int distance;
-    private Integer surcharge;
+    private int surcharge;
 
     public LineRequest() {
     }
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
-        this(name, color, upStationId, downStationId, distance, null);
+        this(name, color, upStationId, downStationId, distance, 0);
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, Integer surcharge) {
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int surcharge) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;

@@ -202,10 +202,6 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다"));
     }
 
-    public Fare fare(Integer age) {
-        return Fare.calculate(totalDistance(), age, maxSurcharge());
-    }
-
     public Distance totalDistance() {
         Distance distance = new Distance();
         for (Section section : sections) {
@@ -214,7 +210,7 @@ public class Sections {
         return distance;
     }
 
-    int maxSurcharge() {
+    public int maxSurcharge() {
         return this.sections.stream()
                 .map(s -> s.getLine().getSurcharge())
                 .filter(Objects::nonNull)

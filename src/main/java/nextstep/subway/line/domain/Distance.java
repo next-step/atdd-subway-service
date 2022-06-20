@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.path.domain.DistanceType;
+
 import javax.persistence.Embeddable;
 import java.util.Objects;
 

@@ -1,4 +1,6 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
+
+import nextstep.subway.line.domain.Distance;
 
 import java.util.Objects;
 
@@ -19,7 +21,7 @@ public class Fare {
     }
 
     private static int calculateDiscount(Integer age, int fare) {
-        return Discount.of(age).calculate(fare);
+        return AgeDiscountType.of(age).calculate(fare);
     }
 
     public int toInt() {

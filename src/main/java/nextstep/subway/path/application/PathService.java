@@ -1,7 +1,7 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.domain.Fare;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.strategy.Dijkstra;
@@ -31,7 +31,7 @@ public class PathService {
 
         List<Station> shortestStations = PathFinder.find(new Dijkstra(source, target, sections));
         Sections filteredSections = sections.filteredBy(shortestStations);
-        Fare fare = filteredSections.fare(age);
+        Fare fare = Fare.calculate(filteredSections.totalDistance(), age, filteredSections.maxSurcharge());
 
         return PathResponse.of(shortestStations, filteredSections.totalDistance(), fare);
     }

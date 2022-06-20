@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import com.sun.istack.NotNull;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 import org.hibernate.annotations.ColumnDefault;
@@ -19,26 +20,27 @@ public class Line extends BaseEntity {
     @Embedded
     private final Sections sections = new Sections();
     @ColumnDefault("0")
-    private Integer surcharge;
+    @Column(nullable = false)
+    private int surcharge;
 
     public Line() {
     }
 
     public Line(String name, String color) {
-        this(name, color, null);
+        this(name, color, 0);
     }
 
-    public Line(String name, String color, Integer surcharge) {
+    public Line(String name, String color, int surcharge) {
         this.name = name;
         this.color = color;
         this.surcharge = surcharge;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this(name, color, upStation, downStation, distance, null);
+        this(name, color, upStation, downStation, distance, 0);
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance, Integer surcharge) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int surcharge) {
         this.name = name;
         this.color = color;
         this.sections.add(this, upStation, downStation, distance);

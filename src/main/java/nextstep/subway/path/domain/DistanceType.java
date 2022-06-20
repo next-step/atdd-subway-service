@@ -1,4 +1,6 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
+
+import nextstep.subway.line.domain.Distance;
 
 import java.util.Arrays;
 import java.util.function.Function;

@@ -68,7 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * When 교대역에서 강남역을 최단거리 노선을 조회하면
      * Then 교대역-남부터미널역-양재역-강남역이 경로가 조회된다
      * and  거리가 조회된다
-     * And  요금이 조회된다
+     * And  일반요금이 조회된다
      */
     @Test
     @DisplayName("최단거리 노선과 경로, 일반요금을 조회한다")
@@ -85,7 +85,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(pathResponse.getStations().get(2).getId()).isEqualTo(양재역.getId()),
                 () -> assertThat(pathResponse.getStations().get(3).getId()).isEqualTo(강남역.getId()),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(18),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1450));
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2450));
     }
 
     /**
