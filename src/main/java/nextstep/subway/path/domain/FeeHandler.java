@@ -7,7 +7,7 @@ public abstract class FeeHandler {
         this.feeHandler = feeHandler;
     }
 
-    public void calculate(FeeV2 fee) {
+    public void calculate(Fee fee) {
         if (feeHandler != null) {
             feeHandler.calculate(fee);
         }

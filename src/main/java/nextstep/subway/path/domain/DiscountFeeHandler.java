@@ -18,12 +18,12 @@ public class DiscountFeeHandler extends FeeHandler {
     }
 
     @Override
-    public void calculate(FeeV2 fee) {
+    public void calculate(Fee fee) {
         discountFee(fee);
         super.calculate(fee);
     }
 
-    private void discountFee(FeeV2 fee) {
+    private void discountFee(Fee fee) {
         if (isChild(this.age)) {
             discountChildFee(fee);
         }
@@ -32,12 +32,12 @@ public class DiscountFeeHandler extends FeeHandler {
         }
     }
 
-    private void discountChildFee(FeeV2 fee) {
+    private void discountChildFee(Fee fee) {
         final int discountFee = (int) ((fee.getFee() - DEFAULT_DEDUCTION_FEE) * CHILD_DISCOUNT_RATE);
         fee.update(discountFee);
     }
 
-    private void discountTeenFee(FeeV2 fee) {
+    private void discountTeenFee(Fee fee) {
         final int discountFee = (int) ((fee.getFee() - DEFAULT_DEDUCTION_FEE) * TEEN_DISCOUNT_RATE);
         fee.update(discountFee);
     }

@@ -15,12 +15,12 @@ public class DistanceFeeHandler extends FeeHandler {
     }
 
     @Override
-    public void calculate(FeeV2 fee) {
+    public void calculate(Fee fee) {
         addDistanceFee(fee);
         super.calculate(fee);
     }
 
-    private void addDistanceFee(FeeV2 fee) {
+    private void addDistanceFee(Fee fee) {
         fee.add(calculateOverFirstSection());
         fee.add(calculateOverSecondSection());
     }

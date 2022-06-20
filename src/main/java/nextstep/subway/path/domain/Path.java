@@ -22,8 +22,11 @@ public class Path {
     }
 
     public void calculateFee(LoginMember member) {
-        Fee originFee = Fee.of(this.distance, this.lines);
-        this.fee = FeeDiscountPolicy.discount(originFee, member.getAge());
+        this.fee = new Fee();
+        final FeeHandler discountFeeHandler = new DiscountFeeHandler(null, member.getAge());
+        final FeeHandler lineExtraFeeHandler = new LineExtraFeeHandler(discountFeeHandler, lines);
+        FeeHandler feeHandler = new DistanceFeeHandler(lineExtraFeeHandler, distance);
+        feeHandler.calculate(this.fee);
     }
 
     public PathResponse toPathResponse() {

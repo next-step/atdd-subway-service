@@ -13,12 +13,12 @@ public class LineExtraFeeHandler extends FeeHandler {
     }
 
     @Override
-    public void calculate(FeeV2 fee) {
+    public void calculate(Fee fee) {
         addLineExtraFee(fee);
         super.calculate(fee);
     }
 
-    private void addLineExtraFee(FeeV2 fee) {
+    private void addLineExtraFee(Fee fee) {
         ExtraCharge extraCharge = ExtraCharge.of(0);
         for (Line line : this.lines) {
             extraCharge = ExtraCharge.max(extraCharge, line.getExtraCharge());

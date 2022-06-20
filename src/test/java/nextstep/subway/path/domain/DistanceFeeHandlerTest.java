@@ -9,38 +9,38 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 class DistanceFeeHandlerTest {
-    private FeeV2 feeV2;
+    private Fee fee;
     private FeeHandler feeHandler;
 
     @BeforeEach
     void setUp() {
-        feeV2 = new FeeV2();
+        fee = new Fee();
     }
 
     @Test
     @DisplayName("기본거리(10km 이하)일 때 요금이 맞는지 검증")
     void basicDistance() {
         feeHandler = new DistanceFeeHandler(null, 10);
-        feeHandler.calculate(feeV2);
+        feeHandler.calculate(fee);
 
-        assertThat(feeV2.getFee()).isEqualTo(1250);
+        assertThat(fee.getFee()).isEqualTo(1250);
     }
 
     @ParameterizedTest(name = "{0}km 첫번째 구간(10km 초과 50km 이하)일 때 {1} 요금이 맞는지 검증")
     @CsvSource(value = {"11:1350", "15:1350", "16:1450", "50:2050"}, delimiter = ':')
     void firstSectionDistance(int distance, int expectedFee) {
         feeHandler = new DistanceFeeHandler(null, distance);
-        feeHandler.calculate(feeV2);
+        feeHandler.calculate(fee);
 
-        assertThat(feeV2.getFee()).isEqualTo(expectedFee);
+        assertThat(fee.getFee()).isEqualTo(expectedFee);
     }
 
     @ParameterizedTest(name = "{0}km 두번째 구간(50km 초과)일 때 {1} 요금이 맞는지 검증")
     @CsvSource(value = {"51:2150", "58:2150", "59:2250"}, delimiter = ':')
     void secondSectionDistance(int distance, int expectedFee) {
         feeHandler = new DistanceFeeHandler(null, distance);
-        feeHandler.calculate(feeV2);
+        feeHandler.calculate(fee);
 
-        assertThat(feeV2.getFee()).isEqualTo(expectedFee);
+        assertThat(fee.getFee()).isEqualTo(expectedFee);
     }
 }

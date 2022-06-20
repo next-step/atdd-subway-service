@@ -2,7 +2,6 @@ package nextstep.subway.path.domain;
 
 import static nextstep.subway.line.domain.LineTest.라인_생성;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -13,21 +12,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class LineExtraFeeHandlerTest {
-    private FeeV2 feeV2;
+    private Fee fee;
     private FeeHandler feeHandler;
 
     @BeforeEach
     void setUp() {
         final List<Line> lines = Arrays.asList(라인_생성("이호선", "초록색", 500), 라인_생성("칠호선", "국방색", 0));
-        feeV2 = new FeeV2();
+        fee = new Fee();
         feeHandler = new LineExtraFeeHandler(null, new HashSet<>(lines));
     }
 
     @Test
     @DisplayName("노선의 추가비용이 잘 반영되는지 확인")
     void addLineMaxExtraCharge() {
-        feeHandler.calculate(feeV2);
+        feeHandler.calculate(fee);
 
-        assertThat(feeV2.getFee()).isEqualTo(1750);
+        assertThat(fee.getFee()).isEqualTo(1750);
     }
 }
