@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +17,6 @@ class PathFinderTest {
     private Station 교대역;
     private Station 강남역;
     private Station 신논현역;
-    private Station 판교역;
     private Line 신분당선;
     private Line 이호선;
     private Line 삼호선;
@@ -29,7 +27,7 @@ class PathFinderTest {
      * |                            |
      * *3호선(3)*                 *신분당선*(1)
      * |                            |
-     * 교대역   --- *2호선*(3) ---   강남역  -- *신분당선*(50) --- 판교역
+     * 교대역   --- *2호선*(3) ---   강남역
      */
     @BeforeEach
     public void setUp() {
@@ -37,7 +35,6 @@ class PathFinderTest {
         교대역 = new Station("교대역");
         강남역 = new Station("강남역");
         신논현역 = new Station("신논현역");
-        판교역 = new Station("판교역");
 
         신분당선 = new Line("신분당선", "red", 신논현역, 강남역, 1, 1000);
         이호선 = new Line("이호선", "green", 교대역, 강남역, 3);
@@ -59,37 +56,6 @@ class PathFinderTest {
                 () -> assertThat(shortestPath.getShortestStations()).containsExactly(고속터미널역, 신논현역, 강남역),
                 () -> assertThat(shortestPath.getShortestDistance()).isEqualTo(5)
         );
-    }
-
-    /* 강남역 --- *신분당선*(50) --- 판교역 */
-    @Test
-    @DisplayName("추가 요금 1000원이 있는 노선의 50km 이용 시 이용 요금은 3050원")
-    void calculateAdditionalFare() {
-        // given
-        신분당선.addSection(new Section(신분당선, 강남역, 판교역, 50));
-        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 구호선));
-
-        // when
-        ShortestPath shortestPath = pathFinder.getShortestPath(강남역, 판교역);
-
-        // then
-        assertThat(shortestPath.getFare()).isEqualTo(3050);
-    }
-
-    /* 신림역 --- *신림선*(4) --- 교대역 --- *2호선*(3) --- 강남역 --- *신분당선*(1) --- 신논현역 */
-    @Test
-    @DisplayName("0원, 500원, 1000원의 추가 요금이 있는 노선들을 경유하여 8km 이용시 2250원")
-    void calculateAdditionalFareByTransferLine() {
-        // given
-        Station 신림역 = new Station("신림역");
-        Line 신림선 = new Line("신림선", "blue", 신림역, 교대역, 4, 500);
-        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 구호선, 신림선));
-
-        // when
-        ShortestPath shortestPath = pathFinder.getShortestPath(신림역, 신논현역);
-
-        // then
-        assertThat(shortestPath.getFare()).isEqualTo(2250);
     }
 
     @Test
