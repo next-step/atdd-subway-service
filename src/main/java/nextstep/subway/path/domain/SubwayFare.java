@@ -5,8 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class SubwayFare {
-    public static final int DEFAULT_FARE_VALUE = 1250;
-    public static final SubwayFare DEFAULT_FARE = new SubwayFare(DEFAULT_FARE_VALUE);
+    public static final SubwayFare DEFAULT_FARE = new SubwayFare(1250);
 
     private static final int MAX_DISCOUNT_RATE = 100;
     private static final int MIN_DISCOUNT_RATE = 0;
@@ -24,7 +23,7 @@ public class SubwayFare {
         this.value = value;
     }
 
-    public static SubwayFare of(Integer value) {
+    public static SubwayFare of(int value) {
         if (cacheMap.containsKey(value)) {
             return cacheMap.get(value);
         }
@@ -34,11 +33,17 @@ public class SubwayFare {
     }
 
     public SubwayFare plus(int plusValue) {
-        return new SubwayFare(value + plusValue);
+        if(plusValue == 0){
+            return this;
+        }
+        return SubwayFare.of(value + plusValue);
     }
 
     public SubwayFare subtract(int subtractValue) {
-        return new SubwayFare(value - subtractValue);
+        if(subtractValue == 0){
+            return this;
+        }
+        return SubwayFare.of(value - subtractValue);
     }
 
     public SubwayFare discountedByPercent(int percent) {
@@ -46,7 +51,7 @@ public class SubwayFare {
             throw new IllegalArgumentException("할인율은 0에서 100사이어야 합니다.");
         }
         double discountRate = (double) percent / 100;
-        return new SubwayFare((int) (value * (1 - discountRate)));
+        return SubwayFare.of((int) (value * (1 - discountRate)));
     }
 
     public int getValue() {

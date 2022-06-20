@@ -105,4 +105,4 @@
 ## 4단계
   - [X] LoginMember로 연령별 할인 역할 이동
   - [X] PathFindResult로 거리 및 노선별 할인 역할 이동 
-  - [ ] SubwayFare에서 불필요한 객체 생성 방지 
+  - [X] SubwayFare에서 불필요한 객체 생성 방지 
