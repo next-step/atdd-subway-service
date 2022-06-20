@@ -1,9 +1,11 @@
 package nextstep.subway.line.application;
 
+import java.util.Collection;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -20,7 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class LineService {
     private LineRepository lineRepository;
     private StationService stationService;
@@ -39,7 +41,6 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> lines = lineRepository.findAll();
 
@@ -48,12 +49,10 @@ public class LineService {
             .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         return LineResponse.of(findLineById(id));
     }
@@ -78,11 +77,21 @@ public class LineService {
         line.addSection(Section.of(line, upStation, downStation, Distance.from(request.getDistance())));
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
 
         line.deleteSection(station);
+    }
+
+    public List<Section> findAllSections() {
+        return lineRepository.findAll().stream()
+            .map(Line::getSections)
+            .map(Sections::getSections)
+            .flatMap(Collection::stream)
+            .distinct()
+            .collect(Collectors.toList());
     }
 
 }
