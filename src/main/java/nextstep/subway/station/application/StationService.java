@@ -5,9 +5,9 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,15 +19,24 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
+        validateDuplicatedName(stationRequest.getName());
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
+    }
+
+    private void validateDuplicatedName(String name) {
+        Optional<Station> stationByName = stationRepository.findByName(name);
+
+        stationByName.ifPresent(line -> {
+            throw new IllegalArgumentException("중복된 지하철역 이름입니다.");
+        });
     }
 
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-                .map(station -> StationResponse.of(station))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
