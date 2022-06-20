@@ -40,7 +40,7 @@ npm run dev
 
 ## ⚙️ 기능 구현 목록
 ### Step1
-- [ ] LineService 리팩터링
+- [x] LineService 리팩터링
 - [ ] (선택) LineSectionAcceptanceTest 리팩터링
 
 ## ✏️ Code Review Process
