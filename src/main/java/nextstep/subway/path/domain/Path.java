@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
@@ -35,5 +36,25 @@ public class Path {
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public int calculateDistanceFare() {
+        FareDistancePolicyType policy = FareDistancePolicyType.of(distance);
+        return policy.calculateFare(distance);
+    }
+
+    public int calculateLineFare() {
+        List<Line> lines = findDistinctLines(sections);
+        return lines.stream()
+                .map(line -> line.getAdditionalFare().getValue())
+                .max(Integer::compareTo)
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private List<Line> findDistinctLines(List<Section> sections) {
+        return sections.stream()
+                .map(section -> section.getLine())
+                .distinct()
+                .collect(Collectors.toList());
     }
 }
