@@ -99,6 +99,6 @@ class SectionsTest {
     @DisplayName("노선 상행종점 조회")
     @Test
     void findUpStation() {
-        assertThat(testSections.findUpStation()).isEqualTo(testUpStation);
+        assertThat(testSections.findFirstUpStation()).isEqualTo(testUpStation);
     }
 }
