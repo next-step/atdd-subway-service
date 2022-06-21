@@ -1,5 +1,6 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.auth.domain.GuestMember;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -30,7 +31,11 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public LoginMember findMemberByToken(String credentials) {
+    public LoginMember findMemberByToken(String credentials, boolean required) {
+        if (!required && !jwtTokenProvider.validateToken(credentials)) {
+            return new GuestMember();
+        }
+
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException();
         }
