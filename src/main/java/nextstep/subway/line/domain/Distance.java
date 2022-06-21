@@ -8,11 +8,14 @@ import java.util.Objects;
 public class Distance {
     private static final int BASIC_FARE = 1250;
     private static final int MIN_DISTANCE = 0;
+    private static final int MIN_OVER_FARE = 0;
     private static final int FIRST_OVER_FARE_PER_VALUE = 5;
     private static final int SECOND_OVER_FARE_PER_VALUE = 8;
+    private static final int SECOND_OVER_FARE_OFF_SET = 7;
     private static final int FIRST_OVER_FARE_MIN_DISTANCE = 10;
     private static final int SECOND_OVER_FARE_MIN_DISTANCE = 50;
     private static final int PER_FARE = 100;
+    public static final int CALCULATE_OVER_FARE_OFFSET = 1;
 
     @Column
     private final int distance;
@@ -45,19 +48,19 @@ public class Distance {
     }
 
     private int getOverFare() {
-        if (distance <= FIRST_OVER_FARE_MIN_DISTANCE) {
-            return 0;
-        }
         if (distance <= SECOND_OVER_FARE_MIN_DISTANCE) {
             return calculateOverFare(distance - FIRST_OVER_FARE_MIN_DISTANCE, FIRST_OVER_FARE_PER_VALUE);
         }
         int firstValue = calculateOverFare(SECOND_OVER_FARE_MIN_DISTANCE - FIRST_OVER_FARE_MIN_DISTANCE, FIRST_OVER_FARE_PER_VALUE);
-        int secondValue = calculateOverFare(distance - SECOND_OVER_FARE_MIN_DISTANCE, SECOND_OVER_FARE_PER_VALUE);
+        int secondValue = calculateOverFare(distance - SECOND_OVER_FARE_MIN_DISTANCE - SECOND_OVER_FARE_OFF_SET, SECOND_OVER_FARE_PER_VALUE);
         return firstValue + secondValue;
     }
 
     private int calculateOverFare(int distance, int perValue) {
-        return (int) ((Math.ceil((distance - 1) / perValue) + 1) * PER_FARE);
+        if (distance <= MIN_DISTANCE) {
+            return MIN_OVER_FARE;
+        }
+        return (int) ((Math.ceil((distance - CALCULATE_OVER_FARE_OFFSET) / perValue) + CALCULATE_OVER_FARE_OFFSET) * PER_FARE);
     }
 
     @Override

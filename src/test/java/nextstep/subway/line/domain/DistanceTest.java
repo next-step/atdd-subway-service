@@ -58,7 +58,7 @@ class DistanceTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"51,2150", "58,2150", "59,2250"})
+    @CsvSource(value = {"51,2050", "57,2050", "58,2150", "59,2150", "65,2150", "66,2250"})
     void 거리가_50키로_초과인_경우에는_8키로마다_100원이_추가되어_요금을_반환한다(int distance, int expectedDistanceFare) {
         assertThat(new Distance(distance).getDistanceFare()).isEqualTo(expectedDistanceFare);
     }
