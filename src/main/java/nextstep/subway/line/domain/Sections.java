@@ -81,7 +81,7 @@ public class Sections {
 
     private void validateNotLastSection() {
         if (sectionList.size() <= 1) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("마지막 구간은 삭제할 수 없습니다.");
         }
     }
 
