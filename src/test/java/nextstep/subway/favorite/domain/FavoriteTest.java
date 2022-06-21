@@ -33,6 +33,7 @@ class FavoriteTest {
         // when & then
         assertThatThrownBy(() ->
                 favorite.validateOwner(member)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("내 즐겨찾기가 아닙니다.");
     }
 }

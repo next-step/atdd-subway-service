@@ -63,6 +63,7 @@ public class AuthServiceTest {
         // when & then
         assertThatThrownBy(() ->
                 authService.findMemberByToken(token)
-        ).isInstanceOf(AuthorizationException.class);
+        ).isInstanceOf(AuthorizationException.class)
+                .hasMessage("토큰 값이 일치하지 않습니다.");
     }
 }

@@ -11,6 +11,7 @@ class FavoriteRequestTest {
         // when & then
         assertThatThrownBy(() ->
                 new FavoriteRequest(1L, 1L)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("출발역과 도착역이 같을 수 없습니다.");
     }
 }

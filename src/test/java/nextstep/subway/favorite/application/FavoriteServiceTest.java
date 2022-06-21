@@ -68,7 +68,8 @@ class FavoriteServiceTest {
         // then
         assertThatThrownBy(() ->
                 favoriteService.findById(member.getId())
-        ).isInstanceOf(NoSuchElementException.class);
+        ).isInstanceOf(NoSuchElementException.class)
+                .hasMessage("즐겨찾기를 찾을 수 없습니다.");
     }
 
     @Test
@@ -76,6 +77,7 @@ class FavoriteServiceTest {
         // when & then
         assertThatThrownBy(() ->
                 favoriteService.deleteFavorite(member2.getId(), 1L)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("내 즐겨찾기가 아닙니다.");
     }
 }
