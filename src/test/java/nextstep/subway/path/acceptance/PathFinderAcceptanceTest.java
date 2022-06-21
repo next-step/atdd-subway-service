@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인을_요청_한다;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
@@ -41,7 +40,6 @@ class PathFinderAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
-    private TokenResponse 토큰값;
 
     /**
      * 10
@@ -64,9 +62,6 @@ class PathFinderAcceptanceTest extends AcceptanceTest {
         이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 500, 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 900, 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 양재역, 2);
-
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        토큰값 = 로그인을_요청_한다(EMAIL, PASSWORD).as(TokenResponse.class);
     }
 
     @Test
@@ -120,11 +115,16 @@ class PathFinderAcceptanceTest extends AcceptanceTest {
         경로_조회시_총_거리도_조회됨(response, 12);
 
         // then
-        지하철_이용_요금도_조회됨(response, 2000);
+        지하철_이용_요금도_조회됨(response, 2250);
     }
 
     @Test
-    void 로그인한_상태로_두_역의_최단_거리_경로를_조회() {
+    void 로그인하여_청소년_할인을_받아_두_역의_최단_거리_경로를_조회() {
+        // when
+        회원_생성을_요청(EMAIL, PASSWORD, 13);
+        // when
+        TokenResponse 토큰값 = 로그인을_요청_한다(EMAIL, PASSWORD).as(TokenResponse.class);
+
         // when
         ExtractableResponse<Response> response = 토큰값_있이_경로_조회_요청(강남역, 남부터미널역, 토큰값);
 
@@ -133,11 +133,14 @@ class PathFinderAcceptanceTest extends AcceptanceTest {
 
         // then
         경로_조회시_총_거리도_조회됨(response, 12);
+
+        // then
+        지하철_이용_요금도_조회됨(response, 1700);
     }
 
     private void 지하철_이용_요금도_조회됨(ExtractableResponse<Response> response, int fee) {
         PathResponse path = response.as(PathResponse.class);
-        assertThat(path.getFee()).isEqualTo(fee);
+        assertThat(path.getFare()).isEqualTo(fee);
     }
 
     private ExtractableResponse<Response> 토큰값_없이_경로_조회_요청(StationResponse sourceResponse, StationResponse targetResponse) {

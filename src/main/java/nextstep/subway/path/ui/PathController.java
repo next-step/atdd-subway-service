@@ -22,6 +22,6 @@ public class PathController {
     @GetMapping
     public ResponseEntity<PathResponse> getPath(@AuthenticationPrincipal(required = false) LoginMember loginMember,
                                                 PathRequest pathRequest) {
-        return ResponseEntity.ok(pathService.getPath(pathRequest));
+        return ResponseEntity.ok(pathService.getPath(pathRequest, loginMember));
     }
 }

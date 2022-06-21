@@ -41,7 +41,7 @@ class PathFinderTest {
         Path result = pathFinder.findPath(강남역, 남부터미널역);
 
         assertThat(result.getStations()).containsExactly(강남역, 양재역, 남부터미널역);
-        assertThat(result.getDistance()).isEqualTo(17);
+        assertThat(result.getDistance()).isEqualTo(new Distance(17));
     }
 
     @Test
