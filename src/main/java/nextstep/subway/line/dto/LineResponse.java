@@ -31,7 +31,7 @@ public class LineResponse {
         List<StationResponse> stations = line.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
+        return new LineResponse(line.getId(), line.getName().getName(), line.getColor().getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
     }
 
     public Long getId() {
