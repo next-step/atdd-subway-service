@@ -63,4 +63,46 @@ public class Sections {
     public List<Section> getSections() {
         return sections;
     }
+
+    public List<Station> getStations() {
+        if(sections.isEmpty()){
+            return Collections.emptyList();
+        }
+
+        List<Station> stations = new ArrayList<>();
+        Station downStation = findFirstUpStation();
+
+        while (downStation != null) {
+            stations.add(downStation);
+            downStation = getNextStation(downStation);
+        }
+
+        return stations;
+    }
+    private Station findFirstUpStation() {
+        Station upStation = this.sections.get(0).getUpStation();
+        while (upStation != null) {
+            Optional<Station> previousStationOptional = getPreviousStation(upStation);
+            if (!previousStationOptional.isPresent()) {
+                break;
+            }
+            upStation = previousStationOptional.get();
+        }
+
+        return upStation;
+    }
+
+    private Optional<Station> getPreviousStation(Station upStation) {
+        Optional<Section> previousSection = this.sections.stream()
+                .filter(section -> section.getDownStation() == upStation)
+                .findFirst();
+        return previousSection.map(Section::getUpStation);
+    }
+
+    private Station getNextStation(Station downStation) {
+        Optional<Section> nextSection = this.sections.stream()
+                .filter(section -> section.getUpStation() == downStation)
+                .findFirst();
+        return nextSection.map(Section::getDownStation).orElse(null);
+    }
 }

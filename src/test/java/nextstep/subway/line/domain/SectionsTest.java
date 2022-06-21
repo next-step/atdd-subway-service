@@ -38,7 +38,7 @@ public class SectionsTest {
 
         // then
         assertAll(
-                () -> assertThat(sections.findAllStations()).containsExactly(판교역, 곤지암역, 여주역),
+                () -> assertThat(sections.getStations()).containsExactly(판교역, 곤지암역, 여주역),
                 () -> assertThat(sections.getSections().size()).isEqualTo(2)
         );
     }
@@ -56,7 +56,7 @@ public class SectionsTest {
 
         // then
         assertAll(
-                () -> assertThat(sections.findAllStations()).contains(판교역, 곤지암역, 여주역),
+                () -> assertThat(sections.getStations()).containsExactly(판교역, 곤지암역, 여주역),
                 () -> assertThat(sections.getSections().stream()
                         .filter(x -> x.getUpStation().equals(곤지암역) && x.getDownStation().equals(여주역))
                         .findFirst()
@@ -79,7 +79,7 @@ public class SectionsTest {
 
         // then
         assertAll(
-                () -> assertThat(sections.findAllStations()).contains(판교역, 곤지암역, 여주역),
+                () -> assertThat(sections.getStations()).containsExactly(판교역, 곤지암역, 여주역),
                 () -> assertThat(sections.getSections().stream()
                         .filter(x -> x.getUpStation().equals(판교역) && x.getDownStation().equals(곤지암역))
                         .findFirst()
