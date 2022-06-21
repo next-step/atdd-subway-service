@@ -1,17 +1,21 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.내_정보_확인;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -20,6 +24,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
+
+    public static final String 내_이메일 = "myemail@email.com";
+    public static final String 내_패스워드 = "mypassword";
+    public static final int 내_나이 = 22;
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        회원_생성을_요청(내_이메일, 내_패스워드, 내_나이);
+    }
+
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -45,10 +60,46 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
-    @DisplayName("나의 정보를 관리한다.")
+    @DisplayName("나의 정보를 조회한다.")
     @Test
-    void manageMyInfo() {
+    void getMyInfo() {
+        //given
+        final String 액세스_토큰 = 로그인_요청(내_이메일, 내_패스워드).as(TokenResponse.class).getAccessToken();
 
+        //when
+        final ExtractableResponse<Response> 내_정보 = 내_정보_요청(액세스_토큰);
+
+        //then
+        내_정보_확인(내_정보, 내_이메일, 내_나이);
+    }
+
+    @DisplayName("나의 정보를 수정한다.")
+    @Test
+    void updateMyInfo() {
+        //given
+        final String 액세스_토큰 = 로그인_요청(내_이메일, 내_패스워드).as(TokenResponse.class).getAccessToken();
+        final String 변경된_이메일 = "mynewemail@email.com";
+        final String 변경된_패스워드 = "mynewpassword";
+        final int 변경된_나이 = 24;
+
+        //when
+        내_정보_변경_요청(액세스_토큰, 변경된_이메일, 변경된_패스워드, 변경된_나이);
+
+        //then
+        수정_결과_확인(변경된_이메일, 변경된_패스워드, 변경된_나이);
+    }
+
+    @DisplayName("나의 정보를 삭제한다.")
+    @Test
+    void deleteMyInfo() {
+        //given
+        final String 액세스_토큰 = 로그인_요청(내_이메일, 내_패스워드).as(TokenResponse.class).getAccessToken();
+
+        //when
+        내_정보_삭제_요청(액세스_토큰);
+
+        //then
+        삭제_결과_확인(내_이메일, 내_패스워드);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -74,7 +125,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email,
+                                                            String password, Integer age) {
         String uri = response.header("Location");
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
@@ -113,5 +165,62 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 내_정보_요청(
+            final String accessToken
+    ) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_변경_요청(
+            final String accessToken,
+            final String myNewEmail,
+            final String myNewPassword,
+            final int myNewAge
+    ) {
+        final MemberRequest memberRequest = new MemberRequest(myNewEmail, myNewPassword, myNewAge);
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .body(memberRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    private void 수정_결과_확인(
+            final String myNewEmail,
+            final String myNewPassword,
+            final int myNewAge
+    ) {
+        final String 액세스_토큰 = 로그인_요청(myNewEmail, myNewPassword).as(TokenResponse.class).getAccessToken();
+
+        final ExtractableResponse<Response> 내_정보 = 내_정보_요청(액세스_토큰);
+
+        내_정보_확인(내_정보, myNewEmail, myNewAge);
+    }
+
+    public static ExtractableResponse<Response> 내_정보_삭제_요청(final String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    private void 삭제_결과_확인(final String myEmail, final String myPassword) {
+        final ExtractableResponse<Response> response = 로그인_요청(myEmail, myPassword);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

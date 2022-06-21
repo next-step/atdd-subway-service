@@ -1,4 +1,4 @@
-package nextstep.subway.path.exceptions;
+package nextstep.subway.exceptions;
 
 public class SourceAndTargetSameException extends RuntimeException {
     public SourceAndTargetSameException() {
