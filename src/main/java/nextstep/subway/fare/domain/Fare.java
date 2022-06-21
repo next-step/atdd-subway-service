@@ -46,7 +46,7 @@ public class Fare {
 
         try {
             AgeDiscount ageDiscount = AgeDiscount.of(member.getAge());
-            return new Fare((int) (value - (value - ageDiscount.getDeduction()) * ageDiscount.getDiscountRate()));
+            return new Fare((int) (value - ageDiscount.calculateDiscount(value)));
         } catch (IllegalArgumentException e) {
             return this;
         }
