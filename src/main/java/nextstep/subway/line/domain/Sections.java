@@ -5,11 +5,15 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import java.util.*;
 
 @Embeddable
 public class Sections {
     private static final int MIN_SIZE = 1;
+
+    @Transient
+    private final OperationCostPolicy<Price> costPolicy = new DistanceCostPolicy();
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
@@ -57,7 +61,7 @@ public class Sections {
 
 
     public Distance getTotalDistance() {
-        return new Distance(sections.stream().mapToLong(section -> section.getDistance().of()).sum());
+        return sections.stream().map(Section::getDistance).reduce(new Distance(0), Distance::plus);
     }
 
     public Price getTotalPrice() {
@@ -69,7 +73,7 @@ public class Sections {
                 .findFirst()
                 .orElseThrow(IllegalStateException::new);
 
-        return this.getTotalDistance().calculate().plus(extraCharge);
+        return this.getTotalDistance().calculate(costPolicy).plus(extraCharge);
     }
 
     public boolean isContains(final Section section) {
