@@ -40,8 +40,7 @@ public class PathResponse {
         return extraCharge;
     }
 
-    public static PathResponse of(GraphPath<Station, SectionEdge> path) {
-        Sections sections = new Sections(path.getEdgeList().stream().map(SectionEdge::getSection).collect(Collectors.toList()));
+    public static PathResponse of(final Sections sections) {
         return new PathResponse(
                 sections.getStations().stream().map(StationResponse::of)
                 .collect(Collectors.toList()),
