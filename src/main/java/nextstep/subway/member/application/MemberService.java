@@ -30,6 +30,13 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public Member findMemberById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("회원번호가 입력되지 않았습니다.");
+        }
+        return memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    }
+
     @Transactional
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
