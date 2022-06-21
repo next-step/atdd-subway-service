@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LineService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
     public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
@@ -29,7 +29,8 @@ public class LineService {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         Line persistLine = lineRepository.save(
-                new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+                new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(),
+                        request.getExtraFare()));
         return LineResponse.of(persistLine);
     }
 

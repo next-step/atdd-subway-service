@@ -7,8 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.Arrays;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +36,7 @@ class PathFinderTest {
         강남역 = new Station("강남역");
         신논현역 = new Station("신논현역");
 
-        신분당선 = new Line("신분당선", "red", 신논현역, 강남역, 1);
+        신분당선 = new Line("신분당선", "red", 신논현역, 강남역, 1, 1000);
         이호선 = new Line("이호선", "green", 교대역, 강남역, 3);
         삼호선 = new Line("삼호선", "orange", 고속터미널역, 교대역, 3);
         구호선 = new Line("구호선", "gold", 고속터미널역, 신논현역, 4);
@@ -51,12 +49,12 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 구호선));
 
         // when
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = pathFinder.getShortestPath(고속터미널역, 강남역);
+        ShortestPath shortestPath = pathFinder.getShortestPath(고속터미널역, 강남역);
 
         // then
         assertAll(
-                () -> assertThat(shortestPath.getVertexList()).containsExactly(고속터미널역, 신논현역, 강남역),
-                () -> assertThat(shortestPath.getWeight()).isEqualTo(5)
+                () -> assertThat(shortestPath.getShortestStations()).containsExactly(고속터미널역, 신논현역, 강남역),
+                () -> assertThat(shortestPath.getShortestDistance()).isEqualTo(5)
         );
     }
 

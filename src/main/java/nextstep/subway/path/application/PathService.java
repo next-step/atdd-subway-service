@@ -1,13 +1,15 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.domain.AgeDiscount;
+import nextstep.subway.fare.domain.DistanceFare;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +24,12 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(PathRequest pathRequest) {
+    public PathResponse findPath(LoginMember loginMember, PathRequest pathRequest) {
         Station sourceStation = stationService.findStationById(pathRequest.getSourceStationId());
         Station targetStation = stationService.findStationById(pathRequest.getTargetStationId());
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
-        GraphPath<Station, DefaultWeightedEdge> path = pathFinder.getShortestPath(sourceStation, targetStation);
-        return PathResponse.of(path.getVertexList(), path.getWeight());
+        ShortestPath path = pathFinder.getShortestPath(sourceStation, targetStation);
+        int fare = path.getFare(new DistanceFare(), new AgeDiscount(loginMember.getAge()));
+        return PathResponse.of(path, fare);
     }
 }
