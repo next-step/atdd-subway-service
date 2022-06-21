@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @Transactional(readOnly = true)
@@ -48,7 +48,7 @@ public class FavoriteService {
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Member member = memberService.findById(loginMember.getId());
         Favorite favorite = favoriteRepository.findByIdAndMemberId(id, member.getId())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(AuthorizationException::new);
         favoriteRepository.delete(favorite);
     }
 }
