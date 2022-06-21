@@ -1,14 +1,13 @@
 package nextstep.subway.station.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import nextstep.subway.path.dto.PathStationResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class StationService {
@@ -41,5 +40,19 @@ public class StationService {
 
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+    }
+
+    public List<StationResponse> convertToStationResponses(final List<Station> stations) {
+        return stations
+                .stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public List<PathStationResponse> convertToPathStationResponses(final List<Station> stations) {
+        return stations
+                .stream()
+                .map(PathStationResponse::of)
+                .collect(Collectors.toList());
     }
 }

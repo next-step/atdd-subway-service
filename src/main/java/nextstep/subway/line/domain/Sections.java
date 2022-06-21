@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.section.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
