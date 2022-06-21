@@ -5,16 +5,19 @@ import nextstep.subway.station.domain.Station;
 import java.time.LocalDateTime;
 
 public class StationResponse {
-    private final Long id;
-    private final String name;
-    private final LocalDateTime createdDate;
-    private final LocalDateTime modifiedDate;
+    private Long id;
+    private String name;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
-    public static StationResponse of(final Station station) {
+    public static StationResponse of(Station station) {
         return new StationResponse(station.getId(), station.getName(), station.getCreatedDate(), station.getModifiedDate());
     }
 
-    public StationResponse(final Long id, final String name, final LocalDateTime createdDate, final LocalDateTime modifiedDate) {
+    public StationResponse() {
+    }
+
+    public StationResponse(Long id, String name, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
         this.createdDate = createdDate;
