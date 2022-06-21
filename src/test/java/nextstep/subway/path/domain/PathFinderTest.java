@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -87,10 +88,10 @@ class PathFinderTest {
         // when & then
         assertAll(
             () -> assertThatThrownBy(() -> pathFinder.findShortestPath(정자역.getId(), 양재역.getId()))
-                    .isExactlyInstanceOf(IllegalArgumentException.class)
+                    .isExactlyInstanceOf(NoSuchElementException.class)
                     .hasMessage("출발역 혹은 도착역이 존재하지 않습니다."),
             () -> assertThatThrownBy(() -> pathFinder.findShortestPath(양재역.getId(), 청량리역.getId()))
-                    .isExactlyInstanceOf(IllegalArgumentException.class)
+                    .isExactlyInstanceOf(NoSuchElementException.class)
                     .hasMessage("출발역 혹은 도착역이 존재하지 않습니다.")
         );
     }

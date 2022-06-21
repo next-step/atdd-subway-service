@@ -9,6 +9,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -75,7 +76,7 @@ public class PathFinder {
         try {
             return dijkstraShortestPath.getPath(sourceStationId, targetStationId);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("출발역 혹은 도착역이 존재하지 않습니다.");
+            throw new NoSuchElementException("출발역 혹은 도착역이 존재하지 않습니다.");
         }
     }
 
