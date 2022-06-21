@@ -22,7 +22,7 @@ public class Stations {
         return stationsList.isEmpty();
     }
 
-    public List<Station> getStationsList() {
+    public List<Station> toList() {
         return stationsList;
     }
 }

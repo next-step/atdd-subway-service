@@ -36,6 +36,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -48,8 +49,10 @@ public class LineService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_LINE));
     }
 
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
+
         return LineResponse.of(persistLine);
     }
 

@@ -50,8 +50,8 @@ public class Sections {
 
     public void addLineStation(Line line, Section section) {
         Stations stations = new Stations(getStations());
-        boolean isUpStationExisted = stations.isContainStations(section.getUpStation());
-        boolean isDownStationExisted = stations.isContainStations(section.getDownStation());
+        boolean isUpStationExisted = stations.toList().stream().anyMatch(it -> it == section.getUpStation());
+        boolean isDownStationExisted = stations.toList().stream().anyMatch(it -> it == section.getDownStation());
 
         validateAddLineStations(stations, isUpStationExisted, isDownStationExisted);
 

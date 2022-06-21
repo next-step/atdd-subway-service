@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -61,17 +60,11 @@ public class Section {
     }
 
     public void updateUpStation(Section section) {
-        if (this.distance.toInt() <= section.getDistance().toInt()) {
-            throw new BadRequestException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = section.getUpStation();
+        this.upStation = section.getDownStation();
         this.distance.minus(section.getDistance().toInt());
     }
 
     public void updateDownStation(Section section) {
-        if (this.distance.toInt() <= section.getDistance().toInt()) {
-            throw new BadRequestException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
         this.downStation = section.getUpStation();
         this.distance.minus(section.getDistance().toInt());
     }
