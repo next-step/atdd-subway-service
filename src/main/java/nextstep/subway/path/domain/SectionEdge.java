@@ -11,6 +11,6 @@ public class SectionEdge extends DefaultWeightedEdge {
     }
 
     public Integer getLineOverFare() {
-        return section.getLine().getOverFare();
+        return section.getLineOverFare();
     }
 }
