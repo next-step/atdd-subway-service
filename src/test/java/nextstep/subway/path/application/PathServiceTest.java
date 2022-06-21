@@ -72,7 +72,15 @@ class PathServiceTest {
         final PathResponse pathResponse = pathService.findShortestRoute(교대역.getId(), 양재역.getId());
 
         // then
-        최단_경로_정보를_가져옴(pathResponse, Arrays.asList(양재역, 남부터미널역, 교대역));
+        최단_경로_정보를_가져옴(pathResponse, Arrays.asList(교대역, 남부터미널역, 양재역));
+
+        // then
+        거리_와_요금도_가져옴(pathResponse, 5, 1250 + 삼호선.getExtraCharge().of());
+    }
+
+    private void 거리_와_요금도_가져옴(PathResponse pathResponse, long distance, long price) {
+        assertThat(pathResponse.getExtraCharge()).isEqualTo(price);
+        assertThat(pathResponse.getDistance()).isEqualTo(distance);
     }
 
     private void 최단_경로_정보를_가져옴(PathResponse pathResponse, List<Station> expectedResult) {
