@@ -36,4 +36,11 @@ public class FavoriteService {
         Favorite newFavorite = favoriteRepository.save(favorite);
         return FavoriteResponse.of(newFavorite);
     }
+
+    public void deleteFavorite(LoginMember loginMember, Long id) {
+        if (!favoriteRepository.existsByIdAndMemberId(id, loginMember.getId())) {
+            throw new IllegalArgumentException("즐겨찾기가 존재하지 않습니다.");
+        }
+        favoriteRepository.deleteById(id);
+    }
 }
