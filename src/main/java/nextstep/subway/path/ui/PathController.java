@@ -23,7 +23,7 @@ public class PathController {
     @GetMapping
     public ResponseEntity<PathResponse> findShortestPath(@AuthenticationPrincipal LoginMember loginMember,
                                                          @RequestParam Long source, @RequestParam Long target) {
-        Path path = pathService.findShortestPath(source, target);
-        return ResponseEntity.ok(PathResponse.of(path, loginMember));
+        PathResponse pathResponse = pathService.findShortestPath(loginMember, source, target);
+        return ResponseEntity.ok(pathResponse);
     }
 }

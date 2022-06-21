@@ -44,14 +44,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
-    private static String 사용자_토큰;
+    private static String 성인_토큰;
+    private static String 청소년_토큰;
+    private static String 어린이_토큰;
 
     /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* --- 양재역
+     * 교대역    --- *2호선*(10) ---   강남역
+     * |                            |
+     * *3호선* (3)                  *신분당선*(10)
+     * |                            |
+     * 남부터미널역  --- *3호선*(2) --- 양재역
      */
     @BeforeEach
     public void setUp() {
@@ -71,8 +73,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
 
-        MemberAcceptanceTest.회원_생성을_요청("test@email.com", "password", 20);
-        사용자_토큰 = AuthAcceptanceTest.로그인_요청("test@email.com", "password")
+        MemberAcceptanceTest.회원_생성을_요청("성인@email.com", "password", 20);
+        MemberAcceptanceTest.회원_생성을_요청("청소년@email.com", "password", 16);
+        MemberAcceptanceTest.회원_생성을_요청("어린이@email.com", "password", 8);
+        성인_토큰 = AuthAcceptanceTest.로그인_요청("성인@email.com", "password")
+                .as(TokenResponse.class)
+                .getAccessToken();
+        청소년_토큰 = AuthAcceptanceTest.로그인_요청("청소년@email.com", "password")
+                .as(TokenResponse.class)
+                .getAccessToken();
+        어린이_토큰 = AuthAcceptanceTest.로그인_요청("어린이@email.com", "password")
                 .as(TokenResponse.class)
                 .getAccessToken();
     }
@@ -86,19 +96,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *     And 지하철 노선에 지하철역 등록되어 있음
      *
      *   Scenario: 최단 경로를 조회한다.
-     *     When 교대역-양재역 최단 경로를 조회하면,
-     *     Then 교대역-남부터미널역-양재역이 조회됨
-     *     AND 경유지, 경유거리, 이용요금을 응답
-     *     When 남부터미널역-강남역 최단 경로를 조회하면,
-     *     Then 남부터미널역-양재역-강남역이 조회됨
-     *     AND 경유지, 경유거리, 이용요금을 응답
+     *     When 교대역-양재역 최단 경로를 로그인하지 않는 사용자가 조회하면,
+     *     Then 경유지, 경유거리, 이용요금을 응답
+     *     When 교대역-양재역 최단 경로를 로그인 한 청소년이 조회하면,
+     *     Then 경유지, 경유거리, 이용요금을 응답
+     *     When 교대역-양재역 최단 경로를 로그인 한 어린이가 조회하면,
+     *     Then 경유지, 경유거리, 이용요금을 응답
+     *     When 교대역-양재역 최단 경로를 로그인 한 성인이 조회하면,
+     *     Then 경유지, 경유거리, 이용요금을 응답
      */
     @TestFactory
-    Stream<DynamicTest> findShortestPath() {
+    Stream<DynamicTest> 최단_경로_조회() {
         return Stream.of(
-                dynamicTest("교대역-양재역 최단 경로를 조회하면, 교대역-남부터미널역-양재역이 조회됨", () -> {
+                dynamicTest("교대역-양재역 최단 경로를 로그인하지 않는 사용자가 조회하면, 경유지/경유거리/이용요금을 응답", () -> {
                     //when
-                    ExtractableResponse<Response> response = 최단_경로_조회_요청(사용자_토큰, 교대역.getId(), 양재역.getId());
+                    ExtractableResponse<Response> response = 최단_경로_조회_요청("비로그인", 교대역.getId(), 양재역.getId());
 
                     //then
                     응답결과_확인(response, HttpStatus.OK);
@@ -108,23 +120,90 @@ public class PathAcceptanceTest extends AcceptanceTest {
                     이용요금_확인(response, 1550);
                 }),
 
-                dynamicTest("남부터미널역-강남역 최단 경로를 조회하면, 남부터미널역-양재역-강남역이 조회됨", () -> {
+                dynamicTest("교대역-양재역 최단 경로를 로그인 한 청소년이 조회하면, 경유지/경유거리/이용요금을 응답", () -> {
                     //when
-                    ExtractableResponse<Response> response = 최단_경로_조회_요청(사용자_토큰, 남부터미널역.getId(), 강남역.getId());
+                    ExtractableResponse<Response> response = 최단_경로_조회_요청(청소년_토큰, 교대역.getId(), 양재역.getId());
 
                     //then
                     응답결과_확인(response, HttpStatus.OK);
-                    List<StationResponse> stations = Arrays.asList(남부터미널역, 양재역, 강남역);
+                    List<StationResponse> stations = Arrays.asList(교대역, 남부터미널역, 양재역);
                     경유지_확인(response, stations);
-                    경유거리_확인(response, 12);
-                    이용요금_확인(response, 1850);
+                    경유거리_확인(response, 5);
+                    이용요금_확인(response, 960);
+                }),
+
+                dynamicTest("교대역-양재역 최단 경로를 로그인 한 어린이가 조회하면, 경유지/경유거리/이용요금을 응답", () -> {
+                    //when
+                    ExtractableResponse<Response> response = 최단_경로_조회_요청(어린이_토큰, 교대역.getId(), 양재역.getId());
+
+                    //then
+                    응답결과_확인(response, HttpStatus.OK);
+                    List<StationResponse> stations = Arrays.asList(교대역, 남부터미널역, 양재역);
+                    경유지_확인(response, stations);
+                    경유거리_확인(response, 5);
+                    이용요금_확인(response, 600);
+                }),
+
+                dynamicTest("교대역-양재역 최단 경로를 로그인 한 성인이 조회하면, 경유지/경유거리/이용요금을 응답", () -> {
+                    //when
+                    ExtractableResponse<Response> response = 최단_경로_조회_요청(성인_토큰, 교대역.getId(), 양재역.getId());
+
+                    //then
+                    응답결과_확인(response, HttpStatus.OK);
+                    List<StationResponse> stations = Arrays.asList(교대역, 남부터미널역, 양재역);
+                    경유지_확인(response, stations);
+                    경유거리_확인(response, 5);
+                    이용요금_확인(response, 1550);
                 })
         );
     }
 
-    private void 이용요금_확인(ExtractableResponse<Response> response, int expectedFare) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getFare()).isEqualTo(expectedFare);
+    /**
+     * Feature: 노선 별 추가요금 테스트
+     *
+     *   Background
+     *     Given 지하철역 등록되어 있음
+     *     And 지하철 노선 등록되어 있음
+     *     And 지하철 노선에 지하철역 등록되어 있음
+     *
+     *   Scenario: 최단 경로를 조회한다.
+     *     When 교대역-강남역 최단 경로를 로그인 한 성인이 조회하면,
+     *     Then 2250원의 이용요금이 발생한다.
+     *     When 강남역-양재역 최단 경로를 로그인 한 성인이 조회하면,
+     *     Then 1750원의 이용요금이 발생
+     *     When 남부터미널역-양재역 최단 경로를 로그인 한 성인이 조회하면,
+     *     Then 1550원의 이용요금이 발생
+     */
+    @TestFactory
+    Stream<DynamicTest> 노선_별_추가요금_테스트() {
+        return Stream.of(
+                dynamicTest("교대역-강남역 최단 경로를 로그인 한 성인이 조회하면, 2250원의 이용요금이 발생", () -> {
+                    //when
+                    ExtractableResponse<Response> response = 최단_경로_조회_요청(성인_토큰, 교대역.getId(), 강남역.getId());
+
+                    //then
+                    응답결과_확인(response, HttpStatus.OK);
+                    이용요금_확인(response, 2250);
+                }),
+
+                dynamicTest("강남역-양재역 최단 경로를 로그인 한 성인이 조회하면, 1750원의 이용요금이 발생", () -> {
+                    //when
+                    ExtractableResponse<Response> response = 최단_경로_조회_요청(성인_토큰, 강남역.getId(), 양재역.getId());
+
+                    //then
+                    응답결과_확인(response, HttpStatus.OK);
+                    이용요금_확인(response, 1750);
+                }),
+
+                dynamicTest("남부터미널역-양재역 최단 경로를 로그인 한 성인이 조회하면, 1550원의 이용요금이 발생", () -> {
+                    //when
+                    ExtractableResponse<Response> response = 최단_경로_조회_요청(성인_토큰, 남부터미널역.getId(), 양재역.getId());
+
+                    //then
+                    응답결과_확인(response, HttpStatus.OK);
+                    이용요금_확인(response, 1550);
+                })
+        );
     }
 
     private ExtractableResponse<Response> 최단_경로_조회_요청(String token, Long sourceStationId, Long targetStationId) {
@@ -141,7 +220,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 경유거리_확인(ExtractableResponse<Response> response, int expectedDistance) {
+    public void 경유거리_확인(ExtractableResponse<Response> response, int expectedDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
     }
@@ -152,6 +231,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         List<Station> expectedStations = toStations(expectedStationResponses);
         assertThat(actualStations).isEqualTo(expectedStations);
         assertThat(actualStations).hasSize(3);
+    }
+
+    private void 이용요금_확인(ExtractableResponse<Response> response, int expectedFare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(expectedFare);
     }
 
     private List<Station> toStations(List<StationResponse> stationResponses) {

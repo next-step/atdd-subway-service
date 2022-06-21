@@ -1,9 +1,11 @@
 package nextstep.subway.path.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
+import java.util.List;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.PathTestUtils;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +56,7 @@ class PathTest {
         path.calculateFare(loginMember);
 
         //then
-        PathTestUtils.이용요금_확인(path, loginMember, 2350);
+        이용요금_확인(path, loginMember, 2350);
     }
 
     @DisplayName("교대역-양재역의 최단경로의 이용요금을 어린이가 조회하면, 이용요금이 1000원으로 계산된다.")
@@ -68,7 +70,7 @@ class PathTest {
         path.calculateFare(loginMember);
 
         //then
-        PathTestUtils.이용요금_확인(path, loginMember, 1000);
+        이용요금_확인(path, loginMember, 1000);
     }
 
     @DisplayName("교대역-양재역의 최단경로의 이용요금을 청소년이 조회하면, 이용요금이 1600원으로 계산된다.")
@@ -82,7 +84,7 @@ class PathTest {
         path.calculateFare(loginMember);
 
         //then
-        PathTestUtils.이용요금_확인(path, loginMember, 1600);
+        이용요금_확인(path, loginMember, 1600);
     }
 
     @DisplayName("강남역-양재역의 최단경로의 이용요금을 성인이 조회하면, 이용요금이 1600원으로 계산된다.")
@@ -96,6 +98,20 @@ class PathTest {
         path.calculateFare(loginMember);
 
         //then
-        PathTestUtils.이용요금_확인(path, loginMember, 2250);
+        이용요금_확인(path, loginMember, 2250);
+    }
+
+    public static void 경유거리_확인(Path path, int expectedDistance) {
+        assertThat(path.getDistance()).isEqualTo(expectedDistance);
+    }
+
+    public static void 경유지_확인(Path path, List<Station> expectedStations) {
+        List<Station> actualStations = path.getStations();
+        assertThat(actualStations).isEqualTo(expectedStations);
+        assertThat(actualStations).hasSize(3);
+    }
+
+    public static void 이용요금_확인(Path path, LoginMember loginMember, int expectedFare) {
+        assertThat(path.calculateFare(loginMember)).isEqualTo(expectedFare);
     }
 }
