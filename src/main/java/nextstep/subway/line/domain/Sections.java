@@ -8,7 +8,6 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Embeddable
 public class Sections {
@@ -108,19 +107,18 @@ public class Sections {
         Station downStation = findUpStation();
         stations.add(downStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sectionList.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        return getStationsByNextUpStation(stations, downStation);
+    }
+
+    private List<Station> getStationsByNextUpStation(List<Station> stations, Station upStation) {
+        Section nextSection = findUpLineStation(upStation);
+        if (nextSection == null) {
+            return stations;
         }
 
-        return stations;
+        Station downStation = nextSection.getDownStation();
+        stations.add(downStation);
+        return getStationsByNextUpStation(stations, downStation);
     }
 
     private boolean hasStation(Station station) {
@@ -128,19 +126,21 @@ public class Sections {
     }
 
     private Station findUpStation() {
-        Station downStation = sectionList.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sectionList.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+        Station upStation = sectionList.get(0).getUpStation();
+        return findNextDownStationByUpStation(null, upStation);
+    }
+
+    private Station findNextDownStationByUpStation(Station prevUpStation, Station currentUpStation) {
+        if (currentUpStation == null) {
+            return prevUpStation;
         }
 
-        return downStation;
+        Section nextLineStation = findDownLineStation(currentUpStation);
+        if (nextLineStation == null) {
+            return currentUpStation;
+        }
+
+        return findNextDownStationByUpStation(currentUpStation, nextLineStation.getUpStation());
     }
 
 }
