@@ -24,22 +24,22 @@ public class StationService {
     }
 
     public List<StationResponse> findAllStations() {
-        List<Station> stations = stationRepository.findAll();
+        final List<Station> stations = stationRepository.findAll();
 
         return Collections.unmodifiableList(stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList()));
     }
 
-    public void deleteStationById(Long id) {
+    public void deleteStationById(final Long id) {
         stationRepository.deleteById(id);
     }
 
-    public Station findStationById(Long id) {
+    public Station findStationById(final Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    public Station findById(Long id) {
+    public Station findById(final Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 }
