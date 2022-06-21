@@ -29,6 +29,6 @@ public class PathService {
                 .addExtraOf(path)
                 .discountForAge(member);
 
-        return PathResponse.of(path.getStations(), path.getDistance(), fare);
+        return PathResponse.of(path, fare);
     }
 }
