@@ -1,23 +1,36 @@
 package nextstep.subway.fare.domain;
 
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.SectionEdge;
 
 import java.util.List;
 import java.util.Objects;
 
 public class Fare {
+    private static int MINIMUM_FARE = 0;
+
     private int value;
 
     public Fare(int value) {
+        validate(value);
         this.value = value;
     }
 
-    public static Fare of(int baseFare) {
-        return new Fare(baseFare);
+    private void validate(int fare) {
+        if (fare < MINIMUM_FARE) {
+            throw new IllegalArgumentException("요금은 0원 이상이어야 합니다");
+        }
     }
 
     public int getValue() {
         return value;
+    }
+
+    public Fare addExtraOf(Path path) {
+        Fare resultFare = addExtraOf(path.getDistance());
+        resultFare = resultFare.addExtraOf(path.getSectionEdges());
+
+        return resultFare;
     }
 
     public Fare addExtraOf(int distance) {
@@ -39,7 +52,7 @@ public class Fare {
             max = sectionEdge.max(max);
         }
 
-        return Fare.of(value + max);
+        return new Fare(value + max);
     }
 
     private Fare plus(Fare extra) {

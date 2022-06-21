@@ -49,13 +49,13 @@ class FareTest {
             delimiter = ':')
     void 거리_비례_추가_금액_계산(int distance, int totalFare) {
         // given
-        Fare baseFare = Fare.of(DistanceExtraFare.BASE_FARE);
+        Fare baseFare = new Fare(DistanceExtraFare.BASE_FARE);
 
         // when
         Fare result = baseFare.addExtraOf(distance);
 
         // then
-        assertThat(result).isEqualTo(Fare.of(totalFare));
+        assertThat(result).isEqualTo(new Fare(totalFare));
     }
 
 
@@ -63,15 +63,13 @@ class FareTest {
     @Test
     void 노선_추가_금액_계산() {
         // given
-        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
-        Path path = pathFinder.getPath(강남역, 남부터미널역);
-        // and
-        Fare baseFare = Fare.of(0);
+        Path path = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선))
+                .getPath(강남역, 남부터미널역);
 
         // when
-        Fare result = baseFare.addExtraOf(path.getSectionEdges());
+        Fare result = new Fare(0).addExtraOf(path.getSectionEdges());
 
         // then
-        assertThat(result).isEqualTo(Fare.of(신분당선.getExtraFare()));
+        assertThat(result).isEqualTo(new Fare(신분당선.getExtraFare()));
     }
 }

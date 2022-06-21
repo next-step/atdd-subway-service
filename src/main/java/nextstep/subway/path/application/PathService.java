@@ -24,9 +24,9 @@ public class PathService {
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
         Path path = pathFinder.getPath(source, target);
-        Fare fare = Fare.of(DistanceExtraFare.BASE_FARE);
-        fare = fare.addExtraOf(path.getDistance());
-        fare = fare.addExtraOf(path.getSectionEdges());
+        Fare fare = new Fare(DistanceExtraFare.BASE_FARE)
+                .addExtraOf(path);
+
         return PathResponse.of(path.getStations(), path.getDistance(), fare);
     }
 }
