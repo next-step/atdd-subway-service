@@ -54,10 +54,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @TestFactory
     Stream<DynamicTest> 즐겨찾기_관련_기능_시나리오() {
         return Stream.of(
+                dynamicTest("로그인하지 않은 사용자는 즐겨찾기를 생성할 수 없다.", this::로그인하지_않은_사용자는_즐겨찾기를_생성할_수_없다),
                 dynamicTest("즐겨찾기를 생성한다.", this::즐겨찾기를_생성한다),
                 dynamicTest("즐겨찾기 목록을 조회한다.", this::즐겨찾기_목록을_조회한다),
                 dynamicTest("즐겨찾기를 삭제한다.", this::즐겨찾기를_삭제한다)
         );
+    }
+
+    private void 로그인하지_않은_사용자는_즐겨찾기를_생성할_수_없다() {
+        // when
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 로그인을_하지_않은_사용자가_즐겨찾기_생성을_요청(강남역, 정자역);
+
+        // then
+        즐겨찾기_생성되지_않음(즐겨찾기_생성_응답);
     }
 
     private void 즐겨찾기를_생성한다() {
@@ -127,5 +136,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 로그인을_하지_않은_사용자가_즐겨찾기_생성을_요청(StationResponse source, StationResponse target) {
+        FavoriteRequest request = new FavoriteRequest(source.getId(), target.getId());
+
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 즐겨찾기_생성되지_않음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

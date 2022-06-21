@@ -1,5 +1,7 @@
 package nextstep.subway.auth.infrastructure;
 
+import nextstep.subway.auth.application.AuthorizationException;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
@@ -17,6 +19,9 @@ public class AuthorizationExtractor {
         while (headers.hasMoreElements()) {
             String value = headers.nextElement();
             authHeaderValue = getHeaderValue(request, value);
+        }
+        if (authHeaderValue == null) {
+            throw new AuthorizationException("로그인이 필요합니다.");
         }
         return authHeaderValue;
     }
