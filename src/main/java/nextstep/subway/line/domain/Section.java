@@ -8,6 +8,8 @@ import java.util.List;
 
 @Entity
 public class Section {
+    private static final String ERROR_MESSAGE_DISTANCE= "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -67,7 +69,7 @@ public class Section {
 
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException(ERROR_MESSAGE_DISTANCE);
         }
         this.upStation = station;
         this.distance -= newDistance;
@@ -75,7 +77,7 @@ public class Section {
 
     public void updateDownStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException(ERROR_MESSAGE_DISTANCE);
         }
         this.downStation = station;
         this.distance -= newDistance;
