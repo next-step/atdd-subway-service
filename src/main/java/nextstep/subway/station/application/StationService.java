@@ -22,7 +22,7 @@ public class StationService {
         return StationResponse.of(persistStation);
     }
 
-    public List<StationResponse> findAllStations() {
+    public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
@@ -30,15 +30,15 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    public List<Station> findAllStations() {
+        return stationRepository.findAll();
+    }
+
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
 
     public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
-    public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
