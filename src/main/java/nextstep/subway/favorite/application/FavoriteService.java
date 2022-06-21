@@ -10,7 +10,6 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class FavoriteService {
@@ -25,7 +24,7 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    public FavoriteResponse createFavorite(LoginMember loginMember, @RequestBody FavoriteRequest request) {
+    public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = memberService.findMemberById(loginMember.getId());
         Station upStation = stationService.findStationById(request.getSource());
         Station downStation = stationService.findStationById(request.getTarget());
@@ -37,7 +36,7 @@ public class FavoriteService {
         return FavoriteResponse.of(newFavorite);
     }
 
-    public void deleteFavorite(LoginMember loginMember, Long id) {
+    public void deleteFavorite(Long id, LoginMember loginMember) {
         if (!favoriteRepository.existsByIdAndMemberId(id, loginMember.getId())) {
             throw new IllegalArgumentException("즐겨찾기가 존재하지 않습니다.");
         }
