@@ -23,13 +23,11 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public Path findShortestPath(LoginMember loginMember, Long sourceStationId, Long targetStationId) {
+    public Path findShortestPath(Long sourceStationId, Long targetStationId) {
         List<Line> lines = lineRepository.findAll();
         Station sourceStation = stationService.findStationById(sourceStationId);
         Station targetStation = stationService.findStationById(targetStationId);
         ShortestPathFinder shortestPathFinder = new DijkstraShortestPathFinder(lines);
-        Path path = shortestPathFinder.getPath(sourceStation, targetStation);
-        path.calculateFare(loginMember);
-        return path;
+        return shortestPathFinder.getPath(sourceStation, targetStation);
     }
 }

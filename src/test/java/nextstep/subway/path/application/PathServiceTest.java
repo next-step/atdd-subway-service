@@ -70,7 +70,7 @@ class PathServiceTest {
         given(stationService.findStationById(양재역_ID)).willReturn(양재역);
 
         //when
-        Path path = 최단_경로_조회함(사용자, 교대역_ID, 양재역_ID);
+        Path path = 최단_경로_조회함(교대역_ID, 양재역_ID);
 
         //then
         PathTestUtils.경유지_확인(path, Arrays.asList(교대역, 남부터미널역, 양재역));
@@ -78,7 +78,7 @@ class PathServiceTest {
         PathTestUtils.이용요금_확인(path, 사용자,1550);
     }
 
-    private Path 최단_경로_조회함(LoginMember loginMember, Long sourceStationId, Long targetStationId) {
-        return pathService.findShortestPath(loginMember, sourceStationId, targetStationId);
+    private Path 최단_경로_조회함(Long sourceStationId, Long targetStationId) {
+        return pathService.findShortestPath(sourceStationId, targetStationId);
     }
 }
