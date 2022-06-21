@@ -1,12 +1,12 @@
 package nextstep.subway.favorite.domain;
 
-import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -17,7 +17,7 @@ class FavoriteTest {
 
     @BeforeEach
     void setUp() {
-        this.member = new Member(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
+        this.member = new Member(EMAIL, PASSWORD, AGE);
         this.source = Station.from("강남역");
         this.target = Station.from("교대역");
     }

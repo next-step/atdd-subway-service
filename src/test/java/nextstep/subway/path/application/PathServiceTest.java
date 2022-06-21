@@ -37,7 +37,7 @@ class PathServiceTest {
     private Station 남부터미널역;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         강남역 = Station.of(1L, "강남역");
         양재역 = Station.of(2L, "양재역");
         교대역 = Station.of(3L, "교대역");
@@ -71,7 +71,6 @@ class PathServiceTest {
         PathService pathService = new PathService(lineService, stationService);
 
         // when
-        lineService.findAll();
         when(lineService.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
         when(stationService.findStationById(남부터미널역.getId())).thenReturn(남부터미널역);
         when(stationService.findStationById(강남역.getId())).thenReturn(강남역);
