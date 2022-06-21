@@ -24,4 +24,8 @@ public class PathResponse {
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
+
+    public List<StationResponse> getStations() {
+        return stations;
+    }
 }

@@ -9,7 +9,7 @@ public class PathRequest {
         this.targetStationId = targetStationId;
     }
 
-    public PathRequest of(Long sourceStationId, Long targetStationId) {
+    public static PathRequest of(Long sourceStationId, Long targetStationId) {
         return new PathRequest(sourceStationId, targetStationId);
     }
 
