@@ -1,7 +1,9 @@
 package nextstep.subway.path.ui;
 
-import nextstep.subway.path.PathResponse;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +21,8 @@ public class PathController {
     }
 
     @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<PathResponse> get(@RequestParam long source, @RequestParam long target) {
-        return ResponseEntity.ok(pathService.get(source, target));
+    public ResponseEntity<PathResponse> get(
+            @AuthenticationPrincipal LoginMember loginMember, @RequestParam long source, @RequestParam long target) {
+        return ResponseEntity.ok(pathService.get(loginMember, source, target));
     }
 }

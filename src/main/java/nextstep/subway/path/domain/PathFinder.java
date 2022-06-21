@@ -1,8 +1,8 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.path.PathResponse;
 import nextstep.subway.path.dto.PathRequest;
+import nextstep.subway.path.dto.ShortestPath;
 
 public interface PathFinder {
-    PathResponse getShortestPath(PathRequest request);
+    ShortestPath getShortestPath(PathRequest request);
 }
