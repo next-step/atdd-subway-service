@@ -1,5 +1,6 @@
 package nextstep.subway.member.application;
 
+import nextstep.subway.line.application.NotFoundException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -38,6 +39,7 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public Member findMemberById(Long id) {
-        return memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("계정을 찾을 수 없습니다."));
     }
 }
