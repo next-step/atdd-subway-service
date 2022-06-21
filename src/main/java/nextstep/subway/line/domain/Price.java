@@ -31,6 +31,10 @@ public class Price implements Comparable<Price> {
         return target.minusBy(money);
     }
 
+    public long of() {
+        return this.money;
+    }
+
     private Price minusBy(final long source) {
         return new Price(source - money);
     }
@@ -59,5 +63,12 @@ public class Price implements Comparable<Price> {
     @Override
     public int hashCode() {
         return Objects.hash(money);
+    }
+
+    @Override
+    public String toString() {
+        return "Price{" +
+                "money=" + money +
+                '}';
     }
 }
