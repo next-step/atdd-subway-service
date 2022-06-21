@@ -15,4 +15,9 @@ public class PathResponse {
     public Long getDistance() {
         return distance;
     }
+
+    public PathResponse(List<Station> stations, Long distance) {
+        this.stations = stations;
+        this.distance = distance;
+    }
 }
