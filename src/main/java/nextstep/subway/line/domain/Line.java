@@ -38,10 +38,9 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
-        this.overFare = line.getOverFare();
+    public void update(String name, String color) {
+        this.name = name;
+        this.color = color;
     }
 
     public List<Station> getStations() {
