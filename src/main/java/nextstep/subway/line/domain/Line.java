@@ -8,6 +8,7 @@ import java.util.List;
 
 @Entity
 public class Line extends BaseEntity {
+    public static final Integer OVERFARE_MIN = 0;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

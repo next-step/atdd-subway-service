@@ -44,7 +44,7 @@ public class DijkstraShortestPathFinder implements ShortestPathFinder {
         int lineOverFare = graphPath.getEdgeList().stream()
                 .map(SectionEdge::getLineOverFare)
                 .max(Integer::compareTo)
-                .orElse(0);
+                .orElse(Line.OVERFARE_MIN);
         return Path.of(graphPath.getVertexList(), graphPath.getWeight(), lineOverFare);
     }
 }
