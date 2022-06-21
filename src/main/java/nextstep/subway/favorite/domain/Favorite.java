@@ -32,6 +32,13 @@ public class Favorite {
         this.target = target;
     }
 
+    public Favorite(Long id, Member member, Station source, Station target) {
+        this.id = id;
+        this.member = member;
+        this.source = source;
+        this.target = target;
+    }
+
     public Long getId() {
         return id;
     }

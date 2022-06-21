@@ -1,6 +1,5 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.acceptance;
 
-import com.google.common.collect.Lists;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
