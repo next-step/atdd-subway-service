@@ -67,7 +67,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //when
         ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청(강남역, 남부터미널역);
         //then
-        지하철_노선에_지하철역_순서_정렬됨(최단경로_조회응답, Arrays.asList(강남역, 교대역, 남부터미널역));
+        지하철_노선에_지하철역_순서_정렬됨(최단경로_조회응답, Arrays.asList(강남역, 양재역, 남부터미널역));
     }
 
     public static ExtractableResponse<Response> 지하철_역사이_최단경로_조회요청( StationResponse sourceStation, StationResponse targetStation) {
