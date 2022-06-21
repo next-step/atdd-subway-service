@@ -34,7 +34,6 @@ class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private StationResponse 잠실역;
-    private String 로그인_토큰;
 
     /**
      * 교대역    --- *2호선* ---   강남역 --- 잠실역
@@ -59,16 +58,13 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
         지하철_노선에_지하철역_등록_요청(이호선, 강남역, 잠실역, 10);
-
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        로그인_토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
     }
 
     @Test
     @DisplayName("교대역에서 양재역 이동시 최단 거리는 5이다")
     void 최단거리를_구한다() {
         // given & when
-        ExtractableResponse<Response> response = 지하철_최단_거리_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> response = 지하철_최단_거리_조회_요청("", 교대역, 양재역);
 
         // then
         assertThat(response.jsonPath().getInt("distance")).isEqualTo(5);
@@ -81,17 +77,77 @@ class PathAcceptanceTest extends AcceptanceTest {
      *     And ** 지하철 이용 요금도 함께 응답함 **
      */
     @Test
-    @DisplayName("교대역에서 잠실역의 최단 거리 경로와 이용요금을 조회한다")
-    void 최단거리와_이용요금을_구한다() {
-        // given & when
-        ExtractableResponse<Response> response = 지하철_최단_거리_조회_요청(교대역, 잠실역);
+    @DisplayName("성인 회원인 경우의 교대역에서 잠실역의 최단 거리 경로와 이용요금을 조회한다")
+    void 회원의_최단거리와_이용요금을_구한다() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        String 로그인_토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단_거리_조회_요청(로그인_토큰, 교대역, 잠실역);
 
         // then
         assertThat(response.jsonPath().getInt("distance")).isEqualTo(20);
         assertThat(response.jsonPath().getInt("fare")).isEqualTo(1450);
     }
 
-    public ExtractableResponse<Response> 지하철_최단_거리_조회_요청(StationResponse upStation, StationResponse downStation) {
+    @Test
+    @DisplayName("청소년 회원인 경우의 교대역에서 잠실역의 최단 거리 경로와 이용요금을 조회한다")
+    void 청소년의_최단거리와_이용요금을_구한다() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, 16);
+        String 로그인_토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단_거리_조회_요청(로그인_토큰, 교대역, 잠실역);
+
+        // then
+        assertThat(response.jsonPath().getInt("distance")).isEqualTo(20);
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(880);
+    }
+
+    @Test
+    @DisplayName("어린이 회원인 경우의 교대역에서 잠실역의 최단 거리 경로와 이용요금을 조회한다")
+    void 어린이의_최단거리와_이용요금을_구한다() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, 6);
+        String 로그인_토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단_거리_조회_요청(로그인_토큰, 교대역, 잠실역);
+
+        // then
+        assertThat(response.jsonPath().getInt("distance")).isEqualTo(20);
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(550);
+    }
+
+    @Test
+    @DisplayName("우대인 경우의 교대역에서 잠실역의 최단 거리 경로와 이용요금을 조회한다")
+    void 우대회원의_최단거리와_이용요금을_구한다() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, 70);
+        String 로그인_토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단_거리_조회_요청(로그인_토큰, 교대역, 잠실역);
+
+        // then
+        assertThat(response.jsonPath().getInt("distance")).isEqualTo(20);
+        assertThat(response.jsonPath().getInt("fare")).isZero();
+    }
+
+    @Test
+    @DisplayName("비회원인 경우의 교대역에서 잠실역의 최단 거리 경로와 이용요금을 조회한다")
+    void 비회원의_최단거리와_이용요금을_구한다() {
+        // given & when
+        ExtractableResponse<Response> response = 지하철_최단_거리_조회_요청("", 교대역, 잠실역);
+
+        // then
+        assertThat(response.jsonPath().getInt("distance")).isEqualTo(20);
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(1450);
+    }
+
+    public ExtractableResponse<Response> 지하철_최단_거리_조회_요청(String 로그인_토큰, StationResponse upStation, StationResponse downStation) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(로그인_토큰)
