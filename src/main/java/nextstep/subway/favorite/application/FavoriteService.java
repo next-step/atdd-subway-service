@@ -16,7 +16,7 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    public FavoriteResponse createFavorite(FavoriteRequest request) {
+    public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
         return null;
     }
 
