@@ -1,6 +1,7 @@
 package nextstep.subway.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +12,7 @@ import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.sections.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class PathFinderTest {
@@ -45,6 +47,7 @@ public class PathFinderTest {
     }
 
 
+    @DisplayName("출발역과 도착역 사이의 최단 경로 조회")
     @Test
     public void findShortestPath() {
         //given
@@ -54,5 +57,17 @@ public class PathFinderTest {
         //then
         assertThat(actual.getStations()).containsExactly(강남역, 양재역, 남부터미널역);
         assertThat(actual.getDistance()).isEqualTo(12);
+    }
+
+    @DisplayName("출발역과 도착역이 최단 경로 조회를 실패한다.")
+    @Test
+    public void findShortestPathWithSameStation() {
+        //given
+        PathFinder pathFinder = new PathFinder();
+        //when
+        //then
+        assertThatThrownBy(() -> pathFinder.findShortestPath(모든구간, 강남역, 강남역))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("출발역과 도착역이 동일하면 최단 경로를 조회할 수 없습니다.");
     }
 }

@@ -19,6 +19,8 @@ public class PathFinder {
     private WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph;
 
     public PathResponse findShortestPath(List<Section> allSection, Station sourceStation, Station targetStation) {
+        validate(allSection, sourceStation, targetStation);
+
         stationGraph = new WeightedMultigraph(DefaultWeightedEdge.class);
         initGraph(allSection);
 
@@ -28,13 +30,18 @@ public class PathFinder {
         return new PathResponse(shortestPath.getVertexList(), (long) shortestPath.getWeight());
     }
 
+    private void validate(List<Section> allSection, Station sourceStation, Station targetStation) {
+        if(sourceStation.equals(targetStation)){
+            throw new IllegalArgumentException("출발역과 도착역이 동일하면 최단 경로를 조회할 수 없습니다.");
+        }
+    }
+
     private void initGraph(List<Section> allSection) {
         List<Station> allStations = findAllStations(allSection);
         allStations.forEach(station -> stationGraph.addVertex(station));
 
         allSection.forEach(section -> stationGraph.setEdgeWeight
             (stationGraph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
-
     }
 
     private List<Station> findAllStations(List<Section> allSection) {
