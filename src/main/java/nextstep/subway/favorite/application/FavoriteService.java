@@ -36,7 +36,7 @@ public class FavoriteService {
         final Member mine = memberService.findMemberById(memberId);
         final Station source = stationService.findStationById(favoriteRequest.getSourceId());
         final Station target = stationService.findStationById(favoriteRequest.getTargetId());
-        validateLinkedPath(source, target);
+        validateFavorite(source, target);
 
         Favorite persistFavorite = favoriteRepository.save(new Favorite(mine, source, target));
         return persistFavorite.toFavoriteResponse();
@@ -46,7 +46,7 @@ public class FavoriteService {
     public List<FavoriteResponse> findFavoriteOfMine(Long memberId) {
         final Member mine = memberService.findMemberById(memberId);
 
-        List<Favorite> favorites = favoriteRepository.findAllByMemberId(mine.getId());
+        List<Favorite> favorites = favoriteRepository.findAllByMemberIdAndDeletedFalse(mine.getId());
         return favorites.stream()
                 .map(Favorite::toFavoriteResponse)
                 .collect(Collectors.toList());
@@ -54,15 +54,14 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavoriteOfMine(Long memberId, Long favoriteId) {
-        final Member mine = memberService.findMemberById(memberId);
+        Optional<Favorite> optionalFavorite = favoriteRepository.findByIdAndMemberId(favoriteId, memberId);
 
-        Optional<Favorite> optionalFavorite = favoriteRepository.findByIdAndMemberId(favoriteId, mine.getId());
-        favoriteRepository.delete(
-                optionalFavorite.orElseThrow(() -> new NotExistException("해당 ID에 대한 즐겨찾기가 존재하지 않습니다."))
-        );
+        optionalFavorite
+                .orElseThrow(() -> new NotExistException("해당 ID에 대한 즐겨찾기가 존재하지 않습니다."))
+                .delete();
     }
 
-    private void validateLinkedPath(Station source, Station target) {
-        pathService.searchShortestPath(source.getId(), target.getId());
+    private void validateFavorite(Station source, Station target) {
+        pathService.validatePath(source, target);
     }
 }

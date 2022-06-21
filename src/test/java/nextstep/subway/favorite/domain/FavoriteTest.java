@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import static nextstep.subway.station.StationAcceptanceTest.지하철역_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import nextstep.subway.member.domain.Member;
@@ -15,8 +16,8 @@ class FavoriteTest {
     @BeforeEach
     void setUp() {
         mond = new Member("mond@mond.com", "mond", 10);
-        source = new Station("강남역");
-        target = new Station("교대역");
+        source = 지하철역_생성("강남역");
+        target = 지하철역_생성("교대역");
     }
 
     @Test

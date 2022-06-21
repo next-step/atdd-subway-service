@@ -1,6 +1,8 @@
 package nextstep.subway.auth.infrastructure;
 
 import io.jsonwebtoken.*;
+import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.exception.NotExistException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -26,11 +28,18 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getPayload(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    public String getPayloadForNotTolerateException(String token) {
+        try {
+            return Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token).getBody()
+                    .getSubject();
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new AuthorizationException();
+        }
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateTokenForTolerateException(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 

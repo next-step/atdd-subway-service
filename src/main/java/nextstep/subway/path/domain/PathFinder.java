@@ -11,15 +11,18 @@ import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Component;
 
-@Component
 public class PathFinder {
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
-            DefaultWeightedEdge.class);
-    private DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = null;
+    private final WeightedMultigraph<Station, SectionWeightedEdge> graph;
+
+    private PathFinder() {
+        this.graph = new WeightedMultigraph<>(SectionWeightedEdge.class);
+    }
+
+    public static PathFinder create() {
+        return new PathFinder();
+    }
 
     public void init(List<Line> lines) {
         lines.forEach(this::addVertexAndEdge);
@@ -37,28 +40,31 @@ public class PathFinder {
 
     private void addEdgeWeight(Sections sections) {
         sections.getSections()
-                .forEach(it -> graph.setEdgeWeight(addEdge(it), weight(it.getDistance())));
+                .forEach(this::addEdgeAndSetWeight);
     }
 
     private double weight(Distance distance) {
         return distance.getDistance();
     }
 
-    private DefaultWeightedEdge addEdge(Section section) {
-        return graph.addEdge(section.upStation(), section.downStation());
+    private void addEdgeAndSetWeight(Section section) {
+        final SectionWeightedEdge sectionWeightedEdge = new SectionWeightedEdge(section);
+        graph.addEdge(section.upStation(), section.downStation(), sectionWeightedEdge);
+        graph.setEdgeWeight(sectionWeightedEdge, weight(section.getDistance()));
     }
 
-    public Path getDijkstraPath(Station source, Station target) {
+    public GraphPath<Station, SectionWeightedEdge> getDijkstraPath(Station source, Station target) {
         validateSameSourceAndTarget(source, target);
-        GraphPath<Station, DefaultWeightedEdge> graphPath = getOptionalDijkstraPath(source, target)
+        return getOptionalDijkstraPath(source, target)
                 .orElseThrow(NotLinkedPathException::new);
-        return new Path(graphPath.getVertexList(), (int) graphPath.getWeight());
     }
 
-    private Optional<GraphPath<Station, DefaultWeightedEdge>> getOptionalDijkstraPath(Station source, Station target) {
-        if (dijkstraShortestPath == null) {
-            dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        }
+    public void validatePath(Station source, Station target) {
+        getDijkstraPath(source, target);
+    }
+
+    private Optional<GraphPath<Station, SectionWeightedEdge>> getOptionalDijkstraPath(Station source, Station target) {
+        DijkstraShortestPath<Station, SectionWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return Optional.ofNullable(dijkstraShortestPath.getPath(source, target));
     }
 

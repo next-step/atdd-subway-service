@@ -5,6 +5,7 @@ import static nextstep.subway.line.domain.SectionTest.gangNam;
 import static nextstep.subway.line.domain.SectionTest.panGyo;
 import static nextstep.subway.line.domain.SectionTest.twoLine;
 import static nextstep.subway.line.domain.SectionTest.yangJae;
+import static nextstep.subway.station.StationAcceptanceTest.지하철역_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -54,8 +55,8 @@ class SectionsTest {
     @Test
     @DisplayName("해당 노선에 모두 존재하지 않는 역을 등록하려고 할 때 에러 발생")
     void addNotExistSection() {
-        Station guri = new Station("구리역");
-        Station jamSil = new Station("잠실역");
+        Station guri = 지하철역_생성("구리역");
+        Station jamSil = 지하철역_생성("잠실역");
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> sections.addSection(new Section(twoLine, guri, jamSil, distance)))

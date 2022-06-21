@@ -1,9 +1,11 @@
 package nextstep.subway.favorite.application;
 
+import static nextstep.subway.station.StationAcceptanceTest.지하철역_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
@@ -32,8 +34,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class FavoriteServiceTest {
     private final Member mond = new Member(1L, "mond@mond.com", "mond", 10);
     final FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
-    private final Station gangNam = new Station(1L, "강남역");
-    private final Station gyoDae = new Station(2L, "교대역");
+    private final Station gangNam = 지하철역_생성(1L, "강남역");
+    private final Station gyoDae = 지하철역_생성(2L, "교대역");
 
     private FavoriteService favoriteService;
     @Mock
@@ -48,9 +50,6 @@ class FavoriteServiceTest {
     @BeforeEach
     void setUp() {
         favoriteService = new FavoriteService(stationService, memberService, pathService, favoriteRepository);
-
-        // given
-        when(memberService.findMemberById(1L)).thenReturn(mond);
     }
 
     @Test
@@ -59,20 +58,22 @@ class FavoriteServiceTest {
         // given
         when(stationService.findStationById(1L)).thenReturn(gangNam);
         when(stationService.findStationById(2L)).thenReturn(gyoDae);
+        when(memberService.findMemberById(1L)).thenReturn(mond);
         when(favoriteRepository.save(any())).thenReturn(new Favorite(mond, gangNam, gyoDae));
 
         // when
         FavoriteResponse favoriteResponse = favoriteService.saveFavoriteOfMine(mond.getId(), favoriteRequest);
 
         // then
-        verifySourceAndTarget(favoriteResponse.getSource(), favoriteResponse.getTarget(), gangNam, gangNam);
+        verifySourceAndTarget(favoriteResponse.getSource(), favoriteResponse.getTarget(), gangNam, gyoDae);
     }
 
     @Test
     @DisplayName("즐겨찾기를 조회한다")
     void searchFavorites() {
         // given
-        when(favoriteRepository.findAllByMemberId(any())).thenReturn(
+        when(memberService.findMemberById(1L)).thenReturn(mond);
+        when(favoriteRepository.findAllByMemberIdAndDeletedFalse(any())).thenReturn(
                 Collections.singletonList(new Favorite(mond, gangNam, gyoDae)));
 
         // when
@@ -115,7 +116,7 @@ class FavoriteServiceTest {
         // given
         when(stationService.findStationById(1L)).thenReturn(gangNam);
         when(stationService.findStationById(2L)).thenReturn(gyoDae);
-        when(pathService.searchShortestPath(any(), any())).thenThrow(NotLinkedPathException.class);
+        doThrow(NotLinkedPathException.class).when(pathService).validatePath(any(), any());
 
         // when
         assertThatIllegalArgumentException()

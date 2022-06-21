@@ -1,14 +1,19 @@
 package nextstep.subway.path.domain;
 
+import static nextstep.subway.line.domain.LineTest.라인_생성;
+import static nextstep.subway.station.StationAcceptanceTest.지하철역_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,33 +25,38 @@ class PathFinderTest {
 
     @BeforeEach
     void setUp() {
-        강남역 = new Station("강남역");
-        양재역 = new Station("양재역");
-        교대역 = new Station("교대역");
-        남부터미널역 = new Station("남부터미널역");
-        서울역 = new Station("서울역");
-        용산역 = new Station("용산역");
+        강남역 = 지하철역_생성("강남역");
+        양재역 = 지하철역_생성("양재역");
+        교대역 = 지하철역_생성("교대역");
+        남부터미널역 = 지하철역_생성("남부터미널역");
+        서울역 = 지하철역_생성("서울역");
+        용산역 = 지하철역_생성("용산역");
 
-        신분당선 = new Line("신분당선", "red", 강남역, 양재역, Distance.of(10));
-        이호선 = new Line("이호선", "green", 교대역, 강남역, Distance.of(10));
-        삼호선 = new Line("삼호선", "yellow", 교대역, 양재역, Distance.of(5));
-        일호선 = new Line("일호선", "blue", 서울역, 용산역, Distance.of(7));
+        신분당선 = 라인_생성("신분당선", "red", 강남역, 양재역, Distance.of(5));
+        이호선 = 라인_생성("이호선", "green", 교대역, 강남역, Distance.of(10));
+        삼호선 = 라인_생성("삼호선", "yellow", 교대역, 양재역, Distance.of(5));
+        일호선 = 라인_생성("일호선", "blue", 서울역, 용산역, Distance.of(7));
 
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, Distance.of(3)));
 
-        pathFinder = new PathFinder();
+        pathFinder = PathFinder.create();
         pathFinder.init(Arrays.asList(신분당선, 이호선, 삼호선, 일호선));
     }
 
     @Test
-    @DisplayName("최단 거리 경로, 거리 확인")
+    @DisplayName("최단 거리 경로, 거리, 해당 노선 확인")
     void verifyShortestPathAndDistance() {
-        Path dijkstraPath = pathFinder.getDijkstraPath(강남역, 남부터미널역);
+        final GraphPath<Station, SectionWeightedEdge> dijkstraPath = pathFinder.getDijkstraPath(강남역, 남부터미널역);
 
         assertAll(
-                () -> assertThat(dijkstraPath.getDistance()).isEqualTo(12),
-                () -> assertThat(dijkstraPath.getStations()).containsExactly(강남역, 양재역, 남부터미널역)
+                () -> assertThat(dijkstraPath.getWeight()).isEqualTo(7),
+                () -> assertThat(dijkstraPath.getVertexList()).containsExactly(강남역, 양재역, 남부터미널역),
+                () -> assertThat(getLines(dijkstraPath)).contains(신분당선, 삼호선)
         );
+    }
+
+    private List<Line> getLines(GraphPath<Station, SectionWeightedEdge> dijkstraPath) {
+        return dijkstraPath.getEdgeList().stream().map(SectionWeightedEdge::getLine).collect(Collectors.toList());
     }
 
     @Test

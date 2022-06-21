@@ -85,6 +85,14 @@ public class Section {
         return downStation;
     }
 
+    public boolean containUpStation(Station first, Station second) {
+        return this.upStation.equals(first) || this.upStation.equals(second);
+    }
+
+    public boolean containDownStation(Station first, Station second) {
+        return this.downStation.equals(first) || this.downStation.equals(second);
+    }
+
     public Distance getDistance() {
         return distance;
     }
