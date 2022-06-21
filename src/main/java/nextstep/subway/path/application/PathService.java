@@ -44,7 +44,7 @@ public class PathService {
     }
 
     private void setVertexes(WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
-        final List<StationResponse> stations = stationService.findAllStations();
+        final List<StationResponse> stations = stationService.findAllStationResponses();
         stations.stream().forEach(stationResponse -> {
             graph.addVertex(stationResponse.getId());
         });
