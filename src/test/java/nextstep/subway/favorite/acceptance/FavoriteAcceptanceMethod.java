@@ -61,8 +61,8 @@ public class FavoriteAcceptanceMethod {
         List<FavoriteResponse> favoriteResponses = response.jsonPath().getList(".", FavoriteResponse.class);
         assertAll(
                 () -> assertThat(favoriteResponses).hasSize(1),
-                () -> assertThat(favoriteResponses.get(0).getSource()).isEqualTo(source),
-                () -> assertThat(favoriteResponses.get(0).getTarget()).isEqualTo(target)
+                () -> assertThat(favoriteResponses.get(0).getSource().getId()).isEqualTo(source.getId()),
+                () -> assertThat(favoriteResponses.get(0).getTarget().getId()).isEqualTo(target.getId())
         );
     }
 
@@ -71,7 +71,7 @@ public class FavoriteAcceptanceMethod {
     }
 
     public static void 즐겨찾기_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static void 즐겨찾기_삭제_실패됨(ExtractableResponse<Response> response) {
