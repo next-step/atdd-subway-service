@@ -22,7 +22,7 @@
     - [x] Favorite 도메인 테스트 작성
     - [x] Favorite 도메인 구현
     - [x] Favorite 요청/응답 객체 구현
-    - [ ] FavoriteController 구현
+    - [x] FavoriteController 구현
     - [ ] FavoriteService 테스트 작성
     - [ ] FavoriteService 기능 구현
 
