@@ -84,4 +84,16 @@ public class PathFinderTest {
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("지하철 역이 연결되어 있지 않습니다.");
     }
+
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우 최단 경로 조회를 실패한다.")
+    @Test
+    public void findShortestPathWithNotExistStation() {
+        //given
+        PathFinder pathFinder = new PathFinder();
+        //when
+        //then
+        assertThatThrownBy(() -> pathFinder.findShortestPath(모든구간, 강남역, new Station("없는역")))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("지하철 역이 존재하지 않습니다.");
+    }
 }

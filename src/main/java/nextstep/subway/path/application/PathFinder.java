@@ -19,10 +19,11 @@ public class PathFinder {
     private WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph;
 
     public PathResponse findShortestPath(List<Section> allSection, Station sourceStation, Station targetStation) {
-        validate(allSection, sourceStation, targetStation);
+        List<Station> allStations = findAllStations(allSection);
 
+        validate(allStations, sourceStation, targetStation);
         stationGraph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        initGraph(allSection);
+        initGraph(allSection, allStations);
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(stationGraph);
 
@@ -31,21 +32,23 @@ public class PathFinder {
     }
 
     private GraphPath getGraphPath(Station sourceStation, Station targetStation, DijkstraShortestPath dijkstraShortestPath) {
-        try{
+        try {
             return dijkstraShortestPath.getPath(sourceStation, targetStation);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("지하철 역이 연결되어 있지 않습니다.");
         }
     }
 
-    private void validate(List<Section> allSection, Station sourceStation, Station targetStation) {
-        if(sourceStation.equals(targetStation)){
+    private void validate(List<Station> allStations, Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
             throw new IllegalArgumentException("출발역과 도착역이 동일하면 최단 경로를 조회할 수 없습니다.");
+        }
+        if (!allStations.contains(sourceStation) || !allStations.contains(targetStation)) {
+            throw new IllegalArgumentException("지하철 역이 존재하지 않습니다.");
         }
     }
 
-    private void initGraph(List<Section> allSection) {
-        List<Station> allStations = findAllStations(allSection);
+    private void initGraph(List<Section> allSection, List<Station> allStations) {
         allStations.forEach(station -> stationGraph.addVertex(station));
 
         allSection.forEach(section -> stationGraph.setEdgeWeight
