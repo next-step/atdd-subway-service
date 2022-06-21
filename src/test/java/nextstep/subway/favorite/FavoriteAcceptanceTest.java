@@ -89,19 +89,31 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인 하지 않은 경우 즐겨찾기 생성 불가")
     @Test
     void create_throwsException_ifMemberNotLoggedIn() {
+        // when
+        ExtractableResponse<Response> 즐겨찾기_결과 = 즐겨찾기_요청(로그인_토큰 + "disable", new FavoriteRequest(강남역.getId(), 광교역.getId()));
 
+        // then
+        즐겨찾기_실패(즐겨찾기_결과);
     }
 
     @DisplayName("같은 출발역과 도착역으로 중복 생성 불가")
     @Test
     void create_throwsException_ifFavoriteExist() {
+        // when
+        ExtractableResponse<Response> 즐겨찾기_결과 = 즐겨찾기_요청(로그인_토큰 + "disable", new FavoriteRequest(강남역.getId(), 강남역.getId()));
 
+        // then
+        즐겨찾기_실패(즐겨찾기_결과);
     }
 
     @DisplayName("존재하지 않는 역으로 중복 생성 불가")
     @Test
     void create_throwsException_ifStationNotExist() {
+        // when
+        ExtractableResponse<Response> 즐겨찾기_결과 = 즐겨찾기_요청(로그인_토큰 + "disable", new FavoriteRequest(2L, 3L));
 
+        // then
+        즐겨찾기_실패(즐겨찾기_결과);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_요청(String accessToken, FavoriteRequest request) {
@@ -115,6 +127,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static void 즐겨찾기_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_삭제(String accessToken, ExtractableResponse<Response> response) {
