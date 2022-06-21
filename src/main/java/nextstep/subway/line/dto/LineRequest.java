@@ -15,12 +15,7 @@ public class LineRequest {
     }
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
-        this.name = name;
-        this.color = color;
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
-        this.distance = distance;
-        this.overFare = 0;
+        this(name, color, upStationId, downStationId, distance, Line.OVERFARE_MIN);
     }
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int overFare) {
