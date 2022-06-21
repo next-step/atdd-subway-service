@@ -19,8 +19,4 @@ public class FavoriteRequest {
     public Long getTarget() {
         return target;
     }
-
-    public boolean isSourceEqualToTarget() {
-        return source.equals(target);
-    }
 }

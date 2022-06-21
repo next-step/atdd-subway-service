@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.subway.exceptions.SourceAndTargetSameException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -31,6 +32,7 @@ public class Favorite {
     }
 
     public Favorite(final Member member, final Station source, final Station target) {
+        checkSourceEqualToTarget(source, target);
         this.member = member;
         this.source = source;
         this.target = target;
@@ -50,5 +52,11 @@ public class Favorite {
 
     public static Favorite of(final Member member, final Station source, final Station target) {
         return new Favorite(member, source, target);
+    }
+
+    private void checkSourceEqualToTarget(final Station source, final Station target) {
+        if (source.equals(target)) {
+            throw new SourceAndTargetSameException();
+        }
     }
 }

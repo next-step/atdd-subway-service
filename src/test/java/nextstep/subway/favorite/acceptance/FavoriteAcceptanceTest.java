@@ -27,16 +27,6 @@ import org.springframework.http.MediaType;
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
-//    Feature: 즐겨찾기를 관리한다.
-//
-//    Scenario: 즐겨찾기를 관리
-//    When 즐겨찾기 생성을 요청
-//    Then 즐겨찾기 생성됨
-//    When 즐겨찾기 목록 조회 요청
-//    Then 즐겨찾기 목록 조회됨
-//    When 즐겨찾기 삭제 요청
-//    Then 즐겨찾기 삭제됨
-
     private LineResponse 일호선;
     private LineResponse 구호선;
     private LineResponse 오호선;

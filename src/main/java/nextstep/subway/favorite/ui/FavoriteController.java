@@ -7,7 +7,6 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.path.exceptions.SourceAndTargetSameException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,9 +31,6 @@ public class FavoriteController {
             @AuthenticationPrincipal LoginMember loginMember,
             @RequestBody FavoriteRequest favoriteRequest
     ) {
-        if (favoriteRequest.isSourceEqualToTarget()) {
-            throw new SourceAndTargetSameException();
-        }
         final FavoriteResponse favoriteResponse = favoriteService.createFavorite(loginMember, favoriteRequest);
         return ResponseEntity.created(URI.create("/favorites/" + favoriteResponse.getId())).build();
     }
