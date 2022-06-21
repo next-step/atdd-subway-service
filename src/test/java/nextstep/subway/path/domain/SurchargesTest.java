@@ -6,13 +6,13 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ChargesTest {
-    @DisplayName("요금 합 계산")
+class SurchargesTest {
+    @DisplayName("추가요금 합 계산")
     @ParameterizedTest
     @CsvSource(value = {"1,2,3", "1000, 1050, 2050"})
     void sum(int a, int b, int sum) {
-        Charge actual = Charges.of(new Charge(a), new Charge(b)).sum();
-        Charge expected = new Charge(sum);
+        Surcharge actual = Surcharges.of(new Surcharge(a), new Surcharge(b)).sum();
+        Surcharge expected = new Surcharge(sum);
         assertThat(actual).isEqualTo(expected);
     }
 }

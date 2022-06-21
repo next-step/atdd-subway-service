@@ -2,7 +2,7 @@ package nextstep.subway.path.domain;
 
 import static java.lang.Math.floor;
 
-public class DistanceSurcharge extends Charge {
+public class DistanceSurcharge extends Surcharge {
     private static final int BOUNDARY_1ST_SURCHARGE = 10;
     private static final int BOUNDARY_2ND_SURCHARGE = 50;
 

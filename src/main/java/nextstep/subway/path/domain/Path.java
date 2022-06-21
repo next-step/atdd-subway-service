@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
-import static nextstep.subway.path.domain.BaseCharge.BASE_CHARGE;
+import static nextstep.subway.path.domain.Charge.BASE_CHARGE;
 
 public class Path {
     private final List<Station> stations;
@@ -23,8 +23,7 @@ public class Path {
     }
 
     private Charge findCharge(int distance, Set<Line> lines) {
-        return Charges.of(BASE_CHARGE, DistanceSurcharge.from(distance), LineSurcharge.from(lines))
-                .sum();
+        return BASE_CHARGE.addAll(DistanceSurcharge.from(distance), LineSurcharge.from(lines));
     }
 
     private Set<Line> lineSet(List<Section> sections) {

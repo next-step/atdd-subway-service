@@ -5,15 +5,19 @@ import nextstep.subway.auth.domain.LoginMember;
 import java.util.Objects;
 
 public class Charge {
-    public static final Charge ZERO = new Charge(0);
+    public static final Charge BASE_CHARGE = new Charge(1250);
     private final int value;
 
     public Charge(int value) {
         this.value = value;
     }
 
-    public Charge add(Charge charge) {
-        return new Charge(this.value + charge.value);
+    public Charge addAll(Surcharge... surcharges) {
+        return add(Surcharges.of(surcharges).sum());
+    }
+
+    private Charge add(Surcharge surcharge) {
+        return new Charge(value + surcharge.getValue());
     }
 
     private Charge minus(int value) {

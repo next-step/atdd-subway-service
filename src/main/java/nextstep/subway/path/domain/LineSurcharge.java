@@ -4,7 +4,7 @@ import nextstep.subway.line.domain.Line;
 
 import java.util.Collection;
 
-public class LineSurcharge extends Charge {
+public class LineSurcharge extends Surcharge {
     private LineSurcharge(int value) {
         super(value);
     }
