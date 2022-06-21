@@ -30,7 +30,7 @@ public class FavoriteController {
 
     @GetMapping
     public ResponseEntity myFavorite(@AuthenticationPrincipal LoginMember loginMember) {
-        List<FavoriteResponse> favorites = favoriteService.findByMemnseberId(loginMember);
+        List<FavoriteResponse> favorites = favoriteService.findByMemberId(loginMember);
         return ResponseEntity.ok(favorites);
     }
 
@@ -42,7 +42,7 @@ public class FavoriteController {
 
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity handleNoSuchElementException(Exception e) {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity handleNoSuchElementException(NoSuchElementException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
