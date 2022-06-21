@@ -54,6 +54,6 @@ class RouteTest {
 
         // then
         List<String> responseStationNames = pathResponse.getStations().stream().map(StationResponse::getName).collect(Collectors.toList());
-        assertThat(responseStationNames).containsExactlyElementsOf(Arrays.asList(양재역.getName(), 남부터미널역.getName(), 교대역.getName()));
+        assertThat(responseStationNames).containsExactlyElementsOf(Arrays.asList( 교대역.getName(),남부터미널역.getName(),양재역.getName()));
     }
 }
