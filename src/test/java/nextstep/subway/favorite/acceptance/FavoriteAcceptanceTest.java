@@ -152,7 +152,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                     ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(존재하지_않는_회원_토큰, 강남역.getId(), 광교역.getId());
 
                     //then
-                    응답결과_확인(createResponse, HttpStatus.UNAUTHORIZED);
+                    응답결과_확인(createResponse, HttpStatus.INTERNAL_SERVER_ERROR);
                 })
         );
     }
