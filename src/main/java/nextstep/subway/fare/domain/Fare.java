@@ -4,8 +4,6 @@ public enum Fare {
 
     BASIC(10, 5),
     ADDITIONAL(50, 8);
-
-    private static final int DEFAULT_CHARGE = 1250;
     private static final int ADDITIONAL_CHARGE = 100;
     private final int distance;
     private final int criteria;
@@ -23,20 +21,11 @@ public enum Fare {
         return criteria;
     }
 
-    public static int calculateFare(int distance) {
-        int fare = DEFAULT_CHARGE;
-
-        if (distance > ADDITIONAL.distance) {
-            fare += calculateOverFare(distance - ADDITIONAL.distance, ADDITIONAL.criteria);
-            distance = ADDITIONAL.distance;
-        }
-        if (distance > BASIC.distance) {
-            fare += calculateOverFare(distance - BASIC.distance, BASIC.criteria);
-        }
-        return fare;
+    public boolean isLonger(int distance) {
+        return distance > this.distance;
     }
 
-    private static int calculateOverFare(int distance, int criteria) {
-        return (int) ((Math.ceil((distance - 1) / criteria) + 1) * ADDITIONAL_CHARGE);
+    public int calculateOverFare(int distance) {
+        return (int) ((Math.ceil(((distance - this.distance) - 1) / criteria) + 1) * ADDITIONAL_CHARGE);
     }
 }
