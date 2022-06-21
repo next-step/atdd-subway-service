@@ -2,39 +2,41 @@ package nextstep.subway.path.domain;
 
 import java.util.List;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 
 public class Path {
-    private final List<Station> stations;
-    private final Integer distance;
-    private Integer fare;
+    private final GraphPath<Station, SectionEdge> graphPath;
 
-    private Path(List<Station> stations, Integer distance, Integer fare) {
-        this.stations = stations;
-        this.distance = distance;
-        this.fare = fare;
+    public Path(GraphPath<Station, SectionEdge> graphPath) {
+        this.graphPath = graphPath;
     }
 
-    public static Path of(List<Station> vertexList, double weight, Integer lineOverFare) {
-        return new Path(vertexList, (int) weight, lineOverFare);
+    public static Path of(GraphPath<Station, SectionEdge> graphPath) {
+        return new Path(graphPath);
     }
 
-    public void calculateFare(LoginMember loginMember) {
-        DistanceFarePolicy distanceFarePolicy = DistanceFarePolicy.findByDistance(distance);
-        fare += distanceFarePolicy.calculate(distance);
+    public Integer calculateFare(LoginMember loginMember) {
+        Integer fare = getLineOverFare();
+        DistanceFarePolicy distanceFarePolicy = DistanceFarePolicy.findByDistance(getDistance());
+        fare += distanceFarePolicy.calculate(getDistance());
         AgeFarePolicy ageFarePolicy = AgeFarePolicy.findByAge(loginMember.getAge());
-        this.fare = ageFarePolicy.calculate(fare);
+        return ageFarePolicy.calculate(fare);
+    }
+
+    private Integer getLineOverFare() {
+        return graphPath.getEdgeList().stream()
+                .map(SectionEdge::getLineOverFare)
+                .max(Integer::compareTo)
+                .orElse(Line.OVERFARE_MIN);
     }
 
     public List<Station> getStations() {
-        return stations;
+        return graphPath.getVertexList();
     }
 
     public Integer getDistance() {
-        return distance;
-    }
-
-    public Integer getFare() {
-        return fare;
+        return (int) graphPath.getWeight();
     }
 }

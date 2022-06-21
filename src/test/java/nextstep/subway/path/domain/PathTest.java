@@ -54,7 +54,7 @@ class PathTest {
         path.calculateFare(loginMember);
 
         //then
-        PathTestUtils.이용요금_확인(path, 2350);
+        PathTestUtils.이용요금_확인(path, loginMember, 2350);
     }
 
     @DisplayName("교대역-양재역의 최단경로의 이용요금을 어린이가 조회하면, 이용요금이 1000원으로 계산된다.")
@@ -68,7 +68,7 @@ class PathTest {
         path.calculateFare(loginMember);
 
         //then
-        PathTestUtils.이용요금_확인(path, 1000);
+        PathTestUtils.이용요금_확인(path, loginMember, 1000);
     }
 
     @DisplayName("교대역-양재역의 최단경로의 이용요금을 청소년이 조회하면, 이용요금이 1600원으로 계산된다.")
@@ -82,7 +82,7 @@ class PathTest {
         path.calculateFare(loginMember);
 
         //then
-        PathTestUtils.이용요금_확인(path, 1600);
+        PathTestUtils.이용요금_확인(path, loginMember, 1600);
     }
 
     @DisplayName("강남역-양재역의 최단경로의 이용요금을 성인이 조회하면, 이용요금이 1600원으로 계산된다.")
@@ -96,6 +96,6 @@ class PathTest {
         path.calculateFare(loginMember);
 
         //then
-        PathTestUtils.이용요금_확인(path, 2250);
+        PathTestUtils.이용요금_확인(path, loginMember, 2250);
     }
 }

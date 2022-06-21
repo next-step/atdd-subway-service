@@ -40,11 +40,6 @@ public class DijkstraShortestPathFinder implements ShortestPathFinder {
 
     @Override
     public Path getPath(Station source, Station target) {
-        GraphPath<Station, SectionEdge> graphPath = dijkstraShortestPath.getPath(source, target);
-        int lineOverFare = graphPath.getEdgeList().stream()
-                .map(SectionEdge::getLineOverFare)
-                .max(Integer::compareTo)
-                .orElse(Line.OVERFARE_MIN);
-        return Path.of(graphPath.getVertexList(), graphPath.getWeight(), lineOverFare);
+        return Path.of(dijkstraShortestPath.getPath(source, target));
     }
 }
