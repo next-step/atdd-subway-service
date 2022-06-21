@@ -60,6 +60,9 @@ public class PathFinder {
     }
 
     private void validateSourceTarget(Long sourceStationId, Long targetStationId) {
+        if (sourceStationId == null || targetStationId == null) {
+            throw new NoSuchElementException("출발역 혹은 도착역이 존재하지 않습니다.");
+        }
         if (sourceStationId.equals(targetStationId)) {
             throw new IllegalArgumentException("출발역과 도착역은 같을 수 없습니다.");
         }
