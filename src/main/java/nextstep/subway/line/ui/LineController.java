@@ -1,5 +1,6 @@
 package nextstep.subway.line.ui;
 
+import nextstep.subway.exception.NotFoundStationException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -55,7 +56,7 @@ public class LineController {
     }
 
     @DeleteMapping("/{lineId}/sections")
-    public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
+    public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) throws NotFoundStationException {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
     }

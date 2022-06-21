@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.exception.NotFoundStationException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -68,28 +69,9 @@ public class LineService {
         line.addSection(new Section(line, upStation, downStation, request.getDistance()));
     }
 
-    public void removeLineStation(Long lineId, Long stationId) {
+    public void removeLineStation(Long lineId, Long stationId) throws NotFoundStationException {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
-        if (line.getSections().size() <= 1) {
-            throw new RuntimeException();
-        }
-
-        Optional<Section> upLineStation = line.getSections().stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = line.getSections().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance().getDistance() + downLineStation.get().getDistance().getDistance();
-            line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(it -> line.getSections().remove(it));
-        downLineStation.ifPresent(it -> line.getSections().remove(it));
+        line.deleteSection(station);
     }
 }

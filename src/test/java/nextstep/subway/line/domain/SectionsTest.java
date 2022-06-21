@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.NotFoundStationException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +40,7 @@ public class SectionsTest {
         // then
         assertAll(
                 () -> assertThat(sections.getStations()).containsExactly(판교역, 곤지암역, 여주역),
-                () -> assertThat(sections.getSections().size()).isEqualTo(2)
+                () -> assertThat(sections.getSections()).hasSize(2)
         );
     }
 
@@ -61,8 +62,8 @@ public class SectionsTest {
                         .filter(x -> x.getUpStation().equals(곤지암역) && x.getDownStation().equals(여주역))
                         .findFirst()
                         .get()
-                        .getDistance()).isEqualTo(5),
-                () -> assertThat(sections.getSections().size()).isEqualTo(2)
+                        .getDistance().getDistance()).isEqualTo(5),
+                () -> assertThat(sections.getSections()).hasSize(2)
         );
     }
 
@@ -84,8 +85,8 @@ public class SectionsTest {
                         .filter(x -> x.getUpStation().equals(판교역) && x.getDownStation().equals(곤지암역))
                         .findFirst()
                         .get()
-                        .getDistance()).isEqualTo(6),
-                () -> assertThat(sections.getSections().size()).isEqualTo(2)
+                        .getDistance().getDistance()).isEqualTo(6),
+                () -> assertThat(sections.getSections()).hasSize(2)
         );
     }
 
@@ -100,6 +101,101 @@ public class SectionsTest {
         // then
         assertThatThrownBy(() -> {
             sections.add(판교역_여주역_구간);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("지하철 노선의 중간역을 제거한다.")
+    public void deleteSection_center() throws NotFoundStationException {
+        // given
+        Section 판교역_여주역_구간 = new Section(경강선, 판교역, 여주역, 11);
+        Section 곤지암역_여주역_구간 = new Section(경강선, 곤지암역, 여주역, 5);
+        sections.add(판교역_여주역_구간);
+        sections.add(곤지암역_여주역_구간);
+
+        // when
+        sections.delete(곤지암역);
+
+        // then
+        assertAll(
+                () -> assertThat(sections.getSections()).hasSize(1),
+                () -> assertThat(sections.getStations()).doesNotContain(곤지암역)
+        );
+    }
+
+    @Test
+    @DisplayName("지하철 노선의 상행 종점역을 제거한다.")
+    public void deleteSection_up() throws NotFoundStationException {
+        // given
+        Section 판교역_여주역_구간 = new Section(경강선, 판교역, 여주역, 11);
+        Section 곤지암역_여주역_구간 = new Section(경강선, 곤지암역, 여주역, 5);
+        sections.add(판교역_여주역_구간);
+        sections.add(곤지암역_여주역_구간);
+
+        // when
+        sections.delete(판교역);
+
+        // then
+        assertAll(
+                () -> assertThat(sections.getSections()).hasSize(1),
+                () -> assertThat(sections.getStations()).doesNotContain(판교역),
+                () -> assertThat(sections.getSections().stream()
+                        .filter(x -> x.getUpStation().equals(곤지암역) && x.getDownStation().equals(여주역))
+                        .findFirst()
+                        .get()
+                        .getDistance().getDistance()).isEqualTo(5)
+        );
+    }
+
+    @Test
+    @DisplayName("지하철 노선의 하행 종점역을 제거한다.")
+    public void deleteSection_down() throws NotFoundStationException {
+        // given
+        Section 판교역_여주역_구간 = new Section(경강선, 판교역, 여주역, 11);
+        Section 곤지암역_여주역_구간 = new Section(경강선, 곤지암역, 여주역, 5);
+        sections.add(판교역_여주역_구간);
+        sections.add(곤지암역_여주역_구간);
+
+        // when
+        sections.delete(여주역);
+
+        // then
+        assertAll(
+                () -> assertThat(sections.getSections()).hasSize(1),
+                () -> assertThat(sections.getStations()).doesNotContain(여주역),
+                () -> assertThat(sections.getSections().stream()
+                        .filter(x -> x.getUpStation().equals(판교역) && x.getDownStation().equals(곤지암역))
+                        .findFirst()
+                        .get()
+                        .getDistance().getDistance()).isEqualTo(6)
+        );
+    }
+
+    @Test
+    @DisplayName("지하철 노선의 구간 제거 실패 - 등록되지 않은 역 제거")
+    public void deleteSection_fail_not_registered() {
+        // given
+        Section 판교역_여주역_구간 = new Section(경강선, 판교역, 여주역, 11);
+        Section 곤지암역_여주역_구간 = new Section(경강선, 곤지암역, 여주역, 5);
+        sections.add(판교역_여주역_구간);
+        sections.add(곤지암역_여주역_구간);
+
+        // then
+        assertThatThrownBy(() -> {
+            sections.delete(new Station("이천역"));
+        }).isInstanceOf(NotFoundStationException.class);
+    }
+
+    @Test
+    @DisplayName("지하철 노선의 구간 제거 실패 - 마지막구간 제거")
+    public void deleteSection_fail_last_station() {
+        // given
+        Section 판교역_여주역_구간 = new Section(경강선, 판교역, 여주역, 11);
+        sections.add(판교역_여주역_구간);
+
+        // then
+        assertThatThrownBy(() -> {
+            sections.delete(판교역);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 }
