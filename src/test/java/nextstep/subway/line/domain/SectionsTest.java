@@ -58,11 +58,7 @@ public class SectionsTest {
         // then
         assertAll(
                 () -> assertThat(sections.getStations()).containsExactly(판교역, 곤지암역, 여주역),
-                () -> assertThat(sections.getSections().stream()
-                        .filter(x -> x.getUpStation().equals(곤지암역) && x.getDownStation().equals(여주역))
-                        .findFirst()
-                        .get()
-                        .getDistance().getDistance()).isEqualTo(5),
+                () -> assertThat(findDistance(sections, 곤지암역, 여주역)).isEqualTo(5),
                 () -> assertThat(sections.getSections()).hasSize(2)
         );
     }
@@ -81,11 +77,7 @@ public class SectionsTest {
         // then
         assertAll(
                 () -> assertThat(sections.getStations()).containsExactly(판교역, 곤지암역, 여주역),
-                () -> assertThat(sections.getSections().stream()
-                        .filter(x -> x.getUpStation().equals(판교역) && x.getDownStation().equals(곤지암역))
-                        .findFirst()
-                        .get()
-                        .getDistance().getDistance()).isEqualTo(6),
+                () -> assertThat(findDistance(sections, 판교역, 곤지암역)).isEqualTo(6),
                 () -> assertThat(sections.getSections()).hasSize(2)
         );
     }
@@ -139,11 +131,7 @@ public class SectionsTest {
         assertAll(
                 () -> assertThat(sections.getSections()).hasSize(1),
                 () -> assertThat(sections.getStations()).doesNotContain(판교역),
-                () -> assertThat(sections.getSections().stream()
-                        .filter(x -> x.getUpStation().equals(곤지암역) && x.getDownStation().equals(여주역))
-                        .findFirst()
-                        .get()
-                        .getDistance().getDistance()).isEqualTo(5)
+                () -> assertThat(findDistance(sections, 곤지암역, 여주역)).isEqualTo(5)
         );
     }
 
@@ -163,11 +151,7 @@ public class SectionsTest {
         assertAll(
                 () -> assertThat(sections.getSections()).hasSize(1),
                 () -> assertThat(sections.getStations()).doesNotContain(여주역),
-                () -> assertThat(sections.getSections().stream()
-                        .filter(x -> x.getUpStation().equals(판교역) && x.getDownStation().equals(곤지암역))
-                        .findFirst()
-                        .get()
-                        .getDistance().getDistance()).isEqualTo(6)
+                () -> assertThat(findDistance(sections, 판교역, 곤지암역)).isEqualTo(6)
         );
     }
 
@@ -197,5 +181,13 @@ public class SectionsTest {
         assertThatThrownBy(() -> {
             sections.delete(판교역);
         }).isInstanceOf(IllegalArgumentException.class);
+    }
+    
+    private int findDistance(Sections sections, Station upStation, Station downStation) {
+        return sections.getSections().stream()
+                .filter(x -> x.getUpStation().equals(upStation) && x.getDownStation().equals(downStation))
+                .findFirst()
+                .get()
+                .getDistance().getDistance();
     }
 }
