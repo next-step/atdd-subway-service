@@ -24,6 +24,7 @@ public class PathFinderTest {
     private Station 강남역;
     private Station 양재역;
     private Station 교대역;
+    private Station 부산역;
     private Station 남부터미널역;
     private List<Section> 모든구간;
 
@@ -32,6 +33,7 @@ public class PathFinderTest {
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
         교대역 = new Station("교대역");
+        부산역 = new Station("부산역");
         남부터미널역 = new Station("남부터미널역");
 
         신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
@@ -59,7 +61,7 @@ public class PathFinderTest {
         assertThat(actual.getDistance()).isEqualTo(12);
     }
 
-    @DisplayName("출발역과 도착역이 최단 경로 조회를 실패한다.")
+    @DisplayName("출발역과 도착역이 같은 경우 최단 경로 조회를 실패한다.")
     @Test
     public void findShortestPathWithSameStation() {
         //given
@@ -69,5 +71,17 @@ public class PathFinderTest {
         assertThatThrownBy(() -> pathFinder.findShortestPath(모든구간, 강남역, 강남역))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("출발역과 도착역이 동일하면 최단 경로를 조회할 수 없습니다.");
+    }
+
+    @DisplayName("출발역과 도착역이 연결되어 있지 않으면 최단 경로 조회를 실패한다.")
+    @Test
+    public void findShortestPathWithNotConnectedStation() {
+        //given
+        PathFinder pathFinder = new PathFinder();
+        //when
+        //then
+        assertThatThrownBy(() -> pathFinder.findShortestPath(모든구간, 강남역, 부산역))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("지하철 역이 연결되어 있지 않습니다.");
     }
 }

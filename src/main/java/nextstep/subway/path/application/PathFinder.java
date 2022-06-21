@@ -26,8 +26,16 @@ public class PathFinder {
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(stationGraph);
 
-        GraphPath shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        GraphPath shortestPath = getGraphPath(sourceStation, targetStation, dijkstraShortestPath);
         return new PathResponse(shortestPath.getVertexList(), (long) shortestPath.getWeight());
+    }
+
+    private GraphPath getGraphPath(Station sourceStation, Station targetStation, DijkstraShortestPath dijkstraShortestPath) {
+        try{
+            return dijkstraShortestPath.getPath(sourceStation, targetStation);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("지하철 역이 연결되어 있지 않습니다.");
+        }
     }
 
     private void validate(List<Section> allSection, Station sourceStation, Station targetStation) {
