@@ -1,5 +1,6 @@
 package nextstep.subway.fare.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
@@ -71,5 +72,24 @@ class FareTest {
 
         // then
         assertThat(result).isEqualTo(new Fare(신분당선.getExtraFare()));
+    }
+
+    @DisplayName("나이에 따라 할인된 금액을 계산한다.")
+    @Test
+    void 나이_할인_금액_계산() {
+        // given
+        LoginMember child = new LoginMember(null, "a@b.c", 6);
+        LoginMember student = new LoginMember(null, "x@z.y", 13);
+        Fare baseFare = new Fare(DistanceExtraFare.BASE_FARE);
+
+        // when
+        Fare result = baseFare.discountForAge(child);
+        // then
+        assertThat(result).isEqualTo(new Fare(800));
+
+        // when
+        result = baseFare.discountForAge(student);
+        // then
+        assertThat(result).isEqualTo(new Fare(1070));
     }
 }

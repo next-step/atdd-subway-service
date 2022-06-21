@@ -1,5 +1,6 @@
 package nextstep.subway.fare.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.SectionEdge;
 
@@ -27,10 +28,21 @@ public class Fare {
     }
 
     public Fare addExtraOf(Path path) {
-        Fare resultFare = addExtraOf(path.getDistance());
-        resultFare = resultFare.addExtraOf(path.getSectionEdges());
+        return addExtraOf(path.getDistance())
+                .addExtraOf(path.getSectionEdges());
+    }
 
-        return resultFare;
+    public Fare discountForAge(LoginMember member) {
+        if (member.isGuest()) {
+            return this;
+        }
+
+        try {
+            AgeDiscount ageDiscount = AgeDiscount.of(member.getAge());
+            return new Fare((int) (value - (value - ageDiscount.getDeduction()) * ageDiscount.getDiscountRate()));
+        } catch (IllegalArgumentException e) {
+            return this;
+        }
     }
 
     public Fare addExtraOf(int distance) {
