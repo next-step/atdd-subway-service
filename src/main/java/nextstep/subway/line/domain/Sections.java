@@ -15,6 +15,13 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> values = new ArrayList<>();
 
+    public Sections() {
+    }
+
+    public Sections(List<Section> sectionList) {
+        values.addAll(sectionList);
+    }
+
     public List<Section> getValues() {
         return Collections.unmodifiableList(new ArrayList<>(values));
     }
@@ -163,5 +170,9 @@ public class Sections {
         if (values.size() <= 1) {
             throw new RuntimeException();
         }
+    }
+
+    public boolean hasStation(Station source) {
+        return values.stream().anyMatch(v -> v.hasStation(source));
     }
 }
