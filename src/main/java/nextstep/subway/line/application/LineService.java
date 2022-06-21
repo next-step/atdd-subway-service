@@ -1,7 +1,6 @@
 package nextstep.subway.line.application;
 
 import nextstep.subway.constant.ErrorMessage;
-import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
@@ -68,16 +67,13 @@ public class LineService {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
 
-        line.addLineStation(request.toSection(upStation, downStation, new Distance(request.getDistance())));
+        line.getSections().addLineStation(line, request.toSection(upStation, downStation, new Distance(request.getDistance())));
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
-        if (line.getSections().size() <= 1) {
-            throw new BadRequestException(ErrorMessage.EMPTY_SECTION);
-        }
-
         Station station = stationService.findStationById(stationId);
-        line.removeLineStation(station);
+
+        line.getSections().removeLineStation(line, station);
     }
 }

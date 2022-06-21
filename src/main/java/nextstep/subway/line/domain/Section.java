@@ -60,19 +60,23 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, Distance newDistance) {
-        if (this.distance.toInt() <= newDistance.toInt()) {
+    public void updateUpStation(Section section) {
+        if (this.distance.toInt() <= section.getDistance().toInt()) {
             throw new BadRequestException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.upStation = station;
-        this.distance.minus(newDistance.toInt());
+        this.upStation = section.getUpStation();
+        this.distance.minus(section.getDistance().toInt());
     }
 
-    public void updateDownStation(Station station, Distance newDistance) {
-        if (this.distance.toInt() <= newDistance.toInt()) {
+    public void updateDownStation(Section section) {
+        if (this.distance.toInt() <= section.getDistance().toInt()) {
             throw new BadRequestException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance.minus(newDistance.toInt());
+        this.downStation = section.getUpStation();
+        this.distance.minus(section.getDistance().toInt());
+    }
+
+    public void toLine(Line line) {
+        this.line = line;
     }
 }

@@ -67,7 +67,7 @@ public class LineTest {
         Station 양재역 = new Station(3L, "양재역");
 
         // when
-        line.addLineStation(new SectionRequest().toSection(강남역, 양재역, new Distance(5)));
+        line.getSections().addLineStation(line, new SectionRequest().toSection(강남역, 양재역, new Distance(5)));
 
         // then
         assertAll(
@@ -83,10 +83,10 @@ public class LineTest {
         // given
         Line line = new Line("신분당선", "bg-red-600", 강남역, 판교역, 15);
         Station 양재역 = new Station(3L, "양재역");
-        line.addLineStation(new SectionRequest().toSection(강남역, 양재역, new Distance(5)));
+        line.getSections().addLineStation(line, new SectionRequest().toSection(강남역, 양재역, new Distance(5)));
 
         // when
-        line.removeLineStation(양재역);
+        line.getSections().removeLineStation(line, 양재역);
 
         // then
         assertAll(
@@ -101,10 +101,10 @@ public class LineTest {
         // given
         Line line = new Line("신분당선", "bg-red-600", 강남역, 판교역, 15);
         Station 양재역 = new Station(3L, "양재역");
-        line.addLineStation(new SectionRequest().toSection(강남역, 양재역, new Distance(5)));
+        line.getSections().addLineStation(line, new SectionRequest().toSection(강남역, 양재역, new Distance(5)));
 
         // when
-        line.removeLineStation(강남역);
+        line.getSections().removeLineStation(line, 강남역);
 
         // then
         assertAll(
