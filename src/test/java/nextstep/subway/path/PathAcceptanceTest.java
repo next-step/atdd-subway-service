@@ -1,8 +1,5 @@
 package nextstep.subway.path;
 
-import static nextstep.subway.auth.domain.LoginMember.CHILD_DISCOUNT_RATE;
-import static nextstep.subway.auth.domain.LoginMember.DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY;
-import static nextstep.subway.auth.domain.LoginMember.TEEN_DISCOUNT_RATE;
 import static nextstep.subway.behaviors.MemberBehaviors.로그인_되어있음;
 import static nextstep.subway.behaviors.MemberBehaviors.회원_생성을_요청;
 import static nextstep.subway.behaviors.SubwayBehaviors.로그인_상태에서_최단경로_및_요금을_조회한다;
@@ -13,6 +10,9 @@ import static nextstep.subway.behaviors.SubwayBehaviors.지하철역_등록되�
 import static nextstep.subway.behaviors.SubwayBehaviors.지하철요금_확인;
 import static nextstep.subway.behaviors.SubwayBehaviors.최단경로_확인;
 import static nextstep.subway.behaviors.SubwayBehaviors.최단경로거리_확인;
+import static nextstep.subway.path.domain.SubwayUser.CHILD_DISCOUNT_RATE;
+import static nextstep.subway.path.domain.SubwayUser.DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY;
+import static nextstep.subway.path.domain.SubwayUser.TEEN_DISCOUNT_RATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;

@@ -106,3 +106,7 @@
   - [X] LoginMember로 연령별 할인 역할 이동
   - [X] PathFindResult로 거리 및 노선별 할인 역할 이동 
   - [X] SubwayFare에서 불필요한 객체 생성 방지 
+
+## 4단계 - 2
+  - [X] path 도메인에 맞게 SubwayUser 객체 정의
+  - [X] SubwayFarePolicy 생성 후 요금 계산 역할 분리 
