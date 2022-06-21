@@ -105,32 +105,16 @@ public class PathFinderTest {
     }
 
     @Test
-    @DisplayName("거리에 따른 운임비용 - 10Km")
-    public void getFareByDistanceBasedWithin10Km() {
+    @DisplayName("거리에 따른 운임비용")
+    public void getFareByDistanceBased() {
         // when
         Path baseFare = pathFinder.findShortestPath(Arrays.asList(이호선, 삼호선, 신분당선), 강남역, 양재역);
-
-        // then
-        assertThat(baseFare.getFare()).isEqualTo(1_250);
-    }
-
-    @Test
-    @DisplayName("거리에 따른 운임비용 - 10km 초과 50km 이내")
-    public void getFareByDistanceBasedExcess10Km() {
-        // when
         Path excess10KmFare = pathFinder.findShortestPath(Arrays.asList(이호선, 삼호선, 신분당선), 강남역, 남부터미널역);
-
-        // then
-        assertThat(excess10KmFare.getFare()).isEqualTo(1_350);
-    }
-
-    @Test
-    @DisplayName("거리에 따른 운임비용 - 50km 초과")
-    public void getFareByDistanceBasedExcess50Km() {
-        // when
         Path excess50KmFare = pathFinder.findShortestPath(Arrays.asList(이호선, 삼호선, 신분당선), 강남역, 정자역);
 
         // then
+        assertThat(baseFare.getFare()).isEqualTo(1_250);
+        assertThat(excess10KmFare.getFare()).isEqualTo(1_350);
         assertThat(excess50KmFare.getFare()).isEqualTo(2_250);
     }
 }
