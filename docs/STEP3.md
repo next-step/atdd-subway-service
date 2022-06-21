@@ -2,8 +2,8 @@
 
 ### 요구사항
 - [x] 토큰 발급 기능 (로그인) 인수 테스트 만들기
-- [ ] 인증 - 내 정보 조회 기능 완성하기
-- [ ] 인증 - 즐겨찾기 기능 완성하기
+- [x] 인증 - 내 정보 조회 기능 완성하기
+- [x] 인증 - 즐겨찾기 기능 완성하기
 
 ### 요구사항 구현
 - [x] 토큰 발급 기능 인수 테스트 작성(AuthAcceptanceTest)
@@ -14,17 +14,17 @@
   - [x] 내 정보 조회, 수정, 삭제 인수 테스트 작성(MemberAcceptanceTest)
     - [x] 테스트 시 로그인 후 발급 받은 토큰을 포함하여 요청
   - [x] MemberController 에서 토큰 확인하여 로그인 정보를 받아오도록 구현
-- [ ] 즐겨찾기 기능 구현
+- [x] 즐겨찾기 기능 구현
   - [x] 즐겨찾기 생성, 조회, 삭제 인수 테스트 작성(FavoriteAcceptanceTest)
     - [x] 테스트 시 로그인 후 발급 받은 토큰을 포함하여 요청
     - [x] 즐겨찾기 기능 관련 예외 테스트 작성
-  - [ ] 즐겨찾기 기능 구현
+  - [x] 즐겨찾기 기능 구현
     - [x] Favorite 도메인 테스트 작성
     - [x] Favorite 도메인 구현
     - [x] Favorite 요청/응답 객체 구현
     - [x] FavoriteController 구현
     - [x] FavoriteService 테스트 작성
-    - [ ] FavoriteService 기능 구현
+    - [x] FavoriteService 기능 구현
 
 ### 요구사항 설명
 #### 토큰 발급 인수 테스트

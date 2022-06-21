@@ -49,4 +49,20 @@ public class Favorite extends BaseEntity {
             throw new IllegalArgumentException(NOT_NULL_TARGET);
         }
     }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public Member getMember() {
+        return this.member;
+    }
+
+    public Station getSource() {
+        return this.source;
+    }
+
+    public Station getTarget() {
+        return this.target;
+    }
 }
