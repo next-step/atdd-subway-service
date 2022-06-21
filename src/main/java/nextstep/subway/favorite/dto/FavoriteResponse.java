@@ -5,31 +5,31 @@ import nextstep.subway.station.dto.StationResponse;
 
 public class FavoriteResponse {
     private Long id;
-    private StationResponse upStation;
-    private StationResponse downStation;
+    private StationResponse source;
+    private StationResponse target;
 
     public FavoriteResponse() {
     }
 
-    public FavoriteResponse(Long id, StationResponse upStation, StationResponse downStation) {
+    public FavoriteResponse(Long id, StationResponse source, StationResponse target) {
         this.id = id;
-        this.upStation = upStation;
-        this.downStation = downStation;
+        this.source = source;
+        this.target = target;
     }
 
     public static FavoriteResponse of(Favorite favorite) {
-        return new FavoriteResponse(favorite.getId(), StationResponse.of(favorite.getUpStation()), StationResponse.of(favorite.getUpStation()));
+        return new FavoriteResponse(favorite.getId(), StationResponse.of(favorite.getUpStation()), StationResponse.of(favorite.getDownStation()));
     }
 
     public Long getId() {
         return id;
     }
 
-    public StationResponse getUpStation() {
-        return upStation;
+    public StationResponse getSource() {
+        return source;
     }
 
-    public StationResponse getDownStation() {
-        return downStation;
+    public StationResponse getTarget() {
+        return target;
     }
 }

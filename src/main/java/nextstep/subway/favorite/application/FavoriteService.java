@@ -11,6 +11,9 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class FavoriteService {
     private final StationService stationService;
@@ -41,5 +44,12 @@ public class FavoriteService {
             throw new IllegalArgumentException("즐겨찾기가 존재하지 않습니다.");
         }
         favoriteRepository.deleteById(id);
+    }
+
+    public List<FavoriteResponse> getFavorites(LoginMember loginMember) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.getId());
+        return favorites.stream()
+                        .map(FavoriteResponse::of)
+                        .collect(Collectors.toList());
     }
 }
