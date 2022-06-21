@@ -26,6 +26,7 @@ public class PathService {
         Path path = pathFinder.getPath(source, target);
         Fare fare = Fare.of(DistanceExtraFare.BASE_FARE);
         fare = fare.addExtraOf(path.getDistance());
+        fare = fare.addExtraOf(path.getSectionEdges());
         return PathResponse.of(path.getStations(), path.getDistance(), fare);
     }
 }

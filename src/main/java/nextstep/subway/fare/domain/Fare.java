@@ -1,5 +1,8 @@
 package nextstep.subway.fare.domain;
 
+import nextstep.subway.path.domain.SectionEdge;
+
+import java.util.List;
 import java.util.Objects;
 
 public class Fare {
@@ -9,12 +12,12 @@ public class Fare {
         this.value = value;
     }
 
-    public int getValue() {
-        return value;
-    }
-
     public static Fare of(int baseFare) {
         return new Fare(baseFare);
+    }
+
+    public int getValue() {
+        return value;
     }
 
     public Fare addExtraOf(int distance) {
@@ -24,6 +27,19 @@ public class Fare {
         }
 
         return result;
+    }
+
+    public Fare addExtraOf(List<SectionEdge> edgeList) {
+        if (edgeList.isEmpty()) {
+            throw new IllegalStateException("경로가 잘못되어 노선별 추가 요금을 계산할 수 없습니다.");
+        }
+
+        int max = edgeList.get(0).getLineFare();
+        for (SectionEdge sectionEdge : edgeList) {
+            max = sectionEdge.max(max);
+        }
+
+        return Fare.of(value + max);
     }
 
     private Fare plus(Fare extra) {

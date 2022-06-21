@@ -5,7 +5,6 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +14,7 @@ import java.util.List;
 @Component
 public class PathFinder {
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
     private LineRepository lineRepository;
 
     @Autowired
@@ -39,17 +38,17 @@ public class PathFinder {
         isSame(source, target);
         isExistent(source, target);
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
         if (path == null) {
             throw new IllegalArgumentException("출발역과 도착역은 연결되어 있어야 합니다.");
         }
 
-        return new Path(path.getVertexList(), (int) path.getWeight());
+        return new Path(path.getVertexList(), (int) path.getWeight(), path.getEdgeList());
     }
 
     public void renewGraph() {
-        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        graph = new WeightedMultigraph<>(SectionEdge.class);
         lineRepository.findAll()
                 .forEach(line -> line.enrollIn(graph));
     }

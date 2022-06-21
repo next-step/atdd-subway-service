@@ -77,7 +77,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse path = response.as(PathResponse.class);
         assertThat(path.getStations()).hasSize(3);
         assertThat(path.getDistance()).isEqualTo(12);
-        assertThat(path.getFare()).isEqualTo(1350);
+        assertThat(path.getFare()).isEqualTo(2250);
     }
 
     /**

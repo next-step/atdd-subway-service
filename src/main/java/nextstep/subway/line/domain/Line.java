@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -74,7 +75,7 @@ public class Line extends BaseEntity {
         sections.removeStation(station);
     }
 
-    public void enrollIn(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    public void enrollIn(WeightedMultigraph<Station, SectionEdge> graph) {
         sections.enrollIn(graph);
     }
 }
