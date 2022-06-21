@@ -3,14 +3,24 @@ package nextstep.subway.path;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 
 
 @DisplayName("지하철 경로 조회")
@@ -45,5 +55,45 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+    }
+
+    /**
+     * when 등록된 역과 역 사이에 최단 경로 조회 요청을 한다.
+     * then 역 사이의 최단 경로를 순서대로 확인한다.
+     */
+    @DisplayName("역과 역 사이에서 가장 짧은 경로를 찾아서 역 순서대로 조회한다.")
+    @Test
+    public void findShortestPath() {
+        //when
+        ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청(강남역, 남부터미널역);
+        //then
+        지하철_노선에_지하철역_순서_정렬됨(최단경로_조회응답, Arrays.asList(강남역, 교대역, 남부터미널역));
+    }
+
+    public static ExtractableResponse<Response> 지하철_역사이_최단경로_조회요청( StationResponse sourceStation, StationResponse targetStation) {
+
+        return RestAssured
+            .given().log().all()
+            .param("source",sourceStation.getId())
+            .param("target",targetStation.getId())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("paths")
+            .then().log().all()
+            .extract();
+    }
+
+    public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response,
+        List<StationResponse> expectedStations) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+
+        List<Long> stationIds = pathResponse.getStations().stream()
+            .map(it -> it.getId())
+            .collect(Collectors.toList());
+
+        List<Long> expectedStationIds = expectedStations.stream()
+            .map(it -> it.getId())
+            .collect(Collectors.toList());
+
+        assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }
 }
