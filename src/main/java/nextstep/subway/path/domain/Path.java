@@ -23,4 +23,8 @@ public class Path {
     public int getDistance() {
         return distance;
     }
+
+    public int getFare() {
+        return DistanceFare.calculate(distance);
+    }
 }

@@ -55,4 +55,8 @@ public class PathAcceptanceSteps {
     public static void 지하철_최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
+
+    public static void 지하철_요금_조회됨(ExtractableResponse<Response> response, int fare) {
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(fare);
+    }
 }
