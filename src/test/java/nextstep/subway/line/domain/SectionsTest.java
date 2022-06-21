@@ -24,7 +24,7 @@ class SectionsTest {
     private Section 광교_광교중앙역;
     @BeforeEach
     void setUp() {
-        신분당선 = new Line("신분당선", "bg-blue-200");
+        신분당선 = new Line("신분당선", "bg-blue-200", 100);
         광교역 = new Station("광교역");
         광교중앙역 = new Station("광교중앙역");
         상현역 = new Station("상현역");
@@ -161,5 +161,27 @@ class SectionsTest {
 
         // Then
         assertThat(구간들이_저장된_노선들.getStations().toArray(new Station[0])).containsExactly(광교역, 광교중앙역, 양재시민의숲, 상현역, 성복역);
+    }
+
+    /**
+     * Given 저장된 구간들에서
+     * When 전체 길이를 요청하면
+     * Then 전체 길이를 반환한다.
+     */
+    @DisplayName("구간들에 전체 길이를 알수 있다.")
+    @Test
+    void getTotalDistanceTest() {
+        assertThat(구간들이_저장된_노선들.getTotalDistance()).isEqualTo(new Distance(30));
+    }
+
+    /**
+     * Given 저장된 구간들에서
+     * When 전체 요금을 요청하면
+     * Then 전체 요금을 반환한다.
+     */
+    @DisplayName("구간들에 대한 요금을 알수 있다.")
+    @Test
+    void getTotalPriceTest() {
+        assertThat(구간들이_저장된_노선들.getTotalPrice()).isEqualTo(new Price(1650).plus(신분당선.getExtraCharge()));
     }
 }

@@ -55,6 +55,23 @@ public class Sections {
         return this.sections.size();
     }
 
+
+    public Distance getTotalDistance() {
+        return new Distance(sections.stream().mapToLong(section -> section.getDistance().of()).sum());
+    }
+
+    public Price getTotalPrice() {
+        Price extraCharge = sections.stream()
+                .map(Section::getLine)
+                .distinct()
+                .map(Line::getExtraCharge)
+                .sorted()
+                .findFirst()
+                .orElseThrow(IllegalStateException::new);
+
+        return this.getTotalDistance().calculate().plus(extraCharge);
+    }
+
     public boolean isContains(final Section section) {
         return sections.contains(section);
     }
@@ -132,4 +149,5 @@ public class Sections {
                 && sections.stream()
                 .anyMatch(it -> it.isMatchUpStation(section.getDownStation()));
     }
+
 }
