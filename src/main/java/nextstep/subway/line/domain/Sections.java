@@ -59,6 +59,8 @@ public class Sections {
     }
 
     private void canNotRegisterSection(final Section section) {
+        System.out.println("#####" + list);
+        System.out.println("###" + section);
         if (!list.isEmpty() && isUpStationNotExisted(section.getUpStation()) &&
                isDownStationNotExisted(section.getDownStation())) {
             throw new LineException(LineExceptionType.CAN_NOT_REGISTER_SECTION);
@@ -67,18 +69,20 @@ public class Sections {
 
     private boolean isUpStationNotExisted(final Station upStation) {
         return list.stream()
-                .noneMatch(it -> it.equalsUpStation(upStation));
+                .map(Section::getUpStation)
+                .noneMatch(it -> upStation.equals(it));
     }
 
     private boolean isDownStationNotExisted(final Station downStation) {
         return list.stream()
-                .noneMatch(it -> it.equalsDownStation(downStation));
+                .map(Section::getDownStation)
+                .noneMatch(it -> downStation.equals(it));
     }
 
     private void updateUpStation(final Section section) {
         if (isUpStationExisted(section.getUpStation())) {
             list.stream()
-                    .filter(it -> it.equalsUpStation(section.getUpStation()))
+                    .filter(it -> section.equalsUpStation(it.getUpStation()))
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
         }
@@ -87,7 +91,7 @@ public class Sections {
     private void updateDownStation(final Section section) {
         if (isDownStationExisted(section.getDownStation())) {
             list.stream()
-                    .filter(it -> it.equalsDownStation(section.getDownStation()))
+                    .filter(it -> section.equalsDownStation(it.getDownStation()))
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
 
@@ -98,15 +102,14 @@ public class Sections {
         deletionValidation();
 
         final Optional<Section> upLineStation = getUpLineStation(station);
-        upLineStation.ifPresent(list::remove);
-
         final Optional<Section> downLineStation = getDownLineStation(station);
         downLineStation.ifPresent(list::remove);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            final Section deleteNewSection = upLineStation.get().deleteStation(downLineStation.get());
-            add(deleteNewSection);
+            final Section updateMiddleStation = upLineStation.get().updateMiddleStation(downLineStation.get());
+            add(updateMiddleStation);
         }
+        upLineStation.ifPresent(list::remove);
     }
 
     private void deletionValidation() {
@@ -145,4 +148,23 @@ public class Sections {
         return Collections.unmodifiableList(new ArrayList<>(stations));
     }
 
+    @Override
+    public String toString() {
+        return "Sections{" +
+                "list=" + list +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sections sections = (Sections) o;
+        return Objects.equals(list, sections.list);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(list);
+    }
 }
