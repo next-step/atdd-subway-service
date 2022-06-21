@@ -18,6 +18,14 @@ public class Path {
         return new Path(stations, distance);
     }
 
+    public List<Station> getStations() {
+        return stations;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
