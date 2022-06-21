@@ -7,6 +7,7 @@ import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,13 +22,6 @@ import static nextstep.subway.station.StationAcceptanceMethod.지하철역_등�
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 20;
-    public static final String NEW_EMAIL = "newemail@email.com";
-    public static final String NEW_PASSWORD = "newpassword";
-    public static final int NEW_AGE = 21;
-
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -52,8 +46,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
 
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        토큰 = 로그인_요청(new TokenRequest(EMAIL, PASSWORD)).as(TokenResponse.class);
+        회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
+        토큰 = 로그인_요청(new TokenRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD)).as(TokenResponse.class);
     }
 
     /**
@@ -100,8 +94,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void delete_other_user_favorite() {
         // given
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(토큰, 강남역.getId(), 교대역.getId());
-        회원_생성을_요청(NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
-        TokenResponse 다른_사용자_토큰 = 로그인_요청(new TokenRequest(NEW_EMAIL, NEW_PASSWORD)).as(TokenResponse.class);
+        회원_생성을_요청(MemberAcceptanceTest.NEW_EMAIL, MemberAcceptanceTest.NEW_PASSWORD, MemberAcceptanceTest.NEW_AGE);
+        TokenResponse 다른_사용자_토큰 = 로그인_요청(new TokenRequest(MemberAcceptanceTest.NEW_EMAIL, MemberAcceptanceTest.NEW_PASSWORD)).as(TokenResponse.class);
 
         // when
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(다른_사용자_토큰, createResponse);

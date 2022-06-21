@@ -19,7 +19,7 @@
     - [x] 테스트 시 로그인 후 발급 받은 토큰을 포함하여 요청
     - [x] 즐겨찾기 기능 관련 예외 테스트 작성
   - [ ] 즐겨찾기 기능 구현
-    - [ ] Favorite 도메인 테스트 작성
+    - [x] Favorite 도메인 테스트 작성
     - [ ] Favorite 도메인 구현
     - [ ] Favorite 요청/응답 객체 구현
     - [ ] FavoriteController 구현
