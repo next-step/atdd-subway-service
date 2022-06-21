@@ -4,13 +4,20 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.SectionEdge;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.util.List;
 import java.util.Objects;
 
+@Embeddable
 public class Fare {
     private static int MINIMUM_FARE = 0;
 
+    @Column
     private int value;
+
+    protected Fare() {
+    }
 
     public Fare(int value) {
         validate(value);

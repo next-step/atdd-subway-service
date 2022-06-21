@@ -1,9 +1,9 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.Column;
@@ -22,7 +22,8 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-    private int extraFare;
+    @Embedded
+    private Fare extraFare;
 
     @Embedded
     private Sections sections = new Sections();
@@ -38,7 +39,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance, int extraFare) {
         this.name = name;
         this.color = color;
-        this.extraFare = extraFare;
+        this.extraFare = new Fare(extraFare);
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
@@ -60,7 +61,7 @@ public class Line extends BaseEntity {
     }
 
     public int getExtraFare() {
-        return extraFare;
+        return extraFare.getValue();
     }
 
     public List<Station> getStationsInOrder() {
