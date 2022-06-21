@@ -30,9 +30,12 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public LoginMember findMemberByToken(String credentials) {
+    public LoginMember findMemberByToken(String credentials, boolean required) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException("토큰이 유효하지 않습니다.");
+            if (required) {
+                throw new AuthorizationException("토큰이 유효하지 않습니다.");
+            }
+            return new LoginMember();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
