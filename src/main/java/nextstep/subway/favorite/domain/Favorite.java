@@ -41,7 +41,7 @@ public class Favorite extends BaseEntity {
     }
 
     private void validate(Station source, Station target) {
-        if(Objects.equals(source, target)) {
+        if (Objects.equals(source, target)) {
             throw new IllegalArgumentException("출발지와 도착지는 다른 역으로 등록해주세요.");
         }
     }

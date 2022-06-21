@@ -41,7 +41,7 @@ public enum DistanceFarePolicy {
 
     public int calculate(int distance) {
         int fare = defaultFare;
-        if(overFarePerUnit > 0) {
+        if (overFarePerUnit > 0) {
             int calculateDistance = distance - startDistance + 1;
             fare += (int) ((Math.ceil((calculateDistance - 1) / calculateUnit) + 1) * overFarePerUnit);
         }
