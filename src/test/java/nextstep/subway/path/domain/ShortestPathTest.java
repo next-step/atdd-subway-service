@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
-import nextstep.subway.fare.domain.DiscountByAge;
-import nextstep.subway.fare.domain.FareByDistance;
+import nextstep.subway.fare.domain.AgeDiscount;
+import nextstep.subway.fare.domain.DistanceFare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -60,7 +60,7 @@ class ShortestPathTest {
         ShortestPath shortestPath = pathFinder.getShortestPath(강남역, 판교역);
 
         // when
-        int fare = shortestPath.getFare(new FareByDistance(), new DiscountByAge(20));
+        int fare = shortestPath.getFare(new DistanceFare(), new AgeDiscount(20));
 
         // then
         assertThat(fare).isEqualTo(3050);
@@ -80,7 +80,7 @@ class ShortestPathTest {
         ShortestPath shortestPath = pathFinder.getShortestPath(신림역, 신논현역);
 
         // then
-        assertThat(shortestPath.getFare(new FareByDistance(), new DiscountByAge(20))).isEqualTo(2250);
+        assertThat(shortestPath.getFare(new DistanceFare(), new AgeDiscount(20))).isEqualTo(2250);
     }
 
     @Test
@@ -91,7 +91,7 @@ class ShortestPathTest {
         ShortestPath path = pathFinder.getShortestPath(교대역, 신논현역);
 
         // when
-        int fare = path.getFare(new FareByDistance(), new DiscountByAge(20));
+        int fare = path.getFare(new DistanceFare(), new AgeDiscount(20));
 
         // then
         assertThat(fare).isEqualTo(2250);
@@ -105,7 +105,7 @@ class ShortestPathTest {
         ShortestPath path = pathFinder.getShortestPath(교대역, 잠실역);
 
         // when
-        int fare = path.getFare(new FareByDistance(), new DiscountByAge(13));
+        int fare = path.getFare(new DistanceFare(), new AgeDiscount(13));
 
         // then
         assertThat(fare).isEqualTo(800);
@@ -119,7 +119,7 @@ class ShortestPathTest {
         ShortestPath path = pathFinder.getShortestPath(교대역, 잠실역);
 
         // when
-        int fare = path.getFare(new FareByDistance(), new DiscountByAge(6));
+        int fare = path.getFare(new DistanceFare(), new AgeDiscount(6));
 
         assertThat(fare).isEqualTo(500);
     }
@@ -132,8 +132,8 @@ class ShortestPathTest {
         ShortestPath path = pathFinder.getShortestPath(교대역, 잠실역);
 
         // when
-        int seniorFare = path.getFare(new FareByDistance(), new DiscountByAge(70));
-        int babyFare = path.getFare(new FareByDistance(), new DiscountByAge(2));
+        int seniorFare = path.getFare(new DistanceFare(), new AgeDiscount(70));
+        int babyFare = path.getFare(new DistanceFare(), new AgeDiscount(2));
 
         // then
         assertAll(

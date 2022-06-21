@@ -1,8 +1,8 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.fare.domain.DiscountByAge;
-import nextstep.subway.fare.domain.FareByDistance;
+import nextstep.subway.fare.domain.AgeDiscount;
+import nextstep.subway.fare.domain.DistanceFare;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.ShortestPath;
@@ -30,6 +30,6 @@ public class PathService {
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
         ShortestPath path = pathFinder.getShortestPath(sourceStation, targetStation);
         return PathResponse.of(path.getShortestStations(), path.getShortestDistance(),
-                path.getFare(new FareByDistance(), new DiscountByAge(loginMember.getAge())));
+                path.getFare(new DistanceFare(), new AgeDiscount(loginMember.getAge())));
     }
 }

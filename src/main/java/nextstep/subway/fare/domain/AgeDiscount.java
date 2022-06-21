@@ -2,11 +2,11 @@ package nextstep.subway.fare.domain;
 
 import nextstep.subway.member.domain.MemberShip;
 
-public class DiscountByAge implements DiscountPolicy {
+public class AgeDiscount implements DiscountPolicy {
 
     private final MemberShip memberShip;
 
-    public DiscountByAge(int age) {
+    public AgeDiscount(int age) {
         this.memberShip = MemberShip.findMemberShip(age);
     }
 
