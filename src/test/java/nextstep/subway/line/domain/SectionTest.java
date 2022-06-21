@@ -21,7 +21,7 @@ class SectionTest {
         정자역_강남역 = new Section(신분당선, 정자역, 강남역, 10000);
     }
     @Test
-    @DisplayName("추가할 구간 너무 긴 경우 에러를 발생시킨다.")
+    @DisplayName("추가할 구간의 길이가 기존 역 사이 길이보다 긴 경우 에러를 발생시킨다.")
     void throwExceptionWhenConnectUpStation() {
         Station 양재역 = new Station("양재역");
         Section 정자역_양재역 = new Section(신분당선, 정자역, 양재역, 20000);
@@ -32,7 +32,7 @@ class SectionTest {
     }
 
     @Test
-    @DisplayName("추가할 구간 너무 긴 경우 에러를 발생시킨다.")
+    @DisplayName("추가할 구간의 길이가 기존 역 사이 길이보다 긴 경우 에러를 발생시킨다.")
     void throwExceptionWhenConnectDownStation() {
         Station 양재역 = new Station("양재역");
         Section 양재역_강남역 = new Section(신분당선, 양재역, 강남역, 20000);
