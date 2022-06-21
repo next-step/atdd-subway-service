@@ -3,6 +3,8 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 public class Section {
@@ -54,9 +56,18 @@ public class Section {
         return distance;
     }
 
+    public void update(Section newSection) {
+        if (this.upStation.equals(newSection.upStation)) {
+            updateUpStation(newSection.getDownStation(), newSection.getDistance());
+        }
+        if (this.downStation.equals(newSection.downStation)) {
+            updateDownStation(newSection.getUpStation(), newSection.getDistance());
+        }
+    }
+
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.upStation = station;
         this.distance -= newDistance;
@@ -64,9 +75,13 @@ public class Section {
 
     public void updateDownStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public List<Station> getStations() {
+        return Arrays.asList(upStation, downStation);
     }
 }
