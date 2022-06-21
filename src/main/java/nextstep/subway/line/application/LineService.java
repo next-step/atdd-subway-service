@@ -26,12 +26,13 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Line persistLine = lineRepository.save(request.toLine());
 
-        Line persistLine = lineRepository.save(
-            new Line(request.getName(), request.getColor(), upStation, downStation,
-                request.getDistance()));
+        if (request.hasSection()) {
+            Station upStation = stationService.findById(request.getUpStationId());
+            Station downStation = stationService.findById(request.getDownStationId());
+            persistLine.addSection(upStation, downStation, request.getDistance());
+        }
 
         return LineResponse.from(persistLine);
     }

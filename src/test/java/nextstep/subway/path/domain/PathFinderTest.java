@@ -3,8 +3,6 @@ package nextstep.subway.path.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import java.util.Arrays;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
@@ -108,13 +106,37 @@ public class PathFinderTest {
     @DisplayName("거리에 따른 운임비용")
     public void getFareByDistanceBased() {
         // when
-        Path baseFare = pathFinder.findShortestPath(Arrays.asList(이호선, 삼호선, 신분당선), 강남역, 양재역);
-        Path excess10KmFare = pathFinder.findShortestPath(Arrays.asList(이호선, 삼호선, 신분당선), 강남역, 남부터미널역);
-        Path excess50KmFare = pathFinder.findShortestPath(Arrays.asList(이호선, 삼호선, 신분당선), 강남역, 정자역);
+        Path basePath = pathFinder.findShortestPath(Arrays.asList(이호선, 삼호선, 신분당선), 강남역, 양재역);
+        Path excess10KmPath = pathFinder.findShortestPath(Arrays.asList(이호선, 삼호선, 신분당선), 강남역, 남부터미널역);
+        Path excess50KmPath = pathFinder.findShortestPath(Arrays.asList(이호선, 삼호선, 신분당선), 강남역, 정자역);
 
         // then
-        assertThat(baseFare.getFare()).isEqualTo(1_250);
-        assertThat(excess10KmFare.getFare()).isEqualTo(1_350);
-        assertThat(excess50KmFare.getFare()).isEqualTo(2_250);
+        assertThat(basePath.getFare()).isEqualTo(1_250);
+        assertThat(excess10KmPath.getFare()).isEqualTo(1_350);
+        assertThat(excess50KmPath.getFare()).isEqualTo(2_250);
+    }
+
+    /**
+     * 동대문역 --- *1호선(300원)* --- 동묘앞역 --- *6호선(900원)* --- 창신역
+     */
+    @Test
+    @DisplayName("노선 추가 요금 - 노선(900원) 요금")
+    void getFareByLineBased() {
+        // given
+        Station 동대문역 = new Station("동대문역");
+        Station 동묘앞역 = new Station("동묘앞역");
+        Station 창신역 = new Station("창신역");
+
+        Line 일호선 = new Line("1호선", "bg-blue-600", 300);
+        Line 육호선 = new Line("6호선", "bg-brown-600", 900);
+
+        일호선.addSection(동대문역, 동묘앞역, 2);
+        육호선.addSection(동묘앞역, 창신역, 2);
+
+        // when
+        Path excess10KmPath = pathFinder.findShortestPath(Arrays.asList(일호선, 육호선), 동대문역, 창신역);
+
+        // then
+        assertThat(excess10KmPath.getFare()).isEqualTo(2_150);
     }
 }

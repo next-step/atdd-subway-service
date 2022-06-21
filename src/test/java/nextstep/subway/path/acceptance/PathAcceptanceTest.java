@@ -11,7 +11,6 @@ import java.util.Arrays;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -129,5 +128,29 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 거리_50km_이상_요금 = 지하철_최단_경로_조회(강남역.getId(), 정자역.getId());
         // then
         지하철_요금_조회됨(거리_50km_이상_요금, 2_250);
+    }
+
+    /**
+     * 동대문역 --- *1호선(300원)* --- 동묘앞역 --- *6호선(900원)* --- 창신역
+     */
+    @Test
+    @DisplayName("노선 추가 요금 - 노선(900원) 요금")
+    void getFareByLineBased() {
+        // given
+        StationResponse 동대문역 = 지하철역_등록되어_있음("동대문역").as(StationResponse.class);
+        StationResponse 동묘앞역 = 지하철역_등록되어_있음("동묘앞역").as(StationResponse.class);
+        StationResponse 창신역 = 지하철역_등록되어_있음("창신역").as(StationResponse.class);
+
+        LineResponse 일호선 = 지하철_노선_등록되어_있음(new LineRequest("1호선", "bg-blue-600", 300)).as(LineResponse.class);
+        LineResponse 육호선 = 지하철_노선_등록되어_있음(new LineRequest("6호선", "bg-brown-600", 900)).as(LineResponse.class);
+
+        지하철_노선에_지하철역_등록_요청(일호선, 동대문역, 동묘앞역, 2);
+        지하철_노선에_지하철역_등록_요청(육호선, 동묘앞역, 창신역, 2);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회(동대문역.getId(), 창신역.getId());
+
+        // then
+        지하철_요금_조회됨(response, 2_150);
     }
 }

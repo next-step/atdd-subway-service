@@ -1,41 +1,41 @@
 package nextstep.subway.path.domain;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class DijkstraShortestPathFinder implements StationGraphStrategy {
     @Override
     public Path findShortestPath(List<Section> sections, Station source, Station target) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph(SectionEdge.class);
         DijkstraShortestPath path = new DijkstraShortestPath(graph);
         setGraph(sections, graph);
 
         GraphPath graphPath = Optional.ofNullable(path.getPath(source, target))
             .orElseThrow(PathException::new);
 
-        List<Station> stations = graphPath.getVertexList();
+        List<SectionEdge> shortestSections = graphPath.getEdgeList();
         int distance = (int)graphPath.getWeight();
 
-        return Path.of(stations, distance);
+        return Path.of(shortestSections, distance);
     }
 
-    private void setGraph(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void setGraph(List<Section> sections, WeightedMultigraph<Station, SectionEdge> graph) {
         for(Section section: sections) {
+            SectionEdge sectionEdge = new SectionEdge(section);
+
             Station upStation = section.getUpStation();
             Station downStation = section.getDownStation();
 
             graph.addVertex(upStation);
             graph.addVertex(downStation);
 
-            graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
+            graph.addEdge(upStation, downStation, sectionEdge);
+            graph.setEdgeWeight(sectionEdge, section.getDistance());
         }
     }
 }
