@@ -49,6 +49,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         로그인_토큰 = AuthAcceptanceTest.로그인_토큰(AuthAcceptanceTest.로그인_요청(new TokenRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD)));
     }
 
+    @DisplayName("즐겨찾기 통합 테스트")
+    @Test
+    void integration() {
+        // 생성
+        ExtractableResponse<Response> 즐겨찾기_결과 = 즐겨찾기_요청(로그인_토큰, new FavoriteRequest(강남역.getId(), 광교역.getId()));
+        즐겨찾기_성공(즐겨찾기_결과);
+
+        // 조회
+        ExtractableResponse<Response> 즐겨찾기 = 즐겨찾기_조회(로그인_토큰);
+        즐겨찾기_조회_성공(즐겨찾기);
+
+        // 삭제
+        ExtractableResponse<Response> 즐겨찾기_삭제 = 즐겨찾기_삭제(로그인_토큰, 즐겨찾기);
+        즐겨찾기_삭제_성공(즐겨찾기_삭제);
+    }
+
     @DisplayName("즐겨찾기 생성")
     @Test
     void create() {
