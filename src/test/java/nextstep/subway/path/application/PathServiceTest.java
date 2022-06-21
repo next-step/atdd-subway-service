@@ -40,11 +40,11 @@ class PathServiceTest {
     private Line 삼호선;
     private Line 구호선;
 
-    final int 강남_양재 = 20;
-    final int 교대_강남 = 10;
-    final int 교대_남부터미널 = 10;
-    final int 남부터미널_양재 = 5;
-    final int 여의도_샛강 = 15;
+    final int 강남역_양재역_간_거리 = 20;
+    final int 교대역_강남역_간_거리 = 10;
+    final int 교대역_남부터미널역_간_거리 = 10;
+    final int 남부터미널역_양재역_간_거리 = 5;
+    final int 여의도역_샛강역_간_거리 = 15;
 
     @BeforeEach
     void setUp() {
@@ -59,12 +59,12 @@ class PathServiceTest {
         여의도역 = stationRepository.save(new Station("여의도역"));
         샛강역 = stationRepository.save(new Station("샛강역"));
 
-        신분당선 = lineRepository.save(new Line("신분당선", "red", 강남역, 양재역, 강남_양재));
-        이호선 = lineRepository.save(new Line("이호선", "green", 교대역, 강남역, 교대_강남));
-        삼호선 = lineRepository.save(new Line("삼호선", "orange", 교대역, 양재역, 교대_남부터미널 + 남부터미널_양재));
-        구호선 = lineRepository.save(new Line("구호선", "brown", 여의도역, 샛강역, 여의도_샛강));
+        신분당선 = lineRepository.save(new Line("신분당선", "red", 강남역, 양재역, 강남역_양재역_간_거리));
+        이호선 = lineRepository.save(new Line("이호선", "green", 교대역, 강남역, 교대역_강남역_간_거리));
+        삼호선 = lineRepository.save(new Line("삼호선", "orange", 교대역, 양재역, 교대역_남부터미널역_간_거리 + 남부터미널역_양재역_간_거리));
+        구호선 = lineRepository.save(new Line("구호선", "brown", 여의도역, 샛강역, 여의도역_샛강역_간_거리));
 
-        삼호선.addSection(교대역, 남부터미널역, 교대_남부터미널);
+        삼호선.addSection(교대역, 남부터미널역, 교대역_남부터미널역_간_거리);
         lineRepository.save(삼호선);
     }
 
@@ -74,7 +74,7 @@ class PathServiceTest {
         final PathResponse path = pathService.findShortestPath(강남역.getId(), 남부터미널역.getId());
 
         // then
-        assertThat(path.getDistance()).isEqualTo(교대_강남 + 교대_남부터미널);
+        assertThat(path.getDistance()).isEqualTo(교대역_강남역_간_거리 + 교대역_남부터미널역_간_거리);
     }
 
     @Test
