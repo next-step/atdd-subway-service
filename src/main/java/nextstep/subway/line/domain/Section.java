@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 @Entity
 public class Section {
+    private static final String ERR_INPUT_MORE_CLOSER_DISTANCE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -56,7 +57,7 @@ public class Section {
 
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException(ERR_INPUT_MORE_CLOSER_DISTANCE);
         }
         this.upStation = station;
         this.distance -= newDistance;
@@ -64,9 +65,25 @@ public class Section {
 
     public void updateDownStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException(ERR_INPUT_MORE_CLOSER_DISTANCE);
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public boolean isContains(Station station) {
+        return upStation == station || downStation == station;
+    }
+
+    public static Section empty() {
+        return new Section();
+    }
+
+    public boolean isEmpty() {
+        return  this.id == null &&
+                this.upStation == null &&
+                this.downStation == null &&
+                this.line == null &&
+                this.distance == 0;
     }
 }
