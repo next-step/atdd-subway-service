@@ -29,7 +29,7 @@ public class PathService {
         Station targetStation = stationService.findStationById(pathRequest.getTargetStationId());
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
         ShortestPath path = pathFinder.getShortestPath(sourceStation, targetStation);
-        return PathResponse.of(path.getShortestStations(), path.getShortestDistance(),
-                path.getFare(new DistanceFare(), new AgeDiscount(loginMember.getAge())));
+        int fare = path.getFare(new DistanceFare(), new AgeDiscount(loginMember.getAge()));
+        return PathResponse.of(path, fare);
     }
 }
