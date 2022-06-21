@@ -231,6 +231,15 @@ Connection: keep-alive
 Date: Sun, 27 Dec 2020 04:32:26 GMT
 ```
 
+</details>
+
+<details markdown="4">
+<summary> 🚀 Step4 - 요금 조회 </summary>
+
+* 4단계
+- [x] 경로 조회 시 거리 기준 요금 정보 포함하기
+- [x] 노선별 추가 요금 정책 추가
+- [x] 연령별 할인 정책 추가
 
 </details>
 
