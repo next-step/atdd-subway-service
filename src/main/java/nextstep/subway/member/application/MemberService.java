@@ -7,14 +7,14 @@ import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.NoSuchElementException;
-
 @Service
 @Transactional
 public class MemberService {
+    private MemberFinder memberFinder;
     private MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberFinder memberFinder, MemberRepository memberRepository) {
+        this.memberFinder = memberFinder;
         this.memberRepository = memberRepository;
     }
 
@@ -23,20 +23,9 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    @Transactional(readOnly = true)
-    public MemberResponse findMember(Long id) {
-        Member member = findById(id);
-        return MemberResponse.of(member);
-    }
-
     public void updateMember(Long id, MemberRequest param) {
-        Member member = findById(id);
+        Member member = memberFinder.findById(id);
         member.update(param.toMember());
-    }
-
-    public Member findById(Long id) {
-        return memberRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("멤버를 찾을 수 없습니다."));
     }
 
     public void deleteMember(Long id) {

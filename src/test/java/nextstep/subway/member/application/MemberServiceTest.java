@@ -1,6 +1,5 @@
 package nextstep.subway.member.application;
 
-import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.member.infrastructure.InMemoryMemberRepository;
@@ -16,13 +15,15 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class MemberServiceTest {
     private MemberService memberService;
+    private MemberFinder memberFinder;
     private MemberRequest memberRequest;
     private MemberRequest updateRequest;
 
     @BeforeEach
     void setUp() {
-        MemberRepository memberRepository = new InMemoryMemberRepository();
-        memberService = new MemberService(memberRepository);
+        InMemoryMemberRepository memberRepository = new InMemoryMemberRepository();
+        memberFinder = new MemberFinder(memberRepository);
+        memberService = new MemberService(memberFinder, memberRepository);
 
         memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
         updateRequest = new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
@@ -42,19 +43,10 @@ class MemberServiceTest {
     }
 
     @Test
-    void 멤버를_조회한다() {
-        // when
-        MemberResponse result = memberService.findMember(1L);
-
-        // then
-        assertThat(result).isNotNull();
-    }
-
-    @Test
     void 멤버를_수정한다() {
         // when
         memberService.updateMember(1L, updateRequest);
-        MemberResponse result = memberService.findMember(1L);
+        MemberResponse result = memberFinder.findMember(1L);
 
         // then
         assertAll(
@@ -70,7 +62,7 @@ class MemberServiceTest {
 
         // then
         assertThatThrownBy(() ->
-                memberService.findMember(1L)
+                memberFinder.findMember(1L)
         ).isInstanceOf(NoSuchElementException.class);
     }
 }

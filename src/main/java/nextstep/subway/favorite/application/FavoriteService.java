@@ -4,9 +4,9 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.application.MemberFinder;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.application.StationFinder;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,20 +18,20 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class FavoriteService {
-    private MemberService memberService;
-    private StationService stationService;
+    private MemberFinder memberFinder;
+    private StationFinder stationFinder;
     private FavoriteRepository favoriteRepository;
 
-    public FavoriteService(MemberService memberService, StationService stationService, FavoriteRepository favoriteRepository) {
-        this.memberService = memberService;
-        this.stationService = stationService;
+    public FavoriteService(MemberFinder memberFinder, StationFinder stationFinder, FavoriteRepository favoriteRepository) {
+        this.memberFinder = memberFinder;
+        this.stationFinder = stationFinder;
         this.favoriteRepository = favoriteRepository;
     }
 
     public Long createFavorite(Long memberId, FavoriteRequest request) {
-        Member member = memberService.findById(memberId);
-        Station source = stationService.findStationById(request.getSource());
-        Station target = stationService.findStationById(request.getTarget());
+        Member member = memberFinder.findById(memberId);
+        Station source = stationFinder.findStationById(request.getSource());
+        Station target = stationFinder.findStationById(request.getTarget());
 
         Favorite saved = favoriteRepository.save(new Favorite(member, source, target));
         return saved.getId();
@@ -39,7 +39,7 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(Long memberId) {
-        Member member = memberService.findById(memberId);
+        Member member = memberFinder.findById(memberId);
         return favoriteRepository.findAllByMember(member)
                 .stream()
                 .map(FavoriteResponse::new)
@@ -47,7 +47,7 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(Long memberId, Long favoriteId) {
-        Member member = memberService.findById(memberId);
+        Member member = memberFinder.findById(memberId);
         Favorite favorite = findById(favoriteId);
         favorite.validateOwner(member);
 

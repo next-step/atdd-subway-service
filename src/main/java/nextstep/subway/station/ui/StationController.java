@@ -1,5 +1,6 @@
 package nextstep.subway.station.ui;
 
+import nextstep.subway.station.application.StationFinder;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
@@ -12,9 +13,11 @@ import java.util.List;
 
 @RestController
 public class StationController {
+    private StationFinder stationFinder;
     private StationService stationService;
 
-    public StationController(StationService stationService) {
+    public StationController(StationFinder stationFinder, StationService stationService) {
+        this.stationFinder = stationFinder;
         this.stationService = stationService;
     }
 
@@ -26,7 +29,7 @@ public class StationController {
 
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStations());
+        return ResponseEntity.ok().body(stationFinder.findAllStations());
     }
 
     @DeleteMapping("/stations/{id}")

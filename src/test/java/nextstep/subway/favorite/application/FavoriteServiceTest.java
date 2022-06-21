@@ -4,10 +4,10 @@ import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.favorite.infrastructure.InMemoryFavoriteRepository;
-import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.application.MemberFinder;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.infrastructure.InMemoryMemberRepository;
-import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.application.StationFinder;
 import nextstep.subway.station.infrastructure.InMemoryStationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,13 +30,14 @@ class FavoriteServiceTest {
         source = 1L;
         target = 2L;
 
-        MemberService memberService = new MemberService(new InMemoryMemberRepository());
-        member = memberService.findById(1L);
-        member2 = memberService.findById(2L);
+        InMemoryMemberRepository memberRepository = new InMemoryMemberRepository();
+        MemberFinder memberFinder = new MemberFinder(memberRepository);
+        member = memberFinder.findById(1L);
+        member2 = memberFinder.findById(2L);
 
-        StationService stationService = new StationService(new InMemoryStationRepository());
+        StationFinder stationFinder = new StationFinder(new InMemoryStationRepository());
         FavoriteRepository favoriteRepository = new InMemoryFavoriteRepository();
-        favoriteService = new FavoriteService(memberService, stationService, favoriteRepository);
+        favoriteService = new FavoriteService(memberFinder, stationFinder, favoriteRepository);
     }
 
     @Test

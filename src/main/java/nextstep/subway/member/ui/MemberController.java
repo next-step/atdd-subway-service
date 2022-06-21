@@ -2,6 +2,7 @@ package nextstep.subway.member.ui;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.member.application.MemberFinder;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -12,9 +13,11 @@ import java.net.URI;
 
 @RestController
 public class MemberController {
+    private MemberFinder memberFinder;
     private MemberService memberService;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberFinder memberFinder, MemberService memberService) {
+        this.memberFinder = memberFinder;
         this.memberService = memberService;
     }
 
@@ -26,7 +29,7 @@ public class MemberController {
 
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
-        MemberResponse member = memberService.findMember(id);
+        MemberResponse member = memberFinder.findMember(id);
         return ResponseEntity.ok().body(member);
     }
 
@@ -44,7 +47,7 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponse member = memberService.findMember(loginMember.getId());
+        MemberResponse member = memberFinder.findMember(loginMember.getId());
         return ResponseEntity.ok().body(member);
     }
 

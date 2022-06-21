@@ -7,10 +7,6 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-
 @Service
 @Transactional
 public class StationService {
@@ -25,22 +21,7 @@ public class StationService {
         return StationResponse.from(persistStation);
     }
 
-    @Transactional(readOnly = true)
-    public List<StationResponse> findAllStations() {
-        List<Station> stations = stationRepository.findAll();
-
-        return stations.stream()
-                .map(StationResponse::from)
-                .collect(Collectors.toList());
-    }
-
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
-    }
-
-    @Transactional(readOnly = true)
-    public Station findStationById(Long id) {
-        return stationRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("지하철역을 찾을 수 없습니다."));
     }
 }
