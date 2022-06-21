@@ -29,6 +29,20 @@ public class PathAcceptanceSteps {
             .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 로그인_사용자의_지하철_최단_경로_조회(String accessToken, Long sourceId, Long targetId) {
+        Map<String, String> params = new HashMap<>();
+        params.put("source", sourceId + "");
+        params.put("target", targetId + "");
+
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .queryParams(params)
+            .when().get("/paths")
+            .then().log().all().extract();
+    }
+
     public static void 지하철_최단_경로_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         PathResponse path = response.as(PathResponse.class);
         List<Long> stationIds = path.getStations().stream()

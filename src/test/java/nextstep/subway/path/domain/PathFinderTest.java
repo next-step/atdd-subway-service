@@ -103,7 +103,7 @@ public class PathFinderTest {
     }
 
     @Test
-    @DisplayName("거리에 따른 운임비용")
+    @DisplayName("거리에 따른 운임비용: 기본운임 1,250원, 10km초과∼50km까지(5km마다 100원), 50km초과 시 (8km마다 100원)")
     public void getFareByDistanceBased() {
         // when
         Path basePath = pathFinder.findShortestPath(Arrays.asList(이호선, 삼호선, 신분당선), 강남역, 양재역);
@@ -120,7 +120,7 @@ public class PathFinderTest {
      * 동대문역 --- *1호선(300원)* --- 동묘앞역 --- *6호선(900원)* --- 창신역
      */
     @Test
-    @DisplayName("노선 추가 요금 - 노선(900원) 요금")
+    @DisplayName("노선 추가 요금: 추가 요금이 가장 비싼 노선 비용")
     void getFareByLineBased() {
         // given
         Station 동대문역 = new Station("동대문역");
