@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -38,11 +39,11 @@ public class Sections {
     }
 
     private void additionalValidation(final Section section) {
-        bothStationExist(section);
+        existsBothStation(section);
         canNotRegisterSection(section);
     }
 
-    private void bothStationExist(final Section section) {
+    private void existsBothStation(final Section section) {
         if (isUpStationExisted(section.getUpStation()) && isDownStationExisted(section.getDownStation())) {
             throw new LineException(LineExceptionType.EXIST_SECTION);
         }
@@ -59,24 +60,20 @@ public class Sections {
     }
 
     private void canNotRegisterSection(final Section section) {
-        System.out.println("#####" + list);
-        System.out.println("###" + section);
-        if (!list.isEmpty() && isUpStationNotExisted(section.getUpStation()) &&
-               isDownStationNotExisted(section.getDownStation())) {
+        if (!list.isEmpty() && isUpStationNotExisted(section.getUpStation())
+                && isDownStationNotExisted(section.getDownStation())) {
             throw new LineException(LineExceptionType.CAN_NOT_REGISTER_SECTION);
         }
     }
 
     private boolean isUpStationNotExisted(final Station upStation) {
-        return list.stream()
-                .map(Section::getUpStation)
-                .noneMatch(it -> upStation.equals(it));
+        return getAllStations().stream()
+                .noneMatch(upStation::equals);
     }
 
     private boolean isDownStationNotExisted(final Station downStation) {
-        return list.stream()
-                .map(Section::getDownStation)
-                .noneMatch(it -> downStation.equals(it));
+        return getAllStations().stream()
+                .noneMatch(downStation::equals);
     }
 
     private void updateUpStation(final Section section) {
@@ -100,16 +97,16 @@ public class Sections {
 
     public void delete(final Station station) {
         deletionValidation();
-
         final Optional<Section> upLineStation = getUpLineStation(station);
         final Optional<Section> downLineStation = getDownLineStation(station);
-        downLineStation.ifPresent(list::remove);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             final Section updateMiddleStation = upLineStation.get().updateMiddleStation(downLineStation.get());
-            add(updateMiddleStation);
+            list.add(updateMiddleStation);
         }
+
         upLineStation.ifPresent(list::remove);
+        downLineStation.ifPresent(list::remove);
     }
 
     private void deletionValidation() {
@@ -146,6 +143,37 @@ public class Sections {
         }
 
         return Collections.unmodifiableList(new ArrayList<>(stations));
+    }
+
+    public List<Station> getSortedStations() {
+        final Set<Station> sortedStations = new LinkedHashSet<>();
+        Optional<Section> section = findFirstSection();
+
+        while (section.isPresent()) {
+            sortedStations.add(section.get().getUpStation());
+            sortedStations.add(section.get().getDownStation());
+            section = nextSection(section.get().getDownStation());
+        }
+
+        return Collections.unmodifiableList(new ArrayList<>(sortedStations));
+    }
+
+    private Optional<Section> findFirstSection() {
+        return list.stream()
+                .filter(it -> !getDownStations().contains(it.getUpStation()))
+                .findFirst();
+    }
+
+    private Optional<Section> nextSection(final Station station) {
+        return list.stream()
+                .filter(it -> station.equals(it.getUpStation()))
+                .findFirst();
+    }
+
+    private List<Station> getDownStations() {
+        return Collections.unmodifiableList(list.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList()));
     }
 
     @Override

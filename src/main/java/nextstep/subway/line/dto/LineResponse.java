@@ -34,17 +34,12 @@ public class LineResponse {
 
     public static LineResponse of(final Line line) {
         return new LineResponse(line.getId(), line.getName(), line.getColor(),
-                getAllStations(line.getAllStations()), line.getCreatedDate(), line.getModifiedDate());
+                getAllStations(line.getSortedStations()), line.getCreatedDate(), line.getModifiedDate());
     }
 
     private static List<StationResponse> getAllStations(final List<Station> stations) {
-        if (stations.size() == 0) {
-            return new ArrayList<>();
-        }
-
         return stations.stream()
                 .map(StationResponse::of)
-                .sorted(Comparator.comparing(StationResponse::getId))
                 .collect(Collectors.toList());
     }
 

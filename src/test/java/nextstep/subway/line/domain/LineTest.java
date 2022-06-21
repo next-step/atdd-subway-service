@@ -44,7 +44,7 @@ public class LineTest {
         // when
         line.deleteStation(new Station("신림역"));
         //
-        assertThat(line.getAllStations()).doesNotContain(new Station("신림역"));
-        assertThat(line.getAllStations()).hasSize(2);
+        assertThat(line.getSortedStations()).doesNotContain(new Station("신림역"));
+        assertThat(line.getSortedStations()).hasSize(2);
     }
 }

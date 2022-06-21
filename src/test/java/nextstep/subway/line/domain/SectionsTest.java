@@ -6,7 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -92,6 +94,21 @@ public class SectionsTest {
         // then
         assertThat(sections.getAllStations()).hasSize(2);
         assertThat(sections.getAllStations()).doesNotContain(new Station("보라매역"));
+    }
+
+    @Test
+    @DisplayName("정렬된 지하철역 조회")
+    void get_sorted_stations() {
+        // given
+        sections.add(new Section(line, new Station("강남역"), new Station("방배역"), 5));
+        sections.add(new Section(line, new Station("사당역"), new Station("강남역"), 5));
+        // when
+        List<String> stationName = sections.getSortedStations()
+                .stream()
+                .map(Station::getName)
+                .collect(Collectors.toList());
+        // then
+        assertThat(stationName).containsExactlyElementsOf(Arrays.asList("사당역", "강남역", "방배역", "잠실역"));
     }
 
 }
