@@ -5,19 +5,17 @@ import nextstep.subway.line.domain.Distance;
 import java.util.Arrays;
 
 public enum DistanceExtraFare {
-    BASIC(1, 10, 1, 0),
-    MEDIUM(11, 50, 5, 100),
-    LONG(51, Integer.MAX_VALUE, 8, 100);
+    BASIC(10, 1, 0),
+    MEDIUM(50, 5, 100),
+    LONG(Integer.MAX_VALUE, 8, 100);
 
     public static final int BASE_FARE = 1_250;
     private static final DistanceExtraFare DEFAULT = DistanceExtraFare.BASIC;
-    private final int from;
     private final int border;
     private final int unitDistance;
     private final int unitExtra;
 
-    DistanceExtraFare(int from, int border, int unitDistance, int unitExtra) {
-        this.from = from;
+    DistanceExtraFare(int border, int unitDistance, int unitExtra) {
         this.border = border;
         this.unitDistance = unitDistance;
         this.unitExtra = unitExtra;
@@ -33,7 +31,7 @@ public enum DistanceExtraFare {
 
     public int addExtraOf(int distance) {
         int result = 0;
-        for (DistanceExtraFare distanceExtraFare : DistanceExtraFare.values()) {
+        for (DistanceExtraFare distanceExtraFare : values()) {
             result += distanceExtraFare.getExtraFare(distance);
         }
 
@@ -41,10 +39,17 @@ public enum DistanceExtraFare {
     }
 
     private int getExtraFare(int distance) {
-        if (distance < this.from) {
+        int prevOrdinal = ordinal() - 1;
+        if (prevOrdinal < 0) {
             return 0;
         }
-        int extraDistance = Math.min(distance, this.border) - this.from + 1;
+
+        DistanceExtraFare prev = values()[prevOrdinal];
+        if (distance <= prev.border) {
+            return 0;
+        }
+
+        int extraDistance = Math.min(distance, this.border) - prev.border;
         return this.calculateExtraFare(extraDistance);
     }
 
