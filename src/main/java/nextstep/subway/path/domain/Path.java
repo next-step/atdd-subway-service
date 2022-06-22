@@ -18,8 +18,8 @@ public class Path {
         return stations;
     }
 
-    public Distance getDistance() {
-        return distance;
+    public int getDistance() {
+        return distance.value();
     }
 
 }

@@ -1,20 +1,37 @@
 package nextstep.subway.path.application;
 
+import java.util.List;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathGraph;
+import nextstep.subway.path.dto.PathRequest;
+import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PathService {
 
-/*    private final SectionRepository sectionRepository;
-    private final ShortestSectionPath dijkstraShortestPath;
+    private final SectionRepository sectionRepository;
+    private final StationRepository stationRepository;
+    private final PathGraph pathGraph;
 
-    public PathService(SectionRepository sectionRepository, ShortestSectionPath dijkstraShortestPath) {
+    public PathService(SectionRepository sectionRepository, StationRepository stationRepository) {
         this.sectionRepository = sectionRepository;
-        this.dijkstraShortestPath = dijkstraShortestPath;
+        this.stationRepository = stationRepository;
+        this.pathGraph = PathGraph.createJgraphPathGraph();
     }
 
-    public PathResponse pathFinder(PathRequest pathRequest) {
+    public PathResponse findShortPath(PathRequest pathRequest) {
         List<Section> sections = sectionRepository.findAll();
-        return new PathResponse();
-    }*/
+        Station source = stationRepository.getById(pathRequest.getSource());
+        Station target = stationRepository.getById(pathRequest.getTarget());
+
+        final Path shortestPath = pathGraph.findShortestPath(sections, source, target);
+
+        return new PathResponse(shortestPath);
+    }
+
 }

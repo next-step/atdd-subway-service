@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
@@ -55,17 +54,16 @@ class PathGraphTest {
     @DisplayName("최단_구간의_경로를_구한다")
     void shortestPath() {
         //given
-        List<Section> sections = 모든_노선의_구간을_구한다(Arrays.asList(신분당선, 이호선, 삼호선));
-        ShortestPathFinder shortestPathFinder = new JgraphShortestPathFinder(sections);
-        PathGraph pathGraph = new PathGraph(shortestPathFinder);
+        List<Section> 모든_구간 = 모든_노선의_구간을_구한다(Arrays.asList(신분당선, 이호선, 삼호선));
+        PathGraph pathGraph = PathGraph.createJgraphPathGraph();
 
         //when
-        Path shortestPath = pathGraph.findShortestPath(교대역, 양재역);
+        Path shortestPath = pathGraph.findShortestPath(모든_구간, 교대역, 양재역);
 
         //then
         assertAll(
                 () -> assertThat(shortestPath.getStations()).isEqualTo(Stations.of(Arrays.asList(교대역, 남부터미널역, 양재역))),
-                () -> assertThat(shortestPath.getDistance()).isEqualTo(Distance.of(5))
+                () -> assertThat(shortestPath.getDistance()).isEqualTo(5)
         );
     }
 
@@ -73,13 +71,12 @@ class PathGraphTest {
     @DisplayName("구간의 없는역을 조회한다.")
     void existNotSectionPath() {
         //given
-        List<Section> sections = 모든_노선의_구간을_구한다(Arrays.asList(신분당선, 이호선, 삼호선));
-        ShortestPathFinder shortestPathFinder = new JgraphShortestPathFinder(sections);
-        PathGraph pathGraph = new PathGraph(shortestPathFinder);
+        List<Section> 모든_구간 = 모든_노선의_구간을_구한다(Arrays.asList(신분당선, 이호선, 삼호선));
+        PathGraph pathGraph = PathGraph.createJgraphPathGraph();
 
         //when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> pathGraph.findShortestPath(교대역, 없는역)
+                () -> pathGraph.findShortestPath(모든_구간, 교대역, 없는역)
         );
     }
 
@@ -87,13 +84,12 @@ class PathGraphTest {
     @DisplayName("같은 시작역과 끝역의 경로는 구할수 없다.")
     void duplicationFindStationSectionPath() {
         //given
-        List<Section> sections = 모든_노선의_구간을_구한다(Arrays.asList(신분당선, 이호선, 삼호선));
-        ShortestPathFinder shortestPathFinder = new JgraphShortestPathFinder(sections);
-        PathGraph pathGraph = new PathGraph(shortestPathFinder);
+        List<Section> 모든_구간 = 모든_노선의_구간을_구한다(Arrays.asList(신분당선, 이호선, 삼호선));
+        PathGraph pathGraph = PathGraph.createJgraphPathGraph();
 
         //when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> pathGraph.findShortestPath(교대역, 교대역)
+                () -> pathGraph.findShortestPath(모든_구간, 교대역, 교대역)
         );
     }
 

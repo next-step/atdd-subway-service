@@ -12,11 +12,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 public class JgraphShortestPathFinder implements ShortestPathFinder {
     WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-    private List<Section> sections;
-
-    JgraphShortestPathFinder(List<Section> sections) {
-        this.sections = sections;
-        setGraph(sections);
+    JgraphShortestPathFinder() {
     }
 
     private void setGraph(List<Section> sections) {
@@ -31,9 +27,9 @@ public class JgraphShortestPathFinder implements ShortestPathFinder {
     }
 
     @Override
-    public Path findShortestPath(Station startStation, Station targetStation) {
+    public Path findShortestPath(List<Section> sections, Station startStation, Station targetStation) {
         findShortestPathValid(startStation, targetStation);
-
+        setGraph(sections);
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(startStation, targetStation);
         return new Path(graphPath.getVertexList(), (int) graphPath.getWeight());

@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 public class Stations {
 
@@ -26,11 +24,9 @@ public class Stations {
                 .filter((target::isNotContains))
                 .findFirst();
     }
-
-    public List<StationResponse> mapToResponse() {
-        return stationElements.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+    
+    public List<Station> getStationElements() {
+        return stationElements;
     }
 
     private boolean isNotContains(Station station) {
