@@ -25,4 +25,8 @@ public class LoginMember {
     public Age getAge() {
         return age;
     }
+
+    public static LoginMember ofGuestMember() {
+        return new LoginMember();
+    }
 }

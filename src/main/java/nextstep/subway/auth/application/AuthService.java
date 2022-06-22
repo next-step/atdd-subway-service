@@ -6,6 +6,7 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -31,6 +32,10 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
+        if (StringUtils.isEmpty(credentials)) {
+            return LoginMember.ofGuestMember();
+        }
+
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException(INVALID_TOKEN);
         }
