@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -98,10 +99,23 @@ class FavoriteServiceTest {
 
         //then
         assertThat(favoriteResponses).hasSize(1);
-        assertThat(favoriteResponses.stream()
-                                    .filter(favoriteResponse -> favoriteResponse.getId() == 1L)
-                                    .findFirst()
-                                    .get().getSource()
-                                    .getId()).isEqualTo(청담역.getId());
+        assertThat(favoriteResponses).extracting("id")
+                                     .containsExactly(청담역.getId());
+    }
+
+    @Test
+    @DisplayName("회원 아이디로 저장된 특정 즐겨찾기를 삭제한다.")
+    void delete() {
+        //given
+        청담역 = new Station(1L, "청담역");
+        뚝섬유원지역 = new Station(2L, "뚝섬유원지역");
+        회원 = new Member(1L, EMAIL, PASSWORD, AGE);
+        즐겨찾기 = new Favorite(1L, 회원, 청담역, 뚝섬유원지역);
+
+        //when
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(회원));
+        when(favoriteRepository.findByIdAndMemberId(anyLong(), anyLong())).thenReturn(Optional.of(즐겨찾기));
+
+        favoriteService.delete(new LoginMember(1L, EMAIL, AGE), 즐겨찾기.getId());
     }
 }
