@@ -121,4 +121,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [ ] 최단 경로 조회 기능 구현하기
     - [X] PathFinder 추가
     - [X] PathService 추가
-
+    - [X] PathController 추가
