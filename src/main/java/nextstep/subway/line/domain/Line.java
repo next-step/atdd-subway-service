@@ -13,6 +13,7 @@ public class Line extends BaseEntity {
     private Long id;
     @Column(unique = true)
     private String name;
+    @Column(nullable = false)
     private String color;
     @Embedded
     private final Sections sections = Sections.instance();

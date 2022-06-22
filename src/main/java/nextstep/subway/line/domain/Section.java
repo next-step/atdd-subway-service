@@ -29,7 +29,7 @@ public class Section {
     protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(final Line line, final Station upStation, final Station downStation, final int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
