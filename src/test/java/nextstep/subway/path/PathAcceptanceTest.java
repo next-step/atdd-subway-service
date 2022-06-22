@@ -74,6 +74,44 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
+    @Test
+    @DisplayName("출발역과 도착역이 같을때")
+    void pathFind_exception_same_station() {
+        // when
+        final ExtractableResponse<Response> 지하철역_최단_거리_조회 = 지하철역_최단_거리_조회(강남역.getId(), 강남역.getId());
+
+        // then
+        assertThat(지하철역_최단_거리_조회.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("출발역과 도착역이 연결되지 않을때")
+    void pathFind_exception_not_linked() {
+        // given
+        final StationResponse 당고개역 = StationAcceptanceTest.지하철역_등록되어_있음("당고개역").as(StationResponse.class);
+        final StationResponse 남태령역 = StationAcceptanceTest.지하철역_등록되어_있음("남태령역").as(StationResponse.class);
+        지하철_노선_등록되어_있음("사호선", "bg-red-600", 당고개역, 남태령역, 10);
+
+        // when
+        final ExtractableResponse<Response> 지하철역_최단_거리_조회 = 지하철역_최단_거리_조회(강남역.getId(), 남태령역.getId());
+
+        // then
+        assertThat(지하철역_최단_거리_조회.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("출발역과 도착역이 존재하지 않을때")
+    void pathFind_exception_not_found() {
+        // given
+        final StationResponse 당고개역 = StationAcceptanceTest.지하철역_등록되어_있음("당고개역").as(StationResponse.class);
+
+        // when
+        final ExtractableResponse<Response> 지하철역_최단_거리_조회 = 지하철역_최단_거리_조회(강남역.getId(), 당고개역.getId());
+
+        // then
+        assertThat(지하철역_최단_거리_조회.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     private ExtractableResponse<Response> 지하철역_최단_거리_조회(Long sourceId, Long targetId) {
         return RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
