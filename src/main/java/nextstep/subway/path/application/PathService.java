@@ -21,13 +21,23 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(final Long sourceStationId, final Long targetStationId) {
-        final SubwayGraph subwayGraph = new SubwayGraph(
+        final SubwayGraph subwayGraph = getSubwayGraph();
+        final Path path = findShortestPathBySubwayGraph(subwayGraph, sourceStationId, targetStationId);
+        return PathResponse.of(getPathStationResponses(path), path.getDistance());
+    }
+
+    private SubwayGraph getSubwayGraph() {
+        return new SubwayGraph(
                 sectionService.findAllSections(),
                 stationService.findAllStations());
-        final Path path = subwayGraph.findShortestPath(
+    }
+
+    private Path findShortestPathBySubwayGraph(final SubwayGraph subwayGraph,
+                                               final Long sourceStationId,
+                                               final Long targetStationId) {
+        return subwayGraph.findShortestPath(
                 stationService.findStationById(sourceStationId),
                 stationService.findStationById(targetStationId));
-        return PathResponse.of(getPathStationResponses(path), path.getDistance());
     }
 
     private List<PathStationResponse> getPathStationResponses(final Path path) {
