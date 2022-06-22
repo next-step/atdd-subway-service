@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.Age;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathResponse;

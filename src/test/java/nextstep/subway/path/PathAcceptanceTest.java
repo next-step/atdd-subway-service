@@ -4,6 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.domain.Age;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -21,7 +23,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.암호_이메일_입력;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 
@@ -36,9 +41,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
 
+    private TokenResponse tokenResponse;
+
+    private String EMAIL = "email@email.com";
+
     @BeforeEach
     public void setUp() {
         super.setUp();
+
+        tokenResponse = Login(EMAIL, 20);
 
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
@@ -56,7 +67,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortedRoute() {
         // When
-        final ExtractableResponse<Response> response = 최단_경로_검색(교대역, 양재역);
+        final ExtractableResponse<Response> response = 최단_경로_검색(tokenResponse, 교대역, 양재역);
 
         // Then
         최단_경로_기준으로_지하철역_정보가_출력됨(response, Arrays.asList(교대역, 남부터미널역, 양재역));
@@ -73,7 +84,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final StationResponse 등록되지않은역 = new StationResponse(100L, "잘못된역", LocalDateTime.now(), LocalDateTime.now());
 
         // When
-        final ExtractableResponse<Response> reponse = 최단_경로_검색(등록되지않은역, 양재역);
+        final ExtractableResponse<Response> reponse = 최단_경로_검색(tokenResponse, 등록되지않은역, 양재역);
 
         // Then
         검색이_안됨(reponse);
@@ -90,10 +101,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // Given
         final StationResponse 수원역 = StationAcceptanceTest.지하철역_등록되어_있음("수원역").as(StationResponse.class);
         final StationResponse 병점역 = StationAcceptanceTest.지하철역_등록되어_있음("병점역").as(StationResponse.class);
-        final LineResponse 일호선 = 지하철_노선_등록되어_있음("일호선", "bg-red-600", 수원역, 병점역, 10,0);
+        final LineResponse 일호선 = 지하철_노선_등록되어_있음("일호선", "bg-red-600", 수원역, 병점역, 10, 0);
 
         // When
-        final ExtractableResponse<Response> response = 최단_경로_검색(교대역, 병점역);
+        final ExtractableResponse<Response> response = 최단_경로_검색(tokenResponse, 교대역, 병점역);
 
         // Then
         검색이_안됨(response);
@@ -107,7 +118,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void sameStationTest() {
         // When
-        final ExtractableResponse<Response> response = 최단_경로_검색(교대역, 교대역);
+        final ExtractableResponse<Response> response = 최단_경로_검색(tokenResponse, 교대역, 교대역);
 
         // Then
         검색이_안됨(response);
@@ -122,7 +133,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void checkSectionAndDistanceAndCharge() {
         // when
-        final ExtractableResponse<Response> response = 최단_경로_검색(교대역, 양재역);
+        final ExtractableResponse<Response> response = 최단_경로_검색(tokenResponse, 교대역, 양재역);
 
         // then
         거리_금액_확인(response, 5, 1350);
@@ -147,8 +158,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(resultStationNames).containsExactlyElementsOf(expectedStationNames);
     }
 
-    public ExtractableResponse<Response> 최단_경로_검색(final StationResponse source, final StationResponse target) {
+    public ExtractableResponse<Response> 최단_경로_검색(final TokenResponse tokenResponse, final StationResponse source, final StationResponse target) {
         return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={sourceId}&target={targetId}", source.getId(), target.getId())
                 .then().log().all()
@@ -164,4 +176,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(HttpStatus.valueOf(reponse.statusCode())).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
+    public static TokenResponse Login(final String email, final int age) {
+        final String PASSWORD = "password";
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(email, PASSWORD, age);
+        회원_생성됨(createResponse);
+
+        return 토큰정보_획득(로그인_요청(암호_이메일_입력(PASSWORD, email)));
+    }
 }
