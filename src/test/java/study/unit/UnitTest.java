@@ -1,6 +1,7 @@
 package study.unit;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,9 +18,7 @@ public class UnitTest {
         Station upStation = Station.from("강남역");
         Station downStation = Station.from("광교역");
         Line line = new Line.Builder("신분당선", "RED")
-                .upStation(upStation)
-                .downStation(downStation)
-                .distance(10)
+                .section(Section.of(upStation, downStation, 10))
                 .build();
         Line newLine = new Line.Builder(newName, "GREEN").build();
 

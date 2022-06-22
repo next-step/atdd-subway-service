@@ -21,27 +21,15 @@ public class Line extends BaseEntity {
     public static class Builder {
         private String name;
         private String color;
-        private Station upStation;
-        private Station downStation;
-        private int distance;
+        private Section section;
 
         public Builder(String name, String color) {
             this.name = name;
             this.color = color;
         }
 
-        public Builder upStation(Station upStation) {
-            this.upStation = upStation;
-            return this;
-        }
-
-        public Builder downStation(Station downStation) {
-            this.downStation = downStation;
-            return this;
-        }
-
-        public Builder distance(int distance) {
-            this.distance = distance;
+        public Builder section(Section section) {
+            this.section = section;
             return this;
         }
 
@@ -56,14 +44,12 @@ public class Line extends BaseEntity {
         this.name = builder.name;
         this.color = builder.color;
         if (isAddedSection(builder)) {
-            this.addSection(Section.of(builder.upStation, builder.downStation, builder.distance));
+            this.addSection(builder.section);
         }
     }
 
     private boolean isAddedSection(Builder builder) {
-        return !Objects.isNull(builder.upStation)
-                && !Objects.isNull(builder.downStation)
-                && builder.distance > 0;
+        return !Objects.isNull(builder.section);
     }
 
     public void update(Line line) {

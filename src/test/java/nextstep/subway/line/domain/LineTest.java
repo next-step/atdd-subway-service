@@ -23,9 +23,7 @@ class LineTest {
         this.upStation = Station.from("강남역");
         this.downStation = Station.from("선릉역");
         this.line = new Line.Builder("2호선", "GREEN")
-                .upStation(this.upStation)
-                .downStation(this.downStation)
-                .distance(10)
+                .section(Section.of(this.upStation, this.downStation, 10))
                 .build();
     }
 

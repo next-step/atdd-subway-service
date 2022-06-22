@@ -7,8 +7,6 @@ import java.util.Objects;
 
 @Entity
 public class Section {
-    private static final String LESS_THEN_ALREADY_DISTANCE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -53,10 +51,8 @@ public class Section {
     }
 
     public Section mergeSection(Section section) {
-        Distance newDistance = Distance.from(this.distance);
-        newDistance.increase(section.distance);
-
-        Section mergeSection = new Section(this.upStation, section.downStation, newDistance);
+        Distance newDistance = Distance.from(this.distance.get());
+        Section mergeSection = new Section(this.upStation, section.downStation, newDistance.increase(section.distance));
         mergeSection.assignLine(this.line);
         return mergeSection;
     }
@@ -71,12 +67,12 @@ public class Section {
     }
 
     private void updateUpStation(Station station, Distance newDistance) {
-        this.distance.decrease(newDistance);
+        this.distance = this.distance.decrease(newDistance);
         this.upStation = station;
     }
 
     private void updateDownStation(Station station, Distance newDistance) {
-        this.distance.decrease(newDistance);
+        this.distance = this.distance.decrease(newDistance);
         this.downStation = station;
     }
 
