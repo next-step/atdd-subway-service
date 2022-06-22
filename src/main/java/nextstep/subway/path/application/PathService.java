@@ -5,7 +5,7 @@ import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.application.StationFinder;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,18 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class PathService {
-    private final StationService stationService;
+    private final StationFinder stationFinder;
     private final LineRepository lineRepository;
 
-    public PathService(StationService stationService, LineRepository lineRepository) {
-        this.stationService = stationService;
+    public PathService(StationFinder stationFinder, LineRepository lineRepository) {
+        this.stationFinder = stationFinder;
         this.lineRepository = lineRepository;
     }
 
     @Transactional(readOnly = true)
     public PathResponse findShortestPath(Long source, Long target) {
-        Station upStation = stationService.findStationById(source);
-        Station downStation = stationService.findStationById(target);
+        Station upStation = stationFinder.findStationById(source);
+        Station downStation = stationFinder.findStationById(target);
         Lines lines = new Lines(lineRepository.findAll());
 
         PathFinder pathFinder = new PathFinder();
