@@ -10,6 +10,7 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
+    private int surcharge;
     private List<StationResponse> stations;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
@@ -40,6 +41,10 @@ public class LineResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public int getSurcharge() {
+        return surcharge;
     }
 
     public List<StationResponse> getStations() {

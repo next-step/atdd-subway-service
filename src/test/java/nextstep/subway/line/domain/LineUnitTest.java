@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class LineUnitTest {
+    public static int LINE_SURCHARGE = 100;
     private Station 청담역;
     private Station 뚝섬유원지역;
     private Station 건대입구역;
@@ -26,7 +27,7 @@ public class LineUnitTest {
         어린이대공원역 = new Station("어린이대공원역");
         군자역 = new Station("군자역");
 
-        칠호선 = new Line("칠호선", "yellow", 청담역, 건대입구역, 20);
+        칠호선 = new Line("칠호선", "yellow", 청담역, 건대입구역, 20, LINE_SURCHARGE);
     }
 
     @Test
@@ -34,6 +35,13 @@ public class LineUnitTest {
     void getStations() {
         assertThat(칠호선.getStations()).containsExactly(청담역, 건대입구역);
     }
+
+    @Test
+    @DisplayName("노선 추가요금 확인하기")
+    void getSurcharge() {
+        assertThat(칠호선.getSurcharge()).isEqualTo(LINE_SURCHARGE);
+    }
+
 
     @Test
     @DisplayName("노선에 포함된 역 Response 리스트 가져오기")
