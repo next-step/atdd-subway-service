@@ -1,23 +1,23 @@
 package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class LineResponse {
-    private Long id;
-    private String name;
-    private String color;
-    private List<StationResponse> stations;
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final List<StationResponse> stations;
+    private final LocalDateTime createdDate;
+    private final LocalDateTime modifiedDate;
 
-    public LineResponse() {
-    }
-
-    public LineResponse(Long id, String name, String color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public LineResponse(final Long id, final String name, final String color,
+                        final List<StationResponse> stations, final LocalDateTime createdDate, final LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -26,8 +26,21 @@ public class LineResponse {
         this.modifiedDate = modifiedDate;
     }
 
-    public static LineResponse of(Line line, List<StationResponse> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
+    public static List<LineResponse> ofLines(final List<Line> lines) {
+        return Collections.unmodifiableList(lines.stream()
+                .map(LineResponse::of)
+                .collect(Collectors.toList()));
+    }
+
+    public static LineResponse of(final Line line) {
+        return new LineResponse(line.getId(), line.getName(), line.getColor(),
+                getAllStations(line.getSortedStations()), line.getCreatedDate(), line.getModifiedDate());
+    }
+
+    private static List<StationResponse> getAllStations(final List<Station> stations) {
+        return stations.stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {
