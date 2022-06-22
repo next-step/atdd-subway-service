@@ -69,8 +69,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("출발역과 도착역이 같은 경우 BAD REQUEST를 리턴한다.")
-    void returnBadRequestWhenSameSourceTargetStation() {
+    @DisplayName("출발역과 도착역이 같은 경우 최단경로 조회를 할 수 없다.")
+    void findShortestPathFailWhenSameSourceTargetStation() {
         // when
         ExtractableResponse<Response> 최단경로 = 최단경로_조회_요청(양재역.getId(), 양재역.getId());
 
@@ -79,8 +79,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("출발역이나 도착역이 존재하지 않는 경우 NOT FOUND를 리턴한다.")
-    void returnNotFoundWhenNotExistingStation() {
+    @DisplayName("출발역이나 도착역이 존재하지 않는 경우 최단경로 조회를 할 수 없다")
+    void findShortestPathFailWhenNotExistingStation() {
         // given
         StationResponse 미등록역 = StationResponse.of(new Station("미등록역"));
 
@@ -93,8 +93,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 
     @Test
-    @DisplayName("출발역과 도착역이 연결되어 있지 않는 경우 BAD REQUEST를 리턴한다.")
-    void returnBadRequestWhenNotConnected() {
+    @DisplayName("출발역과 도착역이 연결되어 있지 않는 경우 최단경로 조회를 할 수 없다.")
+    void findShortestPathFailWhenNotConnected() {
         // given
         StationResponse 정자역 = 지하철역_등록되어_있음("정자역").as(StationResponse.class);
 

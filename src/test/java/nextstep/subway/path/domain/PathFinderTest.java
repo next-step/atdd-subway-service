@@ -70,8 +70,8 @@ class PathFinderTest {
     }
 
     @Test
-    @DisplayName("출발역과 도착역이 같은 경우 예외를 발생시킨다.")
-    void throwExceptionWhenSameSourceTargetStation() {
+    @DisplayName("출발역과 도착역이 같은 경우 최단경로를 조회할 수 없다.")
+    void findShortestPathFailWhenSameSourceTargetStation() {
         // when & then
         assertThatThrownBy(() -> pathFinder.findShortestPath(양재역.getId(), 양재역.getId()))
                 .isExactlyInstanceOf(IllegalArgumentException.class)
@@ -79,8 +79,8 @@ class PathFinderTest {
     }
 
     @Test
-    @DisplayName("출발역이나 도착역이 존재하지 않는 경우 예외를 발생시킨다.")
-    void throwExceptionWhenNotExistingStation() {
+    @DisplayName("출발역이나 도착역이 존재하지 않는 경우 최단경로를 조회할 수 없다.")
+    void findShortestPathFailWhenNotExistingStation() {
         // given
         Station 정자역 = Station.of(5L, "정자역");
         Station 청량리역 = Station.of(6L, "청량리역");
@@ -97,8 +97,8 @@ class PathFinderTest {
     }
 
     @Test
-    @DisplayName("출발역과 도착역이 연결되어 있지 않는 경우 예외를 발생시킨다.")
-    void throwExceptionWhenNotConnected() {
+    @DisplayName("출발역과 도착역이 연결되어 있지 않는 경우 최단경로를 조회할 수 없다.")
+    void findShortestPathFailWhenNotConnected() {
         // when
         Station 고속터미널역 = Station.of(5L, "고속터미널역");
         Station 신사역 = Station.of(6L, "신사역");
