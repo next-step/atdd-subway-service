@@ -17,10 +17,6 @@ import org.springframework.http.MediaType;
 
 @DisplayName("인증 관련 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 20;
-
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -86,7 +82,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private static void 로그인_실패(final ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private void 토큰_발급됨(ExtractableResponse<Response> response) {
