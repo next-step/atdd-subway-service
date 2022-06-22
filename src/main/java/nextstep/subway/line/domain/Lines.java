@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
@@ -19,18 +18,9 @@ public class Lines {
         items.forEach(consumer);
     }
 
-    public Sections findSections(List<Station> stations) {
-        return new Sections(stationsMapToSection(stations).stream()
-                .map(this::findSection)
+    public Sections bindDistance(Sections sections) {
+        return new Sections(sections.map(this::findSection)
                 .collect(Collectors.toList()));
-    }
-
-    private List<Section> stationsMapToSection(List<Station> stations) {
-        List<Section> sectionList = new ArrayList<>();
-        for (int i = 0; i < stations.size() - 1; i++) {
-            sectionList.add(new Section(stations.get(i), stations.get(i + 1)));
-        }
-        return sectionList;
     }
 
     private Section findSection(Section section) {

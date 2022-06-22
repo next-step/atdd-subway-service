@@ -11,6 +11,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.persistence.CascadeType;
@@ -198,13 +199,13 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException("거리값이 잘못 되었습니다."));
     }
 
-    public boolean hasSectionAnyOder(Section section) {
+    public boolean hasSectionOrReverse(Section section) {
         return hasSection(section) || hasSection(section.reverse());
     }
 
     public Section bindDistance(Section section) {
         return sections.stream()
-                .filter(item -> hasSectionAnyOder(section))
+                .filter(item -> hasSectionOrReverse(section))
                 .findFirst()
                 .map(section::bindDistance)
                 .orElseThrow(() -> new NoSuchElementException("구간을 찾을 수 없습니다."));
@@ -212,6 +213,11 @@ public class Sections {
 
     public void foreach(Consumer<Section> consumer) {
         sections.forEach(consumer);
+    }
+
+    public <R> Stream<R> map(Function<Section, R> function) {
+        return sections.stream()
+                .map(function);
     }
 
     @Override

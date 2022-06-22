@@ -1,11 +1,13 @@
 package nextstep.subway.path.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import nextstep.subway.exception.domain.SubwayException;
 import nextstep.subway.exception.domain.SubwayExceptionMessage;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -40,9 +42,8 @@ public class PathFinder {
         final GraphPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph).getPath(sourceStation,
                 targetStation);
         validatePath(path);
-        final List<Station> stations = path.getVertexList();
 
-        return lines.findSections(stations);
+        return lines.bindDistance(pathToSections(path));
     }
 
     private void validateStations(Station sourceStation, Station targetStation) {
@@ -61,5 +62,13 @@ public class PathFinder {
         }
     }
 
+    private Sections pathToSections(GraphPath<Station, DefaultWeightedEdge> path) {
+        final List<Station> stations = path.getVertexList();
+        List<Section> sectionList = new ArrayList<>();
+        for (int i = 0; i < stations.size() - 1; i++) {
+            sectionList.add(new Section(stations.get(i), stations.get(i + 1)));
+        }
+        return new Sections(sectionList);
+    }
 
 }
