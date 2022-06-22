@@ -2,7 +2,7 @@ package nextstep.subway.fare.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.dto.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;

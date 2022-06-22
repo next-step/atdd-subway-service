@@ -1,7 +1,7 @@
 package nextstep.subway.fare.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.dto.Path;
 import nextstep.subway.path.domain.SectionEdge;
 
 import javax.persistence.Column;
