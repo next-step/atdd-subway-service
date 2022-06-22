@@ -2,6 +2,8 @@ package nextstep.subway.fare.domain;
 
 import nextstep.subway.auth.domain.Age;
 
+import java.util.Objects;
+
 public enum DiscountType {
     NONE(0, 0),
     YOUTH(350, 0.8),
@@ -16,6 +18,10 @@ public enum DiscountType {
     }
 
     public static DiscountPolicy ofDiscountPolicy(Age age) {
+        if (Objects.isNull(age)) {
+            return new GeneralDiscountPolicy();
+        }
+
         if (age.isChild()) {
             return new ChildDiscountPolicy();
         }
