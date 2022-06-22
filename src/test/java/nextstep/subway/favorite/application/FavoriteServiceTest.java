@@ -3,6 +3,7 @@ package nextstep.subway.favorite.application;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -82,7 +83,18 @@ class FavoriteServiceTest {
         final List<FavoriteResponse> favorites = favoriteService.findAllFavoriteResponses(로그인_사용자);
 
         // then
-        assertThat(favorites.stream().map(FavoriteResponse::getId))
+        assertThat(favorites.stream().map(FavoriteResponse::getId).collect(Collectors.toList()))
                 .containsExactly(강남역_양재역_즐겨찾기.getId(), 교대역_남부터미널역_즐겨찾기.getId());
+    }
+
+    @Test
+    void 즐겨찾기를_삭제할_수_있다() {
+        // when
+        favoriteService.deleteFavorite(강남역_양재역_즐겨찾기.getId());
+
+        // then
+        final List<FavoriteResponse> favorites = favoriteService.findAllFavoriteResponses(로그인_사용자);
+        assertThat(favorites.stream().map(FavoriteResponse::getId).collect(Collectors.toList()))
+                .containsExactly(교대역_남부터미널역_즐겨찾기.getId());
     }
 }
