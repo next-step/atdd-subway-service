@@ -1,9 +1,11 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.error.ErrorCode;
 import nextstep.subway.error.ErrorCodeException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -26,7 +28,7 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long sourceId, Long targetId) {
+    public PathResponse findPath(Long sourceId, Long targetId, LoginMember loginMember) {
         List<Station> stations = stationRepository.findAll();
         Station source = stationRepository.findById(sourceId).orElseThrow(() -> new ErrorCodeException(NO_EXISTS_STATION));
         Station target = stationRepository.findById(targetId).orElseThrow(() -> new ErrorCodeException(NO_EXISTS_STATION));
@@ -34,6 +36,10 @@ public class PathService {
             throw new ErrorCodeException(ErrorCode.SOURCE_EQUALS_TARGET);
         }
         List<Line> lines = lineRepository.findAllWithSections();
-        return pathFinder.findPath(stations, lines, source, target);
+        Path path = pathFinder.findPath(stations, lines, source, target);
+        if (loginMember != null) {
+            path.discountBy(loginMember);
+        }
+        return new PathResponse(path);
     }
 }

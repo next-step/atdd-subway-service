@@ -2,7 +2,6 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.error.ErrorCodeException;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,13 +53,14 @@ class PathFinderTest {
     @DisplayName("최단경로와 최단거리를 계산한다")
     @Test
     void findPath() {
-        PathResponse response = pathFinder.findPath(stations, lines, 강남역, 남부터미널역);
-        List<String> stationNames = response.getStations().stream()
+        Path path = pathFinder.findPath(stations, lines, 강남역, 남부터미널역);
+        List<String> stationNames = path.getStations().stream()
+                .map(StationResponse::of)
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
         assertSoftly(softAssertions -> {
             softAssertions.assertThat(stationNames).containsExactly("강남역", "양재역", "남부터미널역");
-            softAssertions.assertThat(response.getDistance()).isEqualTo(12);
+            softAssertions.assertThat(path.getDistance()).isEqualTo(12);
         });
     }
 
