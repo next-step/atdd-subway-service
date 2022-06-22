@@ -1,6 +1,5 @@
 package nextstep.subway.path.domain;
 
-import java.util.List;
 import nextstep.subway.station.domain.Station;
 
 public class PathGraph {
@@ -10,8 +9,8 @@ public class PathGraph {
         this.shortestPathFinder = shortestPathFinder;
     }
 
-   public List<Station> findShortestPath(Long startStationId, Long endStationId) {
-        return shortestPathFinder.getShortestStations(startStationId, endStationId);
+   public Path findShortestPath(Station startStation,Station endStation ) {
+        return shortestPathFinder.findShortestPath(startStation, endStation);
    }
 
 }

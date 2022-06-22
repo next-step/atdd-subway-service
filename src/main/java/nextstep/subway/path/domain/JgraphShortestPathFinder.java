@@ -10,14 +10,13 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class JgraphShortestPathFinder implements ShortestPathFinder {
-    WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
     private List<Section> sections;
 
     JgraphShortestPathFinder(List<Section> sections) {
         this.sections = sections;
         setGraph(sections);
-
     }
 
     private void setGraph(List<Section> sections) {
@@ -25,20 +24,24 @@ public class JgraphShortestPathFinder implements ShortestPathFinder {
             Station upStation = section.getUpStation();
             Station downStation = section.getDownStation();
             Distance distance = section.getDistance();
-
-            graph.addVertex(upStation.getId());
-            graph.addVertex(downStation.getId());
-            graph.setEdgeWeight(graph.addEdge(upStation.getId(), downStation.getId()), distance.value());
+            graph.addVertex(upStation);
+            graph.addVertex(downStation);
+            graph.setEdgeWeight(graph.addEdge(upStation, downStation), distance.value());
         }));
     }
 
-
-
     @Override
-    public List<Station> getShortestStations(Long startStationId, Long endStationId) {
-        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Long, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(startStationId, endStationId);
-        //List<Long> vertexList = path.getEdgeList().get(0);
-        return null;
+    public Path findShortestPath(Station startStation, Station targetStation) {
+        findShortestPathValid(startStation, targetStation);
+
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(startStation, targetStation);
+        return new Path(graphPath.getVertexList(), (int) graphPath.getWeight());
+    }
+
+    private void findShortestPathValid(Station startStation, Station targetStation) {
+        if (startStation.equals(targetStation)) {
+            throw new IllegalArgumentException("시작역과 찾을역이 같으면 안 됩니다.");
+        }
     }
 }
