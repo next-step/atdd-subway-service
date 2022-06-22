@@ -20,6 +20,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOf
 class NavigationTest {
 
     private LoginMember 사용자;
+    private LoginMember 청소년_사용자;
+    private LoginMember 어린이_사용자;
     private Line 지하철_2호선;
     private Line 지하철_4호선;
     private Station 강남역;
@@ -40,7 +42,9 @@ class NavigationTest {
         지하철_2호선.addSection(강남역, 역삼역, 거리);
         지하철_4호선.addSection(사당역, 이수역, 거리);
 
-        사용자 = new LoginMember(1L, "14km@github.com", 20);
+        사용자 = new LoginMember(1L, "20km@github.com", 20);
+        청소년_사용자 = new LoginMember(2L, "14km@github.com", 14);
+        어린이_사용자 = new LoginMember(3L, "12km@github.com", 12);
     }
 
     @Test
@@ -55,6 +59,36 @@ class NavigationTest {
                 () -> assertThat(지하철_네비게이션_결과.getDistance()).isEqualTo(10),
                 () -> assertThat(지하철_네비게이션_결과.getStations()).contains(강남역, 역삼역),
                 () -> assertThat(지하철_네비게이션_결과.getFare()).isEqualTo(1_250)
+        );
+    }
+
+    @Test
+    @DisplayName("청소년 지하철 최단 경로 조회 기능 테스트")
+    void findShortest2() {
+        List<Line> 지하철_목록 = Collections.singletonList(지하철_2호선);
+        Navigation 지하철_네비게이션 = Navigation.of(지하철_목록);
+
+        NavigationResponse 지하철_네비게이션_결과 = 지하철_네비게이션.findShortest(강남역, 역삼역, 청소년_사용자);
+
+        Assertions.assertAll(
+                () -> assertThat(지하철_네비게이션_결과.getDistance()).isEqualTo(10),
+                () -> assertThat(지하철_네비게이션_결과.getStations()).contains(강남역, 역삼역),
+                () -> assertThat(지하철_네비게이션_결과.getFare()).isEqualTo(720)
+        );
+    }
+
+    @Test
+    @DisplayName("어린이 지하철 최단 경로 조회 기능 테스트")
+    void findShortest3() {
+        List<Line> 지하철_목록 = Collections.singletonList(지하철_2호선);
+        Navigation 지하철_네비게이션 = Navigation.of(지하철_목록);
+
+        NavigationResponse 지하철_네비게이션_결과 = 지하철_네비게이션.findShortest(강남역, 역삼역, 어린이_사용자);
+
+        Assertions.assertAll(
+                () -> assertThat(지하철_네비게이션_결과.getDistance()).isEqualTo(10),
+                () -> assertThat(지하철_네비게이션_결과.getStations()).contains(강남역, 역삼역),
+                () -> assertThat(지하철_네비게이션_결과.getFare()).isEqualTo(450)
         );
     }
 
