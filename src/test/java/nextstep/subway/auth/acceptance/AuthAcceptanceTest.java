@@ -62,11 +62,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response = MemberAcceptanceTest.내_정보_조회_요청(wrongToken);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        MemberAcceptanceTest.내_정보_조회_실패(response);
     }
 
-    public static ExtractableResponse<Response> 로그인_요청(final String email, final String password) {
-        final TokenRequest tokenRequest = new TokenRequest(email, password);
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        TokenRequest tokenRequest = new TokenRequest(email, password);
 
         return RestAssured
                 .given().log().all()
@@ -77,15 +77,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private static void 로그인_성공(final ExtractableResponse<Response> response) {
+    public static void 로그인_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private static void 로그인_실패(final ExtractableResponse<Response> response) {
+    public static void 로그인_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private void 토큰_발급됨(ExtractableResponse<Response> response) {
+    public void 토큰_발급됨(ExtractableResponse<Response> response) {
         final TokenResponse tokenResponse = response.as(TokenResponse.class);
         assertThat(tokenResponse).isNotNull();
         assertThat(tokenResponse.getAccessToken()).isNotEmpty();
