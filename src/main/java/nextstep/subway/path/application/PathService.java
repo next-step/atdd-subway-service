@@ -21,7 +21,6 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(final Long sourceStationId, final Long targetStationId) {
-        validateStationIds(sourceStationId, targetStationId);
         final SubwayGraph subwayGraph = new SubwayGraph(
                 sectionService.findAllSections(),
                 stationService.findAllStations());
@@ -29,12 +28,6 @@ public class PathService {
                 stationService.findStationById(sourceStationId),
                 stationService.findStationById(targetStationId));
         return PathResponse.of(getPathStationResponses(path), path.getDistance());
-    }
-
-    private void validateStationIds(final Long sourceStationId, final Long targetStationId) {
-        if (sourceStationId == targetStationId) {
-            throw new RuntimeException("출발역과 도착역은 같을 수 없습니다.");
-        }
     }
 
     private List<PathStationResponse> getPathStationResponses(final Path path) {

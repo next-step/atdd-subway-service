@@ -41,6 +41,9 @@ public class SubwayGraph {
     }
 
     public Path findShortestPath(final Station source, final Station target) {
+        if (source == target) {
+            throw new RuntimeException("출발역과 도착역은 같을 수 없습니다.");
+        }
         final GraphPath graphPath = getGraphPath(source.getId(), target.getId());
         return new Path(getStationsOfGraphPath(graphPath), getDistanceOfGraphPath(graphPath));
     }

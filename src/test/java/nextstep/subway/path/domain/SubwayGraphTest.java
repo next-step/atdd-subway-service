@@ -59,6 +59,16 @@ class SubwayGraphTest {
     }
 
     @Test
+    void 출발역과_도착역이_같으면_에러가_발생해야_한다() {
+        // given
+        final SubwayGraph subwayGraph = new SubwayGraph(sections, stations);
+
+        // when and then
+        assertThatThrownBy(() -> subwayGraph.findShortestPath(강남역, 강남역))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
     void 경로가_없으면_에러가_발생해야_한다() {
         // given
         final SubwayGraph subwayGraph = new SubwayGraph(sections, stations);
