@@ -2,8 +2,6 @@ package nextstep.subway.path.apllication;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -13,9 +11,8 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -34,9 +31,30 @@ public class PathService {
         Station targetStation = stationService.findStationById(target);
         List<Line> lines = lineService.findAll();
         path.initLines(lines);
+        return getPathResponse(sourceStation, targetStation);
+    }
 
+    private PathResponse getPathResponse(Station sourceStation, Station targetStation) {
         GraphPath<Long, DefaultWeightedEdge> pathFind = path.find(sourceStation, targetStation);
         List<StationResponse> stationResponses = stationService.findAllStations(pathFind.getVertexList());
+        stationResponses = stationResponseOrderByVertexList(pathFind, stationResponses);
+
         return new PathResponse(stationResponses, pathFind.getWeight());
+    }
+
+    private List<StationResponse> stationResponseOrderByVertexList(GraphPath<Long, DefaultWeightedEdge> pathFind, List<StationResponse> stationResponses) {
+        List<StationResponse> stationResponsesOrderBy = new ArrayList<>();
+        pathFind.getVertexList().stream().forEach(s -> System.out.println(s));
+        pathFind.getVertexList().stream().forEach(
+                id -> stationResponsesOrderBy.add(findStationById(stationResponses, id))
+        );
+        return stationResponsesOrderBy;
+    }
+
+    private StationResponse findStationById(List<StationResponse> stationResponses, Long id) {
+        return stationResponses.stream()
+                .filter(s -> s.getId() == id)
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
     }
 }
