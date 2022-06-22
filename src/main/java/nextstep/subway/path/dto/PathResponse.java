@@ -1,5 +1,6 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.line.domain.Charge;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -41,5 +42,13 @@ public class PathResponse {
                 .collect(Collectors.toList()),
                 sections.getTotalDistance().of(),
                 sections.totalCharge().of());
+    }
+
+    public static PathResponse of(final Sections sections, final Charge charge) {
+        return new PathResponse(
+                sections.getStations().stream().map(StationResponse::of)
+                        .collect(Collectors.toList()),
+                sections.getTotalDistance().of(),
+                charge.of());
     }
 }

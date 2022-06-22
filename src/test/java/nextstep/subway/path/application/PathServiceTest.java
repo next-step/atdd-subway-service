@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.Age;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -69,7 +70,7 @@ class PathServiceTest {
         final PathService pathService = new PathService(lineRepository, stationRepository);
 
         // when
-        final PathResponse pathResponse = pathService.findShortestRoute(교대역.getId(), 양재역.getId());
+        final PathResponse pathResponse = pathService.findShortestRoute(new Age(20), 교대역.getId(), 양재역.getId());
 
         // then
         최단_경로_정보를_가져옴(pathResponse, Arrays.asList(교대역, 남부터미널역, 양재역));

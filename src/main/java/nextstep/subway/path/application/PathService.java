@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.auth.domain.Age;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.UserCost;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.utils.Route;
 import nextstep.subway.path.utils.SectionEdge;
@@ -24,13 +25,15 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestRoute(long sourceId, long targetId) {
+    public PathResponse findShortestRoute(Age age, long sourceId, long targetId) {
         final Station startStation = stationRepository.findById(sourceId).orElseThrow(EntityNotFoundException::new);
         final Station endStation = stationRepository.findById(targetId).orElseThrow(EntityNotFoundException::new);
-        return PathResponse.of(new Sections(
-                new Route().getShortestRoute(lineRepository.findAll(), startStation, endStation).getEdgeList().stream()
+        final GraphPath<Station, SectionEdge> shortestRoute = new Route().getShortestRoute(lineRepository.findAll(), startStation, endStation);
+        final Sections sections = new Sections(
+                shortestRoute.getEdgeList().stream()
                 .map(SectionEdge::getSection)
-                .collect(Collectors.toList())));
+                .collect(Collectors.toList()));
+        return PathResponse.of(sections, UserCost.valueOf(age).calculate(sections.totalCharge()));
     }
 
 }
