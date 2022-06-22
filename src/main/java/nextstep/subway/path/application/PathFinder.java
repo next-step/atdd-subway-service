@@ -20,15 +20,16 @@ public class PathFinder {
 
     public PathResponse findShortestPath(List<Section> allSection, Station sourceStation, Station targetStation) {
         List<Station> allStations = findAllStations(allSection);
-
         validate(allStations, sourceStation, targetStation);
-        stationGraph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        initGraph(allSection, allStations);
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(stationGraph);
-
+        DijkstraShortestPath dijkstraShortestPath = makeDijkstraShortestPath(allSection, allStations);
         GraphPath shortestPath = getShortestPath(sourceStation, targetStation, dijkstraShortestPath);
         return new PathResponse(shortestPath.getVertexList(), (long) shortestPath.getWeight());
+    }
+
+    private DijkstraShortestPath makeDijkstraShortestPath(List<Section> allSection, List<Station> allStations){
+        stationGraph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        initGraph(allSection, allStations);
+        return new DijkstraShortestPath(stationGraph);
     }
 
     private GraphPath getShortestPath(Station sourceStation, Station targetStation, DijkstraShortestPath dijkstraShortestPath) {

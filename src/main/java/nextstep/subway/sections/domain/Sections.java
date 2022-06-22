@@ -23,10 +23,6 @@ public class Sections {
     }
 
     public Sections(Section section) {
-        this.sections.add(section);
-    }
-
-    public void add(Section section) {
         validate(section);
         sections.add(section);
     }

@@ -30,10 +30,9 @@ public class SectionsTest {
     @Test
     public void addSectionWithNull() {
         //given
-        Sections sections = new Sections();
         //when
         //then
-        assertThatThrownBy(() -> sections.add(null))
+        assertThatThrownBy(() -> new Sections(null))
             .isInstanceOf(IllegalArgumentException.class);
     }
 

@@ -71,6 +71,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청(강남역, 남부터미널역);
         //then
         지하철_노선에_지하철역_순서_정렬됨(최단경로_조회응답, Arrays.asList(강남역, 양재역, 남부터미널역));
+        지하철_역사이_최단경로_거리확인(최단경로_조회응답, 12);
     }
 
     /**
@@ -137,6 +138,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
             .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+    }
+
+
+    public static void 지하철_역사이_최단경로_거리확인(ExtractableResponse<Response> response, long distance) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+
+        assertThat(pathResponse.getDistance()).isEqualTo(distance);
     }
 
     public static void 지하철_역사이_최단경로_조회_실패함(ExtractableResponse<Response> response) {
