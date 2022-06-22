@@ -182,7 +182,7 @@ public class SectionsTest {
             sections.delete(판교역);
         }).isInstanceOf(IllegalArgumentException.class);
     }
-    
+
     private int findDistance(Sections sections, Station upStation, Station downStation) {
         return sections.getSections().stream()
                 .filter(x -> x.getUpStation().equals(upStation) && x.getDownStation().equals(downStation))
