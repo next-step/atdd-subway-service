@@ -41,7 +41,7 @@ public class PathService {
                 targetStation,
                 loginMember
         );
-        return PathResponse.of(navigationResponse.getStations(), navigationResponse.getDistance());
+        return PathResponse.of(navigationResponse.getStations(), navigationResponse.getDistance(), navigationResponse.getFare());
     }
 
     private void validateSameStation(PathRequest pathRequest) {
