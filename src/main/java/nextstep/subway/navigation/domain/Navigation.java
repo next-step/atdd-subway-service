@@ -1,6 +1,9 @@
 package nextstep.subway.navigation.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.application.FareCalculatorService;
+import nextstep.subway.fare.domain.DiscountPolicy;
+import nextstep.subway.fare.domain.DiscountType;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.navigation.dto.NavigationResponse;
 import nextstep.subway.station.domain.Station;
@@ -38,7 +41,7 @@ public class Navigation {
         });
     }
 
-    public NavigationResponse findShortest(Station sourceStation, Station targetStation) {
+    public NavigationResponse findShortest(Station sourceStation, Station targetStation, LoginMember loginMember) {
         path = new DijkstraShortestPath<>(graph).getPath(sourceStation, targetStation);
         checkFindShortestPath(path);
 
@@ -46,7 +49,10 @@ public class Navigation {
         int distance = (int) path.getWeight();
         int fare = FareCalculatorService.calculate(distance) + maxLineExtraFare(path);
 
-        return NavigationResponse.of(vertexList, distance, fare);
+        DiscountPolicy discountPolicy = DiscountType.ofDiscountPolicy(loginMember.getAge());
+        int discountedFare = discountPolicy.discount(fare);
+
+        return NavigationResponse.of(vertexList, distance, discountedFare);
     }
 
     private void checkFindShortestPath(GraphPath<Station, SectionEdge> path) {

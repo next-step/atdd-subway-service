@@ -1,5 +1,6 @@
 package nextstep.subway.navigation.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.navigation.domain.Navigation;
 import nextstep.subway.navigation.dto.NavigationResponse;
@@ -11,8 +12,13 @@ import java.util.List;
 @Service
 public class NavigationService {
 
-    public NavigationResponse findShortest(List<Line> persistLines, Station sourceStation, Station targetStation) {
+    public NavigationResponse findShortest(
+            List<Line> persistLines,
+            Station sourceStation,
+            Station targetStation,
+            LoginMember loginMember
+    ) {
         Navigation navigation = Navigation.of(persistLines);
-        return navigation.findShortest(sourceStation, targetStation);
+        return navigation.findShortest(sourceStation, targetStation, loginMember);
     }
 }
