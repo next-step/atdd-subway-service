@@ -58,18 +58,18 @@ public class Sections {
     public void delete(Station station) throws NotFoundStationException {
         validateDelete(station);
 
-        Optional<Section> upLineStation = findUpLineStation(station);
-        Optional<Section> downLineStation = findDownLineStation(station);
+        Optional<Section> downSection = findSectionByUpStation(station);
+        Optional<Section> upSection = findSectionByDownStation(station);
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance().getDistance() + downLineStation.get().getDistance().getDistance();
-            sections.add(new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance));
+        if (downSection.isPresent() && upSection.isPresent()) {
+            Station newUpStation = upSection.get().getUpStation();
+            Station newDownStation = downSection.get().getDownStation();
+            int newDistance = downSection.get().getDistance().getDistance() + upSection.get().getDistance().getDistance();
+            sections.add(new Section(downSection.get().getLine(), newUpStation, newDownStation, newDistance));
         }
 
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+        downSection.ifPresent(it -> sections.remove(it));
+        upSection.ifPresent(it -> sections.remove(it));
     }
 
     private void validateDelete(Station station) throws NotFoundStationException {
@@ -81,13 +81,13 @@ public class Sections {
         }
     }
 
-    public Optional<Section> findUpLineStation(Station station) {
+    public Optional<Section> findSectionByUpStation(Station station) {
         return sections.stream()
                 .filter(it -> it.getUpStation() == station)
                 .findFirst();
     }
 
-    public Optional<Section> findDownLineStation(Station station) {
+    public Optional<Section> findSectionByDownStation(Station station) {
         return sections.stream()
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();
@@ -111,11 +111,11 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findFirstUpStation();
+        Station nextStation = findFirstUpStation();
 
-        while (downStation != null) {
-            stations.add(downStation);
-            downStation = getNextStation(downStation);
+        while (nextStation != null) {
+            stations.add(nextStation);
+            nextStation = getNextStation(nextStation);
         }
 
         return stations;
@@ -141,9 +141,9 @@ public class Sections {
         return previousSection.map(Section::getUpStation);
     }
 
-    private Station getNextStation(Station downStation) {
+    private Station getNextStation(Station nextStation) {
         Optional<Section> nextSection = this.sections.stream()
-                .filter(section -> section.getUpStation() == downStation)
+                .filter(section -> section.getUpStation() == nextStation)
                 .findFirst();
         return nextSection.map(Section::getDownStation).orElse(null);
     }
