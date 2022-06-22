@@ -181,7 +181,7 @@ class SectionsTest {
      */
     @DisplayName("구간들에 대한 요금을 알수 있다.")
     @Test
-    void getTotalPriceTest() {
-        assertThat(구간들이_저장된_노선들.getTotalPrice()).isEqualTo(new Price(1650).plus(신분당선.getExtraCharge()));
+    void totalChargeTest() {
+        assertThat(구간들이_저장된_노선들.totalCharge()).isEqualTo(new Charge(1650).plus(신분당선.getExtraCharge()));
     }
 }

@@ -120,7 +120,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("구간정보와 거리, 금액을 알수있다.")
     @Test
-    void checkSectionAndDistanceAndPrice() {
+    void checkSectionAndDistanceAndCharge() {
         // when
         final ExtractableResponse<Response> response = 최단_경로_검색(교대역, 양재역);
 

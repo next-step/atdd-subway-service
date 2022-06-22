@@ -13,7 +13,7 @@ public class Sections {
     private static final int MIN_SIZE = 1;
 
     @Transient
-    private final OperationCostPolicy<Price> costPolicy = new DistanceCostPolicy();
+    private final OperationCostPolicy costPolicy = new DistanceCostPolicy();
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
@@ -64,8 +64,8 @@ public class Sections {
         return sections.stream().map(Section::getDistance).reduce(new Distance(0), Distance::plus);
     }
 
-    public Price getTotalPrice() {
-        Price extraCharge = sections.stream()
+    public Charge totalCharge() {
+        Charge extraCharge = sections.stream()
                 .map(Section::getLine)
                 .distinct()
                 .map(Line::getExtraCharge)

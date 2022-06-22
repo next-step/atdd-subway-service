@@ -12,10 +12,10 @@ public enum ExceedCharge {
         this.charge = charge;
     }
 
-    public Price calculateOverFare(final long distance) {
+    public Charge calculateOverFare(final long distance) {
         if (distance <= MIN_VALUE) {
-            return new Price(MIN_VALUE);
+            return new Charge(MIN_VALUE);
         }
-        return new Price((int) ((Math.ceil((distance - 1) / unit) + 1) * charge));
+        return new Charge((int) ((Math.ceil((distance - 1) / unit) + 1) * charge));
     }
 }

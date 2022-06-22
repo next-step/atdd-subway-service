@@ -9,7 +9,7 @@ public class Distance {
     private final long distance;
 
     protected Distance() {
-        distance = MIN;
+        this(MIN);
     }
 
     public Distance(long distance) {
@@ -31,9 +31,9 @@ public class Distance {
         return this.distance;
     }
 
-    public Price calculate(OperationCostPolicy<Price> policy) {
-        final Price basicPrice = policy.normal();
-        return basicPrice.plus(policy.special(distance));
+    public Charge calculate(OperationCostPolicy policy) {
+        final Charge basicCharge = policy.basicCharge();
+        return basicCharge.plus(policy.policyCharge(distance));
     }
 
     private Distance plus(final long source) {

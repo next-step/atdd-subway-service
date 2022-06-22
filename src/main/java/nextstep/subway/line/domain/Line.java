@@ -22,23 +22,21 @@ public class Line extends BaseEntity {
     private final Sections sections = new Sections();
 
     @Embedded
-    private Price extraCharge;
+    private Charge extraCharge;
 
     public Line() {
-        extraCharge = new Price();
-    }
-
-    public Line(String name, String color, long extraCharge) {
-        this(name, color);
-        this.extraCharge = new Price(extraCharge);
+        extraCharge = new Charge();
     }
 
     public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
-        this.extraCharge = new Price();
+        this(name, color, 0);
     }
 
+    public Line(String name, String color, long extraCharge) {
+        this.name = name;
+        this.color = color;
+        this.extraCharge = new Charge(extraCharge);
+    }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this(name, color);
@@ -67,7 +65,7 @@ public class Line extends BaseEntity {
         return this.sections;
     }
 
-    public Price getExtraCharge() {
+    public Charge getExtraCharge() {
         return extraCharge;
     }
 

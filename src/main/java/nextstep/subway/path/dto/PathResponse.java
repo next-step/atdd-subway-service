@@ -1,12 +1,7 @@
 package nextstep.subway.path.dto;
 
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
-import nextstep.subway.path.utils.SectionEdge;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +40,6 @@ public class PathResponse {
                 sections.getStations().stream().map(StationResponse::of)
                 .collect(Collectors.toList()),
                 sections.getTotalDistance().of(),
-                sections.getTotalPrice().of());
+                sections.totalCharge().of());
     }
 }

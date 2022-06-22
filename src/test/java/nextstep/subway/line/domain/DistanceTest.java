@@ -35,7 +35,7 @@ class DistanceTest {
 
     @DisplayName("거리에 따른 금액을 반환한다.")
     @Test
-    void calculatorPriceTest() {
-        assertThat(new Distance(14).calculate(new DistanceCostPolicy())).isEqualTo(new Price(1350));
+    void calculateChargeTest() {
+        assertThat(new Distance(14).calculate(new DistanceCostPolicy())).isEqualTo(new Charge(1350));
     }
 }
