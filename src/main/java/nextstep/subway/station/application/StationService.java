@@ -33,12 +33,12 @@ public class StationService {
         return stationRepository.findAll();
     }
 
-    public void deleteStationById(Long id) {
-        stationRepository.deleteById(id);
-    }
-
     public Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+    }
+
+    public void deleteStationById(Long id) {
+        stationRepository.deleteById(id);
     }
 
     public List<StationResponse> convertToStationResponses(final List<Station> stations) {
