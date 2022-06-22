@@ -71,4 +71,8 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+    public Integer getLineOverFare() {
+        return line.getOverFare();
+    }
 }

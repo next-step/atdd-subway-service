@@ -15,8 +15,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.domain.Station;
@@ -41,13 +44,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private static String 성인_토큰;
+    private static String 청소년_토큰;
+    private static String 어린이_토큰;
 
     /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* --- 양재역
+     * 교대역    --- *2호선*(10) ---   강남역
+     * |                            |
+     * *3호선* (3)                  *신분당선*(10)
+     * |                            |
+     * 남부터미널역  --- *3호선*(2) --- 양재역
      */
     @BeforeEach
     public void setUp() {
@@ -58,14 +64,27 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        LineRequest 이호선_등록_요청 = new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10);
+        LineRequest 이호선_등록_요청 = new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10, 1000);
         이호선 = 지하철_노선_등록되어_있음(이호선_등록_요청).as(LineResponse.class);
-        LineRequest 신분당선_등록_요청 = new LineRequest("신분당선", "red", 강남역.getId(), 양재역.getId(), 10);
+        LineRequest 신분당선_등록_요청 = new LineRequest("신분당선", "red", 강남역.getId(), 양재역.getId(), 10, 500);
         신분당선 = 지하철_노선_등록되어_있음(신분당선_등록_요청).as(LineResponse.class);
-        LineRequest 삼호선_등록_요청 = new LineRequest("삼호선", "orange", 교대역.getId(), 양재역.getId(), 5);
+        LineRequest 삼호선_등록_요청 = new LineRequest("삼호선", "orange", 교대역.getId(), 양재역.getId(), 5, 300);
         삼호선 = 지하철_노선_등록되어_있음(삼호선_등록_요청).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+
+        MemberAcceptanceTest.회원_생성을_요청("성인@email.com", "password", 20);
+        MemberAcceptanceTest.회원_생성을_요청("청소년@email.com", "password", 16);
+        MemberAcceptanceTest.회원_생성을_요청("어린이@email.com", "password", 8);
+        성인_토큰 = AuthAcceptanceTest.로그인_요청("성인@email.com", "password")
+                .as(TokenResponse.class)
+                .getAccessToken();
+        청소년_토큰 = AuthAcceptanceTest.로그인_요청("청소년@email.com", "password")
+                .as(TokenResponse.class)
+                .getAccessToken();
+        어린이_토큰 = AuthAcceptanceTest.로그인_요청("어린이@email.com", "password")
+                .as(TokenResponse.class)
+                .getAccessToken();
     }
 
     /**
@@ -77,46 +96,131 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *     And 지하철 노선에 지하철역 등록되어 있음
      *
      *   Scenario: 최단 경로를 조회한다.
-     *     When 교대역-양재역 최단 경로를 조회하면,
-     *     Then 교대역-남부터미널역-양재역이 조회됨
-     *     When 남부터미널역-강남역 최단 경로를 조회하면,
-     *     Then 남부터미널역-양재역-강남역이 조회됨
+     *     When 교대역-양재역 최단 경로를 로그인하지 않는 사용자가 조회하면,
+     *     Then 경유지, 경유거리, 이용요금을 응답
+     *     When 교대역-양재역 최단 경로를 로그인 한 청소년이 조회하면,
+     *     Then 경유지, 경유거리, 이용요금을 응답
+     *     When 교대역-양재역 최단 경로를 로그인 한 어린이가 조회하면,
+     *     Then 경유지, 경유거리, 이용요금을 응답
+     *     When 교대역-양재역 최단 경로를 로그인 한 성인이 조회하면,
+     *     Then 경유지, 경유거리, 이용요금을 응답
      */
     @TestFactory
-    Stream<DynamicTest> findShortestPath() {
+    Stream<DynamicTest> 최단_경로_조회() {
         return Stream.of(
-                dynamicTest("교대역-양재역 최단 경로를 조회하면, 교대역-남부터미널역-양재역이 조회됨", () -> {
+                dynamicTest("교대역-양재역 최단 경로를 로그인하지 않는 사용자가 조회하면, 경유지/경유거리/이용요금을 응답", () -> {
                     //when
-                    ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
+                    ExtractableResponse<Response> response = 최단_경로_조회_요청("비로그인", 교대역.getId(), 양재역.getId());
 
                     //then
                     응답결과_확인(response, HttpStatus.OK);
                     List<StationResponse> stations = Arrays.asList(교대역, 남부터미널역, 양재역);
                     경유지_확인(response, stations);
                     경유거리_확인(response, 5);
+                    이용요금_확인(response, 1550);
                 }),
 
-                dynamicTest("남부터미널역-강남역 최단 경로를 조회하면, 남부터미널역-양재역-강남역이 조회됨", () -> {
+                dynamicTest("교대역-양재역 최단 경로를 로그인 한 청소년이 조회하면, 경유지/경유거리/이용요금을 응답", () -> {
                     //when
-                    ExtractableResponse<Response> response = 최단_경로_조회_요청(남부터미널역.getId(), 강남역.getId());
+                    ExtractableResponse<Response> response = 최단_경로_조회_요청(청소년_토큰, 교대역.getId(), 양재역.getId());
 
                     //then
                     응답결과_확인(response, HttpStatus.OK);
-                    List<StationResponse> stations = Arrays.asList(남부터미널역, 양재역, 강남역);
+                    List<StationResponse> stations = Arrays.asList(교대역, 남부터미널역, 양재역);
                     경유지_확인(response, stations);
-                    경유거리_확인(response, 12);
+                    경유거리_확인(response, 5);
+                    이용요금_확인(response, 960);
+                }),
+
+                dynamicTest("교대역-양재역 최단 경로를 로그인 한 어린이가 조회하면, 경유지/경유거리/이용요금을 응답", () -> {
+                    //when
+                    ExtractableResponse<Response> response = 최단_경로_조회_요청(어린이_토큰, 교대역.getId(), 양재역.getId());
+
+                    //then
+                    응답결과_확인(response, HttpStatus.OK);
+                    List<StationResponse> stations = Arrays.asList(교대역, 남부터미널역, 양재역);
+                    경유지_확인(response, stations);
+                    경유거리_확인(response, 5);
+                    이용요금_확인(response, 600);
+                }),
+
+                dynamicTest("교대역-양재역 최단 경로를 로그인 한 성인이 조회하면, 경유지/경유거리/이용요금을 응답", () -> {
+                    //when
+                    ExtractableResponse<Response> response = 최단_경로_조회_요청(성인_토큰, 교대역.getId(), 양재역.getId());
+
+                    //then
+                    응답결과_확인(response, HttpStatus.OK);
+                    List<StationResponse> stations = Arrays.asList(교대역, 남부터미널역, 양재역);
+                    경유지_확인(response, stations);
+                    경유거리_확인(response, 5);
+                    이용요금_확인(response, 1550);
                 })
         );
     }
 
-    private ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceStationId, Long targetStationId) {
+    /**
+     * Feature: 노선 별 추가요금 테스트
+     *
+     *   Background
+     *     Given 지하철역 등록되어 있음
+     *     And 지하철 노선 등록되어 있음
+     *     And 지하철 노선에 지하철역 등록되어 있음
+     *
+     *   Scenario: 최단 경로를 조회한다.
+     *     When 교대역-강남역 최단 경로를 로그인 한 성인이 조회하면,
+     *     Then 2250원의 이용요금이 발생한다.
+     *     When 강남역-양재역 최단 경로를 로그인 한 성인이 조회하면,
+     *     Then 1750원의 이용요금이 발생
+     *     When 남부터미널역-양재역 최단 경로를 로그인 한 성인이 조회하면,
+     *     Then 1550원의 이용요금이 발생
+     */
+    @TestFactory
+    Stream<DynamicTest> 노선_별_추가요금_테스트() {
+        return Stream.of(
+                dynamicTest("교대역-강남역 최단 경로를 로그인 한 성인이 조회하면, 2250원의 이용요금이 발생", () -> {
+                    //when
+                    ExtractableResponse<Response> response = 최단_경로_조회_요청(성인_토큰, 교대역.getId(), 강남역.getId());
+
+                    //then
+                    응답결과_확인(response, HttpStatus.OK);
+                    이용요금_확인(response, 2250);
+                }),
+
+                dynamicTest("강남역-양재역 최단 경로를 로그인 한 성인이 조회하면, 1750원의 이용요금이 발생", () -> {
+                    //when
+                    ExtractableResponse<Response> response = 최단_경로_조회_요청(성인_토큰, 강남역.getId(), 양재역.getId());
+
+                    //then
+                    응답결과_확인(response, HttpStatus.OK);
+                    이용요금_확인(response, 1750);
+                }),
+
+                dynamicTest("남부터미널역-양재역 최단 경로를 로그인 한 성인이 조회하면, 1550원의 이용요금이 발생", () -> {
+                    //when
+                    ExtractableResponse<Response> response = 최단_경로_조회_요청(성인_토큰, 남부터미널역.getId(), 양재역.getId());
+
+                    //then
+                    응답결과_확인(response, HttpStatus.OK);
+                    이용요금_확인(response, 1550);
+                })
+        );
+    }
+
+    private ExtractableResponse<Response> 최단_경로_조회_요청(String token, Long sourceStationId, Long targetStationId) {
         Map<String, Long> params = new HashMap<>();
         params.put("source", sourceStationId);
         params.put("target", targetStationId);
-        return get(path, params);
+
+        return RestAssured
+                .given().log().all().auth().oauth2(token)
+                .queryParams(params)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(path)
+                .then().log().all()
+                .extract();
     }
 
-    private void 경유거리_확인(ExtractableResponse<Response> response, int expectedDistance) {
+    public void 경유거리_확인(ExtractableResponse<Response> response, int expectedDistance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
     }
@@ -129,6 +233,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(actualStations).hasSize(3);
     }
 
+    private void 이용요금_확인(ExtractableResponse<Response> response, int expectedFare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(expectedFare);
+    }
+
     private List<Station> toStations(List<StationResponse> stationResponses) {
         return stationResponses.stream()
                 .map(PathAcceptanceTest::toStation)
@@ -137,15 +246,5 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static Station toStation(StationResponse stationResponse) {
         return new Station(stationResponse.getName());
-    }
-
-    public static <T> ExtractableResponse<Response> get(String path, Map<String, T> params) {
-        return RestAssured
-                .given().log().all()
-                .queryParams(params)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(path)
-                .then().log().all()
-                .extract();
     }
 }

@@ -1,8 +1,9 @@
 package nextstep.subway.path.domain;
 
+import static nextstep.subway.path.domain.PathTest.*;
+
 import java.util.Arrays;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.PathTestUtils;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,17 +46,15 @@ class DijkstraShortestPathFinderTest {
     @DisplayName("교대역에서 양재역까지 최단 경로 조회를 요청하면, 최단 경로가 조회된다.")
     @Test
     void getPath() {
-        //given
-
         //when
-        Path path = 최단_경로_조회함(교대역, 양재역);
+        Path path = 최단_경로_조회함(dijkstraShortestPathFinder, 교대역, 양재역);
 
         //then
-        PathTestUtils.경유지_확인(path, Arrays.asList(교대역, 남부터미널역, 양재역));
-        PathTestUtils.경유거리_확인(path, 5);
+        경유지_확인(path, Arrays.asList(교대역, 남부터미널역, 양재역));
+        경유거리_확인(path, 5);
     }
 
-    private Path 최단_경로_조회함(Station source, Station target) {
+    public static Path 최단_경로_조회함(DijkstraShortestPathFinder dijkstraShortestPathFinder, Station source, Station target) {
         return dijkstraShortestPathFinder.getPath(source, target);
     }
 

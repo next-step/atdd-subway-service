@@ -8,6 +8,7 @@ import java.util.List;
 
 @Entity
 public class Line extends BaseEntity {
+    public static final Integer OVERFARE_MIN = 0;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,6 +17,7 @@ public class Line extends BaseEntity {
     private String color;
     @Embedded
     private final Sections sections = new Sections();
+    private Integer overFare;
 
     public Line() {
     }
@@ -23,17 +25,23 @@ public class Line extends BaseEntity {
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+        this.overFare = 0;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this(name, color, upStation, downStation, distance, 0);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int overFare) {
         this.name = name;
         this.color = color;
+        this.overFare = overFare;
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+    public void update(String name, String color) {
+        this.name = name;
+        this.color = color;
     }
 
     public List<Station> getStations() {
@@ -62,5 +70,9 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public Integer getOverFare() {
+        return overFare;
     }
 }
