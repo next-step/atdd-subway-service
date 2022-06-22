@@ -4,12 +4,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.domain.Age;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.domain.UserCost;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -163,6 +161,30 @@ public class PathAcceptanceTest extends AcceptanceTest {
         거리_금액_확인(청소년이_요청한_결과, 5, 청소년_예상_할인_요금(성인이_요청한_결과.getExtraCharge()));
     }
 
+    /**
+     *
+     * Given : 어린이가  로그인을 한 후,
+     * When : 지하철 구간을 검색 하면,
+     * Then : 최단 경로와 거리 , 그리고 일반인 보다 350원을 공제되고 50 % 할인된 금액이 보여진다.
+     */
+    @DisplayName("어린이가 검색 할 경우 일반인 보다 요금이 할인된 금액이 보여진다.")
+    @Test
+    void findShortestRouteTestWhenUseIsChild() {
+        // Given
+        final TokenResponse 성인_로그인 = Login("adult@adult.com", 20);
+        final PathResponse 성인이_요청한_결과 = 최단_경로_검색(성인_로그인, 교대역, 양재역).as(PathResponse.class);
+
+        final TokenResponse 어린이_로그인 = Login("child@child.com", 12);
+
+        // When
+        final ExtractableResponse<Response> 어린이가_요청한_결과 = 최단_경로_검색(어린이_로그인, 교대역, 양재역);
+
+        // Then
+        최단_경로_기준으로_지하철역_정보가_출력됨(어린이가_요청한_결과, Arrays.asList(교대역, 남부터미널역, 양재역));
+        거리_금액_확인(어린이가_요청한_결과, 5, 어린이_예상_할인_요금(성인이_요청한_결과.getExtraCharge()));
+    }
+
+
     public static void 거리_금액_확인(ExtractableResponse<Response> response, int expectedDistance, long expectedPrice) {
         final PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
@@ -210,5 +232,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static long 청소년_예상_할인_요금(final long totalCharge) {
         return (totalCharge - 350) * (100 - 20) / 100;
+    }
+
+    public static long 어린이_예상_할인_요금(final long totalCharge) {
+        return (totalCharge - 350) * (100 - 50) / 100;
     }
 }
