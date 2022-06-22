@@ -1,5 +1,9 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.domain.DistanceExtraFare;
+import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.path.dto.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -17,9 +21,14 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse getPath(Long sourceId, Long targetId) {
+    public PathResponse getPath(LoginMember member, Long sourceId, Long targetId) {
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
-        return pathFinder.getPath(source, target);
+        Path path = pathFinder.getPath(source, target);
+        Fare fare = new Fare(DistanceExtraFare.BASE_FARE)
+                .addExtraOf(path)
+                .discountForAge(member);
+
+        return PathResponse.of(path, fare);
     }
 }

@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.CascadeType;
@@ -143,11 +143,13 @@ public class Sections {
                 .findFirst();
     }
 
-    public void enrollIn(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    public void enrollIn(WeightedMultigraph<Station, SectionEdge> graph) {
         graph.addVertex(findFirstSection().getUpStation());
         elements.forEach(section -> graph.addVertex(section.getDownStation()));
-        elements.forEach(section -> graph.setEdgeWeight(
-                graph.addEdge(section.getUpStation(), section.getDownStation()),
-                section.getDistance()));
+        elements.forEach(section -> {
+            SectionEdge sectionEdge = new SectionEdge(section);
+            graph.addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
+            graph.setEdgeWeight(sectionEdge, section.getDistance());
+        });
     }
 }

@@ -47,7 +47,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         강남구청역 = StationAcceptanceTest.지하철역_등록되어_있음("강남구청역").as(StationResponse.class);
         선릉역 = StationAcceptanceTest.지하철역_등록되어_있음("선릉역").as(StationResponse.class);
         // and
-        분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("분당선", "노랑", 왕십리역.getId(), 선릉역.getId(), 7)).as(LineResponse.class);
+        분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("분당선", "노랑", 왕십리역.getId(), 선릉역.getId(), 7, 500)).as(LineResponse.class);
         // and
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(분당선, 왕십리역, 서울숲역, 3);
         // and
