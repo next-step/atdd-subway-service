@@ -39,26 +39,9 @@ public class Fare {
                 .addExtraOf(path.getSectionEdges());
     }
 
-    public Fare discountForAge(LoginMember member) {
-        if (member.isGuest()) {
-            return this;
-        }
-
-        try {
-            AgeDiscount ageDiscount = AgeDiscount.of(member.getAge());
-            return new Fare((int) (value - ageDiscount.calculateDiscount(value)));
-        } catch (IllegalArgumentException e) {
-            return this;
-        }
-    }
-
     public Fare addExtraOf(int distance) {
-        Fare result = this;
-        for (DistanceExtraFare distanceExtraFare : DistanceExtraFare.values()) {
-            result = result.plus(getExtraFare(distance, distanceExtraFare));
-        }
-
-        return result;
+        DistanceExtraFare distanceExtraFare = DistanceExtraFare.of(distance);
+        return new Fare(value + distanceExtraFare.addExtraOf(distance));
     }
 
     public Fare addExtraOf(List<SectionEdge> edgeList) {
@@ -74,20 +57,13 @@ public class Fare {
         return new Fare(value + max);
     }
 
-    private Fare plus(Fare extra) {
-        return new Fare(this.value + extra.value);
-    }
-
-    private Fare getExtraFare(int distance, DistanceExtraFare distanceExtraFare) {
-        if (distance < distanceExtraFare.getFrom()) {
-            return new Fare(0);
+    public Fare discountForAge(LoginMember member) {
+        if (member.isGuest()) {
+            return this;
         }
-        int extraDistance = Math.min(distance, distanceExtraFare.getTo()) - distanceExtraFare.getFrom() + 1;
-        return new Fare(calculateExtraFare(extraDistance, distanceExtraFare));
-    }
 
-    private int calculateExtraFare(int additionalDistance, DistanceExtraFare distanceExtraFare) {
-        return (int) ((Math.ceil((additionalDistance - 1) / distanceExtraFare.getUnitDistance()) + 1) * distanceExtraFare.getUnitExtra());
+        AgeDiscount ageDiscount = AgeDiscount.of(member.getAge());
+        return new Fare((int) (value - ageDiscount.calculateDiscount(value)));
     }
 
     @Override

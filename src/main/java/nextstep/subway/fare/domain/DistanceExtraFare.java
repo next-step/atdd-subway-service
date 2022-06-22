@@ -1,5 +1,7 @@
 package nextstep.subway.fare.domain;
 
+import nextstep.subway.line.domain.Distance;
+
 import java.util.Arrays;
 
 public enum DistanceExtraFare {
@@ -8,42 +10,45 @@ public enum DistanceExtraFare {
     LONG(51, Integer.MAX_VALUE, 8, 100);
 
     public static final int BASE_FARE = 1_250;
+    private static final DistanceExtraFare DEFAULT = DistanceExtraFare.BASIC;
     private final int from;
-    private final int to;
+    private final int border;
     private final int unitDistance;
     private final int unitExtra;
 
-    DistanceExtraFare(int from, int to, int unitDistance, int unitExtra) {
+    DistanceExtraFare(int from, int border, int unitDistance, int unitExtra) {
         this.from = from;
-        this.to = to;
+        this.border = border;
         this.unitDistance = unitDistance;
         this.unitExtra = unitExtra;
     }
 
-    public int getFrom() {
-        return from;
-    }
-
-    public int getTo() {
-        return to;
-    }
-
-    public int getUnitDistance() {
-        return unitDistance;
-    }
-
-    public int getUnitExtra() {
-        return unitExtra;
-    }
-
-    public static DistanceExtraFare valueOf(int distance) {
-        return Arrays.stream(DistanceExtraFare.values())
-                .filter(distanceExtraFare -> distanceExtraFare.has(distance))
+    public static DistanceExtraFare of(int totalDistance) {
+        Distance distance = new Distance(totalDistance);
+        return Arrays.stream(values())
+                .filter(distanceExtraFare -> distance.getValue() < distanceExtraFare.border)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("변환할 수 없는 길이입니다."));
+                .orElse(DEFAULT);
     }
 
-    private boolean has(int distance) {
-        return distance > from && distance <= to;
+    public int addExtraOf(int distance) {
+        int result = 0;
+        for (DistanceExtraFare distanceExtraFare : DistanceExtraFare.values()) {
+            result += distanceExtraFare.getExtraFare(distance);
+        }
+
+        return result;
+    }
+
+    private int getExtraFare(int distance) {
+        if (distance < this.from) {
+            return 0;
+        }
+        int extraDistance = Math.min(distance, this.border) - this.from + 1;
+        return this.calculateExtraFare(extraDistance);
+    }
+
+    private int calculateExtraFare(int extraDistance) {
+        return (int) ((Math.ceil((extraDistance - 1) / unitDistance) + 1) * unitExtra);
     }
 }
