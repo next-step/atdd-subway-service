@@ -2,6 +2,7 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.auth.domain.Age;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.Favorites;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +18,8 @@ public class Member extends BaseEntity {
     private Long id;
     private String email;
     private String password;
-    private Integer age;
+    @Embedded
+    private Age age = new Age();
 
     @Embedded
     private final Favorites favorites = new Favorites();
@@ -26,6 +28,10 @@ public class Member extends BaseEntity {
     }
 
     public Member(String email, String password, Integer age) {
+        this(email, password, new Age(age));
+    }
+
+    public Member(String email, String password, Age age) {
         this.email = email;
         this.password = password;
         this.age = age;
@@ -44,7 +50,7 @@ public class Member extends BaseEntity {
     }
 
     public Integer getAge() {
-        return age;
+        return age.of();
     }
 
     public void update(Member member) {

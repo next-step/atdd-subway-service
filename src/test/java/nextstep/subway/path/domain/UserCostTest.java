@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.Age;
 import nextstep.subway.line.domain.Charge;
 import nextstep.subway.path.domain.UserCost;
 import org.junit.jupiter.api.DisplayName;
@@ -17,9 +18,9 @@ class UserCostTest {
     @DisplayName("나이에 따라 UserCost 를 가진다.")
     @Test
     void findUserCostTest() {
-        assertThat(UserCost.valueOf(19)).isEqualTo(UserCost.ADULT);
-        assertThat(UserCost.valueOf(18)).isEqualTo(UserCost.TEENAGER);
-        assertThat(UserCost.valueOf(12)).isEqualTo(UserCost.CHILD);
+        assertThat(UserCost.valueOf(new Age(19))).isEqualTo(UserCost.ADULT);
+        assertThat(UserCost.valueOf(new Age(18))).isEqualTo(UserCost.TEENAGER);
+        assertThat(UserCost.valueOf(new Age(12))).isEqualTo(UserCost.CHILD);
     }
 
     /**

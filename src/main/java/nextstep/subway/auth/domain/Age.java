@@ -1,10 +1,16 @@
 package nextstep.subway.auth.domain;
 
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
 public class Age {
     private static final int MIN = 0;
     private final int age;
+
+    public Age() {
+        this(MIN);
+    }
 
     public Age(final int age) {
         if (age < MIN) {
@@ -15,6 +21,14 @@ public class Age {
 
     public int of() {
         return age;
+    }
+
+    public boolean isHigh(final Age target) {
+        return target.isLowBy(age);
+    }
+
+    private boolean isLowBy(final int age) {
+        return this.age < age;
     }
 
     @Override
