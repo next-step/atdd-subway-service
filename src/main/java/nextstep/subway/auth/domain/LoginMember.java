@@ -3,15 +3,15 @@ package nextstep.subway.auth.domain;
 public class LoginMember {
     private Long id;
     private String email;
-    private Integer age;
+    private Age age;
 
-    public LoginMember() {
+    protected LoginMember() {
     }
 
     public LoginMember(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
-        this.age = age;
+        this.age = Age.of(age);
     }
 
     public Long getId() {
@@ -22,7 +22,7 @@ public class LoginMember {
         return email;
     }
 
-    public Integer getAge() {
+    public Age getAge() {
         return age;
     }
 }
