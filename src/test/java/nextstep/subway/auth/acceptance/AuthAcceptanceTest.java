@@ -3,11 +3,11 @@ package nextstep.subway.auth.acceptance;
 import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.utils.RestAssuredRequest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -17,7 +17,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
@@ -78,7 +77,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
         //When
-        ExtractableResponse<Response> response = 회원정보_조회_요청(tokenResponse.getAccessToken());
+        ExtractableResponse<Response> response = 내_정보_조회_요청(tokenResponse.getAccessToken());
 
         //Then
         회원정보_조회_성공(response);
@@ -99,50 +98,40 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
         // when
-        ExtractableResponse<Response> findResponse = 회원정보_조회_요청("INVALID_TOKEN");
+        ExtractableResponse<Response> findResponse = 내_정보_조회_요청("INVALID_TOKEN");
 
         // then
         회원정보_조회_실패(findResponse);
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    private static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
 
-        return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(tokenRequest)
-            .when().post("/login/token")
-            .then().log().all()
-            .extract();
+        return post("/login/token", tokenRequest);
     }
 
-    private ExtractableResponse<Response> 회원정보_조회_요청(String accessToken) {
-        return RestAssured
-            .given().log().all()
-            .auth().oauth2(accessToken)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/members/me")
-            .then().log().all()
-            .extract();
-    }
-
-    private void 로그인_성공(ExtractableResponse<Response> response) {
+    private static void 로그인_성공(ExtractableResponse<Response> response) {
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(response.as(TokenResponse.class)).isNotNull()
         );
     }
 
-    private void 로그인_실패(ExtractableResponse<Response> response) {
+    public static String 로그인_되어_있음(String email, String password) {
+        TokenResponse tokenResponse = 로그인_요청(email, password).as(TokenResponse.class);
+
+        return tokenResponse.getAccessToken();
+    }
+
+    private static void 로그인_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private void 회원정보_조회_성공(ExtractableResponse<Response> response) {
+    private static void 회원정보_조회_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 회원정보_조회_실패(ExtractableResponse<Response> response) {
+    private static void 회원정보_조회_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
