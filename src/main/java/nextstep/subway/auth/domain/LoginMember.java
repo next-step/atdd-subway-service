@@ -18,10 +18,6 @@ public class LoginMember {
         return id;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     public Integer getAge() {
         return age;
     }

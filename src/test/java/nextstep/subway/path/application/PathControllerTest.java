@@ -1,19 +1,20 @@
 package nextstep.subway.path.application;
 
 import static java.util.stream.Collectors.toList;
+import static nextstep.subway.behaviors.SubwayBehaviors.로그인정보없이_최단경로_및_요금을_조회한다;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Lists;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import nextstep.subway.RestAssuredTest;
+import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.domain.SubwayFare;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +30,7 @@ class PathControllerTest extends RestAssuredTest {
     private StationResponse 강남역 = new StationResponse(1L, "강남역", LocalDateTime.now(), LocalDateTime.now());
     private StationResponse 양재역 = new StationResponse(2L, "양재역", LocalDateTime.now(), LocalDateTime.now());
     private StationResponse 교대역 = new StationResponse(3L, "교대역", LocalDateTime.now(), LocalDateTime.now());
+    private LineResponse 삼호선 = new LineResponse();
 
     @BeforeEach
     public void setUp() {
@@ -41,10 +43,11 @@ class PathControllerTest extends RestAssuredTest {
         Long endStationId = 교대역.getId();
 
         // Given
-        when(pathService.findShortestPath(startStationId, endStationId))
-                .thenReturn(new PathResponse(Lists.newArrayList(강남역, 양재역, 교대역), 10));
+        when(pathService.findShortestPath(eq(startStationId), eq(endStationId), any()))
+                .thenReturn(new PathResponse(Lists.newArrayList(강남역, 양재역, 교대역), Lists.newArrayList(삼호선), 10,
+                        SubwayFare.of(0)));
         // When
-        ExtractableResponse<Response> response = pathController로_요청보내기(
+        ExtractableResponse<Response> response = 로그인정보없이_최단경로_및_요금을_조회한다(
                 String.valueOf(startStationId),
                 String.valueOf(endStationId)
         );
@@ -58,20 +61,5 @@ class PathControllerTest extends RestAssuredTest {
         assertThat(stationNames)
                 .hasSize(3)
                 .containsExactly("강남역", "양재역", "교대역");
-    }
-
-    private ExtractableResponse<Response> pathController로_요청보내기(String startStationId, String endStationId) {
-        Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("source", startStationId);
-        queryParams.put("target", endStationId);
-
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .accept(ContentType.JSON)
-                .queryParams(queryParams)
-                .when().get("/paths")
-                .then().log().all()
-                .extract();
-        return response;
     }
 }

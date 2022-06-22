@@ -1,5 +1,9 @@
 package nextstep.subway.path.application;
 
+import static java.util.stream.Collectors.toSet;
+
+import java.util.Set;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.PathFindResult;
 import nextstep.subway.path.domain.PathFindService;
 import nextstep.subway.path.domain.exception.NotExistPathException;
@@ -22,6 +26,10 @@ public class JGraphPathFindService implements PathFindService {
         if (shortestPath == null) {
             throw new NotExistPathException("도달가능한 경로가 없습니다.");
         }
-        return new PathFindResult(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+        Set<Line> lines = shortestPath.getEdgeList()
+                .stream()
+                .map(SectionEdge::getLine)
+                .collect(toSet());
+        return new PathFindResult(shortestPath.getVertexList(), lines, (int) shortestPath.getWeight());
     }
 }

@@ -1,10 +1,12 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.PathFindResult;
 import nextstep.subway.path.domain.PathFindService;
+import nextstep.subway.path.domain.SubwayUser;
 import nextstep.subway.path.domain.exception.NotExistPathException;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -31,7 +33,7 @@ public class PathService {
         this.subwayGraphProvider = subwayGraphProvider;
     }
 
-    public PathResponse findShortestPath(Long startStationId, Long endStationId) {
+    public PathResponse findShortestPath(Long startStationId, Long endStationId, LoginMember loginMember) {
         Station startStation = stationService.findStationById(startStationId);
         Station endStation = stationService.findStationById(endStationId);
         PathFindResult findResult = null;
@@ -42,6 +44,9 @@ public class PathService {
         } catch (NotExistPathException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
+        findResult.applyFarePolicy(SubwayUser.of(loginMember));
         return PathResponse.of(findResult);
     }
+
+
 }

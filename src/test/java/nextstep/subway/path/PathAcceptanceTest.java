@@ -1,28 +1,35 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.behaviors.MemberBehaviors.로그인_되어있음;
+import static nextstep.subway.behaviors.MemberBehaviors.회원_생성을_요청;
+import static nextstep.subway.behaviors.SubwayBehaviors.로그인_상태에서_최단경로_및_요금을_조회한다;
+import static nextstep.subway.behaviors.SubwayBehaviors.로그인정보없이_최단경로_및_요금을_조회한다;
+import static nextstep.subway.behaviors.SubwayBehaviors.지하철_노선_등록되어_있음;
+import static nextstep.subway.behaviors.SubwayBehaviors.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.behaviors.SubwayBehaviors.지하철역_등록되어_있음;
+import static nextstep.subway.behaviors.SubwayBehaviors.지하철요금_확인;
+import static nextstep.subway.behaviors.SubwayBehaviors.최단경로_확인;
+import static nextstep.subway.behaviors.SubwayBehaviors.최단경로거리_확인;
+import static nextstep.subway.path.domain.SubwayUser.CHILD_DISCOUNT_RATE;
+import static nextstep.subway.path.domain.SubwayUser.DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY;
+import static nextstep.subway.path.domain.SubwayUser.TEEN_DISCOUNT_RATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.line.acceptance.LineAcceptanceTest;
-import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.domain.SubwayFare;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 @DisplayName("지하철 경로 조회")
-public class PathAcceptanceTest extends AcceptanceTest {
+class PathAcceptanceTest extends AcceptanceTest {
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -32,52 +39,132 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
 
-    public static ExtractableResponse<Response> 도착역으로가는_최단경로를_조회한다(StationResponse source, StationResponse target) {
-        Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("source", String.valueOf(source.getId()));
-        queryParams.put("target", String.valueOf(target.getId()));
 
-        return RestAssured
-                .given().log().all()
-                .accept(ContentType.JSON)
-                .queryParams(queryParams)
-                .when().get("/paths")
-                .then().log().all()
-                .extract();
-    }
-
-    /**
-     * 교대역    --- *2호선* ---   강남역 |                        | *3호선*                   *신분당선* |                        |
-     * 남부터미널역  --- *3호선* ---   양재
-     */
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
-        교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
-        남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
-
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
-
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+        강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
+        남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
     }
 
     @Test
     void 최단경로찾기() {
+        노선_추가요금_없는_테스트경로_세팅();
+
         StationResponse 출발역 = 교대역;
         StationResponse 도착역 = 양재역;
 
-        ExtractableResponse<Response> response = 도착역으로가는_최단경로를_조회한다(교대역, 양재역);
+        ExtractableResponse<Response> response = 로그인정보없이_최단경로_및_요금을_조회한다(출발역, 도착역);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         PathResponse pathResponse = response.as(PathResponse.class);
-        List<StationResponse> stations = pathResponse.getStations();
-        assertThat(stations)
-                .hasSize(3)
-                .containsExactly(교대역, 남부터미널역, 양재역);
+        최단경로_확인(pathResponse, Lists.newArrayList(출발역, 남부터미널역, 도착역));
+    }
+
+    @Test
+    void 기본요금_테스트() {
+        노선_추가요금_없는_테스트경로_세팅();
+
+        StationResponse 출발역 = 교대역;
+        StationResponse 도착역 = 양재역;
+
+        ExtractableResponse<Response> response = 로그인정보없이_최단경로_및_요금을_조회한다(출발역, 도착역);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        PathResponse pathResponse = response.as(PathResponse.class);
+        최단경로거리_확인(pathResponse, 5);
+        지하철요금_확인(pathResponse, SubwayFare.DEFAULT_FARE);
+        최단경로_확인(pathResponse, Lists.newArrayList(출발역, 남부터미널역, 도착역));
+    }
+
+    @Test
+    void 노선별_추가요금_테스트() {
+        노선_추가요금_있는_테스트경로_세팅();
+
+        StationResponse 출발역 = 교대역;
+        StationResponse 도착역 = 강남역;
+
+        ExtractableResponse<Response> response = 로그인정보없이_최단경로_및_요금을_조회한다(출발역, 도착역);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        PathResponse pathResponse = response.as(PathResponse.class);
+        최단경로거리_확인(pathResponse, 9);
+        int 노선추가요금 = Math.max(삼호선.getExtraCharge(), 신분당선.getExtraCharge());
+        지하철요금_확인(pathResponse, SubwayFare.DEFAULT_FARE.plus(노선추가요금));
+        최단경로_확인(pathResponse, Lists.newArrayList(출발역, 남부터미널역, 양재역, 도착역));
+    }
+
+    @Test
+    void 연령별_할인요금_테스트_어린이() {
+        노선_추가요금_없는_테스트경로_세팅();
+        int age = 11;
+        회원_생성을_요청("EMAIL", "PASSWORD", age);
+        String 사용자토큰 = 로그인_되어있음("EMAIL", "PASSWORD").getAccessToken();
+
+        StationResponse 출발역 = 교대역;
+        StationResponse 도착역 = 양재역;
+
+        ExtractableResponse<Response> response = 로그인_상태에서_최단경로_및_요금을_조회한다(사용자토큰, 출발역, 도착역);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        PathResponse pathResponse = response.as(PathResponse.class);
+        최단경로거리_확인(pathResponse, 5);
+        SubwayFare expectedFare = SubwayFare.DEFAULT_FARE
+                .subtract(DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY)
+                .discountedByPercent(CHILD_DISCOUNT_RATE);
+        지하철요금_확인(pathResponse, expectedFare);
+        최단경로_확인(pathResponse, Lists.newArrayList(출발역, 남부터미널역, 도착역));
+    }
+
+    @Test
+    void 연령별_할인요금_테스트_청소년() {
+        노선_추가요금_없는_테스트경로_세팅();
+        int age = 18;
+        회원_생성을_요청("EMAIL", "PASSWORD", age);
+        String 사용자토큰 = 로그인_되어있음("EMAIL", "PASSWORD").getAccessToken();
+
+        StationResponse 출발역 = 교대역;
+        StationResponse 도착역 = 양재역;
+
+        ExtractableResponse<Response> response = 로그인_상태에서_최단경로_및_요금을_조회한다(사용자토큰, 출발역, 도착역);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        PathResponse pathResponse = response.as(PathResponse.class);
+        최단경로거리_확인(pathResponse, 5);
+        SubwayFare expectedFare = SubwayFare.DEFAULT_FARE
+                .subtract(DEFAULT_SUBTRACT_AMOUNT_AT_AGE_POLICY)
+                .discountedByPercent(TEEN_DISCOUNT_RATE);
+        지하철요금_확인(pathResponse, expectedFare);
+        최단경로_확인(pathResponse, Lists.newArrayList(출발역, 남부터미널역, 도착역));
+    }
+
+    /**
+     * 교대역    --- *2호선* ---   강남역
+     * |                        |
+     * *3호선*                   *신분당선*
+     * |                        |
+     * 남부터미널역  --- *3호선* ---   양재
+     */
+    private void 노선_추가요금_없는_테스트경로_세팅() {
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 0);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0);
+        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+    }
+
+    /**
+     * 교대역    --- *2호선*(100)  ---   강남역
+     * |                                 |
+     * *3호선*(3)                      *신분당선*(5)
+     * |                                 |
+     * 남부터미널역  --- *3호선*(1) ---    양재
+     */
+    private void 노선_추가요금_있는_테스트경로_세팅() {
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 5, 1000);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 100, 2000);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 4, 500);
+        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
 }
