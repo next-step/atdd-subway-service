@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -26,14 +28,30 @@ public class FavoriteService {
     }
 
     public FavoriteResponse createFavorite(final LoginMember loginMember, final FavoriteRequest request) {
-        final Member member = memberService.findMemberById(loginMember.getId());
+        final Member member = getMember(loginMember);
         final Station sourceStation = stationService.findStationById(request.getSource());
         final Station targetStation = stationService.findStationById(request.getTarget());
         final Favorite favorite = favoriteRepository.save(new Favorite(member, sourceStation, targetStation));
+        return getFavoriteResponseByFavorite(favorite);
+    }
+
+    public List<FavoriteResponse> findAllFavoriteResponses(final LoginMember loginMember) {
+        final Member member = getMember(loginMember);
+        return favoriteRepository.findAllByMember(member)
+                .stream()
+                .map(this::getFavoriteResponseByFavorite)
+                .collect(Collectors.toList());
+    }
+
+    private Member getMember(final LoginMember loginMember) {
+        return memberService.findMemberById(loginMember.getId());
+    }
+
+    private FavoriteResponse getFavoriteResponseByFavorite(final Favorite favorite) {
         return new FavoriteResponse(
                 favorite.getId(),
-                MemberResponse.of(member),
-                StationResponse.of(sourceStation),
-                StationResponse.of(targetStation));
+                MemberResponse.of(favorite.getMember()),
+                StationResponse.of(favorite.getSourceStation()),
+                StationResponse.of(favorite.getTargetStation()));
     }
 }
