@@ -107,18 +107,24 @@ public class Sections {
         Station downStation = findUpStation();
         stations.add(downStation);
 
-        return getStationsByNextUpStation(stations, downStation);
-    }
-
-    private List<Station> getStationsByNextUpStation(List<Station> stations, Station upStation) {
-        Section nextSection = findUpLineStation(upStation);
-        if (nextSection == null) {
-            return stations;
+        while (hasNextSection(downStation)) {
+            downStation = getNextSection(downStation).getDownStation();
+            stations.add(downStation);
         }
 
-        Station downStation = nextSection.getDownStation();
-        stations.add(downStation);
-        return getStationsByNextUpStation(stations, downStation);
+        return stations;
+    }
+
+    private Section getNextSection(Station downStation) {
+        return sectionList.stream()
+                .filter(it -> it.getUpStation().equals(downStation))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("다음 구간이 존재하지 않습니다."));
+    }
+
+    private boolean hasNextSection(Station downStation) {
+        return sectionList.stream()
+                .anyMatch(it -> it.getUpStation().equals(downStation));
     }
 
     private boolean hasStation(Station station) {
@@ -126,21 +132,26 @@ public class Sections {
     }
 
     private Station findUpStation() {
-        Station upStation = sectionList.get(0).getUpStation();
-        return findNextDownStationByUpStation(null, upStation);
+        Station downStation = sectionList.get(0).getUpStation();
+
+        while (hasPreviousSection(downStation)) {
+            Section previousSection = getPreviousSection(downStation);
+            downStation = previousSection.getUpStation();
+        }
+
+        return downStation;
     }
 
-    private Station findNextDownStationByUpStation(Station prevUpStation, Station currentUpStation) {
-        if (currentUpStation == null) {
-            return prevUpStation;
-        }
+    private Section getPreviousSection(Station upStation) {
+        return sectionList.stream()
+                .filter(it -> it.getDownStation().equals(upStation))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("이전 구간이 존재하지 않습니다."));
+    }
 
-        Section nextLineStation = findDownLineStation(currentUpStation);
-        if (nextLineStation == null) {
-            return currentUpStation;
-        }
-
-        return findNextDownStationByUpStation(currentUpStation, nextLineStation.getUpStation());
+    private boolean hasPreviousSection(Station upStation) {
+        return sectionList.stream()
+                .anyMatch(it -> it.getDownStation().equals(upStation));
     }
 
 }
