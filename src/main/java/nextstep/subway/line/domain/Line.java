@@ -63,7 +63,7 @@ public class Line extends BaseEntity {
     }
 
     public boolean hasSection(Section section) {
-        return sections.hasSectionOrReverse(section);
+        return sections.hasSectionOrReverseSection(section);
     }
 
     public Section bindDistance(Section section) {

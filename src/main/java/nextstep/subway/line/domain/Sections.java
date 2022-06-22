@@ -199,13 +199,13 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException("거리값이 잘못 되었습니다."));
     }
 
-    public boolean hasSectionOrReverse(Section section) {
+    public boolean hasSectionOrReverseSection(Section section) {
         return hasSection(section) || hasSection(section.reverse());
     }
 
     public Section bindDistance(Section section) {
         return sections.stream()
-                .filter(item -> hasSectionOrReverse(section))
+                .filter(item -> hasSectionOrReverseSection(section))
                 .findFirst()
                 .map(section::bindDistance)
                 .orElseThrow(() -> new NoSuchElementException("구간을 찾을 수 없습니다."));
