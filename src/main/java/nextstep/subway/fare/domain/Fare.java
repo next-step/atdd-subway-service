@@ -63,7 +63,7 @@ public class Fare {
         }
 
         AgeDiscount ageDiscount = AgeDiscount.of(member.getAge());
-        return new Fare((int) (value - ageDiscount.calculateDiscount(value)));
+        return new Fare(ageDiscount.discount(value));
     }
 
     @Override

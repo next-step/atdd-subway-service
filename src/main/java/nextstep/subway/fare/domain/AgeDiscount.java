@@ -33,7 +33,11 @@ public enum AgeDiscount {
         }
     }
 
-    public double calculateDiscount(int baseFare) {
-        return (baseFare - deduction) * discountRate;
+    public int discount(int fare) {
+        return (int) (fare - calculateDiscount(fare));
+    }
+
+    private double calculateDiscount(int fare) {
+        return (fare - deduction) * discountRate;
     }
 }
