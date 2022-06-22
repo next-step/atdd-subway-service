@@ -1,5 +1,6 @@
 package nextstep.subway.member.application;
 
+import nextstep.subway.exceptions.MemberNotExistException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -35,5 +36,10 @@ public class MemberService {
     @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public Member findMemberById(final Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(MemberNotExistException::new);
     }
 }
