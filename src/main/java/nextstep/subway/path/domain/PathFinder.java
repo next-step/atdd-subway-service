@@ -36,8 +36,20 @@ public class PathFinder {
     }
 
     public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station sourceStation, Station targetStation) {
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        validateStation(sourceStation, targetStation);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath;
+        try {
+            shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
+        }
         return shortestPath;
+    }
+
+    private void validateStation(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new IllegalArgumentException("출발역과 도착역은 같을 수 없습니다.");
+        }
     }
 
 }

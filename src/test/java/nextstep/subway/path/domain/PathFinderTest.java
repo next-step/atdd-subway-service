@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class PathFinderTest {
@@ -60,6 +61,22 @@ class PathFinderTest {
                 () -> assertThat(shortestPath.getVertexList()).containsExactly(교대역, 남부터미널역, 양재역),
                 () -> assertThat(shortestPath.getWeight()).isEqualTo(8)
         );
+    }
+
+    @Test
+    void 출발역과_도착역이_같은_경우() {
+        // when & then
+        assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, 교대역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("출발역과 도착역은 같을 수 없습니다.");
+    }
+
+    @Test
+    void 출발역과_도착역이_연결이_되어_있지_않은_경우() {
+        // when & then
+        assertThatThrownBy(() -> pathFinder.findShortestPath(연결되지않는역, 교대역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("출발역과 도착역이 연결되어 있지 않습니다.");
     }
 
 }
