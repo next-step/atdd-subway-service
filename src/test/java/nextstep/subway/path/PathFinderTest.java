@@ -20,11 +20,13 @@ public class PathFinderTest {
     private Line 신분당선;
     private Line 이호선;
     private Line 삼호선;
+    private Line 부산도시철도;
 
     private Station 강남역;
     private Station 양재역;
     private Station 교대역;
     private Station 부산역;
+    private Station 자갈치역;
     private Station 남부터미널역;
     private List<Section> 모든구간;
 
@@ -35,14 +37,16 @@ public class PathFinderTest {
         교대역 = new Station("교대역");
         부산역 = new Station("부산역");
         남부터미널역 = new Station("남부터미널역");
+        자갈치역 = new Station("자갈치역");
 
         신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10);
         삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        부산도시철도 = new Line("부산도시철도", "bg-red-600", 부산역, 자갈치역, 15);
 
         삼호선.updateSection(교대역, 남부터미널역, 3);
 
-        모든구간 = Arrays.asList(신분당선, 이호선, 삼호선).stream()
+        모든구간 = Arrays.asList(신분당선, 이호선, 삼호선, 부산도시철도).stream()
             .map(line -> line.getSections())
             .flatMap(sections -> sections.stream())
             .collect(Collectors.toList());

@@ -27,16 +27,16 @@ public class PathFinder {
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(stationGraph);
 
-        GraphPath shortestPath = getGraphPath(sourceStation, targetStation, dijkstraShortestPath);
+        GraphPath shortestPath = getShortestPath(sourceStation, targetStation, dijkstraShortestPath);
         return new PathResponse(shortestPath.getVertexList(), (long) shortestPath.getWeight());
     }
 
-    private GraphPath getGraphPath(Station sourceStation, Station targetStation, DijkstraShortestPath dijkstraShortestPath) {
-        try {
-            return dijkstraShortestPath.getPath(sourceStation, targetStation);
-        } catch (IllegalArgumentException e) {
+    private GraphPath getShortestPath(Station sourceStation, Station targetStation, DijkstraShortestPath dijkstraShortestPath) {
+        GraphPath shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        if (shortestPath == null) {
             throw new IllegalArgumentException("지하철 역이 연결되어 있지 않습니다.");
         }
+        return shortestPath;
     }
 
     private void validate(List<Station> allStations, Station sourceStation, Station targetStation) {
