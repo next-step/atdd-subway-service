@@ -1,15 +1,11 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.exception.AddLineSectionFail;
-import nextstep.subway.line.application.LineService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 

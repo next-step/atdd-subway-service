@@ -1,16 +1,10 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.exception.RemoveSectionFail;
-import nextstep.subway.exception.AddLineSectionFail;
-import nextstep.subway.station.domain.Station;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Embeddable
 public class Sections {

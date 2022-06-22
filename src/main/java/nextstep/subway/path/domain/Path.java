@@ -18,11 +18,10 @@ import java.util.List;
 @Component
 public class Path {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    private List<Line> lines;
 
-    public PathResponse find(List<Line> lines, Station sourceStation, Station targetStation) {
+    public PathResponse find(Station sourceStation, Station targetStation) {
         validationSameStation(sourceStation, targetStation);
-
-        init(lines);
 
         GraphPath<Station, DefaultWeightedEdge> path = findPath(sourceStation, targetStation);
         validationPathNull(path);
@@ -42,12 +41,14 @@ public class Path {
         }
     }
 
-    private void init(List<Line> lines) {
+    public void initLines(List<Line> lines) {
         lines.stream()
                 .map(Line::getSections)
                 .map(Sections::getSections)
                 .flatMap(Collection::stream)
                 .forEach(this::setVertexAndEdgeWeight);
+
+        this.lines = lines;
     }
 
     private void setVertexAndEdgeWeight(Section it) {

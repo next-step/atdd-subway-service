@@ -31,7 +31,7 @@ public class PathService {
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
         List<Line> lines = lineService.findAll();
-
-        return path.find(lines, sourceStation, targetStation);
+        path.initLines(lines);
+        return path.find(sourceStation, targetStation);
     }
 }

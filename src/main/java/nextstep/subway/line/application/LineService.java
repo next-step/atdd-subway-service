@@ -1,7 +1,7 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.exception.AddLineSectionFail;
-import nextstep.subway.exception.RemoveSectionFail;
+import nextstep.subway.exception.AddLineSectionFailException;
+import nextstep.subway.exception.RemoveSectionFailException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -89,10 +89,10 @@ public class LineService {
         validationAddLineStation(upStation, downStation, stations, isUpStationExisted, isDownStationExisted);
         Section section = new Section(line, upStation, downStation, request.getDistance());
 
-        addSections(line, isUpStationExisted, isDownStationExisted, section);
+        addSection(line, isUpStationExisted, isDownStationExisted, section);
     }
 
-    private void addSections(Line line, boolean isUpStationExisted, boolean isDownStationExisted, Section section) {
+    private void addSection(Line line, boolean isUpStationExisted, boolean isDownStationExisted, Section section) {
         if (isUpStationExisted) {
             line.addUpStationExisted(section);
             return ;
@@ -101,7 +101,7 @@ public class LineService {
             line.addDownStationExisted(section);
             return ;
         }
-        throw new AddLineSectionFail("역 정보를 찾지 못했습니다.");
+        throw new AddLineSectionFailException("역 정보를 찾지 못했습니다.");
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -109,7 +109,7 @@ public class LineService {
         Station station = stationService.findStationById(stationId);
 
         if (line.sizeSections() <= 1) {
-            throw new RemoveSectionFail("구간의 길이가 1개 이하이므로 삭제할 수 없습니다.");
+            throw new RemoveSectionFailException("구간의 길이가 1개 이하이므로 삭제할 수 없습니다.");
         }
 
         Optional<Section> upLineStation = line.getSections().getSections().stream()
@@ -132,13 +132,13 @@ public class LineService {
 
     private void validationAddLineStation(Station upStation, Station downStation, List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new AddLineSectionFail("이미 등록된 구간 입니다.");
+            throw new AddLineSectionFailException("이미 등록된 구간 입니다.");
         }
 
         if (!stations.isEmpty() &&
                 stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
-            throw new AddLineSectionFail("등록할 수 없는 구간 입니다.");
+            throw new AddLineSectionFailException("등록할 수 없는 구간 입니다.");
         }
     }
 
@@ -167,19 +167,19 @@ public class LineService {
     }
 
     private static Station findUpStation(Line line) {
-        Station downStation = line.getSections().getSections().get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
+        Station upStation = line.getSections().getSections().get(0).getUpStation();
+        while (upStation != null) {
+            Station finalDownStation = upStation;
             Optional<Section> nextLineStation = line.getSections().getSections().stream()
                     .filter(it -> it.getDownStation() == finalDownStation)
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getUpStation();
+            upStation = nextLineStation.get().getUpStation();
         }
 
-        return downStation;
+        return upStation;
     }
 
 }
