@@ -49,7 +49,8 @@ class NavigationTest {
 
         Assertions.assertAll(
                 () -> assertThat(지하철_네비게이션_결과.getDistance()).isEqualTo(10),
-                () -> assertThat(지하철_네비게이션_결과.getStations()).contains(강남역, 역삼역)
+                () -> assertThat(지하철_네비게이션_결과.getStations()).contains(강남역, 역삼역),
+                () -> assertThat(지하철_네비게이션_결과.getFare()).isEqualTo(1_250)
         );
     }
 
