@@ -15,8 +15,6 @@ import javax.persistence.ManyToOne;
 import nextstep.subway.exception.domain.SubwayException;
 import nextstep.subway.generic.domain.Distance;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 @Entity
 public class Section {
@@ -135,10 +133,6 @@ public class Section {
 
     private boolean isGreaterThanOrEqualsToDistance(final Section section) {
         return distance.isGreaterThanOrEqualsTo(section.distance);
-    }
-
-    public void setEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        graph.setEdgeWeight(graph.addEdge(upStation, downStation), distance.getValue());
     }
 
     public Section reverse() {

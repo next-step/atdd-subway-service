@@ -1,12 +1,11 @@
 package nextstep.subway.line.domain;
 
+import java.util.function.Consumer;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.List;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 @Entity
 public class Line extends BaseEntity {
@@ -63,20 +62,15 @@ public class Line extends BaseEntity {
         sections.removeStation(station);
     }
 
-    public void addVertexStations(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        getStations()
-                .forEach(graph::addVertex);
-    }
-
-    public void setEdgeWeightSections(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        sections.setAllEdgeWeight(graph);
-    }
-
     public boolean hasSection(Section section) {
         return sections.hasSectionAnyOder(section);
     }
 
     public Section bindDistance(Section section) {
         return sections.bindDistance(section);
+    }
+
+    public void foreachSections(Consumer<Section> consumer) {
+        sections.foreach(consumer);
     }
 }

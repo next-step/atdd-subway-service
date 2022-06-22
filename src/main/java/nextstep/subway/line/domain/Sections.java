@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.persistence.CascadeType;
@@ -18,8 +19,6 @@ import javax.persistence.OneToMany;
 import nextstep.subway.exception.domain.SubwayException;
 import nextstep.subway.generic.domain.Distance;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 @Embeddable
 public class Sections {
@@ -192,10 +191,6 @@ public class Sections {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public void setAllEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        sections.forEach(section -> section.setEdgeWeight(graph));
-    }
-
     public Distance totalDistance() {
         return sections.stream()
                 .map(Section::getDistance)
@@ -213,6 +208,10 @@ public class Sections {
                 .findFirst()
                 .map(section::bindDistance)
                 .orElseThrow(() -> new NoSuchElementException("구간을 찾을 수 없습니다."));
+    }
+
+    public void foreach(Consumer<Section> consumer) {
+        sections.forEach(consumer);
     }
 
     @Override

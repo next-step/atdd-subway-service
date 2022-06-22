@@ -33,7 +33,6 @@ public class Lines {
         return sectionList;
     }
 
-
     private Section findSection(Section section) {
         return items.stream()
                 .filter(line -> line.hasSection(section))

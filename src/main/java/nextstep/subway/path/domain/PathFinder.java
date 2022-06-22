@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import nextstep.subway.exception.domain.SubwayException;
 import nextstep.subway.exception.domain.SubwayExceptionMessage;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
@@ -19,8 +20,19 @@ public class PathFinder {
     public PathFinder(Lines lines) {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         this.lines = lines;
-        lines.foreach(line -> line.addVertexStations(graph));
-        lines.foreach(line -> line.setEdgeWeightSections(graph));
+        lines.foreach(this::addVertexStations);
+        lines.foreach(this::setEdgeWeightSections);
+    }
+
+    private void addVertexStations(Line line) {
+        line.getStations()
+                .forEach(station -> graph.addVertex(station));
+    }
+
+    private void setEdgeWeightSections(Line line) {
+        line.foreachSections(section ->
+                graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
+                        section.getDistance().getValue()));
     }
 
     public Sections find(Station sourceStation, Station targetStation) {
