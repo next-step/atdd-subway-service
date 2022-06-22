@@ -9,6 +9,8 @@ import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
+import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -32,6 +34,9 @@ public class PathService {
         Station targetStation = stationService.findStationById(target);
         List<Line> lines = lineService.findAll();
         path.initLines(lines);
-        return path.find(sourceStation, targetStation);
+
+        GraphPath<Long, DefaultWeightedEdge> pathFind = path.find(sourceStation, targetStation);
+        List<StationResponse> stationResponses = stationService.findAllStations(pathFind.getVertexList());
+        return new PathResponse(stationResponses, pathFind.getWeight());
     }
 }

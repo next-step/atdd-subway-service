@@ -31,6 +31,14 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    public List<StationResponse> findAllStations(List<Long> stationIds) {
+        List<Station> stations = stationRepository.findAllById(stationIds);
+
+        return stations.stream()
+                .map(station -> StationResponse.of(station))
+                .collect(Collectors.toList());
+    }
+
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }

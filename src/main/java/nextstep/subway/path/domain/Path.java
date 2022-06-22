@@ -3,7 +3,6 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
-import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -17,19 +16,18 @@ import java.util.List;
 
 @Component
 public class Path {
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-    private List<Line> lines;
+    private final WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
-    public PathResponse find(Station sourceStation, Station targetStation) {
+    public GraphPath<Long, DefaultWeightedEdge> find(Station sourceStation, Station targetStation) {
         validationSameStation(sourceStation, targetStation);
 
-        GraphPath<Station, DefaultWeightedEdge> path = findPath(sourceStation, targetStation);
+        GraphPath<Long, DefaultWeightedEdge> path = findPath(sourceStation, targetStation);
         validationPathNull(path);
 
-        return new PathResponse(path.getVertexList(), path.getWeight());
+        return path;
     }
 
-    private void validationPathNull(GraphPath<Station, DefaultWeightedEdge> path) {
+    private void validationPathNull(GraphPath<Long, DefaultWeightedEdge> path) {
         if (path == null) {
             throw new RuntimeException("역 사이에 경로가 존재하지 않습니다.");
         }
@@ -47,19 +45,17 @@ public class Path {
                 .map(Sections::getSections)
                 .flatMap(Collection::stream)
                 .forEach(this::setVertexAndEdgeWeight);
-
-        this.lines = lines;
     }
 
     private void setVertexAndEdgeWeight(Section it) {
-        graph.addVertex(it.getUpStation());
-        graph.addVertex(it.getDownStation());
-        graph.setEdgeWeight(graph.addEdge(it.getUpStation(), it.getDownStation()), it.getDistance());
+        graph.addVertex(it.getUpStation().getId());
+        graph.addVertex(it.getDownStation().getId());
+        graph.setEdgeWeight(graph.addEdge(it.getUpStation().getId(), it.getDownStation().getId()), it.getDistance());
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> findPath(Station sourceStation, Station targetStation) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        return dijkstraShortestPath.getPath(sourceStation, targetStation);
+    private GraphPath<Long, DefaultWeightedEdge> findPath(Station sourceStation, Station targetStation) {
+        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        return dijkstraShortestPath.getPath(sourceStation.getId(), targetStation.getId());
     }
 
 }
