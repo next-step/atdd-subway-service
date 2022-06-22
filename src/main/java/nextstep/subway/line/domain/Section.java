@@ -73,7 +73,7 @@ public class Section {
             throw new IllegalArgumentException(ERROR_MESSAGE_DISTANCE);
         }
         this.upStation = station;
-        this.distance.setDistanceGap(newDistance);
+        this.distance = this.distance.minus(newDistance);
     }
 
     public void updateDownStation(Station station, Distance newDistance) {
@@ -81,7 +81,7 @@ public class Section {
             throw new IllegalArgumentException(ERROR_MESSAGE_DISTANCE);
         }
         this.downStation = station;
-        this.distance.setDistanceGap(newDistance);
+        this.distance = this.distance.minus(newDistance);
     }
 
     public List<Station> getStations() {

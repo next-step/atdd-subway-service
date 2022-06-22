@@ -26,15 +26,11 @@ public class Distance {
         }
     }
 
-    public void setDistanceGap(Distance newDistance) {
-        this.distance = minus(newDistance);
-    }
-
-    private int minus(Distance other) {
+    public Distance minus(Distance other) {
         if (!isLonger(other)) {
             throw new IllegalArgumentException(ERROR_MESSAGE_NOT_VALID_DISTANCE);
         }
-        return this.distance - other.distance;
+        return new Distance(this.distance - other.distance);
     }
 
     public boolean isLonger(Distance other) {
