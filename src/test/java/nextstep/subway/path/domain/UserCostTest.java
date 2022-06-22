@@ -1,5 +1,7 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Charge;
+import nextstep.subway.path.domain.UserCost;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

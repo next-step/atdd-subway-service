@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.domain.ExceedCharge.FIFTY_EXCEED;
-import static nextstep.subway.line.domain.ExceedCharge.TEN_EXCEED;
+import static nextstep.subway.path.domain.ExceedCharge.FIFTY_EXCEED;
+import static nextstep.subway.path.domain.ExceedCharge.TEN_EXCEED;
 
 public class DistanceCostPolicy implements OperationCostPolicy {
     private static final long ZERO = 0;

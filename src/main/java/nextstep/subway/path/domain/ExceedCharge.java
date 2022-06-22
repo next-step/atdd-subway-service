@@ -1,4 +1,6 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
+
+import nextstep.subway.line.domain.Charge;
 
 public enum ExceedCharge {
     TEN_EXCEED(5, 100), FIFTY_EXCEED(8,100);
