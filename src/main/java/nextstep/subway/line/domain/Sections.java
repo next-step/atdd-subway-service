@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -19,6 +21,10 @@ public class Sections {
 
     public Sections() {
         sections = new ArrayList<>();
+    }
+
+    public Sections(List<Section> sections) {
+        this.sections = sections;
     }
 
     public void add(Section section) {
@@ -93,6 +99,16 @@ public class Sections {
         }
 
         return stations;
+    }
+
+    public int getMaxSurcharge() {
+        return sections.stream()
+            .map(Section::getLine)
+            .collect(Collectors.toList())
+            .stream()
+            .mapToInt(Line::getSurcharge)
+            .max()
+            .orElseThrow(NoSuchElementException::new);
     }
 
     private Station findUpStation() {

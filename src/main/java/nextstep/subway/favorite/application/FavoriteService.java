@@ -1,7 +1,6 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import javax.persistence.EntityNotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;

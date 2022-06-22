@@ -4,6 +4,7 @@ import java.util.List;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.AgeDiscountFare;
 import nextstep.subway.path.domain.DijkstraShortestPathFinder;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
@@ -24,14 +25,15 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findShortestPath(Long sourceId, Long targetId) {
+    public PathResponse findShortestPath(Long sourceId, Long targetId, int age) {
         List<Line> lines = lineRepository.findAll();
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
 
         PathFinder pathFinder = new PathFinder(new DijkstraShortestPathFinder());
         Path path = pathFinder.findShortestPath(lines, source, target);
+        int fare = AgeDiscountFare.calculate(path.getFare(), age);
 
-        return PathResponse.of(path);
+        return PathResponse.of(path, fare);
     }
 }
