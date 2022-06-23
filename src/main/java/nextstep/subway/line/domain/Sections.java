@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -25,7 +26,7 @@ public class Sections {
     }
 
     public void addSection(Section section) {
-        List<Station> stations = getOrderdStations();
+        List<Station> stations = getStations();
         if (stations.isEmpty()) {
             sections.add(section);
             return;
@@ -61,24 +62,19 @@ public class Sections {
         }
     }
 
-    public List<Station> getOrderdStations() {
+    public List<Station> getStations() {
         if (sections.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<Station> stations = new ArrayList<>();
-        Station station = getFirstStation();
-        stations.add(station);
+        Set<Station> stations = new HashSet<>();
 
-        Optional<Section> nextSection = findSectionByUpStation(station);
-        while (nextSection.isPresent()) {
-            station = nextSection.get().getDownStation();
-            stations.add(station);
-
-            nextSection = findSectionByUpStation(station);
+        for (Section section : sections) {
+            stations.add(section.getUpStation());
+            stations.add(section.getDownStation());
         }
 
-        return stations;
+        return new ArrayList<>(stations);
     }
 
     public void removeSection(Station deleteStation) {
