@@ -11,6 +11,10 @@ public class AuthAcceptanceResponse {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    public static String 로그인_성공_토큰_반환(ExtractableResponse<Response> response) {
+        return response.jsonPath().getString("accessToken");
+    }
+
     public static void 로그인_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
