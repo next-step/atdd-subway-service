@@ -215,9 +215,8 @@ public class Sections {
         sections.forEach(consumer);
     }
 
-    public <R> Stream<R> map(Function<Section, R> function) {
-        return sections.stream()
-                .map(function);
+    public List<Section> getSections() {
+        return sections;
     }
 
     @Override

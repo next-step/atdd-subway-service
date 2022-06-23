@@ -19,7 +19,9 @@ public class Lines {
     }
 
     public Sections bindDistance(Sections sections) {
-        return new Sections(sections.map(this::findSection)
+        return new Sections(sections.getSections()
+                .stream()
+                .map(this::findSection)
                 .collect(Collectors.toList()));
     }
 
