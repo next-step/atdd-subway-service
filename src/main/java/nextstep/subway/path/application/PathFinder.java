@@ -26,18 +26,13 @@ public class PathFinder {
         return new PathResponse(shortestPath.getVertexList(), (long) shortestPath.getWeight());
     }
 
-    private DijkstraShortestPath makeDijkstraShortestPath(List<Section> allSection, List<Station> allStations){
-        stationGraph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        initGraph(allSection, allStations);
-        return new DijkstraShortestPath(stationGraph);
-    }
-
-    private GraphPath getShortestPath(Station sourceStation, Station targetStation, DijkstraShortestPath dijkstraShortestPath) {
-        GraphPath shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
-        if (shortestPath == null) {
-            throw new IllegalArgumentException("지하철 역이 연결되어 있지 않습니다.");
-        }
-        return shortestPath;
+    private List<Station> findAllStations(List<Section> allSection) {
+        Set<Station> stations = new HashSet<>();
+        allSection.forEach(section -> {
+            stations.add(section.getUpStation());
+            stations.add(section.getDownStation());
+        });
+        return new ArrayList<>(stations);
     }
 
     private void validate(List<Station> allStations, Station sourceStation, Station targetStation) {
@@ -49,6 +44,12 @@ public class PathFinder {
         }
     }
 
+    private DijkstraShortestPath makeDijkstraShortestPath(List<Section> allSection, List<Station> allStations) {
+        stationGraph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        initGraph(allSection, allStations);
+        return new DijkstraShortestPath(stationGraph);
+    }
+
     private void initGraph(List<Section> allSection, List<Station> allStations) {
         allStations.forEach(station -> stationGraph.addVertex(station));
 
@@ -56,12 +57,11 @@ public class PathFinder {
             (stationGraph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
     }
 
-    private List<Station> findAllStations(List<Section> allSection) {
-        Set<Station> stations = new HashSet<>();
-        allSection.forEach(section -> {
-            stations.add(section.getUpStation());
-            stations.add(section.getDownStation());
-        });
-        return new ArrayList<>(stations);
+    private GraphPath getShortestPath(Station sourceStation, Station targetStation, DijkstraShortestPath dijkstraShortestPath) {
+        GraphPath shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        if (shortestPath == null) {
+            throw new IllegalArgumentException("지하철 역이 연결되어 있지 않습니다.");
+        }
+        return shortestPath;
     }
 }
