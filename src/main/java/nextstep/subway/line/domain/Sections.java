@@ -7,13 +7,18 @@ import static nextstep.subway.exception.domain.SubwayExceptionMessage.NOT_REMOVE
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import nextstep.subway.exception.domain.SubwayException;
+import nextstep.subway.generic.domain.Distance;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -27,7 +32,7 @@ public class Sections {
     protected Sections() {
     }
 
-    protected Sections(final List<Section> sections) {
+    public Sections(final List<Section> sections) {
         this.sections = sections;
     }
 
@@ -96,7 +101,7 @@ public class Sections {
 
     private Section getNextSectionByUpStation(final Station downStation) {
         return sections.stream()
-                .filter(it -> it.hasUpStation(downStation))
+                .filter(it -> it.equalsUpStation(downStation))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
@@ -169,7 +174,7 @@ public class Sections {
 
     private Section findSectionByUpStation(final Station upStation) {
         return sections.stream()
-                .filter(section -> section.hasUpStation(upStation))
+                .filter(section -> section.equalsUpStation(upStation))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
@@ -182,8 +187,60 @@ public class Sections {
 
     private Section findSectionByDownStation(final Station downStation) {
         return sections.stream()
-                .filter(section -> section.hasDownStation(downStation))
+                .filter(section -> section.equalsDownStation(downStation))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public Distance totalDistance() {
+        return sections.stream()
+                .map(Section::getDistance)
+                .reduce(Distance::plus)
+                .orElseThrow(() -> new IllegalArgumentException("거리값이 잘못 되었습니다."));
+    }
+
+    public boolean hasSectionOrReverseSection(Section section) {
+        return hasSection(section) || hasSection(section.reverse());
+    }
+
+    public Section bindDistance(Section section) {
+        return sections.stream()
+                .filter(item -> hasSectionOrReverseSection(section))
+                .findFirst()
+                .map(section::bindDistance)
+                .orElseThrow(() -> new NoSuchElementException("구간을 찾을 수 없습니다."));
+    }
+
+    public void foreach(Consumer<Section> consumer) {
+        sections.forEach(consumer);
+    }
+
+    public <R> Stream<R> map(Function<Section, R> function) {
+        return sections.stream()
+                .map(function);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Sections)) {
+            return false;
+        }
+        final Sections sections1 = (Sections) o;
+        return Objects.equals(sections, sections1.sections);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sections);
+    }
+
+    @Override
+    public String toString() {
+        return "Sections{" +
+                "sections=" + sections +
+                '}';
     }
 }

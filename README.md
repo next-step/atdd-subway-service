@@ -105,3 +105,20 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] 전역 예외 처리 추가
     - [X] RuntimeException 으로 사용되던 예외 수정
 - [X] 인수 테스트 코드 시나리오 기반으로 리팩토링
+
+
+---
+
+# 2단계 요구사항
+
+* 최단 경로 조회 인수 테스트 만들기
+* 최단 경로 조회 기능 구현하기
+
+### to-do list
+- [X] 최단 경로 조회 인수 테스트 만들기
+    - [X] 최단거리 조회 성공 케이스 추가
+    - [X] 최단거리 조회 에외 케이스 추가
+- [ ] 최단 경로 조회 기능 구현하기
+    - [X] PathFinder 추가
+    - [X] PathService 추가
+    - [X] PathController 추가
