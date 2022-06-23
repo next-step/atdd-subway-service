@@ -30,18 +30,11 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
-        confirmExistMyFavorite(loginMember, request);
         Member member = memberService.findMemberById(loginMember.getId());
         Station upStation = stationService.findStationById(request.getSource());
         Station downStation = stationService.findStationById(request.getTarget());
         Favorite newFavorite = favoriteRepository.save(new Favorite(member, upStation, downStation));
         return FavoriteResponse.of(newFavorite);
-    }
-
-    public void confirmExistMyFavorite(LoginMember loginMember, FavoriteRequest request) {
-        if (favoriteRepository.existsByMemberIdAndUpStationIdAndDownStationId(loginMember.getId(), request.getSource(), request.getTarget())) {
-            throw new IllegalArgumentException("이미 등록된 즐겨찾기 입니다.");
-        }
     }
 
     public void deleteFavorite(Long id, LoginMember loginMember) {

@@ -7,6 +7,14 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+@Table(
+    name = "favorite",
+    uniqueConstraints = {
+        @UniqueConstraint(
+            name = "favorite_unique", columnNames = {"member_id", "up_station_id", "down_station_id"}
+        )
+    }
+)
 public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
