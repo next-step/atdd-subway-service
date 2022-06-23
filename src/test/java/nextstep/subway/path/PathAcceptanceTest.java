@@ -77,6 +77,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회_404_실패(findPathResponse);
     }
 
+    @Test
+    void 출발지와_도착지가_같은_경로_조회시_에러_발생() {
+        //when
+        ExtractableResponse<Response> findPathResponse = 최단_경로_조회_요청(강남역.getId(), 강남역.getId());
+
+        //then
+        최단_경로_조회_400_실패(findPathResponse);
+
+    }
+
     private static ExtractableResponse<Response> getPath(String path, Map<String, ?> queryParams) {
         return RestAssured.given().log().all()
                 .queryParams(queryParams)
@@ -87,8 +97,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceId, Long targetId) {
         Map<String, Long> queryParam = new HashMap<>();
-        queryParam.put("sourceId", sourceId);
-        queryParam.put("targetId", targetId);
+        queryParam.put("source", sourceId);
+        queryParam.put("target", targetId);
 
         return getPath("paths", queryParam);
     }
@@ -101,5 +111,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 최단_경로_조회_404_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    private void 최단_경로_조회_400_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
