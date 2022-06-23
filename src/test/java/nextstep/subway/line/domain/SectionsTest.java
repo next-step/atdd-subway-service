@@ -24,7 +24,7 @@ class SectionsTest {
         Sections sections = new Sections();
         sections.add(구간);
 
-        assertThat(sections.get()).hasSize(1);
+        assertThat(sections.getStations()).hasSize(2);
     }
 
     @Test

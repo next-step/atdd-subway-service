@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import java.util.Optional;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
@@ -63,25 +62,16 @@ public class Line extends BaseEntity {
     }
 
     public void removeLineStation(Station station) {
-        if (sections.size() <= 1) {
-            throw new IllegalStateException("구간이 하나인 노선에서 역을 삭제할 수 없습니다.");
-        }
+        sections.remove(station);
+    }
 
-        Optional<Section> upLineStation = sections.get().stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = sections.get().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            sections.add(new Section(this, newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+    @Override
+    public String toString() {
+        return "Line{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", sections=" + sections +
+                '}';
     }
 }

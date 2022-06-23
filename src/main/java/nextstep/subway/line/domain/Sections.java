@@ -28,14 +28,6 @@ public class Sections {
         return sections.stream().map(Section::from).collect(Collectors.toList());
     }
 
-    public List<Section> get() {
-        return Collections.unmodifiableList(values);
-    }
-
-    public int size() {
-        return values.size();
-    }
-
     public void add(Section section) {
         validateSectionToAdd(section);
 
@@ -71,8 +63,34 @@ public class Sections {
                 .ifPresent(section -> section.update(newSection));
     }
 
-    public void remove(Section section) {
-        values.remove(section);
+    public void remove(Station station) {
+        validateMinimumNumberOfSections();
+
+        Optional<Section> upLineStation = findSectionByUpStation(station);
+        Optional<Section> downLineStation = findSectionByDownStation(station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Section sectionWithUpStation = upLineStation.get();
+            Section sectionWithDownStation = downLineStation.get();
+            values.add(sectionWithUpStation.merge(sectionWithDownStation));
+        }
+
+        upLineStation.ifPresent(it -> values.remove(it));
+        downLineStation.ifPresent(it -> values.remove(it));
+    }
+
+    private void validateMinimumNumberOfSections() {
+        if (values.size() <= 1) {
+            throw new IllegalStateException("구간이 하나인 노선에서 역을 삭제할 수 없습니다.");
+        }
+    }
+
+    private Optional<Section> findSectionByUpStation(Station upStation) {
+        return values.stream().filter(it -> it.hasUpStation(upStation)).findFirst();
+    }
+
+    private Optional<Section> findSectionByDownStation(Station downStation) {
+        return values.stream().filter(it -> it.hasDownStation(downStation)).findFirst();
     }
 
     public List<Station> getStations() {
@@ -87,6 +105,13 @@ public class Sections {
         return findAllDownStation(stations, downStation);
     }
 
+    public Station findFinalUpStation() {
+        if (values.isEmpty()) {
+            return null;
+        }
+        return findUpStation(values.get(0).getUpStation());
+    }
+
     private List<Station> findAllDownStation(List<Station> stations, Station finalUpStation) {
         Optional<Section> nextLineStation = findSectionByUpStation(finalUpStation);
         if (!nextLineStation.isPresent()) {
@@ -98,26 +123,11 @@ public class Sections {
         return findAllDownStation(newStations, newStation);
     }
 
-    private Optional<Section> findSectionByUpStation(Station upStation) {
-        return values.stream().filter(it -> it.hasUpStation(upStation)).findFirst();
-    }
-
-    public Station findFinalUpStation() {
-        if (values.isEmpty()) {
-            return null;
-        }
-        return findUpStation(values.get(0).getUpStation());
-    }
-
     private Station findUpStation(Station downStation) {
         Optional<Section> nextLineStation = findSectionByDownStation(downStation);
         if (!nextLineStation.isPresent()) {
             return downStation;
         }
         return findUpStation(nextLineStation.get().getUpStation());
-    }
-
-    private Optional<Section> findSectionByDownStation(Station downStation) {
-        return values.stream().filter(it -> it.hasDownStation(downStation)).findFirst();
     }
 }

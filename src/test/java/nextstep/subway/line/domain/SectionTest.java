@@ -10,30 +10,34 @@ import org.junit.jupiter.api.Test;
 
 @DisplayName("구간")
 class SectionTest {
-    private Station 상행역;
-    private Station 하행역;
+    private static final int 거리 = 5;
 
-    private Section 구간;
+    private Station 강남역;
+    private Station 역삼역;
+
+    private Line 이호선;
+    private Section 강남_역삼_구간;
 
     @BeforeEach
     void setUp() {
-        상행역 = Station.from("강남역");
-        하행역 = Station.from("역삼역");
+        강남역 = Station.from("강남역");
+        역삼역 = Station.from("역삼역");
 
-        구간 = Section.of(Line.of("2호선", "green"), 상행역, 하행역, 5);
+        이호선 = Line.of("2호선", "green");
+        강남_역삼_구간 = Section.of(이호선, 강남역, 역삼역, 거리);
     }
 
     @Test
     @DisplayName("정적 팩토리 메소드 of를 통해 생성 가능하다.")
     void 생성() {
-        assertThat(Section.of(Line.of("2호선", "green"), Station.from("강남역"), Station.from("역삼역"), 5)).isNotNull();
+        assertThat(Section.of(이호선, 강남역, 역삼역, 거리)).isNotNull();
     }
 
     @Test
     @DisplayName("입력받은 역이 하행역인지 여부를 반환한다.")
     void 하행역_검사() {
-        assertAll(() -> assertThat(구간.hasDownStation(상행역)).isFalse(),
-                () -> assertThat(구간.hasDownStation(하행역)).isTrue());
+        assertAll(() -> assertThat(강남_역삼_구간.hasDownStation(강남역)).isFalse(),
+                () -> assertThat(강남_역삼_구간.hasDownStation(역삼역)).isTrue());
     }
 
     @Test
@@ -42,10 +46,21 @@ class SectionTest {
         Station 새_상행역 = Station.from("서초역");
         Station 새_하행역 = new Station("선릉역");
 
-        Section 상행역이_같은_구간 = Section.of(Line.of("2호선", "green"), 상행역, 새_하행역, 5);
-        Section 상하행역_다른_구간 = Section.of(Line.of("2호선", "green"), 새_상행역, 새_하행역, 5);
+        Section 상행역이_같은_구간 = Section.of(이호선, 강남역, 새_하행역, 거리);
+        Section 상하행역_다른_구간 = Section.of(이호선, 새_상행역, 새_하행역, 거리);
 
-        assertAll(() -> assertThat(구간.hasSameUpOrDownStation(상하행역_다른_구간)).isFalse(),
-                () -> assertThat(구간.hasSameUpOrDownStation(상행역이_같은_구간)).isTrue());
+        assertAll(() -> assertThat(강남_역삼_구간.hasSameUpOrDownStation(상하행역_다른_구간)).isFalse(),
+                () -> assertThat(강남_역삼_구간.hasSameUpOrDownStation(상행역이_같은_구간)).isTrue());
+    }
+
+    @Test
+    @DisplayName("연결된 두 구간을 하나의 구간으로 병합할 수 있다.")
+    void 연결된_두_구간_병합() {
+        Station 선릉역 = Station.from("선릉역");
+
+        Section 강남_역삼_구간 = Section.of(이호선, 강남역, 역삼역, 거리);
+        Section 역삼_선릉_구간 = Section.of(이호선, 역삼역, 선릉역, 거리);
+
+        assertThat(강남_역삼_구간.merge(역삼_선릉_구간)).isEqualTo(Section.of(이호선, 강남역, 선릉역, 거리 + 거리));
     }
 }
