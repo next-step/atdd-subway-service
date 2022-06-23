@@ -113,15 +113,9 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
-    /*
-        When 지하철 구간 삭제 요청
-        Then 지하철 구간 삭제됨
-        When 지하철 노선에 등록된 역 목록 조회 요청
-        Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
-    * */
-    @DisplayName("docs의 시나리오")
+    @DisplayName("등록 후 조회 시 구간이 반영된 역목록을 확인하며 구간추가 후 역을 제거하면 삭제가 반영된 역 목록을 확인하는 시나리오")
     @Test
-    void scenario() {
+    void scenario_등록_조회_구간추가_역제거_조회() {
         // when
         ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
         // then

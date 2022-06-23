@@ -99,3 +99,76 @@ Feature: 지하철 구간 관련 기능
     When 지하철 노선에 등록된 역 목록 조회 요청
     Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
 ```
+
+## 경로 조회 기능 (STEP 2)
+### 기능 요구사항
+- [x] 최단 경로 조회 인수 테스트 만들기
+- [x] 최단 경로 조회 기능 구현하기
+* jgrapht 라이브러리 사용
+* mock 서버와 dto를 정의하여 인수 테스트 성공 시키기
+
+### 예외사항
+- [x] 출발역과 도착역이 같은 경우
+- [x] 출발역과 도착역이 연결이 되어 있지 않은 경우
+- [x] 존재하지 않은 출발역이나 도착역을 조회 할 경우
+
+### Outside In 경우
+* 컨트롤러 레이어 구현 이후 서비스 레이어 구현 시 서비스 테스트 우선 작성 후 기능 구현
+* 서비스 테스트 내부에서 도메인들간의 로직의 흐름을 검증, 이 때 사용되는 도메인은 mock 객체를 활용
+* 외부 라이브러리를 활용한 로직을 검증할 때는 가급적 실제 객체를 활용
+* Happy 케이스에 대한 부분만 구현( Side 케이스에 대한 구현은 다음 단계에서 진행)
+
+### Inside Out 경우
+* 도메인 설계 후 도메인 테스트를 시작으로 기능 구현 시작
+* 해당 도메인의 단위 테스트를 통해 도메인의 역할과 경계를 설계
+* 도메인의 구현이 끝나면 해당 도메인과 관계를 맺는 객체에 대해 기능 구현 시작
+
+### Request
+``` Request 
+HTTP/1.1 200 
+Request method:	GET
+Request URI:	http://localhost:55494/paths?source=1&target=6
+Headers: 	Accept=application/json
+		Content-Type=application/json; charset=UTF-8
+```
+
+### Response
+``` Response
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 09 May 2020 14:54:11 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    "stations": [
+        {
+            "id": 5,
+            "name": "양재시민의숲역",
+            "createdAt": "2020-05-09T23:54:12.007"
+        },
+        {
+            "id": 4,
+            "name": "양재역",
+            "createdAt": "2020-05-09T23:54:11.995"
+        },
+        {
+            "id": 1,
+            "name": "강남역",
+            "createdAt": "2020-05-09T23:54:11.855"
+        },
+        {
+            "id": 2,
+            "name": "역삼역",
+            "createdAt": "2020-05-09T23:54:11.876"
+        },
+        {
+            "id": 3,
+            "name": "선릉역",
+            "createdAt": "2020-05-09T23:54:11.893"
+        }
+    ],
+    "distance": 40
+}
+```

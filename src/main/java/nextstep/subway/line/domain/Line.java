@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -32,7 +33,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        sections.addLineStation(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
@@ -40,12 +41,20 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
-    public void addLineStation(Station upStation, Station downStation, int distance) {
-        sections.addLineStation(this, upStation, downStation, distance);
+    public void addLineStation(Section section) {
+        sections.addLineStation(section);
     }
 
-    public void removeLineStation(Station station) {
-        sections.removeLineStation(this, station);
+    public void addUpStationExisted(Section section) {
+        sections.addUpStationExisted(section);
+    }
+
+    public void addDownStationExisted(Section section) {
+        sections.addDownStationExisted(section);
+    }
+
+    public void removeLineStation(Section section) {
+        sections.removeLineStation(section);
     }
 
     public Long getId() {
@@ -60,12 +69,22 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections.getSections();
+    public boolean emptySections() {
+        return sections.getSections().isEmpty();
     }
 
-    public List<Station> getStations() {
-        return sections.getStations();
+    public int sizeSections() {
+        return sections.getSections().size();
+    }
+    public Section getSection(int index) {
+        return sections.getSections().get(index);
     }
 
+    public Sections getSections() {
+        return sections;
+    }
+
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
+        return new Line(name, color, upStation, downStation, distance);
+    }
 }
