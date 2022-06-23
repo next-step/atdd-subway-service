@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class PathService {
 
-    private StationService stationService;
-    private PathFinder pathFinder;
-    private LineRepository lineRepository;
+    private final StationService stationService;
+    private final PathFinder pathFinder;
+    private final LineRepository lineRepository;
 
     public PathService(StationService stationService, PathFinder pathFinder, LineRepository lineRepository) {
         this.stationService = stationService;

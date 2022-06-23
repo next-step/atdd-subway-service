@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PathFinder {
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph;
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
     public PathResponse findShortestPath(List<Section> allSection, Station sourceStation, Station targetStation) {
         List<Station> allStations = findAllStations(allSection);
@@ -45,7 +45,6 @@ public class PathFinder {
     }
 
     private DijkstraShortestPath makeDijkstraShortestPath(List<Section> allSection, List<Station> allStations) {
-        stationGraph = new WeightedMultigraph(DefaultWeightedEdge.class);
         initGraph(allSection, allStations);
         return new DijkstraShortestPath(stationGraph);
     }
