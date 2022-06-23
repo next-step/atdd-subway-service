@@ -1,14 +1,18 @@
-package nextstep.subway.line.acceptance.domain;
+package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("노선")
 class LineTest {
+    @Test
+    void 생성() {
+        assertThat(Line.of("2호선", "green")).isNotNull();
+    }
+
     @Test
     @DisplayName("노선에 포함된 모든 역을 조회할 수 있다.")
     void 노선_역_조회() {
