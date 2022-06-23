@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.function.Supplier;
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class NoSuchElementFoundException extends RuntimeException{
+public class NoSuchElementFoundException extends RuntimeException {
     private String message;
     public NoSuchElementFoundException(String message) {
         super(message);
