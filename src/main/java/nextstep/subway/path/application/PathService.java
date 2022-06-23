@@ -4,7 +4,9 @@ import java.util.List;
 import nextstep.subway.exceptions.StationNotExistException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.util.ChargeCalculator;
 import nextstep.subway.path.util.PathNavigator;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -29,6 +31,9 @@ public class PathService {
         final List<Line> lines = lineRepository.findAll();
         final PathNavigator pathNavigator = PathNavigator.of(lines);
 
-        return new PathResponse(pathNavigator.getPath(sourceStation, targetStation));
+        final Path path = pathNavigator.getPath(sourceStation, targetStation);
+        final int charge = ChargeCalculator.calculate(path.getDistance());
+
+        return new PathResponse(path, charge);
     }
 }
