@@ -22,7 +22,7 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse createMemberResponse(Long id) {
+    public MemberResponse toMemberResponse(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("회원번호가 입력되지 않았습니다.");
         }
