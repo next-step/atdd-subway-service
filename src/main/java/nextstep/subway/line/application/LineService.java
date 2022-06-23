@@ -5,6 +5,7 @@ import nextstep.subway.exception.RemoveSectionFailException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -25,10 +26,12 @@ import java.util.stream.Collectors;
 public class LineService {
     private LineRepository lineRepository;
     private StationService stationService;
+    private SectionRepository sectionRepository;
 
-    public LineService(LineRepository lineRepository, StationService stationService) {
+    public LineService(LineRepository lineRepository, StationService stationService, SectionRepository sectionRepository) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
+        this.sectionRepository = sectionRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -81,15 +84,21 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
+        validationStationEquals(upStation, downStation);
 
-        List<Station> stations = getStations(line);
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+        boolean isUpStationExisted = !sectionRepository.findByLine_IdAndUpStation_IdOrDownStation_Id(line.getId(), upStation.getId()).isEmpty();
+        boolean isDownStationExisted = !sectionRepository.findByLine_IdAndUpStation_IdOrDownStation_Id(line.getId(), downStation.getId()).isEmpty();
 
-        validationAddLineStation(upStation, downStation, stations, isUpStationExisted, isDownStationExisted);
+        validationAddLineStation(line, isUpStationExisted, isDownStationExisted);
         Section section = new Section(line, upStation, downStation, request.getDistance());
 
         addSection(line, isUpStationExisted, isDownStationExisted, section);
+    }
+
+    private void validationStationEquals(Station upStation, Station downStation) {
+        if(upStation.getId() == downStation.getId()) {
+            throw new AddLineSectionFailException("두개의 역이 같습니다.");
+        }
     }
 
     private void addSection(Line line, boolean isUpStationExisted, boolean isDownStationExisted, Section section) {
@@ -112,12 +121,8 @@ public class LineService {
             throw new RemoveSectionFailException("구간의 길이가 1개 이하이므로 삭제할 수 없습니다.");
         }
 
-        Optional<Section> upLineStation = line.getSections().getSections().stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = line.getSections().getSections().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+        Optional<Section> upLineStation = sectionRepository.findByLine_IdAndUpStation_Id(line.getId(), station.getId());
+        Optional<Section> downLineStation = sectionRepository.findByLine_IdAndDownStation_Id(line.getId(), station.getId());
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
@@ -130,14 +135,14 @@ public class LineService {
         downLineStation.ifPresent(it -> line.removeLineStation(it));
     }
 
-    private void validationAddLineStation(Station upStation, Station downStation, List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
-        if (isUpStationExisted && isDownStationExisted) {
+    private void validationAddLineStation(Line line, boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (!isUpStationExisted && !isDownStationExisted) {
             throw new AddLineSectionFailException("이미 등록된 구간 입니다.");
         }
 
-        if (!stations.isEmpty() &&
-                stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
+        if (!line.emptySections() &&
+                isUpStationExisted &&
+                isDownStationExisted) {
             throw new AddLineSectionFailException("등록할 수 없는 구간 입니다.");
         }
     }
