@@ -46,7 +46,8 @@ public class LineService {
     }
 
     private Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("아이디가 (%d)인 역을 찾을 수 없습니다.", id)));
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("아이디가 (%d)인 역을 찾을 수 없습니다.", id)));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
