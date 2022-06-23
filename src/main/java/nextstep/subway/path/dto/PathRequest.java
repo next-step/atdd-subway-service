@@ -1,19 +1,19 @@
 package nextstep.subway.path.dto;
 
 public class PathRequest {
-    private Long source;
-    private Long target;
+    private long source;
+    private long target;
 
-    public PathRequest(Long source, Long target) {
+    public PathRequest(long source, long target) {
         this.source = source;
         this.target = target;
     }
 
-    public Long getSource() {
+    public long getSource() {
         return source;
     }
 
-    public Long getTarget() {
+    public long getTarget() {
         return target;
     }
 }
