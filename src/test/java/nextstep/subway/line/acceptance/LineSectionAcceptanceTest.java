@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -139,9 +140,13 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
 
+        Collections.sort(stationIds);
+
         List<Long> expectedStationIds = expectedStations.stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
+
+        Collections.sort(expectedStationIds);
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }
