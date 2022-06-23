@@ -23,8 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     private static final MemberRequest 회원가입 = new MemberRequest("tasklet1579@next.co.kr", "test1234", 30);
-    private static final LoginMember 로그인_회원 = new LoginMember(1L, "tasklet1579@next.co.kr", 30);
-    private static final TokenRequest 로그인 = new TokenRequest("tasklet1579@next.co.kr", "test1234");
+    private static final TokenRequest 회원가입된_정보 = new TokenRequest("tasklet1579@next.co.kr", "test1234");
     private static final TokenRequest 없는_아이디 = new TokenRequest("tasklet1571@next.co.kr", "test1234");
     private static final TokenRequest 비밀번호_틀림 = new TokenRequest("tasklet1579@next.co.kr", "test1231");
 
@@ -40,7 +39,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 회원가입_결과 = 회원가입_요청(회원가입);
 
         // when
-        ExtractableResponse<Response> 로그인_결과 = 로그인_요청(로그인);
+        ExtractableResponse<Response> 로그인_결과 = 로그인_요청(회원가입된_정보);
 
         // then
         로그인_성공(로그인_결과);
@@ -71,7 +70,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithWrongBearerAuth() {
         // given
         ExtractableResponse<Response> 회원가입_결과 = 회원가입_요청(회원가입);
-        ExtractableResponse<Response> 로그인_결과 = 로그인_요청(로그인);
+        ExtractableResponse<Response> 로그인_결과 = 로그인_요청(회원가입된_정보);
 
         // when
         ExtractableResponse<Response> 나의_정보_조회_결과 = 나의_정보_조회_요청(로그인_토큰(로그인_결과) + "disable");

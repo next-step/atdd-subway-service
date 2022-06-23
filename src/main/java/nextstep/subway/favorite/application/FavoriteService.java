@@ -10,6 +10,7 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,16 +28,20 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
+    @Transactional
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
+        confirmExistMyFavorite(loginMember, request);
         Member member = memberService.findMemberById(loginMember.getId());
         Station upStation = stationService.findStationById(request.getSource());
         Station downStation = stationService.findStationById(request.getTarget());
-        Favorite favorite = new Favorite(member, upStation, downStation);
-        if (favoriteRepository.existsByMemberIdAndUpStationIdAndDownStationId(member.getId(), upStation.getId(), downStation.getId())) {
+        Favorite newFavorite = favoriteRepository.save(new Favorite(member, upStation, downStation));
+        return FavoriteResponse.of(newFavorite);
+    }
+
+    public void confirmExistMyFavorite(LoginMember loginMember, FavoriteRequest request) {
+        if (favoriteRepository.existsByMemberIdAndUpStationIdAndDownStationId(loginMember.getId(), request.getSource(), request.getTarget())) {
             throw new IllegalArgumentException("이미 등록된 즐겨찾기 입니다.");
         }
-        Favorite newFavorite = favoriteRepository.save(favorite);
-        return FavoriteResponse.of(newFavorite);
     }
 
     public void deleteFavorite(Long id, LoginMember loginMember) {

@@ -22,11 +22,11 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(Long id) {
+    public MemberResponse createMemberResponse(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("회원번호가 입력되지 않았습니다.");
         }
-        Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        Member member = findMemberById(id);
         return MemberResponse.of(member);
     }
 
@@ -39,7 +39,7 @@ public class MemberService {
 
     @Transactional
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        Member member = findMemberById(id);
         member.update(param.toMember());
     }
 
