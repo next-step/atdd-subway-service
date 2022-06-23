@@ -112,7 +112,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_실패(즐겨찾기_결과);
     }
 
-    @DisplayName("같은 출발역과 도착역으로 중복 생성 불가")
+    @DisplayName("같은 출발역과 도착역으로 생성 불가")
     @Test
     void create_throwsException_ifFavoriteExist() {
         // when
@@ -122,7 +122,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_실패(즐겨찾기_결과);
     }
 
-    @DisplayName("존재하지 않는 역으로 중복 생성 불가")
+    @DisplayName("존재하지 않는 역으로 생성 불가")
     @Test
     void create_throwsException_ifStationNotExist() {
         // when
@@ -130,6 +130,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         즐겨찾기_실패(즐겨찾기_결과);
+    }
+
+    @DisplayName("즐겨찾기 중복 생성")
+    @Test
+    void create_throwsException_ifDuplicate() {
+        // given
+        즐겨찾기_요청(로그인_토큰, new FavoriteRequest(강남역.getId(), 광교역.getId()));
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_결과 = 즐겨찾기_요청(로그인_토큰, new FavoriteRequest(강남역.getId(), 광교역.getId()));
+
+        // then
+        assertThat(즐겨찾기_결과.jsonPath().getString("message")).isEqualTo("이미 등록된 즐겨찾기 입니다.");
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_요청(String accessToken, FavoriteRequest request) {
