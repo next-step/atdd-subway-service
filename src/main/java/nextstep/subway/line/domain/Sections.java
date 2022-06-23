@@ -139,8 +139,8 @@ public class Sections {
         return previousSection.map(Section::getUpStation);
     }
 
-    private Station getNextStation(Station nextStation) {
-        Optional<Section> nextSection = findSectionByUpStation(nextStation);
+    private Station getNextStation(Station station) {
+        Optional<Section> nextSection = findSectionByUpStation(station);
         return nextSection.map(Section::getDownStation).orElse(null);
     }
 }
