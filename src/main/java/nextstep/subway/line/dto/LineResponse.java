@@ -11,7 +11,6 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
-
     private Integer extraFare;
 
     private List<StationResponse> stations;
@@ -31,7 +30,7 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare(), StationResponse.of(line.getOrderedStations()), line.getCreatedDate(), line.getModifiedDate());
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getExtraFare().getExtraFare(), StationResponse.of(line.getOrderedStations()), line.getCreatedDate(), line.getModifiedDate());
     }
 
     public static List<LineResponse> of(List<Line> lines) {

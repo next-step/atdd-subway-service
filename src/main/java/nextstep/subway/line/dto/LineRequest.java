@@ -1,5 +1,6 @@
 package nextstep.subway.line.dto;
 
+import nextstep.subway.line.domain.ExtraFare;
 import nextstep.subway.line.domain.Line;
 
 public class LineRequest {
@@ -49,6 +50,6 @@ public class LineRequest {
     }
 
     public Line toLine() {
-        return new Line(name, color, extraFare);
+        return new Line(name, color, new ExtraFare(extraFare));
     }
 }
