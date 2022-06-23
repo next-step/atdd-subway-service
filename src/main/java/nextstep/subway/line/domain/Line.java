@@ -54,10 +54,6 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public Sections getSections() {
-        return sections;
-    }
-
     public List<Station> getStations() {
         return sections.getStations();
     }
@@ -68,12 +64,12 @@ public class Line extends BaseEntity {
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
                 stations.stream().noneMatch(it -> it == section.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
 
         if (stations.isEmpty()) {
@@ -96,13 +92,13 @@ public class Line extends BaseEntity {
 
             sections.add(section);
         } else {
-            throw new RuntimeException();
+            throw new IllegalArgumentException("추가할 구간의 상하행역을 노선에서 찾을 수 없습니다.");
         }
     }
 
     public void removeLineStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new IllegalStateException("구간이 하나인 노선에서 역을 삭제할 수 없습니다.");
         }
 
         Optional<Section> upLineStation = sections.get().stream()

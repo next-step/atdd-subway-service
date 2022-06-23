@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -45,7 +46,7 @@ public class LineService {
     }
 
     private Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("아이디가 (%d)인 역을 찾을 수 없습니다.", id)));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
