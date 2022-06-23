@@ -3,7 +3,6 @@ package nextstep.subway.favorite.application;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -36,7 +35,8 @@ public class FavoriteService {
         Member persistMember = findMemberById(loginMemberId);
         Station source = findStationById(favoriteRequest.getSourceId());
         Station target = findStationById(favoriteRequest.getTargetId());
-        Favorite persistFavorite = favoriteRepository.save(new Favorite(persistMember, source, target));
+        Favorite persistFavorite = favoriteRepository.save(
+            new Favorite(persistMember, source, target));
 
         return FavoriteResponse.from(persistFavorite);
     }
@@ -67,9 +67,4 @@ public class FavoriteService {
             .orElseThrow(NoSuchElementException::new);
     }
 
-    @Transactional
-    public void deleteFavoritesByMemberId(Long loginMemberId) {
-        List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMemberId);
-        favoriteRepository.deleteAll(favorites);
-    }
 }

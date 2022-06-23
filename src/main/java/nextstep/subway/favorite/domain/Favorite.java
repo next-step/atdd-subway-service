@@ -1,8 +1,6 @@
 package nextstep.subway.favorite.domain;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -49,7 +47,7 @@ public class Favorite extends BaseEntity {
     }
 
     private static void validateSourceAndTarget(Station source, Station target) {
-        if(source.equals(target)){
+        if (source.equals(target)) {
             throw new IllegalArgumentException("출발역과 도착역이 동일할 수 없습니다.");
         }
     }
