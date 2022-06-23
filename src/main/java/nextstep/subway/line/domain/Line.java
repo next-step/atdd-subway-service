@@ -1,10 +1,10 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.exception.NotFoundStationException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,24 +12,25 @@ public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String name;
-    private String color;
+    @Embedded
+    private LineName name;
+    @Embedded
+    private LineColor color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections = new Sections();
 
     public Line() {
     }
 
     public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+        this.name = new LineName(name);
+        this.color = new LineColor(color);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
+        this.name = new LineName(name);
+        this.color = new LineColor(color);
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
@@ -38,19 +39,31 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
+    public void addSection(Section section) {
+        sections.add(section);
+    }
+
+    public void deleteSection(Station station) throws NotFoundStationException {
+        sections.delete(station);
+    }
+
     public Long getId() {
         return id;
     }
 
-    public String getName() {
+    public LineName getName() {
         return name;
     }
 
-    public String getColor() {
+    public LineColor getColor() {
         return color;
     }
 
     public List<Section> getSections() {
-        return sections;
+        return sections.getSections();
+    }
+
+    public List<Station> getStations() {
+        return sections.getStations();
     }
 }
