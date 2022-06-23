@@ -41,6 +41,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
 
+    private StationResponse 신사역;
+    private StationResponse 압구정역;
     private TokenResponse tokenResponse;
 
     private String EMAIL = "email@email.com";
@@ -56,12 +58,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        신사역 = StationAcceptanceTest.지하철역_등록되어_있음("신사역").as(StationResponse.class);
+        압구정역 = StationAcceptanceTest.지하철역_등록되어_있음("입구정역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 200);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 500);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+        지하철_노선에_지하철역_등록_요청(삼호선, 신사역, 교대역, 15);
+        지하철_노선에_지하철역_등록_요청(삼호선, 압구정역, 신사역, 45);
+
     }
 
     @DisplayName("출발역과 도착역 정보로 최단경로 요청시 경로 정보를 알려준다.")
@@ -129,15 +136,48 @@ public class PathAcceptanceTest extends AcceptanceTest {
     /**
      * When : 출발역과 도착역을 입력시
      * Then : 경로와 거리 , 금액을 제공한다.
+     * when : 총 구간 거리가 10 km 이상 일때
+     * Then : 10 ~ 50 에서는 5km 마다 100 원 50km 초과시 에는 8km 마다 100원이 추가 계산된다.
      */
     @DisplayName("구간정보와 거리, 금액을 알수있다.")
     @Test
     void checkSectionAndDistanceAndCharge() {
+
         // when
         final ExtractableResponse<Response> response = 최단_경로_검색(tokenResponse, 교대역, 양재역);
 
         // then
         거리_금액_확인(response, 5, distanceCostPolicy.basicCharge().of());
+    }
+
+    /**
+     * When : 총 구간 거리가 10 ~ 50 km  일때
+     * Then : 5km 마다 100원이 추가 부과 된다.
+     */
+    @DisplayName("총 구간거리가 10 ~ 50km 일때 5km 마다 100원이 추가 부과된다.")
+    @Test
+    void checkDistanceAndChargeWhenDistanceIsTwenty() {
+        // when
+        final ExtractableResponse<Response> response = 최단_경로_검색(tokenResponse, 신사역, 양재역);
+
+        // then
+        최단_경로_기준으로_지하철역_정보가_출력됨(response, Arrays.asList(신사역,교대역, 남부터미널역, 양재역));
+        거리_금액_확인(response, 20, 총거리가_10_50_일때_예상_금액_계산(20));
+    }
+
+    /**
+     * When : 총 구간 거리가 50 km 초과 일때
+     * Then : 8km 마다 100원이 추가 부과 된다.
+     */
+    @DisplayName("총 구간거리가 10 ~ 50km 일때 5km 마다 100원이 추가 부과된다.")
+    @Test
+    void checkDistanceAndChargeWhenDistanceIsFifty() {
+        // when
+        final ExtractableResponse<Response> response = 최단_경로_검색(tokenResponse, 압구정역, 양재역);
+
+        // then
+        최단_경로_기준으로_지하철역_정보가_출력됨(response, Arrays.asList(압구정역,신사역,교대역, 남부터미널역, 양재역));
+        거리_금액_확인(response, 65, 총거리가_50_초과_일때_예상_금액_계산(65));
     }
 
     /**
@@ -235,5 +275,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static long 어린이_예상_할인_요금(final long totalCharge) {
         return (totalCharge - 350) * (100 - 50) / 100;
+    }
+
+    private long 총거리가_10_50_일때_예상_금액_계산(int distance) {
+        return distanceCostPolicy.basicCharge().of() +(int) ((Math.ceil(((distance-10) - 1) / 5) + 1) * 100);
+    }
+
+    private long  총거리가_50_초과_일때_예상_금액_계산(int distance) {
+        return 총거리가_10_50_일때_예상_금액_계산(50) + (int) ((Math.ceil(((distance-50) - 1) / 8) + 1) * 100);
     }
 }
