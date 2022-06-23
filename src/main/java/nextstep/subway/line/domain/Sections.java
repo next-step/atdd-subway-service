@@ -37,7 +37,38 @@ public class Sections {
     }
 
     public void add(Section section) {
+        validateSectionToAdd(section);
+
+        if (values.isEmpty()) {
+            values.add(section);
+            return;
+        }
+
+        updateExistingSection(section);
+
         values.add(section);
+    }
+
+    private void validateSectionToAdd(Section section) {
+        List<Station> allStations = getStations();
+
+        boolean isUpStationExisted = allStations.contains(section.getUpStation());
+        boolean isDownStationExisted = allStations.contains(section.getDownStation());
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+        }
+
+        if (!allStations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void updateExistingSection(Section newSection) {
+        values.stream()
+                .filter(section -> section.hasSameUpOrDownStation(newSection))
+                .findFirst()
+                .ifPresent(section -> section.update(newSection));
     }
 
     public void remove(Section section) {

@@ -59,41 +59,7 @@ public class Line extends BaseEntity {
     }
 
     public void addLineStation(Section section) {
-        List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
-                stations.stream().noneMatch(it -> it == section.getDownStation())) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
-            sections.add(section);
-            return;
-        }
-
-        if (isUpStationExisted) {
-            sections.get().stream()
-                    .filter(it -> it.getUpStation() == section.getUpStation())
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
-            sections.add(section);
-        } else if (isDownStationExisted) {
-            sections.get().stream()
-                    .filter(it -> it.getDownStation() == section.getDownStation())
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-
-            sections.add(section);
-        } else {
-            throw new IllegalArgumentException("추가할 구간의 상하행역을 노선에서 찾을 수 없습니다.");
-        }
+        sections.add(section);
     }
 
     public void removeLineStation(Station station) {
