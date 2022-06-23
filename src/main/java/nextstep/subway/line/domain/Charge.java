@@ -2,12 +2,11 @@ package nextstep.subway.line.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Transient;
 import java.util.Objects;
 
 @Embeddable
 public class Charge implements Comparable<Charge> {
-    @Transient
+
     private static final long MIN_VALUE = 0;
     @Column(name = "extra_charge", nullable = false)
     private final long charge;
