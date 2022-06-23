@@ -10,10 +10,12 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-public class PathFinder {
+@Component
+public class DijkstraShortestPathFinder implements PathFinderStrategy {
     public Path getShortestDistance(Lines lines, Station source, Station target) {
         List<Section> sections = lines.getAllSections();
 
