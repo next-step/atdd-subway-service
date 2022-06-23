@@ -4,25 +4,29 @@ import java.util.Arrays;
 
 public enum AgeGroup {
     // 5세 이하의 요구사항은 없어서 우선 비워두었습니다.
-    CHILD(6, 13, 350, 0.5),
-    TEENAGER(13, 19, 350, 0.8),
-    ADULT(19, Integer.MAX_VALUE, 0, 1);
+    CHILD(AgeGroup.MINIMUM_CHILD_AGE, AgeGroup.MINIMUM_TEENAGER_AGE, 350, 0.5),
+    TEENAGER(AgeGroup.MINIMUM_TEENAGER_AGE, AgeGroup.MINIMUM_ADULT_AGE, 350, 0.8),
+    ADULT(AgeGroup.MINIMUM_ADULT_AGE, Integer.MAX_VALUE, 0, 1);
 
-    private final int from;
-    private final int to;
+    public static final int MINIMUM_CHILD_AGE = 6;
+    public static final int MINIMUM_TEENAGER_AGE = 13;
+    public static final int MINIMUM_ADULT_AGE = 19;
+
+    private final Age from;
+    private final Age to;
     private final int deductibleAmount;
     private final double deductibleRate;
 
     AgeGroup(int from, int to, int deductibleAmount, double deductibleRate) {
-        this.from = from;
-        this.to = to;
+        this.from = new Age(from);
+        this.to = new Age(to);
         this.deductibleAmount = deductibleAmount;
         this.deductibleRate = deductibleRate;
     }
 
-    public static AgeGroup getAgeGroupByAge(int age) {
+    public static AgeGroup getAgeGroupByAge(Age age) {
         return Arrays.stream(AgeGroup.values())
-                .filter(group -> group.from <= age && group.to > age)
+                .filter(group -> group.from.isGreaterThenOrEqual(age) && group.to.isLessThen(age))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("연령 그룹을 찾을 수 없습니다."));
     }

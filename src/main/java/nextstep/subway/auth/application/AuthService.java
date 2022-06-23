@@ -4,6 +4,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.member.domain.AgeGroup;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,8 @@ public class AuthService {
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException("토큰이 유효하지 않습니다.");
+//            return new LoginMember(null, null, AgeGroup.MINIMUM_ADULT_AGE);
+//            로그인 정보가 없을 경우 guest 등과 같이 처리할 경우 위와 같이 처리할 수 있을 것 같습니다.
         }
 
         String email = jwtTokenProvider.getPayload(credentials);

@@ -8,14 +8,15 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.List;
 
 import static nextstep.subway.line.domain.LineTest.노선_생성;
 import static nextstep.subway.path.application.PathServiceTest.라인_목록_생성;
 import static nextstep.subway.station.domain.StationTest.지하철_생성;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 
 class PathFinderTest {
 
@@ -212,20 +213,17 @@ class PathFinderTest {
     }
 
     @DisplayName("경로 조회 시 연령별 할인율이 적용되어 계산되어야 한다")
-    @Test
-    void findShortestPathWithAgeGroupTest() {
+    @ParameterizedTest
+    @EnumSource(value = AgeGroup.class)
+    void findShortestPathWithAgeGroupTest(AgeGroup ageGroup) {
         // given
         PathFinder pathFinder = new PathFinder((라인_목록_생성(신분당선, 경강선)));
 
         // when
-        ShortestPathResponse stationsByAdult = pathFinder.findShortestPath(판교역, 이매역, AgeGroup.ADULT);
-        ShortestPathResponse stationsByTeenager = pathFinder.findShortestPath(판교역, 이매역, AgeGroup.TEENAGER);
-        ShortestPathResponse stationsByChild = pathFinder.findShortestPath(판교역, 이매역, AgeGroup.CHILD);
+        ShortestPathResponse stationsWithAgeGroup = pathFinder.findShortestPath(판교역, 이매역, ageGroup);
 
         // then
-        노선_요금_일치됨(stationsByAdult, 1_250 + ADDITIONAL_LINE_FARE);
-        노선_요금_일치됨(stationsByTeenager, (int) ((1_250 + ADDITIONAL_LINE_FARE - 350) * 0.8));
-        노선_요금_일치됨(stationsByChild, (int) ((1_250 + ADDITIONAL_LINE_FARE - 350) * 0.5));
+        노선_요금_일치됨(stationsWithAgeGroup, ageGroup, 1_250, ADDITIONAL_LINE_FARE);
     }
 
     private void 최소_노선_경로_일치됨(ShortestPathResponse source, Station... target) {
@@ -244,5 +242,23 @@ class PathFinderTest {
 
     private void 노선_요금_일치됨(ShortestPathResponse source, int expectedFare) {
         assertThat(source.getTotalFare()).isEqualTo(expectedFare);
+    }
+
+    private void 노선_요금_일치됨(ShortestPathResponse source, AgeGroup ageGroup, int originalLineFare, int additionalLineFare) {
+        Integer discountResult = null;
+        if (ageGroup == AgeGroup.ADULT) {
+            discountResult = originalLineFare + additionalLineFare;
+        }
+        if (ageGroup == AgeGroup.TEENAGER) {
+            discountResult = (int) ((originalLineFare + additionalLineFare - 350) * 0.8);
+        }
+        if (ageGroup == AgeGroup.CHILD) {
+            discountResult = (int) ((originalLineFare + additionalLineFare - 350) * 0.5);
+        }
+
+        if (discountResult == null || discountResult == 0) {
+            fail("할인 결과를 계산할 수 없습니다.");
+        }
+        assertThat(source.getTotalFare()).isEqualTo(discountResult);
     }
 }
