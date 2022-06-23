@@ -39,11 +39,6 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
-    public Station findStationById(final Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
-    @Transactional(readOnly = true)
     public Station findById(final Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
