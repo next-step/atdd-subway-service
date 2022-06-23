@@ -6,29 +6,29 @@ import java.util.Objects;
 @Embeddable
 public class Age {
     private static final int MIN = 0;
-    private final int age;
+    private final int value;
 
     public Age() {
         this(MIN);
     }
 
-    public Age(final int age) {
-        if (age < MIN) {
+    public Age(final int value) {
+        if (value < MIN) {
             throw new IllegalArgumentException("음수를 가질수 없다.");
         }
-        this.age = age;
+        this.value = value;
     }
 
     public int of() {
-        return age;
+        return value;
     }
 
     public boolean isHigh(final Age target) {
-        return target.isLowBy(age);
+        return target.isLowBy(value);
     }
 
-    private boolean isLowBy(final int age) {
-        return this.age < age;
+    private boolean isLowBy(final int value) {
+        return this.value < value;
     }
 
     @Override
@@ -36,11 +36,11 @@ public class Age {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Age age1 = (Age) o;
-        return age == age1.age;
+        return value == age1.value;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(age);
+        return Objects.hash(value);
     }
 }
