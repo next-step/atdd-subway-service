@@ -1,24 +1,27 @@
 package nextstep.subway.path;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
+
+import java.util.List;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
-@DisplayName("지하철 경로 조회")
-public class PathAcceptanceTest extends AcceptanceTest {
+@DisplayName("지하철 최단 경로 조회")
+class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -28,11 +31,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
 
     /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
+     * 교대역    --- *2호선*(10) ---  강남역
+     * |                              |
+     * *3호선*(3)                 *신분당선* (10)
+     * |                             |
+     * 남부터미널역 --- *3호선*(2) ---   양재
      */
 
     @BeforeEach
@@ -49,6 +52,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음(LineRequest.of("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+    }
+
+    @DisplayName("최단 경로를 조회한다.")
+    @Test
+    void getShortestRoute() {
+        // when 최단 경로를 조회하면
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", 교대역.getId(), 양재역.getId())
+                .then().log().all()
+                .extract();
+
+        // then 경로와 거리가 리턴된다
+        List<String> stations = response.jsonPath().get("stations.name");
+        assertThat(stations).containsExactly(교대역.getName(), 남부터미널역.getName(), 양재역.getName());
+
+        int distance = response.jsonPath().get("distance");
+        assertThat(distance).isEqualTo(5);
     }
 
 }
