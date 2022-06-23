@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.exception.NotFoundStationException;
+import nextstep.subway.exception.NoSearchStationException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -98,7 +98,7 @@ public class SectionsTest {
 
     @Test
     @DisplayName("지하철 노선의 중간역을 제거한다.")
-    public void deleteSection_center() throws NotFoundStationException {
+    public void deleteSection_center() throws NoSearchStationException {
         // given
         Section 판교역_여주역_구간 = new Section(경강선, 판교역, 여주역, 11);
         Section 곤지암역_여주역_구간 = new Section(경강선, 곤지암역, 여주역, 5);
@@ -117,7 +117,7 @@ public class SectionsTest {
 
     @Test
     @DisplayName("지하철 노선의 상행 종점역을 제거한다.")
-    public void deleteSection_up() throws NotFoundStationException {
+    public void deleteSection_up() throws NoSearchStationException {
         // given
         Section 판교역_여주역_구간 = new Section(경강선, 판교역, 여주역, 11);
         Section 곤지암역_여주역_구간 = new Section(경강선, 곤지암역, 여주역, 5);
@@ -137,7 +137,7 @@ public class SectionsTest {
 
     @Test
     @DisplayName("지하철 노선의 하행 종점역을 제거한다.")
-    public void deleteSection_down() throws NotFoundStationException {
+    public void deleteSection_down() throws NoSearchStationException {
         // given
         Section 판교역_여주역_구간 = new Section(경강선, 판교역, 여주역, 11);
         Section 곤지암역_여주역_구간 = new Section(경강선, 곤지암역, 여주역, 5);
@@ -167,7 +167,7 @@ public class SectionsTest {
         // then
         assertThatThrownBy(() -> {
             sections.delete(new Station("이천역"));
-        }).isInstanceOf(NotFoundStationException.class);
+        }).isInstanceOf(NoSearchStationException.class);
     }
 
     @Test
