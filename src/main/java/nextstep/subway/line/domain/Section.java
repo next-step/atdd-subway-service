@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.Objects;
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,12 +29,17 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
+        this(line, upStation, downStation, Distance.from(distance));
+    }
+
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -69,20 +75,24 @@ public class Section {
         }
     }
 
-    private void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    private void updateUpStation(Station station, Distance newDistance) {
+        validateDistance(newDistance);
+
+        upStation = station;
+        distance = distance.minus(newDistance);
     }
 
-    private void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    private void validateDistance(Distance newDistance) {
+        if (!distance.isGreaterThan(newDistance)) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+    }
+
+    private void updateDownStation(Station station, Distance newDistance) {
+        validateDistance(newDistance);
+
+        downStation = station;
+        distance = distance.minus(newDistance);
     }
 
     public boolean hasSameUpOrDownStation(Section section) {
@@ -98,7 +108,7 @@ public class Section {
     }
 
     public Section merge(Section section) {
-        int newDistance = distance + section.distance;
+        Distance newDistance = distance.add(section.distance);
 
         Station newUpStation = upStation;
         Station newDownStation = downStation;
@@ -112,6 +122,17 @@ public class Section {
     }
 
     @Override
+    public String toString() {
+        return "Section{" +
+                "id=" + id +
+                ", line=" + line +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -120,18 +141,13 @@ public class Section {
             return false;
         }
         Section section = (Section) o;
-        return distance == section.distance && Objects.equals(id, section.id) && Objects.equals(line, section.line)
-                && Objects.equals(upStation, section.upStation) && Objects.equals(downStation, section.downStation);
+        return Objects.equals(id, section.id) && Objects.equals(line, section.line)
+                && Objects.equals(upStation, section.upStation) && Objects.equals(downStation,
+                section.downStation) && Objects.equals(distance, section.distance);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, line, upStation, downStation, distance);
-    }
-
-    @Override
-    public String toString() {
-        return "Section{" + "id=" + id + ", line=" + line + ", upStation=" + upStation + ", downStation=" + downStation
-                + ", distance=" + distance + '}';
     }
 }
