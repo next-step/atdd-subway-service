@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class AuthService {
+    private static final LoginMember LOGIN_MEMBER = new LoginMember();
+
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -35,7 +37,7 @@ public class AuthService {
             if (required) {
                 throw new AuthorizationException("토큰이 유효하지 않습니다.");
             }
-            return new LoginMember();
+            return LOGIN_MEMBER;
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
