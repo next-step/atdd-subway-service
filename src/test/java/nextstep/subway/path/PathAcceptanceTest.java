@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
+import nextstep.subway.line.domain.DistanceCostPolicy;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -44,6 +45,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private String EMAIL = "email@email.com";
 
+    private DistanceCostPolicy distanceCostPolicy = new DistanceCostPolicy();
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -57,7 +59,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 200);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 500);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 100);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -135,7 +137,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response = 최단_경로_검색(tokenResponse, 교대역, 양재역);
 
         // then
-        거리_금액_확인(response, 5, 1350);
+        거리_금액_확인(response, 5, distanceCostPolicy.basicCharge().of());
     }
 
     /**
@@ -158,7 +160,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // Then
         최단_경로_기준으로_지하철역_정보가_출력됨(청소년이_요청한_결과, Arrays.asList(교대역, 남부터미널역, 양재역));
-        거리_금액_확인(청소년이_요청한_결과, 5, 청소년_예상_할인_요금(성인이_요청한_결과.getExtraCharge()));
+        거리_금액_확인(청소년이_요청한_결과, 5, 청소년_예상_할인_요금(distanceCostPolicy.basicCharge().of()));
     }
 
     /**
@@ -170,9 +172,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("어린이가 검색 할 경우 일반인 보다 요금이 할인된 금액이 보여진다.")
     @Test
     void findShortestRouteTestWhenUseIsChild() {
-        // Given
-        final TokenResponse 성인_로그인 = Login("adult@adult.com", 20);
-        final PathResponse 성인이_요청한_결과 = 최단_경로_검색(성인_로그인, 교대역, 양재역).as(PathResponse.class);
 
         final TokenResponse 어린이_로그인 = Login("child@child.com", 12);
 
@@ -181,7 +180,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // Then
         최단_경로_기준으로_지하철역_정보가_출력됨(어린이가_요청한_결과, Arrays.asList(교대역, 남부터미널역, 양재역));
-        거리_금액_확인(어린이가_요청한_결과, 5, 어린이_예상_할인_요금(성인이_요청한_결과.getExtraCharge()));
+        거리_금액_확인(어린이가_요청한_결과, 5, 어린이_예상_할인_요금(distanceCostPolicy.basicCharge().of()));
     }
 
 
