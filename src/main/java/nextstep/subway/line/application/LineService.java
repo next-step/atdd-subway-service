@@ -49,7 +49,6 @@ public class LineService {
         });
     }
 
-
     private void validateDuplicatedColor(String color) {
         Optional<Line> lineByColor = lineRepository.findByColor(new LineColor(color));
 
@@ -58,6 +57,7 @@ public class LineService {
         });
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -69,6 +69,7 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
