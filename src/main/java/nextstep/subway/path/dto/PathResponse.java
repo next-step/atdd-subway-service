@@ -14,13 +14,13 @@ public class PathResponse {
 
     }
 
-    public PathResponse(final Path path, final int charge) {
+    public PathResponse(final Path path, final int totalCharge) {
         this.stations = path.getStations()
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
         this.distance = path.getDistance();
-        this.totalCharge = charge + path.getSurcharge();
+        this.totalCharge = totalCharge;
     }
 
     public List<StationResponse> getStations() {

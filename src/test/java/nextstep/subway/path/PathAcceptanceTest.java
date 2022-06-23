@@ -1,7 +1,9 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -9,6 +11,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -56,7 +59,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(오호선, 신길역, 여의도역, 10);
     }
 
-    @DisplayName("노량진역 -> 여의나루역 최단거리는 15이며 지하철 요금은 1,850원이고 경로는 노량진 - 샛강 - 여의도 - 여의나루다.")
+    @DisplayName("(비로그인) 노량진역 -> 여의나루역 최단거리는 15이며 지하철 요금은 1,850원이고 경로는 노량진 - 샛강 - 여의도 - 여의나루다.")
     @Test
     void shortestPathNoryangjinToYeouinaru() {
 
@@ -77,7 +80,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
-    @DisplayName("샛강역 -> 신길역 최단거리는 15이며 지하철 요금은 1,850원이고 경로는 샛강 - 노량진 - 대방 - 신길이다.")
+    @DisplayName("(비로그인) 샛강역 -> 신길역 최단거리는 15이며 지하철 요금은 1,850원이고 경로는 샛강 - 노량진 - 대방 - 신길이다.")
     @Test
     void shortestPathSaetGangToSingil() {
 
@@ -95,6 +98,62 @@ public class PathAcceptanceTest extends AcceptanceTest {
         N번째_역_이름_확인(역_이동_목록, 3, 신길역);
         이동_거리_확인(이동_거리, 15);
         지하철_요금_확인(지하철_요금, 1_850);
+
+    }
+
+    @DisplayName("(로그인) 샛강역 -> 신길역 최단거리는 15이며 청소년 지하철 요금은 1,550원이고 경로는 샛강 - 노량진 - 대방 - 신길이다.")
+    @Test
+    void shortestPathSaetGangToSingilWithYouthLogin() {
+
+        //given
+        final String 이메일 = "email@email.com";
+        final String 패스워드 = "password";
+        final int 나이 = 17;
+        회원_생성을_요청(이메일, 패스워드, 나이);
+        final String 액세스_토큰 = 로그인_요청(이메일, 패스워드).as(TokenResponse.class).getAccessToken();
+
+        //when
+        final PathResponse 최단_경로 = 로그인_최단_경로_요청(샛강역, 신길역, 액세스_토큰).as(PathResponse.class);
+        final List<StationResponse> 역_이동_목록 = 최단_경로.getStations();
+        final int 이동_거리 = 최단_경로.getDistance();
+        final int 지하철_요금 = 최단_경로.getTotalCharge();
+
+        //then
+        역_이동_목록_개수_확인(역_이동_목록, 4);
+        N번째_역_이름_확인(역_이동_목록, 0, 샛강역);
+        N번째_역_이름_확인(역_이동_목록, 1, 노량진역);
+        N번째_역_이름_확인(역_이동_목록, 2, 대방역);
+        N번째_역_이름_확인(역_이동_목록, 3, 신길역);
+        이동_거리_확인(이동_거리, 15);
+        지하철_요금_확인(지하철_요금, 1_550);
+
+    }
+
+    @DisplayName("(로그인) 샛강역 -> 신길역 최단거리는 15이며 어린이 지하철 요금은 1,100원이고 경로는 샛강 - 노량진 - 대방 - 신길이다.")
+    @Test
+    void shortestPathSaetGangToSingilWithChildLogin() {
+
+        //given
+        final String 이메일 = "email@email.com";
+        final String 패스워드 = "password";
+        final int 나이 = 6;
+        회원_생성을_요청(이메일, 패스워드, 나이);
+        final String 액세스_토큰 = 로그인_요청(이메일, 패스워드).as(TokenResponse.class).getAccessToken();
+
+        //when
+        final PathResponse 최단_경로 = 로그인_최단_경로_요청(샛강역, 신길역, 액세스_토큰).as(PathResponse.class);
+        final List<StationResponse> 역_이동_목록 = 최단_경로.getStations();
+        final int 이동_거리 = 최단_경로.getDistance();
+        final int 지하철_요금 = 최단_경로.getTotalCharge();
+
+        //then
+        역_이동_목록_개수_확인(역_이동_목록, 4);
+        N번째_역_이름_확인(역_이동_목록, 0, 샛강역);
+        N번째_역_이름_확인(역_이동_목록, 1, 노량진역);
+        N번째_역_이름_확인(역_이동_목록, 2, 대방역);
+        N번째_역_이름_확인(역_이동_목록, 3, 신길역);
+        이동_거리_확인(이동_거리, 15);
+        지하철_요금_확인(지하철_요금, 1_100);
 
     }
 
@@ -136,6 +195,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
                                                          final StationResponse targetStation) {
         return RestAssured
                 .given().log().all()
+                .param("source", sourceStation.getId())
+                .param("target", targetStation.getId())
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 로그인_최단_경로_요청(final StationResponse sourceStation,
+                                                             final StationResponse targetStation,
+                                                             final String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
                 .param("source", sourceStation.getId())
                 .param("target", targetStation.getId())
                 .when().get("/paths")

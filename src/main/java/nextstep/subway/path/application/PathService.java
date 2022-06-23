@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exceptions.StationNotExistException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -23,7 +24,7 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse getShortestPaths(final Long source, final Long target) {
+    public PathResponse getShortestPaths(final Long source, final Long target, final LoginMember loginMember) {
 
         final Station sourceStation = stationRepository.findById(source).orElseThrow(StationNotExistException::new);
         final Station targetStation = stationRepository.findById(target).orElseThrow(StationNotExistException::new);
@@ -32,8 +33,9 @@ public class PathService {
         final PathNavigator pathNavigator = PathNavigator.of(lines);
 
         final Path path = pathNavigator.getPath(sourceStation, targetStation);
-        final int charge = ChargeCalculator.calculate(path.getDistance());
+        final int totalCharge = ChargeCalculator.calculateTotalCharge(path.getDistance(), path.getSurcharge(),
+                loginMember);
 
-        return new PathResponse(path, charge);
+        return new PathResponse(path, totalCharge);
     }
 }
