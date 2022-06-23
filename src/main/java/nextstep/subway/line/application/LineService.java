@@ -42,6 +42,11 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
+    public List<Line> findAllLineEntities() {
+        return lineRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
