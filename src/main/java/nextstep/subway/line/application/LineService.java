@@ -41,7 +41,7 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(NoSuchElementFoundException.exceptionSupplier(ErrorMessage.NOT_FOUND_LINE));
+        return lineRepository.findById(id).orElseThrow(() -> NoSuchElementFoundException.of(ErrorMessage.NOT_FOUND_LINE));
     }
 
     public LineResponse findLineResponseById(Long id) {

@@ -18,8 +18,8 @@ public class NoSuchElementFoundException extends RuntimeException{
         this.message = message.getMessage();
     }
 
-    public static Supplier<NoSuchElementFoundException> exceptionSupplier(ErrorMessage message) {
-        return () -> new NoSuchElementFoundException(message);
+    public static NoSuchElementFoundException of(ErrorMessage message) {
+        return new NoSuchElementFoundException(message);
     }
 
 }
