@@ -5,7 +5,6 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.exception.PathException;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,12 +47,12 @@ public class PathFinderTest {
         // given
         final Station start = new Station("강남역");
         final Station destination = new Station("용산역");
-        final PathFinder pathFinder = new PathFinder();
+        final JgraphPathFinder pathFinder = new JgraphPathFinder();
         // when
-        final GraphPath graphPath = pathFinder.getShortestPath(lines, start, destination);
+        final StationPath graphPath = pathFinder.getShortestPath(lines, start, destination);
         // then
-        assertThat(graphPath.getVertexList()).containsExactlyElementsOf(Arrays.asList(new Station("강남역"), new Station("중앙역"), new Station("용산역")));
-        assertThat(graphPath.getWeight()).isEqualTo(25);
+        assertThat(graphPath.getStations()).containsExactlyElementsOf(Arrays.asList(new Station("강남역"), new Station("중앙역"), new Station("용산역")));
+        assertThat(graphPath.getDistance()).isEqualTo(25);
     }
 
     @Test
@@ -62,7 +61,7 @@ public class PathFinderTest {
         // given
         final Station start = new Station("강남역");
         final Station destination = new Station("강남역");
-        final PathFinder pathFinder = new PathFinder();
+        final JgraphPathFinder pathFinder = new JgraphPathFinder();
         // then
         assertThatThrownBy(() -> pathFinder.getShortestPath(lines, start, destination))
                 .isInstanceOf(PathException.class);

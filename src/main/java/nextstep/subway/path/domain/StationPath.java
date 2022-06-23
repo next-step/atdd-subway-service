@@ -1,6 +1,6 @@
-package nextstep.subway.path.dto;
+package nextstep.subway.path.domain;
 
-import nextstep.subway.path.domain.StationPath;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -8,17 +8,17 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import java.util.List;
 import java.util.Objects;
 
-public class PathResponse {
+public class StationPath {
     private final List<Station> stations;
     private final int distance;
 
-    public PathResponse(final List<Station> stations, final int distance) {
+    public StationPath(final List<Station> stations, final int distance) {
         this.stations = stations;
         this.distance = distance;
     }
 
-    public static PathResponse of(final StationPath stationPath) {
-        return new PathResponse(stationPath.getStations(), stationPath.getDistance());
+    public static StationPath of(final GraphPath<Station, DefaultWeightedEdge> graphPath) {
+        return new StationPath(graphPath.getVertexList(), (int) graphPath.getWeight());
     }
 
     public List<Station> getStations() {
@@ -41,7 +41,7 @@ public class PathResponse {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PathResponse that = (PathResponse) o;
+        StationPath that = (StationPath) o;
         return distance == that.distance && Objects.equals(stations, that.stations);
     }
 
