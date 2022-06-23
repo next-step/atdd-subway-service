@@ -22,12 +22,18 @@ class PathGraphTest {
     Line 이호선;
     Line 삼호선;
     Line 신분당선;
+
+    Line 오호선;
+
     Station 강남역;
     Station 양재역;
     Station 교대역;
     Station 남부터미널역;
 
     Station 없는역;
+    Station 여의도역;
+
+    Station 신길역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -41,13 +47,18 @@ class PathGraphTest {
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
         교대역 = new Station("교대역");
+        여의도역 = new Station("여의도역");
+        신길역 = new Station("신길역");
+
         남부터미널역 = new Station("남부터미널역");
         없는역 = new Station("없는역");
 
         신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10);
         삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        오호선 = new Line("오호선", "bg-red-700", 여의도역, 신길역, 5);
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, 3));
+
     }
 
     @Test
@@ -92,6 +103,20 @@ class PathGraphTest {
                 () -> pathGraph.findShortestPath(모든_구간, 교대역, 교대역)
         );
     }
+
+    @Test
+    @DisplayName("연결되지 않는 구간의 경로를 조회한다.")
+    void existNotLinkSectionPath() {
+        //given
+        List<Section> 모든_구간 = 모든_노선의_구간을_구한다(Arrays.asList(신분당선, 이호선, 삼호선, 오호선));
+        PathGraph pathGraph = PathGraph.createJgraphPathGraph();
+
+        //when & then
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> pathGraph.findShortestPath(모든_구간, 신길역, 교대역)
+        );
+    }
+
 
     private List<Section> 모든_노선의_구간을_구한다(List<Line> lines) {
         List<Section> mergeSection = new ArrayList<>();

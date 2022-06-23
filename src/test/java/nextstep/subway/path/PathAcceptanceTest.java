@@ -91,8 +91,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
     void notLinkSection() {
+        StationResponse 신길역 = StationAcceptanceTest.지하철역_등록되어_있음("신길역").as(StationResponse.class);
+        StationResponse 여의도역 = StationAcceptanceTest.지하철역_등록되어_있음("여의도역").as(StationResponse.class);
+        LineResponse 오호선 = 지하철_노선_등록되어_있음("오호선", "bg-red-600", 신길역, 여의도역, 5);
+
+
         //when
-        ExtractableResponse<Response> response = 최단거리_경로를_구한다(남부터미널역, 양재역);
+        ExtractableResponse<Response> response = 최단거리_경로를_구한다(신길역, 남부터미널역);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());

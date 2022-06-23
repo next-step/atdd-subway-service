@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import java.util.Optional;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -31,13 +32,17 @@ public class JgraphShortestPathFinder implements ShortestPathFinder {
         findShortestPathValid(startStation, targetStation);
         setGraph(sections);
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(startStation, targetStation);
+
+        GraphPath<Station, DefaultWeightedEdge> graphPath = Optional.ofNullable(dijkstraShortestPath
+                        .getPath(startStation, targetStation))
+                .orElseThrow(() -> new IllegalArgumentException("찾을 경로가 존재하지 않습니다."));
+
         return new Path(graphPath.getVertexList(), (int) graphPath.getWeight());
     }
 
     private void findShortestPathValid(Station startStation, Station targetStation) {
         if (startStation.equals(targetStation)) {
-            throw new IllegalArgumentException("시작역과 찾을역이 같으면 안 됩니다.");
+            throw new IllegalArgumentException("시작역과 찾을역이 같으면 안됩니다.");
         }
     }
 }
