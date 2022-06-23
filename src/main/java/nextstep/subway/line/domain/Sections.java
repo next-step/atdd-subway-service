@@ -135,16 +135,12 @@ public class Sections {
     }
 
     private Optional<Station> getPreviousStation(Station upStation) {
-        Optional<Section> previousSection = this.sections.stream()
-                .filter(section -> section.getDownStation() == upStation)
-                .findFirst();
+        Optional<Section> previousSection = findSectionByDownStation(upStation);
         return previousSection.map(Section::getUpStation);
     }
 
     private Station getNextStation(Station nextStation) {
-        Optional<Section> nextSection = this.sections.stream()
-                .filter(section -> section.getUpStation() == nextStation)
-                .findFirst();
+        Optional<Section> nextSection = findSectionByUpStation(nextStation);
         return nextSection.map(Section::getDownStation).orElse(null);
     }
 }
