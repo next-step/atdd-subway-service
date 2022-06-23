@@ -104,7 +104,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원정보_조회_실패(findResponse);
     }
 
-    private static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
 
         return post("/login/token", tokenRequest);
