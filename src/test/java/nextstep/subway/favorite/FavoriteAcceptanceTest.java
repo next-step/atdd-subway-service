@@ -48,7 +48,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // And 지하철 노선 등록되어 있음
         // And 지하철 노선에 지하철역 등록되어 있음
-        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 0, 강남역.getId(), 양재역.getId(), 10);
         신분당선 = 지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
         // And 회원 등록되어 있음

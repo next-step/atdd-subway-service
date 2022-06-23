@@ -5,7 +5,6 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.Collection;
@@ -14,7 +13,7 @@ import java.util.Objects;
 
 public class PathFinder {
     private final List<Line> lines;
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private final WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
 
     public PathFinder(List<Line> lines) {
         this.lines = lines;
@@ -32,13 +31,16 @@ public class PathFinder {
     private void setVertexAndEdgeWeight(Section it) {
         graph.addVertex(it.getUpStation());
         graph.addVertex(it.getDownStation());
-        graph.setEdgeWeight(graph.addEdge(it.getUpStation(), it.getDownStation()), it.getDistance().getDistance());
+
+        SectionEdge sectionEdge = new SectionEdge(it);
+        graph.addEdge(it.getUpStation(), it.getDownStation(), sectionEdge);
+        graph.setEdgeWeight(sectionEdge, it.getDistance().getDistance());
     }
 
     public Path findPath(Station source, Station target) {
         raiseIfNotValidFindPath(source, target);
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return new Path(dijkstraShortestPath.getPath(source, target));
     }
 

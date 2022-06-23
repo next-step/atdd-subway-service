@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.ExtraFare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,9 +30,9 @@ class PathFinderTest {
         남부터미널역 = new Station("남부터미널역");
         서초역 = new Station("서초역");
         교대역 = new Station("교대역");
-        신분당선 = new Line("신분당선", "red", 강남역, 양재역, new Distance(10));
-        삼호선 = new Line("신분당선", "red", 양재역, 남부터미널역, new Distance(7));
-        이호선 = new Line("신분당선", "red", 서초역, 교대역, new Distance(15));
+        신분당선 = new Line("신분당선", "red", new ExtraFare(0), 강남역, 양재역, new Distance(10));
+        삼호선 = new Line("신분당선", "red", new ExtraFare(500), 양재역, 남부터미널역, new Distance(7));
+        이호선 = new Line("신분당선", "red", new ExtraFare(900), 서초역, 교대역, new Distance(15));
     }
 
     @Test
@@ -41,7 +42,7 @@ class PathFinderTest {
         Path result = pathFinder.findPath(강남역, 남부터미널역);
 
         assertThat(result.getStations()).containsExactly(강남역, 양재역, 남부터미널역);
-        assertThat(result.getDistance()).isEqualTo(17);
+        assertThat(result.getDistance()).isEqualTo(new Distance(17));
     }
 
     @Test

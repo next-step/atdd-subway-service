@@ -21,7 +21,7 @@ class SectionsTest {
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
         신논현역 = new Station("신논현역");
-        신분당선 = new Line("신분당선", "red");
+        신분당선 = new Line("신분당선", "red", new ExtraFare(0));
     }
 
     @Test

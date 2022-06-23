@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -20,8 +21,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인을_요청_한다;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
+import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -53,35 +58,35 @@ class PathFinderAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 0, 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 500, 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 900, 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 양재역, 2);
     }
 
     @Test
     void 같은_호선의_목적지로_경로_조회_하여_최적경로를_구할_수_있다() {
         // when
-        ExtractableResponse<Response> response = 경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> response = 토큰값_없이_경로_조회_요청(교대역, 양재역);
 
         // then
-        경로_조회가_최적거리로_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
+        경로_조회가_최적거리로_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역));
     }
 
     @Test
     void 다른_호선의_목적지로_경로_조회_하여_최적경로를_구할_수_있다() {
         // when
-        ExtractableResponse<Response> response = 경로_조회_요청(강남역, 남부터미널역);
+        ExtractableResponse<Response> response = 토큰값_없이_경로_조회_요청(강남역, 남부터미널역);
 
         // then
-        경로_조회가_최적거리로_조회됨(response, Arrays.asList(강남역, 양재역, 남부터미널역), 12);
+        경로_조회가_최적거리로_조회됨(response, Arrays.asList(강남역, 양재역, 남부터미널역));
     }
 
     @Test
     void 존재하지_않은_출발역에_대한_최단거리를_구할_수_없다() {
         StationResponse 없는역 = new StationResponse(9999L, "없는역", LocalDateTime.now(), LocalDateTime.now());
         // when
-        ExtractableResponse<Response> response = 경로_조회_요청(없는역, 남부터미널역);
+        ExtractableResponse<Response> response = 토큰값_없이_경로_조회_요청(없는역, 남부터미널역);
 
         // then
         역을_찾지_못하여_경로조회를_실패함(response);
@@ -92,13 +97,53 @@ class PathFinderAcceptanceTest extends AcceptanceTest {
         StationResponse 없는역 = new StationResponse(9999L, "없는역", LocalDateTime.now(), LocalDateTime.now());
 
         // when
-        ExtractableResponse<Response> response = 경로_조회_요청(강남역, 없는역);
+        ExtractableResponse<Response> response = 토큰값_없이_경로_조회_요청(강남역, 없는역);
 
         // then
         역을_찾지_못하여_경로조회를_실패함(response);
     }
 
-    private ExtractableResponse<Response> 경로_조회_요청(StationResponse sourceResponse, StationResponse targetResponse) {
+    @Test
+    void 로그인하지_않고_두_역의_최단_거리_경로를_조회() {
+        // when
+        ExtractableResponse<Response> response = 토큰값_없이_경로_조회_요청(강남역, 남부터미널역);
+
+        // then
+        경로_조회가_최적거리로_조회됨(response, Arrays.asList(강남역, 양재역, 남부터미널역));
+
+        // then
+        경로_조회시_총_거리도_조회됨(response, 12);
+
+        // then
+        지하철_이용_요금도_조회됨(response, 2250);
+    }
+
+    @Test
+    void 로그인하여_청소년_할인을_받아_두_역의_최단_거리_경로를_조회() {
+        // when
+        회원_생성을_요청(EMAIL, PASSWORD, 13);
+        // when
+        TokenResponse 토큰값 = 로그인을_요청_한다(EMAIL, PASSWORD).as(TokenResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 토큰값_있이_경로_조회_요청(강남역, 남부터미널역, 토큰값);
+
+        // then
+        경로_조회가_최적거리로_조회됨(response, Arrays.asList(강남역, 양재역, 남부터미널역));
+
+        // then
+        경로_조회시_총_거리도_조회됨(response, 12);
+
+        // then
+        지하철_이용_요금도_조회됨(response, 1700);
+    }
+
+    private void 지하철_이용_요금도_조회됨(ExtractableResponse<Response> response, int fee) {
+        PathResponse path = response.as(PathResponse.class);
+        assertThat(path.getFare()).isEqualTo(fee);
+    }
+
+    private ExtractableResponse<Response> 토큰값_없이_경로_조회_요청(StationResponse sourceResponse, StationResponse targetResponse) {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -107,7 +152,17 @@ class PathFinderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 경로_조회가_최적거리로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations, int distance) {
+    private ExtractableResponse<Response> 토큰값_있이_경로_조회_요청(StationResponse sourceResponse, StationResponse targetResponse, TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", sourceResponse.getId(), targetResponse.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    private void 경로_조회가_최적거리로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         PathResponse path = response.as(PathResponse.class);
 
         List<Long> stationIds = path.getStations().stream()
@@ -119,6 +174,10 @@ class PathFinderAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+    }
+
+    private void 경로_조회시_총_거리도_조회됨(ExtractableResponse<Response> response, int distance) {
+        PathResponse path = response.as(PathResponse.class);
         assertThat(path.getDistance()).isEqualTo(distance);
     }
 

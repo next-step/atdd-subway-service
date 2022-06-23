@@ -51,7 +51,8 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(LoginMember loginMember, Long id) {
-        Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new NotFoundException("즐겨찾기를 찾을 수 없습니다."));
+        Favorite favorite = favoriteRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("즐겨찾기를 찾을 수 없습니다."));
 
         raiseIfNotMine(favorite, loginMember.getId());
 

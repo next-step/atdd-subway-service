@@ -38,10 +38,10 @@ class DistanceTest {
 
     @Test
     void 뺄때_결과값이_음수_또는_0이_될_수_없다() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> new Distance(1).minus(new Distance(2)));
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> new Distance(1).minus(new Distance(1)));
+        Distance one = new Distance(1);
+        Distance two = new Distance(2);
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> one.minus(two));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> one.minus(one));
     }
 
 }
