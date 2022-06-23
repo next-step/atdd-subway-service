@@ -60,4 +60,42 @@ public class Line extends BaseEntity {
     public List<Station> getStations() {
         return sections.getStations();
     }
+
+    public void addLineStation(Section section) {
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
+                stations.stream().noneMatch(it -> it == section.getDownStation())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (stations.isEmpty()) {
+            sections.add(section);
+            return;
+        }
+
+        if (isUpStationExisted) {
+            sections.get().stream()
+                    .filter(it -> it.getUpStation() == section.getUpStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+
+            sections.add(section);
+        } else if (isDownStationExisted) {
+            sections.get().stream()
+                    .filter(it -> it.getDownStation() == section.getDownStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+
+            sections.add(section);
+        } else {
+            throw new RuntimeException();
+        }
+    }
 }
