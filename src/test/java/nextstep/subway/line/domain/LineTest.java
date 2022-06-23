@@ -41,4 +41,15 @@ class LineTest {
         이호선.addLineStation(section);
         assertThat(이호선.getStations()).containsExactly(강남역, 역삼역, 선릉역);
     }
+
+    @Test
+    @DisplayName("노선의 역을 삭제할 수 있다.")
+    void 노선_역_삭제() {
+        Station 선릉역 = Station.from("선릉역");
+        Section section = Section.of(이호선, 역삼역, 선릉역, 4);
+        이호선.addLineStation(section);
+        이호선.removeLineStation(선릉역);
+
+        assertThat(이호선.getStations()).containsExactly(강남역, 역삼역);
+    }
 }
