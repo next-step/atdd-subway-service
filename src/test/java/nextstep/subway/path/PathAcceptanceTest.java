@@ -6,8 +6,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.GivenSubway;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.utils.fixture.AcceptanceTestSubwayFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,12 +16,12 @@ import org.springframework.http.MediaType;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
-    private GivenSubway 지하철;
+    private AcceptanceTestSubwayFixture 지하철;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        지하철 = new GivenSubway();
+        지하철 = new AcceptanceTestSubwayFixture();
     }
 
     @DisplayName("경로를 조회한다")

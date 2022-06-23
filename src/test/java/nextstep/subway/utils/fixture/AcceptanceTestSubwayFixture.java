@@ -1,4 +1,4 @@
-package nextstep.subway;
+package nextstep.subway.utils.fixture;
 
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
@@ -7,7 +7,7 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
-public class GivenSubway {
+public class AcceptanceTestSubwayFixture {
     public final StationResponse 강남역;
     public final StationResponse 양재역;
     public final StationResponse 교대역;
@@ -20,7 +20,7 @@ public class GivenSubway {
     public final LineResponse 삼호선;
     public final LineResponse 구호선;
 
-    public GivenSubway() {
+    public AcceptanceTestSubwayFixture() {
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);

@@ -9,12 +9,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.GivenSubway;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.MemberAcceptanceTest;
+import nextstep.subway.utils.fixture.AcceptanceTestSubwayFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import org.springframework.http.MediaType;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
-    private GivenSubway 지하철;
+    private AcceptanceTestSubwayFixture 지하철;
     private String 로그인_인증_토큰;
 
     @BeforeEach
@@ -35,7 +35,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                         MemberAcceptanceTest.PASSWORD,
                         MemberAcceptanceTest.AGE
                 ));
-        지하철 = new GivenSubway();
+        지하철 = new AcceptanceTestSubwayFixture();
         로그인_인증_토큰 = AuthAcceptanceTest
                 .로그인_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD)
                 .as(TokenResponse.class)
