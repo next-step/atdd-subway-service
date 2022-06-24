@@ -97,6 +97,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findShortestPathFailWhenNotConnected() {
         // given
         StationResponse 정자역 = 지하철역_등록되어_있음("정자역").as(StationResponse.class);
+        StationResponse 서현역 = 지하철역_등록되어_있음("서현역").as(StationResponse.class);
+        지하철_노선_등록되어_있음(new LineRequest("분당선", "bg-yellow-600", 정자역.getId(), 서현역.getId(), 1000)).as(LineResponse.class);
 
         // when
         ExtractableResponse<Response> 최단경로 = 최단경로_조회_요청(정자역.getId(), 양재역.getId());
