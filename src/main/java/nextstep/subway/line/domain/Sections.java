@@ -166,4 +166,8 @@ public class Sections {
     private void addLineSection(Line line, Section upSection, Section downSection) {
         sections.add(new Section(line, upSection, downSection));
     }
+
+    public List<Section> getSections() {
+        return sections;
+    }
 }
