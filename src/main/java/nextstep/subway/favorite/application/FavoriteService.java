@@ -13,6 +13,9 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Transactional
 @Service
 public class FavoriteService {
@@ -36,6 +39,16 @@ public class FavoriteService {
         Favorite favorite = new Favorite(member, source, target);
         favoriteRepository.save(favorite);
         return FavoriteResponse.of(favorite);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> findAll(LoginMember loginMember) {
+        Member member = memberService.findById(loginMember.getId());
+        List<Favorite> favorites = favoriteRepository.findAllByMember(member);
+
+        return favorites.stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 
     private void validateDuplication(Member member, Station source, Station target) {

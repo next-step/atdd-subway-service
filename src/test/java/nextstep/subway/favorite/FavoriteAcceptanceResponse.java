@@ -19,7 +19,7 @@ public class FavoriteAcceptanceResponse {
     }
 
     public static void 즐겨찾기_조회_요청_성공(ExtractableResponse<Response> response) {
-        List<FavoriteResponse> list = response.jsonPath().getList(".", FavoriteResponse.class);
+        List<FavoriteResponse> list = response.jsonPath().getList(".");
         assertThat(list.size()).isEqualTo(2);
         assertThat(list).isNotEmpty();
     }
