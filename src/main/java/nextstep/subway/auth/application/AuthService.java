@@ -27,7 +27,11 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public LoginMember findMemberByToken(final String credentials, final boolean required) {
+        if (!required && !jwtTokenProvider.validateToken(credentials)) {
+            return LoginMember.empty();
+        }
+
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new NotValidTokenException();
         }

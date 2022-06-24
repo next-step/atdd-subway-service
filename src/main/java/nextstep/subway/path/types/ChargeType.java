@@ -1,18 +1,18 @@
 package nextstep.subway.path.types;
 
 public enum ChargeType {
-    LESS_OR_EQUAL_TEN, BETWEEN_TEN_AND_FIFTY, MORE_OR_EQUAL_FIFTY;
+    LEVEL_ONE_CHARGE, LEVEL_TWO_CHARGE, DEFAULT_CHARGE;
 
     private static int TEN = 10;
     private static int FIFTY = 50;
 
     public static ChargeType of(final int distance) {
         if (distance <= TEN) {
-            return LESS_OR_EQUAL_TEN;
+            return DEFAULT_CHARGE;
         }
         if (TEN < distance && distance <= FIFTY) {
-            return BETWEEN_TEN_AND_FIFTY;
+            return LEVEL_ONE_CHARGE;
         }
-        return MORE_OR_EQUAL_FIFTY;
+        return LEVEL_TWO_CHARGE;
     }
 }

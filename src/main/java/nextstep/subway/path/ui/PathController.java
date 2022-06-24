@@ -21,24 +21,14 @@ public class PathController {
         this.pathService = pathService;
     }
 
-    @GetMapping(headers = "authorization", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PathResponse> getShortestPathsWithToken(
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PathResponse> getShortestPaths(
             @RequestParam(value = "source") final Long source
             , @RequestParam(value = "target") final Long target
-            , @AuthenticationPrincipal LoginMember loginMember) {
+            , @AuthenticationPrincipal(required = false) LoginMember loginMember) {
         if (source.equals(target)) {
             throw new SourceAndTargetSameException();
         }
         return ResponseEntity.ok().body(pathService.getShortestPaths(source, target, loginMember));
-    }
-
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PathResponse> getShortestPaths(
-            @RequestParam(value = "source") final Long source
-            , @RequestParam(value = "target") final Long target) {
-        if (source.equals(target)) {
-            throw new SourceAndTargetSameException();
-        }
-        return ResponseEntity.ok().body(pathService.getShortestPaths(source, target, LoginMember.empty()));
     }
 }

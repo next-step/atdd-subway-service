@@ -41,7 +41,7 @@ public class PathNavigator {
                 targetStation);
         checkSourceEqualToTarget(sourceStation, targetStation);
         checkSourceNotConnectedWithTarget(graphPath);
-        final int maxSurcharge = calculateMaxSurcharge(graphPath.getEdgeList());
+        final int maxSurcharge = ChargeCalculator.calculateMaxSurcharge(graphPath.getEdgeList());
         return new Path(graphPath.getVertexList(), (int) graphPath.getWeight(), maxSurcharge);
     }
 
@@ -55,13 +55,6 @@ public class PathNavigator {
         if (sourceStation.equals(targetStation)) {
             throw new SourceAndTargetSameException();
         }
-    }
-
-    private int calculateMaxSurcharge(final List<SectionWeightedEdge> edgeList) {
-        return edgeList.stream()
-                .mapToInt(sectionWeightedEdge -> sectionWeightedEdge.getSurcharge())
-                .max()
-                .orElse(0);
     }
 
     public static PathNavigator of(final List<Line> lines) {

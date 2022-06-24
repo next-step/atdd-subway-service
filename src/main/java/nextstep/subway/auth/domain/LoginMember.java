@@ -5,13 +5,17 @@ public class LoginMember {
     private String email;
     private Integer age;
 
-    public LoginMember() {
+    private LoginMember() {
     }
 
     public LoginMember(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
+    }
+
+    private static class LoginMemberHolder {
+        private static final LoginMember INSTANCE = new LoginMember();
     }
 
     public Long getId() {
@@ -27,7 +31,7 @@ public class LoginMember {
     }
 
     public static LoginMember empty() {
-        return new LoginMember();
+        return LoginMemberHolder.INSTANCE;
     }
 
     public boolean isEmpty() {
