@@ -7,7 +7,7 @@ public enum AgeFarePolicy {
     ALL(value -> new BigDecimal(value)),
     TEENAGER(value -> new BigDecimal((value - 350) * 4 / 5).setScale(0, BigDecimal.ROUND_CEILING)),
     CHILDREN(value -> new BigDecimal((value - 350) / 2).setScale(0, BigDecimal.ROUND_CEILING)),
-    Free(value -> new BigDecimal(0));
+    FREE(value -> new BigDecimal(0));
 
     private Function<Integer, BigDecimal> operator;
 
@@ -17,7 +17,7 @@ public enum AgeFarePolicy {
 
     public static BigDecimal calculate(int fare, int age) {
         if(age < 6 || age >= 65) {
-            return Free.operator.apply(fare);
+            return FREE.operator.apply(fare);
         }
 
         if(age >= 6 && age < 13) {
