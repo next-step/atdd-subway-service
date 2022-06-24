@@ -189,10 +189,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("청소년이 검색 할 경우 일반인 보다 요금이 할인된 금액이 보여진다.")
     @Test
     void findShortestRouteTestWhenUseIsTeenager() {
-        // Given
-        final TokenResponse 성인_로그인 = Login("adult@adult.com", 20);
-        final PathResponse 성인이_요청한_결과 = 최단_경로_검색(성인_로그인, 교대역, 양재역).as(PathResponse.class);
-
         final TokenResponse 청소년_로그인 = Login("teenager@teenager.com", 18);
 
         // When
