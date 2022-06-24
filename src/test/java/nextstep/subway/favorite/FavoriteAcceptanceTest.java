@@ -1,8 +1,24 @@
 package nextstep.subway.favorite;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.dto.StationResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_요청;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceResponse.로그인_성공_토큰_반환;
+import static nextstep.subway.favorite.FavoriteAcceptanceRequest.즐겨찾기_생성_요청;
+import static nextstep.subway.favorite.FavoriteAcceptanceResponse.즐겨찾기_생성_요청_성공;
+import static nextstep.subway.favorite.FavoriteAcceptanceResponse.즐겨찾기_생성_요청_실패;
+import static nextstep.subway.member.MemberAcceptanceRequest.회원_생성을_요청;
+import static nextstep.subway.member.MemberAcceptanceResponse.회원_생성됨;
+import static nextstep.subway.member.MemberAcceptanceTest.AGE;
+import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
+import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
 
 /*
 Feature: 즐겨찾기를 관리한다.
@@ -22,16 +38,39 @@ Feature: 즐겨찾기를 관리한다.
  */
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+    private final String INVALID_TOKEN = "invalidToken";
+    private String ACCESS_TOKEN;
+    private StationResponse 강남역;
+    private StationResponse 역삼역;
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+
+        ExtractableResponse<Response> registerResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(registerResponse);
+
+        ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
+        ACCESS_TOKEN = 로그인_성공_토큰_반환(loginResponse);
+
+        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        역삼역 = StationAcceptanceTest.지하철역_등록되어_있음("역삼역").as(StationResponse.class);
+    }
+
     @DisplayName("토큰이 유효하면 즐겨찾기를 생성한다")
     @Test
     void 즐겨찾기_생성_성공() {
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(ACCESS_TOKEN, 강남역.getId(), 역삼역.getId());
 
+        즐겨찾기_생성_요청_성공(response);
     }
 
     @DisplayName("토큰이 유효하지 않다면 생성을 실패한다.")
     @Test
     void 즐겨찾기_생성_토큰_실패() {
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(INVALID_TOKEN, 강남역.getId(), 역삼역.getId());
 
+        즐겨찾기_생성_요청_실패(response);
     }
 
     @DisplayName("토큰이 유효하면 즐겨찾기를 조회한다.")
