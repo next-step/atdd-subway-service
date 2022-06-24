@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PathResponse {
-    List<StationResponse> stations;
+    private List<StationResponse> stations;
     private int distance;
 
     private PathResponse(List<StationResponse> stations, int distance) {
@@ -27,5 +27,9 @@ public class PathResponse {
 
     public List<StationResponse> getStations() {
         return stations;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 }
