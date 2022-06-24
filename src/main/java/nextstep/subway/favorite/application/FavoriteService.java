@@ -6,6 +6,7 @@ import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.favorite.exception.FavoriteDuplicationException;
+import nextstep.subway.favorite.exception.FavoriteNotFoundException;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
@@ -49,6 +50,16 @@ public class FavoriteService {
         return favorites.stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public void remove(LoginMember loginMember, Long id) {
+        Favorite favorite = favoriteRepository.findById(id)
+                .orElseThrow(() -> new FavoriteNotFoundException());
+
+        Member member = memberService.findById(loginMember.getId());
+        favorite.validateMember(member);
+
+        favoriteRepository.delete(favorite);
     }
 
     private void validateDuplication(Member member, Station source, Station target) {

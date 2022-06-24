@@ -29,12 +29,14 @@ public class FavoriteAcceptanceRequest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, Long id) {
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, ExtractableResponse<Response> favoriteResponse) {
+        String uri = favoriteResponse.header("Location");
+
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/favorites/" + id)
+                .when().delete(uri)
                 .then().log().all()
                 .extract();
     }

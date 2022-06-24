@@ -1,7 +1,9 @@
 package nextstep.subway.common;
 
 import nextstep.subway.auth.exception.UnAuthorizedException;
+import nextstep.subway.favorite.exception.FavoriteCannotDeleteException;
 import nextstep.subway.favorite.exception.FavoriteDuplicationException;
+import nextstep.subway.favorite.exception.FavoriteNotFoundException;
 import nextstep.subway.path.exception.NotConnectedException;
 import nextstep.subway.path.exception.SameSourceAndTargetException;
 import nextstep.subway.station.exception.StationNotFoundException;
@@ -40,5 +42,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FavoriteDuplicationException.class)
     public ErrorResponse handleFavoriteDuplicationException() {
         return ErrorResponse.of(ErrorMessage.FAVORITE_DUPLICATION.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(FavoriteNotFoundException.class)
+    public ErrorResponse handleFavoriteNotFoundException() {
+        return ErrorResponse.of(ErrorMessage.FAVORITE_NOT_FOUND.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(FavoriteCannotDeleteException.class)
+    public ErrorResponse handleFavoriteCannotDeleteException() {
+        return ErrorResponse.of(ErrorMessage.FAVORITE_CAN_NOT_DELETE.getMessage());
     }
 }

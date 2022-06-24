@@ -47,11 +47,13 @@ Feature: 즐겨찾기를 관리한다.
  */
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
-    private final String INVALID_TOKEN = "invalidToken";
     private String ACCESS_TOKEN;
     private StationResponse 강남역;
     private StationResponse 역삼역;
     private StationResponse 삼성역;
+
+    private ExtractableResponse<Response> 즐겨찾기_1;
+    private ExtractableResponse<Response> 즐겨찾기_2;
 
     @BeforeEach
     public void setUp() {
@@ -81,18 +83,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     Stream<DynamicTest> register_get_delete_Favorite() {
         return Stream.of(
                 dynamicTest("즐겨찾기를 생성한다", () -> {
-                    ExtractableResponse<Response> register_response_1 = 즐겨찾기_생성_요청(ACCESS_TOKEN, 강남역.getId(), 역삼역.getId());
-                    즐겨찾기_생성_요청_성공(register_response_1);
+                    즐겨찾기_1 = 즐겨찾기_생성_요청(ACCESS_TOKEN, 강남역.getId(), 역삼역.getId());
+                    즐겨찾기_생성_요청_성공(즐겨찾기_1);
 
-                    ExtractableResponse<Response> register_response_2 = 즐겨찾기_생성_요청(ACCESS_TOKEN, 강남역.getId(), 삼성역.getId());
-                    즐겨찾기_생성_요청_성공(register_response_2);
+                    즐겨찾기_2 = 즐겨찾기_생성_요청(ACCESS_TOKEN, 강남역.getId(), 삼성역.getId());
+                    즐겨찾기_생성_요청_성공(즐겨찾기_2);
                 }),
                 dynamicTest("생성된 즐겨찾기를 조회한다", () -> {
                     ExtractableResponse<Response> response = 즐겨찾기_조회_요청(ACCESS_TOKEN);
                     즐겨찾기_조회_요청_성공(response);
                 }),
                 dynamicTest("생성된 즐겨찾기를 삭제한다", () -> {
-                    ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(ACCESS_TOKEN, 강남역.getId());
+                    ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(ACCESS_TOKEN, 즐겨찾기_1);
                     즐겨찾기_삭제_요청_성공(response);
                 })
         );
@@ -101,6 +103,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("토큰이 유효하지 않다면 실패한다.")
     @Test
     void 즐겨찾기_생성_토큰_실패() {
+        final String INVALID_TOKEN = "invalidToken";
+
         ExtractableResponse<Response> response = 즐겨찾기_생성_요청(INVALID_TOKEN, 강남역.getId(), 역삼역.getId());
 
         즐겨찾기_생성_요청_실패(response);

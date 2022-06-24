@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.favorite.exception.FavoriteCannotDeleteException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -52,5 +53,11 @@ public class Favorite {
 
     public Station getTarget() {
         return target;
+    }
+
+    public void validateMember(Member member) {
+        if (!this.member.equals(member)) {
+            throw new FavoriteCannotDeleteException();
+        }
     }
 }
