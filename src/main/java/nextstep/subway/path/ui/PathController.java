@@ -24,7 +24,7 @@ public class PathController {
         return ResponseEntity.ok(pathService.findShortestPath(source, target));
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, NoSuchElementException.class})
+    @ExceptionHandler({IllegalArgumentException.class, NoSuchElementException.class, NullPointerException.class})
     public ResponseEntity handleIllegalArgsException() {
         return ResponseEntity.badRequest().build();
     }
