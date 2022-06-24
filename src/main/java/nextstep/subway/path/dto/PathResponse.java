@@ -40,7 +40,7 @@ public class PathResponse {
         return new PathResponse(
                 sections.getStations().stream().map(StationResponse::of)
                         .collect(Collectors.toList()),
-                sections.getTotalDistance().of(),
-                charge.of());
+                sections.getTotalDistance().value(),
+                charge.value());
     }
 }

@@ -19,7 +19,7 @@ public class Age {
         this.value = value;
     }
 
-    public int of() {
+    public int value() {
         return value;
     }
 

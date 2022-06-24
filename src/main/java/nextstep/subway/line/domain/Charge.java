@@ -30,7 +30,7 @@ public class Charge implements Comparable<Charge> {
         return target.minusBy(charge);
     }
 
-    public long of() {
+    public long value() {
         return this.charge;
     }
 

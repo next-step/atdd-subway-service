@@ -27,7 +27,7 @@ public class Distance {
         return source.minusBy(distance);
     }
 
-    public long of() {
+    public long value() {
         return this.distance;
     }
 

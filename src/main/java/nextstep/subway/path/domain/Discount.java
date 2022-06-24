@@ -29,7 +29,7 @@ public class Discount {
     }
 
     public Charge calculate(final Charge charge) {
-        return new Charge(charge.of() * (MAX - discount) / MAX);
+        return new Charge(charge.value() * (MAX - discount) / MAX);
     }
 
     private Discount plus(final long source) {

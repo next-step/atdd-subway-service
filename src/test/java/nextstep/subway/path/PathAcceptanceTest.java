@@ -147,7 +147,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> response = 최단_경로_검색(tokenResponse, 교대역, 양재역);
 
         // then
-        거리_금액_확인(response, 5, distanceCostPolicy.basicCharge().of());
+        거리_금액_확인(response, 5, distanceCostPolicy.basicCharge().value());
     }
 
     /**
@@ -200,7 +200,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // Then
         최단_경로_기준으로_지하철역_정보가_출력됨(청소년이_요청한_결과, Arrays.asList(교대역, 남부터미널역, 양재역));
-        거리_금액_확인(청소년이_요청한_결과, 5, 청소년_예상_할인_요금(distanceCostPolicy.basicCharge().of()));
+        거리_금액_확인(청소년이_요청한_결과, 5, 청소년_예상_할인_요금(distanceCostPolicy.basicCharge().value()));
     }
 
     /**
@@ -220,7 +220,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // Then
         최단_경로_기준으로_지하철역_정보가_출력됨(어린이가_요청한_결과, Arrays.asList(교대역, 남부터미널역, 양재역));
-        거리_금액_확인(어린이가_요청한_결과, 5, 어린이_예상_할인_요금(distanceCostPolicy.basicCharge().of()));
+        거리_금액_확인(어린이가_요청한_결과, 5, 어린이_예상_할인_요금(distanceCostPolicy.basicCharge().value()));
     }
 
 
@@ -278,7 +278,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private long 총거리가_10_50_일때_예상_금액_계산(int distance) {
-        return distanceCostPolicy.basicCharge().of() +(int) ((Math.ceil(((distance-10) - 1) / 5) + 1) * 100);
+        return distanceCostPolicy.basicCharge().value() +(int) ((Math.ceil(((distance-10) - 1) / 5) + 1) * 100);
     }
 
     private long  총거리가_50_초과_일때_예상_금액_계산(int distance) {

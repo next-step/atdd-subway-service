@@ -8,7 +8,6 @@ import nextstep.subway.favorite.domain.Favorites;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -50,7 +49,7 @@ public class Member extends BaseEntity {
     }
 
     public Integer getAge() {
-        return age.of();
+        return age.value();
     }
 
     public void update(Member member) {

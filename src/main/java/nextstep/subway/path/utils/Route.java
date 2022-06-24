@@ -36,7 +36,7 @@ public class Route {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
             SectionEdge sectionEdge = graph.addEdge(section.getUpStation(), section.getDownStation());
-            graph.setEdgeWeight(sectionEdge.updateSection(section), section.getDistance().of());
+            graph.setEdgeWeight(sectionEdge.updateSection(section), section.getDistance().value());
         });
     }
 }
