@@ -57,7 +57,7 @@ public class PathFinder {
     }
 
     private void validateEqualStation(Station source, Station target) {
-        if (source.getId().equals(target.getId())) {
+        if (source.equals(target)) {
             throw new IllegalArgumentException(ERROR_MESSAGE_EQUAL_STATION);
         }
     }
