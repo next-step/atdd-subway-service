@@ -57,12 +57,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /*
-    *   Given 2개 이상의 지하철역이 등록되어 있음
-    *   And 1개 이상의 지하철 노선이 등록되어 있음
-    *   And 지하철 노선에 지하철역이 등록되어 있음
-    *   When 출발역과 도착역을 선택하고 경로를 검색하면
-    *   Then 출발역에서 도착역까지의 최단거리 경로가 조회된다.
-    */
+     *   Given 2개 이상의 지하철역이 등록되어 있음
+     *   And 1개 이상의 지하철 노선이 등록되어 있음
+     *   And 지하철 노선에 지하철역이 등록되어 있음
+     *   When 출발역과 도착역을 선택하고 경로를 검색하면
+     *   Then 출발역에서 도착역까지의 최단거리 경로가 조회된다.
+     */
     @DisplayName("같은 지하철 노선에 포함된 역 사이의 최단거리 경로를 조회한다.")
     @Test
     void findPath_sameLine() {
@@ -71,6 +71,31 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         출발역_도착역_최단거리_거리_경로_확인(response, 12, 강남역, 양재역, 서울역);
+    }
+
+    /*
+     *   Given 2개 이상의 지하철역이 등록되어 있음
+     *   And 1개 이상의 지하철 노선이 등록되어 있음
+     *   And 지하철 노선에 지하철역이 등록되어 있음
+     *   When 출발역과 도착역을 선택하고 경로를 검색하면
+     *   Then 출발역에서 도착역까지의 최단거리 경로가 조회된다.
+     *   And 총 거리도 함께 조회된다.
+     *   And 지하철 이용 요금도 함께 조회된다.
+     */
+    @DisplayName("같은 지하철 노선에 포함된 역 사이의 최단거리 경로와 총 거리, 요금을 조회한다.")
+    @Test
+    void findPath_distance_fare_sameLine() {
+        // 기본운임(10㎞ 이내) : 기본운임 1,250원
+        // 10km초과∼50km까지(5km마다 100원)
+        // 50km초과 시 (8km마다 100원)
+
+        // 추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가
+        // 900원 추가 요금이 있는 노선 8km 이용 시 1,250원 -> 2,150원
+        // 900원 추가 요금이 있는 노선 12km 이용 시 1,350원 -> 2,250원
+
+        // when
+
+        // then
     }
 
     /*
@@ -88,6 +113,68 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         출발역_도착역_최단거리_거리_경로_확인(response, 18, 강남역, 교대역, 남부터미널역);
+    }
+
+    /*
+     *   Given 2개 이상의 지하철역이 등록되어 있음
+     *   And 1개 이상의 지하철 노선이 등록되어 있음
+     *   And 지하철 노선에 지하철역이 등록되어 있음
+     *   When 출발역과 도착역을 선택하고 경로를 검색하면
+     *   Then 출발역에서 도착역까지의 최단거리 경로가 조회된다.
+     *   And 총 거리도 함께 조회된다.
+     *   And 지하철 이용 요금도 함께 조회된다.
+     */
+    @DisplayName("서로 다른 지하철 노선에 포함된 역 사이의 최단거리 경로와 총 거리, 요금을 조회한다.")
+    @Test
+    void findPath_distance_fare_differentLines() {
+        // 경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용
+        // 0원, 500원, 900원의 추가 요금이 있는 노선들을 경유하여 8km 이용 시 1,250원 -> 2,150원
+
+        // when
+
+        // then
+    }
+
+    /*
+     *   Given 1명 이상의 13세 이상~19세 미만의 청소년이 등록되어 있음
+     *   And 2개 이상의 지하철역이 등록되어 있음
+     *   And 1개 이상의 지하철 노선이 등록되어 있음
+     *   And 지하철 노선에 지하철역이 등록되어 있음
+     *   When 청소년이 출발역과 도착역을 선택하고 경로를 검색하면
+     *   Then 출발역에서 도착역까지의 최단거리 경로가 조회된다.
+     *   And 총 거리도 함께 조회된다.
+     *   And 할인된 지하철 이용 요금도 함께 조회된다.
+     */
+    @DisplayName("13세 이상~19세 미만의 청소년은 350원을 공제한 금액의 20%를 할인 받는다.")
+    @Test
+    void apply_youth_discount() {
+        // 청소년: 운임에서 350원을 공제한 금액의 20%할인
+        // 청소년: 13세 이상~19세 미만
+
+        // when
+
+        // then
+    }
+
+    /*
+     *   Given 1명 이상의 6세 이상~ 13세 미만의 어린이가 등록되어 있음
+     *   And 2개 이상의 지하철역이 등록되어 있음
+     *   And 1개 이상의 지하철 노선이 등록되어 있음
+     *   And 지하철 노선에 지하철역이 등록되어 있음
+     *   When 어린이가 출발역과 도착역을 선택하고 경로를 검색하면
+     *   Then 출발역에서 도착역까지의 최단거리 경로가 조회된다.
+     *   And 총 거리도 함께 조회된다.
+     *   And 할인된 지하철 이용 요금도 함께 조회된다.
+     */
+    @DisplayName("6세 이상~ 13세 미만의 어린이는 350원을 공제한 금액의 50%를 할인 받는다.")
+    @Test
+    void apply_child_discount() {
+        // 어린이: 운임에서 350원을 공제한 금액의 50%할인
+        // 어린이: 6세 이상~ 13세 미만
+
+        // when
+
+        // then
     }
 
     @DisplayName("출발역과 도착역이 같은 경우 최단거리 경로를 조회할 수 없다.")
@@ -145,5 +232,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse path = response.as(PathResponse.class);
         assertThat(path.getStationResponses()).containsExactly(stations);
         assertThat(path.getDistance()).isEqualTo(distance);
+//        assertThat(path.)isEqualTo();
     }
 }
