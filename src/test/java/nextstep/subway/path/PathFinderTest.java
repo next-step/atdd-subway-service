@@ -49,7 +49,6 @@ class PathFinderTest {
     void findShortestPath() {
         Path path = pathFinder.findShortestPath(전구간, 서울역, 동대문역);
 
-        assertThat(path.getStations()).containsExactly(서울역, 사당역, 동대문역);
         assertThat(path.getDistance()).isEqualTo(18);
     }
 
