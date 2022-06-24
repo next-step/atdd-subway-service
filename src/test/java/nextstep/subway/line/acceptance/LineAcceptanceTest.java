@@ -68,7 +68,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // given
         ExtractableResponse<Response> createResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
         ExtractableResponse<Response> createResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
-        
+
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
 
@@ -119,6 +119,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
         return 지하철_노선_생성_요청(params);
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(
+            String name, String color,
+            Long upStationId, Long downStationId, int distance) {
+
+        return 지하철_노선_생성_요청(new LineRequest(name, color, upStationId, downStationId, distance));
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
