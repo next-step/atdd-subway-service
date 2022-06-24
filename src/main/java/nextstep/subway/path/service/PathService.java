@@ -7,6 +7,7 @@ import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findShortestPath(PathRequest pathRequest) {
         List<Line> lines = lineRepository.findAll();
         PathFinder pathFinder = PathFinder.init(lines);
