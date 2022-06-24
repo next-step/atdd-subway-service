@@ -7,6 +7,9 @@ import java.util.List;
 public class Fare {
     private int fare = 1_250;
 
+    protected Fare() {
+    }
+
     public Fare(List<Section> sections, Path path, int age) {
         calculate(sections, path, age);
     }
@@ -15,7 +18,7 @@ public class Fare {
         return new Fare(sections, path, age);
     }
 
-    private void calculate(List<Section> sections, Path path, int age) {
+    public void calculate(List<Section> sections, Path path, int age) {
         calculateLineExtraFare(sections, path);
         calculateOverFare(path.getDistance());
         calculateAgePolicy(age);
@@ -27,7 +30,7 @@ public class Fare {
 
     private void calculateOverFare(int distance) {
         if(distance >= 50) {
-            this.fare += (int) (Math.floor(distance / 8.0) * 500);
+            this.fare += (int) (Math.floor(distance / 8.0) * 100);
         }
         if(distance > 10 && distance < 50) {
             this.fare += (int) (Math.floor(distance / 5.0) * 100);

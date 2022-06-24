@@ -93,7 +93,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단구간을_조회한다(pathRequest);
 
         최단구간이_정상적으로_조회됨(response);
-        int fare = 1_250 + 200 + 삼호선.getSurcharge(); //기본요금 + 거리 추가요금 + 노선 추가요금
+        int fare = 1_250 + calculateOverFare(13) + 삼호선.getSurcharge(); //기본요금 + 거리 추가요금 + 노선 추가요금
         최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13, AgeFarePolicy.TEENAGER.getOperator().apply(fare).intValue());
     }
 
@@ -106,7 +106,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단구간을_조회한다(pathRequest);
 
         최단구간이_정상적으로_조회됨(response);
-        int fare = 1_250 + 200 + 삼호선.getSurcharge(); //기본요금 + 거리 추가요금 + 노선 추가요금
+        int fare = 1_250 + calculateOverFare(13) + 삼호선.getSurcharge(); //기본요금 + 거리 추가요금 + 노선 추가요금
         최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13, AgeFarePolicy.CHILDREN.getOperator().apply(fare).intValue());
     }
 
@@ -119,7 +119,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단구간을_조회한다(pathRequest);
 
         최단구간이_정상적으로_조회됨(response);
-        int fare = 1_250 + 200 + 삼호선.getSurcharge(); //기본요금 + 거리 추가요금 + 노선 추가요금
+        int fare = 1_250 + calculateOverFare(13) + 삼호선.getSurcharge(); //기본요금 + 거리 추가요금 + 노선 추가요금
         최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13, AgeFarePolicy.FREE.getOperator().apply(fare).intValue());
     }
 
@@ -132,7 +132,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단구간을_조회한다(pathRequest);
 
         최단구간이_정상적으로_조회됨(response);
-        int fare = 1_250 + 200 + 삼호선.getSurcharge(); //기본요금 + 거리 추가요금 + 노선 추가요금
+        int fare = 1_250 + calculateOverFare(13) + 삼호선.getSurcharge(); //기본요금 + 거리 추가요금 + 노선 추가요금
         최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13, AgeFarePolicy.ALL.getOperator().apply(fare).intValue());
     }
     
@@ -206,5 +206,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         회원_로그인_성공확인(loginResponse);
 
         return loginToken = loginResponse.as(TokenResponse.class);
+    }
+
+    private static int calculateOverFare(int distance) {
+        if (distance >= 50) {
+            return (int) (Math.floor(distance / 8.0) * 100);
+        }
+        if (distance > 10 && distance < 50) {
+            return (int) (Math.floor(distance / 5.0) * 100);
+        }
+        return 0;
     }
 }

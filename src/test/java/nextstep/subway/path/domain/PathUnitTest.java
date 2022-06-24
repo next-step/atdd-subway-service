@@ -13,7 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Path 단위 테스트")
 public class PathUnitTest {
-
     private Line 칠호선;
     private Line 이호선;
 
