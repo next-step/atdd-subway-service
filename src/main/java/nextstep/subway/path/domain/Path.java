@@ -1,12 +1,15 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Path {
-
     private List<Station> stations;
     private Distance distance;
 
@@ -19,6 +22,26 @@ public class Path {
         return new Path(vertexList, weight);
     }
 
+    public int getLineExtraFare(List<Section> sections) {
+        Set<Integer> maxExtraSet = new HashSet<>();
+
+        for(int i = 0; i < stations.size() - 1; i++) {
+            int index = i;
+            maxExtraSet.add(sections.stream()
+                        .filter(section -> section.getUpStation().equals(stations.get(index)))
+                        .filter(section -> section.getDownStation().equals(stations.get(index + 1)))
+                        .map(Section::getLine)
+                        .map(Line::getSurcharge)
+                        .findFirst()
+                        .orElse(0));
+        }
+
+        return maxExtraSet.stream()
+                        .mapToInt(value -> value)
+                        .max()
+                        .orElse(0);
+    }
+
     public List<Station> getStations() {
         return stations;
     }
@@ -26,4 +49,5 @@ public class Path {
     public int getDistance() {
         return distance.getDistance();
     }
+
 }
