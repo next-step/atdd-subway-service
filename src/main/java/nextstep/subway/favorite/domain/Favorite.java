@@ -1,7 +1,9 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.exception.BadRequestException;
 import nextstep.subway.common.exception.CanNotDeleteException;
+import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -12,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.util.Objects;
 
 @Entity
 public class Favorite {
@@ -35,6 +38,7 @@ public class Favorite {
     }
 
     public Favorite(Member member, Station source, Station target) {
+        validateFavorite(source, target);
         this.source = source;
         this.target = target;
         this.member = member;
@@ -59,6 +63,16 @@ public class Favorite {
     public void validateMember(Member member) {
         if (!this.member.equals(member)) {
             throw new CanNotDeleteException(ErrorMessage.FAVORITE_CAN_NOT_DELETE);
+        }
+    }
+
+    private void validateFavorite(Station source, Station target) {
+        if (Objects.isNull(source) || Objects.isNull(target)) {
+            throw new NotFoundException(ErrorMessage.STATION_NOT_FOUND);
+        }
+
+        if (source == target) {
+            throw new BadRequestException(ErrorMessage.SAME_CAN_NOT_SAME);
         }
     }
 }
