@@ -53,7 +53,7 @@ class RouteTest {
         // when
         List<SectionEdge> edgeList = new Route().getShortestRoute(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 양재역).getEdgeList();
         final Sections sections = new Sections(edgeList.stream().map(SectionEdge::getSection).collect(Collectors.toList()));
-        PathResponse pathResponse = PathResponse.of(sections);
+        PathResponse pathResponse = PathResponse.of(sections,sections.totalCharge());
 
         // then
         List<String> responseStationNames = pathResponse.getStations().stream().map(StationResponse::getName).collect(Collectors.toList());

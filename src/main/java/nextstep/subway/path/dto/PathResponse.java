@@ -36,14 +36,6 @@ public class PathResponse {
         return extraCharge;
     }
 
-    public static PathResponse of(final Sections sections) {
-        return new PathResponse(
-                sections.getStations().stream().map(StationResponse::of)
-                .collect(Collectors.toList()),
-                sections.getTotalDistance().of(),
-                sections.totalCharge().of());
-    }
-
     public static PathResponse of(final Sections sections, final Charge charge) {
         return new PathResponse(
                 sections.getStations().stream().map(StationResponse::of)
