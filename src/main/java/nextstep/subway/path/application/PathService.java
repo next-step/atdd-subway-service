@@ -1,8 +1,8 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
-import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.application.SectionService;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -12,22 +12,22 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PathService {
-    private final LineService lineService;
+    private final SectionService sectionService;
     private final StationService stationService;
     private final PathFinder pathFinder;
 
-    public PathService(LineService lineService, StationService stationService, PathFinder pathFinder) {
-        this.lineService = lineService;
+    public PathService(SectionService sectionService, StationService stationService, PathFinder pathFinder) {
+        this.sectionService = sectionService;
         this.stationService = stationService;
         this.pathFinder = pathFinder;
     }
 
     public PathResponse findShortestPath(Long sourceId, Long targetId) {
-        List<Line> lines = lineService.findAllLineEntities();
+        List<Section> allSections = sectionService.findAllSections();
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
 
-        Path path = pathFinder.findShortestPath(lines, source, target);
+        Path path = pathFinder.findShortestPath(allSections, source, target);
         return PathResponse.of(path);
     }
 }
