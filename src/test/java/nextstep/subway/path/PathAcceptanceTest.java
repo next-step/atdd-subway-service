@@ -6,7 +6,6 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -111,7 +110,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .body(PathRequest.of(sourceStationId, targetStationId))
+                .param("source", sourceStationId)
+                .param("target", targetStationId)
                 .when().get("/paths")
                 .then().log().all()
                 .extract();
