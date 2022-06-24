@@ -157,3 +157,56 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     * 출발역과 도착역이 같은 경우
     * 출발역과 도착역이 연결이 되어 있지 않은 경우
     * 의존재하지 않은 출발역이나 도착역을 조회 할 경우
+
+
+
+--- 
+3단계 인증을 통한 기능 구현
+
+
+- 요구사항 
+  - [ ] 토큰 발급 기능 (로그인) 인수 테스트 만들기
+    * 토큰 발급(로그인)을 검증하는 인수 테스트 만들기
+    * AuthAcceptanceTest 인수 테스트 만들기
+
+      - 인수 조건 
+      ```text
+       Feature: 로그인 기능
+          Scenario: 로그인을 시도한다.
+            Given: 회원 등록되어 있음
+             When 로그인 요청
+             Then 로그인 됨
+      ```
+      - request 
+      ```http request
+      POST /login/token HTTP/1.1
+      content-type: application/json; charset=UTF-8
+      accept: application/json
+      {
+      "password": "password",
+      "email": "email@email.com"
+      }
+      ```
+    
+      - response 
+      ```text
+        HTTP/1.1 200 
+        Content-Type: application/json
+        Transfer-Encoding: chunked
+        Date: Sun, 27 Dec 2020 04:32:26 GMT
+        Keep-Alive: timeout=60
+        Connection: keep-alive
+    
+        {
+        "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY"
+        }
+      ```
+  - 예외
+    - 회원이 등록 되지 않은 경우 로그인 실패
+    - 패스워드가 틀릴 경우 로그인 실패
+    
+
+- [ ] 인증 - 내 정보 조회 기능 완성하기
+  
+- [ ] 인증 - 즐겨 찾기 기능 완성하기
+
