@@ -97,4 +97,12 @@ public class Line extends BaseEntity {
 
         return sections.orderBySection();
     }
+
+    public Sections getSections() {
+        return sections;
+    }
+
+    public int getDistance() {
+        return sections.getDistance();
+    }
 }

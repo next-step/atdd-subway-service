@@ -127,4 +127,14 @@ public class Sections {
 
         values.remove(section);
     }
+
+    public List<Section> getValues() {
+        return values;
+    }
+
+    public int getDistance() {
+        return values.stream()
+                .map(Section::getDistance)
+                .reduce(0, Integer::sum);
+    }
 }
