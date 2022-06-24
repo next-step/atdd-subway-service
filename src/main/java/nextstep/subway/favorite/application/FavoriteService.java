@@ -1,12 +1,13 @@
 package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.exception.DuplicationException;
+import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.favorite.exception.FavoriteDuplicationException;
-import nextstep.subway.favorite.exception.FavoriteNotFoundException;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
@@ -54,7 +55,7 @@ public class FavoriteService {
 
     public void remove(LoginMember loginMember, Long id) {
         Favorite favorite = favoriteRepository.findById(id)
-                .orElseThrow(() -> new FavoriteNotFoundException());
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.FAVORITE_NOT_FOUND));
 
         Member member = memberService.findById(loginMember.getId());
         favorite.validateMember(member);
@@ -64,7 +65,7 @@ public class FavoriteService {
 
     private void validateDuplication(Member member, Station source, Station target) {
         if (favoriteRepository.existsByMemberAndSourceAndTarget(member, source, target)) {
-            throw new FavoriteDuplicationException();
+            throw new DuplicationException(ErrorMessage.FAVORITE_DUPLICATION);
         }
     }
 }

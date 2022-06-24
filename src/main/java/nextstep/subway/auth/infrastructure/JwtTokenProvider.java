@@ -8,7 +8,8 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import nextstep.subway.auth.exception.UnAuthorizedException;
+import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.exception.UnAuthorizedException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -44,7 +45,7 @@ public class JwtTokenProvider {
 
             return !claims.getBody().getExpiration().before(new Date());
         } catch (MalformedJwtException | SignatureException | ExpiredJwtException | UnsupportedJwtException e) {
-            throw new UnAuthorizedException();
+            throw new UnAuthorizedException(ErrorMessage.UNAUTHORIZED);
         }
     }
 }

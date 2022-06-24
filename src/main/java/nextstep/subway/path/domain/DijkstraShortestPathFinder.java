@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.common.ErrorMessage;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
@@ -49,14 +50,14 @@ public class DijkstraShortestPathFinder implements PathFinderStrategy {
 
     private void validateSameSourceAndTarget(Station source, Station target) {
         if (source.equals(target)) {
-            throw new SameSourceAndTargetException();
+            throw new SameSourceAndTargetException(ErrorMessage.SAME_SOURCE_AND_TARGET);
         }
     }
 
     private void validateStationExistence(List<Section> sectionList, Station source, Station target) {
         Sections sections = new Sections(sectionList);
         if (!sections.hasStation(source) || !sections.hasStation(target)) {
-            throw new NotConnectedException();
+            throw new NotConnectedException(ErrorMessage.NOT_CONNECTED);
         }
     }
 }
