@@ -8,8 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 @Embeddable
 public class Sections {
@@ -168,9 +166,5 @@ public class Sections {
         }
 
         return nextDownStation;
-    }
-
-    public void addVertexAndEdgeToGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        sections.forEach(section -> section.addVertexAndEdgeToGraph(graph));
     }
 }
