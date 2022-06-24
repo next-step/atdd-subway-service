@@ -77,6 +77,10 @@ public class Section {
         return distance;
     }
 
+    public int getDistanceValue() {
+        return distance.getDistance();
+    }
+
     public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
         this.distance.subDistance(newDistance);
@@ -115,7 +119,9 @@ public class Section {
     }
 
     private void addVertexToGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Station station) {
-        if(graph.containsVertex(station)) return;
+        if (graph.containsVertex(station)) {
+            return;
+        }
 
         graph.addVertex(station);
     }
