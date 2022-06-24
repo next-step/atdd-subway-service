@@ -15,32 +15,32 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toMap;
 
 public class PathFinder {
-    private WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph;
-    private Map<Long, Station> stationsCache;
+    private final DijkstraShortestPath<Long, DefaultWeightedEdge> shortestPath;
+    private final Map<Long, Station> stationsCache;
 
-    private PathFinder(WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph, Map<Long, Station> stationsCache) {
-        this.pathGraph = pathGraph;
+    private PathFinder(DijkstraShortestPath<Long, DefaultWeightedEdge> shortestPath, Map<Long, Station> stationsCache) {
+        this.shortestPath = shortestPath;
         this.stationsCache = stationsCache;
     }
 
     public static PathFinder init(List<Line> lines) {
         WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        List<Station> stations = getAllStations(lines);
-        List<Section> sections = getAllSections(lines);
+        List<Station> stations = getLineStations(lines);
+        List<Section> sections = getLineSections(lines);
 
         addVertex(pathGraph, stations);
         setEdgeWeight(pathGraph, sections);
-        return new PathFinder(pathGraph, cacheAllStations(stations));
+        return new PathFinder(new DijkstraShortestPath<>(pathGraph), cacheAllStations(stations));
     }
 
-    private static List<Station> getAllStations(List<Line> lines) {
+    private static List<Station> getLineStations(List<Line> lines) {
         return lines.stream()
                 .flatMap(line -> line.getStations().stream())
                 .distinct()
                 .collect(Collectors.toList());
     }
 
-    private static List<Section> getAllSections(List<Line> lines) {
+    private static List<Section> getLineSections(List<Line> lines) {
         return lines.stream()
                 .flatMap(section -> section.getSections().stream())
                 .collect(Collectors.toList());
@@ -90,9 +90,8 @@ public class PathFinder {
     }
 
     private GraphPath<Long, DefaultWeightedEdge> findGraphPath(Long sourceStationId, Long targetStationId) {
-        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(pathGraph);
         try {
-            return dijkstraShortestPath.getPath(sourceStationId, targetStationId);
+            return shortestPath.getPath(sourceStationId, targetStationId);
         } catch (IllegalArgumentException e) {
             throw new NoSuchElementException("출발역 혹은 도착역이 존재하지 않습니다.");
         }
@@ -100,7 +99,7 @@ public class PathFinder {
 
     private List<Station> getStationsByIds(List<Long> stationIds) {
         return stationIds.stream()
-                .map(stationId -> stationsCache.get(stationId))
+                .map(stationsCache::get)
                 .collect(Collectors.toList());
     }
 }
