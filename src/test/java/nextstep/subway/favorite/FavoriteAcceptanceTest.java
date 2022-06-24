@@ -7,18 +7,25 @@ import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+
+import java.util.stream.Stream;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_요청;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceResponse.로그인_성공_토큰_반환;
 import static nextstep.subway.favorite.FavoriteAcceptanceRequest.즐겨찾기_생성_요청;
+import static nextstep.subway.favorite.FavoriteAcceptanceRequest.즐겨찾기_조회_요청;
 import static nextstep.subway.favorite.FavoriteAcceptanceResponse.즐겨찾기_생성_요청_성공;
 import static nextstep.subway.favorite.FavoriteAcceptanceResponse.즐겨찾기_생성_요청_실패;
+import static nextstep.subway.favorite.FavoriteAcceptanceResponse.즐겨찾기_조회_요청_성공;
 import static nextstep.subway.member.MemberAcceptanceRequest.회원_생성을_요청;
 import static nextstep.subway.member.MemberAcceptanceResponse.회원_생성됨;
 import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 /*
 Feature: 즐겨찾기를 관리한다.
@@ -42,6 +49,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private String ACCESS_TOKEN;
     private StationResponse 강남역;
     private StationResponse 역삼역;
+    private StationResponse 삼성역;
 
     @BeforeEach
     public void setUp() {
@@ -55,6 +63,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         역삼역 = StationAcceptanceTest.지하철역_등록되어_있음("역삼역").as(StationResponse.class);
+        삼성역 = StationAcceptanceTest.지하철역_등록되어_있음("삼성역").as(StationResponse.class);
+
     }
 
     @DisplayName("토큰이 유효하면 즐겨찾기를 생성한다")
@@ -65,24 +75,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_요청_성공(response);
     }
 
-    @DisplayName("토큰이 유효하지 않다면 생성을 실패한다.")
-    @Test
-    void 즐겨찾기_생성_토큰_실패() {
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(INVALID_TOKEN, 강남역.getId(), 역삼역.getId());
+    @DisplayName("토큰이 유효하면 지하철역을 즐겨찾기로 등록, 조회, 삭제한다")
+    @TestFactory
+    Stream<DynamicTest> register_get_delete_Favorite() {
+        return Stream.of(
+                dynamicTest("즐겨찾기를 생성한다", () -> {
+                    ExtractableResponse<Response> register_response_1 = 즐겨찾기_생성_요청(ACCESS_TOKEN, 강남역.getId(), 역삼역.getId());
+                    즐겨찾기_생성_요청_성공(register_response_1);
 
-        즐겨찾기_생성_요청_실패(response);
-    }
-
-    @DisplayName("토큰이 유효하면 즐겨찾기를 조회한다.")
-    @Test
-    void 즐겨찾기_조회_성공() {
-
-    }
-
-    @DisplayName("토큰이 유효하지 않다면 즐겨찾기를 조회를 실패한다.")
-    @Test
-    void 즐겨찾기_조회_토큰_실패() {
-
+                    ExtractableResponse<Response> register_response_2 = 즐겨찾기_생성_요청(ACCESS_TOKEN, 강남역.getId(), 삼성역.getId());
+                    즐겨찾기_생성_요청_성공(register_response_2);
+                }),
+                dynamicTest("생성된 즐겨찾기를 조회하면 즐겨찾기 목록이 조회된다", () -> {
+                    ExtractableResponse<Response> getResponse = 즐겨찾기_조회_요청(ACCESS_TOKEN);
+                    즐겨찾기_조회_요청_성공(getResponse);
+                })
+        );
     }
 
     @DisplayName("토큰이 유효하면 즐겨찾기를 삭제한다.")
@@ -91,9 +99,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     }
 
-    @DisplayName("토큰이 유효하지 않다면 즐겨찾기를 삭제를 실패한다.")
+    @DisplayName("토큰이 유효하지 않다면 실패한다.")
     @Test
-    void 즐겨찾기_삭제_토큰_실패() {
+    void 즐겨찾기_생성_토큰_실패() {
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(INVALID_TOKEN, 강남역.getId(), 역삼역.getId());
 
+        즐겨찾기_생성_요청_실패(response);
     }
 }
