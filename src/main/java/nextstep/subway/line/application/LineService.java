@@ -42,18 +42,18 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    private Line findLineById(Long id) throws NoSearchLineException {
+    private Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(() -> new NoSearchLineException(id));
     }
 
 
     @Transactional(readOnly = true)
-    public LineResponse findLineResponseById(Long id) throws NoSearchLineException {
+    public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) throws NoSearchLineException {
+    public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = findLineById(id);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
@@ -62,14 +62,14 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    public void addLineStation(Long lineId, SectionRequest request) throws NoSearchLineException {
+    public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         line.addSection(new Section(line, upStation, downStation, request.getDistance()));
     }
 
-    public void removeLineStation(Long lineId, Long stationId) throws NoSearchStationException, NoSearchLineException {
+    public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.deleteSection(station);
