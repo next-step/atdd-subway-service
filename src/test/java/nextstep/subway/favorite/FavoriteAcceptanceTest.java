@@ -15,8 +15,10 @@ import java.util.stream.Stream;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_요청;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceResponse.로그인_성공_토큰_반환;
+import static nextstep.subway.favorite.FavoriteAcceptanceRequest.즐겨찾기_삭제_요청;
 import static nextstep.subway.favorite.FavoriteAcceptanceRequest.즐겨찾기_생성_요청;
 import static nextstep.subway.favorite.FavoriteAcceptanceRequest.즐겨찾기_조회_요청;
+import static nextstep.subway.favorite.FavoriteAcceptanceResponse.즐겨찾기_삭제_요청_성공;
 import static nextstep.subway.favorite.FavoriteAcceptanceResponse.즐겨찾기_생성_요청_성공;
 import static nextstep.subway.favorite.FavoriteAcceptanceResponse.즐겨찾기_생성_요청_실패;
 import static nextstep.subway.favorite.FavoriteAcceptanceResponse.즐겨찾기_조회_요청_성공;
@@ -64,7 +66,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         역삼역 = StationAcceptanceTest.지하철역_등록되어_있음("역삼역").as(StationResponse.class);
         삼성역 = StationAcceptanceTest.지하철역_등록되어_있음("삼성역").as(StationResponse.class);
-
     }
 
     @DisplayName("토큰이 유효하면 즐겨찾기를 생성한다")
@@ -86,17 +87,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                     ExtractableResponse<Response> register_response_2 = 즐겨찾기_생성_요청(ACCESS_TOKEN, 강남역.getId(), 삼성역.getId());
                     즐겨찾기_생성_요청_성공(register_response_2);
                 }),
-                dynamicTest("생성된 즐겨찾기를 조회하면 즐겨찾기 목록이 조회된다", () -> {
-                    ExtractableResponse<Response> getResponse = 즐겨찾기_조회_요청(ACCESS_TOKEN);
-                    즐겨찾기_조회_요청_성공(getResponse);
+                dynamicTest("생성된 즐겨찾기를 조회한다", () -> {
+                    ExtractableResponse<Response> response = 즐겨찾기_조회_요청(ACCESS_TOKEN);
+                    즐겨찾기_조회_요청_성공(response);
+                }),
+                dynamicTest("생성된 즐겨찾기를 삭제한다", () -> {
+                    ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(ACCESS_TOKEN, 강남역.getId());
+                    즐겨찾기_삭제_요청_성공(response);
                 })
         );
-    }
-
-    @DisplayName("토큰이 유효하면 즐겨찾기를 삭제한다.")
-    @Test
-    void 즐겨찾기_삭제_성공() {
-
     }
 
     @DisplayName("토큰이 유효하지 않다면 실패한다.")

@@ -23,4 +23,8 @@ public class FavoriteAcceptanceResponse {
         assertThat(list.size()).isEqualTo(2);
         assertThat(list).isNotEmpty();
     }
+
+    public static void 즐겨찾기_삭제_요청_성공(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 }
