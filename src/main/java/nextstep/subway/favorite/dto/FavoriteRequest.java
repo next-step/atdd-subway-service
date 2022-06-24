@@ -1,14 +1,8 @@
 package nextstep.subway.favorite.dto;
 
-import nextstep.subway.favorite.domain.Favorite;
-
 public class FavoriteRequest {
     private Long sourceId;
     private Long targetId;
-
-    public static Favorite toFavorite(FavoriteRequest request) {
-        return new Favorite(request.getSourceId(), request.getTargetId());
-    }
 
     public FavoriteRequest() {
     }

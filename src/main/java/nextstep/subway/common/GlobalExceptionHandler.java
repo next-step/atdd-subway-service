@@ -1,6 +1,7 @@
 package nextstep.subway.common;
 
 import nextstep.subway.auth.exception.UnAuthorizedException;
+import nextstep.subway.favorite.exception.FavoriteDuplicationException;
 import nextstep.subway.path.exception.NotConnectedException;
 import nextstep.subway.path.exception.SameSourceAndTargetException;
 import nextstep.subway.station.exception.StationNotFoundException;
@@ -33,5 +34,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnAuthorizedException.class)
     public ErrorResponse handleUnAuthorizedException() {
         return ErrorResponse.of(ErrorMessage.UN_AUTHORIZED.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(FavoriteDuplicationException.class)
+    public ErrorResponse handleFavoriteDuplicationException() {
+        return ErrorResponse.of(ErrorMessage.FAVORITE_DUPLICATION.getMessage());
     }
 }
