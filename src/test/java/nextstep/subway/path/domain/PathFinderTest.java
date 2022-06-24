@@ -1,15 +1,12 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,14 +23,6 @@ class PathFinderTest {
     private Line 삼호선;
     private Line 이호선;
 
-    private Section 강남역_양재역;
-    private Section 교대역_남부터미널역;
-    private Section 남부터미널역_양재역;
-    private Section 교대역_강남역;
-
-    private List<Station> 모든역;
-    private List<Section> 모든구간;
-
     private PathFinder pathFinder;
 
     @BeforeEach
@@ -47,15 +36,12 @@ class PathFinderTest {
         삼호선 = new Line("3호선", "bg-orange-600");
         이호선 = new Line("2호선", "bg-green-600");
 
-        강남역_양재역 = new Section(신분당선, 강남역, 양재역, 3000);
-        교대역_남부터미널역 = new Section(삼호선, 교대역, 남부터미널역, 2000);
-        남부터미널역_양재역 = new Section(삼호선, 남부터미널역, 양재역, 2500);
-        교대역_강남역 = new Section(이호선, 교대역, 강남역, 3000);
+        신분당선.addLineStation(강남역, 양재역, 3000);
+        삼호선.addLineStation(교대역, 남부터미널역, 2000);
+        삼호선.addLineStation(남부터미널역, 양재역, 2500);
+        이호선.addLineStation(교대역, 강남역, 3000);
 
-        모든역 = Arrays.asList(강남역, 양재역, 남부터미널역, 교대역);
-        모든구간 = Arrays.asList(강남역_양재역, 교대역_남부터미널역, 남부터미널역_양재역, 교대역_강남역);
-
-        pathFinder = PathFinder.init(모든역, 모든구간);
+        pathFinder = PathFinder.init(Arrays.asList(신분당선, 삼호선, 이호선));
     }
 
     @Test
@@ -100,21 +86,16 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역이 연결되어 있지 않는 경우 최단경로를 조회할 수 없다.")
     void findShortestPathFailWhenNotConnected() {
         // when
-        Station 고속터미널역 = Station.of(5L, "고속터미널역");
-        Station 신사역 = Station.of(6L, "신사역");
-        Section 고속터미널역_신사역 = new Section(삼호선, 고속터미널역, 신사역, 1000);
+        Station 정자역 = Station.of(5L, "정자역");
+        Station 서현역 = Station.of(6L, "서현역");
 
-        List<Station> 모든역 = new ArrayList<>(this.모든역);
-        모든역.add(고속터미널역);
-        모든역.add(신사역);
+        Line 분당선 = new Line("분당선", "bg-yellow-600");
+        분당선.addLineStation(정자역, 서현역, 1000);
 
-        List<Section> 모든구간 = new ArrayList<>(this.모든구간);
-        모든구간.add(고속터미널역_신사역);
-
-        PathFinder pathFinder = PathFinder.init(모든역, 모든구간);
+        PathFinder pathFinder = PathFinder.init(Arrays.asList(신분당선, 삼호선, 이호선, 분당선));
 
         // when & then
-        assertThatThrownBy(() -> pathFinder.findShortestPath(교대역.getId(), 고속터미널역.getId()))
+        assertThatThrownBy(() -> pathFinder.findShortestPath(교대역.getId(), 정자역.getId()))
                 .isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발역과 도착역이 연결되어 있지 않습니다.");
     }
