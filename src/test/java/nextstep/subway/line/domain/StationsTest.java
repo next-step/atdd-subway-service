@@ -29,26 +29,6 @@ class StationsTest {
         신분당선.addSection(section);
     }
 
-    @Test
-    @DisplayName("구간의 상행역 구한다")
-    void getUpStation() {
-        //when
-        final Stations upStations = Stations.createUpStations(신분당선.getSections());
-
-        //then
-        assertThat(upStations.getStationElements()).contains(강남역, 광교역);
-    }
-
-    @Test
-    @DisplayName("구간의 하행역 구한다")
-    void getDownStation() {
-        //when
-        final Stations upStations = Stations.createDownStations(신분당선.getSections());
-
-        //then
-        assertThat(upStations.getStationElements()).contains(광교역, 판교역);
-    }
-
 
     @Test
     @DisplayName("포함되지 않은 역의 첫번째를 구한다.")

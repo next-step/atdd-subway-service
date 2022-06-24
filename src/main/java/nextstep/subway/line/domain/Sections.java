@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -36,12 +37,11 @@ public class Sections {
     public List<Station> getOrderStations() {
         List<Station> stations = new ArrayList<>();
         Station station = findFinalUpStation();
-
+        stations.add(station);
         while (existNextStation(station)) {
-            stations.add(station);
             station = nextStation(station);
+            stations.add(station);
         }
-
         return Collections.unmodifiableList(stations);
     }
 
@@ -53,18 +53,19 @@ public class Sections {
                 .orElse(null);
     }
 
+    private boolean existNextStation(Station station) {
+        return this.sectionElements.stream()
+                .anyMatch((section -> section.isUpStation(station)));
+    }
+
+
     private Station findFinalUpStation() {
-        Stations downStations = Stations.createDownStations(this);
-        Stations upStations = Stations.createUpStations(this);
+        Stations downStations = Stations.of(downStations());
+        Stations upStations = Stations.of(upStations());
 
         return upStations.isNotContainsFirstStation(downStations)
                 .orElseThrow(() -> new NoSuchElementException("하행 종점을 찾을수 없습니다."));
     }
-
-    private boolean existNextStation(Station station) {
-        return !Station.isEmpty(station) ;
-    }
-
 
     public void addSection(Section section) {
         validAddSection(section);
@@ -122,7 +123,7 @@ public class Sections {
     }
 
     private boolean isUpStationExisted(Section section) {
-        return sectionElements.stream().anyMatch(it -> it.getUpStation().equals(section.getUpStation()));
+        return sectionElements.stream().anyMatch(it -> it.isUpStation(section.getUpStation()));
     }
 
     public void removeStation(Station station) {
@@ -168,4 +169,19 @@ public class Sections {
         return Collections.unmodifiableList(sectionElements);
 
     }
+
+    private List<Station> upStations() {
+        return sectionElements
+                .stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toList());
+    }
+
+    private List<Station> downStations() {
+        return sectionElements
+                .stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
+    }
+
 }
