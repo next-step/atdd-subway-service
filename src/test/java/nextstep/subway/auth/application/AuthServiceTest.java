@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceTest {
@@ -37,11 +37,14 @@ public class AuthServiceTest {
 
     @Test
     void login() {
-        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
-        when(jwtTokenProvider.createToken(anyString())).thenReturn("TOKEN");
+        // given
+        given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
+        given(jwtTokenProvider.createToken(anyString())).willReturn("TOKEN");
 
+        // when
         TokenResponse token = authService.login(new TokenRequest(EMAIL, PASSWORD));
 
+        // then
         assertThat(token.getAccessToken()).isNotBlank();
     }
 }

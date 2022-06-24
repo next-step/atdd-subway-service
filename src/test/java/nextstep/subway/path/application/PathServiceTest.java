@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -62,14 +63,14 @@ class PathServiceTest {
         target = new Station("강남역");
         newStation = new Station("남부터미널역");
         stations = Arrays.asList(source, target, newStation);
-        when(stationRepository.findAll()).thenReturn(stations);
-        when(stationRepository.findById(sourceId)).thenReturn(Optional.of(source));
-        when(stationRepository.findById(targetId)).thenReturn(Optional.of(target));
+        given(stationRepository.findAll()).willReturn(stations);
+        given(stationRepository.findById(sourceId)).willReturn(Optional.of(source));
+        given(stationRepository.findById(targetId)).willReturn(Optional.of(target));
     }
 
     void stubLineService() {
         lines = Collections.emptyList();
-        when(lineRepository.findAll()).thenReturn(lines);
+        given(lineRepository.findAll()).willReturn(lines);
     }
 
     void stubPathFinder() {
@@ -84,7 +85,7 @@ class PathServiceTest {
             .distinct()
             .collect(Collectors.toList());
 
-        when(pathFinder.searchShortestPath(sections, source, target)).thenReturn(pathResponse);
+        given(pathFinder.searchShortestPath(sections, source, target)).willReturn(pathResponse);
     }
 
     @Test
