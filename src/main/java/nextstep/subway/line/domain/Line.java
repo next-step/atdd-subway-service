@@ -63,6 +63,10 @@ public class Line extends BaseEntity {
         Optional<Section> upLineStation = sections.findUpStation(stationId);
         Optional<Section> downLineStation = sections.findDownStation(stationId);
 
+        if (!upLineStation.isPresent() && !downLineStation.isPresent()) {
+            throw new IllegalArgumentException("노선에 포햠되지 않은 지하철역입니다.");
+        }
+
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             createSection(upLineStation.get(), downLineStation.get());
         }
