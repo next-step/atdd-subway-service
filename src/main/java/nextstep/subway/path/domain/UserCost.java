@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public enum UserCost {
-    ADULT(18,0,0), TEENAGER(12,350,20), CHILD(5,350,50), FREE(0,0,100) ,GUEST(0,0,0);
+    ADULT(18,0,0), TEENAGER(12,350,20), CHILD(5,350,50), GUEST(Integer.MAX_VALUE,0,0);
 
     private final Age minAge;
     private final Charge deduction;
@@ -24,12 +24,10 @@ public enum UserCost {
     }
 
     public static UserCost valueOf(final Age age) {
-        if (Objects.isNull(age)) {
-            return GUEST;
-        }
         return Arrays.stream(UserCost.values())
+                .filter(it -> it != GUEST)
                 .filter(it -> age.isHigh(it.minAge))
                 .findFirst()
-                .orElse(FREE);
+                .orElse(GUEST);
     }
 }
