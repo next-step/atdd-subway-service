@@ -56,6 +56,14 @@ public class Section {
         return distance.getLength();
     }
 
+    public boolean isMatchedUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean isMatchedDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
     public void updateUpStation(Station station, int newDistance) {
         this.upStation = station;
         distance.lengthMinus(newDistance);
