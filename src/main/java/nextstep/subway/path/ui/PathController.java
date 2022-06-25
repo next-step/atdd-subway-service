@@ -14,8 +14,8 @@ public class PathController {
 
     private final PathService pathService;
 
-    public PathController() {
-        pathService = new PathService();
+    public PathController(PathService pathService) {
+        this.pathService = pathService;
     }
 
     @GetMapping("/short")
