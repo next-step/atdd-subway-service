@@ -9,8 +9,11 @@ import java.util.stream.Collectors;
 
 public class PathResponse {
 
-    private final List<StationResponse> stations;
-    private final Distance distance;
+    private List<StationResponse> stations;
+    private Distance distance;
+
+    public PathResponse() {
+    }
 
     public PathResponse(List<StationResponse> stations, int distance) {
         this.stations = stations;
@@ -31,4 +34,5 @@ public class PathResponse {
     public Distance getDistance() {
         return distance;
     }
+
 }
