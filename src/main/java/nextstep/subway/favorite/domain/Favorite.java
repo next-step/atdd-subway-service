@@ -7,6 +7,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
 public class Favorite extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +43,22 @@ public class Favorite extends BaseEntity {
         if (source.equals(target)) {
             throw new IllegalArgumentException("같은 역을 즐겨찾기에 추가할 수 없습니다.");
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public Station getSource() {
+        return source;
+    }
+
+    public Station getTarget() {
+        return target;
     }
 
     @Override
