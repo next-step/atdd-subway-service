@@ -5,7 +5,7 @@ import java.util.Objects;
 public class TokenResponse {
     private final String accessToken;
 
-    private TokenResponse(final String accessToken) {
+    public TokenResponse(final String accessToken) {
         this.accessToken = accessToken;
     }
 

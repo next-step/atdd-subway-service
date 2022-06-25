@@ -6,6 +6,7 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.exception.AuthorizationException;
 import nextstep.subway.auth.exception.AuthorizationExceptionType;
 import nextstep.subway.auth.infrastructure.TokenProvider;
+import nextstep.subway.member.domain.Email;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.exception.MemberException;
@@ -36,7 +37,7 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginMember findMemberByToken(final String credentials) {
         if (!tokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException(AuthorizationExceptionType.INVALID_TOKEN);
+            throw new AuthorizationException(AuthorizationExceptionType.EXPIRE_TOKEN);
         }
 
         final String email = tokenProvider.getPayload(credentials);
@@ -45,7 +46,7 @@ public class AuthService {
     }
 
     private Member findByEmail(final String email) {
-        return memberRepository.findByEmail(email)
+        return memberRepository.findByEmail(Email.of(email))
                 .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_EXISTS_EMAIL));
     }
 }
