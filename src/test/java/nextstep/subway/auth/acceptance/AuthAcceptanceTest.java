@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.MemberRequests.내_정보_조회_요청;
+import static nextstep.subway.member.MemberRequests.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
