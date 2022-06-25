@@ -2,9 +2,14 @@ package nextstep.subway.fare.domain;
 
 import nextstep.subway.fare.application.InvalidFareException;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
-public class Fare {
+@Embeddable
+@Access(AccessType.FIELD)
+public class Fare implements Comparable<Fare> {
     private static final int MIN = 0;
     private final int value;
 
@@ -34,5 +39,10 @@ public class Fare {
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    @Override
+    public int compareTo(Fare fare) {
+        return value < fare.value ? -1 : 1;
     }
 }
