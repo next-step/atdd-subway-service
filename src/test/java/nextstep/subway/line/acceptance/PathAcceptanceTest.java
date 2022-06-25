@@ -7,6 +7,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.ShortestPathResponse;
+import nextstep.subway.path.dto.StationsResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,10 +15,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 경로 쪼회")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -29,13 +33,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
 
-    /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
-     */
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -68,22 +65,28 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * And 지하철 노선에 지하철 역이 등록 되어 있음
      * When 출발역과 도착역을 선택하면
      * Then 최단거리가 조회된다.
+     * (deatil : 강남 - 남부터미널 간 최단경로를 조회한다.)
      */
     @Test
     @DisplayName("최단경로 조회")
     void 최단경로조회() {
         // when
-        Map<String, String> params = new HashMap<>();
+        Map<String, Long> params = new HashMap<>();
+        params.put("startingStationId", 강남역.getId());
+        params.put("destinationStationId", 남부터미널역.getId());
 
         ExtractableResponse<Response> response = 최단경로조회_요청(params);
 
         // then
         ShortestPathResponse shortestPathResponse = response.as(ShortestPathResponse.class);
-        ShortestPathResponse answerPath = new ShortestPathResponse();
+        ShortestPathResponse answerPath = new ShortestPathResponse(
+                new StationsResponse(Arrays.asList(강남역, 교대역, 남부터미널역)),
+                13D
+        );
         최단경로조회_검증(shortestPathResponse, answerPath);
     }
 
-    private ExtractableResponse<Response> 최단경로조회_요청(Map<String, String> params) {
+    private ExtractableResponse<Response> 최단경로조회_요청(Map<String, Long> params) {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -95,6 +98,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void 최단경로조회_검증(ShortestPathResponse shortestPathResponse, ShortestPathResponse answerPath) {
-        assertThat(shortestPathResponse.getDistance()).isEqualTo(answerPath.getDistance());
+        List<StationResponse> responseStations = shortestPathResponse.getStations().getStations();
+        List<StationResponse> answerStations = answerPath.getStations().getStations();
+
+        assertAll(
+                () -> assertThat(responseStations.get(0).getName()).isEqualTo(answerStations.get(0).getName()),
+                () -> assertThat(responseStations.get(1).getName()).isEqualTo(answerStations.get(1).getName()),
+                () -> assertThat(responseStations.get(2).getName()).isEqualTo(answerStations.get(2).getName()),
+                () -> assertThat(shortestPathResponse.getDistance()).isEqualTo(answerPath.getDistance())
+        );
     }
 }

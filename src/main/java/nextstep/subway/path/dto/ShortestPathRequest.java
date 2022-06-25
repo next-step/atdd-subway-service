@@ -1,14 +1,22 @@
 package nextstep.subway.path.dto;
 
 public class ShortestPathRequest {
-    private Long startingStationsId;
-    private Long destinationStationsId;
+    private Long startingStationId;
+    private Long destinationStationId;
+
+    public ShortestPathRequest() {
+    }
+
+    public ShortestPathRequest(Long startingStationId, Long destinationStationId) {
+        this.startingStationId = startingStationId;
+        this.destinationStationId = destinationStationId;
+    }
 
     public Long getStartingStationsId() {
-        return startingStationsId;
+        return startingStationId;
     }
 
     public Long getDestinationStationsId() {
-        return destinationStationsId;
+        return destinationStationId;
     }
 }

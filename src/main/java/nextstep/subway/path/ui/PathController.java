@@ -1,11 +1,11 @@
 package nextstep.subway.path.ui;
 
 import nextstep.subway.path.application.PathService;
-import nextstep.subway.path.dto.ShortestPathRequest;
 import nextstep.subway.path.dto.ShortestPathResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,8 +19,11 @@ public class PathController {
     }
 
     @GetMapping("/short")
-    public ResponseEntity<ShortestPathResponse> getShortestPath(ShortestPathRequest requestDto) {
-        return ResponseEntity.ok(pathService.findShortestPath(requestDto));
+    public ResponseEntity<ShortestPathResponse> getShortestPath(@RequestParam("startingStationId") Long startingStationId, @RequestParam("destinationStationId") Long destinationStationId) {
+        System.out.println("-_-_-");
+        System.out.println(startingStationId);
+        System.out.println(destinationStationId);
+        return ResponseEntity.ok(pathService.findShortestPath(startingStationId, destinationStationId));
     }
 
 }

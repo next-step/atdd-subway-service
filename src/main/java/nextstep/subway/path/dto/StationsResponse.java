@@ -3,11 +3,16 @@ package nextstep.subway.path.dto;
 import nextstep.subway.station.domain.Stations;
 import nextstep.subway.station.dto.StationResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class StationsResponse {
     private List<StationResponse> stations;
+
+    public StationsResponse() {
+        this.stations = new ArrayList<>();
+    }
 
     public StationsResponse(List<StationResponse> stations) {
         this.stations = stations;
