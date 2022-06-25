@@ -3,11 +3,17 @@ package nextstep.subway.member.domain;
 import nextstep.subway.member.exception.MemberException;
 import nextstep.subway.member.exception.MemberExceptionType;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
 public class Age {
     private static final int MIN_AGE = 0;
-    private final int value;
+    @Column(name = "age", nullable = false)
+    private int value;
+
+    protected Age() {}
 
     private Age(final int age) {
         validation(age);

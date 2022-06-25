@@ -8,7 +8,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AgeTest {
-
     @Test
     @DisplayName("나이 생성")
     void createAge() {

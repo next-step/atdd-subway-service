@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile("!test")
 public class DataLoaderConfig implements CommandLineRunner {
-    private LineRepository lineRepository;
-    private MemberRepository memberRepository;
+    private final LineRepository lineRepository;
+    private final MemberRepository memberRepository;
 
-    public DataLoaderConfig(LineRepository lineRepository, MemberRepository memberRepository) {
+    public DataLoaderConfig(final LineRepository lineRepository, final MemberRepository memberRepository) {
         this.lineRepository = lineRepository;
         this.memberRepository = memberRepository;
     }
@@ -34,6 +34,6 @@ public class DataLoaderConfig implements CommandLineRunner {
 
         lineRepository.saveAll(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
-        memberRepository.save(new Member("probitanima11@gmail.com", "11", 10));
+        memberRepository.save(Member.of("probitanima11@gmail.com", "11", 10));
     }
 }

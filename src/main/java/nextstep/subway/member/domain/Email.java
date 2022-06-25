@@ -3,12 +3,18 @@ package nextstep.subway.member.domain;
 import nextstep.subway.member.exception.MemberException;
 import nextstep.subway.member.exception.MemberExceptionType;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+@Embeddable
 public class Email {
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
-    private final String value;
+    @Column(name = "email", unique = true, nullable = false)
+    private String value;
+
+    protected Email() {}
 
     private Email(final String email) {
         validation(email);
