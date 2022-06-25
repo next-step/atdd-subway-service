@@ -25,7 +25,7 @@ public class Line extends BaseEntity {
     private Sections sections = new Sections();
 
     @Embedded
-    private Fare surcharge = new Fare();
+    private Fare surcharge = Fare.from(0);
 
     public Line() {
     }

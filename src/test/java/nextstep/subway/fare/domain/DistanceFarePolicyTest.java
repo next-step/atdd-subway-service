@@ -8,7 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DistanceFarePolicyTest {
-    private static final Fare BASIC_FARE = new Fare(1_250);
+    private static final Fare BASIC_FARE = Fare.from(1_250);
     private final DistanceFarePolicy policy = new DistanceFarePolicy();
 
     @ParameterizedTest
@@ -22,14 +22,14 @@ class DistanceFarePolicyTest {
     @CsvSource(value = {"11:1350", "20:1450", "50:2050"}, delimiter = ':')
     void 요금_10키로초과_50키로이하(int distance, int fare) {
         assertThat(policy.calculate(new Distance(distance)))
-                .isEqualTo(new Fare(fare));
+                .isEqualTo(Fare.from(fare));
     }
 
     @ParameterizedTest
     @CsvSource(value = {"55:2250", "58:2350"}, delimiter = ':')
     void 요금_50키로초과(int distance, int fare) {
         assertThat(policy.calculate(new Distance(distance)))
-                .isEqualTo(new Fare(fare));
+                .isEqualTo(Fare.from(fare));
     }
 
 }

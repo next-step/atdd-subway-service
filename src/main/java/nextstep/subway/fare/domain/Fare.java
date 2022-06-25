@@ -13,15 +13,18 @@ public class Fare implements Comparable<Fare> {
     private static final int MIN = 0;
     private final int value;
 
-    public Fare() {
+    protected Fare() {
         this.value = MIN;
     }
 
-    public Fare(int value) {
+    protected Fare(int value) {
         if (value < 0) {
             throw new InvalidFareException("요금은 음수일 수 없습니다.");
         }
         this.value = value;
+    }
+    public static Fare from(int value){
+        return new Fare(value);
     }
 
     public int getValue() {

@@ -10,7 +10,7 @@ class FareTest {
 
     @Test
     void 요금_생성() {
-        Fare fare = new Fare(1_000);
+        Fare fare = Fare.from(1_000);
 
         assertThat(fare).isNotNull();
     }
@@ -18,7 +18,7 @@ class FareTest {
     @Test
     void 요금_생성_실패() {
         assertThatThrownBy(
-                () -> new Fare(-100)
+                () -> Fare.from(-100)
         ).isInstanceOf(InvalidFareException.class)
                 .hasMessageContaining("요금은 음수일 수 없습니다.");
     }
