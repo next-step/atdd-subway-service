@@ -20,6 +20,7 @@ import static nextstep.subway.auth.acceptance.AuthAcceptanceMethod.로그인_요
 import static nextstep.subway.line.acceptance.LineAcceptanceMethod.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceMethod.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.member.MemberAcceptanceMethod.회원_생성을_요청;
+import static nextstep.subway.member.MemberAcceptanceMethod.회원_정보_조회_요청;
 import static nextstep.subway.path.acceptance.PathAcceptanceMethod.*;
 import static nextstep.subway.station.StationAcceptanceMethod.지하철역_등록되어_있음;
 
@@ -63,9 +64,9 @@ public class FareAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(이호선, 강남역, 신도림역, 36);
         지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 광교역, 21);
 
-        일반회원 = 회원_생성을_요청("basic@email.com", MemberAcceptanceTest.PASSWORD, 19).as(MemberResponse.class);
-        청소년회원 = 회원_생성을_요청("teenager@email.com", MemberAcceptanceTest.PASSWORD, 13).as(MemberResponse.class);
-        어린이회원 = 회원_생성을_요청("kid@email.com", MemberAcceptanceTest.PASSWORD, 6).as(MemberResponse.class);
+        일반회원 = 회원_정보_조회_요청(회원_생성을_요청("basic@email.com", MemberAcceptanceTest.PASSWORD, 19)).as(MemberResponse.class);
+        청소년회원 = 회원_정보_조회_요청(회원_생성을_요청("teenagers@email.com", MemberAcceptanceTest.PASSWORD, 13)).as(MemberResponse.class);
+        어린이회원 = 회원_정보_조회_요청(회원_생성을_요청("kids@email.com", MemberAcceptanceTest.PASSWORD, 6)).as(MemberResponse.class);
     }
 
     /**
@@ -117,7 +118,7 @@ public class FareAcceptanceTest extends AcceptanceTest {
      *  When 남부터미널역부터 신도림역까지의 최단 경로를 조회하면
      *  Then 최단 경로가 조회된다 (남부터미널역 -(12)-> 교대역 -(10)-> 강남역 -(36)-> 신도림역)
      *  And 총 거리가 조회된다
-     *  And 지하철 이용 요금이 조회된다(기본운임: 1250원, 추가운임: 900원)
+     *  And 지하철 이용 요금이 조회된다(기본운임: 1250원, 추가운임: 600원)
      */
     @DisplayName("총 거리가 58km 인 경우 최단 경로와 거리, 요금을 조회한다.")
     @Test
@@ -131,7 +132,7 @@ public class FareAcceptanceTest extends AcceptanceTest {
         // and
         지하철_최단경로_총거리_확인됨(response, 58);
         // and
-        지하철_이용요금_조회됨(response, 2150);
+        지하철_이용요금_조회됨(response, 1850);
     }
 
     /**
@@ -157,6 +158,32 @@ public class FareAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * Scenario: 로그인 사용자가 일반(19세)인 경우 요금 조회
+     *  When 일반 회원 로그인 후
+     *  And 교대역부터 양재역까지의 최단 경로를 조회하면
+     *  Then 최단 경로가 조회된다 (교대역 -(10)-> 강남역 -(10)-> 양재역)
+     *  And 총 거리가 조회된다
+     *  And 지하철 이용 요금이 조회된다(기본운임: 1250원, 추가운임: 200원, 노선추가: 900원)
+     */
+    @DisplayName("일반(19세)인 경우 최단 경로와 거리, 요금을 조회한다.")
+    @Test
+    void find_path_basic() {
+        // when
+        ExtractableResponse<Response> loginResponse = 로그인_요청(new TokenRequest(일반회원.getEmail(), MemberAcceptanceTest.PASSWORD));
+        TokenResponse tokenResponse = loginResponse.as(TokenResponse.class);
+        // and
+        ExtractableResponse<Response> response = 회원_지하철_최단경로_조회_요청(tokenResponse, 교대역.getId(), 양재역.getId());
+
+        // then
+        지하철_최단경로_응답됨(response);
+        지하철_최단경로_포함됨(response, Arrays.asList(교대역, 강남역, 양재역));
+        // and
+        지하철_최단경로_총거리_확인됨(response, 20);
+        // and
+        지하철_이용요금_조회됨(response, 2350);
+    }
+
+    /**
      * Scenario: 로그인 사용자가 청소년(13세)인 경우 요금 조회
      *  When 청소년 회원 로그인 후
      *  And 교대역부터 양재역까지의 최단 경로를 조회하면
@@ -166,7 +193,7 @@ public class FareAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("청소년(13세)인 경우 최단 경로와 거리, 요금을 조회한다.")
     @Test
-    void find_path_teenager() {
+    void find_path_teenagers() {
         // when
         ExtractableResponse<Response> loginResponse = 로그인_요청(new TokenRequest(청소년회원.getEmail(), MemberAcceptanceTest.PASSWORD));
         TokenResponse tokenResponse = loginResponse.as(TokenResponse.class);
@@ -188,11 +215,11 @@ public class FareAcceptanceTest extends AcceptanceTest {
      *  And 교대역부터 양재역까지의 최단 경로를 조회하면
      *  Then 최단 경로가 조회된다 (교대역 -(10)-> 강남역 -(10)-> 양재역)
      *  And 총 거리가 조회된다
-     *  And 지하철 이용 요금이 조회된다(기본운임: 900원, 추가운임: 200원, 노선추가: 900원, 연령할인(50%): 1000원)
+     *  And 지하철 이용 요금이 조회된다(기본운임: 1250원, 추가운임: 200원, 노선추가: 900원, 연령할인(50%): 1000원)
      */
     @DisplayName("어린이(6세)인 경우 최단 경로와 거리, 요금을 조회한다.")
     @Test
-    void find_path_kid() {
+    void find_path_kids() {
         // when
         ExtractableResponse<Response> loginResponse = 로그인_요청(new TokenRequest(어린이회원.getEmail(), MemberAcceptanceTest.PASSWORD));
         TokenResponse tokenResponse = loginResponse.as(TokenResponse.class);

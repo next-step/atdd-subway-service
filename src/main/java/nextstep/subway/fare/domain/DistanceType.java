@@ -4,6 +4,9 @@ public enum DistanceType {
     EXTRA_10_TO_50(10, 5),
     EXTRA_50(50, 8);
 
+    private static final int NO_EXTRA_FARE = 0;
+
+    private static final int BASIC_DISTANCE = 10;
     private final int minDistance;
     private final int extraUnit;
 
@@ -19,10 +22,11 @@ public enum DistanceType {
         if (distance > EXTRA_10_TO_50.minDistance) {
             return getExtraFare(distance, EXTRA_10_TO_50.extraUnit);
         }
-        return 0;
+        return NO_EXTRA_FARE;
     }
 
     private static int getExtraFare(int distance, int extraUnit) {
-        return (int) ((Math.ceil((distance - 1) / extraUnit) + 1) * FareType.EXTRA.getFare());
+        int overDistance = distance - BASIC_DISTANCE;
+        return (int) ((Math.ceil((overDistance - 1) / extraUnit) + 1) * FareType.EXTRA.getFare());
     }
 }
