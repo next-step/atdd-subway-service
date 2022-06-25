@@ -80,6 +80,10 @@ public class Section {
         return this.id;
     }
 
+    public Line getLine() {
+        return this.line;
+    }
+
     public Station getUpStation() {
         return this.upStation;
     }
