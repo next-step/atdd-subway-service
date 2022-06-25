@@ -57,4 +57,15 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
  - [x] LineService 리팩터링
     - [x] Sections 일급 컬렉션 만들기
     - [x] Distance 값 포장하기
- - [ ] LineSectionAcceptanceTest 리팩터링
+ - [x] LineSectionAcceptanceTest 리팩터링
+
+ 
+ - [x] 최단 경로 조회 인수테스트 만들기
+ - [x] 최단 경로 조회 기능 구현하기
+
+
+ - [ ] 토큰 발급 기능(로그인) 인수 테스트 만들기
+ - [ ] 회원 가입 기능 완성 하기
+ - [ ] 인증 - 내정보 조회 기능 완성 하기
+ - [ ] 인증 - 즐겨찾기 기능 완성 하기
+ - 
