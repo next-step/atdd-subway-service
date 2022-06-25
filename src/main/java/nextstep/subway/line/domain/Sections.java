@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.exception.NotFoundStationException;
+import nextstep.subway.exception.NoSearchStationException;
 import nextstep.subway.station.domain.Station;
 
 import java.util.*;
@@ -55,7 +55,7 @@ public class Sections {
         return !stations.contains(newSection.getUpStation()) && !stations.contains(newSection.getDownStation());
     }
 
-    public void delete(Station station) throws NotFoundStationException {
+    public void delete(Station station) throws NoSearchStationException {
         validateDelete(station);
 
         Optional<Section> downSection = findSectionByUpStation(station);
@@ -72,9 +72,9 @@ public class Sections {
         upSection.ifPresent(it -> sections.remove(it));
     }
 
-    private void validateDelete(Station station) throws NotFoundStationException {
+    private void validateDelete(Station station) throws NoSearchStationException {
         if (!findAllStations().contains(station)) {
-            throw new NotFoundStationException(station.getId());
+            throw new NoSearchStationException(station.getId());
         }
         if (sections.size() <= MIN_SECTION_SIZE) {
             throw new IllegalArgumentException(ERROR_MESSAGE_MIN_SECTION_SIZE);
@@ -139,8 +139,8 @@ public class Sections {
         return previousSection.map(Section::getUpStation);
     }
 
-    private Station getNextStation(Station nextStation) {
-        Optional<Section> nextSection = findSectionByUpStation(nextStation);
+    private Station getNextStation(Station station) {
+        Optional<Section> nextSection = findSectionByUpStation(station);
         return nextSection.map(Section::getDownStation).orElse(null);
     }
 }

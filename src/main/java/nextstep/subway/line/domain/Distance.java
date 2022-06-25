@@ -40,4 +40,8 @@ public class Distance {
     public int getDistance() {
         return this.distance;
     }
+
+    public double getDistanceDouble() {
+        return (double) this.distance;
+    }
 }

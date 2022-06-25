@@ -1,11 +1,11 @@
 package nextstep.subway.exception;
 
-import javassist.NotFoundException;
+import java.util.NoSuchElementException;
 
-public class NotFoundStationException extends NotFoundException {
+public class NoSearchStationException extends NoSuchElementException {
     private static final String MESSAGE = "해당하는 지하철역을 찾을 수 없습니다. (id: %d)";
 
-    public NotFoundStationException(Long stationId) {
+    public NoSearchStationException(Long stationId) {
         super(String.format(MESSAGE, stationId));
     }
 }

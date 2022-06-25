@@ -1,7 +1,7 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.exception.NotFoundLineException;
-import nextstep.subway.exception.NotFoundStationException;
+import nextstep.subway.exception.NoSearchLineException;
+import nextstep.subway.exception.NoSearchStationException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -28,8 +28,8 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         return LineResponse.of(persistLine);
     }
@@ -42,18 +42,18 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    private Line findLineById(Long id) throws NotFoundLineException {
-        return lineRepository.findById(id).orElseThrow(() -> new NotFoundLineException(id));
+    private Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(() -> new NoSearchLineException(id));
     }
 
 
     @Transactional(readOnly = true)
-    public LineResponse findLineResponseById(Long id) throws NotFoundLineException {
+    public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) throws NotFoundLineException {
+    public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = findLineById(id);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
@@ -62,16 +62,20 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    public void addLineStation(Long lineId, SectionRequest request) throws NotFoundLineException {
+    public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         line.addSection(new Section(line, upStation, downStation, request.getDistance()));
     }
 
-    public void removeLineStation(Long lineId, Long stationId) throws NotFoundStationException, NotFoundLineException {
+    public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.deleteSection(station);
+    }
+
+    public List<Line> getAllLines() {
+        return lineRepository.findAll();
     }
 }
