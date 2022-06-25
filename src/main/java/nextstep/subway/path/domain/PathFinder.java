@@ -31,8 +31,20 @@ public class PathFinder {
     }
 
     public GraphPath<Long, DefaultWeightedEdge> getPaths(Station source, Station target) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        return dijkstraShortestPath.getPath(source.getId(), target.getId());
+        validSameSourceAndTarget(source, target);
+        try {
+            DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+            return dijkstraShortestPath.getPath(source.getId(), target.getId());
+        } catch (Exception e){
+            throw new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
+        }
+
+    }
+
+    private void validSameSourceAndTarget(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("시작역과 도착역은 같을 수 없습니다.");
+        }
     }
 
     public Long getDistance(GraphPath<Long, DefaultWeightedEdge> graphPath) {
