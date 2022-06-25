@@ -21,23 +21,32 @@ public class Line extends BaseEntity {
     @Embedded
     private final Sections sections = new Sections();
 
+    @Embedded
+    private Charge extraCharge;
+
     public Line() {
+        extraCharge = new Charge();
     }
 
     public Line(String name, String color) {
+        this(name, color, 0);
+    }
+
+    public Line(String name, String color, long extraCharge) {
         this.name = name;
         this.color = color;
+        this.extraCharge = new Charge(extraCharge);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
+        this(name, color);
         addSection(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+        this.extraCharge = line.getExtraCharge();
     }
 
     public Long getId() {
@@ -54,6 +63,10 @@ public class Line extends BaseEntity {
 
     public Sections getSections() {
         return this.sections;
+    }
+
+    public Charge getExtraCharge() {
+        return extraCharge;
     }
 
     public Optional<Station> getStartStation() {

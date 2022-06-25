@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityExistsException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -153,5 +154,20 @@ class LineTest {
 
         // Then
         assertThat(신분당선.getStations().toArray(new Station[0])).containsExactly(광교중앙역, 성복역);
+    }
+
+    @DisplayName("노선 리스트에서 추가요금이 많은 순서대로 가져온다.")
+    @Test
+    void getMaxExtraChargeTest() {
+        final Line maxExtraChargeLine = new Line("일호선", "bg", 900);
+        List<Line> lines = Arrays.asList(
+                new Line("신분당선", "bg", 700),
+                maxExtraChargeLine,
+                new Line("이호선", "bg", 600));
+
+        assertThat(lines.stream()
+                .map(Line::getExtraCharge)
+                .sorted()
+                .findFirst().orElseThrow(IllegalStateException::new)).isEqualTo(maxExtraChargeLine.getExtraCharge());
     }
 }

@@ -1,6 +1,9 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.Age;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.ShortestPath;
+import nextstep.subway.path.domain.UserCost;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.utils.Route;
 import nextstep.subway.station.domain.Station;
@@ -19,10 +22,11 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestRoute(long sourceId, long targetId) {
+    public PathResponse findShortestRoute(Age age, long sourceId, long targetId) {
         final Station startStation = stationRepository.findById(sourceId).orElseThrow(EntityNotFoundException::new);
         final Station endStation = stationRepository.findById(targetId).orElseThrow(EntityNotFoundException::new);
-        return PathResponse.of(new Route().getShortestRoute(lineRepository.findAll(), startStation, endStation));
+        final ShortestPath shortestPath = new ShortestPath(new Route().getShortestRoute(lineRepository.findAll(), startStation, endStation));
+        return PathResponse.of(shortestPath, UserCost.valueOf(age).calculate(shortestPath.totalCharge()));
     }
 
 }

@@ -2,6 +2,7 @@ package nextstep.subway.path.utils;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -50,10 +51,11 @@ class RouteTest {
     @Test
     void getShortestRouteTest() {
         // when
-        PathResponse pathResponse = PathResponse.of(new Route().getShortestRoute(Arrays.asList(신분당선, 이호선, 삼호선),교대역, 양재역));
+        final ShortestPath shortestPath = new ShortestPath(new Route().getShortestRoute(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 양재역));
+        PathResponse pathResponse = PathResponse.of(shortestPath,shortestPath.totalCharge());
 
         // then
         List<String> responseStationNames = pathResponse.getStations().stream().map(StationResponse::getName).collect(Collectors.toList());
-        assertThat(responseStationNames).containsExactlyElementsOf(Arrays.asList(양재역.getName(), 남부터미널역.getName(), 교대역.getName()));
+        assertThat(responseStationNames).containsExactlyElementsOf(Arrays.asList( 교대역.getName(),남부터미널역.getName(),양재역.getName()));
     }
 }

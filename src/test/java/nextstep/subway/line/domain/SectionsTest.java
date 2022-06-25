@@ -24,7 +24,7 @@ class SectionsTest {
     private Section 광교_광교중앙역;
     @BeforeEach
     void setUp() {
-        신분당선 = new Line("신분당선", "bg-blue-200");
+        신분당선 = new Line("신분당선", "bg-blue-200", 100);
         광교역 = new Station("광교역");
         광교중앙역 = new Station("광교중앙역");
         상현역 = new Station("상현역");

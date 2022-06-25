@@ -1,38 +1,47 @@
 package nextstep.subway.path.dto;
 
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.line.domain.Charge;
+import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.station.dto.StationResponse;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PathResponse {
     private  List<StationResponse> stations;
-    private  int distance;
+    private  long  distance;
+    private  long extraCharge;
 
     public PathResponse() {
     }
+    public PathResponse(List<StationResponse> stations, long distance) {
+        this(stations, distance, 0);
+    }
 
-    public PathResponse(List<StationResponse> stations, int distance) {
+    public PathResponse(List<StationResponse> stations, long distance, long extraCharge) {
         this.stations = stations;
         this.distance = distance;
+        this.extraCharge = extraCharge;
     }
 
     public List<StationResponse> getStations() {
         return stations;
     }
 
-    public int getDistance() {
+    public long getDistance() {
         return distance;
     }
 
-    public static PathResponse of(GraphPath<Station, DefaultWeightedEdge> path) {
+    public long getExtraCharge() {
+        return extraCharge;
+    }
+
+    public static PathResponse of(final ShortestPath shortestPath, final Charge charge) {
         return new PathResponse(
-                path.getVertexList().stream()
-                        .map(StationResponse::of)
+                shortestPath.stations().stream().map(StationResponse::of)
                         .collect(Collectors.toList()),
-                Double.valueOf(path.getWeight()).intValue());
+                shortestPath.totalDistance().value(),
+                charge.value());
     }
 }

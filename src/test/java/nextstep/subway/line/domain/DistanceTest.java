@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.path.domain.DistanceCostPolicy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -31,5 +32,11 @@ class DistanceTest {
     @Test
     void minusTest() {
         assertThat(new Distance(5).minus(new Distance(3))).isEqualTo(new Distance(2));
+    }
+
+    @DisplayName("거리에 따른 금액을 반환한다.")
+    @Test
+    void calculateChargeTest() {
+        assertThat(new Distance(14).calculate(new DistanceCostPolicy())).isEqualTo(new Charge(1350));
     }
 }

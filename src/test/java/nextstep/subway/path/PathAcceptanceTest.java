@@ -4,7 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
+import nextstep.subway.path.domain.DistanceCostPolicy;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -21,14 +23,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.암호_이메일_입력;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
-    private LineResponse 신분당선;
-    private LineResponse 이호선;
     private LineResponse 삼호선;
 
     private StationResponse 강남역;
@@ -36,6 +39,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
 
+    private StationResponse 신사역;
+    private StationResponse 압구정역;
+
+    private final DistanceCostPolicy distanceCostPolicy = new DistanceCostPolicy();
+    
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -44,22 +52,27 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        신사역 = StationAcceptanceTest.지하철역_등록되어_있음("신사역").as(StationResponse.class);
+        압구정역 = StationAcceptanceTest.지하철역_등록되어_있음("입구정역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 200);
+        지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 500);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+        지하철_노선에_지하철역_등록_요청(삼호선, 신사역, 교대역, 15);
+        지하철_노선에_지하철역_등록_요청(삼호선, 압구정역, 신사역, 45);
+
     }
 
     @DisplayName("출발역과 도착역 정보로 최단경로 요청시 경로 정보를 알려준다.")
     @Test
     void findShortedRoute() {
         // When
-        final ExtractableResponse<Response> response = 최단_경로_검색(교대역, 양재역);
+        final ExtractableResponse<Response> response = 인증_정보_없이_이용한_최단_경로_검색(교대역, 양재역);
 
         // Then
-        최단_경로_기준으로_지하철역_정보가_출력됨(response, Arrays.asList(양재역, 남부터미널역, 교대역));
+        최단_경로_기준으로_지하철역_정보가_출력됨(response, Arrays.asList(교대역, 남부터미널역, 양재역));
     }
 
     /**
@@ -73,7 +86,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final StationResponse 등록되지않은역 = new StationResponse(100L, "잘못된역", LocalDateTime.now(), LocalDateTime.now());
 
         // When
-        final ExtractableResponse<Response> reponse = 최단_경로_검색(등록되지않은역, 양재역);
+        final ExtractableResponse<Response> reponse = 인증_정보_없이_이용한_최단_경로_검색(등록되지않은역, 양재역);
 
         // Then
         검색이_안됨(reponse);
@@ -90,10 +103,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // Given
         final StationResponse 수원역 = StationAcceptanceTest.지하철역_등록되어_있음("수원역").as(StationResponse.class);
         final StationResponse 병점역 = StationAcceptanceTest.지하철역_등록되어_있음("병점역").as(StationResponse.class);
-        final LineResponse 일호선 = 지하철_노선_등록되어_있음("일호선", "bg-red-600", 수원역, 병점역, 10);
+        final LineResponse 일호선 = 지하철_노선_등록되어_있음("일호선", "bg-red-600", 수원역, 병점역, 10, 0);
 
         // When
-        final ExtractableResponse<Response> response = 최단_경로_검색(교대역, 병점역);
+        final ExtractableResponse<Response> response = 인증_정보_없이_이용한_최단_경로_검색(교대역, 병점역);
 
         // Then
         검색이_안됨(response);
@@ -107,10 +120,104 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void sameStationTest() {
         // When
-        final ExtractableResponse<Response> response = 최단_경로_검색(교대역, 교대역);
+        final ExtractableResponse<Response> response = 인증_정보_없이_이용한_최단_경로_검색(교대역, 교대역);
 
         // Then
         검색이_안됨(response);
+    }
+
+
+    /**
+     * When : 출발역과 도착역을 입력시
+     * Then : 경로와 거리 , 금액을 제공한다.
+     * when : 총 구간 거리가 10 km 이상 일때
+     * Then : 10 ~ 50 에서는 5km 마다 100 원 50km 초과시 에는 8km 마다 100원이 추가 계산된다.
+     */
+    @DisplayName("구간정보와 거리, 금액을 알수있다.")
+    @Test
+    void checkSectionAndDistanceAndCharge() {
+
+        // when
+        final ExtractableResponse<Response> response = 인증_정보_없이_이용한_최단_경로_검색(교대역, 양재역);
+
+        // then
+        거리_금액_확인(response, 5, distanceCostPolicy.basicCharge().value());
+    }
+
+    /**
+     * When : 총 구간 거리가 10 ~ 50 km  일때
+     * Then : 5km 마다 100원이 추가 부과 된다.
+     */
+    @DisplayName("총 구간거리가 10 ~ 50km 일때 5km 마다 100원이 추가 부과된다.")
+    @Test
+    void checkDistanceAndChargeWhenDistanceIsTwenty() {
+        // when
+        final ExtractableResponse<Response> response = 인증_정보_없이_이용한_최단_경로_검색(신사역, 양재역);
+
+        // then
+        최단_경로_기준으로_지하철역_정보가_출력됨(response, Arrays.asList(신사역,교대역, 남부터미널역, 양재역));
+        거리_금액_확인(response, 20, 총거리가_10_50_일때_예상_금액_계산(20));
+    }
+
+    /**
+     * When : 총 구간 거리가 50 km 초과 일때
+     * Then : 8km 마다 100원이 추가 부과 된다.
+     */
+    @DisplayName("총 구간거리가 10 ~ 50km 일때 5km 마다 100원이 추가 부과된다.")
+    @Test
+    void checkDistanceAndChargeWhenDistanceIsFifty() {
+        // when
+        final ExtractableResponse<Response> response = 인증_정보_없이_이용한_최단_경로_검색(압구정역, 양재역);
+
+        // then
+        최단_경로_기준으로_지하철역_정보가_출력됨(response, Arrays.asList(압구정역,신사역,교대역, 남부터미널역, 양재역));
+        거리_금액_확인(response, 65, 총거리가_50_초과_일때_예상_금액_계산(65));
+    }
+
+    /**
+     *
+     * Given : 청소년 이 로그인을 한 후,
+     * When : 지하철 구간을 검색 하면,
+     * Then : 최단 경로와 거리 , 그리고 일반인 보다 350원을 공제되고 20 % 할인된 금액이 보여진다.
+     */
+    @DisplayName("청소년이 검색 할 경우 일반인 보다 요금이 할인된 금액이 보여진다.")
+    @Test
+    void findShortestRouteTestWhenUseIsTeenager() {
+        final TokenResponse 청소년_로그인 = Login("teenager@teenager.com", 18);
+
+        // When
+        final ExtractableResponse<Response> 청소년이_요청한_결과 = 인증_정보를_이용한_최단_경로_검색(청소년_로그인, 교대역, 양재역);
+
+        // Then
+        최단_경로_기준으로_지하철역_정보가_출력됨(청소년이_요청한_결과, Arrays.asList(교대역, 남부터미널역, 양재역));
+        거리_금액_확인(청소년이_요청한_결과, 5, 청소년_예상_할인_요금(distanceCostPolicy.basicCharge().value()));
+    }
+
+    /**
+     *
+     * Given : 어린이가  로그인을 한 후,
+     * When : 지하철 구간을 검색 하면,
+     * Then : 최단 경로와 거리 , 그리고 일반인 보다 350원을 공제되고 50 % 할인된 금액이 보여진다.
+     */
+    @DisplayName("어린이가 검색 할 경우 일반인 보다 요금이 할인된 금액이 보여진다.")
+    @Test
+    void findShortestRouteTestWhenUseIsChild() {
+
+        final TokenResponse 어린이_로그인 = Login("child@child.com", 12);
+
+        // When
+        final ExtractableResponse<Response> 어린이가_요청한_결과 = 인증_정보를_이용한_최단_경로_검색(어린이_로그인, 교대역, 양재역);
+
+        // Then
+        최단_경로_기준으로_지하철역_정보가_출력됨(어린이가_요청한_결과, Arrays.asList(교대역, 남부터미널역, 양재역));
+        거리_금액_확인(어린이가_요청한_결과, 5, 어린이_예상_할인_요금(distanceCostPolicy.basicCharge().value()));
+    }
+
+
+    public static void 거리_금액_확인(ExtractableResponse<Response> response, int expectedDistance, long expectedPrice) {
+        final PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
+        assertThat(pathResponse.getExtraCharge()).isEqualTo(expectedPrice);
     }
 
     public static void 최단_경로_기준으로_지하철역_정보가_출력됨(ExtractableResponse<Response> response, List<StationResponse> expectedResult) {
@@ -126,16 +233,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(resultStationNames).containsExactlyElementsOf(expectedStationNames);
     }
 
-    public ExtractableResponse<Response> 최단_경로_검색(final StationResponse source, final StationResponse target) {
+    public ExtractableResponse<Response> 인증_정보_없이_이용한_최단_경로_검색( final StationResponse source, final StationResponse target) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={sourceId}&target={targetId}", source.getId(), target.getId())
                 .then().log().all()
                 .extract();
     }
+    public ExtractableResponse<Response> 인증_정보를_이용한_최단_경로_검색(final TokenResponse tokenResponse, final StationResponse source, final StationResponse target) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", source.getId(), target.getId())
+                .then().log().all()
+                .extract();
+    }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse preStation, StationResponse downStation, int distance) {
-        return LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(name, color, preStation.getId(), downStation.getId(), 10)).as(LineResponse.class);
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse preStation, StationResponse downStation, int distance, long extraCharge) {
+        return LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(name, color, preStation.getId(), downStation.getId(), distance, extraCharge)).as(LineResponse.class);
     }
 
 
@@ -143,4 +258,27 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(HttpStatus.valueOf(reponse.statusCode())).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
+    public static TokenResponse Login(final String email, final int age) {
+        final String PASSWORD = "password";
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(email, PASSWORD, age);
+        회원_생성됨(createResponse);
+
+        return 토큰정보_획득(로그인_요청(암호_이메일_입력(PASSWORD, email)));
+    }
+
+    public static long 청소년_예상_할인_요금(final long totalCharge) {
+        return (totalCharge - 350) * (100 - 20) / 100;
+    }
+
+    public static long 어린이_예상_할인_요금(final long totalCharge) {
+        return (totalCharge - 350) * (100 - 50) / 100;
+    }
+
+    private long 총거리가_10_50_일때_예상_금액_계산(int distance) {
+        return distanceCostPolicy.basicCharge().value() +(int) ((Math.ceil(((distance-10) - 1) / 5) + 1) * 100);
+    }
+
+    private long  총거리가_50_초과_일때_예상_금액_계산(int distance) {
+        return 총거리가_10_50_일때_예상_금액_계산(50) + (int) ((Math.ceil(((distance-50) - 1) / 8) + 1) * 100);
+    }
 }
