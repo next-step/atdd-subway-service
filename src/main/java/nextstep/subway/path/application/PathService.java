@@ -26,8 +26,7 @@ public class PathService {
         Station targetStation = stationService.findStationById(targetId);
 
         Lines lines = new Lines(lineRepository.findAll());
-        PathFinder pathFinder = new PathFinder(lines);
-        Path path = pathFinder.findPath(sourceStation, targetStation);
+        Path path = lines.findPath(sourceStation, targetStation);
 
         return PathResponse.of(path.getStations(), path.getDistance());
     }
