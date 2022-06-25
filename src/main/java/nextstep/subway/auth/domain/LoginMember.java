@@ -4,6 +4,7 @@ public class LoginMember {
     private Long id;
     private String email;
     private Integer age;
+    private boolean guest = true;
 
     public LoginMember() {
     }
@@ -12,6 +13,7 @@ public class LoginMember {
         this.id = id;
         this.email = email;
         this.age = age;
+        this.guest = false;
     }
 
     public Long getId() {
@@ -24,5 +26,9 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public boolean isGuest() {
+        return guest;
     }
 }
