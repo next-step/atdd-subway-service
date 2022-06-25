@@ -5,15 +5,11 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import java.util.*;
 
 @Embeddable
 public class Sections {
     private static final int MIN_SIZE = 1;
-
-    @Transient
-    private final OperationCostPolicy costPolicy = new DistanceCostPolicy();
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
@@ -59,23 +55,6 @@ public class Sections {
         return this.sections.size();
     }
 
-
-    public Distance getTotalDistance() {
-        return sections.stream().map(Section::getDistance).reduce(new Distance(0), Distance::plus);
-    }
-
-    public Charge totalCharge() {
-        Charge extraCharge = sections.stream()
-                .map(Section::getLine)
-                .distinct()
-                .map(Line::getExtraCharge)
-                .sorted()
-                .findFirst()
-                .orElseThrow(IllegalStateException::new);
-
-        return this.getTotalDistance().calculate(costPolicy).plus(extraCharge);
-    }
-
     public boolean isContains(final Section section) {
         return sections.contains(section);
     }
@@ -108,8 +87,8 @@ public class Sections {
 
     private Match findInsertSomePlace(final Section section) {
         final List<Station> stations = getStations();
-        final boolean isUpStationExisted = stations.stream().anyMatch(it -> Objects.equals(it,section.getUpStation()));
-        final boolean isDownStationExisted = stations.stream().anyMatch(it -> Objects.equals(it,section.getDownStation()));
+        final boolean isUpStationExisted = stations.stream().anyMatch(it -> Objects.equals(it, section.getUpStation()));
+        final boolean isDownStationExisted = stations.stream().anyMatch(it -> Objects.equals(it, section.getDownStation()));
         if (Objects.equals(isUpStationExisted, true) && Objects.equals(isDownStationExisted, true)) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }

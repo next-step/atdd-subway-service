@@ -37,14 +37,6 @@ public class PathResponse {
         return extraCharge;
     }
 
-    public static PathResponse of(final Sections sections, final Charge charge) {
-        return new PathResponse(
-                sections.getStations().stream().map(StationResponse::of)
-                        .collect(Collectors.toList()),
-                sections.getTotalDistance().value(),
-                charge.value());
-    }
-
     public static PathResponse of(final ShortestPath shortestPath, final Charge charge) {
         return new PathResponse(
                 shortestPath.stations().stream().map(StationResponse::of)

@@ -162,26 +162,4 @@ class SectionsTest {
         // Then
         assertThat(구간들이_저장된_노선들.getStations().toArray(new Station[0])).containsExactly(광교역, 광교중앙역, 양재시민의숲, 상현역, 성복역);
     }
-
-    /**
-     * Given 저장된 구간들에서
-     * When 전체 길이를 요청하면
-     * Then 전체 길이를 반환한다.
-     */
-    @DisplayName("구간들에 전체 길이를 알수 있다.")
-    @Test
-    void getTotalDistanceTest() {
-        assertThat(구간들이_저장된_노선들.getTotalDistance()).isEqualTo(new Distance(30));
-    }
-
-    /**
-     * Given 저장된 구간들에서
-     * When 전체 요금을 요청하면
-     * Then 전체 요금을 반환한다.
-     */
-    @DisplayName("구간들에 대한 요금을 알수 있다.")
-    @Test
-    void totalChargeTest() {
-        assertThat(구간들이_저장된_노선들.totalCharge()).isEqualTo(new Charge(1650).plus(신분당선.getExtraCharge()));
-    }
 }
