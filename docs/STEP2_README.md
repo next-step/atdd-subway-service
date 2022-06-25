@@ -2,7 +2,9 @@
 
 ## 🚀 요구사항
 ### 1. 최단 경로 조회 인수 테스트 만들기
-- 인수 테스트 픽스쳐
+- LinesTest
+- PathServiceTest
+- 인수 테스트 픽스쳐 (PathAcceptanceTest)
 ```
 Feature: 지하철 경로 조회
   Background 
@@ -20,6 +22,13 @@ Feature: 지하철 경로 조회
 ```
 
 ### 2. 최단 경로 조회 기능 구현하기
+- application
+  - PathService
+- domain
+  - Path, PathFinder, Lines
+- dto
+  - PathResponse
+
 - Request
 ```
 HTTP/1.1 200 
