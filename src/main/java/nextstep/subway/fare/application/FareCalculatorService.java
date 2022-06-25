@@ -1,7 +1,7 @@
 package nextstep.subway.fare.application;
 
 public class FareCalculatorService {
-    private static final int DEFAULT_DISTANCE = 10;
+    private static final int DEFAULT_MAXIMUM_DISTANCE = 10;
     private static final int DEFAULT_FARE = 1_250;
     private static final int MAX_DISTANCE = 50;
 
@@ -9,15 +9,15 @@ public class FareCalculatorService {
     private static final int EIGHT_KILOMETRE = 8;
 
     public static int calculate(int distance) {
-        if (DEFAULT_DISTANCE >= distance) {
+        if (DEFAULT_MAXIMUM_DISTANCE >= distance) {
             return DEFAULT_FARE;
         }
 
         if (MAX_DISTANCE >= distance) {
-            return DEFAULT_FARE + calculateOverFareAsFiveKm(distance - DEFAULT_DISTANCE);
+            return DEFAULT_FARE + calculateOverFareAsFiveKm(distance - DEFAULT_MAXIMUM_DISTANCE);
         }
 
-        int calculationFareAsFiveKm = calculateOverFareAsFiveKm(MAX_DISTANCE - DEFAULT_DISTANCE);
+        int calculationFareAsFiveKm = calculateOverFareAsFiveKm(MAX_DISTANCE - DEFAULT_MAXIMUM_DISTANCE);
         int maxCalculateFare = calculateOverFareAsEightKm(distance - MAX_DISTANCE) + calculationFareAsFiveKm;
         return DEFAULT_FARE + maxCalculateFare;
     }
