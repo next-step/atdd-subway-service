@@ -4,11 +4,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.dto.MemberRequest;
 import org.springframework.http.MediaType;
 
 public class MemberRequests {
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
-        nextstep.subway.member.dto.MemberRequest memberRequest = new nextstep.subway.member.dto.MemberRequest(email, password, age);
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
                 .given().log().all()
@@ -32,7 +33,7 @@ public class MemberRequests {
 
     public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
         String uri = response.header("Location");
-        nextstep.subway.member.dto.MemberRequest memberRequest = new nextstep.subway.member.dto.MemberRequest(email, password, age);
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
                 .given().log().all()
@@ -63,7 +64,7 @@ public class MemberRequests {
     }
 
     public static ExtractableResponse<Response> 내_정보_수정_요청(TokenResponse tokenResponse, String email, String password, Integer age) {
-        nextstep.subway.member.dto.MemberRequest memberRequest = new nextstep.subway.member.dto.MemberRequest(email, password, age);
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
                 .given().log().all()
