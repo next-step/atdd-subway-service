@@ -7,6 +7,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
@@ -17,6 +18,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class PathFareTest {
+    @InjectMocks
+    private PathFare pathFare;
+
     Line 이호선;
     Line 사호선;
 
@@ -74,7 +78,7 @@ class PathFareTest {
         기본운임_구간_생성();
 
         // when
-        int fare = new PathFare().calculateFare(단일_그래프_간선, 단일_지하철_구간);
+        int fare = pathFare.calculateFare(단일_그래프_간선, 단일_지하철_구간);
 
         // then
         assertThat(fare).isEqualTo(2050);
@@ -87,7 +91,7 @@ class PathFareTest {
         추가요금_구간_생성();
 
         // when
-        int fare = new PathFare().calculateFare(다중_그래프_간선, 다중_지하철_구간);
+        int fare = pathFare.calculateFare(다중_그래프_간선, 다중_지하철_구간);
 
         // then
         assertThat(fare).isEqualTo(3050);
@@ -100,15 +104,11 @@ class PathFareTest {
         환승요금_구간_생성();
 
         // when
-        int fare = new PathFare().calculateFare(다중_그래프_간선, 다중_지하철_구간);
+        int fare = pathFare.calculateFare(다중_그래프_간선, 다중_지하철_구간);
 
         // then
         assertThat(fare).isEqualTo(3650);
     }
-
-    // 청소년요금
-
-    // 어린이요금
 
     void 기본운임_구간_생성() {
         단일_지하철_구간.add(서울대입구역_낙성대역);

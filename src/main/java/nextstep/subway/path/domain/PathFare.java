@@ -12,26 +12,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class PathFare {
-    // 기본운임(10㎞ 이내) : 기본운임 1,250원
-    // 10km초과∼50km까지(5km마다 100원)
-    // 50km초과 시 (8km마다 100원)
-
-    // 추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가
-    // 900원 추가 요금이 있는 노선 8km 이용 시 1,250원 -> 2,150원
-    // 900원 추가 요금이 있는 노선 12km 이용 시 1,350원 -> 2,250원
-
-    // 경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용
-    // 0원, 500원, 900원의 추가 요금이 있는 노선들을 경유하여 8km 이용 시 1,250원 -> 2,150원
-
-    // 청소년: 운임에서 350원을 공제한 금액의 20%할인
-    // 청소년: 13세 이상~19세 미만
-
-    // 어린이: 운임에서 350원을 공제한 금액의 50%할인
-    // 어린이: 6세 이상~ 13세 미만
-
-    public PathFare() {
-    }
-
     public int calculateFare(List<DefaultWeightedEdge> edges, List<Section> sections) {
         AtomicReference<Line> line = new AtomicReference<>();
         AtomicInteger surcharge = new AtomicInteger(0);
