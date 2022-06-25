@@ -76,8 +76,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 * 도메인 테스트 코드 작성
 
 ## 🚀 2단계 - 경로 조회 기능
-
----
+***
 ### 요구사항
 * 최단 경로 조회 기능 구현하기
   * 최단 경로 라이브러리(`jgrapht`) 활용하여 최단거리 조회 기능을 구현한다.
@@ -92,3 +91,22 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 * 경로를 나타내는 도메인과 최단경로를 조회할 도메인 분리
 * 최단경로 조회 도메인에 대한 테스트 코드 작성
 * 최단경로 조회 인수 테스트 코드 작성
+
+## 🚀 3단계 - 인증을 통한 기능 구현
+***
+### 요구사항
+* 토큰 발급 기능(로그인) 인수 테스트
+  * 토큰 발급(로그인)을 검증하는 인수 테스트(`AuthAcceptanceTest`)를 작성한다.
+  * 유효하지 않은 토큰으로 `/members/me`에 요청을 보내는 케이스에 대한 인수 테스트를 작성한다.
+* [인증] 내 정보 조회 기능 구현 및 인수 테스트
+  * 인수 테스트
+    * `MemberAcceptanceTest` 클래스의 `manageMyInfo` 메서드에 인수 테스트를 추가한다.
+    * `/members/me` URI 요청 시 내 정보 조회, 수정, 삭제 기능이 동작하도록 검증한다.
+    * 로그인 후 발급 받은 토큰을 포함해서 요청한다.
+  * 토큰을 통한 인증
+    * `/members/me` 요청 시 토큰을 확인하여 로그인 정보를 받아올 수 있도록 한다.
+    * `@AuthenticationPrincipal`과 `AuthenticationPrincipalArgumentResolver`를 활용한다.
+    * `/members/me` URI 요청 시 내 정보 조회, 수정, 삭제 기능이 동작하도록 구현한다.
+* [인증] 즐겨 찾기 기능 완성하기
+  * 즐겨찾기 기능을 완성한다.
+  * 인증을 포함하여 전체 ATDD 사이클을 경험할 수 있도록 기능을 구현한다.
