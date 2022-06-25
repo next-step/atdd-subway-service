@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class Fare {
     private static final int MIN = 0;
-    private int value;
+    private final int value;
 
     public Fare() {
         this.value = MIN;
@@ -17,6 +17,10 @@ public class Fare {
             throw new InvalidFareException("요금은 음수일 수 없습니다.");
         }
         this.value = value;
+    }
+
+    public int getValue() {
+        return value;
     }
 
     @Override

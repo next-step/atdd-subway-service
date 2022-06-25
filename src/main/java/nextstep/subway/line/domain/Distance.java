@@ -11,7 +11,7 @@ public class Distance {
     private final int distance;
 
     public Distance() {
-        distance = 0;
+        distance = MIN;
     }
 
     public Distance(int distance) {
@@ -34,5 +34,10 @@ public class Distance {
 
     public Distance plus(Distance distance) {
         return new Distance(this.distance + distance.getDistance());
+    }
+
+    public boolean isLessThan(Distance targetDistance) {
+        return distance - targetDistance.distance <= MIN;
+
     }
 }
