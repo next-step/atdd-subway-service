@@ -8,7 +8,9 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class PathFinder {
@@ -27,6 +29,23 @@ public class PathFinder {
         List<Station> stations = path.getVertexList();
         double distance = shortestPath.getPathWeight(source, target);
         return new PathResponse(stations, distance);
+    }
+
+    public Map<String, Object> findShortestPathNew(WeightedMultigraph<Station, DefaultWeightedEdge> map,
+                                                         Station source, Station target) {
+        confirmSelectSameStation(source, target);
+        confirmStationIsOnLine(map, source, target);
+
+        DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(map);
+        GraphPath<Station, DefaultWeightedEdge> path = shortestPath.getPath(source, target);
+        confirmNonShortestPath(path);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("vertex", path.getVertexList());
+        data.put("edge", path.getEdgeList());
+        data.put("weight", shortestPath.getPathWeight(source, target));
+
+        return data;
     }
 
     public void confirmSelectSameStation(Station source, Station target) {

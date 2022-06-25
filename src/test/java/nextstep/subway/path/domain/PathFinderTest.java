@@ -3,7 +3,6 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -14,12 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
@@ -74,11 +71,11 @@ class PathFinderTest {
         Station source = stationRepository.findById(1L).get();
         Station target = stationRepository.findById(3L).get();
         WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
-        PathResponse result = new PathFinder().findShortestPath(map, source, target);
+        Map<String, Object> data = new PathFinder().findShortestPathNew(map, source, target);
 
         // then
-        assertThat(result.toStations()).containsExactly(선릉역, 정자역, 수원역);
-        assertThat(result.getDistance()).isEqualTo(50);
+        assertThat((List<Station>) data.get("vertex")).containsExactly(선릉역, 정자역, 수원역);
+        assertThat((double) data.get("weight")).isEqualTo(50);
     }
 
     @Test
@@ -92,11 +89,11 @@ class PathFinderTest {
         Station source = stationRepository.findById(1L).get();
         Station target = stationRepository.findById(5L).get();
         WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
-        PathResponse result = new PathFinder().findShortestPath(map, source, target);
+        Map<String, Object> data = new PathFinder().findShortestPathNew(map, source, target);
 
         // then
-        assertThat(result.toStations()).containsExactly(선릉역, 정자역, 수원역, 춘천역, 강릉역);
-        assertThat(result.getDistance()).isEqualTo(80);
+        assertThat((List<Station>) data.get("vertex")).containsExactly(선릉역, 정자역, 수원역, 춘천역, 강릉역);
+        assertThat((double) data.get("weight")).isEqualTo(80);
     }
 
     @Test
@@ -111,8 +108,7 @@ class PathFinderTest {
         Station target = stationRepository.findById(1L).get();
         WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
 
-        assertThatThrownBy(() -> new PathFinder().findShortestPath(map, source, target))
-                .isInstanceOf(RuntimeException.class);
+        assertThatIllegalArgumentException().isThrownBy(() -> new PathFinder().findShortestPath(map, source, target));
     }
 
     @Test
@@ -128,8 +124,7 @@ class PathFinderTest {
         Station target = stationRepository.findById(6L).get();
         WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
 
-        assertThatThrownBy((() -> new PathFinder().findShortestPath(map, source, target)))
-                .isInstanceOf(RuntimeException.class);
+        assertThatIllegalArgumentException().isThrownBy(() -> new PathFinder().findShortestPath(map, source, target));
     }
 
     @Test
@@ -146,10 +141,8 @@ class PathFinderTest {
         WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
 
         assertAll(
-                () -> assertThatThrownBy((() -> new PathFinder().findShortestPath(map, source, target)))
-                        .isInstanceOf(RuntimeException.class),
-                () -> assertThatThrownBy((() -> new PathFinder().findShortestPath(map, target, source)))
-                        .isInstanceOf(RuntimeException.class)
+                () -> assertThatIllegalArgumentException().isThrownBy(() -> new PathFinder().findShortestPath(map, source, target)),
+                () -> assertThatIllegalArgumentException().isThrownBy(() -> new PathFinder().findShortestPath(map, target, source))
         );
     }
 }
