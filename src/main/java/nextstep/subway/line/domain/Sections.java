@@ -13,7 +13,7 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    public Sections(){
+    protected Sections(){
     }
 
     public void add(Section section) {
@@ -153,7 +153,8 @@ public class Sections {
     }
 
     private void validSectionsSizeCheck() {
-        if (sections.size() <= 1) {
+        final int MIN_SIZE = 1;
+        if (sections.size() <= MIN_SIZE) {
             throw new IllegalArgumentException("구간이 하나인 노선인 경우 구간 삭제 할 수 없습니다.");
         }
     }
