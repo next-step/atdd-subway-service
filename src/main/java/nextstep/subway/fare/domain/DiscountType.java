@@ -5,9 +5,21 @@ import nextstep.subway.auth.domain.Age;
 import java.util.Objects;
 
 public enum DiscountType {
-    NONE(0, 0),
-    YOUTH(350, 0.8),
-    CHILD(350, 0.5);
+    NONE(0, 0) {
+        public int calculate(int price) {
+            return price;
+        }
+    },
+    YOUTH(350, 0.8) {
+        public int calculate(int price) {
+            return (int) ((price - YOUTH.getFare()) * YOUTH.getDiscountPercent());
+        }
+    },
+    CHILD(350, 0.5) {
+        public int calculate(int price) {
+            return (int) ((price - CHILD.getFare()) * CHILD.getDiscountPercent());
+        }
+    };
 
     private final int fare;
     private final double discountPercent;
@@ -32,6 +44,8 @@ public enum DiscountType {
 
         return new GeneralDiscountPolicy();
     }
+
+    public abstract int calculate(int price);
 
     public int getFare() {
         return fare;
