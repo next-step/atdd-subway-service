@@ -25,30 +25,27 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     }
 
-    @DisplayName("로그인 기능")
-    @Test
-    void login() {
-        //given 회원이 등록되어 있음
-        TokenResponse 회원_토큰 = 토큰_요청(new TokenRequest("email@email.com", "password")).as(TokenResponse.class);
-
-    }
-
-
+/*
+    Feature: 로그인 기능
+    Scenario: 로그인을 시도한다.
+        Given 회원 등록되어 있음
+        When 로그인 요청
+        Then 로그인 됨
+    */
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
         //when
-        final ExtractableResponse<Response> response = 토큰_요청(new TokenRequest("email@email.com", "password"));
+        final ExtractableResponse<Response> 토근_로그인_응답 = 토큰_요청("email@email.com", "password");
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.as(TokenResponse.class).getAccessToken()).isNotEmpty();
+        로그인_됨(토근_로그인_응답);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
-        final ExtractableResponse<Response> 잘못된_토큰_요청 = 토큰_요청(new TokenRequest("email@email.com", "1"));
+        final ExtractableResponse<Response> 잘못된_토큰_요청 = 토큰_요청("email@email.com", "");
 
         assertThat(잘못된_토큰_요청.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
@@ -56,11 +53,26 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        //given
+        String token = "유효하지않은 토큰";
+
+        //when
+        final ExtractableResponse<Response> 유효하지_않은_토큰_요청 = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+
+        //then
+        assertThat(유효하지_않은_토큰_요청.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
 
 
-    private ExtractableResponse<Response> 토큰_요청(TokenRequest tokenRequest) {
+    public static ExtractableResponse<Response> 토큰_요청(String email, String password) {
+        TokenRequest tokenRequest = new TokenRequest(email, password);
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(tokenRequest)
@@ -69,10 +81,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    private void 로그인_됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.as(TokenResponse.class).getAccessToken()).isNotEmpty();
+    }
 
     private ExtractableResponse<Response> 회원이_등록되어_있음(String email, String password, int age) {
         return MemberAcceptanceTest.회원_생성을_요청(email, password, age);
     }
-
-
 }
