@@ -1,4 +1,4 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.domain;
 
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.member.domain.Member;
