@@ -14,6 +14,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    private int extraFare;
 
     @Embedded
     private Sections sections = Sections.empty();
@@ -21,11 +22,17 @@ public class Line extends BaseEntity {
     public static class Builder {
         private String name;
         private String color;
+        private int extraFare = 0;
         private Section section;
 
         public Builder(String name, String color) {
             this.name = name;
             this.color = color;
+        }
+
+        public Builder extraFare(int extraFare) {
+            this.extraFare = extraFare;
+            return this;
         }
 
         public Builder section(Section section) {
@@ -43,6 +50,7 @@ public class Line extends BaseEntity {
     private Line(Builder builder) {
         this.name = builder.name;
         this.color = builder.color;
+        this.extraFare = builder.extraFare;
         if (isAddedSection(builder)) {
             this.addSection(builder.section);
         }
@@ -55,6 +63,7 @@ public class Line extends BaseEntity {
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+        this.extraFare = line.getExtraFare();
     }
 
     public void addSection(Section section) {
@@ -80,6 +89,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return this.color;
+    }
+
+    public int getExtraFare() {
+        return this.extraFare;
     }
 
     public List<Section> getSections() {
