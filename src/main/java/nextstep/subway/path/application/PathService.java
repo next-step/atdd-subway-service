@@ -2,18 +2,15 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.Age;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.domain.UserCost;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.utils.Route;
-import nextstep.subway.path.utils.SectionEdge;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -28,12 +25,8 @@ public class PathService {
     public PathResponse findShortestRoute(Age age, long sourceId, long targetId) {
         final Station startStation = stationRepository.findById(sourceId).orElseThrow(EntityNotFoundException::new);
         final Station endStation = stationRepository.findById(targetId).orElseThrow(EntityNotFoundException::new);
-        final GraphPath<Station, SectionEdge> shortestRoute = new Route().getShortestRoute(lineRepository.findAll(), startStation, endStation);
-        final Sections sections = new Sections(
-                shortestRoute.getEdgeList().stream()
-                .map(SectionEdge::getSection)
-                .collect(Collectors.toList()));
-        return PathResponse.of(sections, UserCost.valueOf(age).calculate(sections.totalCharge()));
+        final ShortestPath shortestPath = new ShortestPath(new Route().getShortestRoute(lineRepository.findAll(), startStation, endStation));
+        return PathResponse.of(shortestPath, UserCost.valueOf(age).calculate(shortestPath.totalCharge()));
     }
 
 }

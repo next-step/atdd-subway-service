@@ -57,7 +57,6 @@ public class ShortestPathTest {
     @Test
     void invalidCreateTest() {
         assertThatThrownBy(() -> new ShortestPath(Collections.emptyList())).isExactlyInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new ShortestPath(null)).isExactlyInstanceOf(IllegalArgumentException.class);
     }
 
     /**

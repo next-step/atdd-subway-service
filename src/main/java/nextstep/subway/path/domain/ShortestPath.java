@@ -1,24 +1,31 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.*;
+import nextstep.subway.path.utils.SectionEdge;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ShortestPath {
     private static final int FIRST_INDEX = 0;
     private static final int ZERO = 0;
-    private final List<Section> sections;
+    private List<Section> sections;
 
     private final OperationCostPolicy costPolicy = new DistanceCostPolicy();
 
     public ShortestPath(List<Section> sections) {
-        if (Objects.isNull(sections) || sections.isEmpty()) {
-            throw new IllegalArgumentException("빈값이나 null 를 입력 받을수 없다");
-        }
-        this.sections = sections;
+       updateSectionBy(sections);
+    }
+
+    public ShortestPath(GraphPath<Station, SectionEdge> shortestRoute) {
+        List<Section> edgeSections = shortestRoute.getEdgeList().stream().map(SectionEdge::getSection).collect(Collectors.toList());
+        Collections.reverse(edgeSections);
+        updateSectionBy(edgeSections);
     }
 
 
@@ -43,6 +50,13 @@ public class ShortestPath {
                 .orElseThrow(IllegalStateException::new);
 
         return this.totalDistance().calculate(costPolicy).plus(extraCharge);
+    }
+
+    private void updateSectionBy(final List<Section> sections) {
+        if (Objects.isNull(sections) || sections.isEmpty()) {
+            throw new IllegalArgumentException("빈값이나 null 를 입력 받을수 없다");
+        }
+        this.sections = sections;
     }
 
     @Override

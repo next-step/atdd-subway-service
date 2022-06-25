@@ -2,6 +2,7 @@ package nextstep.subway.path.dto;
 
 import nextstep.subway.line.domain.Charge;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.util.List;
@@ -41,6 +42,14 @@ public class PathResponse {
                 sections.getStations().stream().map(StationResponse::of)
                         .collect(Collectors.toList()),
                 sections.getTotalDistance().value(),
+                charge.value());
+    }
+
+    public static PathResponse of(final ShortestPath shortestPath, final Charge charge) {
+        return new PathResponse(
+                shortestPath.stations().stream().map(StationResponse::of)
+                        .collect(Collectors.toList()),
+                shortestPath.totalDistance().value(),
                 charge.value());
     }
 }
