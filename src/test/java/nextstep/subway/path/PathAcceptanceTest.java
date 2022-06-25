@@ -54,17 +54,21 @@ class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
 
+    /**
+     * When 최단 경로를 조회하면
+     * Then 경로와 거리가 리턴된다
+     */
     @DisplayName("최단 경로를 조회한다.")
     @Test
     void getShortestRoute() {
-        // when 최단 경로를 조회하면
+        // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={sourceId}&target={targetId}", 교대역.getId(), 양재역.getId())
                 .then().log().all()
                 .extract();
 
-        // then 경로와 거리가 리턴된다
+        // then
         List<String> stations = response.jsonPath().get("stations.name");
         assertThat(stations).containsExactly(교대역.getName(), 남부터미널역.getName(), 양재역.getName());
 
