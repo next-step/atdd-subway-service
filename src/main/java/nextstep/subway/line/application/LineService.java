@@ -36,7 +36,7 @@ public class LineService {
     }
 
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
+        List<Line> persistLines = findAll();
         return persistLines.stream()
                 .map(line -> {
                     List<StationResponse> stations = getStationResponse(line);
@@ -45,7 +45,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findAllLines() {
+    public List<Line> findAll() {
         return lineRepository.findAll();
     }
 
