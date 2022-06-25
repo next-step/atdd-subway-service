@@ -29,9 +29,17 @@ public class PathService {
         Station sourceStation = stationService.findStationById(sourceId);
         Station targetStation = stationService.findStationById(targetId);
 
+        ensureNotSameStation(sourceStation, targetStation);
+
         List<Line> lines = lineService.findAll();
         PathFinder pathFinder = new DijkstraPathFinder(lines);
 
         return pathFinder.findShortestPath(sourceStation, targetStation);
+    }
+
+    private void ensureNotSameStation(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new IllegalArgumentException("출발역과 도착역이 동일합니다.");
+        }
     }
 }

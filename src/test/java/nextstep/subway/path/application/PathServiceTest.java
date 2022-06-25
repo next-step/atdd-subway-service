@@ -3,12 +3,11 @@ package nextstep.subway.path.application;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Sections;
-import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,7 +16,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(SpringExtension.class)
@@ -60,14 +60,10 @@ class PathServiceTest {
         삼호선.addSection(new Section(삼호선, 남부터미널역, 양재역, 3));
     }
 
+    @DisplayName("최단 경로를 조회한다.")
     @Test
     void getDijkstraShortestPath() {
         // given
-        List<Section> sections = new ArrayList<>();
-        sections.addAll(이호선.getSections());
-        sections.addAll(삼호선.getSections());
-        sections.addAll(신분당선.getSections());
-
         List<Line> lines = new ArrayList<>();
         lines.add(이호선);
         lines.add(삼호선);
@@ -83,6 +79,17 @@ class PathServiceTest {
         PathResponse pathResponse = pathService.findShortestPath(남부터미널역.getId(), 강남역.getId());
 
         // then
-        assertThat(pathResponse.getDistance()).isEqualTo(9);
+        assertEquals(9, pathResponse.getDistance());
+    }
+
+    @DisplayName("출발역과 도착역이 같은 경우 오류가 발생한다.")
+    @Test
+    void hasSameSourceAndTarget() {
+        PathService pathService = new PathService(lineService, stationService);
+        given(stationService.findStationById(강남역.getId())).willReturn(강남역);
+
+        long 강남역_ID = 강남역.getId();
+        assertThrows(IllegalArgumentException.class, () -> pathService.findShortestPath(강남역_ID, 강남역_ID)
+                , "출발역과 도착역이 동일합니다.");
     }
 }
