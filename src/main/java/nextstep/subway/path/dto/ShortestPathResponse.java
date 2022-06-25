@@ -2,12 +2,12 @@ package nextstep.subway.path.dto;
 
 public class ShortestPathResponse {
     private StationsResponse stations;
-    private int distance;
+    private double distance;
 
     public ShortestPathResponse() {
     }
 
-    public ShortestPathResponse(StationsResponse stations, int distance) {
+    public ShortestPathResponse(StationsResponse stations, double distance) {
         this.stations = stations;
         this.distance = distance;
     }
@@ -16,7 +16,7 @@ public class ShortestPathResponse {
         return stations;
     }
 
-    public int getDistance() {
+    public double getDistance() {
         return distance;
     }
 }

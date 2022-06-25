@@ -20,7 +20,7 @@ public class PathController {
 
     @GetMapping("/short")
     public ResponseEntity<ShortestPathResponse> getShortestPath(ShortestPathRequest requestDto) {
-        return ResponseEntity.ok(pathService.getShortestPath(requestDto));
+        return ResponseEntity.ok(pathService.findShortestPath(requestDto));
     }
 
 }
