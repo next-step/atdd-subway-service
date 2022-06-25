@@ -21,7 +21,9 @@ public class PathResponse {
     }
 
     public static PathResponse of(List<Station> stationList, int distance) {
-        List<StationResponse> stationResponses = stationList.stream().map(StationResponse::of).collect(Collectors.toList());
+        List<StationResponse> stationResponses = stationList.stream()
+                .map(StationResponse::from)
+                .collect(Collectors.toList());
         return new PathResponse(stationResponses, distance);
     }
 
