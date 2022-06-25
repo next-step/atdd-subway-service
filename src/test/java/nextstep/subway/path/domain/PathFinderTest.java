@@ -2,7 +2,6 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,8 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
-import static nextstep.subway.path.acceptance.PathAcceptanceMethod.getStationIds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,10 +26,10 @@ class PathFinderTest {
 
     @BeforeEach
     public void setUp() {
-        강남역 = Station.from("강남역");
-        양재역 = Station.from("양재역");
-        교대역 = Station.from("교대역");
-        남부터미널역 = Station.from("남부터미널역");
+        강남역 = Station.of(1L, "강남역");
+        양재역 = Station.of(2L, "양재역");
+        교대역 = Station.of(3L, "교대역");
+        남부터미널역 = Station.of(4L, "남부터미널역");
 
         신분당선 = new Line.Builder("신분당선", "bg-red-600")
                 .section(Section.of(강남역, 양재역, 10))
@@ -61,13 +60,11 @@ class PathFinderTest {
 
         // when
         Path shortestPath = pathFinder.findShortestPath(남부터미널역, 강남역);
-        PathResponse pathResponse = PathResponse.from(shortestPath);
 
         // then
         assertAll(
-                () -> assertThat(pathResponse.getDistance()).isEqualTo(12),
-                () -> assertThat(getStationIds(pathResponse.getStations()))
-                        .containsExactly(남부터미널역.getId(), 양재역.getId(), 강남역.getId())
+                () -> assertThat(shortestPath.getDistance()).isEqualTo(12),
+                () -> assertThat(shortestPath.getStations()).containsExactly(남부터미널역, 양재역, 강남역)
         );
     }
 
@@ -131,5 +128,22 @@ class PathFinderTest {
         // when & then
         assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, 양재역))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("경로 조회 시 포함된 노선 목록을 조회한다.")
+    @Test
+    void find_path_include_line() {
+        // given
+        PathFinder pathFinder = new DijkstraShortestPathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        // when
+        Path path = pathFinder.findShortestPath(남부터미널역, 강남역);
+        List<Line> includeLines = path.getLines();
+
+        // then
+        assertAll(
+                () -> assertThat(includeLines).hasSize(2),
+                () -> assertThat(includeLines).containsExactly(삼호선, 신분당선)
+        );
     }
 }
