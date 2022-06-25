@@ -205,9 +205,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - 회원이 등록 되지 않은 경우 로그인 실패
     - 패스워드가 틀릴 경우 로그인 실패
     
-- [ ] 인증 - 내 정보 조회 기능 완성하기
-    - [ ] MemberAcceptanceTest 클래스의 manageMyInfo메서드에 인수 테스트를 추가하기
-    - [ ] 토큰을 통한 인증 구현
+- [X] 인증 - 내 정보 조회 기능 완성하기
+    - [X] MemberAcceptanceTest 클래스의 manageMyInfo메서드에 인수 테스트를 추가하기
+    - [X] 토큰을 통한 인증 구현
   
 - [ ] 인증 - 즐겨 찾기 기능 완성하기
 
