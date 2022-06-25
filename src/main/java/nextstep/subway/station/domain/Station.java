@@ -1,7 +1,6 @@
 package nextstep.subway.station.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.line.domain.Section;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -19,6 +18,15 @@ public class Station extends BaseEntity {
 
     public Station(String name) {
         this.name = name;
+    }
+
+    private Station(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public static Station of(Long id, String name) {
+        return new Station(id, name);
     }
 
     public Long getId() {
