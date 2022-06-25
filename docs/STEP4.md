@@ -31,7 +31,7 @@
   - [x] Fare 도메인 구현
   - [x] 연령별 할인 정책 테스트 작성
   - [x] 연령별 할인 정책 추가
-  - [ ] PathService 경로 조회 시 요금 기능 추가
+  - [x] PathService 경로 조회 시 요금 기능 추가
   - [ ] PathController 사용자 기능 추가
 
 ### 요구사항 설명

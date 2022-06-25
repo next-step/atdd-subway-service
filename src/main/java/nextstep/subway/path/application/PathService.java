@@ -1,5 +1,9 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.AuthMember;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.domain.AgeType;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.DijkstraShortestPathFinder;
@@ -24,13 +28,14 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findShortestPath(Long sourceId, Long targetId) {
+    public PathResponse findShortestPath(AuthMember authMember, Long sourceId, Long targetId) {
         List<Line> allLines = lineService.findAll();
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
 
         PathFinder pathFinder = new DijkstraShortestPathFinder(allLines);
         Path path = pathFinder.findShortestPath(source, target);
-        return PathResponse.from(path);
+        Fare fare = Fare.of(path, AgeType.getDiscountPolicy(authMember));
+        return PathResponse.from(path, fare);
     }
 }
