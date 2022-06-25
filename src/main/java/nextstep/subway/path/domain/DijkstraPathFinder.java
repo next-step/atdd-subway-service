@@ -26,6 +26,7 @@ public class DijkstraPathFinder implements PathFinder {
     @Override
     public PathResponse findShortestPath(Station sourceStation, Station targetStation) {
         ensureNotSameStation(sourceStation, targetStation);
+        ensureStationInRoute(sourceStation, targetStation);
 
         initGraphVertex();
         initGraphEdgeWeight();
@@ -37,6 +38,23 @@ public class DijkstraPathFinder implements PathFinder {
         }
 
         return new PathResponse(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+    }
+
+    private void ensureStationInRoute(Station sourceStation, Station targetStation) {
+        if (isNotInRoute(sourceStation)) {
+            throw new IllegalArgumentException("출발역이 존재하지 않습니다.");
+        }
+
+        if (isNotInRoute(targetStation)) {
+            throw new IllegalArgumentException("도착역이 존재하지 않습니다.");
+        }
+    }
+
+    private boolean isNotInRoute(Station sourceStation) {
+        return lines.stream()
+                .map(Line::getStations)
+                .flatMap(Collection::stream)
+                .noneMatch(station -> station.equals(sourceStation));
     }
 
     private void ensureNotSameStation(Station sourceStation, Station targetStation) {

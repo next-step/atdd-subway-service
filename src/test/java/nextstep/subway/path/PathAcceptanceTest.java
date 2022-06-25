@@ -107,6 +107,38 @@ class PathAcceptanceTest extends AcceptanceTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.statusCode());
     }
 
+    /**
+     * When 존재하지 않는 출발역을 조회할 경우
+     * Then 오류가 발생한다
+     */
+    @DisplayName("존재하지 않는 출발역을 조회할 경우 오류가 발생한다.")
+    @Test
+    void isNotPresentSourceStation() {
+        StationResponse 시청역 = 지하철역_등록되어_있음("시청역").as(StationResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 노선_최단경로_조회(시청역, 교대역);
+
+        // then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.statusCode());
+    }
+
+    /**
+     * When 존재하지 않는 도착역을 조회할 경우
+     * Then 오류가 발생한다
+     */
+    @DisplayName("존재하지 않는 도착역을 조회할 경우 오류가 발생한다.")
+    @Test
+    void isNotPresentTargetStation() {
+        StationResponse 시청역 = 지하철역_등록되어_있음("시청역").as(StationResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 노선_최단경로_조회(교대역, 시청역);
+
+        // then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.statusCode());
+    }
+
     private ExtractableResponse<Response> 노선_최단경로_조회(StationResponse 출발역, StationResponse 도착역) {
         return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)

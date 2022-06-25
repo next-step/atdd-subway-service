@@ -77,4 +77,23 @@ class DijkstraPathFinderTest {
                 , "최단거리가 존재하지 않습니다.");
     }
 
+    @DisplayName("존재하지 않는 출발역을 조회할 경우 오류가 발생한다.")
+    @Test
+    void isNotPresentSourceStation() {
+        Station 시청역 = new Station(10L, "시청역");
+
+        PathFinder pathFinder = new DijkstraPathFinder(lines);
+        assertThrows(IllegalArgumentException.class, () -> pathFinder.findShortestPath(시청역, 강남역)
+                , "출발역이 존재하지 않습니다.");
+    }
+
+    @DisplayName("존재하지 않는 도착역을 조회할 경우 오류가 발생한다.")
+    @Test
+    void isNotPresentTargetStation() {
+        Station 시청역 = new Station(10L, "시청역");
+
+        PathFinder pathFinder = new DijkstraPathFinder(lines);
+        assertThrows(IllegalArgumentException.class, () -> pathFinder.findShortestPath(강남역, 시청역)
+                , "도착역이 존재하지 않습니다.");
+    }
 }
