@@ -64,11 +64,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void getShortestRoute() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths?source={sourceId}&target={targetId}", 교대역.getId(), 양재역.getId())
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = 노선_최단경로_조회(교대역, 양재역);
 
         // then
         List<String> stations = response.jsonPath().get("stations.name");
@@ -86,14 +82,37 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void hasSameSourceAndTargetStation() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths?source={sourceId}&target={targetId}", 교대역.getId(), 교대역.getId())
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = 노선_최단경로_조회(교대역, 교대역);
 
         // then
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.statusCode());
+    }
+
+    /**
+     * When 출발역과 도착역이 연결되어 있지 않은 경우
+     * Then 오류가 발생한다
+     */
+    @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 오류가 발생한다.")
+    @Test
+    void isNotConnected() {
+        StationResponse 시청역 = 지하철역_등록되어_있음("시청역").as(StationResponse.class);
+        StationResponse 종각역 = 지하철역_등록되어_있음("종각역").as(StationResponse.class);
+        LineResponse 일호선 = 지하철_노선_등록되어_있음(LineRequest.of(
+                "일호선", "bg-red-600", 시청역.getId(), 종각역.getId(), 3)).as(LineResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 노선_최단경로_조회(종각역, 교대역);
+
+        // then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.statusCode());
+    }
+
+    private ExtractableResponse<Response> 노선_최단경로_조회(StationResponse 출발역, StationResponse 도착역) {
+        return RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", 출발역.getId(), 도착역.getId())
+                .then().log().all()
+                .extract();
     }
 
 }

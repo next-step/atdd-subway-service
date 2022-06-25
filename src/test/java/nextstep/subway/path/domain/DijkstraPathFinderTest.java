@@ -1,27 +1,21 @@
-package nextstep.subway.path.application;
+package nextstep.subway.path.domain;
 
-import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(SpringExtension.class)
-class PathServiceTest {
+class DijkstraPathFinderTest {
 
     private Station 강남역;
     private Station 양재역;
@@ -32,18 +26,14 @@ class PathServiceTest {
     private Line 삼호선;
     private Line 신분당선;
 
-    @MockBean
-    private StationService stationService;
-
-    @MockBean
-    private LineService lineService;
+    private List<Line> lines;
 
     /**
-     * 교대역    --- *2호선* (10) ---    강남역
-     * |                                  |
-     * *3호선(5)*                     *신분당선* (6)
-     * |                                |
-     * 남부터미널역 --- *3호선 (3)* ---   양재
+     * 교대역    --- *2호선* (10) ---    강남역         시청역
+     * |                                  |             |
+     * *3호선(5)*                     *신분당선* (6)   *1호선*(3)
+     * |                                 |             |
+     * 남부터미널역 --- *3호선 (3)* --- 양재역         종각역
      */
 
     @BeforeEach
@@ -58,27 +48,33 @@ class PathServiceTest {
         삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 남부터미널역, 5);
 
         삼호선.addSection(new Section(삼호선, 남부터미널역, 양재역, 3));
-    }
 
-    @DisplayName("최단 경로를 조회한다.")
-    @Test
-    void getDijkstraShortestPath() {
-        // given
-        List<Line> lines = new ArrayList<>();
+        lines = new ArrayList<>();
         lines.add(이호선);
         lines.add(삼호선);
         lines.add(신분당선);
-
-        PathService pathService = new PathService(lineService, stationService);
-
-        given(lineService.findAll()).willReturn(lines);
-        given(stationService.findStationById(남부터미널역.getId())).willReturn(남부터미널역);
-        given(stationService.findStationById(강남역.getId())).willReturn(강남역);
-
-        // when
-        PathResponse pathResponse = pathService.findShortestPath(남부터미널역.getId(), 강남역.getId());
-
-        // then
-        assertEquals(9, pathResponse.getDistance());
     }
+
+    @DisplayName("출발역과 도착역이 같은 경우 오류가 발생한다.")
+    @Test
+    void hasSameSourceAndTarget() {
+        PathFinder pathFinder = new DijkstraPathFinder(lines);
+        assertThrows(IllegalArgumentException.class, () -> pathFinder.findShortestPath(강남역, 강남역)
+                , "출발역과 도착역이 동일합니다.");
+    }
+
+    @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 오류가 발생한다.")
+    @Test
+    void isNotConnected() {
+        Station 시청역 = new Station(10L, "시청역");
+        Station 종각역 = new Station(11L, "종각역");
+        Line 일호선 = new Line("일호선", "bg-navy-600", 시청역, 종각역, 3);
+        lines.add(일호선);
+
+        PathFinder pathFinder = new DijkstraPathFinder(lines);
+
+        assertThrows(IllegalArgumentException.class, () -> pathFinder.findShortestPath(강남역, 종각역)
+                , "최단거리가 존재하지 않습니다.");
+    }
+
 }

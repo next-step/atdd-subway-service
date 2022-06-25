@@ -25,12 +25,24 @@ public class DijkstraPathFinder implements PathFinder {
 
     @Override
     public PathResponse findShortestPath(Station sourceStation, Station targetStation) {
+        ensureNotSameStation(sourceStation, targetStation);
+
         initGraphVertex();
         initGraphEdgeWeight();
 
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        if (shortestPath == null) {
+            throw new IllegalArgumentException("최단거리가 존재하지 않습니다.");
+        }
+
         return new PathResponse(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+    }
+
+    private void ensureNotSameStation(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new IllegalArgumentException("출발역과 도착역이 동일합니다.");
+        }
     }
 
     private void initGraphEdgeWeight() {
