@@ -28,15 +28,15 @@ public class Distance {
         return new Distance(distance);
     }
 
-    public Distance decrease(Distance distance) {
-        if (this.distance <= distance.distance) {
+    public Distance decrease(Distance other) {
+        if (this.distance <= other.distance) {
             throw new IllegalArgumentException(LESS_THEN_ALREADY_DISTANCE);
         }
-        return new Distance(this.distance - distance.distance);
+        return new Distance(this.distance - other.distance);
     }
 
-    public Distance increase(Distance distance) {
-        return new Distance(this.distance + distance.distance);
+    public Distance increase(Distance other) {
+        return new Distance(this.distance + other.distance);
     }
 
     public int get() {
