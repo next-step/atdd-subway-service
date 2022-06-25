@@ -86,7 +86,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.as(TokenResponse.class).getAccessToken()).isNotEmpty();
     }
 
-    private ExtractableResponse<Response> 회원이_등록되어_있음(String email, String password, int age) {
+    public static TokenResponse 로그인_되어_있음(String email, String password) {
+        return 토큰_요청(email, password).as(TokenResponse.class);
+    }
+
+    public static ExtractableResponse<Response> 회원이_등록되어_있음(String email, String password, int age) {
         return MemberAcceptanceTest.회원_생성을_요청(email, password, age);
     }
 }
