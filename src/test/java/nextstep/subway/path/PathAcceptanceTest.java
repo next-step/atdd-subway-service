@@ -10,6 +10,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노�
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @DisplayName("지하철 최단 경로 조회")
@@ -73,7 +75,25 @@ class PathAcceptanceTest extends AcceptanceTest {
         assertThat(stations).containsExactly(교대역.getName(), 남부터미널역.getName(), 양재역.getName());
 
         int distance = response.jsonPath().get("distance");
-        assertThat(distance).isEqualTo(5);
+        assertEquals(5, distance);
+    }
+
+    /**
+     * When 출발역과 도착역이 같은 경우
+     * Then 오류가 발생한다
+     */
+    @DisplayName("출발역과 도착역이 같은 경우 오류가 발생한다.")
+    @Test
+    void hasSameSourceAndTargetStation() {
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", 교대역.getId(), 교대역.getId())
+                .then().log().all()
+                .extract();
+
+        // then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.statusCode());
     }
 
 }
