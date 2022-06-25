@@ -1,4 +1,7 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
+
+import nextstep.subway.line.domain.Charge;
+import nextstep.subway.line.domain.OperationCostPolicy;
 
 import static nextstep.subway.path.domain.ExceedCharge.FIFTY_EXCEED;
 import static nextstep.subway.path.domain.ExceedCharge.TEN_EXCEED;

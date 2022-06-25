@@ -6,7 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
-import nextstep.subway.line.domain.DistanceCostPolicy;
+import nextstep.subway.path.domain.DistanceCostPolicy;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -45,9 +45,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 압구정역;
     private TokenResponse tokenResponse;
 
-    private String EMAIL = "email@email.com";
+    private final String EMAIL = "email@email.com";
 
-    private DistanceCostPolicy distanceCostPolicy = new DistanceCostPolicy();
+    private final DistanceCostPolicy distanceCostPolicy = new DistanceCostPolicy();
+    
     @BeforeEach
     public void setUp() {
         super.setUp();
