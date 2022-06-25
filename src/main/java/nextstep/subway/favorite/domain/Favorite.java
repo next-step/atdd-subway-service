@@ -33,7 +33,7 @@ public class Favorite extends BaseEntity {
         this.target = target;
     }
 
-    private static Favorite of(Member member, Station source, Station target) {
+    public static Favorite of(Member member, Station source, Station target) {
         validateStations(source, target);
         return new Favorite(member, source, target);
     }
