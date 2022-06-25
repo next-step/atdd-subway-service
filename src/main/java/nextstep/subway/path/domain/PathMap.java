@@ -18,7 +18,6 @@ public class PathMap {
 
         lines.forEach(
                 line -> line.getSections()
-                            .getSections()
                             .forEach(
                                     section -> {
                                         graph.addVertex(section.getUpStation());
