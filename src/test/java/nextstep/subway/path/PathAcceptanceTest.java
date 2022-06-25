@@ -32,8 +32,6 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
-    private LineResponse 신분당선;
-    private LineResponse 이호선;
     private LineResponse 삼호선;
 
     private StationResponse 강남역;
@@ -43,17 +41,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private StationResponse 신사역;
     private StationResponse 압구정역;
-    private TokenResponse tokenResponse;
-
-    private final String EMAIL = "email@email.com";
 
     private final DistanceCostPolicy distanceCostPolicy = new DistanceCostPolicy();
     
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-        tokenResponse = Login(EMAIL, 20);
 
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
@@ -62,8 +55,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         신사역 = StationAcceptanceTest.지하철역_등록되어_있음("신사역").as(StationResponse.class);
         압구정역 = StationAcceptanceTest.지하철역_등록되어_있음("입구정역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 200);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 500);
+        지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 200);
+        지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 500);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
@@ -76,7 +69,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortedRoute() {
         // When
-        final ExtractableResponse<Response> response = 최단_경로_검색(tokenResponse, 교대역, 양재역);
+        final ExtractableResponse<Response> response = 인증_정보_없이_이용한_최단_경로_검색(교대역, 양재역);
 
         // Then
         최단_경로_기준으로_지하철역_정보가_출력됨(response, Arrays.asList(교대역, 남부터미널역, 양재역));
@@ -93,7 +86,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final StationResponse 등록되지않은역 = new StationResponse(100L, "잘못된역", LocalDateTime.now(), LocalDateTime.now());
 
         // When
-        final ExtractableResponse<Response> reponse = 최단_경로_검색(tokenResponse, 등록되지않은역, 양재역);
+        final ExtractableResponse<Response> reponse = 인증_정보_없이_이용한_최단_경로_검색(등록되지않은역, 양재역);
 
         // Then
         검색이_안됨(reponse);
@@ -113,7 +106,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final LineResponse 일호선 = 지하철_노선_등록되어_있음("일호선", "bg-red-600", 수원역, 병점역, 10, 0);
 
         // When
-        final ExtractableResponse<Response> response = 최단_경로_검색(tokenResponse, 교대역, 병점역);
+        final ExtractableResponse<Response> response = 인증_정보_없이_이용한_최단_경로_검색(교대역, 병점역);
 
         // Then
         검색이_안됨(response);
@@ -127,7 +120,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void sameStationTest() {
         // When
-        final ExtractableResponse<Response> response = 최단_경로_검색(tokenResponse, 교대역, 교대역);
+        final ExtractableResponse<Response> response = 인증_정보_없이_이용한_최단_경로_검색(교대역, 교대역);
 
         // Then
         검색이_안됨(response);
@@ -145,7 +138,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void checkSectionAndDistanceAndCharge() {
 
         // when
-        final ExtractableResponse<Response> response = 최단_경로_검색(tokenResponse, 교대역, 양재역);
+        final ExtractableResponse<Response> response = 인증_정보_없이_이용한_최단_경로_검색(교대역, 양재역);
 
         // then
         거리_금액_확인(response, 5, distanceCostPolicy.basicCharge().value());
@@ -159,7 +152,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void checkDistanceAndChargeWhenDistanceIsTwenty() {
         // when
-        final ExtractableResponse<Response> response = 최단_경로_검색(tokenResponse, 신사역, 양재역);
+        final ExtractableResponse<Response> response = 인증_정보_없이_이용한_최단_경로_검색(신사역, 양재역);
 
         // then
         최단_경로_기준으로_지하철역_정보가_출력됨(response, Arrays.asList(신사역,교대역, 남부터미널역, 양재역));
@@ -174,7 +167,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void checkDistanceAndChargeWhenDistanceIsFifty() {
         // when
-        final ExtractableResponse<Response> response = 최단_경로_검색(tokenResponse, 압구정역, 양재역);
+        final ExtractableResponse<Response> response = 인증_정보_없이_이용한_최단_경로_검색(압구정역, 양재역);
 
         // then
         최단_경로_기준으로_지하철역_정보가_출력됨(response, Arrays.asList(압구정역,신사역,교대역, 남부터미널역, 양재역));
@@ -193,7 +186,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final TokenResponse 청소년_로그인 = Login("teenager@teenager.com", 18);
 
         // When
-        final ExtractableResponse<Response> 청소년이_요청한_결과 = 최단_경로_검색(청소년_로그인, 교대역, 양재역);
+        final ExtractableResponse<Response> 청소년이_요청한_결과 = 인증_정보를_이용한_최단_경로_검색(청소년_로그인, 교대역, 양재역);
 
         // Then
         최단_경로_기준으로_지하철역_정보가_출력됨(청소년이_요청한_결과, Arrays.asList(교대역, 남부터미널역, 양재역));
@@ -213,7 +206,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final TokenResponse 어린이_로그인 = Login("child@child.com", 12);
 
         // When
-        final ExtractableResponse<Response> 어린이가_요청한_결과 = 최단_경로_검색(어린이_로그인, 교대역, 양재역);
+        final ExtractableResponse<Response> 어린이가_요청한_결과 = 인증_정보를_이용한_최단_경로_검색(어린이_로그인, 교대역, 양재역);
 
         // Then
         최단_경로_기준으로_지하철역_정보가_출력됨(어린이가_요청한_결과, Arrays.asList(교대역, 남부터미널역, 양재역));
@@ -240,7 +233,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(resultStationNames).containsExactlyElementsOf(expectedStationNames);
     }
 
-    public ExtractableResponse<Response> 최단_경로_검색(final TokenResponse tokenResponse, final StationResponse source, final StationResponse target) {
+    public ExtractableResponse<Response> 인증_정보_없이_이용한_최단_경로_검색( final StationResponse source, final StationResponse target) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", source.getId(), target.getId())
+                .then().log().all()
+                .extract();
+    }
+    public ExtractableResponse<Response> 인증_정보를_이용한_최단_경로_검색(final TokenResponse tokenResponse, final StationResponse source, final StationResponse target) {
         return RestAssured.given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
