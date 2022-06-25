@@ -9,13 +9,12 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -114,6 +113,43 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         assertThat(removeResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("지하철 구간과 관련한 총 인수테스트")
+    @TestFactory
+    Collection<DynamicTest> 지하철_구간_테스트() {
+        return Arrays.asList(
+                DynamicTest.dynamicTest("지하철 구간 등록 테스트", () -> {
+                    // when 지하철 구간 등록 요청
+                    LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+
+                    //then 지하철 구간 등록됨
+                    ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+                    LineSectionAcceptanceTest.지하철_노선에_지하철역_등록됨(response);
+                }),
+                DynamicTest.dynamicTest("등록된 구간 목록 조회 테스트", () -> {
+                    //when 지하철 노선에 등록된 역 목록 조회
+                    ExtractableResponse<Response> linesResponse = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+
+                    //then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+                    LineSectionAcceptanceTest.지하철_노선에_지하철역_순서_정렬됨(linesResponse, Arrays.asList(강남역, 양재역, 광교역));
+                }),
+                DynamicTest.dynamicTest("지하철 구간 삭제 테스트", () -> {
+                    //when 지하철 구간 삭제 요청
+                    ExtractableResponse<Response> removeResponse = LineSectionAcceptanceTest.지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+
+                    //then 지하철 구간 삭제됨
+                    LineSectionAcceptanceTest.지하철_노선에_지하철역_제외됨(removeResponse);
+                }),
+                DynamicTest.dynamicTest("삭제된 구간 목록 조회 테스트", () -> {
+                    //when 지하철 노선에 등록된 역 목록 조회 요청
+                    ExtractableResponse<Response> linesResponseForRemoved = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+
+                    //then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+                    LineSectionAcceptanceTest.지하철_노선에_지하철역_순서_정렬됨(linesResponseForRemoved, Arrays.asList(강남역, 광교역));
+                })
+
+        );
+    }
+
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
@@ -139,14 +175,10 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         List<Long> stationIds = line.getStations().stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
-
-        Collections.sort(stationIds);
-
+        
         List<Long> expectedStationIds = expectedStations.stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
-
-        Collections.sort(expectedStationIds);
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }
