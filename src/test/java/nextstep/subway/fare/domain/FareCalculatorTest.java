@@ -44,7 +44,7 @@ class FareCalculatorTest {
      */
     @Test
     void 거리_노선_요금계산() {
-        Distance distance = new Distance(20);
+        Distance distance = Distance.from(20);
         List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
         Fare expected = Fare.from(2350);
 

@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class DistanceFarePolicy implements FarePolicy {
     private static final Fare BASIC_FARE = Fare.from(1_250);
-    private static final Distance BASIC_DISTANCE = new Distance(10);
-    private static final Distance EXTRA_FARE_DISTANCE = new Distance(50);
+    private static final Distance BASIC_DISTANCE = Distance.from(10);
+    private static final Distance EXTRA_FARE_DISTANCE = Distance.from(50);
 
     @Override
     public Fare calculate(Distance distance) {

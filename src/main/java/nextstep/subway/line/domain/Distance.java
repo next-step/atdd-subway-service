@@ -10,15 +10,19 @@ public class Distance {
     @Column
     private final int distance;
 
-    public Distance() {
+    protected Distance() {
         distance = MIN;
     }
 
-    public Distance(int distance) {
+    protected Distance(int distance) {
         if (distance < MIN) {
             throw new IllegalArgumentException("거리는 0보다 작을 수 없습니다.");
         }
         this.distance = distance;
+    }
+
+    public static Distance from(int distance) {
+        return new Distance(distance);
     }
 
     public int getDistance() {
@@ -29,11 +33,11 @@ public class Distance {
         if (this.distance - distance.getDistance() <= MIN) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        return new Distance(this.distance - distance.getDistance());
+        return Distance.from(this.distance - distance.getDistance());
     }
 
     public Distance plus(Distance distance) {
-        return new Distance(this.distance + distance.getDistance());
+        return Distance.from(this.distance + distance.getDistance());
     }
 
     public boolean isLessThan(Distance targetDistance) {

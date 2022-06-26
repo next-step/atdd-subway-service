@@ -14,21 +14,21 @@ class DistanceFarePolicyTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 5, 10})
     void 기본요금_10키로이하(int distance) {
-        assertThat(policy.calculate(new Distance(distance)))
+        assertThat(policy.calculate(Distance.from(distance)))
                 .isEqualTo(BASIC_FARE);
     }
 
     @ParameterizedTest
     @CsvSource(value = {"11:1350", "20:1450", "50:2050"}, delimiter = ':')
     void 요금_10키로초과_50키로이하(int distance, int fare) {
-        assertThat(policy.calculate(new Distance(distance)))
+        assertThat(policy.calculate(Distance.from(distance)))
                 .isEqualTo(Fare.from(fare));
     }
 
     @ParameterizedTest
     @CsvSource(value = {"55:2250", "58:2350"}, delimiter = ':')
     void 요금_50키로초과(int distance, int fare) {
-        assertThat(policy.calculate(new Distance(distance)))
+        assertThat(policy.calculate(Distance.from(distance)))
                 .isEqualTo(Fare.from(fare));
     }
 
