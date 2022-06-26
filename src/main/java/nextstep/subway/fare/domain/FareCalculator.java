@@ -10,17 +10,22 @@ import java.util.List;
 public class FareCalculator {
     private final DistanceFarePolicy distanceFarePolicy;
     private final LineFarePolicy lineFarePolicy;
+    private final AgeFarePolicy ageFarePolicy;
 
-    public FareCalculator(DistanceFarePolicy distanceFarePolicy, LineFarePolicy lineFarePolicy) {
+    public FareCalculator(DistanceFarePolicy distanceFarePolicy, LineFarePolicy lineFarePolicy, AgeFarePolicy ageFarePolicy) {
         this.distanceFarePolicy = distanceFarePolicy;
         this.lineFarePolicy = lineFarePolicy;
+        this.ageFarePolicy = ageFarePolicy;
     }
 
-    public Fare calculate(Distance distance, List<Line> lines) {
+    public Fare calculate(Distance distance, List<Line> lines, int age) {
         Fare distanceFare = distanceFarePolicy.calculate(distance);
         Fare lineFare = lineFarePolicy.calculate(lines);
+        Fare distanceLineFare = distanceFare.plus(lineFare);
 
-        return distanceFare.plus(lineFare);
+        Fare calculate = ageFarePolicy.calculate(distanceLineFare, age);
+
+        return calculate;
     }
 
 }

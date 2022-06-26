@@ -15,7 +15,8 @@ class FareCalculatorTest {
 
     private final DistanceFarePolicy distancePolicy = new DistanceFarePolicy();
     private final LineFarePolicy linePolicy = new LineFarePolicy();
-    private final FareCalculator fareCalculator = new FareCalculator(distancePolicy, linePolicy);
+    private final AgeFarePolicy ageFarePolicy = new AgeFarePolicy();
+    private final FareCalculator fareCalculator = new FareCalculator(distancePolicy, linePolicy, ageFarePolicy);
     private Line 신분당선;
     private Line 이호선;
     private Line 삼호선;
@@ -38,17 +39,19 @@ class FareCalculatorTest {
     }
 
     /**
-     * when 기본요금 1250원에 추가요금 900원이 있는 노선을 20KM 이용하면
-     * 총금액은 2350원의 요금이 나온다.
-     * 기본요금(1250원) + 추가요금(900원) + 10KM 추가요금(200원)
+     * when 10살 어린이가 기본요금 1250원에 추가요금 900원이 있는 노선을 20KM 이용하면
+     * then 총금액은 1350원의 요금이 나온다.
+     * 기본요금(1250원) + 추가요금(900원) + 10KM 추가요금(200원) =2350원
+     * 어린이 할인(2350-350)*0.5 = 1000원)
+     * 계산요금 = 2350-1000 = 1350원
      */
     @Test
     void 거리_노선_요금계산() {
         Distance distance = Distance.from(20);
         List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
-        Fare expected = Fare.from(2350);
+        Fare expected = Fare.from(1350);
 
-        assertThat(fareCalculator.calculate(distance, lines)).isEqualTo(expected);
+        assertThat(fareCalculator.calculate(distance, lines, 10)).isEqualTo(expected);
     }
 
 
