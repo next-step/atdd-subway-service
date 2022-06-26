@@ -29,7 +29,7 @@ public class LineService {
     public Long saveLine(LineRequest request) {
         Station upStation = stationFinder.findStationById(request.getUpStationId());
         Station downStation = stationFinder.findStationById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(request.toLine(upStation, downStation));
 
         return persistLine.getId();
     }
