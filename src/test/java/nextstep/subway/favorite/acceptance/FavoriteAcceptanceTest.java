@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
@@ -39,7 +41,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     Stream<DynamicNode> 시나리오_테스트() {
         return Stream.of(
                 dynamicTest("지하철역, 노선, 회원, 로그인", this::background),
-                dynamicTest("즐겨찾기 생성", this::createFavorite)
+                dynamicTest("즐겨찾기 생성", this::create),
+                dynamicTest("즐겨찾기 목록 조회", this::findAll),
+                dynamicTest("즐겨찾기 삭제", this::remove)
         );
     }
 
@@ -56,7 +60,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
     }
 
-    private void createFavorite() {
+    private void create() {
         // when
         ExtractableResponse<Response> response = 즐겨찾기_생성_요청(토큰, 강남역.getId(), 양재역.getId());
 
@@ -64,8 +68,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(response);
     }
 
-    public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    private void findAll() {
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(토큰);
+
+        // then
+        즐겨찾기_조회됨(response);
+    }
+
+    private void remove() {
+
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long source, Long target) {
@@ -79,5 +91,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .when().post("/favorites")
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 즐겨찾기_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        List<FavoriteResponse> favorites = response.jsonPath().getList(".", FavoriteResponse.class);
+        assertThat(favorites).isNotEmpty();
     }
 }

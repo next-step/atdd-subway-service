@@ -10,11 +10,15 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -48,13 +52,14 @@ class FavoriteServiceTest {
 
         로그인_사용자 = new LoginMember(1L , "email@email.com", 20);
 
-        사용자 = new Member(로그인_사용자.getEmail(), "password", 20);
+        사용자 = new Member(로그인_사용자.getEmail(), "password", 로그인_사용자.getAge());
 
         즐겨찾기 = new Favorite(사용자, 강남역, 양재역);
     }
 
+    @DisplayName("즐겨찾기 등록")
     @Test
-    void createFavorite() {
+    void create() {
         // given
         given(stationService.findStationById(1L)).willReturn(강남역);
         given(stationService.findStationById(1L)).willReturn(양재역);
@@ -62,7 +67,7 @@ class FavoriteServiceTest {
         given(favoriteRepository.save(any())).willReturn(즐겨찾기);
 
         // when
-        FavoriteResponse favorite = favoriteService.createFavorite(로그인_사용자, new FavoriteRequest(1L, 2L));
+        FavoriteResponse favorite = favoriteService.create(로그인_사용자, new FavoriteRequest(1L, 2L));
 
         // then
         assertAll(
@@ -70,5 +75,18 @@ class FavoriteServiceTest {
                 () -> assertThat(favorite.getSource().getName()).isEqualTo("강남역"),
                 () -> assertThat(favorite.getTarget().getName()).isEqualTo("양재역")
         );
+    }
+
+    @DisplayName("즐겨찾기 목록 조회")
+    @Test
+    void findAll() {
+        // given
+        given(favoriteRepository.findByMember(any())).willReturn(Collections.singletonList(즐겨찾기));
+
+        // when
+        List<FavoriteResponse> favorites = favoriteService.findAll(로그인_사용자);
+
+        // then
+        assertThat(favorites).isNotEmpty();
     }
 }
