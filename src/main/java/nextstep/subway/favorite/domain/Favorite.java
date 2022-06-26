@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.hibernate.annotations.OnDelete;
@@ -35,17 +36,17 @@ public class Favorite extends BaseEntity {
     }
 
     private Favorite(Member member, Station source, Station target) {
+        validateEqaulStation(source, target);
         this.member = member;
         this.source = source;
         this.target = target;
     }
 
-    public static Favorite of(Member member, Station sourceStation, Station targetStation) {
-        validate(sourceStation, targetStation);
-        return new Favorite(member, sourceStation, targetStation);
+    public static Favorite of(Member member, Station source, Station target) {
+        return new Favorite(member, source, target);
     }
 
-    private static void validate(Station source, Station target) {
+    private void validateEqaulStation(Station source, Station target) {
         if (source.equals(target)) {
             throw new IllegalArgumentException(ERROR_MESSAGE_EQAUL_STATION);
         }
@@ -53,7 +54,7 @@ public class Favorite extends BaseEntity {
 
     public void vlidateOwner(Long memberId) {
         if (!Objects.equals(member.getId(), memberId)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_OWNER);
+            throw new AuthorizationException(ERROR_MESSAGE_NOT_OWNER);
         }
     }
 
