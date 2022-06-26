@@ -2,12 +2,14 @@ package nextstep.subway.favorite.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -135,5 +137,25 @@ class FavoriteServiceTest {
         );
     }
 
+    @Test
+    @DisplayName("즐겨찾기가 조회가 되지 않음")
+    void noSearchFavorite() {
+        //given
+        when(favoriteRepository.findById(any())).thenReturn(Optional.empty());
 
+        //then
+        assertThatThrownBy(() -> favoriteService.searchFavorite(1L))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 항목이 없을경우 삭제가 되지 않는다.")
+    void deleteFavorites() {
+        when(favoriteRepository.findByMemberIdAndId(유저.getId(),1L)).thenReturn(Optional.empty());
+
+        //when & then
+        assertThatThrownBy(() -> favoriteService.deleteFavorite(유저.getId(), 1L))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+    
 }

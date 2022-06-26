@@ -55,4 +55,11 @@ public class FavoriteService {
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
     }
+
+    public void deleteFavorite(long memberId, long favoriteId) {
+        final Favorite favorite = favoriteRepository.findByMemberIdAndId(memberId, favoriteId)
+                .orElseThrow(() -> new NoSuchElementException("해당 즐겨찾기를 찾을 수 없습니다."));
+
+        favoriteRepository.delete(favorite);
+    }
 }

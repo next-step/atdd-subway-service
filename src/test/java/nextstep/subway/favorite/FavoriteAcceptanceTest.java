@@ -11,6 +11,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
@@ -69,12 +70,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 /*
 Scenario: 즐겨찾기를 관리
-        When 즐겨찾기 생성을 요청
+        When 즐겨찾기 생성을 요청 (2건)
         Then 즐겨찾기 생성됨
         When 즐겨찾기 목록 조회 요청
         Then 즐겨찾기 목록 조회됨
+        When 즐겨찾기 삭제할 즐겨찾기 조회
+        Then 즐겨찾기 즐겨찾기가 조회 됨
         When 즐겨찾기 삭제 요청
         Then 즐겨찾기 삭제됨
+        WHEN 삭제된 즐겨 찾기 조회
+        Then 삭제된 즐겨 찾기 조회되지 않음
 */
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
@@ -92,22 +97,16 @@ Scenario: 즐겨찾기를 관리
         //then
         즐겨찾기_목록_조회됨(retrieveFavorites, Arrays.asList(양재역.getId(), 교대역.getId()));
 
+        final ExtractableResponse<Response> responseFavorite = 즐겨찾기_조회_요청(createFavorite);
+        즐겨찾기가_조회됨(responseFavorite);
 
-    }
+        FavoriteResponse 첫번째_즐겨찾기 = responseFavorite.as(FavoriteResponse.class);
 
+        final ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(로그인된_회원, 첫번째_즐겨찾기.getId());
+        즐겨찾기가_삭제됨(deleteResponse);
 
-
-    @DisplayName("즐겨찾기 조회")
-    @Test
-    void searchFavorite() {
-        //givne
-        final ExtractableResponse<Response> createFavorite = 즐겨찾기_생성_요청(로그인된_회원, new FavoriteRequest(강남역.getId(), 양재역.getId()));
-
-        //when
-        final ExtractableResponse<Response> 즐겨찾기_조회_요청 = 즐겨찾기_조회_요청(createFavorite);
-
-        //then
-        즐겨찾기가_조회됨(즐겨찾기_조회_요청);
+        final ExtractableResponse<Response> searchDeleteFavorite = 즐겨찾기_조회_요청(첫번째_즐겨찾기.getId());
+        즐겨찾기가_조회가_되지않음(searchDeleteFavorite);
     }
 
     private void 즐겨찾기가_조회됨(ExtractableResponse<Response> response) {
@@ -115,17 +114,14 @@ Scenario: 즐겨찾기를 관리
         assertThat(response.jsonPath().getString("source.name")).isNotEmpty();
     }
 
-    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> retrieveFavorites, List<Long> favoritTargets) {
-        assertThat(retrieveFavorites.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(retrieveFavorites.jsonPath().getList("target.id",Long.class)).containsAnyElementsOf(favoritTargets);
+    private void 즐겨찾기가_조회가_되지않음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
 
-
-    @DisplayName("즐겨찾기 목록 조회")
-    @Test
-    void searchfavorit() {
-
+    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> retrieveFavorites, List<Long> favoritTargets) {
+        assertThat(retrieveFavorites.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(retrieveFavorites.jsonPath().getList("target.id",Long.class)).containsAnyElementsOf(favoritTargets);
     }
 
 
@@ -161,10 +157,29 @@ Scenario: 즐겨찾기를 관리
                 .extract();
     }
 
+    private ExtractableResponse<Response> 즐겨찾기_조회_요청(long favoriteId) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .pathParam("favoriteId", favoriteId)
+                .when().get("/favorites/{favoriteId}")
+                .then().log().all()
+                .extract();
+    }
 
 
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse tokenResponse, long favoriteId) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .pathParam("favoriteId", favoriteId)
+                .when().delete("/favorites/{favoriteId}")
+                .then().log().all()
+                .extract();
+    }
 
-
+    private void 즐겨찾기가_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 
 
 

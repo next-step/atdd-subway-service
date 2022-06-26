@@ -209,7 +209,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] MemberAcceptanceTest 클래스의 manageMyInfo메서드에 인수 테스트를 추가하기
     - [X] 토큰을 통한 인증 구현
   
-- [ ] 인증 - 즐겨 찾기 기능 완성하기
+- [X] 인증 - 즐겨 찾기 기능 완성하기
   - 인수 조건
   ```text
   Feature: 즐겨찾기를 관리한다.
@@ -221,14 +221,17 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     And 회원 등록되어 있음
     And 로그인 되어있음
 
-  Scenario: 즐겨찾기를 관리
-    When 즐겨찾기 생성을 요청
-    Then 즐겨찾기 생성됨
-    When 즐겨찾기 목록 조회 요청
-    Then 즐겨찾기 목록 조회됨
-    When 즐겨찾기 삭제 요청
-    Then 즐겨찾기 삭제됨
-
+    Scenario: 즐겨찾기를 관리
+        When 즐겨찾기 생성을 요청 (2건)
+        Then 즐겨찾기 생성됨
+        When 즐겨찾기 목록 조회 요청
+        Then 즐겨찾기 목록 조회됨
+        When 즐겨찾기 삭제할 즐겨찾기 조회
+        Then 즐겨찾기 즐겨찾기가 조회 됨
+        When 즐겨찾기 삭제 요청
+        Then 즐겨찾기 삭제됨
+        WHEN 삭제된 즐겨 찾기 조회
+        Then 삭제된 즐겨 찾기 조회되지 않음
   ```
   - 즐겨찾기 생성 요청/응답
   ```text
