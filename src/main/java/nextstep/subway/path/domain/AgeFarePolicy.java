@@ -1,21 +1,20 @@
 package nextstep.subway.path.domain;
 
-import java.math.BigDecimal;
 import java.util.function.Function;
 
 public enum AgeFarePolicy {
-    ALL(value -> new BigDecimal(value)),
-    TEENAGER(value -> new BigDecimal((value - 350) * 4 / 5).setScale(0, BigDecimal.ROUND_CEILING)),
-    CHILDREN(value -> new BigDecimal((value - 350) / 2).setScale(0, BigDecimal.ROUND_CEILING)),
-    FREE(value -> new BigDecimal(0));
+    ALL(value -> value),
+    TEENAGER(value -> (int)(Math.ceil((value - 350) * 4 / 5.0))),
+    CHILDREN(value -> (int)(Math.ceil((value - 350) / 2.0))),
+    FREE(value -> 0);
 
-    private Function<Integer, BigDecimal> operator;
+    private Function<Integer, Integer> operator;
 
-    AgeFarePolicy(Function<Integer, BigDecimal> operator) {
+    AgeFarePolicy(Function<Integer, Integer> operator) {
         this.operator = operator;
     }
 
-    public static BigDecimal calculate(int fare, int age) {
+    public static int calculate(int fare, int age) {
         if(age < 6 || age >= 65) {
             return FREE.operator.apply(fare);
         }
@@ -31,7 +30,7 @@ public enum AgeFarePolicy {
         return ALL.operator.apply(fare);
     }
 
-    public Function<Integer, BigDecimal> getOperator() {
+    public Function<Integer, Integer> getOperator() {
         return operator;
     }
 }

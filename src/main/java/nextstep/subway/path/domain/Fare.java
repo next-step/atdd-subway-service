@@ -38,7 +38,7 @@ public class Fare {
     }
 
     private void calculateAgePolicy(int age) {
-        this.fare = AgeFarePolicy.calculate(this.fare, age).intValue();
+        this.fare = AgeFarePolicy.calculate(this.fare, age);
     }
 
     public int getFare() {
