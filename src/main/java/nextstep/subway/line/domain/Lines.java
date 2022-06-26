@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.path.domain.Paths;
 import nextstep.subway.station.domain.Station;
 
 import java.util.ArrayList;
@@ -30,5 +31,15 @@ public class Lines {
     public boolean notContainsAll(Station upStation, Station downStation) {
         return !getAllStations()
                 .containsAll(Arrays.asList(upStation, downStation));
+    }
+
+    public List<Line> getLinesInShortestPath(List<Station> stations) {
+        Paths paths = new Paths(stations);
+
+        return getAllSections().stream()
+                .filter(paths::contains)
+                .map(Section::getLine)
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

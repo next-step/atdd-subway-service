@@ -50,7 +50,7 @@ public class DistanceFarePolicy {
         }
 
         private static int calculateFirstOverFare(int distance) {
-            return (int) ((Math.ceil((distance - 1) / FIRST_OVER_FARE_DISTANCE) + 1) * 100);
+            return (int) ((Math.ceil((distance - FIRST_OVER.start - 1) / FIRST_OVER_FARE_DISTANCE) + 1) * 100);
         }
 
         private static int calculateSecondOverFare(int distance) {

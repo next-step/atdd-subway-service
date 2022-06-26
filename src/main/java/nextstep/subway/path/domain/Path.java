@@ -12,6 +12,7 @@ public class Path {
     }
 
     public boolean isSame(Station upStation, Station downStation) {
-        return source.match(upStation) && target.match(downStation);
+        return (source.match(upStation) && target.match(downStation))
+                || (source.match(downStation) && target.match(upStation));
     }
 }

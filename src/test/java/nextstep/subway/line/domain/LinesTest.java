@@ -16,9 +16,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("전체 노선에 대한 기능")
 public class LinesTest {
-    private static Station 강남역;
-    private static Station 양재역;
-    private static Station 수진역;
+    private static Station 강남역 = new Station( "강남역");
+    private static Station 양재역 = new Station( "양재역");
+    private static Station 수진역 = new Station( "수진역");
+    private static Station 남부터미널역 = new Station( "남부터미널역");
+
+    private Line 신분당선;
+    private Line 삼호선;
 
     private Lines lines;
 
@@ -26,12 +30,12 @@ public class LinesTest {
     void setUp() {
         강남역 = new Station( "강남역");
         양재역 = new Station( "양재역");
-        Station 남부터미널역 = new Station( "남부터미널역");
+        남부터미널역 = new Station( "남부터미널역");
         Station 교대역 = new Station( "교대역");
         수진역 = new Station( "수진역");
 
-        Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, 4);
-        Line 삼호선 = new Line("삼호선", "orange", 교대역, 남부터미널역, 3);
+        신분당선 = new Line("신분당선", "red", 강남역, 양재역, 4);
+        삼호선 = new Line("삼호선", "orange", 교대역, 남부터미널역, 3);
         Line 이호선 = new Line("이호선", "green", 교대역, 강남역, 10);
 
         삼호선.addSection(new Section(남부터미널역, 양재역, 2));
@@ -89,5 +93,17 @@ public class LinesTest {
         return Arrays.asList(
                 강남역, 수진역
         );
+    }
+
+    @Test
+    void 최단경로가_지나가는_노선들을_조회한다() {
+        // given
+        List<Station> shortestPath = Arrays.asList(강남역, 양재역, 남부터미널역);
+
+        // when
+        List<Line> result = lines.getLinesInShortestPath(shortestPath);
+
+        // then
+        assertThat(result).containsExactly(신분당선, 삼호선);
     }
 }
