@@ -9,4 +9,5 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
     List<Favorite> findByMember(Member member);
 
+    void deleteByIdAndMember(Long id, Member member);
 }

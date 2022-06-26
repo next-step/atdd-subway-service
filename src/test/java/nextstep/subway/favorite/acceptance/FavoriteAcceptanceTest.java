@@ -36,6 +36,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 광교역;
     private String 토큰;
 
+    private ExtractableResponse<Response> createResponse;
+
     @DisplayName("즐겨찾기를 관리한다.")
     @TestFactory
     Stream<DynamicNode> 시나리오_테스트() {
@@ -62,10 +64,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void create() {
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(토큰, 강남역.getId(), 양재역.getId());
+        createResponse = 즐겨찾기_생성_요청(토큰, 강남역.getId(), 양재역.getId());
 
         // then
-        즐겨찾기_생성됨(response);
+        즐겨찾기_생성됨(createResponse);
     }
 
     private void findAll() {
@@ -77,7 +79,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void remove() {
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(토큰, createResponse);
 
+        // then
+        즐겨찾기_삭제됨(response);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long source, Long target) {
@@ -110,5 +116,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         List<FavoriteResponse> favorites = response.jsonPath().getList(".", FavoriteResponse.class);
         assertThat(favorites).isNotEmpty();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, ExtractableResponse<Response> response) {
+        String uri = response.header("Location");
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
