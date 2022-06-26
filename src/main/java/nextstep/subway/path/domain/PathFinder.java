@@ -14,23 +14,21 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
 public class PathFinder {
     private static final Logger LOGGER = LoggerFactory.getLogger(PathFinder.class);
 
-    public ShortestPathResponse findShortestPath(List<Line> allLines, Station starting, Station destination) {
-        this.validateSameStation(starting, destination);
+    public static ShortestPathResponse findShortestPath(List<Line> allLines, Station starting, Station destination) {
+        validateSameStation(starting, destination);
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph = this.createStationGraph(allLines);
-        this.validateIsExistStation(stationGraph, starting, destination);
+        WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph = createStationGraph(allLines);
+        validateIsExistStation(stationGraph, starting, destination);
 
         DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(stationGraph);
         GraphPath<Station, DefaultWeightedEdge> path = shortestPath.getPath(starting, destination);
-        this.validateConnectedStation(path);
+        validateConnectedStation(path);
 
         List<Station> stations = path.getVertexList();
         double distance = shortestPath.getPathWeight(starting, destination);
@@ -38,7 +36,7 @@ public class PathFinder {
         return new ShortestPathResponse(StationsResponse.of(new Stations(stations)), distance);
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> createStationGraph(List<Line> lines) {
+    private static WeightedMultigraph<Station, DefaultWeightedEdge> createStationGraph(List<Line> lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
         lines.forEach(
@@ -54,21 +52,21 @@ public class PathFinder {
         return stationGraph;
     }
 
-    private void validateIsExistStation(WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph, Station starting, Station destination) {
+    private static void validateIsExistStation(WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph, Station starting, Station destination) {
         if (!stationGraph.containsVertex(starting) || !stationGraph.containsVertex(destination)) {
             LOGGER.error(ErrorMessage.NOT_FOUND_STATION);
             throw new NotFoundException(ErrorMessage.NOT_FOUND_STATION);
         }
     }
 
-    private void validateSameStation(Station starting, Station destination) {
+    private static void validateSameStation(Station starting, Station destination) {
         if (starting.isSame(destination)) {
             LOGGER.error(ErrorMessage.SAME_STATION);
             throw new BadRequestException(ErrorMessage.SAME_STATION);
         }
     }
 
-    private void validateConnectedStation(GraphPath<Station, DefaultWeightedEdge> path) {
+    private static void validateConnectedStation(GraphPath<Station, DefaultWeightedEdge> path) {
         if (path == null) {
             LOGGER.error(ErrorMessage.NOT_CONNECTED_STATION);
             throw new BadRequestException(ErrorMessage.NOT_CONNECTED_STATION);
