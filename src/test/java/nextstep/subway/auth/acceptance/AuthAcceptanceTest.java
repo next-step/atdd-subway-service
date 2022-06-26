@@ -10,6 +10,9 @@ import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -36,8 +39,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = 로그인_요청(email, password).as(TokenResponse.class);
 
         // then
-        MemberResponse memberResponse = 로그인_됨(tokenResponse.getAccessToken()).as(MemberResponse.class);
-        assertThat(memberResponse.getEmail()).isEqualTo(email);
+        로그인_됨(tokenResponse.getAccessToken(), email);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -50,15 +52,35 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @ParameterizedTest(name = "이메일형식이 아닌경우 로그인 실패")
+    @NullAndEmptySource
+    @ValueSource(strings = {"test"})
+    void myInfoWithBadEmailFormat(String email) {
+        // when
+        ExtractableResponse<Response> response = 로그인_요청(email, "1212");
+
+        // then
+        잘못된_로그인정보로_로그인_실패(response);
+    }
+
+    @ParameterizedTest(name = "비밀번호가 잘못입력된 경우 로그인 실패")
+    @NullAndEmptySource
+    void myInfoWithBadPassword(String password) {
+        // when
+        ExtractableResponse<Response> response = 로그인_요청(email, password);
+
+        // then
+        잘못된_로그인정보로_로그인_실패(response);
+    }
+
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
         // when
-        로그인_요청(email, password).as(TokenResponse.class);
+        로그인_요청(email, password);
 
         // then
-        ExtractableResponse<Response> response = 로그인_실패("유효하지 않은 토큰");
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        유효하지_않는_토큰_로그인_실패();
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String pw) {
@@ -73,11 +95,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 로그인_됨(String accessToken) {
-        return 회원_내_정보_조회(accessToken);
+    private void 로그인_됨(String accessToken, String email) {
+        MemberResponse memberResponse = 회원_내_정보_조회(accessToken).as(MemberResponse.class);
+        assertThat(memberResponse.getEmail()).isEqualTo(email);
     }
 
-    private ExtractableResponse<Response> 로그인_실패(String accessToken) {
-        return 회원_내_정보_조회(accessToken);
+    private void 잘못된_로그인정보로_로그인_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void 유효하지_않는_토큰_로그인_실패() {
+        ExtractableResponse<Response> response = 회원_내_정보_조회("유효하지 않는 토큰");
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

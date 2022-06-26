@@ -9,6 +9,9 @@ import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -45,6 +48,34 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
         // then
         회원_삭제됨(deleteResponse);
+    }
+
+    @ParameterizedTest(name = "이메일 형식이 잘못된 경우 에러가 발생한다.")
+    @NullAndEmptySource
+    @ValueSource(strings = "test")
+    void createMemberBadEmailFormat(String email) {
+        // when
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(email, PASSWORD, AGE);
+        // then
+        회원_생성_실패(createResponse);
+    }
+
+    @ParameterizedTest(name = "비밀번호가 잘못된 경우 에러가 발생한다.")
+    @NullAndEmptySource
+    void createMemberBadPassword(String password) {
+        // when
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, password, AGE);
+        // then
+        회원_생성_실패(createResponse);
+    }
+
+    @ParameterizedTest(name = "나이가 잘못된 경우 에러가 발생한다.")
+    @ValueSource(ints = {0, -1})
+    void createMemberBadPassword(int age) {
+        // when
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, age);
+        // then
+        회원_생성_실패(createResponse);
     }
 
     @DisplayName("나의 정보를 관리한다.")
@@ -173,5 +204,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     private void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 회원_생성_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

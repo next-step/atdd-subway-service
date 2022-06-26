@@ -6,8 +6,10 @@ import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -23,7 +25,12 @@ public class FavoriteController {
     @PostMapping
     public ResponseEntity<String> createFavorite(
             @AuthenticationPrincipal LoginMember loginMember,
-            @RequestBody FavoriteRequest request) {
+            @RequestBody @Valid FavoriteRequest request,
+            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new IllegalArgumentException(bindingResult.getAllErrors().get(0).getDefaultMessage());
+        }
+
         favoriteService.createFavorite(loginMember, request);
         return ResponseEntity
                 .created(URI.create("/favorites/" + 1L))
