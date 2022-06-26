@@ -10,31 +10,42 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
+    public static final String EMAIL2 = "email2@email.com";
+    public static final String PASSWORD2 = "password2";
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final String NEW_EMAIL = "newemail@email.com";
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
+    private String accessToken;
+
+    @BeforeEach
+    public void setUp(){
+        super.setUp();
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        accessToken = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
+    }
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
         // when
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL2, PASSWORD2, AGE);
         // then
         회원_생성됨(createResponse);
 
         // when
         ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
         // then
-        회원_정보_조회됨(findResponse, EMAIL, AGE);
+        회원_정보_조회됨(findResponse, EMAIL2, AGE);
 
         // when
         ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
@@ -55,9 +66,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 조회한다.")
     @Test
     void getMyInfo() {
-        //given
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        String accessToken = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
 
         //when
         ExtractableResponse<Response> 나의_정보_조회_응답 = 나의_정보_조회_요청(accessToken);
@@ -74,9 +82,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 수정한다.")
     @Test
     void updateMyInfo() {
-        //given
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        String accessToken = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
 
         //when
         나의_정보_수정_요청(accessToken, "변경이메일", "변경패스워드", AGE);
@@ -95,11 +100,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 삭제한다.")
     @Test
     void deleteMyInfo() {
-        //given
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
 
         //when
-        String accessToken = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
         ExtractableResponse<Response> 나의_정보_삭제_응답 = 나의_정보_삭제_요청(accessToken);
 
         //then
