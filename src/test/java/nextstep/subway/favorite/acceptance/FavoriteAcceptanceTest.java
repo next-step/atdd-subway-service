@@ -1,7 +1,7 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthTestUtils.*;
-import static nextstep.subway.favorite.FavoriteTestUtils.*;
+import static nextstep.subway.favorite.acceptance.FavoriteTestUtils.*;
 import static nextstep.subway.member.MemberTestUtils.*;
 
 import io.restassured.response.ExtractableResponse;
