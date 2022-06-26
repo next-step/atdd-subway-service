@@ -24,6 +24,7 @@ public class Favorite {
     public Favorite(Member member, Station source, Station target) {
         validMember(member);
         validStation(source, target);
+        this.member = member;
         this.source = source;
         this.target = target;
     }
@@ -44,6 +45,10 @@ public class Favorite {
 
     public Station getTarget() {
         return target;
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     public long getId() {

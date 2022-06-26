@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -40,12 +43,15 @@ class FavoriteServiceTest {
 
     private Station 주안역;
     private Station 인천역;
+    private Station 화곡역;
     private Member 유저;
+
 
     @BeforeEach
     public void setUp() {
         주안역 = new Station(1L,"주안역");
         인천역 = new Station(2L,"인천역");
+        화곡역 = new Station(3L,"화곡역");
         유저 = new Member(1L,"email@gmail.com", "password", 20);
 
     }
@@ -80,7 +86,7 @@ class FavoriteServiceTest {
     }
 
     @Test
-    @DisplayName("유져가 없는 경우 저장이 되지 않는다.")
+    @DisplayName("유저가 없는 경우 저장이 되지 않는다.")
     void saveMemberIsNull() {
         when(stationRepository.getById(1L)).thenReturn(주안역);
         when(stationRepository.getById(2L)).thenReturn(인천역);
@@ -89,5 +95,45 @@ class FavoriteServiceTest {
                 favoriteService.saveFavorite(주안역.getId(), new FavoriteRequest(인천역.getId(), 주안역.getId()))
         );
     }
+
+    @Test
+    @DisplayName("내 즐겨찾기 목록이 조회된다")
+    void findMyFavorites() {
+        //given
+        final Favorite favorite1 = new Favorite(유저, 주안역, 인천역);
+        final Favorite favorite2 = new Favorite(유저, 인천역, 화곡역);
+
+        when(favoriteRepository.findAllByMemberId(유저.getId())).thenReturn(Arrays.asList(favorite1, favorite2));
+
+        //when
+        List<FavoriteResponse> favoriteResponses = favoriteService.searchMemberFavorite(유저.getId());
+
+        //then
+        assertAll(
+                () -> assertThat(favoriteResponses).hasSize(2),
+                () -> assertThat(favoriteResponses).extracting("source.name").contains("주안역", "인천역"),
+                () -> assertThat(favoriteResponses).extracting("target.name").contains("인천역", "화곡역")
+        );
+
+    }
+
+    @Test
+    @DisplayName("즐겨찾기가 조회된다")
+    void favorites() {
+        //given
+        final Favorite favorite = new Favorite(유저, 주안역, 인천역);
+
+        when(favoriteRepository.findById(any())).thenReturn(Optional.of(favorite));
+
+        //when
+        FavoriteResponse favoriteResponses = favoriteService.searchFavorite(1L);
+
+        //then
+        assertAll(
+                () -> assertThat(favoriteResponses.getSource().getName()).isEqualTo(주안역.getName()),
+                () -> assertThat(favoriteResponses.getTarget().getName()).isEqualTo(인천역.getName())
+        );
+    }
+
 
 }
