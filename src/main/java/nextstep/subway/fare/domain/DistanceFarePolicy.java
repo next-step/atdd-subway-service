@@ -26,6 +26,7 @@ public class DistanceFarePolicy implements FarePolicy {
         this.distance = distance;
     }
 
+    @Override
     public Fare fare() {
         DistanceFare distanceFare = DistanceFare.from(distance);
         Fare fare = distanceFare.calculate(distance);

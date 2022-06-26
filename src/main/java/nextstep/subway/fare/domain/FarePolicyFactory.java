@@ -24,7 +24,7 @@ public class FarePolicyFactory {
         return new MemberFareDiscountPolicy(noDisCountFarePolicy(lines, shortestPath), loginMember.getAge());
     }
 
-    private static DistanceFarePolicy noDisCountFarePolicy(Lines lines, ShortestPath shortestPath) {
+    private static FarePolicy noDisCountFarePolicy(Lines lines, ShortestPath shortestPath) {
         List<Station> path = shortestPath.getPath();
         int distance = shortestPath.getDistance();
 
