@@ -5,6 +5,8 @@ public class LoginMember {
     private String email;
     private Age age;
 
+    private static final LoginMember instance = new LoginMember();
+
     protected LoginMember() {
     }
 
@@ -27,6 +29,6 @@ public class LoginMember {
     }
 
     public static LoginMember ofGuestMember() {
-        return new LoginMember();
+        return instance;
     }
 }
