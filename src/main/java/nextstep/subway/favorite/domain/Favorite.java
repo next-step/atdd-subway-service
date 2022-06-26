@@ -45,6 +45,12 @@ public class Favorite extends BaseEntity {
         }
     }
 
+    public void validateMember(Member member) {
+        if (!this.member.equals(member)) {
+            throw new IllegalArgumentException("즐겨찾기를 등록한 사용자가 아닙니다.");
+        }
+    }
+
     public Long getId() {
         return id;
     }

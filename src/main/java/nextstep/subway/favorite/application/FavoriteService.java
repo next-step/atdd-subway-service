@@ -11,7 +11,11 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+import java.util.List;
+
 @Service
+@Transactional
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final MemberService memberService;
@@ -24,13 +28,30 @@ public class FavoriteService {
         this.stationService = stationService;
     }
 
-    @Transactional
-    public FavoriteResponse saveFavorite(Long id, FavoriteRequest request) {
-        Member member = memberService.findById(id);
+    public FavoriteResponse saveFavorite(Long memberId, FavoriteRequest request) {
+        Member member = memberService.findById(memberId);
         Station source = stationService.findStationById(request.getSource());
         Station target = stationService.findStationById(request.getTarget());
 
         Favorite persistFavorite = favoriteRepository.save(Favorite.of(member, source, target));
         return FavoriteResponse.from(persistFavorite);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> findAllFavorites(Long memberId) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
+        return FavoriteResponse.from(favorites);
+    }
+
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        Favorite favorite = findFavoriteById(favoriteId);
+        Member member =  memberService.findById(memberId);
+        favorite.validateMember(member);
+
+        favoriteRepository.delete(favorite);
+    }
+
+    private Favorite findFavoriteById(Long favoriteId) {
+        return favoriteRepository.findById(favoriteId).orElseThrow(EntityNotFoundException::new);
     }
 }
