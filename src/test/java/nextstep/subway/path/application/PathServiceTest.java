@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 최단 경로 조회 로직")
 public class PathServiceTest {
@@ -29,6 +30,9 @@ public class PathServiceTest {
         PathResponse response = pathService.findShortestPath(1L, 4L);
 
         // then
-        assertThat(response.getDistance()).isEqualTo(9);
+        assertAll(
+                () -> assertThat(response.getDistance()).isEqualTo(9),
+                () -> assertThat(response.fare()).isEqualTo(1750)
+        );
     }
 }

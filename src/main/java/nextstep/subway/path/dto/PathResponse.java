@@ -15,9 +15,10 @@ public class PathResponse {
 
     private PathResponse() {}
 
-    public PathResponse(ShortestPath shortestPath) {
+    public PathResponse(ShortestPath shortestPath, int fare) {
         this.stations = mapToStationResponse(shortestPath.getPath());
         this.distance = shortestPath.getDistance();
+        this.fare = fare;
     }
 
     private List<StationResponse> mapToStationResponse(List<Station> stations) {

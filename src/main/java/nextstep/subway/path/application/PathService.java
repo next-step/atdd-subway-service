@@ -2,6 +2,8 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.FarePolicy;
+import nextstep.subway.path.domain.FarePolicyFactory;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathResponse;
@@ -29,6 +31,8 @@ public class PathService {
 
         PathFinder pathFinder = new PathFinder();
         ShortestPath shortestPath = pathFinder.findShortestPath(lines, upStation, downStation);
-        return new PathResponse(shortestPath);
+
+        FarePolicy farePolicy = FarePolicyFactory.of(lines, shortestPath);
+        return new PathResponse(shortestPath, farePolicy.fare());
     }
 }

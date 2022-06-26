@@ -24,8 +24,8 @@ public class InMemoryLineRepository implements LineRepository {
         Station 사당역 = stations.findById(5L).orElse(empty);
         Station 이수역 = stations.findById(6L).orElse(empty);
 
-        Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, 4);
-        Line 삼호선 = new Line("삼호선", "orange", 교대역, 남부터미널역, 3);
+        Line 신분당선 = new Line("신분당선", "red", 500, 강남역, 양재역, 4);
+        Line 삼호선 = new Line("삼호선", "orange", 400, 교대역, 남부터미널역, 3);
         Line 이호선 = new Line("이호선", "green", 교대역, 강남역, 10);
         Line 사호선 = new Line("사호선", "blue", 사당역, 이수역, 10);
 
