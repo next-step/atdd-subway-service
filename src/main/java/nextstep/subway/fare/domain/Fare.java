@@ -23,8 +23,13 @@ public class Fare implements Comparable<Fare> {
         }
         this.value = value;
     }
-    public static Fare from(int value){
+
+    public static Fare from(int value) {
         return new Fare(value);
+    }
+
+    public Fare add(Fare target) {
+        return new Fare(value + target.value);
     }
 
     public int getValue() {
