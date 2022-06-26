@@ -36,7 +36,7 @@ public class PathTest extends UnitTest {
     private Station 교대역;
     private Station 남부터미널역;
 
-    private List<Line> allLines = Arrays.asList(신분당선, 이호선, 삼호선);
+    private List<Line> allLines;
 
     @BeforeEach
     public void setUp() {
@@ -63,6 +63,7 @@ public class PathTest extends UnitTest {
     @DisplayName("최단 경로 조회 단위 테스트")
     void 최단경로조회_테스트() {
         // when
+        allLines = Arrays.asList(이호선, 삼호선, 신분당선);
         ShortestPathResponse response = PathFinder.findShortestPath(allLines, 강남역, 남부터미널역);
         List<String> answerPaths = Arrays.asList("강남역", "교대역", "남부터미널역");
 
