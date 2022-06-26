@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 public class PathService {
 
     private final StationService stationService;
-    private final PathFinder pathFinder;
     private final LineRepository lineRepository;
+    private PathFinder pathFinder;
 
-    public PathService(StationService stationService, PathFinder pathFinder, LineRepository lineRepository) {
+    public PathService(StationService stationService, LineRepository lineRepository) {
         this.stationService = stationService;
-        this.pathFinder = pathFinder;
         this.lineRepository = lineRepository;
+        pathFinder = new PathFinder();
     }
 
     public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
