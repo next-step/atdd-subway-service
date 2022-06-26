@@ -9,9 +9,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -59,7 +62,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * when 즐겨찾기 생성 요청을 하면
      * then 즐겨찾기가 생성된다.
      */
-    @DisplayName("즐겨찾기 요청을 한다.")
+    @DisplayName("즐겨찾기 생성 요청을 한다.")
     @Test
     public void createFavorite() {
         //when
@@ -68,7 +71,37 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(즐겨찾기_생성_응답);
     }
 
+    /**
+     * Given 지하철역 등록되어 있음
+     * And 지하철 노선 등록되어 있음
+     * And 지하철 노선에 지하철역 등록되어 있음
+     * And 회원 등록되어 있음
+     * And 로그인 되어있음
+     * And 즐겨찾기 생성 되어있음
+     * when 즐겨찾기 목록 조회 요청을 하면
+     * then 즐겨찾기 목록이 조회된다.
+     */
+    @DisplayName("즐겨찾기 목록 조회 요청을 한다.")
+    @Test
+    public void findFavorites() {
+        //given
+        즐겨찾기_생성_요청(accessToken, 강남역.getId(), 광교역.getId());
+        //when
+        ExtractableResponse<Response> 즐겨찾기_조회_요청 = 즐겨찾기_조회_요청(accessToken);
+        //then
+        즐겨찾기_정보_조회됨(즐겨찾기_조회_요청, 강남역, 광교역);
+    }
 
+    public static void 즐겨찾기_정보_조회됨(ExtractableResponse<Response> response, StationResponse source, StationResponse target) {
+        List<FavoriteResponse> favoriteResponses = response.jsonPath().getList(".", FavoriteResponse.class);
+
+        List<StationResponse> favoriteSources = favoriteResponses.stream().map(favoriteResponse -> favoriteResponse.getSource()).collect(Collectors.toList());
+
+        List<StationResponse> favoriteTargets = favoriteResponses.stream().map(favoriteResponse -> favoriteResponse.getTarget()).collect(Collectors.toList());
+
+        assertThat(favoriteSources).contains(source);
+        assertThat(favoriteTargets).contains(target);
+    }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long sourceId, Long targetId) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(sourceId, targetId);
@@ -79,6 +112,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(favoriteRequest)
             .when().post("/favorites")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_조회_요청(String accessToken) {
+
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/favorites")
             .then().log().all()
             .extract();
     }
