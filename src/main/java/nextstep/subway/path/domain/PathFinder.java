@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import java.util.Optional;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -49,9 +50,19 @@ public class PathFinder {
     }
 
     public Path findShortestPath(Station start, Station end) {
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = shortestPathAlgorithm.getPath(start, end);
+        validateInput(start, end);
+
+        GraphPath<Station, DefaultWeightedEdge> shortestPath =
+                Optional.ofNullable(shortestPathAlgorithm.getPath(start, end))
+                        .orElseThrow(() -> new IllegalStateException("출발역과 도착역이 연결이 되어 있지 않습니다."));
 
         return new Path(shortestPath.getVertexList(),
-                Distance.from(Double.valueOf(shortestPath.getWeight()).intValue()));
+                Distance.from((int) shortestPath.getWeight()));
+    }
+
+    private void validateInput(Station start, Station end) {
+        if (start.equals(end)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+        }
     }
 }

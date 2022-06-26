@@ -23,10 +23,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 일호선;
+
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 서울역;
+    private StationResponse 삼각지역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -34,6 +38,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * *3호선*                   *신분당선*
      * |                        |
      * 남부터미널역  --- *3호선* ---   양재
+     *
+     * 서울역 ---*1호선*--- 삼각지역
      */
     @BeforeEach
     public void setUp() {
@@ -43,10 +49,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        서울역 = StationAcceptanceTest.지하철역_등록되어_있음("서울역").as(StationResponse.class);
+        삼각지역 = StationAcceptanceTest.지하철역_등록되어_있음("삼각지역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        일호선 = 지하철_노선_등록되어_있음("일호선", "bg-blue-600", 서울역, 삼각지역, 4);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -64,6 +73,34 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // Then
         지하철_경로_조회됨(response);
         지하철_경로_최단거리_확인(response, 12);
+    }
+
+    /**
+     * When 출발역과 도착역을 동일한 역으로 최단 경로를 조회하면
+     * Then 조회할 수 없다.
+     */
+    @Test
+    @DisplayName("출발역과 도착역을 동일한 역으로 최단 경로를 조회하면 조회할 수 없다.")
+    void 출발역_도착역이_같은_경우_조회() {
+        // When
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(강남역.getId(), 강남역.getId());
+
+        // Then
+        지하철_경로_조회_실패됨(response);
+    }
+
+    /**
+     * When 출발역과 도착역이 연결되지 않은 경우 최단 경로를 조회하면
+     * Then 조회할 수 없다.
+     */
+    @Test
+    @DisplayName("출발역과 도착역이 연결되지 않은 경우 최단 경로를 조회하면 조회할 수 없다.")
+    void 출발역_도착역이_연결되지_않은_경우_조회() {
+        // When
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(강남역.getId(), 서울역.getId());
+
+        // Then
+        지하철_경로_조회_실패됨(response);
     }
 
     private static ExtractableResponse<Response> 지하철_경로_조회_요청(long source, long target) {
@@ -84,5 +121,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_경로_최단거리_확인(ExtractableResponse<Response> response, int shortestDistance) {
         assertThat(response.jsonPath().getInt("distance")).isEqualTo(shortestDistance);
+    }
+
+    public static void 지하철_경로_조회_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
