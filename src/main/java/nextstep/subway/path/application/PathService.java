@@ -17,9 +17,9 @@ public class PathService {
         this.lineService = lineService;
     }
 
-    public ShortestPathResponse findShortestPath(Long startingStationId, Long destinationStationId) {
-        Station starting = stationService.findStationById(startingStationId);
-        Station destination = stationService.findStationById(destinationStationId);
+    public ShortestPathResponse findShortestPath(Long source, Long target) {
+        Station starting = stationService.findStationById(source);
+        Station destination = stationService.findStationById(target);
 
         return PathFinder.findShortestPath(lineService.findAllLines(), starting, destination);
     }

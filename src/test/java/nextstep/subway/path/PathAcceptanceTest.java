@@ -74,8 +74,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void 최단경로조회() {
         // when
         Map<String, Long> params = new HashMap<>();
-        params.put("startingStationId", 강남역.getId());
-        params.put("destinationStationId", 남부터미널역.getId());
+        params.put("source", 강남역.getId());
+        params.put("target", 남부터미널역.getId());
 
         ExtractableResponse<Response> response = 최단경로조회_요청(params);
 
@@ -92,7 +92,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().queryParams(params).get("/path/short")
+                .when().queryParams(params).get("/paths")
                 .then().log().all()
                 .extract();
 

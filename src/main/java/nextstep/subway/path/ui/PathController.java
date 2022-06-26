@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/path")
+@RequestMapping("/paths")
 public class PathController {
 
     private final PathService pathService;
@@ -18,9 +18,9 @@ public class PathController {
         this.pathService = pathService;
     }
 
-    @GetMapping("/short")
-    public ResponseEntity<ShortestPathResponse> getShortestPath(@RequestParam("startingStationId") Long startingStationId, @RequestParam("destinationStationId") Long destinationStationId) {
-        return ResponseEntity.ok(pathService.findShortestPath(startingStationId, destinationStationId));
+    @GetMapping
+    public ResponseEntity<ShortestPathResponse> getShortestPath(@RequestParam("source") Long source, @RequestParam("target") Long target) {
+        return ResponseEntity.ok(pathService.findShortestPath(source, source));
     }
 
 }
