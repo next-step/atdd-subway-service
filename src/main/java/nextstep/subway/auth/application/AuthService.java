@@ -26,17 +26,26 @@ public class AuthService {
 
         member.checkPassword(request.getPassword());
 
-        String token = jwtTokenProvider.createToken(request.getEmail());
+        String token = jwtTokenProvider.createToken(member.getId().toString());
         return new TokenResponse(token);
     }
 
     public LoginMember findMemberByToken(String credentials) {
+        validateToken(credentials);
+
+        Long memberId = Long.parseLong(jwtTokenProvider.getPayload(credentials));
+        Member member = findById(memberId);
+        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+    }
+
+    private Member findById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원이니다."));
+    }
+
+    private void validateToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException("유효하지 않는 토큰입니다.");
         }
-
-        String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }
