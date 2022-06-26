@@ -53,12 +53,11 @@ class NavigationTest {
         List<Line> 지하철_목록 = Collections.singletonList(지하철_2호선);
         Navigation 지하철_네비게이션 = Navigation.of(지하철_목록);
 
-        NavigationResponse 지하철_네비게이션_결과 = 지하철_네비게이션.findShortest(강남역, 역삼역, 사용자);
+        NavigationResponse 지하철_네비게이션_결과 = 지하철_네비게이션.findShortest(강남역, 역삼역);
 
         Assertions.assertAll(
                 () -> assertThat(지하철_네비게이션_결과.getDistance()).isEqualTo(10),
-                () -> assertThat(지하철_네비게이션_결과.getStations()).contains(강남역, 역삼역),
-                () -> assertThat(지하철_네비게이션_결과.getFare()).isEqualTo(1_250)
+                () -> assertThat(지하철_네비게이션_결과.getStations()).contains(강남역, 역삼역)
         );
     }
 
@@ -68,12 +67,11 @@ class NavigationTest {
         List<Line> 지하철_목록 = Collections.singletonList(지하철_2호선);
         Navigation 지하철_네비게이션 = Navigation.of(지하철_목록);
 
-        NavigationResponse 지하철_네비게이션_결과 = 지하철_네비게이션.findShortest(강남역, 역삼역, 청소년_사용자);
+        NavigationResponse 지하철_네비게이션_결과 = 지하철_네비게이션.findShortest(강남역, 역삼역);
 
         Assertions.assertAll(
                 () -> assertThat(지하철_네비게이션_결과.getDistance()).isEqualTo(10),
-                () -> assertThat(지하철_네비게이션_결과.getStations()).contains(강남역, 역삼역),
-                () -> assertThat(지하철_네비게이션_결과.getFare()).isEqualTo(720)
+                () -> assertThat(지하철_네비게이션_결과.getStations()).contains(강남역, 역삼역)
         );
     }
 
@@ -83,12 +81,11 @@ class NavigationTest {
         List<Line> 지하철_목록 = Collections.singletonList(지하철_2호선);
         Navigation 지하철_네비게이션 = Navigation.of(지하철_목록);
 
-        NavigationResponse 지하철_네비게이션_결과 = 지하철_네비게이션.findShortest(강남역, 역삼역, 어린이_사용자);
+        NavigationResponse 지하철_네비게이션_결과 = 지하철_네비게이션.findShortest(강남역, 역삼역);
 
         Assertions.assertAll(
                 () -> assertThat(지하철_네비게이션_결과.getDistance()).isEqualTo(10),
-                () -> assertThat(지하철_네비게이션_결과.getStations()).contains(강남역, 역삼역),
-                () -> assertThat(지하철_네비게이션_결과.getFare()).isEqualTo(450)
+                () -> assertThat(지하철_네비게이션_결과.getStations()).contains(강남역, 역삼역)
         );
     }
 
@@ -99,7 +96,7 @@ class NavigationTest {
         Navigation 지하철_네비게이션 = Navigation.of(지하철_목록);
 
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> 지하철_네비게이션.findShortest(강남역, 사당역, 사용자))
+                .isThrownBy(() -> 지하철_네비게이션.findShortest(강남역, 사당역))
                 .withMessageContaining(NOT_CONNECTED_SOURCE_TARGET_STATION);
     }
 }

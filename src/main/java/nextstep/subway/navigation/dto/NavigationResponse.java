@@ -18,7 +18,11 @@ public class NavigationResponse {
         this.fare = fare;
     }
 
-    public static NavigationResponse of(List<Station> stations, int distance, int fare) {
+    public static NavigationResponse of(List<Station> stations, int distance) {
+        return new NavigationResponse(stations, distance, 0);
+    }
+
+    public static NavigationResponse ofNavigationAndFare(List<Station> stations, int distance, int fare) {
         return new NavigationResponse(stations, distance, fare);
     }
 

@@ -1,6 +1,9 @@
 package nextstep.subway.navigation.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.application.FareCalculatorService;
+import nextstep.subway.fare.domain.DiscountPolicy;
+import nextstep.subway.fare.domain.DiscountType;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.navigation.domain.Navigation;
 import nextstep.subway.navigation.dto.NavigationResponse;
@@ -19,6 +22,12 @@ public class NavigationService {
             LoginMember loginMember
     ) {
         Navigation navigation = Navigation.of(persistLines);
-        return navigation.findShortest(sourceStation, targetStation, loginMember);
+        NavigationResponse shortest = navigation.findShortest(sourceStation, targetStation);
+        DiscountPolicy discountPolicy = DiscountType.ofDiscountPolicy(loginMember.getAge());
+
+        int fare = FareCalculatorService.calculate(shortest.getDistance()) + navigation.maxLineExtraFare();
+        int discountedFare = discountPolicy.discountedFare(fare);
+
+        return NavigationResponse.ofNavigationAndFare(shortest.getStations(), shortest.getDistance(), discountedFare);
     }
 }

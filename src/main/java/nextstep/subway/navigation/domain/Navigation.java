@@ -1,9 +1,5 @@
 package nextstep.subway.navigation.domain;
 
-import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.fare.application.FareCalculatorService;
-import nextstep.subway.fare.domain.DiscountPolicy;
-import nextstep.subway.fare.domain.DiscountType;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.navigation.dto.NavigationResponse;
 import nextstep.subway.station.domain.Station;
@@ -41,18 +37,14 @@ public class Navigation {
         });
     }
 
-    public NavigationResponse findShortest(Station sourceStation, Station targetStation, LoginMember loginMember) {
+    public NavigationResponse findShortest(Station sourceStation, Station targetStation) {
         path = new DijkstraShortestPath<>(graph).getPath(sourceStation, targetStation);
         checkFindShortestPath(path);
 
         List<Station> vertexList = path.getVertexList();
         int distance = (int) path.getWeight();
-        int fare = FareCalculatorService.calculate(distance) + maxLineExtraFare(path);
 
-        DiscountPolicy discountPolicy = DiscountType.ofDiscountPolicy(loginMember.getAge());
-        int discountedFare = discountPolicy.discountedFare(fare);
-
-        return NavigationResponse.of(vertexList, distance, discountedFare);
+        return NavigationResponse.of(vertexList, distance);
     }
 
     private void checkFindShortestPath(GraphPath<Station, SectionEdge> path) {
@@ -61,7 +53,7 @@ public class Navigation {
         }
     }
 
-    private int maxLineExtraFare(GraphPath<Station, SectionEdge> path) {
+    public int maxLineExtraFare() {
         return path.getEdgeList().stream()
                 .map(SectionEdge::getLine)
                 .mapToInt(Line::getExtraFare)
