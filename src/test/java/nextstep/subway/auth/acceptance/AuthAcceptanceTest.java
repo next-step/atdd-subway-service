@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -13,24 +14,25 @@ import org.springframework.http.MediaType;
 
 import java.awt.*;
 
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+    }
+
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
-        // given
-        String email = "email@email.com";
-        String password = "password";
-        Integer age = 30;
-
-        회원_생성을_요청(email, password, age);
-
         // when
-        TokenRequest request = new TokenRequest(email, password);
+        TokenRequest request = new TokenRequest(EMAIL, PASSWORD);
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
