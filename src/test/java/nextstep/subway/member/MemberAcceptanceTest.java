@@ -63,6 +63,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
+        return 회원_생성을_요청(email, password, age);
+    }
+
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
@@ -113,5 +117,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 회원_내_정보_조회(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/members/me")
+                .then()
+                .log().all()
+                .extract();
     }
 }
