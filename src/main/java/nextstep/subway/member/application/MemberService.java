@@ -7,6 +7,8 @@ import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 public class MemberService {
@@ -29,8 +31,17 @@ public class MemberService {
 
     @Transactional
     public void updateMember(Long id, MemberRequest param) {
+        validateDuplicatedEmail(param.getEmail());
+
         Member member = findById(id);
         member.update(param.toMember());
+    }
+
+    private void validateDuplicatedEmail(String email) {
+        Optional<Member> memberByEmail = memberRepository.findByEmail(email);
+        memberByEmail.ifPresent(member -> {
+            throw new IllegalArgumentException("중복된 이메일입니다.");
+        });
     }
 
     private Member findById(Long id) {
