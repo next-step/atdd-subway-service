@@ -19,7 +19,7 @@ class FareTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, -1})
+    @ValueSource(ints = {-1})
     void 요금은_0원_이상이어야_한다(int fare) {
         // when & then
         assertThatThrownBy(() ->

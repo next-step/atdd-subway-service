@@ -12,12 +12,12 @@ class DistanceFarePolicyTest {
     @CsvSource(value = {"10:1250", "15:1350", "48:2050", "56: 2150"}, delimiter = ':')
     void 거리를_기준으로_지하철_요금을_계산한다(int distance, int fare) {
         // given
-        DistanceFarePolicy distanceFarePolicy = new DistanceFarePolicy(() -> 0, new Distance(distance));
+        DistanceFarePolicy distanceFarePolicy = new DistanceFarePolicy(() -> Fare.FREE, new Distance(distance));
 
         // when
-        int result = distanceFarePolicy.fare();
+        Fare result = distanceFarePolicy.fare();
 
         // then
-        assertThat(result).isEqualTo(fare);
+        assertThat(result.value()).isEqualTo(fare);
     }
 }

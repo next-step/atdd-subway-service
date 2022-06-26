@@ -5,6 +5,9 @@ import nextstep.subway.line.domain.Distance;
 import java.util.Arrays;
 import java.util.function.Function;
 
+import static nextstep.subway.path.domain.Fare.BASIC_FARE;
+import static nextstep.subway.path.domain.Fare.FIRST_MAX_FARE;
+
 /**
  * 기본운임(10㎞ 이내) : 기본운임 1,250원
  * 이용 거리초과 시 추가운임 부과
@@ -12,8 +15,6 @@ import java.util.function.Function;
  * 50km초과 시 (8km마다 100원)
  */
 public class DistanceFarePolicy implements FarePolicy {
-    public static final int BASIC_FARE = 1_250;
-    public static final int FIRST_MAX_OVER_FARE = 800;
     public static final int FIRST_OVER_FARE_DISTANCE = 5;
     public static final int SECOND_OVER_FARE_DISTANCE = 8;
 
@@ -25,24 +26,24 @@ public class DistanceFarePolicy implements FarePolicy {
         this.distance = distance;
     }
 
-    public int fare() {
+    public Fare fare() {
         DistanceFare distanceFare = DistanceFare.from(distance);
-        int fare = distanceFare.calculate(distance.value());
+        Fare fare = distanceFare.calculate(distance);
 
-        return fare + farePolicy.fare();
+        return fare.add(farePolicy.fare());
     }
 
     private enum DistanceFare {
         BASIC(1, 10, distance -> BASIC_FARE),
-        FIRST_OVER(10, 50, distance -> BASIC_FARE + calculateFirstOverFare(distance)),
-        SECOND_OVER(50, Integer.MAX_VALUE, distance -> BASIC_FARE + FIRST_MAX_OVER_FARE + calculateSecondOverFare(distance))
+        FIRST_OVER(10, 50, distance -> BASIC_FARE.add(calculateFirstOverFare(distance))),
+        SECOND_OVER(50, Integer.MAX_VALUE, distance -> FIRST_MAX_FARE.add(calculateSecondOverFare(distance)))
         ;
 
         private final int start;
         private final int end;
-        private final Function<Integer, Integer> calculable;
+        private final Function<Distance, Fare> calculable;
 
-        DistanceFare(int start, int end, Function<Integer, Integer> calculable) {
+        DistanceFare(int start, int end, Function<Distance, Fare> calculable) {
             this.start = start;
             this.end = end;
             this.calculable = calculable;
@@ -50,24 +51,26 @@ public class DistanceFarePolicy implements FarePolicy {
 
         public static DistanceFare from(Distance distance) {
             return Arrays.stream(values())
-                    .filter(fare -> fare.between(distance.value()))
+                    .filter(fare -> fare.between(distance))
                     .findFirst()
                     .get();
         }
 
-        public boolean between(int distance) {
-            return start <= distance && distance <= end;
+        public boolean between(Distance distance) {
+            return start <= distance.value() && distance.value() <= end;
         }
 
-        private static int calculateFirstOverFare(int distance) {
-            return (int) ((Math.ceil((distance - FIRST_OVER.start - 1) / FIRST_OVER_FARE_DISTANCE) + 1) * 100);
+        private static Fare calculateFirstOverFare(Distance distance) {
+            int fare = (int) ((Math.ceil((distance.value() - FIRST_OVER.start - 1) / FIRST_OVER_FARE_DISTANCE) + 1) * 100);
+            return new Fare(fare);
         }
 
-        private static int calculateSecondOverFare(int distance) {
-            return (int) ((Math.ceil((distance - SECOND_OVER.start - 1) / SECOND_OVER_FARE_DISTANCE) + 1) * 100);
+        private static Fare calculateSecondOverFare(Distance distance) {
+            int fare = (int) ((Math.ceil((distance.value() - SECOND_OVER.start - 1) / SECOND_OVER_FARE_DISTANCE) + 1) * 100);
+            return new Fare(fare);
         }
 
-        public int calculate(int distance) {
+        public Fare calculate(Distance distance) {
             return calculable.apply(distance);
         }
     }

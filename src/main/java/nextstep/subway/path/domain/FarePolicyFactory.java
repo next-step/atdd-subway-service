@@ -27,7 +27,7 @@ public class FarePolicyFactory {
         List<Station> path = shortestPath.getPath();
         int distance = shortestPath.getDistance();
 
-        FarePolicy lineSurchargePolicy = new LineSurchargePolicy(() -> 0, lines.getLinesInShortestPath(path));
+        FarePolicy lineSurchargePolicy = new LineSurchargePolicy(() -> Fare.FREE, lines.getLinesInShortestPath(path));
         return new DistanceFarePolicy(lineSurchargePolicy, new Distance(distance));
     }
 }

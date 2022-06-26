@@ -19,7 +19,7 @@ public class MemberFareDiscountPolicy implements FarePolicy {
     }
 
     @Override
-    public int fare() {
+    public Fare fare() {
         MemberGroup memberGroup = MemberGroup.from(age);
         return memberGroup.discount(farePolicy.fare());
     }
@@ -32,9 +32,9 @@ public class MemberFareDiscountPolicy implements FarePolicy {
 
         private final int minimum;
         private final int maximum;
-        private final Function<Integer, Integer> discountable;
+        private final Function<Fare, Fare> discountable;
 
-        MemberGroup(int minimum, int maximum, Function<Integer, Integer> discountable) {
+        MemberGroup(int minimum, int maximum, Function<Fare, Fare> discountable) {
             this.minimum = minimum;
             this.maximum = maximum;
             this.discountable = discountable;
@@ -51,16 +51,18 @@ public class MemberFareDiscountPolicy implements FarePolicy {
             return minimum <= age && age <= maximum;
         }
 
-        public int discount(int fare) {
+        public Fare discount(Fare fare) {
             return discountable.apply(fare);
         }
 
-        private static int discountChildren(int fare) {
-            return (int) ((fare - DEDUCTIBLE_AMOUNT) * 0.5);
+        private static Fare discountChildren(Fare fare) {
+            int discount = (int) ((fare.value() - DEDUCTIBLE_AMOUNT) * 0.5);
+            return new Fare(discount);
         }
 
-        private static int discountTeenager(int fare) {
-            return (int) ((fare - DEDUCTIBLE_AMOUNT) * 0.8);
+        private static Fare discountTeenager(Fare fare) {
+            int discount = (int) ((fare.value() - DEDUCTIBLE_AMOUNT) * 0.8);
+            return new Fare(discount);
         }
     }
 }

@@ -14,13 +14,13 @@ class MemberFareDiscountPolicyTest {
     @MethodSource("연령별_할인_금액")
     void 연령별_할인을_적용한다(int age, int expected) {
         // given
-        FarePolicy memberFareDiscountPolicy = new MemberFareDiscountPolicy(() -> 1050, age);
+        FarePolicy memberFareDiscountPolicy = new MemberFareDiscountPolicy(() -> new Fare(1050), age);
 
         // when
-        int result = memberFareDiscountPolicy.fare();
+        Fare result = memberFareDiscountPolicy.fare();
 
         // then
-        assertThat(result).isEqualTo(expected);
+        assertThat(result.value()).isEqualTo(expected);
     }
 
     private static Stream<Arguments> 연령별_할인_금액() {

@@ -23,8 +23,9 @@ public class LineSurchargePolicy implements FarePolicy {
     }
 
     @Override
-    public int fare() {
-        return getMaxSurcharge(lines) + farePolicy.fare();
+    public Fare fare() {
+        Fare maxSurcharge = new Fare(getMaxSurcharge(lines));
+        return maxSurcharge.add(farePolicy.fare());
     }
 
     private int getMaxSurcharge(List<Line> lines) {

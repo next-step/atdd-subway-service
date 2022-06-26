@@ -27,15 +27,15 @@ class LineSurchargePolicyTest {
 
         lines = Arrays.asList(line, line2);
 
-        lineSurchargePolicy = new LineSurchargePolicy(() -> 1250, lines);
+        lineSurchargePolicy = new LineSurchargePolicy(() -> Fare.BASIC_FARE, lines);
     }
 
     @Test
     void 추가_요금이_있는_노선을_이용할_경우_가장_높은_추가_요금만_적용한다() {
         // when
-        int result = lineSurchargePolicy.fare();
+        Fare result = lineSurchargePolicy.fare();
 
         // then
-        assertThat(result).isEqualTo(2000);
+        assertThat(result.value()).isEqualTo(2000);
     }
 }
