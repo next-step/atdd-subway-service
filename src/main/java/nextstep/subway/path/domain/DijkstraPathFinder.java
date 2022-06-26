@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.SubwayExceptionMessage;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -34,7 +35,7 @@ public class DijkstraPathFinder implements PathFinder {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         if (shortestPath == null) {
-            throw new IllegalArgumentException("최단거리가 존재하지 않습니다.");
+            throw new IllegalArgumentException(SubwayExceptionMessage.EMPTY_SHORTEST_PATH.getMessage());
         }
 
         return new PathResponse(shortestPath.getVertexList(), (int) shortestPath.getWeight());
@@ -42,11 +43,11 @@ public class DijkstraPathFinder implements PathFinder {
 
     private void ensureStationInRoute(Station sourceStation, Station targetStation) {
         if (isNotInRoute(sourceStation)) {
-            throw new IllegalArgumentException("출발역이 존재하지 않습니다.");
+            throw new IllegalArgumentException(SubwayExceptionMessage.EMPTY_SOURCE.getMessage());
         }
 
         if (isNotInRoute(targetStation)) {
-            throw new IllegalArgumentException("도착역이 존재하지 않습니다.");
+            throw new IllegalArgumentException(SubwayExceptionMessage.EMPTY_TARGET.getMessage());
         }
     }
 
@@ -59,7 +60,7 @@ public class DijkstraPathFinder implements PathFinder {
 
     private void ensureNotSameStation(Station sourceStation, Station targetStation) {
         if (sourceStation.equals(targetStation)) {
-            throw new IllegalArgumentException("출발역과 도착역이 동일합니다.");
+            throw new IllegalArgumentException();
         }
     }
 

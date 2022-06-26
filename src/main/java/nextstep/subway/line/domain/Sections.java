@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.SubwayExceptionMessage;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -51,12 +52,12 @@ public class Sections {
         boolean isDownStationExisted = hasStation(section.getDownStation());
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException(SubwayExceptionMessage.DUPLICATE_SECTION.getMessage());
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
                 stations.stream().noneMatch(it -> it == section.getDownStation())) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException(SubwayExceptionMessage.INVALID_SECTION.getMessage());
         }
     }
 
@@ -80,7 +81,7 @@ public class Sections {
 
     private void validateNotLastSection() {
         if (sectionList.size() <= 1) {
-            throw new IllegalStateException("마지막 구간은 삭제할 수 없습니다.");
+            throw new IllegalStateException(SubwayExceptionMessage.CANNOT_DELETE_LAST_SECTION.getMessage());
         }
     }
 
@@ -119,7 +120,7 @@ public class Sections {
         return sectionList.stream()
                 .filter(it -> it.getUpStation().equals(downStation))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("다음 구간이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(SubwayExceptionMessage.EMPTY_NEXT_SECTION.getMessage()));
     }
 
     private boolean hasNextSection(Station downStation) {
@@ -146,7 +147,7 @@ public class Sections {
         return sectionList.stream()
                 .filter(it -> it.getDownStation().equals(upStation))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("이전 구간이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(SubwayExceptionMessage.EMPTY_PREVIOUS_SECTION.getMessage()));
     }
 
     private boolean hasPreviousSection(Station upStation) {

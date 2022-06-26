@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.exception.SubwayExceptionMessage;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.DijkstraPathFinder;
@@ -39,7 +40,7 @@ public class PathService {
 
     private void ensureNotSameStation(Station sourceStation, Station targetStation) {
         if (sourceStation.equals(targetStation)) {
-            throw new IllegalArgumentException("출발역과 도착역이 동일합니다.");
+            throw new IllegalArgumentException(SubwayExceptionMessage.SAME_SOURCE_TARGET.getMessage());
         }
     }
 }

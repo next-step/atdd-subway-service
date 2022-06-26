@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.SubwayExceptionMessage;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -60,7 +61,7 @@ class DijkstraPathFinderTest {
     void hasSameSourceAndTarget() {
         PathFinder pathFinder = new DijkstraPathFinder(lines);
         assertThrows(IllegalArgumentException.class, () -> pathFinder.findShortestPath(강남역, 강남역)
-                , "출발역과 도착역이 동일합니다.");
+                , SubwayExceptionMessage.SAME_SOURCE_TARGET.getMessage());
     }
 
     @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 오류가 발생한다.")
@@ -74,7 +75,7 @@ class DijkstraPathFinderTest {
         PathFinder pathFinder = new DijkstraPathFinder(lines);
 
         assertThrows(IllegalArgumentException.class, () -> pathFinder.findShortestPath(강남역, 종각역)
-                , "최단거리가 존재하지 않습니다.");
+                , SubwayExceptionMessage.EMPTY_SHORTEST_PATH.getMessage());
     }
 
     @DisplayName("존재하지 않는 출발역을 조회할 경우 오류가 발생한다.")
@@ -84,7 +85,7 @@ class DijkstraPathFinderTest {
 
         PathFinder pathFinder = new DijkstraPathFinder(lines);
         assertThrows(IllegalArgumentException.class, () -> pathFinder.findShortestPath(시청역, 강남역)
-                , "출발역이 존재하지 않습니다.");
+                , SubwayExceptionMessage.EMPTY_SOURCE.getMessage());
     }
 
     @DisplayName("존재하지 않는 도착역을 조회할 경우 오류가 발생한다.")
@@ -94,6 +95,6 @@ class DijkstraPathFinderTest {
 
         PathFinder pathFinder = new DijkstraPathFinder(lines);
         assertThrows(IllegalArgumentException.class, () -> pathFinder.findShortestPath(강남역, 시청역)
-                , "도착역이 존재하지 않습니다.");
+                , SubwayExceptionMessage.EMPTY_TARGET.getMessage());
     }
 }
