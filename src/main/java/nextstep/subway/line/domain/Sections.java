@@ -12,6 +12,8 @@ import java.util.*;
 
 @Embeddable
 public class Sections {
+    private static final int DELETABLE_SIZE = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
@@ -23,14 +25,14 @@ public class Sections {
     }
 
     public void addSection(Section section) {
-        List<Station> stations = getOrderdStations();
+        List<Station> stations = getOrderStations();
         if (stations.isEmpty()) {
             sections.add(section);
             return;
         }
 
-        boolean isUpStationExisted = stations.stream().anyMatch(station -> station.getName().equals(section.getUpStation().getName()));
-        boolean isDownStationExisted = stations.stream().anyMatch(station -> station.getName().equals(section.getDownStation().getName()));
+        boolean isUpStationExisted = stations.stream().anyMatch(station -> station.equals(section.getUpStation()));
+        boolean isDownStationExisted = stations.stream().anyMatch(station -> station.equals(section.getDownStation()));
 
         checkAlreadyRegisteredStation(isUpStationExisted, isDownStationExisted);
         checkContainStation(isUpStationExisted, isDownStationExisted);
@@ -53,14 +55,13 @@ public class Sections {
     }
 
     private void checkContainStation(boolean isUpStationExisted, boolean isDownStationExisted) {
-
         if (!isUpStationExisted && !isDownStationExisted) {
             throw new NoSuchElementFoundException(ErrorMessage.NOT_FOUND_STATIONS_FOR_SECTION);
         }
     }
 
-    public List<Station> getOrderdStations() {
-        if (getSections().isEmpty()) {
+    public List<Station> getOrderStations() {
+        if (sections.isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -93,6 +94,13 @@ public class Sections {
         downLineStation.ifPresent(sections::remove);
     }
 
+    public boolean hasStation(Station station) {
+        Optional<Section> upLineStation = findSectionByUpStation(station);
+        Optional<Section> downLineStation = findSectionByDownStation(station);
+
+        return upLineStation.isPresent() || downLineStation.isPresent();
+    }
+
     private void combineSection(Section upLineStation, Section downLineStation) {
         Station newUpStation = downLineStation.getUpStation();
         Station newDownStation = upLineStation.getDownStation();
@@ -102,7 +110,6 @@ public class Sections {
     }
 
     private void checkDeletableSection() {
-        int DELETABLE_SIZE = 1;
         if (sections.size() <= DELETABLE_SIZE) {
             throw new IllegalArgumentException(ErrorMessage.NOT_DELETABLE_SIZE_SECTION);
         }
@@ -119,12 +126,12 @@ public class Sections {
     }
 
     private Optional<Section> findSectionByUpStation(Station station) {
-        return sections.stream().filter(section -> section.getUpStation().getName().equals(station.getName()))
+        return sections.stream().filter(section -> section.getUpStation().equals(station))
                 .findFirst();
     }
 
     private Optional<Section> findSectionByDownStation(Station station) {
-        return sections.stream().filter(section -> section.getDownStation().getName().equals(station.getName()))
+        return sections.stream().filter(section -> section.getDownStation().equals(station))
                 .findFirst();
     }
 
@@ -140,4 +147,5 @@ public class Sections {
 
         return station;
     }
+
 }
