@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.exception.NoSearchFavoriteException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -61,6 +62,6 @@ public class FavoriteService {
     }
 
     private Favorite findFavoriteById(Long id) {
-        return favoriteRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        return favoriteRepository.findById(id).orElseThrow(() -> new NoSearchFavoriteException(id));
     }
 }
