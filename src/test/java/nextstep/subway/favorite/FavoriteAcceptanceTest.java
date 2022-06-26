@@ -108,6 +108,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
 
+    /**
+     * when 등록되어 있지 않은 역으로 즐겨찾기 생성 요청을 하면
+     * then 에러가 발생한다.
+     */
+    @DisplayName("등록되어 있지 않은 역으로 즐겨찾기 생성 요청 시 에러발생.")
+    @Test
+    public void createFavoriteWithNoExistStation() {
+        //when
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 999l, 1000l);
+        //then
+        응답에러_확인(즐겨찾기_생성_응답,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+
     public static void 즐겨찾기_정보_조회됨(ExtractableResponse<Response> response, StationResponse source, StationResponse target) {
         List<FavoriteResponse> favoriteResponses = response.jsonPath().getList(".", FavoriteResponse.class);
 
@@ -161,5 +176,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+
+    public static void 응답에러_확인(ExtractableResponse<Response> response, HttpStatus httpStatus) {
+        assertThat(response.statusCode()).isEqualTo(httpStatus.value());
     }
 }
