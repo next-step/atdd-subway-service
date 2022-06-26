@@ -1,4 +1,4 @@
-package nextstep.subway.path.util;
+package nextstep.subway.path.types;
 
 public enum SalePolicy {
     YOUTH(0.2) {
@@ -48,12 +48,10 @@ public enum SalePolicy {
     abstract public int calculateCharge(final int age);
 
     private static int calculateYouthCharge(final int totalCharge) {
-        final int deductionPrice = totalCharge - DEDUCTION_AMOUNT;
-        return totalCharge - (int) Math.round(deductionPrice * YOUTH.getDiscountRate());
+        return (int) Math.round((totalCharge - DEDUCTION_AMOUNT) * (1 - YOUTH.getDiscountRate()));
     }
 
     private static int calculateChildCharge(final int totalCharge) {
-        final int deductionPrice = totalCharge - DEDUCTION_AMOUNT;
-        return totalCharge - (int) Math.round(deductionPrice * CHILD.getDiscountRate());
+        return (int) Math.round((totalCharge - DEDUCTION_AMOUNT) * (1 - CHILD.getDiscountRate()));
     }
 }

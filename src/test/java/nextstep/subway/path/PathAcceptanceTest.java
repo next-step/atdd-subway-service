@@ -101,7 +101,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
-    @DisplayName("(로그인) 샛강역 -> 신길역 최단거리는 15이며 청소년 지하철 요금은 1,390원이고 경로는 샛강 - 노량진 - 대방 - 신길이다.")
+    @DisplayName("(로그인) 샛강역 -> 신길역 최단거리는 15이며 청소년 지하철 요금은 1,040원이고 경로는 샛강 - 노량진 - 대방 - 신길이다.")
     @Test
     void shortestPathSaetGangToSingilWithYouthLogin() {
 
@@ -125,11 +125,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         N번째_역_이름_확인(역_이동_목록, 2, 대방역);
         N번째_역_이름_확인(역_이동_목록, 3, 신길역);
         이동_거리_확인(이동_거리, 15);
-        지하철_요금_확인(지하철_요금, 1_390);
+        지하철_요금_확인(지하철_요금, 1_040);
 
     }
 
-    @DisplayName("(로그인) 샛강역 -> 신길역 최단거리는 15이며 어린이 지하철 요금은 1,000원이고 경로는 샛강 - 노량진 - 대방 - 신길이다.")
+    @DisplayName("(로그인) 샛강역 -> 신길역 최단거리는 15이며 어린이 지하철 요금은 650원이고 경로는 샛강 - 노량진 - 대방 - 신길이다.")
     @Test
     void shortestPathSaetGangToSingilWithChildLogin() {
 
@@ -153,7 +153,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         N번째_역_이름_확인(역_이동_목록, 2, 대방역);
         N번째_역_이름_확인(역_이동_목록, 3, 신길역);
         이동_거리_확인(이동_거리, 15);
-        지하철_요금_확인(지하철_요금, 1_000);
+        지하철_요금_확인(지하철_요금, 650);
 
     }
 
