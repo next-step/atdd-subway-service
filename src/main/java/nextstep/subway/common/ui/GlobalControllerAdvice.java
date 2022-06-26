@@ -2,6 +2,7 @@ package nextstep.subway.common.ui;
 
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.common.dto.ErrorResponse;
+import nextstep.subway.favorite.domain.HasNotPermissionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -39,5 +40,11 @@ public class GlobalControllerAdvice {
     public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException exception) {
         ErrorResponse errorResponse = ErrorResponse.of(exception.getMessage(), HttpStatus.UNAUTHORIZED.value());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+    }
+
+    @ExceptionHandler(HasNotPermissionException.class)
+    public ResponseEntity<ErrorResponse> handleHasNotPermissionException(HasNotPermissionException exception) {
+        ErrorResponse errorResponse = ErrorResponse.of(exception.getMessage(), HttpStatus.FORBIDDEN.value());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
 }
