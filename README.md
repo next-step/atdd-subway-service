@@ -122,3 +122,38 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - 2. 경로 조회 메서드에서 Line을 인자로 받고 그 결과로 원하는 응답을 리턴하도록 테스트 완성
         - 3. 테스트를 성공시키기 위해 JGraph의 실제 객체를 활용(테스트에서는 알 필요가 없음)
         ```
+
+***
+# 🚀 3단계 - 구간 추가 기능
+
+## 요구사항
+- 토큰 발급 기능 (로그인) 인수 테스트 만들기
+- 인증 - 내 정보 조회 기능 완성하기
+- 인증 - 즐겨 찾기 기능 완성하기
+
+## 요구사항 설명
+- 토큰 발급 인수 테스트
+    + 토큰 발급(로그인)을 검증하는 인수 테스트 만들기
+    + `AuthAcceptanceTest` 인수 테스트 만들기
+    + 이메일과 패스워드를 이용하여 요청 시 access token을 응답하는 기능을 구현하기
+        * AuthAcceptanceTest을 만족하도록 구현하면 됨
+        * AuthAcceptanceTest에서 제시하는 예외 케이스도 함께 고려하여 구현하기
+    + Bearer Auth 유효하지 않은 토큰 인수 테스트
+        * 유효하지 않은 토큰으로 /members/me 요청을 보낼 경우에 대한 예외 처리
+- 내 정보 조회 기능
+    + 인수 테스트
+        * MemberAcceptanceTest 클래스의 manageMyInfo메서드에 인수 테스트를 추가하기
+        * 내 정보 조회, 수정, 삭제 기능을 /members/me 라는 URI 요청으로 동작하도록 검증
+        * 로그인 후 발급 받은 토큰을 포함해서 요청 하기
+    + 토큰을 통한 인증
+        * /members/me 요청 시 토큰을 확인하여 로그인 정보를 받아올 수 있도록 하기
+        * @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용하기
+        * 아래의 기능이 제대로 동작하도록 구현하기
+- 즐겨 찾기 기능 구현하기
+    + 즐겨찾기 기능을 완성하기
+    + 인증을 포함하여 전체 ATDD 사이클을 경험할 수 있도록 기능을 구현하기
+
+## 힌트
+- 인증 기반 인수 테스트
+    + 사용자 정보를 인수 테스트 메서드의 첫번째 파라미터로 넘겨줄 수 있음 
+    + 참고로 코틀린에서는 확장 함수를 활용하여 작성할 수 있음

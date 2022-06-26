@@ -8,11 +8,13 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class PathFinder {
     private static final String ERROR_MESSAGE_EQUAL_STATION = "출발역과 도착역이 동일합니다.";
     private static final String ERROR_MESSAGE_NOT_CONNECTED = "출발역과 도착역이 연결이 되어 있지 않습니다.";
