@@ -32,15 +32,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBearerAuth() {
         // when
-        TokenRequest request = new TokenRequest(EMAIL, PASSWORD);
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().post("/login/token")
-                .then().log().all()
-                .extract();
-
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
 
         // then
         TokenResponse tokenResponse = response.as(TokenResponse.class);
@@ -51,6 +43,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
+        String incorrectPassword = "incorrectPassword";
+
+        // when
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, incorrectPassword);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -58,4 +57,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithWrongBearerAuth() {
     }
 
+    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        TokenRequest request = new TokenRequest(email, password);
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/login/token")
+                .then().log().all()
+                .extract();
+        return response;
+    }
 }
