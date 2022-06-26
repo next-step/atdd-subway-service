@@ -66,6 +66,10 @@ public class Section {
         return downStation;
     }
 
+    public int getDistance() {
+        return distance.value();
+    }
+
     public void update(Section section) {
         if (upStation == section.upStation) {
             updateUpStation(section.downStation, section.distance);
