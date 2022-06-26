@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.fare.domain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

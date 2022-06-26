@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.fare.domain;
 
 public class Fare {
     private static final int MIN = 0;

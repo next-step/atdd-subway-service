@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.fare.domain;
 
 import java.util.Arrays;
 import java.util.function.Function;

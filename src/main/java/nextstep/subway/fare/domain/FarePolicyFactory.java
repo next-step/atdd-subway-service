@@ -1,8 +1,9 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.fare.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.fare.domain;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

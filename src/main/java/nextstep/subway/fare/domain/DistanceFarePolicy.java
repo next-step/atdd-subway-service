@@ -1,12 +1,12 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.fare.domain;
 
 import nextstep.subway.line.domain.Distance;
 
 import java.util.Arrays;
 import java.util.function.Function;
 
-import static nextstep.subway.path.domain.Fare.BASIC_FARE;
-import static nextstep.subway.path.domain.Fare.FIRST_MAX_FARE;
+import static nextstep.subway.fare.domain.Fare.BASIC_FARE;
+import static nextstep.subway.fare.domain.Fare.FIRST_MAX_FARE;
 
 /**
  * 기본운임(10㎞ 이내) : 기본운임 1,250원
@@ -53,7 +53,7 @@ public class DistanceFarePolicy implements FarePolicy {
             return Arrays.stream(values())
                     .filter(fare -> fare.between(distance))
                     .findFirst()
-                    .get();
+                    .orElseThrow(() -> new IllegalArgumentException("잘못된 거리입니다."));
         }
 
         public boolean between(Distance distance) {
