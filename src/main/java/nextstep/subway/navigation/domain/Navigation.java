@@ -50,7 +50,7 @@ public class Navigation {
         int fare = FareCalculatorService.calculate(distance) + maxLineExtraFare(path);
 
         DiscountPolicy discountPolicy = DiscountType.ofDiscountPolicy(loginMember.getAge());
-        int discountedFare = discountPolicy.discountFare(fare);
+        int discountedFare = discountPolicy.discountedFare(fare);
 
         return NavigationResponse.of(vertexList, distance, discountedFare);
     }
