@@ -5,6 +5,7 @@ import nextstep.subway.fare.application.InvalidFareException;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 import java.util.Objects;
 
 @Embeddable
@@ -12,6 +13,9 @@ import java.util.Objects;
 public class Fare implements Comparable<Fare> {
     private static final int MIN = 0;
     private final int value;
+
+    @Transient
+    private final AgeFarePolicy ageFarePolicy = new AgeFarePolicy();
 
     protected Fare() {
         this.value = MIN;
@@ -41,6 +45,11 @@ public class Fare implements Comparable<Fare> {
 
     public Fare discountPercent(int discountRate) {
         return new Fare((int) (value * discountRate * 0.01));
+    }
+
+    public Fare discountByAge(int age) {
+        return ageFarePolicy.calculate(this, age);
+
     }
 
     public int getValue() {

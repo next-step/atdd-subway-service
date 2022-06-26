@@ -1,9 +1,11 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.NotConnectStationException;
+import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.fare.domain.FareCalculator;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -17,16 +19,14 @@ import java.util.List;
 @Component
 public class PathFinder {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-    private DijkstraShortestPath shortestPath = new DijkstraShortestPath(graph);
+    private final FareCalculator fareCalculator;
+    private final DijkstraShortestPath shortestPath = new DijkstraShortestPath(graph);
 
-    protected PathFinder() {
+    public PathFinder(FareCalculator fareCalculator) {
+        this.fareCalculator = fareCalculator;
     }
 
-    public static PathFinder of() {
-        return new PathFinder();
-    }
-
-    public PathResponse findShortest(List<Line> lines, Station source, Station target) {
+    public Path findShortest(List<Line> lines, Station source, Station target) {
         for (Line line : lines) {
             addSectionToGraph(line);
         }
@@ -37,7 +37,8 @@ public class PathFinder {
         }
 
         double pathWeight = shortestPath.getPathWeight(source, target);
-        return PathResponse.of(path.getVertexList(), (int) pathWeight);
+        Fare fare = fareCalculator.calculateWithoutAge(Distance.from((int) pathWeight), lines);
+        return Path.of(path.getVertexList(), Distance.from((int) pathWeight), fare);
     }
 
     private void addSectionToGraph(Line line) {

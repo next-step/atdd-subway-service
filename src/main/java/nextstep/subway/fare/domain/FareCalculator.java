@@ -28,4 +28,11 @@ public class FareCalculator {
         return calculate;
     }
 
+    public Fare calculateWithoutAge(Distance distance, List<Line> lines) {
+        Fare distanceFare = distanceFarePolicy.calculate(distance);
+        Fare lineFare = lineFarePolicy.calculate(lines);
+
+        return distanceFare.plus(lineFare);
+    }
+
 }
