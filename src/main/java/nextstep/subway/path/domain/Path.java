@@ -27,13 +27,7 @@ public class Path {
 
         for(int i = 0; i < stations.size() - 1; i++) {
             int index = i;
-            maxExtraSet.add(sections.stream()
-                        .filter(section -> section.getUpStation().equals(stations.get(index)))
-                        .filter(section -> section.getDownStation().equals(stations.get(index + 1)))
-                        .map(Section::getLine)
-                        .map(Line::getSurcharge)
-                        .findFirst()
-                        .orElse(0));
+            maxExtraSet.add(Sections.findAllSurcharges(sections, stations.get(index), stations.get(index + 1)));
         }
 
         return maxExtraSet.stream()
