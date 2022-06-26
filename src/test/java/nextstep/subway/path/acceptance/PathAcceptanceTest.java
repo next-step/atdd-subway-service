@@ -1,4 +1,4 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -58,7 +58,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 양재역, 교대역, 3);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 강남역, 교대역, 5);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 7);
     }
 
@@ -90,7 +89,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                                 new nextstep.subway.path.dto.StationResponse(남부터미널역.getId(), 남부터미널역.getName(), 남부터미널역.getCreatedDate())
                         )
                 ),
-                13D
+                13
         );
         최단경로조회_검증(shortestPathResponse, answerPath);
     }

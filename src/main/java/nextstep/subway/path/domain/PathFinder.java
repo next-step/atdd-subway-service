@@ -33,7 +33,7 @@ public class PathFinder {
         List<Station> stations = path.getVertexList();
         double distance = shortestPath.getPathWeight(starting, destination);
 
-        return new ShortestPathResponse(StationsResponse.of(new Stations(stations)), distance);
+        return new ShortestPathResponse(StationsResponse.of(new Stations(stations)), (int) distance);
     }
 
     private static WeightedMultigraph<Station, DefaultWeightedEdge> createStationGraph(List<Line> lines) {
