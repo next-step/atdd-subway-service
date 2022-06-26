@@ -11,7 +11,7 @@ import org.jgrapht.GraphPath;
 import java.util.List;
 
 public class Lines {
-    List<Line> lines;
+    private List<Line> lines;
 
     public Lines(List<Line> lines) {
         this.lines = lines;
