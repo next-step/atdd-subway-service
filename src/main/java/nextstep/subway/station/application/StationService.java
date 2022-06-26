@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class StationService {
     private final StationRepository stationRepository;
 
@@ -20,6 +20,7 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         validateDuplicatedName(stationRequest.getName());
         Station persistStation = stationRepository.save(stationRequest.toStation());
@@ -34,7 +35,6 @@ public class StationService {
         });
     }
 
-    @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
@@ -43,11 +43,12 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteStationById(Long id) {
-        stationRepository.deleteById(id);
-    }
-
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지하철역입니다."));
+    }
+
+    @Transactional
+    public void deleteStationById(Long id) {
+        stationRepository.deleteById(id);
     }
 }
