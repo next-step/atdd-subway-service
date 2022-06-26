@@ -1,7 +1,6 @@
 package nextstep.subway.line.application;
 
 import nextstep.subway.exception.NoSearchLineException;
-import nextstep.subway.exception.NoSearchStationException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
