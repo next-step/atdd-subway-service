@@ -12,12 +12,16 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 public class PathFinder {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PathFinder.class);
+
     public ShortestPathResponse findShortestPath(List<Line> allLines, Station starting, Station destination) {
         this.validateSameStation(starting, destination);
 
@@ -52,21 +56,21 @@ public class PathFinder {
 
     private void validateIsExistStation(WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph, Station starting, Station destination) {
         if (!stationGraph.containsVertex(starting) || !stationGraph.containsVertex(destination)) {
-            System.out.println(ErrorMessage.NOT_FOUND_STATION);
+            LOGGER.error(ErrorMessage.NOT_FOUND_STATION);
             throw new NotFoundException(ErrorMessage.NOT_FOUND_STATION);
         }
     }
 
     private void validateSameStation(Station starting, Station destination) {
         if (starting.isSame(destination)) {
-            System.out.println(ErrorMessage.SAME_STATION);
+            LOGGER.error(ErrorMessage.SAME_STATION);
             throw new BadRequestException(ErrorMessage.SAME_STATION);
         }
     }
 
     private void validateConnectedStation(GraphPath<Station, DefaultWeightedEdge> path) {
         if (path == null) {
-            System.out.println(ErrorMessage.NOT_CONNECTED_STATION);
+            LOGGER.error(ErrorMessage.NOT_CONNECTED_STATION);
             throw new BadRequestException(ErrorMessage.NOT_CONNECTED_STATION);
         }
     }

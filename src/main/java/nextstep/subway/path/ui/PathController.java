@@ -20,9 +20,6 @@ public class PathController {
 
     @GetMapping("/short")
     public ResponseEntity<ShortestPathResponse> getShortestPath(@RequestParam("startingStationId") Long startingStationId, @RequestParam("destinationStationId") Long destinationStationId) {
-        System.out.println("-_-_-");
-        System.out.println(startingStationId);
-        System.out.println(destinationStationId);
         return ResponseEntity.ok(pathService.findShortestPath(startingStationId, destinationStationId));
     }
 
