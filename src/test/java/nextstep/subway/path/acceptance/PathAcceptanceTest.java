@@ -116,6 +116,39 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    /**
+     * Given 2개 이상의 지하철 역이 등록 되어 있음
+     * And 한 개 이상의 지하철 노선이 등록 되어 있음
+     * And 지하철 노선에 지하철 역이 등록 되어 있음
+     * When 출발역과 도착역이 연결 되어 있지 않음
+     * Then 최단거리를 조회 할 수 없다. (에러 응답)
+     */
+    @Test
+    @DisplayName("출발역, 도착역이 연결 되어 있지 않는 경우 에러 응땁")
+    void 출발역_도착역_연결안됨_에러_테스트() {
+        // when
+        StationResponse 까치산역 = StationAcceptanceTest.지하철역_등록되어_있음("까치산역")
+                .as(StationResponse.class);
+
+        StationResponse 서울역 = StationAcceptanceTest.지하철역_등록되어_있음("서울역")
+                .as(StationResponse.class);
+
+
+        LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("1호선", "bg-red-600", 까치산역.getId(), 서울역.getId(), 10))
+                .as(LineResponse.class);
+
+        // then
+        Map<String, Long> params = new HashMap<>();
+        params.put("source", 강남역.getId());
+        params.put("target", 서울역.getId());
+        ExtractableResponse<Response> response = 최단경로조회_요청(params);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+        );
+    }
+
     private ExtractableResponse<Response> 최단경로조회_요청(Map<String, Long> params) {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
