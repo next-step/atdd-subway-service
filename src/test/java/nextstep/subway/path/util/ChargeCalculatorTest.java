@@ -23,7 +23,7 @@ public class ChargeCalculatorTest {
         지하철_요금_확인(지하철_요금, 1_250);
     }
 
-    @DisplayName("거리가 17이고 노선 추가요금이 0일 때 지하철 요금은 1,650원을 반환한다.")
+    @DisplayName("거리가 17이고 노선 추가요금이 0일 때 지하철 요금은 1,450원을 반환한다.")
     @Test
     void calculateBetweenTenAndFifty() {
         //given
@@ -34,10 +34,10 @@ public class ChargeCalculatorTest {
         final int 지하철_요금 = ChargeCalculator.calculateTotalCharge(distance, surcharge, LoginMember.empty());
 
         //then
-        지하철_요금_확인(지하철_요금, 1_650);
+        지하철_요금_확인(지하철_요금, 1_450);
     }
 
-    @DisplayName("거리가 58이고 노선 추가요금이 0일 때 지하철 요금은 2,050원을 반환한다.")
+    @DisplayName("거리가 58이고 노선 추가요금이 0일 때 지하철 요금은 2,150원을 반환한다.")
     @Test
     void calculateMoreOrEqualFifty() {
         //given
@@ -48,7 +48,7 @@ public class ChargeCalculatorTest {
         final int 지하철_요금 = ChargeCalculator.calculateTotalCharge(distance, surcharge, LoginMember.empty());
 
         //then
-        지하철_요금_확인(지하철_요금, 2_050);
+        지하철_요금_확인(지하철_요금, 2_150);
     }
 
     private void 지하철_요금_확인(final int totalCharge, final int expected) {

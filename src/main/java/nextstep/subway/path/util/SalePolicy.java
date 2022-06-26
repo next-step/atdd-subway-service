@@ -1,12 +1,29 @@
 package nextstep.subway.path.util;
 
 public enum SalePolicy {
-    YOUTH(0.2), CHILD(0.5), ADULT(0);
+    YOUTH(0.2) {
+        @Override
+        public int calculateCharge(final int totalCharge) {
+            return calculateYouthCharge(totalCharge);
+        }
+    }, CHILD(0.5) {
+        @Override
+        public int calculateCharge(final int totalCharge) {
+            return calculateChildCharge(totalCharge);
+        }
+    }, ADULT(0) {
+        @Override
+        public int calculateCharge(final int totalCharge) {
+            return totalCharge;
+        }
+    };
 
-    private final static Integer YOUTH_MIN_AGE = 13;
-    private final static Integer YOUTH_MAX_AGE = 18;
-    private final static Integer CHILD_MIN_AGE = 6;
-    private final static Integer CHILD_MAX_AGE = 12;
+    private static final Integer YOUTH_MIN_AGE = 13;
+    private static final Integer YOUTH_MAX_AGE = 18;
+    private static final Integer CHILD_MIN_AGE = 6;
+    private static final Integer CHILD_MAX_AGE = 12;
+
+    private static final int DEDUCTION_AMOUNT = 350;
 
     private double discountRate;
 
@@ -18,13 +35,25 @@ public enum SalePolicy {
         return discountRate;
     }
 
-    public static SalePolicy getPolicyByAge(final Integer age) {
+    public static int calculateAgeDiscountFrom(final int totalCharge, final Integer age) {
         if (YOUTH_MIN_AGE <= age && age <= YOUTH_MAX_AGE) {
-            return YOUTH;
+            return YOUTH.calculateCharge(totalCharge);
         }
         if (CHILD_MIN_AGE <= age && age <= CHILD_MAX_AGE) {
-            return CHILD;
+            return CHILD.calculateCharge(totalCharge);
         }
-        return ADULT;
+        return ADULT.calculateCharge(totalCharge);
+    }
+
+    abstract public int calculateCharge(final int age);
+
+    private static int calculateYouthCharge(final int totalCharge) {
+        final int deductionPrice = totalCharge - DEDUCTION_AMOUNT;
+        return totalCharge - (int) Math.round(deductionPrice * YOUTH.getDiscountRate());
+    }
+
+    private static int calculateChildCharge(final int totalCharge) {
+        final int deductionPrice = totalCharge - DEDUCTION_AMOUNT;
+        return totalCharge - (int) Math.round(deductionPrice * CHILD.getDiscountRate());
     }
 }

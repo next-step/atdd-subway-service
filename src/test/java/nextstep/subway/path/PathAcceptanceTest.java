@@ -59,7 +59,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(오호선, 신길역, 여의도역, 10);
     }
 
-    @DisplayName("(비로그인) 노량진역 -> 여의나루역 최단거리는 15이며 지하철 요금은 1,850원이고 경로는 노량진 - 샛강 - 여의도 - 여의나루다.")
+    @DisplayName("(비로그인) 노량진역 -> 여의나루역 최단거리는 15이며 지하철 요금은 1,650원이고 경로는 노량진 - 샛강 - 여의도 - 여의나루다.")
     @Test
     void shortestPathNoryangjinToYeouinaru() {
 
@@ -76,11 +76,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         N번째_역_이름_확인(역_이동_목록, 2, 여의도역);
         N번째_역_이름_확인(역_이동_목록, 3, 여의나루역);
         이동_거리_확인(이동_거리, 15);
-        지하철_요금_확인(지하철_요금, 1_850);
+        지하철_요금_확인(지하철_요금, 1_650);
 
     }
 
-    @DisplayName("(비로그인) 샛강역 -> 신길역 최단거리는 15이며 지하철 요금은 1,850원이고 경로는 샛강 - 노량진 - 대방 - 신길이다.")
+    @DisplayName("(비로그인) 샛강역 -> 신길역 최단거리는 15이며 지하철 요금은 1,650원이고 경로는 샛강 - 노량진 - 대방 - 신길이다.")
     @Test
     void shortestPathSaetGangToSingil() {
 
@@ -97,11 +97,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         N번째_역_이름_확인(역_이동_목록, 2, 대방역);
         N번째_역_이름_확인(역_이동_목록, 3, 신길역);
         이동_거리_확인(이동_거리, 15);
-        지하철_요금_확인(지하철_요금, 1_850);
+        지하철_요금_확인(지하철_요금, 1_650);
 
     }
 
-    @DisplayName("(로그인) 샛강역 -> 신길역 최단거리는 15이며 청소년 지하철 요금은 1,550원이고 경로는 샛강 - 노량진 - 대방 - 신길이다.")
+    @DisplayName("(로그인) 샛강역 -> 신길역 최단거리는 15이며 청소년 지하철 요금은 1,390원이고 경로는 샛강 - 노량진 - 대방 - 신길이다.")
     @Test
     void shortestPathSaetGangToSingilWithYouthLogin() {
 
@@ -125,11 +125,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         N번째_역_이름_확인(역_이동_목록, 2, 대방역);
         N번째_역_이름_확인(역_이동_목록, 3, 신길역);
         이동_거리_확인(이동_거리, 15);
-        지하철_요금_확인(지하철_요금, 1_550);
+        지하철_요금_확인(지하철_요금, 1_390);
 
     }
 
-    @DisplayName("(로그인) 샛강역 -> 신길역 최단거리는 15이며 어린이 지하철 요금은 1,100원이고 경로는 샛강 - 노량진 - 대방 - 신길이다.")
+    @DisplayName("(로그인) 샛강역 -> 신길역 최단거리는 15이며 어린이 지하철 요금은 1,000원이고 경로는 샛강 - 노량진 - 대방 - 신길이다.")
     @Test
     void shortestPathSaetGangToSingilWithChildLogin() {
 
@@ -153,7 +153,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         N번째_역_이름_확인(역_이동_목록, 2, 대방역);
         N번째_역_이름_확인(역_이동_목록, 3, 신길역);
         이동_거리_확인(이동_거리, 15);
-        지하철_요금_확인(지하철_요금, 1_100);
+        지하철_요금_확인(지하철_요금, 1_000);
 
     }
 
