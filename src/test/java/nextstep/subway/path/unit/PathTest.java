@@ -47,9 +47,9 @@ public class PathTest extends UnitTest {
         교대역 = new Station("교대역");
         남부터미널역 = new Station("남부터미널역");
 
-        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        신분당선 = new Line("신분당선", "bg-red-300", 강남역, 양재역, 10);
+        이호선 = new Line("이호선", "bg-yellow-400", 교대역, 강남역, 10);
+        삼호선 = new Line("삼호선", "bg-green-500", 교대역, 양재역, 5);
 
         삼호선.getSections().add(new Section(교대역, 남부터미널역, new Distance(3)));
         삼호선.getSections().add(new Section(양재역, 교대역, new Distance(3)));
@@ -86,8 +86,27 @@ public class PathTest extends UnitTest {
     @Test
     @DisplayName("출발역, 도착역 동일 예외 테스트")
     void 최단경로조회_출발역_도착역_동일_예외() {
+        // then
         assertThatThrownBy(
                 () -> PathFinder.findShortestPath(allLines, 강남역, 강남역)
+        ).isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("[ERROR]");
+    }
+
+    /**
+     * 출발역, 도착역이 연결 되어 있지 않을 때 최단 거리 조회 예외 테스트
+     */
+    @Test
+    @DisplayName("출발역, 도착역이 연결 되어 있지 않을 때 예외 테스트")
+    void 최단경로조회_출발역_도착역_연결되어있지않음_예외() {
+        // when
+        Station 까치산역 = new Station("까치산역");
+        Station 서울역 = new Station("서울역");
+        Line 일호선 = new Line("1호선", "bg-blue-600", 까치산역, 서울역, 10);
+        allLines = Arrays.asList(일호선, 이호선, 삼호선, 신분당선);
+
+        assertThatThrownBy(
+                () -> PathFinder.findShortestPath(allLines, 강남역, 까치산역)
         ).isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("[ERROR]");
     }

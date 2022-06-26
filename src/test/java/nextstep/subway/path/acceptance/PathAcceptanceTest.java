@@ -49,11 +49,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역")
                 .as(StationResponse.class);
 
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10))
+        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-300", 강남역.getId(), 양재역.getId(), 10))
                 .as(LineResponse.class);
-        이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10))
+        이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-yellow-400", 교대역.getId(), 강남역.getId(), 10))
                 .as(LineResponse.class);
-        삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5))
+        삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-green-500", 교대역.getId(), 양재역.getId(), 5))
                 .as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
@@ -102,7 +102,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * Then 최단거리를 조회 할 수 없다. (에러 응답)
      */
     @Test
-    @DisplayName("출발역, 도착역이 같을 경우 에러 응땁 확인")
+    @DisplayName("출발역, 도착역이 같을 경우 에러 응응답 확인")
     void 출발역_도착역_동일_에러_테스트() {
         // when
         Map<String, Long> params = new HashMap<>();
@@ -124,7 +124,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * Then 최단거리를 조회 할 수 없다. (에러 응답)
      */
     @Test
-    @DisplayName("출발역, 도착역이 연결 되어 있지 않는 경우 에러 응땁")
+    @DisplayName("출발역, 도착역이 연결 되어 있지 않는 경우 에러 응답")
     void 출발역_도착역_연결안됨_에러_테스트() {
         // when
         StationResponse 까치산역 = StationAcceptanceTest.지하철역_등록되어_있음("까치산역")
@@ -133,8 +133,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 서울역 = StationAcceptanceTest.지하철역_등록되어_있음("서울역")
                 .as(StationResponse.class);
 
-
-        LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("1호선", "bg-red-600", 까치산역.getId(), 서울역.getId(), 10))
+        LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("1호선", "bg-blue-600", 까치산역.getId(), 서울역.getId(), 10))
                 .as(LineResponse.class);
 
         // then
