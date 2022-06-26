@@ -33,7 +33,7 @@ public class PathFinderTest {
     @Test
     void 경로_리스트_포함_역_확인() {
         // when
-        List<Long> stations = pathFinder.getPaths(강남역, 광교역).getVertexList();
+        List<Long> stations = pathFinder.getStationsId(강남역, 광교역);
 
         // then
         assertThat(stations).containsExactly(강남역.getId(), 광교역.getId());
@@ -42,7 +42,7 @@ public class PathFinderTest {
     @Test
     void 경로_길이_조회() {
         // when
-        double distance = pathFinder.getPaths(강남역, 광교역).getWeight();
+        double distance = pathFinder.getDistance(강남역, 광교역);
 
         // then
         assertThat(distance).isEqualTo(10);
@@ -52,7 +52,7 @@ public class PathFinderTest {
     @Test
     void sameSourceAndTarget() {
         assertThatThrownBy(() -> {
-            pathFinder.getPaths(강남역, 강남역);
+            pathFinder.getStationsId(강남역, 강남역);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -60,7 +60,7 @@ public class PathFinderTest {
     @Test
     void notConnectSourceAndTarget() {
         assertThatThrownBy(() -> {
-            pathFinder.getPaths(강남역, 판교역);
+            pathFinder.getStationsId(강남역, 판교역);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -68,7 +68,7 @@ public class PathFinderTest {
     @Test
     void notContainsSourceOrTarget() {
         assertThatThrownBy(() -> {
-            pathFinder.getPaths(신림역, 판교역);
+            pathFinder.getStationsId(신림역, 판교역);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 }
