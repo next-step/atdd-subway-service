@@ -15,6 +15,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
@@ -92,6 +93,28 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 13D
         );
         최단경로조회_검증(shortestPathResponse, answerPath);
+    }
+
+    /**
+     * Given 2개 이상의 지하철 역이 등록 되어 있음
+     * And 한 개 이상의 지하철 노선이 등록 되어 있음
+     * And 지하철 노선에 지하철 역이 등록 되어 있음
+     * When 출발역과 도착역을 동일하게 설정하면
+     * Then 최단거리를 조회 할 수 없다. (에러 응답)
+     */
+    @Test
+    @DisplayName("출발역, 도착역이 같을 경우 에러 응땁 확인")
+    void 출발역_도착역_동일_에러_테스트() {
+        // when
+        Map<String, Long> params = new HashMap<>();
+        params.put("source", 강남역.getId());
+        params.put("target", 강남역.getId());
+        ExtractableResponse<Response> response = 최단경로조회_요청(params);
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+        );
     }
 
     private ExtractableResponse<Response> 최단경로조회_요청(Map<String, Long> params) {
