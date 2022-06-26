@@ -20,7 +20,7 @@ public class FareCalculator {
         Fare distanceFare = distanceFarePolicy.calculate(distance);
         Fare lineFare = lineFarePolicy.calculate(lines);
 
-        return distanceFare.add(lineFare);
+        return distanceFare.plus(lineFare);
     }
 
 }

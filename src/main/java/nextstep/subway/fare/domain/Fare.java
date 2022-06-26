@@ -28,8 +28,19 @@ public class Fare implements Comparable<Fare> {
         return new Fare(value);
     }
 
-    public Fare add(Fare target) {
+    public Fare plus(Fare target) {
         return new Fare(value + target.value);
+    }
+
+    public Fare minus(Fare target) {
+        if (value < target.value) {
+            throw new IllegalArgumentException("차감 요금이 더 클 수 없습니다.");
+        }
+        return new Fare(value - target.value);
+    }
+
+    public Fare discountPercent(int discountRate) {
+        return new Fare((int) (value * discountRate * 0.01));
     }
 
     public int getValue() {
