@@ -5,12 +5,14 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class StationService {
     private final StationRepository stationRepository;
 
@@ -32,6 +34,7 @@ public class StationService {
         });
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
@@ -44,11 +47,7 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
     public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        return stationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지하철역입니다."));
     }
 }

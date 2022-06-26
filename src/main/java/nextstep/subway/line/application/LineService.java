@@ -49,7 +49,6 @@ public class LineService {
         });
     }
 
-
     private void validateDuplicatedColor(String color) {
         Optional<Line> lineByColor = lineRepository.findByColor(new LineColor(color));
 
@@ -58,17 +57,24 @@ public class LineService {
         });
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
+        List<Line> persistLines = findAllLines();
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
-    private Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+    @Transactional(readOnly = true)
+    public List<Line> findAllLines() {
+        return lineRepository.findAll();
     }
 
+    private Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지하철노선입니다."));
+    }
+
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
@@ -94,15 +100,15 @@ public class LineService {
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Station upStation = stationService.findById(request.getUpStationId());
+        Station downStation = stationService.findById(request.getDownStationId());
 
         line.addLineSection(upStation, downStation, new Distance(request.getDistance()));
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
+        Station station = stationService.findById(stationId);
 
         line.removeStation(station.getId());
     }

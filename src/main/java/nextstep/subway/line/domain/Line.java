@@ -41,26 +41,6 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
-    public List<Station> getStations() {
-        if (sections.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return sections.orderBySection();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public LineName getName() {
-        return name;
-    }
-
-    public LineColor getColor() {
-        return color;
-    }
-
     public void addLineSection(Station upStation, Station downStation, Distance distance) {
         boolean isUpStationExisted = sections.isExisted(upStation);
         boolean isDownStationExisted = sections.isExisted(downStation);
@@ -83,6 +63,10 @@ public class Line extends BaseEntity {
         Optional<Section> upLineStation = sections.findUpStation(stationId);
         Optional<Section> downLineStation = sections.findDownStation(stationId);
 
+        if (!upLineStation.isPresent() && !downLineStation.isPresent()) {
+            throw new IllegalArgumentException("노선에 포햠되지 않은 지하철역입니다.");
+        }
+
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             createSection(upLineStation.get(), downLineStation.get());
         }
@@ -96,5 +80,33 @@ public class Line extends BaseEntity {
         Station newDownStation = upLineStation.getDownStation();
         int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
         sections.addSection(new Section(this, newUpStation, newDownStation, newDistance));
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public LineName getName() {
+        return name;
+    }
+
+    public LineColor getColor() {
+        return color;
+    }
+
+    public List<Station> getStations() {
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return sections.orderBySection();
+    }
+
+    public Sections getSections() {
+        return sections;
+    }
+
+    public int getDistance() {
+        return sections.getDistance();
     }
 }

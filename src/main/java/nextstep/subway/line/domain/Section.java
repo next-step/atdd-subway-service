@@ -74,7 +74,7 @@ public class Section {
 
     public void updateUpStation(Station station, Distance newDistance) {
         if (this.distance.getValue() <= newDistance.getValue()) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.upStation = station;
         this.distance = distance.substract(newDistance);
@@ -82,7 +82,7 @@ public class Section {
 
     public void updateDownStation(Station station, Distance newDistance) {
         if (this.distance.getValue() <= newDistance.getValue()) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.downStation = station;
         this.distance = distance.substract(newDistance);
@@ -94,5 +94,29 @@ public class Section {
 
     public boolean existUpStation() {
         return this.upStation != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Section section = (Section) o;
+
+        if (!Objects.equals(id, section.id)) return false;
+        if (!Objects.equals(line.getId(), section.line.getId())) return false;
+        if (!Objects.equals(upStation.getId(), section.upStation.getId())) return false;
+        if (!Objects.equals(downStation.getId(), section.downStation.getId())) return false;
+        return Objects.equals(distance.getValue(), section.distance.getValue());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (line != null ? line.hashCode() : 0);
+        result = 31 * result + (upStation != null ? upStation.hashCode() : 0);
+        result = 31 * result + (downStation != null ? downStation.hashCode() : 0);
+        result = 31 * result + (distance != null ? distance.hashCode() : 0);
+        return result;
     }
 }

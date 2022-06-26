@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Embeddable
@@ -43,14 +44,14 @@ public class Sections {
 
     public void updateDownStation(Station upStation, Station downStation, Distance distance) {
         values.stream()
-                .filter(it -> it.getDownStation() == downStation)
+                .filter(it -> Objects.equals(it.getDownStation(), downStation))
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
     }
 
     public void updateUpStation(Station upStation, Station downStation, Distance distance) {
         values.stream()
-                .filter(it -> it.getUpStation() == upStation)
+                .filter(it -> Objects.equals(it.getUpStation(), upStation))
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
     }
@@ -125,5 +126,15 @@ public class Sections {
         }
 
         values.remove(section);
+    }
+
+    public List<Section> getValues() {
+        return values;
+    }
+
+    public int getDistance() {
+        return values.stream()
+                .map(Section::getDistance)
+                .reduce(0, Integer::sum);
     }
 }
