@@ -49,18 +49,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단 거리 조회")
     void shortest_path() {
         // when
-        PathResponse 최단거리_조회됨 = 지하철_최단거리_조회(강남역.getId(), 남부터미널역.getId()).as(PathResponse.class);
+        final ExtractableResponse<Response> 지하철_최단거리_조회 = 지하철_최단거리_조회(강남역.getId(), 남부터미널역.getId());
         // then
-        assertThat(최단거리_조회됨.getStations()).hasSize(3);
-        assertThat(최단거리_조회됨.getDistance()).isEqualTo(20);
+        지하철_최단거리_조회됨(지하철_최단거리_조회);
     }
 
-    public ExtractableResponse<Response> 지하철_최단거리_조회(final Long source, final Long target) {
+    public static ExtractableResponse<Response> 지하철_최단거리_조회(final Long source, final Long target) {
         return RestAssured.given().log().all()
                 .when()
                 .get("/paths?source={source}&target={target}", source, target)
                 .then().log().all()
                 .extract();
     }
+
+    public static void 지하철_최단거리_조회됨(ExtractableResponse<Response> response) {
+        // when
+        final PathResponse 최단거리_조회됨 = response.as(PathResponse.class);
+        // then
+        assertThat(최단거리_조회됨.getStations()).hasSize(3);
+        assertThat(최단거리_조회됨.getDistance()).isEqualTo(20);
+    }
+
 
 }
