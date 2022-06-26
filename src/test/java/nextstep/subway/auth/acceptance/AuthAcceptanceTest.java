@@ -61,7 +61,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String pw) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String pw) {
         TokenRequest tokenRequest = new TokenRequest(email, pw);
 
         return RestAssured
