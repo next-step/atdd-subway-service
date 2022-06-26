@@ -50,11 +50,11 @@ public class Line extends BaseEntity {
     }
 
     public String getName() {
-        return Objects.nonNull(name) ? name.toString() : null;
+        return Objects.nonNull(name) ? name.toString() : "";
     }
 
     public String getColor() {
-        return Objects.nonNull(color) ? color.toString() : null;
+        return Objects.nonNull(color) ? color.toString() : "";
     }
 
     public List<Section> getSections() {
