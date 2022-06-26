@@ -101,7 +101,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_조회_실패(response);
     }
 
-    public static ExtractableResponse<Response> 최단경로_조회_요청(Long sourceStationId, Long targetStationId) {
+    private static ExtractableResponse<Response> 최단경로_조회_요청(Long sourceStationId, Long targetStationId) {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -110,7 +110,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 최단경로_조회_성공(ExtractableResponse<Response> response, int distance, List<StationResponse> stationResponses) {
+    private static void 최단경로_조회_성공(ExtractableResponse<Response> response, int distance, List<StationResponse> stationResponses) {
         PathResponse pathResponse = response.as(PathResponse.class);
 
         List<Long> expectedStationIds = stationResponses.stream()
@@ -129,7 +129,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
-    public static void 최단경로_조회_실패(ExtractableResponse<Response> response) {
+    private static void 최단경로_조회_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
