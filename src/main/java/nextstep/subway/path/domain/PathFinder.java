@@ -30,11 +30,11 @@ public class PathFinder {
         sections.forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation().getId(), section.getDownStation().getId()), section.getDistance()));
     }
 
-    public GraphPath<Long, DefaultWeightedEdge> getPaths(Station source, Station target) {
+    public List<Long> getStationsId(Station source, Station target) {
         validSameSourceAndTarget(source, target);
         try {
-            DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-            return dijkstraShortestPath.getPath(source.getId(), target.getId());
+            GraphPath<Long, DefaultWeightedEdge> graphPath = getGraphPath(source, target);
+            return graphPath.getVertexList();
         } catch (Exception e){
             throw new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
@@ -47,7 +47,13 @@ public class PathFinder {
         }
     }
 
-    public Long getDistance(GraphPath<Long, DefaultWeightedEdge> graphPath) {
+    public Long getDistance(Station source, Station target) {
+        GraphPath<Long, DefaultWeightedEdge> graphPath = getGraphPath(source, target);
         return (long) graphPath.getWeight();
+    }
+
+    private GraphPath<Long, DefaultWeightedEdge> getGraphPath(Station source, Station target) {
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        return dijkstraShortestPath.getPath(source.getId(), target.getId());
     }
 }
