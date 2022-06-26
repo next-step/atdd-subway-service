@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.favorite.acceptance.FavoriteRequests.*;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
@@ -70,11 +69,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
+    public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, List<Long> expectedStationIds) {
+    public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, List<Long> expectedStationIds) {
         List<FavoriteResponse> favoriteResponses = response.jsonPath().getList(".", FavoriteResponse.class);
         List<Long> actualStationIds = favoriteResponses.stream()
                 .flatMap(favorite -> Stream.of(favorite.getSource().getId(), favorite.getTarget().getId()))
