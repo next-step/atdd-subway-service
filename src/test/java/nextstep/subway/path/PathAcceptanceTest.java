@@ -123,7 +123,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private static void 최단_경로_목록_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(9);
-        assertThat(response.as(PathResponse.class).fare()).isEqualTo(1250);
+        assertThat(response.as(PathResponse.class).getFare()).isEqualTo(1250);
     }
 
     private static void 최단_경로_조회_실패(ExtractableResponse<Response> response) {

@@ -32,7 +32,7 @@ public class PathServiceTest {
         // then
         assertAll(
                 () -> assertThat(response.getDistance()).isEqualTo(9),
-                () -> assertThat(response.fare()).isEqualTo(1750)
+                () -> assertThat(response.getFare()).isEqualTo(1750)
         );
     }
 }
