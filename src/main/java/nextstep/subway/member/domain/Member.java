@@ -51,7 +51,7 @@ public class Member extends BaseEntity {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("아이디 또는 비밀번호를 다시 확인해주세요.");
         }
     }
 }
