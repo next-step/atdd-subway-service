@@ -27,9 +27,10 @@ public class PathAcceptanceFactory {
             String color,
             StationResponse upStation,
             StationResponse downStation,
-            int distance
+            int distance,
+            int extraFare
     ) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
         return LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
@@ -42,7 +43,10 @@ public class PathAcceptanceFactory {
         return 지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
     }
 
-    public static ExtractableResponse<Response> 최단_거리_조회(PathRequest pathRequest) {
+    public static ExtractableResponse<Response> 최단_거리_조회(
+            String accessToken,
+            PathRequest pathRequest
+    ) {
         Map<String, Long> queryParams = new HashMap<>();
         queryParams.put("source", pathRequest.getSource());
         queryParams.put("target", pathRequest.getTarget());
@@ -51,6 +55,7 @@ public class PathAcceptanceFactory {
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(accessToken)
                 .queryParams(queryParams)
                 .when().get("/paths")
                 .then().log().all()

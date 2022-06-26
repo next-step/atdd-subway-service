@@ -13,8 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceFactory {
 
-    public static ExtractableResponse<Response> 로그인_요청(String name, String email) {
-        TokenRequest tokenRequest = TokenRequest.of(name, email);
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        TokenRequest tokenRequest = TokenRequest.of(email, password);
 
         return RestAssured
                 .given().log().all()
@@ -26,8 +26,8 @@ public class AuthAcceptanceFactory {
                 .extract();
     }
 
-    public static String 로그인_되어_있음(String name, String email) {
-        return 로그인_요청(name, email).as(TokenResponse.class).getAccessToken();
+    public static String 로그인_되어_있음(String email, String password) {
+        return 로그인_요청(email, password).as(TokenResponse.class).getAccessToken();
     }
 
     public static void 로그인_성공됨(ExtractableResponse<Response> response) {

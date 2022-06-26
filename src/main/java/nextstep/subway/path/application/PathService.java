@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.navigation.application.NavigationService;
@@ -27,15 +28,20 @@ public class PathService {
         this.navigationService = navigationService;
     }
 
-    public PathResponse findShortestDistance(PathRequest pathRequest) {
+    public PathResponse findShortestDistance(LoginMember loginMember, PathRequest pathRequest) {
         validateSameStation(pathRequest);
 
         Station sourceStation = stationService.findStationById(pathRequest.getSource());
         Station targetStation = stationService.findStationById(pathRequest.getTarget());
         List<Line> persistLines = lineService.findPersistLines();
 
-        NavigationResponse navigationResponse = navigationService.findShortest(persistLines, sourceStation, targetStation);
-        return PathResponse.of(navigationResponse.getStations(), navigationResponse.getDistance());
+        NavigationResponse navigationResponse = navigationService.findShortest(
+                persistLines,
+                sourceStation,
+                targetStation,
+                loginMember
+        );
+        return PathResponse.of(navigationResponse.getStations(), navigationResponse.getDistance(), navigationResponse.getFare());
     }
 
     private void validateSameStation(PathRequest pathRequest) {

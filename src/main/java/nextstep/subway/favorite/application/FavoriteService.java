@@ -59,7 +59,7 @@ public class FavoriteService {
     public void removeFavorites(Long memberId, Long favoriteId) {
         Favorite favorite = findFavorite(favoriteId);
 
-        if (favorite.isNotEqualsMember(memberId)) {
+        if (!favorite.isMemberFavorite(memberId)) {
             throw new AuthorizationException(NOT_EQUALS_MEMBER);
         }
 

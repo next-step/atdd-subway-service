@@ -54,8 +54,8 @@ public class Favorite {
         return targetStation;
     }
 
-    public boolean isNotEqualsMember(Long id) {
-        return !member.getId().equals(id);
+    public boolean isMemberFavorite(Long id) {
+        return member.getId().equals(id);
     }
 
     @Override

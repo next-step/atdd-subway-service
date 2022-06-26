@@ -7,17 +7,23 @@ import java.util.List;
 public class NavigationResponse {
     private List<Station> stations;
     private int distance;
+    private int fare;
 
     protected NavigationResponse() {
     }
 
-    public NavigationResponse(List<Station> stations, int distance) {
+    public NavigationResponse(List<Station> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = fare;
     }
 
     public static NavigationResponse of(List<Station> stations, int distance) {
-        return new NavigationResponse(stations, distance);
+        return new NavigationResponse(stations, distance, 0);
+    }
+
+    public static NavigationResponse ofNavigationAndFare(List<Station> stations, int distance, int fare) {
+        return new NavigationResponse(stations, distance, fare);
     }
 
     public List<Station> getStations() {
@@ -26,5 +32,9 @@ public class NavigationResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }
