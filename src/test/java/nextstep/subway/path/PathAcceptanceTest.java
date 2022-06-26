@@ -82,7 +82,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         ShortestPathResponse shortestPathResponse = response.as(ShortestPathResponse.class);
         ShortestPathResponse answerPath = new ShortestPathResponse(
-                new StationsResponse(Arrays.asList(강남역, 교대역, 남부터미널역)),
+                new StationsResponse(
+                        Arrays.asList(
+                                new nextstep.subway.path.dto.StationResponse(강남역.getId(), 강남역.getName(), 강남역.getCreatedDate()),
+                                new nextstep.subway.path.dto.StationResponse(교대역.getId(), 교대역.getName(), 교대역.getCreatedDate()),
+                                new nextstep.subway.path.dto.StationResponse(남부터미널역.getId(), 남부터미널역.getName(), 남부터미널역.getCreatedDate())
+                        )
+                ),
                 13D
         );
         최단경로조회_검증(shortestPathResponse, answerPath);
@@ -100,8 +106,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void 최단경로조회_검증(ShortestPathResponse shortestPathResponse, ShortestPathResponse answerPath) {
-        List<StationResponse> responseStations = shortestPathResponse.getStations().getStations();
-        List<StationResponse> answerStations = answerPath.getStations().getStations();
+        List<nextstep.subway.path.dto.StationResponse> responseStations = shortestPathResponse.getStations().getStations();
+        List<nextstep.subway.path.dto.StationResponse> answerStations = answerPath.getStations().getStations();
 
         assertAll(
                 () -> assertThat(responseStations.get(0).getName()).isEqualTo(answerStations.get(0).getName()),
