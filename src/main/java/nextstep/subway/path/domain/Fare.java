@@ -7,9 +7,6 @@ import java.util.List;
 public class Fare {
     private int fare = 1_250;
 
-    protected Fare() {
-    }
-
     public Fare(List<Section> sections, Path path, int age) {
         calculate(sections, path, age);
     }
