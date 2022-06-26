@@ -3,7 +3,7 @@ package nextstep.subway.fare.domain;
 public class YouthDiscountPolicy implements DiscountPolicy {
 
     @Override
-    public int discount(int price) {
+    public int discountFare(int price) {
         return DiscountType.YOUTH.calculate(price);
     }
 }
