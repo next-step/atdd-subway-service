@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.NoSuchElementException;
 
 import static nextstep.subway.common.Messages.INVALID_TOKEN;
+import static nextstep.subway.common.Messages.REQUIRED_MEMBER;
 
 @Service
 public class AuthService {
@@ -31,7 +32,11 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public LoginMember findMemberByToken(boolean required, String credentials) {
+        if (required && StringUtils.isEmpty(credentials)) {
+            throw new AuthorizationException(REQUIRED_MEMBER);
+        }
+
         if (StringUtils.isEmpty(credentials)) {
             return LoginMember.ofGuestMember();
         }
