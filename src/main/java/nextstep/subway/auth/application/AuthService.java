@@ -36,13 +36,17 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public LoginMember findMemberByToken(final String credentials) {
-        if (!tokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException(AuthorizationExceptionType.EXPIRE_TOKEN);
-        }
+        validationToken(credentials);
 
         final String email = tokenProvider.getPayload(credentials);
         final Member member = findByEmail(email);
         return LoginMember.of(member.getId(), member.getEmail(), member.getAge());
+    }
+
+    private void validationToken(final String credentials) {
+        if (!tokenProvider.validateToken(credentials)) {
+            throw new AuthorizationException(AuthorizationExceptionType.EXPIRE_TOKEN);
+        }
     }
 
     private Member findByEmail(final String email) {

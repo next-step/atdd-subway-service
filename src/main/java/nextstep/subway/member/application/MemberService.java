@@ -40,6 +40,6 @@ public class MemberService {
 
     private Member findById(final Long id) {
         return memberRepository.findById(id)
-                .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_EXISTS_UESR_ID));
+                .orElseThrow(() -> new MemberException(MemberExceptionType.NOT_EXISTS_USER));
     }
 }

@@ -42,6 +42,14 @@ public class Favorite extends BaseEntity {
         return id;
     }
 
+    public Station getSourceStation() {
+        return sourceStation;
+    }
+
+    public Station getTargetStation() {
+        return targetStation;
+    }
+
     @Override
     public String toString() {
         return "Favorite{" +
