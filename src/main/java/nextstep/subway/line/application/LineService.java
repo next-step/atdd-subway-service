@@ -24,8 +24,8 @@ public class LineService {
     }
 
     public LineResponse saveLine(final LineRequest request) {
-        final Station upStation = stationService.findById(request.getUpStationId());
-        final Station downStation = stationService.findById(request.getDownStationId());
+        final Station upStation = stationService.findStationById(request.getUpStationId());
+        final Station downStation = stationService.findStationById(request.getDownStationId());
         final Line persistLine = lineRepository.save(
                 new Line(
                         request.getName(),

@@ -2,7 +2,6 @@ package nextstep.subway.station.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import nextstep.subway.path.dto.PathStationResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
@@ -22,7 +21,7 @@ public class StationService {
         return StationResponse.of(persistStation);
     }
 
-    public List<StationResponse> findAllStations() {
+    public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
@@ -30,29 +29,22 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteStationById(Long id) {
-        stationRepository.deleteById(id);
+    public List<Station> findAllStations() {
+        return stationRepository.findAll();
     }
 
     public Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+    public void deleteStationById(Long id) {
+        stationRepository.deleteById(id);
     }
 
     public List<StationResponse> convertToStationResponses(final List<Station> stations) {
         return stations
                 .stream()
                 .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    public List<PathStationResponse> convertToPathStationResponses(final List<Station> stations) {
-        return stations
-                .stream()
-                .map(PathStationResponse::of)
                 .collect(Collectors.toList());
     }
 }
