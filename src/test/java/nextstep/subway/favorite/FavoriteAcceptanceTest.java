@@ -8,7 +8,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.favorite.dto.FavoriteReqeust;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
@@ -86,10 +86,10 @@ Scenario: 즐겨찾기를 관리
     @Test
     void createFavorite() {
         //given
-        FavoriteReqeust favoriteReqeust = new FavoriteReqeust(강남역.getId(), 양재역.getId());
+        FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 양재역.getId());
 
         //when
-        final ExtractableResponse<Response> response = 즐겨찾기_생성_요청(로그인된_회원, favoriteReqeust);
+        final ExtractableResponse<Response> response = 즐겨찾기_생성_요청(로그인된_회원, favoriteRequest);
 
         //then
         즐겨찾기가_생성됨(response);
@@ -101,7 +101,7 @@ Scenario: 즐겨찾기를 관리
     }
 
 
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청(TokenResponse tokenResponse, FavoriteReqeust favoriteReqeust) {
+    private ExtractableResponse<Response> 즐겨찾기_생성_요청(TokenResponse tokenResponse, FavoriteRequest favoriteReqeust) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(tokenResponse.getAccessToken())
