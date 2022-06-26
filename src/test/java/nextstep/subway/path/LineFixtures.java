@@ -29,7 +29,7 @@ public class LineFixtures {
 
         신분당선.addLineStation(Section.of(신분당선, 강남역, 양재역, 10));
         이호선.addLineStation(Section.of(이호선, 교대역, 강남역, 10));
-        삼호선.addLineStation(Section.of(삼호선, 교대역, 양재역, 10));
+        삼호선.addLineStation(Section.of(삼호선, 교대역, 양재역, 5));
         삼호선.addLineStation(Section.of(삼호선, 교대역, 남부터미널역, 3));
 
         모든_노선 = Arrays.asList(신분당선, 이호선, 삼호선);

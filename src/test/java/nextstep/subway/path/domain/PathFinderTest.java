@@ -34,6 +34,6 @@ class PathFinderTest {
 
         // Then
         assertAll(() -> assertThat(최단경로.getStations()).hasSize(3),
-                () -> assertThat(최단경로.getDistance()).isEqualTo(Distance.from(13)));
+                () -> assertThat(최단경로.getDistance()).isEqualTo(Distance.from(12)));
     }
 }

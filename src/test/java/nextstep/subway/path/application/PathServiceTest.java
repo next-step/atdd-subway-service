@@ -48,6 +48,6 @@ class PathServiceTest {
         PathResponse pathResponse = pathService.findShortestPath(출발역.getId(), 도착역.getId());
 
         assertAll(() -> assertThat(pathResponse.getStations()).hasSize(3),
-                () -> assertThat(pathResponse.getDistance()).isEqualTo(13));
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(12));
     }
 }
