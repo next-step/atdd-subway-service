@@ -29,4 +29,15 @@ public class FavoriteTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("같은 역을 즐겨찾기에 추가할 수 없습니다.");
     }
+
+    @Test
+    @DisplayName("즐겨찾기를 등록했던 사용자가 아니면 등록에 실패한다.")
+    void validateMember() {
+        Favorite 즐겨찾기 = Favorite.of(콜펌, 강남역, 정자역);
+        Member 필필 = new Member("test2@gamil.com", "password2", 30);
+
+        assertThatThrownBy(() -> 즐겨찾기.validateMember(필필))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("즐겨찾기를 등록한 사용자가 아닙니다.");
+    }
 }
