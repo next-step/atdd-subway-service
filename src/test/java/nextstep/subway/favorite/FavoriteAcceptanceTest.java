@@ -54,8 +54,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Given 지하철역 등록되어 있음
      * And 지하철 노선 등록되어 있음
      * And 지하철 노선에 지하철역 등록되어 있음
-     * And 회원 등록되어 있음 And 로그인 되어있음
-     * when 즐겨찾기 요청을 하면
+     * And 회원 등록되어 있음
+     * And 로그인 되어있음
+     * when 즐겨찾기 생성 요청을 하면
      * then 즐겨찾기가 생성된다.
      */
     @DisplayName("즐겨찾기 요청을 한다.")
@@ -66,6 +67,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //then
         즐겨찾기_생성됨(즐겨찾기_생성_응답);
     }
+
+
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long sourceId, Long targetId) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(sourceId, targetId);
