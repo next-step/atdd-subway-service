@@ -40,4 +40,9 @@ public class FavoriteService {
         List<Favorite> favorites = favoriteRepository.findAllByMember(member);
         return FavoriteResponse.of(favorites);
     }
+
+    public void deleteFavorite(LoginMember loginMember, Long id) {
+        Member member = memberService.findMemberOrThrow(loginMember.getId());
+        favoriteRepository.deleteByMemberAndId(member, id);
+    }
 }

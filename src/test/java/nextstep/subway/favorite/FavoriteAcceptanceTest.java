@@ -29,10 +29,7 @@ import org.springframework.http.MediaType;
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
-    private LineResponse 신분당선;
     private StationResponse 강남역;
-    private StationResponse 양재역;
-    private StationResponse 정자역;
     private StationResponse 광교역;
     private String accessToken;
 
@@ -44,13 +41,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         accessToken = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
 
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
-        정자역 = StationAcceptanceTest.지하철역_등록되어_있음("정자역").as(StationResponse.class);
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(),
-            10);
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
     /**
@@ -92,6 +86,28 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_정보_조회됨(즐겨찾기_조회_요청, 강남역, 광교역);
     }
 
+    /**
+     * Given 지하철역 등록되어 있음
+     * And 지하철 노선 등록되어 있음
+     * And 지하철 노선에 지하철역 등록되어 있음
+     * And 회원 등록되어 있음
+     * And 로그인 되어있음
+     * And 즐겨찾기 생성 되어있음
+     * when 즐겨찾기 삭제 요청을 하면
+     * then 즐겨찾기가 삭제된다.
+     */
+    @DisplayName("즐겨찾기 목록 삭제 요청을 한다.")
+    @Test
+    public void deleteFavorite() {
+        //given
+        즐겨찾기_생성_요청(accessToken, 강남역.getId(), 광교역.getId());
+        //when
+        ExtractableResponse<Response> 즐겨찾기_삭제_요청 = 즐겨찾기_삭제_요청(accessToken, 1L);
+        //then
+        즐겨찾기_삭제됨(즐겨찾기_삭제_요청);
+    }
+
+
     public static void 즐겨찾기_정보_조회됨(ExtractableResponse<Response> response, StationResponse source, StationResponse target) {
         List<FavoriteResponse> favoriteResponses = response.jsonPath().getList(".", FavoriteResponse.class);
 
@@ -116,6 +132,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, Long favoriteId) {
+
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .pathParam("id", favoriteId)
+            .when().delete("/favorites/{id}")
+            .then().log().all()
+            .extract();
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_조회_요청(String accessToken) {
 
         return RestAssured
@@ -131,4 +159,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 }
