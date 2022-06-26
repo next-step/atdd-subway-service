@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.auth.acceptance.AuthTestUtils.*;
-import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.MemberTestUtils.*;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
