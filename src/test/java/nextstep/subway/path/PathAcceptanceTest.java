@@ -20,6 +20,8 @@ import org.springframework.http.MediaType;
 
 @DisplayName("지하철 경로 조회 관련 기능")
 public class PathAcceptanceTest extends AcceptanceTest {
+    private static final Long 존재하지_않는_역_아이디 = -1L;
+
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -103,6 +105,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_경로_조회_실패됨(response);
     }
 
+    /**
+     * When 존재하지 않은 출발역이나 도착역으로 최단 경로를 조회하면
+     * Then 역을 찾을 수 없다는 NOT FOUND를 반환한다
+     */
+    @Test
+    @DisplayName("존재하지 않은 출발역이나 도착역으로 최단 경로를 조회하면 역을 찾을 수 없다는 NOT FOUND를 반환한다.")
+    void 출발역이나_도착역이_존재하지_않는_경우_조회() {
+        // When
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(강남역.getId(), 존재하지_않는_역_아이디);
+
+        // Then
+        역_조회_실패됨(response);
+    }
+
     private static ExtractableResponse<Response> 지하철_경로_조회_요청(long source, long target) {
         return RestAssured
                 .given().log().all()
@@ -114,7 +130,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-
     public static void 지하철_경로_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
@@ -125,5 +140,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_경로_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 역_조회_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }
