@@ -38,10 +38,14 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
+        List<Line> persistLines = findAllLines();
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public List<Line> findAllLines() {
+        return lineRepository.findAll();
     }
 
     private Line findLineById(Long id) {
