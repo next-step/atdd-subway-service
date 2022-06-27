@@ -10,28 +10,32 @@ import java.util.Objects;
 
 @Embeddable
 @Access(AccessType.FIELD)
-public class Distance {
-    private static final int MIN_DISTANCE = 0;
-    private int value;
+public class Charge {
+    private static final int BASIC_CHARGE = 1_250;
 
-    protected Distance(){}
-    
-    public Distance(final int value) {
-        if (value <= MIN_DISTANCE) {
-            throw new LineException(LineExceptionType.DISTANCE_MIN_ERROR);
-        }
+    private final int value;
+
+    protected Charge() {
+        this.value = BASIC_CHARGE;
+    }
+
+    public Charge(final int value) {
+        validation(value);
         this.value = value;
     }
 
-    public void minusDistance(final int value) {
-        if (this.value < value) {
-            throw new LineException(LineExceptionType.DISTANCE_MINUS_ERROR);
-        }
-        this.value = this.value - value;
+    public static Charge ofBasic() {
+        return new Charge(BASIC_CHARGE);
     }
 
-    public void plusDistance(final int value) {
-        this.value = this.value + value;
+    public static Charge of(final int value) {
+        return new Charge(value);
+    }
+
+    private void validation(final int value) {
+        if (value < BASIC_CHARGE) {
+            throw new LineException(LineExceptionType.LESS_BASIC_CHARGE);
+        }
     }
 
     public int getValue() {
@@ -40,17 +44,17 @@ public class Distance {
 
     @Override
     public String toString() {
-        return "Distance{" +
+        return "Charge{" +
                 "value=" + value +
                 '}';
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Distance distance = (Distance) o;
-        return value == distance.value;
+        final Charge charge = (Charge) o;
+        return value == charge.value;
     }
 
     @Override
@@ -58,3 +62,4 @@ public class Distance {
         return Objects.hash(value);
     }
 }
+

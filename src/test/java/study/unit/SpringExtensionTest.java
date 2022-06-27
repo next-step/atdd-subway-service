@@ -28,12 +28,10 @@ public class SpringExtensionTest {
     @Test
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
+        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line("2호선", "bg-blue-500")));
         LineService lineService = new LineService(lineRepository, stationService);
-
         // when
         List<LineResponse> responses = lineService.findLines();
-
         // then
         assertThat(responses).hasSize(1);
     }

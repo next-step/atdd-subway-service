@@ -18,20 +18,27 @@ public class Line extends BaseEntity {
     private String color;
     @Embedded
     private final Sections sections = Sections.instance();
+    @Embedded
+    private Charge charge;
 
-    public Line() {
-    }
+    protected Line() {}
 
-    public Line(final String name, final String color) {
+    public Line(final String name, final String color, final Station upStation,
+                final Station downStation, final int distance, final int charge) {
         this.name = name;
         this.color = color;
+        sections.add(new Section(this, upStation, downStation, distance));
+        this.charge = Charge.of(charge);
     }
 
     public Line(final String name, final String color, final Station upStation,
                 final Station downStation, final int distance) {
-        this.name = name;
-        this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        this(name, color, upStation, downStation, distance, Charge.ofBasic().getValue());
+    }
+
+    public Line(final String name, final String color) {
+      this.name = name;
+      this.color = color;
     }
 
     public void update(final Line line) {
@@ -65,6 +72,10 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections.getSections();
+    }
+
+    public int getCharge() {
+        return charge.getValue();
     }
 
     @Override
