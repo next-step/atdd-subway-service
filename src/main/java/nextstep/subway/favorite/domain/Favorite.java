@@ -85,4 +85,8 @@ public class Favorite extends BaseEntity {
     public boolean isOwner(Member member) {
         return this.member.equals(member);
     }
+
+    public boolean isSameRoute(Favorite favorite) {
+        return this.source.equals(favorite.getSource()) && this.target.equals(favorite.getTarget());
+    }
 }
