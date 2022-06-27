@@ -88,6 +88,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> 즐겨찾기_삭제_요청 = 즐겨찾기_삭제_요청(accessToken, favoriteResponse.getId());
         // then
         즐겨찾기_삭제됨(즐겨찾기_삭제_요청);
+
+        // given
+        final List<FavoriteResponse> 삭제_조회 = 즐겨찾기_조회_요청(accessToken).jsonPath().getList(".", FavoriteResponse.class);
+        // then
+        assertThat(삭제_조회).hasSize(0);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_추가_요청(final String accessToken, final Long sourceStationId, final Long targetStationId) {
