@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -36,7 +37,7 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = new Distance(distance);
+        this.distance = Distance.of(distance);
     }
 
     public Long getId() {
@@ -86,5 +87,9 @@ public class Section {
 
     public List<Station> getStations() {
         return Arrays.asList(upStation, downStation);
+    }
+
+    public Fare getLineExtraFare(){
+        return line.getExtraFare();
     }
 }
