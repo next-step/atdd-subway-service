@@ -34,11 +34,14 @@ public class PathServiceTest {
     private Line 신분당선;
     private Line 이호선;
     private Line 삼호선;
+    private Line 오호선;
 
     private Station 강남역;
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
+    private Station 군자역;
+    private Station 미사역;
 
     /**
      * 교대역    --- *2호선* (7) ---   강남역
@@ -47,6 +50,8 @@ public class PathServiceTest {
      * (3)                           (10)
      * |                              |
      * 남부터미널역  --- *3호선* (2)---   양재
+     *
+     * 군자역    --- *5호선* (12) ---   미사역
      */
     @BeforeEach
     public void setUp() {
@@ -54,10 +59,13 @@ public class PathServiceTest {
         양재역 = new Station("양재역");
         교대역 = new Station("교대역");
         남부터미널역 = new Station("남부터미널역");
+        군자역 = new Station("군자역");
+        미사역 = new Station("미사역");
 
         신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = new Line("이호선", "bg-green-600", 교대역, 강남역, 7);
         삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 양재역, 5);
+        오호선 = new Line("오호선", "bg-purple-600",군자역, 미사역, 12);
 
         삼호선.addSection(교대역, 남부터미널역, 3);
     }
@@ -98,5 +106,16 @@ public class PathServiceTest {
         when(stationService.findStationById(2L)).thenReturn(양재역);
 
         assertThrows(NoSuchElementFoundException.class,() -> pathService.findShortestPath(2L, 9L));
+    }
+
+    @Test
+    void 출발역과_도착역이_연결되어_있지_않을_경우_에러_발생() {
+        //given
+        PathService pathService = new PathService(lineRepository, stationService);
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선, 오호선));
+        when(stationService.findStationById(2L)).thenReturn(양재역);
+        when(stationService.findStationById(6L)).thenReturn(미사역);
+
+        assertThrows(IllegalArgumentException.class, () -> pathService.findShortestPath(2L, 6L));
     }
 }
