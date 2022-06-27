@@ -3,10 +3,7 @@ package nextstep.subway.fare.domain;
 public enum DistanceType {
     EXTRA_10_TO_50(10, 5),
     EXTRA_50(50, 8);
-
-    private static final int NO_EXTRA_FARE = 0;
-
-    private static final int BASIC_DISTANCE = 10;
+    
     private final int minDistance;
     private final int extraUnit;
 
@@ -16,17 +13,19 @@ public enum DistanceType {
     }
 
     public static int distanceExtraFare(int distance) {
+        int extraFare = FareType.BASIC.getFare();
         if (distance > EXTRA_50.minDistance) {
-            return getExtraFare(distance, EXTRA_50.extraUnit);
+            extraFare += EXTRA_50.extraFare(distance);
+            distance = EXTRA_50.minDistance;
         }
         if (distance > EXTRA_10_TO_50.minDistance) {
-            return getExtraFare(distance, EXTRA_10_TO_50.extraUnit);
+            extraFare += EXTRA_10_TO_50.extraFare(distance);
         }
-        return NO_EXTRA_FARE;
+        return extraFare;
     }
 
-    private static int getExtraFare(int distance, int extraUnit) {
-        int overDistance = distance - BASIC_DISTANCE;
+    public int extraFare(int distance) {
+        int overDistance = distance - minDistance;
         return (int) ((Math.ceil((overDistance - 1) / extraUnit) + 1) * FareType.EXTRA.getFare());
     }
 }
