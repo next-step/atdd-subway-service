@@ -27,9 +27,9 @@ public class PathNavigatorTest {
 
     @BeforeEach
     void setUp() {
-        일호선 = 라인_생성("일호선", "bg-blue-600", 노량진역, 용산역, 5);
-        구호선 = 라인_생성("구호선", "bg-yellow-600", 노량진역, 여의도역, 10);
-        오호선 = 라인_생성("오호선", "bg-purple-600", 신길역, 여의나루역, 12);
+        일호선 = 라인_생성("일호선", "bg-blue-600", 200, 노량진역, 용산역, 5);
+        구호선 = 라인_생성("구호선", "bg-yellow-600", 300, 노량진역, 여의도역, 10);
+        오호선 = 라인_생성("오호선", "bg-purple-600", 300, 신길역, 여의나루역, 12);
         구간_추가(구호선, 노량진역, 샛강역, 5);
         구간_추가(오호선, 여의도역, 여의나루역, 3);
         역_목록.add(일호선);
@@ -49,7 +49,7 @@ public class PathNavigatorTest {
         //then
         최단_경로_거리_확인(최단_경로, 18);
         최단_경로_역_목록_확인(최단_경로, 용산역, 노량진역, 샛강역, 여의도역, 여의나루역);
-        
+
     }
 
     private void 최단_경로_거리_확인(Path path, int distance) {
@@ -68,7 +68,7 @@ public class PathNavigatorTest {
         return new Station(name);
     }
 
-    private Line 라인_생성(String name, String color, Station upStation, Station downStation, int distance) {
-        return new Line(name, color, upStation, downStation, distance);
+    private Line 라인_생성(String name, String color, int surcharge, Station upStation, Station downStation, int distance) {
+        return new Line(name, color, surcharge, upStation, downStation, distance);
     }
 }

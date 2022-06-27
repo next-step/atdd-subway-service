@@ -1,5 +1,7 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exceptions.SourceAndTargetSameException;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
@@ -22,10 +24,11 @@ public class PathController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PathResponse> getShortestPaths(
             @RequestParam(value = "source") final Long source
-            , @RequestParam(value = "target") final Long target) {
+            , @RequestParam(value = "target") final Long target
+            , @AuthenticationPrincipal(required = false) LoginMember loginMember) {
         if (source.equals(target)) {
             throw new SourceAndTargetSameException();
         }
-        return ResponseEntity.ok().body(pathService.getShortestPaths(source, target));
+        return ResponseEntity.ok().body(pathService.getShortestPaths(source, target, loginMember));
     }
 }

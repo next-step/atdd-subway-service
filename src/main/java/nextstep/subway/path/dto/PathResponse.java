@@ -8,17 +8,19 @@ import nextstep.subway.station.dto.StationResponse;
 public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
+    private int totalCharge;
 
     public PathResponse() {
-        
+
     }
 
-    public PathResponse(final Path path) {
+    public PathResponse(final Path path, final int totalCharge) {
         this.stations = path.getStations()
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
         this.distance = path.getDistance();
+        this.totalCharge = totalCharge;
     }
 
     public List<StationResponse> getStations() {
@@ -35,5 +37,9 @@ public class PathResponse {
 
     public void setDistance(int distance) {
         this.distance = distance;
+    }
+
+    public int getTotalCharge() {
+        return totalCharge;
     }
 }
