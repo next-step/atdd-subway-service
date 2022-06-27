@@ -1,7 +1,6 @@
 package nextstep.subway.fare.domain;
 
 import nextstep.subway.auth.domain.AuthMember;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.policy.DiscountPolicy;
 import nextstep.subway.fare.policy.KidsDiscountPolicy;
 import nextstep.subway.fare.policy.NoneDiscountPolicy;
@@ -12,33 +11,22 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public enum AgeType {
-    BASIC(19, 65, 0),
-    TEENAGERS(13, 19, 0.2f),
-    KIDS(6, 13, 0.5f);
+    BASIC(19, 65, new NoneDiscountPolicy()),
+    TEENAGERS(13, 19, new TeenagersDiscountPolicy()),
+    KIDS(6, 13, new KidsDiscountPolicy());
 
     private final int minAge;
     private final int maxAge;
-    private final float discountRate;
+    private final DiscountPolicy discountPolicy;
 
-    AgeType(int minAge, int maxAge, float discountRate) {
+    AgeType(int minAge, int maxAge, DiscountPolicy discountPolicy) {
         this.minAge = minAge;
         this.maxAge = maxAge;
-        this.discountRate = discountRate;
-    }
-
-    public float getDiscountRate() {
-        return this.discountRate;
+        this.discountPolicy = discountPolicy;
     }
 
     public static DiscountPolicy getDiscountPolicy(AuthMember authMember) {
-        AgeType ageType = getAgeType(authMember);
-        if (TEENAGERS.equals(ageType)) {
-            return new TeenagersDiscountPolicy();
-        }
-        if (KIDS.equals(ageType)) {
-            return new KidsDiscountPolicy();
-        }
-        return new NoneDiscountPolicy();
+        return getAgeType(authMember).discountPolicy;
     }
 
     private static AgeType getAgeType(AuthMember authMember) {
