@@ -12,7 +12,8 @@ import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
-
+    public static final String ALREADY_EXIST_SECTION_ERROR = "이미 등록된 구간 입니다.";
+    public static final String CAN_NOT_ADD_SECTION_ERROR = "등록할 수 없는 구간 입니다.";
     public static final String NOT_CONTAINS_TARGET_STATION_ERROR_MESSAGE = "삭제 대상역이 노선에 존재하지 않습니다.";
     public static int MINIMUM_REMOVE_SIZE = 1;
     public static final String CAN_NOT_REMOVE_SECTIONS_SIZE_ERROR = String
@@ -40,7 +41,7 @@ public class Sections {
     private void validateHasEqualsSection(List<Station> stations, Section addTargetSection) {
         if (hasStation(stations, addTargetSection.getUpStation())
             && hasStation(stations, addTargetSection.getDownStation())) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException(ALREADY_EXIST_SECTION_ERROR);
         }
     }
 
@@ -53,7 +54,7 @@ public class Sections {
             && !hasStation(stations, addTargetSection.getUpStation())
             && !hasStation(stations, addTargetSection.getDownStation())
         ) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException(CAN_NOT_ADD_SECTION_ERROR);
         }
     }
 
