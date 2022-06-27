@@ -29,9 +29,6 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    /**
-     * 신규 노선 저장
-     */
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -39,18 +36,10 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    /**
-     * 노선 목록 조회
-     */
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-            .map(line -> {
-                List<StationResponse> stations = getStations(line).stream()
-                    .map(it -> StationResponse.of(it))
-                    .collect(Collectors.toList());
-                return LineResponse.of(line, stations);
-            })
+            .map(LineResponse::of)
             .collect(Collectors.toList());
     }
 
