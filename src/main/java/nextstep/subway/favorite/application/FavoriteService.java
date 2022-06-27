@@ -33,7 +33,7 @@ public class FavoriteService {
         Station source = stationService.findStationById(request.getSource());
         Station target = stationService.findStationById(request.getTarget());
 
-        Favorite persistFavorite = favoriteRepository.save(Favorite.of(member, source, target));
+        Favorite persistFavorite = favoriteRepository.save(Favorite.of(member.getId(), source, target));
         return FavoriteResponse.from(persistFavorite);
     }
 
@@ -45,8 +45,7 @@ public class FavoriteService {
 
     public void deleteFavorite(Long memberId, Long favoriteId) {
         Favorite favorite = findFavoriteById(favoriteId);
-        Member member =  memberService.findById(memberId);
-        favorite.validateMember(member);
+        favorite.validateMember(memberId);
 
         favoriteRepository.delete(favorite);
     }

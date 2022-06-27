@@ -13,9 +13,7 @@ public class Favorite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    private Long memberId;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "source_station_id")
@@ -28,15 +26,15 @@ public class Favorite extends BaseEntity {
     protected Favorite() {
     }
 
-    private Favorite(Member member, Station source, Station target) {
-        this.member = member;
+    private Favorite(Long memberId, Station source, Station target) {
+        this.memberId = memberId;
         this.source = source;
         this.target = target;
     }
 
-    public static Favorite of(Member member, Station source, Station target) {
+    public static Favorite of(Long memberId, Station source, Station target) {
         validateStations(source, target);
-        return new Favorite(member, source, target);
+        return new Favorite(memberId, source, target);
     }
 
     private static void validateStations(Station source, Station target) {
@@ -45,8 +43,8 @@ public class Favorite extends BaseEntity {
         }
     }
 
-    public void validateMember(Member member) {
-        if (!this.member.equals(member)) {
+    public void validateMember(Long memberId) {
+        if (!this.memberId.equals(memberId)) {
             throw new IllegalArgumentException("즐겨찾기를 등록한 사용자가 아닙니다.");
         }
     }
@@ -55,8 +53,8 @@ public class Favorite extends BaseEntity {
         return id;
     }
 
-    public Member getMember() {
-        return member;
+    public Long getMemberId() {
+        return memberId;
     }
 
     public Station getSource() {
