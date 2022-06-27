@@ -1,17 +1,22 @@
 package nextstep.subway.favorite.dto;
 
-import nextstep.subway.station.dto.StationRequest;
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.station.dto.StationResponse;
 
 public class FavoriteResponse {
     private final Long id;
     private final StationResponse source;
-    private final StationRequest target;
+    private final StationResponse target;
 
-    public FavoriteResponse(Long id, StationResponse source, StationRequest target) {
+    public FavoriteResponse(Long id, StationResponse source, StationResponse target) {
         this.id = id;
         this.source = source;
         this.target = target;
+    }
+
+    public static FavoriteResponse of(Favorite favorite) {
+        return new FavoriteResponse(favorite.getId(), StationResponse.of(favorite.getSource()),
+                StationResponse.of(favorite.getTarget()));
     }
 
     public Long getId() {
@@ -22,7 +27,7 @@ public class FavoriteResponse {
         return source;
     }
 
-    public StationRequest getTarget() {
+    public StationResponse getTarget() {
         return target;
     }
 }
