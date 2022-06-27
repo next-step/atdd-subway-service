@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.favorite.exception.FavoriteException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 public class FavoriteTest {
@@ -40,5 +42,13 @@ public class FavoriteTest {
         // then
         System.out.println(favorite);
         assertThat(favorite).isInstanceOf(Favorite.class);
+    }
+
+    @Test
+    @DisplayName("출발지 도착지 동일 오류")
+    void sameException() {
+        // then
+        assertThatThrownBy(() -> favoriteRepository.save(Favorite.of(member, sourceStation, sourceStation)))
+                .isInstanceOf(FavoriteException.class);
     }
 }

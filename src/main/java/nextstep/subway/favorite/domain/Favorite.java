@@ -1,6 +1,8 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.favorite.exception.FavoriteException;
+import nextstep.subway.favorite.exception.FavoriteExceptionType;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -24,10 +26,17 @@ public class Favorite extends BaseEntity {
     protected Favorite(){}
 
     public Favorite(final Long id, final Member member, final Station sourceStation, final Station targetStation) {
+        validation(sourceStation, targetStation);
         this.id = id;
         this.member = member;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
+    }
+
+    private void validation(final Station sourceStation, final Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new FavoriteException(FavoriteExceptionType.SAME_STATION);
+        }
     }
 
     public Favorite(final Member member, final Station sourceStation, final Station targetStation) {
