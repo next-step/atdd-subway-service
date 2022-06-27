@@ -15,9 +15,6 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
-    @Enumerated(EnumType.STRING)
-    private UserType userType;
-
     public Member() {
     }
 
@@ -25,7 +22,6 @@ public class Member extends BaseEntity {
         this.email = email;
         this.password = password;
         this.age = age;
-        this.userType = UserType.NORMAL;
     }
 
     public Long getId() {
@@ -42,10 +38,6 @@ public class Member extends BaseEntity {
 
     public Integer getAge() {
         return age;
-    }
-
-    public UserType getUserType() {
-        return this.userType;
     }
 
     public void update(Member member) {

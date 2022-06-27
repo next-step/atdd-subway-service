@@ -35,7 +35,7 @@ public class AuthService {
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge(), member.getUserType());
+        return new LoginMember(member.getId(), member.getEmail(), member.getAge(), UserType.NORMAL);
     }
 
     private LoginMember getGuestOrUnAuthenticate(boolean enabledGuest) {
