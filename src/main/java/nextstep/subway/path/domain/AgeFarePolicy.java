@@ -5,10 +5,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public enum AgeFarePolicy {
-    ALL(value -> value, age -> age >= 19 && age < 65),
+    ALL(value -> value, age -> (age >= 19 && age < 65) || age == 0),
     TEENAGER(value -> (int)(Math.ceil((value - 350) * 4 / 5.0)), age -> age >= 13 && age < 19),
     CHILDREN(value -> (int)(Math.ceil((value - 350) / 2.0)), age -> age >= 6 && age < 13),
-    FREE(value -> 0, age -> age < 6 || age >= 65);
+    FREE(value -> 0, age -> (age > 0 && age < 6) || age >= 65);
 
     private Function<Integer, Integer> operator;
     private Predicate<Integer> agePredicate;
@@ -23,10 +23,14 @@ public enum AgeFarePolicy {
                 .filter(ageFarePolicy -> ageFarePolicy.agePredicate.test(age))
                 .findFirst()
                 .map(ageFarePolicy -> ageFarePolicy.operator.apply(fare))
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(RuntimeException::new);
     }
 
     public Function<Integer, Integer> getOperator() {
         return operator;
+    }
+
+    public Predicate<Integer> getAgePredicate() {
+        return agePredicate;
     }
 }

@@ -135,6 +135,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         int fare = 1_250 + calculateOverFare(13) + 삼호선.getSurcharge(); //기본요금 + 거리 추가요금 + 노선 추가요금
         최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13, AgeFarePolicy.ALL.getOperator().apply(fare).intValue());
     }
+
+    @Test
+    @DisplayName("Distance기준 최단 거리 구간 조회 (HappyPath)")
+    void 교대역에서_양재역_최단_구간은_교대역_남부터미널역_양재역_비로그인_금액정책() {
+        PathRequest pathRequest = new PathRequest(교대역.getId(), 양재역.getId());
+        ExtractableResponse<Response> response = 비로그인_최단구간을_조회한다(pathRequest);
+
+        최단구간이_정상적으로_조회됨(response);
+        int fare = 1_250 + calculateOverFare(13) + 삼호선.getSurcharge(); //기본요금 + 거리 추가요금 + 노선 추가요금
+        최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13, AgeFarePolicy.ALL.getOperator().apply(fare).intValue());
+    }
     
     @Test
     void 경로_출발역과_도착역이_같은_경우_BAD_REQUEST_반환() {
@@ -178,6 +189,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .when().get("/paths")
                 .then().log().all().
                 extract();
+    }
+
+    public static ExtractableResponse<Response> 비로그인_최단구간을_조회한다(PathRequest pathRequest) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(pathRequest)
+                .when().get("/paths")
+                .then().log().all().
+                        extract();
     }
 
     public static void 최단구간이_정상적으로_조회됨(ExtractableResponse<Response> response) {
