@@ -34,12 +34,14 @@ public class Sections {
         if (isStationExisted(stations, section.getUpStation())) {
             updateUpStation(section);
             addSection(section);
-        } else if (isStationExisted(stations, section.getDownStation())) {
+            return;
+        }
+        if (isStationExisted(stations, section.getDownStation())) {
             updateDownStation(section);
             addSection(section);
-        } else {
-            throw new RuntimeException();
+            return;
         }
+        throw new RuntimeException();
     }
 
     //remove
