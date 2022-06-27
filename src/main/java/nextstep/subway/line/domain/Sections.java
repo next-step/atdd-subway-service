@@ -5,10 +5,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Embeddable
 public class Sections {
@@ -129,7 +126,7 @@ public class Sections {
     }
 
     public List<Section> getValues() {
-        return values;
+        return Collections.unmodifiableList(values);
     }
 
     public int getDistance() {

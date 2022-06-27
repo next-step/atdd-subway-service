@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class LineService {
     private final LineRepository lineRepository;
     private final StationService stationService;
@@ -25,6 +25,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         validateDuplicate(request.getName(), request.getColor());
 
@@ -57,7 +58,6 @@ public class LineService {
         });
     }
 
-    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> persistLines = findAllLines();
         return persistLines.stream()
@@ -65,7 +65,6 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public List<Line> findAllLines() {
         return lineRepository.findAll();
     }
@@ -74,12 +73,12 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지하철노선입니다."));
     }
 
-    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = findLineById(id);
 
@@ -94,10 +93,12 @@ public class LineService {
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findById(request.getUpStationId());
@@ -106,6 +107,7 @@ public class LineService {
         line.addLineSection(upStation, downStation, new Distance(request.getDistance()));
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findById(stationId);

@@ -43,7 +43,7 @@ class PathFinderTest {
     @DisplayName("최단경로 조회")
     @Test
     public void findShortestPath() {
-        PathFinder pathFinder = new PathFinder(List.of(이호선, 삼호선, 신분당선));
+        PathFinder pathFinder = new DijkstraPathFinder(List.of(이호선, 삼호선, 신분당선));
 
         ShortestPath shortestPath = pathFinder.findShortestPath(교대역, 양재역);
 
@@ -57,7 +57,7 @@ class PathFinderTest {
     @ParameterizedTest
     @NullSource
     public void findShortestPath_출발역_또는_도착역_null_에러발생(Station station) {
-        PathFinder pathFinder = new PathFinder(List.of(이호선, 삼호선, 신분당선));
+        PathFinder pathFinder = new DijkstraPathFinder(List.of(이호선, 삼호선, 신분당선));
 
         assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, station))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -69,7 +69,7 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역이 같은 경우 에러발생")
     @Test
     public void findShortestPath_출발역과_도착역이_같은_경우_에러_발생() {
-        PathFinder pathFinder = new PathFinder(List.of(이호선, 삼호선, 신분당선));
+        PathFinder pathFinder = new DijkstraPathFinder(List.of(이호선, 삼호선, 신분당선));
 
         assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, 교대역))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -81,7 +81,7 @@ class PathFinderTest {
         Station 오이도역 = new Station(5L, "오이도역");
         Station 당고개역 = new Station(5L, "당고개역");
         Line 사호선 = new Line("사호선", "하늘색", 당고개역, 오이도역, 30);
-        PathFinder pathFinder = new PathFinder(List.of(이호선, 삼호선, 신분당선, 사호선));
+        PathFinder pathFinder = new DijkstraPathFinder(List.of(이호선, 삼호선, 신분당선, 사호선));
 
         assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, 당고개역))
                 .isInstanceOf(IllegalStateException.class);
@@ -91,7 +91,7 @@ class PathFinderTest {
     @Test
     public void findShortestPath_존재하지_않는_출발역과_도착역을_조회할_경우_에러_발생() {
         Station 오이도역 = new Station(5L, "오이도역");
-        PathFinder pathFinder = new PathFinder(List.of(이호선, 삼호선, 신분당선));
+        PathFinder pathFinder = new DijkstraPathFinder(List.of(이호선, 삼호선, 신분당선));
 
         assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, 오이도역))
                 .isInstanceOf(IllegalArgumentException.class);
