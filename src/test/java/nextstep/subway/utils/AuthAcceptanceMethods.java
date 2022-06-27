@@ -73,5 +73,8 @@ public class AuthAcceptanceMethods {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
+    public static String extractAccessToken(ExtractableResponse<Response> response) {
+        return response.jsonPath().getString("accessToken");
+    }
 
 }

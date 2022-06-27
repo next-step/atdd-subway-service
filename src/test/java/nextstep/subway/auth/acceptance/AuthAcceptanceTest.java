@@ -37,10 +37,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 로그인을_요청한다(계정_이메일, 계정_패스워드);
 
         //when
-        내_정보를_요청한다(response.jsonPath().getString("accessToken"));
+        ExtractableResponse<Response> myInfoResponse = 내_정보를_요청한다(extractAccessToken(response));
 
         //then
-        내_정보_요청_성공함(response);
+        내_정보_요청_성공함(myInfoResponse);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
