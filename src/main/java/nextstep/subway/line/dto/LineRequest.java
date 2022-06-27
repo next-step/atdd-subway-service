@@ -1,21 +1,39 @@
 package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.station.domain.Station;
 
 public class LineRequest {
+    private static final int EXIST_EXTRA_CHARGE = 0;
+
     private final String name;
     private final String color;
     private final Long upStationId;
     private final Long downStationId;
     private final int distance;
+    private final int extraCharge;
 
-    public LineRequest(final String name, final String color, final Long upStationId,
-                       final Long downStationId, final int distance) {
+    public LineRequest(final String name, final String color, final Long upStationId, final Long downStationId, final int distance, final int extraCharge) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.extraCharge = extraCharge;
+    }
+
+    public Line toEntity(final Station upStation, final Station downStation) {
+        if (existsExtraCharge()) {
+            return new Line(name, color, upStation, downStation, distance, extraCharge);
+        }
+        return new Line(name, color, upStation, downStation, distance);
+    }
+
+    private boolean existsExtraCharge() {
+        if (extraCharge > EXIST_EXTRA_CHARGE) {
+            return true;
+        }
+        return  false;
     }
 
     public String getName() {
@@ -36,6 +54,10 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraCharge() {
+        return extraCharge;
     }
 
     public Line toLine() {

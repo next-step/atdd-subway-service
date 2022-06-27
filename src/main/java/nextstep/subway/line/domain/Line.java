@@ -24,15 +24,14 @@ public class Line extends BaseEntity {
     protected Line() {}
 
     public Line(final String name, final String color, final Station upStation,
-                final Station downStation, final int distance, final int charge) {
+                final Station downStation, final int distance, final int extraCharge) {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
-        this.charge = Charge.of(charge);
+        this.charge = Charge.ofExtraCharge(extraCharge);
     }
 
-    public Line(final String name, final String color, final Station upStation,
-                final Station downStation, final int distance) {
+    public Line(final String name, final String color, final Station upStation, final Station downStation, final int distance) {
         this(name, color, upStation, downStation, distance, Charge.ofBasic().getValue());
     }
 

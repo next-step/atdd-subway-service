@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineTest {
-    public static final Line LINE = new Line("2호선", "bg-blue-400", new Station("강남역"), new Station("잠실역"), 10);
+    public static final Line LINE = new Line("2호선", "bg-blue-400", new Station("강남역"), new Station("잠실역"), 10, 1_250);
 
     @Test
     @DisplayName("line 수정")

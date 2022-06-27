@@ -5,6 +5,7 @@ import nextstep.subway.line.exception.LineExceptionType;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
@@ -13,6 +14,7 @@ import java.util.Objects;
 public class Charge {
     private static final int BASIC_CHARGE = 1_250;
 
+    @Column(name = "charge", nullable = false)
     private final int value;
 
     protected Charge() {
@@ -28,8 +30,8 @@ public class Charge {
         return new Charge(BASIC_CHARGE);
     }
 
-    public static Charge of(final int value) {
-        return new Charge(value);
+    public static Charge ofExtraCharge(final int value) {
+        return new Charge(BASIC_CHARGE + value);
     }
 
     private void validation(final int value) {
