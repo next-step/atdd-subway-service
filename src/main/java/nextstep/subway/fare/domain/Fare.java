@@ -1,22 +1,21 @@
 package nextstep.subway.fare.domain;
 
-import nextstep.subway.fare.policy.DiscountPolicy;
-import nextstep.subway.path.domain.Path;
-
 public class Fare {
+    private static final String NOT_LESS_THAN_ZERO_FARE = "요금은 0원 보다 적을 수 없습니다.";
     private final int fare;
     private Fare(int fare) {
         this.fare = fare;
     }
 
-    public static Fare of(Path path, DiscountPolicy discountPolicy) {
-        return new Fare(finalFare(path, discountPolicy));
+    public static Fare from(int fare) {
+        validateLessThanZeroFare(fare);
+        return new Fare(fare);
     }
 
-    private static int finalFare(Path path, DiscountPolicy discountPolicy) {
-        int calculateFare = FareType.BASIC.getFare() + DistanceType.distanceExtraFare(path.getDistance())
-                + path.findExtraFare();
-        return discountPolicy.discount(calculateFare);
+    private static void validateLessThanZeroFare(int fare) {
+        if (fare < FareType.FREE.getFare()) {
+            throw new IllegalArgumentException(NOT_LESS_THAN_ZERO_FARE);
+        }
     }
 
     public int get() {
