@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.SubwayExceptionMessage;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -51,12 +52,12 @@ public class Sections {
         boolean isDownStationExisted = hasStation(section.getDownStation());
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException(SubwayExceptionMessage.DUPLICATE_SECTION.getMessage());
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
                 stations.stream().noneMatch(it -> it == section.getDownStation())) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException(SubwayExceptionMessage.INVALID_SECTION.getMessage());
         }
     }
 
@@ -80,7 +81,7 @@ public class Sections {
 
     private void validateNotLastSection() {
         if (sectionList.size() <= 1) {
-            throw new IllegalStateException("마지막 구간은 삭제할 수 없습니다.");
+            throw new IllegalStateException(SubwayExceptionMessage.CANNOT_DELETE_LAST_SECTION.getMessage());
         }
     }
 
@@ -107,18 +108,24 @@ public class Sections {
         Station downStation = findUpStation();
         stations.add(downStation);
 
-        return getStationsByNextUpStation(stations, downStation);
-    }
-
-    private List<Station> getStationsByNextUpStation(List<Station> stations, Station upStation) {
-        Section nextSection = findUpLineStation(upStation);
-        if (nextSection == null) {
-            return stations;
+        while (hasNextSection(downStation)) {
+            downStation = getNextSection(downStation).getDownStation();
+            stations.add(downStation);
         }
 
-        Station downStation = nextSection.getDownStation();
-        stations.add(downStation);
-        return getStationsByNextUpStation(stations, downStation);
+        return stations;
+    }
+
+    private Section getNextSection(Station downStation) {
+        return sectionList.stream()
+                .filter(it -> it.getUpStation().equals(downStation))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(SubwayExceptionMessage.EMPTY_NEXT_SECTION.getMessage()));
+    }
+
+    private boolean hasNextSection(Station downStation) {
+        return sectionList.stream()
+                .anyMatch(it -> it.getUpStation().equals(downStation));
     }
 
     private boolean hasStation(Station station) {
@@ -126,21 +133,26 @@ public class Sections {
     }
 
     private Station findUpStation() {
-        Station upStation = sectionList.get(0).getUpStation();
-        return findNextDownStationByUpStation(null, upStation);
+        Station downStation = sectionList.get(0).getUpStation();
+
+        while (hasPreviousSection(downStation)) {
+            Section previousSection = getPreviousSection(downStation);
+            downStation = previousSection.getUpStation();
+        }
+
+        return downStation;
     }
 
-    private Station findNextDownStationByUpStation(Station prevUpStation, Station currentUpStation) {
-        if (currentUpStation == null) {
-            return prevUpStation;
-        }
+    private Section getPreviousSection(Station upStation) {
+        return sectionList.stream()
+                .filter(it -> it.getDownStation().equals(upStation))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(SubwayExceptionMessage.EMPTY_PREVIOUS_SECTION.getMessage()));
+    }
 
-        Section nextLineStation = findDownLineStation(currentUpStation);
-        if (nextLineStation == null) {
-            return currentUpStation;
-        }
-
-        return findNextDownStationByUpStation(currentUpStation, nextLineStation.getUpStation());
+    private boolean hasPreviousSection(Station upStation) {
+        return sectionList.stream()
+                .anyMatch(it -> it.getDownStation().equals(upStation));
     }
 
 }
