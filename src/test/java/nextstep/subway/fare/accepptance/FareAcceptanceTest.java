@@ -118,7 +118,7 @@ public class FareAcceptanceTest extends AcceptanceTest {
      *  When 남부터미널역부터 신도림역까지의 최단 경로를 조회하면
      *  Then 최단 경로가 조회된다 (남부터미널역 -(12)-> 교대역 -(10)-> 강남역 -(36)-> 신도림역)
      *  And 총 거리가 조회된다
-     *  And 지하철 이용 요금이 조회된다(기본운임: 1250원, 추가운임: 600원)
+     *  And 지하철 이용 요금이 조회된다(기본운임: 1250원, 추가운임 - 50km 까지: 800원, 58km 까지: 100원)
      */
     @DisplayName("총 거리가 58km 인 경우 최단 경로와 거리, 요금을 조회한다.")
     @Test
@@ -132,7 +132,7 @@ public class FareAcceptanceTest extends AcceptanceTest {
         // and
         지하철_최단경로_총거리_확인됨(response, 58);
         // and
-        지하철_이용요금_조회됨(response, 1850);
+        지하철_이용요금_조회됨(response, 2150);
     }
 
     /**
