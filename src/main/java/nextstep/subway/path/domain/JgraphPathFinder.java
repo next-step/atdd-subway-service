@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.ExtraCharge;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.exception.PathException;
@@ -24,10 +25,10 @@ public class JgraphPathFinder implements PathFinder {
         addStation(lines);
         addEdgeWeight(lines);
 
-        return createStationPath(start, destination);
+        return toStationPath(start, destination);
     }
 
-    private StationPath createStationPath(final Station start, final Station destination) {
+    private StationPath toStationPath(final Station start, final Station destination) {
         final GraphPath<Station, SectionWeightedEdge> path = new DijkstraShortestPath<>(graph).getPath(start, destination);
         final Integer charge = getCharge(path.getEdgeList());
         return StationPath.of(path.getVertexList(), path.getWeight(), charge);
@@ -39,7 +40,7 @@ public class JgraphPathFinder implements PathFinder {
                 .map(Section::getLine)
                 .map(Line::getExtraCharge)
                 .max(Integer::compareTo)
-                .get();
+                .orElse(ExtraCharge.DEFAULT_EXTRA_CHARGE);
     }
 
 
@@ -52,7 +53,7 @@ public class JgraphPathFinder implements PathFinder {
     private void addStation(final List<Line> lines) {
         for (Line line : lines) {
             line.getSortedStations()
-                    .forEach(it -> graph.addVertex(it));
+                    .forEach(graph::addVertex);
         }
     }
 

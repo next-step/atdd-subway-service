@@ -19,7 +19,7 @@ public class Line extends BaseEntity {
     @Embedded
     private final Sections sections = Sections.instance();
     @Embedded
-    private Charge extraCharge;
+    private ExtraCharge extraCharge;
 
     protected Line() {}
 
@@ -28,7 +28,7 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
-        this.extraCharge = Charge.ofExtraCharge(extraCharge);
+        this.extraCharge = ExtraCharge.of(extraCharge);
     }
 
     public Line(final String name, final String color, final Station upStation, final Station downStation, final int distance) {

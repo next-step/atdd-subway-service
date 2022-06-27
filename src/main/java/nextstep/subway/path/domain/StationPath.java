@@ -7,17 +7,17 @@ import java.util.Objects;
 
 public class StationPath {
     private final List<Station> stations;
-    private final int charge;
     private final int distance;
+    private final int charge;
 
-    public StationPath(final List<Station> stations, final int charge, final int distance) {
+    public StationPath(final List<Station> stations, final int distance, final int charge) {
         this.stations = stations;
-        this.charge = charge;
         this.distance = distance;
+        this.charge = charge;
     }
 
-    public static StationPath of(final List<Station> vertexList, final double weight, final Integer charge) {
-        return new StationPath(vertexList,(int) weight, charge);
+    public static StationPath of(final List<Station> stations, final double distance, final Integer charge) {
+        return new StationPath(stations, (int) distance, charge);
     }
 
     public List<Station> getStations() {

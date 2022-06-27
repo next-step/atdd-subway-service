@@ -11,32 +11,28 @@ import java.util.Objects;
 
 @Embeddable
 @Access(AccessType.FIELD)
-public class Charge {
-    private static final int BASIC_CHARGE = 1_250;
+public class ExtraCharge {
+    public static final int DEFAULT_EXTRA_CHARGE = 0;
 
-    @Column(name = "charge", nullable = false)
+    @Column(name = "extra_charge", nullable = false)
     private final int value;
 
-    protected Charge() {
-        this.value = BASIC_CHARGE;
+    protected ExtraCharge() {
+        this.value = DEFAULT_EXTRA_CHARGE;
     }
 
-    public Charge(final int value) {
+    public ExtraCharge(final int value) {
         validation(value);
         this.value = value;
     }
 
-    public static Charge ofBasic() {
-        return new Charge(BASIC_CHARGE);
-    }
-
-    public static Charge ofExtraCharge(final int value) {
-        return new Charge(BASIC_CHARGE + value);
+    public static ExtraCharge of(final int value) {
+        return new ExtraCharge(value);
     }
 
     private void validation(final int value) {
-        if (value < BASIC_CHARGE) {
-            throw new LineException(LineExceptionType.LESS_BASIC_CHARGE);
+        if (value < DEFAULT_EXTRA_CHARGE) {
+            throw new LineException(LineExceptionType.MIN_DEFAULT_EXTRA_CHARGE);
         }
     }
 
@@ -55,7 +51,7 @@ public class Charge {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final Charge charge = (Charge) o;
+        final ExtraCharge charge = (ExtraCharge) o;
         return value == charge.value;
     }
 
