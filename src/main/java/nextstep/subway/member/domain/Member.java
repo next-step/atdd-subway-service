@@ -65,11 +65,11 @@ public class Member extends BaseEntity {
             return false;
         }
         Member member = (Member) o;
-        return Objects.equals(id, member.id);
+        return Objects.equals(id, member.id) && Objects.equals(email, member.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, email);
     }
 }
