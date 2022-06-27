@@ -13,6 +13,8 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
+    private static PathFinder pathFinder = null;
+
     private final WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph;
     private final ShortestPathAlgorithm<Station, DefaultWeightedEdge> shortestPathAlgorithm;
 
@@ -21,6 +23,14 @@ public class PathFinder {
         setStationGraph(lines);
 
         shortestPathAlgorithm = new DijkstraShortestPath<>(stationGraph);
+    }
+
+    public static PathFinder create(List<Line> lines) {
+        if (pathFinder != null) {
+            return pathFinder;
+        }
+        pathFinder = new PathFinder(lines);
+        return pathFinder;
     }
 
     private void setStationGraph(List<Line> lines) {

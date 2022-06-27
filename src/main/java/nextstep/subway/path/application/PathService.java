@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PathService {
+    private static PathFinder pathFinder = null;
+
     private final LineRepository lineRepository;
     private final StationService stationService;
 
@@ -23,13 +25,20 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse findShortestPath(Long source, Long target) {
-        List<Line> lines = lineRepository.findAll();
-
         Station start = stationService.findStationById(source);
         Station end = stationService.findStationById(target);
 
-        Path shortestPath = new PathFinder(lines).findShortestPath(start, end);
+        Path shortestPath = getPathFinder().findShortestPath(start, end);
 
         return PathResponse.from(shortestPath);
+    }
+
+    public PathFinder getPathFinder() {
+        if (pathFinder != null) {
+            return pathFinder;
+        }
+        List<Line> lines = lineRepository.findAll();
+        pathFinder = PathFinder.create(lines);
+        return pathFinder;
     }
 }
