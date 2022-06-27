@@ -44,7 +44,7 @@ class LineTest {
         // Then
         assertAll(
             () -> assertThat(신분당선.getSections()).hasSize(2),
-            () -> assertThat(신분당선.getAllStation())
+            () -> assertThat(신분당선.getAllStations())
                 .hasSize(3)
                 .containsExactly(신사역, 논현역, 정자역)
         );
@@ -79,7 +79,7 @@ class LineTest {
         구간_추가(신분당선, 양재시민의숲역, 청계산입구역, 20);
 
         // When
-        List<Station> 노선_역목록 = 신분당선.getAllStation();
+        List<Station> 노선_역목록 = 신분당선.getAllStations();
         신분당선.getSections().forEach(it -> System.out
             .println(it.getUpStation().getName() + " -> " + it.getDownStation().getName() + " = " + it.getDistance()));
 
@@ -94,7 +94,7 @@ class LineTest {
         );
 
         // When
-        List<Station> station = 신분당선.getAllStation();
+        List<Station> station = 신분당선.getAllStations();
 
         // Then
         assertThat(station.contains(논현역)).isTrue();
