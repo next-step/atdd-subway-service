@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.favorite.acceptance.FavoriteRequests.*;
@@ -55,12 +54,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(생성된_즐겨찾기);
 
         // given
-        즐겨찾기_생성_요청(인증_토큰, 정자역, 판교역);
+        ExtractableResponse<Response> 두번째_즐겨찾기 = 즐겨찾기_생성_요청(인증_토큰, 정자역, 판교역);
         // when
         ExtractableResponse<Response> 조회된_즐겨찾기_목록 = 즐겨찾기_목록_조회_요청(인증_토큰);
         // then
-        List<Long> 즐겨찾기_모든_역IDs = Arrays.asList(강남역.getId(), 정자역.getId(), 판교역.getId());
-        즐겨찾기_목록_조회됨(조회된_즐겨찾기_목록, 즐겨찾기_모든_역IDs);
+        즐겨찾기_목록_조회됨(조회된_즐겨찾기_목록, Arrays.asList(생성된_즐겨찾기, 두번째_즐겨찾기));
 
         // when
         ExtractableResponse<Response> 삭제된_즐겨찾기 = 즐겨찾기_삭제_요청(인증_토큰, 생성된_즐겨찾기);
@@ -68,19 +66,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(삭제된_즐겨찾기);
     }
 
-
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, List<Long> expectedStationIds) {
-        List<FavoriteResponse> favoriteResponses = response.jsonPath().getList(".", FavoriteResponse.class);
-        List<Long> actualStationIds = favoriteResponses.stream()
-                .flatMap(favorite -> Stream.of(favorite.getSource().getId(), favorite.getTarget().getId()))
-                .distinct()
+    public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
+        List<Long> favoriteIds = response.jsonPath().getList(".", FavoriteResponse.class).stream()
+                .map(FavoriteResponse::getId)
                 .collect(Collectors.toList());
 
-        assertThat(actualStationIds).containsExactlyElementsOf(expectedStationIds);
+        List<Long> expected = createdResponses.stream()
+                .map(FavoriteAcceptanceTest::extractFavoriteId)
+                .collect(Collectors.toList());
+
+        assertThat(favoriteIds).containsExactlyElementsOf(expected);
+    }
+
+    private static Long extractFavoriteId(ExtractableResponse<Response> response) {
+        String[] splitUri = response.header("Location").split("/");
+        return Long.parseLong(splitUri[splitUri.length - 1]);
     }
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
