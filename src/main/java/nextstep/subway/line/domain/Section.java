@@ -1,11 +1,15 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.domain.wrap.Distance;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
 @Entity
 public class Section {
+    public static final String NULL_STATIONS_ERROR_MESSAGE = "구간 생성 시, 상행역과 하행역 정보는 필수 입니다.";
+    public static final String EQUALS_STATIONS_ERROR_MESSAGE = "구간 생성 시, 상행역과 하행역 정보는 필수 입니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,16 +26,39 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    private Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
+    }
+
+    public static Section of(Line line, Station upStation, Station downStation, int distance) {
+        validateStation(upStation, downStation);
+        return new Section(line, upStation, downStation, distance);
+    }
+
+    private static void validateStation(Station upStation, Station downStation) {
+        validateIsNotNullStation(upStation, downStation);
+        validateEqualsStations(upStation, downStation);
+    }
+
+    private static void validateIsNotNullStation(Station upStation, Station downStation) {
+        if (upStation == null || downStation == null) {
+            throw new IllegalArgumentException(NULL_STATIONS_ERROR_MESSAGE);
+        }
+    }
+
+    private static void validateEqualsStations(Station upStation, Station downStation) {
+        if (upStation.equals(downStation)) {
+            throw new IllegalArgumentException(EQUALS_STATIONS_ERROR_MESSAGE);
+        }
     }
 
     public void update(Section section){
@@ -44,19 +71,13 @@ public class Section {
     }
 
     public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
         this.upStation = station;
-        this.distance -= newDistance;
+        distance.minusDistance(newDistance);
     }
 
     public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
         this.downStation = station;
-        this.distance -= newDistance;
+        distance.minusDistance(newDistance);
     }
 
     public Long getId() {
@@ -76,6 +97,6 @@ public class Section {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getDistance();
     }
 }

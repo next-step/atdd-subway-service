@@ -36,7 +36,7 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         this.sections = new Sections();
-        addSection(new Section(this, upStation, downStation, distance));
+        addSection(Section.of(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {

@@ -28,7 +28,7 @@ class LineTest {
     }
 
     private void 구간_추가(final Line 노선, final Station 상행역, final Station 하행역, final int 구간_거리) {
-        신분당선.addSection(new Section(노선, 상행역, 하행역, 구간_거리));
+        신분당선.addSection(Section.of(노선, 상행역, 하행역, 구간_거리));
     }
 
     @Test
@@ -36,7 +36,7 @@ class LineTest {
     public void addSection() {
         // Given
         final Station 신사역 = new Station("신사역");
-        final Section 신사_논현_구간 = new Section(신분당선, 신사역, 논현역, 5);
+        final Section 신사_논현_구간 = Section.of(신분당선, 신사역, 논현역, 5);
 
         // When
         신분당선.addSection(신사_논현_구간);
