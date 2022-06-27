@@ -57,7 +57,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithWrongBearerAuth() {
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest request = new TokenRequest(email, password);
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
