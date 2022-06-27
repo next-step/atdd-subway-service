@@ -35,7 +35,7 @@ public class PathService {
 
         PathFinder pathFinder = new DijkstraShortestPathFinder(allLines);
         Path path = pathFinder.findShortestPath(source, target);
-        Fare fare = Fare.of(path, AgeType.getDiscountPolicy(authMember));
-        return PathResponse.from(path, fare);
+        Fare fare = path.calculateFare(authMember);
+        return PathResponse.of(path, fare);
     }
 }

@@ -20,7 +20,7 @@ public class PathResponse {
         this.fare = fare;
     }
 
-    public static PathResponse from(Path path, Fare fare) {
+    public static PathResponse of(Path path, Fare fare) {
         List<StationResponse> stationResponses = path.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
