@@ -3,6 +3,7 @@ package nextstep.subway.path.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionTestUtils;
 import nextstep.subway.line.acceptance.LineTestUtils;
@@ -21,8 +22,8 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PathTestUtils {
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int extraFare) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
         return LineTestUtils.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
@@ -34,6 +35,20 @@ public class PathTestUtils {
         PathRequest request = new PathRequest(source.getId(), target.getId());
 
         return RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().get("/paths")
+                .then()
+                .log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 로그인회원_거리_경로_조회_요청(TokenResponse token, StationResponse source, StationResponse target) {
+        PathRequest request = new PathRequest(source.getId(), target.getId());
+
+        return RestAssured.given().log().all()
+                .auth().oauth2(token.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
@@ -68,5 +83,10 @@ public class PathTestUtils {
 
     public static void 최단경로_조회_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 요금_확인(ExtractableResponse<Response> response, int expected) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(expected);
     }
 }
