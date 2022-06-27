@@ -6,7 +6,6 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
@@ -24,19 +23,20 @@ public class PathFinder {
 
         validateEqualStation(source, target);
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        DijkstraShortestPath path = new DijkstraShortestPath(graph);
+        WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
+        DijkstraShortestPath<Station, SectionEdge> path = new DijkstraShortestPath<>(graph);
 
         generateGraph(sections, graph);
         validateEmptyStation(graph, source, target);
 
-        GraphPath<Station, DefaultWeightedEdge> graphPath = path.getPath(source, target);
+        GraphPath<Station, SectionEdge> graphPath = path.getPath(source, target);
         validateConnected(graphPath);
 
         List<Station> stations = graphPath.getVertexList();
         int distance = (int) graphPath.getWeight();
+        List<SectionEdge> sectionEdges = graphPath.getEdgeList();
 
-        return Path.of(stations, distance);
+        return Path.of(stations, distance, sectionEdges);
     }
 
     private List<Section> getAllSections(List<Line> lines) {
@@ -46,15 +46,17 @@ public class PathFinder {
                 .collect(Collectors.toList());
     }
 
-    private void generateGraph(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void generateGraph(List<Section> sections, WeightedMultigraph<Station, SectionEdge> graph) {
         for (Section section : sections) {
+            SectionEdge sectionEdge = new SectionEdge(section);
             Station upStation = section.getUpStation();
             Station downStation = section.getDownStation();
 
             graph.addVertex(upStation);
             graph.addVertex(downStation);
 
-            graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance().getDistanceDouble());
+            graph.addEdge(upStation, downStation, sectionEdge);
+            graph.setEdgeWeight(sectionEdge, section.getDistance().getDistanceDouble());
         }
     }
 
@@ -64,13 +66,13 @@ public class PathFinder {
         }
     }
 
-    private void validateConnected(GraphPath<Station, DefaultWeightedEdge> path) {
+    private void validateConnected(GraphPath<Station, SectionEdge> path) {
         if (path == null) {
             throw new IllegalArgumentException(ERROR_MESSAGE_NOT_CONNECTED);
         }
     }
 
-    private void validateEmptyStation(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Station source, Station target) {
+    private void validateEmptyStation(WeightedMultigraph<Station, SectionEdge> graph, Station source, Station target) {
         if (!graph.containsVertex(source)) {
             throw new NoSearchStationException(source.getId());
         }
