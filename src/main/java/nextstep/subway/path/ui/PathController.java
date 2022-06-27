@@ -20,7 +20,9 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<ShortestPathResponse> getShortestPath(@AuthenticationPrincipal LoginMember loginMember, Long source, Long target) {
+    public ResponseEntity<ShortestPathResponse> getShortestPath(
+            @AuthenticationPrincipal(enabledGuest = true) LoginMember loginMember, Long source, Long target
+    ) {
         return ResponseEntity.ok(pathService.findShortestPath(source, target, loginMember.getAgeGroup()));
     }
 }

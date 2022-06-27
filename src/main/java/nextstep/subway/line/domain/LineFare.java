@@ -51,7 +51,7 @@ public class LineFare {
         }
 
         return totalDistance.getMinimumDistance(MAX_DEFAULT_ADDITIONAL_DISTANCE)
-                .subtractThenReturnResult(MINIMUM_DEFAULT_ADDITIONAL_DISTANCE)
+                .subtract(MINIMUM_DEFAULT_ADDITIONAL_DISTANCE)
                 .calculateDistanceRatio(DEFAULT_ADDITIONAL_DISTANCE_UNIT) * ADDITIONAL_FARE_UNIT;
     }
 
@@ -60,7 +60,7 @@ public class LineFare {
             return 0;
         }
 
-        return totalDistance.subtractThenReturnResult(MINIMUM_LONGER_ADDITIONAL_DISTANCE)
+        return totalDistance.subtract(MINIMUM_LONGER_ADDITIONAL_DISTANCE)
                 .calculateDistanceRatio(LONGER_ADDITIONAL_DISTANCE_UNIT) * ADDITIONAL_FARE_UNIT;
     }
 }

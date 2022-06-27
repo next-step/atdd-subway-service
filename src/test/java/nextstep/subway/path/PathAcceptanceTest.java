@@ -200,6 +200,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 노선_경로_조회(광교역, 성복역, myToken);
 
         // then
+       노선_경로_비용_정상_조회됨(response, 2_150);
+    }
+
+    /**
+     * given 여러역이 포함된 노선에
+     * when 추가 운임 거리가 최대거리 이상 해당하는 경로를 로그인 없이 조회하면
+     * then 운임 비용은 해당 구간의 비용으로 할인 없이 정상 계산되어야 한다 (어른 요금으로 계산되어야 한다)
+     */
+    @DisplayName("로그인 없이 구간 검색을 하면 할인 없이 어른 요금으로 정상 조회되어야 한다")
+    @Test
+    void findDistanceWithoutLoginTest() {
+        // when
+        ExtractableResponse<Response> response = 노선_경로_조회(광교역, 성복역, null);
+
+        // then
         노선_경로_비용_정상_조회됨(response, 2_150);
     }
 
@@ -213,7 +228,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         params.put("source", source.getId());
         params.put("target", target.getId());
 
-        return RestAssuredRequest.getRequest(PATH, params, myToken);
+        return RestAssuredRequest.getRequest(PATH, params, token);
     }
 
     private void 노선_경로_조회_성공됨(ExtractableResponse<Response> response) {
