@@ -6,7 +6,6 @@ import javax.persistence.*;
 
 @Entity
 public class Section {
-    private static final String ERR_INPUT_MORE_CLOSER_DISTANCE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,16 +22,18 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
+        distance = Distance.empty();
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     public Long getId() {
@@ -52,23 +53,25 @@ public class Section {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getLength();
+    }
+
+    public boolean isMatchedUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean isMatchedDownStation(Station station) {
+        return downStation.equals(station);
     }
 
     public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new IllegalArgumentException(ERR_INPUT_MORE_CLOSER_DISTANCE);
-        }
         this.upStation = station;
-        this.distance -= newDistance;
+        distance.lengthMinus(newDistance);
     }
 
     public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new IllegalArgumentException(ERR_INPUT_MORE_CLOSER_DISTANCE);
-        }
         this.downStation = station;
-        this.distance -= newDistance;
+        distance.lengthMinus(newDistance);
     }
 
     public boolean isContains(Station station) {
@@ -84,6 +87,6 @@ public class Section {
                 this.upStation == null &&
                 this.downStation == null &&
                 this.line == null &&
-                this.distance == 0;
+                this.distance.isEmpty();
     }
 }

@@ -43,6 +43,10 @@ npm run dev
 - [x] LineService 리팩터링
 - [ ] (선택) LineSectionAcceptanceTest 리팩터링
 
+### Step2
+- [x] 최단 경로 조회 인수 테스트 만들기
+- [x] 최단 경로 조회 기능 구현하기
+
 ## ✏️ Code Review Process
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
 

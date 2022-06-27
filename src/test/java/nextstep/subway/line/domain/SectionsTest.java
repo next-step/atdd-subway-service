@@ -5,7 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -138,10 +140,14 @@ class SectionsTest {
         sections.delete(광교역);
 
         // then
+        List<Long> list = sections.getStations().stream().map(Station::getId).collect(Collectors.toList());
+        List<Long> expectList = Arrays.asList(강남역.getId(), 광교역.getId());
         assertAll(
                 () -> assertThat(sections.getSections()).hasSize(1),
-                () -> assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(판교역),
-                () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(9)
+                () -> assertThat(sections.getSections().stream()
+                        .filter(x -> x.getUpStation().getName().equals("강남역"))
+                        .findFirst().get().getDistance()).isEqualTo(9),
+                () -> 지하철_노선_정렬_확인(list, expectList)
         );
     }
 
@@ -158,10 +164,14 @@ class SectionsTest {
         sections.delete(판교역);
 
         // then
+        List<Long> list = sections.getStations().stream().map(Station::getId).collect(Collectors.toList());
+        List<Long> expectList = Arrays.asList(강남역.getId(), 광교역.getId());
         assertAll(
                 () -> assertThat(sections.getSections()).hasSize(1),
-                () -> assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(광교역),
-                () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(10)
+                () -> assertThat(sections.getSections().stream()
+                        .filter(x -> x.getUpStation().getName().equals("강남역"))
+                        .findFirst().get().getDistance()).isEqualTo(10),
+                () -> 지하철_노선_정렬_확인(list, expectList)
         );
     }
 
@@ -187,5 +197,9 @@ class SectionsTest {
 
         // then
         assertThatThrownBy(() -> sections.delete(신림역)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    public void 지하철_노선_정렬_확인(List<Long> list, List<Long> expectList) {
+        assertThat(list).containsExactlyElementsOf(expectList);
     }
 }
