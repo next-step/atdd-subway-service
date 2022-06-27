@@ -44,15 +44,13 @@ public class Section {
     }
 
     public static Section from(Section section) {
-        if (Objects.isNull(section)) {
-            return null;
-        }
-        return new Builder()
-                .upStation(section.upStation)
-                .downStation(section.downStation)
-                .distance(section.distance)
-                .line(section.line)
-                .build();
+        return section == null ? section
+                : new Builder()
+                        .upStation(section.upStation)
+                        .downStation(section.downStation)
+                        .distance(section.distance)
+                        .line(section.line)
+                        .build();
     }
 
     public static Section of(Line line, Station upStation, Station downStation, int distance) {
@@ -139,13 +137,8 @@ public class Section {
 
     @Override
     public String toString() {
-        return "Section{" +
-                "id=" + id +
-                ", line=" + line +
-                ", upStation=" + upStation +
-                ", downStation=" + downStation +
-                ", distance=" + distance +
-                '}';
+        return "Section{" + "id=" + id + ", line=" + line + ", upStation=" + upStation + ", downStation=" + downStation
+                + ", distance=" + distance + '}';
     }
 
     @Override
@@ -157,9 +150,9 @@ public class Section {
             return false;
         }
         Section section = (Section) o;
-        return Objects.equals(id, section.id) && Objects.equals(line, section.line)
-                && Objects.equals(upStation, section.upStation) && Objects.equals(downStation,
-                section.downStation) && Objects.equals(distance, section.distance);
+        return Objects.equals(id, section.id) && Objects.equals(line, section.line) && Objects.equals(upStation,
+                section.upStation) && Objects.equals(downStation, section.downStation) && Objects.equals(distance,
+                section.distance);
     }
 
     @Override
