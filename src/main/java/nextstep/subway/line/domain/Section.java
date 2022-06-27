@@ -39,7 +39,7 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = new Distance(distance);
+        this.distance = Distance.from(distance);
     }
 
     public Section(Line line, Station upStation, Station downStation, Distance distance) {

@@ -8,8 +8,8 @@ class DistanceTest {
 
     @Test
     void 거리를_더한다() {
-        Distance distance = new Distance(5);
-        Distance distance2 = new Distance(3);
+        Distance distance = Distance.from(5);
+        Distance distance2 = Distance.from(3);
 
         Distance plus = distance.plus(distance2);
 
@@ -18,8 +18,8 @@ class DistanceTest {
 
     @Test
     void 거리를_뺀다() {
-        Distance distance = new Distance(5);
-        Distance distance2 = new Distance(3);
+        Distance distance = Distance.from(5);
+        Distance distance2 = Distance.from(3);
 
         Distance plus = distance.minus(distance2);
 
