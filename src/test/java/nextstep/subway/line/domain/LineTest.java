@@ -32,14 +32,15 @@ class LineTest {
     }
 
     @Test
-    @DisplayName("노선에 구간 추가")
-    public void addSection() {
+    @DisplayName("신규 상행종점역 구간 추가")
+    public void addFinalUpSection() {
         // Given
         final Station 신사역 = new Station("신사역");
-        final Section 신사_논현_구간 = Section.of(신분당선, 신사역, 논현역, 5);
+        final Station 논현역 = new Station("논현역");
+        final int 구간_길이 = 5;
 
         // When
-        신분당선.addSection(신사_논현_구간);
+        구간_추가(신분당선, 신사역, 논현역, 구간_길이);
 
         // Then
         assertAll(
@@ -51,7 +52,29 @@ class LineTest {
     }
 
     @Test
-    @DisplayName("노선의 정렬된 역 목록 조회")
+    @DisplayName("신규 하행종점역 구간 추가")
+    public void addFinalDownSection() {
+        // Given
+        final Station 정자역 = new Station("정자역");
+        final Station 광교역 = new Station("광교역");
+        final int 구간_길이 = 5;
+
+        final Section 신규_하행종점역_구간 = Section.of(신분당선, 정자역, 광교역, 구간_길이);
+
+        // When
+        신분당선.addSection(신규_하행종점역_구간);
+
+        // Then
+        assertAll(
+            () -> assertThat(신분당선.getSections()).hasSize(2),
+            () -> assertThat(신분당선.getAllStations())
+                .hasSize(3)
+                .containsExactly(논현역, 정자역, 광교역)
+        );
+    }
+
+    @Test
+    @DisplayName("순서 없는 구간 추가")
     public void getAllSortedStations() {
         // Given
         final Station 신사역 = new Station("신사역");
@@ -87,9 +110,8 @@ class LineTest {
         // 신사-(5)-논현-(5)-신논현-(5)-강남-(5)-양재-(30)-양재시민의숲역-(20)-청계산입구-(25)-판교-(10)-정자-(5)-미금
         assertAll(
             () -> assertThat(신분당선.getSections()).hasSize(9),
-            () -> assertThat(노선_역목록).hasSize(10),
             () -> assertThat(노선_역목록)
-                .as("정렬 여부 확인")
+                .hasSize(10)
                 .containsExactly(신사역, 논현역, 신논현역, 강남역, 양재역, 양재시민의숲역, 청계산입구역, 판교역, 정자역, 미금역)
         );
 

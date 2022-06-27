@@ -69,7 +69,7 @@ public class Sections {
 
     public Section findSectionByUpStationEqStation(Station station) {
         return elements.stream()
-            .filter(it -> it.getUpStation() == station)
+            .filter(it -> it.getUpStation().equals(station))
             .findFirst()
             .orElseThrow(IllegalArgumentException::new);
     }
