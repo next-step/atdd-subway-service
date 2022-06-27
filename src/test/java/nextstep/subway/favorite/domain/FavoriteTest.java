@@ -1,13 +1,14 @@
 package nextstep.subway.favorite.domain;
 
-import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class FavoriteTest {
     private Station 강남역;
@@ -39,5 +40,17 @@ public class FavoriteTest {
         assertThatThrownBy(() -> 즐겨찾기.validateMember(필필))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("즐겨찾기를 등록한 사용자가 아닙니다.");
+    }
+
+    @Test
+    @DisplayName("즐겨찾기를 생성한다.")
+    void createFavorite() {
+        Favorite 즐겨찾기 = Favorite.of(콜펌, 강남역, 정자역);
+
+        assertAll(
+            () ->  assertThat(즐겨찾기.getSource().getName()).isEqualTo("강남역"),
+            () ->  assertThat(즐겨찾기.getTarget().getName()).isEqualTo("정자역"),
+            () ->  assertThat(즐겨찾기.getMember()).isEqualTo(콜펌)
+        );
     }
 }
