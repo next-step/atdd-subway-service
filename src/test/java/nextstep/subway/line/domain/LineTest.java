@@ -130,4 +130,30 @@ class LineTest {
         assertThatThrownBy(() -> givenLine.removeStation(givenUpStation))
                 .isInstanceOf(RuntimeException.class);
     }
+
+    @Test
+    void 추가요금을_등록할_수_있어야_한다() {
+        // given
+        final int extraCharge = 100;
+
+        // when
+        final Line line = new Line(
+                givenLineName,
+                givenLineColor,
+                givenUpStation,
+                givenDownStation,
+                givenLineDistance,
+                extraCharge);
+
+        // then
+        assertThat(line.getExtraCharge()).isEqualTo(extraCharge);
+    }
+
+    @Test
+    void 추가요금이_0보다_작으면_에러가_발생해야_한다() {
+        // when and then
+        assertThatThrownBy(
+                () -> new Line(givenLineName, givenLineColor, givenUpStation, givenDownStation, givenLineDistance, -1))
+                .isInstanceOf(RuntimeException.class);
+    }
 }
