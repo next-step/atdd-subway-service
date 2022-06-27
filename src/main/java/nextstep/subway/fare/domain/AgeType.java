@@ -42,14 +42,10 @@ public enum AgeType {
     }
 
     private static AgeType getAgeType(AuthMember authMember) {
-        if (authMember instanceof LoginMember) {
-            LoginMember loginMember = (LoginMember) authMember;
-            return Arrays.stream(values())
-                    .filter(value -> value.isAgeRange(loginMember.getAge()))
-                    .findFirst()
-                    .orElse(BASIC);
-        }
-        return BASIC;
+        return Arrays.stream(values())
+                .filter(value -> value.isAgeRange(authMember.getAge()))
+                .findFirst()
+                .orElse(BASIC);
     }
 
     private boolean isAgeRange(int age) {

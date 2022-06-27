@@ -22,6 +22,7 @@ public class LoginMember implements AuthMember {
         return email;
     }
 
+    @Override
     public Integer getAge() {
         return age;
     }
