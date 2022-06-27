@@ -19,7 +19,7 @@ public class Line extends BaseEntity {
     @Embedded
     private final Sections sections = Sections.instance();
     @Embedded
-    private Charge charge;
+    private Charge extraCharge;
 
     protected Line() {}
 
@@ -28,11 +28,11 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
-        this.charge = Charge.ofExtraCharge(extraCharge);
+        this.extraCharge = Charge.ofExtraCharge(extraCharge);
     }
 
     public Line(final String name, final String color, final Station upStation, final Station downStation, final int distance) {
-        this(name, color, upStation, downStation, distance, Charge.ofBasic().getValue());
+        this(name, color, upStation, downStation, distance, 0);
     }
 
     public Line(final String name, final String color) {
@@ -73,8 +73,8 @@ public class Line extends BaseEntity {
         return sections.getSections();
     }
 
-    public int getCharge() {
-        return charge.getValue();
+    public int getExtraCharge() {
+        return extraCharge.getValue();
     }
 
     @Override
@@ -84,19 +84,20 @@ public class Line extends BaseEntity {
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
                 ", sections=" + sections +
+                ", charge=" + extraCharge +
                 '}';
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color) && Objects.equals(sections, line.sections);
+        final Line line = (Line) o;
+        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color) && Objects.equals(sections, line.sections) && Objects.equals(extraCharge, line.extraCharge);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color, sections);
+        return Objects.hash(id, name, color, sections, extraCharge);
     }
 }

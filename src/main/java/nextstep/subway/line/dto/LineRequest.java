@@ -4,8 +4,6 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
 public class LineRequest {
-    private static final int EXIST_EXTRA_CHARGE = 0;
-
     private final String name;
     private final String color;
     private final Long upStationId;
@@ -23,17 +21,7 @@ public class LineRequest {
     }
 
     public Line toEntity(final Station upStation, final Station downStation) {
-        if (existsExtraCharge()) {
-            return new Line(name, color, upStation, downStation, distance, extraCharge);
-        }
-        return new Line(name, color, upStation, downStation, distance);
-    }
-
-    private boolean existsExtraCharge() {
-        if (extraCharge > EXIST_EXTRA_CHARGE) {
-            return true;
-        }
-        return  false;
+        return new Line(name, color, upStation, downStation, distance, extraCharge);
     }
 
     public String getName() {

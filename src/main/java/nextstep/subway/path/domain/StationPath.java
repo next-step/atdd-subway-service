@@ -1,24 +1,23 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
 import java.util.Objects;
 
 public class StationPath {
     private final List<Station> stations;
+    private final int charge;
     private final int distance;
 
-    public StationPath(final List<Station> stations, final int distance) {
+    public StationPath(final List<Station> stations, final int charge, final int distance) {
         this.stations = stations;
+        this.charge = charge;
         this.distance = distance;
     }
 
-    public static StationPath of(final GraphPath<Station, DefaultWeightedEdge> graphPath) {
-        return new StationPath(graphPath.getVertexList(), (int) graphPath.getWeight());
+    public static StationPath of(final List<Station> vertexList, final double weight, final Integer charge) {
+        return new StationPath(vertexList,(int) weight, charge);
     }
 
     public List<Station> getStations() {
