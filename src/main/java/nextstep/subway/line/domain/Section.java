@@ -32,29 +32,34 @@ public class Section {
     @Embedded
     private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
-        this(line, upStation, downStation, Distance.from(distance));
-    }
-
-    public Section(Line line, Station upStation, Station downStation, Distance distance) {
-        this.line = line;
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
+    private Section(Builder builder) {
+        this.id = builder.id;
+        this.line = builder.line;
+        this.upStation = builder.upStation;
+        this.downStation = builder.downStation;
+        this.distance = builder.distance;
     }
 
     public static Section from(Section section) {
-        if (Objects.isNull(section)) {
-            return null;
-        }
-        return new Section(section.line, section.upStation, section.downStation, section.distance);
+        return section == null ? section
+                : new Builder()
+                        .upStation(section.upStation)
+                        .downStation(section.downStation)
+                        .distance(section.distance)
+                        .line(section.line)
+                        .build();
     }
 
     public static Section of(Line line, Station upStation, Station downStation, int distance) {
-        return new Section(line, upStation, downStation, distance);
+        return new Builder()
+                .upStation(upStation)
+                .downStation(downStation)
+                .distance(distance)
+                .line(line)
+                .build();
     }
 
     public Station getUpStation() {
@@ -63,6 +68,10 @@ public class Section {
 
     public Station getDownStation() {
         return downStation;
+    }
+
+    public int getDistance() {
+        return distance.value();
     }
 
     public void update(Section section) {
@@ -118,18 +127,18 @@ public class Section {
         if (hasDownStation(section.upStation)) {
             newDownStation = section.downStation;
         }
-        return new Section(line, newUpStation, newDownStation, newDistance);
+        return new Builder()
+                .upStation(newUpStation)
+                .downStation(newDownStation)
+                .distance(newDistance)
+                .line(line)
+                .build();
     }
 
     @Override
     public String toString() {
-        return "Section{" +
-                "id=" + id +
-                ", line=" + line +
-                ", upStation=" + upStation +
-                ", downStation=" + downStation +
-                ", distance=" + distance +
-                '}';
+        return "Section{" + "id=" + id + ", line=" + line + ", upStation=" + upStation + ", downStation=" + downStation
+                + ", distance=" + distance + '}';
     }
 
     @Override
@@ -141,13 +150,65 @@ public class Section {
             return false;
         }
         Section section = (Section) o;
-        return Objects.equals(id, section.id) && Objects.equals(line, section.line)
-                && Objects.equals(upStation, section.upStation) && Objects.equals(downStation,
-                section.downStation) && Objects.equals(distance, section.distance);
+        return Objects.equals(id, section.id) && Objects.equals(line, section.line) && Objects.equals(upStation,
+                section.upStation) && Objects.equals(downStation, section.downStation) && Objects.equals(distance,
+                section.distance);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, line, upStation, downStation, distance);
+    }
+
+    public static class Builder {
+        private final Long id;
+        private final Station upStation;
+        private final Station downStation;
+        private final Distance distance;
+        private final Line line;
+
+        public Builder() {
+            this(null, null, null);
+        }
+
+        private Builder(Station upStation, Station downStation, Distance distance) {
+            this(null, upStation, downStation, distance, null);
+        }
+
+        private Builder(Long id, Station upStation, Station downStation, Distance distance, Line line) {
+            this.id = id;
+            this.upStation = upStation;
+            this.downStation = downStation;
+            this.distance = distance;
+            this.line = line;
+        }
+
+        public Builder id(Long id) {
+            return new Builder(id, upStation, downStation, distance, line);
+        }
+
+        public Builder upStation(Station upStation) {
+            return new Builder(id, upStation, downStation, distance, line);
+        }
+
+        public Builder downStation(Station downStation) {
+            return new Builder(id, upStation, downStation, distance, line);
+        }
+
+        public Builder distance(Distance distance) {
+            return new Builder(id, upStation, downStation, distance, line);
+        }
+
+        public Builder distance(int distance) {
+            return new Builder(id, upStation, downStation, Distance.from(distance), line);
+        }
+
+        public Builder line(Line line) {
+            return new Builder(id, upStation, downStation, distance, line);
+        }
+
+        public Section build() {
+            return new Section(this);
+        }
     }
 }

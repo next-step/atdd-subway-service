@@ -13,15 +13,24 @@ public class Station extends BaseEntity {
     @Column(unique = true)
     private String name;
 
-    public Station() {
+    protected Station() {
     }
 
     public Station(String name) {
+        this(null, name);
+    }
+
+    private Station(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
     public static Station from(String name) {
         return new Station(name);
+    }
+
+    public static Station of(Long id, String name) {
+        return new Station(id, name);
     }
 
     public Long getId() {

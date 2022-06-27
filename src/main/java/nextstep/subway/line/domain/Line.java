@@ -33,7 +33,12 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = LineName.from(name);
         this.color = LineColor.from(color);
-        sections.add(new Section(this, upStation, downStation, distance));
+        sections.add(new Section.Builder()
+                .upStation(upStation)
+                .downStation(downStation)
+                .distance(distance)
+                .line(this)
+                .build());
     }
 
     public static Line of(String name, String color) {
@@ -50,11 +55,15 @@ public class Line extends BaseEntity {
     }
 
     public String getName() {
-        return Objects.nonNull(name) ? name.toString() : null;
+        return Objects.nonNull(name) ? name.toString() : "";
     }
 
     public String getColor() {
-        return Objects.nonNull(color) ? color.toString() : null;
+        return Objects.nonNull(color) ? color.toString() : "";
+    }
+
+    public List<Section> getSections() {
+        return sections.get();
     }
 
     public List<Station> getStations() {

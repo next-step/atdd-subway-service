@@ -28,6 +28,10 @@ public class Sections {
         return sections.stream().map(Section::from).collect(Collectors.toList());
     }
 
+    public List<Section> get() {
+        return Collections.unmodifiableList(values);
+    }
+
     public void add(Section section) {
         validateSectionToAdd(section);
 
