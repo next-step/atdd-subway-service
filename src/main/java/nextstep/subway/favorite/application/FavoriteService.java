@@ -64,7 +64,8 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavorite(LoginMember loginMember, Long id) {
-        Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
+        Favorite favorite = favoriteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 즐겨찾기 항목입니다."));
         validateOwner(loginMember, favorite);
         favoriteRepository.deleteById(id);
     }
