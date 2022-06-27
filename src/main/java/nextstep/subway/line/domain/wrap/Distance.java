@@ -28,10 +28,6 @@ public class Distance {
         }
     }
 
-    public int getDistance() {
-        return distance;
-    }
-
     public void minusDistance(int distance) {
         validateOperateDistance(distance);
         this.distance = this.distance - distance;
@@ -45,5 +41,13 @@ public class Distance {
 
     private boolean isOverOrEquals(int targetDistance) {
         return distance <= targetDistance;
+    }
+
+    public void plusDistance(int distance) {
+        this.distance = this.distance + distance;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 }

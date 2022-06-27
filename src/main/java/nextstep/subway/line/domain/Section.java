@@ -80,6 +80,11 @@ public class Section {
         distance.minusDistance(newDistance);
     }
 
+    public Section swapDownStationToTargetDownStation(Section targetSection) {
+        distance.plusDistance(targetSection.getDistance());
+        return Section.of(this.line, this.upStation, targetSection.downStation, distance.getDistance());
+    }
+
     public Long getId() {
         return id;
     }

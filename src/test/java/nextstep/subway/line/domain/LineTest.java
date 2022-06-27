@@ -121,4 +121,59 @@ class LineTest {
         // Then
         assertThat(station.contains(논현역)).isTrue();
     }
+
+    @Test
+    @DisplayName("상행 종점역 구간 삭제")
+    public void removeFinalUpSection() {
+        // Given
+        final Station 신사역 = new Station("신사역");
+        구간_추가(신분당선, 신사역, 논현역, 10);
+
+        // When
+        신분당선.removeSection(신사역);
+
+        // Then
+        assertAll(
+            () -> assertThat(신분당선.getSections()).hasSize(1),
+            () -> assertThat(신분당선.getAllStations())
+                .hasSize(2)
+                .containsExactly(논현역, 정자역)
+        );
+    }
+
+    @Test
+    @DisplayName("하행 종점역 구간 삭제")
+    public void removeFinalDownSection() {
+        // Given
+        final Station 강남역 = new Station("강남역");
+        final Section 상행역이_동일한_구간 = Section.of(신분당선, 강남역, 정자역, 30);
+        신분당선.addSection(상행역이_동일한_구간);
+
+        // When
+        신분당선.removeSection(정자역);
+
+        // Then
+        assertAll(
+            () -> assertThat(신분당선.getSections()).hasSize(1),
+            () -> assertThat(신분당선.getAllStations()).containsExactly(논현역, 강남역)
+        );
+    }
+
+    @Test
+    @DisplayName("중간 구간 삭제")
+    public void removeMiddleSection() {
+        // Given
+        final Station 강남역 = new Station("강남역");
+        final Section 상행역이_동일한_구간 = Section.of(신분당선, 강남역, 정자역, 30);
+        신분당선.addSection(상행역이_동일한_구간);
+
+        // When
+        신분당선.removeSection(강남역);
+
+        // Then
+        assertAll(
+            () -> assertThat(신분당선.getSections()).hasSize(1),
+            () -> assertThat(신분당선.getAllStations()).containsExactly(논현역, 정자역)
+        );
+    }
 }

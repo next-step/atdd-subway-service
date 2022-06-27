@@ -125,6 +125,12 @@ public class LineService {
         downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
 
+    public void renewal_removeLineStation(Long lineId, Long stationId) {
+        Line line = findLineById(lineId);
+        Station station = stationService.findStationById(stationId);
+        line.removeSection(station);
+    }
+
     /**
      * 노선의 정렬된 역 목록을 조회한다.
      * <p>
