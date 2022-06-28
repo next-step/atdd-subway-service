@@ -1,5 +1,7 @@
 package nextstep.subway.fare.policy;
 
+import nextstep.subway.fare.domain.Fare;
+
 public interface DiscountPolicy {
-    int discount(int fare);
+    Fare discount(int fare);
 }
