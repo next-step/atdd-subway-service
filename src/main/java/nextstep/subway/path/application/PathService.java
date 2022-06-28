@@ -24,6 +24,9 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
+        if (sourceStationId.equals(targetStationId)) {
+            throw new IllegalArgumentException("출발역과 도착역은 같을 수 없습니다.");
+        }
         Station sourceStation = stationService.findStationById(sourceStationId);
         Station targetStation = stationService.findStationById(targetStationId);
         PathFinder pathFinder = new PathFinder(lineService.findAllLines());
