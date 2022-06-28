@@ -9,8 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 @Entity
 public class Section {
@@ -77,6 +75,10 @@ public class Section {
         return distance;
     }
 
+    public int getDistanceValue() {
+        return distance.getDistance();
+    }
+
     public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
         this.distance.subDistance(newDistance);
@@ -106,21 +108,5 @@ public class Section {
 
     public boolean equalDownStation(Station station) {
         return downStation.equals(station);
-    }
-
-    public void addVertexAndEdgeToGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        addVertexToGraph(graph, upStation);
-        addVertexToGraph(graph, downStation);
-        addEdgeToGraph(graph);
-    }
-
-    private void addVertexToGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Station station) {
-        if(graph.containsVertex(station)) return;
-
-        graph.addVertex(station);
-    }
-
-    private void addEdgeToGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        graph.setEdgeWeight(graph.addEdge(upStation, downStation), distance.getDistance());
     }
 }
