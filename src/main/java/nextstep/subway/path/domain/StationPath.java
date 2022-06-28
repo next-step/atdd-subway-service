@@ -28,24 +28,29 @@ public class StationPath {
         return distance;
     }
 
+    public int getExtraCharge() {
+        return extraCharge;
+    }
+
     @Override
     public String toString() {
-        return "ShortestPathResponse{" +
+        return "StationPath{" +
                 "stations=" + stations +
                 ", distance=" + distance +
+                ", extraCharge=" + extraCharge +
                 '}';
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        StationPath that = (StationPath) o;
-        return distance == that.distance && Objects.equals(stations, that.stations);
+        final StationPath that = (StationPath) o;
+        return distance == that.distance && extraCharge == that.extraCharge && Objects.equals(stations, that.stations);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(stations, distance);
+        return Objects.hash(stations, distance, extraCharge);
     }
 }

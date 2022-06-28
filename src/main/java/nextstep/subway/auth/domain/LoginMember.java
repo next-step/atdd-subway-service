@@ -26,6 +26,10 @@ public class LoginMember {
         return NON_MEMBER;
     }
 
+    public boolean isNonMember() {
+        return NON_MEMBER.equals(this);
+    }
+
     public Long getId() {
         return id;
     }
