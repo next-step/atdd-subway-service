@@ -1,6 +1,7 @@
 package nextstep.subway.common;
 
 public enum ErrorMessage {
+    MEMBER_NOT_FOUND("존재하지 않는 유저입니다."),
     SAME_SOURCE_AND_TARGET("존재하지 않는 노선입니다."),
     SAME_CAN_NOT_SAME("동일한 역은 처리할 수 없습니다."),
     STATION_NOT_FOUND("구간에 존재하지 않는 역입니다."),
