@@ -1,7 +1,9 @@
 package nextstep.subway.path.application;
 
-import io.jsonwebtoken.lang.Collections;
-import nextstep.subway.line.domain.*;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
@@ -10,8 +12,6 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
