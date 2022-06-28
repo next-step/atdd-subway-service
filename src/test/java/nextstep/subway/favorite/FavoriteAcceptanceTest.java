@@ -24,6 +24,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private static final String 이호선 = "2호선";
     private static final String 노선색상 = "green";
     private static final int 구간거리 = 10;
+    private static final int 노선추가요금 = 100;
 
     private static final String 계정_이메일 = "aajisafj@naver.com";
     private static final String 계정_패스워드 = "abbddffl";
@@ -49,7 +50,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         sourceStationId = upStationResponse.jsonPath().getLong("id");
         targetStationId = downStationResponse.jsonPath().getLong("id");
 
-        지하철_노선_등록되어_있음(new LineRequest(이호선, 노선색상, sourceStationId, targetStationId, 구간거리));
+        지하철_노선_등록되어_있음(new LineRequest(이호선, 노선색상, 노선추가요금, sourceStationId, targetStationId, 구간거리));
         회원_등록되어_있음(계정_이메일, 계정_패스워드, 계정_연령);
 
         ExtractableResponse<Response> loginResponse = 로그인을_요청한다(계정_이메일, 계정_패스워드);

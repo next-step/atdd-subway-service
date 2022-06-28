@@ -43,10 +43,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         고속터미널역 = 지하철역_등록되어_있음("고속터미널역").as(StationResponse.class);
         교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
 
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-600", 사당역.getId(), 교대역.getId(), 15)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-orange-600", 고속터미널역.getId(), 교대역.getId(), 6)).as(LineResponse.class);
-        사호선 = 지하철_노선_등록되어_있음(new LineRequest("사호선", "bg-blue-600", 이수역.getId(), 사당역.getId(), 4)).as(LineResponse.class);
-        칠호선 = 지하철_노선_등록되어_있음(new LineRequest("칠호선", "bg-khaki-600", 이수역.getId(), 고속터미널역.getId(), 13)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-600", 900, 사당역.getId(), 교대역.getId(), 15)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-orange-600", 500, 고속터미널역.getId(), 교대역.getId(), 6)).as(LineResponse.class);
+        사호선 = 지하철_노선_등록되어_있음(new LineRequest("사호선", "bg-blue-600", 200, 이수역.getId(), 사당역.getId(), 4)).as(LineResponse.class);
+        칠호선 = 지하철_노선_등록되어_있음(new LineRequest("칠호선", "bg-khaki-600", 0, 이수역.getId(), 고속터미널역.getId(), 13)).as(LineResponse.class);
     }
 
     @DisplayName("최단 경로를 조회.")
@@ -100,7 +100,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 광교중앙역 = 지하철역_등록되어_있음("광교중앙역").as(StationResponse.class);
         StationResponse 강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
 
-        LineResponse 신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 광교중앙역.getId(), 강남역.getId(), 20)).as(LineResponse.class);
+        LineResponse 신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 100, 광교중앙역.getId(), 강남역.getId(), 20)).as(LineResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(사당역, 강남역);
+
+        // then
+        최단_경로_조회_실패됨(response);
+    }
+
+    @DisplayName("두 역의 최단 거리 경로를 조회")
+    @Test
+    void findPath() {
+        // given
+        StationResponse 광교중앙역 = 지하철역_등록되어_있음("광교중앙역").as(StationResponse.class);
+        StationResponse 강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
+
+        LineResponse 신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 500, 광교중앙역.getId(), 강남역.getId(), 20)).as(LineResponse.class);
 
         // when
         ExtractableResponse<Response> response = 최단_경로_조회_요청(사당역, 강남역);

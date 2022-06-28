@@ -31,11 +31,11 @@ class PathFinderTest {
         사당역 = new Station("사당역");
         동대문역 = new Station("동대문역");
 
-        일호선 = new Line("1호선", "navy");
+        일호선 = new Line("1호선", "navy", 200);
         Section 일호선구간 = new Section(서울역, 사당역, 10);
         일호선.addSection(일호선구간);
 
-        사호선 = new Line("4호선", "sky-blue");
+        사호선 = new Line("4호선", "sky-blue", 0);
         Section 사호선구간 = new Section(동대문역, 사당역, 8);
         사호선.addSection(사호선구간);
 
@@ -73,7 +73,7 @@ class PathFinderTest {
         Station 서면역 = new Station("서면역");
         Station 부산역 = new Station("부산역");
 
-        Line 부산선 = new Line("부산선", "blue");
+        Line 부산선 = new Line("부산선", "blue", 0);
         Section 부산선구간 = new Section(서면역, 부산역, 21);
         전구간.add(부산선구간);
 

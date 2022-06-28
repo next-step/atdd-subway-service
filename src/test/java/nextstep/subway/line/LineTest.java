@@ -20,7 +20,7 @@ class LineTest {
         testUpStation = new Station("서울역");
         testDownStation = new Station("금정역");
 
-        testLine = new Line("1호선", "navy", testUpStation, testDownStation, 10);
+        testLine = new Line("1호선", "navy", 0, testUpStation, testDownStation, 10);
     }
 
     @DisplayName("노선내의 역 목록 조회")
