@@ -133,15 +133,19 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 * 인증 - 즐겨 찾기 기능 완성하기
 
 ### to-do list
-- [ ] 토큰 발급 인수 테스트 만들기
+- [X] 토큰 발급 인수 테스트 만들기
     - [X] AuthAcceptanceTest
         - [X] 로그인 케이스
         - [X] Bearer Auth 로그인 실패 케이스
         - [X] Bearer Auth 유효하지 않은 케이스
     - [X] 로그인한 사용자의 정보로 반환하도록 기능 추가
-- [ ] 내 정보 조회 기능
-    - [ ] MemberAcceptanceTest
-  
+- [X] 내 정보 조회 기능
+    - [X] MemberAcceptanceTest
+        - [X] manageMyInfo 케이스 추가
+    - [X] MemberController
+        - [X] 나의 정보 조회
+        - [X] 나의 정보 수정
+        - [X] 나의 정보 삭제
 - [ ] 즐겨 찾기 기능 구현하기
     - [ ] FavoritesAcceptanceTest
   

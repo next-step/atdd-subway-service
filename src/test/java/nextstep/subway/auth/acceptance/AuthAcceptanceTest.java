@@ -82,11 +82,16 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(로그인_사용자_정보_조회.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private void 로그인_검증(ExtractableResponse<Response> 토큰발급) {
+    private void 로그인_검증(ExtractableResponse<Response> 로그인_요청) {
         assertAll(
-                () -> assertThat(토큰발급.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(토큰발급.jsonPath().getString("accessToken")).isNotBlank()
+                () -> assertThat(로그인_요청.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(로그인_요청.jsonPath().getString("accessToken")).isNotBlank()
         );
+    }
+
+
+    public static String 토큰_발급(String email, String password) {
+        return 로그인_요청(email, password).as(TokenResponse.class).getAccessToken();
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
