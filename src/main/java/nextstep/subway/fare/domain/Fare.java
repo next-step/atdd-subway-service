@@ -2,9 +2,11 @@ package nextstep.subway.fare.domain;
 
 public class Fare {
     private static final int MIN = 0;
+    private static final int BASIC = 1_250;
+    private static final int FIRST_MAX_SURCHARGE = 800;
     public static final Fare FREE = new Fare(MIN);
-    public static final Fare BASIC_FARE = new Fare(1_250);
-    public static final Fare FIRST_MAX_FARE = new Fare(2_050);
+    public static final Fare BASIC_FARE = new Fare(BASIC);
+    public static final Fare FIRST_MAX_FARE = new Fare(BASIC + FIRST_MAX_SURCHARGE);
 
     private final int value;
 
