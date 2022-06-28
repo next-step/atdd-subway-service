@@ -2,7 +2,6 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.Path;
@@ -19,12 +18,10 @@ import java.util.stream.Collectors;
 public class PathService {
     private LineRepository lineRepository;
     private StationService stationService;
-    private SectionRepository sectionRepository;
 
-    public PathService(StationService stationService, LineRepository lineRepository, SectionRepository sectionRepository) {
+    public PathService(StationService stationService, LineRepository lineRepository) {
         this.stationService = stationService;
         this.lineRepository = lineRepository;
-        this.sectionRepository = sectionRepository;
     }
 
     public PathResponse getShortestPath(Long source, Long target, Integer age) {

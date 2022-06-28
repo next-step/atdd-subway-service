@@ -2,8 +2,6 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.PathException;
 import nextstep.subway.station.application.StationService;
@@ -44,9 +42,6 @@ class PathServiceTest {
     @Mock
     StationRepository stationRepository;
 
-    @Mock
-    SectionRepository sectionRepository;
-
     /**
      *  청담역 -- 7호선(20) -- 뚝섬유원지역 --7호선(5)-- 건대입구역
      *                                                  |
@@ -58,7 +53,7 @@ class PathServiceTest {
     
     @BeforeEach
     void init() {
-        pathService = new PathService(new StationService(stationRepository), lineRepository, sectionRepository);
+        pathService = new PathService(new StationService(stationRepository), lineRepository);
 
         청담역 = new Station(1L, "청담역");
         뚝섬유원지역 = new Station(2L, "뚝섬유원지역");
