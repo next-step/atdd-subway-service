@@ -10,21 +10,23 @@ import java.util.List;
 public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
+    private int fare;
 
     private PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> stations, int distance) {
+    public PathResponse(List<StationResponse> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = fare;
     }
 
-    public static PathResponse of(Path shortestPath) {
+    public static PathResponse of(Path shortestPath, int fare) {
         List<StationResponse> stationResponses = new ArrayList<>();
         for(Station station : shortestPath.getStations()) {
             stationResponses.add(StationResponse.of(station));
         }
-        return new PathResponse(stationResponses, shortestPath.getDistance());
+        return new PathResponse(stationResponses, shortestPath.getDistance(), fare);
     }
 
     public List<StationResponse> getStations() {
@@ -33,5 +35,9 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }

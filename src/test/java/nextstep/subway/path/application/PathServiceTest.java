@@ -61,10 +61,10 @@ class PathServiceTest {
         구의역 = new Station(4L, "구의역");
         신사역 = new Station(5L, "신사역");
 
-        칠호선 = new Line("칠호선", "yellow", 청담역, 뚝섬유원지역, 20);
+        칠호선 = new Line("칠호선", "yellow", 청담역, 뚝섬유원지역, 20, 200);
         칠호선.addLineStation(뚝섬유원지역, 건대입구역, 5);
         
-        이호선 = new Line("이호선", "green", 건대입구역, 구의역, 10);
+        이호선 = new Line("이호선", "green", 건대입구역, 구의역, 10, 0);
 
         when(lineRepository.findAll()).thenReturn(Arrays.asList(칠호선, 이호선));
     }
@@ -76,7 +76,7 @@ class PathServiceTest {
         when(stationRepository.findById(4L)).thenReturn(Optional.of(구의역));
 
         //given
-        PathResponse response = pathService.getShortestPath(청담역.getId(), 구의역.getId());
+        PathResponse response = pathService.getShortestPath(청담역.getId(), 구의역.getId(), 15);
 
         //then
         assertAll(
@@ -85,7 +85,8 @@ class PathServiceTest {
                         StationResponse.of(청담역),
                         StationResponse.of(뚝섬유원지역),
                         StationResponse.of(건대입구역),
-                        StationResponse.of(구의역))
+                        StationResponse.of(구의역)),
+                () -> assertThat(response.getFare()).isEqualTo(1440)
                 );
     }
 
@@ -94,7 +95,7 @@ class PathServiceTest {
         when(stationRepository.findById(1L)).thenReturn(Optional.of(청담역));
 
         //then
-        assertThatThrownBy(() -> pathService.getShortestPath(청담역.getId(), 청담역.getId()))
+        assertThatThrownBy(() -> pathService.getShortestPath(청담역.getId(), 청담역.getId(), 10))
                 .isInstanceOf(PathException.class)
                 .hasMessageContaining(PathException.SAME_SOURCE_TARGET_STATION_MSG);
     }
@@ -105,7 +106,7 @@ class PathServiceTest {
         when(stationRepository.findById(5L)).thenReturn(Optional.of(신사역));
 
         //then
-        assertThatThrownBy(() -> pathService.getShortestPath(청담역.getId(), 신사역.getId()))
+        assertThatThrownBy(() -> pathService.getShortestPath(청담역.getId(), 신사역.getId(), 10))
                 .isInstanceOf(PathException.class)
                 .hasMessageContaining(PathException.NO_CONTAIN_STATION_MSG);
     }

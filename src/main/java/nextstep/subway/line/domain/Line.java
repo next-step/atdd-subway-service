@@ -1,17 +1,11 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.line.exception.SectionAddException;
-import nextstep.subway.line.exception.SectionSizeMinimunException;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
-import org.springframework.data.geo.Distance;
 
 import javax.persistence.*;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Line extends BaseEntity {
@@ -20,7 +14,10 @@ public class Line extends BaseEntity {
     private Long id;
     @Column(unique = true)
     private String name;
+    @Column
     private String color;
+    @Column
+    private int surcharge = 0;
 
     @Embedded
     private Sections sections = new Sections();
@@ -39,6 +36,13 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int surcharge) {
+        this.name = name;
+        this.color = color;
+        this.surcharge = surcharge;
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
@@ -54,6 +58,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public int getSurcharge() {
+        return surcharge;
     }
 
     public Sections getSections() {

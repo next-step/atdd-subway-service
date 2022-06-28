@@ -17,6 +17,20 @@ public class Sections {
     protected Sections() {
     }
 
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+    }
+
+    public int findAllSurcharges(Station upStaion, Station downStation) {
+        return sections.stream()
+                .filter(section -> section.getUpStation().equals(upStaion))
+                .filter(section -> section.getDownStation().equals(downStation))
+                .map(Section::getLine)
+                .map(Line::getSurcharge)
+                .findFirst()
+                .orElse(0);
+    }
+
     public void add(Section section) {
         sections.add(section);
     }

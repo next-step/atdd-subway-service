@@ -2,6 +2,9 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.Fare;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -9,6 +12,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -20,13 +24,21 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
-    public PathResponse getShortestPath(Long source, Long target) {
+    public PathResponse getShortestPath(Long source, Long target, Integer age) {
         List<Line> lines = lineRepository.findAll();
         Station sourceStation = stationService.findById(source);
         Station targetStation = stationService.findById(target);
+        Sections sections = new Sections(lines.stream()
+                                            .map(Line::getSections)
+                                            .map(Sections::getSections)
+                                            .flatMap(List::stream)
+                                            .distinct()
+                                            .collect(Collectors.toList()));
 
         PathFinder pathFinder = new PathFinder(lines);
+        Path path = pathFinder.getShortestPath(sourceStation, targetStation);
+        Fare fare = Fare.of(sections, path, age);
 
-        return PathResponse.of(pathFinder.getShortestPath(sourceStation, targetStation));
+        return PathResponse.of(path, fare.getFare());
     }
 }

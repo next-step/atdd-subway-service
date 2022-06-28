@@ -7,7 +7,6 @@ import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -27,7 +26,11 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public LoginMember findMemberByToken(String credentials, boolean required) {
+        if (!required && !jwtTokenProvider.validateToken(credentials)) {
+            return LoginMember.fromGuest();
+        }
+
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException(AuthorizationException.INVALID_ACCESS_TOKEN_MSG);
         }
