@@ -14,24 +14,25 @@ public class DistanceTest {
         Distance original = 거리_생성(10);
 
         // when
-        Distance addResult = original.addThenReturnResult(거리_생성(20));
+        Distance addResult = original.add(거리_생성(20));
 
         // then
-        assertThat(original).isNotEqualTo(addResult);
         assertThat(addResult.getValue()).isEqualTo(30);
+        assertThat(original.getValue()).isEqualTo(10);
     }
 
-    @DisplayName("기존 거리에 일정 거리를 빼면 해당 거리만큼 줄어들어야 한다")
+    @DisplayName("기존 거리에 기존 거리보다 작거나 같은 거리를 빼면 해당 결과의 객체가 새로 반환되어야 한다")
     @Test
     void subtractDistanceTest() {
         // given
-        Distance distance = 거리_생성(10);
+        Distance original = 거리_생성(10);
 
         // when
-        distance.subtract(거리_생성(5));
+        Distance subtractResult = original.subtract(거리_생성(5));
 
         // then
-        assertThat(distance.getValue()).isEqualTo(5);
+        assertThat(subtractResult.getValue()).isEqualTo(5);
+        assertThat(original.getValue()).isEqualTo(10);
     }
 
     @DisplayName("기존 거리보다 큰 거리를 빼면 해당 예외가 발생해야 한다")

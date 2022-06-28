@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.member.domain.AgeGroup;
 import nextstep.subway.path.dto.PathStation;
 import nextstep.subway.path.dto.ShortestPathResponse;
 import nextstep.subway.station.application.StationService;
@@ -86,7 +87,7 @@ public class PathServiceTest {
         stubServiceReturns();
 
         // when
-        ShortestPathResponse stations = pathService.findShortestPath(교대역.getId(), 선릉역.getId());
+        ShortestPathResponse stations = pathService.findShortestPath(교대역.getId(), 선릉역.getId(), AgeGroup.ADULT);
 
         // then
         최소_노선_경로_일치됨(stations, 교대역, 강남역, 역삼역, 선릉역);
@@ -100,7 +101,7 @@ public class PathServiceTest {
         stubServiceReturns();
 
         // when
-        ShortestPathResponse stations = pathService.findShortestPath(교대역.getId(), 양재역.getId());
+        ShortestPathResponse stations = pathService.findShortestPath(교대역.getId(), 양재역.getId(), AgeGroup.ADULT);
 
         // then
         최소_노선_경로_일치됨(stations, 교대역, 강남역, 양재역);
@@ -114,7 +115,7 @@ public class PathServiceTest {
         stubServiceReturns();
 
         // when
-        ShortestPathResponse stations = pathService.findShortestPath(교대역.getId(), 도곡역.getId());
+        ShortestPathResponse stations = pathService.findShortestPath(교대역.getId(), 도곡역.getId(), AgeGroup.ADULT);
 
         // then
         최소_노선_경로_일치됨(stations, 교대역, 강남역, 양재역, 매봉역, 도곡역);
@@ -129,7 +130,7 @@ public class PathServiceTest {
 
         // then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> pathService.findShortestPath(교대역.getId(), 교대역.getId()));
+                .isThrownBy(() -> pathService.findShortestPath(교대역.getId(), 교대역.getId(), AgeGroup.ADULT));
     }
 
     @DisplayName("도달할 수 없는 경로를 조회하면 예외가 발생해야 한다")
@@ -140,9 +141,9 @@ public class PathServiceTest {
 
         // then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> pathService.findShortestPath(교대역.getId(), 오남역.getId()));
+                .isThrownBy(() -> pathService.findShortestPath(교대역.getId(), 오남역.getId(), AgeGroup.ADULT));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> pathService.findShortestPath(오남역.getId(), 교대역.getId()));
+                .isThrownBy(() -> pathService.findShortestPath(오남역.getId(), 교대역.getId(), AgeGroup.ADULT));
     }
 
     public static Lines 라인_목록_생성(Line... lines) {

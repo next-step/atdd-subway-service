@@ -52,7 +52,7 @@ public class Sections {
         if (upSection != null && downSection != null) {
             Station newUpStation = downSection.getUpStation();
             Station newDownStation = upSection.getDownStation();
-            Distance newDistance = upSection.getDistance().addThenReturnResult(downSection.getDistance());
+            Distance newDistance = upSection.getDistance().add(downSection.getDistance());
 
             this.sections.add(new Section(line, newUpStation, newDownStation, newDistance));
         }

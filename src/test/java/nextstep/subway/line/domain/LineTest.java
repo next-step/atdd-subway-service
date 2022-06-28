@@ -122,6 +122,10 @@ public class LineTest {
         return new Line(name, color, upStation, downStation, distance);
     }
 
+    public static Line 노선_생성(String name, String color, Station upStation, Station downStation, int distance, int additionalFare) {
+        return new Line(name, color, upStation, downStation, distance, additionalFare);
+    }
+
     private Line 노선_업데이트_생성(String name, String color) {
         return new Line(name, color);
     }

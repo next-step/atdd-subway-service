@@ -4,8 +4,10 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.member.domain.AgeGroup;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.member.domain.UserType;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,13 +28,21 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public LoginMember findMemberByToken(String credentials, boolean enabledGuest) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException("토큰이 유효하지 않습니다.");
+            return getGuestOrUnAuthenticate(enabledGuest);
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+        return new LoginMember(member.getId(), member.getEmail(), member.getAge(), UserType.NORMAL);
+    }
+
+    private LoginMember getGuestOrUnAuthenticate(boolean enabledGuest) {
+        if (enabledGuest) {
+            return new LoginMember(null, null, AgeGroup.MINIMUM_ADULT_AGE, UserType.GUEST);
+        }
+
+        throw new AuthorizationException("토큰이 유효하지 않습니다.");
     }
 }
