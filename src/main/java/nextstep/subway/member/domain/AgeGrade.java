@@ -23,7 +23,7 @@ public enum AgeGrade {
         if (isYouth(age)) {
             return YOUTH;
         }
-        return CHILDREN;
+        return GENERAL;
     }
 
     private static boolean isChildren(Integer age) {
