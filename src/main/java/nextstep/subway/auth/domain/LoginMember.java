@@ -1,9 +1,12 @@
 package nextstep.subway.auth.domain;
 
+import nextstep.subway.member.domain.AgeGrade;
+
 public class LoginMember {
     private Long id;
     private String email;
     private Integer age;
+    private AgeGrade ageGrade;
 
     public LoginMember() {
     }
@@ -12,6 +15,7 @@ public class LoginMember {
         this.id = id;
         this.email = email;
         this.age = age;
+        this.ageGrade = AgeGrade.getGrade(age);
     }
 
     public Long getId() {
@@ -24,5 +28,9 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public AgeGrade getAgeGrade() {
+        return ageGrade;
     }
 }
