@@ -5,6 +5,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
@@ -18,8 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_등록되어_있음;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -34,6 +37,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private StationResponse 양재역;
+    private String accessToken;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -56,6 +60,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "빨간색", 강남역.getId(), 양재역.getId(), 10).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 10);
+
+        회원_등록되어_있음("test@naver.com", "1234", 20);
+        TokenResponse tokenResponse = 로그인_요청("test@naver.com", "1234").as(TokenResponse.class);
+        accessToken = tokenResponse.getAccessToken();
     }
 
     @DisplayName("최단경로를 조회한다.")
@@ -101,16 +109,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_조회_실패(response);
     }
 
-    private static ExtractableResponse<Response> 최단경로_조회_요청(Long sourceStationId, Long targetStationId) {
+    private ExtractableResponse<Response> 최단경로_조회_요청(Long sourceStationId, Long targetStationId) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths/?source={sourceStationId}&target={targetStationId}", sourceStationId, targetStationId)
                 .then().log().all()
                 .extract();
     }
 
-    private static void 최단경로_조회_성공(ExtractableResponse<Response> response, int distance, List<StationResponse> stationResponses) {
+    private void 최단경로_조회_성공(ExtractableResponse<Response> response, int distance, List<StationResponse> stationResponses) {
         PathResponse pathResponse = response.as(PathResponse.class);
 
         List<Long> expectedStationIds = stationResponses.stream()
@@ -129,7 +138,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private static void 최단경로_조회_실패(ExtractableResponse<Response> response) {
+    private void 최단경로_조회_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
