@@ -1,9 +1,8 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.domain.StationPath;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,7 +16,7 @@ public class PathResponse {
         this.distance = distance;
     }
 
-    public static PathResponse of(final StationPath stationPath) {
+    public static PathResponse of(final StationPath stationPath, final LoginMember loginMember) {
         return new PathResponse(stationPath.getStations(), stationPath.getDistance());
     }
 

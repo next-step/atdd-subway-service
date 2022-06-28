@@ -14,12 +14,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalAdvice {
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Void> exception(Exception e) {
-        System.out.println(e.getLocalizedMessage());
-        return ResponseEntity.badRequest().build();
-    }
-
     @ExceptionHandler(StationException.class)
     public ResponseEntity<Void> stationException(final StationException e) {
         return ResponseEntity.badRequest().build();
@@ -48,6 +42,11 @@ public class GlobalAdvice {
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<Void> authException(AuthorizationException e) {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Void> exception(Exception e) {
+        return ResponseEntity.badRequest().build();
     }
 
 

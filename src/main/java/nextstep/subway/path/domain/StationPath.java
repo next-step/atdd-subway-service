@@ -8,16 +8,16 @@ import java.util.Objects;
 public class StationPath {
     private final List<Station> stations;
     private final int distance;
-    private final int charge;
+    private final int extraCharge;
 
-    public StationPath(final List<Station> stations, final int distance, final int charge) {
+    public StationPath(final List<Station> stations, final int distance, final int extraCharge) {
         this.stations = stations;
         this.distance = distance;
-        this.charge = charge;
+        this.extraCharge = extraCharge;
     }
 
-    public static StationPath of(final List<Station> stations, final double distance, final Integer charge) {
-        return new StationPath(stations, (int) distance, charge);
+    public static StationPath of(final List<Station> stations, final double distance, final int extraCharge) {
+        return new StationPath(stations, (int) distance, extraCharge);
     }
 
     public List<Station> getStations() {

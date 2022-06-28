@@ -40,7 +40,6 @@ public class FavoriteTest {
         // when
         final Favorite favorite = favoriteRepository.save(Favorite.of(member, sourceStation, targetStation));
         // then
-        System.out.println(favorite);
         assertThat(favorite).isInstanceOf(Favorite.class);
     }
 

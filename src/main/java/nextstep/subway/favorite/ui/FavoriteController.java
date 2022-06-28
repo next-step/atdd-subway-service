@@ -1,6 +1,5 @@
 package nextstep.subway.favorite.ui;
 
-import jdk.internal.net.http.common.Log;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;

@@ -30,11 +30,11 @@ public class JgraphPathFinder implements PathFinder {
 
     private StationPath toStationPath(final Station start, final Station destination) {
         final GraphPath<Station, SectionWeightedEdge> path = new DijkstraShortestPath<>(graph).getPath(start, destination);
-        final Integer charge = getCharge(path.getEdgeList());
-        return StationPath.of(path.getVertexList(), path.getWeight(), charge);
+        final Integer extraCharge = getExtraCharge(path.getEdgeList());
+        return StationPath.of(path.getVertexList(), path.getWeight(), extraCharge);
     }
 
-    private Integer getCharge(final List<SectionWeightedEdge> sectionEdge) {
+    private Integer getExtraCharge(final List<SectionWeightedEdge> sectionEdge) {
         return sectionEdge.stream()
                 .map(SectionWeightedEdge::getSection)
                 .map(Section::getLine)
