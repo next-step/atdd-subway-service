@@ -44,7 +44,7 @@ class FareTest {
     void calculate_일반요금() {
         //given
         Path path = new Path(Arrays.asList(뚝섬유원지역, 건대역, 구의역), 32);
-        int fare = 1_250 + calculateOverFare(32) + 칠호선.getSurcharge();
+        int fare = 1_250 + 600 + 칠호선.getSurcharge();
 
         //when
         Fare 요금 = new Fare(Arrays.asList(뚝유_건대, 건대_구의), path, PathAcceptanceTest.ALL_AGE);
@@ -57,7 +57,7 @@ class FareTest {
     void calculate_무료요금() {
         //given
         Path path = new Path(Arrays.asList(뚝섬유원지역, 건대역, 구의역), 32);
-        int fare = 1_250 + calculateOverFare(32) + 칠호선.getSurcharge();
+        int fare = 1_250 + 600 + 칠호선.getSurcharge();
 
         //when
         Fare 요금 = new Fare(Arrays.asList(뚝유_건대, 건대_구의), path, PathAcceptanceTest.FREE_AGE);
@@ -70,7 +70,7 @@ class FareTest {
     void calculate_아동요금() {
         //given
         Path path = new Path(Arrays.asList(뚝섬유원지역, 건대역, 구의역), 32);
-        int fare = 1_250 + calculateOverFare(32) + 칠호선.getSurcharge();
+        int fare = 1_250 + 600 + 칠호선.getSurcharge();
 
         //when
         Fare 요금 = new Fare(Arrays.asList(뚝유_건대, 건대_구의), path, PathAcceptanceTest.CHILDREN_AGE);
@@ -83,7 +83,7 @@ class FareTest {
     void calculate_청소년요금() {
         //given
         Path path = new Path(Arrays.asList(뚝섬유원지역, 건대역, 구의역), 32);
-        int fare = 1_250 + calculateOverFare(32) + 칠호선.getSurcharge();
+        int fare = 1_250 + 600 + 칠호선.getSurcharge();
 
         //when
         Fare 요금 = new Fare(Arrays.asList(뚝유_건대, 건대_구의), path, PathAcceptanceTest.TEENAGER_AGE);
@@ -96,7 +96,7 @@ class FareTest {
     void calculate_요금_50km이상() {
         //given
         Path path = new Path(Arrays.asList(뚝섬유원지역, 건대역, 구의역, 강변역), 62);
-        int fare = 1_250 + calculateOverFare(62) + 칠호선.getSurcharge();
+        int fare = 1_250 + 700 + 칠호선.getSurcharge();
 
         //when
         Fare 요금 = new Fare(Arrays.asList(뚝유_건대, 건대_구의), path, PathAcceptanceTest.ALL_AGE);
@@ -109,7 +109,7 @@ class FareTest {
     void calculate_요금_10km이상_50km이하() {
         //given
         Path path = new Path(Arrays.asList(뚝섬유원지역, 건대역, 구의역, 강변역), 22);
-        int fare = 1_250 + calculateOverFare(22) + 칠호선.getSurcharge();
+        int fare = 1_250 + 400 + 칠호선.getSurcharge();
 
         //when
         Fare 요금 = new Fare(Arrays.asList(뚝유_건대, 건대_구의), path, PathAcceptanceTest.ALL_AGE);
@@ -122,22 +122,12 @@ class FareTest {
     void calculate_일반요금_10km이하() {
         //given
         Path path = new Path(Arrays.asList(뚝섬유원지역, 건대역, 구의역, 강변역), 8);
-        int fare = 1_250 + calculateOverFare(8) + 칠호선.getSurcharge();
+        int fare = 1_250 + 0 + 칠호선.getSurcharge();
 
         //when
         Fare 요금 = new Fare(Arrays.asList(뚝유_건대, 건대_구의), path, PathAcceptanceTest.ALL_AGE);
 
         //then
         assertThat(요금.getFare()).isEqualTo(AgeFarePolicy.ALL.getOperator().apply(fare).intValue());
-    }
-
-    private static int calculateOverFare(int distance) {
-        if (distance >= 50) {
-            return (int) (Math.floor(distance / 8.0) * 100);
-        }
-        if (distance > 10 && distance < 50) {
-            return (int) (Math.floor(distance / 5.0) * 100);
-        }
-        return 0;
     }
 }
