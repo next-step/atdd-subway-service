@@ -2,27 +2,8 @@ package nextstep.subway.auth.domain;
 
 import nextstep.subway.path.domain.AgeFarePolicy;
 
-public class LoginMember implements AuthMember {
-    private Long id;
-    private String email;
-    private Integer age;
-
-    public LoginMember() {
-    }
-
-    public LoginMember(Long id, String email, Integer age) {
-        this.id = id;
-        this.email = email;
-        this.age = age;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
+public class GuestMember implements AuthMember {
+    private final Integer age = AgeFarePolicy.TEENAGER_MAX_AGE.value() + 1;
 
     @Override
     public Integer getAge() {
