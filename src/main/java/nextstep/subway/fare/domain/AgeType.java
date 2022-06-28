@@ -7,8 +7,6 @@ import nextstep.subway.fare.policy.NoneDiscountPolicy;
 import nextstep.subway.fare.policy.TeenagersDiscountPolicy;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public enum AgeType {
     BASIC(19, 65, new NoneDiscountPolicy()),
@@ -37,9 +35,6 @@ public enum AgeType {
     }
 
     private boolean isAgeRange(int age) {
-        return IntStream.range(minAge, maxAge)
-                .boxed()
-                .collect(Collectors.toList())
-                .contains(age);
+        return minAge <= age && age < maxAge;
     }
 }
