@@ -2,6 +2,8 @@ package nextstep.subway.path.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.auth.domain.AuthMember;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.SubwayGraph;
 import nextstep.subway.path.dto.PathResponse;
@@ -20,10 +22,11 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findShortestPath(final Long sourceStationId, final Long targetStationId) {
+    public PathResponse findShortestPathResponse(final AuthMember authMember, final Long sourceStationId, final Long targetStationId) {
         final SubwayGraph subwayGraph = getSubwayGraph();
         final Path path = findShortestPathBySubwayGraph(subwayGraph, sourceStationId, targetStationId);
-        return PathResponse.of(getPathStationResponses(path), path.getDistance());
+        final Fare fare = new Fare(path, authMember);
+        return PathResponse.of(getPathStationResponses(path), path.getDistance(), fare.getFare());
     }
 
     private SubwayGraph getSubwayGraph() {

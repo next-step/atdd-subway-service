@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -148,10 +149,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 경로_조회_요청(final long sourceId, final long targetId, final String token) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(token)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+        RequestSpecification given = RestAssured.given().log().all().accept(MediaType.APPLICATION_JSON_VALUE);
+        if (null != token) {
+            given = given.auth().oauth2(token);
+        }
+        return given
                 .queryParam("source", sourceId)
                 .queryParam("target", targetId)
                 .when().get("/paths")
