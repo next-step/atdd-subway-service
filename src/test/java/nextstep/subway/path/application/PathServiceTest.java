@@ -47,8 +47,7 @@ class PathServiceTest {
         선릉역 = new Station(1L, "선릉역");
         정자역 = new Station(2L, "정자역");
         수원역 = new Station(3L, "수원역");
-        분당선 = new Line(1L, "분당선", "bg-yellow-400", 1000);
-        분당선.addLineStation(new Section(분당선, 선릉역, 정자역, 40));
+        분당선 = new Line("분당선", "bg-yellow-400", 선릉역, 정자역, 40, 1000);
         분당선.addLineStation(new Section(분당선, 정자역, 수원역, 15));
     }
 

@@ -47,9 +47,6 @@ class PathFareTest {
 
     @BeforeEach
     void beforeEach() {
-        이호선 = new Line(1L, "이호선", "green", 0);
-        사호선 = new Line(2L, "사호선", "sky", 1000);
-
         서울대입구역 = new Station(1L, "서울대입구역");
         낙성대역 = new Station(2L, "낙성대역");
         사당역 = new Station(3L, "사당역");
@@ -57,6 +54,9 @@ class PathFareTest {
         교대역 = new Station(5L, "교대역");
         이수역 = new Station(6L, "이수역");
         동작역 = new Station(7L, "동작역");
+
+        이호선 = new Line("이호선", "green", 서울대입구역, 낙성대역, 15, 0);
+        사호선 = new Line("사호선", "sky", 교대역, 이수역, 15, 1000);
 
         서울대입구역_낙성대역 = new Section(이호선, 서울대입구역, 낙성대역, 15);
         낙성대역_사당역 = new Section(이호선, 낙성대역, 사당역, 15);
@@ -115,7 +115,6 @@ class PathFareTest {
         단일_지하철_구간.add(낙성대역_사당역);
         단일_지하철_구간.add(사당역_방배역);
 
-        이호선.addLineStation(서울대입구역_낙성대역);
         이호선.addLineStation(낙성대역_사당역);
         이호선.addLineStation(사당역_방배역);
 
@@ -128,7 +127,6 @@ class PathFareTest {
         다중_지하철_구간.add(이수역_동작역);
 
         사호선.addLineStation(방배역_교대역);
-        사호선.addLineStation(교대역_이수역);
         사호선.addLineStation(이수역_동작역);
 
         다중_그래프_간선.addAll(new PathMap().createMap(Arrays.asList(사호선)).edgeSet());

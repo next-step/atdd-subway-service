@@ -48,16 +48,14 @@ class PathFinderTest {
         강릉역 = new Station(5L, "강릉역");
         경주역 = new Station(6L, "경주역");
         포항역 = new Station(7L, "포항역");
-        분당선 = new Line("분당선", "bg-yellow-400");
-        강릉선 = new Line("강릉선", "bg-blue-600");
-        당릉선 = new Line("당릉선", "bg-blue-600");
-        동해선 = new Line("동해선", "bg-white-400");
-        분당선.addLineStation(new Section(분당선, 선릉역, 정자역, 40));
+
+        분당선 = new Line("분당선", "bg-yellow-400", 선릉역, 정자역, 40);
+        강릉선 = new Line("강릉선", "bg-blue-600", 정자역, 춘천역, 40);
+        당릉선 = new Line("당릉선", "bg-blue-600", 수원역, 춘천역, 10);
+        동해선 = new Line("동해선", "bg-white-400", 경주역, 포항역, 20);
+
         분당선.addLineStation(new Section(분당선, 정자역, 수원역, 10));
-        강릉선.addLineStation(new Section(강릉선, 정자역, 춘천역, 40));
         강릉선.addLineStation(new Section(강릉선, 춘천역, 강릉역, 20));
-        당릉선.addLineStation(new Section(당릉선, 수원역, 춘천역, 10));
-        동해선.addLineStation(new Section(동해선, 경주역, 포항역, 20));
     }
 
     @Test

@@ -24,29 +24,25 @@ public class Line extends BaseEntity {
     public Line() {
     }
 
-    public Line(Long id, String name, String color, int surcharge) {
+    public Line(Long id, String name, String color, Station upStation, Station downStation, int distance, int surcharge) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.surcharge = surcharge;
+        sections.addSection(new Section(this, upStation, downStation, distance));
     }
 
     public Line(String name, String color) {
-        this(null, name, color, 500);
+        this.name = name;
+        this.color = color;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
-        this.surcharge = 0;
-        sections.addSection(new Section(this, upStation, downStation, distance));
+        this(name, color, upStation, downStation, distance, 0);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance, int surcharge) {
-        this.name = name;
-        this.color = color;
-        this.surcharge = surcharge;
-        sections.addSection(new Section(this, upStation, downStation, distance));
+        this(null, name, color, upStation, downStation, distance, surcharge);
     }
 
     public void update(Line line) {
