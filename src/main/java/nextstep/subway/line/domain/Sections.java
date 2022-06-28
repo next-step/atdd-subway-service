@@ -98,23 +98,23 @@ public class Sections {
     public void remove(Station station) {
         validateRemoveStation(station);
 
-        Optional<Section> upLineStation = elements.stream()
+        Optional<Section> upSection = elements.stream()
             .filter(it -> it.getUpStation() == station)
             .findFirst();
-        Optional<Section> downLineStation = elements.stream()
+        Optional<Section> downSection = elements.stream()
             .filter(it -> it.getDownStation() == station)
             .findFirst();
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            addSwapSection(downLineStation.get(), upLineStation.get());
+        if (upSection.isPresent() && downSection.isPresent()) {
+            addSwapSection(downSection.get(), upSection.get());
         }
 
-        upLineStation.ifPresent(it -> elements.remove(it));
-        downLineStation.ifPresent(it -> elements.remove(it));
+        upSection.ifPresent(it -> elements.remove(it));
+        downSection.ifPresent(it -> elements.remove(it));
     }
 
-    private void addSwapSection(Section currentSection, Section targetSection) {
-        Section section = currentSection.swapDownStationToTargetDownStation(targetSection);
+    private void addSwapSection(Section upSection, Section targetSection) {
+        Section section = upSection.swapDownStationToTargetDownStation(targetSection);
         elements.add(section);
     }
 
