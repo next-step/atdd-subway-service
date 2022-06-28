@@ -146,7 +146,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
 
     public static void 지하철_노선에_지하철역_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
@@ -162,7 +162,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(@org.jetbrains.annotations.NotNull LineResponse line, StationResponse station) {
         return RestAssured
                 .given().log().all()
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
@@ -171,7 +171,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 지하철_구간이_반영된_역_목록이_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
