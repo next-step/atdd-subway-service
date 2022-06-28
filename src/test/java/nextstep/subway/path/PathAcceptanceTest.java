@@ -8,7 +8,6 @@ import nextstep.subway.line.LineAcceptanceTest;
 import nextstep.subway.line.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선, 이호선, 삼호선;
     private StationResponse 강남역, 양재역, 교대역, 남부터미널역;
-    private PathRequest 경로검색;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -48,8 +46,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
-
-        경로검색 = new PathRequest(교대역.getId(), 양재역.getId());
     }
 
 
@@ -57,19 +53,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPath() {
         //when
-        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(경로검색);
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(교대역, 양재역);
 
         //then
         지하철_최단_경로_요청_성공(response);
     }
 
 
-    public static ExtractableResponse<Response> 지하철_최단_경로_조회_요청(PathRequest params) {
+    public static ExtractableResponse<Response> 지하철_최단_경로_조회_요청(StationResponse source, StationResponse target) {
         return RestAssured
                 .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().get("/paths")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={source}&target={target}", source.getId(), target.getId())
                 .then().log().all()
                 .extract();
     }
