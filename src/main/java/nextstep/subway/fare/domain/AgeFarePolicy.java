@@ -9,6 +9,7 @@ public enum AgeFarePolicy {
     TEENAGER(13, 19, fare -> (fare - 350) * 8 / 10),
     ADULT(20, Integer.MAX_VALUE, fare -> fare);
 
+
     private final int beginAge;
     private final int endAge;
     private final Function<Integer, Integer> discount;

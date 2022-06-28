@@ -68,6 +68,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(최단거리_조회됨.getStations()).hasSize(3);
         assertThat(최단거리_조회됨.getDistance()).isEqualTo(20);
+        // 비회원(1,250 + 노선 추가요금(신분당선) 1,000 + 거리(20km) 추가요금 200
+        assertThat(최단거리_조회됨.getFare()).isEqualTo(2450);
     }
 
 

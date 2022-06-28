@@ -11,13 +11,16 @@ public class Fare {
         this.value = value;
     }
 
-    public static Fare of(final LoginMember loginMember, final int extraCharge, final int distance) {
-        final int distanceExtraCharge = DistanceFarePolicy.ofExtraCharge(distance);
-        final int totalCharge = DEFAULT_FARE + extraCharge + distanceExtraCharge;
+    public static Fare of(final LoginMember loginMember, final int lineExtraCharge, final int distance) {
+        final int totalCharge = totalCharge(lineExtraCharge, distance);
         if (isNonMember(loginMember)) {
             return new Fare(totalCharge);
         }
         return new Fare(AgeFarePolicy.ofDiscount(loginMember.getAge(), totalCharge));
+    }
+
+    private static int totalCharge(final int extraCharge, final int distance) {
+        return DEFAULT_FARE + extraCharge + DistanceFarePolicy.ofExtraCharge(distance);
     }
 
     private static boolean isNonMember(final LoginMember loginMember) {

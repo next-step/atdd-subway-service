@@ -4,9 +4,15 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 public enum DistanceFarePolicy {
-    FIFTY_KM(51, (distance) -> calculateFiFtyOverFare(distance - 50) + calculateTenOverFare(40)),
-    TEN_KM(11, (distance) -> calculateTenOverFare(distance - 10)),
+    HIGH_DISTANCE_KM(51, DistanceFarePolicy::calculateHighDistanceOverFare),
+    MIDDLE_DISTANCE_KM(11, DistanceFarePolicy::calculateMiddleDistanceOverFare),
     DEFAULT_KM(0, (distance) -> 0);
+
+    private static final int AMOUNT_PER_KM = 100;
+    private static final int HIGH_ADD_PER_KM = 8;
+    private static final int HIGH_EXCEPT_KM = 50;
+    private static final int MIDDLE_ADD_PER_KM = 5;
+    private static final int MIDDLE_EXCEPT_KM = 10;
 
     private final int km;
     private final Function<Integer, Integer> discount;
@@ -32,13 +38,14 @@ public enum DistanceFarePolicy {
         return discount.apply(distance);
     }
 
-
-    private static int calculateFiFtyOverFare(final int distance) {
-        return distance / 8 * 100;
+    private static int calculateHighDistanceOverFare(final int distance) {
+        final int calculateDistance =  distance - HIGH_EXCEPT_KM;
+        return (int) ((Math.ceil((calculateDistance - 1) / HIGH_ADD_PER_KM) + 1) * AMOUNT_PER_KM) + calculateMiddleDistanceOverFare(HIGH_EXCEPT_KM);
     }
 
-    private static int calculateTenOverFare(final int distance) {
-        return distance / 5 * 100;
+    private static int calculateMiddleDistanceOverFare(final int distance) {
+        final int calculateDistance = distance - MIDDLE_EXCEPT_KM;
+        return (int) ((Math.ceil((calculateDistance - 1) / MIDDLE_ADD_PER_KM) + 1) * AMOUNT_PER_KM);
     }
 
 }

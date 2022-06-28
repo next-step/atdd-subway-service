@@ -31,6 +31,6 @@ public class DistanceFarePolicyTest {
         // when
         final int extraCharge = DistanceFarePolicy.ofExtraCharge(60);
         // then
-        assertThat(extraCharge).isEqualTo(900);
+        assertThat(extraCharge).isEqualTo(1000);
     }
 }
