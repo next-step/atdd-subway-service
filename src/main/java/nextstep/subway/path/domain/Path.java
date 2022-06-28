@@ -1,13 +1,13 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Path {
     private List<Station> stations;

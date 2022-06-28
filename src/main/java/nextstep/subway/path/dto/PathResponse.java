@@ -1,6 +1,5 @@
 package nextstep.subway.path.dto;
 
-import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
