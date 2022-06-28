@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -76,10 +77,11 @@ public class Favorite {
     }
 
     private boolean isEmptyMember(Member member) {
-        return member == null;
+        return Objects.isNull(member);
+
     }
 
     private boolean isEmptyStation(Station station) {
-        return station == null;
+        return Objects.isNull(station);
     }
 }
