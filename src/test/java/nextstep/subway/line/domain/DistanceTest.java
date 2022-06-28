@@ -38,6 +38,49 @@ class DistanceTest {
     }
 
     @Test
+    @DisplayName("거리를 뺀 거리를 구함")
+    void minusObject() {
+        Distance distance = Distance.of(4);
+        Distance sub = Distance.of(2);
+
+        Distance result = distance.subDistance(sub);
+
+        assertThat(result.value()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("거리를 나눈 값")
+    void rateObject() {
+        Distance distance = Distance.of(4);
+        Distance target = Distance.of(2);
+
+        int result = distance.rateDistance(target);
+
+        assertThat(result).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("거리를 나눈 값 나머지가 발생시 1을 더한다")
+    void rateObject2() {
+        Distance distance = Distance.of(4);
+        Distance target = Distance.of(3);
+
+        int result = distance.rateDistance(target);
+
+        assertThat(result).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("거리를 나눈 값이 Null 이면 안됨")
+    void rateIsNotNullObject() {
+        Distance distance = Distance.of(4);
+
+        assertThatIllegalArgumentException().isThrownBy(() ->
+                distance.rateDistance(null)
+        );
+    }
+
+    @Test
     @DisplayName("거리들의 합인 거리를 구한다")
     void sumDistance() {
         assertThat(Distance.sumDistance(Distance.of(4), Distance.of(7)).value()).isEqualTo(11);

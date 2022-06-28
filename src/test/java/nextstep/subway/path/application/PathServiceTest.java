@@ -1,8 +1,7 @@
 package nextstep.subway.path.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +18,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
@@ -35,6 +36,16 @@ class PathServiceTest {
     Station 동인천역;
     Station 주안역;
 
+    @Mock
+    SectionRepository sectionRepository;
+
+    @Mock
+    StationRepository stationRepository;
+
+    @InjectMocks
+    PathService pathService;
+
+
     @BeforeEach
     void setUp() {
 
@@ -45,30 +56,63 @@ class PathServiceTest {
         인천역 = new Station("인천역");
         동인천역 = new Station("동인천역");
         주안역 = new Station("주안역");
+        // --  판교 - 주안 - 성남 - 광교
+        신분당선 = new Line("신분당선", "레드", 판교역, 성남역, 40);
+        신분당선.addSection(new Section(신분당선, 판교역, 주안역, 22));
+        신분당선.addSection(new Section(신분당선, 성남역, 광교역, 22));
+        신분당선.addSection(new Section(신분당선, 광교역, 동인천역, 16));
 
-        신분당선 = new Line("신분당선", "레드", 판교역, 성남역, 5);
-        일호선 = new Line("일호선", "블루", 인천역, 동인천역, 5);
-        신분당선.addSection(new Section(신분당선, 판교역, 주안역, 2));
-        일호선.addSection(new Section(일호선, 동인천역, 주안역, 10));
+        // -- 인천 - 판교 -- 동인천  -- 광교
+        일호선 = new Line("일호선", "블루", 인천역, 판교역, 33);
+        일호선.addSection(new Section(일호선, 판교역, 동인천역, 31));
+        일호선.addSection(new Section(일호선, 동인천역, 광교역, 31));
+        일호선.addSection(new Section(일호선, 광교역, 주안역, 10));
 
     }
 
     @Test
-    @DisplayName("최적 경로 찾기")
-    void findShortPath() {
-        SectionRepository sectionRepository = mock(SectionRepository.class);
-        StationRepository stationRepository = mock(StationRepository.class);
-
-        PathService pathService = new PathService(sectionRepository, stationRepository);
+    @DisplayName("최적 경로 찾기 - 장거리 금액")
+    void findShortPathLongDistance() {
         PathRequest pathRequest = new PathRequest(1L, 2L);
 
-        when(sectionRepository.findAll()).thenReturn(stubSections());
-        when(stationRepository.getById(pathRequest.getSource())).thenReturn(판교역);
-        when(stationRepository.getById(pathRequest.getTarget())).thenReturn(주안역);
+        given(sectionRepository.findAll()).willReturn(stubSections());
+        given(stationRepository.getById(pathRequest.getSource())).willReturn(판교역);
+        given(stationRepository.getById(pathRequest.getTarget())).willReturn(광교역);
 
-        final PathResponse shortPath = pathService.findShortPath(new PathRequest(1L, 2L));
+        final PathResponse pathResponse = pathService.findShortPath(new PathRequest(1L, 2L));
 
-        assertThat(shortPath.getStations()).containsExactly(StationResponse.of(판교역), StationResponse.of(주안역));
+        assertThat(pathResponse.getStations()).containsExactly(StationResponse.of(판교역), StationResponse.of(동인천역), StationResponse.of(광교역));
+        assertThat(pathResponse.getFare()).isEqualTo(2_250);
+    }
+
+    @Test
+    @DisplayName("최적 경로 찾기 - 초과 거리 금액")
+    void findShortPathMidDistance() {
+        PathRequest pathRequest = new PathRequest(1L, 2L);
+
+        given(sectionRepository.findAll()).willReturn(stubSections());
+        given(stationRepository.getById(pathRequest.getSource())).willReturn(광교역);
+        given(stationRepository.getById(pathRequest.getTarget())).willReturn(동인천역);
+
+        final PathResponse pathResponse = pathService.findShortPath(new PathRequest(1L, 2L));
+
+        assertThat(pathResponse.getStations()).containsExactly(StationResponse.of(광교역), StationResponse.of(동인천역));
+        assertThat(pathResponse.getFare()).isEqualTo(1_450);
+    }
+
+    @Test
+    @DisplayName("최적 경로 찾기 - 디폴트 금액")
+    void findShortPathDefaltDistance() {
+        PathRequest pathRequest = new PathRequest(1L, 2L);
+
+        given(sectionRepository.findAll()).willReturn(stubSections());
+        given(stationRepository.getById(pathRequest.getSource())).willReturn(광교역);
+        given(stationRepository.getById(pathRequest.getTarget())).willReturn(주안역);
+
+        final PathResponse pathResponse = pathService.findShortPath(new PathRequest(1L, 2L));
+
+        assertThat(pathResponse.getStations()).containsExactly(StationResponse.of(광교역), StationResponse.of(주안역));
+        assertThat(pathResponse.getFare()).isEqualTo(1_250);
     }
 
     private List<Section> stubSections() {
