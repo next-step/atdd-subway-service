@@ -22,12 +22,12 @@ public class Path {
         return new Path(vertexList, weight);
     }
 
-    public int getLineExtraFare(List<Section> sections) {
+    public int getLineExtraFare(Sections sections) {
         Set<Integer> maxExtraSet = new HashSet<>();
 
         for(int i = 0; i < stations.size() - 1; i++) {
             int index = i;
-            maxExtraSet.add(Sections.findAllSurcharges(sections, stations.get(index), stations.get(index + 1)));
+            maxExtraSet.add(sections.findAllSurcharges(stations.get(index), stations.get(index + 1)));
         }
 
         return maxExtraSet.stream()

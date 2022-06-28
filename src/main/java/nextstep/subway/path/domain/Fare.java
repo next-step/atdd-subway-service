@@ -1,27 +1,25 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.line.domain.Section;
-
-import java.util.List;
+import nextstep.subway.line.domain.Sections;
 
 public class Fare {
     private int fare = 1_250;
 
-    public Fare(List<Section> sections, Path path, int age) {
+    public Fare(Sections sections, Path path, int age) {
         calculate(sections, path, age);
     }
 
-    public static Fare of(List<Section> sections, Path path, int age) {
+    public static Fare of(Sections sections, Path path, int age) {
         return new Fare(sections, path, age);
     }
 
-    public void calculate(List<Section> sections, Path path, int age) {
+    private void calculate(Sections sections, Path path, int age) {
         calculateLineExtraFare(sections, path);
         calculateOverFare(path.getDistance());
         calculateAgePolicy(age);
     }
 
-    private void calculateLineExtraFare(List<Section> sections, Path path) {
+    private void calculateLineExtraFare(Sections sections, Path path) {
         this.fare += path.getLineExtraFare(sections);
     }
 

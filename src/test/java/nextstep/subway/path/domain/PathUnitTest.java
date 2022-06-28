@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +42,6 @@ public class PathUnitTest {
     void getLineExtraFare() {
         Path path = new Path(Arrays.asList(뚝섬유원지역, 건대역, 구의역), 20);
         
-        assertThat(path.getLineExtraFare(Arrays.asList(뚝유_건대, 건대_구의))).isEqualTo(500);
+        assertThat(path.getLineExtraFare(new Sections(Arrays.asList(뚝유_건대, 건대_구의)))).isEqualTo(500);
     }
 }
