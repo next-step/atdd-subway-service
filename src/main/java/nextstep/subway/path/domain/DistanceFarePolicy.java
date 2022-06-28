@@ -8,6 +8,7 @@ public enum DistanceFarePolicy {
     DISTANCE_UNIT_AFTER_FIFTY(8),
 
     EXTRA_CHARGE_BY_DISTANCE_UNIT(100),
+    EXTRA_CHARGE_FROM_TEN_TO_FIFTY(800),
     ;
 
     private int value;

@@ -13,10 +13,24 @@ public class Path {
     public Path() {
     }
 
+    public Path(Set<Line> lines, Integer distance) {
+        this.lines = lines;
+        this.distance = distance;
+    }
+
     public Path(final List<Station> stations, final Set<Line> lines, final Integer distance) {
         this.stations = stations;
         this.lines = lines;
         this.distance = distance;
+    }
+
+    public boolean isLongerThanTenAndLessThanFiftyKilometers() {
+        return distance > DistanceFarePolicy.DISTANCE_THRESHOLD_AFTER_TEN.value()
+                && distance <= DistanceFarePolicy.DISTANCE_THRESHOLD_AFTER_FIFTY.value();
+    }
+
+    public boolean isLongerThanFiftyKilometers() {
+        return distance > DistanceFarePolicy.DISTANCE_THRESHOLD_AFTER_FIFTY.value();
     }
 
     public List<Station> getStations() {

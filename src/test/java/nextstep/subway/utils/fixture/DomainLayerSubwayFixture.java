@@ -15,6 +15,8 @@ public class DomainLayerSubwayFixture {
     public final Line 이호선 = new Line(2L, "이호선", "green");
     public final Line 삼호선 = new Line(3L, "삼호선", "orange");
     public final Line 구호선 = new Line(4L, "구호선", "brown");
+    public final Line 추가요금_노선 = new Line(5L, "추가요금 노선", "black", 900);
+
     public final int 강남역_양재역_간_거리 = 20;
     public final int 교대역_강남역_간_거리 = 10;
     public final int 교대역_남부터미널역_간_거리 = 10;
