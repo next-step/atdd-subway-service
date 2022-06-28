@@ -2,7 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.auth.domain.AuthMember;
 import nextstep.subway.fare.domain.AgeType;
-import nextstep.subway.fare.domain.DistanceType;
+import nextstep.subway.fare.domain.DistanceFare;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.fare.policy.DiscountPolicy;
 import nextstep.subway.line.domain.Line;
@@ -26,9 +26,9 @@ public class Path {
     }
 
     public Fare calculateFare(AuthMember authMember) {
-        int calculateFare = DistanceType.distanceExtraFare(this.distance) + findLineExtraFare();
+        int calculateFare = DistanceFare.calculateDistanceFare(this.distance) + findLineExtraFare();
         DiscountPolicy discountPolicy = AgeType.getDiscountPolicy(authMember);
-        return Fare.from(discountPolicy.discount(calculateFare));
+        return discountPolicy.discount(calculateFare);
     }
 
     private int findLineExtraFare() {
