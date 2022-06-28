@@ -1,0 +1,17 @@
+package nextstep.subway.path.domain.policy;
+
+import java.util.function.Function;
+
+public class ChildrenFarePolicy implements FarePolicy {
+    public static final Function<Integer, Integer> CHILDREN_DISCOUNT = fare -> (int)(Math.ceil((fare - 350) / 2.0));
+
+    @Override
+    public int discount(int fare) {
+        int resultFare = CHILDREN_DISCOUNT.apply(fare);
+
+        if(validFare.test(resultFare)) {
+            throw new IllegalArgumentException(FARE_INVALID_MSG);
+        }
+        return resultFare;
+    }
+}

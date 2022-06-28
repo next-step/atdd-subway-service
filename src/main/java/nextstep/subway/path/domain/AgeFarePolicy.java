@@ -1,36 +1,37 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.path.domain.policy.*;
+
 import java.util.Arrays;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public enum AgeFarePolicy {
-    ALL(value -> value, age -> (age >= 19 && age < 65) || age == 0),
-    TEENAGER(value -> (int)(Math.ceil((value - 350) * 4 / 5.0)), age -> age >= 13 && age < 19),
-    CHILDREN(value -> (int)(Math.ceil((value - 350) / 2.0)), age -> age >= 6 && age < 13),
-    FREE(value -> 0, age -> (age > 0 && age < 6) || age >= 65);
+    ALL(age -> (age >= 19 && age < 65) || age == 0, new AllFarePolicy()),
+    TEENAGER(age -> age >= 13 && age < 19, new TeenagerFarePolicy()),
+    CHILDREN(age -> age >= 6 && age < 13, new ChildrenFarePolicy()),
+    FREE(age -> (age > 0 && age < 6) || age >= 65, new FreeFarePolicy());
 
-    private Function<Integer, Integer> operator;
     private Predicate<Integer> agePredicate;
+    private FarePolicy farePolicy;
 
-    AgeFarePolicy(Function<Integer, Integer> operator, Predicate<Integer> agePredicate) {
-        this.operator = operator;
+    AgeFarePolicy(Predicate<Integer> agePredicate, FarePolicy farePolicy) {
         this.agePredicate = agePredicate;
+        this.farePolicy = farePolicy;
     }
 
-    public static int calculate(int fare, int age) {
-        return Arrays.stream(AgeFarePolicy.values())
-                .filter(ageFarePolicy -> ageFarePolicy.agePredicate.test(age))
-                .findFirst()
-                .map(ageFarePolicy -> ageFarePolicy.operator.apply(fare))
-                .orElseThrow(RuntimeException::new);
-    }
-
-    public Function<Integer, Integer> getOperator() {
-        return operator;
+    public static FarePolicy findAgeFarePolicy(int age) {
+        return  Arrays.stream(AgeFarePolicy.values())
+                    .filter(ageFarePolicy -> ageFarePolicy.agePredicate.test(age))
+                    .map(AgeFarePolicy::getFarePolicy)
+                    .findFirst()
+                    .orElseThrow(IllegalArgumentException::new);
     }
 
     public Predicate<Integer> getAgePredicate() {
         return agePredicate;
+    }
+
+    public FarePolicy getFarePolicy() {
+        return farePolicy;
     }
 }
