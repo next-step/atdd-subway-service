@@ -31,18 +31,18 @@ public class FavoriteService {
         Member member = memberService.findMemberOrThrow(loginMember.getId());
         Station sourceStation = stationService.findStationById(favoriteRequest.getSource());
         Station targetStation = stationService.findStationById(favoriteRequest.getTarget());
-        Favorite favorite = favoriteRepository.save(new Favorite(member, sourceStation, targetStation));
+        Favorite favorite = favoriteRepository.save(new Favorite(member.getId(), sourceStation, targetStation));
         return favorite;
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         Member member = memberService.findMemberOrThrow(loginMember.getId());
-        List<Favorite> favorites = favoriteRepository.findAllByMember(member);
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
         return FavoriteResponse.of(favorites);
     }
 
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Member member = memberService.findMemberOrThrow(loginMember.getId());
-        favoriteRepository.deleteByMemberAndId(member, id);
+        favoriteRepository.deleteByMemberIdAndId(member.getId(), id);
     }
 }

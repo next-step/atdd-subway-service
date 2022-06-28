@@ -21,6 +21,7 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional(readOnly = true)
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
@@ -36,6 +37,7 @@ public class MemberService {
     }
 
 
+    @Transactional(readOnly = true)
     public Member findMemberOrThrow(Long id) {
         return memberRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }

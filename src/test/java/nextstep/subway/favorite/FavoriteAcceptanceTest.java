@@ -5,6 +5,7 @@ import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -122,6 +123,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
 
+    /**
+     * Given 지하철역 등록되어 있음
+     * And 지하철 노선 등록되어 있음
+     * And 지하철 노선에 지하철역 등록되어 있음
+     * And 회원 등록되어 있음
+     * And 로그인을 하지 않은 상태로
+     * when 즐겨찾기 생성 요청을 하면
+     * then 요청이 실패한다.
+     */
+    @DisplayName("로그인이 안된 상태로 즐겨찾기 생성 요청을 하면 실패한다.")
+    @Test
+    public void createFavoriteWithOutLogin() {
+        //when
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청("no_exist_token", 강남역.getId(), 광교역.getId());
+        //then
+        응답에러_확인(즐겨찾기_생성_응답,HttpStatus.UNAUTHORIZED);
+    }
+
+
 
     public static void 즐겨찾기_정보_조회됨(ExtractableResponse<Response> response, StationResponse source, StationResponse target) {
         List<FavoriteResponse> favoriteResponses = response.jsonPath().getList(".", FavoriteResponse.class);
@@ -130,8 +150,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         List<StationResponse> favoriteTargets = favoriteResponses.stream().map(favoriteResponse -> favoriteResponse.getTarget()).collect(Collectors.toList());
 
-        assertThat(favoriteSources).contains(source);
-        assertThat(favoriteTargets).contains(target);
+        assertAll(() -> favoriteSources.contains(source)
+            , () -> favoriteTargets.contains(target));
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long sourceId, Long targetId) {
