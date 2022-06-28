@@ -31,8 +31,8 @@ public class LineService {
 
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line line = new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(), request.getExtraFare());
+        Line persistLine = lineRepository.save(line);
 
         return LineResponse.of(persistLine);
     }
@@ -90,7 +90,7 @@ public class LineService {
             validateDuplicatedColor(lineUpdateRequest.getColor());
         }
 
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getExtraFare()));
     }
 
     @Transactional

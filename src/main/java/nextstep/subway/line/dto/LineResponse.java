@@ -13,6 +13,7 @@ public class LineResponse {
     private String name;
     private String color;
     private List<StationResponse> stations;
+    private long extraFare;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
@@ -79,5 +80,9 @@ public class LineResponse {
 
     public LocalDateTime getModifiedDate() {
         return modifiedDate;
+    }
+
+    public long getExtraFare() {
+        return extraFare;
     }
 }
