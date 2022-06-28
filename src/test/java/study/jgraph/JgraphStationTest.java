@@ -75,14 +75,6 @@ public class JgraphStationTest {
         );
     }
 
-    private void 전체_구간_가중치_설정() {
-        그래프_정점간_가중치_설정(_9호선);
-        그래프_정점간_가중치_설정(_2호선);
-        그래프_정점간_가중치_설정(_3호선);
-        그래프_정점간_가중치_설정(분당선);
-        그래프_정점간_가중치_설정(신분당선);
-    }
-
     public void 지하철역_생성() {
         신논현역 = new Station("신논현역");
         언주역 = new Station("언주역");
@@ -126,6 +118,14 @@ public class JgraphStationTest {
         _9호선.getAllStations().forEach(it -> graph.addVertex(it));
         _2호선.getAllStations().forEach(it -> graph.addVertex(it));
         _3호선.getAllStations().forEach(it -> graph.addVertex(it));
+    }
+
+    private void 전체_구간_가중치_설정() {
+        그래프_정점간_가중치_설정(_9호선);
+        그래프_정점간_가중치_설정(_2호선);
+        그래프_정점간_가중치_설정(_3호선);
+        그래프_정점간_가중치_설정(분당선);
+        그래프_정점간_가중치_설정(신분당선);
     }
 
     private void 그래프_정점간_가중치_설정(Line 노선) {
