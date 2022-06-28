@@ -47,7 +47,7 @@ Feature: 즐겨찾기를 관리한다.
  */
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
-    private String ACCESS_TOKEN;
+    private String accessToken;
     private StationResponse 강남역;
     private StationResponse 역삼역;
     private StationResponse 삼성역;
@@ -63,7 +63,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_생성됨(registerResponse);
 
         ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
-        ACCESS_TOKEN = 로그인_성공_토큰_반환(loginResponse);
+        accessToken = 로그인_성공_토큰_반환(loginResponse);
 
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         역삼역 = StationAcceptanceTest.지하철역_등록되어_있음("역삼역").as(StationResponse.class);
@@ -73,7 +73,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("토큰이 유효하면 즐겨찾기를 생성한다")
     @Test
     void 즐겨찾기_생성_성공() {
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(ACCESS_TOKEN, 강남역.getId(), 역삼역.getId());
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 강남역.getId(), 역삼역.getId());
 
         즐겨찾기_생성_요청_성공(response);
     }
@@ -83,18 +83,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     Stream<DynamicTest> register_get_delete_Favorite() {
         return Stream.of(
                 dynamicTest("즐겨찾기를 생성한다", () -> {
-                    즐겨찾기_1 = 즐겨찾기_생성_요청(ACCESS_TOKEN, 강남역.getId(), 역삼역.getId());
+                    즐겨찾기_1 = 즐겨찾기_생성_요청(accessToken, 강남역.getId(), 역삼역.getId());
                     즐겨찾기_생성_요청_성공(즐겨찾기_1);
 
-                    즐겨찾기_2 = 즐겨찾기_생성_요청(ACCESS_TOKEN, 강남역.getId(), 삼성역.getId());
+                    즐겨찾기_2 = 즐겨찾기_생성_요청(accessToken, 강남역.getId(), 삼성역.getId());
                     즐겨찾기_생성_요청_성공(즐겨찾기_2);
                 }),
                 dynamicTest("생성된 즐겨찾기를 조회한다", () -> {
-                    ExtractableResponse<Response> response = 즐겨찾기_조회_요청(ACCESS_TOKEN);
+                    ExtractableResponse<Response> response = 즐겨찾기_조회_요청(accessToken);
                     즐겨찾기_조회_요청_성공(response);
                 }),
                 dynamicTest("생성된 즐겨찾기를 삭제한다", () -> {
-                    ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(ACCESS_TOKEN, 즐겨찾기_1);
+                    ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(accessToken, 즐겨찾기_1);
                     즐겨찾기_삭제_요청_성공(response);
                 })
         );
