@@ -26,9 +26,9 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
-        if (credentials == null) {
-            return new LoginMember();
+    public LoginMember findMemberByToken(String credentials, boolean required) {
+        if (!required && !jwtTokenProvider.validateToken(credentials)) {
+            return LoginMember.fromGuest();
         }
 
         if (!jwtTokenProvider.validateToken(credentials)) {

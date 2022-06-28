@@ -5,6 +5,10 @@ public class LoginMember {
     private String email;
     private Integer age;
 
+    public static LoginMember fromGuest() {
+        return Guest.instance;
+    }
+
     public LoginMember() {
         this.age = 0;
     }
@@ -25,5 +29,9 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    private static class Guest {
+        private static final LoginMember instance = new LoginMember();
     }
 }
