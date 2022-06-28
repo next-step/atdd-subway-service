@@ -16,27 +16,27 @@ class AgeFarePolicyTest {
     @DisplayName("청소년_할인_금액_계산")
     void calculateForTeenager() {
         int fare = AgeFarePolicy.calculate(2000, TEENAGER_AGE);
-        assertThat(fare).isEqualTo(AgeFarePolicy.TEENAGER.getOperator().apply(2000));
+        assertThat(fare).isEqualTo(1320);
     }
 
     @Test
     @DisplayName("아동_할인_금액_계산")
     void calculateForChildren() {
         int fare = AgeFarePolicy.calculate(2000, CHILDREN_AGE);
-        assertThat(fare).isEqualTo(AgeFarePolicy.CHILDREN.getOperator().apply(2000));
+        assertThat(fare).isEqualTo(825);
     }
 
     @Test
     @DisplayName("무료_대상자_할인_금액_계산")
     void calculateForFree() {
         int fare = AgeFarePolicy.calculate(2000, FREE_AGE);
-        assertThat(fare).isEqualTo(AgeFarePolicy.FREE.getOperator().apply(2000));
+        assertThat(fare).isZero();
     }
 
     @Test
     @DisplayName("일반요금_금액_계산")
     void calculateForAll() {
         int fare = AgeFarePolicy.calculate(2000, ALL_AGE);
-        assertThat(fare).isEqualTo(AgeFarePolicy.ALL.getOperator().apply(2000));
+        assertThat(fare).isEqualTo(2000);
     }
 }

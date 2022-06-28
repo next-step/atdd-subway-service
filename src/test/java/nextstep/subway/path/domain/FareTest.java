@@ -50,7 +50,7 @@ class FareTest {
         Fare 요금 = new Fare(Arrays.asList(뚝유_건대, 건대_구의), path, PathAcceptanceTest.ALL_AGE);
 
         //then
-        assertThat(요금.getFare()).isEqualTo(AgeFarePolicy.ALL.getOperator().apply(fare).intValue());
+        assertThat(요금.getFare()).isEqualTo(2350);
     }
 
     @Test
@@ -63,7 +63,7 @@ class FareTest {
         Fare 요금 = new Fare(Arrays.asList(뚝유_건대, 건대_구의), path, PathAcceptanceTest.FREE_AGE);
 
         //then
-        assertThat(요금.getFare()).isEqualTo(AgeFarePolicy.FREE.getOperator().apply(fare).intValue());
+        assertThat(요금.getFare()).isZero();
     }
 
     @Test
@@ -76,7 +76,7 @@ class FareTest {
         Fare 요금 = new Fare(Arrays.asList(뚝유_건대, 건대_구의), path, PathAcceptanceTest.CHILDREN_AGE);
 
         //then
-        assertThat(요금.getFare()).isEqualTo(AgeFarePolicy.CHILDREN.getOperator().apply(fare).intValue());
+        assertThat(요금.getFare()).isEqualTo(1000);
     }
 
     @Test
@@ -89,7 +89,7 @@ class FareTest {
         Fare 요금 = new Fare(Arrays.asList(뚝유_건대, 건대_구의), path, PathAcceptanceTest.TEENAGER_AGE);
 
         //then
-        assertThat(요금.getFare()).isEqualTo(AgeFarePolicy.TEENAGER.getOperator().apply(fare).intValue());
+        assertThat(요금.getFare()).isEqualTo(1600);
     }
 
     @Test
@@ -98,11 +98,11 @@ class FareTest {
         Path path = new Path(Arrays.asList(뚝섬유원지역, 건대역, 구의역, 강변역), 62);
         int fare = 1_250 + 700 + 칠호선.getSurcharge();
 
-        //when
+        //when`
         Fare 요금 = new Fare(Arrays.asList(뚝유_건대, 건대_구의), path, PathAcceptanceTest.ALL_AGE);
 
         //then
-        assertThat(요금.getFare()).isEqualTo(AgeFarePolicy.ALL.getOperator().apply(fare).intValue());
+        assertThat(요금.getFare()).isEqualTo(2450);
     }
 
     @Test
@@ -115,7 +115,7 @@ class FareTest {
         Fare 요금 = new Fare(Arrays.asList(뚝유_건대, 건대_구의), path, PathAcceptanceTest.ALL_AGE);
 
         //then
-        assertThat(요금.getFare()).isEqualTo(AgeFarePolicy.ALL.getOperator().apply(fare).intValue());
+        assertThat(요금.getFare()).isEqualTo(2150);
     }
 
     @Test
@@ -128,6 +128,6 @@ class FareTest {
         Fare 요금 = new Fare(Arrays.asList(뚝유_건대, 건대_구의), path, PathAcceptanceTest.ALL_AGE);
 
         //then
-        assertThat(요금.getFare()).isEqualTo(AgeFarePolicy.ALL.getOperator().apply(fare).intValue());
+        assertThat(요금.getFare()).isEqualTo(1750);
     }
 }

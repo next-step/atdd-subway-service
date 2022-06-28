@@ -94,7 +94,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         최단구간이_정상적으로_조회됨(response);
         int fare = 1_250 + calculateOverFare(13) + 삼호선.getSurcharge(); //기본요금 + 거리 추가요금 + 노선 추가요금
-        최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13, AgeFarePolicy.TEENAGER.getOperator().apply(fare).intValue());
+        최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13, 1440);
     }
 
     @Test
@@ -107,7 +107,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         최단구간이_정상적으로_조회됨(response);
         int fare = 1_250 + calculateOverFare(13) + 삼호선.getSurcharge(); //기본요금 + 거리 추가요금 + 노선 추가요금
-        최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13, AgeFarePolicy.CHILDREN.getOperator().apply(fare).intValue());
+        최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13, 900);
     }
 
     @Test
@@ -120,7 +120,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         최단구간이_정상적으로_조회됨(response);
         int fare = 1_250 + calculateOverFare(13) + 삼호선.getSurcharge(); //기본요금 + 거리 추가요금 + 노선 추가요금
-        최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13, AgeFarePolicy.FREE.getOperator().apply(fare).intValue());
+        최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13, 0);
     }
 
     @Test
@@ -133,7 +133,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         최단구간이_정상적으로_조회됨(response);
         int fare = 1_250 + calculateOverFare(13) + 삼호선.getSurcharge(); //기본요금 + 거리 추가요금 + 노선 추가요금
-        최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13, AgeFarePolicy.ALL.getOperator().apply(fare).intValue());
+        최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13, 2150);
     }
 
     @Test
@@ -144,7 +144,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         최단구간이_정상적으로_조회됨(response);
         int fare = 1_250 + calculateOverFare(13) + 삼호선.getSurcharge(); //기본요금 + 거리 추가요금 + 노선 추가요금
-        최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13, AgeFarePolicy.ALL.getOperator().apply(fare).intValue());
+        최단거리_조회_결과_확인(response, Arrays.asList(교대역, 남부터미널역, 양재역), 13, 2150);
     }
     
     @Test
