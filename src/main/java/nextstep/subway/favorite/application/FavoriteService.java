@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -48,9 +47,7 @@ public class FavoriteService {
         Member member = memberService.findById(loginMember.getId());
         List<Favorite> favorites = favoriteRepository.findAllByMember(member);
 
-        return favorites.stream()
-                .map(FavoriteResponse::of)
-                .collect(Collectors.toList());
+        return FavoriteResponse.of(favorites);
     }
 
     public void remove(LoginMember loginMember, Long id) {
