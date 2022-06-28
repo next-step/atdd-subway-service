@@ -162,7 +162,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(@org.jetbrains.annotations.NotNull LineResponse line, StationResponse station) {
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
         return RestAssured
                 .given().log().all()
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
