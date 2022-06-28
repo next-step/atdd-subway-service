@@ -1,10 +1,10 @@
 package nextstep.subway.favorite.dto;
 
 public class FavoriteRequest {
+    private final static long EMPTY_STATION = 0L;
+
     private long source;
     private long target;
-
-    private final long EMPTY_STATION = 0L;
 
     public FavoriteRequest(long source, long target) {
         valid(source, target);
@@ -12,7 +12,7 @@ public class FavoriteRequest {
         this.target = target;
     }
 
-    void valid(long source, long target) {
+    private void valid(long source, long target) {
         if (isEmptyStation(source, target)) {
             throw new IllegalArgumentException("즐겨찾기에 등록할 역은 필수 입니다.");
         }

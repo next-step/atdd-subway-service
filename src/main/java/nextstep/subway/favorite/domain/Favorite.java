@@ -17,6 +17,16 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Station source;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Station target;
+
     protected Favorite() {
 
     }
@@ -28,16 +38,6 @@ public class Favorite {
         this.source = source;
         this.target = target;
     }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Station source;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Station target;
 
     public Station getSource() {
         return source;
