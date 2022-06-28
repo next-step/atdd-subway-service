@@ -66,9 +66,8 @@ public class JgraphTest {
         graph.setEdgeWeight(graph.addEdge("v3", "v4"), 10);
 
         List<GraphPath> paths = new KShortestPaths(graph, 100).getPaths(source, target);
-        System.out.println(paths);
         assertThat(paths)
-            .hasSize(2)
+            .hasSize(1)
             .allSatisfy(it -> {
                 assertThat(it.getVertexList()).startsWith(source);
                 assertThat(it.getVertexList()).endsWith(target);
