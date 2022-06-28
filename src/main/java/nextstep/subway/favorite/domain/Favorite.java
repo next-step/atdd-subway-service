@@ -71,7 +71,7 @@ public class Favorite {
             throw new NotFoundException(ErrorMessage.STATION_NOT_FOUND);
         }
 
-        if (source == target) {
+        if (source.equals(target)) {
             throw new BadRequestException(ErrorMessage.SAME_CAN_NOT_SAME);
         }
     }
