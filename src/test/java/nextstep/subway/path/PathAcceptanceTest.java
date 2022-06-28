@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,18 +56,28 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철역_목록_포함됨(신분당선_조회_응답, Arrays.asList(신논현역, 강남역, 양재역));
     }
 
-    public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {
-        List<Long> expectedStationIds = createdResponses.stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
-
-        List<Long> resultStationIds = response.jsonPath().getList("stations", StationResponse.class).stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
-
-        assertThat(resultStationIds).containsAll(expectedStationIds);
-    }
-
+    /**
+     *  [신분당선]                           [분당선]
+     *   |                                      |
+     *   |                                     |
+     * 신논현 -  (7)  - 언주  -   (18)   -  `선정릉`  ---> [9호선]
+     *   |                                    |
+     *  (5)                                 (4)
+     *   |                                  |
+     * 강남   -    (6)   -   역삼 - (1) - 선릉  ---> [2호선]
+     *   |                                |
+     *   |                              (9)
+     *   |                              |
+     *  (12)                          한티
+     *   |                             |
+     *   |                            (6)
+     *   |                            |
+     * `양재` - (1) - 매봉 - (0.8) - 도곡  ---> [3호선]
+     *
+     * path 1: 선정릉 -> 언주 -> 신논현 -> 강남 -> 양재 : 4개역, 42
+     * path 2: 선정릉 -> 선릉 -> 한티 -> 도곡 -> 매봉 -> 양재 : 5개역, 37
+     * path 3: 선정릉 -> 선릉 -> 역삼 -> 강남 -> 양재 : 4개역, 32
+     */
     @Test
     @DisplayName("지하철 최단 경로를 조회한다.")
     public void findShortestPath() {
@@ -74,14 +85,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(선정릉역, 양재역);
 
         // Then
-        최단_경로_조회됨(response);
+        최단_경로_조회됨(response, Arrays.asList(선정릉역, 선릉역, 역삼역, 강남역, 양재역));
     }
 
     @Test
     @DisplayName("출발역과 도착역이 같은 경우, 최단 경로를 조회할 수 없다.")
     public void throwException_WhenSourceStationIsEqualToTargetStation() {
         // When
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(선정릉역, 양재역);
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(선정릉역, 선정릉역);
 
         // Then
         최단_경로_조회_실패됨(response);
@@ -90,8 +101,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우, 최단 경로를 조회할 수 없다.")
     public void throwException_WhenSourceStationAndTargetStationIsNotConnected() {
+        // Given
+        StationResponse 천호역 = StationAcceptanceTest.지하철역_등록되어_있음("천호역").as(StationResponse.class);
+
         // When
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(선정릉역, 양재역);
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(선정릉역, 천호역);
 
         // Then
         최단_경로_조회_실패됨(response);
@@ -100,8 +114,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("출발역이나 도착역이 존재하지 않는 경우, 최단 경로를 조회할 수 없다.")
     public void throwException_When() {
+        StationResponse 천호역 = new StationResponse(0L, "천호역", LocalDateTime.now(), LocalDateTime.now());
+
         // When
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(선정릉역, 양재역);
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(선정릉역, 천호역);
 
         // Then
         최단_경로_조회_실패됨(response);
@@ -116,13 +132,32 @@ public class PathAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    private void 최단_경로_조회됨(ExtractableResponse<Response> response, StationResponse... expected) {
-        List<StationResponse> actual = response.jsonPath().getList(".", StationResponse.class);
-        assertThat(actual).containsExactly(expected);
+    private void 최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expected) {
+        List<Long> actualIds = response.jsonPath()
+            .getList("stations", StationResponse.class).stream()
+            .map(it -> it.getId())
+            .collect(Collectors.toList());
+
+        List<Long> expectedIds = expected.stream()
+            .map(it -> it.getId())
+            .collect(Collectors.toList());
+        assertThat(actualIds).containsExactlyElementsOf(expectedIds);
     }
 
     private void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<StationResponse> createdResponses) {
+        List<Long> expectedStationIds = createdResponses.stream()
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
+
+        List<Long> resultStationIds = response.jsonPath().getList("stations", StationResponse.class).stream()
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
+
+        assertThat(resultStationIds).containsAll(expectedStationIds);
     }
 
     private void 지하철역_생성() {

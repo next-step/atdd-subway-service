@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.Arrays;
 import java.util.List;
 import nextstep.subway.line.dto.ShortestPathResponse;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
