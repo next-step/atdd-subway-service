@@ -134,9 +134,11 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### to-do list
 - [ ] 토큰 발급 인수 테스트 만들기
-    - [ ] AuthAcceptanceTest
-        - [ ] 로그인 케이스
-        - [ ] Bearer Auth 유효하지 않은 케이스
+    - [X] AuthAcceptanceTest
+        - [X] 로그인 케이스
+        - [X] Bearer Auth 로그인 실패 케이스
+        - [X] Bearer Auth 유효하지 않은 케이스
+    - [X] 로그인한 사용자의 정보로 반환하도록 기능 추가
 - [ ] 내 정보 조회 기능
     - [ ] MemberAcceptanceTest
   

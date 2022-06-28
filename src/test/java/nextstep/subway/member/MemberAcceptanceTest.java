@@ -74,6 +74,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 나의_정보_조회_요청(String token) {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
         String uri = response.header("Location");
         MemberRequest memberRequest = new MemberRequest(email, password, age);
@@ -105,6 +115,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(email);
         assertThat(memberResponse.getAge()).isEqualTo(age);
+    }
+
+    public static void 회원_정보_조회_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
