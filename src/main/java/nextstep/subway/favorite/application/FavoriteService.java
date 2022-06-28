@@ -51,8 +51,7 @@ public class FavoriteService {
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.getId());
         favorites.stream()
                 .filter(favorite -> favorite.isSameRoute(newFavorite))
-                .findAny()
-                .ifPresent(favorite -> {
+                .anyMatch(favorite -> {
                     throw new IllegalArgumentException(ERROR_MESSAGE_DUPLICATION);
                 });
     }
