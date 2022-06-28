@@ -3,8 +3,8 @@ package nextstep.subway.path.domain;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
-    private Station source;
-    private Station target;
+    private final Station source;
+    private final Station target;
 
     public Path(Station source, Station target) {
         this.source = source;
