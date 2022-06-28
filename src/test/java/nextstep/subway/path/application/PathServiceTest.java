@@ -79,9 +79,6 @@ class PathServiceTest {
     void getShortestPath() {
         when(stationRepository.findById(1L)).thenReturn(Optional.of(청담역));
         when(stationRepository.findById(4L)).thenReturn(Optional.of(구의역));
-        when(sectionRepository.findAll()).thenReturn(Arrays.asList(new Section(칠호선, 청담역, 뚝섬유원지역, 20),
-                                                                    new Section(칠호선, 뚝섬유원지역, 건대입구역, 5),
-                                                                    new Section(이호선, 건대입구역, 구의역, 10)));
 
         //given
         PathResponse response = pathService.getShortestPath(청담역.getId(), 구의역.getId(), 15);

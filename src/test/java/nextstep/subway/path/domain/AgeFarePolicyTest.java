@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.path.domain.policy.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,30 +14,30 @@ class AgeFarePolicyTest {
     public static final int FREE_AGE = 70;
 
     @Test
-    @DisplayName("청소년_할인_금액_계산")
-    void calculateForTeenager() {
-        int fare = AgeFarePolicy.calculate(2000, TEENAGER_AGE);
-        assertThat(fare).isEqualTo(1320);
+    @DisplayName("일반요금_나이대이면_일반_요금정책_가져온다")
+    void findAgeFarePolicyForAll() {
+        FarePolicy farePolicy = AgeFarePolicy.findAgeFarePolicy(ALL_AGE);
+        assertThat(farePolicy).isInstanceOf(AllFarePolicy.class);
     }
 
     @Test
-    @DisplayName("아동_할인_금액_계산")
-    void calculateForChildren() {
-        int fare = AgeFarePolicy.calculate(2000, CHILDREN_AGE);
-        assertThat(fare).isEqualTo(825);
+    @DisplayName("청소년_나이대이면_청소년_요금정책_가져온다")
+    void findAgeFarePolicyForTeenager() {
+        FarePolicy farePolicy = AgeFarePolicy.findAgeFarePolicy(TEENAGER_AGE);
+        assertThat(farePolicy).isInstanceOf(TeenagerFarePolicy.class);
     }
 
     @Test
-    @DisplayName("무료_대상자_할인_금액_계산")
-    void calculateForFree() {
-        int fare = AgeFarePolicy.calculate(2000, FREE_AGE);
-        assertThat(fare).isZero();
+    @DisplayName("아동_나이대이면_아동_요금정책_가져온다")
+    void findAgeFarePolicyForChildren() {
+        FarePolicy farePolicy = AgeFarePolicy.findAgeFarePolicy(CHILDREN_AGE);
+        assertThat(farePolicy).isInstanceOf(ChildrenFarePolicy.class);
     }
 
     @Test
-    @DisplayName("일반요금_금액_계산")
-    void calculateForAll() {
-        int fare = AgeFarePolicy.calculate(2000, ALL_AGE);
-        assertThat(fare).isEqualTo(2000);
+    @DisplayName("무료대상_나이대이면_무료대상_요금정책_가져온다")
+    void findAgeFarePolicyForFree() {
+        FarePolicy farePolicy = AgeFarePolicy.findAgeFarePolicy(FREE_AGE);
+        assertThat(farePolicy).isInstanceOf(FreeFarePolicy.class);
     }
 }
