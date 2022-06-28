@@ -18,22 +18,22 @@ public class DijkstraShortestPathFinder implements PathFinder {
     private static final String EQUALS_SOURCE_TARGET = "출발역과 도착역이 같으면 경로를 찾을 수 없습니다.";
     private static final String NONE_MATCH_PATH = "요청하신 경로를 찾을 수 없습니다.";
 
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private final DijkstraShortestPath<Station, SectionWeightedEdge> dijkstraShortestPath;
+    private final WeightedMultigraph<Station, SectionWeightedEdge> graph;
 
     public DijkstraShortestPathFinder(List<Line> lines) {
-        this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        this.graph = new WeightedMultigraph<>(SectionWeightedEdge.class);
         addVertexes(lines);
-        setEdgeWeight(lines);
+        addEdgeWeight(lines);
         this.dijkstraShortestPath = new DijkstraShortestPath<>(this.graph);
     }
 
     @Override
     public Path findShortestPath(Station source, Station target) {
         validateEqualsSourceAndTarget(source, target);
-        GraphPath<Station, DefaultWeightedEdge> graphPath = this.dijkstraShortestPath.getPath(source, target);
+        GraphPath<Station, SectionWeightedEdge> graphPath = this.dijkstraShortestPath.getPath(source, target);
         validateNoneMatchPath(graphPath);
-        return Path.of(graphPath.getVertexList(), (int) graphPath.getWeight());
+        return Path.of(findPathIncludeLines(graphPath), graphPath.getVertexList(), (int) graphPath.getWeight());
     }
 
     private void addVertexes(List<Line> lines) {
@@ -44,14 +44,18 @@ public class DijkstraShortestPathFinder implements PathFinder {
         allStations.forEach(this.graph::addVertex);
     }
 
-    private void setEdgeWeight(List<Line> lines) {
+    private void addEdgeWeight(List<Line> lines) {
         Set<Section> allSections = lines.stream()
                 .map(Line::getSections)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
-        allSections.forEach(section -> this.graph.setEdgeWeight(
-                this.graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance())
-        );
+        allSections.forEach(this::setEdgeWeight);
+    }
+
+    private void setEdgeWeight(Section section) {
+        SectionWeightedEdge sectionWeightedEdge = new SectionWeightedEdge(section);
+        this.graph.addEdge(section.getUpStation(), section.getDownStation(), sectionWeightedEdge);
+        this.graph.setEdgeWeight(sectionWeightedEdge, section.getDistance());
     }
 
     private void validateEqualsSourceAndTarget(Station source, Station target) {
@@ -60,9 +64,22 @@ public class DijkstraShortestPathFinder implements PathFinder {
         }
     }
 
-    private void validateNoneMatchPath(GraphPath<Station, DefaultWeightedEdge> graphPath) {
+    private void validateNoneMatchPath(GraphPath<Station, SectionWeightedEdge> graphPath) {
         if (Objects.isNull(graphPath)) {
             throw new IllegalArgumentException(NONE_MATCH_PATH);
         }
+    }
+
+    private List<Line> findPathIncludeLines(GraphPath<Station, SectionWeightedEdge> graphPath) {
+        return findPathSections(graphPath).stream()
+                .map(Section::getLine)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private List<Section> findPathSections(GraphPath<Station, SectionWeightedEdge> graphPath) {
+        return graphPath.getEdgeList().stream()
+                .map(SectionWeightedEdge::getSection)
+                .collect(Collectors.toList());
     }
 }

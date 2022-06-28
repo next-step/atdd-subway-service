@@ -43,9 +43,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 900)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10, 0)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 5, 0)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -53,6 +53,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     /**
      * When 교대역부터 양재역까지의 최단 경로를 조회하면
      * Then 최단 경로가 조회된다 (교대역 -(3)-> 남부터미널역 -(2)-> 양재역)
+     * And 총 거리가 조회된다
+     * And 지하철 이용 요금이 조회된다
      */
     @DisplayName("교대역부터 양재역까지의 최단 경로를 조회한다.")
     @Test
@@ -63,6 +65,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         지하철_최단경로_응답됨(response);
         지하철_최단경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역));
+        // and
+        지하철_최단경로_총거리_확인됨(response, 5);
+        // and
+        지하철_이용요금_조회됨(response, 1250);
     }
 
     /**
@@ -105,7 +111,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // given
         StationResponse 뚝섬유원지역 = 지하철역_등록되어_있음("뚝섬유원지역").as(StationResponse.class);
         StationResponse 건대입구역 = 지하철역_등록되어_있음("건대입구역").as(StationResponse.class);
-        지하철_노선_등록되어_있음(new LineRequest("7호선", "bg-olive-600", 뚝섬유원지역.getId(), 건대입구역.getId(), 8)).as(LineResponse.class);
+        지하철_노선_등록되어_있음(new LineRequest("7호선", "bg-olive-600", 뚝섬유원지역.getId(), 건대입구역.getId(), 8, 0)).as(LineResponse.class);
 
         // when
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(건대입구역.getId(), 강남역.getId());

@@ -27,25 +27,30 @@ class LineTest {
                 .build();
     }
 
-    @DisplayName("노선의 이름과 색상으로 지하철 노선을 생성한다.")
+    @DisplayName("노선의 이름, 색상, 추가 요금으로 지하철 노선을 생성한다.")
     @ParameterizedTest
-    @CsvSource(value = {"2호선,GREEN", "신분당선,RED"})
-    void create_line(String name, String color) {
+    @CsvSource(value = {"2호선,GREEN,0", "신분당선,RED,900"})
+    void create_line(String name, String color, int extraFare) {
         // given & when
-        Line newLine = new Line.Builder(name, color).build();
+        Line newLine = new Line.Builder(name, color)
+                .extraFare(extraFare)
+                .build();
 
         // then
         assertAll(
                 () -> assertThat(newLine.getName()).isEqualTo(name),
-                () -> assertThat(newLine.getColor()).isEqualTo(color)
+                () -> assertThat(newLine.getColor()).isEqualTo(color),
+                () -> assertThat(newLine.getExtraFare()).isEqualTo(extraFare)
         );
     }
 
-    @DisplayName("지하철 노선의 이름과 색상을 수정한다.")
+    @DisplayName("지하철 노선의 이름, 색상, 추가 요금을 수정한다.")
     @Test
     void update_line() {
         // given
-        Line updateLine = new Line.Builder("신분당선", "RED").build();
+        Line updateLine = new Line.Builder("신분당선", "RED")
+                .extraFare(300)
+                .build();
 
         // when
         this.line.update(updateLine);
@@ -53,7 +58,8 @@ class LineTest {
         // then
         assertAll(
                 () -> assertThat(this.line.getName()).isEqualTo(updateLine.getName()),
-                () -> assertThat(this.line.getColor()).isEqualTo(updateLine.getColor())
+                () -> assertThat(this.line.getColor()).isEqualTo(updateLine.getColor()),
+                () -> assertThat(this.line.getExtraFare()).isEqualTo(updateLine.getExtraFare())
         );
     }
 

@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -15,6 +16,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
 
+import static nextstep.subway.member.MemberAcceptanceTest.AGE;
+import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.path.acceptance.PathAcceptanceMethod.getStationIds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -69,12 +72,13 @@ class PathServiceTest {
     void findShortestPath() {
         // given
         PathService pathService = new PathService(lineService, stationService);
+        LoginMember loginMember = new LoginMember(0L, EMAIL, AGE);
 
         // when
         when(lineService.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
         when(stationService.findStationById(남부터미널역.getId())).thenReturn(남부터미널역);
         when(stationService.findStationById(강남역.getId())).thenReturn(강남역);
-        PathResponse pathResponse = pathService.findShortestPath(남부터미널역.getId(), 강남역.getId());
+        PathResponse pathResponse = pathService.findShortestPath(loginMember, 남부터미널역.getId(), 강남역.getId());
 
         // then
         assertAll(

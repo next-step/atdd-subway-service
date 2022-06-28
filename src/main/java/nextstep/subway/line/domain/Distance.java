@@ -7,8 +7,8 @@ import java.util.Objects;
 @Embeddable
 public class Distance {
     private static final int MIN_DISTANCE = 1;
-    private static final String GREATER_THEN_MIN_DISTANCE = "지하철 구간은 최소 1 이상이어야 합니다.";
-    private static final String LESS_THEN_ALREADY_DISTANCE = "기존 역 사이의 길이보다 크거나 같을 수 없습니다.";
+    private static final String GREATER_THAN_MIN_DISTANCE = "지하철 구간은 최소 1 이상이어야 합니다.";
+    private static final String LESS_THAN_ALREADY_DISTANCE = "기존 역 사이의 길이보다 크거나 같을 수 없습니다.";
 
     @Column(nullable = false)
     private final int distance;
@@ -23,20 +23,20 @@ public class Distance {
 
     public static Distance from(int distance) {
         if (distance < MIN_DISTANCE) {
-            throw new IllegalArgumentException(GREATER_THEN_MIN_DISTANCE);
+            throw new IllegalArgumentException(GREATER_THAN_MIN_DISTANCE);
         }
         return new Distance(distance);
     }
 
-    public Distance decrease(Distance distance) {
-        if (this.distance <= distance.distance) {
-            throw new IllegalArgumentException(LESS_THEN_ALREADY_DISTANCE);
+    public Distance decrease(Distance other) {
+        if (this.distance <= other.distance) {
+            throw new IllegalArgumentException(LESS_THAN_ALREADY_DISTANCE);
         }
-        return new Distance(this.distance - distance.distance);
+        return new Distance(this.distance - other.distance);
     }
 
-    public Distance increase(Distance distance) {
-        return new Distance(this.distance + distance.distance);
+    public Distance increase(Distance other) {
+        return new Distance(this.distance + other.distance);
     }
 
     public int get() {
