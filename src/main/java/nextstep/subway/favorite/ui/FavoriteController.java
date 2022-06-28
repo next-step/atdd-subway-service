@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.util.List;
 
+@RequestMapping("/favorites")
 @RestController
 public class FavoriteController {
     private final FavoriteService favoriteService;
@@ -24,18 +26,18 @@ public class FavoriteController {
         this.favoriteService = favoriteService;
     }
 
-    @PostMapping("/favorites")
+    @PostMapping
     public ResponseEntity register(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest request) {
         FavoriteResponse response = favoriteService.register(loginMember, request);
         return ResponseEntity.created(URI.create("/favorites/" + response.getId())).build();
     }
 
-    @GetMapping("/favorites")
+    @GetMapping
     public ResponseEntity<List<FavoriteResponse>> list(@AuthenticationPrincipal LoginMember loginMember) {
         return ResponseEntity.ok(favoriteService.findAll(loginMember));
     }
 
-    @DeleteMapping(value = "/favorites/{id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> remove(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
         favoriteService.remove(loginMember, id);
         return ResponseEntity.noContent().build();
