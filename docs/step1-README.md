@@ -70,8 +70,8 @@
 
 - [ ] TDD 기반인 미션에 부합하도록 전반적인 기능에 대한 TC 작성
   - [ ] 일급 컬렉션 `Sections` 에 대한 단위 테스트 작성
-  - [ ] 원시 타입 포장 객체인 `Distance`에 대한 테스트 작성 
-  - [ ] `Mockito`를 활용한 `LineServcie`, `PathService` 계층에 대한 단위 테스트 작성
+  - [x] 원시 타입 포장 객체인 `Distance`에 대한 테스트 작성 
+  - [x] `Mockito`를 활용한 `LineServcie` 계층에 대한 단위 테스트 작성
     - LineService TC 작성 목록
       - [x] 노선 저장
         - [x] 이미 존재하는 이름을 가지는 노선 생성 시 예외
