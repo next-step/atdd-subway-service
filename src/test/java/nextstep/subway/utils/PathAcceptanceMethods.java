@@ -52,4 +52,9 @@ public class PathAcceptanceMethods {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(distance);
     }
+
+    public static void 경로_요금_확인(ExtractableResponse<Response> response, int fare) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.as(PathResponse.class).getFare()).isEqualTo(fare);
+    }
 }
