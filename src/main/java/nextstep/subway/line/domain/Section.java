@@ -79,6 +79,10 @@ public class Section {
         return distance.getDistance();
     }
 
+    public int getExtraCharge() {
+        return line.getExtraCharge();
+    }
+
     public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
         this.distance.subDistance(newDistance);
