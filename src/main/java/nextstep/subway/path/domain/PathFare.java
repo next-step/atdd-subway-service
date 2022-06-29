@@ -30,9 +30,7 @@ public class PathFare {
                         return;
                     }
                     line.set(section.get().getLine());
-                    if (surcharge.intValue() < line.get().getSurcharge()) {
-                        surcharge.set(line.get().getSurcharge());
-                    }
+                    surcharge.set(findMaxSurcharge(surcharge.intValue(), line.get().getSurcharge()));
                     distance.addAndGet(section.get().getDistance());
                 });
 
@@ -45,6 +43,10 @@ public class PathFare {
 
     private Long parseDownStation(String station) {
         return Long.parseLong(station.substring(station.indexOf("=") + 1, station.indexOf(",")));
+    }
+
+    private int findMaxSurcharge(int surcharge, int lineSurcharge) {
+        return Math.max(surcharge, lineSurcharge);
     }
 
     private int sum(int distance, int surcharge) {
