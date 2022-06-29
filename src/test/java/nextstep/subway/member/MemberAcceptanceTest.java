@@ -56,7 +56,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void manageMyInfo() {
         // given
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-
         // when
         ExtractableResponse<Response> loginResponse = 로그인(new TokenRequest(EMAIL, PASSWORD));
         // then
@@ -74,7 +73,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         나의_정보_수정됨(updateResponse);
 
         // when
-        ExtractableResponse<Response> deleteResponse = 나의_계정_삭제_요청(accessToken);
+        ExtractableResponse<Response> updateLoginResponse = 로그인(new TokenRequest(NEW_EMAIL, NEW_PASSWORD));
+        // then
+        로그인_성공(loginResponse);
+
+        // when
+        String updateAccessToken = updateLoginResponse.as(TokenResponse.class).getAccessToken();
+        ExtractableResponse<Response> deleteResponse = 나의_계정_삭제_요청(updateAccessToken);
         // then
         나의_계정_삭제됨(deleteResponse);
     }
