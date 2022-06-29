@@ -99,10 +99,10 @@ public class Sections {
         validateRemoveStation(station);
 
         Optional<Section> upSection = elements.stream()
-            .filter(it -> it.getUpStation() == station)
+            .filter(it -> it.getUpStation().equals(station))
             .findFirst();
         Optional<Section> downSection = elements.stream()
-            .filter(it -> it.getDownStation() == station)
+            .filter(it -> it.getDownStation().equals(station))
             .findFirst();
 
         if (upSection.isPresent() && downSection.isPresent()) {

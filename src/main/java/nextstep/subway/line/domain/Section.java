@@ -68,10 +68,10 @@ public class Section {
     }
 
     public void update(Section section) {
-        if (upStation == section.upStation) {
+        if (upStation.equals(section.upStation)) {
             updateUpStation(section.downStation, section.getDistance());
         }
-        if (downStation == section.downStation) {
+        if (downStation.equals(section.downStation)) {
             updateDownStation(section.upStation, section.getDistance());
         }
     }
