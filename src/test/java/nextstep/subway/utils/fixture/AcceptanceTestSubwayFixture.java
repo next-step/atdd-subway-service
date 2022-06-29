@@ -38,7 +38,7 @@ public class AcceptanceTestSubwayFixture {
                         new LineRequest("삼호선", "orange", 교대역.getId(), 양재역.getId(), 10))
                 .as(LineResponse.class);
         구호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
-                        new LineRequest("구호선", "brown", 여의도역.getId(), 샛강역.getId(), 10))
+                        new LineRequest("구호선", "brown", 여의도역.getId(), 샛강역.getId(), 55, 1000))
                 .as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
