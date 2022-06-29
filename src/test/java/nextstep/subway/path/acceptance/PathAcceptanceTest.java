@@ -71,7 +71,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> 최단_경로_거리_조회_응답됨(response),
                 () -> 최단_경로_거리_확인됨(pathResponse, 10),
-                () -> 최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(강남역, 양재역))
+                () -> 최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(강남역, 양재역)),
+                () -> 최단_경로_요금_확인됨(pathResponse, 1250)
         );
     }
 
@@ -85,7 +86,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> 최단_경로_거리_조회_응답됨(response),
                 () -> 최단_경로_거리_확인됨(pathResponse, 12),
-                () -> 최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(강남역, 양재역, 남부터미널역))
+                () -> 최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(강남역, 양재역, 남부터미널역)),
+                () -> 최단_경로_요금_확인됨(pathResponse, 1350)
         );
     }
 
@@ -99,7 +101,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> 최단_경로_거리_조회_응답됨(response),
                 () -> 최단_경로_거리_확인됨(pathResponse, 5),
-                () -> 최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(교대역, 남부터미널역, 양재역))
+                () -> 최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(교대역, 남부터미널역, 양재역)),
+                () -> 최단_경로_요금_확인됨(pathResponse, 1250)
         );
     }
 
@@ -140,6 +143,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .when().get("paths?source={source}&target={target}", sourceStation.getId(), targetStation.getId())
                 .then().log().all()
                 .extract();
+    }
+
+    private AbstractIntegerAssert<?> 최단_경로_요금_확인됨(PathResponse pathResponse, int fare) {
+        return assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 
 }
