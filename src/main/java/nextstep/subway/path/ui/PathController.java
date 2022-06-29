@@ -19,7 +19,7 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal LoginMember member, @RequestBody PathRequest pathRequest) {
+    public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal(required = false) LoginMember member, @RequestBody PathRequest pathRequest) {
         return ResponseEntity.ok().body(pathService.findPath(member, pathRequest));
     }
 }
