@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -58,18 +58,57 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
         String token = loginResponse.as(TokenResponse.class).getAccessToken();
 
-        // when
-        ExtractableResponse<Response> findMemberResponse = RestAssured
+        // when 내 정보 조회
+        ExtractableResponse<Response> findMemberResult = 내_정보_조회_요청(token);
+
+        MemberResponse findMemberResponse = findMemberResult.as(MemberResponse.class);
+        assertNotNull(findMemberResponse.getId());
+        assertEquals(EMAIL, findMemberResponse.getEmail());
+        assertEquals(AGE, findMemberResponse.getAge());
+
+        // when 내 정보 수정
+        final String NEW_EMAIL = "newemail@email.com";
+        final String NEW_PASSWORD = "newPassword";
+        final Integer NEW_AGE = 100;
+
+        ExtractableResponse<Response> updateResult = 내_정보_수정_요청(token, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        assertEquals(HttpStatus.OK.value(), updateResult.statusCode());
+
+        // when 내 정보 삭제
+        ExtractableResponse<Response> deleteResult = 내_정보_삭제_요청(token);
+        assertEquals(HttpStatus.NO_CONTENT.value(), deleteResult.statusCode());
+    }
+
+    private ExtractableResponse<Response> 내_정보_삭제_요청(String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_수정_요청(String token, String email, String password, Integer age) {
+        MemberRequest updateRequest = new MemberRequest(email, password, age);
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(updateRequest)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String token) {
+        return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
                 .extract();
-
-        MemberResponse memberResponse = findMemberResponse.as(MemberResponse.class);
-        assertEquals(EMAIL, memberResponse.getEmail());
-        assertEquals(AGE, memberResponse.getAge());
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
