@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
@@ -59,7 +60,7 @@ class PathFinderTest {
         assertAll(
                 () -> assertThat(shortestPath.getStations()).containsExactly(교대역, 남부터미널역, 양재역),
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(8),
-                () -> assertThat(shortestPath.getFare()).isEqualTo(new Fare(1250))
+                () -> assertThat(shortestPath.getFare(new LoginMember())).isEqualTo(new Fare(1250))
         );
     }
 

@@ -4,6 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -21,8 +24,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import static java.util.stream.Collectors.*;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -37,6 +43,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private String 토큰;
 
     /**                 10
      * 교대역  ---   *2호선*   ---   강남역
@@ -59,6 +66,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 900).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+
+        회원_생성을_요청(EMAIL, PASSWORD, TEENAGER_AGE);
+        토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
     }
 
     @Test
@@ -73,6 +83,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> 최단_경로_거리_확인됨(pathResponse, 10),
                 () -> 최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(강남역, 양재역)),
                 () -> 최단_경로_요금_확인됨(pathResponse, 1250)
+        );
+    }
+
+    @Test
+    void 청소년_최단_경로_조회() {
+        // when
+        ExtractableResponse<Response> response = 토큰포함_최단_경로_조회_요청(강남역, 양재역, 토큰);
+        PathResponse pathResponse = response.as(PathResponse.class);
+
+        // then
+        assertAll(
+                () -> 최단_경로_거리_조회_응답됨(response),
+                () -> 최단_경로_거리_확인됨(pathResponse, 10),
+                () -> 최단_경로_지하철역_순서_정렬됨(pathResponse, Arrays.asList(강남역, 양재역)),
+                () -> 최단_경로_요금_확인됨(pathResponse, 720)
         );
     }
 
@@ -140,6 +165,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse sourceStation, StationResponse targetStation) {
          return RestAssured.given().log().all()
+                .when().get("paths?source={source}&target={target}", sourceStation.getId(), targetStation.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 토큰포함_최단_경로_조회_요청(StationResponse sourceStation, StationResponse targetStation, String accessToken) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
                 .when().get("paths?source={source}&target={target}", sourceStation.getId(), targetStation.getId())
                 .then().log().all()
                 .extract();

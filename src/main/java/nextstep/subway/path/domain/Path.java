@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
@@ -28,9 +29,12 @@ public class Path {
         return (int) shortestPath.getWeight();
     }
 
-    public Fare getFare() {
+    public Fare getFare(LoginMember loginMember) {
         Fare resultFare = DistanceFarePolicy.calculate(getDistance());
         resultFare.plus(getExtraFare());
+        if (!loginMember.isGuest()) {
+            resultFare = AgeDiscountPolicy.discount(resultFare, loginMember.getAge());
+        }
         return resultFare;
     }
 

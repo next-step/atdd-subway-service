@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
@@ -22,7 +23,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
+    public PathResponse findShortestPath(Long sourceStationId, Long targetStationId, LoginMember loginMember) {
         if (sourceStationId.equals(targetStationId)) {
             throw new IllegalArgumentException("출발역과 도착역은 같을 수 없습니다.");
         }
@@ -31,7 +32,7 @@ public class PathService {
         PathFinder pathFinder = new PathFinder(lineService.findAllLines());
         Path shortestPath = pathFinder.findShortestPath(sourceStation, targetStation);
 
-        return PathResponse.of(shortestPath.getStations(), shortestPath.getDistance(), shortestPath.getFare());
+        return PathResponse.of(shortestPath.getStations(), shortestPath.getDistance(), shortestPath.getFare(loginMember));
     }
 
 }
