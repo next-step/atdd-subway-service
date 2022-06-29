@@ -76,7 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("두 역의 최단 거리 경로를 조회하면 연령별 할인이 적용된 요금이 조회된다.")
     @ParameterizedTest
-    @CsvSource(value = {"6:800", "13:1070", "19:1250"}, delimiter = ':')
+    @CsvSource(value = {"6:450", "13:720", "19:1250"}, delimiter = ':')
     void findPathWithFare(int age, int expected) {
         // given
         회원_생성을_요청(email, password, age);

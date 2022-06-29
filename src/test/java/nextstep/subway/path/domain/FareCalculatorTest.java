@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.GuestMember;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -17,8 +19,7 @@ public class FareCalculatorTest {
     private final PathFinder pathFinder = new PathFinder();
     private final DistanceFarePolicy distancePolicy = new DistanceFarePolicy();
     private final LineFarePolicy linePolicy = new LineFarePolicy();
-    private final AgeFarePolicy ageFarePolicy = new AgeFarePolicy();
-    private final FareCalculator fareCalculator = new FareCalculator(distancePolicy, linePolicy, ageFarePolicy);
+    private final FareCalculator fareCalculator = new FareCalculator(distancePolicy, linePolicy);
     private Line 신분당선;
     private Line 이호선;
     private Line 삼호선;
@@ -64,7 +65,7 @@ public class FareCalculatorTest {
         List<SectionEdge> sectionEdges = path.getSectionEdges();
 
         // when
-        Fare fare = fareCalculator.calculate(sectionEdges, path.getDistance());
+        Fare fare = fareCalculator.calculate(GuestMember.getInstance(), sectionEdges, path.getDistance());
 
         // then
         assertThat(fare.getFare()).isEqualTo(2250);
@@ -75,9 +76,9 @@ public class FareCalculatorTest {
     void discountByAge() {
         // then
         assertAll(
-                () -> assertThat(fareCalculator.discountByAge(Fare.of(1350), 8)).isEqualTo(Fare.of(850)),
-                () -> assertThat(fareCalculator.discountByAge(Fare.of(1350), 13)).isEqualTo(Fare.of(1150)),
-                () -> assertThat(fareCalculator.discountByAge(Fare.of(1350), 19)).isEqualTo(Fare.of(1350))
+                () -> assertThat(fareCalculator.discountByAge(Fare.of(1250), 8)).isEqualTo(Fare.of(450)),
+                () -> assertThat(fareCalculator.discountByAge(Fare.of(1250), 13)).isEqualTo(Fare.of(720)),
+                () -> assertThat(fareCalculator.discountByAge(Fare.of(1250), 19)).isEqualTo(Fare.of(1250))
         );
     }
 }

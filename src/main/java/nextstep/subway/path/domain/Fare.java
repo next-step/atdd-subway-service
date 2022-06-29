@@ -41,8 +41,8 @@ public class Fare implements Comparable<Fare> {
         return new Fare(fare - other.fare);
     }
 
-    public Fare discountPercent(int discountRate) {
-        return new Fare((int) (fare * discountRate * 0.01));
+    public Fare discountByPercent(double discountRate) {
+        return new Fare((int) (fare * (1 - discountRate)));
     }
 
     public int getFare() {

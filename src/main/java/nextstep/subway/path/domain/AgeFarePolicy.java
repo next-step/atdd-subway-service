@@ -1,31 +1,34 @@
 package nextstep.subway.path.domain;
 
-import org.springframework.stereotype.Component;
+import java.util.Arrays;
 
-@Component
-public class AgeFarePolicy {
+public enum AgeFarePolicy {
+    CHILDREN(6, 13, 0.5),
+    YOUTH(13, 19, 0.2),
+    ADULT(19, Integer.MAX_VALUE, 0);
+
     private static final Fare DEDUCT_FARE = Fare.of(350);
-    private static final int CHILDREN_MIN_AGE = 6;
-    private static final int CHILDREN_BOUNDARY_AGE = 13;
-    private static final int TEENAGER_MAX_AGE = 19;
+    private final int minAge;
+    private final int maxAge;
+    private final double discountRate;
 
-    public Fare discount(Fare fare, int age) {
-        if (isChildren(age)) {
-            Fare discountFare = fare.minus(DEDUCT_FARE).discountPercent(50);
-            return fare.minus(discountFare);
-        }
-        if (isTeenager(age)) {
-            Fare discountFare = fare.minus(DEDUCT_FARE).discountPercent(20);
-            return fare.minus(discountFare);
+    AgeFarePolicy(int minAge, int maxAge, double discountRate) {
+        this.minAge = minAge;
+        this.maxAge = maxAge;
+        this.discountRate = discountRate;
+    }
+
+    public static AgeFarePolicy of(int age) {
+        return Arrays.stream(AgeFarePolicy.values())
+                .filter(it -> age >= it.minAge && age < it.maxAge)
+                .findFirst()
+                .orElse(ADULT);
+    }
+
+    public Fare discount(Fare fare) {
+        if (discountRate > 0) {
+            fare = fare.minus(DEDUCT_FARE).discountByPercent(discountRate);
         }
         return fare;
-    }
-
-    private boolean isChildren(int age) {
-        return age >= CHILDREN_MIN_AGE && age < CHILDREN_BOUNDARY_AGE;
-    }
-
-    private boolean isTeenager(int age) {
-        return age >= CHILDREN_BOUNDARY_AGE && age < TEENAGER_MAX_AGE;
     }
 }

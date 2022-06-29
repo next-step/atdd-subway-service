@@ -46,7 +46,7 @@ public class FareTest {
         Fare fare = new Fare(6);
 
         // when
-        Fare result = fare.discountPercent(50);
+        Fare result = fare.discountByPercent(0.5);
 
         // then
         assertThat(result.getFare()).isEqualTo(3);
