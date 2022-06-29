@@ -18,13 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     private TokenRequest tokenRequest;
-    private ExtractableResponse<Response> memberResponse;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
         tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        memberResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
     }
 
     @DisplayName("Bearer Auth")
@@ -34,10 +33,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response =  로그인(tokenRequest);
 
         // then
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(TokenResponse.class).getAccessToken()).isNotNull()
-        );
+        로그인_성공(response);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -51,14 +47,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 로그인(failTokenRequest);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        로그인_실패(response);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
     }
-    public ExtractableResponse<Response> 로그인(TokenRequest tokenRequest) {
+
+    public static ExtractableResponse<Response> 로그인(TokenRequest tokenRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -66,5 +63,16 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .when().post("/login/token")
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 로그인_성공(ExtractableResponse<Response> response) {
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(TokenResponse.class).getAccessToken()).isNotNull()
+        );
+    }
+
+    public static void 로그인_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
