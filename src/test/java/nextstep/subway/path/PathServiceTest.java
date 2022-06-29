@@ -5,11 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.application.PathFinder;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.sections.domain.Section;
@@ -29,9 +28,6 @@ public class PathServiceTest {
     private StationService stationService;
 
     @Mock
-    private PathFinder pathFinder;
-
-    @Mock
     private LineRepository lineRepository;
 
     private Station 강남역;
@@ -39,24 +35,26 @@ public class PathServiceTest {
     private Station 남부터미널역;
     private Station 부산역;
     private List<Section> 모든구간;
-
+    private Line 신분당선;
     @BeforeEach
     public void setUp() {
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
         남부터미널역 = new Station("남부터미널역");
         부산역 = new Station("부산역");
-        모든구간 = new ArrayList<>();
+        모든구간 = Arrays.asList(new Section(강남역,남부터미널역,10));
+        신분당선 =  new Line("신분당선", "red",new Section(강남역,남부터미널역,10));
+        신분당선.updateSection(강남역, 양재역, 5);
     }
 
     @DisplayName("역과 역 사이의 최단 경로를 조회한다.")
     @Test
     public void findShortestPath() {
         //given
-        PathService pathService = new PathService(stationService, pathFinder, lineRepository);
+        PathService pathService = new PathService(stationService, lineRepository);
         when(stationService.findStationById(1l)).thenReturn(강남역);
         when(stationService.findStationById(2l)).thenReturn(남부터미널역);
-        when(pathFinder.findShortestPath(모든구간, 강남역, 남부터미널역)).thenReturn(new PathResponse(Arrays.asList(강남역, 양재역, 남부터미널역), 12L));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선));
 
         //when
         PathResponse shortestPath = pathService.findShortestPath(1l, 2l);
@@ -70,9 +68,9 @@ public class PathServiceTest {
     @Test
     public void findShortestPathWithSameStation() {
         //given
-        PathService pathService = new PathService(stationService, pathFinder, lineRepository);
+        PathService pathService = new PathService(stationService, lineRepository);
         when(stationService.findStationById(1l)).thenReturn(강남역);
-        when(pathFinder.findShortestPath(모든구간, 강남역, 강남역)).thenThrow(IllegalArgumentException.class);
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선));
 
         //when
         //then
@@ -84,10 +82,10 @@ public class PathServiceTest {
     @Test
     public void findShortestPathWithNotConnectedStation() {
         //given
-        PathService pathService = new PathService(stationService, pathFinder, lineRepository);
+        PathService pathService = new PathService(stationService, lineRepository);
         when(stationService.findStationById(1l)).thenReturn(강남역);
         when(stationService.findStationById(3l)).thenReturn(부산역);
-        when(pathFinder.findShortestPath(모든구간, 강남역, 부산역)).thenThrow(IllegalArgumentException.class);
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선));
         //when
         //then
         assertThatThrownBy(() -> pathService.findShortestPath(1l, 3l))
@@ -98,10 +96,10 @@ public class PathServiceTest {
     @Test
     public void findShortestPathWithNotExistStation() {
         //given
-        PathService pathService = new PathService(stationService, pathFinder, lineRepository);
+        PathService pathService = new PathService(stationService, lineRepository);
         when(stationService.findStationById(1l)).thenReturn(강남역);
         when(stationService.findStationById(9999l)).thenReturn(null);
-        when(pathFinder.findShortestPath(모든구간, 강남역, null)).thenThrow(IllegalArgumentException.class);
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선));
         //when
         //then
         assertThatThrownBy(() -> pathService.findShortestPath(1l, 9999l))
