@@ -9,14 +9,4 @@ public class GuestMember implements AuthMember {
     public int getAge() {
         return age;
     }
-
-    @Override
-    public boolean isTeenager() {
-        return false;
-    }
-
-    @Override
-    public boolean isKid() {
-        return false;
-    }
 }

@@ -24,15 +24,6 @@ public class Path {
         this.distance = distance;
     }
 
-    public boolean isLongerThanTenAndLessThanFiftyKilometers() {
-        return distance > DistanceFarePolicy.DISTANCE_THRESHOLD_AFTER_TEN.value()
-                && distance <= DistanceFarePolicy.DISTANCE_THRESHOLD_AFTER_FIFTY.value();
-    }
-
-    public boolean isLongerThanFiftyKilometers() {
-        return distance > DistanceFarePolicy.DISTANCE_THRESHOLD_AFTER_FIFTY.value();
-    }
-
     public List<Station> getStations() {
         return stations;
     }
