@@ -21,7 +21,7 @@ class DistanceTest {
     }
 
     @Test
-    @DisplayName("구간 거리의 차")
+    @DisplayName("현재 구간 거리와 대상 구간 거리의 차")
     public void minusDistance() {
         // Given
         int targetDistance = 10;
@@ -49,7 +49,7 @@ class DistanceTest {
     }
 
     @Test
-    @DisplayName("구간 거리의 합")
+    @DisplayName("현재 구간 거리와 대상 구간 거리의 합")
     public void plusDistance() {
         int targetDistance = 10;
         int distance = 100;

@@ -17,7 +17,7 @@ public class Sections {
     public static final String NOT_CONTAINS_TARGET_STATION_ERROR_MESSAGE = "삭제 대상역이 노선에 존재하지 않습니다.";
     public static int MINIMUM_REMOVE_SIZE = 1;
     public static final String CAN_NOT_REMOVE_SECTIONS_SIZE_ERROR = String
-        .format("구간의 길이가 %d 이하인 경우 삭제할 수 없습니다.", MINIMUM_REMOVE_SIZE);
+        .format("구간이 %d개 이하인 경우 삭제할 수 없습니다.", MINIMUM_REMOVE_SIZE);
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> elements = new ArrayList<>();
@@ -75,7 +75,7 @@ public class Sections {
 
     public Section findSectionByUpStationEqStation(Station station) {
         return elements.stream()
-            .filter(it -> it.getUpStation().equals(station))
+            .filter(it -> isEquals(station, it.getUpStation()))
             .findFirst()
             .orElseThrow(IllegalArgumentException::new);
     }
@@ -99,10 +99,10 @@ public class Sections {
         validateRemoveStation(station);
 
         Optional<Section> upSection = elements.stream()
-            .filter(it -> it.getUpStation().equals(station))
+            .filter(it -> isEquals(station, it.getUpStation()))
             .findFirst();
         Optional<Section> downSection = elements.stream()
-            .filter(it -> it.getDownStation().equals(station))
+            .filter(it -> isEquals(station, it.getDownStation()))
             .findFirst();
 
         if (upSection.isPresent() && downSection.isPresent()) {
@@ -111,6 +111,10 @@ public class Sections {
 
         upSection.ifPresent(it -> elements.remove(it));
         downSection.ifPresent(it -> elements.remove(it));
+    }
+
+    private boolean isEquals(Station station, Station targetStation) {
+        return targetStation.equals(station);
     }
 
     private void addSwapSection(Section upSection, Section targetSection) {
