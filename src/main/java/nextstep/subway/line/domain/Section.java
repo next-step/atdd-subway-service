@@ -38,16 +38,16 @@ public class Section {
     public Section() {
     }
 
-    private Section(Line line, Station upStation, Station downStation, int distance) {
+    private Section(Line line, Station upStation, Station downStation, Distance distance) {
+        validateStation(upStation, downStation);
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = new Distance(distance);
+        this.distance = distance;
     }
 
     public static Section of(Line line, Station upStation, Station downStation, int distance) {
-        validateStation(upStation, downStation);
-        return new Section(line, upStation, downStation, distance);
+        return new Section(line, upStation, downStation, new Distance(distance));
     }
 
     private static void validateStation(Station upStation, Station downStation) {
