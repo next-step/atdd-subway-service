@@ -12,11 +12,11 @@ public class GuestMember implements AuthMember {
 
     @Override
     public boolean isTeenager() {
-        return age >= AgeFarePolicy.TEENAGER_MIN_AGE.value() && age <= AgeFarePolicy.TEENAGER_MAX_AGE.value();
+        return false;
     }
 
     @Override
     public boolean isKid() {
-        return age >= AgeFarePolicy.KID_MIN_AGE.value() && age <= AgeFarePolicy.KID_MAX_AGE.value();
+        return false;
     }
 }
