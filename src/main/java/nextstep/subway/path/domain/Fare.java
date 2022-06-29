@@ -26,12 +26,17 @@ public class Fare {
 
     private int addDistanceExtraCharge(int fare) {
         if (path.isLongerThanTenAndLessThanFiftyKilometers()) {
-            return fare + getDistanceExtraCharge(path.getDistance() - 10, DistanceFarePolicy.DISTANCE_UNIT_AFTER_TEN.value());
+            return fare
+                    + getDistanceExtraCharge(
+                    path.getDistance() - DistanceFarePolicy.DISTANCE_THRESHOLD_AFTER_TEN.value(),
+                    DistanceFarePolicy.DISTANCE_UNIT_AFTER_TEN.value());
         }
         if (path.isLongerThanFiftyKilometers()) {
             return fare
                     + DistanceFarePolicy.EXTRA_CHARGE_FROM_TEN_TO_FIFTY.value()
-                    + getDistanceExtraCharge(path.getDistance() - 50, DistanceFarePolicy.DISTANCE_UNIT_AFTER_FIFTY.value());
+                    + getDistanceExtraCharge(
+                    path.getDistance() - DistanceFarePolicy.DISTANCE_THRESHOLD_AFTER_FIFTY.value(),
+                    DistanceFarePolicy.DISTANCE_UNIT_AFTER_FIFTY.value());
         }
         return fare;
     }
