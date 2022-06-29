@@ -1,10 +1,10 @@
 package nextstep.subway.path.domain;
 
 public enum DistanceFarePolicy {
-    DISTANCE_THRESHOLD_AFTER_TEN(10),
+    THRESHOLD_OF_TEN_KILOMETERS(10),
     DISTANCE_UNIT_AFTER_TEN(5),
 
-    DISTANCE_THRESHOLD_AFTER_FIFTY(50),
+    THRESHOLD_OF_FIFTY_KILOMETERS(50),
     DISTANCE_UNIT_AFTER_FIFTY(8),
 
     EXTRA_CHARGE_BY_DISTANCE_UNIT(100),
@@ -23,11 +23,11 @@ public enum DistanceFarePolicy {
 
     public static boolean isLongerThanTenAndLessThanFiftyKilometers(final Path path) {
         final int distance = path.getDistance();
-        return distance > DISTANCE_THRESHOLD_AFTER_TEN.value() && distance <= DISTANCE_THRESHOLD_AFTER_FIFTY.value();
+        return distance > THRESHOLD_OF_TEN_KILOMETERS.value() && distance <= THRESHOLD_OF_FIFTY_KILOMETERS.value();
     }
 
     public static boolean isLongerThanFiftyKilometers(final Path path) {
         final int distance = path.getDistance();
-        return distance > DistanceFarePolicy.DISTANCE_THRESHOLD_AFTER_FIFTY.value();
+        return distance > DistanceFarePolicy.THRESHOLD_OF_FIFTY_KILOMETERS.value();
     }
 }

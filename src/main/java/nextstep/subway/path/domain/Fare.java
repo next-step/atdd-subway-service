@@ -28,14 +28,14 @@ public class Fare {
         if (DistanceFarePolicy.isLongerThanTenAndLessThanFiftyKilometers(path)) {
             return fare
                     + getDistanceExtraCharge(
-                    path.getDistance() - DistanceFarePolicy.DISTANCE_THRESHOLD_AFTER_TEN.value(),
+                    path.getDistance() - DistanceFarePolicy.THRESHOLD_OF_TEN_KILOMETERS.value(),
                     DistanceFarePolicy.DISTANCE_UNIT_AFTER_TEN.value());
         }
         if (DistanceFarePolicy.isLongerThanFiftyKilometers(path)) {
             return fare
                     + DistanceFarePolicy.EXTRA_CHARGE_FROM_TEN_TO_FIFTY.value()
                     + getDistanceExtraCharge(
-                    path.getDistance() - DistanceFarePolicy.DISTANCE_THRESHOLD_AFTER_FIFTY.value(),
+                    path.getDistance() - DistanceFarePolicy.THRESHOLD_OF_FIFTY_KILOMETERS.value(),
                     DistanceFarePolicy.DISTANCE_UNIT_AFTER_FIFTY.value());
         }
         return fare;
