@@ -1,6 +1,7 @@
 package nextstep.subway.member;
 
 import io.restassured.RestAssured;
+import io.restassured.mapper.ObjectMapperType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -75,7 +76,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
+                .body(memberRequest, ObjectMapperType.JACKSON_2)
                 .when().post("/members")
                 .then().log().all()
                 .extract();
@@ -169,7 +170,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static MemberResponse 회원_등록되어_있음(String email, String password, int age) {
-        return 회원_생성을_요청(email, password, age).as(MemberResponse.class);
+    public static void 회원_등록되어_있음(String email, String password, int age) {
+        회원_생성을_요청(email, password, age);
     }
 }

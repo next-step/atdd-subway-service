@@ -146,9 +146,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - [X] 나의 정보 조회
         - [X] 나의 정보 수정
         - [X] 나의 정보 삭제
-- [ ] 즐겨 찾기 기능 구현하기
+- [X] 즐겨 찾기 기능 구현하기
     - [X] FavoritesAcceptanceTest
         - [X] manageFavorite 인수 테스트 케이스 추가
-    - [ ] Favorites 추가
-    - [ ] FavoritesRepository 추가
-    - [ ] FavoritesService 추가
+    - [X] Favorite 기능
+      - [X] Favorite 등록
+      - [X] Favorite 목록 조회
+      - [X] Favorite 삭제

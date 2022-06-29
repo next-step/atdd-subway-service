@@ -30,7 +30,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private StationResponse 강남역;
     private StationResponse 광교역;
-    private MemberResponse 회원;
+
     private String 토큰;
     private RequestSpecification 사용자_요청;
 
@@ -45,8 +45,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
         신분당선 = LineControllerTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
-        회원 = MemberAcceptanceTest.회원_등록되어_있음(MemberAcceptanceTest.EMAIL,
-                MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
+        MemberAcceptanceTest.회원_등록되어_있음(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
         토큰 = AuthAcceptanceTest.로그인_되어_있음(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
         사용자_요청 = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
