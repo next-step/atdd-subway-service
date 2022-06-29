@@ -13,7 +13,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 public class JgraphShortestPathFinder implements ShortestPathFinder {
     private WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-    JgraphShortestPathFinder() {
+    public JgraphShortestPathFinder() {
     }
 
     private void setGraph(List<Section> sections) {

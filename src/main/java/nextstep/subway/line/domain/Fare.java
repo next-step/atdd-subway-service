@@ -1,7 +1,9 @@
 package nextstep.subway.line.domain;
 
 import java.util.Objects;
+import javax.persistence.Embeddable;
 
+@Embeddable
 public class Fare {
     private static final int MIN_FARE = 0;
     private static final int DEFAULT_FARE = 1_250;
@@ -11,7 +13,11 @@ public class Fare {
     private static final Distance SHORT_ADDITIONAL_DISTANCE = Distance.of(5);
     private static final Distance LONG_ADDITIONAL_DISTANCE = Distance.of(8);
 
-    private final int fare;
+    private int fare;
+
+    protected Fare() {
+
+    }
 
     private Fare(int fare) {
         validFare(fare);

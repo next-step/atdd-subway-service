@@ -20,6 +20,9 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
+    private Fare fare = Fare.of(0);
+
+    @Embedded
     private Sections sections;
 
     protected Line() {
@@ -42,6 +45,19 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
+    public void changeFare(int fare) {
+        this.fare = Fare.of(fare);
+    }
+
+    public void addSection(Section section) {
+        sections.addSection(section);
+    }
+
+    public void removeStation(Station station) {
+        sections.removeStation(station);
+    }
+
+
     public Long getId() {
         return id;
     }
@@ -54,12 +70,8 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public void addSection(Section section) {
-        sections.addSection(section);
-    }
-
-    public void removeStation(Station station) {
-        sections.removeStation(station);
+    public Fare getFare() {
+        return fare;
     }
 
     public Stations getStations() {
@@ -69,6 +81,7 @@ public class Line extends BaseEntity {
     public Sections getSections() {
         return sections;
     }
+
 
     @Override
     public boolean equals(Object o) {

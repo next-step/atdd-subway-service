@@ -20,4 +20,14 @@ class LineTest {
                 () -> assertThat(line.getName()).isEqualTo("1호선")
         );
     }
+
+    @Test
+    @DisplayName("요금이 변경된다.")
+    public void changeFare() {
+        Line line = new Line("신분당선", "bg-red-500");
+
+        line.changeFare(10);
+
+        assertThat(line.getFare()).isEqualTo(Fare.of(10));
+    }
 }

@@ -2,13 +2,16 @@ package nextstep.subway.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
@@ -19,7 +22,9 @@ import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -59,6 +64,37 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
 
+/*    Scenario: 두 역의 최단 거리 경로를 조회
+      Given 지하철역이 등록되어있음
+        And 지하철 노선이 등록되어있음
+        And 지하철 노선에 지하철역이 등록되어있음
+        When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+        Then 최단 거리 경로를 응답
+        And 총 거리도 함께 응답함
+        And 지하철 이용 요금도 함께 응답함
+*/
+    @TestFactory
+    @DisplayName("지하철 경로 검색")
+    Stream<DynamicTest> subwayPathSearch() {
+        return Stream.of(
+            dynamicTest("출발역에서 도착역까지의 최단 거리 구한다", () -> {
+                //when
+                ExtractableResponse<Response> response = 최단거리_경로를_구한다(교대역, 양재역);
+
+                //then
+                최단경로가_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역));
+            })
+        );
+
+
+
+
+    }
+
+
+
+
+
     @Test
     @DisplayName("최단거리 경로 찾기 기능")
     void pathFinder() {
@@ -66,7 +102,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단거리_경로를_구한다(교대역, 양재역);
 
         //then
-        최단경로가_조회됨(response, new PathResponse(Arrays.asList(교대역, 남부터미널역, 양재역) ,5));
+        최단경로가_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역));
     }
 
 
@@ -122,13 +158,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 
 
-    private void 최단경로가_조회됨(ExtractableResponse<Response> response, PathResponse pathResponse) {
+    private void 최단경로가_조회됨(ExtractableResponse<Response> response,  List<StationResponse> stations) {
         PathResponse minPath = response.as(PathResponse.class);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(minPath.getDistance()).isEqualTo(5),
-                () ->  assertThat(minPath.getStations()).containsExactlyElementsOf(pathResponse.getStations())
+                () -> assertThat(minPath.getStations()).containsExactlyElementsOf(stations)
         );
     }
 
