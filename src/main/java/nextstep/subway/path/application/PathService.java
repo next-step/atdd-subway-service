@@ -1,6 +1,8 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.path.domain.Path;
@@ -24,14 +26,15 @@ public class PathService {
         this.pathGraph = PathGraph.createJgraphPathGraph();
     }
 
-    public PathResponse findShortPath(PathRequest pathRequest) {
+    public PathResponse findShortPath(LoginMember loginMember, PathRequest pathRequest) {
         List<Section> sections = sectionRepository.findAll();
         Station source = stationRepository.getById(pathRequest.getSource());
         Station target = stationRepository.getById(pathRequest.getTarget());
 
         final Path shortestPath = pathGraph.findShortestPath(sections, source, target);
+        final Fare calcFare = shortestPath.getFare();
 
-        return new PathResponse(shortestPath);
+        return new PathResponse(shortestPath, calcFare.calculateAgeFare(loginMember.getAgeType()));
     }
 
 }

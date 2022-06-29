@@ -1,6 +1,8 @@
 package nextstep.subway.line.domain;
 
+import java.util.Objects;
 import javax.persistence.Embeddable;
+import nextstep.subway.path.domain.AgeType;
 
 @Embeddable
 public class Fare {
@@ -30,12 +32,19 @@ public class Fare {
         return Fare.of(calculate(totDistance));
     }
 
+
     public int value() {
         return fare;
     }
 
     public Fare add(Fare fare) {
         return Fare.of(this.value() + fare.value());
+    }
+
+
+    public Fare calculateAgeFare(AgeType ageType) {
+        int discountFare = fare - ageType.getDiscountFare();
+        return Fare.of((int) (discountFare - (discountFare * ageType.getDiscountFarePercent())));
     }
 
     private void validFare(int fare) {
@@ -63,4 +72,20 @@ public class Fare {
         return DEFAULT_FARE + ADDITIONAL_FARE * totDistance.subDistance(DEFAULT_MAX_DISTANCE).rateDistance(SHORT_ADDITIONAL_DISTANCE);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Fare fare1 = (Fare) o;
+        return fare == fare1.fare;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fare);
+    }
 }

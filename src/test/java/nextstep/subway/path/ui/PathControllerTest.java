@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.mock;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -22,11 +23,11 @@ class PathControllerTest {
 
         assertAll(
                 () -> assertThatIllegalArgumentException()
-                        .isThrownBy(() -> pathController.findPaths(null)),
+                        .isThrownBy(() -> pathController.findPaths(LoginMember.guestLogin(),null)),
                 () -> assertThatIllegalArgumentException()
-                        .isThrownBy(() -> pathController.findPaths(new PathRequest(0, 1))),
+                        .isThrownBy(() -> pathController.findPaths(LoginMember.guestLogin(), new PathRequest(0, 1))),
                 () -> assertThatIllegalArgumentException()
-                        .isThrownBy(() -> pathController.findPaths(new PathRequest(1, 0)))
+                        .isThrownBy(() -> pathController.findPaths(LoginMember.guestLogin(), new PathRequest(1, 0)))
         );
     }
 

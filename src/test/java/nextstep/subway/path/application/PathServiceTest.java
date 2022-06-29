@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
@@ -82,7 +83,7 @@ class PathServiceTest {
     }
 
     @Test
-    @DisplayName("최적 경로 찾기 - 장거리 금액")
+    @DisplayName("비회원 최적 경로 찾기 - 장거리 금액")
     void findShortPathLongDistance() {
         PathRequest pathRequest = new PathRequest(1L, 2L);
 
@@ -90,8 +91,7 @@ class PathServiceTest {
         given(stationRepository.getById(pathRequest.getSource())).willReturn(판교역);
         given(stationRepository.getById(pathRequest.getTarget())).willReturn(광교역);
 
-
-        final PathResponse pathResponse = pathService.findShortPath(new PathRequest(1L, 2L));
+        final PathResponse pathResponse = pathService.findShortPath(LoginMember.guestLogin(), new PathRequest(1L, 2L));
 
         assertAll(
                 () -> assertThat(pathResponse.getStations()).containsExactly(StationResponse.of(판교역), StationResponse.of(동인천역), StationResponse.of(광교역)),
@@ -100,7 +100,7 @@ class PathServiceTest {
     }
 
     @Test
-    @DisplayName("최적 경로 찾기 - 초과 거리 금액")
+    @DisplayName("비회원 최적 경로 찾기 - 초과 거리 금액")
     void findShortPathMidDistance() {
         PathRequest pathRequest = new PathRequest(1L, 2L);
 
@@ -108,7 +108,7 @@ class PathServiceTest {
         given(stationRepository.getById(pathRequest.getSource())).willReturn(동인천역);
         given(stationRepository.getById(pathRequest.getTarget())).willReturn(광교역);
 
-        final PathResponse pathResponse = pathService.findShortPath(new PathRequest(1L, 2L));
+        final PathResponse pathResponse = pathService.findShortPath(LoginMember.guestLogin(), new PathRequest(1L, 2L));
 
         assertAll(
                 () -> assertThat(pathResponse.getStations()).containsExactly(StationResponse.of(동인천역), StationResponse.of(광교역)),
@@ -119,7 +119,7 @@ class PathServiceTest {
     }
 
     @Test
-    @DisplayName("최적 경로 찾기 - 디폴트 금액")
+    @DisplayName("비회원 최적 경로 찾기 - 디폴트 금액")
     void findShortPathDefaultDistance() {
         PathRequest pathRequest = new PathRequest(1L, 2L);
 
@@ -127,11 +127,65 @@ class PathServiceTest {
         given(stationRepository.getById(pathRequest.getSource())).willReturn(판교역);
         given(stationRepository.getById(pathRequest.getTarget())).willReturn(주안역);
 
-        final PathResponse pathResponse = pathService.findShortPath(new PathRequest(1L, 2L));
+        final PathResponse pathResponse = pathService.findShortPath(LoginMember.guestLogin(), new PathRequest(1L, 2L));
 
         assertAll(
                 () -> assertThat(pathResponse.getStations()).containsExactly(StationResponse.of(판교역), StationResponse.of(주안역)),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(3_250)
+        );
+    }
+
+    @Test
+    @DisplayName("어린이 회원 최적 경로 찾기 - 장거리 금액")
+    void findShortPathLongDistanceChildren() {
+        PathRequest pathRequest = new PathRequest(1L, 2L);
+        LoginMember loginMember = new LoginMember(1L, "asda@gmail.com", 10);
+        given(sectionRepository.findAll()).willReturn(stubSections());
+        given(stationRepository.getById(pathRequest.getSource())).willReturn(판교역);
+        given(stationRepository.getById(pathRequest.getTarget())).willReturn(광교역);
+
+
+        final PathResponse pathResponse = pathService.findShortPath(loginMember, new PathRequest(1L, 2L));
+
+        assertAll(
+                () -> assertThat(pathResponse.getStations()).containsExactly(StationResponse.of(판교역), StationResponse.of(동인천역), StationResponse.of(광교역)),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2500)
+        );
+    }
+
+    @Test
+    @DisplayName("청소년 회원 최적 경로 찾기 - 장거리 금액")
+    void findShortPathLongDistanceThenAger() {
+        PathRequest pathRequest = new PathRequest(1L, 2L);
+        LoginMember loginMember = new LoginMember(1L, "asda@gmail.com", 18);
+        given(sectionRepository.findAll()).willReturn(stubSections());
+        given(stationRepository.getById(pathRequest.getSource())).willReturn(판교역);
+        given(stationRepository.getById(pathRequest.getTarget())).willReturn(광교역);
+
+
+        final PathResponse pathResponse = pathService.findShortPath(loginMember, new PathRequest(1L, 2L));
+
+        assertAll(
+                () -> assertThat(pathResponse.getStations()).containsExactly(StationResponse.of(판교역), StationResponse.of(동인천역), StationResponse.of(광교역)),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(4000)
+        );
+    }
+
+    @Test
+    @DisplayName("어른 회원 최적 경로 찾기 - 장거리 금액")
+    void findShortPathLongDistanceAdult() {
+        PathRequest pathRequest = new PathRequest(1L, 2L);
+        LoginMember loginMember = new LoginMember(1L, "asda@gmail.com", 25);
+        given(sectionRepository.findAll()).willReturn(stubSections());
+        given(stationRepository.getById(pathRequest.getSource())).willReturn(판교역);
+        given(stationRepository.getById(pathRequest.getTarget())).willReturn(광교역);
+
+
+        final PathResponse pathResponse = pathService.findShortPath(loginMember, new PathRequest(1L, 2L));
+
+        assertAll(
+                () -> assertThat(pathResponse.getStations()).containsExactly(StationResponse.of(판교역), StationResponse.of(동인천역), StationResponse.of(광교역)),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(5350)
         );
     }
 

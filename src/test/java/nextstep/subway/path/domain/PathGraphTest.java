@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
@@ -82,7 +83,7 @@ class PathGraphTest {
         //then
         assertAll(
                 () -> assertThat(shortestPath.getStations()).isEqualTo(Stations.of(Arrays.asList(교대역, 남부터미널역, 양재역))),
-                () -> assertThat(shortestPath.getDistance()).isEqualTo(5)
+                () -> assertThat(shortestPath.getDistance()).isEqualTo(Distance.of(5))
         );
     }
 
