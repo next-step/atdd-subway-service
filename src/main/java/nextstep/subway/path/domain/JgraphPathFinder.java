@@ -36,9 +36,7 @@ public class JgraphPathFinder implements PathFinder {
 
     private Integer getExtraCharge(final List<SectionWeightedEdge> sectionEdge) {
         return sectionEdge.stream()
-                .map(SectionWeightedEdge::getSection)
-                .map(Section::getLine)
-                .map(Line::getExtraCharge)
+                .map(SectionWeightedEdge::getExtraCharge)
                 .max(Integer::compareTo)
                 .orElse(ExtraCharge.DEFAULT_EXTRA_CHARGE);
     }
@@ -51,10 +49,9 @@ public class JgraphPathFinder implements PathFinder {
     }
 
     private void addStation(final List<Line> lines) {
-        for (Line line : lines) {
-            line.getSortedStations()
-                    .forEach(graph::addVertex);
-        }
+        lines.stream()
+                .flatMap(it -> it.getSortedStations().stream())
+                .forEach(graph::addVertex);
     }
 
     private void addEdgeWeight(final List<Line> lines) {

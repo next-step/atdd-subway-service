@@ -68,9 +68,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         final String accessToken = AuthAcceptanceTest.로그인_성공됨(로그인_요청);
 
         // when
-        final ExtractableResponse<Response> 지하철_최단거리_조회 = PathAcceptanceTest.지하철_최단거리_조회(강남역.getId(), 남부터미널역.getId());
+        final ExtractableResponse<Response> 지하철_최단거리_조회 = PathAcceptanceTest.비회원_지하철_최단거리_조회(강남역.getId(), 남부터미널역.getId());
         // then
-        PathAcceptanceTest.지하철_최단거리_조회됨(지하철_최단거리_조회);
+        PathAcceptanceTest.비회원_지하철_최단거리_조회됨(지하철_최단거리_조회);
 
         // when
         final ExtractableResponse<Response> 즐겨찾기_추가_요청 = 즐겨찾기_추가_요청(accessToken, 강남역.getId(), 남부터미널역.getId());
