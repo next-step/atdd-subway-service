@@ -20,4 +20,14 @@ public enum DistanceFarePolicy {
     public int value() {
         return value;
     }
+
+    public static boolean isLongerThanTenAndLessThanFiftyKilometers(final Path path) {
+        final int distance = path.getDistance();
+        return distance > DISTANCE_THRESHOLD_AFTER_TEN.value() && distance <= DISTANCE_THRESHOLD_AFTER_FIFTY.value();
+    }
+
+    public static boolean isLongerThanFiftyKilometers(final Path path) {
+        final int distance = path.getDistance();
+        return distance > DistanceFarePolicy.DISTANCE_THRESHOLD_AFTER_FIFTY.value();
+    }
 }

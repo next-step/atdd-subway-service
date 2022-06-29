@@ -1,5 +1,8 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.AuthMember;
+import nextstep.subway.auth.domain.GuestMember;
+
 public enum AgeFarePolicy {
     NOT_ADULT_DEDUCTION(350),
 
@@ -20,5 +23,19 @@ public enum AgeFarePolicy {
 
     public int value() {
         return value;
+    }
+
+    public static boolean isTeenager(final AuthMember member) {
+        if (member instanceof GuestMember) {
+            return false;
+        }
+        return member.getAge() >= TEENAGER_MIN_AGE.value() && member.getAge() <= TEENAGER_MAX_AGE.value();
+    }
+
+    public static boolean isKid(final AuthMember member) {
+        if (member instanceof GuestMember) {
+            return false;
+        }
+        return member.getAge() >= KID_MIN_AGE.value() && member.getAge() <= KID_MAX_AGE.value();
     }
 }

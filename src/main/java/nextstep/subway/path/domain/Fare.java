@@ -25,13 +25,13 @@ public class Fare {
     }
 
     private int addDistanceExtraCharge(int fare) {
-        if (path.isLongerThanTenAndLessThanFiftyKilometers()) {
+        if (DistanceFarePolicy.isLongerThanTenAndLessThanFiftyKilometers(path)) {
             return fare
                     + getDistanceExtraCharge(
                     path.getDistance() - DistanceFarePolicy.DISTANCE_THRESHOLD_AFTER_TEN.value(),
                     DistanceFarePolicy.DISTANCE_UNIT_AFTER_TEN.value());
         }
-        if (path.isLongerThanFiftyKilometers()) {
+        if (DistanceFarePolicy.isLongerThanFiftyKilometers(path)) {
             return fare
                     + DistanceFarePolicy.EXTRA_CHARGE_FROM_TEN_TO_FIFTY.value()
                     + getDistanceExtraCharge(
@@ -56,11 +56,11 @@ public class Fare {
     }
 
     private int applyAgeDiscount(final int fare) {
-        if (member.isTeenager()) {
+        if (AgeFarePolicy.isTeenager(member)) {
             return ((fare - AgeFarePolicy.NOT_ADULT_DEDUCTION.value())
                     * (100 - AgeFarePolicy.TEENAGER_DISCOUNT_RATE.value())) / 100;
         }
-        if (member.isKid()) {
+        if (AgeFarePolicy.isKid(member)) {
             return ((fare - AgeFarePolicy.NOT_ADULT_DEDUCTION.value())
                     * (100 - AgeFarePolicy.KID_DISCOUNT_RATE.value())) / 100;
         }
