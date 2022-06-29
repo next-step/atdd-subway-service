@@ -12,6 +12,13 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class PathFare {
+    private static final int BASIC_FARE = 1250;
+    private static final int ADDED_FARE = 100;
+    private static final int TEN_KILOMETER = 10;
+    private static final int FIFTY_KILOMETER = 50;
+    private static final double FIVE = 5.0;
+    private static final double EIGHT = 8.0;
+
     public int calculateFare(List<DefaultWeightedEdge> edges, List<Section> sections) {
         AtomicReference<Line> line = new AtomicReference<>();
         AtomicInteger surcharge = new AtomicInteger(0);
@@ -50,18 +57,26 @@ public class PathFare {
     }
 
     private int sum(int distance, int surcharge) {
-        if (distance > 10) {
-            return 1250 + surcharge + calculateOverFare(distance);
+        if (distance > TEN_KILOMETER) {
+            return BASIC_FARE + surcharge + calculateOverFare(distance);
         }
-        return 1250 + surcharge;
+        return BASIC_FARE + surcharge;
     }
 
     private int calculateOverFare(int distance) {
-        if (distance > 50) {
-            int over10km = distance - (distance - 50) - 10;
-            int over50km = distance - 50;
-            return (int) (Math.ceil(over10km / 5.0) * 100) + (int) (Math.ceil(over50km / 8.0) * 100);
+        if (distance > FIFTY_KILOMETER) {
+            int over50km = distance - FIFTY_KILOMETER;
+            int over10To50km = distance - over50km - TEN_KILOMETER;
+            return addFarePerFiveKilometer(over10To50km) + addFarePerEightKilometer(over50km);
         }
-        return (int) (Math.ceil((distance - 10.0) / 5)) * 100;
+        return addFarePerFiveKilometer(distance - TEN_KILOMETER);
+    }
+
+    private int addFarePerFiveKilometer(int distance) {
+        return (int) (Math.ceil(distance / FIVE) * ADDED_FARE);
+    }
+
+    private int addFarePerEightKilometer(int distance) {
+        return (int) (Math.ceil(distance / EIGHT) * ADDED_FARE);
     }
 }
