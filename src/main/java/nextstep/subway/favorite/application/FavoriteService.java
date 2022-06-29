@@ -1,6 +1,8 @@
 package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.ErrorMessage;
+import nextstep.subway.exception.NoSuchElementFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
@@ -27,9 +30,9 @@ public class FavoriteService {
     }
     @Transactional
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
-        Member member = memberRepository.getById(loginMember.getId());
-        Station sourceStation = stationRepository.getById(favoriteRequest.getSource());
-        Station targetStation = stationRepository.getById(favoriteRequest.getTarget());
+        Member member = memberRepository.findById(loginMember.getId()).orElseThrow(() -> new NoSuchElementFoundException(ErrorMessage.NOT_FOUND_MEMBER));
+        Station sourceStation = findStationById(favoriteRequest.getSource());
+        Station targetStation = findStationById(favoriteRequest.getTarget());
 
         Favorite persistFavorite = favoriteRepository.save(new Favorite(member, sourceStation, targetStation));
 
@@ -46,6 +49,10 @@ public class FavoriteService {
     public void deleteFavoriteById(LoginMember loginMember, Long id) {
         Member member = memberRepository.getById(loginMember.getId());
         favoriteRepository.deleteByMemberAndId(member, id);
+    }
+
+    private Station findStationById(Long id) {
+        return stationRepository.findById(id).orElseThrow(() -> new NoSuchElementFoundException(ErrorMessage.NOT_FOUND_STATION));
     }
 
 }
