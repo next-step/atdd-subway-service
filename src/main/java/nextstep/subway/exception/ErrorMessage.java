@@ -11,7 +11,8 @@ public enum ErrorMessage {
     NOT_FOUND_STATION_FOR_DELETE_SECTION("구간 삭제를 위한 역을 찾을 수 없습니다."),
     SOURCE_EQUALS_TARGET("출발지와 도착지가 같습니다."),
     NOT_FOUND_STATION_FOR_FIND_PATH("최단 경로를 찾기 위한 역을 찾을 수 없습니다."),
-    NOT_CONNECTED_STATIONS("출발지와 도착지가 연결되어 있지 않습니다.");
+    NOT_CONNECTED_STATIONS("출발지와 도착지가 연결되어 있지 않습니다."),
+    NOT_FOUND_MEMBER("유저를 찾을 수 없습니다.");
 
 
     private final String message;

@@ -1,19 +1,21 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.IllegalArgumentException;
 import nextstep.subway.exception.NoSuchElementFoundException;
-import nextstep.subway.path.domain.Path;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class LinesTest {
+public class PathFinderTest {
     private Line 신분당선;
     private Line 이호선;
     private Line 삼호선;
@@ -28,6 +30,8 @@ public class LinesTest {
 
     private Lines lines;
 
+    private PathFinder pathFinder;
+
 
     /**
      * 교대역    --- *2호선* (7) ---   강남역
@@ -37,7 +41,6 @@ public class LinesTest {
      * |                              |
      * 남부터미널역  --- *3호선* (2)---   양재
      *
-     * 군자역    --- *5호선* (12) ---   미사역
      */
     @BeforeEach
     public void setUp() {
@@ -56,49 +59,19 @@ public class LinesTest {
         삼호선.addSection(교대역, 남부터미널역, 3);
 
         lines = new Lines(Arrays.asList(신분당선, 이호선, 삼호선, 오호선));
-    }
-
-    @DisplayName("강남역과 교대역의 최단 거리 조회")
-    @Test
-    void 최단_거리_조회() {
-
-        //when
-        Path path = lines.findPath(강남역, 교대역);
-
-        //then
-        assertThat(path.getDistance()).isEqualTo(7);
-    }
-
-
-    @Test
-    void 지하철역_포함_여부() {
-        //given
-        Station 구로역 = new Station("구로역");
-
-        //when
-        boolean containResult = lines.hasStation(강남역);
-        boolean notContainResult = lines.hasStation(구로역);
-
-        //then
-        assertTrue(containResult);
-        assertFalse(notContainResult);
+        pathFinder = new PathFinder(lines);
     }
 
     @Test
-    void 출발지와_도착지가_같은_경우_최단_거리_조회시_에러_발생() {
-        assertThrows(IllegalArgumentException.class, () -> lines.findPath(강남역, 강남역));
+    void GraphPath_확인() {
+        GraphPath path = pathFinder.getGraphPath(교대역, 양재역);
+
+        assertAll(
+                () -> assertThat(path.getStartVertex()).isEqualTo(교대역),
+                () -> assertThat(path.getEndVertex()).isEqualTo(양재역),
+                () -> assertThat(path.getVertexList()).containsAll(Arrays.asList(교대역, 남부터미널역, 양재역)),
+                () -> assertThat(path.getWeight()).isEqualTo(5L)
+        );
     }
 
-    @Test
-    void 등록되지_않은_역을_최단_거리_조회시_에러_발생() {
-        //given
-        Station 구로역 = new Station("구로역");
-
-        assertThrows(NoSuchElementFoundException.class, () -> lines.findPath(강남역, 구로역));
-    }
-
-    @Test
-    void 출발역과_도착역이_연결되어_있지_않을_경우_에러_발생() {
-        assertThrows(IllegalArgumentException.class, () -> lines.findPath(양재역, 미사역));
-    }
 }

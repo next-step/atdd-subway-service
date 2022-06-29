@@ -1,0 +1,57 @@
+package nextstep.subway.favorite.domain;
+
+import nextstep.subway.exception.ErrorMessage;
+import nextstep.subway.exception.IllegalArgumentException;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.station.domain.Station;
+
+import javax.persistence.*;
+
+@Entity
+public class Favorite {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Station source;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Station target;
+
+    public Favorite() {
+
+    }
+
+    public Favorite(Member member, Station source, Station target) {
+        checkValidStation(source, target);
+        this.member = member;
+        this.source = source;
+        this.target = target;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public Station getSource() {
+        return source;
+    }
+
+    public Station getTarget() {
+        return target;
+    }
+
+    private void checkValidStation(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException(ErrorMessage.SOURCE_EQUALS_TARGET);
+        }
+    }
+}
