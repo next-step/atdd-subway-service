@@ -27,13 +27,13 @@ public class LineResponse {
         this.modifiedDate = modifiedDate;
     }
 
-    public static LineResponse of(Line line, List<StationResponse> stations) {
+    public static LineResponse from(Line line, List<StationResponse> stations) {
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
     }
 
-    public static LineResponse of(Line line) {
+    public static LineResponse from(Line line) {
         List<StationResponse> stations = line.getAllStations().stream()
-            .map(it -> StationResponse.of(it))
+            .map(it -> StationResponse.from(it))
             .collect(Collectors.toList());
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
     }
