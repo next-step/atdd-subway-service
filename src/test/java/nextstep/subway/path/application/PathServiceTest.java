@@ -17,7 +17,6 @@ import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -57,31 +56,13 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Collections.singletonList(분당선));
         when(stationRepository.findById(1L)).thenReturn(Optional.of(선릉역));
         when(stationRepository.findById(3L)).thenReturn(Optional.of(수원역));
-
-        // when
-        StationService stationService = new StationService(stationRepository);
-        LineService lineService = new LineService(lineRepository, stationService);
-        PathService pathService = new PathService(new PathFinder(), new PathMap(), new PathFare(), new FareDiscounter(), stationService, lineService, sectionRepository);
-        PathResponse result = pathService.findShortestPath(1L, 3L);
-
-        // then
-        assertThat(result.toStations()).containsExactly(선릉역, 정자역, 수원역);
-        assertThat(result.getDistance()).isEqualTo(55);
-    }
-
-    @Test
-    void findPath_sameLineNew() {
-        // given
-        when(lineRepository.findAll()).thenReturn(Collections.singletonList(분당선));
-        when(stationRepository.findById(1L)).thenReturn(Optional.of(선릉역));
-        when(stationRepository.findById(3L)).thenReturn(Optional.of(수원역));
         when(sectionRepository.findAll()).thenReturn(Arrays.asList(new Section(분당선, 선릉역, 정자역, 40), new Section(분당선, 정자역, 수원역, 15)));
 
         // when
         StationService stationService = new StationService(stationRepository);
         LineService lineService = new LineService(lineRepository, stationService);
         PathService pathService = new PathService(new PathFinder(), new PathMap(), new PathFare(), new FareDiscounter(), stationService, lineService, sectionRepository);
-        PathResponse result = pathService.findShortestPathNew(new LoginMember(), 1L, 3L);
+        PathResponse result = pathService.findShortestPath(new LoginMember(), 1L, 3L);
 
         // then
         assertThat(result.toStations()).containsExactly(선릉역, 정자역, 수원역);

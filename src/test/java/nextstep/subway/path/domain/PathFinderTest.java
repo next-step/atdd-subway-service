@@ -69,7 +69,7 @@ class PathFinderTest {
         Station source = stationRepository.findById(1L).get();
         Station target = stationRepository.findById(3L).get();
         WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
-        Map<String, Object> data = new PathFinder().findShortestPathNew(map, source, target);
+        Map<String, Object> data = new PathFinder().findShortestPath(map, source, target);
 
         // then
         assertThat((List<Station>) data.get("vertex")).containsExactly(선릉역, 정자역, 수원역);
@@ -87,7 +87,7 @@ class PathFinderTest {
         Station source = stationRepository.findById(1L).get();
         Station target = stationRepository.findById(5L).get();
         WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
-        Map<String, Object> data = new PathFinder().findShortestPathNew(map, source, target);
+        Map<String, Object> data = new PathFinder().findShortestPath(map, source, target);
 
         // then
         assertThat((List<Station>) data.get("vertex")).containsExactly(선릉역, 정자역, 수원역, 춘천역, 강릉역);

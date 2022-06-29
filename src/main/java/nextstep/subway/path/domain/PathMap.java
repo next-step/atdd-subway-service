@@ -10,9 +10,6 @@ import java.util.List;
 
 @Component
 public class PathMap {
-    public PathMap() {
-    }
-
     public WeightedMultigraph<Station, DefaultWeightedEdge> createMap(List<Line> lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 

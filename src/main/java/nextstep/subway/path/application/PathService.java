@@ -40,19 +40,11 @@ public class PathService {
         this.sectionRepository = sectionRepository;
     }
 
-    public PathResponse findShortestPath(Long sourceId, Long targetId) {
+    public PathResponse findShortestPath(LoginMember loginMember, Long sourceId, Long targetId) {
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
         WeightedMultigraph<Station, DefaultWeightedEdge> map = pathMap.createMap(lineService.findAll());
-
-        return pathFinder.findShortestPath(map, source, target);
-    }
-
-    public PathResponse findShortestPathNew(LoginMember loginMember, Long sourceId, Long targetId) {
-        Station source = stationService.findById(sourceId);
-        Station target = stationService.findById(targetId);
-        WeightedMultigraph<Station, DefaultWeightedEdge> map = pathMap.createMap(lineService.findAll());
-        Map<String, Object> data = pathFinder.findShortestPathNew(map, source, target);
+        Map<String, Object> data = pathFinder.findShortestPath(map, source, target);
         int fare = pathFare.calculateFare((List<DefaultWeightedEdge>) data.get("edge"), sectionRepository.findAll());
         fare = fareDiscounter.discountFare(fare, loginMember.isGuest() ? 20 : loginMember.getAge());
 

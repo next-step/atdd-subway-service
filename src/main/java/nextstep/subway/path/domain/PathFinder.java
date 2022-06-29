@@ -1,6 +1,5 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -9,30 +8,12 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
 public class PathFinder {
-    public PathFinder() {
-    }
-
-    public PathResponse findShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> map,
-                                         Station source, Station target) {
-        confirmSelectSameStation(source, target);
-        confirmStationIsOnLine(map, source, target);
-
-        DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(map);
-        GraphPath<Station, DefaultWeightedEdge> path = shortestPath.getPath(source, target);
-        confirmNonShortestPath(path);
-
-        List<Station> stations = path.getVertexList();
-        double distance = shortestPath.getPathWeight(source, target);
-        return new PathResponse(stations, distance);
-    }
-
-    public Map<String, Object> findShortestPathNew(WeightedMultigraph<Station, DefaultWeightedEdge> map,
-                                                         Station source, Station target) {
+    public Map<String, Object> findShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> map,
+                                                Station source, Station target) {
         confirmSelectSameStation(source, target);
         confirmStationIsOnLine(map, source, target);
 
