@@ -35,10 +35,7 @@ public class PathService {
         List<Line> lines = lineService.getAllLines();
 
         Path path = pathFinder.findPath(lines, source, target);
-        Fare totalFare = fareCalculator.calculate(path.getSectionEdges(), path.getDistance());
-        if (loginMember.isLogin()) {
-            totalFare = fareCalculator.discountByAge(totalFare, loginMember.getAge());
-        }
+        Fare totalFare = fareCalculator.calculate(loginMember, path.getSectionEdges(), path.getDistance());
 
         return PathResponse.of(path, totalFare.getFare());
     }

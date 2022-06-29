@@ -16,10 +16,15 @@ public class FareCalculator {
         this.lineFarePolicy = lineFarePolicy;
     }
 
-    public Fare calculate(List<SectionEdge> sectionEdges, Distance distance) {
+    public Fare calculate(LoginMember loginMember, List<SectionEdge> sectionEdges, Distance distance) {
         Fare distanceExtraFare = distanceFarePolicy.calculate(distance);
         Fare lineExtraFare = lineFarePolicy.calculate(sectionEdges);
-        return distanceExtraFare.plus(lineExtraFare);
+        Fare totalFare = distanceExtraFare.plus(lineExtraFare);
+
+        if (loginMember.isLogin()) {
+            totalFare = discountByAge(totalFare, loginMember.getAge());
+        }
+        return totalFare;
     }
 
     public Fare discountByAge(Fare fare, int age) {
