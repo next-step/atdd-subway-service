@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -60,7 +60,7 @@ public class Sections {
 
     public List<Station> getAllStation() {
         if (elements.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> sortedByFinalUpStations = new ArrayList<>();
