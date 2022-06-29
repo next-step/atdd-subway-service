@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import java.util.Objects;
 import javax.persistence.Embeddable;
 
 @Embeddable
@@ -27,15 +26,22 @@ public class Fare {
     public static Fare of(int fare) {
         return new Fare(fare);
     }
+    public static Fare calculateFare(Distance totDistance) {
+        return Fare.of(calculate(totDistance));
+    }
+
+    public int value() {
+        return fare;
+    }
+
+    public Fare add(Fare fare) {
+        return Fare.of(this.value() + fare.value());
+    }
 
     private void validFare(int fare) {
         if (fare < MIN_FARE) {
-          throw new IllegalArgumentException("요금은 0원 이상이어야만 합니다.");
+            throw new IllegalArgumentException("요금은 0원 이상이어야만 합니다.");
         }
-    }
-
-    public static Fare calculateFare(Distance totDistance) {
-        return Fare.of(calculate(totDistance));
     }
 
     private static int calculate(Distance totDistance) {
@@ -57,24 +63,4 @@ public class Fare {
         return DEFAULT_FARE + ADDITIONAL_FARE * totDistance.subDistance(DEFAULT_MAX_DISTANCE).rateDistance(SHORT_ADDITIONAL_DISTANCE);
     }
 
-    public int value() {
-        return fare;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Fare fare1 = (Fare) o;
-        return fare == fare1.fare;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(fare);
-    }
 }

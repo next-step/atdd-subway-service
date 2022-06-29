@@ -322,7 +322,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - 10km초과∼50km까지(5km마다 100원)
     - 50km초과 시 (8km마다 100원)
   
-- [ ] 노선별 추가 요금 정책 추가
+- [X] 노선별 추가 요금 정책 추가
   - 노선별 추가 요금 정책
     - 노선에 추가 요금 필드를 추가
     - 추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가  

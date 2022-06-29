@@ -24,8 +24,8 @@ public class PathResponse {
         this.fare = fare.value();
     }
 
-    public PathResponse(Path path, Fare fare) {
-        this(StationResponse.of(path), path.getDistance(), fare);
+    public PathResponse(Path path) {
+        this(StationResponse.of(path), path.getDistance(), path.getFare());
     }
 
     public List<StationResponse> getStations() {

@@ -1,7 +1,6 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
-import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.path.domain.Path;
@@ -32,7 +31,7 @@ public class PathService {
 
         final Path shortestPath = pathGraph.findShortestPath(sections, source, target);
 
-        return new PathResponse(shortestPath, Fare.calculateFare(shortestPath.getDistance()));
+        return new PathResponse(shortestPath);
     }
 
 }

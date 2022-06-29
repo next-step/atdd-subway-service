@@ -38,10 +38,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
+    private StationResponse 한국역;
+    private StationResponse 광화문역;
     private StationResponse 남부터미널역;
 
     /**
-     * 교대역    --- *2호선* ---   강남역
+     * 교대역    --- *2호선* ---   강남역 ---  한국역 ----- 광화문역
      * |                        |
      * *3호선*                   *신분당선*
      * |                        |
@@ -56,11 +58,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        한국역 = StationAcceptanceTest.지하철역_등록되어_있음("한국역").as(StationResponse.class);
+        광화문역 = StationAcceptanceTest.지하철역_등록되어_있음("광화문역").as(StationResponse.class);
+
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 100);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 200);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 300);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 강남역, 한국역, 40);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 한국역, 광화문역, 100);
     }
 
 
@@ -68,21 +75,43 @@ public class PathAcceptanceTest extends AcceptanceTest {
       Given 지하철역이 등록되어있음
         And 지하철 노선이 등록되어있음
         And 지하철 노선에 지하철역이 등록되어있음
-        When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
-        Then 최단 거리 경로를 응답
-        And 총 거리도 함께 응답함
-        And 지하철 이용 요금도 함께 응답함
+        - 출발역에서 도착역까지의 최단 거리(기본금액) 구한다
+            When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+            Then 최단 거리 경로를 응답
+            And 총 거리도 함께 응답함
+            And 지하철 이용 요금도 함께 응답함
+        - 출발역에서 도착역까지의 최단 거리(초과금액) 구한다
+            When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+            Then 최단 거리 경로를 응답
+            And 총 거리도 함께 응답함
+            And 지하철 이용 요금도 함께 응답함
+        - 출발역에서 도착역까지의 최단 거리(장거리) 구한다
+            When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+            Then 최단 거리 경로를 응답
+            And 총 거리도 함께 응답함
+            And 지하철 이용 요금도 함께 응답함
 */
     @TestFactory
     @DisplayName("지하철 경로 검색")
     Stream<DynamicTest> subwayPathSearch() {
         return Stream.of(
-            dynamicTest("출발역에서 도착역까지의 최단 거리 구한다", () -> {
+            dynamicTest("출발역에서 도착역까지의 최단 거리(기본금액) 구한다", () -> {
                 //when
                 ExtractableResponse<Response> response = 최단거리_경로를_구한다(교대역, 양재역);
-
                 //then
-                최단경로가_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역));
+                최단경로와_거리_요금이_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역),5 ,1_550);
+            }),
+            dynamicTest("출발역에서 도착역까지의 최단 거리(초과금액) 구한다", () -> {
+                //when
+                ExtractableResponse<Response> response = 최단거리_경로를_구한다(양재역, 한국역);
+                //then
+                최단경로와_거리_요금이_조회됨(response, Arrays.asList(양재역, 강남역, 한국역), 50, 2_250);
+            }),
+            dynamicTest("출발역에서 도착역까지의 최단 거리(장거리) 구한다", () -> {
+                //when
+                ExtractableResponse<Response> response = 최단거리_경로를_구한다(양재역, 광화문역);
+                //then
+                최단경로와_거리_요금이_조회됨(response, Arrays.asList(양재역, 강남역, 한국역, 광화문역), 150, 3_550);
             })
         );
 
@@ -91,19 +120,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
-
-
-
-
-    @Test
-    @DisplayName("최단거리 경로 찾기 기능")
-    void pathFinder() {
-        //when
-        ExtractableResponse<Response> response = 최단거리_경로를_구한다(교대역, 양재역);
-
-        //then
-        최단경로가_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역));
-    }
 
 
     /**
@@ -129,7 +145,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void notLinkSection() {
         StationResponse 신길역 = StationAcceptanceTest.지하철역_등록되어_있음("신길역").as(StationResponse.class);
         StationResponse 여의도역 = StationAcceptanceTest.지하철역_등록되어_있음("여의도역").as(StationResponse.class);
-        LineResponse 오호선 = 지하철_노선_등록되어_있음("오호선", "bg-red-600", 신길역, 여의도역, 5);
+        LineResponse 오호선 = 지하철_노선_등록되어_있음("오호선", "bg-red-600", 신길역, 여의도역, 5, 100);
 
 
         //when
@@ -158,18 +174,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 
 
-    private void 최단경로가_조회됨(ExtractableResponse<Response> response,  List<StationResponse> stations) {
+    private void 최단경로와_거리_요금이_조회됨(ExtractableResponse<Response> response,  List<StationResponse> stations, int distance, int fare) {
         PathResponse minPath = response.as(PathResponse.class);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(minPath.getDistance()).isEqualTo(5),
-                () -> assertThat(minPath.getStations()).containsExactlyElementsOf(stations)
+                () -> assertThat(minPath.getStations()).containsExactlyElementsOf(stations),
+                () -> assertThat(minPath.getDistance()).isEqualTo(distance),
+                () -> assertThat(minPath.getFare()).isEqualTo(fare)
         );
     }
 
-    private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+    private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,
+                                        StationResponse downStation, int distance, int fare) {
+
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, fare);
         return LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
