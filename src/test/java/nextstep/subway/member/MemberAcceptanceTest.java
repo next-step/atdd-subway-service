@@ -51,7 +51,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void manageMyInfo() {
         // givne
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        final String token = AuthAcceptanceTest.토큰_발급(EMAIL, PASSWORD);
+        final String token = AuthAcceptanceTest.로그인_되어_있음(EMAIL, PASSWORD);
 
         // when
         final ExtractableResponse<Response> getMyInfoResponse = 나의_정보_조회_요청(token);
@@ -167,5 +167,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .when().delete("/members/me")
                 .then().log().all()
                 .extract();
+    }
+
+    public static MemberResponse 회원_등록되어_있음(String email, String password, int age) {
+        return 회원_생성을_요청(email, password, age).as(MemberResponse.class);
     }
 }

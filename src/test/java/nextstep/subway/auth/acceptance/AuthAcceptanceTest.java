@@ -90,7 +90,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
 
-    public static String 토큰_발급(String email, String password) {
+    public static String 로그인_되어_있음(String email, String password) {
         return 로그인_요청(email, password).as(TokenResponse.class).getAccessToken();
     }
 
