@@ -95,7 +95,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 로그인_됨(String accessToken, String email) {
+    public static void 로그인_됨(String accessToken, String email) {
         MemberResponse memberResponse = 회원_내_정보_조회(accessToken).as(MemberResponse.class);
         assertThat(memberResponse.getEmail()).isEqualTo(email);
     }

@@ -8,10 +8,12 @@ import java.util.List;
 public class ShortestPath {
 
     private List<Station> stations;
+    private List<SectionEdge> sectionEdges;
     private Distance distance;
 
-    public ShortestPath(List<Station> stations, int distance) {
+    public ShortestPath(List<Station> stations, List<SectionEdge> sectionEdges, int distance) {
         this.stations = stations;
+        this.sectionEdges = sectionEdges;
         this.distance = new Distance(distance);
     }
 
@@ -21,5 +23,9 @@ public class ShortestPath {
 
     public Distance getDistance() {
         return distance;
+    }
+
+    public List<SectionEdge> getSectionEdges() {
+        return sectionEdges;
     }
 }

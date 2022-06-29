@@ -22,7 +22,7 @@ class LineTest {
         upStation = new Station(1L, "당고개역");
         downStation = new Station(2L, "오이도역");
 
-        line = new Line("4호선", "하늘색", upStation, downStation, 20);
+        line = new Line("4호선", "하늘색", upStation, downStation, 20, 0);
     }
 
     @DisplayName("노선명, 노선색갈 수정")
@@ -31,7 +31,7 @@ class LineTest {
         String name = "2호선";
         String color = "파란색";
 
-        line.update(new Line(name, color));
+        line.update(new Line(name, color, 0));
 
         assertAll(
                 () -> assertThat(line.getName().getValue()).isEqualTo(name),

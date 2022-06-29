@@ -12,7 +12,10 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,8 +34,15 @@ public class FavoriteService {
     public void createFavorite(LoginMember loginMember, FavoriteRequest request) {
         validateSameStationId(request);
 
-        Favorite favorite = new Favorite(loginMember.getId(), request.getSource(), request.getTarget());
+        Map<Long, Station> stations = getStations(request);
+
+        Favorite favorite = new Favorite(loginMember.getId(), stations.get(request.getSource()), stations.get(request.getTarget()));
         favoriteRepository.save(favorite);
+    }
+
+    private Map<Long, Station> getStations(FavoriteRequest request) {
+        return stationRepository.findAllById(Arrays.asList(request.getSource(), request.getTarget())).stream()
+                .collect(Collectors.toMap(Station::getId, Function.identity()));
     }
 
     private void validateSameStationId(FavoriteRequest request) {
@@ -43,34 +53,19 @@ public class FavoriteService {
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
-        Map<Long, Station> stations = extractStations(favorites);
 
         return favorites.stream()
                 .map(it -> FavoriteResponse.of(
                         it,
-                        StationResponse.of(stations.get(it.getSourceStationId())),
-                        StationResponse.of(stations.get(it.getTargetStationId()))))
+                        StationResponse.of(it.getSourceStation()),
+                        StationResponse.of(it.getTargetStation())))
                 .collect(Collectors.toList());
-    }
-
-    private Map<Long, Station> extractStations(List<Favorite> favorites) {
-        Set<Long> stationIds = extractStationIds(favorites);
-        return stationRepository.findAllById(stationIds).stream()
-                .collect(Collectors.toMap(Station::getId, Function.identity()));
-    }
-
-    private Set<Long> extractStationIds(List<Favorite> favorites) {
-        Set<Long> stationIds = new HashSet<>();
-        for (Favorite favorite : favorites) {
-            stationIds.add(favorite.getSourceStationId());
-            stationIds.add(favorite.getTargetStationId());
-        }
-        return stationIds;
     }
 
     @Transactional
     public void deleteFavorite(LoginMember loginMember, Long id) {
-        Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
+        Favorite favorite = favoriteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 즐겨찾기 항목입니다."));
         validateOwner(loginMember, favorite);
         favoriteRepository.deleteById(id);
     }

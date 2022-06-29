@@ -33,9 +33,9 @@ class PathFinderTest {
      */
     @BeforeEach
     public void setup() {
-        이호선 = new Line("이호선", "파랑색", 교대역, 강남역, 10);
-        삼호선 = new Line("삼호선", "초록색", 교대역, 양재역, 20);
-        신분당선 = new Line("신분당선", "빨간색", 양재역, 강남역, 10);
+        이호선 = new Line("이호선", "파랑색", 교대역, 강남역, 10, 0);
+        삼호선 = new Line("삼호선", "초록색", 교대역, 양재역, 20, 0);
+        신분당선 = new Line("신분당선", "빨간색", 양재역, 강남역, 10, 0);
 
         삼호선.addLineSection(남부터미널역, 양재역, new Distance(10));
     }
@@ -80,7 +80,7 @@ class PathFinderTest {
     public void findShortestPath_출발역과_도착역이_연결되지_않은_경우_에러_발생() {
         Station 오이도역 = new Station(5L, "오이도역");
         Station 당고개역 = new Station(5L, "당고개역");
-        Line 사호선 = new Line("사호선", "하늘색", 당고개역, 오이도역, 30);
+        Line 사호선 = new Line("사호선", "하늘색", 당고개역, 오이도역, 30, 0);
         PathFinder pathFinder = new DijkstraPathFinder(List.of(이호선, 삼호선, 신분당선, 사호선));
 
         assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, 당고개역))

@@ -2,11 +2,9 @@ package nextstep.subway.favorite.domain;
 
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.station.domain.Station;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Favorite extends BaseEntity {
@@ -14,16 +12,22 @@ public class Favorite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long memberId;
-    private Long sourceStationId;
-    private Long targetStationId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "source_station_id")
+    private Station sourceStation;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "target_station_id")
+    private Station targetStation;
 
     protected Favorite() {
     }
 
-    public Favorite(Long memberId, Long sourceStationId, Long targetStationId) {
+    public Favorite(Long memberId, Station sourceStation, Station targetStation) {
         this.memberId = memberId;
-        this.sourceStationId = sourceStationId;
-        this.targetStationId = targetStationId;
+        this.sourceStation = sourceStation;
+        this.targetStation = targetStation;
     }
 
     public Long getId() {
@@ -34,12 +38,12 @@ public class Favorite extends BaseEntity {
         return memberId;
     }
 
-    public Long getSourceStationId() {
-        return sourceStationId;
+    public Station getSourceStation() {
+        return sourceStation;
     }
 
-    public Long getTargetStationId() {
-        return targetStationId;
+    public Station getTargetStation() {
+        return targetStation;
     }
 
     public boolean isCreatedBy(Long memberId) {
