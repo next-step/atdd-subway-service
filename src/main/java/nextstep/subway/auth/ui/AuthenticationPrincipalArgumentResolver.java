@@ -2,6 +2,7 @@ package nextstep.subway.auth.ui;
 
 import nextstep.subway.auth.application.AuthService;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.GuestMember;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 import org.springframework.core.MethodParameter;
@@ -28,7 +29,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
         if (credentials == null) {
-            return new LoginMember();
+            return GuestMember.getInstance();
         }
 
         return authService.findMemberByToken(credentials);
