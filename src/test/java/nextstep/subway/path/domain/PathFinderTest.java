@@ -63,7 +63,7 @@ public class PathFinderTest {
         // then
         assertAll(
                 () -> assertThat(path.getStations()).containsExactly(교대역, 남부터미널역, 양재역),
-                () -> assertThat(path.getDistance()).isEqualTo(4)
+                () -> assertThat(path.getDistance().getDistance()).isEqualTo(4)
         );
     }
 
