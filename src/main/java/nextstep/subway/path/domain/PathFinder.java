@@ -22,7 +22,7 @@ public class PathFinder {
         validate(allSections, source, target);
 
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = generateStationGraph(allSections);
-        return findShortestPath(graph, source, target);
+        return findShortestPath(graph, allSections, source, target);
     }
 
     private void validate(List<Section> allSections, Station source, Station target) {
@@ -57,13 +57,13 @@ public class PathFinder {
         return graph;
     }
 
-    private Path findShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
+    private Path findShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> allSections,
                                   Station source, Station target) {
         DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> graphPath = shortestPath.getPath(source, target);
         validatePathResult(graphPath);
 
-        return convertToPath(graphPath);
+        return convertToPath(allSections, graphPath);
     }
 
     private void validatePathResult(GraphPath<Station, DefaultWeightedEdge> graphPath) {
@@ -91,7 +91,31 @@ public class PathFinder {
                 section.getDistanceValue());
     }
 
-    private Path convertToPath(GraphPath<Station, DefaultWeightedEdge> graphPath) {
-        return new Path(graphPath.getVertexList(), (int) graphPath.getWeight());
+    private Path convertToPath(List<Section> allSections, GraphPath<Station, DefaultWeightedEdge> graphPath) {
+        List<Station> stations = graphPath.getVertexList();
+        int totalDistance = (int) graphPath.getWeight();
+        int maxExtraCharge = getMaxExtraCharge(allSections, stations);
+
+        Charge charge = new Charge(totalDistance, maxExtraCharge);
+        return new Path(stations, totalDistance, charge);
+    }
+
+    private int getMaxExtraCharge(List<Section> allSections, List<Station> stations) {
+        int maxValue = 0;
+
+        for (int i = 0; i < stations.size() - 1; i++) {
+            Section section = findSection(allSections, stations.get(i), stations.get(i + 1));
+
+            maxValue = Math.max(maxValue, section.getExtraCharge());
+        }
+
+        return maxValue;
+    }
+
+    private Section findSection(List<Section> allSections, Station upStation, Station downStation) {
+        return allSections.stream()
+                .filter(section -> section.hasStation(upStation) && section.hasStation(downStation))
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
     }
 }
