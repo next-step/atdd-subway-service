@@ -3,10 +3,10 @@ package nextstep.subway.auth.domain;
 import nextstep.subway.path.domain.AgeFarePolicy;
 
 public class GuestMember implements AuthMember {
-    private final Integer age = AgeFarePolicy.TEENAGER_MAX_AGE.value() + 1;
+    private final int age = AgeFarePolicy.TEENAGER_MAX_AGE.value() + 1;
 
     @Override
-    public Integer getAge() {
+    public int getAge() {
         return age;
     }
 

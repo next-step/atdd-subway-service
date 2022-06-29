@@ -5,7 +5,7 @@ import nextstep.subway.path.domain.AgeFarePolicy;
 public class LoginMember implements AuthMember {
     private Long id;
     private String email;
-    private Integer age;
+    private int age;
 
     public LoginMember() {
     }
@@ -25,7 +25,7 @@ public class LoginMember implements AuthMember {
     }
 
     @Override
-    public Integer getAge() {
+    public int getAge() {
         return age;
     }
 
