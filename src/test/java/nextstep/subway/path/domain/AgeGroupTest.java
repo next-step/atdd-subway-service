@@ -2,16 +2,12 @@ package nextstep.subway.path.domain;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-class FareDiscounterTest {
-    @InjectMocks
-    private FareDiscounter fareDiscounter;
-
+class AgeGroupTest {
     @Test
     void adultDontReceiveDiscount() {
         // given
@@ -19,7 +15,7 @@ class FareDiscounterTest {
         int age = 30;
 
         // when
-        int i = fareDiscounter.discountFare(fare, age);
+        int i = AgeGroup.findAgeGroup(age).discountFare(fare);
 
         // then
         assertThat(i).isEqualTo(1250);
@@ -32,7 +28,7 @@ class FareDiscounterTest {
         int age = 17;
 
         // when
-        int i = fareDiscounter.discountFare(fare, age);
+        int i = AgeGroup.findAgeGroup(age).discountFare(fare);
 
         // then
         assertThat(i).isEqualTo(880);
@@ -45,7 +41,7 @@ class FareDiscounterTest {
         int age = 10;
 
         // when
-        int i = fareDiscounter.discountFare(fare, age);
+        int i = AgeGroup.findAgeGroup(age).discountFare(fare);
 
         // then
         assertThat(i).isEqualTo(650);

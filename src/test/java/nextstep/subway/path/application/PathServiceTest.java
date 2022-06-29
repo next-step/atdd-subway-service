@@ -6,7 +6,6 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
-import nextstep.subway.path.domain.FareDiscounter;
 import nextstep.subway.path.domain.PathFare;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.PathMap;
@@ -61,7 +60,7 @@ class PathServiceTest {
         // when
         StationService stationService = new StationService(stationRepository);
         LineService lineService = new LineService(lineRepository, stationService);
-        PathService pathService = new PathService(new PathFinder(), new PathMap(), new PathFare(), new FareDiscounter(), stationService, lineService, sectionRepository);
+        PathService pathService = new PathService(new PathFinder(), new PathMap(), new PathFare(), stationService, lineService, sectionRepository);
         PathResponse result = pathService.findShortestPath(new LoginMember(), 1L, 3L);
 
         // then
