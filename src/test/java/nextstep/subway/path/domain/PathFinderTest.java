@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.dto.LinePath;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -69,11 +70,11 @@ class PathFinderTest {
         Station source = stationRepository.findById(1L).get();
         Station target = stationRepository.findById(3L).get();
         WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
-        Map<String, Object> data = new PathFinder().findShortestPath(map, source, target);
+        LinePath linePath = new PathFinder().findShortestPath(map, source, target);
 
         // then
-        assertThat((List<Station>) data.get("vertex")).containsExactly(선릉역, 정자역, 수원역);
-        assertThat((double) data.get("weight")).isEqualTo(50);
+        assertThat(linePath.getVertex()).containsExactly(선릉역, 정자역, 수원역);
+        assertThat(linePath.getWeight()).isEqualTo(50);
     }
 
     @Test
@@ -87,11 +88,11 @@ class PathFinderTest {
         Station source = stationRepository.findById(1L).get();
         Station target = stationRepository.findById(5L).get();
         WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
-        Map<String, Object> data = new PathFinder().findShortestPath(map, source, target);
+        LinePath linePath = new PathFinder().findShortestPath(map, source, target);
 
         // then
-        assertThat((List<Station>) data.get("vertex")).containsExactly(선릉역, 정자역, 수원역, 춘천역, 강릉역);
-        assertThat((double) data.get("weight")).isEqualTo(80);
+        assertThat(linePath.getVertex()).containsExactly(선릉역, 정자역, 수원역, 춘천역, 강릉역);
+        assertThat(linePath.getWeight()).isEqualTo(80);
     }
 
     @Test

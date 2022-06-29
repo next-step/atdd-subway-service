@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.line.dto.LinePath;
 import nextstep.subway.path.domain.FareDiscounter;
 import nextstep.subway.path.domain.PathFare;
 import nextstep.subway.path.domain.PathFinder;
@@ -44,10 +45,10 @@ public class PathService {
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
         WeightedMultigraph<Station, DefaultWeightedEdge> map = pathMap.createMap(lineService.findAll());
-        Map<String, Object> data = pathFinder.findShortestPath(map, source, target);
-        int fare = pathFare.calculateFare((List<DefaultWeightedEdge>) data.get("edge"), sectionRepository.findAll());
+        LinePath linePath = pathFinder.findShortestPath(map, source, target);
+        int fare = pathFare.calculateFare(linePath.getEdge(), sectionRepository.findAll());
         fare = fareDiscounter.discountFare(fare, loginMember.isGuest() ? 20 : loginMember.getAge());
 
-        return new PathResponse((List<Station>) data.get("vertex"), (double) data.get("weight"), fare);
+        return new PathResponse(linePath.getVertex(), linePath.getWeight(), fare);
     }
 }
