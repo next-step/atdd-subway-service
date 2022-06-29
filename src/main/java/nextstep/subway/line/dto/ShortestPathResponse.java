@@ -17,7 +17,7 @@ public class ShortestPathResponse {
         this.stations = stations;
     }
 
-    public static ShortestPathResponse of(GraphPath path) {
+    public static ShortestPathResponse from(GraphPath path) {
         return new ShortestPathResponse((int) path.getWeight(), path.getVertexList());
     }
 

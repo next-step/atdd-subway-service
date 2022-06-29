@@ -27,7 +27,7 @@ public class PathFinder {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath path = dijkstraShortestPath.getPath(source, target);
         checkResultIsNull(path);
-        return ShortestPathResponse.of(path);
+        return ShortestPathResponse.from(path);
     }
 
     private static void validate(List<Line> allLines, Station source, Station target){
