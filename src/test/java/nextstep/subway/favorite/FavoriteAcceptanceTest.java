@@ -39,7 +39,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private String email = "lcjltj@gmail.com";
     private String password = "password";
-    private int age = 33;
+    private int age = 15;
 
     @Override
     @BeforeEach
@@ -50,7 +50,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 5, 0)).as(LineResponse.class);
+        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 5, 1000)).as(LineResponse.class);
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 0)).as(LineResponse.class);
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 0)).as(LineResponse.class);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 양재역, 남부터미널역, 15);
@@ -68,9 +68,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         final String accessToken = AuthAcceptanceTest.로그인_성공됨(로그인_요청);
 
         // when
-        final ExtractableResponse<Response> 지하철_최단거리_조회 = PathAcceptanceTest.비회원_지하철_최단거리_조회(강남역.getId(), 남부터미널역.getId());
+        final ExtractableResponse<Response> 지하철_최단거리_조회 = PathAcceptanceTest.회원_지하철_최단거리_조회(강남역.getId(), 남부터미널역.getId(), accessToken);
         // then
-        PathAcceptanceTest.비회원_지하철_최단거리_조회됨(지하철_최단거리_조회);
+        PathAcceptanceTest.회원_지하철_최단거리_조회됨(지하철_최단거리_조회);
 
         // when
         final ExtractableResponse<Response> 즐겨찾기_추가_요청 = 즐겨찾기_추가_요청(accessToken, 강남역.getId(), 남부터미널역.getId());
