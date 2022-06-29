@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.exception.ErrorMessage;
+import nextstep.subway.exception.IllegalArgumentException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -25,6 +27,7 @@ public class Favorite {
     }
 
     public Favorite(Member member, Station source, Station target) {
+        checkValidStation(source, target);
         this.member = member;
         this.source = source;
         this.target = target;
@@ -44,5 +47,11 @@ public class Favorite {
 
     public Station getTarget() {
         return target;
+    }
+
+    private void checkValidStation(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException(ErrorMessage.SOURCE_EQUALS_TARGET);
+        }
     }
 }
