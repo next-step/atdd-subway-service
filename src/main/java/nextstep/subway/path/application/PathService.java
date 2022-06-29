@@ -26,8 +26,8 @@ public class PathService {
     }
 
     public ShortestPathResponse getShortestPath(Long sourceStationId, Long targetStationId) {
-        Station sourceStation = stationService.findById(sourceStationId);
-        Station targetStation = stationService.findById(targetStationId);
+        Station sourceStation = stationService.findStationById(sourceStationId);
+        Station targetStation = stationService.findStationById(targetStationId);
         List<Line> allLines = lineRepository.findAll();
         return PathFinder.findShortestPath(allLines, sourceStation, targetStation);
     }
