@@ -23,6 +23,16 @@ public class PathAcceptanceMethods {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse target, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source=" + source.getId() + "&target=" + target.getId())
+                .then().log().all()
+                .extract();
+    }
+
     public static void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
