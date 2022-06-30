@@ -83,6 +83,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> findFavoritesResponse = 즐겨찾기_전체_조회(accessToken);
         // then
         즐겨찾기_전체_조회(findFavoritesResponse);
+
+        // when
+        FavoriteResponse favoriteResponse = saveFavoriteResponse.as(FavoriteResponse.class);
+        ExtractableResponse<Response> deleteFavoritesResponse = 즐겨찾기_삭제(accessToken, favoriteResponse.getId());
+        // then
+        즐겨찾기_삭제_성공(deleteFavoritesResponse);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_추가(String accessToken, FavoriteRequest request) {
@@ -106,6 +112,16 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_삭제(String accessToken, Long id) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/favorites/" + id)
+                .then().log().all()
+                .extract();
+    }
+
     public static void 즐겨찾기_추가_성공(ExtractableResponse<Response> response) {
         FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
         assertAll(
@@ -117,12 +133,15 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 즐겨찾기_전체_조회(ExtractableResponse<Response> response) {
-        List<FavoriteResponse> favoriteResponseList = response.jsonPath().getList(".", FavoriteResponse.class).stream()
-                .collect(Collectors.toList());
+        List<FavoriteResponse> favoriteResponseList = response.jsonPath().getList(".", FavoriteResponse.class).stream().collect(Collectors.toList());
         assertAll(
                 () -> assertThat(favoriteResponseList).hasSize(1),
                 () -> assertThat(favoriteResponseList.get(0).getSource().getName()).isEqualTo(강남역.getName()),
                 () -> assertThat(favoriteResponseList.get(0).getTarget().getName()).isEqualTo(양재역.getName())
         );
+    }
+
+    public static void 즐겨찾기_삭제_성공(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
