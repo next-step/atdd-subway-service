@@ -28,11 +28,11 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return LoginMember.guestLogin();
+            return LoginMember.createGuestLoginMember();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return LoginMember.memberLogin(member.getId(), member.getEmail(), member.getAge());
+        return LoginMember.createLoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

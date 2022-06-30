@@ -1,7 +1,9 @@
 package nextstep.subway.auth.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.path.domain.AgeType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,7 +50,7 @@ class LoginMemberTest {
     @Test
     void isGuest() {
         //given
-        LoginMember loginMember = LoginMember.guestLogin();
+        LoginMember loginMember = LoginMember.createGuestLoginMember();
 
         //when & Then
         assertThat(loginMember.isGuest()).isTrue();
@@ -58,9 +60,23 @@ class LoginMemberTest {
     @Test
     void isGuestIsAgeNone() {
         //given
-        LoginMember loginMember = LoginMember.guestLogin();
+        LoginMember loginMember = LoginMember.createGuestLoginMember();
 
         //when & Then
         assertThat(loginMember.getAgeType()).isEqualTo(AgeType.NONE);
     }
+
+
+    @DisplayName("허가된 사용자인지 확인")
+    @Test
+    void isAuthValid() {
+        //given
+        LoginMember loginMember = LoginMember.createGuestLoginMember();
+
+        //when & then
+        assertThatThrownBy(loginMember::authValidLoginMember)
+                .isInstanceOf(AuthorizationException.class);
+
+    }
+
 }
