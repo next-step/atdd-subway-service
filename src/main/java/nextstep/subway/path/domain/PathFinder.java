@@ -10,23 +10,22 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
     public static final String SOURCE_AND_TARGET_IS_EQUAL_ERROR = "출발지와 도착지는 같을 수 없습니다.";
     public static final String SOURCE_OR_TARGET_IS_NOT_CONTAINS_ALL_LINE_STATION_ERROR = "대상 노선에서 해당역을 찾을 수 없습니다.";
-    static WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    static WeightedMultigraph<Station, SectionWeightedEdge> graph;
     static {
-        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        graph = new WeightedMultigraph<>(SectionWeightedEdge.class);
     }
 
     public static ShortestPathResponse findShortestPath(List<Line> allLines, Station source, Station target) {
         validate(allLines, source, target);
         addSectionsToGraph(allLines);
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+        DijkstraShortestPath<Station, SectionWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, SectionWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
         checkResultIsNull(path);
         return ShortestPathResponse.of(path, toStationResponse(path.getVertexList()));
     }
@@ -65,11 +64,11 @@ public class PathFinder {
     }
 
     private static void setEdgeWeightBySection(List<Section> allLinesSections) {
-        allLinesSections.forEach(it ->
-            graph.setEdgeWeight(
-                graph.addEdge(it.getUpStation(), it.getDownStation()),
-                it.getDistance()
-            ));
+        allLinesSections.forEach(it -> {
+            SectionWeightedEdge sectionWeightedEdge = new SectionWeightedEdge(it);
+            graph.addEdge(it.getUpStation(), it.getDownStation(), sectionWeightedEdge);
+            graph.setEdgeWeight(sectionWeightedEdge, it.getDistance());
+        });
     }
 
     private static List<Station> mergeAllLinesStations(List<Line> allLines) {
@@ -86,7 +85,7 @@ public class PathFinder {
             .collect(Collectors.toList());
     }
 
-    private static void checkResultIsNull(GraphPath<Station, DefaultWeightedEdge> path) {
+    private static void checkResultIsNull(GraphPath<Station, SectionWeightedEdge> path) {
         if (path == null) {
             throw new IllegalArgumentException("출발지와 도착지가 연결 되어있는지 확인하세요.");
         }
