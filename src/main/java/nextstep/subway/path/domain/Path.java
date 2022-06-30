@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -25,5 +26,11 @@ public class Path {
 
     public Integer getFare() {
         return charge.getFare();
+    }
+
+    public void updateByLoginMember(LoginMember loginMember) {
+        if(!loginMember.isGuest()) {
+            charge.updateAgeType(loginMember.getAge());
+        }
     }
 }
