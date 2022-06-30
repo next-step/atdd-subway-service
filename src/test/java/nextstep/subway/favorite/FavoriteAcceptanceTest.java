@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_성공;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,19 +47,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         super.setUp();
         tokenRequest = new TokenRequest(EMAIL, PASSWORD);
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
-
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
-        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
-        교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
-        남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
-
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
-
-        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
         loginResponse = 로그인(new TokenRequest(EMAIL, PASSWORD));
+        지하철_노선_생성();
     }
 
     @DisplayName("노선 즐겨찾기를 관리한다.")
@@ -143,5 +131,14 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_삭제_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public void 지하철_노선_생성() {
+        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
+
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
+
+        loginResponse = 로그인(new TokenRequest(EMAIL, PASSWORD));
     }
 }
