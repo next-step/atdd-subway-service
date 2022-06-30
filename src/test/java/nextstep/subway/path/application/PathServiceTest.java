@@ -12,9 +12,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.ShortestPathResponse;
+import nextstep.subway.path.fake.FakeLineRepository;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -24,14 +24,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Service:Path")
 class PathServiceTest {
 
-    @Mock
-    private LineRepository lineRepository;
+    @Spy
+    private FakeLineRepository lineRepository;
 
     @Mock
     private StationService stationService;
@@ -47,6 +48,8 @@ class PathServiceTest {
         전체_노선 = Arrays.asList(_9호선, _2호선, _3호선, 분당선, 신분당선);
         선정릉역_번호 = 1L;
         양재역_번호 = 2L;
+
+        lineRepository.saveAll(전체_노선);
     }
 
     private Line 신분당선, 분당선, _9호선, _2호선, _3호선;
@@ -82,7 +85,6 @@ class PathServiceTest {
         // Given
         역_조회_동작_정의(선정릉역_번호, 선정릉역);
         역_조회_동작_정의(양재역_번호, 양재역);
-        전체_노선_조회_동작_정의();
 
         // When
         ShortestPathResponse 최단_경로_응답 = pathService.getShortestPath(선정릉역_번호, 양재역_번호);
@@ -108,7 +110,6 @@ class PathServiceTest {
     public void throwException_WhenSourceIsEqualToTarget() {
         // Given
         역_조회_동작_정의(선정릉역_번호, 선정릉역);
-        전체_노선_조회_동작_정의();
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -126,7 +127,6 @@ class PathServiceTest {
 
         역_조회_동작_정의(선정릉역_번호, 선정릉역);
         역_조회_동작_정의(천호역_번호, 천호역);
-        전체_노선_조회_동작_정의();
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -146,10 +146,6 @@ class PathServiceTest {
 
     private void 역_조회_동작_정의(Long 역번호, Station 반환역) {
         given(stationService.findStationById(역번호)).willReturn(반환역);
-    }
-
-    private void 전체_노선_조회_동작_정의() {
-        given(lineRepository.findAll()).willReturn(전체_노선);
     }
 
     public void 지하철역_생성() {
