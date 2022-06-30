@@ -30,7 +30,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials, boolean required) {
         if (!required && credentials == null) {
-            return new LoginMember();
+            return LoginMember.guest();
         }
 
         if (!jwtTokenProvider.validateToken(credentials)) {

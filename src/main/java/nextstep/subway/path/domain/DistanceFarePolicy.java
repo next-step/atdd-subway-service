@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Fare;
 
 import java.util.Arrays;
@@ -10,9 +11,11 @@ import static java.util.stream.Collectors.toList;
 
 public enum DistanceFarePolicy {
 
-     OVER_FIFTY_KM(50, distance -> (int) ((Math.ceil((distance - 1) / 8) + 1) * 100)),
-     OVER_TEN_KM(10, distance -> (int) ((Math.ceil((distance - 1) / 5) + 1) * 100)),
+     OVER_FIFTY_KM(50, calculationFunction(8)),
+     OVER_TEN_KM(10, calculationFunction(5)),
      DEFAULT(0, distance -> 1250);
+
+     private static final int ADDITIONAL_CHARGE = 100;
 
      private final int distance;
      private final Function<Integer, Integer> calculation;
@@ -22,9 +25,13 @@ public enum DistanceFarePolicy {
           this.calculation = calculation;
      }
 
-     public static Fare calculate(int distance) {
+     private static Function<Integer, Integer> calculationFunction(int criteria) {
+          return distance -> (int) ((Math.ceil((distance - 1) / criteria) + 1) * ADDITIONAL_CHARGE);
+     }
+
+     public static Fare calculate(Distance distance) {
           int fareValue = 0;
-          int distanceValue = distance;
+          int distanceValue = distance.getValue();
           for (DistanceFarePolicy policy : findMatches(distanceValue)) {
                fareValue += calculate(policy, distanceValue);
                distanceValue = policy.distance;

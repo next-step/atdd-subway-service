@@ -32,7 +32,7 @@ public class PathService {
         PathFinder pathFinder = new PathFinder(lineService.findAllLines());
         Path shortestPath = pathFinder.findShortestPath(sourceStation, targetStation);
 
-        return PathResponse.of(shortestPath.getStations(), shortestPath.getDistance(), shortestPath.getFare(loginMember));
+        return PathResponse.of(shortestPath.getStations(), shortestPath.getDistanceValue(), shortestPath.getFare(loginMember));
     }
 
 }

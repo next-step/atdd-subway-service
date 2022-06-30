@@ -17,12 +17,12 @@ public class Fare implements Comparable<Fare>{
         this.value = value;
     }
 
-    public void plus(Fare fare) {
-        this.value += fare.value;
+    public Fare plus(Fare fare) {
+        return new Fare(this.value += fare.value);
     }
 
-    public void minus(Fare fare) {
-        this.value -= fare.value;
+    public Fare minus(Fare fare) {
+        return new Fare(this.value -= fare.value);
     }
 
     public int getValue() {

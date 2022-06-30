@@ -59,7 +59,7 @@ class PathFinderTest {
         // then
         assertAll(
                 () -> assertThat(shortestPath.getStations()).containsExactly(교대역, 남부터미널역, 양재역),
-                () -> assertThat(shortestPath.getDistance()).isEqualTo(8),
+                () -> assertThat(shortestPath.getDistanceValue()).isEqualTo(8),
                 () -> assertThat(shortestPath.getFare(new LoginMember())).isEqualTo(new Fare(1250))
         );
     }

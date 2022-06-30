@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Fare;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,7 @@ class DistanceFarePolicyTest {
     @Test
     void calculate() {
         // given
-        int distance = 58;
+        Distance distance = new Distance(58);
 
         // when
         Fare actual = DistanceFarePolicy.calculate(distance);

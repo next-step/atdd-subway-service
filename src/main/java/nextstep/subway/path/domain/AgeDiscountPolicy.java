@@ -10,7 +10,9 @@ public enum AgeDiscountPolicy {
     CHILDREN(6, 50),
     INFANCY(0, 100);
 
-    private static final Fare DEFAULT_MINUS_FARE = new Fare(350);
+    private static final int DEFAULT_MINUS_FARE_VALUE = 350;
+    private static final Fare DEFAULT_MINUS_FARE = new Fare(DEFAULT_MINUS_FARE_VALUE);
+    private static final int PERCENT_NUMBER = 100;
 
     private final int age;
     private final double discountRate;
@@ -21,12 +23,12 @@ public enum AgeDiscountPolicy {
     }
 
     public static Fare discount(Fare fare, int age) {
-        fare.minus(DEFAULT_MINUS_FARE);
+        fare = fare.minus(DEFAULT_MINUS_FARE);
 
         AgeDiscountPolicy policy = valueOf(age);
 
-        Fare discountFare = new Fare((int) (fare.getValue() * (policy.discountRate / 100)));
-        fare.minus(discountFare);
+        Fare discountFare = new Fare((int) (fare.getValue() * (policy.discountRate / PERCENT_NUMBER)));
+        fare = fare.minus(discountFare);
 
         return fare;
     }
