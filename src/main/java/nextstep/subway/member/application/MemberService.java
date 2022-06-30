@@ -33,7 +33,7 @@ public class MemberService {
         member.update(param.toMember());
     }
 
-    private Member findMemberById(Long id) {
+    public Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow(() -> new NoSearchMemberException(id));
     }
 

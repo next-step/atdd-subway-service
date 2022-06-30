@@ -15,9 +15,13 @@ public class Distance {
     protected Distance() {
     }
 
-    public Distance(int distance) {
+    protected Distance(int distance) {
         validate(distance);
         this.distance = distance;
+    }
+
+    public static Distance of(int distance) {
+        return new Distance(distance);
     }
 
     private void validate(int distance) {

@@ -29,7 +29,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void init() {
         강남역 = StationTestUtils.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         광교역 = StationTestUtils.지하철역_등록되어_있음("광교역").as(StationResponse.class);
-        신분당선 = LineTestUtils.지하철_노선_생성_요청(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10)).as(LineResponse.class);
+        신분당선 = LineTestUtils.지하철_노선_생성_요청(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 0)).as(LineResponse.class);
 
         회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
         로그인_토큰 = 로그인_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD).as(TokenResponse.class);

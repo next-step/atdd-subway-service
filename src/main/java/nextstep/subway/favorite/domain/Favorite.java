@@ -52,7 +52,7 @@ public class Favorite extends BaseEntity {
         }
     }
 
-    public void vlidateOwner(Long memberId) {
+    public void validateOwner(Long memberId) {
         if (!Objects.equals(member.getId(), memberId)) {
             throw new AuthorizationException(ERROR_MESSAGE_NOT_OWNER);
         }
