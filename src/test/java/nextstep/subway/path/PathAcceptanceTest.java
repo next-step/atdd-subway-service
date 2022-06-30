@@ -3,6 +3,7 @@ package nextstep.subway.path;
 import static nextstep.subway.utils.LineAcceptanceMethods.*;
 import static nextstep.subway.utils.StationAcceptanceMethods.*;
 import static nextstep.subway.utils.PathAcceptanceMethods.*;
+import static nextstep.subway.utils.AuthAcceptanceMethods.*;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -79,6 +80,38 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_역_목록_순서(response, Arrays.asList(사당역, 이수역, 고속터미널역));
         최단_경로_거리_확인(response, 17);
         경로_요금_확인(response, 1650);
+    }
+
+    /**
+     *   Scenario: 두 역의 최단 거리 경로를 조회
+     *     Given 지하철역이 등록되어있음
+     *     And 지하철 노선이 등록되어있음
+     *     And 지하철 노선에 지하철역이 등록되어있음
+     *     And 10세 회원이 등록되 있음
+     *     When 10세 회원 계정으로 로그인
+     *     And 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+     *     Then 최단 거리 경로를 응답
+     *     And 총 거리도 함께 응답함
+     *     And ** 어린이 요금이 적용된 지하철 이용 요금도 함께 응답함 **
+     */
+    @DisplayName("로그인 된 유저의 연령에 따른 요금 확인.")
+    @Test
+    void findShortestPathWithLogin() {
+        //given
+        String email = "aa@bb.com";
+        String password = "abcd";
+        int age = 10;
+
+        회원_등록되어_있음(email, password, age);
+
+        // when
+        ExtractableResponse<Response> loginResponse = 로그인을_요청한다(email, password);
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(사당역, 고속터미널역, extractAccessToken(loginResponse));
+
+        // then
+        최단_경로_역_목록_순서(response, Arrays.asList(사당역, 이수역, 고속터미널역));
+        최단_경로_거리_확인(response, 17);
+        경로_요금_확인(response, 650);
     }
 
     @DisplayName("노선상에 존재하지 않는 역에 대해 최단거리 조회.")
