@@ -54,16 +54,21 @@ class PathGraphTest {
         남부터미널역 = new Station("남부터미널역");
         없는역 = new Station("없는역");
 
-        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        신분당선.changeFare(2_000);
+        신분당선 = new Line.Builder().name("신분당선").color("bg-red-600")
+                .upStation(강남역).downStation(양재역).distance(10).fare(2_000)
+                .build();
 
-        이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10);
-        이호선.changeFare(1_000);
+        이호선 = new Line.Builder().name("이호선").color("bg-red-600")
+                .upStation(교대역).downStation(강남역).distance(10).fare(1_000)
+                .build();
 
-        삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        삼호선 = new Line.Builder().name("삼호선").color("bg-red-600")
+                .upStation(교대역).downStation(양재역).distance(5)
+                .build();
 
-        오호선 = new Line("오호선", "bg-red-700", 여의도역, 신길역, 5);
-        오호선.changeFare(1_000);
+        오호선 = new Line.Builder().name("삼호선").color("bg-red-700")
+                .upStation(여의도역).downStation(신길역).distance(5).fare(1_000)
+                .build();
 
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, 3));
 

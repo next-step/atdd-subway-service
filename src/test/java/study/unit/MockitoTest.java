@@ -24,7 +24,10 @@ public class MockitoTest {
         StationService stationService = mock(StationService.class);
 
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(
-                new Line("신분당선", "RED", new Station("상행선"), new Station("하행선"), 10)));
+                new Line.Builder().name("신분당선").color("RED").upStation(new Station("상행성"))
+                        .downStation(new Station("하행선")).distance(10)
+                        .build()));
+
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when

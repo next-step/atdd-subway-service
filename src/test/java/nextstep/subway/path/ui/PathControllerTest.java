@@ -23,11 +23,11 @@ class PathControllerTest {
 
         assertAll(
                 () -> assertThatIllegalArgumentException()
-                        .isThrownBy(() -> pathController.findPaths(LoginMember.guestLogin(),null)),
+                        .isThrownBy(() -> pathController.findPaths(LoginMember.createGuestLoginMember(),null)),
                 () -> assertThatIllegalArgumentException()
-                        .isThrownBy(() -> pathController.findPaths(LoginMember.guestLogin(), new PathRequest(0, 1))),
+                        .isThrownBy(() -> pathController.findPaths(LoginMember.createGuestLoginMember(), new PathRequest(0, 1))),
                 () -> assertThatIllegalArgumentException()
-                        .isThrownBy(() -> pathController.findPaths(LoginMember.guestLogin(), new PathRequest(1, 0)))
+                        .isThrownBy(() -> pathController.findPaths(LoginMember.createGuestLoginMember(), new PathRequest(1, 0)))
         );
     }
 

@@ -61,13 +61,23 @@ class PathServiceTest {
         동인천역 = new Station("동인천역");
         주안역 = new Station("주안역");
         // --  판교 - 주안 - 성남 - 광교
-        신분당선 = new Line("신분당선", "레드", 판교역, 주안역, 10);
+        신분당선 = new Line.Builder().name("신분당선")
+                .color("레드")
+                .upStation(판교역).downStation(주안역)
+                .distance(10)
+                .build();
+
         신분당선.addSection(new Section(신분당선, 주안역, 성남역, 100));
         신분당선.addSection(new Section(신분당선, 성남역, 광교역, 42));
         신분당선.changeFare(2_000);
 
         // -- 인천 - 판교 -- 동인천  -- 광교
-        일호선 = new Line("일호선", "블루", 인천역, 판교역, 33);
+        일호선 = new Line.Builder().name("일호선")
+                .color("블루")
+                .upStation(인천역).downStation(판교역)
+                .distance(33)
+                .build();
+
         일호선.addSection(new Section(일호선, 판교역, 동인천역, 31));
         일호선.addSection(new Section(일호선, 동인천역, 광교역, 41));
 
@@ -91,10 +101,12 @@ class PathServiceTest {
         given(stationRepository.getById(pathRequest.getSource())).willReturn(판교역);
         given(stationRepository.getById(pathRequest.getTarget())).willReturn(광교역);
 
-        final PathResponse pathResponse = pathService.findShortPath(LoginMember.guestLogin(), new PathRequest(1L, 2L));
+        final PathResponse pathResponse = pathService.findShortPath(LoginMember.createGuestLoginMember(),
+                new PathRequest(1L, 2L));
 
         assertAll(
-                () -> assertThat(pathResponse.getStations()).containsExactly(StationResponse.of(판교역), StationResponse.of(동인천역), StationResponse.of(광교역)),
+                () -> assertThat(pathResponse.getStations()).containsExactly(
+                        StationResponse.of(판교역), StationResponse.of(동인천역), StationResponse.of(광교역)),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(5350)
         );
     }
@@ -108,10 +120,12 @@ class PathServiceTest {
         given(stationRepository.getById(pathRequest.getSource())).willReturn(동인천역);
         given(stationRepository.getById(pathRequest.getTarget())).willReturn(광교역);
 
-        final PathResponse pathResponse = pathService.findShortPath(LoginMember.guestLogin(), new PathRequest(1L, 2L));
+        final PathResponse pathResponse = pathService.findShortPath(LoginMember.createGuestLoginMember(),
+                new PathRequest(1L, 2L));
 
         assertAll(
-                () -> assertThat(pathResponse.getStations()).containsExactly(StationResponse.of(동인천역), StationResponse.of(광교역)),
+                () -> assertThat(pathResponse.getStations()).containsExactly(StationResponse.of(동인천역),
+                        StationResponse.of(광교역)),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(4_950)
         );
 
@@ -127,7 +141,7 @@ class PathServiceTest {
         given(stationRepository.getById(pathRequest.getSource())).willReturn(판교역);
         given(stationRepository.getById(pathRequest.getTarget())).willReturn(주안역);
 
-        final PathResponse pathResponse = pathService.findShortPath(LoginMember.guestLogin(), new PathRequest(1L, 2L));
+        final PathResponse pathResponse = pathService.findShortPath(LoginMember.createGuestLoginMember(), new PathRequest(1L, 2L));
 
         assertAll(
                 () -> assertThat(pathResponse.getStations()).containsExactly(StationResponse.of(판교역), StationResponse.of(주안역)),

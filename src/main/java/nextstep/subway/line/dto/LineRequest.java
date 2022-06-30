@@ -1,6 +1,8 @@
 package nextstep.subway.line.dto;
 
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.station.domain.Station;
 
 public class LineRequest {
     private String name;
@@ -31,6 +33,16 @@ public class LineRequest {
         this.fare = fare;
     }
 
+    public Line toLine(Station upStation, Station downStation) {
+        return new Line.Builder().name(name)
+                .color(color)
+                .upStation(upStation)
+                .downStation(downStation)
+                .distance(distance)
+                .fare(Fare.of(fare))
+                .build();
+    }
+
     public String getName() {
         return name;
     }
@@ -53,10 +65,6 @@ public class LineRequest {
 
     public int getFare() {
         return fare;
-    }
-
-    public Line toLine() {
-        return new Line(name, color);
     }
 
 }

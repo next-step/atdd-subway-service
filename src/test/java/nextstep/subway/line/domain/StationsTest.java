@@ -24,7 +24,12 @@ class StationsTest {
         광교역 = new Station("광교역");
         판교역 = new Station("판교역");
 
-        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        신분당선 = new Line.Builder().name("신분당선")
+                .color("bg-red-600")
+                .upStation(강남역)
+                .downStation(광교역)
+                .distance(10).build();
+
         final Section section = new Section(신분당선, 광교역, 판교역, 10);
         신분당선.addSection(section);
     }

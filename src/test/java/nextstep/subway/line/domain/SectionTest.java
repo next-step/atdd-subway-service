@@ -21,7 +21,7 @@ class SectionTest {
         광교역 = new Station("광교역");
         판교역 = new Station("판교역");
         성수역 = new Station("성수역");
-        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        신분당선 = new Line.Builder().name("신분당선").color("bg-red-600").downStation(광교역).distance(10).build();
     }
 
 

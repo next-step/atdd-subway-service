@@ -1,7 +1,6 @@
 package nextstep.subway.member.ui;
 
 import java.net.URI;
-import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.application.MemberService;
@@ -50,7 +49,7 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        authValidLoginMember(loginMember);
+        loginMember.authValidLoginMember();
         MemberResponse member = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(member);
     }
@@ -66,11 +65,5 @@ public class MemberController {
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
-    }
-
-    private void authValidLoginMember(LoginMember loginMember) {
-        if (loginMember.isGuest()) {
-            throw new AuthorizationException("허가 되지 않은 사용자");
-        }
     }
 }

@@ -28,16 +28,17 @@ public class Line extends BaseEntity {
     protected Line() {
     }
 
+
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
-        final Section section = new Section(this, upStation, downStation, distance);
-        sections = new Sections(section);
+    private Line(Builder builder) {
+        this(builder.name, builder.color);
+        Section section = new Section(this, builder.upStation, builder.downStation, builder.distance);
+        this.sections = new Sections(section);
+        this.fare = builder.fare;
     }
 
     public void update(Line line) {
@@ -98,5 +99,54 @@ public class Line extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(getName(), getColor());
+    }
+
+    public static class Builder {
+        private String name;
+        private String color;
+        private Fare fare = Fare.of(0);
+        private Station upStation;
+        private Station downStation;
+
+        private int distance;
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder color(String color) {
+            this.color = color;
+            return this;
+        }
+
+        public Builder fare(Fare fare) {
+            this.fare = fare;
+            return this;
+        }
+
+        public Builder fare(int fare) {
+            this.fare = Fare.of(fare);
+            return this;
+        }
+
+        public Builder upStation(Station upStation) {
+            this.upStation = upStation;
+            return this;
+        }
+
+        public Builder downStation(Station downStation) {
+            this.downStation = downStation;
+            return this;
+        }
+
+        public Builder distance(int distance) {
+            this.distance = distance;
+            return this;
+        }
+
+        public Line build() {
+            return new Line(this);
+        }
     }
 }
