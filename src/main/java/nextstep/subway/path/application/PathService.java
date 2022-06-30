@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.SectionService;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.Path;
@@ -22,12 +23,14 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findShortestPath(Long sourceId, Long targetId) {
+    public PathResponse findShortestPath(Long sourceId, Long targetId, LoginMember loginMember) {
         List<Section> allSections = sectionService.findAllSections();
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
 
         Path path = pathFinder.findShortestPath(allSections, source, target);
+        path.updateByLoginMember(loginMember);
         return PathResponse.of(path);
     }
+
 }
