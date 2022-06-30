@@ -6,6 +6,8 @@ import nextstep.subway.member.domain.Email;
 import java.util.Objects;
 
 public class LoginMember {
+    private static final LoginMember NON_MEMBER = new LoginMember(0L, "none@member.com", 20);
+
     private final Long id;
     private final Email email;
     private final Age age;
@@ -18,6 +20,14 @@ public class LoginMember {
 
     public static LoginMember of(final Long id, final String email, final Integer age) {
         return new LoginMember(id, email, age);
+    }
+
+    public static LoginMember ofNonMember() {
+        return NON_MEMBER;
+    }
+
+    public boolean isNonMember() {
+        return NON_MEMBER.equals(this);
     }
 
     public Long getId() {

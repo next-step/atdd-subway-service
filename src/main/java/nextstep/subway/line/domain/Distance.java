@@ -3,10 +3,13 @@ package nextstep.subway.line.domain;
 import nextstep.subway.line.exception.LineException;
 import nextstep.subway.line.exception.LineExceptionType;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
+@Access(AccessType.FIELD)
 public class Distance {
     private static final int MIN_DISTANCE = 0;
     private int value;
