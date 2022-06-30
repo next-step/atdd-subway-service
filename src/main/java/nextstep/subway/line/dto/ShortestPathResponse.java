@@ -1,31 +1,31 @@
 package nextstep.subway.line.dto;
 
 import java.util.List;
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
 
 public class ShortestPathResponse {
     private int distance;
-    private List<Station> stations;
+    private List<StationResponse> stations;
 
     public ShortestPathResponse() {
 
     }
 
-    public ShortestPathResponse(int distance, List<Station> stations) {
+    private ShortestPathResponse(int distance, List<StationResponse> stations) {
         this.distance = distance;
         this.stations = stations;
     }
 
-    public static ShortestPathResponse from(GraphPath path) {
-        return new ShortestPathResponse((int) path.getWeight(), path.getVertexList());
+    public static ShortestPathResponse of(GraphPath path, List<StationResponse> stationResponses) {
+        return new ShortestPathResponse((int) path.getWeight(), stationResponses);
     }
 
     public int getDistance() {
         return distance;
     }
 
-    public List<Station> getStations() {
+    public List<StationResponse> getStations() {
         return stations;
     }
 }

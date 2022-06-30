@@ -10,12 +10,14 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.ShortestPathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -88,11 +90,16 @@ class PathServiceTest {
         // Then
         verify(stationService, times(2)).findStationById(anyLong());
         verify(lineRepository).findAll();
+        List<String> 최단_경로_역_목록 = 최단_경로_응답.getStations()
+            .stream()
+            .map(StationResponse::getName)
+            .collect(Collectors.toList());
         assertAll(
             () -> assertThat(최단_경로_응답.getDistance()).isEqualTo(32),
             () -> assertThat(최단_경로_응답.getStations())
+                .extracting(StationResponse::getName)
                 .hasSize(5)
-                .containsExactly(선정릉역, 선릉역, 역삼역, 강남역, 양재역)
+                .containsAnyElementsOf(최단_경로_역_목록)
         );
     }
 

@@ -7,6 +7,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.ShortestPathResponse;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -27,23 +28,29 @@ public class PathFinder {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath path = dijkstraShortestPath.getPath(source, target);
         checkResultIsNull(path);
-        return ShortestPathResponse.from(path);
+        return ShortestPathResponse.of(path, toStationResponse(path.getVertexList()));
     }
 
-    private static void validate(List<Line> allLines, Station source, Station target){
+    private static List<StationResponse> toStationResponse(List<Station> vertexStationList) {
+        return vertexStationList.stream()
+            .map(StationResponse::from)
+            .collect(Collectors.toList());
+    }
+
+    private static void validate(List<Line> allLines, Station source, Station target) {
         validateStationEquals(source, target);
         validateStationContains(allLines, source, target);
     }
 
     private static void validateStationEquals(Station source, Station target) {
-        if(source.equals(target)){
+        if (source.equals(target)) {
             throw new IllegalArgumentException(SOURCE_AND_TARGET_IS_EQUAL_ERROR);
         }
     }
 
-    private static void validateStationContains(List<Line> allLines, Station source, Station target){
+    private static void validateStationContains(List<Line> allLines, Station source, Station target) {
         List<Station> stations = mergeAllLinesStations(allLines);
-        if(!stations.contains(source) || !stations.contains(target)){
+        if (!stations.contains(source) || !stations.contains(target)) {
             throw new IllegalArgumentException(SOURCE_OR_TARGET_IS_NOT_CONTAINS_ALL_LINE_STATION_ERROR);
         }
     }
@@ -67,20 +74,20 @@ public class PathFinder {
 
     private static List<Station> mergeAllLinesStations(List<Line> allLines) {
         return allLines.stream()
-            .map(it -> it.getAllStations())
+            .map(Line::getAllStations)
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
     }
 
     private static List<Section> mergeAllLinesSections(List<Line> allLines) {
         return allLines.stream()
-            .map(it -> it.getSections())
+            .map(Line::getSections)
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
     }
 
     private static void checkResultIsNull(GraphPath path) {
-        if(path == null){
+        if (path == null) {
             throw new IllegalArgumentException("출발지와 도착지가 연결 되어있는지 확인하세요.");
         }
     }

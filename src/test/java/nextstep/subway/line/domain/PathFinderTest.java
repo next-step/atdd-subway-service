@@ -6,9 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.line.dto.ShortestPathResponse;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,9 +58,17 @@ class PathFinderTest {
         ShortestPathResponse 최단_경로_응답 = PathFinder.findShortestPath(전체_노선, 선정릉역, 양재역);
 
         // Then
+        List<String> 최단_경로_역_목록 = 최단_경로_응답.getStations()
+            .stream()
+            .map(StationResponse::getName)
+            .collect(Collectors.toList());
+        
         assertAll(
             () -> assertThat(최단_경로_응답.getDistance()).isEqualTo(32),
-            () -> assertThat(최단_경로_응답.getStations()).containsExactly(선정릉역, 선릉역, 역삼역, 강남역, 양재역)
+            () -> assertThat(최단_경로_응답.getStations())
+                .extracting(StationResponse::getName)
+                .hasSize(5)
+                .containsAnyElementsOf(최단_경로_역_목록)
         );
     }
 
