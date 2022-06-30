@@ -80,7 +80,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, int age) {
+    public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, int age) {
         return MemberAcceptanceTest.회원_생성을_요청(email, password, age);
     }
 
