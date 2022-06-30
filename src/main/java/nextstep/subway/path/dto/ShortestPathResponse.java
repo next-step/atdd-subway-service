@@ -1,6 +1,9 @@
-package nextstep.subway.line.dto;
+package nextstep.subway.path.dto;
 
 import java.util.List;
+import javax.xml.xpath.XPathException;
+import nextstep.subway.path.domain.SectionWeightedEdge;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
 
@@ -17,7 +20,7 @@ public class ShortestPathResponse {
         this.stations = stations;
     }
 
-    public static ShortestPathResponse of(GraphPath path, List<StationResponse> stationResponses) {
+    public static ShortestPathResponse of(GraphPath<Station, SectionWeightedEdge> path, List<StationResponse> stationResponses) {
         return new ShortestPathResponse((int) path.getWeight(), stationResponses);
     }
 

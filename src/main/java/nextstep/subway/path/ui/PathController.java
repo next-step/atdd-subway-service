@@ -1,6 +1,6 @@
 package nextstep.subway.path.ui;
 
-import nextstep.subway.line.dto.ShortestPathResponse;
+import nextstep.subway.path.dto.ShortestPathResponse;
 import nextstep.subway.path.application.PathService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
