@@ -17,11 +17,15 @@ public class PathFinder {
     private static final String SOURCE_OR_TARGET_IS_NOT_CONTAINS_ALL_LINE_STATION_ERROR = "대상 노선에서 해당역을 찾을 수 없습니다.";
     private static final String SOURCE_AND_TARGET_IS_NOT_CONNECTED_ERROR = "출발지와 도착지가 연결 되어있는지 확인하세요.";
 
+    private WeightedMultigraph<Station, SectionWeightedEdge> graph;
+
+    public PathFinder() {
+        this.graph = new WeightedMultigraph<>(SectionWeightedEdge.class);
+    }
+
     public ShortestPathResponse findShortestPath(List<Line> allLines, Station source, Station target) {
         validate(allLines, source, target);
-
-        WeightedMultigraph<Station, SectionWeightedEdge> graph = new WeightedMultigraph<>(SectionWeightedEdge.class);
-        addSectionsToGraph(graph, allLines);
+        addSectionsToGraph(allLines);
 
         DijkstraShortestPath<Station, SectionWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, SectionWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
@@ -54,16 +58,16 @@ public class PathFinder {
         }
     }
 
-    private void addSectionsToGraph(WeightedMultigraph<Station, SectionWeightedEdge> graph, List<Line> allLines) {
-        addVertexByStation(graph, mergeAllLinesStations(allLines));
-        setEdgeWeightBySection(graph, mergeAllLinesSections(allLines));
+    private void addSectionsToGraph(List<Line> allLines) {
+        addVertexByStation(mergeAllLinesStations(allLines));
+        setEdgeWeightBySection( mergeAllLinesSections(allLines));
     }
 
-    private void addVertexByStation(WeightedMultigraph<Station, SectionWeightedEdge> graph, List<Station> allLinesStations) {
+    private void addVertexByStation(List<Station> allLinesStations) {
         allLinesStations.forEach(graph::addVertex);
     }
 
-    private void setEdgeWeightBySection(WeightedMultigraph<Station, SectionWeightedEdge> graph, List<Section> allLinesSections) {
+    private void setEdgeWeightBySection(List<Section> allLinesSections) {
         allLinesSections.forEach(it -> {
             SectionWeightedEdge sectionWeightedEdge = new SectionWeightedEdge(it);
             graph.addEdge(it.getUpStation(), it.getDownStation(), sectionWeightedEdge);
