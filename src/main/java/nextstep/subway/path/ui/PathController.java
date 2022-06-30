@@ -1,7 +1,7 @@
 package nextstep.subway.path.ui;
 
-import nextstep.subway.path.application.PathService;
 import nextstep.subway.line.dto.ShortestPathResponse;
+import nextstep.subway.path.application.PathService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +19,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity findShortestPath(
+    public ResponseEntity<ShortestPathResponse> findShortestPath(
         @RequestParam(value = "source") Long sourceStationId,
         @RequestParam(value = "target") Long targetStationId
     ) {
@@ -29,6 +29,6 @@ public class PathController {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
