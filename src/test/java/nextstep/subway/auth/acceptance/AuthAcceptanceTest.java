@@ -16,6 +16,7 @@ import java.awt.*;
 
 import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -55,6 +56,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        String invalidToken = "Bearer helloworld";
+
+        // when
+        ExtractableResponse<Response> response = 내_정보_조회_요청(invalidToken);
+
+        // then
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.statusCode());
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
