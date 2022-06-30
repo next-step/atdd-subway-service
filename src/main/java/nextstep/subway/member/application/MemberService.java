@@ -22,9 +22,8 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("잘못된 정보를 입력하였습니다."));
-        return MemberResponse.of(member);
+    public Member findMember(Long id) {
+        return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("잘못된 정보를 입력하였습니다."));
     }
 
     @Transactional
