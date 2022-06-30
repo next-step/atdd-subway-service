@@ -18,15 +18,35 @@ public class PathFinder {
     private static final String SOURCE_AND_TARGET_IS_NOT_CONNECTED_ERROR = "출발지와 도착지가 연결 되어있는지 확인하세요.";
 
     private WeightedMultigraph<Station, SectionWeightedEdge> graph;
+    private List<Line> allLines;
 
     public PathFinder() {
         this.graph = new WeightedMultigraph<>(SectionWeightedEdge.class);
+    }
+
+    public PathFinder(List<Line> allLines) {
+        this.graph = new WeightedMultigraph<>(SectionWeightedEdge.class);
+        this.allLines = allLines;
+        addSectionsToGraph();
+    }
+
+    public static PathFinder from(List<Line> allLines) {
+        return new PathFinder(allLines);
     }
 
     public ShortestPathResponse findShortestPath(List<Line> allLines, Station source, Station target) {
         validate(allLines, source, target);
         addSectionsToGraph(allLines);
 
+        DijkstraShortestPath<Station, SectionWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, SectionWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+
+        checkResultIsNull(path);
+        return ShortestPathResponse.of(path, toStationResponse(path.getVertexList()));
+    }
+
+    public ShortestPathResponse findShortestPath(Station source, Station target) {
+        validate(allLines, source, target);
         DijkstraShortestPath<Station, SectionWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, SectionWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
 
@@ -60,14 +80,33 @@ public class PathFinder {
 
     private void addSectionsToGraph(List<Line> allLines) {
         addVertexByStation(mergeAllLinesStations(allLines));
-        setEdgeWeightBySection( mergeAllLinesSections(allLines));
+        setEdgeWeightBySection(mergeAllLinesSections(allLines));
+    }
+
+    private void addSectionsToGraph() {
+        addVertexByStation();
+        setEdgeWeightBySection();
     }
 
     private void addVertexByStation(List<Station> allLinesStations) {
         allLinesStations.forEach(graph::addVertex);
     }
 
+    private void addVertexByStation() {
+        List<Station> allLinesStations = mergeAllLinesStations();
+        allLinesStations.forEach(graph::addVertex);
+    }
+
     private void setEdgeWeightBySection(List<Section> allLinesSections) {
+        allLinesSections.forEach(it -> {
+            SectionWeightedEdge sectionWeightedEdge = new SectionWeightedEdge(it);
+            graph.addEdge(it.getUpStation(), it.getDownStation(), sectionWeightedEdge);
+            graph.setEdgeWeight(sectionWeightedEdge, it.getDistance());
+        });
+    }
+
+    private void setEdgeWeightBySection() {
+        List<Section> allLinesSections = mergeAllLinesSections();
         allLinesSections.forEach(it -> {
             SectionWeightedEdge sectionWeightedEdge = new SectionWeightedEdge(it);
             graph.addEdge(it.getUpStation(), it.getDownStation(), sectionWeightedEdge);
@@ -82,12 +121,27 @@ public class PathFinder {
             .collect(Collectors.toList());
     }
 
+    private List<Station> mergeAllLinesStations() {
+        return allLines.stream()
+            .map(Line::getAllStations)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+    }
+
     private List<Section> mergeAllLinesSections(List<Line> allLines) {
         return allLines.stream()
             .map(Line::getSections)
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
     }
+
+    private List<Section> mergeAllLinesSections() {
+        return allLines.stream()
+            .map(Line::getSections)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+    }
+
 
     private void checkResultIsNull(GraphPath<Station, SectionWeightedEdge> path) {
         if (path == null) {
