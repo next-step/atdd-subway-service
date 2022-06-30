@@ -56,7 +56,8 @@ class PathFinderTest {
     @DisplayName("전체 노선에서 출발지로부터 도착지까지의 최단 경로 조회")
     public void findShortestPath() {
         // When
-        ShortestPathResponse 최단_경로_응답 = PathFinder.findShortestPath(전체_노선, 선정릉역, 양재역);
+        PathFinder pathFinder = new PathFinder();
+        ShortestPathResponse 최단_경로_응답 = pathFinder.findShortestPath(전체_노선, 선정릉역, 양재역);
 
         // Then
         List<String> 최단_경로_역_목록 = 최단_경로_응답.getStations()
@@ -76,33 +77,38 @@ class PathFinderTest {
     @Test
     @DisplayName("출발지와 도착지가 같은 경우 예외 발생 검증")
     public void throwException_WhenSourceIsEqualToTarget() {
+        // Given
+        PathFinder pathFinder = new PathFinder();
+
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> PathFinder.findShortestPath(전체_노선, 선정릉역, 선정릉역));
+            .isThrownBy(() -> pathFinder.findShortestPath(전체_노선, 선정릉역, 선정릉역));
     }
 
     @Test
     @DisplayName("출발지 혹은 도착지가 전체 노선에 포함된 역이 아닌 경우")
     public void throwException_WhenSourceAndTargetIsNotConnected2(){
         // Given
+        PathFinder pathFinder = new PathFinder();
         Station 천호역 = new Station("천호역");
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> PathFinder.findShortestPath(전체_노선, 선정릉역, 천호역));
+            .isThrownBy(() -> pathFinder.findShortestPath(전체_노선, 선정릉역, 천호역));
     }
 
     @Test
     @DisplayName("출발지와 도착지 사이에 간선이 없는 경우 예외 발생 검증")
     public void throwException_WhenSourceAndTargetIsNotConnected(){
         // Given
+        PathFinder pathFinder = new PathFinder();
         Station 천호역 = new Station("천호역");
         Line _8호선 = new Line("9호선", "brown", new Station("강동역"), 천호역, 3);
         List<Line> 전체_노선 = Arrays.asList(_9호선, _2호선, _3호선, 분당선, 신분당선, _8호선);
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> PathFinder.findShortestPath(전체_노선, 선정릉역, 천호역));
+            .isThrownBy(() -> pathFinder.findShortestPath(전체_노선, 선정릉역, 천호역));
     }
 
     public void 지하철역_생성() {
