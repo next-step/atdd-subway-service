@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Void> handleIllegalArgsException(DataIntegrityViolationException e) {
+    @ExceptionHandler({DataIntegrityViolationException.class, IllegalArgumentException.class})
+    public ResponseEntity<Void> handleIllegalArgsException(RuntimeException e) {
         return ResponseEntity.badRequest().build();
     }
 
@@ -19,10 +19,4 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Void> handleNoSuchElementException(NoSuchElementException e) {
         return ResponseEntity.notFound().build();
     }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Void> handleIllegalArgsException(IllegalArgumentException e) {
-        return ResponseEntity.badRequest().build();
-    }
-
 }
