@@ -71,7 +71,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(유효한_토큰_요청.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> 로그인_토큰_요청(TokenRequest tokenRequest) {
+    public static ExtractableResponse<Response> 로그인_토큰_요청(TokenRequest tokenRequest) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(tokenRequest)
