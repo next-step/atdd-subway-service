@@ -7,7 +7,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.ShortestPathResponse;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.dto.StationSimpleResponse;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -30,9 +30,9 @@ public class PathFinder {
         return ShortestPathResponse.of(path, toStationResponse(path.getVertexList()));
     }
 
-    private List<StationResponse> toStationResponse(List<Station> vertexStationList) {
+    private List<StationSimpleResponse> toStationResponse(List<Station> vertexStationList) {
         return vertexStationList.stream()
-            .map(StationResponse::from)
+            .map(StationSimpleResponse::from)
             .collect(Collectors.toList());
     }
 

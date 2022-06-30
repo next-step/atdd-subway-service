@@ -17,6 +17,7 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.dto.StationSimpleResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -134,12 +135,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expected) {
         List<Long> actualIds = response.jsonPath()
-            .getList("stations", StationResponse.class).stream()
-            .map(it -> it.getId())
+            .getList("stations", StationSimpleResponse.class).stream()
+            .map(StationSimpleResponse::getId)
             .collect(Collectors.toList());
 
         List<Long> expectedIds = expected.stream()
-            .map(it -> it.getId())
+            .map(StationResponse::getId)
             .collect(Collectors.toList());
         assertThat(actualIds).containsExactlyElementsOf(expectedIds);
     }

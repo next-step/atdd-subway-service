@@ -17,7 +17,7 @@ import nextstep.subway.path.dto.ShortestPathResponse;
 import nextstep.subway.path.fake.FakeLineRepository;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.dto.StationSimpleResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -94,12 +94,12 @@ class PathServiceTest {
         verify(lineRepository).findAll();
         List<String> 최단_경로_역_목록 = 최단_경로_응답.getStations()
             .stream()
-            .map(StationResponse::getName)
+            .map(StationSimpleResponse::getName)
             .collect(Collectors.toList());
         assertAll(
             () -> assertThat(최단_경로_응답.getDistance()).isEqualTo(32),
             () -> assertThat(최단_경로_응답.getStations())
-                .extracting(StationResponse::getName)
+                .extracting(StationSimpleResponse::getName)
                 .hasSize(5)
                 .containsAnyElementsOf(최단_경로_역_목록)
         );

@@ -11,7 +11,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.ShortestPathResponse;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.dto.StationSimpleResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,13 +62,13 @@ class PathFinderTest {
         // Then
         List<String> 최단_경로_역_목록 = 최단_경로_응답.getStations()
             .stream()
-            .map(StationResponse::getName)
+            .map(StationSimpleResponse::getName)
             .collect(Collectors.toList());
 
         assertAll(
             () -> assertThat(최단_경로_응답.getDistance()).isEqualTo(32),
             () -> assertThat(최단_경로_응답.getStations())
-                .extracting(StationResponse::getName)
+                .extracting(StationSimpleResponse::getName)
                 .hasSize(5)
                 .containsAnyElementsOf(최단_경로_역_목록)
         );
@@ -87,7 +87,7 @@ class PathFinderTest {
 
     @Test
     @DisplayName("출발지 혹은 도착지가 전체 노선에 포함된 역이 아닌 경우")
-    public void throwException_WhenSourceAndTargetIsNotConnected2(){
+    public void throwException_WhenSourceAndTargetIsNotContainsInLines() {
         // Given
         PathFinder pathFinder = new PathFinder();
         Station 천호역 = new Station("천호역");
@@ -99,7 +99,7 @@ class PathFinderTest {
 
     @Test
     @DisplayName("출발지와 도착지 사이에 간선이 없는 경우 예외 발생 검증")
-    public void throwException_WhenSourceAndTargetIsNotConnected(){
+    public void throwException_WhenSourceAndTargetIsNotConnected() {
         // Given
         PathFinder pathFinder = new PathFinder();
         Station 천호역 = new Station("천호역");
