@@ -4,6 +4,7 @@ import static nextstep.subway.exception.domain.SubwayExceptionMessage.OVER_THE_D
 
 import com.google.common.collect.Sets;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -135,13 +136,17 @@ public class Section {
         return distance.isGreaterThanOrEqualsTo(section.distance);
     }
 
-    public Section reverse() {
-        return new Section(line, downStation, upStation, distance);
-    }
-
     public Section bindDistance(Section section) {
         distance = section.distance;
         return this;
+    }
+
+    public boolean containsStations(Section section) {
+        return getAllStations().containsAll(section.getAllStations());
+    }
+
+    private Set<Station> getAllStations() {
+        return Sets.newHashSet(upStation, downStation);
     }
 
     @Override
