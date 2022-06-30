@@ -103,7 +103,7 @@ public class Charge {
         }
 
         return (int) Math.ceil(
-                (totalDistance - START_DISTANCE_OF_FIRST_OVER_CHARGE) / (double) UNIT_DISTANCE_OF_SECOND_OVER_CHARGE)
+                (totalDistance - START_DISTANCE_OF_SECOND_OVER_CHARGE) / (double) UNIT_DISTANCE_OF_SECOND_OVER_CHARGE)
                 * ADDITIONAL_CHARGE;
     }
 
