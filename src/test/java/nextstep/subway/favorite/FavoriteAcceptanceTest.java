@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -15,21 +16,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.List;
+
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("즐겨찾기 관련 기능")
 class FavoriteAcceptanceTest extends AcceptanceTest {
     /*
-    Scenario: 즐겨찾기를 관리
-    When 즐겨찾기 생성을 요청
-    Then 즐겨찾기 생성됨
-    When 즐겨찾기 목록 조회 요청
-    Then 즐겨찾기 목록 조회됨
     When 즐겨찾기 삭제 요청
     Then 즐겨찾기 삭제됨
      */
@@ -58,8 +57,24 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // When 즐겨찾기 생성 요청
         ExtractableResponse<Response> createFavoriteResponse = 즐겨찾기_생성을_요청(token, 양재역.getId(), 광교역.getId());
+        // THen 즐겨찾기 생성됨
         assertEquals(HttpStatus.CREATED.value(), createFavoriteResponse.statusCode());
 
+        // When 즐겨찾기 목록 조회
+        ExtractableResponse<Response> listFavoriteResponse = 즐겨찾기_목록_조회_요청(token);
+        // Then 즐겨찾기 목록 조회됨
+        assertEquals(HttpStatus.OK.value(), listFavoriteResponse.statusCode());
+        assertThat(listFavoriteResponse.as(List.class)).hasSize(1);
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성을_요청(String token, Long source, Long target) {
