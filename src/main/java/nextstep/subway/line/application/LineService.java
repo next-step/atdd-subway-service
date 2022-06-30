@@ -86,8 +86,8 @@ public class LineService {
         Station downStation = stationService.findStationById(request.getDownStationId());
         validationStationEquals(upStation, downStation);
 
-        boolean isUpStationExisted = !sectionRepository.findByLine_IdAndUpStation_IdOrDownStation_Id(line.getId(), upStation.getId()).isEmpty();
-        boolean isDownStationExisted = !sectionRepository.findByLine_IdAndUpStation_IdOrDownStation_Id(line.getId(), downStation.getId()).isEmpty();
+        boolean isUpStationExisted = !sectionRepository.findByLineIdAndUpStationIdOrDownStationId(line.getId(), upStation.getId()).isEmpty();
+        boolean isDownStationExisted = !sectionRepository.findByLineIdAndUpStationIdOrDownStationId(line.getId(), downStation.getId()).isEmpty();
 
         validationAddLineStation(line, isUpStationExisted, isDownStationExisted);
         Section section = new Section(line, upStation, downStation, request.getDistance());
@@ -125,14 +125,18 @@ public class LineService {
         Optional<Section> downLineStation = sectionRepository.findByLine_IdAndDownStation_Id(line.getId(), station.getId());
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            line.addLineStation(new Section(line, newUpStation, newDownStation, newDistance));
+            addSection(line, upLineStation, downLineStation);
         }
 
         upLineStation.ifPresent(it -> line.removeLineStation(it));
         downLineStation.ifPresent(it -> line.removeLineStation(it));
+    }
+
+    private void addSection(Line line, Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        Station newUpStation = downLineStation.get().getUpStation();
+        Station newDownStation = upLineStation.get().getDownStation();
+        int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+        line.addSection(new Section(line, newUpStation, newDownStation, newDistance));
     }
 
     private void validationAddLineStation(Line line, boolean isUpStationExisted, boolean isDownStationExisted) {
@@ -140,9 +144,7 @@ public class LineService {
             throw new AddLineSectionFailException("이미 등록된 구간 입니다.");
         }
 
-        if (!line.emptySections() &&
-                isUpStationExisted &&
-                isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
             throw new AddLineSectionFailException("등록할 수 없는 구간 입니다.");
         }
     }

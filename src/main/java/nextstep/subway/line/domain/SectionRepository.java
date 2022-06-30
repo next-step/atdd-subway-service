@@ -12,5 +12,5 @@ public interface SectionRepository extends JpaRepository<Section, Long> {
     Optional<Section> findByLine_IdAndDownStation_Id(Long lineId, Long downStationId);
 
     @Query(value = "select s.* from Section s where s.line_id = ?1 and ( s.up_station_id = ?2 or s.down_station_id = ?2 )", nativeQuery = true)
-    List<Section> findByLine_IdAndUpStation_IdOrDownStation_Id(Long lineId, Long stationId);
+    List<Section> findByLineIdAndUpStationIdOrDownStationId(Long lineId, Long stationId);
 }
