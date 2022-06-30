@@ -28,10 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("즐겨찾기 관련 기능")
 class FavoriteAcceptanceTest extends AcceptanceTest {
-    /*
-    When 즐겨찾기 삭제 요청
-    Then 즐겨찾기 삭제됨
-     */
 
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
@@ -45,7 +41,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         LineResponse 신분당선 = 지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
         // And 지하철 노선에 지하철역 등록되어 있음
-        StationResponse 양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        StationResponse 양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
         지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 광교역, 5);
 
         // And 회원 등록되어 있음
@@ -65,6 +61,19 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         // Then 즐겨찾기 목록 조회됨
         assertEquals(HttpStatus.OK.value(), listFavoriteResponse.statusCode());
         assertThat(listFavoriteResponse.as(List.class)).hasSize(1);
+
+        // When 즐겨찾기 삭제 요청
+        ExtractableResponse<Response> deleteFavoriteResponse = 즐겨찾기_삭제_요청(token, createFavoriteResponse);
+        // Then 즐겨찾기 삭제됨
+        assertEquals(HttpStatus.OK.value(), deleteFavoriteResponse.statusCode());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String token, ExtractableResponse<Response> createResponse) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .when().delete(createResponse.header("Location"))
+                .then().log().all()
+                .extract();
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String token) {

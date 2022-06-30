@@ -11,4 +11,6 @@ import java.util.List;
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
     List<FavoriteResponse> findByMember(Member member);
+
+    void deleteByIdAndMember(Long id, Member member);
 }

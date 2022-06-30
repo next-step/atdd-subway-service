@@ -42,4 +42,10 @@ public class FavoriteService {
         Member member = memberService.findMemberById(loginMember.getId());
         return favoriteRepository.findByMember(member);
     }
+
+    @Transactional
+    public void removeFavorite(LoginMember loginMember, Long id) {
+        Member member = memberService.findMemberById(loginMember.getId());
+        favoriteRepository.deleteByIdAndMember(id, member);
+    }
 }
