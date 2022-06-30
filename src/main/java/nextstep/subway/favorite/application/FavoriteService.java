@@ -50,4 +50,10 @@ public class FavoriteService {
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
     }
+
+    public void deleteFavoriteById(LoginMember loginMember, Long id) {
+        Member member = memberService.findMember(loginMember.getId());
+        Favorite favorite = favoriteRepository.findByIdAndMember(id, member).orElseThrow(() -> new IllegalArgumentException("해당 즐겨찾기를 찾을 수 없습니다."));
+        favoriteRepository.deleteById(id);
+    }
 }
