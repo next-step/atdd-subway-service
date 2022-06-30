@@ -50,7 +50,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
-    @Disabled
     void myInfoWithWrongBearerAuth() {
         //when
         ExtractableResponse<Response> response = 로그인_토큰_요청(new TokenRequest("test@email.com", "password"));
@@ -59,6 +58,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(유효하지_않은_토큰_요청.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("Bearer Auth 유효한 토큰")
+    @Test
+    void myInfoWithBearerAuthToken() {
+        //when
+        ExtractableResponse<Response> 로그인_토큰_요청 = 로그인_토큰_요청(new TokenRequest("test@email.com", "password"));
+        ExtractableResponse<Response> 유효한_토큰_요청 = MemberAcceptanceTest.회원_토근_조회_요청(로그인_토큰_요청, 로그인_토큰_요청.as(TokenResponse.class).getAccessToken());
+
+        //then
+        assertThat(유효한_토큰_요청.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     private ExtractableResponse<Response> 로그인_토큰_요청(TokenRequest tokenRequest) {

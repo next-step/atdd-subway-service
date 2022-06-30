@@ -66,6 +66,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 회원_토근_조회_요청(ExtractableResponse<Response> response, String token) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
