@@ -18,6 +18,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_성공;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
@@ -38,6 +41,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private static StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private ExtractableResponse<Response> loginResponse;
 
     @BeforeEach
     public void setUp() {
@@ -56,6 +60,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+        loginResponse = 로그인(new TokenRequest(EMAIL, PASSWORD));
     }
 
     @DisplayName("노선 즐겨찾기를 관리한다.")
@@ -73,6 +78,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> saveFavoriteResponse = 즐겨찾기_추가(accessToken, favoriteRequest);
         // then
         즐겨찾기_추가_성공(saveFavoriteResponse);
+
+        // when
+        ExtractableResponse<Response> findFavoritesResponse = 즐겨찾기_전체_조회(accessToken);
+        // then
+        즐겨찾기_전체_조회(findFavoritesResponse);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_추가(String accessToken, FavoriteRequest request) {
@@ -86,6 +96,16 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_전체_조회(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
     public static void 즐겨찾기_추가_성공(ExtractableResponse<Response> response) {
         FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
         assertAll(
@@ -93,6 +113,16 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(favoriteResponse.getId()).isNotNull(),
                 () -> assertThat(favoriteResponse.getSource().getName()).isEqualTo(강남역.getName()),
                 () -> assertThat(favoriteResponse.getTarget().getName()).isEqualTo(양재역.getName())
+        );
+    }
+
+    public static void 즐겨찾기_전체_조회(ExtractableResponse<Response> response) {
+        List<FavoriteResponse> favoriteResponseList = response.jsonPath().getList(".", FavoriteResponse.class).stream()
+                .collect(Collectors.toList());
+        assertAll(
+                () -> assertThat(favoriteResponseList).hasSize(1),
+                () -> assertThat(favoriteResponseList.get(0).getSource().getName()).isEqualTo(강남역.getName()),
+                () -> assertThat(favoriteResponseList.get(0).getTarget().getName()).isEqualTo(양재역.getName())
         );
     }
 }
