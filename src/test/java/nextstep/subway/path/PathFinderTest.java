@@ -2,6 +2,7 @@ package nextstep.subway.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,10 @@ class PathFinderTest {
     void findShortestPath() {
         Path path = pathFinder.findShortestPath(전구간, 서울역, 동대문역);
 
-        assertThat(path.getDistance()).isEqualTo(18);
+        assertAll(
+                () -> assertThat(path.getDistance()).isEqualTo(18),
+                () -> assertThat(path.getFare()).isEqualTo(1650)
+        );
     }
 
     @DisplayName("최단거리 조회시 출발역과 도착역이 같을 경우")
