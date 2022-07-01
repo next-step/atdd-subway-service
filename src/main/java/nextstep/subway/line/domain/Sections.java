@@ -19,7 +19,7 @@ public class Sections {
         sections.remove(section);
     }
 
-    public void addLineStation(Section section) {
+    public void addSection(Section section) {
         sections.add(section);
     }
 
@@ -29,7 +29,7 @@ public class Sections {
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
 
-        addLineStation(section);
+        addSection(section);
     }
 
     public void addUpStationExisted(Section section) {
@@ -38,7 +38,7 @@ public class Sections {
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
 
-        addLineStation(section);
+        addSection(section);
     }
 
     public List<Section> getSections() {
