@@ -1,7 +1,6 @@
 package nextstep.subway.auth.domain;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jcp.xml.dsig.internal.dom.Utils;
 import org.springframework.util.ObjectUtils;
 
 public class LoginMember {

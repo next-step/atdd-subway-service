@@ -17,36 +17,35 @@ public enum DistanceFarePolicy {
 
      private static final int ADDITIONAL_CHARGE = 100;
 
-     private final int distance;
+     private final Distance distance;
      private final Function<Integer, Integer> calculation;
 
      DistanceFarePolicy(int distance, Function<Integer, Integer> calculation) {
-          this.distance = distance;
+          this.distance = new Distance(distance);
           this.calculation = calculation;
      }
 
      private static Function<Integer, Integer> calculationFunction(int criteria) {
-          return distance -> (int) ((Math.ceil((distance - 1) / criteria) + 1) * ADDITIONAL_CHARGE);
+          return distanceValue -> (int) ((Math.ceil((distanceValue - 1) / criteria) + 1) * ADDITIONAL_CHARGE);
      }
 
      public static Fare calculate(Distance distance) {
           int fareValue = 0;
-          int distanceValue = distance.getValue();
-          for (DistanceFarePolicy policy : findMatches(distanceValue)) {
-               fareValue += calculate(policy, distanceValue);
-               distanceValue = policy.distance;
+          for (DistanceFarePolicy policy : findMatches(distance)) {
+               fareValue += calculate(policy, distance);
+               distance = policy.distance;
           }
           return new Fare(fareValue);
      }
 
-     private static List<DistanceFarePolicy> findMatches(int distance) {
+     private static List<DistanceFarePolicy> findMatches(Distance distance) {
           return Arrays.stream(values())
-                  .filter(value -> distance > value.distance)
+                  .filter(value -> distance.isBigger(value.distance))
                   .collect(toList());
      }
 
-     private static int calculate(DistanceFarePolicy policy, int distanceValue) {
-          return policy.calculation.apply(distanceValue - policy.distance);
+     private static int calculate(DistanceFarePolicy policy, Distance distance) {
+          return policy.calculation.apply(Distance.minus(distance, policy.distance).getValue());
      }
 
 }
