@@ -193,9 +193,9 @@ Connection: keep-alive
 ### 토큰 발급 인수 테스트
 - 요청 URL : POST `/login/token`
 - 구현 기능 목록
-  - [ ] 토큰 발급(로그인) 기능 구현 (로그인 요청 : email, password)
-  - [ ] 주어진 `AuthAcceptanceTest`통과 하도록 구현
-  - [ ] 주어진 `AuthAcceptanceTest`의 예외 케이스 구현
+  - [x] 토큰 발급(로그인) 기능 구현 (로그인 요청 : email, password)
+  - [x] 주어진 `AuthAcceptanceTest`통과 하도록 구현
+  - [x] 주어진 `AuthAcceptanceTest`의 예외 케이스 구현
 
 ### 내 정보 조회 기능
 - Base URL : `/members/me`
