@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -17,6 +18,14 @@ public class Favorites extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+        name = "member_id",
+        foreignKey = @ForeignKey(name = "FK_FAVORITES_TO_MEMBER"),
+        nullable = false
+    )
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
@@ -38,7 +47,8 @@ public class Favorites extends BaseEntity {
 
     }
 
-    public Favorites(Station source, Station target) {
+    public Favorites(Member member, Station source, Station target) {
+        this.member = member;
         this.source = source;
         this.target = target;
     }

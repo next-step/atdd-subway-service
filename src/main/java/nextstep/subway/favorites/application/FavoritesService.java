@@ -1,11 +1,16 @@
 package nextstep.subway.favorites.application;
 
+import static nextstep.subway.member.application.MemberService.MEMBER_NOT_FOUND_ERROR;
+
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorites.domain.Favorites;
 import nextstep.subway.favorites.domain.FavoritesRepository;
 import nextstep.subway.favorites.dto.FavoritesRequest;
 import nextstep.subway.favorites.dto.FavoritesResponse;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -17,20 +22,27 @@ public class FavoritesService {
 
     private final FavoritesRepository favoritesRepository;
     private final StationService stationService;
+    private final MemberRepository memberRepository;
 
     public FavoritesService(
         FavoritesRepository favoritesRepository,
-        StationService stationService
+        StationService stationService,
+        MemberRepository memberRepository
     ) {
         this.favoritesRepository = favoritesRepository;
         this.stationService = stationService;
+        this.memberRepository = memberRepository;
     }
 
     @Transactional
-    public FavoritesResponse saveFavorites(FavoritesRequest favoritesRequest) {
+    public FavoritesResponse saveFavorites(LoginMember loginMember, FavoritesRequest favoritesRequest) {
+        Member member = memberRepository.findById(loginMember.getId())
+            .orElseThrow(() -> new IllegalArgumentException(MEMBER_NOT_FOUND_ERROR));
         Station sourceStation = stationService.findStationById(favoritesRequest.getSourceId());
         Station targetStation = stationService.findStationById(favoritesRequest.getTargetId());
-        Favorites persistFavorites = favoritesRepository.save(favoritesRequest.toEntity(sourceStation, targetStation));
+        Favorites favorites = favoritesRequest.toEntity(member, sourceStation, targetStation);
+
+        Favorites persistFavorites = favoritesRepository.save(favorites);
         return FavoritesResponse.from(persistFavorites);
     }
 
