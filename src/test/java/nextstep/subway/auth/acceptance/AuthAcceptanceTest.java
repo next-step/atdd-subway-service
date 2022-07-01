@@ -3,7 +3,7 @@ package nextstep.subway.auth.acceptance;
 import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
-import static nextstep.subway.member.MemberAcceptanceTest.내_정보_조회_실패됨;
+import static nextstep.subway.member.MemberAcceptanceTest.인증_실패됨;
 import static nextstep.subway.member.MemberAcceptanceTest.내_정보_조회_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static nextstep.subway.utils.RestAssuredUtils.post;
@@ -88,7 +88,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 내_정보_조회_요청(invalidAccessToken);
 
         // Then
-        내_정보_조회_실패됨(response);
+        인증_실패됨(response);
     }
 
     private static Stream<Arguments> myInfoWithWrongBearerAuth() {

@@ -201,9 +201,10 @@ Connection: keep-alive
 - Base URL : `/members/me`
 - 주의 사항 : 로그인 후 발급 받은 토큰을 포함해서 요청
 - 구현 기능 목록
-  - [ ] 내 정보 조회 : GET `/members/me`
-  - [ ] 내 정보 수정 : PUT `/members/me`
-  - [ ] 내 정보 삭제 : DELETE `/members/me`
+  - [x] 내 정보 조회 : GET `/members/me`
+  - [x] 내 정보 수정 : PUT `/members/me`
+  - [x] 내 정보 삭제 : DELETE `/members/me`
+  - [x] 잘못된 토큰 정보로 내 정보 관련 API 요청 시 예외 케이스 구현
 
 ### 즐겨 찾기 기능 구현
 - Base URL : `/favorites`
