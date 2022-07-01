@@ -34,14 +34,13 @@ public class Favorites extends BaseEntity {
     )
     private Station target;
 
-    public Favorites(Long id, Station source, Station target) {
-        this.id = id;
-        this.source = source;
-        this.target = target;
-    }
-
     protected Favorites() {
 
+    }
+
+    public Favorites(Station source, Station target) {
+        this.source = source;
+        this.target = target;
     }
 
     public Long getId() {

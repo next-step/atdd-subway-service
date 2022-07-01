@@ -1,6 +1,7 @@
 package nextstep.subway.favorites.dto;
 
 import nextstep.subway.favorites.domain.Favorites;
+import nextstep.subway.station.domain.Station;
 
 public class FavoritesRequest {
 
@@ -21,5 +22,9 @@ public class FavoritesRequest {
 
     public Long getTargetId() {
         return targetId;
+    }
+
+    public Favorites toEntity(Station sourceStation, Station targetStation) {
+        return new Favorites(sourceStation, targetStation);
     }
 }
