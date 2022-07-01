@@ -4,6 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_성공;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -20,6 +25,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
+    private final static String MEMBER_ME_URI = "/members/me";
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -48,7 +54,34 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // given
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        // when
+        ExtractableResponse<Response> loginResponse = 로그인(new TokenRequest(EMAIL, PASSWORD));
+        // then
+        로그인_성공(loginResponse);
 
+        // when
+        String accessToken = loginResponse.as(TokenResponse.class).getAccessToken();
+        ExtractableResponse<Response> findResponse = 나의_정보_조회_요청(accessToken);
+        // then
+        나의_정보_조회_요청됨(findResponse);
+
+        // when
+        ExtractableResponse<Response> updateResponse = 나의_정보_수정_요청(accessToken, new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
+        // then
+        나의_정보_수정됨(updateResponse);
+
+        // when
+        ExtractableResponse<Response> updateLoginResponse = 로그인(new TokenRequest(NEW_EMAIL, NEW_PASSWORD));
+        // then
+        로그인_성공(loginResponse);
+
+        // when
+        String updateAccessToken = updateLoginResponse.as(TokenResponse.class).getAccessToken();
+        ExtractableResponse<Response> deleteResponse = 나의_계정_삭제_요청(updateAccessToken);
+        // then
+        나의_계정_삭제됨(deleteResponse);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -112,6 +145,53 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 나의_정보_조회_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(MEMBER_ME_URI)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 나의_정보_수정_요청(String accessToken, MemberRequest memberRequest) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put(MEMBER_ME_URI)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 나의_계정_삭제_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(MEMBER_ME_URI)
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 나의_정보_조회_요청됨(ExtractableResponse<Response> response) {
+        MemberResponse memberResponse = response.as(MemberResponse.class);
+        assertAll(
+                () -> assertThat(memberResponse.getEmail()).isEqualTo(EMAIL),
+                () -> assertThat(memberResponse.getAge()).isEqualTo(AGE)
+        );
+    }
+
+    public static void 나의_정보_수정됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 나의_계정_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

@@ -1,6 +1,7 @@
 package nextstep.subway.auth.infrastructure;
 
 import io.jsonwebtoken.*;
+import nextstep.subway.auth.application.AuthorizationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -35,8 +36,8 @@ public class JwtTokenProvider {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 
             return !claims.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
+        } catch (MalformedJwtException | SignatureException | ExpiredJwtException | UnsupportedJwtException e) {
+            throw new AuthorizationException("잘못된 Token 값입니다.");
         }
     }
 }
