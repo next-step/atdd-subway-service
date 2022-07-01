@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,10 +58,10 @@ class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * When 최단 경로를 조회하면
-     * Then 경로와 거리가 리턴된다
+     * When 교대역에서 양재역의 최단 경로를 조회하면
+     * Then 거리 5, 요금 1250원이 리턴된다
      */
-    @DisplayName("최단 경로를 조회한다.")
+    @DisplayName("10km 이하 최단 경로를 조회한다.")
     @Test
     void getShortestRoute() {
         // when
@@ -70,9 +71,51 @@ class PathAcceptanceTest extends AcceptanceTest {
         List<String> stations = response.jsonPath().get("stations.name");
         assertThat(stations).containsExactly(교대역.getName(), 남부터미널역.getName(), 양재역.getName());
 
-        int distance = response.jsonPath().get("distance");
-        assertEquals(5, distance);
+        assertEquals(5, (int) response.jsonPath().get("distance"));
+        assertEquals(1250, (int) response.jsonPath().get("fare"));
     }
+
+    /**
+     * When 남부터미널에서 강남역의 최단 경로를 조회하면
+     * Then 남부터미널, 양재역, 강남역 의 경로와 1,350원의 지하철 이용 요금이 리턴된다
+     */
+    @DisplayName("10km 초과 50km 까지의 최단 경로와 지하철 요금을 조회한다.")
+    @Test
+    void getShortestRouteWithSurcharge1() {
+        // when
+        ExtractableResponse<Response> response = 노선_최단경로_조회(남부터미널역, 강남역);
+
+        // then
+        List<String> stations = response.jsonPath().get("stations.name");
+        assertThat(stations).containsExactly(남부터미널역.getName(), 양재역.getName(), 강남역.getName());
+
+        assertEquals(12, (int) response.jsonPath().get("distance"));
+        assertEquals(1350, (int) response.jsonPath().get("fare"));
+    }
+
+    /**
+     * Given 양재역 - 양재시민의숲역의 거리를 50으로 지정하여 추가 후
+     * When 양재시민의숲역에서 강남역의 최단 경로를 조회하면
+     * Then 양재시민의숲역, 양재역, 강남역 의 경로와 거리 60, 2,250 원의 지하철 이용 요금이 리턴된다
+     */
+    @DisplayName("50km 초과 최단 경로와 지하철 요금을 조회한다.")
+    @Test
+    void getShortestRouteWithSurcharge2() {
+        // given
+        StationResponse 양재시민의숲역 = StationAcceptanceTest.지하철역_등록되어_있음("양재시민의숲역").as(StationResponse.class);
+        지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 양재시민의숲역, 50);
+
+        // when
+        ExtractableResponse<Response> response = 노선_최단경로_조회(양재시민의숲역, 강남역);
+
+        // then
+        List<String> stations = response.jsonPath().get("stations.name");
+        assertThat(stations).containsExactly(양재시민의숲역.getName(), 양재역.getName(), 강남역.getName());
+
+        assertEquals(60, (int) response.jsonPath().get("distance"));
+        assertEquals(2250, (int) response.jsonPath().get("fare"));
+    }
+
 
     /**
      * When 출발역과 도착역이 같은 경우
