@@ -1,14 +1,14 @@
 package nextstep.subway.line.dto;
 
-import nextstep.subway.line.domain.Fare;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.station.domain.Station;
+import java.util.Objects;
 
 public class LineRequest {
+
+    private final static long INIT_STATION_ID = 0L;
     private String name;
     private String color;
-    private Long upStationId;
-    private Long downStationId;
+    private long upStationId;
+    private long downStationId;
     private int distance;
 
     private int fare;
@@ -33,14 +33,20 @@ public class LineRequest {
         this.fare = fare;
     }
 
-    public Line toLine(Station upStation, Station downStation) {
-        return new Line.Builder().name(name)
-                .color(color)
-                .upStation(upStation)
-                .downStation(downStation)
-                .distance(distance)
-                .fare(Fare.of(fare))
-                .build();
+    public static void saveLineValidate(LineRequest lineRequest) {
+        if (Objects.isNull(lineRequest)) {
+            throw new IllegalArgumentException("요청한 노선이 존재하지 않습니다.");
+        }
+        if (isStationIdInitValue(lineRequest.getUpStationId())) {
+            throw new IllegalArgumentException("upStationId 값은 유효하지 않습니다");
+        }
+        if (isStationIdInitValue(lineRequest.getDownStationId())) {
+            throw new IllegalArgumentException("downStation 값은 유효하지 않습니다");
+        }
+    }
+
+    private static boolean isStationIdInitValue(long stationId) {
+        return stationId == INIT_STATION_ID;
     }
 
     public String getName() {

@@ -30,4 +30,5 @@ class LineTest {
 
         assertThat(line.getFare()).isEqualTo(Fare.of(10));
     }
+
 }
