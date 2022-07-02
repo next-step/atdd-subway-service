@@ -12,12 +12,17 @@ public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
+
     private String color;
 
     @Embedded
-    private Sections sections = new Sections();;
+    private Sections sections = new Sections();
+
+    @Embedded
+    private AdditionalFare additionalFare = AdditionalFare.init();
 
     public Line() {
     }
@@ -64,5 +69,9 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections.getSections();
+    }
+
+    public AdditionalFare getAdditionalFare() {
+        return additionalFare;
     }
 }
