@@ -42,11 +42,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private LineResponse 분당선;
 
     /**
-     * @Given 지하철역 등록되어 있음
-     * @And 지하철 노선 등록되어 있음
-     * @And 지하철 노선에 지하철역 등록되어 있음
-     * @And 회원 등록되어 있음
-     * @And 로그인 되어있음
+     * Given 지하철역 등록되어 있음
+     * And 지하철 노선 등록되어 있음
+     * And 지하철 노선에 지하철역 등록되어 있음
+     * And 회원 등록되어 있음
+     * And 로그인 되어있음
      */
     @BeforeEach
     public void setUp() {

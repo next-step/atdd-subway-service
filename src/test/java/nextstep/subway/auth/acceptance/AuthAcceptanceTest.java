@@ -34,9 +34,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * @Given 회원 가입 되어있음
-     * @When 로그인을 요청하면
-     * @Then 토큰을 발급 받는다.
+     * Given 회원 가입 되어있음
+     * When 로그인을 요청하면
+     * Then 토큰을 발급 받는다.
      */
     @DisplayName("Bearer Auth")
     @Test
@@ -49,9 +49,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * @Given 유효하지 않은 회원 정보로
-     * @When 로그인을 요청하면
-     * @Then 토큰 발급에 실패한다.
+     * Given 유효하지 않은 회원 정보로
+     * When 로그인을 요청하면
+     * Then 토큰 발급에 실패한다.
      */
     @DisplayName("Bearer Auth 로그인 실패")
     @ParameterizedTest(name = "case[{index}] : ({0} , {1}) => {2}")
@@ -76,9 +76,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * @Given 유효하지 않은 토큰 정보로
-     * @When 로그인을 요청하면
-     * @Then 토큰 발급에 실패한다.
+     * Given 유효하지 않은 토큰 정보로
+     * When 로그인을 요청하면
+     * Then 토큰 발급에 실패한다.
      */
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @ParameterizedTest(name = "case[{index}] : {0} => {1}")
