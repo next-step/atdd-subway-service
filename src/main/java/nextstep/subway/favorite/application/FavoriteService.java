@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class FavoriteService {
-    private MemberService memberService;
-    private StationService stationService;
+    private final MemberService memberService;
+    private final StationService stationService;
 
-    private FavoriteRepository favoriteRepository;
+    private final FavoriteRepository favoriteRepository;
 
     public FavoriteService(MemberService memberService, StationService stationService,
                            FavoriteRepository favoriteRepository) {
