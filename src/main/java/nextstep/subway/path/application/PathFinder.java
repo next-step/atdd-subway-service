@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Fare;
 import nextstep.subway.path.domain.SectionEdge;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.sections.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -19,13 +18,12 @@ public class PathFinder {
 
     private final WeightedMultigraph<Station, SectionEdge> stationGraph = new WeightedMultigraph<>(SectionEdge.class);
 
-    public PathResponse findShortestPath(List<Section> allSection, Station sourceStation, Station targetStation) {
+    public GraphPath findShortestPath(List<Section> allSection, Station sourceStation, Station targetStation) {
         List<Station> allStations = findAllStations(allSection);
         validate(allStations, sourceStation, targetStation);
         DijkstraShortestPath dijkstraShortestPath = makeDijkstraShortestPath(allSection, allStations);
         GraphPath shortestPath = getShortestPath(sourceStation, targetStation, dijkstraShortestPath);
-        Fare maxFare = findMaxLineFare(shortestPath);
-        return new PathResponse(shortestPath.getVertexList(), (long) shortestPath.getWeight(), maxFare.calculateFare((long) shortestPath.getWeight()));
+        return shortestPath;
     }
 
     private List<Station> findAllStations(List<Section> allSection) {
@@ -69,7 +67,7 @@ public class PathFinder {
         return shortestPath;
     }
 
-    private Fare findMaxLineFare(GraphPath shortestPath) {
+    public Fare findMaxLineFare(GraphPath shortestPath) {
         List<SectionEdge> edgeList = shortestPath.getEdgeList();
         List<Fare> fares = edgeList.stream()
             .map(edge -> edge.getFare())

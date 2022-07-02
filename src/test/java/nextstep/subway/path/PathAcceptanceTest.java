@@ -1,8 +1,10 @@
 package nextstep.subway.path;
 
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -12,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -36,6 +39,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private StationResponse 부산역;
+    private String childAccessToken;
+    private String teenAccessToken;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -59,21 +64,60 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+
+        회원_생성을_요청("child", "child", 10);
+        회원_생성을_요청("teen", "teen", 15);
+        childAccessToken = 로그인_요청("child", "child").as(TokenResponse.class).getAccessToken();
+        teenAccessToken = 로그인_요청("teen", "teen").as(TokenResponse.class).getAccessToken();
+
     }
 
     /**
-     * when 등록된 역과 역 사이에 최단 경로 조회 요청을 한다.
+     * when 게스트가 등록된 역과 역 사이에 최단 경로 조회 요청을 한다.
      * then 역 사이의 최단 경로를 순서대로 확인한다.
+     * and 지하철 이용요금도 응답
      */
-    @DisplayName("역과 역 사이에서 가장 짧은 경로를 찾아서 역 순서대로 조회한다.")
+    @DisplayName("게스트가 역과 역 사이에서 가장 짧은 경로를 찾아서 역 순서대로 조회한다.")
     @Test
     public void findShortestPath() {
         //when
-        ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청(강남역, 남부터미널역);
+        ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청("guest", 강남역, 남부터미널역);
         //then
         지하철_노선에_지하철역_순서_정렬됨(최단경로_조회응답, Arrays.asList(강남역, 양재역, 남부터미널역));
         지하철_역사이_최단경로_거리확인(최단경로_조회응답, 12);
         최단경로_요금조회(최단경로_조회응답, Fare.of(1350));
+    }
+
+    /**
+     * when 청소년이 등록된 역과 역 사이에 최단 경로 조회 요청을 한다.
+     * then 역 사이의 최단 경로를 순서대로 확인한다.
+     * and 지하철 이용요금은 20퍼 할인된 값으로 응답
+     */
+    @DisplayName("청소년이 역과 역 사이에서 가장 짧은 경로를 찾아서 역 순서대로 조회한다.")
+    @Test
+    public void findShortestPathWithTeen() {
+        //when
+        ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청(teenAccessToken, 강남역, 남부터미널역);
+        //then
+        지하철_노선에_지하철역_순서_정렬됨(최단경로_조회응답, Arrays.asList(강남역, 양재역, 남부터미널역));
+        지하철_역사이_최단경로_거리확인(최단경로_조회응답, 12);
+        최단경로_요금조회(최단경로_조회응답, Fare.of(800));
+    }
+
+    /**
+     * when 어린이가 등록된 역과 역 사이에 최단 경로 조회 요청을 한다.
+     * then 역 사이의 최단 경로를 순서대로 확인한다.
+     * and 지하철 이용요금은 50퍼 할인된 값으로 응답
+     */
+    @DisplayName("어린이가 역과 역 사이에서 가장 짧은 경로를 찾아서 역 순서대로 조회한다.")
+    @Test
+    public void findShortestPathWithChild() {
+        //when
+        ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청(childAccessToken, 강남역, 남부터미널역);
+        //then
+        지하철_노선에_지하철역_순서_정렬됨(최단경로_조회응답, Arrays.asList(강남역, 양재역, 남부터미널역));
+        지하철_역사이_최단경로_거리확인(최단경로_조회응답, 12);
+        최단경로_요금조회(최단경로_조회응답, Fare.of(500));
     }
 
     /**
@@ -84,7 +128,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     public void findShortestPathWithSameStation() {
         //when
-        ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청(강남역, 강남역);
+        ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청("guest", 강남역, 강남역);
         //then
         지하철_역사이_최단경로_조회_실패함(최단경로_조회응답);
     }
@@ -97,7 +141,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     public void findShortestPathWithNotConnectedStation() {
         //when
-        ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청(강남역, 부산역);
+        ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청("guest", 강남역, 부산역);
         //then
         지하철_역사이_최단경로_조회_실패함(최단경로_조회응답);
     }
@@ -110,16 +154,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     public void findShortestPathWithNotExistStation() {
         //when
-        ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청(new StationResponse(9999l, "존재하지 않는 역"), 강남역);
+        ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청("guest", new StationResponse(9999l, "존재하지 않는 역"), 강남역);
         //then
         지하철_역사이_최단경로_조회_실패함(최단경로_조회응답);
     }
 
 
-    public static ExtractableResponse<Response> 지하철_역사이_최단경로_조회요청(StationResponse sourceStation, StationResponse targetStation) {
+    public static ExtractableResponse<Response> 지하철_역사이_최단경로_조회요청(String accessToken, StationResponse sourceStation, StationResponse targetStation) {
 
         return RestAssured
             .given().log().all()
+            .auth().oauth2(accessToken)
             .param("source",sourceStation.getId())
             .param("target",targetStation.getId())
             .contentType(MediaType.APPLICATION_JSON_VALUE)

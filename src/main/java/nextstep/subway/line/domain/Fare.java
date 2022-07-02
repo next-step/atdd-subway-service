@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.Objects;
 import javax.persistence.Embeddable;
+import nextstep.subway.member.domain.MemberType;
 
 @Embeddable
 public class Fare {
@@ -35,6 +36,16 @@ public class Fare {
             return new Fare(longExtraDistanceCalculate(distance) + DEFAULT_FARE + fare);
         }
     }
+
+
+    public Fare calculateFareWithMemberType(MemberType memberType) {
+        if(memberType.equals(MemberType.GUEST)){
+            return this;
+        }
+
+        return Fare.of((long) ((fare - memberType.getDeductedAmount()) * ( 1 - memberType.getDiscountRate())));
+    }
+
 
     public long shortExtraDistanceCalculate(long distance) {
         return extraDistanceCalculate(distance - DEFAULT_FARE_DISTANCE_LIMIT, SHORT_EXTRA_FARE_CHARGE_DISTANCE) * EXTRA_FARE;

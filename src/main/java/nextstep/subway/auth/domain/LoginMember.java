@@ -1,5 +1,8 @@
 package nextstep.subway.auth.domain;
 
+import java.util.Objects;
+import nextstep.subway.member.domain.MemberType;
+
 public class LoginMember {
     private Long id;
     private String email;
@@ -12,6 +15,13 @@ public class LoginMember {
         this.id = id;
         this.email = email;
         this.age = age;
+    }
+
+    public MemberType findMemberType() {
+        if(Objects.isNull(age)){
+            return MemberType.GUEST;
+        }
+        return MemberType.findType(age);
     }
 
     public Long getId() {
