@@ -2,6 +2,7 @@ package nextstep.subway.favorite.application;
 
 import java.util.List;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -40,5 +41,11 @@ public class FavoriteService {
     public List<FavoriteResponse> findFavorites(Long memberId) {
         List<Favorite> favorites = favoriteRepository.findByMember_id(memberId);
         return FavoriteResponse.from(favorites);
+    }
+
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        Favorite foundFavorite = favoriteRepository.findByMember_idAndId(memberId, favoriteId)
+                .orElseThrow(() -> new NotFoundException(String.format("회원님의 즐겨찾기(%d)를 찾을 수 없습니다.", favoriteId)));
+        favoriteRepository.delete(foundFavorite);
     }
 }
