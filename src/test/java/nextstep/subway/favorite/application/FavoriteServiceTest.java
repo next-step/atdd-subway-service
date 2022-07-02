@@ -47,12 +47,12 @@ class FavoriteServiceTest {
 
     @BeforeEach
     void setUp() {
-        member = new Member("weno@nextstep.com", "password", 20);
+        member = new Member(1L,"weno@nextstep.com", "password", 20);
         loginMember = new LoginMember(1L, "weno@nextstep.com", 20);
         강남역 = new Station(1L, "강남역");
         역삼역 = new Station(2L, "역삼역");
         삼성역 = new Station(3L, "삼성역");
-        favorites = Arrays.asList(new Favorite(member, 강남역, 역삼역), new Favorite(member, 강남역, 삼성역));
+        favorites = Arrays.asList(new Favorite(member.getId(), 강남역, 역삼역), new Favorite(member.getId(), 강남역, 삼성역));
     }
 
     @Test
@@ -70,8 +70,7 @@ class FavoriteServiceTest {
 
     @Test
     void findAll() {
-        given(memberService.findById(anyLong())).willReturn(member);
-        given(favoriteRepository.findAllByMember(any())).willReturn(favorites);
+        given(favoriteRepository.findAllByMemberId(any())).willReturn(favorites);
 
         List<FavoriteResponse> result = favoriteService.findAll(loginMember);
 

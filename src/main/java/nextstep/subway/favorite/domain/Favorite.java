@@ -4,7 +4,6 @@ import nextstep.subway.common.ErrorMessage;
 import nextstep.subway.common.exception.BadRequestException;
 import nextstep.subway.common.exception.CanNotDeleteException;
 import nextstep.subway.common.exception.NotFoundException;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.Entity;
@@ -22,9 +21,7 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    private Long memberId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source_id")
@@ -37,19 +34,19 @@ public class Favorite {
     protected Favorite() {
     }
 
-    public Favorite(Member member, Station source, Station target) {
+    public Favorite(Long memberId, Station source, Station target) {
         validateFavorite(source, target);
         this.source = source;
         this.target = target;
-        this.member = member;
+        this.memberId = memberId;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Member getMember() {
-        return member;
+    public Long getMemberId() {
+        return memberId;
     }
 
     public Station getSource() {
@@ -60,8 +57,8 @@ public class Favorite {
         return target;
     }
 
-    public void validateMember(Member member) {
-        if (!this.member.equals(member)) {
+    public void validateMember(Long memberId) {
+        if (!this.memberId.equals(memberId)) {
             throw new CanNotDeleteException(ErrorMessage.FAVORITE_CAN_NOT_DELETE);
         }
     }

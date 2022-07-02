@@ -37,15 +37,14 @@ public class FavoriteService {
 
         validateDuplication(member, source, target);
 
-        Favorite favorite = new Favorite(member, source, target);
+        Favorite favorite = new Favorite(member.getId(), source, target);
         favoriteRepository.save(favorite);
         return FavoriteResponse.of(favorite);
     }
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findAll(LoginMember loginMember) {
-        Member member = memberService.findById(loginMember.getId());
-        List<Favorite> favorites = favoriteRepository.findAllByMember(member);
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.getId());
 
         return FavoriteResponse.of(favorites);
     }
@@ -55,13 +54,13 @@ public class FavoriteService {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.FAVORITE_NOT_FOUND));
 
         Member member = memberService.findById(loginMember.getId());
-        favorite.validateMember(member);
+        favorite.validateMember(loginMember.getId());
 
         favoriteRepository.delete(favorite);
     }
 
     private void validateDuplication(Member member, Station source, Station target) {
-        if (favoriteRepository.existsByMemberAndSourceAndTarget(member, source, target)) {
+        if (favoriteRepository.existsByMemberIdAndSourceAndTarget(member.getId(), source, target)) {
             throw new DuplicationException(ErrorMessage.FAVORITE_DUPLICATION);
         }
     }
