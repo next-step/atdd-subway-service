@@ -1,11 +1,17 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.BaseEntity;
-import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import nextstep.subway.BaseEntity;
+import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Entity
 public class Line extends BaseEntity {
@@ -16,8 +22,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -50,7 +56,28 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections;
+    public List<Station> getStations() {
+        if (sections.isEmpty()) {
+            return Arrays.asList();
+        }
+
+        Stations stations = Stations.of(sections);
+
+        return stations.getStations();
+    }
+
+    public void addLineStation(SectionRequest request, Station upStation, Station downStation) {
+        Stations stations = new Stations(getStations());
+        boolean isUpStationExisted = stations.isUpStationExisted(upStation);
+        boolean isDownStationExisted = stations.isDownStationExisted(downStation);
+
+        stations.checkAddLineStation(upStation,downStation, isUpStationExisted, isDownStationExisted);
+
+        Section section = new Section(this, upStation, downStation, request.getDistance());
+        sections.addSection(stations, section, isUpStationExisted, isDownStationExisted);
+    }
+
+    public void removeLineStation(Station station){
+        sections.removeLineStation(station, this);
     }
 }
