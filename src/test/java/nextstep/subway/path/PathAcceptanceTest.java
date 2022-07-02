@@ -73,7 +73,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         지하철_노선에_지하철역_순서_정렬됨(최단경로_조회응답, Arrays.asList(강남역, 양재역, 남부터미널역));
         지하철_역사이_최단경로_거리확인(최단경로_조회응답, 12);
-        최단경로_요금조회(최단경로_조회응답, new Fare(1350));
+        최단경로_요금조회(최단경로_조회응답, Fare.of(1350));
     }
 
     /**
