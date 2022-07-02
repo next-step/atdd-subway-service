@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -72,6 +73,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         지하철_노선에_지하철역_순서_정렬됨(최단경로_조회응답, Arrays.asList(강남역, 양재역, 남부터미널역));
         지하철_역사이_최단경로_거리확인(최단경로_조회응답, 12);
+        최단경로_요금조회(최단경로_조회응답, new Fare(1350));
     }
 
     /**
@@ -146,6 +148,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(pathResponse.getDistance()).isEqualTo(distance);
     }
+
+    public static void 최단경로_요금조회(ExtractableResponse<Response> response, Fare fare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+
+        assertThat(pathResponse.getFare()).isEqualTo(fare.value());
+    }
+
 
     public static void 지하철_역사이_최단경로_조회_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());

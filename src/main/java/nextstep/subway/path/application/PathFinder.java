@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.sections.domain.Section;
@@ -21,7 +22,7 @@ public class PathFinder {
         validate(allStations, sourceStation, targetStation);
         DijkstraShortestPath dijkstraShortestPath = makeDijkstraShortestPath(allSection, allStations);
         GraphPath shortestPath = getShortestPath(sourceStation, targetStation, dijkstraShortestPath);
-        return new PathResponse(shortestPath.getVertexList(), (long) shortestPath.getWeight());
+        return new PathResponse(shortestPath.getVertexList(), (long) shortestPath.getWeight(), Fare.calculateFare((long) shortestPath.getWeight()));
     }
 
     private List<Station> findAllStations(List<Section> allSection) {
