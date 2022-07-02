@@ -30,7 +30,7 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findShortestPath(Long sourceId, Long targetId) {
+    public PathResponse findShortestPath(Long sourceId, Long targetId, Integer age) {
         Station sourceStation = stationService.findStationById(sourceId);
         Station targetStation = stationService.findStationById(targetId);
 
@@ -39,10 +39,10 @@ public class PathService {
         List<Line> lines = lineService.findAll();
         PathFinder pathFinder = new DijkstraPathFinder(lines);
         Path shortestPath = pathFinder.findShortestPath(sourceStation, targetStation);
-        return calculateFare(shortestPath);
+        return calculateFare(shortestPath, age);
     }
 
-    private PathResponse calculateFare(Path shortestPath) {
+    private PathResponse calculateFare(Path shortestPath, Integer age) {
         int distance = shortestPath.getDistance();
         final int BASIC_FARE = 1250;
         int fare = BASIC_FARE;
@@ -63,6 +63,15 @@ public class PathService {
                 .getLineSurcharge();
 
         fare += lineSurcharge;
+
+        if (age >= 13 && age < 19) {
+            fare -= ((fare - 350) * 0.2);
+        }
+
+        if (age >= 6 && age < 13) {
+            fare -= ((fare - 350) * 0.5);
+        }
+
         return new PathResponse(shortestPath.getStations(), shortestPath.getDistance(), fare);
     }
 

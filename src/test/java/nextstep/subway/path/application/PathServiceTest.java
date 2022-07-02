@@ -75,7 +75,7 @@ class PathServiceTest {
         given(stationService.findStationById(강남역.getId())).willReturn(강남역);
 
         // when
-        PathResponse pathResponse = pathService.findShortestPath(남부터미널역.getId(), 강남역.getId());
+        PathResponse pathResponse = pathService.findShortestPath(남부터미널역.getId(), 강남역.getId(), null);
 
         // then
         assertEquals(9, pathResponse.getDistance());

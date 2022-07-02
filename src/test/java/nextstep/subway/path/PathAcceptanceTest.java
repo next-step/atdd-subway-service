@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -16,8 +17,10 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -183,6 +186,60 @@ class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * Given 청소년이 로그인한 상태에서
+     * When 교대역에서 양재역의 최단 경로를 조회하면
+     * Then 거리 5, 요금 1070원이 리턴된다
+     */
+    @DisplayName("10km 이하 거리의 청소년 요금을 조회한다")
+    @Test
+    void getShortestRouteAndFareForTeenagers() {
+        // given
+        final String EMAIL = "teenager@email.com";
+        final String PASSWORD = "teenager12";
+        final Integer AGE = 13;
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
+        String token = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
+
+        // when
+        ExtractableResponse<Response> response = 노선_최단경로_조회(token, 교대역, 양재역);
+
+        // then
+        List<String> stations = response.jsonPath().get("stations.name");
+        assertThat(stations).containsExactly(교대역.getName(), 남부터미널역.getName(), 양재역.getName());
+
+        assertEquals(5, (int) response.jsonPath().get("distance"));
+        assertEquals(1070, (int) response.jsonPath().get("fare"));
+    }
+
+    /**
+     * Given 어린이로 로그인한 상태에서
+     * When 교대역에서 양재역의 최단 경로를 조회하면
+     * Then 거리 5, 요금 800원이 리턴된다
+     */
+    @DisplayName("10km 이하 거리의 어린이 요금을 조회한다")
+    @Test
+    void getShortestRouteAndFareForChildren() {
+        // given
+        final String EMAIL = "children@email.com";
+        final String PASSWORD = "children12";
+        final Integer AGE = 10;
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
+        String token = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
+
+        // when
+        ExtractableResponse<Response> response = 노선_최단경로_조회(token, 교대역, 양재역);
+
+        // then
+        List<String> stations = response.jsonPath().get("stations.name");
+        assertThat(stations).containsExactly(교대역.getName(), 남부터미널역.getName(), 양재역.getName());
+
+        assertEquals(5, (int) response.jsonPath().get("distance"));
+        assertEquals(800, (int) response.jsonPath().get("fare"));
+    }
+
+    /**
      * When 출발역과 도착역이 같은 경우
      * Then 오류가 발생한다
      */
@@ -247,6 +304,14 @@ class PathAcceptanceTest extends AcceptanceTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.statusCode());
     }
 
+    private ExtractableResponse<Response> 노선_최단경로_조회(String token, StationResponse 출발역, StationResponse 도착역) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", 출발역.getId(), 도착역.getId())
+                .then().log().all()
+                .extract();
+    }
     private ExtractableResponse<Response> 노선_최단경로_조회(StationResponse 출발역, StationResponse 도착역) {
         return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
