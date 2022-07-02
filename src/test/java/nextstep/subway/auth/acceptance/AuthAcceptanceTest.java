@@ -15,6 +15,8 @@ import org.springframework.http.MediaType;
 import java.awt.*;
 
 import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.MemberRequest.회원_생성을_요청;
+import static nextstep.subway.member.MyInfoRequest.내_정보_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
