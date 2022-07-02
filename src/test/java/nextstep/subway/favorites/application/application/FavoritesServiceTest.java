@@ -1,4 +1,4 @@
-package nextstep.subway.favorites.application;
+package nextstep.subway.favorites.application.application;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import java.util.Collections;
 import java.util.Optional;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.favorites.application.FavoritesService;
 import nextstep.subway.favorites.domain.Favorites;
 import nextstep.subway.favorites.domain.FavoritesRepository;
 import nextstep.subway.favorites.dto.FavoritesRequest;

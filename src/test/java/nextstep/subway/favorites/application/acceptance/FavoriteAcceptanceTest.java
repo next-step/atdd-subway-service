@@ -1,4 +1,4 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorites.application.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.유효하지_않은_인증_토큰;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.인증_실패됨;
