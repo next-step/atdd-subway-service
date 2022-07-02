@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -45,6 +46,18 @@ public class Line extends BaseEntity {
         this.name = line.getName();
         this.color = line.getColor();
     }
+
+    public static Line of(LineRequest request, Station upStation, Station downStation) {
+        return new Line.Builder()
+                .color(request.getColor())
+                .name(request.getName())
+                .distance(request.getDistance())
+                .fare(request.getFare())
+                .upStation(upStation)
+                .downStation(downStation)
+                .build();
+    }
+
 
     public void changeFare(int fare) {
         this.fare = Fare.of(fare);
