@@ -39,8 +39,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findMyFavorites(LoginMember loginMember) {
-        Member member = memberService.findMemberById(loginMember.getId());
-        return favoriteRepository.findByMember(member);
+        return FavoriteResponse.of(favoriteRepository.findAllByMemberId(loginMember.getId()));
     }
 
     @Transactional
