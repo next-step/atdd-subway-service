@@ -7,13 +7,16 @@ import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -44,8 +47,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    private static ExtractableResponse<Response> 즐겨찾기_목록_조회를_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(FAVORITES_URL)
+                .then().log().all()
+                .extract();
+    }
+
     /**
-     * Background Given 지하철역 등록되어 있음 And 지하철 노선 등록되어 있음 And 지하철 노선에 지하철역 등록되어 있음 And 회원 등록되어 있음 And 로그인 되어있음
+     * Background
+     *  Given 지하철역 등록되어 있음
+     *  And 지하철 노선 등록되어 있음
+     *  And 지하철 노선에 지하철역 등록되어 있음
+     *  And 회원 등록되어 있음
+     *  And 로그인 되어있음
      */
     @Override
     @BeforeEach
@@ -66,10 +84,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
         사용자 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
     }
-
     /**
-     * Feature: 즐겨찾기를 관리한다. Scenario: 즐겨찾기를 관리 When 즐겨찾기 생성을 요청 Then 즐겨찾기 생성됨 When 즐겨찾기 목록 조회 요청 Then 즐겨찾기 목록 조회됨 When
-     * 즐겨찾기 삭제 요청 Then 즐겨찾기 삭제됨
+     * Feature: 즐겨찾기를 관리한다.
+     *  Scenario: 즐겨찾기를 관리
+     *      When 즐겨찾기 생성을 요청
+     *      Then 즐겨찾기 생성됨
+     *      When 즐겨찾기 목록 조회 요청
+     *      Then 즐겨찾기 목록 조회됨
+     *      When 즐겨찾기 삭제 요청
+     *      Then 즐겨찾기 삭제됨
      */
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
@@ -78,9 +101,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(사용자, 강남역, 정자역);
         // then
         즐겨찾기_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회를_요청(사용자);
+        // then
+        즐겨찾기_목록_조회됨(findResponse);
     }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         응답코드_확인(response, HttpStatus.CREATED);
+    }
+
+    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
+        응답코드_확인(response, HttpStatus.OK);
+
+        List<FavoriteResponse> favoriteResponses = response.jsonPath().getList(".", FavoriteResponse.class);
+        assertThat(favoriteResponses).isNotEmpty();
     }
 }

@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import java.util.List;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -34,5 +35,10 @@ public class FavoriteService {
         Favorite persistFavorite = favoriteRepository.save(new Favorite(source, target, member));
 
         return FavoriteResponse.from(persistFavorite);
+    }
+
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        List<Favorite> favorites = favoriteRepository.findByMember_id(memberId);
+        return FavoriteResponse.from(favorites);
     }
 }
