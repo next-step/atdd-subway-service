@@ -115,7 +115,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // Then : 즐겨 찾기 목록 조회됨
         인증_실패됨(retrieveResponse);
     }
-    
+
     @Test
     @DisplayName("즐겨찾기가 이미 등록된 경우 예외 발생")
     public void throwException_WhenFavoritesIsAlreadyExist(){
@@ -128,6 +128,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // Then
         요청_실패됨(createSecondFavoritesResponse);
+    }
+
+    @Test
+    @DisplayName("삭제 대상 즐겨찾기가 없는 경우 삭제 시 예외")
+    public void throwException_WhenDeleteTargetFavoritesIsNotExist(){
+        // When
+        ExtractableResponse<Response> deleteFirstFavoritesResponse = 즐겨찾기_삭제_요청(인증_토큰, 1L);
+
+        // Then
+        요청_실패됨(deleteFirstFavoritesResponse);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(

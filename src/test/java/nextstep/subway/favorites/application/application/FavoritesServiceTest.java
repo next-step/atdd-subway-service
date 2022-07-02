@@ -115,6 +115,35 @@ class FavoritesServiceTest {
         verify(favoritesRepository).existsBySourceIdAndTargetId(선정릉역_번호, 선릉역_번호);
     }
 
+    @Test
+    @DisplayName("즐겨찾기 목록을 삭제한다.")
+    public void deleteFavoritesById() {
+        // Given
+        given(favoritesRepository.findByIdAndMemberId(로그인_회원.getId(), 즐겨찾기_번호)).willReturn(Optional.of(즐겨찾기));
+
+        // When
+        favoritesService.deleteFavoritesById(로그인_회원, 즐겨찾기_번호);
+
+        // Then
+        verify(favoritesRepository).findByIdAndMemberId(로그인_회원.getId(), 즐겨찾기_번호);
+    }
+
+    @Test
+    @DisplayName("삭제 대상 즐겨찾기가 없는 경우 삭제 시 예외")
+    public void throwException_WhenDeleteTargetFavoritesIsNotExist() {
+        // Given
+        given(favoritesRepository.findByIdAndMemberId(로그인_회원.getId(), 즐겨찾기_번호))
+            .willThrow(IllegalArgumentException.class);
+
+        // When
+        assertThatExceptionOfType(IllegalArgumentException.class)
+            .isThrownBy(() -> favoritesService.deleteFavoritesById(로그인_회원, 즐겨찾기_번호));
+
+        // Then
+        verify(favoritesRepository).findByIdAndMemberId(로그인_회원.getId(), 즐겨찾기_번호);
+    }
+
+
     private void 회원_관련_테스트_객체_생성() {
         회원_번호 = 1L;
         회원 = new Member("honggildong@gmail.com", "password", 99);
