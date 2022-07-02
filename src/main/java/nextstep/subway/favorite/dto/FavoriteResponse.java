@@ -1,27 +1,29 @@
 package nextstep.subway.favorite.dto;
 
 import nextstep.subway.favorite.domain.Favorite;
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class FavoriteResponse {
     private Long id;
-    private Station source;
-    private Station target;
+    private StationResponse source;
+    private StationResponse target;
 
     public FavoriteResponse() {
     }
 
-    public FavoriteResponse(Long id, Station source, Station target) {
+    public FavoriteResponse(Long id, StationResponse source, StationResponse target) {
         this.id = id;
         this.source = source;
         this.target = target;
     }
 
     public static FavoriteResponse of(Favorite favorite) {
-        return new FavoriteResponse(favorite.getId(), favorite.getSource(), favorite.getTarget());
+        StationResponse sourceResponse = StationResponse.of(favorite.getSource());
+        StationResponse targetResponse = StationResponse.of(favorite.getTarget());
+        return new FavoriteResponse(favorite.getId(), sourceResponse, targetResponse);
     }
 
     public static List<FavoriteResponse> of(List<Favorite> favorites) {
@@ -34,11 +36,4 @@ public class FavoriteResponse {
         return id;
     }
 
-    public Station getSource() {
-        return source;
-    }
-
-    public Station getTarget() {
-        return target;
-    }
 }

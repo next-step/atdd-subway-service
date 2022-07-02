@@ -12,13 +12,13 @@ public class Favorite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Station source;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Station target;
 
     public Favorite() {
