@@ -115,6 +115,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // Then : 즐겨 찾기 목록 조회됨
         인증_실패됨(retrieveResponse);
     }
+    
+    @Test
+    @DisplayName("즐겨찾기가 이미 등록된 경우 예외 발생")
+    public void throwException_WhenFavoritesIsAlreadyExist(){
+        // Given
+        ExtractableResponse<Response> createFirstFavoritesResponse = 즐겨찾기_생성_요청(인증_토큰, 선정릉역, 도곡역);
+        즐겨찾기_생성됨(createFirstFavoritesResponse);
+
+        // When
+        ExtractableResponse<Response> createSecondFavoritesResponse = 즐겨찾기_생성_요청(인증_토큰, 선정릉역, 도곡역);
+
+        // Then
+        요청_실패됨(createSecondFavoritesResponse);
+    }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(
         final String accessToken,
@@ -146,6 +160,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static void 요청_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 즐겨찾기_목록_조회됨(

@@ -1,5 +1,6 @@
 package nextstep.subway.favorites.application.application;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -45,20 +46,17 @@ class FavoritesServiceTest {
     private LoginMember 로그인_회원;
     private Member 회원;
     private Long 회원_번호;
-    private Station 선정릉역;
-    private Station 선릉역;
-    private Long 선정릉역_번호;
-    private Long 선릉역_번호;
+    private Station 선정릉역, 선릉역;
+    private Long 선정릉역_번호, 선릉역_번호;
+    private Favorites 즐겨찾기;
+    private Long 즐겨찾기_번호;
 
     @BeforeEach
     void setUp() {
-        회원 = new Member("honggildong@gmail.com", "password", 99);
-        회원_번호 = 1L;
-        로그인_회원 = new LoginMember(회원_번호, 회원.getEmail(), 회원.getAge());
-        선정릉역 = new Station("선정릉역");
-        선릉역 = new Station("선릉역");
-        선정릉역_번호 = 1L;
-        선릉역_번호 = 2L;
+        회원_관련_테스트_객체_생성();
+        로그인_관련_테스트_객체_생성();
+        역_관련_테스트_객체_생성();
+        즐겨찾기_관련_테스트_객체_생성();
     }
 
     @Test
@@ -69,6 +67,7 @@ class FavoritesServiceTest {
         given(stationService.findStationById(선정릉역_번호)).willReturn(선정릉역);
         given(stationService.findStationById(선릉역_번호)).willReturn(선릉역);
         given(favoritesRepository.save(any(Favorites.class))).will(AdditionalAnswers.returnsFirstArg());
+        given(favoritesRepository.existsBySourceIdAndTargetId(선정릉역_번호, 선릉역_번호)).willReturn(false);
 
         FavoritesRequest favoritesRequest = new FavoritesRequest(선정릉역_번호, 선릉역_번호);
 
@@ -78,6 +77,7 @@ class FavoritesServiceTest {
         // Then
         verify(memberRepository).findById(회원_번호);
         verify(stationService, times(2)).findStationById(anyLong());
+        verify(favoritesRepository).existsBySourceIdAndTargetId(선정릉역_번호, 선릉역_번호);
         verify(favoritesRepository).save(any(Favorites.class));
     }
 
@@ -93,5 +93,46 @@ class FavoritesServiceTest {
 
         // Then
         verify(favoritesRepository).findAllByMemberId(로그인_회원.getId());
+    }
+
+    @Test
+    @DisplayName("즐겨찾기가 이미 등록된 경우 예외 발생 검증")
+    public void throwException_WhenFavoritesIsAlreadyExist() {
+        given(memberRepository.findById(회원_번호)).willReturn(Optional.of(회원));
+        given(stationService.findStationById(선정릉역_번호)).willReturn(선정릉역);
+        given(stationService.findStationById(선릉역_번호)).willReturn(선릉역);
+        given(favoritesRepository.existsBySourceIdAndTargetId(선정릉역_번호, 선릉역_번호)).willReturn(true);
+
+        FavoritesRequest favoritesRequest = new FavoritesRequest(선정릉역_번호, 선릉역_번호);
+
+        // When
+        assertThatExceptionOfType(IllegalArgumentException.class)
+            .isThrownBy(() -> favoritesService.saveFavorites(로그인_회원, favoritesRequest));
+
+        // Then
+        verify(memberRepository).findById(회원_번호);
+        verify(stationService, times(2)).findStationById(anyLong());
+        verify(favoritesRepository).existsBySourceIdAndTargetId(선정릉역_번호, 선릉역_번호);
+    }
+
+    private void 회원_관련_테스트_객체_생성() {
+        회원_번호 = 1L;
+        회원 = new Member("honggildong@gmail.com", "password", 99);
+    }
+
+    private void 로그인_관련_테스트_객체_생성() {
+        로그인_회원 = new LoginMember(회원_번호, 회원.getEmail(), 회원.getAge());
+    }
+
+    private void 역_관련_테스트_객체_생성() {
+        선정릉역_번호 = 1L;
+        선정릉역 = new Station("선정릉역");
+        선릉역_번호 = 2L;
+        선릉역 = new Station("선릉역");
+    }
+
+    private void 즐겨찾기_관련_테스트_객체_생성() {
+        즐겨찾기_번호 = 1L;
+        즐겨찾기 = new Favorites(회원, 선정릉역, 선릉역);
     }
 }

@@ -10,5 +10,7 @@ public interface FavoritesRepository extends JpaRepository<Favorites, Long> {
     @EntityGraph(attributePaths = {"source", "target"})
     List<Favorites> findAllByMemberId(Long memberId);
 
+    boolean existsBySourceIdAndTargetId(Long id, Long memberId);
+
     Optional<Favorites> findByIdAndMemberId(Long id, Long memberId);
 }

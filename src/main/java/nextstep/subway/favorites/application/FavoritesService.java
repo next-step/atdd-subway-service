@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FavoritesService {
 
     public static final String FAVORITES_NOT_FOUND_ERROR = "요청에 해당하는 즐겨찾기를 찾을 수 없습니다.";
+    public static final String ALREADY_EXIST_FAVORITES_ERROR = "이미 즐겨찾기에 등록된 구간입니다.";
     private final FavoritesRepository favoritesRepository;
     private final StationService stationService;
     private final MemberRepository memberRepository;
@@ -41,10 +42,17 @@ public class FavoritesService {
             .orElseThrow(() -> new IllegalArgumentException(MEMBER_NOT_FOUND_ERROR));
         Station sourceStation = stationService.findStationById(favoritesRequest.getSource());
         Station targetStation = stationService.findStationById(favoritesRequest.getTarget());
-        Favorites favorites = favoritesRequest.toEntity(member, sourceStation, targetStation);
+        if (isExistFavorites(favoritesRequest.getSource(), favoritesRequest.getTarget())) {
+            throw new IllegalArgumentException(ALREADY_EXIST_FAVORITES_ERROR);
+        }
 
+        Favorites favorites = favoritesRequest.toEntity(member, sourceStation, targetStation);
         Favorites persistFavorites = favoritesRepository.save(favorites);
         return FavoritesResponse.from(persistFavorites);
+    }
+
+    private boolean isExistFavorites(Long sourceId, Long targetId) {
+        return favoritesRepository.existsBySourceIdAndTargetId(sourceId, targetId);
     }
 
     public List<FavoritesResponse> findAllFavorites(LoginMember loginMember) {
