@@ -12,8 +12,10 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
     private final MemberService memberService;
     private final StationService stationService;
@@ -27,6 +29,7 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
+    @Transactional
     public FavoriteResponse saveFavorite(LoginMember loginMember, FavoriteRequest request) {
         Station source = stationService.findStationById(request.getSourceStationId());
         Station target = stationService.findStationById(request.getTargetStationId());
@@ -43,6 +46,7 @@ public class FavoriteService {
         return FavoriteResponse.from(favorites);
     }
 
+    @Transactional
     public void deleteFavorite(Long memberId, Long favoriteId) {
         Favorite foundFavorite = favoriteRepository.findByMember_idAndId(memberId, favoriteId)
                 .orElseThrow(() -> new NotFoundException(String.format("회원님의 즐겨찾기(%d)를 찾을 수 없습니다.", favoriteId)));
