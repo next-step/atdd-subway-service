@@ -1,5 +1,7 @@
 package nextstep.subway.favorite;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.유효하지_않은_인증_토큰;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.인증_실패됨;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.토큰_발급_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
@@ -34,6 +36,7 @@ import org.springframework.http.HttpStatus;
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static final String FAVORITES_API_BASE_URL = "/favorites";
+    public static final String DELETE_FAVORITES_API_BASE_URL = "/favorites/{id}";
     private static String 인증_토큰;
     private StationResponse 선정릉역, 선릉역, 도곡역, 한티역;
     private LineResponse 분당선;
@@ -84,6 +87,35 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_조회됨(retrieveResponse, 선릉역, 도곡역);
     }
 
+    @Test
+    @DisplayName("유효하지 못한 토큰인 경우 즐겨 찾기 관리 기능 실패 검증")
+    public void throwException_WhenAccessTokenIsInvalid() {
+        // When : 즐겨찾기 생성 요청
+        ExtractableResponse<Response> createFirstFavoritesResponse = 즐겨찾기_생성_요청(유효하지_않은_인증_토큰, 선정릉역, 도곡역);
+        즐겨찾기_생성_요청(인증_토큰, 선릉역, 도곡역);
+
+        // Then : 즐겨 찾기 생성됨
+        인증_실패됨(createFirstFavoritesResponse);
+
+        // When : 즐겨찾기 목록 조회 요청
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(유효하지_않은_인증_토큰);
+
+        // Then : 즐겨 찾기 목록 조회됨
+        인증_실패됨(findResponse);
+
+        // When : 즐겨찾기 삭제 요청
+        ExtractableResponse<Response> deleteFirstFavoritesResponse = 즐겨찾기_삭제_요청(유효하지_않은_인증_토큰, 1L);
+
+        // Then : 즐겨 찾기 삭제됨
+        인증_실패됨(deleteFirstFavoritesResponse);
+
+        // When : 즐겨찾기 목록 조회 요청
+        ExtractableResponse<Response> retrieveResponse = 즐겨찾기_목록_조회_요청(유효하지_않은_인증_토큰);
+
+        // Then : 즐겨 찾기 목록 조회됨
+        인증_실패됨(retrieveResponse);
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(
         final String accessToken,
         final StationResponse source,
@@ -103,6 +135,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     ) {
         final String uri = response.header("Location");
         return delete(accessToken, uri);
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(
+        final String accessToken,
+        final Long path
+    ) {
+        return delete(accessToken, DELETE_FAVORITES_API_BASE_URL, path);
     }
 
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {

@@ -184,6 +184,26 @@ Connection: keep-alive
 ]
 ```
 
+### 삭제 요청/응답
+Request
+```
+DELETE /favorites/1 HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
+accept: */*
+host: localhost:50336
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
+accept-encoding: gzip,deflate
+```
+
+Response
+```
+HTTP/1.1 204 No Content
+Keep-Alive: timeout=60
+Connection: keep-alive
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+```
+
 ---
 
 # TODO List
@@ -204,14 +224,14 @@ Connection: keep-alive
   - [x] 내 정보 조회 : GET `/members/me`
   - [x] 내 정보 수정 : PUT `/members/me`
   - [x] 내 정보 삭제 : DELETE `/members/me`
-  - [x] 잘못된 토큰 정보로 내 정보 관련 API 요청 시 예외 케이스 구현
+  - [x] 잘못된 토큰 정보로 내 정보 관련 API 요청 시 예외 발생 검증 테스트 구현
 
 ### 즐겨 찾기 기능 구현
 - Base URL : `/favorites`
 - 주의 사항 : 로그인 후 발급 받은 토큰을 포함해서 요청
 - 구현 기능 목록 
-  - [ ] 즐겨 찾기 생성 : POST `/favorites` (즐겨 찾기 생성 요청 : source, target)
-  - [ ] 즐겨 찾기 목록 조회 : GET `/favorites`
-  - [ ] 즐겨 찾기 삭제 : DELETE `/favorites/{favoritesId}`
-
+  - [x] 즐겨 찾기 생성 : POST `/favorites` (즐겨 찾기 생성 요청 : source: Long, target: Long)
+  - [x] 즐겨 찾기 목록 조회 : GET `/favorites`
+  - [x] 즐겨 찾기 삭제 : DELETE `/favorites/{favoritesId}`
+  - [x] 잘못된 토큰 정보로 즐겨찾기 관련 API 요청 시 예외 발생 검증 테스트 구현
 ---

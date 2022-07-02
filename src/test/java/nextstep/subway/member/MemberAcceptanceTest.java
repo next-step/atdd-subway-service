@@ -1,5 +1,7 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.유효하지_않은_인증_토큰;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.인증_실패됨;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.토큰_발급_요청;
 import static nextstep.subway.utils.RestAssuredUtils.delete;
 import static nextstep.subway.utils.RestAssuredUtils.get;
@@ -28,14 +30,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int NEW_AGE = 21;
 
     public static String 인증_토큰;
-    public static String 유효하지_않은_인증_토큰;
+
 
     @BeforeEach
     public void setUp() {
         super.setUp();
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
         인증_토큰 = 토큰_발급_요청(EMAIL, PASSWORD);
-        유효하지_않은_인증_토큰 = "invalid access token";
     }
 
     @DisplayName("회원 정보를 관리한다.")
@@ -185,9 +186,5 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 내_정보_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public static void 인증_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

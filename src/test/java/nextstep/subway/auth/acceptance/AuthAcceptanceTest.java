@@ -3,7 +3,6 @@ package nextstep.subway.auth.acceptance;
 import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
-import static nextstep.subway.member.MemberAcceptanceTest.인증_실패됨;
 import static nextstep.subway.member.MemberAcceptanceTest.내_정보_조회_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static nextstep.subway.utils.RestAssuredUtils.post;
@@ -26,6 +25,7 @@ import org.springframework.http.HttpStatus;
 @DisplayName("로그인 관련 ")
 public class AuthAcceptanceTest extends AcceptanceTest {
     public static final String LOGIN_BASE_URL = "/login/token";
+    public static final String 유효하지_않은_인증_토큰 = "invalid access token";
 
     @BeforeEach
     public void setUp() {
@@ -107,6 +107,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return post(LOGIN_BASE_URL, tokenRequest);
     }
 
+    public static String 토큰_발급_요청(
+        final String email,
+        final String password
+    ) {
+        return 로그인_요청(email, password)
+            .as(TokenResponse.class)
+            .getAccessToken();
+    }
+
     public static void 로그인_됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(TokenResponse.class)).isNotNull();
@@ -116,12 +125,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public static String 토큰_발급_요청(
-        final String email,
-        final String password
-    ) {
-        return 로그인_요청(email, password)
-            .as(TokenResponse.class)
-            .getAccessToken();
+    public static void 인증_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
