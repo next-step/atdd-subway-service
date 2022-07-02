@@ -6,23 +6,23 @@ import nextstep.subway.station.domain.Station;
 
 public class FavoritesRequest {
 
-    private Long sourceId;
-    private Long targetId;
+    private Long source;
+    private Long target;
 
     public FavoritesRequest() {
     }
 
-    public FavoritesRequest(Long sourceId, Long targetId) {
-        this.sourceId = sourceId;
-        this.targetId = targetId;
+    public FavoritesRequest(Long source, Long target) {
+        this.source = source;
+        this.target = target;
     }
 
-    public Long getSourceId() {
-        return sourceId;
+    public Long getSource() {
+        return source;
     }
 
-    public Long getTargetId() {
-        return targetId;
+    public Long getTarget() {
+        return target;
     }
 
     public Favorites toEntity(Member member, Station sourceStation, Station targetStation) {

@@ -39,8 +39,8 @@ public class FavoritesService {
     public FavoritesResponse saveFavorites(LoginMember loginMember, FavoritesRequest favoritesRequest) {
         Member member = memberRepository.findById(loginMember.getId())
             .orElseThrow(() -> new IllegalArgumentException(MEMBER_NOT_FOUND_ERROR));
-        Station sourceStation = stationService.findStationById(favoritesRequest.getSourceId());
-        Station targetStation = stationService.findStationById(favoritesRequest.getTargetId());
+        Station sourceStation = stationService.findStationById(favoritesRequest.getSource());
+        Station targetStation = stationService.findStationById(favoritesRequest.getTarget());
         Favorites favorites = favoritesRequest.toEntity(member, sourceStation, targetStation);
 
         Favorites persistFavorites = favoritesRepository.save(favorites);
