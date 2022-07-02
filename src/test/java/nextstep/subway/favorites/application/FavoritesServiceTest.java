@@ -85,12 +85,12 @@ class FavoritesServiceTest {
     public void findAllFavorites() {
         // Given
         Favorites favorites = new Favorites(회원, 선정릉역, 선릉역);
-        given(favoritesRepository.findAll()).willReturn(Collections.singletonList(favorites));
+        given(favoritesRepository.findAllByMemberId(로그인_회원.getId())).willReturn(Collections.singletonList(favorites));
 
         // When
-        favoritesService.findAllFavorites();
+        favoritesService.findAllFavorites(로그인_회원);
 
         // Then
-        verify(favoritesRepository).findAll();
+        verify(favoritesRepository).findAllByMemberId(로그인_회원.getId());
     }
 }

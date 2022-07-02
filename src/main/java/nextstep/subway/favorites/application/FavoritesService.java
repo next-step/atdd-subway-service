@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class FavoritesService {
 
+    public static final String FAVORITES_NOT_FOUND_ERROR = "요청에 해당하는 즐겨찾기를 찾을 수 없습니다.";
     private final FavoritesRepository favoritesRepository;
     private final StationService stationService;
     private final MemberRepository memberRepository;
@@ -46,15 +47,21 @@ public class FavoritesService {
         return FavoritesResponse.from(persistFavorites);
     }
 
-    public List<FavoritesResponse> findAllFavorites() {
-        List<Favorites> persistFavorites = favoritesRepository.findAll();
+    public List<FavoritesResponse> findAllFavorites(LoginMember loginMember) {
+        List<Favorites> persistFavorites = favoritesRepository.findAllByMemberId(loginMember.getId());
         return persistFavorites.stream()
             .map(FavoritesResponse::from)
             .collect(Collectors.toList());
     }
 
     @Transactional
-    public void deleteFavoritesById(Long id) {
-        favoritesRepository.deleteById(id);
+    public void deleteFavoritesById(LoginMember loginMember, Long id) {
+        Favorites favorites = findByIdAndMemberId(id, loginMember);
+        favoritesRepository.deleteById(favorites.getId());
+    }
+
+    private Favorites findByIdAndMemberId(Long id, LoginMember loginMember) {
+        return favoritesRepository.findByIdAndMemberId(id, loginMember.getId())
+            .orElseThrow(() -> new IllegalArgumentException(FAVORITES_NOT_FOUND_ERROR));
     }
 }

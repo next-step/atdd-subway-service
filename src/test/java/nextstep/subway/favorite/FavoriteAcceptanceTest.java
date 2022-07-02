@@ -15,7 +15,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.favorites.dto.FavoritesRequest;
 import nextstep.subway.favorites.dto.FavoritesResponse;
@@ -67,7 +69,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(인증_토큰);
 
         // Then : 즐겨 찾기 목록 조회됨
-        즐겨찾기_목록_조회됨(findResponse, 선정릉역, 도곡역);
+        즐겨찾기_목록_조회됨(findResponse, 선정릉역, 도곡역, 선릉역, 도곡역);
 
         // When : 즐겨찾기 삭제 요청
         ExtractableResponse<Response> deleteFirstFavoritesResponse = 즐겨찾기_삭제_요청(인증_토큰, createFirstFavoritesResponse);
@@ -80,7 +82,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // Then : 즐겨 찾기 목록 조회됨
         즐겨찾기_목록_조회됨(retrieveResponse, 선릉역, 도곡역);
-
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(
@@ -113,10 +114,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         final StationResponse... stations
     ) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<FavoritesResponse> list = response.jsonPath().getList(".", FavoritesResponse.class);
-        assertThat(list)
-            .flatExtracting(FavoritesResponse::getSource, FavoritesResponse::getTarget)
-            .contains(Arrays.asList(stations));
+
+        List<Long> actualIds = response.jsonPath().getList(".", FavoritesResponse.class).stream()
+            .map(it -> Arrays.asList(it.getSource().getId(), it.getTarget().getId()))
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+
+        List<Long> expectedIds = Arrays.stream(stations)
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
+
+        assertThat(actualIds).containsExactlyElementsOf(expectedIds);
     }
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
