@@ -1,5 +1,8 @@
 package nextstep.subway.auth.domain;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.ObjectUtils;
+
 public class LoginMember {
     private Long id;
     private String email;
@@ -14,6 +17,10 @@ public class LoginMember {
         this.age = age;
     }
 
+    public static LoginMember guest() {
+        return new LoginMember();
+    }
+
     public Long getId() {
         return id;
     }
@@ -24,5 +31,9 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public boolean isGuest() {
+        return ObjectUtils.isEmpty(id) && StringUtils.isEmpty(email) && ObjectUtils.isEmpty(age);
     }
 }

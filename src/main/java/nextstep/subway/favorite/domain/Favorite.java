@@ -22,7 +22,7 @@ public class Favorite extends BaseEntity {
     @ManyToOne
     private Station target;
 
-    public Favorite() {
+    protected Favorite() {
     }
 
     public Favorite(Member member, Station source, Station target) {

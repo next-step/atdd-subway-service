@@ -1,9 +1,9 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,12 +54,13 @@ class PathFinderTest {
     @Test
     void findShortestPath() {
         // when
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = pathFinder.findShortestPath(교대역, 양재역);
+        Path shortestPath = pathFinder.findShortestPath(교대역, 양재역);
 
         // then
         assertAll(
-                () -> assertThat(shortestPath.getVertexList()).containsExactly(교대역, 남부터미널역, 양재역),
-                () -> assertThat(shortestPath.getWeight()).isEqualTo(8)
+                () -> assertThat(shortestPath.getStations()).containsExactly(교대역, 남부터미널역, 양재역),
+                () -> assertThat(shortestPath.getDistanceValue()).isEqualTo(8),
+                () -> assertThat(shortestPath.getFare(new LoginMember())).isEqualTo(new Fare(1250))
         );
     }
 

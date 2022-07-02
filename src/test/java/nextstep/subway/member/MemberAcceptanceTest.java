@@ -23,6 +23,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_EMAIL = "newemail@email.com";
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
+    public static final int TEENAGER_AGE = 15;
     public static final int NEW_AGE = 21;
 
     private ExtractableResponse<Response> createResponse;
