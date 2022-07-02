@@ -1,10 +1,11 @@
 package nextstep.subway.station.application;
 
+import nextstep.subway.common.ErrorMessage;
+import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
-import nextstep.subway.station.exception.StationNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(StationNotFoundException::new);
+        return stationRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.STATION_NOT_FOUND));
     }
 
     public Station findById(Long id) {

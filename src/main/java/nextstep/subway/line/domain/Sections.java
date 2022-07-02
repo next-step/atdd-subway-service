@@ -18,8 +18,8 @@ public class Sections {
     public Sections() {
     }
 
-    public Sections(List<Section> sectionList) {
-        values.addAll(sectionList);
+    public Sections(List<Section> sections) {
+        values.addAll(sections);
     }
 
     public List<Section> getValues() {

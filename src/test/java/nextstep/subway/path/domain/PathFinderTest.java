@@ -22,7 +22,7 @@ class PathFinderTest {
     private Line 이호선;
     private Line 신분당선;
     private Line 삼호선;
-    private PathFinder pathFinder;
+    private PathFinderStrategy pathFinderStrategy;
 
     /**
      * 교대역    --- *2호선* (10) ---   강남역
@@ -50,12 +50,12 @@ class PathFinderTest {
         삼호선.addSection(교대역, 남부터미널역, 5);
         삼호선.addSection(남부터미널역, 양재역, 3);
 
-        pathFinder = new PathFinder();
+        pathFinderStrategy = new DijkstraShortestPathFinder();
     }
 
     @Test
     void getShortestDistance() {
-        Path path = pathFinder.getShortestDistance(new Lines(Arrays.asList(이호선, 삼호선, 신분당선)), 교대역, 양재역);
+        Path path = pathFinderStrategy.getShortestDistance(new Lines(Arrays.asList(이호선, 삼호선, 신분당선)), 교대역, 양재역);
 
         assertThat(path.getDistance()).isEqualTo(8);
     }
@@ -63,14 +63,14 @@ class PathFinderTest {
     @Test
     void getShortestDistanceWithSameStations() {
         assertThatThrownBy(() -> {
-            pathFinder.getShortestDistance(new Lines(Arrays.asList(이호선, 삼호선, 신분당선)), 교대역, 교대역);
+            pathFinderStrategy.getShortestDistance(new Lines(Arrays.asList(이호선, 삼호선, 신분당선)), 교대역, 교대역);
         }).isInstanceOf(SameSourceAndTargetException.class);
     }
 
     @Test
     void getShortestDistanceWithNotExistenceStationsInSections() {
         assertThatThrownBy(() -> {
-            pathFinder.getShortestDistance(new Lines(Arrays.asList(이호선, 삼호선, 신분당선)), 교대역, 잠실역);
+            pathFinderStrategy.getShortestDistance(new Lines(Arrays.asList(이호선, 삼호선, 신분당선)), 교대역, 잠실역);
         }).isInstanceOf(NotConnectedException.class);
     }
 }
