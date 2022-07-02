@@ -11,7 +11,8 @@ public enum SubwayExceptionMessage {
     CANNOT_DELETE_LAST_SECTION("마지막 구간은 삭제할 수 없습니다."),
     EMPTY_NEXT_SECTION("다음 구간이 존재하지 않습니다."),
     EMPTY_PREVIOUS_SECTION("이전 구간이 존재하지 않습니다."),
-    INVALID_TOKEN("토큰 인증에 실패하였습니다.");
+    INVALID_TOKEN("토큰 인증에 실패하였습니다."),
+    INVALID_FAVORITE_OWNER("즐겨찾기를 삭제할 수 없는 사용자입니다.");
 
     private final String message;
 

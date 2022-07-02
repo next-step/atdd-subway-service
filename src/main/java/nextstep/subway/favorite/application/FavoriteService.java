@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional(readOnly = true)
@@ -44,7 +45,8 @@ public class FavoriteService {
 
     @Transactional
     public void removeFavorite(LoginMember loginMember, Long id) {
-        Member member = memberService.findMemberById(loginMember.getId());
-        favoriteRepository.deleteByIdAndMember(id, member);
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        favorite.isOwnedBy(loginMember.getId());
+        favoriteRepository.delete(favorite);
     }
 }
