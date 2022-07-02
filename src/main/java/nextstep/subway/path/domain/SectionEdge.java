@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.sections.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -18,17 +19,19 @@ public class SectionEdge extends DefaultWeightedEdge {
 
 
     public Station getSource() {
-
         return section.getUpStation();
     }
 
 
     public Station getTarget() {
-
         return section.getDownStation();
     }
 
     public int getDistance() {
         return distance;
+    }
+
+    public Fare getFare() {
+        return line.getFare();
     }
 }

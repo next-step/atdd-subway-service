@@ -63,6 +63,22 @@ public class PathFinderTest {
         //then
         assertThat(actual.getStations()).containsExactly(강남역, 양재역, 남부터미널역);
         assertThat(actual.getDistance()).isEqualTo(12);
+        assertThat(actual.getFare()).isEqualTo(1350);
+    }
+
+    @DisplayName("노선에 추가 요금이 있는 경우 가격 확인")
+    @Test
+    public void findShortestPathFare() {
+        //given
+        PathFinder pathFinder = new PathFinder();
+        신분당선.changeFare(300);
+        삼호선.changeFare(900);
+        //when
+        PathResponse actual = pathFinder.findShortestPath(모든구간, 강남역, 남부터미널역);
+        //then
+        assertThat(actual.getStations()).containsExactly(강남역, 양재역, 남부터미널역);
+        assertThat(actual.getDistance()).isEqualTo(12);
+        assertThat(actual.getFare()).isEqualTo(2250);
     }
 
     @DisplayName("출발역과 도착역이 같은 경우 최단 경로 조회를 실패한다.")

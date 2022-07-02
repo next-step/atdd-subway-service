@@ -1,9 +1,11 @@
 package nextstep.subway.path.application;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Fare;
 import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.path.dto.PathResponse;
@@ -22,7 +24,8 @@ public class PathFinder {
         validate(allStations, sourceStation, targetStation);
         DijkstraShortestPath dijkstraShortestPath = makeDijkstraShortestPath(allSection, allStations);
         GraphPath shortestPath = getShortestPath(sourceStation, targetStation, dijkstraShortestPath);
-        return new PathResponse(shortestPath.getVertexList(), (long) shortestPath.getWeight(), Fare.calculateFare((long) shortestPath.getWeight()));
+        Fare maxFare = findMaxLineFare(shortestPath);
+        return new PathResponse(shortestPath.getVertexList(), (long) shortestPath.getWeight(), maxFare.calculateFare((long) shortestPath.getWeight()));
     }
 
     private List<Station> findAllStations(List<Section> allSection) {
@@ -65,4 +68,14 @@ public class PathFinder {
         }
         return shortestPath;
     }
+
+    private Fare findMaxLineFare(GraphPath shortestPath) {
+        List<SectionEdge> edgeList = shortestPath.getEdgeList();
+        List<Fare> fares = edgeList.stream()
+            .map(edge -> edge.getFare())
+            .collect(Collectors.toList());
+        Comparator<Fare> comparatorByFare = Comparator.comparingLong(Fare::value);
+        return fares.stream().max(comparatorByFare).get();
+    }
+
 }
