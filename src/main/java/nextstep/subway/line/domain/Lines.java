@@ -26,7 +26,7 @@ public class Lines {
         return lines;
     }
 
-    public Path findPath(Station sourceStation, Station targetStation) {
+    public Path findPath(Station sourceStation, Station targetStation, int age) {
         checkValidateStationsForPath(sourceStation, targetStation);
         PathFinder pathFinder = new PathFinder(this);
         GraphPath path = pathFinder.getGraphPath(sourceStation, targetStation);
@@ -36,7 +36,7 @@ public class Lines {
         List<SectionEdge> sectionEdges = path.getEdgeList();
         int additionalFare = getMaxAdditionalLineFare(sectionEdges);
 
-        return Path.of(stations, distance, additionalFare);
+        return Path.of(stations, distance, additionalFare, age);
     }
 
     private void checkValidateStationsForPath(Station sourceStation, Station targetStation) {
