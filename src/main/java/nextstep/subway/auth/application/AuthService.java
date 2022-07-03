@@ -33,7 +33,18 @@ public class AuthService {
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException();
         }
+        return createLoginMemberWithCredentials(credentials);
+    }
 
+    @Transactional(readOnly = true)
+    public LoginMember findMemberIfExistToken(String credentials) {
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            return new LoginMember();
+        }
+        return createLoginMemberWithCredentials(credentials);
+    }
+
+    private LoginMember createLoginMemberWithCredentials(String credentials) {
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
