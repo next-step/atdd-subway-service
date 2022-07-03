@@ -51,10 +51,10 @@ public class PathFinderTest {
         군자역 = new Station("군자역");
         미사역 = new Station("미사역");
 
-        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = new Line("이호선", "bg-green-600", 교대역, 강남역, 7);
-        삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 양재역, 5);
-        오호선 = new Line("오호선", "bg-purple-600",군자역, 미사역, 12);
+        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
+        이호선 = new Line("이호선", "bg-green-600", 교대역, 강남역, 7, 0);
+        삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 양재역, 5, 0);
+        오호선 = new Line("오호선", "bg-purple-600",군자역, 미사역, 12, 0);
 
         삼호선.addSection(교대역, 남부터미널역, 3);
 
