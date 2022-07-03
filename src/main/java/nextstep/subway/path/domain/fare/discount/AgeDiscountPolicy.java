@@ -13,6 +13,8 @@ public enum AgeDiscountPolicy implements DiscountPolicy {
     Predicate<Integer> agePredicate;
     IntUnaryOperator discountOperator;
 
+    private static final int MIN_DISCOUNTED_FARE = 0;
+
     AgeDiscountPolicy(Predicate<Integer> agePredicate, IntUnaryOperator discountOperator) {
         this.agePredicate = agePredicate;
         this.discountOperator = discountOperator;
@@ -27,6 +29,10 @@ public enum AgeDiscountPolicy implements DiscountPolicy {
 
     @Override
     public int discount(int fare) {
-        return discountOperator.applyAsInt(fare);
+        int discountedFare = discountOperator.applyAsInt(fare);
+        if (discountedFare < MIN_DISCOUNTED_FARE) {
+            throw new IllegalStateException("할인요금 계산 시 오류가 발생했습니다.");
+        }
+        return discountedFare;
     }
 }
