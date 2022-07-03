@@ -19,6 +19,9 @@ import org.springframework.http.HttpStatus;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_됨;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -32,6 +35,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 하남시청역;
     private StationResponse 미사역;
     private StationResponse 군자역;
     private StationResponse 왕십리역;
@@ -44,7 +48,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * |                              |
      * 남부터미널역  --- *3호선* (30)---   양재
      *
-     * 미사역 ----- *5호선* (55) ------- 군자역----- (30)---- 왕십리역
+     * 하남시청역 ---(5)---- 미사역 ----- *5호선* (55) ----- 군자역---- (30)---- 왕십리역
      */
     @BeforeEach
     public void setUp() {
@@ -54,6 +58,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        하남시청역 = StationAcceptanceTest.지하철역_등록되어_있음("하남시청역").as(StationResponse.class);
         미사역 = StationAcceptanceTest.지하철역_등록되어_있음("미사역").as(StationResponse.class);
         군자역 = StationAcceptanceTest.지하철역_등록되어_있음("군자역").as(StationResponse.class);
         왕십리역 = StationAcceptanceTest.지하철역_등록되어_있음("왕십리역").as(StationResponse.class);
@@ -64,6 +69,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         오호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-red-600", 미사역.getId(), 군자역.getId(), 55, 0)).as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 5);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(오호선, 하남시청역, 미사역, 5);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(오호선, 군자역, 왕십리역, 30);
     }
 
@@ -97,7 +103,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         //then
         최단_경로_조회_400_실패(findPathResponse);
-
     }
 
     @Test
@@ -120,7 +125,66 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> findPathResponse = 최단_경로_조회_요청(미사역.getId(), 군자역.getId());
 
         경로_별_요금_비교(findPathResponse, 1950);
+    }
 
+    @Test
+    void 청소년의_기본_운임_요금_조회() {
+        //given
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, 18);
+        회원_생성됨(createResponse);
+        ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
+        로그인_됨(loginResponse);
+
+        //when
+        ExtractableResponse<Response> findPathResponse = 로그인된_유저의_최단_경로_조회_요청(loginResponse.jsonPath().getString("accessToken"), 하남시청역.getId(), 미사역.getId());
+
+        //then 기본요금 1250원 + 노선 요금 0 + 거리별 요금 0원 - ((1250 - 350) * 0.2)
+        경로_별_요금_비교(findPathResponse, 1070);
+    }
+
+    @Test
+    void 청소년_고객이_추가요금이_있는_노선을_이용할_경우_요금_비교_50km_초과() {
+        //given
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, 18);
+        회원_생성됨(createResponse);
+        ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
+        로그인_됨(loginResponse);
+
+        //when
+        ExtractableResponse<Response> findPathResponse = 로그인된_유저의_최단_경로_조회_요청(loginResponse.jsonPath().getString("accessToken"), 미사역.getId(), 군자역.getId());
+
+        //then 기본요금 1250원 + 노선 요금 0 + 거리별 요금 700원 - ((1950 - 350) * 0.2)
+        경로_별_요금_비교(findPathResponse, 1630);
+    }
+
+    @Test
+    void 어린이의_기본_운임_요금_조회() {
+        //given
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, 6);
+        회원_생성됨(createResponse);
+        ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
+        로그인_됨(loginResponse);
+
+        //when
+        ExtractableResponse<Response> findPathResponse = 로그인된_유저의_최단_경로_조회_요청(loginResponse.jsonPath().getString("accessToken"), 하남시청역.getId(), 미사역.getId());
+
+        //then 기본요금 1250원 + 노선 요금 0 + 거리별 요금 0원 - ((1250 - 350) * 0.5)
+        경로_별_요금_비교(findPathResponse, 800);
+    }
+
+    @Test
+    void 어린이_고객이_추가요금이_있는_노선을_이용할_경우_요금_비교_50km_초과() {
+        //given
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, 6);
+        회원_생성됨(createResponse);
+        ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
+        로그인_됨(loginResponse);
+
+        //when
+        ExtractableResponse<Response> findPathResponse = 로그인된_유저의_최단_경로_조회_요청(loginResponse.jsonPath().getString("accessToken"), 미사역.getId(), 군자역.getId());
+
+        //then
+        경로_별_요금_비교(findPathResponse, 1150);
     }
 
     private static ExtractableResponse<Response> getPath(String path, Map<String, ?> queryParams) {
@@ -137,6 +201,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
         queryParam.put("target", targetId);
 
         return getPath("paths", queryParam);
+    }
+
+    public static ExtractableResponse<Response> 로그인된_유저의_최단_경로_조회_요청(String accessToken, Long sourceId, Long targetId) {
+        Map<String, Long> queryParam = new HashMap<>();
+        queryParam.put("source", sourceId);
+        queryParam.put("target", targetId);
+
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .queryParams(queryParam)
+                .when().get("paths")
+                .then().log().all()
+                .extract();
     }
 
     private void 최단_경로_거리_비교(ExtractableResponse<Response> response, int expectedDistance) {

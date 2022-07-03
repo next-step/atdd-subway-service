@@ -63,7 +63,7 @@ public class LinesTest {
     void 최단_거리_조회() {
 
         //when
-        Path path = lines.findPath(강남역, 교대역);
+        Path path = lines.findPath(강남역, 교대역, 20);
 
         //then
         assertThat(path.getDistance()).isEqualTo(7);
@@ -86,7 +86,7 @@ public class LinesTest {
 
     @Test
     void 출발지와_도착지가_같은_경우_최단_거리_조회시_에러_발생() {
-        assertThrows(IllegalArgumentException.class, () -> lines.findPath(강남역, 강남역));
+        assertThrows(IllegalArgumentException.class, () -> lines.findPath(강남역, 강남역, 20));
     }
 
     @Test
@@ -94,11 +94,11 @@ public class LinesTest {
         //given
         Station 구로역 = new Station("구로역");
 
-        assertThrows(NoSuchElementFoundException.class, () -> lines.findPath(강남역, 구로역));
+        assertThrows(NoSuchElementFoundException.class, () -> lines.findPath(강남역, 구로역, 20));
     }
 
     @Test
     void 출발역과_도착역이_연결되어_있지_않을_경우_에러_발생() {
-        assertThrows(IllegalArgumentException.class, () -> lines.findPath(양재역, 미사역));
+        assertThrows(IllegalArgumentException.class, () -> lines.findPath(양재역, 미사역, 20));
     }
 }
