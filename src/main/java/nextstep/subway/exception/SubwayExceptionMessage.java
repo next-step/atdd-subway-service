@@ -13,7 +13,8 @@ public enum SubwayExceptionMessage {
     EMPTY_PREVIOUS_SECTION("이전 구간이 존재하지 않습니다."),
     INVALID_TOKEN("토큰 인증에 실패하였습니다."),
     INVALID_FAVORITE_OWNER("즐겨찾기를 삭제할 수 없는 사용자입니다."),
-    INVALID_AGE("나이는 0 이상의 숫자만 입력 가능합니다.");
+    INVALID_AGE("나이는 0 이상의 숫자만 입력 가능합니다."),
+    INVALID_FAVORITE_INPUT("즐겨찾기 입력값이 유효하지 않습니다.");
 
     private final String message;
 
