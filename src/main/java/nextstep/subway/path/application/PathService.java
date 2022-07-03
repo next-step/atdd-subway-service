@@ -1,9 +1,11 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.exception.SubwayExceptionMessage;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.DijkstraPathFinder;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -26,7 +28,7 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findShortestPath(Long sourceId, Long targetId) {
+    public PathResponse findShortestPath(Long sourceId, Long targetId, Integer age) {
         Station sourceStation = stationService.findStationById(sourceId);
         Station targetStation = stationService.findStationById(targetId);
 
@@ -34,8 +36,9 @@ public class PathService {
 
         List<Line> lines = lineService.findAll();
         PathFinder pathFinder = new DijkstraPathFinder(lines);
-
-        return pathFinder.findShortestPath(sourceStation, targetStation);
+        Path shortestPath = pathFinder.findShortestPath(sourceStation, targetStation);
+        Fare fare = new Fare(shortestPath, age);
+        return new PathResponse(shortestPath.getStations(), shortestPath.getDistance(), fare.getCalculatedFare());
     }
 
     private void ensureNotSameStation(Station sourceStation, Station targetStation) {

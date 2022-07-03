@@ -1,5 +1,7 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +19,9 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findShortestPath(@RequestParam("source") Long sourceId,
+    public ResponseEntity<PathResponse> findShortestPath(@AuthenticationPrincipal(required = false) LoginMember loginMember,
+                                                         @RequestParam("source") Long sourceId,
                                                          @RequestParam("target") Long targetId) {
-        return ResponseEntity.ok(pathService.findShortestPath(sourceId, targetId));
+        return ResponseEntity.ok(pathService.findShortestPath(sourceId, targetId, loginMember.getAge()));
     }
 }
