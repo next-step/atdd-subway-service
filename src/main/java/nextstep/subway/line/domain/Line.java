@@ -32,16 +32,19 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, int additionalFare) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int additionalFare) {
         this.name = name;
         this.color = color;
+        sections.addLineStation(new Section(this, upStation, downStation, distance));
         this.additionalFare = AdditionalFare.from(additionalFare);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
-        sections.addLineStation(new Section(this, upStation, downStation, distance));
+        this(name, color, upStation, downStation, distance, 0);
+    }
+
+    public Line(String name, String color, int additionalFare) {
+        this(name, color, null, null, 0, additionalFare);
     }
 
     public void addLineStation(Station upStation, Station downStation, int distance) {
