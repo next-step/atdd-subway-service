@@ -8,6 +8,8 @@ public class Path {
     private final List<Station> stations;
     private final int distance;
 
+    private final int fare;
+
     public static Path of(List<Station> stations, int distance) {
         return new Path(stations, distance);
     }
@@ -15,6 +17,7 @@ public class Path {
     public Path(List<Station> stations, int distance) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = DistanceFarePolicy.BASIC_FARE + DistanceFarePolicy.calculateOverFare(distance);
     }
 
     public List<Station> getStations() {
@@ -23,5 +26,9 @@ public class Path {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }

@@ -28,6 +28,6 @@ public class PathService {
         Lines lines = new Lines(lineRepository.findAll());
         Path path = lines.findPath(sourceStation, targetStation);
 
-        return PathResponse.of(path.getStations(), path.getDistance());
+        return PathResponse.of(path.getStations(), path.getDistance(), path.getFare());
     }
 }
