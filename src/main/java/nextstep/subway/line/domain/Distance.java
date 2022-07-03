@@ -37,6 +37,23 @@ public class Distance {
         this.distance -= number;
     }
 
+    public Distance subDistance(Distance distance) {
+        Distance source = Distance.of(this.value());
+        source.minusDistance(distance);
+        return source;
+    }
+
+    public int rateDistance(Distance distance) {
+        if (Objects.isNull(distance)) {
+            throw new IllegalArgumentException("나눌 거리는 0이면 안됩니다.");
+        }
+
+        if (this.value() % distance.value() == 0) {
+            return this.value() / distance.value();
+        }
+        return this.value() / distance.value() + 1;
+    }
+
     public static Distance sumDistance(Distance source, Distance target) {
         return Distance.of(source.value() + target.value());
     }

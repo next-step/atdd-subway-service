@@ -28,11 +28,12 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         final Station upStation = stationService.findById(request.getUpStationId());
         final Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
 
-        Stations stations = persistLine.getStations();
-        return LineResponse.of(persistLine, stations);
+        Line persistLine = lineRepository.save(Line.of(request, upStation, downStation));
+
+        return LineResponse.of(persistLine, persistLine.getStations());
     }
+
 
     @Transactional(readOnly = true)
     public List<LineResponse> findLines() {

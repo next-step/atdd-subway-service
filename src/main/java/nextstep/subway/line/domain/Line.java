@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -20,27 +21,56 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
+    private Fare fare = Fare.of(0);
+
+    @Embedded
     private Sections sections;
 
     protected Line() {
     }
+
 
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
-        final Section section = new Section(this, upStation, downStation, distance);
-        sections = new Sections(section);
+    private Line(Builder builder) {
+        this(builder.name, builder.color);
+        Section section = new Section(this, builder.upStation, builder.downStation, builder.distance);
+        this.sections = new Sections(section);
+        this.fare = builder.fare;
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
     }
+
+    public static Line of(LineRequest request, Station upStation, Station downStation) {
+        return new Line.Builder()
+                .color(request.getColor())
+                .name(request.getName())
+                .distance(request.getDistance())
+                .fare(request.getFare())
+                .upStation(upStation)
+                .downStation(downStation)
+                .build();
+    }
+
+
+    public void changeFare(int fare) {
+        this.fare = Fare.of(fare);
+    }
+
+    public void addSection(Section section) {
+        sections.addSection(section);
+    }
+
+    public void removeStation(Station station) {
+        sections.removeStation(station);
+    }
+
 
     public Long getId() {
         return id;
@@ -54,12 +84,8 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public void addSection(Section section) {
-        sections.addSection(section);
-    }
-
-    public void removeStation(Station station) {
-        sections.removeStation(station);
+    public Fare getFare() {
+        return fare;
     }
 
     public Stations getStations() {
@@ -69,6 +95,7 @@ public class Line extends BaseEntity {
     public Sections getSections() {
         return sections;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -85,5 +112,54 @@ public class Line extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(getName(), getColor());
+    }
+
+    public static class Builder {
+        private String name;
+        private String color;
+        private Fare fare = Fare.of(0);
+        private Station upStation;
+        private Station downStation;
+
+        private int distance;
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder color(String color) {
+            this.color = color;
+            return this;
+        }
+
+        public Builder fare(Fare fare) {
+            this.fare = fare;
+            return this;
+        }
+
+        public Builder fare(int fare) {
+            this.fare = Fare.of(fare);
+            return this;
+        }
+
+        public Builder upStation(Station upStation) {
+            this.upStation = upStation;
+            return this;
+        }
+
+        public Builder downStation(Station downStation) {
+            this.downStation = downStation;
+            return this;
+        }
+
+        public Builder distance(int distance) {
+            this.distance = distance;
+            return this;
+        }
+
+        public Line build() {
+            return new Line(this);
+        }
     }
 }

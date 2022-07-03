@@ -18,11 +18,14 @@ public class StationResponse {
         return new StationResponse(station.getId(), station.getName(), station.getCreatedDate(), station.getModifiedDate());
     }
 
-    public static List<StationResponse> of(Stations stations) {
-        return stations.getStationElements()
-                .stream()
+    public static List<StationResponse> of(List<Station> stations) {
+        return stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public static List<StationResponse> of(Stations stations) {
+        return of(stations.getStationElements());
     }
 
     public static List<StationResponse> of(Path path) {
