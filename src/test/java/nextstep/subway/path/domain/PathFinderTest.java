@@ -32,9 +32,9 @@ class PathFinderTest {
         남부터미널역 = Station.of(3L,"남부터미널역");
         교대역 = Station.of(4L,"교대역");
 
-        신분당선 = new Line("신분당선", "bg-red-600");
+        신분당선 = new Line("신분당선", "bg-red-600", 1000);
         삼호선 = new Line("3호선", "bg-orange-600");
-        이호선 = new Line("2호선", "bg-green-600");
+        이호선 = new Line("2호선", "bg-green-600", 500);
 
         신분당선.addLineStation(강남역, 양재역, 3000);
         삼호선.addLineStation(교대역, 남부터미널역, 2000);
@@ -98,5 +98,22 @@ class PathFinderTest {
         assertThatThrownBy(() -> pathFinder.findShortestPath(교대역.getId(), 정자역.getId()))
                 .isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발역과 도착역이 연결되어 있지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("경로 중 가장 높은 노선 추가요금을 리턴한다.")
+    void additionalFare() {
+        // when
+        Path 삼호선_이용_경로 = pathFinder.findShortestPath(양재역.getId(), 교대역.getId());
+        Path 삼호선_이호선_이용_경로 = pathFinder.findShortestPath(남부터미널역.getId(), 강남역.getId());
+        Path 신분당선_이용_경로 = pathFinder.findShortestPath(양재역.getId(), 강남역.getId());
+
+        // then
+        assertThat(삼호선_이용_경로.getAdditionalFare())
+                .isEqualTo(0);
+        assertThat(삼호선_이호선_이용_경로.getAdditionalFare())
+                .isEqualTo(500);
+        assertThat(신분당선_이용_경로.getAdditionalFare())
+                .isEqualTo(1000);
     }
 }
