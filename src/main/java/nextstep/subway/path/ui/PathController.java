@@ -26,9 +26,4 @@ public class PathController {
         ShortestPathResponse shortestPath = pathService.getShortestPath(sourceStationId, targetStationId);
         return ResponseEntity.ok(shortestPath);
     }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
 }
