@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.line.acceptance.LineRequests.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
@@ -129,56 +130,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .when().post("/lines")
                 .then().log().all().
                         extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
-        return 지하철_노선_목록_조회_요청("/lines");
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-
-        return 지하철_노선_목록_조회_요청(uri);
-    }
-
-    private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String uri) {
-        return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(uri)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response) {
-        return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", response.getId())
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_수정_요청(ExtractableResponse<Response> response, LineRequest params) {
-        String uri = response.header("Location");
-
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().put(uri)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_제거_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-
-        return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
     }
 
     public static void 지하철_노선_생성됨(ExtractableResponse response) {
