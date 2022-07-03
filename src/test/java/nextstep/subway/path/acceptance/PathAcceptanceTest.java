@@ -1,6 +1,5 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.path.acceptance.PathRequests.최단경로_조회_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -51,10 +50,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 3000)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("2호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 3000)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("3호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 4500)).as(LineResponse.class);
-        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 2000);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 25, 1000)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("2호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10, 500)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("3호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 20)).as(LineResponse.class);
+        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 5);
     }
 
     @Test
@@ -90,7 +89,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         존재하지_않는_역_최단경로_조회_실패됨(최단경로);
     }
 
-
     @Test
     @DisplayName("출발역과 도착역이 연결되어 있지 않는 경우 최단경로 조회를 할 수 없다.")
     void findShortestPathFailWhenNotConnected() {
@@ -106,16 +104,28 @@ public class PathAcceptanceTest extends AcceptanceTest {
         연결되지_않은_역_최단경로_조회_실패됨(최단경로);
     }
 
-    public static ExtractableResponse<Response> 최단경로_조회_요청(Long sourceStationId, Long targetStationId) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .param("source", sourceStationId)
-                .param("target", targetStationId)
-                .when().get("/paths")
-                .then().log().all()
-                .extract();
+    @Test
+    @DisplayName("최단경로 조회 시 거리별 노선별로 요금이 계산되어 조회된다.(미로그인)")
+    void returnFareWithShortestPath() {
+        // given
+        StationResponse 대화역 = 지하철역_등록되어_있음("대화역").as(StationResponse.class);
+        지하철_노선에_지하철역_등록_요청(삼호선, 대화역, 교대역, 60);
+
+        // when
+//        ExtractableResponse<Response> 추가요금_없는_20Km = 최단경로_조회_요청(양재역.getId(), 교대역.getId());
+//        ExtractableResponse<Response> 이호선_추가요금_15Km = 최단경로_조회_요청(남부터미널역.getId(), 강남역.getId());
+//        ExtractableResponse<Response> 신분당선_추가요금_25Km = 최단경로_조회_요청(양재역.getId(), 강남역.getId());
+        ExtractableResponse<Response> 추가요금_없는_65Km = 최단경로_조회_요청(대화역.getId(), 남부터미널역.getId());
+
+        // then
+//        요금_조회됨(추가요금_없는_20Km, 1450);     // 1,250(기본요금) + 200 (거리별 추가요금)
+//        요금_조회됨(이호선_추가요금_15Km, 1850);    // 1,250(기본요금) + 100 (거리별 추가요금) + 500 (2호선 추가요금)
+//        요금_조회됨(신분당선_추가요금_25Km, 2550);   // 1,250(기본요금) + 1,000 (거리별 추가요금) + 1000 (신분당선 추가요금)
+        요금_조회됨(추가요금_없는_65Km, 2250);      // 1,250(기본요금) + 1,000 (거리별 추가요금)
     }
+
+
+
 
     private static void 최단경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectStations) {
         List<StationResponse> stations = response.as(PathResponse.class).getStations();
@@ -143,5 +153,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private static void 연결되지_않은_역_최단경로_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode())
                 .isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private static void 요금_조회됨(ExtractableResponse<Response> response, int expectedFare) {
+        int fare = response.as(PathResponse.class).getFare();
+
+        assertThat(fare)
+                .isEqualTo(expectedFare);
     }
 }
