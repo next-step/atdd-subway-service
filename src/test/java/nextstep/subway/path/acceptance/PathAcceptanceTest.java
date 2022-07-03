@@ -34,6 +34,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
     private StationResponse 미사역;
     private StationResponse 군자역;
+    private StationResponse 왕십리역;
 
     /**
      * 교대역    --- *2호선* (20) ---   강남역
@@ -43,7 +44,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * |                              |
      * 남부터미널역  --- *3호선* (30)---   양재
      *
-     * 미사역 ----- *5호선* (55) ------- 군자역
+     * 미사역 ----- *5호선* (55) ------- 군자역----- (30)---- 왕십리역
      */
     @BeforeEach
     public void setUp() {
@@ -55,13 +56,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
         미사역 = StationAcceptanceTest.지하철역_등록되어_있음("미사역").as(StationResponse.class);
         군자역 = StationAcceptanceTest.지하철역_등록되어_있음("군자역").as(StationResponse.class);
+        왕십리역 = StationAcceptanceTest.지하철역_등록되어_있음("왕십리역").as(StationResponse.class);
 
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
-        이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 20)).as(LineResponse.class);
-        삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 35)).as(LineResponse.class);
-        오호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-red-600", 미사역.getId(), 군자역.getId(), 55)).as(LineResponse.class);
+        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 500)).as(LineResponse.class);
+        이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 20, 200)).as(LineResponse.class);
+        삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 35, 0)).as(LineResponse.class);
+        오호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-red-600", 미사역.getId(), 군자역.getId(), 55, 0)).as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 5);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(오호선, 군자역, 왕십리역, 30);
     }
 
     @Test
@@ -71,7 +74,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         //then
         최단_경로_거리_비교(findPathResponse, 30);
-        경로_별_요금_비교(findPathResponse, 1850);
+        //기본요금 1250 + 신분당선의 라인 요금 500원 추가 + 10km 초과 요금 600
+        경로_별_요금_비교(findPathResponse, 2350);
     }
 
     @Test
@@ -98,15 +102,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 거리_기준_요금_정보_조회_기본운임() {
-        ExtractableResponse<Response> findPathResponse = 최단_경로_조회_요청(강남역.getId(), 양재역.getId());
+        ExtractableResponse<Response> findPathResponse = 최단_경로_조회_요청(교대역.getId(), 남부터미널역.getId());
 
         경로_별_요금_비교(findPathResponse, 1250);
     }
 
     @Test
     void 거리_기준_요금_정보_조회_10km_초과() {
-        //교대 - 양재 distance 30
-        ExtractableResponse<Response> findPathResponse = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
+        //군자역 - 왕십리역 distance 30
+        ExtractableResponse<Response> findPathResponse = 최단_경로_조회_요청(군자역.getId(), 왕십리역.getId());
 
         경로_별_요금_비교(findPathResponse, 1850);
     }

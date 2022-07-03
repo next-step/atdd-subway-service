@@ -51,7 +51,7 @@ public class PathServiceTest {
      * |                              |
      * 남부터미널역  --- *3호선* (2)---   양재
      *
-     * 군자역    --- *5호선* (12) ---   미사역
+     * 군자역    --- *5호선* (55) ---   미사역
      */
     @BeforeEach
     public void setUp() {
@@ -62,10 +62,10 @@ public class PathServiceTest {
         군자역 = new Station("군자역");
         미사역 = new Station("미사역");
 
-        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = new Line("이호선", "bg-green-600", 교대역, 강남역, 7);
-        삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 양재역, 5);
-        오호선 = new Line("오호선", "bg-purple-600",군자역, 미사역, 12);
+        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10, 200);
+        이호선 = new Line("이호선", "bg-green-600", 교대역, 강남역, 7, 100);
+        삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 양재역, 5, 0);
+        오호선 = new Line("오호선", "bg-purple-600",군자역, 미사역, 55, 500);
 
         삼호선.addSection(교대역, 남부터미널역, 3);
     }
@@ -85,7 +85,39 @@ public class PathServiceTest {
         //then
         assertThat(pathResponse).isNotNull();
         assertThat(pathResponse.getDistance()).isEqualTo(5);
+        assertThat(pathResponse.getFare()).isEqualTo(1250);
 
+    }
+
+    @Test
+    void 추가요금이_있는_노선을_환승하여_이용할_경우_요금_비교_10km_이내() {
+        //강남역 - 교대역 - 남부터미널
+        //given
+        PathService pathService = new PathService(lineRepository, stationService);
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+        when(stationService.findStationById(1L)).thenReturn(강남역);
+        when(stationService.findStationById(4L)).thenReturn(남부터미널역);
+
+        //when
+        PathResponse pathResponse = pathService.findShortestPath(1L, 4L);
+
+        //then 기본 요금 1250원 + 이호선의 추가요금 100원
+        assertThat(pathResponse.getFare()).isEqualTo(1350);
+    }
+
+    @Test
+    void 추가요금이_있는_노선을_이용할_경우_요금_비교_50km_초과() {
+        //given
+        PathService pathService = new PathService(lineRepository, stationService);
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선, 오호선));
+        when(stationService.findStationById(5L)).thenReturn(군자역);
+        when(stationService.findStationById(6L)).thenReturn(미사역);
+
+        //when
+        PathResponse pathResponse = pathService.findShortestPath(5L, 6L);
+
+        //then 기본요금 1250 + 거리별 추가요금 700 + 노선 이용추가요금 500
+        assertThat(pathResponse.getFare()).isEqualTo(2450);
     }
 
     @Test
