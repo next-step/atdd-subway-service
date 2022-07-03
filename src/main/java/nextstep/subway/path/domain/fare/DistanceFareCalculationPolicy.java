@@ -41,12 +41,14 @@ public class DistanceFareCalculationPolicy implements FareCalculationPolicy {
     }
 
     private int calculateFirstAdditionalFare() {
-        return (int) Math.ceil(firstAdditionalFareDistance / FIRST_ADDITIONAL_FARE_DISTANCE_UNIT)
+        return (firstAdditionalFareDistance + FIRST_ADDITIONAL_FARE_DISTANCE_UNIT - 1)
+                / FIRST_ADDITIONAL_FARE_DISTANCE_UNIT
                 * ADDITIONAL_FARE_UNIT;
     }
 
     private int calculateSecondAdditionalFare() {
-        return (int) Math.ceil(secondAdditionalFareDistance / SECOND_ADDITIONAL_FARE_DISTANCE_UNIT)
+        return (secondAdditionalFareDistance + SECOND_ADDITIONAL_FARE_DISTANCE_UNIT - 1)
+                / SECOND_ADDITIONAL_FARE_DISTANCE_UNIT
                 * ADDITIONAL_FARE_UNIT;
     }
 }
