@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class PathFinder {
-    private WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph;
+    private WeightedMultigraph<Station, SectionEdge> stationGraph;
 
     public PathFinder(Lines lines) {
-        stationGraph = new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+        stationGraph = new WeightedMultigraph<Station, SectionEdge>(SectionEdge.class);
         setStationGraph(lines);
     }
 
@@ -29,13 +29,15 @@ public class PathFinder {
     private void setStationGraph(Lines lines) {
         for (Line line : lines.getLines()) {
             line.getSections().forEach(section -> {
+                SectionEdge sectionEdge = new SectionEdge(section);
                 Station upStation = section.getUpStation();
                 Station downStation = section.getDownStation();
 
                 stationGraph.addVertex(upStation);
                 stationGraph.addVertex(downStation);
 
-                stationGraph.setEdgeWeight(stationGraph.addEdge(upStation, downStation), section.getDistance());
+                stationGraph.addEdge(upStation, downStation, sectionEdge);
+                stationGraph.setEdgeWeight(sectionEdge, section.getDistance());
             });
         }
     }

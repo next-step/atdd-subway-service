@@ -10,14 +10,14 @@ public class Path {
 
     private final int fare;
 
-    public static Path of(List<Station> stations, int distance) {
-        return new Path(stations, distance);
+    public static Path of(List<Station> stations, int distance, int additionalFare) {
+        return new Path(stations, distance, additionalFare);
     }
 
-    public Path(List<Station> stations, int distance) {
+    public Path(List<Station> stations, int distance, int additionalFare) {
         this.stations = stations;
         this.distance = distance;
-        this.fare = DistanceFarePolicy.BASIC_FARE + DistanceFarePolicy.calculateOverFare(distance);
+        this.fare = DistanceFarePolicy.BASIC_FARE + DistanceFarePolicy.calculateOverFare(distance) + additionalFare;
     }
 
     public List<Station> getStations() {

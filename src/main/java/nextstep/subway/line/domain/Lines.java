@@ -5,6 +5,7 @@ import nextstep.subway.exception.IllegalArgumentException;
 import nextstep.subway.exception.NoSuchElementFoundException;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 
@@ -32,8 +33,10 @@ public class Lines {
 
         List<Station> stations = path.getVertexList();
         int distance = (int) path.getWeight();
+        List<SectionEdge> sectionEdges = path.getEdgeList();
+        int additionalFare = getMaxAdditionalLineFare(sectionEdges);
 
-        return Path.of(stations, distance);
+        return Path.of(stations, distance, additionalFare);
     }
 
     private void checkValidateStationsForPath(Station sourceStation, Station targetStation) {
@@ -51,5 +54,19 @@ public class Lines {
         if (!isSourceStationExisted | !isTargetStationExisted) {
             throw new NoSuchElementFoundException(ErrorMessage.NOT_FOUND_STATION_FOR_FIND_PATH);
         }
+    }
+
+    private int getMaxAdditionalLineFare(List<SectionEdge> sectionEdges) {
+        int maxFare = 0;
+
+        for (SectionEdge sectionEdge : sectionEdges) {
+            int lineFare = sectionEdge.getFare();
+
+            if (maxFare < lineFare) {
+                maxFare = lineFare;
+            }
+        }
+
+        return maxFare;
     }
 }
