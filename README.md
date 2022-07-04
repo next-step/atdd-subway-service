@@ -173,3 +173,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] 최단거리 해당하는 Lines 찾기
     - [X] Lines 에 최대 추가 요금 찾기
     - [X] 거리별 요금에 추가요금 합산
+
+- [X] 로그인 사용자의 경우 연령별 요금 할인 적용
+    - [X] 로그인 사용자 요금 조회 테스트 케이스 추가
+    - [X] Age 추가
+        - [X] 나이별 분류 추가
+        - [X] 나이 분류별 할인 값 추가
+    - [X] 로그인 사용자 처리 할인 적용 추가

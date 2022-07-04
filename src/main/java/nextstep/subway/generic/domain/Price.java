@@ -50,4 +50,9 @@ public class Price {
     public Price plus(Price price) {
         return new Price(value + price.value);
     }
+
+    public Price discount(double discountRate) {
+        double discountValue = (value - 350) * (1 - discountRate) + 350;
+        return new Price((int) discountValue);
+    }
 }

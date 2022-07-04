@@ -20,7 +20,7 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
-    private Price surcharge;
+    private Price surcharge = Price.valueOf(0);
 
     public Line() {
     }

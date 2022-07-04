@@ -7,16 +7,22 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.ui.LineControllerTest;
 import nextstep.subway.line.ui.SectionControllerTest;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 
 
@@ -151,6 +157,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *     And ** 지하철 이용 요금도 함께 응답함 **
     */
     @Test
+    @DisplayName("최단경로에 따른 요금 조회")
     void findPathPrice() {
         // when
         final ExtractableResponse<Response> 지하철역_최단_거리_조회 = 지하철역_최단_거리_조회(강남역.getId(), 남부터미널역.getId());
@@ -161,5 +168,34 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(지하철역_최단_거리_조회.jsonPath().getList("stations.name")).containsExactly(강남역.getName(), 양재역.getName(), 남부터미널역.getName()),
                 () -> assertThat(지하철역_최단_거리_조회.jsonPath().getInt("price")).isEqualTo(2250)
         );
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"6;1300", "10;1300", "13;1680", "16;1680", "19;2250", "24;2250"}, delimiterString = ";")
+    @DisplayName("로그인 한 사용자의 경우 연령별 할인 확인")
+    void loginMemberFindPathPrice(int age, int price) {
+        // given
+        MemberAcceptanceTest.회원_등록되어_있음(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, age);
+        final String 토큰 = AuthAcceptanceTest.로그인_되어_있음(MemberAcceptanceTest.EMAIL,
+                MemberAcceptanceTest.PASSWORD);
+
+        // when
+        final ExtractableResponse<Response> 지하철역_최단_거리_조회 = 지하철역_최단_거리_조회(토큰, 강남역.getId(), 남부터미널역.getId());
+
+        // then
+        assertThat(지하철역_최단_거리_조회.jsonPath().getInt("price")).isEqualTo(price);
+    }
+
+    private ExtractableResponse<Response> 지하철역_최단_거리_조회(String token, Long sourceId, Long targetId) {
+        return RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .auth().oauth2(token)
+                .param("source", sourceId)
+                .param("target", targetId)
+                .when().get("/paths")
+
+                .then().log().all()
+                .extract();
     }
 }

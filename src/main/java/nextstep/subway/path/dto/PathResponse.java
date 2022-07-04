@@ -29,6 +29,13 @@ public class PathResponse {
                 .collect(Collectors.toList()), sections.totalDistance(), Price.of(sections.totalDistance()).plus(surcharge));
     }
 
+    public static PathResponse of(Sections sections, Price surcharge, double discountRate) {
+        return new PathResponse(sections.getStations()
+                .stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList()), sections.totalDistance(), Price.of(sections.totalDistance()).plus(surcharge).discount(discountRate));
+    }
+
     public List<StationResponse> getStations() {
         return stations;
     }

@@ -1,7 +1,8 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.generic.domain.Age.AgeType;
 import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.PathFinder;
@@ -21,13 +22,19 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findShortestPath(long sourceId, long targetId) {
+    public PathResponse findShortestPath(LoginMember loginMember, long sourceId, long targetId) {
         final Station sourceStation = stationService.findStationById(sourceId);
         final Station targetStation = stationService.findStationById(targetId);
         final Lines allLines = lineService.findAllLines();
         final PathFinder pathFinder = new PathFinder(allLines);
         final Sections sections = pathFinder.find(sourceStation, targetStation);
         final Lines lines = allLines.findLinesBySections(sections);
-        return PathResponse.of(sections, lines.maxSurcharge());
+
+        if (loginMember.isNotLogin()) {
+            return PathResponse.of(sections, lines.maxSurcharge());
+        }
+
+        return PathResponse.of(sections, lines.maxSurcharge(), loginMember.getAge().ageType().getDiscountRate());
     }
+
 }
