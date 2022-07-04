@@ -61,7 +61,7 @@ public class FavoriteService {
     }
 
     private void validateMyFavorite(Member member, Favorite favorite) {
-        if (!favorite.isMyFavorite(member)) {
+        if (favorite.isNotEqualsMember(member)) {
             throw new SubwayException(NOT_MINE_FAVORITE);
         }
     }
