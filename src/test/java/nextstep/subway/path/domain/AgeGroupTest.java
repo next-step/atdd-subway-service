@@ -15,7 +15,7 @@ class AgeGroupTest {
         int age = 30;
 
         // when
-        int i = AgeGroup.findAgeGroup(age).discountFare(fare);
+        int i = AgeGroup.discountFare(age, fare);
 
         // then
         assertThat(i).isEqualTo(1250);
@@ -28,7 +28,7 @@ class AgeGroupTest {
         int age = 17;
 
         // when
-        int i = AgeGroup.findAgeGroup(age).discountFare(fare);
+        int i = AgeGroup.discountFare(age, fare);
 
         // then
         assertThat(i).isEqualTo(880);
@@ -41,7 +41,7 @@ class AgeGroupTest {
         int age = 10;
 
         // when
-        int i = AgeGroup.findAgeGroup(age).discountFare(fare);
+        int i = AgeGroup.discountFare(age, fare);
 
         // then
         assertThat(i).isEqualTo(650);

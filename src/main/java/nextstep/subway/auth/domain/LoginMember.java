@@ -1,10 +1,11 @@
 package nextstep.subway.auth.domain;
 
 public class LoginMember {
+    public static final GuestMember GUEST = new GuestMember();
+
     private Long id;
     private String email;
-    private Integer age = 20;
-    private boolean guest = true;
+    private Integer age;
 
     public LoginMember() {
     }
@@ -13,7 +14,6 @@ public class LoginMember {
         this.id = id;
         this.email = email;
         this.age = age;
-        this.guest = false;
     }
 
     public Long getId() {
@@ -28,7 +28,14 @@ public class LoginMember {
         return age;
     }
 
-    public boolean isGuest() {
-        return guest;
+    public boolean isGuestUser() {
+        return false;
+    }
+
+    private static class GuestMember extends LoginMember {
+        @Override
+        public boolean isGuestUser() {
+            return true;
+        }
     }
 }

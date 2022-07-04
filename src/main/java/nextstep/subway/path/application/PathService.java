@@ -39,8 +39,10 @@ public class PathService {
         WeightedMultigraph<Station, DefaultWeightedEdge> map = pathMap.createMap(lineService.findAll());
         LinePath linePath = pathFinder.findShortestPath(map, source, target);
         int fare = pathFare.calculateFare(linePath.getEdge(), sectionRepository.findAll());
-        fare = AgeGroup.findAgeGroup(loginMember.getAge()).discountFare(fare);
+        if (loginMember.isGuestUser()) {
+            return new PathResponse(linePath.getVertex(), linePath.getWeight(), fare);
+        }
 
-        return new PathResponse(linePath.getVertex(), linePath.getWeight(), fare);
+        return new PathResponse(linePath.getVertex(), linePath.getWeight(), AgeGroup.discountFare(loginMember.getAge(), fare));
     }
 }

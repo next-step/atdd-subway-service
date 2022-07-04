@@ -61,7 +61,7 @@ class PathServiceTest {
         StationService stationService = new StationService(stationRepository);
         LineService lineService = new LineService(lineRepository, stationService);
         PathService pathService = new PathService(new PathFinder(), new PathMap(), new PathFare(), stationService, lineService, sectionRepository);
-        PathResponse result = pathService.findShortestPath(new LoginMember(), 1L, 3L);
+        PathResponse result = pathService.findShortestPath(LoginMember.GUEST, 1L, 3L);
 
         // then
         assertThat(result.toStations()).containsExactly(선릉역, 정자역, 수원역);

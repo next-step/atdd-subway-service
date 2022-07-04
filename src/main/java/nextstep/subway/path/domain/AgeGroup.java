@@ -52,10 +52,11 @@ public enum AgeGroup {
 
     abstract public int discountFare(int fare);
 
-    public static AgeGroup findAgeGroup(int age) {
+    public static int discountFare(int age, int fare) {
         return Arrays.stream(values())
                      .filter(ageGroup -> ageGroup.from <= age && age <= ageGroup.to)
                      .findFirst()
-                     .orElseThrow(IllegalArgumentException::new);
+                     .orElseThrow(IllegalArgumentException::new)
+                     .discountFare(fare);
     }
 }
