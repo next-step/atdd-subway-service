@@ -136,4 +136,30 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return LineControllerTest.지하철_노선_등록되어_있음(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance))
                 .as(LineResponse.class);
     }
+
+
+    /**
+     * Feature: 지하철 경로 검색
+     *
+     *   Scenario: 두 역의 최단 거리 경로를 조회
+     *     Given 지하철역이 등록되어있음
+     *     And 지하철 노선이 등록되어있음
+     *     And 지하철 노선에 지하철역이 등록되어있음
+     *     When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+     *     Then 최단 거리 경로를 응답
+     *     And 총 거리도 함께 응답함
+     *     And ** 지하철 이용 요금도 함께 응답함 **
+    */
+    @Test
+    void findPathPrice() {
+        // when
+        final ExtractableResponse<Response> 지하철역_최단_거리_조회 = 지하철역_최단_거리_조회(강남역.getId(), 남부터미널역.getId());
+
+        // then
+        assertAll(
+                () -> assertThat(지하철역_최단_거리_조회.jsonPath().getInt("distance")).isEqualTo(12),
+                () -> assertThat(지하철역_최단_거리_조회.jsonPath().getList("stations.name")).containsExactly(강남역.getName(), 양재역.getName(), 남부터미널역.getName()),
+                () -> assertThat(지하철역_최단_거리_조회.jsonPath().getInt("price")).isEqualTo(1350)
+        );
+    }
 }

@@ -164,4 +164,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### to-do list
 
-- [ ] 거리별 요금 정책 인수 테스트 추가
+- [X] 거리별 요금 정책 인수 테스트 추가
+    - [X] Price 추가
+        - [X] 거리별 추가 요금 계산 추가  
