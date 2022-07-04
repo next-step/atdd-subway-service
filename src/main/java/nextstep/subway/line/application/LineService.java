@@ -86,13 +86,21 @@ public class LineService {
         Station downStation = stationService.findStationById(request.getDownStationId());
         validationStationEquals(upStation, downStation);
 
-        boolean isUpStationExisted = !sectionRepository.findByLineIdAndUpStationIdOrDownStationId(line.getId(), upStation.getId()).isEmpty();
-        boolean isDownStationExisted = !sectionRepository.findByLineIdAndUpStationIdOrDownStationId(line.getId(), downStation.getId()).isEmpty();
+        boolean isUpStationExisted = isUpStationExisted(line, upStation);
+        boolean isDownStationExisted = isDownStationExisted(line, downStation);
 
         validationAddLineStation(line, isUpStationExisted, isDownStationExisted);
         Section section = new Section(line, upStation, downStation, request.getDistance());
 
         addSection(line, isUpStationExisted, isDownStationExisted, section);
+    }
+
+    private boolean isUpStationExisted(Line line, Station upStation) {
+        return !sectionRepository.findByLineIdAndUpStationIdOrDownStationId(line.getId(), upStation.getId()).isEmpty();
+    }
+
+    private boolean isDownStationExisted(Line line, Station downStation) {
+        return !sectionRepository.findByLineIdAndUpStationIdOrDownStationId(line.getId(), downStation.getId()).isEmpty();
     }
 
     private void validationStationEquals(Station upStation, Station downStation) {
@@ -125,17 +133,17 @@ public class LineService {
         Optional<Section> downLineStation = sectionRepository.findByLine_IdAndDownStation_Id(line.getId(), station.getId());
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            addSection(line, upLineStation, downLineStation);
+            addSection(line, upLineStation.get(), downLineStation.get());
         }
 
         upLineStation.ifPresent(it -> line.removeLineStation(it));
         downLineStation.ifPresent(it -> line.removeLineStation(it));
     }
 
-    private void addSection(Line line, Optional<Section> upLineStation, Optional<Section> downLineStation) {
-        Station newUpStation = downLineStation.get().getUpStation();
-        Station newDownStation = upLineStation.get().getDownStation();
-        int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+    private void addSection(Line line, Section upLineStation, Section downLineStation) {
+        Station newUpStation = downLineStation.getUpStation();
+        Station newDownStation = upLineStation.getDownStation();
+        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
         line.addSection(new Section(line, newUpStation, newDownStation, newDistance));
     }
 
