@@ -1,5 +1,6 @@
 package nextstep.subway.member.application;
 
+import java.util.NoSuchElementException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -32,5 +33,9 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id).orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다."));
     }
 }

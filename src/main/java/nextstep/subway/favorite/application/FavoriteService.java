@@ -11,8 +11,8 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -23,14 +23,14 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final StationService stationService;
 
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
 
     public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService,
-                           MemberRepository memberRepository) {
+                           MemberService memberService) {
         this.stationService = stationService;
         this.favoriteRepository = favoriteRepository;
-        this.memberRepository = memberRepository;
+        this.memberService = memberService;
     }
 
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest favorite) {
@@ -42,8 +42,7 @@ public class FavoriteService {
     }
 
     private Member getMember(LoginMember loginMember) {
-        return memberRepository.findById(loginMember.getId())
-                .orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다."));
+        return memberService.findMemberById(loginMember.getId());
     }
 
     public List<FavoriteResponse> findAllFavorites(LoginMember loginMember) {
