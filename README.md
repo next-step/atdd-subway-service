@@ -153,3 +153,15 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       - [X] Favorite 등록
       - [X] Favorite 목록 조회
       - [X] Favorite 삭제
+
+---
+
+# 4단계 요구사항
+
+* 경로 조회 시 거리 기준 요금 정보 포함하기
+* 노선별 추가 요금 정책 추가
+* 연령별 할인 정책 추가
+
+### to-do list
+
+- [ ] 거리별 요금 정책 인수 테스트 추가
