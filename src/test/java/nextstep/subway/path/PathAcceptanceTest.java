@@ -47,9 +47,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 900 , 강남역, 양재역, 10);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 0,교대역, 강남역, 10);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 500, 교대역, 양재역, 5);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
 
@@ -90,7 +90,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // given
         final StationResponse 당고개역 = StationAcceptanceTest.지하철역_등록되어_있음("당고개역").as(StationResponse.class);
         final StationResponse 남태령역 = StationAcceptanceTest.지하철역_등록되어_있음("남태령역").as(StationResponse.class);
-        지하철_노선_등록되어_있음("사호선", "bg-red-600", 당고개역, 남태령역, 10);
+        지하철_노선_등록되어_있음("사호선", "bg-red-600", 500, 당고개역, 남태령역, 10);
 
         // when
         final ExtractableResponse<Response> 지하철역_최단_거리_조회 = 지하철역_최단_거리_조회(강남역.getId(), 남태령역.getId());
@@ -131,9 +131,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         SectionControllerTest.지하철_노선에_지하철역_등록됨(지하철_노선_조회_요청);
     }
 
-    private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,
+    private LineResponse 지하철_노선_등록되어_있음(String name, String color, int surcharge , StationResponse upStation,
                                         StationResponse downStation, int distance) {
-        return LineControllerTest.지하철_노선_등록되어_있음(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance))
+        return LineControllerTest.지하철_노선_등록되어_있음(new LineRequest(name, color, surcharge, upStation.getId(), downStation.getId(), distance))
                 .as(LineResponse.class);
     }
 
@@ -159,7 +159,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(지하철역_최단_거리_조회.jsonPath().getInt("distance")).isEqualTo(12),
                 () -> assertThat(지하철역_최단_거리_조회.jsonPath().getList("stations.name")).containsExactly(강남역.getName(), 양재역.getName(), 남부터미널역.getName()),
-                () -> assertThat(지하철역_최단_거리_조회.jsonPath().getInt("price")).isEqualTo(1350)
+                () -> assertThat(지하철역_최단_거리_조회.jsonPath().getInt("price")).isEqualTo(2250)
         );
     }
 }

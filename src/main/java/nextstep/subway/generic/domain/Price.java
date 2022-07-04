@@ -1,6 +1,4 @@
-package nextstep.subway.path.domain;
-
-import nextstep.subway.generic.domain.Distance;
+package nextstep.subway.generic.domain;
 
 public class Price {
     private static final Distance KM_10 = Distance.valueOf(10);
@@ -8,8 +6,20 @@ public class Price {
     public static final int DEFAULT_PRICE = 1250;
     private final int value;
 
-    public Price(Distance distance) {
-        value = calculatePrice(distance);
+    protected Price(int value) {
+        this.value = value;
+    }
+
+    protected Price(Distance distance) {
+        this.value = calculatePrice(distance);
+    }
+
+    public static Price valueOf(Integer value) {
+        return new Price(value);
+    }
+
+    public static Price of(Distance distance) {
+        return new Price(distance);
     }
 
     private int calculatePrice(Distance distance) {
@@ -35,5 +45,9 @@ public class Price {
 
     public int getValue() {
         return value;
+    }
+
+    public Price plus(Price price) {
+        return new Price(value + price.value);
     }
 }

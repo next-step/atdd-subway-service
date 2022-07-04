@@ -167,3 +167,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] 거리별 요금 정책 인수 테스트 추가
     - [X] Price 추가
         - [X] 거리별 추가 요금 계산 추가  
+
+- [X] 노선별 추가 요금 정책
+    - [X] Line 에 surcharge 추가
+    - [X] 최단거리 해당하는 Lines 찾기
+    - [X] Lines 에 최대 추가 요금 찾기
+    - [X] 거리별 요금에 추가요금 합산
