@@ -7,16 +7,22 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.ui.LineControllerTest;
 import nextstep.subway.line.ui.SectionControllerTest;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 
 
@@ -47,9 +53,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 900 , 강남역, 양재역, 10);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 0,교대역, 강남역, 10);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 500, 교대역, 양재역, 5);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
 
@@ -90,7 +96,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // given
         final StationResponse 당고개역 = StationAcceptanceTest.지하철역_등록되어_있음("당고개역").as(StationResponse.class);
         final StationResponse 남태령역 = StationAcceptanceTest.지하철역_등록되어_있음("남태령역").as(StationResponse.class);
-        지하철_노선_등록되어_있음("사호선", "bg-red-600", 당고개역, 남태령역, 10);
+        지하철_노선_등록되어_있음("사호선", "bg-red-600", 500, 당고개역, 남태령역, 10);
 
         // when
         final ExtractableResponse<Response> 지하철역_최단_거리_조회 = 지하철역_최단_거리_조회(강남역.getId(), 남태령역.getId());
@@ -131,9 +137,65 @@ public class PathAcceptanceTest extends AcceptanceTest {
         SectionControllerTest.지하철_노선에_지하철역_등록됨(지하철_노선_조회_요청);
     }
 
-    private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,
+    private LineResponse 지하철_노선_등록되어_있음(String name, String color, int surcharge , StationResponse upStation,
                                         StationResponse downStation, int distance) {
-        return LineControllerTest.지하철_노선_등록되어_있음(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance))
+        return LineControllerTest.지하철_노선_등록되어_있음(new LineRequest(name, color, surcharge, upStation.getId(), downStation.getId(), distance))
                 .as(LineResponse.class);
+    }
+
+
+    /**
+     * Feature: 지하철 경로 검색
+     *
+     *   Scenario: 두 역의 최단 거리 경로를 조회
+     *     Given 지하철역이 등록되어있음
+     *     And 지하철 노선이 등록되어있음
+     *     And 지하철 노선에 지하철역이 등록되어있음
+     *     When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+     *     Then 최단 거리 경로를 응답
+     *     And 총 거리도 함께 응답함
+     *     And ** 지하철 이용 요금도 함께 응답함 **
+    */
+    @Test
+    @DisplayName("최단경로에 따른 요금 조회")
+    void findPathPrice() {
+        // when
+        final ExtractableResponse<Response> 지하철역_최단_거리_조회 = 지하철역_최단_거리_조회(강남역.getId(), 남부터미널역.getId());
+
+        // then
+        assertAll(
+                () -> assertThat(지하철역_최단_거리_조회.jsonPath().getInt("distance")).isEqualTo(12),
+                () -> assertThat(지하철역_최단_거리_조회.jsonPath().getList("stations.name")).containsExactly(강남역.getName(), 양재역.getName(), 남부터미널역.getName()),
+                () -> assertThat(지하철역_최단_거리_조회.jsonPath().getInt("price")).isEqualTo(2250)
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"6;1300", "10;1300", "13;1680", "16;1680", "19;2250", "24;2250"}, delimiterString = ";")
+    @DisplayName("로그인 한 사용자의 경우 연령별 할인 확인")
+    void loginMemberFindPathPrice(int age, int price) {
+        // given
+        MemberAcceptanceTest.회원_등록되어_있음(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, age);
+        final String 토큰 = AuthAcceptanceTest.로그인_되어_있음(MemberAcceptanceTest.EMAIL,
+                MemberAcceptanceTest.PASSWORD);
+
+        // when
+        final ExtractableResponse<Response> 지하철역_최단_거리_조회 = 지하철역_최단_거리_조회(토큰, 강남역.getId(), 남부터미널역.getId());
+
+        // then
+        assertThat(지하철역_최단_거리_조회.jsonPath().getInt("price")).isEqualTo(price);
+    }
+
+    private ExtractableResponse<Response> 지하철역_최단_거리_조회(String token, Long sourceId, Long targetId) {
+        return RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .auth().oauth2(token)
+                .param("source", sourceId)
+                .param("target", targetId)
+                .when().get("/paths")
+
+                .then().log().all()
+                .extract();
     }
 }

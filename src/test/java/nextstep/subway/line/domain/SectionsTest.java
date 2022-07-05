@@ -27,7 +27,7 @@ class SectionsTest {
         강남역 = new Station("강남역");
         판교역 = new Station("판교역");
         광교역 = new Station("광교역");
-        신분당선 = new Line("신분당선", "bg-red-600");
+        신분당선 = new Line("신분당선", "bg-red-600", 0);
         강남역_판교역 = new Section(신분당선, 강남역, 판교역, 5);
         판교역_광교역 = new Section(신분당선, 판교역, 광교역, 8);
     }

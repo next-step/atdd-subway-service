@@ -62,7 +62,7 @@ public class Favorite {
         return target;
     }
 
-    public boolean isMyFavorite(Member member) {
-        return this.member.equals(member);
+    public boolean isNotEqualsMember(Member member) {
+        return !this.member.equals(member);
     }
 }

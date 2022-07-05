@@ -36,9 +36,9 @@ class PathFinderTest {
         교대역 = new Station("교대역");
         남부터미널역 = new Station("남부터미널역");
 
-        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        신분당선 = new Line("신분당선", "bg-red-600", 500 , 강남역, 양재역, 10);
+        이호선 = new Line("이호선", "bg-red-600", 900 ,교대역, 강남역, 10);
+        삼호선 = new Line("삼호선", "bg-red-600",  0, 교대역, 양재역, 5);
 
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, 3));
 
@@ -73,7 +73,7 @@ class PathFinderTest {
         // given
         final Station 당고개역 = new Station("당고개역");
         final Station 남태령역 = new Station("남태령역");
-        final Line 사호선 = new Line("사호선", "bg-red-600", 당고개역, 남태령역, 10);
+        final Line 사호선 = new Line("사호선", "bg-red-600", 0, 당고개역, 남태령역, 10);
 
         final PathFinder exceptionPathFinder = new PathFinder(new Lines(Arrays.asList(신분당선, 이호선, 삼호선, 사호선)));
 

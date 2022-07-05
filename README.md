@@ -153,3 +153,30 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       - [X] Favorite 등록
       - [X] Favorite 목록 조회
       - [X] Favorite 삭제
+
+---
+
+# 4단계 요구사항
+
+* 경로 조회 시 거리 기준 요금 정보 포함하기
+* 노선별 추가 요금 정책 추가
+* 연령별 할인 정책 추가
+
+### to-do list
+
+- [X] 거리별 요금 정책 인수 테스트 추가
+    - [X] Price 추가
+        - [X] 거리별 추가 요금 계산 추가  
+
+- [X] 노선별 추가 요금 정책
+    - [X] Line 에 surcharge 추가
+    - [X] 최단거리 해당하는 Lines 찾기
+    - [X] Lines 에 최대 추가 요금 찾기
+    - [X] 거리별 요금에 추가요금 합산
+
+- [X] 로그인 사용자의 경우 연령별 요금 할인 적용
+    - [X] 로그인 사용자 요금 조회 테스트 케이스 추가
+    - [X] Age 추가
+        - [X] 나이별 분류 추가
+        - [X] 나이 분류별 할인 값 추가
+    - [X] 로그인 사용자 처리 할인 적용 추가
