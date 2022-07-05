@@ -45,4 +45,5 @@ public class FavoriteService {
         Member member = memberService.findMemberOrThrow(loginMember.getId());
         favoriteRepository.deleteByMemberIdAndId(member.getId(), id);
     }
+
 }

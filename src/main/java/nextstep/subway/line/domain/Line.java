@@ -23,6 +23,8 @@ public class Line extends BaseEntity {
     private String color;
     @Embedded
     private Sections sections;
+    @Embedded
+    private Fare fare = Fare.of(0);
 
     public Line() {
         sections = new Sections();
@@ -31,6 +33,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Section section) {
         this.name = name;
         this.color = color;
+        section.setLine(this);
         sections = new Sections(section);
     }
 
@@ -43,6 +46,10 @@ public class Line extends BaseEntity {
     public void update(String name, String color) {
         this.name = name;
         this.color = color;
+    }
+
+    public void changeFare(long fare) {
+        this.fare = Fare.of(fare);
     }
 
     public Long getId() {
@@ -73,5 +80,9 @@ public class Line extends BaseEntity {
 
     public void removeSectionByStation(Station station) {
         sections.delete(station);
+    }
+
+    public Fare getFare() {
+        return fare;
     }
 }

@@ -6,11 +6,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.application.PathFinder;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.sections.domain.Section;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.util.FareCalculator;
+import org.jgrapht.GraphPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,10 +61,26 @@ public class PathFinderTest {
         //given
         PathFinder pathFinder = new PathFinder();
         //when
-        PathResponse actual = pathFinder.findShortestPath(모든구간, 강남역, 남부터미널역);
+        GraphPath shortestPath = pathFinder.findShortestPath(모든구간, 강남역, 남부터미널역);
         //then
-        assertThat(actual.getStations()).containsExactly(강남역, 양재역, 남부터미널역);
-        assertThat(actual.getDistance()).isEqualTo(12);
+        assertThat(shortestPath.getVertexList()).containsExactly(강남역, 양재역, 남부터미널역);
+        assertThat((long) shortestPath.getWeight()).isEqualTo(12);
+        assertThat(FareCalculator.calculateFare(12, pathFinder.findMaxLineFare(shortestPath).value())).isEqualTo(Fare.of(1350));
+    }
+
+    @DisplayName("노선에 추가 요금이 있는 경우 가격 확인")
+    @Test
+    public void findShortestPathFare() {
+        //given
+        PathFinder pathFinder = new PathFinder();
+        신분당선.changeFare(300);
+        삼호선.changeFare(900);
+        //when
+        GraphPath shortestPath = pathFinder.findShortestPath(모든구간, 강남역, 남부터미널역);
+        //then
+        assertThat(shortestPath.getVertexList()).containsExactly(강남역, 양재역, 남부터미널역);
+        assertThat((long) shortestPath.getWeight()).isEqualTo(12);
+        assertThat(FareCalculator.calculateFare(12, pathFinder.findMaxLineFare(shortestPath).value())).isEqualTo(Fare.of(2250));
     }
 
     @DisplayName("출발역과 도착역이 같은 경우 최단 경로 조회를 실패한다.")

@@ -1,27 +1,29 @@
 package nextstep.subway.path.application;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import nextstep.subway.path.dto.PathResponse;
+import java.util.stream.Collectors;
+import nextstep.subway.line.domain.Fare;
+import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.sections.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private final WeightedMultigraph<Station, SectionEdge> stationGraph = new WeightedMultigraph<>(SectionEdge.class);
 
-    public PathResponse findShortestPath(List<Section> allSection, Station sourceStation, Station targetStation) {
+    public GraphPath findShortestPath(List<Section> allSection, Station sourceStation, Station targetStation) {
         List<Station> allStations = findAllStations(allSection);
         validate(allStations, sourceStation, targetStation);
         DijkstraShortestPath dijkstraShortestPath = makeDijkstraShortestPath(allSection, allStations);
         GraphPath shortestPath = getShortestPath(sourceStation, targetStation, dijkstraShortestPath);
-        return new PathResponse(shortestPath.getVertexList(), (long) shortestPath.getWeight());
+        return shortestPath;
     }
 
     private List<Station> findAllStations(List<Section> allSection) {
@@ -50,8 +52,11 @@ public class PathFinder {
     private void initGraph(List<Section> allSection, List<Station> allStations) {
         allStations.forEach(station -> stationGraph.addVertex(station));
 
-        allSection.forEach(section -> stationGraph.setEdgeWeight
-            (stationGraph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
+        allSection.forEach(section -> {
+            SectionEdge sectionEdge = new SectionEdge(section);
+            stationGraph.addEdge(sectionEdge.getSource(), sectionEdge.getTarget(), sectionEdge);
+            stationGraph.setEdgeWeight(sectionEdge, sectionEdge.getDistance());
+        });
     }
 
     private GraphPath getShortestPath(Station sourceStation, Station targetStation, DijkstraShortestPath dijkstraShortestPath) {
@@ -61,4 +66,14 @@ public class PathFinder {
         }
         return shortestPath;
     }
+
+    public Fare findMaxLineFare(GraphPath shortestPath) {
+        List<SectionEdge> edgeList = shortestPath.getEdgeList();
+        List<Fare> fares = edgeList.stream()
+            .map(edge -> edge.getFare())
+            .collect(Collectors.toList());
+        Comparator<Fare> comparatorByFare = Comparator.comparingLong(Fare::value);
+        return fares.stream().max(comparatorByFare).get();
+    }
+
 }
