@@ -1,10 +1,7 @@
 package nextstep.subway.member.application;
 
-import nextstep.subway.auth.application.AuthorizationException;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
-import nextstep.subway.member.domain.MemberType;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.stereotype.Service;
@@ -43,11 +40,5 @@ public class MemberService {
     @Transactional(readOnly = true)
     public Member findMemberOrThrow(Long id) {
         return memberRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-    }
-
-    public void validateGuest(LoginMember loginMember) {
-        if(loginMember.findMemberType().equals(MemberType.GUEST)){
-            throw new AuthorizationException();
-        }
     }
 }

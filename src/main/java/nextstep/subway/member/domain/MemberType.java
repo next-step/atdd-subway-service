@@ -1,11 +1,32 @@
 package nextstep.subway.member.domain;
 
+import java.util.Arrays;
+
 public enum MemberType {
-    GUEST(0, 0), CHILD(350, 0.5), TEENAGER(350, 0.2), LOGIN(0,0);
+    CHILD(350, 0.5, 6, 13),
+    TEENAGER(350, 0.2, 13, 19),
+    LOGIN(0, 0, 0, 0);
 
 
     double deductedAmount;
     double discountRate;
+    int lowerBoundaryAge;
+    int upperBoundaryAge;
+
+    MemberType(double deductedAmount, double discountRate, int lowerBoundaryAge, int upperBoundaryAge) {
+        this.deductedAmount = deductedAmount;
+        this.discountRate = discountRate;
+        this.lowerBoundaryAge = lowerBoundaryAge;
+        this.upperBoundaryAge = upperBoundaryAge;
+    }
+
+    public int getLowerBoundaryAge() {
+        return lowerBoundaryAge;
+    }
+
+    public int getUpperBoundaryAge() {
+        return upperBoundaryAge;
+    }
 
     MemberType(double deductedAmount, double discountRate) {
         this.deductedAmount = deductedAmount;
@@ -21,12 +42,14 @@ public enum MemberType {
     }
 
     public static MemberType findType(int age) {
-        if (6 <= age && age < 13) {
-            return CHILD;
-        }
-        if (13 <= age && age < 19) {
-            return TEENAGER;
-        }
-        return LOGIN;
+        MemberType matchType = Arrays.stream(values())
+            .filter(memberType -> hasMatchMemberType(memberType, age))
+            .findAny().orElse(LOGIN);
+
+        return matchType;
+    }
+
+    private static boolean hasMatchMemberType(MemberType memberType, int age) {
+        return memberType.getLowerBoundaryAge() <= age && age < memberType.getUpperBoundaryAge();
     }
 }

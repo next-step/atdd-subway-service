@@ -11,6 +11,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.application.PathFinder;
 import nextstep.subway.sections.domain.Section;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.util.FareCalculator;
 import org.jgrapht.GraphPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -64,7 +65,7 @@ public class PathFinderTest {
         //then
         assertThat(shortestPath.getVertexList()).containsExactly(강남역, 양재역, 남부터미널역);
         assertThat((long) shortestPath.getWeight()).isEqualTo(12);
-        assertThat(pathFinder.findMaxLineFare(shortestPath).calculateFare(12)).isEqualTo(Fare.of(1350));
+        assertThat(FareCalculator.calculateFare(12, pathFinder.findMaxLineFare(shortestPath).value())).isEqualTo(Fare.of(1350));
     }
 
     @DisplayName("노선에 추가 요금이 있는 경우 가격 확인")
@@ -79,7 +80,7 @@ public class PathFinderTest {
         //then
         assertThat(shortestPath.getVertexList()).containsExactly(강남역, 양재역, 남부터미널역);
         assertThat((long) shortestPath.getWeight()).isEqualTo(12);
-        assertThat(pathFinder.findMaxLineFare(shortestPath).calculateFare(12)).isEqualTo(Fare.of(2250));
+        assertThat(FareCalculator.calculateFare(12, pathFinder.findMaxLineFare(shortestPath).value())).isEqualTo(Fare.of(2250));
     }
 
     @DisplayName("출발역과 도착역이 같은 경우 최단 경로 조회를 실패한다.")

@@ -28,7 +28,6 @@ public class FavoriteService {
     }
 
     public Favorite createFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
-        memberService.validateGuest(loginMember);
         Member member = memberService.findMemberOrThrow(loginMember.getId());
         Station sourceStation = stationService.findStationById(favoriteRequest.getSource());
         Station targetStation = stationService.findStationById(favoriteRequest.getTarget());
@@ -37,14 +36,12 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        memberService.validateGuest(loginMember);
         Member member = memberService.findMemberOrThrow(loginMember.getId());
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
         return FavoriteResponse.of(favorites);
     }
 
     public void deleteFavorite(LoginMember loginMember, Long id) {
-        memberService.validateGuest(loginMember);
         Member member = memberService.findMemberOrThrow(loginMember.getId());
         favoriteRepository.deleteByMemberIdAndId(member.getId(), id);
     }

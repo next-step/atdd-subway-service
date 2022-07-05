@@ -81,7 +81,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     public void findShortestPath() {
         //when
-        ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청("guest", 강남역, 남부터미널역);
+        ExtractableResponse<Response> 최단경로_조회응답 = 게스트_지하철_역사이_최단경로_조회요청(강남역, 남부터미널역);
         //then
         지하철_노선에_지하철역_순서_정렬됨(최단경로_조회응답, Arrays.asList(강남역, 양재역, 남부터미널역));
         지하철_역사이_최단경로_거리확인(최단경로_조회응답, 12);
@@ -128,7 +128,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     public void findShortestPathWithSameStation() {
         //when
-        ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청("guest", 강남역, 강남역);
+        ExtractableResponse<Response> 최단경로_조회응답 = 게스트_지하철_역사이_최단경로_조회요청(강남역, 강남역);
         //then
         지하철_역사이_최단경로_조회_실패함(최단경로_조회응답);
     }
@@ -141,7 +141,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     public void findShortestPathWithNotConnectedStation() {
         //when
-        ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청("guest", 강남역, 부산역);
+        ExtractableResponse<Response> 최단경로_조회응답 = 게스트_지하철_역사이_최단경로_조회요청(강남역, 부산역);
         //then
         지하철_역사이_최단경로_조회_실패함(최단경로_조회응답);
     }
@@ -154,7 +154,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     public void findShortestPathWithNotExistStation() {
         //when
-        ExtractableResponse<Response> 최단경로_조회응답 = 지하철_역사이_최단경로_조회요청("guest", new StationResponse(9999l, "존재하지 않는 역"), 강남역);
+        ExtractableResponse<Response> 최단경로_조회응답 = 게스트_지하철_역사이_최단경로_조회요청(new StationResponse(9999l, "존재하지 않는 역"), 강남역);
         //then
         지하철_역사이_최단경로_조회_실패함(최단경로_조회응답);
     }
@@ -165,6 +165,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return RestAssured
             .given().log().all()
             .auth().oauth2(accessToken)
+            .param("source",sourceStation.getId())
+            .param("target",targetStation.getId())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("paths")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 게스트_지하철_역사이_최단경로_조회요청(StationResponse sourceStation, StationResponse targetStation) {
+
+        return RestAssured
+            .given().log().all()
             .param("source",sourceStation.getId())
             .param("target",targetStation.getId())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
