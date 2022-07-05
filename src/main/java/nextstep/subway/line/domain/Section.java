@@ -55,6 +55,10 @@ public class Section {
         return distance;
     }
 
+    public boolean containsUpDownStations(Long upStationId, Long downStationId) {
+        return upStation.getId().equals(upStationId) && downStation.getId().equals(downStationId);
+    }
+
     public boolean containsUpStation(Station station) {
         return upStation.equals(station);
     }

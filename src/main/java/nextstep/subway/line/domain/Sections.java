@@ -156,7 +156,7 @@ public class Sections {
         sections.stream()
                 .filter(sec -> sec.containsUpStation(station))
                 .findFirst()
-                .ifPresent(sec -> sec.updateUpStationIncreasedDistance(sec));
+                .ifPresent(sec -> sec.updateUpStationIncreasedDistance(section));
         sections.remove(section);
     }
 }

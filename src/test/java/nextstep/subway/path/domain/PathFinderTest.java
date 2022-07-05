@@ -3,7 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.line.dto.LinePath;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -14,12 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
@@ -51,16 +49,14 @@ class PathFinderTest {
         강릉역 = new Station(5L, "강릉역");
         경주역 = new Station(6L, "경주역");
         포항역 = new Station(7L, "포항역");
-        분당선 = new Line("분당선", "bg-yellow-400");
-        강릉선 = new Line("강릉선", "bg-blue-600");
-        당릉선 = new Line("당릉선", "bg-blue-600");
-        동해선 = new Line("동해선", "bg-white-400");
-        분당선.addLineStation(new Section(분당선, 선릉역, 정자역, 40));
+
+        분당선 = new Line("분당선", "bg-yellow-400", 선릉역, 정자역, 40);
+        강릉선 = new Line("강릉선", "bg-blue-600", 정자역, 춘천역, 40);
+        당릉선 = new Line("당릉선", "bg-blue-600", 수원역, 춘천역, 10);
+        동해선 = new Line("동해선", "bg-white-400", 경주역, 포항역, 20);
+
         분당선.addLineStation(new Section(분당선, 정자역, 수원역, 10));
-        강릉선.addLineStation(new Section(강릉선, 정자역, 춘천역, 40));
         강릉선.addLineStation(new Section(강릉선, 춘천역, 강릉역, 20));
-        당릉선.addLineStation(new Section(당릉선, 수원역, 춘천역, 10));
-        동해선.addLineStation(new Section(동해선, 경주역, 포항역, 20));
     }
 
     @Test
@@ -74,11 +70,11 @@ class PathFinderTest {
         Station source = stationRepository.findById(1L).get();
         Station target = stationRepository.findById(3L).get();
         WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
-        PathResponse result = new PathFinder().findShortestPath(map, source, target);
+        LinePath linePath = new PathFinder().findShortestPath(map, source, target);
 
         // then
-        assertThat(result.toStations()).containsExactly(선릉역, 정자역, 수원역);
-        assertThat(result.getDistance()).isEqualTo(50);
+        assertThat(linePath.getVertex()).containsExactly(선릉역, 정자역, 수원역);
+        assertThat(linePath.getWeight()).isEqualTo(50);
     }
 
     @Test
@@ -92,11 +88,11 @@ class PathFinderTest {
         Station source = stationRepository.findById(1L).get();
         Station target = stationRepository.findById(5L).get();
         WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
-        PathResponse result = new PathFinder().findShortestPath(map, source, target);
+        LinePath linePath = new PathFinder().findShortestPath(map, source, target);
 
         // then
-        assertThat(result.toStations()).containsExactly(선릉역, 정자역, 수원역, 춘천역, 강릉역);
-        assertThat(result.getDistance()).isEqualTo(80);
+        assertThat(linePath.getVertex()).containsExactly(선릉역, 정자역, 수원역, 춘천역, 강릉역);
+        assertThat(linePath.getWeight()).isEqualTo(80);
     }
 
     @Test
@@ -111,8 +107,7 @@ class PathFinderTest {
         Station target = stationRepository.findById(1L).get();
         WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
 
-        assertThatThrownBy(() -> new PathFinder().findShortestPath(map, source, target))
-                .isInstanceOf(RuntimeException.class);
+        assertThatIllegalArgumentException().isThrownBy(() -> new PathFinder().findShortestPath(map, source, target));
     }
 
     @Test
@@ -128,8 +123,7 @@ class PathFinderTest {
         Station target = stationRepository.findById(6L).get();
         WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
 
-        assertThatThrownBy((() -> new PathFinder().findShortestPath(map, source, target)))
-                .isInstanceOf(RuntimeException.class);
+        assertThatIllegalArgumentException().isThrownBy(() -> new PathFinder().findShortestPath(map, source, target));
     }
 
     @Test
@@ -146,10 +140,8 @@ class PathFinderTest {
         WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
 
         assertAll(
-                () -> assertThatThrownBy((() -> new PathFinder().findShortestPath(map, source, target)))
-                        .isInstanceOf(RuntimeException.class),
-                () -> assertThatThrownBy((() -> new PathFinder().findShortestPath(map, target, source)))
-                        .isInstanceOf(RuntimeException.class)
+                () -> assertThatIllegalArgumentException().isThrownBy(() -> new PathFinder().findShortestPath(map, source, target)),
+                () -> assertThatIllegalArgumentException().isThrownBy(() -> new PathFinder().findShortestPath(map, target, source))
         );
     }
 }

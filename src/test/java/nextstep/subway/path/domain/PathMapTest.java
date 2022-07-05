@@ -9,19 +9,21 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PathMapTest {
     @Mock
     private LineRepository lineRepository;
+    @InjectMocks
+    private PathMap pathMap;
 
     private Station 선릉역;
     private Station 정자역;
@@ -46,7 +48,7 @@ class PathMapTest {
         when(lineRepository.findAll()).thenReturn(Collections.singletonList(분당선));
 
         // then
-        WeightedMultigraph<Station, DefaultWeightedEdge> map = new PathMap().createMap(lineRepository.findAll());
+        WeightedMultigraph<Station, DefaultWeightedEdge> map = pathMap.createMap(lineRepository.findAll());
 
         // given
         assertThat(map.containsVertex(선릉역)).isTrue();

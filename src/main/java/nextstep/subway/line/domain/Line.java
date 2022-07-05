@@ -16,11 +16,20 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    private int surcharge;
 
     @Embedded
     private final Sections sections = new Sections();
 
     public Line() {
+    }
+
+    public Line(Long id, String name, String color, Station upStation, Station downStation, int distance, int surcharge) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.surcharge = surcharge;
+        sections.addSection(new Section(this, upStation, downStation, distance));
     }
 
     public Line(String name, String color) {
@@ -29,9 +38,11 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
-        sections.addSection(new Section(this, upStation, downStation, distance));
+        this(name, color, upStation, downStation, distance, 0);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int surcharge) {
+        this(null, name, color, upStation, downStation, distance, surcharge);
     }
 
     public void update(Line line) {
@@ -51,8 +62,12 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public Sections getSections() {
-        return sections;
+    public int getSurcharge() {
+        return surcharge;
+    }
+
+    public List<Section> getSections() {
+        return sections.getSections();
     }
 
     public List<Station> getStations() {
@@ -75,12 +90,16 @@ public class Line extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color) && Objects.equals(sections, line.sections);
+        return surcharge == line.surcharge
+                && Objects.equals(id, line.id)
+                && Objects.equals(name, line.name)
+                && Objects.equals(color, line.color)
+                && Objects.equals(sections, line.sections);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color, sections);
+        return Objects.hash(id, name, color, surcharge, sections);
     }
 
     @Override
@@ -89,6 +108,7 @@ public class Line extends BaseEntity {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
+                ", surcharge=" + surcharge +
                 ", sections=" + sections +
                 '}';
     }
