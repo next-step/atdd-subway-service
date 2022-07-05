@@ -1,8 +1,10 @@
 package nextstep.subway.path.apllication;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.Price;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -19,14 +21,17 @@ public class PathService {
     private StationService stationService;
     private LineService lineService;
     private Path path;
+    private Price price;
 
-    public PathService(StationService stationService, LineService lineService, Path path) {
+
+    public PathService(StationService stationService, LineService lineService, Path path, Price price) {
         this.stationService = stationService;
         this.lineService = lineService;
         this.path = path;
+        this.price = price;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
         List<Line> lines = lineService.findAll();
@@ -38,8 +43,9 @@ public class PathService {
         GraphPath<Long, DefaultWeightedEdge> pathFind = path.find(sourceStation, targetStation);
         List<StationResponse> stationResponses = stationService.findAllStations(pathFind.getVertexList());
         stationResponses = stationResponseOrderByVertexList(pathFind, stationResponses);
+        price.calculatePrice(pathFind.getWeight());
 
-        return new PathResponse(stationResponses, pathFind.getWeight());
+        return new PathResponse(stationResponses, pathFind.getWeight(), price.getPrice());
     }
 
     private List<StationResponse> stationResponseOrderByVertexList(GraphPath<Long, DefaultWeightedEdge> pathFind, List<StationResponse> stationResponses) {

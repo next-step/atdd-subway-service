@@ -1,5 +1,7 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -20,10 +22,11 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity findPath(@RequestParam("source") Long source,
-                                    @RequestParam("target") Long target) {
-
-        return ResponseEntity.ok(pathService.findPath(source, target));
+    public ResponseEntity findPath(
+                                   @RequestParam("source") Long source,
+                                   @RequestParam("target") Long target) {
+        LoginMember loginMember  = null;
+        return ResponseEntity.ok(pathService.findPath(loginMember, source, target));
     }
 
     @ExceptionHandler(RuntimeException.class)

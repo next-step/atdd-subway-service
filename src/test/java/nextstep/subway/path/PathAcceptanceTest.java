@@ -10,8 +10,8 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
+import org.assertj.core.api.AbstractDoubleAssert;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
@@ -86,10 +87,32 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 출발역_도착역_최단거리_조회(교대역.getId(), 양재역.getId());
 
         //then
-        출발역_도착역_최단거리_비교하기(response.as(PathResponse.class).getStations(), Arrays.asList(교대역, 남부터미널역, 양재역));
+        출발역_도착역_최단거리_비교하기_역정보(response.as(PathResponse.class).getStations(), Arrays.asList(교대역, 남부터미널역, 양재역));
     }
 
-    private void 출발역_도착역_최단거리_비교하기(List<StationResponse> stations, List<StationResponse> expectedStations) {
+    @Test
+    @DisplayName("경로를 검색하고 가격을 비교하는 테스트")
+    void findShortPrice() {
+        //when
+        ExtractableResponse<Response> response = 출발역_도착역_최단거리_조회(교대역.getId(), 양재역.getId());
+
+        //then
+        assertAll(
+                () -> 출발역_도착역_최단거리_비교하기_거리(response, 5),
+                () -> 출발역_도착역_최단거리_비교하기_역정보(response.as(PathResponse.class).getStations(), Arrays.asList(교대역, 남부터미널역, 양재역)),
+                () -> 출발역_도착역_최단거리_비교하기_금액(response, 1250)
+        );
+    }
+
+    private AbstractDoubleAssert<?> 출발역_도착역_최단거리_비교하기_금액(ExtractableResponse<Response> response, int price) {
+        return assertThat(response.as(PathResponse.class).getPrice()).isEqualTo(price);
+    }
+
+    private AbstractDoubleAssert<?> 출발역_도착역_최단거리_비교하기_거리(ExtractableResponse<Response> response, int distance) {
+        return assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(distance);
+    }
+
+    private void 출발역_도착역_최단거리_비교하기_역정보(List<StationResponse> stations, List<StationResponse> expectedStations) {
         List<Long> stationIds = stations.stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
