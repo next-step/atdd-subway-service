@@ -100,6 +100,12 @@ public class Sections {
         Optional<Section> upLineStation = sections.stream().filter(it -> it.getUpStation() == station).findFirst();
         Optional<Section> downLineStation = sections.stream().filter(it -> it.getDownStation() == station).findFirst();
 
+        connectFrontBackSection(line, upLineStation, downLineStation);
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private void connectFrontBackSection(Line line, Optional<Section> upLineStation, Optional<Section> downLineStation) {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
@@ -107,8 +113,5 @@ public class Sections {
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
             sections.add(new Section(line, newUpStation, newDownStation, newDistance));
         }
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
     }
-
 }
