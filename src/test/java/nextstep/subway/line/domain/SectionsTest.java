@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import nextstep.subway.SectionsNotRemovedException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.assertj.core.api.Assertions;
@@ -28,10 +29,9 @@ class SectionsTest {
     @Test
     @DisplayName("초기 구간 등록 확인")
     void addSectionEmpty() {
-        Stations stations = new Stations();
         Sections sections = new Sections();
 
-        sections.addSection(stations, 판교_정자, false, false);
+        sections.requestAddSection(판교_정자);
         assertThat(sections.getSections()).contains(판교_정자);
     }
 
@@ -44,7 +44,7 @@ class SectionsTest {
 
         Sections sections = new Sections();
 
-        sections.addSection(stations, 판교_정자, false, true);
+        sections.requestAddSection(판교_정자);
         assertThat(sections.getSections()).contains(판교_정자);
     }
 
@@ -59,22 +59,19 @@ class SectionsTest {
         stations.add(강남역);
         stations.add(판교역);
 
-        Assertions.assertThatThrownBy(() -> sections.removeLineStation(판교역, 신분당선)).isInstanceOf(RuntimeException.class);
+        Assertions.assertThatThrownBy(() -> sections.removeLineStation(판교역, 신분당선)).isInstanceOf(
+                SectionsNotRemovedException.class);
     }
 
     @Test
     @DisplayName("상행역 하행역 모두 존재시 구간 정상 삭제 처리")
     void removeLineStation() {
-        Stations stations = new Stations();
         Sections sections = new Sections();
         Section 강남_판교 = new Section(신분당선, 강남역, 판교역, 10);
-        sections.addSection(stations, 강남_판교,false, false);
 
-        stations.add(강남역);
-        stations.add(판교역);
-        stations.add(정자역);
+        sections.requestAddSection(강남_판교);
 
-        sections.addSection(stations, 판교_정자,true, true);
+        sections.requestAddSection(판교_정자);
 
         sections.removeLineStation(정자역, 신분당선);
         assertThat(sections.getSections()).doesNotContain(판교_정자);

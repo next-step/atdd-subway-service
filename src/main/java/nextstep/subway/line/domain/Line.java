@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -58,26 +58,25 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
-        Stations stations = Stations.of(sections);
+        Stations stations = Stations.from(sections);
 
         return stations.getStations();
     }
 
-    public void addLineStation(SectionRequest request, Station upStation, Station downStation) {
-        Stations stations = new Stations(getStations());
-        boolean isUpStationExisted = stations.isUpStationExisted(upStation);
-        boolean isDownStationExisted = stations.isDownStationExisted(downStation);
-
-        stations.checkAddLineStation(upStation,downStation, isUpStationExisted, isDownStationExisted);
-
-        Section section = new Section(this, upStation, downStation, request.getDistance());
-        sections.addSection(stations, section, isUpStationExisted, isDownStationExisted);
+    public Sections getSections() {
+        return sections;
     }
 
-    public void removeLineStation(Station station){
+    public void addLineStation(SectionRequest request, Station upStation, Station downStation) {
+        Section section = new Section(this, upStation, downStation, request.getDistance());
+        sections.requestAddSection(section);
+    }
+
+    public void removeLineStation(Station station) {
         sections.removeLineStation(station, this);
     }
+
 }

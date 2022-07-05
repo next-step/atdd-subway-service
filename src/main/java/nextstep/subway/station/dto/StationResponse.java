@@ -37,14 +37,8 @@ public class StationResponse {
         return modifiedDate;
     }
 
-    public static StationResponse of(Station station) {
+    public static StationResponse from(Station station) {
         return new StationResponse(station.getId(), station.getName(), station.getCreatedDate(), station.getModifiedDate());
-    }
-
-    public static List<StationResponse> toStationResponses(List<Station> stations){
-        return stations.stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
     }
 
 }
