@@ -24,7 +24,7 @@ public class PathController {
     @GetMapping
     public ResponseEntity<PathResponse> findBestPath(@AuthenticationPrincipal(required = false) LoginMember loginMember,
                                                      @RequestParam Long source, @RequestParam Long target) {
-        int age = (loginMember != null) ? loginMember.getAge() : FareSalePolicy.ADULT.getOver() + 1;
+        int age = loginMember.getAge();
         return ResponseEntity.ok(pathService.findShortestPath(source, target, age));
     }
 }
