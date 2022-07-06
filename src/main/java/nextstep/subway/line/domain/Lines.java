@@ -10,6 +10,7 @@ import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Lines {
     private List<Line> lines;
@@ -26,17 +27,23 @@ public class Lines {
         return lines;
     }
 
-    public Path findPath(Station sourceStation, Station targetStation, int age) {
+    public Path findPath(Station sourceStation, Station targetStation) {
         checkValidateStationsForPath(sourceStation, targetStation);
         PathFinder pathFinder = new PathFinder(this);
         GraphPath path = pathFinder.getGraphPath(sourceStation, targetStation);
 
         List<Station> stations = path.getVertexList();
         int distance = (int) path.getWeight();
-        List<SectionEdge> sectionEdges = path.getEdgeList();
-        int additionalFare = getMaxAdditionalLineFare(sectionEdges);
 
-        return Path.of(stations, distance, additionalFare, age);
+        return Path.of(stations, distance);
+    }
+
+    public int getAdditionalFare(Station sourceStation, Station targetStation) {
+        checkValidateStationsForPath(sourceStation, targetStation);
+        PathFinder pathFinder = new PathFinder(this);
+        GraphPath path = pathFinder.getGraphPath(sourceStation, targetStation);
+
+        return  getMaxAdditionalLineFare(path.getEdgeList());
     }
 
     private void checkValidateStationsForPath(Station sourceStation, Station targetStation) {
@@ -57,16 +64,9 @@ public class Lines {
     }
 
     private int getMaxAdditionalLineFare(List<SectionEdge> sectionEdges) {
-        int maxFare = 0;
+        Optional<SectionEdge> maxSectionEdge = sectionEdges.stream().max((e1, e2) -> Integer.compare(e1.getFare(), e2.getFare()));
 
-        for (SectionEdge sectionEdge : sectionEdges) {
-            int lineFare = sectionEdge.getFare();
+        return maxSectionEdge.map(SectionEdge::getFare).orElse(0);
 
-            if (maxFare < lineFare) {
-                maxFare = lineFare;
-            }
-        }
-
-        return maxFare;
     }
 }
