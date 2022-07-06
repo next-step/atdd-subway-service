@@ -29,7 +29,7 @@ public enum DistanceFarePolicy {
 
     public static int calculateOverFare(int distance) {
         DistanceFarePolicy farePolicy = getFarePolicyByDistance(distance);
-        if (farePolicy.each == 0) {
+        if (farePolicy == DistanceFarePolicy.BASIC) {
             return 0;
         }
 
