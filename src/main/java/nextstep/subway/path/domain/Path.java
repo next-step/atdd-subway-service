@@ -8,17 +8,13 @@ public class Path {
     private final List<Station> stations;
     private final int distance;
 
-    private final int fare;
-
-    public static Path of(List<Station> stations, int distance, int additionalFare, int age) {
-        return new Path(stations, distance, additionalFare, age);
+    public static Path of(List<Station> stations, int distance) {
+        return new Path(stations, distance);
     }
 
-    public Path(List<Station> stations, int distance, int additionalFare, int age) {
+    public Path(List<Station> stations, int distance) {
         this.stations = stations;
         this.distance = distance;
-        int totalFare = DistanceFarePolicy.BASIC_FARE + DistanceFarePolicy.calculateOverFare(distance) + additionalFare;
-        this.fare = totalFare - FareSalePolicy.calculateSaleByAge(age, totalFare);
     }
 
     public List<Station> getStations() {
@@ -29,7 +25,8 @@ public class Path {
         return distance;
     }
 
-    public int getFare() {
-        return fare;
+    public int getFare(int additionalFare, int age) {
+        int totalFare = DistanceFarePolicy.BASIC_FARE + DistanceFarePolicy.calculateOverFare(distance) + additionalFare;
+        return totalFare - FareSalePolicy.calculateSaleByAge(age, totalFare);
     }
 }

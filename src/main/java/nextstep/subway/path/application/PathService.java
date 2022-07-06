@@ -26,8 +26,9 @@ public class PathService {
         Station targetStation = stationService.findStationById(targetId);
 
         Lines lines = new Lines(lineRepository.findAll());
-        Path path = lines.findPath(sourceStation, targetStation, age);
+        Path path = lines.findPath(sourceStation, targetStation);
+        int additionalFare = lines.getAdditionalFare(sourceStation, targetStation);
 
-        return PathResponse.of(path.getStations(), path.getDistance(), path.getFare());
+        return PathResponse.of(path.getStations(), path.getDistance(), path.getFare(additionalFare, age));
     }
 }
