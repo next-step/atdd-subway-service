@@ -27,7 +27,7 @@ public class LineTest {
     @Test
     void saveLine() {
         // given
-        Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
+        Line line = Line.of("2호선", "초록색", 강남역, 역삼역, 15, 0);
 
         // then
         assertAll(
@@ -42,7 +42,7 @@ public class LineTest {
     @Test
     void update() {
         // given
-        Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
+        Line line = Line.of("2호선", "초록색", 강남역, 역삼역, 15, 0);
         Line newLine = new Line("two", "green");
 
         // when
@@ -58,7 +58,7 @@ public class LineTest {
     @Test
     void addLineStation() {
         // given
-        Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
+        Line line = Line.of("2호선", "초록색", 강남역, 역삼역, 15, 0);
         Station 교대역 = stationRepository.save(new Station("교대역"));
 
         // when
@@ -73,7 +73,7 @@ public class LineTest {
     @Test
     void addLineStation2() {
         // given
-        Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
+        Line line = Line.of("2호선", "초록색", 강남역, 역삼역, 15, 0);
         Station 선릉역 = stationRepository.save(new Station("선릉역"));
 
         // when
@@ -88,7 +88,7 @@ public class LineTest {
     @Test
     void addLineStation3() {
         // given
-        Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
+        Line line = Line.of("2호선", "초록색", 강남역, 역삼역, 15, 0);
         Station 교대역 = stationRepository.save(new Station("교대역"));
         Station 선릉역 = stationRepository.save(new Station("선릉역"));
         Station 삼성역 = stationRepository.save(new Station("삼성역"));
@@ -115,7 +115,7 @@ public class LineTest {
     @Test
     void removeLineStation() {
         // given
-        Line line = new Line("2호선", "초록색", 강남역, 역삼역, 15);
+        Line line = Line.of("2호선", "초록색", 강남역, 역삼역, 15, 0);
         Station 교대역 = stationRepository.save(new Station("교대역"));
         Section newSection = new Section(line, 교대역, 강남역, 13);
         // when
