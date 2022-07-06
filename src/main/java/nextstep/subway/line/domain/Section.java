@@ -69,4 +69,8 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+    public int getFare() {
+        return line.getFare();
+    }
 }
