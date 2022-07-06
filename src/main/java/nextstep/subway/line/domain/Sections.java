@@ -34,41 +34,36 @@ public class Sections {
             sections.add(section);
             return;
         }
-        checkExistsStation(section, section.getUpStation(), section.getDownStation());
+        checkExistsStation(section);
     }
 
-    private void checkExistsStation(Section section, Station upStation, Station downStation) {
-        boolean upMatchesLineUp = stationExistsInUp(upStation);
-        boolean downMatchsLineDown = stationExistsInDown(downStation);
-        boolean matchesAtFront = stationExistsInUp(downStation);
-        boolean matchesAtBack = stationExistsInDown(upStation);
-        if (!upMatchesLineUp && !matchesAtFront && !matchesAtBack && !downMatchsLineDown) {
+    private void checkExistsStation(Section section) {
+        boolean upMatchesLineUp = stationExistsInUp(section.getUpStation());
+        boolean downMatchesLineDown = stationExistsInDown(section.getDownStation());
+        boolean matchesAtEnd = stationExistsAtEnd(section);
+
+        if (!upMatchesLineUp && !downMatchesLineDown && !matchesAtEnd) {
             throw new SectionsNotAddedException("구간 중 어떠한 역도 현재 구간에 없습니다.");
         }
-        if (upMatchesLineUp && downMatchsLineDown) {
+        if (upMatchesLineUp && downMatchesLineDown) {
             throw new SectionsNotAddedException("이미 등록된 구간 입니다.");
         }
 
-        addSectionToMatchStation(section, upStation, downStation, upMatchesLineUp, downMatchsLineDown, matchesAtFront,
-                matchesAtBack);
-
+        addSectionToMatchStation(section, upMatchesLineUp, downMatchesLineDown);
     }
 
-    private void addSectionToMatchStation(Section section, Station upStation, Station downStation,
-                                          boolean upMatchesLineUp, boolean downMatchsLineDown, boolean matchesAtFront,
-                                          boolean matchesAtBack) {
+    private void addSectionToMatchStation(Section section, boolean upMatchesLineUp, boolean downMatchsLineDown) {
+        Station upStation = section.getUpStation();
+        Station downStation = section.getDownStation();
         if (upMatchesLineUp) {
-            addUpStationExists(section, upStation, downStation, section.getDistance());
-            return;
+            updateUpStationMatch(section, upStation, downStation, section.getDistance());
         }
         if (downMatchsLineDown) {
-            addDownStationExists(section, upStation, downStation, section.getDistance());
-            return;
+            updateDownStatioMatch(section, upStation, downStation, section.getDistance());
         }
 
-        if (matchesAtFront || matchesAtBack) {
-            sections.add(section);
-        }
+        //양쪽 끝에 더해질 경우
+        sections.add(section);
     }
 
     private boolean stationExistsInUp(Station station) {
@@ -79,33 +74,40 @@ public class Sections {
         return sections.stream().anyMatch(section -> section.getDownStation().equals(station));
     }
 
+    private boolean stationExistsAtEnd(Section section) {
+        return sections.stream().anyMatch(
+                sectionIterate -> sectionIterate.getDownStation().equals(section.getUpStation())
+                        || sectionIterate.getUpStation().equals(section.getDownStation()));
+    }
 
-    private void addUpStationExists(Section section, Station upStation, Station downStation, int distance) {
+    private void updateUpStationMatch(Section section, Station upStation, Station downStation, int distance) {
         sections.stream().filter(sectionIterate -> upStation.equals(sectionIterate.getUpStation())).findFirst()
                 .ifPresent(sectionIterate -> sectionIterate.updateUpStation(downStation, distance));
-        sections.add(section);
     }
 
-    private void addDownStationExists(Section section, Station upStation, Station downStation, int distance) {
+    private void updateDownStatioMatch(Section section, Station upStation, Station downStation, int distance) {
         sections.stream().filter(sectionIterate -> downStation.equals(sectionIterate.getDownStation())).findFirst()
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
-        sections.add(section);
     }
+
 
     public void removeLineStation(Station station, Line line) {
         if (sections.size() <= ONE) {
             throw new SectionsNotRemovedException("현재 구간이 하나밖에 없습니다.");
         }
 
-        Optional<Section> upLineStation = sections.stream().filter(it -> it.getUpStation() == station).findFirst();
-        Optional<Section> downLineStation = sections.stream().filter(it -> it.getDownStation() == station).findFirst();
+        Optional<Section> upLineStation = sections.stream().filter(section -> section.getUpStation().equals(station))
+                .findFirst();
+        Optional<Section> downLineStation = sections.stream()
+                .filter(section -> section.getDownStation().equals(station)).findFirst();
 
         connectFrontBackSection(line, upLineStation, downLineStation);
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+        upLineStation.ifPresent(section -> sections.remove(section));
+        downLineStation.ifPresent(section -> sections.remove(section));
     }
 
-    private void connectFrontBackSection(Line line, Optional<Section> upLineStation, Optional<Section> downLineStation) {
+    private void connectFrontBackSection(Line line, Optional<Section> upLineStation,
+                                         Optional<Section> downLineStation) {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
