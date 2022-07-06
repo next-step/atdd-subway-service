@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class FavoriteServiceTest  extends AcceptanceTest {
+public class FavoriteServiceTest {
 
     private FavoriteService favoriteService;
 
