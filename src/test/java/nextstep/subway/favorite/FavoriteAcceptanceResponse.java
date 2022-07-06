@@ -15,7 +15,7 @@ public class FavoriteAcceptanceResponse {
     }
 
     public static void 즐겨찾기_생성_요청_실패(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     public static void 즐겨찾기_조회_요청_성공(ExtractableResponse<Response> response) {
