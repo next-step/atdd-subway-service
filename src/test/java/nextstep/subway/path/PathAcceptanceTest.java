@@ -115,14 +115,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
                     ExtractableResponse<Response> response = 최단경로_토큰_조회(청소년_토큰, 강남역.getId(), 양재역.getId());
 
                     //then
-                    최단경로_토큰_조회_금액_성공(response, 1250, 720);
+                    최단경로_토큰_조회_금액_성공(response, 720, 10);
                 }),
 
                 dynamicTest("강남역-양재역 최단 경로를 로그인 한 어린이가 조회하면, 경유지/경유거리/이용요금을 응답", () -> {
                     //when
                     ExtractableResponse<Response> response = 최단경로_토큰_조회(어린이_토큰, 강남역.getId(), 양재역.getId());
 
-                    최단경로_토큰_조회_금액_성공(response, 1250, 450);
+                    최단경로_토큰_조회_금액_성공(response, 450, 10);
                 })
         );
     }
