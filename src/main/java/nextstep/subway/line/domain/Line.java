@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.fare.Fare;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
@@ -24,6 +25,9 @@ public class Line extends BaseEntity {
 
     @Embedded
     private Sections sections = new Sections();
+
+    @Embedded
+    private Fare charge = new Fare(0);
 
     public Line() {
     }
@@ -58,6 +62,10 @@ public class Line extends BaseEntity {
 
     public Sections getSections() {
         return sections;
+    }
+
+    public Fare getCharge() {
+        return charge;
     }
 
     public List<Station> getStations() {
