@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
-    List<Favorite> findByMember_id(Long memberId);
+    List<Favorite> findByMemberId(Long memberId);
 
-    Optional<Favorite> findByMember_idAndId(Long memberId, Long id);
+    Optional<Favorite> findByMemberIdAndId(Long memberId, Long id);
 }

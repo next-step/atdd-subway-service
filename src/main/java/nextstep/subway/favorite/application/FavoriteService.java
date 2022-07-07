@@ -42,13 +42,13 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(Long memberId) {
-        List<Favorite> favorites = favoriteRepository.findByMember_id(memberId);
+        List<Favorite> favorites = favoriteRepository.findByMemberId(memberId);
         return FavoriteResponse.from(favorites);
     }
 
     @Transactional
     public void deleteFavorite(Long memberId, Long favoriteId) {
-        Favorite foundFavorite = favoriteRepository.findByMember_idAndId(memberId, favoriteId)
+        Favorite foundFavorite = favoriteRepository.findByMemberIdAndId(memberId, favoriteId)
                 .orElseThrow(() -> new NotFoundException(String.format("회원님의 즐겨찾기(%d)를 찾을 수 없습니다.", favoriteId)));
         favoriteRepository.delete(foundFavorite);
     }
