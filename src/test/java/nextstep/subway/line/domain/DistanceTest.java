@@ -39,4 +39,13 @@ class DistanceTest {
         assertAll(() -> assertThat(짧은_거리.isGreaterThan(긴_거리)).isFalse(),
                 () -> assertThat(긴_거리.isGreaterThan(짧은_거리)).isTrue());
     }
+
+    @Test
+    @DisplayName("두 거리중 짧은 거리를 찾을 수 있다.")
+    void 두_거리중_짧은_거리_찾기() {
+        Distance 짧은_거리 = new Distance(1);
+        Distance 긴_거리 = new Distance(2);
+
+        assertThat(Distance.min(긴_거리, 짧은_거리)).isEqualTo(짧은_거리);
+    }
 }

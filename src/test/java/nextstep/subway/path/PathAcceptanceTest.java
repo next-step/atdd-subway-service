@@ -65,9 +65,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     /**
      * When 두 지하철역의 아이디로 최단 경로를 조회 하면
      * Then 최단 경로가 조회되며 그 거리를 확인할 수 있다.
+     *  And 지하철 이용 요금도 함께 확인할 수 있다.
      */
     @Test
-    @DisplayName("두 지하철역의 아이디로 최단 경로를 조회하면 최단 경로와 그 거리를 확인할 수 있다.")
+    @DisplayName("두 지하철역의 아이디로 최단 경로를 조회하면 최단 경로와 그 거리와 요금을 확인할 수 있다.")
     void 최단_경로_조회() {
         // When
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(강남역.getId(), 남부터미널역.getId());
@@ -75,6 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // Then
         지하철_경로_조회됨(response);
         지하철_경로_최단거리_확인(response, 12);
+        // 지하철_경로_요금_확인(response, );
     }
 
     /**

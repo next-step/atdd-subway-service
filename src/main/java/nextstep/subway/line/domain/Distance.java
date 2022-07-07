@@ -6,6 +6,8 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Distance {
+    public static final Distance ZERO = new Distance();
+
     @Column(name = "distance", nullable = false)
     private int value;
 
@@ -26,6 +28,10 @@ public class Distance {
         if (distance < 0) {
             throw new IllegalArgumentException("거리는 음수가 될 수 없습니다.");
         }
+    }
+
+    public static Distance min(Distance distance1, Distance distance2) {
+        return distance1.isGreaterThan(distance2) ? distance2 : distance1;
     }
 
     public int value() {
