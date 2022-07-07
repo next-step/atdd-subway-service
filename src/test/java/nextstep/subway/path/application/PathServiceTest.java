@@ -56,9 +56,9 @@ class PathServiceTest {
         교대역 = new Station(3L, "교대역");
         남부터미널역 = new Station(4L, "남부터미널역");
 
-        이호선 = new Line("이호선", "bg-green-600", 교대역, 강남역, 10, 0);
-        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 6, 0);
-        삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 남부터미널역, 5, 0);
+        이호선 = new Line.Builder("이호선", "bg-green-600", 교대역, 강남역, 10).build();
+        신분당선 = new Line.Builder("신분당선", "bg-red-600", 강남역, 양재역, 6).build();
+        삼호선 = new Line.Builder("삼호선", "bg-orange-600", 교대역, 남부터미널역, 5).build();
 
         삼호선.addSection(new Section(삼호선, 남부터미널역, 양재역, 3));
 
@@ -102,7 +102,7 @@ class PathServiceTest {
     void getFare10km_50km() {
         // given
         Station 판교역 = new Station(5L, "판교역");
-        Line 구분당선 = new Line("구분당선", "bg-red-300", 양재역, 판교역, 14, 0);
+        Line 구분당선 = new Line.Builder("구분당선", "bg-red-300", 양재역, 판교역, 14).build();
         lines.add(구분당선);
 
         PathService pathService = new PathService(lineService, stationService);
@@ -135,7 +135,7 @@ class PathServiceTest {
     void getFareOver50km() {
         // given
         Station 판교역 = new Station(5L, "판교역");
-        Line 구분당선 = new Line("구분당선", "bg-red-300", 양재역, 판교역, 54, 0);
+        Line 구분당선 = new Line.Builder("구분당선", "bg-red-300", 양재역, 판교역, 54).build();
         lines.add(구분당선);
 
         PathService pathService = new PathService(lineService, stationService);
@@ -169,7 +169,9 @@ class PathServiceTest {
     void getFareWithLineSurcharge() {
         // given
         Station 판교역 = new Station(5L, "판교역");
-        Line 구분당선 = new Line("구분당선", "bg-red-300", 양재역, 판교역, 5, 1000);
+        Line 구분당선 = new Line.Builder("구분당선", "bg-red-300", 양재역, 판교역, 5)
+                .surcharge(1000)
+                .build();
         lines.add(구분당선);
 
         PathService pathService = new PathService(lineService, stationService);
@@ -205,11 +207,15 @@ class PathServiceTest {
     void getFareWithMultipleLineSurcharge() {
         // given
         Station 판교역 = new Station(5L, "판교역");
-        Line 구분당선 = new Line("구분당선", "bg-red-300", 양재역, 판교역, 5, 1000);
+        Line 구분당선 = new Line.Builder("구분당선", "bg-red-300", 양재역, 판교역, 5)
+                .surcharge(1000)
+                .build();
         lines.add(구분당선);
 
         Station 이매역 = new Station(6L, "이매역");
-        Line 경강선 = new Line("경강선", "bg-blue-300", 판교역, 이매역, 5, 2000);
+        Line 경강선 = new Line.Builder("경강선", "bg-blue-300", 판교역, 이매역, 5)
+                .surcharge(2000)
+                .build();
         lines.add(경강선);
 
         PathService pathService = new PathService(lineService, stationService);
@@ -244,7 +250,9 @@ class PathServiceTest {
     void getFareWithLineSurchargeForChildren() {
         // given
         Station 판교역 = new Station(5L, "판교역");
-        Line 구분당선 = new Line("구분당선", "bg-red-300", 양재역, 판교역, 5, 1000);
+        Line 구분당선 = new Line.Builder("구분당선", "bg-red-300", 양재역, 판교역, 5)
+                .surcharge(1000)
+                .build();
         lines.add(구분당선);
 
         PathService pathService = new PathService(lineService, stationService);
@@ -279,7 +287,9 @@ class PathServiceTest {
     void getFareWithLineSurchargeForTeenagers() {
         // given
         Station 판교역 = new Station(5L, "판교역");
-        Line 구분당선 = new Line("구분당선", "bg-red-300", 양재역, 판교역, 5, 1000);
+        Line 구분당선 = new Line.Builder("구분당선", "bg-red-300", 양재역, 판교역, 5)
+                .surcharge(1000)
+                .build();
         lines.add(구분당선);
 
         PathService pathService = new PathService(lineService, stationService);

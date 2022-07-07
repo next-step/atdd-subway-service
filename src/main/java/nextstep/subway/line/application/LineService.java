@@ -29,7 +29,9 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(
-                new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(), request.getSurcharge()));
+                new Line.Builder(request.getName(), request.getColor(), upStation, downStation, request.getDistance())
+                        .surcharge(request.getSurcharge())
+                        .build());
         return LineResponse.of(persistLine);
     }
 
