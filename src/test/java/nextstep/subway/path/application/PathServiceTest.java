@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
@@ -50,7 +51,7 @@ class PathServiceTest {
     @DisplayName("출발역과 도착역의 아이디로 최단 경로를 찾을 수 있다.")
     void 경로_찾기() {
         PathService pathService = new PathService(lineRepository, stationService);
-        PathResponse pathResponse = pathService.findShortestPath(출발역.getId(), 도착역.getId());
+        PathResponse pathResponse = pathService.findShortestPath(new LoginMember(), 출발역.getId(), 도착역.getId());
 
         assertAll(() -> assertThat(pathResponse.getStations()).hasSize(3),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(12));
@@ -61,7 +62,7 @@ class PathServiceTest {
         PathService pathService = new PathService(lineRepository, stationService);
         Long 출발역_아이디 = 출발역.getId();
 
-        assertThatThrownBy(() -> pathService.findShortestPath(출발역_아이디, 존재하지_않는_역)).isInstanceOf(
+        assertThatThrownBy(() -> pathService.findShortestPath(new LoginMember(), 출발역_아이디, 존재하지_않는_역)).isInstanceOf(
                 NotFoundException.class);
     }
 }

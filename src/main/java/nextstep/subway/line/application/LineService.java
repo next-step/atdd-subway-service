@@ -3,6 +3,7 @@ package nextstep.subway.line.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.exception.NotFoundException;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -29,13 +30,10 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
 
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor()));
-        Section newSection = new Section.Builder()
-                .upStation(upStation)
-                .downStation(downStation)
-                .distance(request.getDistance())
-                .line(persistLine)
-                .build();
+        Line persistLine = lineRepository.save(
+                new Line(request.getName(), request.getColor(), Fare.from(request.getExtraFare())));
+        Section newSection = new Section.Builder().upStation(upStation).downStation(downStation)
+                .distance(request.getDistance()).line(persistLine).build();
         persistLine.addLineStation(newSection);
 
         return LineResponse.from(persistLine);
@@ -72,12 +70,8 @@ public class LineService {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
 
-        Section section = new Section.Builder()
-                .upStation(upStation)
-                .downStation(downStation)
-                .distance(request.getDistance())
-                .line(line)
-                .build();
+        Section section = new Section.Builder().upStation(upStation).downStation(downStation)
+                .distance(request.getDistance()).line(line).build();
         line.addLineStation(section);
     }
 

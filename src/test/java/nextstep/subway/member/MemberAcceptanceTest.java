@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+@DisplayName("회원 관리 기능")
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String MEMBER_ME_URL = "/members/me";
 

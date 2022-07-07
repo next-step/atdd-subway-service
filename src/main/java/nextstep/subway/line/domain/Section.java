@@ -62,6 +62,10 @@ public class Section {
                 .build();
     }
 
+    public Line getLine() {
+        return line;
+    }
+
     public Station getUpStation() {
         return upStation;
     }
