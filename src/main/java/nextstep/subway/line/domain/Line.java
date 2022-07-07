@@ -12,6 +12,8 @@ import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Line extends BaseEntity {
+    private static final Fare DEFAULT_EXTRA_FARE = Fare.ZERO;
+
     @Embedded
     private final Sections sections = new Sections();
     @Id
@@ -21,16 +23,27 @@ public class Line extends BaseEntity {
     private LineName name;
     @Embedded
     private LineColor color;
+    @Embedded
+    private Fare extraFare;
 
     public Line() {
     }
 
     public Line(String name, String color) {
+        this(name, color, DEFAULT_EXTRA_FARE);
+    }
+
+    public Line(String name, String color, Fare extraFare) {
         this.name = LineName.from(name);
         this.color = LineColor.from(color);
+        this.extraFare = extraFare;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this(name, color, upStation, downStation, distance, DEFAULT_EXTRA_FARE.value());
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int extraFare) {
         this.name = LineName.from(name);
         this.color = LineColor.from(color);
         sections.add(new Section.Builder()
@@ -39,10 +52,15 @@ public class Line extends BaseEntity {
                 .distance(distance)
                 .line(this)
                 .build());
+        this.extraFare = Fare.from(extraFare);
     }
 
     public static Line of(String name, String color) {
         return new Line(name, color);
+    }
+
+    public static Line of(String name, String color, int extraFare) {
+        return new Line(name, color, Fare.from(extraFare));
     }
 
     public void update(Line line) {
@@ -60,6 +78,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return Objects.nonNull(color) ? color.toString() : "";
+    }
+
+    public int getExtraFare() {
+        return extraFare.value();
     }
 
     public List<Section> getSections() {
