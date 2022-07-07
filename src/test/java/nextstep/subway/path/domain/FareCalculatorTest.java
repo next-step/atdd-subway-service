@@ -31,21 +31,21 @@ class FareCalculatorTest {
         @DisplayName("10Km 이내 기본운임을 계산할 수 있다.")
         @Test
         void 기본운임_계산() {
-            assertThat(fareCalculator.calculate(Distance.from(9), Collections.singletonList(기본_노선), 30)).isEqualTo(
+            assertThat(fareCalculator.calculate(Distance.from(9), Collections.singletonList(기본_노선))).isEqualTo(
                     1250);
         }
 
         @DisplayName("이용 거리 10Km 초과 시 5Km마다 100원씩 추가운임 부과할 수 있다.")
         @Test
         void 이용거리_초과_10KM_50KM까지의_계산() {
-            assertThat(fareCalculator.calculate(Distance.from(11), Collections.singletonList(기본_노선), 30)).isEqualTo(
+            assertThat(fareCalculator.calculate(Distance.from(11), Collections.singletonList(기본_노선))).isEqualTo(
                     1350);
         }
 
         @DisplayName("이용 거리 50Km 초과 시 8Km마다 100원씩 추가운임 부과할 수 있다.")
         @Test
         void 이용거리_50KM_초과_계산() {
-            assertThat(fareCalculator.calculate(Distance.from(57), Collections.singletonList(기본_노선), 30)).isEqualTo(
+            assertThat(fareCalculator.calculate(Distance.from(57), Collections.singletonList(기본_노선))).isEqualTo(
                     2150);
         }
     }
@@ -56,21 +56,21 @@ class FareCalculatorTest {
         @DisplayName("10Km 이내 기본운임을 계산할 수 있다.")
         @Test
         void 기본운임_계산() {
-            assertThat(fareCalculator.calculate(Distance.from(9), Collections.singletonList(추가요금_노선), 30)).isEqualTo(
+            assertThat(fareCalculator.calculate(Distance.from(9), Collections.singletonList(추가요금_노선))).isEqualTo(
                     2150);
         }
 
         @DisplayName("이용 거리 10Km 초과 시 5Km마다 100원씩 추가운임 부과할 수 있다.")
         @Test
         void 이용거리_초과_10KM_50KM까지의_계산() {
-            assertThat(fareCalculator.calculate(Distance.from(11), Collections.singletonList(추가요금_노선), 30)).isEqualTo(
+            assertThat(fareCalculator.calculate(Distance.from(11), Collections.singletonList(추가요금_노선))).isEqualTo(
                     2250);
         }
 
         @DisplayName("이용 거리 50Km 초과 시 8Km마다 100원씩 추가운임 부과할 수 있다.")
         @Test
         void 이용거리_50KM_초과_계산() {
-            assertThat(fareCalculator.calculate(Distance.from(57), Collections.singletonList(추가요금_노선), 30)).isEqualTo(
+            assertThat(fareCalculator.calculate(Distance.from(57), Collections.singletonList(추가요금_노선))).isEqualTo(
                     3050);
         }
 
@@ -79,8 +79,7 @@ class FareCalculatorTest {
         void 추가_요금이_있는_노선들을_경유한_경우_계산() {
             Line 조금싼_추가요금_노선 = Line.of("조금 싼 추가요금 노선", "파랑", 500);
 
-            assertThat(fareCalculator.calculate(Distance.from(57), Arrays.asList(기본_노선, 조금싼_추가요금_노선, 추가요금_노선),
-                    30)).isEqualTo(3050);
+            assertThat(fareCalculator.calculate(Distance.from(57), Arrays.asList(기본_노선, 조금싼_추가요금_노선, 추가요금_노선))).isEqualTo(3050);
         }
     }
 

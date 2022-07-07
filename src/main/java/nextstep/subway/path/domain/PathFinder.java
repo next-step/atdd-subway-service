@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -15,11 +16,11 @@ import org.jgrapht.graph.WeightedMultigraph;
 public class PathFinder {
     private static PathFinder pathFinder = null;
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph;
-    private final ShortestPathAlgorithm<Station, DefaultWeightedEdge> shortestPathAlgorithm;
+    private final WeightedMultigraph<Station, StationGraphEdge> stationGraph;
+    private final ShortestPathAlgorithm<Station, StationGraphEdge> shortestPathAlgorithm;
 
     public PathFinder(List<Line> lines) {
-        stationGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        stationGraph = new WeightedMultigraph<>(StationGraphEdge.class);
         setStationGraph(lines);
 
         shortestPathAlgorithm = new DijkstraShortestPath<>(stationGraph);
@@ -55,19 +56,23 @@ public class PathFinder {
     }
 
     private void setSection(Section section) {
-        stationGraph.setEdgeWeight(stationGraph.addEdge(section.getUpStation(), section.getDownStation()),
-                section.getDistance());
+        StationGraphEdge stationGraphEdge = StationGraphEdge.from(section);
+        stationGraph.addEdge(section.getUpStation(), section.getDownStation(), stationGraphEdge);
+        stationGraph.setEdgeWeight(stationGraphEdge, section.getDistance());
     }
 
     public Path findShortestPath(Station start, Station end) {
         validateInput(start, end);
 
-        GraphPath<Station, DefaultWeightedEdge> shortestPath =
-                Optional.ofNullable(shortestPathAlgorithm.getPath(start, end))
-                        .orElseThrow(() -> new IllegalStateException("출발역과 도착역이 연결이 되어 있지 않습니다."));
+        GraphPath<Station, StationGraphEdge> shortestPath = Optional.ofNullable(
+                        shortestPathAlgorithm.getPath(start, end))
+                .orElseThrow(() -> new IllegalStateException("출발역과 도착역이 연결이 되어 있지 않습니다."));
 
-        return new Path(shortestPath.getVertexList(),
-                Distance.from((int) shortestPath.getWeight()));
+        List<Line> lines = shortestPath.getEdgeList().stream()
+                .map(StationGraphEdge::getLine)
+                .collect(Collectors.toList());
+
+        return new Path(lines, shortestPath.getVertexList(), Distance.from((int) shortestPath.getWeight()));
     }
 
     private void validateInput(Station start, Station end) {

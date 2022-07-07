@@ -8,12 +8,19 @@ import nextstep.subway.line.domain.Line;
 public class FareCalculator {
     private static final int BASE_FARE = 1250;
 
-    public int calculate(Distance distance, List<Line> lines, Integer age) {
+    protected FareCalculator() {
+    }
+
+    public int calculate(Distance distance, List<Line> lines) {
         int totalFare = BASE_FARE;
         int distanceExcessFare = DistanceFarePolicy.calculateTotalExcessFare(distance);
         int lineExcessFare = LineFarePolicy.calculateExcessFare(lines);
 
-        totalFare = totalFare + distanceExcessFare + lineExcessFare;
+        return totalFare + distanceExcessFare + lineExcessFare;
+    }
+
+    public int calculate(Distance distance, List<Line> lines, Integer age) {
+        int totalFare = calculate(distance, lines);
 
         Optional<AgeFarePolicy> applicableAgeFarePolicy = AgeFarePolicy.findApplicableAgeFarePolicy(age);
         if (applicableAgeFarePolicy.isPresent()) {

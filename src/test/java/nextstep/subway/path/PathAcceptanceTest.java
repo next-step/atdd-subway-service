@@ -76,7 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // Then
         지하철_경로_조회됨(response);
         지하철_경로_최단거리_확인(response, 12);
-        // 지하철_경로_요금_확인(response, );
+        지하철_경로_요금_확인(response, 1350);
     }
 
     /**
@@ -138,6 +138,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_경로_최단거리_확인(ExtractableResponse<Response> response, int shortestDistance) {
         assertThat(response.jsonPath().getInt("distance")).isEqualTo(shortestDistance);
+    }
+
+    public static void 지하철_경로_요금_확인(ExtractableResponse<Response> response, int fare) {
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(fare);
     }
 
     public static void 지하철_경로_조회_실패됨(ExtractableResponse<Response> response) {
