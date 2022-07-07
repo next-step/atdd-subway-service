@@ -17,6 +17,7 @@ import java.util.List;
 
 @Component
 public class DijkstraShortestPathFinder implements PathFinderStrategy {
+
     public Path getShortestDistance(Lines lines, Station source, Station target) {
         List<Section> sections = lines.getAllSections();
 
@@ -33,7 +34,7 @@ public class DijkstraShortestPathFinder implements PathFinderStrategy {
         List<Station> stations = graphPath.getVertexList();
         int distance = (int) graphPath.getWeight();
 
-        return new Path(stations, distance);
+        return new Path(stations, distance, lines);
     }
 
     private void generateGraph(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
