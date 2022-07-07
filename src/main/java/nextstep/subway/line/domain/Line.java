@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,7 +25,7 @@ public class Line extends BaseEntity {
     @Embedded
     private LineColor color;
     @Embedded
-    private Fare extraFare;
+    private Fare extraFare = Fare.ZERO;
 
     public Line() {
     }
