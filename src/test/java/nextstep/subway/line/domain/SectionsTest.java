@@ -2,7 +2,7 @@ package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import nextstep.subway.SectionsNotRemovedException;
+import nextstep.subway.line.exception.SectionsNotRemovedException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.assertj.core.api.Assertions;
