@@ -24,4 +24,9 @@ public class Path {
     public int getDistance() {
         return distance;
     }
+
+    public int getFare(int additionalFare, int age) {
+        int totalFare = DistanceFarePolicy.BASIC_FARE + DistanceFarePolicy.calculateOverFare(distance) + additionalFare;
+        return totalFare - FareSalePolicy.calculateSaleByAge(age, totalFare);
+    }
 }

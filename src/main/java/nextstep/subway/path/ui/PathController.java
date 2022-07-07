@@ -1,6 +1,10 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.domain.DistanceFarePolicy;
+import nextstep.subway.path.domain.FareSalePolicy;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +22,9 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findBestPath(@RequestParam Long source, @RequestParam Long target) {
-        return ResponseEntity.ok(pathService.findShortestPath(source, target));
+    public ResponseEntity<PathResponse> findBestPath(@AuthenticationPrincipal(required = false) LoginMember loginMember,
+                                                     @RequestParam Long source, @RequestParam Long target) {
+        int age = loginMember.getAge();
+        return ResponseEntity.ok(pathService.findShortestPath(source, target, age));
     }
 }

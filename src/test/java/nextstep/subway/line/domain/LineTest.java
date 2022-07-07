@@ -18,7 +18,7 @@ public class LineTest {
     public void setup() {
         강남역 = new Station("강남역");
         건대입구역 = new Station("건대입구역");
-        지하철2호선 = new Line("지하철2호선", "GREEN", 강남역, 건대입구역, 10);
+        지하철2호선 = new Line("지하철2호선", "GREEN", 강남역, 건대입구역, 10, 0);
     }
 
     @Test
