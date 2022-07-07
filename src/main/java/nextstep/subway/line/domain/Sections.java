@@ -6,9 +6,11 @@ import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import nextstep.subway.SectionsNotAddedException;
-import nextstep.subway.SectionsNotRemovedException;
+import nextstep.subway.line.exception.SectionsNotAddedException;
+import nextstep.subway.line.exception.SectionsNotRemovedException;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 @Embeddable
 public class Sections {
@@ -116,4 +118,11 @@ public class Sections {
             sections.add(new Section(line, newUpStation, newDownStation, newDistance));
         }
     }
+
+    public void addGraphEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        for (Section section : sections) {
+            section.addGraphEdge(graph);
+        }
+    }
+
 }

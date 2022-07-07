@@ -1,8 +1,8 @@
 package nextstep.subway.station.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import nextstep.subway.station.domain.Station;
 
 public class StationResponse {
@@ -39,6 +39,14 @@ public class StationResponse {
 
     public static StationResponse from(Station station) {
         return new StationResponse(station.getId(), station.getName(), station.getCreatedDate(), station.getModifiedDate());
+    }
+
+    public static List<StationResponse> fromList(List<Station> stations) {
+        List<StationResponse> stationResponses = new ArrayList<>();
+        for (Station station : stations) {
+            stationResponses.add(StationResponse.from(station));
+        }
+        return stationResponses;
     }
 
 }

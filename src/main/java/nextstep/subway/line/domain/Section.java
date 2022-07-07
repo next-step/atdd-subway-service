@@ -1,8 +1,15 @@
 package nextstep.subway.line.domain;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 @Entity
 public class Section {
@@ -70,5 +77,9 @@ public class Section {
         if (this.distance <= newDistance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
+    }
+
+    public void addGraphEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        graph.setEdgeWeight(graph.addEdge(upStation, downStation), distance);
     }
 }

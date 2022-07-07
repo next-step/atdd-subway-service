@@ -1,4 +1,4 @@
-package nextstep.subway;
+package nextstep.subway.line.exception;
 
 public class SectionsNotAddedException extends RuntimeException {
     public SectionsNotAddedException(String message) {

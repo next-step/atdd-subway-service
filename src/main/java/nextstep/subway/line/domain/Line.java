@@ -12,6 +12,8 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 @Entity
 public class Line extends BaseEntity {
@@ -79,4 +81,15 @@ public class Line extends BaseEntity {
         sections.removeLineStation(station, this);
     }
 
+    public void addPathInfo(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        addGraphVertex(graph);
+        sections.addGraphEdge(graph);
+    }
+
+    private void addGraphVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        List<Station> stations = getStations();
+        for (Station station : stations) {
+            graph.addVertex(station);
+        }
+    }
 }
