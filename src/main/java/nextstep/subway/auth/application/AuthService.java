@@ -30,12 +30,13 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials, boolean required) {
-        if (!required && !jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+        boolean hasValidToken = jwtTokenProvider.validateToken(credentials);
+        if (required && !hasValidToken) {
+            throw new AuthorizationException(SubwayExceptionMessage.INVALID_TOKEN.getMessage());
         }
 
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException(SubwayExceptionMessage.INVALID_TOKEN.getMessage());
+        if (!hasValidToken) {
+            return new LoginMember();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
