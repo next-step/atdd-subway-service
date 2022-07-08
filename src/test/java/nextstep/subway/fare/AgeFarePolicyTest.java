@@ -13,7 +13,7 @@ class AgeFarePolicyTest {
     @Test
     void calculate_guest() {
         Fare fare = new Fare(1000);
-        LoginMember loginMember = new LoginMember();
+        LoginMember loginMember = LoginMember.guest();
 
         Fare result = ageFarePolicy.calculate(fare, loginMember);
 

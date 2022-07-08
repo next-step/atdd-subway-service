@@ -9,10 +9,11 @@ public class LoginMember {
     private String email;
     private Integer age;
 
+    public static LoginMember guest() {
+        return new LoginMember(GUEST_ID, GUEST_EMAIL, GUEST_AGE);
+    }
+
     public LoginMember() {
-        this.id = GUEST_ID;
-        this.email = GUEST_EMAIL;
-        this.age = GUEST_AGE;
     }
 
     public LoginMember(Long id, String email, Integer age) {
@@ -31,9 +32,5 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
-    }
-
-    public boolean isGuest() {
-        return GUEST_EMAIL.equals(this.email);
     }
 }
