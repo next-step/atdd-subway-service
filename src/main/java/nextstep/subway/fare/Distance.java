@@ -8,6 +8,9 @@ public class Distance {
     private int distance;
 
     public Distance(int distance) {
+        if (distance <= MIN) {
+            throw new IllegalArgumentException();
+        }
         this.distance = distance;
     }
 
@@ -20,9 +23,6 @@ public class Distance {
     }
 
     public Distance minus(Distance distance) {
-        if (this.distance - distance.getDistance() <= MIN) {
-            throw new IllegalArgumentException();
-        }
         return new Distance(this.distance - distance.getDistance());
     }
 
