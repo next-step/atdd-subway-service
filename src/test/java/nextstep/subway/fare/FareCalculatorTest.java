@@ -30,7 +30,7 @@ class FareCalculatorTest {
     @Test
     void calculatorFare_down_10Km() {
         // given
-        Fare fare = FareCalculator.calculate(lines, 5L, new LoginMember());
+        Fare fare = 요금계산(lines, 5L, new LoginMember());
 
         // then
         assertThat(fare.getValue()).isEqualTo(1450);
@@ -40,7 +40,7 @@ class FareCalculatorTest {
     @Test
     void calculatorFare_up_10Km_and_down_50km() {
         // given
-        Fare fare = FareCalculator.calculate(lines, 50L, new LoginMember());
+        Fare fare = 요금계산(lines, 50L, new LoginMember());
 
         // then
         assertThat(fare.getValue()).isEqualTo(2250);
@@ -50,7 +50,7 @@ class FareCalculatorTest {
     @Test
     void calculatorFare_up_50km() {
         // given
-        Fare fare = FareCalculator.calculate(lines, 80L, new LoginMember());
+        Fare fare = 요금계산(lines, 80L, new LoginMember());
 
         // then
         assertThat(fare.getValue()).isEqualTo(2650);
@@ -61,7 +61,7 @@ class FareCalculatorTest {
     void calculatorFare_child() {
         // given
         LoginMember loginMember = new LoginMember(1L, "child", 10);
-        Fare fare = FareCalculator.calculate(lines, 80L, loginMember);
+        Fare fare = 요금계산(lines, 80L, loginMember);
 
         // then
         assertThat(fare.getValue()).isEqualTo(1150);
@@ -72,7 +72,7 @@ class FareCalculatorTest {
     void calculatorFare_teenager() {
         // given
         LoginMember loginMember = new LoginMember(1L, "teenager", 15);
-        Fare fare = FareCalculator.calculate(lines, 80L, loginMember);
+        Fare fare = 요금계산(lines, 80L, loginMember);
 
         // then
         assertThat(fare.getValue()).isEqualTo(1840);
@@ -83,9 +83,13 @@ class FareCalculatorTest {
     void calculatorFare_adult() {
         // given
         LoginMember loginMember = new LoginMember(1L, "adult", 20);
-        Fare fare = FareCalculator.calculate(lines, 80L, loginMember);
+        Fare fare = 요금계산(lines, 80L, loginMember);
 
         // then
         assertThat(fare.getValue()).isEqualTo(2650);
+    }
+
+    public static Fare 요금계산(List<Line> lines, Long distance, LoginMember loginMember) {
+        return FareCalculator.calculate(lines, distance, loginMember);
     }
 }
