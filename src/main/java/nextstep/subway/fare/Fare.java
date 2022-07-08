@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public class Fare {
     private static final int BASIC_FARE = 1250;
+
     private int value;
 
     public static Fare basic() {
