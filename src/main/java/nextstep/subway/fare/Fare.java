@@ -22,11 +22,11 @@ public class Fare {
         return value;
     }
 
-    public static Fare create5kmExtraCharge(Distance extraDistance) {
+    public static Fare createMiddleDistanceExtraCharge(Distance extraDistance) {
         return new Fare(BASIC_FARE + (int) ((Math.ceil((extraDistance.getDistance() - 1) / 5) + 1) * 100));
     }
 
-    public static Fare create8kmExtraCharge(Fare additionalCharge5KM, Distance extraDistance) {
+    public static Fare createLongDistanceExtraCharge(Fare additionalCharge5KM, Distance extraDistance) {
         return new Fare(additionalCharge5KM.getValue() + (int) ((Math.ceil((extraDistance.getDistance() - 1) / 8) + 1) * 100));
     }
 

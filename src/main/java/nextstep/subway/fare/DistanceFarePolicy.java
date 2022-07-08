@@ -12,19 +12,19 @@ public class DistanceFarePolicy {
             return Fare.basic();
         }
         if (distance.isLessThan(EXTRA_FARE_DISTANCE)) {
-            return apply5kmExtraCharge(distance);
+            return applyMiddleDistanceExtraCharge(distance);
         }
-        return apply8kmExtraCharge(distance);
+        return applyLongDistanceExtraCharge(distance);
     }
 
-    private Fare apply5kmExtraCharge(Distance distance) {
+    private Fare applyMiddleDistanceExtraCharge(Distance distance) {
         Distance extraDistance = distance.minus(BASIC_DISTANCE);
-        return Fare.create5kmExtraCharge(extraDistance);
+        return Fare.createMiddleDistanceExtraCharge(extraDistance);
     }
 
-    private Fare apply8kmExtraCharge(Distance distance) {
-        Fare additionalCharge5KM = apply5kmExtraCharge(distance);
+    private Fare applyLongDistanceExtraCharge(Distance distance) {
+        Fare additionalCharge5KM = applyMiddleDistanceExtraCharge(distance);
         Distance extraDistance = distance.minus(EXTRA_FARE_DISTANCE);
-        return Fare.create8kmExtraCharge(additionalCharge5KM, extraDistance);
+        return Fare.createLongDistanceExtraCharge(additionalCharge5KM, extraDistance);
     }
 }

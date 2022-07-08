@@ -11,7 +11,7 @@ class FareTest {
     void create5kmExtraCharge() {
         Distance extraDistance = new Distance(10);
 
-        assertThat(Fare.create5kmExtraCharge(extraDistance)).isEqualTo(new Fare(1450));
+        assertThat(Fare.createMiddleDistanceExtraCharge(extraDistance)).isEqualTo(new Fare(1450));
     }
 
     @DisplayName("50km초과시, 8km 마다 추가요금은 100원이다.")
@@ -20,7 +20,7 @@ class FareTest {
         Fare fare = new Fare(1250);
         Distance extraDistance = new Distance(60);
 
-        assertThat(Fare.create8kmExtraCharge(fare, extraDistance)).isEqualTo(new Fare(2050));
+        assertThat(Fare.createLongDistanceExtraCharge(fare, extraDistance)).isEqualTo(new Fare(2050));
     }
 
     @DisplayName("요금을 할인한다")
