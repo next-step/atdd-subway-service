@@ -1,5 +1,7 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.Fare.domain.Fare;
+import nextstep.subway.Fare.domain.FareCalculator;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
@@ -28,6 +30,7 @@ public class PathService {
 
         List<Station> stations = stationService.findAllByIdIn(pathFinder.getStationsId(source, target));
         Long distance = pathFinder.getDistance(source, target);
-        return PathResponse.of(stations, distance);
+        Fare fare = FareCalculator.calculate(lines, distance, loginMember);
+        return PathResponse.of(stations, distance, fare.getValue());
     }
 }
