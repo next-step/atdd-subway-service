@@ -31,7 +31,7 @@ class AgeFarePolicyTest {
         assertThat(result).isEqualTo(new Fare(500));
     }
 
-    @DisplayName("청소년은 50프로 할인한다")
+    @DisplayName("청소년은 20프로 할인한다")
     @Test
     void calculate_teenager() {
         Fare fare = new Fare(1350);
