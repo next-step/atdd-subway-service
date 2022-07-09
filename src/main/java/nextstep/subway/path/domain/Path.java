@@ -49,8 +49,9 @@ public class Path {
     private void setVertexAndEdgeWeight(Section it) {
         graph.addVertex(it.getUpStation().getId());
         graph.addVertex(it.getDownStation().getId());
-        new SectionEdge(it);
-        graph.setEdgeWeight(new SectionEdge(it), it.getDistance());
+        SectionEdge sectionEdge = new SectionEdge(it);
+        graph.addEdge(it.getUpStation().getId(), it.getDownStation().getId(), sectionEdge);
+        graph.setEdgeWeight(sectionEdge, it.getDistance());
     }
 
     private GraphPath<Long, SectionEdge> findPath(Station sourceStation, Station targetStation) {
