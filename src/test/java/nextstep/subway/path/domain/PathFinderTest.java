@@ -32,14 +32,10 @@ class PathFinderTest {
         남부터미널역 = Station.of(3L,"남부터미널역");
         교대역 = Station.of(4L,"교대역");
 
-        신분당선 = new Line("신분당선", "bg-red-600", 1000);
-        삼호선 = new Line("3호선", "bg-orange-600");
-        이호선 = new Line("2호선", "bg-green-600", 500);
-
-        신분당선.addLineStation(강남역, 양재역, 3000);
-        삼호선.addLineStation(교대역, 남부터미널역, 2000);
+        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역,3000, 1000);
+        삼호선 = new Line("3호선", "bg-orange-600", 교대역, 남부터미널역, 2000, 0);
         삼호선.addLineStation(남부터미널역, 양재역, 2500);
-        이호선.addLineStation(교대역, 강남역, 3000);
+        이호선 = new Line("2호선", "bg-green-600", 교대역, 강남역, 3000, 500);
 
         pathFinder = PathFinder.init(Arrays.asList(신분당선, 삼호선, 이호선));
     }
@@ -89,8 +85,7 @@ class PathFinderTest {
         Station 정자역 = Station.of(5L, "정자역");
         Station 서현역 = Station.of(6L, "서현역");
 
-        Line 분당선 = new Line("분당선", "bg-yellow-600");
-        분당선.addLineStation(정자역, 서현역, 1000);
+        Line 분당선 = new Line("분당선", "bg-yellow-600", 정자역, 서현역, 1000);
 
         PathFinder pathFinder = PathFinder.init(Arrays.asList(신분당선, 삼호선, 이호선, 분당선));
 
