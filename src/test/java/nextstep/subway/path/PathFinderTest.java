@@ -49,11 +49,7 @@ class PathFinderTest {
     @Test
     void findShortestPath() {
         Path path = pathFinder.findShortestPath(전구간, 서울역, 동대문역);
-
-        assertAll(
-                () -> assertThat(path.getDistance()).isEqualTo(18),
-                () -> assertThat(path.getFare()).isEqualTo(1650)
-        );
+        assertThat(path.getDistance()).isEqualTo(18);
     }
 
     @DisplayName("최단거리 조회시 출발역과 도착역이 같을 경우")
