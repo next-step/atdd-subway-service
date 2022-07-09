@@ -1,15 +1,10 @@
 package nextstep.subway.path.dto;
 
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.domain.fare.DistanceFareCalculationPolicy;
-import nextstep.subway.path.domain.fare.FareCalculationPolicy;
-import nextstep.subway.path.domain.fare.discount.DiscountPolicy;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static nextstep.subway.path.domain.fare.discount.AgeDiscountPolicy.ADULT;
 
 public class PathResponse {
     private List<StationResponse> stations;
@@ -22,20 +17,8 @@ public class PathResponse {
         this.fare = fare;
     }
 
-    public static PathResponse from(Path shortestPath) {
-        int distance = shortestPath.getDistance();
-        FareCalculationPolicy distanceFareCalculator = new DistanceFareCalculationPolicy(ADULT, distance);
-        int totalFare = distanceFareCalculator.calculateFare() + shortestPath.getAdditionalFare();
-
-        return new PathResponse(getStationResponses(shortestPath), distance, totalFare);
-    }
-
-    public static PathResponse of(DiscountPolicy discountPolicy, Path shortestPath) {
-        int distance = shortestPath.getDistance();
-        FareCalculationPolicy distanceFareCalculator = new DistanceFareCalculationPolicy(discountPolicy, distance);
-        int totalFare = distanceFareCalculator.calculateFare() + shortestPath.getAdditionalFare();
-
-        return new PathResponse(getStationResponses(shortestPath), distance, totalFare);
+    public static PathResponse of(Path shortestPath, int totalFare) {
+        return new PathResponse(getStationResponses(shortestPath), shortestPath.getDistance(), totalFare);
     }
 
     private static List<StationResponse> getStationResponses(Path shortestPath) {
