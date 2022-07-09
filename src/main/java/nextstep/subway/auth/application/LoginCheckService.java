@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class LoginCheckService {
     public void needLogin(LoginMember loginMember) {
-        if(loginMember.isGuest()) {
+        if (loginMember.isGuest()) {
             throw new AuthorizationException();
         }
     }
