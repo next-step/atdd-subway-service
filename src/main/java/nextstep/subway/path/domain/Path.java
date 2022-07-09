@@ -1,19 +1,19 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
-import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.charge.domain.Charge;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
 public class Path {
     private final Stations stations;
     private final int distance;
-    private final Charge charge;
+    private Charge charge;
 
-    public Path(List<Station> stations, int distance, Charge charge) {
+    public Path(List<Station> stations, int distance) {
         this.stations = new Stations(stations);
         this.distance = distance;
-        this.charge = charge;
     }
 
     public int getDistance() {
@@ -24,13 +24,15 @@ public class Path {
         return stations.toStationResponses();
     }
 
-    public Integer getFare() {
-        return charge.getFare();
+    public void updateCharge(Charge charge) {
+        this.charge = charge;
     }
 
-    public void updateByLoginMember(LoginMember loginMember) {
-        if(!loginMember.isGuest()) {
-            charge.updateAgeType(loginMember.getAge());
-        }
+    public List<Section> getPathRouteSections(List<Section> allSections) {
+        return stations.getRouteSections(allSections);
+    }
+
+    public int getFare() {
+        return charge.getChargeValue();
     }
 }

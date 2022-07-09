@@ -2,6 +2,8 @@ package nextstep.subway.path.application;
 
 import java.util.List;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.charge.domain.Charge;
+import nextstep.subway.charge.domain.ChargeCalculator;
 import nextstep.subway.line.application.SectionService;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.Path;
@@ -29,8 +31,16 @@ public class PathService {
         Station target = stationService.findById(targetId);
 
         Path path = pathFinder.findShortestPath(allSections, source, target);
-        path.updateByLoginMember(loginMember);
+        Charge charge = calculateCharge(loginMember.getAge(), path.getDistance(),
+                path.getPathRouteSections(allSections));
+        path.updateCharge(charge);
+
         return PathResponse.of(path);
+    }
+
+    private Charge calculateCharge(Integer age, Integer totalDistance, List<Section> sections) {
+        ChargeCalculator chargeCalculator = new ChargeCalculator(age, totalDistance, sections);
+        return chargeCalculator.calculate();
     }
 
 }
