@@ -5,6 +5,7 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.Price;
+import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -40,7 +41,7 @@ public class PathService {
     }
 
     private PathResponse getPathResponse(Station sourceStation, Station targetStation) {
-        GraphPath<Long, DefaultWeightedEdge> pathFind = path.find(sourceStation, targetStation);
+        GraphPath<Long, SectionEdge> pathFind = path.find(sourceStation, targetStation);
         List<StationResponse> stationResponses = stationService.findAllStations(pathFind.getVertexList());
         stationResponses = stationResponseOrderByVertexList(pathFind, stationResponses);
         price.calculatePrice(pathFind.getWeight());
@@ -48,9 +49,8 @@ public class PathService {
         return new PathResponse(stationResponses, pathFind.getWeight(), price.getPrice());
     }
 
-    private List<StationResponse> stationResponseOrderByVertexList(GraphPath<Long, DefaultWeightedEdge> pathFind, List<StationResponse> stationResponses) {
+    private List<StationResponse> stationResponseOrderByVertexList(GraphPath<Long, SectionEdge> pathFind, List<StationResponse> stationResponses) {
         List<StationResponse> stationResponsesOrderBy = new ArrayList<>();
-        pathFind.getVertexList().stream().forEach(s -> System.out.println(s));
         pathFind.getVertexList().stream().forEach(
                 id -> stationResponsesOrderBy.add(findStationById(stationResponses, id))
         );
