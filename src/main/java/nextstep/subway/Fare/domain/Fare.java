@@ -1,7 +1,6 @@
 package nextstep.subway.Fare.domain;
 
 public class Fare {
-    private static final int DISCOUNT_FARE = 350;
     private int value;
 
     public Fare(int value) {
@@ -16,11 +15,7 @@ public class Fare {
         return new Fare(value + fare.getValue());
     }
 
-    public Fare discountChild() {
-        return new Fare((int) ((value - DISCOUNT_FARE) * 0.5));
-    }
-
-    public Fare discountTeenager() {
-        return new Fare((int) ((value - DISCOUNT_FARE) * 0.8));
+    public Fare calculatorDiscount(Age age) {
+        return new Fare((int) ((value - age.getDiscountFare()) * age.getMultipleRate()));
     }
 }
