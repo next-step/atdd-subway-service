@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.nio.file.AccessDeniedException;
 
 @RestController
 public class PathController {
@@ -22,10 +23,10 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity findPath(
+    public ResponseEntity findPath(@AuthenticationPrincipal LoginMember loginMember,
                                    @RequestParam("source") Long source,
                                    @RequestParam("target") Long target) {
-        LoginMember loginMember  = null;
+
         return ResponseEntity.ok(pathService.findPath(loginMember, source, target));
     }
 

@@ -38,21 +38,41 @@ public class PathService {
         Station targetStation = stationService.findStationById(target);
         List<Line> lines = lineService.findAll();
         path.initLines(lines);
-        return getPathResponse(sourceStation, targetStation);
+        return getPathResponse(loginMember, sourceStation, targetStation);
     }
 
-    private PathResponse getPathResponse(Station sourceStation, Station targetStation) {
+    private PathResponse getPathResponse(LoginMember loginMember, Station sourceStation, Station targetStation) {
         GraphPath<Long, SectionEdge> pathFind = path.find(sourceStation, targetStation);
         List<StationResponse> stationResponses = stationService.findAllStations(pathFind.getVertexList());
         stationResponses = stationResponseOrderByVertexList(pathFind, stationResponses);
 
         price.calculatePrice(pathFind.getWeight());
 
-        return new PathResponse(stationResponses, pathFind.getWeight(), getPriceValue(pathFind));
+        return new PathResponse(stationResponses, pathFind.getWeight(), getPriceValue(pathFind, loginMember));
     }
 
-    private int getPriceValue(GraphPath<Long, SectionEdge> pathFind) {
-        return price.getPrice() + getMaxSurcharge(pathFind);
+    private int getPriceValue(GraphPath<Long, SectionEdge> pathFind, LoginMember loginMember) {
+        int priceValue = price.getPrice() + getMaxSurcharge(pathFind);
+        if (loginMember == null) {
+            return priceValue;
+        }
+        return discount(priceValue, loginMember.getAge());
+    }
+
+    private int discount(int priceValue, int age) {
+        if (age < 6) {
+            return 0;
+        }
+
+        if (age < 13) {
+            return (int) ((priceValue - 350) * 0.5);
+        }
+
+        if (age < 19) {
+            return (int) ((priceValue - 350) * 0.8);
+        }
+
+        return priceValue;
     }
 
     private int getMaxSurcharge(GraphPath<Long, SectionEdge> pathFind) {

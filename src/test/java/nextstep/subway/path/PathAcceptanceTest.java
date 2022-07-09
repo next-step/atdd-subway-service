@@ -4,10 +4,15 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
+import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -101,6 +106,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> 출발역_도착역_최단거리_비교하기_거리(response, 5),
                 () -> 출발역_도착역_최단거리_비교하기_역정보(response.as(PathResponse.class).getStations(), Arrays.asList(교대역, 남부터미널역, 양재역)),
                 () -> 출발역_도착역_최단거리_비교하기_금액(response, 2250)
+        );
+    }
+
+    @DisplayName("로그인한 사용자가 경로를 검색하고 가격을 비교하는 테스트")
+    @Test
+    void loginMemberFindShortPrice() {
+        // when
+        AuthAcceptanceTest.회원_등록되어_있음("test@email.com", "password", 10);
+        ExtractableResponse<Response> 로그인_토큰_요청 = AuthAcceptanceTest.로그인_토큰_요청(new TokenRequest("test@email.com", "password"));
+        ExtractableResponse<Response> response = 회원_출발역_도착역_최단거리_조회(교대역.getId(), 양재역.getId(), 로그인_토큰_요청.as(TokenResponse.class).getAccessToken());
+
+        //then
+        assertAll(
+                () -> 출발역_도착역_최단거리_비교하기_거리(response, 5),
+                () -> 출발역_도착역_최단거리_비교하기_역정보(response.as(PathResponse.class).getStations(), Arrays.asList(교대역, 남부터미널역, 양재역)),
+                () -> 출발역_도착역_최단거리_비교하기_금액(response, 950)
         );
     }
 
@@ -199,6 +220,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 출발역_도착역_최단거리_조회(Long source, Long target) {
         return RestAssured
                 .given().log().all()
+                .when().get("/paths?source={source}&target={target}", source, target)
+                .then().log().all().
+                extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_출발역_도착역_최단거리_조회(Long source, Long target, String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={source}&target={target}", source, target)
                 .then().log().all().
                 extract();
