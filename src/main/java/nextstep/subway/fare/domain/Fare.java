@@ -1,11 +1,10 @@
 package nextstep.subway.fare.domain;
 
 import nextstep.subway.exception.SubwayExceptionMessage;
+import nextstep.subway.fare.policy.AgeDiscountCalculator;
+import nextstep.subway.fare.policy.DistanceSurchargeCalculator;
+import nextstep.subway.fare.policy.LineSurchargeCalculator;
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.domain.SectionEdge;
-
-import java.util.Comparator;
-import java.util.NoSuchElementException;
 
 public class Fare {
 
@@ -22,46 +21,11 @@ public class Fare {
     }
 
     private void calculateFare() {
-        int distanceSurcharge = calculateDistanceSurcharge(shortestPath.getDistance());
-        int lineSurcharge = calculateLineSurcharge(shortestPath);
+        int distanceSurcharge = new DistanceSurchargeCalculator().calculate(shortestPath);
+        int lineSurcharge = new LineSurchargeCalculator().calculate(shortestPath);
         int totalFare = BASIC_FARE + distanceSurcharge + lineSurcharge;
-        int discountByAge = calculateAgeDiscount(totalFare, age);
+        int discountByAge = new AgeDiscountCalculator().calculate(totalFare, age);
         this.calculatedFare = totalFare - discountByAge;
-    }
-
-    private int calculateLineSurcharge(Path shortestPath) {
-        return shortestPath.getSectionEdges().stream()
-                .max(Comparator.comparing(SectionEdge::getLineSurcharge))
-                .orElseThrow(NoSuchElementException::new)
-                .getLineSurcharge();
-    }
-
-    private int calculateAgeDiscount(int totalFare, Integer age) {
-        if (age >= 13 && age < 19) {
-            return (int) ((totalFare - 350) * 0.2);
-        }
-
-        if (age >= 6 && age < 13) {
-            return (int) ((totalFare - 350) * 0.5);
-        }
-
-        return 0;
-    }
-
-    private int calculateDistanceSurcharge(int distance) {
-        int distanceSurcharge = 0;
-        if (distance > 50) {
-            int extraDistance = distance - 50;
-            distanceSurcharge += (Math.ceil((double) extraDistance / 8) * 100);
-            distance -= extraDistance;
-        }
-
-        if (distance <= 50 && distance >= 10) {
-            int extraDistance = distance - 10;
-            distanceSurcharge += (Math.ceil((double) extraDistance / 5) * 100);
-        }
-
-        return distanceSurcharge;
     }
 
     public int getCalculatedFare() {
