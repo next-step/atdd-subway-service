@@ -53,9 +53,9 @@ npm run dev
 - [x] 인증 - 즐겨 찾기 기능 완성하기
 
 ### Step4
-- [ ] 경로 조회 시 거리 기준 요금 정보 포함하기
-- [ ] 노선별 추가 요금 정책 추가
-- [ ] 연령별 할인 정책 추가
+- [x] 경로 조회 시 거리 기준 요금 정보 포함하기
+- [x] 노선별 추가 요금 정책 추가
+- [x] 연령별 할인 정책 추가
 
 ## ✏️ Code Review Process
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
