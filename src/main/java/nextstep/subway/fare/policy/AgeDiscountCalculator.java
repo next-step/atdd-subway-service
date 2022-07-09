@@ -4,11 +4,12 @@ public class AgeDiscountCalculator implements DiscountCalculator {
 
     @Override
     public int calculate(int totalFare, int age) {
-        if (age >= 13 && age < 19) {
+        AgeType ageType = AgeType.of(age);
+        if (ageType.isTeenagers(ageType)) {
             return (int) ((totalFare - 350) * 0.2);
         }
 
-        if (age >= 6 && age < 13) {
+        if (ageType.isChildren(ageType)) {
             return (int) ((totalFare - 350) * 0.5);
         }
 
