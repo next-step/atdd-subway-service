@@ -165,7 +165,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 유아_회원_최단경로 = 로그인_후_최단경로_조회_요청(유아_회원, 교대역.getId(), 남부터미널역.getId());
 
-        // then
+        // then (유아: 0원)
         요금_조회됨(유아_회원_최단경로, 0);
     }
 
@@ -179,7 +179,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 어린이_회원_최댠경로 = 로그인_후_최단경로_조회_요청(어린이_회원, 교대역.getId(), 남부터미널역.getId());
 
-        // then
+        // then (어린이 : 일반 운임에서 350원을 제하고 50% 할인)
         요금_조회됨(어린이_회원_최댠경로, 450);
     }
 
@@ -193,7 +193,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 청소년_회원_최댠경로 = 로그인_후_최단경로_조회_요청(청소년_회원, 교대역.getId(), 남부터미널역.getId());
 
-        // then
+        // then (청소년: 일반 운임에서 350원을 제하고 20% 할인)
         요금_조회됨(청소년_회원_최댠경로, 720);
     }
 
