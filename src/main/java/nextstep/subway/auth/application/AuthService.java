@@ -29,9 +29,14 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
+    public LoginMember findMemberByToken(String credentials, boolean required) {
+        boolean hasValidToken = jwtTokenProvider.validateToken(credentials);
+        if (required && !hasValidToken) {
             throw new AuthorizationException(SubwayExceptionMessage.INVALID_TOKEN.getMessage());
+        }
+
+        if (!hasValidToken) {
+            return new LoginMember();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);

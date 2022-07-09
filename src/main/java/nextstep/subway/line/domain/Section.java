@@ -56,6 +56,10 @@ public class Section {
         return distance;
     }
 
+    public double getDistanceAsDouble() {
+        return Double.valueOf(distance);
+    }
+
     public boolean hasSameUpStation(Station station) {
         return upStation.equals(station);
     }

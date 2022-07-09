@@ -4,6 +4,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.SubwayExceptionMessage;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.*;
 
@@ -27,9 +28,16 @@ public class Favorite extends BaseEntity {
     }
 
     public Favorite(Member member, Station source, Station target) {
+        ensureNotNull(member, source, target);
         this.member = member;
         this.source = source;
         this.target = target;
+    }
+
+    private void ensureNotNull(Member member, Station source, Station target) {
+        if (ObjectUtils.isEmpty(member) || ObjectUtils.isEmpty(source) || ObjectUtils.isEmpty(target)) {
+            throw new IllegalArgumentException(SubwayExceptionMessage.INVALID_FAVORITE_INPUT.getMessage());
+        }
     }
 
     public Long getId() {

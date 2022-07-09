@@ -17,12 +17,10 @@ class SectionsTest {
 
     @BeforeEach
     void setUp() {
-        신분당선 = new Line("신분당선", "bg-red-300");
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
         강남역에서_양재역_거리 = 10;
-        Section 강남역에서_양재역 = new Section(신분당선, 강남역, 양재역, 강남역에서_양재역_거리);
-        신분당선.addSection(강남역에서_양재역);
+        신분당선 = new Line.Builder("신분당선", "bg-red-300", 강남역, 양재역, 강남역에서_양재역_거리).build();
     }
 
     @DisplayName("이미 등록된 구간 추가")

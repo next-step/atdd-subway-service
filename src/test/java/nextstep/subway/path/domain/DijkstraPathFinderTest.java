@@ -41,9 +41,9 @@ class DijkstraPathFinderTest {
         교대역 = new Station(3L, "교대역");
         남부터미널역 = new Station(4L, "남부터미널역");
 
-        이호선 = new Line("이호선", "bg-green-600", 교대역, 강남역, 10);
-        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 6);
-        삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 남부터미널역, 5);
+        이호선 = new Line.Builder("이호선", "bg-green-600", 교대역, 강남역, 10).build();
+        신분당선 = new Line.Builder("신분당선", "bg-red-600", 강남역, 양재역, 6).build();
+        삼호선 = new Line.Builder("삼호선", "bg-orange-600", 교대역, 남부터미널역, 5).build();
 
         삼호선.addSection(new Section(삼호선, 남부터미널역, 양재역, 3));
 
@@ -66,7 +66,7 @@ class DijkstraPathFinderTest {
     void isNotConnected() {
         Station 시청역 = new Station(10L, "시청역");
         Station 종각역 = new Station(11L, "종각역");
-        Line 일호선 = new Line("일호선", "bg-navy-600", 시청역, 종각역, 3);
+        Line 일호선 = new Line.Builder("일호선", "bg-navy-600", 시청역, 종각역, 3).build();
         lines.add(일호선);
 
         PathFinder pathFinder = new DijkstraPathFinder(lines);
