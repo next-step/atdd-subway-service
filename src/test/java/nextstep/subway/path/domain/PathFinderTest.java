@@ -101,19 +101,24 @@ class PathFinderTest {
     }
 
     @Test
-    @DisplayName("경로 중 가장 높은 노선 추가요금을 리턴한다.")
-    void additionalFare() {
+    @DisplayName("노선의 추가요금이 있는 경우 추가요금을 리턴한다.")
+    void additionalFareOfSingleLineInPath() {
         // when
-        Path 삼호선_이용_경로 = pathFinder.findShortestPath(양재역.getId(), 교대역.getId());
-        Path 삼호선_이호선_이용_경로 = pathFinder.findShortestPath(남부터미널역.getId(), 강남역.getId());
         Path 신분당선_이용_경로 = pathFinder.findShortestPath(양재역.getId(), 강남역.getId());
 
         // then
-        assertThat(삼호선_이용_경로.getAdditionalFare())
-                .isEqualTo(0);
-        assertThat(삼호선_이호선_이용_경로.getAdditionalFare())
-                .isEqualTo(500);
         assertThat(신분당선_이용_경로.getAdditionalFare())
                 .isEqualTo(1000);
+    }
+
+    @Test
+    @DisplayName("경로 중 가장 높은 노선 추가요금을 리턴한다.")
+    void additionalFareOfMultipleLineInPath() {
+        // when
+        Path 삼호선_이호선_이용_경로 = pathFinder.findShortestPath(남부터미널역.getId(), 강남역.getId());
+
+        // then
+        assertThat(삼호선_이호선_이용_경로.getAdditionalFare())
+                .isEqualTo(500);
     }
 }
