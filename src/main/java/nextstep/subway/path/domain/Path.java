@@ -1,21 +1,30 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.AdditionalFare;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
 import java.util.Objects;
 
 public class Path {
-    private List<Station> stations;
-    private int distance;
+    private static final int INITIAL_ADDITIONAL_FARE = 0;
 
-    private Path (List<Station> stations, int distance) {
+    private final List<Station> stations;
+    private final int distance;
+    private final AdditionalFare additionalFare;
+
+    private Path (List<Station> stations, int distance, int additionalFare) {
         this.stations = stations;
         this.distance = distance;
+        this.additionalFare = AdditionalFare.from(additionalFare);
     }
 
-    public static Path of(List<Station> stations, int distance) {
-        return new Path(stations, distance);
+    private Path (List<Station> stations, int distance) {
+        this(stations, distance, INITIAL_ADDITIONAL_FARE);
+    }
+
+    public static Path of(List<Station> stations, int distance, int additionalFare) {
+        return new Path(stations, distance, additionalFare);
     }
 
     public List<Station> getStations() {
@@ -24,6 +33,10 @@ public class Path {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getAdditionalFare() {
+        return additionalFare.getFare();
     }
 
     @Override
