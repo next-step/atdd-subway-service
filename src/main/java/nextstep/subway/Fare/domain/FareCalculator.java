@@ -24,11 +24,11 @@ public class FareCalculator {
     private static Fare defaultFare(Long distance) {
         int result = BASIC_FARE;
 
-        if (distance > 10 && distance <= 50) {
+        if (distance > BASIC_DISTANCE && distance <= MIDDLE_DISTANCE) {
             result += middleCalculator((int) (distance - BASIC_DISTANCE));
         }
 
-        if (distance > 50) {
+        if (distance > MIDDLE_DISTANCE) {
             result += middleCalculator((int) (MIDDLE_DISTANCE - BASIC_DISTANCE));
             result += lastCalculator((int) (distance - MIDDLE_DISTANCE));
         }
