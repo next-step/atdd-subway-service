@@ -119,106 +119,96 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("거리별 노선별로 요금이 계산되어 조회된다.(미로그인)")
-    void calculateFare() {
+    @DisplayName("노선의 추가요금이 계산되어 조회된다.(미로그인)")
+    void calculateFareWithLineAdditionalFare() {
+        // when
+        ExtractableResponse<Response> 이호선_이용_경로 = 최단경로_조회_요청(교대역.getId(), 강남역.getId());
+
+        // then
+        요금_조회됨(이호선_이용_경로, 1750);       // 1,250(기본요금) + 500(2호선 추가요금)
+    }
+
+    @Test
+    @DisplayName("첫번째 추가요금 구간 요금이 계산되어 조회된다.(미로그인)")
+    void calculateFareWithFirstAdditionalFareDistance() {
+        // when
+        ExtractableResponse<Response> 첫번째_추가요금_경로_20Km = 최단경로_조회_요청(양재역.getId(), 교대역.getId());
+
+        // then
+        // 10km 초과시 첫번째 추가요금 구간 : 5km 당 100원
+        요금_조회됨(첫번째_추가요금_경로_20Km, 1450);         // 1,250(기본요금) + 200 (거리별 추가요금)
+    }
+
+    @Test
+    @DisplayName("두번째 추가요금 구간 요금이 계산되어 조회된다.(미로그인)")
+    void calculateFareWithSecondAdditionalFareDistance() {
         // given
         StationResponse 대화역 = 지하철역_등록되어_있음("대화역").as(StationResponse.class);
         지하철_노선에_지하철역_등록_요청(삼호선, 대화역, 교대역, 60);
 
         // when
-        ExtractableResponse<Response> 추가요금_없는_20Km = 최단경로_조회_요청(양재역.getId(), 교대역.getId());
-        ExtractableResponse<Response> 이호선_추가요금_15Km = 최단경로_조회_요청(남부터미널역.getId(), 강남역.getId());
-        ExtractableResponse<Response> 신분당선_추가요금_25Km = 최단경로_조회_요청(양재역.getId(), 강남역.getId());
-        ExtractableResponse<Response> 추가요금_없는_65Km = 최단경로_조회_요청(대화역.getId(), 남부터미널역.getId());
+        ExtractableResponse<Response> 두번째_추가요금_경로_65Km = 최단경로_조회_요청(대화역.getId(), 남부터미널역.getId());
 
         // then
-        요금_조회됨(추가요금_없는_20Km, 1450);         // 1,250(기본요금) + 200 (거리별 추가요금)
-        요금_조회됨(이호선_추가요금_15Km, 1850);        // 1,250(기본요금) + 100 (거리별 추가요금) + 500 (2호선 추가요금)
-        요금_조회됨(신분당선_추가요금_25Km, 2550);       // 1,250(기본요금) + 1,000 (거리별 추가요금) + 1000 (신분당선 추가요금)
-        요금_조회됨(추가요금_없는_65Km, 2250);         // 1,250(기본요금) + 1,000 (거리별 추가요금)
+        // 10km 초과시 첫번째 추가요금 구간 : 5km 당 100원
+        // 50km 초과시 두번째 추가요금 구간 : 8km 당 100원
+        요금_조회됨(두번째_추가요금_경로_65Km, 2250);         // 1,250(기본요금) + 1,000 (거리별 추가요금)
     }
 
     @Test
-    @DisplayName("로그인 된 경우 연령별 거리별 노선별로 요금이 계산되어 조회된다: 유아")
-    void calculateFareOfInfantByDistanceWhenLoggedIn() {
+    @DisplayName("로그인 된 경우 연령별로 요금이 계산되어 조회된다: 유아")
+    void calculateFareOfInfantWhenLoggedIn() {
         // given
         회원_생성을_요청(INFANT_EMAIL, PASSWORD, INFANT_AGE);
         TokenResponse 유아_회원 = 로그인_요청(INFANT_EMAIL, PASSWORD).as(TokenResponse.class);
 
         // when
-        ExtractableResponse<Response> 유아_회원_최단경로 = 로그인_후_최단경로_조회_요청(유아_회원, 양재역.getId(), 교대역.getId());
+        ExtractableResponse<Response> 유아_회원_최단경로 = 로그인_후_최단경로_조회_요청(유아_회원, 교대역.getId(), 남부터미널역.getId());
 
         // then
         요금_조회됨(유아_회원_최단경로, 0);
     }
 
     @Test
-    @DisplayName("로그인 된 경우 연령별 거리별 노선별로 요금이 계산되어 조회된다: 어린이")
-    void calculateFareOfChildByDistanceWhenLoggedIn() {
+    @DisplayName("로그인 된 경우 연령별로 요금이 계산되어 조회된다: 어린이")
+    void calculateFareOfChildWhenLoggedIn() {
         // given
-        StationResponse 대화역 = 지하철역_등록되어_있음("대화역").as(StationResponse.class);
-        지하철_노선에_지하철역_등록_요청(삼호선, 대화역, 교대역, 60);
-
         회원_생성을_요청(CHILD_EMAIL, PASSWORD, CHILD_AGE);
         TokenResponse 어린이_회원 = 로그인_요청(CHILD_EMAIL, PASSWORD).as(TokenResponse.class);
 
         // when
-        ExtractableResponse<Response> 추가요금_없는_20Km = 로그인_후_최단경로_조회_요청(어린이_회원, 양재역.getId(), 교대역.getId());
-        ExtractableResponse<Response> 이호선_추가요금_15Km = 로그인_후_최단경로_조회_요청(어린이_회원, 남부터미널역.getId(), 강남역.getId());
-        ExtractableResponse<Response> 신분당선_추가요금_25Km = 로그인_후_최단경로_조회_요청(어린이_회원, 양재역.getId(), 강남역.getId());
-        ExtractableResponse<Response> 추가요금_없는_65Km = 로그인_후_최단경로_조회_요청(어린이_회원, 대화역.getId(), 남부터미널역.getId());
+        ExtractableResponse<Response> 어린이_회원_최댠경로 = 로그인_후_최단경로_조회_요청(어린이_회원, 교대역.getId(), 남부터미널역.getId());
 
         // then
-        요금_조회됨(추가요금_없는_20Km, 550);          // (1450(거리) - 350) * 0.5
-        요금_조회됨(이호선_추가요금_15Km, 1000);        // (1350(거리) - 350) * 0.5 + 500 (2호선 추가요금)
-        요금_조회됨(신분당선_추가요금_25Km, 1600);       // (1550(거리) - 350) * 0.5 + 1000 (신분당선 추가요금)
-        요금_조회됨(추가요금_없는_65Km, 950);          // (2250(거리) - 350) * 0.5
+        요금_조회됨(어린이_회원_최댠경로, 450);
     }
 
     @Test
-    @DisplayName("로그인 된 경우 연령별 거리별 노선별로 요금이 계산되어 조회된다: 청소년")
-    void calculateFareOfAdolescentByDistanceWhenLoggedIn() {
+    @DisplayName("로그인 된 경우 연령별로 요금이 계산되어 조회된다: 청소년")
+    void calculateFareOfAdolescentWhenLoggedIn() {
         // given
-        StationResponse 대화역 = 지하철역_등록되어_있음("대화역").as(StationResponse.class);
-        지하철_노선에_지하철역_등록_요청(삼호선, 대화역, 교대역, 60);
-
         회원_생성을_요청(ADOLESCENT_EMAIL, PASSWORD, ADOLESCENT_AGE);
         TokenResponse 청소년_회원 = 로그인_요청(ADOLESCENT_EMAIL, PASSWORD).as(TokenResponse.class);
 
         // when
-        ExtractableResponse<Response> 추가요금_없는_20Km = 로그인_후_최단경로_조회_요청(청소년_회원, 양재역.getId(), 교대역.getId());
-        ExtractableResponse<Response> 이호선_추가요금_15Km = 로그인_후_최단경로_조회_요청(청소년_회원, 남부터미널역.getId(), 강남역.getId());
-        ExtractableResponse<Response> 신분당선_추가요금_25Km = 로그인_후_최단경로_조회_요청(청소년_회원, 양재역.getId(), 강남역.getId());
-        ExtractableResponse<Response> 추가요금_없는_65Km = 로그인_후_최단경로_조회_요청(청소년_회원, 대화역.getId(), 남부터미널역.getId());
+        ExtractableResponse<Response> 청소년_회원_최댠경로 = 로그인_후_최단경로_조회_요청(청소년_회원, 교대역.getId(), 남부터미널역.getId());
 
         // then
-        요금_조회됨(추가요금_없는_20Km, 880);          // (1450(거리) - 350) * 0.8
-        요금_조회됨(이호선_추가요금_15Km, 1300);        // (1350(거리) - 350) * 0.8 + 500 (2호선 추가요금)
-        요금_조회됨(신분당선_추가요금_25Km, 1960);       // (1550(거리) - 350) * 0.8 + 1000 (신분당선 추가요금)
-        요금_조회됨(추가요금_없는_65Km, 1520);         // (2250(거리) - 350) * 0.8
+        요금_조회됨(청소년_회원_최댠경로, 720);
     }
 
     @Test
     @DisplayName("로그인 된 경우 연령별 거리별 노선별로 요금이 계산되어 조회된다: 어른")
-    void calculateFareOfAdultByDistanceWhenLoggedIn() {
+    void calculateFareOfAdultWhenLoggedIn() {
         // given
-        StationResponse 대화역 = 지하철역_등록되어_있음("대화역").as(StationResponse.class);
-        지하철_노선에_지하철역_등록_요청(삼호선, 대화역, 교대역, 60);
-
         회원_생성을_요청(ADULT_EMAIL, PASSWORD, ADULT_AGE);
         TokenResponse 어른_회원 = 로그인_요청(ADULT_EMAIL, PASSWORD).as(TokenResponse.class);
 
         // when
-        ExtractableResponse<Response> 추가요금_없는_20Km = 로그인_후_최단경로_조회_요청(어른_회원, 양재역.getId(), 교대역.getId());
-        ExtractableResponse<Response> 이호선_추가요금_15Km = 로그인_후_최단경로_조회_요청(어른_회원, 남부터미널역.getId(), 강남역.getId());
-        ExtractableResponse<Response> 신분당선_추가요금_25Km = 로그인_후_최단경로_조회_요청(어른_회원, 양재역.getId(), 강남역.getId());
-        ExtractableResponse<Response> 추가요금_없는_65Km = 로그인_후_최단경로_조회_요청(어른_회원, 대화역.getId(), 남부터미널역.getId());
+        ExtractableResponse<Response> 어른_회원_최댠경로 = 로그인_후_최단경로_조회_요청(어른_회원, 교대역.getId(), 남부터미널역.getId());
 
         // then
-        요금_조회됨(추가요금_없는_20Km, 1450);         // 1450(거리)
-        요금_조회됨(이호선_추가요금_15Km, 1850);        // 1350(거리) + 500 (2호선 추가요금)
-        요금_조회됨(신분당선_추가요금_25Km, 2550);       // 1550(거리) + 1000 (신분당선 추가요금)
-        요금_조회됨(추가요금_없는_65Km, 2250);         // 2250(거리)
+        요금_조회됨(어른_회원_최댠경로, 1250);
     }
 
     private static void 최단경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectStations) {
