@@ -53,9 +53,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 0).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 0).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 1000).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -100,7 +100,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> 출발역_도착역_최단거리_비교하기_거리(response, 5),
                 () -> 출발역_도착역_최단거리_비교하기_역정보(response.as(PathResponse.class).getStations(), Arrays.asList(교대역, 남부터미널역, 양재역)),
-                () -> 출발역_도착역_최단거리_비교하기_금액(response, 1250)
+                () -> 출발역_도착역_최단거리_비교하기_금액(response, 2250)
         );
     }
 
@@ -157,12 +157,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        return 지하철_노선_생성_요청(name, color, upStation, downStation, distance);
+    public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int surcharge) {
+        return 지하철_노선_생성_요청(name, color, upStation, downStation, distance, surcharge);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, 0);
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int surcharge) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, surcharge);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

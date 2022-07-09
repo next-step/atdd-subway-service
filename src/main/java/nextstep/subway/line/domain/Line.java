@@ -97,6 +97,8 @@ public class Line extends BaseEntity {
         return sections;
     }
 
+    public int getSurcharge() { return surcharge; }
+
     public static Line of(String name, String color, Station upStation, Station downStation, int distance, int surcharge) {
         return new Line()
                 .withName(name)

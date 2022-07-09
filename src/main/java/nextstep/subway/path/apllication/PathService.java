@@ -15,6 +15,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -44,9 +45,21 @@ public class PathService {
         GraphPath<Long, SectionEdge> pathFind = path.find(sourceStation, targetStation);
         List<StationResponse> stationResponses = stationService.findAllStations(pathFind.getVertexList());
         stationResponses = stationResponseOrderByVertexList(pathFind, stationResponses);
+
         price.calculatePrice(pathFind.getWeight());
 
-        return new PathResponse(stationResponses, pathFind.getWeight(), price.getPrice());
+        return new PathResponse(stationResponses, pathFind.getWeight(), getPriceValue(pathFind));
+    }
+
+    private int getPriceValue(GraphPath<Long, SectionEdge> pathFind) {
+        return price.getPrice() + getMaxSurcharge(pathFind);
+    }
+
+    private int getMaxSurcharge(GraphPath<Long, SectionEdge> pathFind) {
+        return pathFind.getEdgeList().stream()
+                .max(Comparator.comparingInt(SectionEdge::getLineSurcharge))
+                .orElseThrow(RuntimeException::new)
+                .getLineSurcharge();
     }
 
     private List<StationResponse> stationResponseOrderByVertexList(GraphPath<Long, SectionEdge> pathFind, List<StationResponse> stationResponses) {

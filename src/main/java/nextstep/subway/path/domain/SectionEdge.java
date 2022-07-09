@@ -13,4 +13,8 @@ public class SectionEdge extends DefaultWeightedEdge {
     public Section getSection() {
         return this.section;
     }
+
+    public int getLineSurcharge() {
+        return this.section.getLine().getSurcharge();
+    }
 }
