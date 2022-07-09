@@ -41,6 +41,6 @@ public class MemberAcceptanceResponse {
     }
 
     public static void 나의_정보_조회_요청_권한_실패(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }

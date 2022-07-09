@@ -11,7 +11,7 @@ import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class AuthService {
     private final MemberRepository memberRepository;
@@ -31,8 +31,11 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    @Transactional(readOnly = true)
     public LoginMember findMemberByToken(String credentials) {
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            return LoginMember.guest();
+        }
+
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
