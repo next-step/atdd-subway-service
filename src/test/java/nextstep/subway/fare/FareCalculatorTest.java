@@ -1,8 +1,8 @@
 package nextstep.subway.fare;
 
+import nextstep.subway.Fare.domain.Age;
 import nextstep.subway.Fare.domain.Fare;
 import nextstep.subway.Fare.domain.FareCalculator;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +30,7 @@ class FareCalculatorTest {
     @Test
     void calculatorFare_down_10Km() {
         // given
-        Fare fare = 요금계산(lines, 5L, new LoginMember());
+        Fare fare = 요금계산(lines, 5L, Age.ADULT);
 
         // then
         assertThat(fare.getValue()).isEqualTo(1450);
@@ -40,7 +40,7 @@ class FareCalculatorTest {
     @Test
     void calculatorFare_up_10Km_and_down_50km() {
         // given
-        Fare fare = 요금계산(lines, 50L, new LoginMember());
+        Fare fare = 요금계산(lines, 50L, Age.ADULT);
 
         // then
         assertThat(fare.getValue()).isEqualTo(2250);
@@ -50,7 +50,7 @@ class FareCalculatorTest {
     @Test
     void calculatorFare_up_50km() {
         // given
-        Fare fare = 요금계산(lines, 80L, new LoginMember());
+        Fare fare = 요금계산(lines, 80L, Age.ADULT);
 
         // then
         assertThat(fare.getValue()).isEqualTo(2650);
@@ -60,8 +60,7 @@ class FareCalculatorTest {
     @Test
     void calculatorFare_child() {
         // given
-        LoginMember loginMember = new LoginMember(1L, "child", 10);
-        Fare fare = 요금계산(lines, 80L, loginMember);
+        Fare fare = 요금계산(lines, 80L, Age.CHILD);
 
         // then
         assertThat(fare.getValue()).isEqualTo(1150);
@@ -71,8 +70,7 @@ class FareCalculatorTest {
     @Test
     void calculatorFare_teenager() {
         // given
-        LoginMember loginMember = new LoginMember(1L, "teenager", 15);
-        Fare fare = 요금계산(lines, 80L, loginMember);
+        Fare fare = 요금계산(lines, 80L, Age.TEENAGER);
 
         // then
         assertThat(fare.getValue()).isEqualTo(1840);
@@ -82,14 +80,13 @@ class FareCalculatorTest {
     @Test
     void calculatorFare_adult() {
         // given
-        LoginMember loginMember = new LoginMember(1L, "adult", 20);
-        Fare fare = 요금계산(lines, 80L, loginMember);
+        Fare fare = 요금계산(lines, 80L, Age.ADULT);
 
         // then
         assertThat(fare.getValue()).isEqualTo(2650);
     }
 
-    public static Fare 요금계산(List<Line> lines, Long distance, LoginMember loginMember) {
-        return FareCalculator.calculate(lines, distance, loginMember);
+    public static Fare 요금계산(List<Line> lines, Long distance, Age age) {
+        return FareCalculator.calculate(lines, distance, age);
     }
 }
