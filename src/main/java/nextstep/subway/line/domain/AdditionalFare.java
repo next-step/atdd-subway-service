@@ -15,14 +15,14 @@ public class AdditionalFare {
     }
 
     private AdditionalFare(int fare) {
-        this.fare = fare;
-    }
-
-    public static AdditionalFare from(int fare) {
         if (fare < INITIAL_FARE) {
             String message = String.format("추가 요금은 %d 보다 작을 수 없습니다.", INITIAL_FARE);
             throw new IllegalArgumentException(message);
         }
+        this.fare = fare;
+    }
+
+    public static AdditionalFare from(int fare) {
         return new AdditionalFare(fare);
     }
 
