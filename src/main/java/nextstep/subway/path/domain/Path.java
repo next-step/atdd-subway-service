@@ -23,10 +23,6 @@ public class Path {
         this(stations, distance, INITIAL_ADDITIONAL_FARE);
     }
 
-    public static Path of(List<Station> stations, int distance) {
-        return new Path(stations, distance);
-    }
-
     public static Path of(List<Station> stations, int distance, int additionalFare) {
         return new Path(stations, distance, additionalFare);
     }

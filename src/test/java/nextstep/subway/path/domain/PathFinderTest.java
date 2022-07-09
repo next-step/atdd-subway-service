@@ -48,7 +48,7 @@ class PathFinderTest {
 
         // then
         assertThat(최단경로)
-                .isEqualTo(Path.of(Arrays.asList(양재역, 남부터미널역, 교대역), 4500));
+                .isEqualTo(Path.of(Arrays.asList(양재역, 남부터미널역, 교대역), 4500, 0));
     }
 
     @Test
