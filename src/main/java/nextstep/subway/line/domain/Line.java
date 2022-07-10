@@ -22,6 +22,8 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    private int surcharge;
+
     public Line() {
     }
 
@@ -30,10 +32,21 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line withName(String name) {
         this.name = name;
+        return this;
+    }
+    public Line withColor(String color) {
         this.color = color;
+        return this;
+    }
+    public Line withSections(Station upStation, Station downStation, int distance) {
         sections.addSection(new Section(this, upStation, downStation, distance));
+        return this;
+    }
+    public Line withSurcharge(int surcharge) {
+        this.surcharge = surcharge;
+        return this;
     }
 
     public void update(Line line) {
@@ -84,7 +97,13 @@ public class Line extends BaseEntity {
         return sections;
     }
 
-    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
-        return new Line(name, color, upStation, downStation, distance);
+    public int getSurcharge() { return surcharge; }
+
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance, int surcharge) {
+        return new Line()
+                .withName(name)
+                .withColor(color)
+                .withSections(upStation, downStation, distance)
+                .withSurcharge(surcharge);
     }
 }

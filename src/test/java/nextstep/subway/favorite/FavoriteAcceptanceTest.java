@@ -51,7 +51,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         대방역 = StationAcceptanceTest.지하철역_등록되어_있음("대방역").as(StationResponse.class);
 
         //노선
-        일호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("일호선", "bg-blue-600", 신도림역.getId(), 영등포역.getId(), 5)).as(LineResponse.class);
+        일호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("일호선", "bg-blue-600", 신도림역.getId(), 영등포역.getId(), 5, 0)).as(LineResponse.class);
 
         //노선에 지하철 추가
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 영등포역, 신길역,10);
