@@ -25,22 +25,18 @@ public class FavoriteService {
     private static final String ERROR_MESSAGE_DUPLICATION = "이미 존재하는 경로입니다.";
 
     private final FavoriteRepository favoriteRepository;
-    private final MemberRepository memberRepository;
     private final StationService stationService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService,
-                           MemberRepository memberRepository) {
+    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService) {
         this.favoriteRepository = favoriteRepository;
         this.stationService = stationService;
-        this.memberRepository = memberRepository;
     }
 
     public FavoriteResponse saveFavorite(FavoriteRequest request, LoginMember loginMember) {
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
-        Member member = memberRepository.getById(loginMember.getId());
 
-        Favorite favorite = new Favorite(source, target, member);
+        Favorite favorite = new Favorite(source, target, loginMember.getId());
         validateDuplicatedFavorite(favorite, loginMember);
 
         Favorite persistFavorite = favoriteRepository.save(favorite);
@@ -51,8 +47,7 @@ public class FavoriteService {
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.getId());
         favorites.stream()
                 .filter(favorite -> favorite.isSameRoute(newFavorite))
-                .findAny()
-                .ifPresent(favorite -> {
+                .anyMatch(favorite -> {
                     throw new IllegalArgumentException(ERROR_MESSAGE_DUPLICATION);
                 });
     }
@@ -95,9 +90,7 @@ public class FavoriteService {
     }
 
     private void validateFavoriteOwner(Favorite favorite, LoginMember loginMember) {
-        Member member = memberRepository.getById(loginMember.getId());
-
-        if (!favorite.isOwner(member)) {
+        if (!favorite.isOwner(loginMember.getId())) {
             throw new AuthorizationException(ERROR_MESSAGE_NOT_MINE);
         }
     }

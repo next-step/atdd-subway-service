@@ -22,7 +22,7 @@ class SectionsTest {
 
     @BeforeEach
     void makeDefaultLine() {
-        testLine = new Line("1호선", "navy");
+        testLine = new Line("1호선", "navy", 0);
         testUpStation = new Station("서울역");
         testDownStation = new Station("금정역");
         Section section = new Section(testLine, testUpStation, testDownStation, 10);

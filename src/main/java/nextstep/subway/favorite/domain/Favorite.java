@@ -31,25 +31,23 @@ public class Favorite extends BaseEntity {
     @JoinColumn(name = "target_station_id")
     private Station target;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    private Long memberId;
 
     protected Favorite() {
     }
 
-    public Favorite(Station source, Station target, Member member) {
-        validate(source, target, member);
+    public Favorite(Station source, Station target, Long memberId) {
+        validate(source, target, memberId);
 
         this.source = source;
         this.target = target;
-        this.member = member;
+        this.memberId = memberId;
     }
 
-    private void validate(Station source, Station target, Member member) {
+    private void validate(Station source, Station target, Long memberId) {
         validateNull(source, ERROR_MESSAGE_SOURCE_NULL);
         validateNull(target, ERROR_MESSAGE_TARGET_NULL);
-        validateNull(member, ERROR_MESSAGE_MEMBER_NULL);
+        validateNull(memberId, ERROR_MESSAGE_MEMBER_NULL);
 
         validateDuplicatedStation(source, target);
     }
@@ -78,12 +76,12 @@ public class Favorite extends BaseEntity {
         return target;
     }
 
-    public Member getMember() {
-        return member;
+    public Long getMemberId() {
+        return memberId;
     }
 
-    public boolean isOwner(Member member) {
-        return this.member.equals(member);
+    public boolean isOwner(Long memberId) {
+        return this.memberId.equals(memberId);
     }
 
     public boolean isSameRoute(Favorite favorite) {

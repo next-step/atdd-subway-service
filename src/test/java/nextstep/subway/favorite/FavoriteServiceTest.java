@@ -43,13 +43,12 @@ class FavoriteServiceTest {
 
     private Station 강남역;
     private Station 판교역;
-    private Member 작성자;
+
 
     @BeforeEach
     private void setUp() {
         강남역 = new Station("강남역");
         판교역 = new Station("판교역");
-        작성자 = new Member("abbc@gmail.com", "1234", 2);
     }
 
 
@@ -59,9 +58,8 @@ class FavoriteServiceTest {
         //given
         when(stationService.findById(1L)).thenReturn(강남역);
         when(stationService.findById(2L)).thenReturn(판교역);
-        when(memberRepository.getById(any())).thenReturn(작성자);
         when(favoriteRepository.findAllByMemberId(any())).thenReturn(new ArrayList<>());
-        when(favoriteRepository.save(any())).thenReturn(new Favorite(강남역, 판교역, 작성자));
+        when(favoriteRepository.save(any())).thenReturn(new Favorite(강남역, 판교역, 1L));
 
         //when
         FavoriteRequest request = new FavoriteRequest(1L, 2L);
@@ -80,7 +78,6 @@ class FavoriteServiceTest {
     void saveFavoriteWithNull() {
         //given
         when(stationService.findById(1L)).thenReturn(강남역);
-        when(memberRepository.getById(any())).thenReturn(작성자);
 
         //when
         FavoriteRequest request = new FavoriteRequest(1L, null);
@@ -96,7 +93,6 @@ class FavoriteServiceTest {
     void saveFavoriteWithSameStation() {
         //given
         when(stationService.findById(1L)).thenReturn(강남역);
-        when(memberRepository.getById(any())).thenReturn(작성자);
 
         //when
         FavoriteRequest request = new FavoriteRequest(1L, 1L);
@@ -113,8 +109,7 @@ class FavoriteServiceTest {
         //given
         when(stationService.findById(1L)).thenReturn(강남역);
         when(stationService.findById(2L)).thenReturn(판교역);
-        when(memberRepository.getById(any())).thenReturn(작성자);
-        when(favoriteRepository.findAllByMemberId(any())).thenReturn(Arrays.asList(new Favorite(강남역, 판교역, 작성자)));
+        when(favoriteRepository.findAllByMemberId(any())).thenReturn(Arrays.asList(new Favorite(강남역, 판교역, 1L)));
 
         //when
         FavoriteRequest request = new FavoriteRequest(1L, 2L);
@@ -129,7 +124,7 @@ class FavoriteServiceTest {
     @Test
     void findFavorites() {
         //given
-        when(favoriteRepository.findAllByMemberId(any())).thenReturn(Arrays.asList(new Favorite(강남역, 판교역, 작성자)));
+        when(favoriteRepository.findAllByMemberId(any())).thenReturn(Arrays.asList(new Favorite(강남역, 판교역, 1L)));
 
         //when
         LoginMember loginMember = new LoginMember(1L, "abbc@gmail.com", 2);
@@ -147,8 +142,7 @@ class FavoriteServiceTest {
     void deleteFavoriteWithOtherUser() {
         //given
         Member 다른유저 = new Member("abcc@naver.com", "1122", 3);
-        when(memberRepository.getById(2L)).thenReturn(다른유저);
-        when(favoriteRepository.findById(any())).thenReturn(Optional.of(new Favorite(강남역, 판교역, 작성자)));
+        when(favoriteRepository.findById(any())).thenReturn(Optional.of(new Favorite(강남역, 판교역, 1L)));
 
         //when
         LoginMember loginMember = new LoginMember(2L, "abbc@gmail.com", 2);

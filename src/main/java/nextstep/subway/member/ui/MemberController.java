@@ -1,5 +1,6 @@
 package nextstep.subway.member.ui;
 
+import nextstep.subway.auth.application.LoginCheckService;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
@@ -13,10 +14,12 @@ import java.net.URI;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
+    private final LoginCheckService loginCheckService;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, LoginCheckService loginCheckService) {
         this.memberService = memberService;
+        this.loginCheckService = loginCheckService;
     }
 
     @PostMapping("/members")
@@ -45,18 +48,24 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        loginCheckService.needLogin(loginMember);
+
         MemberResponse member = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+        loginCheckService.needLogin(loginMember);
+
         memberService.updateMember(loginMember.getId(), param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        loginCheckService.needLogin(loginMember);
+
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }

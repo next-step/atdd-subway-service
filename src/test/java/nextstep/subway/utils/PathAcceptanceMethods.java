@@ -23,6 +23,16 @@ public class PathAcceptanceMethods {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse target, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source=" + source.getId() + "&target=" + target.getId())
+                .then().log().all()
+                .extract();
+    }
+
     public static void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -51,5 +61,10 @@ public class PathAcceptanceMethods {
     public static void 최단_경로_거리_확인(ExtractableResponse<Response> response, int distance) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(distance);
+    }
+
+    public static void 경로_요금_확인(ExtractableResponse<Response> response, int fare) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.as(PathResponse.class).getFare()).isEqualTo(fare);
     }
 }

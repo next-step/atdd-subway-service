@@ -57,8 +57,8 @@ public class PathFinder {
         return graph;
     }
 
-    private Path findShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
-                                  Station source, Station target) {
+    private Path findShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Station source,
+                                  Station target) {
         DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> graphPath = shortestPath.getPath(source, target);
         validatePathResult(graphPath);
@@ -92,6 +92,9 @@ public class PathFinder {
     }
 
     private Path convertToPath(GraphPath<Station, DefaultWeightedEdge> graphPath) {
-        return new Path(graphPath.getVertexList(), (int) graphPath.getWeight());
+        List<Station> stations = graphPath.getVertexList();
+        int totalDistance = (int) graphPath.getWeight();
+
+        return new Path(stations, totalDistance);
     }
 }
