@@ -53,8 +53,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void manageMyInfo() {
         //given
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
-        String token = 토큰_조회(loginResponse);
+        String token = 로그인_되어_있음(EMAIL, PASSWORD);
 
         //when
         ExtractableResponse<Response> findResponse = 본인_정보_조회_요청(token);
@@ -124,7 +123,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
                 .when().put(MY_INFO_URI)
                 .then().log().all()
