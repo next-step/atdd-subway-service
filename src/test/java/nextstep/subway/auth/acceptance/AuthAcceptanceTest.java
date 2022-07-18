@@ -82,6 +82,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
+    public static String 토큰_조회(ExtractableResponse<Response> response) {
+        return response.jsonPath().getString("accessToken");
+    }
+
     public static void 토큰_인증_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
