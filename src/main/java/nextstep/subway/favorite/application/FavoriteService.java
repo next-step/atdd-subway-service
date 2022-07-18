@@ -33,8 +33,12 @@ public class FavoriteService {
         return FavoriteResponse.of(favorite);
     }
 
-    public List<FavoriteResponse> findFavorites(Long id) {
-        List<Favorite> favorites = favoriteRepository.findAllByMemberId(id);
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
         return FavoriteResponse.of(favorites);
+    }
+
+    public void deleteFavorite(Long id) {
+        favoriteRepository.deleteById(id);
     }
 }
