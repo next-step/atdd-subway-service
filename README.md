@@ -7,7 +7,7 @@
     <img width="200px;" src="https://raw.githubusercontent.com/woowacourse/atdd-subway-admin-frontend/master/images/main_logo.png"/>
 </p>
 
-### 💻 프로젝트의 목표와 성과
+### 💻 나의 프로젝트의 목표와 성과
 #### 목표
 - 도메인 주도 개발을 위하여 Service의 비즈니스 로직을 Domain으로 옮기는 리팩터링을 진행
 - 인수 테스트 기반으로 API를 검증하기 보다는 시나리오, 흐름을 검증하는 테스트로 리팩터링
