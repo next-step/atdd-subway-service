@@ -32,10 +32,10 @@
 <br>
 
 
-### [🚆 도메인 주도 개발 및 인수 테스트 통합](https://github.com/yyy96/ddd-subway-service/tree/atdd1)
-### [🚆 경로 조회 기능 추가](https://github.com/yyy96/ddd-subway-service/tree/atdd2)
+### [🚆 도메인 주도 개발 및 인수 테스트 통합 (branch)](https://github.com/yyy96/ddd-subway-service/tree/atdd1)
+### [🚆 경로 조회 기능 추가 (branch)](https://github.com/yyy96/ddd-subway-service/tree/atdd2)
 ![image](https://user-images.githubusercontent.com/65826145/196177442-bec42307-05a6-4688-91d2-08fd33dafc82.png)
-### [🚆 나의 즐겨찾기 기능과 토큰 발급 인수 테스트](https://github.com/yyy96/ddd-subway-service/tree/atdd3)
+### [🚆 나의 즐겨찾기 기능과 토큰 발급 인수 테스트 (branch)](https://github.com/yyy96/ddd-subway-service/tree/atdd3)
 ![image](https://user-images.githubusercontent.com/65826145/196177583-22f13ff6-dfc5-49ed-963a-78cbb86f10d0.png)
 
 <br>
