@@ -1,5 +1,7 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -18,6 +20,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String PASSWORD = "password";
     public static final String NEW_EMAIL = "newemail@email.com";
     public static final String NEW_PASSWORD = "newpassword";
+    public static final String MY_INFO_URI = "/members/me";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
 
@@ -48,7 +51,24 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        //given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        String token = 로그인_되어_있음(EMAIL, PASSWORD);
 
+        //when
+        ExtractableResponse<Response> findResponse = 본인_정보_조회_요청(token);
+        //then
+        회원_정보_조회됨(findResponse, EMAIL, AGE);
+
+        //when
+        ExtractableResponse<Response> updateResponse = 본인_정보_수정_요청(token, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        //then
+        회원_정보_수정됨(updateResponse);
+
+        //when
+        ExtractableResponse<Response> deleteResponse = 본인_삭제_요청(token);
+        //then
+        회원_삭제됨(deleteResponse);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -74,6 +94,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 본인_정보_조회_요청(String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(MY_INFO_URI)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
         String uri = response.header("Location");
         MemberRequest memberRequest = new MemberRequest(email, password, age);
@@ -87,11 +117,33 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 본인_정보_수정_요청(String token, String email, String password, Integer age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put(MY_INFO_URI)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
         return RestAssured
                 .given().log().all()
                 .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 본인_삭제_요청(String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .when().delete(MY_INFO_URI)
                 .then().log().all()
                 .extract();
     }

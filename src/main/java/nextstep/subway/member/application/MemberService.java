@@ -1,11 +1,12 @@
 package nextstep.subway.member.application;
 
+import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
@@ -23,6 +24,10 @@ public class MemberService {
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
+    }
+
+    public Member getAuthMember(LoginMember loginMember){
+        return memberRepository.findById(loginMember.getId()).orElseThrow(AuthorizationException::new);
     }
 
     public void updateMember(Long id, MemberRequest param) {
