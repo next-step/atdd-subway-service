@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.StationRepository;
@@ -23,16 +24,18 @@ public class SpringExtensionTest {
     @MockBean
     private LineRepository lineRepository;
     @MockBean
+    private SectionRepository sectionRepository;
+    @MockBean
     private StationService stationService;
 
     @Test
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
-        LineService lineService = new LineService(lineRepository, stationService);
+        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line("신분당선", "bg-red-600")));
+        LineService lineService = new LineService(lineRepository, sectionRepository, stationService);
 
         // when
-        List<LineResponse> responses = lineService.findLines();
+        List<LineResponse> responses = lineService.findAllLines();
 
         // then
         assertThat(responses).hasSize(1);
