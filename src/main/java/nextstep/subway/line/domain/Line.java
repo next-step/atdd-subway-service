@@ -1,41 +1,76 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.BaseEntity;
+import nextstep.subway.common.BaseEntity;
+import nextstep.subway.line.exception.LineExceptionCode;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String name;
+    @Column(unique = true, nullable = false)
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private final Sections sections = new Sections();
 
-    public Line() {
+    protected Line() {
     }
 
     public Line(String name, String color) {
+        validateName(name);
+        validateColor(color);
         this.name = name;
         this.color = color;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        this(name, color);
+        addSection(new Section(upStation, downStation, distance));
+    }
+
+    private void validateName(String name) {
+        if(Objects.isNull(name)) {
+            throw new IllegalArgumentException(LineExceptionCode.REQUIRED_NAME.getMessage());
+        }
+    }
+
+    private void validateColor(String color) {
+        if(Objects.isNull(color)) {
+            throw new IllegalArgumentException(LineExceptionCode.REQUIRED_COLOR.getMessage());
+        }
+    }
+
+    public void addSection(Section section) {
+        sections.addSection(this, section);
     }
 
     public void update(Line line) {
+        validateName(name);
+        validateColor(color);
         this.name = line.getName();
         this.color = line.getColor();
+    }
+
+    public void updateSections(Section request, List<Section> matchedSections) {
+        sections.updateSections(this, request, matchedSections);
+    }
+
+    public void deleteSectionContainsStation(Optional<Section> sectionOfUpStation,
+                                             Optional<Section> sectionOfDownStation) {
+        sections.deleteSectionContainsStation(this, sectionOfUpStation, sectionOfDownStation);
+    }
+
+    void deleteSection(Section request) {
+        sections.deleteSection(request);
     }
 
     public Long getId() {
@@ -50,7 +85,31 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections;
+    public List<Station> getSortedStations() {
+        return sections.getSortedStations();
     }
+
+    public List<Section> getSections() {
+        return sections.getSections();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Line line = (Line) o;
+        return Objects.equals(name, line.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
 }
