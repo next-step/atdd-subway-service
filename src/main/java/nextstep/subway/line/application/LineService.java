@@ -32,22 +32,17 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = findStation(request.getUpStationId());
         Station downStation = findStation(request.getDownStationId());
-        Line line = lineRepository.save(request.toLine2(upStation, downStation));
+        Line line = lineRepository.save(request.toLine(upStation, downStation));
 
         return LineResponse.of(line);
     }
 
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
+        List<Line> line = lineRepository.findAll();
+        return line.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
-
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
 
     public LineResponse findLineResponseById(Long id) {
         Line line = findLineById(id);
@@ -168,6 +163,10 @@ public class LineService {
         }
 
         return downStation;
+    }
+
+    private Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(NoResultException::new);
     }
 
     private Station findStation(Long id) {
