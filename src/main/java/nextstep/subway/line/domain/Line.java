@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.common.constant.ErrorCode;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -34,10 +35,25 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        validateUpStation(upStation);
+        validateDownStation(downStation);
+
         Section section = Section.of(this, upStation, downStation, distance);
         this.name = Name.from(name);
         this.color = Color.from(color);
         this.sections = Sections.from(singletonList(section));
+    }
+
+    private void validateUpStation(Station upStation) {
+        if(upStation == null) {
+            throw new IllegalArgumentException(ErrorCode.상행종착역은_비어있을_수_없음.getErrorMessage());
+        }
+    }
+
+    private void validateDownStation(Station downStation) {
+        if(downStation == null) {
+            throw new IllegalArgumentException(ErrorCode.하행종착역은_비어있을_수_없음.getErrorMessage());
+        }
     }
 
     public void update(Line line) {
