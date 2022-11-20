@@ -28,6 +28,7 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        Section section = Section.of(this, upStation, downStation, distance);
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));

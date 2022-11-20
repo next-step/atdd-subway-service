@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import nextstep.subway.common.constant.ErrorCode;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -29,11 +30,44 @@ public class Section {
     public Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    private Section(Line line, Station upStation, Station downStation, int distance) {
+        validateLine(line);
+        validateStations(upStation, downStation);
+
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section of(Line line, Station upStation, Station downStation, int distance) {
+        return new Section(line, upStation, downStation, distance);
+    }
+
+    private void validateLine(Line line) {
+        if(line == null) {
+            throw new IllegalArgumentException(ErrorCode.노선_정보가_없음.getErrorMessage());
+        }
+    }
+
+    private void validateStations(Station upStation, Station downStation) {
+        validateUpStation(upStation);
+        validateDownStation(downStation);
+        if(upStation.equals(downStation)) {
+            throw new IllegalArgumentException(ErrorCode.구간의_상행역과_하행역이_동일할_수_없음.getErrorMessage());
+        }
+    }
+
+    private void validateUpStation(Station upstation) {
+        if(upstation == null) {
+            throw new IllegalArgumentException(ErrorCode.상행종착역은_비어있을_수_없음.getErrorMessage());
+        }
+    }
+
+    private void validateDownStation(Station downStation) {
+        if(downStation == null) {
+            throw new IllegalArgumentException(ErrorCode.하행종착역은_비어있을_수_없음.getErrorMessage());
+        }
     }
 
     public Long getId() {
