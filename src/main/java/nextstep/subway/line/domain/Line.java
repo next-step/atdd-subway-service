@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.common.constant.ErrorCode;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.utils.StringUtils;
 
 @Entity
 public class Line extends BaseEntity {
@@ -59,6 +60,23 @@ public class Line extends BaseEntity {
     public void update(Line line) {
         this.name = line.name;
         this.color = line.color;
+    }
+
+    public void updateLineAndColor(String name, String color) {
+        if(!StringUtils.isNullOrEmpty(name)) {
+            updateLineName(name);
+        }
+        if(!StringUtils.isNullOrEmpty(color)) {
+            updateLineColor(color);
+        }
+    }
+
+    private void updateLineName(String name) {
+        this.name = Name.from(name);
+    }
+
+    private void updateLineColor(String color) {
+        this.color = Color.from(color);
     }
 
     public void addSection(Section section) {
