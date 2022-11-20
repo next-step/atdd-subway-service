@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@DisplayName("지하철역 관련 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class StationServiceTest {
 
