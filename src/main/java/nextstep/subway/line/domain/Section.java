@@ -33,12 +33,24 @@ public class Section extends BaseEntity {
     protected Section() {
     }
 
-    public Section(Station upStation, Station downStation, int distance) {
-        validateStations(upStation, downStation);
+    public Section(Line line, Station upStation, Station downStation, int distance) {
+        validate(line, upStation, downStation);
 
+        this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = new Distance(distance);
+    }
+
+    private void validate(Line line, Station upStation, Station downStation) {
+        validateLine(line);
+        validateStations(upStation, downStation);
+    }
+
+    private void validateLine(Line line) {
+        if(Objects.isNull(line)) {
+            throw new IllegalArgumentException(SectionExceptionCode.REQUIRED_LINE.getMessage());
+        }
     }
 
     private void validateStations(Station upStation, Station downStation) {
@@ -64,12 +76,12 @@ public class Section extends BaseEntity {
     }
 
     public void divideSection(Section request) {
-        this.distance = distance.minus(request.getDistance());
+        this.distance = distance.minus(new Distance(request.getDistance()));
         this.upStation = request.downStation;
     }
 
     public void extendSection(Section request) {
-        this.distance = distance.plus(request.getDistance());
+        this.distance = distance.plus(new Distance(request.getDistance()));
         this.downStation = request.downStation;
     }
 
