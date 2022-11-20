@@ -49,9 +49,9 @@ public class LineService {
         return LineResponse.of(line);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    public void updateLine(Long id, LineRequest request) {
+        Line line = findLineById(id);
+        line.update(request.getName(), request.getColor());
     }
 
     public void deleteLineById(Long id) {
