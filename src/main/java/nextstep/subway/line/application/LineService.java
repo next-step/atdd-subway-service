@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class LineService {
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
@@ -29,6 +29,7 @@ public class LineService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         Station upStation = findStation(request.getUpStationId());
         Station downStation = findStation(request.getDownStationId());
@@ -49,15 +50,18 @@ public class LineService {
         return LineResponse.of(line);
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest request) {
         Line line = findLineById(id);
         line.update(request.getName(), request.getColor());
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = findStation(request.getUpStationId());
@@ -99,6 +103,7 @@ public class LineService {
         }
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = findStation(stationId);
