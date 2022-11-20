@@ -10,11 +10,20 @@ import org.junit.jupiter.api.Test;
 @DisplayName("이름 관련 도메인 테스트")
 public class NameTest {
 
-    @DisplayName("이름 생성 시 비어있으면 에러가 발생한다.")
+    @DisplayName("이름 생성 시 null이면 에러가 발생한다.")
     @Test
-    void createNameThrowErrorWhenNameIsNullOrEmpty() {
+    void createNameThrowErrorWhenNameIsNull() {
         // when & then
         assertThatThrownBy(() -> Name.from(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorCode.노선_또는_지하철명은_비어있을_수_없음.getErrorMessage());
+    }
+
+    @DisplayName("이름 생성 시 비어있이면 에러가 발생한다.")
+    @Test
+    void createNameThrowErrorWhenNameIsEmpty() {
+        // when & then
+        assertThatThrownBy(() -> Name.from(""))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.노선_또는_지하철명은_비어있을_수_없음.getErrorMessage());
     }
