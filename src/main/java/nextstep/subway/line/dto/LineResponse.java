@@ -16,7 +16,7 @@ public class LineResponse {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
-    public LineResponse(Long id, Name name, String color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    private LineResponse(Long id, Name name, String color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name.value();
         this.color = color;
@@ -35,7 +35,7 @@ public class LineResponse {
                 line.getColor(),
                 line.findInOrderStations()
                         .stream()
-                        .map(StationResponse::of)
+                        .map(StationResponse::from)
                         .collect(Collectors.toList()),
                 line.getCreatedDate(),
                 line.getModifiedDate());
