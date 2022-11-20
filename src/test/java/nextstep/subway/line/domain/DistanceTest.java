@@ -26,7 +26,7 @@ class DistanceTest {
     void 거리_차감시_입력된_거리값이_현재_거리값보다_크거나_같으면_IllegalArgumentException_발생(int current, int request) {
         assertThatThrownBy(() -> {
             Distance distance = new Distance(current);
-            distance.minus(request);
+            distance.minus(new Distance(request));
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(SectionExceptionCode.INVALID_DISTANCE.getMessage());
     }
@@ -35,7 +35,7 @@ class DistanceTest {
     @CsvSource(value = { "20:10", "50:20", "10:5" }, delimiter = ':')
     void 거리_차감(int current, int request) {
         Distance distance = new Distance(current);
-        distance = distance.minus(request);
+        distance = distance.minus(new Distance(request));
         assertEquals((current - request), distance.getDistance());
     }
 
@@ -43,7 +43,7 @@ class DistanceTest {
     @CsvSource(value = { "10:10", "10:20", "20:30" }, delimiter = ':')
     void 거리_가산(int current, int request) {
         Distance distance = new Distance(current);
-        distance = distance.plus(request);
+        distance = distance.plus(new Distance(request));
         assertEquals((current + request), distance.getDistance());
     }
 }

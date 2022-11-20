@@ -27,16 +27,16 @@ public class Distance {
         }
     }
 
-    public Distance minus(int distance) {
-        if(this.distance <= distance) {
+    public Distance minus(Distance target) {
+        if(this.distance <= target.distance) {
             throw new IllegalArgumentException(SectionExceptionCode.INVALID_DISTANCE.getMessage());
         }
 
-        return new Distance(this.distance - distance);
+        return new Distance(this.distance - target.distance);
     }
 
-    public Distance plus(int distance) {
-        return new Distance(this.distance + distance);
+    public Distance plus(Distance target) {
+        return new Distance(this.distance + target.distance);
     }
 
     public int getDistance() {
