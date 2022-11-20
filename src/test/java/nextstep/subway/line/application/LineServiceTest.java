@@ -335,16 +335,17 @@ public class LineServiceTest {
                 .hasMessage(ErrorCode.노선에_속한_구간이_하나이면_제거_불가.getErrorMessage());
     }
 
-//    @DisplayName("노선에 등록되지 않은 역을 제거하면 노선에서 역이 제거되지 않는다.")
-//    @Test
-//    void deleteStationNotInLine() {
-//        // given
-//        when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
-//        when(stationService.findById(2L)).thenReturn(종합운동장역);
-//
-//        // when & then
-//        assertThatThrownBy(() -> lineService.removeLineStation(1L, 2L))
-//                .isInstanceOf(IllegalArgumentException.class)
-//                .hasMessage(ErrorCode.노선_내_존재하지_않는_역.getErrorMessage());
-//    }
+    @DisplayName("노선에 등록되지 않은 역을 제거하면 노선에서 역이 제거되지 않는다.")
+    @Test
+    void deleteStationNotInLine() {
+        // given
+        이호선.addSection(createSection(이호선, 강남역, 역삼역, 2));
+        when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
+        when(stationService.findById(2L)).thenReturn(종합운동장역);
+
+        // when & then
+        assertThatThrownBy(() -> lineService.removeLineStation(1L, 2L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorCode.노선_내_존재하지_않는_역.getErrorMessage());
+    }
 }

@@ -86,27 +86,6 @@ public class Section {
         return downStation.isSameStation(station);
     }
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public Line getLine() {
-        return line;
-    }
-
-    public Station getUpStation() {
-        return upStation;
-    }
-
-    public Station getDownStation() {
-        return downStation;
-    }
-
-    public Distance getDistance() {
-        return distance;
-    }
-
     public void updateUpStation(Section section) {
         this.distance = this.distance.subtract(section.distance);
         this.upStation = section.downStation;
@@ -130,5 +109,25 @@ public class Section {
 
     public boolean isSameSection(Section section) {
         return isSameUpStation(section.upStation) && isSameDownStation(section.downStation) && hasSameLine(section);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Line getLine() {
+        return line;
+    }
+
+    public Station getUpStation() {
+        return upStation;
+    }
+
+    public Station getDownStation() {
+        return downStation;
+    }
+
+    public Distance getDistance() {
+        return distance;
     }
 }

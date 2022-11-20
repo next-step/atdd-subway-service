@@ -13,7 +13,7 @@ public class StationRestAssured {
     }
 
     public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
-        StationRequest stationRequest = new StationRequest(name);
+        StationRequest stationRequest = StationRequest.from(name);
 
         return RestAssured
                 .given().log().all()
