@@ -2,10 +2,17 @@ package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import nextstep.subway.common.constant.ErrorCode;
 import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
 
 @Entity
 public class Section {
@@ -55,8 +62,8 @@ public class Section {
         }
     }
 
-    private void validateUpStation(Station upstation) {
-        if(upstation == null) {
+    private void validateUpStation(Station upStation) {
+        if(upStation == null) {
             throw new IllegalArgumentException(ErrorCode.상행종착역은_비어있을_수_없음.getErrorMessage());
         }
     }
@@ -100,16 +107,6 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        this.upStation = station;
-        this.distance = this.distance.subtract(Distance.from(newDistance));
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        this.downStation = station;
-        this.distance = this.distance.subtract(Distance.from(newDistance));
-    }
-
     public void updateUpStation(Section section) {
         this.distance = this.distance.subtract(section.distance);
         this.upStation = section.downStation;
@@ -120,10 +117,18 @@ public class Section {
         this.downStation = section.upStation;
     }
 
+    public Distance findAddDistance(Section section) {
+        return this.distance.add(section.distance);
+    }
+
     public List<Station> stations() {
         List<Station> stations = new ArrayList<>();
         stations.add(upStation);
         stations.add(downStation);
         return stations;
+    }
+
+    public boolean isSameSection(Section section) {
+        return isSameUpStation(section.upStation) && isSameDownStation(section.downStation) && hasSameLine(section);
     }
 }
