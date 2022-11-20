@@ -77,6 +77,10 @@ public class Line extends BaseEntity {
         sections.addSection(section);
     }
 
+    public void removeStation(Station station) {
+        sections.removeStationInLine(station);
+    }
+
     public List<Station> findStations() {
         return sections.findStations();
     }
