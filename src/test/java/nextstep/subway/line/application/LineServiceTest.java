@@ -9,8 +9,8 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.line.exception.LineExceptionCode;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class LineServiceTest {
     private SectionRepository sectionRepository;
 
     @Mock
-    private StationService stationService;
+    private StationRepository stationRepository;
 
     @InjectMocks
     private LineService lineService;
@@ -58,8 +58,8 @@ class LineServiceTest {
 
     @Test
     void 지하철_노선_저장() {
-        when(stationService.findById(1L)).thenReturn(upStation);
-        when(stationService.findById(2L)).thenReturn(downStation);
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(upStation));
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(downStation));
         when(lineRepository.save(request.toLineWithSection(upStation, downStation)))
                 .thenReturn(request.toLineWithSection(upStation, downStation));
 
@@ -130,8 +130,8 @@ class LineServiceTest {
         line.addSection(section);
         SectionRequest request = new SectionRequest(2L, 3L, 10);
 
-        when(stationService.findById(2L)).thenReturn(강남역);
-        when(stationService.findById(3L)).thenReturn(역삼역);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(강남역));
+        when(stationRepository.findById(3L)).thenReturn(Optional.of(역삼역));
         when(sectionRepository.findAllByRequestedSection(강남역, 역삼역)).thenReturn(Arrays.asList(section));
         when(lineRepository.findById(1L)).thenReturn(Optional.of(line));
 

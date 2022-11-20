@@ -6,7 +6,6 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,13 +26,13 @@ public class MockitoExtensionTest {
     @Mock
     private SectionRepository sectionRepository;
     @Mock
-    private StationService stationService;
+    private StationRepository stationRepository;
 
     @Test
     void findAllLines() {
         // given
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line("신분당선", "bg-red-600")));
-        LineService lineService = new LineService(lineRepository, sectionRepository, stationService);
+        LineService lineService = new LineService(lineRepository, sectionRepository, stationRepository);
 
         // when
         List<LineResponse> responses = lineService.findAllLines();
