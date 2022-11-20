@@ -164,8 +164,4 @@ public class Sections {
         }
         return sortStations;
     }
-
-    public List<Section> getSections() { // TODO 추후 리팩토링 작업에 의해 제거 예정
-        return sections;
-    }
 }

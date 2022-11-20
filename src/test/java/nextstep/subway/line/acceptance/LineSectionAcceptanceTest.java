@@ -181,18 +181,18 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
-//    @DisplayName("노선에 등록되지 않은 역을 제거하면 노선에서 역이 제거되지 않는다.")
-//    @Test
-//    void deleteStationNotInLine() {
-//        // given
-//        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-//
-//        // when
-//        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 신사역);
-//
-//        // then
-//        지하철_노선에_지하철역_제외_실패됨(removeResponse);
-//    }
+    @DisplayName("노선에 등록되지 않은 역을 제거하면 노선에서 역이 제거되지 않는다.")
+    @Test
+    void deleteStationNotInLine() {
+        // given
+        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
+
+        // when
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 신사역);
+
+        // then
+        지하철_노선에_지하철역_제외_실패됨(removeResponse);
+    }
 
     private static void 지하철_노선에_지하철역_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());

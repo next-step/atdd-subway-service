@@ -101,10 +101,6 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections.getSections(); // TODO 리팩토링 필요
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
