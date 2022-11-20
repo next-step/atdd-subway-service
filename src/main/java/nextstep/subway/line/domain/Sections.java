@@ -15,6 +15,8 @@ import nextstep.subway.station.domain.Station;
 @Embeddable
 public class Sections {
 
+    private static final int ONLY_ONE_SECTION = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -75,6 +77,25 @@ public class Sections {
         return !sections.get(0).hasSameLine(section);
     }
 
+    public void removeStationInLine(Station deleteStation) {
+        validateIfOnlyOneSection();
+        Optional<Section> upStationSection = findSectionByUpStation(deleteStation);
+        Optional<Section> downStationSection = findSectionByDownStation(deleteStation);
+        validateNotContainAnySection(upStationSection.isPresent(), downStationSection.isPresent());
+
+        if(isInTheMiddleOfLine(upStationSection.isPresent(), downStationSection.isPresent())) {
+            addCombineSection(downStationSection.get(), upStationSection.get());
+        }
+        upStationSection.ifPresent(this::deleteSection);
+        downStationSection.ifPresent(this::deleteSection);
+    }
+
+    private void validateIfOnlyOneSection() {
+        if(sections.size() == ONLY_ONE_SECTION) {
+            throw new IllegalArgumentException(ErrorCode.노선에_속한_구간이_하나이면_제거_불가.getErrorMessage());
+        }
+    }
+
     private Optional<Section> findSectionByUpStation(Station station) {
         return sections.stream()
                 .filter(section -> section.isSameUpStation(station))
@@ -85,6 +106,30 @@ public class Sections {
         return sections.stream()
                 .filter(section -> section.isSameDownStation(station))
                 .findFirst();
+    }
+
+    private void validateNotContainAnySection(boolean hasUpStationSection, boolean hasDownStationSection) {
+        if(hasNotBothUpAnddownStationSection(hasUpStationSection, hasDownStationSection)) {
+            throw new IllegalArgumentException(ErrorCode.노선_내_존재하지_않는_역.getErrorMessage());
+        }
+    }
+
+    private boolean hasNotBothUpAnddownStationSection(boolean hasUpStationSection, boolean hasDownStationSection) {
+        return !hasUpStationSection && !hasDownStationSection;
+    }
+
+    private boolean isInTheMiddleOfLine(boolean hasUpStationSection, boolean hasDownStationSection) {
+        return hasUpStationSection && hasDownStationSection;
+    }
+
+    private void addCombineSection(Section upSection, Section downSection) {
+        Distance distance = upSection.findAddDistance(downSection);
+        Section section = Section.of(upSection.getLine(), upSection.getUpStation(), downSection.getDownStation(), distance.value());
+        sections.add(section);
+    }
+
+    private void deleteSection(Section deleteSection) {
+        sections.removeIf(section -> section.isSameSection(deleteSection));
     }
 
     public List<Station> findStations() {
