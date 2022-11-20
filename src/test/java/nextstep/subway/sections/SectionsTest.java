@@ -21,8 +21,8 @@ public class SectionsTest {
         Station station2 = new Station("양재역");
         Station station3 = new Station("강남역");
 
-        Section section1 = new Section(station1, station2, 10);
-        Section section2 = new Section(station1, station3, 5);
+        Section section1 = new Section(station3, station2, 10);
+        Section section2 = new Section(station2, station1, 5);
 
         Sections sections = new Sections(Arrays.asList(section1, section2));
 
@@ -33,6 +33,6 @@ public class SectionsTest {
                 .collect(Collectors.toList());
 
         // then
-        assertThat(stations).containsExactly("판교역", "강남역", "양재역");
+        assertThat(stations).containsExactly("강남역", "양재역", "판교역");
     }
 }
