@@ -41,21 +41,19 @@ public class LineService {
                 StationResponse.toStationResponses(persistLine.getSortedStations()));
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findAllLines() {
         List<Line> persistLines = lineRepository.findAll();
         return LineResponse.toLineResponses(persistLines);
     }
 
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
-        Optional<Line> optional = lineRepository.findById(id);
-        if(!optional.isPresent()) {
-            throw new NotFoundException(LineExceptionCode.NOT_FOUND_BY_ID.getMessage());
-        }
-
-        return optional.get();
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(LineExceptionCode.NOT_FOUND_BY_ID.getMessage()));
     }
 
-
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine,

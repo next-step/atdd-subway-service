@@ -27,6 +27,7 @@ public class StationService {
         return StationResponse.of(persistStation);
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
@@ -41,11 +42,7 @@ public class StationService {
     }
 
     public Station findById(Long id) {
-        Optional<Station> optional = stationRepository.findById(id);
-        if(!optional.isPresent()) {
-            throw new NotFoundException(StationExceptionCode.NOT_FOUND_BY_ID.getMessage());
-        }
-
-        return optional.get();
+        return stationRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(StationExceptionCode.NOT_FOUND_BY_ID.getMessage()));
     }
 }
