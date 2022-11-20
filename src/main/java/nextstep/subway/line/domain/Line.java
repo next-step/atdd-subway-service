@@ -4,7 +4,6 @@ import static java.util.Collections.singletonList;
 
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -57,12 +56,7 @@ public class Line extends BaseEntity {
         }
     }
 
-    public void update(Line line) {
-        this.name = line.name;
-        this.color = line.color;
-    }
-
-    public void updateLineAndColor(String name, String color) {
+    public void updateNameAndColor(String name, String color) {
         if(!StringUtils.isNullOrEmpty(name)) {
             updateLineName(name);
         }

@@ -143,7 +143,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] 지하철 노선 생성
 - [x] 지하철 노선 목록 조회
 - [x] 지하철 노선 조회
-- 지하철 노선 수정
+- [x] 지하철 노선 수정
 - 지하철 노선 삭제
 - 지하철 노선 내 구간 추가
 - 지하철 노선 내 역 삭제(구간 삭제)

@@ -44,7 +44,6 @@ public class LineServiceTest {
     private Station 강남역;
     private Station 역삼역;
     private Line 이호선;
-    private LineRequest lineRequest;
 
     @BeforeEach
     void setUp() {
@@ -58,7 +57,7 @@ public class LineServiceTest {
     void saveLine() {
         // given
         LineRequest lineRequest = new LineRequest(이호선.getName().value(), 이호선.getColor().value(), 1L, 2L, 10);
-        Line line = lineRequest.toLine();
+        Line line = lineRequest.toLine(강남역, 역삼역);
         when(stationService.findById(1L))
                 .thenReturn(강남역);
         when(stationService.findById(2L))
@@ -144,37 +143,37 @@ public class LineServiceTest {
         );
     }
 
-//    @DisplayName("노선명과 노선색상 수정 시, 노선명이 비어있으면 노선색상만 수정한다.")
-//    @Test
-//    void updateLineColor() {
-//        // given
-//        Name actualName = 이호선.getName();
-//        when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
-//
-//        // when
-//        lineService.updateLine(1L, new LineRequest(null, "bg-orange", null, null, 0));
-//
-//        // then
-//        assertAll(
-//                () -> assertThat(이호선.getColor()).isEqualTo(Color.from("bg-orange")),
-//                () -> assertThat(이호선.getName()).isEqualTo(actualName)
-//        );
-//    }
-//
-//    @DisplayName("노선명과 노선색상 수정 시, 노선색상이 비어있으면 노선명만 수정한다.")
-//    @Test
-//    void updateLineName() {
-//        // given
-//        Color actualColor = 이호선.getColor();
-//        when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
-//
-//        // when
-//        lineService.updateLine(1L, new LineRequest("3호선", null, null, null, 0));
-//
-//        // then
-//        assertAll(
-//                () -> assertThat(이호선.getColor()).isEqualTo(actualColor),
-//                () -> assertThat(이호선.getName()).isEqualTo(Name.from("3호선"))
-//        );
-//    }
+    @DisplayName("노선명과 노선색상 수정 시, 노선명이 비어있으면 노선색상만 수정한다.")
+    @Test
+    void updateLineColor() {
+        // given
+        Name actualName = 이호선.getName();
+        when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
+
+        // when
+        lineService.updateLine(1L, new LineRequest(null, "bg-orange", null, null, 0));
+
+        // then
+        assertAll(
+                () -> assertThat(이호선.getColor()).isEqualTo(Color.from("bg-orange")),
+                () -> assertThat(이호선.getName()).isEqualTo(actualName)
+        );
+    }
+
+    @DisplayName("노선명과 노선색상 수정 시, 노선색상이 비어있으면 노선명만 수정한다.")
+    @Test
+    void updateLineName() {
+        // given
+        Color actualColor = 이호선.getColor();
+        when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
+
+        // when
+        lineService.updateLine(1L, new LineRequest("3호선", null, null, null, 0));
+
+        // then
+        assertAll(
+                () -> assertThat(이호선.getColor()).isEqualTo(actualColor),
+                () -> assertThat(이호선.getName()).isEqualTo(Name.from("3호선"))
+        );
+    }
 }

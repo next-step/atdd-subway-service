@@ -76,7 +76,7 @@ public class LineTest {
         Line line = createLine("신분당선", "bg-red", 강남역, 양재역, 10);
 
         // when
-        line.updateLineAndColor("2호선", "bg-green");
+        line.updateNameAndColor("2호선", "bg-green");
 
         // then
         assertAll(
@@ -92,7 +92,7 @@ public class LineTest {
         Line line = createLine("신분당선", "bg-red", 강남역, 양재역, 10);
 
         // when
-        line.updateLineAndColor(null, "bg-green");
+        line.updateNameAndColor(null, "bg-green");
 
         // then
         assertAll(
@@ -108,7 +108,7 @@ public class LineTest {
         Line line = createLine("신분당선", "bg-red", 강남역, 양재역, 10);
 
         // when
-        line.updateLineAndColor("2호선", null);
+        line.updateNameAndColor("2호선", null);
 
         // then
         assertAll(
