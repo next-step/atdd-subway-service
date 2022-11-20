@@ -4,7 +4,7 @@ import static nextstep.subway.line.acceptance.LineRestAssured.지하철_노선_�
 import static nextstep.subway.line.acceptance.LineRestAssured.지하철_노선_조회_요청;
 import static nextstep.subway.line.acceptance.LineSectionRestAssured.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.line.acceptance.LineSectionRestAssured.지하철_노선에_지하철역_제외_요청;
-import static nextstep.subway.station.StationRestAssured.지하철역_등록되어_있음;
+import static nextstep.subway.station.acceptance.StationRestAssured.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

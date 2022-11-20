@@ -1,9 +1,9 @@
-package nextstep.subway.station;
+package nextstep.subway.station.acceptance;
 
-import static nextstep.subway.station.StationRestAssured.지하철역_등록되어_있음;
-import static nextstep.subway.station.StationRestAssured.지하철역_목록_조회_요청;
-import static nextstep.subway.station.StationRestAssured.지하철역_생성_요청;
-import static nextstep.subway.station.StationRestAssured.지하철역_제거_요청;
+import static nextstep.subway.station.acceptance.StationRestAssured.지하철역_등록되어_있음;
+import static nextstep.subway.station.acceptance.StationRestAssured.지하철역_목록_조회_요청;
+import static nextstep.subway.station.acceptance.StationRestAssured.지하철역_생성_요청;
+import static nextstep.subway.station.acceptance.StationRestAssured.지하철역_제거_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
