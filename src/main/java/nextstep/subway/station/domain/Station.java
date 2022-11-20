@@ -4,20 +4,21 @@ import nextstep.subway.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Objects;
+import nextstep.subway.line.domain.Name;
 
 @Entity
 public class Station extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String name;
+    @Embedded
+    private Name name;
 
     public Station() {
     }
 
     public Station(String name) {
-        this.name = name;
+        this.name = Name.from(name);
     }
 
     public boolean isSameStation(Station station) {
@@ -28,7 +29,7 @@ public class Station extends BaseEntity {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 }
