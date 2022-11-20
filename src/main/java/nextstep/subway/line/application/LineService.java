@@ -6,12 +6,12 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,17 +21,17 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
 
-    public LineService(LineRepository lineRepository, StationService stationService) {
+    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
-        this.stationService = stationService;
+        this.stationRepository = stationRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = findStation(request.getUpStationId());
+        Station downStation = findStation(request.getDownStationId());
         Line line = lineRepository.save(request.toLine2(upStation, downStation));
 
         return LineResponse.of(line);
@@ -65,8 +65,8 @@ public class LineService {
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Station upStation = findStation(request.getUpStationId());
+        Station downStation = findStation(request.getDownStationId());
         List<Station> stations = getStations(line);
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
@@ -106,7 +106,7 @@ public class LineService {
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
+        Station station = findStation(stationId);
         if (line.getSections().size() <= 1) {
             throw new RuntimeException();
         }
@@ -168,5 +168,9 @@ public class LineService {
         }
 
         return downStation;
+    }
+
+    private Station findStation(Long id) {
+        return stationRepository.findById(id).orElseThrow(NoResultException::new);
     }
 }
