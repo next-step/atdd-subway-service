@@ -29,7 +29,7 @@ public class LineStationSorter {
                 .filter(section -> section.getUpStation().equals(beforeDownStation))
                 .findFirst();
 
-        return nextSection.isPresent() ? nextSection.get().getDownStation() : null;
+        return nextSection.map(Section::getDownStation).orElse(null);
     }
 
     private static Station findFirstStation(List<Section> sections) {
@@ -49,6 +49,6 @@ public class LineStationSorter {
                 .filter(section -> section.getDownStation().equals(beforeUpStation))
                 .findFirst();
 
-        return prevSection.isPresent() ? prevSection.get().getUpStation() : null;
+        return prevSection.map(Section::getUpStation).orElse(null);
     }
 }
