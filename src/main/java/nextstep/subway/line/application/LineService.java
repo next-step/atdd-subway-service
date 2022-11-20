@@ -39,6 +39,17 @@ public class LineService {
         return LineResponse.of(persistLine, stations);
     }
 
+    public LineResponse newSaveLine(LineRequest request) {
+        Station upStation = stationService.findById(request.getUpStationId());
+        Station downStation = stationService.findById(request.getDownStationId());
+        Line line = lineRepository.save(request.toLine2(upStation, downStation));
+
+        List<StationResponse> stations = getStations(line).stream()
+                .map(it -> StationResponse.of(it))
+                .collect(Collectors.toList());
+        return LineResponse.of(line, stations);
+    }
+
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
