@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import static java.util.Collections.singletonList;
 
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -69,5 +70,22 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections.getSections(); // TODO 리팩토링 필요
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Line line = (Line) o;
+        return Objects.equals(getName(), line.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName());
     }
 }

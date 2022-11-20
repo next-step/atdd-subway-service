@@ -140,7 +140,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
   ```
 ### LineService 기능목록
-- 지하철 노선 생성
+- [x] 지하철 노선 생성
 - 지하철 노선 목록 조회
 - 지하철 노선 조회
 - 지하철 노선 수정
