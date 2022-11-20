@@ -42,10 +42,6 @@ public class SectionDeleteManager {
     }
 
     private Section toSection(Optional<Section> optSection) {
-        if(optSection.isPresent()) {
-            return optSection.get();
-        }
-
-        return null;
+        return optSection.orElse(null);
     }
 }

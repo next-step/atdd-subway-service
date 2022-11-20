@@ -36,9 +36,7 @@ public class LineResponse {
 
     public static List<LineResponse> toLineResponses(List<Line> lines) {
         return lines.stream()
-                .map(line -> {
-                    return of(line, StationResponse.toStationResponses(line.getSortedStations()));
-                })
+                .map(line -> of(line, StationResponse.toStationResponses(line.getSortedStations())))
                 .collect(toList());
     }
 
