@@ -50,11 +50,13 @@ public class LineService {
         return LineResponse.from(persistLine);
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = findById(id);
         persistLine.updateNameAndColor(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
@@ -68,12 +70,12 @@ public class LineService {
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
 
         if (stations.isEmpty()) {
@@ -104,7 +106,7 @@ public class LineService {
         Line line = findById(lineId);
         Station station = stationService.findById(stationId);
         if (line.getSections().size() <= 1) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException();
         }
 
         Optional<Section> upLineStation = line.getSections().stream()
