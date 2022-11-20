@@ -1,11 +1,16 @@
 package nextstep.subway.line.domain;
 
+import static java.util.Collections.singletonList;
+
+import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Line extends BaseEntity {
@@ -15,9 +20,8 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections;
 
     public Line() {
     }
@@ -31,12 +35,16 @@ public class Line extends BaseEntity {
         Section section = Section.of(this, upStation, downStation, distance);
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        this.sections = Sections.from(singletonList(section));
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+    }
+
+    public List<Station> findStations() {
+        return sections.findStations();
     }
 
     public Long getId() {
@@ -52,6 +60,6 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return sections.getSections(); // TODO 리팩토링 필요
     }
 }
