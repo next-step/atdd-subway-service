@@ -1,16 +1,16 @@
 package nextstep.subway.line.domain;
 
-import java.util.function.BiFunction;
+import java.util.function.BiConsumer;
 
 public enum ConnectionType {
-    FIRST((current, request) -> SectionConnectManager.connectFirstSection(request)),
-    MIDDLE((current, request) -> SectionConnectManager.connectMiddleSection(current, request)),
-    LAST((current, request) -> SectionConnectManager.connectLastSection(request)),
-    NONE((current, request) -> null);
+    FIRST((current, request) -> {}),
+    MIDDLE(Section::divideSection),
+    LAST((current, request) -> {}),
+    NONE((current, request) -> {});
 
-    private BiFunction<Section, Section, Section> expression;
+    private BiConsumer<Section, Section> expression;
 
-    ConnectionType(BiFunction<Section, Section, Section> expression) {
+    ConnectionType(BiConsumer<Section, Section> expression) {
         this.expression = expression;
     }
 
@@ -43,7 +43,7 @@ public enum ConnectionType {
         return current.getDownStation().equals(request.getUpStation());
     }
 
-    public Section connect(Section current, Section request) {
-        return expression.apply(current, request);
+    public void connect(Section current, Section request) {
+        expression.accept(current, request);
     }
 }

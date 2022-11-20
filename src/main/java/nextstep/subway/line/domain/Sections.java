@@ -34,7 +34,7 @@ public class Sections {
 
     public void updateSections(Line line, Section request, List<Section> matchedSections) {
         validateRequestedSection(request, matchedSections);
-        SectionConnectManager.connectAll(line, request);
+        SectionConnectManager.connectAll(line, request, matchedSections);
     }
 
     private void validateRequestedSection(Section request, List<Section> matchedSections) {
