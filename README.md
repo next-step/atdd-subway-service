@@ -118,8 +118,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
    * 기존 로직을 지우지 않고 새로운 로직 만들어 수행
    * 정상 동작 확인 후 기존 로직 제거
 #### LineSectionAScceptanceTest 리팩터링
-* [ ] API 검증이 아닌 시나리오, 흐름을 검증하는 테스트로 리팩터링
-* [ ] 기능의 인수 조건을 설명할 때 하나 이상의 시나리오가 필요한 경우 여러 시나리오 만들어 인수 테스트 작성
+* [x] API 검증이 아닌 시나리오, 흐름을 검증하는 테스트로 리팩터링
+* [x] 기능의 인수 조건을 설명할 때 하나 이상의 시나리오가 필요한 경우 여러 시나리오 만들어 인수 테스트 작성
 ##### 인수 조건 예시
   ```text
   Feature: 지하철 구간 관련 기능
