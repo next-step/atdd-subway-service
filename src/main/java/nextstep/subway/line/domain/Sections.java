@@ -22,11 +22,19 @@ public class Sections {
 
     protected Sections() {}
 
-//    public List<Station> getStations() {
-//        return sections.stream()
-//                .map(Section::getStations)
-//                .flatMap(Collection::stream)
-//                .distinct()
-//                .collect(Collectors.toList());
-//    }
+    public List<Section> get() {
+        return sections;
+    }
+
+    public List<Station> getStations() {
+        return sections.stream()
+                .map(Section::getStations)
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public void add(Section newSection) {
+        sections.add(newSection);
+    }
 }
