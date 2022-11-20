@@ -1,12 +1,14 @@
 package nextstep.subway.line.application;
 
-import static nextstep.subway.line.domain.LineTestFixture.createLine;
 import static nextstep.subway.station.domain.StationTestFixture.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+import java.util.stream.Collectors;
+import nextstep.subway.common.constant.ErrorCode;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -58,5 +60,43 @@ public class LineServiceTest {
                 () -> assertThat(response.getName()).isEqualTo("2호선"),
                 () -> assertThat(response.getStations()).hasSize(2)
         );
+    }
+
+    @DisplayName("노선을 조회한다.")
+    @Test
+    void findLineById() {
+        // given
+        Station upStation = createStation("강남역");
+        Station downStation = createStation("역삼역");
+        Line line = new Line("2호선", "bg-green", upStation, downStation, 10);
+        when(lineRepository.findById(1L)).thenReturn(Optional.of(line));
+
+        // when
+        LineResponse response = lineService.findLineResponseById(1L);
+
+        // then
+        assertAll(
+                () -> assertThat(response.getName()).isEqualTo("2호선"),
+                () -> assertThat(response.getColor()).isEqualTo("bg-green"),
+                () -> assertThat(response.getStations()).hasSize(2),
+                () -> assertThat(response.getStations().stream()
+                        .map(StationResponse::getName)
+                        .collect(Collectors.toList())).containsExactly("강남역", "역삼역")
+        );
+    }
+
+    @DisplayName("노선을 조회할 때 존재하는 노선이 없으면 에러가 발생한다.")
+    @Test
+    void findLineByIdThrowErrorIfNotExists() {
+        // given
+        Station upStation = createStation("강남역");
+        Station downStation = createStation("역삼역");
+        Line line = new Line("2호선", "bg-green", upStation, downStation, 10);
+        when(lineRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> lineService.findLineResponseById(1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorCode.해당하는_노선_없음.getErrorMessage());
     }
 }
