@@ -70,12 +70,12 @@ public class LineService {
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException(ErrorCode.이미_존재하는_구간.getErrorMessage());
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException(ErrorCode.구간의_상행역과_하행역이_모두_노선에_포함되지_않음.getErrorMessage());
         }
 
         if (stations.isEmpty()) {
@@ -106,7 +106,7 @@ public class LineService {
         Line line = findById(lineId);
         Station station = stationService.findById(stationId);
         if (line.getSections().size() <= 1) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(ErrorCode.노선에_속한_구간이_하나이면_제거_불가.getErrorMessage());
         }
 
         Optional<Section> upLineStation = line.getSections().stream()
