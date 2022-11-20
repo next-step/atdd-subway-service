@@ -37,15 +37,30 @@ public class DistanceTest {
     void subtractDistance() {
         //given
         int original = 15;
-        int subtract = 5;
+        int target = 5;
         Distance distance = Distance.from(original);
-        Distance subtractDistance = Distance.from(subtract);
+        Distance subtractDistance = Distance.from(target);
 
         //when
         Distance resultDistance = distance.subtract(subtractDistance);
 
         //then
-        assertThat(resultDistance.value()).isEqualTo(original - subtract);
+        assertThat(resultDistance.value()).isEqualTo(original - target);
+    }
+
+    @DisplayName("기존 길이보다 큰 길이를 빼려고 하면 에러가 발생한다.")
+    @Test
+    void subtractDistanceThrowErrorWhenOriginalSmallerThenTarget() {
+        //given
+        int original = 5;
+        int target = 10;
+        Distance distance = Distance.from(original);
+        Distance subtractDistance = Distance.from(target);
+
+        //when & then
+        assertThatThrownBy(() -> distance.subtract(subtractDistance))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorCode.노선거리는_0보다_작거나_같을_수_없음.getErrorMessage());
     }
 
     @DisplayName("길이에서 길이를 더하면 새로운 길이가 나온다.")

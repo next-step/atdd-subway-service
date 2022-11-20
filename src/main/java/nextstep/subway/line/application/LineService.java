@@ -131,7 +131,7 @@ public class LineService {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            int newDistance = upLineStation.get().getDistance().value() + downLineStation.get().getDistance().value();
             line.getSections().add(Section.of(line, newUpStation, newDownStation, newDistance));
         }
 

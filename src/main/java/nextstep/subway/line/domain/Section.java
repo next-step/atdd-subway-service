@@ -12,20 +12,17 @@ public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "line_id")
+    @JoinColumn(name = "line_id", foreignKey = @ForeignKey(name = "fk_section_to_line"))
     private Line line;
-
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "up_station_id")
+    @JoinColumn(name = "up_station_id", foreignKey = @ForeignKey(name = "fk_section_to_upstation"), nullable = false)
     private Station upStation;
-
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "down_station_id")
+    @JoinColumn(name = "down_station_id", foreignKey = @ForeignKey(name = "fk_section_to_downstation"), nullable = false)
     private Station downStation;
-
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
@@ -37,7 +34,7 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = Distance.from(distance);
     }
 
     public static Section of(Line line, Station upStation, Station downStation, int distance) {
@@ -99,39 +96,27 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
     public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance.subtract(Distance.from(newDistance));
     }
 
     public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
         this.downStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance.subtract(Distance.from(newDistance));
     }
 
     public void updateUpStation(Section section) {
-        if(this.distance <= section.distance) { // TODO distance 원시값 포장 후 리팩토링 필요
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.distance -= section.distance;
+        this.distance = this.distance.subtract(section.distance);
         this.upStation = section.downStation;
     }
 
     public void updateDownStation(Section section) {
-        if(this.distance <= section.distance) { // TODO distance 원시값 포장 후 리팩토링 필요
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.distance -= section.distance;
+        this.distance = this.distance.subtract(section.distance);
         this.downStation = section.upStation;
     }
 

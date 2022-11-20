@@ -5,6 +5,7 @@ import static nextstep.subway.line.domain.SectionTestFixture.createSection;
 import static nextstep.subway.station.domain.StationTestFixture.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import nextstep.subway.common.constant.ErrorCode;
@@ -117,5 +118,51 @@ public class SectionTest {
 
         //when & then
         assertThat(section.isSameDownStation(강남역)).isTrue();
+    }
+
+    @DisplayName("구간의 상행역을 업데이트하면 구간 길이와 상행역이 바뀐다.")
+    @Test
+    void updateUpStationInSection() {
+        //given
+        Station 강남역 = createStation("강남역");
+        Station 논현역 = createStation("논현역");
+        Station 신논현역 = createStation("신논현역");
+        int originalDistance = 25;
+        Line 신분당선 = createLine("신분당선", "bg-red", 강남역, createStation("양재역"), 10);
+        Section section = createSection(신분당선, 논현역, 강남역, originalDistance);
+
+        //when
+        int targetDistance = 10;
+        section.updateUpStation(createSection(신분당선, 논현역, 신논현역, targetDistance));
+
+        //then
+        assertAll(
+                () -> assertThat(section.getDistance()).isEqualTo(Distance.from(originalDistance - targetDistance)),
+                () -> assertThat(section.getUpStation()).isEqualTo(신논현역),
+                () -> assertThat(section.getDownStation()).isEqualTo(강남역)
+        );
+    }
+
+    @DisplayName("구간의 하행역을 업데이트하면 구간 길이와 하행역이 바뀐다.")
+    @Test
+    void updateDownStationInSection() {
+        //given
+        Station 강남역 = createStation("강남역");
+        Station 논현역 = createStation("논현역");
+        Station 신논현역 = createStation("신논현역");
+        int originalDistance = 25;
+        Line 신분당선 = createLine("신분당선", "bg-red", 강남역, createStation("양재역"), 10);
+        Section section = createSection(신분당선, 논현역, 강남역, originalDistance);
+
+        //when
+        int targetDistance = 10;
+        section.updateDownStation(createSection(신분당선, 신논현역, 강남역, targetDistance));
+
+        //then
+        assertAll(
+                () -> assertThat(section.getDistance()).isEqualTo(Distance.from(originalDistance - targetDistance)),
+                () -> assertThat(section.getUpStation()).isEqualTo(논현역),
+                () -> assertThat(section.getDownStation()).isEqualTo(신논현역)
+        );
     }
 }
