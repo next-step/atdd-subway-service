@@ -3,6 +3,8 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 public class Section {
@@ -52,6 +54,10 @@ public class Section {
 
     public int getDistance() {
         return distance;
+    }
+
+    public List<Station> getStations() {
+        return Arrays.asList(upStation, downStation);
     }
 
     public void updateUpStation(Station station, int newDistance) {
