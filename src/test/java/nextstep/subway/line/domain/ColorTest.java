@@ -40,4 +40,15 @@ public class ColorTest {
         // then
         assertThat(color.value()).isEqualTo(actual);
     }
+
+    @DisplayName("색상이 동일하면 동일한 객체이다.")
+    @Test
+    void equalColor() {
+        // given
+        String color = "bg-green";
+        String duplicateColor = "bg-green";
+
+        // when & then
+        assertThat(Color.from(color)).isEqualTo(Color.from(duplicateColor));
+    }
 }
