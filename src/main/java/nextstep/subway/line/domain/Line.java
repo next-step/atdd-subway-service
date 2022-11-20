@@ -43,8 +43,16 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
+    public void addSection(Section section) {
+        sections.addSection(section);
+    }
+
     public List<Station> findStations() {
         return sections.findStations();
+    }
+
+    public List<Station> findInOrderStations() {
+        return sections.findInOrderStations();
     }
 
     public Long getId() {
