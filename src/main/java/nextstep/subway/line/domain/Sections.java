@@ -30,6 +30,10 @@ public class Sections {
     }
 
     public List<Station> getStations() {
+        if (sections.isEmpty()) {
+            return new ArrayList<>();
+        }
+
         Map<Station, Station> stations = sectionsToMap();
         return sortStations(stations, findUpStation(stations));
     }
