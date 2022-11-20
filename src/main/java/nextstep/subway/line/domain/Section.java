@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -68,5 +70,12 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public List<Station> stations() {
+        List<Station> stations = new ArrayList<>();
+        stations.add(upStation);
+        stations.add(downStation);
+        return stations;
     }
 }
