@@ -70,6 +70,19 @@ public class Section {
         }
     }
 
+    public boolean hasSameLine(Section section) {
+        return this.line.equals(section.line);
+    }
+
+    public boolean isSameUpStation(Station station) {
+        return upStation.isSameStation(station);
+    }
+
+    public boolean isSameDownStation(Station station) {
+        return downStation.isSameStation(station);
+    }
+
+
     public Long getId() {
         return id;
     }
@@ -104,6 +117,22 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public void updateUpStation(Section section) {
+        if(this.distance <= section.distance) { // TODO distance 원시값 포장 후 리팩토링 필요
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.distance -= section.distance;
+        this.upStation = section.downStation;
+    }
+
+    public void updateDownStation(Section section) {
+        if(this.distance <= section.distance) { // TODO distance 원시값 포장 후 리팩토링 필요
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.distance -= section.distance;
+        this.downStation = section.upStation;
     }
 
     public List<Station> stations() {

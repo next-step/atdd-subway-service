@@ -20,25 +20,15 @@ public class Station extends BaseEntity {
         this.name = name;
     }
 
+    public boolean isSameStation(Station station) {
+        return Objects.equals(this.name, station.name);
+    }
+
     public Long getId() {
         return id;
     }
 
     public String getName() {
         return name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Station station = (Station) o;
-        return Objects.equals(id, station.id) &&
-                Objects.equals(name, station.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
     }
 }

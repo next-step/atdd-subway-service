@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -28,9 +29,62 @@ public class Sections {
         return new Sections(sections);
     }
 
-    public void addSection(Section section) {
-        // TODO validation 추가 필요
-        sections.add(section);
+    public void addSection(Section newSection) {
+        validateDuplicateSection(newSection);
+        validateNotContainAnySection(newSection);
+        validateLine(newSection);
+
+        Optional<Section> upStationSection = findSectionByUpStation(newSection.getUpStation());
+        Optional<Section> downStationSection = findSectionByDownStation(newSection.getDownStation());
+        upStationSection.ifPresent(section -> section.updateUpStation(newSection));
+        downStationSection.ifPresent(section -> section.updateDownStation(newSection));
+        sections.add(newSection);
+    }
+
+    private void validateDuplicateSection(Section section) {
+        if(isAllContainStations(section)) {
+            throw new IllegalArgumentException(ErrorCode.이미_존재하는_구간.getErrorMessage());
+        }
+    }
+
+    private boolean isAllContainStations(Section section) {
+        return findStations().containsAll(section.stations());
+    }
+
+    private void validateNotContainAnySection(Section section) {
+        if(isNotContainAnyStation(section)) {
+            throw new IllegalArgumentException(ErrorCode.구간의_상행역과_하행역이_모두_노선에_포함되지_않음.getErrorMessage());
+        }
+    }
+
+    private boolean isNotContainAnyStation(Section section) {
+        return findStations().stream()
+                .noneMatch(station -> section.stations().contains(station));
+    }
+
+    private void validateLine(Section section) {
+        if(isNotEqualLine(section)) {
+            throw new IllegalArgumentException(ErrorCode.구간의_노선이_기존_구간들과_상이함.getErrorMessage());
+        }
+    }
+
+    private boolean isNotEqualLine(Section section) {
+        if(sections.isEmpty()) {
+            return false;
+        }
+        return !sections.get(0).hasSameLine(section);
+    }
+
+    private Optional<Section> findSectionByUpStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.isSameUpStation(station))
+                .findFirst();
+    }
+
+    private Optional<Section> findSectionByDownStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.isSameDownStation(station))
+                .findFirst();
     }
 
     public List<Station> findStations() {
