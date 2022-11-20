@@ -62,7 +62,7 @@ class LineTest {
 
         Line line = new Line("2호선", "bg-green-600", 서초역, 강남역, 10);
 
-        line.updateSections(new Section(서초역, 교대역, 7), Arrays.asList(new Section(서초역, 강남역, 10)));
+        line.updateSections(new Section(line, 서초역, 교대역, 7), Arrays.asList(new Section(line, 서초역, 강남역, 10)));
 
         assertThat(line.getSections()).hasSize(2);
     }
@@ -74,8 +74,8 @@ class LineTest {
         Station 강남역 = new Station("강남역");
 
         Line line = new Line("2호선", "bg-green-600");
-        Section upSection = new Section(서초역, 교대역, 10);
-        Section downSection = new Section(교대역, 강남역, 10);
+        Section upSection = new Section(line, 서초역, 교대역, 10);
+        Section downSection = new Section(line, 교대역, 강남역, 10);
         line.addSection(upSection);
         line.addSection(downSection);
 

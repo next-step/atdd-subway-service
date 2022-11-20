@@ -29,8 +29,8 @@ class SectionDeleteManagerTest {
 
     @Test
     void 역_사이의_구간을_삭제한다() {
-        Section upSection = new Section(강남역, 역삼역, 10);
-        Section downSection = new Section(교대역, 강남역, 10);
+        Section upSection = new Section(line, 강남역, 역삼역, 10);
+        Section downSection = new Section(line, 교대역, 강남역, 10);
         line.addSection(upSection);
         line.addSection(downSection);
 
@@ -48,8 +48,8 @@ class SectionDeleteManagerTest {
 
     @Test
     void 상행_종점역_구간을_삭제한다() {
-        Section upSection = new Section(교대역, 강남역, 10);
-        Section downSection = new Section(강남역, 역삼역, 10);
+        Section upSection = new Section(line, 교대역, 강남역, 10);
+        Section downSection = new Section(line, 강남역, 역삼역, 10);
         line.addSection(upSection);
         line.addSection(downSection);
 
@@ -60,8 +60,8 @@ class SectionDeleteManagerTest {
 
     @Test
     void 하행_종점역_구간을_삭제한다() {
-        Section upSection = new Section(교대역, 강남역, 10);
-        Section downSection = new Section(강남역, 역삼역, 10);
+        Section upSection = new Section(line, 교대역, 강남역, 10);
+        Section downSection = new Section(line, 강남역, 역삼역, 10);
         line.addSection(upSection);
         line.addSection(downSection);
 

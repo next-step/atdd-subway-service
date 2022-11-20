@@ -44,8 +44,8 @@ class SectionRepositoryTest {
     @Test
     @DisplayName("line으로 section 목록을 검색한다.")
     void findByLine() {
-        line.addSection(new Section(교대역, 강남역, 10));
-        line.addSection(new Section(강남역, 역삼역, 10));
+        line.addSection(new Section(line, 교대역, 강남역, 10));
+        line.addSection(new Section(line, 강남역, 역삼역, 10));
         lineRepository.save(line);
 
         List<Section> sections = sectionRepository.findAllByLine(line);
@@ -56,8 +56,8 @@ class SectionRepositoryTest {
     @Test
     @DisplayName("현재 노선의 구간에서 요청된 상행역, 하행역 중 하나라도 일치하는 구간 목록을 검색한다.")
     void findAllByRequestedSection() {
-        line.addSection(new Section(교대역, 강남역, 10));
-        line.addSection(new Section(강남역, 역삼역, 10));
+        line.addSection(new Section(line, 교대역, 강남역, 10));
+        line.addSection(new Section(line, 강남역, 역삼역, 10));
         lineRepository.save(line);
 
         List<Section> sections = sectionRepository.findAllByRequestedSection(교대역, 역삼역);
@@ -68,8 +68,8 @@ class SectionRepositoryTest {
     @Test
     @DisplayName("요청된 역을 상행역으로 포함하고 있는 노선을 검색한다.")
     void findByUpStationId() {
-        Section expected = new Section(강남역, 역삼역, 10);
-        line.addSection(new Section(교대역, 강남역, 10));
+        Section expected = new Section(line, 강남역, 역삼역, 10);
+        line.addSection(new Section(line, 교대역, 강남역, 10));
         line.addSection(expected);
         lineRepository.save(line);
 
@@ -84,9 +84,9 @@ class SectionRepositoryTest {
     @Test
     @DisplayName("요청된 역을 하행역으로 포함하고 있는 노선을 검색한다.")
     void findByDownStationId() {
-        Section expected = new Section(교대역, 강남역, 10);
+        Section expected = new Section(line, 교대역, 강남역, 10);
         line.addSection(expected);
-        line.addSection(new Section(강남역, 역삼역, 10));
+        line.addSection(new Section(line, 강남역, 역삼역, 10));
         lineRepository.save(line);
 
         Optional<Section> actual = sectionRepository.findByDownStationId(강남역.getId());

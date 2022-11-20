@@ -126,7 +126,7 @@ class LineServiceTest {
         Station 역삼역 = new Station("역삼역");
 
         Line line = new Line("2호선", "bg-green-600");
-        Section section = new Section(교대역, 강남역, 10);
+        Section section = new Section(line, 교대역, 강남역, 10);
         line.addSection(section);
         SectionRequest request = new SectionRequest(2L, 3L, 10);
 
@@ -147,8 +147,8 @@ class LineServiceTest {
         Station 역삼역 = new Station("역삼역");
 
         Line line = new Line("2호선", "bg-green-600");
-        Section upSection = new Section(강남역, 역삼역, 10);
-        Section downSection = new Section(교대역, 강남역, 10);
+        Section upSection = new Section(line, 강남역, 역삼역, 10);
+        Section downSection = new Section(line, 교대역, 강남역, 10);
         line.addSection(downSection);
         line.addSection(upSection);
 

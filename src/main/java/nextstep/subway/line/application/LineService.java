@@ -78,7 +78,7 @@ public class LineService {
         List<Section> matchedSections = sectionRepository.findAllByRequestedSection(upStation, downStation);
         Line line = findLineById(lineId);
 
-        line.updateSections(sectionRequest.toSection(upStation, downStation), matchedSections);
+        line.updateSections(sectionRequest.toSection(line, upStation, downStation), matchedSections);
     }
 
     @Transactional

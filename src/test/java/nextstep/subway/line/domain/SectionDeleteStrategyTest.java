@@ -25,8 +25,8 @@ class SectionDeleteStrategyTest {
 
     @Test
     void 삭제하려는_구간이_상행_종점역() {
-        Section 교대역_강남역_구간 = new Section(교대역, 강남역, 10);
-        Section 강남역_역삼역_구간 = new Section(강남역, 역삼역, 10);
+        Section 교대역_강남역_구간 = new Section(이호선, 교대역, 강남역, 10);
+        Section 강남역_역삼역_구간 = new Section(이호선, 강남역, 역삼역, 10);
         이호선.addSection(교대역_강남역_구간);
         이호선.addSection(강남역_역삼역_구간);
 
@@ -37,8 +37,8 @@ class SectionDeleteStrategyTest {
 
     @Test
     void 삭제하려는_구간이_중간역() {
-        Section 교대역_강남역_구간 = new Section(교대역, 강남역, 10);
-        Section 강남역_역삼역_구간 = new Section(강남역, 역삼역, 10);
+        Section 교대역_강남역_구간 = new Section(이호선, 교대역, 강남역, 10);
+        Section 강남역_역삼역_구간 = new Section(이호선, 강남역, 역삼역, 10);
         이호선.addSection(교대역_강남역_구간);
         이호선.addSection(강남역_역삼역_구간);
 
@@ -49,8 +49,8 @@ class SectionDeleteStrategyTest {
 
     @Test
     void 삭제하려는_구간이_하행_종점역() {
-        Section 교대역_강남역_구간 = new Section(교대역, 강남역, 10);
-        Section 강남역_역삼역_구간 = new Section(강남역, 역삼역, 10);
+        Section 교대역_강남역_구간 = new Section(이호선, 교대역, 강남역, 10);
+        Section 강남역_역삼역_구간 = new Section(이호선, 강남역, 역삼역, 10);
         이호선.addSection(교대역_강남역_구간);
         이호선.addSection(강남역_역삼역_구간);
 

@@ -29,27 +29,27 @@ class SectionConnectManagerTest {
 
     @Test
     void 역과_역_사이에_새로운_구간을_추가한다() {
-        line.addSection(new Section(교대역, 역삼역, 10));
+        line.addSection(new Section(line, 교대역, 역삼역, 10));
 
-        SectionConnectManager.connectAll(line, new Section(교대역, 강남역, 7));
+        SectionConnectManager.connectAll(line, new Section(line, 교대역, 강남역, 7));
 
         assertThat(line.getSections()).hasSize(2);
     }
 
     @Test
     void 맨_처음_구간을_추가한다() {
-        line.addSection(new Section(강남역, 역삼역, 10));
+        line.addSection(new Section(line, 강남역, 역삼역, 10));
 
-        SectionConnectManager.connectAll(line, new Section(교대역, 강남역, 10));
+        SectionConnectManager.connectAll(line, new Section(line, 교대역, 강남역, 10));
 
         assertThat(line.getSections()).hasSize(2);
     }
 
     @Test
     void 맨_마지막_구간을_추가한다() {
-        line.addSection(new Section(교대역, 강남역, 10));
+        line.addSection(new Section(line, 교대역, 강남역, 10));
 
-        SectionConnectManager.connectAll(line, new Section(강남역, 역삼역, 10));
+        SectionConnectManager.connectAll(line, new Section(line, 강남역, 역삼역, 10));
 
         assertThat(line.getSections()).hasSize(2);
     }
@@ -57,10 +57,10 @@ class SectionConnectManagerTest {
     @ParameterizedTest
     @ValueSource(ints = { 10, 20, 30 })
     void 거리가_추가하려는_구간에_지정된_거리보다_크거나_같으면_구간을_추가할_수_없다(int addDistance) {
-        line.addSection(new Section(교대역, 역삼역, 10));
+        line.addSection(new Section(line, 교대역, 역삼역, 10));
 
         assertThatThrownBy(() -> {
-            SectionConnectManager.connectAll(line, new Section(교대역, 강남역, addDistance));
+            SectionConnectManager.connectAll(line, new Section(line, 교대역, 강남역, addDistance));
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(SectionExceptionCode.INVALID_DISTANCE.getMessage());
     }

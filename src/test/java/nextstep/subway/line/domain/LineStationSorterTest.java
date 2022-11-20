@@ -30,9 +30,9 @@ class LineStationSorterTest {
     @Test
     void 역_목록을_정렬한다() {
         Line line = new Line("2호선", "bg-green-600", 서초역, 교대역, 10);
-        line.addSection(new Section(역삼역, 선릉역, 10));
-        line.addSection(new Section(교대역, 강남역, 10));
-        line.addSection(new Section(강남역, 역삼역, 10));
+        line.addSection(new Section(line, 역삼역, 선릉역, 10));
+        line.addSection(new Section(line, 교대역, 강남역, 10));
+        line.addSection(new Section(line, 강남역, 역삼역, 10));
 
         assertThat(line.getSortedStations())
                 .containsExactlyElementsOf(Arrays.asList(서초역, 교대역, 강남역, 역삼역, 선릉역));

@@ -24,7 +24,7 @@ public class LineRequest {
 
     public Line toLineWithSection(Station upStation, Station downStation) {
         Line line = new Line(name, color);
-        line.addSection(new Section(upStation, downStation, distance));
+        line.addSection(new Section(line, upStation, downStation, distance));
 
         return line;
     }
