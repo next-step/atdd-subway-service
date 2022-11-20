@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import nextstep.subway.common.constant.ErrorCode;
@@ -80,8 +82,7 @@ public class LineServiceTest {
                 () -> assertThat(response.getColor()).isEqualTo("bg-green"),
                 () -> assertThat(response.getStations()).hasSize(2),
                 () -> assertThat(response.getStations().stream()
-                        .map(StationResponse::getName)
-                        .collect(Collectors.toList())).containsExactly("강남역", "역삼역")
+                        .map(StationResponse::getName)).containsExactly("강남역", "역삼역")
         );
     }
 
@@ -98,5 +99,28 @@ public class LineServiceTest {
         assertThatThrownBy(() -> lineService.findLineResponseById(1L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.해당하는_노선_없음.getErrorMessage());
+    }
+
+    @DisplayName("노선 전체 목록을 조회한다.")
+    @Test
+    void findLines() {
+        // given
+        Station upStation = createStation("강남역");
+        Station downStation = createStation("역삼역");
+        Line line = new Line("2호선", "bg-green", upStation, downStation, 10);
+        Station upStation2 = createStation("양재역");
+        Station downStation2 = createStation("매봉역");
+        Line line2 = new Line("3호선", "bg-orange", upStation2, downStation2, 25);
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(line, line2));
+
+        // when
+        List<LineResponse> lines = lineService.findLines();
+
+        // then
+        assertAll(
+                () -> assertThat(lines).hasSize(2),
+                () -> assertThat(lines.stream().map(LineResponse::getColor)).contains("bg-green", "bg-orange"),
+                () -> assertThat(lines.stream().map(LineResponse::getName)).contains("2호선", "3호선")
+        );
     }
 }
