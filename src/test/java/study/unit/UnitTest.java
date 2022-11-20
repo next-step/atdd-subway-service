@@ -1,6 +1,7 @@
 package study.unit;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Name;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,6 @@ public class UnitTest {
         line.update(newLine);
 
         // then
-        assertThat(line.getName()).isEqualTo(newName);
+        assertThat(line.getName()).isEqualTo(Name.from(newName));
     }
 }

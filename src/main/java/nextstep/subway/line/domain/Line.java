@@ -18,8 +18,8 @@ public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String name;
+    @Embedded
+    private Name name;
     private String color;
     @Embedded
     private Sections sections;
@@ -28,20 +28,20 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color) {
-        this.name = name;
+        this.name = Name.from(name);
         this.color = color;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         Section section = Section.of(this, upStation, downStation, distance);
-        this.name = name;
+        this.name = Name.from(name);
         this.color = color;
         this.sections = Sections.from(singletonList(section));
     }
 
     public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+        this.name = line.name;
+        this.color = line.color;
     }
 
     public void addSection(Section section) {
@@ -60,7 +60,7 @@ public class Line extends BaseEntity {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
