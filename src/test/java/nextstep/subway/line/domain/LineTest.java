@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class LineTest {
     @DisplayName("노선에 포함된 지하철 역 정보를 가져올 수 있다")
@@ -24,5 +25,21 @@ public class LineTest {
 
         // then
         assertThat(results).containsOnly(upStation, downStation);
+    }
+
+    @DisplayName("노선의 이름과 색깔을 수정할 수 있다")
+    @Test
+    void update() {
+        // given
+        Line line = new Line("신분당선", "bg-red-600");
+
+        // when
+        line.update("분당선", "bg-blue-400");
+
+        // then
+        assertAll(
+                () -> assertThat(line.getName()).isEqualTo("분당선"),
+                () -> assertThat(line.getColor()).isEqualTo("bg-blue-400")
+        );
     }
 }
