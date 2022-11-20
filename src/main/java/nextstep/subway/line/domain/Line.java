@@ -20,7 +20,8 @@ public class Line extends BaseEntity {
     private Long id;
     @Embedded
     private Name name;
-    private String color;
+    @Embedded
+    private Color color;
     @Embedded
     private Sections sections;
 
@@ -29,13 +30,13 @@ public class Line extends BaseEntity {
 
     public Line(String name, String color) {
         this.name = Name.from(name);
-        this.color = color;
+        this.color = Color.from(color);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         Section section = Section.of(this, upStation, downStation, distance);
         this.name = Name.from(name);
-        this.color = color;
+        this.color = Color.from(color);
         this.sections = Sections.from(singletonList(section));
     }
 
@@ -64,7 +65,7 @@ public class Line extends BaseEntity {
         return name;
     }
 
-    public String getColor() {
+    public Color getColor() {
         return color;
     }
 
