@@ -1,5 +1,6 @@
 package nextstep.subway.section;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
@@ -21,10 +22,10 @@ class SectionTest {
         // given
         Station upStation = new Station("판교역");
         Station downStation = new Station("강남역");
-        Section section = new Section(upStation, downStation, 10);
+        Section section = new Section(upStation, downStation, new Distance(10));
 
         Station newStation = new Station("양재역");
-        Section newSection = new Section(upStation, newStation, 10);
+        Section newSection = new Section(upStation, newStation, new Distance(5));
 
         // when
         section.update(newSection);
@@ -39,10 +40,10 @@ class SectionTest {
         // given
         Station upStation = new Station("판교역");
         Station downStation = new Station("강남역");
-        Section section = new Section(upStation, downStation, 10);
+        Section section = new Section(upStation, downStation, new Distance(10));
 
         Station newStation = new Station("양재역");
-        Section newSection = new Section(newStation, downStation, 10);
+        Section newSection = new Section(newStation, downStation, new Distance(5));
 
         // when
         section.update(newSection);
@@ -57,10 +58,10 @@ class SectionTest {
         // given
         Station upStation = new Station("판교역");
         Station downStation = new Station("강남역");
-        Section section = new Section(upStation, downStation, 10);
+        Section section = new Section(upStation, downStation, new Distance(10));
 
         Station newStation = new Station("양재역");
-        Section newSection = new Section(downStation, newStation, 5);
+        Section newSection = new Section(downStation, newStation, new Distance(5));
 
         // when
         Section result = section.merge(newSection);

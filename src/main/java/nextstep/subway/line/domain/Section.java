@@ -24,12 +24,13 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
 
-    public Section(Station upStation, Station downStation, int distance) {
+    public Section(Station upStation, Station downStation, Distance distance) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
@@ -51,28 +52,12 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
     public List<Station> getStations() {
         return Arrays.asList(upStation, downStation);
-    }
-
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
     }
 
     public void addLine(Line line) {
@@ -99,16 +84,16 @@ public class Section {
 
     private void updateUpStation(Section newSection) {
         upStation = newSection.downStation;
-        distance = distance - newSection.distance;
+        distance = distance.subtract(newSection.distance);
     }
 
     private void updateDownStation(Section newSection) {
         downStation = newSection.upStation;
-        distance = distance - newSection.distance;
+        distance = distance.subtract(newSection.distance);
     }
 
     public Section merge(Section nextSection) {
-        int newDistance = distance + nextSection.distance;
+        Distance newDistance = distance.add(nextSection.distance);
         Section section = new Section(upStation, nextSection.getDownStation(), newDistance);
         section.addLine(line);
         return section;

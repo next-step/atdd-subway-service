@@ -1,5 +1,6 @@
 package nextstep.subway.sections;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
@@ -23,8 +24,8 @@ class SectionsTest {
         Station downStation = new Station("양재역");
         Station newStation = new Station("강남역");
 
-        Section section1 = new Section(newStation, downStation, 10);
-        Section section2 = new Section(downStation, upStation, 5);
+        Section section1 = new Section(newStation, downStation, new Distance(10));
+        Section section2 = new Section(downStation, upStation, new Distance(5));
 
         Sections sections = new Sections(Arrays.asList(section1, section2));
 
@@ -46,11 +47,11 @@ class SectionsTest {
         Station downStation = new Station("양재역");
 
         Sections sections = new Sections(new ArrayList<>());
-        Section section = new Section(upStation, downStation, 10);
+        Section section = new Section(upStation, downStation, new Distance(10));
         sections.add(section);
 
         Station newStation = new Station("강남역");
-        Section newSection = new Section(upStation, newStation, 5);
+        Section newSection = new Section(upStation, newStation, new Distance(5));
 
         // when
         sections.add(newSection);
@@ -67,10 +68,10 @@ class SectionsTest {
         Station downStation = new Station("양재역");
 
         Sections sections = new Sections(new ArrayList<>());
-        Section section = new Section(upStation, downStation, 10);
+        Section section = new Section(upStation, downStation, new Distance(10));
         sections.add(section);
 
-        Section newSection = new Section(upStation, downStation, 10);
+        Section newSection = new Section(upStation, downStation, new Distance(10));
 
         // then
         assertThatThrownBy(() -> sections.add(newSection))
@@ -89,9 +90,9 @@ class SectionsTest {
 
         Sections sections = new Sections(new ArrayList<>());
 
-        Section section = new Section(upStation, downStation, 10);
+        Section section = new Section(upStation, downStation, new Distance(10));
         sections.add(section);
-        Section newSection = new Section(newUpStation, newDownStation, 10);
+        Section newSection = new Section(newUpStation, newDownStation, new Distance(10));
 
         // then
         assertThatThrownBy(() -> sections.add(newSection))
@@ -107,8 +108,8 @@ class SectionsTest {
         Station downStation = new Station("양재역");
         Station newStation = new Station("강남역");
 
-        Section section1 = new Section(upStation, downStation, 10);
-        Section section2 = new Section(newStation, downStation, 5);
+        Section section1 = new Section(upStation, downStation, new Distance(10));
+        Section section2 = new Section(newStation, downStation, new Distance(5));
 
         Sections sections = new Sections(new ArrayList<>());
         sections.add(section1);
@@ -129,8 +130,8 @@ class SectionsTest {
         Station downStation = new Station("양재역");
         Station newStation = new Station("강남역");
 
-        Section section1 = new Section(newStation, downStation, 10);
-        Section section2 = new Section(downStation, upStation, 5);
+        Section section1 = new Section(newStation, downStation, new Distance(10));
+        Section section2 = new Section(downStation, upStation, new Distance(5));
 
         Sections sections = new Sections(new ArrayList<>());
         sections.add(section1);
@@ -151,7 +152,7 @@ class SectionsTest {
         Station upStation = new Station("판교역");
         Station downStation = new Station("양재역");
 
-        Section section = new Section(upStation, downStation, 10);
+        Section section = new Section(upStation, downStation, new Distance(10));
 
         Sections sections = new Sections(new ArrayList<>());
         sections.add(section);
