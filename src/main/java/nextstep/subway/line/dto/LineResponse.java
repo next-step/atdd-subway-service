@@ -16,20 +16,6 @@ public class LineResponse {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
-    public LineResponse() {
-    }
-
-    public LineResponse(Long id, String name, String color, List<Station> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.stations = stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-        this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
-    }
-
     public static LineResponse of(Line line) {
         return new LineResponse(
                 line.getId(),
@@ -39,6 +25,27 @@ public class LineResponse {
                 line.getCreatedDate(),
                 line.getModifiedDate()
         );
+    }
+
+    private LineResponse() {
+    }
+
+    private LineResponse(
+            Long id,
+            String name,
+            String color,
+            List<Station> stations,
+            LocalDateTime createdDate,
+            LocalDateTime modifiedDate
+    ) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.stations = stations.stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
     }
 
     public Long getId() {

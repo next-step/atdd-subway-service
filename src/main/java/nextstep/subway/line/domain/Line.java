@@ -27,11 +27,6 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, Distance distance) {
-        this.name = name;
-        this.color = color;
-    }
-
     public Long getId() {
         return id;
     }
@@ -42,10 +37,6 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
-    }
-
-    public List<Section> getSections() {
-        return sections.get();
     }
 
     public List<Station> getStations() {
