@@ -33,8 +33,4 @@ public class StationService {
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
-
-    public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(ErrorCode.존재하지_않는_역.getErrorMessage()));
-    }
 }

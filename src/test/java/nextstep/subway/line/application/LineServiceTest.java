@@ -19,8 +19,8 @@ import nextstep.subway.line.domain.Name;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +40,7 @@ public class LineServiceTest {
     private LineRepository lineRepository;
 
     @Mock
-    private StationService stationService;
+    private StationRepository stationRepository;
 
     @InjectMocks
     private LineService lineService;
@@ -70,10 +70,10 @@ public class LineServiceTest {
         // given
         LineRequest lineRequest = new LineRequest(이호선.getName().value(), 이호선.getColor().value(), 1L, 2L, 10);
         Line line = lineRequest.toLine(강남역, 삼성역);
-        when(stationService.findById(1L))
-                .thenReturn(강남역);
-        when(stationService.findById(2L))
-                .thenReturn(삼성역);
+        when(stationRepository.findById(1L))
+                .thenReturn(Optional.of(강남역));
+        when(stationRepository.findById(2L))
+                .thenReturn(Optional.of(삼성역));
         when(lineRepository.save(line))
                 .thenReturn(이호선);
 
@@ -194,8 +194,8 @@ public class LineServiceTest {
     void addStationBetweenLine() {
         // given
         when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
-        when(stationService.findById(2L)).thenReturn(강남역);
-        when(stationService.findById(3L)).thenReturn(역삼역);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(강남역));
+        when(stationRepository.findById(3L)).thenReturn(Optional.of(역삼역));
 
         // when
         lineService.addLineStation(1L, new SectionRequest(2L, 3L, 3));
@@ -209,8 +209,8 @@ public class LineServiceTest {
     void addStationInFrontOfUpStation() {
         // given
         when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
-        when(stationService.findById(2L)).thenReturn(교대역);
-        when(stationService.findById(3L)).thenReturn(강남역);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(교대역));
+        when(stationRepository.findById(3L)).thenReturn(Optional.of(강남역));
 
         // when
         lineService.addLineStation(1L, new SectionRequest(2L, 3L, 3));
@@ -224,8 +224,8 @@ public class LineServiceTest {
     void addStationAfterDownStation() {
         // given
         when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
-        when(stationService.findById(2L)).thenReturn(삼성역);
-        when(stationService.findById(3L)).thenReturn(종합운동장역);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(삼성역));
+        when(stationRepository.findById(3L)).thenReturn(Optional.of(종합운동장역));
 
         // when
         lineService.addLineStation(1L, new SectionRequest(2L, 3L, 3));
@@ -240,8 +240,8 @@ public class LineServiceTest {
     void addSectionWhichHasEqualOrLongerDistance(int currentDistance) {
         // given
         when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
-        when(stationService.findById(2L)).thenReturn(역삼역);
-        when(stationService.findById(3L)).thenReturn(삼성역);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(역삼역));
+        when(stationRepository.findById(3L)).thenReturn(Optional.of(삼성역));
 
         // when & then
         assertThatThrownBy(() -> lineService.addLineStation(1L, new SectionRequest(2L, 3L, currentDistance)))
@@ -254,8 +254,8 @@ public class LineServiceTest {
     void addSectionDuplicateInLine() {
         // given
         when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
-        when(stationService.findById(2L)).thenReturn(강남역);
-        when(stationService.findById(3L)).thenReturn(삼성역);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(강남역));
+        when(stationRepository.findById(3L)).thenReturn(Optional.of(삼성역));
 
         // when & then
         assertThatThrownBy(() -> lineService.addLineStation(1L, new SectionRequest(2L, 3L, 5)))
@@ -268,8 +268,8 @@ public class LineServiceTest {
     void addSectionNotInLine() {
         // given
         when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
-        when(stationService.findById(2L)).thenReturn(역삼역);
-        when(stationService.findById(3L)).thenReturn(선릉역);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(역삼역));
+        when(stationRepository.findById(3L)).thenReturn(Optional.of(선릉역));
 
         // when & then
         assertThatThrownBy(() -> lineService.addLineStation(1L, new SectionRequest(2L, 3L, 5)))
@@ -282,7 +282,7 @@ public class LineServiceTest {
     void deleteStationInMiddle() {
         // given
         when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
-        when(stationService.findById(2L)).thenReturn(역삼역);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(역삼역));
         이호선.addSection(createSection(이호선, 강남역, 역삼역, 2));
 
         // when
@@ -297,7 +297,7 @@ public class LineServiceTest {
     void deleteStationWhichIsUpStation() {
         // given
         when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
-        when(stationService.findById(2L)).thenReturn(강남역);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(강남역));
         이호선.addSection(createSection(이호선, 강남역, 역삼역, 2));
 
         // when
@@ -312,7 +312,7 @@ public class LineServiceTest {
     void deleteStationWhichIsDownStation() {
         // given
         when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
-        when(stationService.findById(2L)).thenReturn(삼성역);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(삼성역));
         이호선.addSection(createSection(이호선, 강남역, 역삼역, 2));
 
         // when
@@ -327,7 +327,7 @@ public class LineServiceTest {
     void deleteStationWhenLineHasOneSection() {
         // given
         when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
-        when(stationService.findById(2L)).thenReturn(강남역);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(강남역));
 
         // when & then
         assertThatThrownBy(() -> lineService.removeLineStation(1L, 2L))
@@ -341,7 +341,7 @@ public class LineServiceTest {
         // given
         이호선.addSection(createSection(이호선, 강남역, 역삼역, 2));
         when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
-        when(stationService.findById(2L)).thenReturn(종합운동장역);
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(종합운동장역));
 
         // when & then
         assertThatThrownBy(() -> lineService.removeLineStation(1L, 2L))

@@ -9,8 +9,8 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,17 +19,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class LineService {
 
     private final LineRepository lineRepository;
-    private final StationService stationService;
+    private final StationRepository stationRepository;
 
-    public LineService(LineRepository lineRepository, StationService stationService) {
+    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
-        this.stationService = stationService;
+        this.stationRepository = stationRepository;
     }
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = findStationById(request.getUpStationId());
+        Station downStation = findStationById(request.getDownStationId());
         Line persistLine = lineRepository.save(request.toLine(upStation, downStation));
         return LineResponse.from(persistLine);
     }
@@ -42,13 +42,13 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findById(id);
+        Line persistLine = findLineById(id);
         return LineResponse.from(persistLine);
     }
 
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = findById(id);
+        Line persistLine = findLineById(id);
         persistLine.updateNameAndColor(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 
@@ -59,21 +59,25 @@ public class LineService {
 
     @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
-        Line line = findById(lineId);
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Line line = findLineById(lineId);
+        Station upStation = findStationById(request.getUpStationId());
+        Station downStation = findStationById(request.getDownStationId());
         line.addSection(Section.of(line, upStation, downStation, request.getDistance()));
     }
 
     @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = findById(lineId);
-        Station station = stationService.findById(stationId);
+        Line line = findLineById(lineId);
+        Station station = findStationById(stationId);
         line.removeStation(station);
     }
 
-    private Line findById(Long id) {
+    private Line findLineById(Long id) {
         return lineRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.해당하는_노선_없음.getErrorMessage()));
+    }
+
+    private Station findStationById(Long id) {
+        return stationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(ErrorCode.존재하지_않는_역.getErrorMessage()));
     }
 }
