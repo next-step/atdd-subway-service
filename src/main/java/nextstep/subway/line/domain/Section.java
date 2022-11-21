@@ -1,45 +1,88 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.common.BaseEntity;
+import nextstep.subway.line.exception.SectionExceptionCode;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
-public class Section {
+public class Section extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "line_id")
+    @JoinColumn(nullable = false)
     private Line line;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "up_station_id")
+    @JoinColumn(nullable = false)
     private Station upStation;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "down_station_id")
+    @JoinColumn(nullable = false)
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
+        validate(line, upStation, downStation);
+
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
-    public Long getId() {
-        return id;
+    private void validate(Line line, Station upStation, Station downStation) {
+        validateLine(line);
+        validateStations(upStation, downStation);
     }
 
-    public Line getLine() {
-        return line;
+    private void validateLine(Line line) {
+        if(Objects.isNull(line)) {
+            throw new IllegalArgumentException(SectionExceptionCode.REQUIRED_LINE.getMessage());
+        }
+    }
+
+    private void validateStations(Station upStation, Station downStation) {
+        if(Objects.isNull(upStation)) {
+            throw new IllegalArgumentException(SectionExceptionCode.REQUIRED_UP_STATION.getMessage());
+        }
+
+        if(Objects.isNull(downStation)) {
+            throw new IllegalArgumentException(SectionExceptionCode.REQUIRED_DOWN_STATION.getMessage());
+        }
+
+        if(upStation.equals(downStation)) {
+            throw new IllegalArgumentException(
+                    SectionExceptionCode.CANNOT_BE_THE_SAME_EACH_STATION.getMessage());
+        }
+    }
+
+    void updateLine(Line line) {
+        if(this.line != line) {
+            this.line = line;
+            line.addSection(this);
+        }
+    }
+
+    public void divideSection(Section request) {
+        this.distance = distance.minus(new Distance(request.getDistance()));
+        this.upStation = request.downStation;
+    }
+
+    public void extendSection(Section request) {
+        this.distance = distance.plus(new Distance(request.getDistance()));
+        this.downStation = request.downStation;
     }
 
     public Station getUpStation() {
@@ -50,23 +93,32 @@ public class Section {
         return downStation;
     }
 
+    public List<Station> getStations() {
+        return Arrays.asList(upStation, downStation);
+    }
+
     public int getDistance() {
-        return distance;
+        return distance.getDistance();
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
-        this.upStation = station;
-        this.distance -= newDistance;
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Section section = (Section) o;
+        return Objects.equals(line, section.line)
+                && Objects.equals(upStation, section.upStation)
+                && Objects.equals(downStation, section.downStation);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
+    @Override
+    public int hashCode() {
+        return Objects.hash(line, upStation, downStation);
     }
 }
