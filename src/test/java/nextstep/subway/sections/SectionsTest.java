@@ -38,6 +38,27 @@ class SectionsTest {
         assertThat(stations).containsExactly("강남역", "양재역", "판교역");
     }
 
+    @DisplayName("노선의 구간을 추가할 수 있다")
+    @Test
+    void addStation() {
+        // given
+        Station upStation = new Station("판교역");
+        Station downStation = new Station("양재역");
+
+        Sections sections = new Sections(new ArrayList<>());
+        Section section = new Section(upStation, downStation, 10);
+        sections.add(section);
+
+        Station newStation = new Station("강남역");
+        Section newSection = new Section(upStation, newStation, 5);
+
+        // when
+        sections.add(newSection);
+
+        // then
+        assertThat(sections.get()).contains(section, newSection);
+    }
+
     @DisplayName("추가하려는 구간의 지하철 역이 모두 존재할 경우 예외가 발생한다")
     @Test
     void addBothExistStationException() {
@@ -76,5 +97,68 @@ class SectionsTest {
         assertThatThrownBy(() -> sections.add(newSection))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록할 수 없는 구간 입니다.");
+    }
+
+    @DisplayName("노선의 지하철을 삭제할 수 있다")
+    @Test
+    void deleteStation() {
+        // given
+        Station upStation = new Station("판교역");
+        Station downStation = new Station("양재역");
+        Station newStation = new Station("강남역");
+
+        Section section1 = new Section(upStation, downStation, 10);
+        Section section2 = new Section(newStation, downStation, 5);
+
+        Sections sections = new Sections(new ArrayList<>());
+        sections.add(section1);
+        sections.add(section2);
+
+        // when
+        sections.delete(newStation);
+
+        // then
+        assertThat(sections.getStations()).containsOnly(upStation, downStation);
+    }
+
+    @DisplayName("노선에 존재하지 않는 지하철을 삭제할 경우 예외가 발생한다")
+    @Test
+    void deleteNotExistStationException() {
+        // given
+        Station upStation = new Station("판교역");
+        Station downStation = new Station("양재역");
+        Station newStation = new Station("강남역");
+
+        Section section1 = new Section(newStation, downStation, 10);
+        Section section2 = new Section(downStation, upStation, 5);
+
+        Sections sections = new Sections(new ArrayList<>());
+        sections.add(section1);
+        sections.add(section2);
+
+        Station station = new Station("존재하지 않는 지하철 역");
+
+        // then
+        assertThatThrownBy(() -> sections.delete(station))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("삭제하려는 지하철이 노선에 존재하지 않습니다");
+    }
+
+    @DisplayName("노선의 마지막 구간의 지하철을 삭제할 경우 예외가 발생한다")
+    @Test
+    void deleteOneSectionException() {
+        // given
+        Station upStation = new Station("판교역");
+        Station downStation = new Station("양재역");
+
+        Section section = new Section(upStation, downStation, 10);
+
+        Sections sections = new Sections(new ArrayList<>());
+        sections.add(section);
+
+        // then
+        assertThatThrownBy(() -> sections.delete(upStation))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("마지막 구간은 삭제할 수 없습니다.");
     }
 }

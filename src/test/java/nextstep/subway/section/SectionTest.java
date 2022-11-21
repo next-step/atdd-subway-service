@@ -50,4 +50,22 @@ class SectionTest {
         // then
         assertThat(section.getDownStation()).isEqualTo(newStation);
     }
+
+    @DisplayName("두 개의 구간을 병합 할 수 있다")
+    @Test
+    void merge() {
+        // given
+        Station upStation = new Station("판교역");
+        Station downStation = new Station("강남역");
+        Section section = new Section(upStation, downStation, 10);
+
+        Station newStation = new Station("양재역");
+        Section newSection = new Section(downStation, newStation, 5);
+
+        // when
+        Section result = section.merge(newSection);
+
+        // then
+        assertThat(result.getDownStation()).isEqualTo(newStation);
+    }
 }
