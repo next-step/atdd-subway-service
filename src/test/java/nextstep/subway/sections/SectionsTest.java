@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class SectionsTest {
+class SectionsTest {
     @DisplayName("정렬된 지하철 역 정보를 반환할 수 있다")
     @Test
     void sortStations() {
@@ -45,13 +45,14 @@ public class SectionsTest {
         Station upStation = new Station("판교역");
         Station downStation = new Station("양재역");
 
+        Sections sections = new Sections(new ArrayList<>());
         Section section = new Section(upStation, downStation, 10);
-
-        Sections sections = new Sections(Arrays.asList(section));
         sections.add(section);
 
+        Section newSection = new Section(upStation, downStation, 10);
+
         // then
-        assertThatThrownBy(() -> sections.add(section))
+        assertThatThrownBy(() -> sections.add(newSection))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("이미 등록된 구간 입니다.");
     }
@@ -62,12 +63,17 @@ public class SectionsTest {
         // given
         Station upStation = new Station("판교역");
         Station downStation = new Station("양재역");
-        Section section = new Section(upStation, downStation, 10);
+        Station newUpStation = new Station("존재하지않는역1");
+        Station newDownStation = new Station("존재하지않는역2");
 
         Sections sections = new Sections(new ArrayList<>());
 
+        Section section = new Section(upStation, downStation, 10);
+        sections.add(section);
+        Section newSection = new Section(newUpStation, newDownStation, 10);
+
         // then
-        assertThatThrownBy(() -> sections.add(section))
+        assertThatThrownBy(() -> sections.add(newSection))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록할 수 없는 구간 입니다.");
     }

@@ -78,4 +78,32 @@ public class Section {
     public void addLine(Line line) {
         this.line = line;
     }
+
+    public void update(Section newSection) {
+        if (isEqualUpStation(newSection.upStation)) {
+            updateUpStation(newSection);
+        }
+
+        if (isEqualDownStation(newSection.downStation)) {
+            updateDownStation(newSection);
+        }
+    }
+
+    public boolean isEqualUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean isEqualDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
+    private void updateUpStation(Section newSection) {
+        upStation = newSection.downStation;
+        distance = distance - newSection.distance;
+    }
+
+    private void updateDownStation(Section newSection) {
+        downStation = newSection.upStation;
+        distance = distance - newSection.distance;
+    }
 }

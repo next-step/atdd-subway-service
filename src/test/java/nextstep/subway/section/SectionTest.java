@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class SectionTest {
+class SectionTest {
     @DisplayName("상행선을 바꿀 수 있다.")
     @Test
     void updateUpStation() {

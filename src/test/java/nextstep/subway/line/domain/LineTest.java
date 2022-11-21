@@ -9,7 +9,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class LineTest {
+class LineTest {
     @DisplayName("노선에 포함된 지하철 역 정보를 가져올 수 있다")
     @Test
     void stations() {

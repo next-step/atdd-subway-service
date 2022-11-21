@@ -64,6 +64,38 @@ public class Sections {
     }
 
     public void add(Section newSection) {
+        if (sections.isEmpty()) {
+            sections.add(newSection);
+            return;
+        }
+
+        validateAddition(newSection);
+        sections.forEach(section -> section.update(newSection));
         sections.add(newSection);
+    }
+
+    private void validateAddition(Section section) {
+        validateHasBothStations(section);
+        validateHasNotBothStations(section);
+    }
+
+    private void validateHasBothStations(Section section) {
+        if (getStations().containsAll(section.getStations())) {
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private void validateHasNotBothStations(Section section) {
+        if (hasNotBothStations(section)) {
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private boolean hasNotBothStations(Section section) {
+        List<Station> stations = getStations();
+
+        return section.getStations()
+                .stream()
+                .noneMatch(stations::contains);
     }
 }
