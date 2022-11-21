@@ -50,7 +50,7 @@ Feature: 지하철 구간 관련 기능
 ### 기능 구현 목록
 - [x] 요구사항 및 기능 구현 목록 작성
 - [x] LineSectionAcceptanceTest 리팩터링
-- [ ] Domain 테스트 코드 작성
-- [ ] Domain 코드 작성
-- [ ] Domain 코드를 사용한 새로운 메소드 작성
+- [x] Domain 테스트 코드 작성
+- [x] Domain 코드 작성
+- [x] Domain 코드를 사용한 새로운 메소드 작성
 - [ ] 정상 동작 확인 후, 기존 로직 제거

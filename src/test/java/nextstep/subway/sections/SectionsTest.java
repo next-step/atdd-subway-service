@@ -97,7 +97,7 @@ class SectionsTest {
         // then
         assertThatThrownBy(() -> sections.add(newSection))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("등록할 수 없는 구간 입니다.");
+                .hasMessageContaining("상행성 하행선 모두 존재하지 않습니다.");
     }
 
     @DisplayName("노선의 지하철을 삭제할 수 있다")
