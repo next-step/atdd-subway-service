@@ -106,4 +106,11 @@ public class Section {
         downStation = newSection.upStation;
         distance = distance - newSection.distance;
     }
+
+    public Section merge(Section nextSection) {
+        int newDistance = distance + nextSection.distance;
+        Section section = new Section(upStation, nextSection.getDownStation(), newDistance);
+        section.addLine(line);
+        return section;
+    }
 }
