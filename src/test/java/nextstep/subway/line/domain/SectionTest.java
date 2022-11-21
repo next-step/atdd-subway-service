@@ -1,19 +1,10 @@
-package nextstep.subway.section;
+package nextstep.subway.line.domain;
 
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SectionTest {
     @DisplayName("상행선을 바꿀 수 있다.")

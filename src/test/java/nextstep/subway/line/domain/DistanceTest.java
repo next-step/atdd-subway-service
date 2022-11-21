@@ -1,8 +1,5 @@
-package nextstep.subway.distance;
+package nextstep.subway.line.domain;
 
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
