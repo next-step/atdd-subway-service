@@ -1,6 +1,9 @@
 package nextstep.subway.line.dto;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.station.domain.Station;
 
 public class LineRequest {
     private String name;
@@ -9,15 +12,15 @@ public class LineRequest {
     private Long downStationId;
     private int distance;
 
-    public LineRequest() {
+    private LineRequest() {
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
-        this.name = name;
-        this.color = color;
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
-        this.distance = distance;
+    private LineRequest(Builder builder) {
+        this.name = builder.name;
+        this.color = builder.color;
+        this.upStationId = builder.upStationId;
+        this.downStationId = builder.downStationId;
+        this.distance = builder.distance;
     }
 
     public String getName() {
@@ -40,7 +43,50 @@ public class LineRequest {
         return distance;
     }
 
-    public Line toLine() {
-        return new Line(name, color);
+    public Line toLine(Station upStation, Station downStation) {
+        Section section = new Section(upStation, downStation, new Distance(distance));
+        Line line = new Line(name, color);
+        line.addSection(section);
+
+        return line;
+    }
+
+    public static class Builder {
+        private String name;
+        private String color;
+        private Long upStationId;
+        private Long downStationId;
+        private int distance;
+
+        public Builder() {}
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder color(String color) {
+            this.color = color;
+            return this;
+        }
+
+        public Builder upStationId(Long upStationId) {
+            this.upStationId = upStationId;
+            return this;
+        }
+
+        public Builder downStationId(Long downStationId) {
+            this.downStationId = downStationId;
+            return this;
+        }
+
+        public Builder distance(int distance) {
+            this.distance = distance;
+            return this;
+        }
+
+        public LineRequest build() {
+            return new LineRequest(this);
+        }
     }
 }
