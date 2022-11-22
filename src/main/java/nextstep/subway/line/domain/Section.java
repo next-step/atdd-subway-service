@@ -111,6 +111,10 @@ public class Section {
         return isSameUpStation(section.upStation) && isSameDownStation(section.downStation) && hasSameLine(section);
     }
 
+    public boolean isContainStation(Station station) {
+        return upStation.isSameStation(station) || downStation.isSameStation(station);
+    }
+
     public Long getId() {
         return id;
     }

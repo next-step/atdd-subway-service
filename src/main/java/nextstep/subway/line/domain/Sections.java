@@ -61,7 +61,7 @@ public class Sections {
 
     private boolean isNotContainAnyStation(Section section) {
         return findStations().stream()
-                .noneMatch(station -> section.stations().contains(station));
+                .noneMatch(section::isContainStation);
     }
 
     private void validateLine(Section section) {
