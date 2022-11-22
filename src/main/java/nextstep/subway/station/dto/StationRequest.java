@@ -5,11 +5,15 @@ import nextstep.subway.station.domain.Station;
 public class StationRequest {
     private String name;
 
-    public StationRequest() {
+    protected StationRequest() {
     }
 
-    public StationRequest(String name) {
+    private StationRequest(String name) {
         this.name = name;
+    }
+
+    public static StationRequest from(String name) {
+        return new StationRequest(name);
     }
 
     public String getName() {

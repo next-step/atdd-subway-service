@@ -1,56 +1,120 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.BaseEntity;
-import nextstep.subway.station.domain.Station;
+import static java.util.Collections.singletonList;
 
-import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import nextstep.subway.BaseEntity;
+import nextstep.subway.common.constant.ErrorCode;
+import nextstep.subway.station.domain.Station;
+import nextstep.subway.utils.StringUtils;
 
 @Entity
 public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String name;
-    private String color;
+    @Embedded
+    private Name name;
+    @Embedded
+    private Color color;
+    @Embedded
+    private Sections sections;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
-
-    public Line() {
+    protected Line() {
     }
 
     public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+        this.name = Name.from(name);
+        this.color = Color.from(color);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        validateUpStation(upStation);
+        validateDownStation(downStation);
+
+        Section section = Section.of(this, upStation, downStation, distance);
+        this.name = Name.from(name);
+        this.color = Color.from(color);
+        this.sections = Sections.from(singletonList(section));
     }
 
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+    private void validateUpStation(Station upStation) {
+        if(upStation == null) {
+            throw new IllegalArgumentException(ErrorCode.상행종착역은_비어있을_수_없음.getErrorMessage());
+        }
+    }
+
+    private void validateDownStation(Station downStation) {
+        if(downStation == null) {
+            throw new IllegalArgumentException(ErrorCode.하행종착역은_비어있을_수_없음.getErrorMessage());
+        }
+    }
+
+    public void updateNameAndColor(String name, String color) {
+        if(!StringUtils.isNullOrEmpty(name)) {
+            updateLineName(name);
+        }
+        if(!StringUtils.isNullOrEmpty(color)) {
+            updateLineColor(color);
+        }
+    }
+
+    private void updateLineName(String name) {
+        this.name = Name.from(name);
+    }
+
+    private void updateLineColor(String color) {
+        this.color = Color.from(color);
+    }
+
+    public void addSection(Section section) {
+        sections.addSection(section);
+    }
+
+    public void removeStation(Station station) {
+        sections.removeStationInLine(station);
+    }
+
+    public List<Station> findStations() {
+        return sections.findStations();
+    }
+
+    public List<Station> findInOrderStations() {
+        return sections.findInOrderStations();
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
-    public String getColor() {
+    public Color getColor() {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Line line = (Line) o;
+        return Objects.equals(getName(), line.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName());
     }
 }
