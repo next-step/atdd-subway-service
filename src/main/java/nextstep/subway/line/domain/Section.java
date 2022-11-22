@@ -60,7 +60,7 @@ public class Section {
         return Arrays.asList(upStation, downStation);
     }
 
-    public void addLine(Line line) {
+    public void belongs(Line line) {
         this.line = line;
     }
 
@@ -95,7 +95,7 @@ public class Section {
     public Section merge(Section nextSection) {
         Distance newDistance = distance.add(nextSection.distance);
         Section section = new Section(upStation, nextSection.getDownStation(), newDistance);
-        section.addLine(line);
+        section.belongs(line);
         return section;
     }
 }

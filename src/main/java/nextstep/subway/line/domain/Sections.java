@@ -23,10 +23,6 @@ public class Sections {
 
     protected Sections() {}
 
-    public List<Section> get() {
-        return sections;
-    }
-
     public List<Station> getStations() {
         if (sections.isEmpty()) {
             return new ArrayList<>();
@@ -78,7 +74,7 @@ public class Sections {
     }
 
     private void validateHasBothStations(Section section) {
-        if (getStations().containsAll(section.getStations())) {
+        if (new HashSet<>(getStations()).containsAll(section.getStations())) {
             throw new IllegalArgumentException(ErrorCode.BOTH_STATION_EXIST.getMessage());
         }
     }

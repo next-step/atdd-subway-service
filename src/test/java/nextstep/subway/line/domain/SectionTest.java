@@ -25,6 +25,36 @@ class SectionTest {
         assertThat(section.getUpStation()).isEqualTo(newStation);
     }
 
+    @DisplayName("지하철 역이 구간의 상행선과 동일한지 알 수 있다")
+    @Test
+    void isEqualUpStation() {
+        // given
+        Station upStation = new Station("판교역");
+        Station downStation = new Station("강남역");
+        Section section = new Section(upStation, downStation, new Distance(10));
+
+        // when
+        boolean result = section.isEqualUpStation(upStation);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @DisplayName("지하철 역이 구간의 하행선과 동일한지 알 수 있다")
+    @Test
+    void isEqualDownStation() {
+        // given
+        Station upStation = new Station("판교역");
+        Station downStation = new Station("강남역");
+        Section section = new Section(upStation, downStation, new Distance(10));
+
+        // when
+        boolean result = section.isEqualDownStation(downStation);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
     @DisplayName("하행선을 바꿀 수 있다.")
     @Test
     void updateDownStation() {

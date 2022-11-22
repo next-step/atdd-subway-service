@@ -36,7 +36,7 @@ class SectionsTest {
         assertThat(stations).containsExactly("강남역", "양재역", "판교역");
     }
 
-    @DisplayName("노선의 구간을 추가할 수 있다")
+    @DisplayName("노선의 구간을 추가하면, 추가된 지하철을 확인할 수 있다")
     @Test
     void addStation() {
         // given
@@ -54,7 +54,7 @@ class SectionsTest {
         sections.add(newSection);
 
         // then
-        assertThat(sections.get()).contains(section, newSection);
+        assertThat(sections.getStations()).contains(upStation, downStation, newStation);
     }
 
     @DisplayName("추가하려는 구간의 지하철 역이 모두 존재할 경우 예외가 발생한다")

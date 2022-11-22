@@ -42,4 +42,20 @@ class LineTest {
                 () -> assertThat(line.getColor()).isEqualTo("bg-blue-400")
         );
     }
+
+    @DisplayName("노선에 구간을 추가할 수 있다")
+    @Test
+    void addSection() {
+        // given
+        Line line = new Line("신분당선", "bg-red-600");
+        Station upStation = new Station("판교역");
+        Station downStation = new Station("강남역");
+        Section section = new Section(upStation, downStation, new Distance(10));
+
+        // when
+        line.addSection(section);
+
+        // then
+        assertThat(line.getStations()).hasSize(2);
+    }
 }
