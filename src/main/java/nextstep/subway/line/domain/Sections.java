@@ -109,12 +109,12 @@ public class Sections {
     }
 
     private void validateNotContainAnySection(boolean hasUpStationSection, boolean hasDownStationSection) {
-        if(hasNotBothUpAnddownStationSection(hasUpStationSection, hasDownStationSection)) {
+        if(hasNotBothUpAndDownStationSection(hasUpStationSection, hasDownStationSection)) {
             throw new IllegalArgumentException(ErrorCode.노선_내_존재하지_않는_역.getErrorMessage());
         }
     }
 
-    private boolean hasNotBothUpAnddownStationSection(boolean hasUpStationSection, boolean hasDownStationSection) {
+    private boolean hasNotBothUpAndDownStationSection(boolean hasUpStationSection, boolean hasDownStationSection) {
         return !hasUpStationSection && !hasDownStationSection;
     }
 
