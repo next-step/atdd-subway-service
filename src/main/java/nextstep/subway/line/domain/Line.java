@@ -44,22 +44,32 @@ public class Line extends BaseEntity {
     }
 
     public void removeLineStation(Station station) {
-        Optional<Section> upLineStation = getSections().stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = getSections().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+        Optional<Section> upLineStation = getUpLineStation(station);
+        Optional<Section> downLineStation = getDownLineStation(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            addSection(new Section(this, newUpStation, newDownStation, newDistance));
+            addNewLineStation(upLineStation.get(), downLineStation.get());
         }
 
-        upLineStation.ifPresent(it -> getSections().remove(it));
-        downLineStation.ifPresent(it -> getSections().remove(it));
+        upLineStation.ifPresent(sections::remove);
+        downLineStation.ifPresent(sections::remove);
+    }
+
+    private Optional<Section> getUpLineStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+    }
+
+    private Optional<Section> getDownLineStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+    }
+
+    private void addNewLineStation(Section upLineStation, Section downLineStation) {
+        addSection(new Section(this, downLineStation.getUpStation(), upLineStation.getDownStation(),
+                upLineStation.getDistance() + downLineStation.getDistance()));
     }
 
     public Long getId() {
