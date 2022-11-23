@@ -20,10 +20,10 @@ public class DistanceTest {
         Distance 추가_거리 = Distance.from(5);
 
         // when
-        거리.add(추가_거리);
+        Distance 새로운_거리 = 거리.add(추가_거리);
 
         // then
-        assertEquals(15, 거리.value());
+        assertEquals(15, 새로운_거리.value());
     }
 
     @DisplayName("거리를 줄일 수 있다.")
@@ -33,10 +33,10 @@ public class DistanceTest {
         Distance 거리 = Distance.from(10);
         Distance 차감_거리 = Distance.from(5);
         // when
-        거리.subtract(차감_거리);
+        Distance 새로운_거리 = 거리.subtract(차감_거리);
 
         // then
-        assertEquals(5, 거리.value());
+        assertEquals(5, 새로운_거리.value());
     }
 
     @DisplayName("거리를 생성할때 거리가 0과 같거나 음수라면 IllegalArgumentException 발생합니다.")
