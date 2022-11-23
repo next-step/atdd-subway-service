@@ -1,10 +1,9 @@
 package nextstep.subway.handler;
 
+import nextstep.subway.exception.EntityNotFound;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -13,8 +12,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<Void> handleNoSuchElementException() {
+    @ExceptionHandler(EntityNotFound.class)
+    public ResponseEntity<Void> handleEntityNotFoundException() {
         return ResponseEntity.badRequest().build();
     }
 }
