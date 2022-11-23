@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
+import java.util.List;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -28,19 +30,32 @@ public class Section {
     public Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
-        this.line = line;
+    public Section(Station upStation, Station downStation, int distance) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = new Distance(distance);
     }
 
-    public Long getId() {
-        return id;
+    public void addLine(Line line) {
+        this.line = line;
     }
 
-    public Line getLine() {
-        return line;
+    public List<Station> stations() {
+        return Arrays.asList(upStation, downStation);
+    }
+
+    public boolean isNext(Section section) {
+        return this.upStation.equals(section.downStation);
+    }
+
+    public void updateUpStation(Station station, int newDistance) {
+        this.upStation = station;
+        this.distance.subtract(new Distance(newDistance));
+    }
+
+    public void updateDownStation(Station station, int newDistance) {
+        this.downStation = station;
+        this.distance.subtract(new Distance(newDistance));
     }
 
     public Station getUpStation() {
@@ -55,13 +70,5 @@ public class Section {
         return distance.value();
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        this.upStation = station;
-        this.distance.subtract(new Distance(newDistance));
-    }
 
-    public void updateDownStation(Station station, int newDistance) {
-        this.downStation = station;
-        this.distance.subtract(new Distance(newDistance));
-    }
 }
