@@ -20,17 +20,14 @@ public class Line extends BaseEntity {
     private List<Section> sections = new ArrayList<>();
 
     public Line() {
+
     }
 
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
-
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+    private Line(Builder builder) {
+        this.name = builder.name;
+        this.color = builder.color;
+        Section section = new Section(this, builder.upStation, builder.downStation, builder.distance);
+        sections.add(section);
     }
 
     public void update(Line line) {
@@ -52,5 +49,50 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String name;
+        private int distance;
+        private String color;
+        private Station upStation;
+        private Station downStation;
+
+        private Builder() {
+
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder distance(int distance) {
+            this.distance = distance;
+            return this;
+        }
+
+        public Builder color(String color) {
+            this.color = color;
+            return this;
+        }
+
+        public Builder upStation(Station upStation) {
+            this.upStation = upStation;
+            return this;
+        }
+
+        public Builder downStation(Station downStation) {
+            this.downStation = downStation;
+            return this;
+        }
+
+        public Line build() {
+            return new Line(this);
+        }
     }
 }
