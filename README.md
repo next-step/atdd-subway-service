@@ -33,4 +33,4 @@
   - [ ] Line
   - [ ] Section
   - [ ] Sections
-  - [ ] Distance
+  - [x] Distance
