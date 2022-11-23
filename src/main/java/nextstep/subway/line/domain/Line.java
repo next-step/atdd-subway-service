@@ -119,6 +119,10 @@ public class Line extends BaseEntity {
     }
 
     public void removeLineStation(Station station) {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+
         Optional<Section> upLineStation = getUpLineStation(station);
         Optional<Section> downLineStation = getDownLineStation(station);
 
