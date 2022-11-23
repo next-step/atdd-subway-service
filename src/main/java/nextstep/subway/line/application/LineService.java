@@ -32,6 +32,7 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
+        // line.addSection
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         List<StationResponse> stations = getStations(persistLine).stream()
                 .map(it -> StationResponse.of(it))
@@ -78,6 +79,7 @@ public class LineService {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         List<Station> stations = getStations(line);
+        // line.addSection -> sections.add
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
@@ -114,6 +116,7 @@ public class LineService {
         }
     }
 
+    // mv - sections : sections.removeStation()
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
@@ -139,7 +142,7 @@ public class LineService {
         downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
 
-
+    // mv - sections : sections.getStations()
     public List<Station> getStations(Line line) {
         if (line.getSections().isEmpty()) {
             return Arrays.asList();
@@ -164,6 +167,7 @@ public class LineService {
         return stations;
     }
 
+    // mv - sections : sections.findUpStation()
     private Station findUpStation(Line line) {
         Station downStation = line.getSections().get(0).getUpStation();
         while (downStation != null) {
