@@ -5,10 +5,8 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -20,39 +18,55 @@ public class Sections {
     }
 
     public void addSection(Line line, Station upStation, Station downStation, int distance) {
-        List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+        validateAddSection(upStation, downStation);
 
-        if (isUpStationExisted && isDownStationExisted) {
+        Section newSection = new Section(line, upStation, downStation, distance);
+        if (sections.isEmpty()) {
+            sections.add(newSection);
+            return;
+        }
+        if (hasStation(upStation)) {
+            updateUpStation(upStation, downStation, distance);
+            sections.add(newSection);
+            return;
+        }
+        if (hasStation(downStation)) {
+            updateDownStation(upStation, downStation, distance);
+            sections.add(newSection);
+            return;
+        }
+        throw new RuntimeException();
+    }
+
+    private void validateAddSection(Station upStation, Station downStation) {
+        if (hasStation(upStation) && hasStation(downStation)) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+        List<Station> stations = getStations();
+        if (!sections.isEmpty() &&
+                stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
+    }
 
-        if (stations.isEmpty()) {
-            sections.add(new Section(line, upStation, downStation, distance));
-            return;
-        }
+    private void updateUpStation(Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
+    }
 
-        if (isUpStationExisted) {
-            sections.stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, distance));
-            sections.add(new Section(line, upStation, downStation, distance));
-        } else if (isDownStationExisted) {
-            sections.stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, distance));
-            sections.add(new Section(line, upStation, downStation, distance));
-        } else {
-            throw new RuntimeException();
-        }
+    private void updateDownStation(Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
+    }
+
+    private boolean hasStation(Station station) {
+        return getStations().stream().anyMatch(it -> it == station);
     }
 
     public List<Section> getSections() {
