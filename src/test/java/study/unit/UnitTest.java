@@ -20,7 +20,8 @@ public class UnitTest {
         Line newLine = Line.builder().name(newName).color("GREEN").distance(10).build();
 
         // when
-        line.update(newLine);
+        line.changeName(newLine.getName());
+        line.changeColor(newLine.getColor());
 
         // then
         assertThat(line.getName()).isEqualTo(newName);
