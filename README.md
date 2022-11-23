@@ -36,19 +36,8 @@ npm run dev
 ```
 ./gradlew bootRun
 ```
-<br>
 
-## ✏️ Code Review Process
-[텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
 
-<br>
-
-## 🐞 Bug Report
-
-버그를 발견한다면, [Issues](https://github.com/next-step/atdd-subway-service/issues) 에 등록해주세요 :)
-
-<br>
-
-## 📝 License
-
-This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+# Step1 요구사항
+- [ ] LineService 리팩터링
+- [ ]  (선택) LineSectionAcceptanceTest 리팩터링 
