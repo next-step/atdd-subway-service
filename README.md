@@ -40,4 +40,13 @@ npm run dev
 
 # Step1 요구사항
 - [ ] LineService 리팩터링
+  1. Domain으로 옮길 로직을 찾기
+     스프링 빈을 사용하는 객체와 의존하는 로직을 제외하고는 도메인으로 옮길 예정  <br>
+  2. Domain의 단위 테스트를 작성하기 <br>
+     서비스 레이어에서 옮겨 올 로직의 기능을 테스트  <br>
+     SectionsTest나 LineTest 클래스가 생성될 수 있음  <br>
+  3. 로직을 옮기기
+     기존 로직을 지우지 말고 새로운 로직을 만들어 수행 <br>
+     정상 동작 확인 후 기존 로직 제거 <br>
+
 - [ ]  (선택) LineSectionAcceptanceTest 리팩터링 
