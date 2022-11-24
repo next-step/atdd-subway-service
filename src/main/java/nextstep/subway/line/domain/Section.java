@@ -48,6 +48,25 @@ public class Section {
         return this.upStation.equals(section.downStation);
     }
 
+    public void reorganize(Section newSection) {
+        if (isSameUpStation(newSection)) {
+            this.upStation = newSection.downStation;
+            this.distance = this.distance.subtract(newSection.distance);
+        }
+        if (isSameDownStation(newSection)) {
+            this.downStation = newSection.upStation;
+            this.distance = this.distance.subtract(newSection.distance);
+        }
+    }
+
+    private boolean isSameUpStation(Section newSection) {
+        return this.upStation.equals(newSection.upStation);
+    }
+
+    private boolean isSameDownStation(Section newSection) {
+        return this.downStation.equals(newSection.downStation);
+    }
+
     public void updateUpStation(Station station, int newDistance) {
         this.upStation = station;
         this.distance.subtract(new Distance(newDistance));
