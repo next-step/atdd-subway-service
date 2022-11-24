@@ -64,6 +64,11 @@ public class Line extends BaseEntity {
         return new Builder();
     }
 
+    public void addSection(Section newSection) {
+        newSection.addLine(this);
+        this.sections.add(newSection);
+    }
+
     public static class Builder {
         private String name;
         private int distance;

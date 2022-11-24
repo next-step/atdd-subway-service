@@ -48,6 +48,10 @@ public class Section {
         return this.upStation.equals(section.downStation);
     }
 
+    public boolean isSameUpDownStation(Section newSection) {
+        return isSameUpStation(newSection) && isSameDownStation(newSection);
+    }
+
     public void reorganize(Section newSection) {
         if (isSameUpStation(newSection)) {
             this.upStation = newSection.downStation;
