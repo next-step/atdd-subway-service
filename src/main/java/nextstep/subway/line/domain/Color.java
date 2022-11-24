@@ -12,8 +12,7 @@ public class Color {
     @Column(nullable = false)
     private String color;
 
-    protected Color() {
-    }
+    protected Color() {}
 
     private Color(String color) {
         validateColorNullOrEmpty(color);

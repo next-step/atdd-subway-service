@@ -20,8 +20,7 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    protected Sections() {
-    }
+    protected Sections() {}
 
     private Sections(List<Section> sections) {
         this.sections = new ArrayList<>(sections);
@@ -163,5 +162,9 @@ public class Sections {
             sortStations.add(currentStation);
         }
         return sortStations;
+    }
+
+    public List<Section> getSections() {
+        return new ArrayList<>(sections);
     }
 }

@@ -14,15 +14,10 @@ public class Station extends BaseEntity {
     @Embedded
     private Name name;
 
-    public Station() {
-    }
+    public Station() {}
 
     public Station(String name) {
         this.name = Name.from(name);
-    }
-
-    public boolean isSameStation(Station station) {
-        return Objects.equals(this.name, station.name);
     }
 
     public Long getId() {
@@ -31,5 +26,22 @@ public class Station extends BaseEntity {
 
     public Name getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Station station = (Station) o;
+        return Objects.equals(getId(), station.getId()) && Objects.equals(getName(), station.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName());
     }
 }

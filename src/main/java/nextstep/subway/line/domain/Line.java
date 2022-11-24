@@ -26,8 +26,7 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections;
 
-    protected Line() {
-    }
+    protected Line() {}
 
     public Line(String name, String color) {
         this.name = Name.from(name);
@@ -99,6 +98,10 @@ public class Line extends BaseEntity {
 
     public Color getColor() {
         return color;
+    }
+
+    public Sections getSections() {
+        return sections;
     }
 
     @Override
