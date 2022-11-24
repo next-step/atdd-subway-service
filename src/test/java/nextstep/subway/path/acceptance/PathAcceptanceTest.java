@@ -124,7 +124,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 }),
                 DynamicTest.dynamicTest("존재하지 않는 출발역이나 도착역 사이의 경로를 조회할 수 없다.", () -> {
                     // when
-                    ExtractableResponse<Response> response = 지하철_경로_조회_요청(9999999L, 이수역.getId());
+                    ExtractableResponse<Response> response = 지하철_경로_조회_요청(null, 이수역.getId());
 
                     // then
                     지하철_경로_조회_실패됨(response);
