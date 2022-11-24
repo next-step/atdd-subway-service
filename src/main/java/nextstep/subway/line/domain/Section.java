@@ -71,6 +71,19 @@ public class Section {
         return this.downStation.equals(newSection.downStation);
     }
 
+    public boolean isDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
+
+    public boolean isUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public void merge(Section section) {
+        this.downStation = section.downStation;
+        this.distance = this.distance.add(section.distance);
+    }
+
     public Station getUpStation() {
         return upStation;
     }
@@ -82,6 +95,4 @@ public class Section {
     public int getDistance() {
         return distance.value();
     }
-
-
 }
