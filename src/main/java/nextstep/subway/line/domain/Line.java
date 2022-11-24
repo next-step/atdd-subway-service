@@ -69,6 +69,10 @@ public class Line extends BaseEntity {
         this.sections.add(newSection);
     }
 
+    public void deleteStation(Station station) {
+        this.sections.delete(station);
+    }
+
     public static class Builder {
         private String name;
         private int distance;
