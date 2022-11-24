@@ -41,6 +41,7 @@ public class DijkstraPathFinder implements PathFinder {
         validateEqualStations(sourceStation, targetStation);
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        validatePathExists(shortestPath);
         List<Station> shortestPathVertexes = shortestPath.getVertexList();
         double shortestPathWeight = shortestPath.getWeight();
 
@@ -50,6 +51,12 @@ public class DijkstraPathFinder implements PathFinder {
     private void validateEqualStations(Station sourceStation, Station targetStation) {
         if(sourceStation.equals(targetStation)) {
             throw new IllegalArgumentException(ErrorCode.출발역과_도착역이_서로_같음.getErrorMessage());
+        }
+    }
+
+    private void validatePathExists(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
+        if(shortestPath == null) {
+            throw new IllegalArgumentException(ErrorCode.출발역과_도착역은_연결되지_않음.getErrorMessage());
         }
     }
 }
