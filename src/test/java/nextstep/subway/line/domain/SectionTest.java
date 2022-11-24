@@ -44,6 +44,17 @@ class SectionTest {
         assertThat(existSection.getDownStation()).isEqualTo(교대역);
     }
 
+    @DisplayName("구간 병합을 통해 기존 구간의 하행역을 변경할 수 있다.")
+    @Test
+    void merge() {
+        Station 역삼역 = new Station("역삼역");
+        Section newSection = new Section(강남역, 역삼역, 5);
+
+        existSection.merge(newSection);
+
+        assertThat(existSection.getDownStation()).isEqualTo(역삼역);
+    }
+
     @DisplayName("구간 재조정 시 기존 역 사이의 거리보다 크거나 같을 경우 예외가 발생한다.")
     @ParameterizedTest
     @ValueSource(ints = {10, 11})
