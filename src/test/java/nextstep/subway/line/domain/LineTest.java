@@ -26,4 +26,14 @@ class LineTest {
     void findAssignedStations() {
         assertThat(역2개_2호선.findAssignedStations()).containsExactly(서초역, 강남역);
     }
+
+    @Test
+    @DisplayName("구간을 추가하고 노선 조회 시 추가한 역 조회를 성공한다.")
+    void addSection() {
+        Section newSection = new Section(서초역, 교대역, 5);
+
+        역2개_2호선.addSection(newSection);
+
+        assertThat(역2개_2호선.findAssignedStations()).containsExactly(서초역, 교대역, 강남역);
+    }
 }

@@ -50,9 +50,26 @@ class SectionTest {
     void reorganizeException(int distance) {
         Station 교대역 = new Station("교대역");
         Section newSection = new Section(서초역, 교대역, distance);
+
         assertThatThrownBy(() -> existSection.reorganize(newSection))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("거리는 0이하의 값일 수 없습니다.");
     }
 
+    @DisplayName("구간 거리가 0 이하인 구간을 등록 할 경우 예외가 발생한다.")
+    @ParameterizedTest
+    @ValueSource(ints = {0, -1})
+    void createSectionException(int distance) {
+        assertThatThrownBy(() -> new Section(서초역, 강남역, distance))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("거리는 0이하의 값일 수 없습니다.");
+    }
+
+    @DisplayName("새로운 구간의 상하행 역이 기존 구간과 동일한지 확인할 수 있다.")
+    @Test
+    void isSameUpDownStation() {
+        Section newSection = new Section(서초역, 강남역, 5);
+
+        assertThat(existSection.isSameUpDownStation(newSection)).isTrue();
+    }
 }
