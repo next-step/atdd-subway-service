@@ -5,23 +5,45 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptance.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
 
+@ExtendWith(MockitoExtension.class)
+@AutoConfigureMockMvc
 @DisplayName("지하철 경로 조회")
 class PathAcceptanceTest extends AcceptanceTest {
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private PathService pathService;
+
     private LineResponse 삼호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
@@ -61,18 +83,32 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 역 사이의 최단 경로를 조회한다")
     @Test
     void findShortestPath() {
+        // given
+        LocalDateTime now = LocalDateTime.now();
+        StationResponse response1 = new StationResponse(1L, "강남역", now, now);
+        StationResponse response2 = new StationResponse(2L, "양재역", now, now);
+        StationResponse response3 = new StationResponse(4L, "남부터미널역", now, now);
+        List<StationResponse> stations = Arrays.asList(response1, response2, response3);
+        when(pathService.findShortestPath(anyLong(), anyLong()))
+                .thenReturn(new PathResponse(stations, 12));
+
+
         // when
-        ExtractableResponse<Response> response = 최단경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> response = 최단경로_조회_요청(강남역, 남부터미널역);
 
         // then
-        최단경로_요청이_정상_조회됨(response, 5, 교대역, 양재역, 남부터미널역);
+        최단경로_요청이_정상_조회됨(response, 12, 강남역, 양재역, 남부터미널역);
     }
 
     @DisplayName("최단 경로를 조회 시, 출발역과 도착역이 같다면 예외가 발생한다")
     @Test
     void sameStationException() {
+        // given
+        when(pathService.findShortestPath(anyLong(), anyLong()))
+                .thenThrow(new IllegalArgumentException("출발역과 도착역이 같습니다."));
+
         // when
-        ExtractableResponse<Response> response = 최단경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> response = 최단경로_조회_요청(교대역, 교대역);
 
         // then
         최단_경로_조회_실패(response);
@@ -81,6 +117,10 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단 경로를 조회 시, 출발역과 도착역이 연결이 되어 있지 않다면 예외가 발생한다")
     @Test
     void notConnectException() {
+        // given
+        when(pathService.findShortestPath(anyLong(), anyLong()))
+                .thenThrow(new IllegalArgumentException("출발역과 도착역이 연결이 되어 있지 않습니다."));
+
         // when
         ExtractableResponse<Response> response = 최단경로_조회_요청(양재역, 인천역);
 
@@ -93,6 +133,8 @@ class PathAcceptanceTest extends AcceptanceTest {
     void notExistException() {
         // given
         StationResponse 존재하지_않는_역 = 지하철역_등록되어_있음("미궁역").as(StationResponse.class);
+        when(pathService.findShortestPath(anyLong(), anyLong()))
+                .thenThrow(new IllegalArgumentException("최단 경로를 조회하려는 역이 존재하지 않습니다."));
 
         // when
         ExtractableResponse<Response> response = 최단경로_조회_요청(교대역, 존재하지_않는_역);
@@ -107,8 +149,18 @@ class PathAcceptanceTest extends AcceptanceTest {
             StationResponse... stations
     ) {
         PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(stations).containsAll(pathResponse.getStations());
-        assertThat(distance).isEqualTo(pathResponse.getDistance());
+        List<Long> actualIds = Arrays.asList(stations)
+                .stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+        List<Long> expectedIds = pathResponse.getStations()
+                .stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+
+        assertThat(actualIds).containsAll(expectedIds);
+        assertThat(pathResponse.getDistance()).isEqualTo(distance);
     }
 
     private static ExtractableResponse<Response> 최단경로_조회_요청(
