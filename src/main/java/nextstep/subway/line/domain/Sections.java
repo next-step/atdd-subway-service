@@ -28,7 +28,7 @@ public class Sections {
         return this.sections;
     }
 
-    public Set<Station> assignedStations() {
+    public Set<Station> assignedOrderedStation() {
         Set<Station> sortedStations = new LinkedHashSet<>();
         Optional<Section> section = findFirstSection();
         while (section.isPresent()) {

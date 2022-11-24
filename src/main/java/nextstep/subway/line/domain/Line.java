@@ -41,7 +41,7 @@ public class Line extends BaseEntity {
     }
 
     public Set<Station> findAssignedStations() {
-        return sections.assignedStations();
+        return sections.assignedOrderedStation();
     }
 
     public Long getId() {

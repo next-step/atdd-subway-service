@@ -23,6 +23,6 @@ class SectionsTest {
     @DisplayName("구간 목록에 할당된 지하철 역을 조회할 수 있다.")
     @Test
     void assignedStations() {
-        assertThat(sections.assignedStations()).containsExactly(서초역, 강남역);
+        assertThat(sections.assignedOrderedStation()).containsExactly(서초역, 강남역);
     }
 }
