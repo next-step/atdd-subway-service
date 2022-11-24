@@ -50,7 +50,7 @@ public class DijkstraPathFinderTest {
         신분당선 = createLine("신분당선", "bg-red", 강남역, 양재역, 10);
         이호선 = createLine("이호선", "bg-green", 교대역, 강남역, 10);
         삼호선 = createLine("삼호선", "bg-orange", 교대역, 양재역, 5);
-        createSection(삼호선, 교대역, 남부터미널역, 3);
+        삼호선.addSection(createSection(삼호선, 교대역, 남부터미널역, 3));
     }
 
     @DisplayName("지하철들 간 최단 거리의 경로를 조회한다.")
