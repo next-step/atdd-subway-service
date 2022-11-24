@@ -2,13 +2,10 @@ package nextstep.subway.line.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +24,7 @@ public class SectionTest {
         Section 구간 = new Section(신분당선, 강남역, 광교역, 10);
         // when
 
-        구간.updateUpStation(미금역, 5);
+        구간.updateUpStation(미금역, Distance.from(5));
 
         // then
         assertEquals(미금역, 구간.getUpStation());
@@ -41,7 +38,7 @@ public class SectionTest {
         Section 구간 = new Section(신분당선, 강남역, 광교역, 10);
         // when
 
-        구간.updateDownStation(미금역, 5);
+        구간.updateDownStation(미금역, Distance.from(5));
 
         // then
         assertEquals(미금역, 구간.getDownStation());
@@ -55,7 +52,7 @@ public class SectionTest {
         Section 구간 = new Section(신분당선, 강남역, 미금역, 5);
         // when
 
-        구간.updateDownStationDelete(미금역, 10);
+        구간.updateDownStationDelete(미금역, Distance.from(10));
 
         // then
         assertEquals(미금역, 구간.getDownStation());

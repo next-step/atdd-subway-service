@@ -84,7 +84,7 @@ public class SectionsTest {
     }
 
 
-    @DisplayName("구간을 추가할때 상행역, 하행역이 전부 노선에 있으면 IllegalArgumentException 발생한다.")
+    @DisplayName("구간을 추가할때 상행역, 하행역이 전부 노선에 있으면 IllegalStateException 발생한다.")
     @Test
     void addSection_duplicated_exception() {
         // when
@@ -93,11 +93,11 @@ public class SectionsTest {
         구간_목록.add(구간);
 
         // then
-        assertThatThrownBy(() -> 구간_목록.add(구간)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> 구간_목록.add(구간)).isInstanceOf(IllegalStateException.class);
     }
 
 
-    @DisplayName("구간을 추가할때 상행역, 하행역이 전부 노선에 없으면 IllegalArgumentException 발생한다.")
+    @DisplayName("구간을 추가할때 상행역, 하행역이 전부 노선에 없으면 IllegalStateException 발생한다.")
     @Test
     void addSection_notExists_exception() {
         // when
@@ -108,7 +108,7 @@ public class SectionsTest {
         Section 신규_구간 = new Section(신분당선, 정자역, 미금역, 10);
 
         // then
-        assertThatThrownBy(() -> 구간_목록.add(신규_구간)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> 구간_목록.add(신규_구간)).isInstanceOf(IllegalStateException.class);
     }
 
 
