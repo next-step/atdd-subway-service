@@ -5,11 +5,13 @@ import static nextstep.subway.line.acceptance.LineSectionRestAssured.지하철_�
 import static nextstep.subway.path.acceptance.PathRestAssured.지하철_경로_조회_요청;
 import static nextstep.subway.station.acceptance.StationRestAssured.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -47,7 +49,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *   |                         |                      |
      * *신분당선*[10]              *분당선*[5]           *2호선*[4]
      *   |                        |                     |
-     * 강남역 --- *2호선*[7] --- 선릉역 --- *2호선*[4] --- 삼성역
+     * 강남역 --- *2호선*[6] --- 선릉역 --- *2호선*[4] --- 삼성역
      *                         |
      *                      *분당선*[5]
      *                        |
@@ -67,7 +69,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         LineRequest 신분당선_요청 = new LineRequest("신분당선", "bg-red-600", 신논현역.getId(), 강남역.getId(), 10);
         신분당선 = 지하철_노선_등록되어_있음(신분당선_요청).as(LineResponse.class);
-        LineRequest 이호선_요청 = new LineRequest("이호선", "bg-green-600", 강남역.getId(), 선릉역.getId(), 7);
+        LineRequest 이호선_요청 = new LineRequest("이호선", "bg-green-600", 강남역.getId(), 선릉역.getId(), 6);
         이호선 = 지하철_노선_등록되어_있음(이호선_요청).as(LineResponse.class);
         LineRequest 구호선_요청 = new LineRequest("구호선", "bg-gold-600", 신논현역.getId(), 선정릉역.getId(), 12);
         구호선 = 지하철_노선_등록되어_있음(구호선_요청).as(LineResponse.class);
@@ -111,6 +113,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
                     // then
                     지하철_경로_조회됨(response);
+                    지하철_최단_경로_조회됨(response, Arrays.asList(신논현역, 강남역, 선릉역, 한티역), 21);
                 }),
                 DynamicTest.dynamicTest("연결되지 않은 출발역과 도착역 사이의 경로를 조회할 수 없다.", () -> {
                     // when
@@ -142,5 +145,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private static void 지하철_경로_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private static void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectStations, int expectDistance) {
+        List<StationResponse> actualStations = response.jsonPath().getList("stations", StationResponse.class);
+        int actualDistance = response.jsonPath().getInt("distance");
+        assertAll(
+                () -> assertThat(actualStations).containsExactlyElementsOf(expectStations),
+                () -> assertThat(actualDistance).isEqualTo(actualDistance)
+        );
     }
 }
