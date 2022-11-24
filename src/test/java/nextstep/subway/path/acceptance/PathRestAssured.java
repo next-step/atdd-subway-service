@@ -17,7 +17,7 @@ public class PathRestAssured {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .queryParams(params)
                 .when().get("/paths")
                 .then().log().all()
                 .extract();
