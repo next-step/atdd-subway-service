@@ -204,8 +204,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 ### 기능 구현 목록
 - [x] README.md 요구사항 및 기능 구현 목록 작성
-- [ ] 인수 테스트 작성 및 성공시키기
+- [x] 인수테스트 작성
 - [ ] controller 구현
+- [ ] 인수 테스트 성공시키기
 - [ ] service 테스트 작성 
 - [ ] service 구현
 - [ ] domain 테스트 작성
