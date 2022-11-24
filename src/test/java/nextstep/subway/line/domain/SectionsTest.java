@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.exception.InvalidDistanceException;
 import nextstep.subway.line.exception.InvalidRemoveSectionException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,12 +65,12 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("구간 중간에 역에 추가할 경우 거리는 기존 구간보다 작아야 한다")
+    @DisplayName("구간 중간에 역에 추가할 경우 거리는 기존 구간보다 작을 경우 예외를 던진다")
     void whenDistanceSplitDistanceLessThanBefore() {
         구간.addSection(new Section(노선, 당산역, 동작역, 100));
 
         assertThatThrownBy(() ->구간.addSection(new Section(노선, 당산역, 여의도역, 100+1)))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(InvalidDistanceException.class);
     }
 
     @Test

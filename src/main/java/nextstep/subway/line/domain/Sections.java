@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.exception.InvalidAddSectionException;
 import nextstep.subway.line.exception.InvalidRemoveSectionException;
 import nextstep.subway.station.domain.Station;
 
@@ -10,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static nextstep.subway.line.exception.InvalidAddSectionException.EXISTS_SECTION;
+import static nextstep.subway.line.exception.InvalidAddSectionException.NOT_EXIST_STATIONS;
 
 @Embeddable
 public class Sections {
@@ -60,11 +64,11 @@ public class Sections {
 
     private static void verifyAddSection(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new InvalidAddSectionException(EXISTS_SECTION);
         }
 
         if (!isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new InvalidAddSectionException(NOT_EXIST_STATIONS);
         }
     }
 
