@@ -71,16 +71,6 @@ public class Section {
         return this.downStation.equals(newSection.downStation);
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        this.upStation = station;
-        this.distance.subtract(new Distance(newDistance));
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        this.downStation = station;
-        this.distance.subtract(new Distance(newDistance));
-    }
-
     public Station getUpStation() {
         return upStation;
     }
