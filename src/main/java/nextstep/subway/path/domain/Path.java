@@ -24,7 +24,7 @@ public class Path {
 
     private void validatePathStations(List<Station> stations) {
         if(stations == null || stations.isEmpty()) {
-            throw new IllegalArgumentException(ErrorCode.출발역과_도착역은_연결되지_않음.getErrorMessage());
+            throw new IllegalArgumentException(ErrorCode.경로는_비어있을_수_없음.getErrorMessage());
         }
     }
 

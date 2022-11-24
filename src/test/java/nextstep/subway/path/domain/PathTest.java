@@ -19,7 +19,7 @@ public class PathTest {
         // when & then
         assertThatThrownBy(() -> Path.of(Collections.emptyList(), 4))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.출발역과_도착역은_연결되지_않음.getErrorMessage());
+                .hasMessage(ErrorCode.경로는_비어있을_수_없음.getErrorMessage());
     }
 
     @DisplayName("경로 생성 시, 거리가 음수이면 생성되지 않는다.")
