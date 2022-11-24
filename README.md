@@ -52,3 +52,37 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+---
+
+# 인증 테스트 기반 TDD
+
+## 1단계 - 인수 테스트 기반 리팩터링
+
+### 요구사항
+
+```text
+- LineService 리팩터링
+- (선택) LineSectionAcceptanceTest 리팩터링
+```
+
+#### LineService 리팩토링
+
+1. Domain으로 옮길 로직을 찾기 (대상 : LineService)
+
+- [ ] saveLine
+- [ ] findLines
+- [ ] findLineResponseById
+- [ ] updateLine
+- [ ] deleteLineById
+- [ ] addLineStation
+- [ ] removeLineStation
+
+2. Domain의 단위 테스트를 작성하기
+
+- 서비스 레이어에서 옮겨 올 로직의 기능을 테스트
+
+3. 로직을 옮기기
+
+- 기존 로직을 지우지 말고 새로운 로직을 만들어 수행
+- 정상 동작 확인 후 기존 로직 제거
