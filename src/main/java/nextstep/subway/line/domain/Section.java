@@ -71,6 +71,14 @@ public class Section {
         this.distance -= newDistance;
     }
 
+    public boolean equalsUpStation(Station station) {
+        return this.upStation == station;
+    }
+
+    public boolean equalsDownStation(Station station) {
+        return this.downStation == station;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

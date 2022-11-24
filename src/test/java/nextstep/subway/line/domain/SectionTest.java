@@ -35,4 +35,18 @@ class SectionTest {
         section.updateDownStation(신길역, 50);
         assertThat(section.getDownStation()).isEqualTo(신길역);
     }
+
+    @Test
+    @DisplayName("구간의 상행역을 비교한다.")
+    void 상행역_비교() {
+        assertThat(section.equalsUpStation(신도림역)).isTrue();
+        assertThat(section.equalsUpStation(신길역)).isFalse();
+    }
+
+    @Test
+    @DisplayName("구간의 하행역을 비교한다.")
+    void 하행역_비교() {
+        assertThat(section.equalsDownStation(영등포역)).isTrue();
+        assertThat(section.equalsDownStation(구로역)).isFalse();
+    }
 }

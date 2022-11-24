@@ -6,7 +6,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -51,24 +50,6 @@ public class Sections {
         }
     }
 
-    private void updateUpStation(Station upStation, Station downStation, int distance) {
-        sections.stream()
-                .filter(it -> it.getUpStation() == upStation)
-                .findFirst()
-                .ifPresent(it -> it.updateUpStation(downStation, distance));
-    }
-
-    private void updateDownStation(Station upStation, Station downStation, int distance) {
-        sections.stream()
-                .filter(it -> it.getDownStation() == downStation)
-                .findFirst()
-                .ifPresent(it -> it.updateDownStation(upStation, distance));
-    }
-
-    private boolean hasStation(Station station) {
-        return getStations().stream().anyMatch(it -> it == station);
-    }
-
     public List<Section> getSections() {
         return sections;
     }
@@ -84,9 +65,7 @@ public class Sections {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = getUpLineStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -115,13 +94,23 @@ public class Sections {
         }
     }
 
+    private void updateUpStation(Station upStation, Station downStation, int distance) {
+        getUpLineStation(upStation).ifPresent(it -> it.updateUpStation(downStation, distance));
+    }
+
+    private void updateDownStation(Station upStation, Station downStation, int distance) {
+        getDownLineStation(downStation).ifPresent(it -> it.updateDownStation(upStation, distance));
+    }
+
+    private boolean hasStation(Station station) {
+        return getStations().stream().anyMatch(it -> it == station);
+    }
+
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = getDownLineStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -133,13 +122,13 @@ public class Sections {
 
     private Optional<Section> getUpLineStation(Station station) {
         return sections.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(it -> it.equalsUpStation(station))
                 .findFirst();
     }
 
     private Optional<Section> getDownLineStation(Station station) {
         return sections.stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(it -> it.equalsDownStation(station))
                 .findFirst();
     }
 }
