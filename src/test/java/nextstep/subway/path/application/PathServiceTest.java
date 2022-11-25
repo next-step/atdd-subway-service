@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.constant.ErrorCode;
 import nextstep.subway.fixture.LineTestFactory;
 import nextstep.subway.fixture.SectionTestFactory;
 import nextstep.subway.line.domain.Line;
@@ -96,7 +97,7 @@ class PathServiceTest {
         // when & then
         assertThatThrownBy(() -> pathService.findShortestPath(source, source))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("출발역과 도착역이 같습니다.");
+                .hasMessageContaining(ErrorCode.FIND_PATH_SAME_STATION.getMessage());
     }
 
     @DisplayName("최단경로를 조회하는 역이 존재하지 않으면 예외가 발생한다")
@@ -113,7 +114,7 @@ class PathServiceTest {
         // when & then
         assertThatThrownBy(() -> pathService.findShortestPath(source, target))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("최단 경로를 조회하려는 역이 존재하지 않습니다.");
+                .hasMessageContaining(ErrorCode.FIND_PATH_NOT_EXIST.getMessage());
     }
 
     @DisplayName("출발역과 도착역이 연결 되어 있지 않으면 예외가 발생한다")
@@ -129,6 +130,6 @@ class PathServiceTest {
         // when & then
         assertThatThrownBy(() -> pathService.findShortestPath(source, target))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("출발역과 도착역이 연결이 되어 있지 않습니다.");
+                .hasMessageContaining(ErrorCode.FIND_PATH_NOT_CONNECT.getMessage());
     }
 }

@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.constant.ErrorCode;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
@@ -105,7 +106,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     void sameStationException() {
         // given
         when(pathService.findShortestPath(anyLong(), anyLong()))
-                .thenThrow(new IllegalArgumentException("출발역과 도착역이 같습니다."));
+                .thenThrow(new IllegalArgumentException(ErrorCode.FIND_PATH_SAME_STATION.getMessage()));
 
         // when
         ExtractableResponse<Response> response = 최단경로_조회_요청(교대역, 교대역);
@@ -119,7 +120,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     void notConnectException() {
         // given
         when(pathService.findShortestPath(anyLong(), anyLong()))
-                .thenThrow(new IllegalArgumentException("출발역과 도착역이 연결이 되어 있지 않습니다."));
+                .thenThrow(new IllegalArgumentException(ErrorCode.FIND_PATH_NOT_EXIST.getMessage()));
 
         // when
         ExtractableResponse<Response> response = 최단경로_조회_요청(양재역, 인천역);
@@ -134,7 +135,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         // given
         StationResponse 존재하지_않는_역 = 지하철역_등록되어_있음("미궁역").as(StationResponse.class);
         when(pathService.findShortestPath(anyLong(), anyLong()))
-                .thenThrow(new IllegalArgumentException("최단 경로를 조회하려는 역이 존재하지 않습니다."));
+                .thenThrow(new IllegalArgumentException(ErrorCode.FIND_PATH_NOT_CONNECT.getMessage()));
 
         // when
         ExtractableResponse<Response> response = 최단경로_조회_요청(교대역, 존재하지_않는_역);

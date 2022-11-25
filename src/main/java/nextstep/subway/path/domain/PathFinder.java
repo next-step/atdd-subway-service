@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.constant.ErrorCode;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.dto.PathResponse;
@@ -62,19 +63,19 @@ public class PathFinder {
 
     private void validateSameStation(Station sourceStation, Station targetStation) {
         if (sourceStation.equals(targetStation)) {
-            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+            throw new IllegalArgumentException(ErrorCode.FIND_PATH_SAME_STATION.getMessage());
         }
     }
 
     private void validateNotExistLines(Station sourceStation, Station targetStation) {
         if (lines.hasNotStation(sourceStation) || lines.hasNotStation(targetStation)) {
-            throw new IllegalArgumentException("최단 경로를 조회하려는 역이 존재하지 않습니다.");
+            throw new IllegalArgumentException(ErrorCode.FIND_PATH_NOT_EXIST.getMessage());
         }
     }
 
     private void validateAfter(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
         if (shortestPath == null) {
-            throw new IllegalArgumentException("출발역과 도착역이 연결이 되어 있지 않습니다.");
+            throw new IllegalArgumentException(ErrorCode.FIND_PATH_NOT_CONNECT.getMessage());
         }
     }
 }
