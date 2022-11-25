@@ -1,5 +1,8 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.InvalidSectionException;
+import nextstep.subway.exception.SectionAlreadyExistException;
+import nextstep.subway.exception.SectionCannotDeleteException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -34,19 +37,19 @@ public class Sections {
             sections.add(newSection);
             return;
         }
-        throw new RuntimeException();
+        throw new InvalidSectionException();
     }
 
     private void validateAddSection(Station upStation, Station downStation) {
         if (hasStation(upStation) && hasStation(downStation)) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new SectionAlreadyExistException();
         }
 
         List<Station> stations = getStations();
         if (!sections.isEmpty() &&
                 stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new InvalidSectionException();
         }
     }
 
@@ -78,7 +81,7 @@ public class Sections {
 
     public void removeLineStation(Line line, Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new SectionCannotDeleteException();
         }
 
         Optional<Section> upLineStation = getUpLineStation(station);
