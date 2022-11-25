@@ -33,33 +33,30 @@ public class Sections {
             return;
         }
         List<Station> stations = getStations();
-        Station upStation = section.getUpStation();
-        Station downStation = section.getDownStation();
-        int distance = section.getDistance();
 
-        boolean isUpStationExisted = isStationExist(upStation, stations);
-        boolean isDownStationExisted = isStationExist(downStation, stations);
+        boolean isUpStationExisted = section.isUpStationExist(stations);
+        boolean isDownStationExisted = section.isDownStationExist(stations);
 
         verifyAddSection(isUpStationExisted, isDownStationExisted);
 
         if (isUpStationExisted) {
-            updateUpStation(upStation, downStation, distance);
-            sections.add(new Section(section.getLine(), upStation, downStation, distance));
+            updateUpStation(section);
+            sections.add(section);
             return;
         }
 
-        updateDownStation(upStation, downStation, distance);
-        sections.add(new Section(section.getLine(), upStation, downStation, distance));
+        updateDownStation(section);
+        sections.add(section);
     }
 
-    private void updateDownStation(Station upStation, Station downStation, int distance) {
-        getDownStationSection(downStation)
-                .ifPresent(it -> it.updateDownStation(upStation, distance));
+    private void updateDownStation(Section section) {
+        getDownStationSection(section)
+                .ifPresent(it -> it.updateDownStation(section));
     }
 
-    private void updateUpStation(Station upStation, Station downStation, int distance) {
-        getUpStationSection(upStation)
-                .ifPresent(it -> it.updateUpStation(downStation, distance));
+    private void updateUpStation(Section section) {
+        getUpStationSection(section)
+                .ifPresent(it -> it.updateUpStation(section));
     }
 
     private static void verifyAddSection(boolean isUpStationExisted, boolean isDownStationExisted) {
@@ -133,7 +130,7 @@ public class Sections {
     }
 
     private void addSections(Section upLineStation, Section downLineStation) {
-        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+        Distance newDistance = upLineStation.addDistance(downLineStation);
         sections.add(
                 new Section(
                         upLineStation.getLine(),
@@ -166,6 +163,14 @@ public class Sections {
         return sections.stream()
                 .filter(it -> it.getUpStation() == station)
                 .findFirst();
+    }
+
+    private Optional<Section> getUpStationSection(Section section) {
+        return sections.stream().filter(it -> it.isUpStation(section)).findFirst();
+    }
+
+    private Optional<Section> getDownStationSection(Section section) {
+        return sections.stream().filter(it -> it.isDownStation(section)).findFirst();
     }
 
     private boolean isSectionCountLessThanOne() {

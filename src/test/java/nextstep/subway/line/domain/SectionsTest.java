@@ -23,7 +23,6 @@ class SectionsTest {
     Station 노량진역;
     Station 동작역;
 
-
     @BeforeEach
     void setup() {
         당산역 = new Station("당산역");
@@ -131,9 +130,11 @@ class SectionsTest {
     }
 
     private void 구간_거리_검증(Integer ...distances) {
+        List<Distance> expectDistances = Arrays.stream(distances).map(Distance::new).collect(Collectors.toList());
         assertThat(구간.getSections())
                 .extracting(Section::getDistance)
-                .containsExactlyInAnyOrderElementsOf(Arrays.stream(distances).collect(Collectors.toList()));
+                .containsExactlyInAnyOrderElementsOf(
+                        expectDistances);
     }
 
     private void 역_순서_검증(Station ...역_목록) {
