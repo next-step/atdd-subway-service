@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import static nextstep.subway.line.exception.InvalidAddSectionException.EXISTS_SECTION;
 import static nextstep.subway.line.exception.InvalidAddSectionException.NOT_EXIST_STATIONS;
+import static nextstep.subway.line.exception.InvalidRemoveSectionException.ONE_SECTION_REMAINS;
 
 @Embeddable
 public class Sections {
@@ -59,7 +60,7 @@ public class Sections {
                 .ifPresent(it -> it.updateUpStation(section));
     }
 
-    private static void verifyAddSection(boolean isUpStationExisted, boolean isDownStationExisted) {
+    private void verifyAddSection(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
             throw new InvalidAddSectionException(EXISTS_SECTION);
         }
@@ -67,10 +68,6 @@ public class Sections {
         if (!isUpStationExisted && !isDownStationExisted) {
             throw new InvalidAddSectionException(NOT_EXIST_STATIONS);
         }
-    }
-
-    private boolean isStationExist(Station station, List<Station> stations) {
-        return stations.stream().anyMatch(it -> it == station);
     }
 
     public List<Station> getStations() {
@@ -97,7 +94,7 @@ public class Sections {
 
     public void removeSection(Station station) {
         if (isSectionCountLessThanOne()) {
-            throw new InvalidRemoveSectionException("구간이 1개인 노선은 구간을 삭제할 수 없습니다");
+            throw new InvalidRemoveSectionException(ONE_SECTION_REMAINS);
         }
 
         if (isLastStation(station)) {
