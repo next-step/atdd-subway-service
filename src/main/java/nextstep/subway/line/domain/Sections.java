@@ -57,6 +57,10 @@ public class Sections {
         return sortedStations;
     }
 
+    public List<Section> get() {
+        return Collections.unmodifiableList(sections);
+    }
+
     public void add(Section newSection) {
         if (sections.isEmpty()) {
             sections.add(newSection);
