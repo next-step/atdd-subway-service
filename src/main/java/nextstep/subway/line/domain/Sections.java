@@ -23,21 +23,13 @@ public class Sections {
         validateAddSection(upStation, downStation);
 
         Section newSection = new Section(line, upStation, downStation, distance);
-        if (sections.isEmpty()) {
-            sections.add(newSection);
-            return;
-        }
         if (hasStation(upStation)) {
             updateUpStation(upStation, downStation, distance);
-            sections.add(newSection);
-            return;
         }
         if (hasStation(downStation)) {
             updateDownStation(upStation, downStation, distance);
-            sections.add(newSection);
-            return;
         }
-        throw new InvalidSectionException();
+        sections.add(newSection);
     }
 
     private void validateAddSection(Station upStation, Station downStation) {
