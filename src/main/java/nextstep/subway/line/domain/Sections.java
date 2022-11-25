@@ -15,7 +15,7 @@ public class Sections {
     private final List<Section> sections;
 
     public Sections()  {
-        this.sections = Collections.emptyList();
+        this.sections = new ArrayList<>();
     }
 
     public Sections(final List<Section> sections) {
