@@ -41,14 +41,14 @@ public class Sections {
     }
 
     private void validateAddSection(Station upStation, Station downStation) {
-        if (hasStation(upStation) && hasStation(downStation)) {
+        boolean hasUpStation = hasStation(upStation);
+        boolean hasDownStation = hasStation(downStation);
+
+        if (hasUpStation && hasDownStation) {
             throw new SectionAlreadyExistException();
         }
 
-        List<Station> stations = getStations();
-        if (!sections.isEmpty() &&
-                stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
+        if (!sections.isEmpty() && !hasUpStation && !hasDownStation) {
             throw new InvalidSectionException();
         }
     }
