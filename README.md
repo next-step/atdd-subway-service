@@ -234,3 +234,193 @@ public void getDijkstraShortestPath() {
 * 간선: 지하철역 연결정보(Section)
 * 가중치: 거리
 
+## 3단계 - 인증을 통한 기능 구현
+### 요구 사항
+- [ ] 토큰 발급 기능 (로그인) 인수 테스트 만들기
+  - [ ] 이메일과 패스워드를 이용해 요청 시 access token 응답하는 기능 구현
+  - 예외 상황 테스트 구현
+    - [ ] 유요하지 않은 토큰으로 `/members/me` 요청 보낼 경우 예외 처리
+- 인증 - 내 정보 조회 기능 완성하기
+  - [ ] 인수 테스트(MemberAcceptanceTest 클래스의 `manageMyInfo` 메소드에 인수 테스트 추가)
+    - [ ] 내 정보 조회/수정/삭제 기능을 `/members/me`라는 URI 요청으로 동작하도록 검증
+    - 로그인 후 발급 받은 토큰을 포함해 요청하기
+  - [ ] 토근을 통한 인증
+    - [ ] `/members/me` 요청 시 토큰 확인해 로그인 정보 받아오도록 할 것
+    - [ ] `@AuthenticationPrincipal`과 `AuthenticationPrincipalArgumentResolver` 활용
+    - [ ] 아래 기능 정상 동작 필요
+      - [ ] GET /members/me
+      - [ ] PUT /members/me
+      - [ ] DELETE /members/me
+- 인증 - 즐겨 찾기 기능 완성하기
+  - [ ] 즐겨찾기 기능 완성하기
+  - [ ] 인증을 포함해 ATDD 사이클 경험할 수 있도록 기능 구현
+
+#### 요구 사항 설명
+- 토큰 발급(로그인)을 검증하는 인수 테스트 만들기 -> `AuthAcceptanceTest`
+```text
+Feature: 로그인 기능
+
+  Scenario: 로그인을 시도한다.
+    Given 회원 등록되어 있음
+    When 로그인 요청
+    Then 로그인 됨
+```
+- 즐겨 찾기 기능 검증하는 인수 테스트
+```text
+Feature: 즐겨찾기를 관리한다.
+
+  Background 
+    Given 지하철역 등록되어 있음
+    And 지하철 노선 등록되어 있음
+    And 지하철 노선에 지하철역 등록되어 있음
+    And 회원 등록되어 있음
+    And 로그인 되어있음
+
+  Scenario: 즐겨찾기를 관리
+    When 즐겨찾기 생성을 요청
+    Then 즐겨찾기 생성됨
+    When 즐겨찾기 목록 조회 요청
+    Then 즐겨찾기 목록 조회됨
+    When 즐겨찾기 삭제 요청
+    Then 즐겨찾기 삭제됨
+```
+
+#### API 명세
+**[ 토큰 발급 ]**
+**request**
+```json
+POST /login/token HTTP/1.1
+content-type: application/json; charset=UTF-8
+accept: application/json
+{
+"password": "password",
+"email": "email@email.com"
+}
+```
+**response**
+```json
+HTTP/1.1 200
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+"accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY"
+}
+```
+**[ 즐겨 찾기 등록 ]**
+**request**
+```json
+POST /favorites HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
+accept: */*
+content-type: application/json; charset=UTF-8
+content-length: 27
+host: localhost:50336
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
+accept-encoding: gzip,deflate
+{
+"source": "1",
+"target": "3"
+}
+```
+**response**
+```json
+HTTP/1.1 201 Created
+Keep-Alive: timeout=60
+Connection: keep-alive
+Content-Length: 0
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+Location: /favorites/1
+```
+**[ 즐겨 찾기 목록 조회 ]**
+**request**
+```json
+POST /favorites HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
+accept: */*
+content-type: application/json; charset=UTF-8
+content-length: 27
+host: localhost:50336
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
+accept-encoding: gzip,deflate
+{
+"source": "1",
+"target": "3"
+}
+```
+**response**
+```json
+HTTP/1.1 201 Created
+Keep-Alive: timeout=60
+Connection: keep-alive
+Content-Length: 0
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+Location: /favorites/1
+```
+**[ 즐겨 찾기 삭제 요청 ]**
+**request**
+```json
+DELETE /favorites/1 HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
+accept: */*
+host: localhost:50336
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
+accept-encoding: gzip,deflate
+```
+**response**
+```json
+HTTP/1.1 204 No Content
+Keep-Alive: timeout=60
+Connection: keep-alive
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+```
+
+### 힌트
+#### 인증 기반 인수 테스트
+- 사용자 정보를 인수 테스트 메서드의 첫번째 파라미터로 넘겨줄 수 있음
+```java
+@BeforeEach
+public void setUp() {
+    ...
+
+    회원_생성을_요청(EMAIL, PASSWORD, 20);
+    사용자 = 로그인_되어_있음(EMAIL, PASSWORD);
+}
+
+@DisplayName("즐겨찾기를 관리한다.")
+@Test
+void manageMember() {
+    // when
+    ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(사용자, 강남역, 정자역);
+    ...
+}
+```
+```kotlin
+val 사용자 = RestAssured.given().log().all().auth().oauth2(accessToken)
+
+@Test
+fun 즐겨찾기_관리_기능() {
+    val response = 사용자.즐겨찾기_생성_요청(강남역, 정자역)
+    ...
+}
+
+fun RequestSpecification.즐겨찾기_생성_요청(
+    source: Long,
+    target: Long
+): ExtractableResponse<FavoriteResponse> {
+    val favoriteRequest = FavoriteRequest(source, target)
+
+    return this
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body(favoriteRequest)
+        .`when`().post("/favorites")
+        .then().log().all()
+        .extract()
+}
+```
