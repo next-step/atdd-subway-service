@@ -94,10 +94,8 @@ public class PathServiceTest {
         // then
         assertAll(
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(5),
-                () -> assertThat(pathResponse.getStations()).containsExactlyElementsOf(
-                        Stream.of(교대역, 남부터미널역, 양재역)
-                                .map(StationResponse::from)
-                                .collect(Collectors.toList()))
+                () -> assertThat(pathResponse.getStations().stream().map(StationResponse::getName).collect(Collectors.toList()))
+                        .containsExactlyElementsOf(Arrays.asList("교대역", "남부터미널역", "양재역"))
         );
     }
 

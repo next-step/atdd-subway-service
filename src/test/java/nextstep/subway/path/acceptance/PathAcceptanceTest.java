@@ -12,6 +12,7 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -148,11 +149,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private static void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectStations, int expectDistance) {
-        List<StationResponse> actualStations = response.jsonPath().getList("stations", StationResponse.class);
+        List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
+        List<Long> expectStationIds = expectStations.stream().map(StationResponse::getId).collect(Collectors.toList());
+        List<String> actualStationNames = response.jsonPath().getList("stations.name", String.class);
+        List<String> expectStationNames = expectStations.stream().map(StationResponse::getName).collect(Collectors.toList());
         int actualDistance = response.jsonPath().getInt("distance");
         assertAll(
-                () -> assertThat(actualStations).containsExactlyElementsOf(expectStations),
-                () -> assertThat(actualDistance).isEqualTo(actualDistance)
+                () -> assertThat(actualStationIds).containsExactlyElementsOf(expectStationIds),
+                () -> assertThat(actualStationNames).containsExactlyElementsOf(expectStationNames),
+                () -> assertThat(actualDistance).isEqualTo(expectDistance)
         );
     }
 }
