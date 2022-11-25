@@ -31,8 +31,7 @@ public class Section {
     @Embedded
     private Distance distance;
 
-    public Section() {
-    }
+    public Section() {}
 
     private Section(Line line, Station upStation, Station downStation, int distance) {
         validateLine(line);
@@ -79,11 +78,11 @@ public class Section {
     }
 
     public boolean isSameUpStation(Station station) {
-        return upStation.isSameStation(station);
+        return upStation.equals(station);
     }
 
     public boolean isSameDownStation(Station station) {
-        return downStation.isSameStation(station);
+        return downStation.equals(station);
     }
 
     public void updateUpStation(Section section) {
@@ -109,6 +108,14 @@ public class Section {
 
     public boolean isSameSection(Section section) {
         return isSameUpStation(section.upStation) && isSameDownStation(section.downStation) && hasSameLine(section);
+    }
+
+    public boolean isContainStation(Station station) {
+        return upStation.equals(station) || downStation.equals(station);
+    }
+
+    public int distanceValue() {
+        return distance.value();
     }
 
     public Long getId() {

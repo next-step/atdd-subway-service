@@ -178,4 +178,30 @@ public class SectionTest {
         // when & then
         assertThat(section.isSameSection(duplicateSection)).isTrue();
     }
+
+    @DisplayName("구간의 상행/하행역 중 하나라도 주어진 지하철역과 동일하면 참을 반환한다.")
+    @Test
+    void isContainStationReturnTrue() {
+        // given
+        Section section = createSection(신분당선, 신논현역, 강남역, 10);
+
+        // when
+        assertAll(
+                () -> assertThat(section.isContainStation(신논현역)).isTrue(),
+                () -> assertThat(section.isContainStation(강남역)).isTrue()
+        );
+    }
+
+    @DisplayName("구간의 상행/하행역 중 하나라도 주어진 지하철역과 다르면 거짓을 반환한다.")
+    @Test
+    void isContainStationReturnFalse() {
+        // given
+        Section section = createSection(신분당선, 신논현역, 강남역, 10);
+
+        // when
+        assertAll(
+                () -> assertThat(section.isContainStation(양재시민의숲역)).isFalse(),
+                () -> assertThat(section.isContainStation(양재역)).isFalse()
+        );
+    }
 }

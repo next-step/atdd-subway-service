@@ -20,8 +20,7 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    protected Sections() {
-    }
+    protected Sections() {}
 
     private Sections(List<Section> sections) {
         this.sections = new ArrayList<>(sections);
@@ -61,7 +60,7 @@ public class Sections {
 
     private boolean isNotContainAnyStation(Section section) {
         return findStations().stream()
-                .noneMatch(station -> section.stations().contains(station));
+                .noneMatch(section::isContainStation);
     }
 
     private void validateLine(Section section) {
@@ -109,12 +108,12 @@ public class Sections {
     }
 
     private void validateNotContainAnySection(boolean hasUpStationSection, boolean hasDownStationSection) {
-        if(hasNotBothUpAnddownStationSection(hasUpStationSection, hasDownStationSection)) {
+        if(hasNotBothUpAndDownStationSection(hasUpStationSection, hasDownStationSection)) {
             throw new IllegalArgumentException(ErrorCode.노선_내_존재하지_않는_역.getErrorMessage());
         }
     }
 
-    private boolean hasNotBothUpAnddownStationSection(boolean hasUpStationSection, boolean hasDownStationSection) {
+    private boolean hasNotBothUpAndDownStationSection(boolean hasUpStationSection, boolean hasDownStationSection) {
         return !hasUpStationSection && !hasDownStationSection;
     }
 
@@ -163,5 +162,9 @@ public class Sections {
             sortStations.add(currentStation);
         }
         return sortStations;
+    }
+
+    public List<Section> getSections() {
+        return new ArrayList<>(sections);
     }
 }

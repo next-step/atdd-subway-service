@@ -17,6 +17,6 @@ public class StationTest {
         Station duplicateStation = createStation("강남역");
 
         // when & then
-        assertThat(station.isSameStation(duplicateStation)).isTrue();
+        assertThat(station.equals(duplicateStation)).isTrue();
     }
 }

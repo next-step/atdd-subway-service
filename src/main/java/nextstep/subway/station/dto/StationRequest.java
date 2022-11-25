@@ -5,8 +5,7 @@ import nextstep.subway.station.domain.Station;
 public class StationRequest {
     private String name;
 
-    protected StationRequest() {
-    }
+    private StationRequest() {}
 
     private StationRequest(String name) {
         this.name = name;

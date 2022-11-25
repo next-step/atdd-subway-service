@@ -12,8 +12,7 @@ public class Name {
     @Column(nullable = false, unique = true)
     private String name;
 
-    protected Name() {
-    }
+    protected Name() {}
 
     private Name(String name) {
         validateNameNullOrEmpty(name);
