@@ -61,7 +61,7 @@ class PathFinderTest {
         // when & then
         assertThatThrownBy(() -> pathFinder.shortestPath(강남역, 강남역))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ErrorCode.FIND_PATH_SAME_STATION.getMessage());
+                .hasMessageContaining(ErrorCode.FIND_PATH_SAME_SOURCE_TARGET.getMessage());
     }
 
     @DisplayName("최단경로를 조회하는 역이 존재하지 않으면 예외가 발생한다")

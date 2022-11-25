@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.exception.EntityNotFound;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -29,6 +30,6 @@ public class PathService {
 
     private Station findStationById(Long id) {
         return stationRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+                .orElseThrow(() -> new EntityNotFound("존재하지 않는 역입니다."));
     }
 }
