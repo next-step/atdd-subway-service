@@ -18,7 +18,7 @@ public class Sections {
     private List<Section> sections;
 
     public Sections(List<Section> sections) {
-        this.sections = sections;
+        this.sections = new ArrayList<>(sections);
     }
 
     protected Sections() {}

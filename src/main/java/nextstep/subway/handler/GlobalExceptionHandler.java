@@ -7,13 +7,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Void> handleIllegalArgsException() {
-        return ResponseEntity.badRequest().build();
-    }
-
-    @ExceptionHandler(EntityNotFound.class)
-    public ResponseEntity<Void> handleEntityNotFoundException() {
+    @ExceptionHandler({IllegalArgumentException.class, EntityNotFound.class})
+    public ResponseEntity<Void> handle() {
         return ResponseEntity.badRequest().build();
     }
 }
