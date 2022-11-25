@@ -1,10 +1,11 @@
 package nextstep.subway.line.domain;
 
+import java.util.Collections;
+import java.util.Set;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,26 +17,31 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections;
 
-    public Line() {
+    protected Line() {
+
     }
 
-    public Line(String name, String color) {
+    private Line(Builder builder) {
+        this.name = builder.name;
+        this.color = builder.color;
+        Section section = new Section(builder.upStation, builder.downStation, builder.distance);
+        section.addLine(this);
+        this.sections = new Sections(Collections.singletonList(section));
+    }
+
+    public void changeName(String name) {
         this.name = name;
+    }
+
+    public void changeColor(String color) {
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
-    }
-
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+    public Set<Station> findAssignedStations() {
+        return sections.assignedOrderedStation();
     }
 
     public Long getId() {
@@ -51,6 +57,60 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return sections.value();
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public void addSection(Section newSection) {
+        newSection.addLine(this);
+        this.sections.add(newSection);
+    }
+
+    public void deleteStation(Station station) {
+        this.sections.delete(station);
+    }
+
+    public static class Builder {
+        private String name;
+        private int distance;
+        private String color;
+        private Station upStation;
+        private Station downStation;
+
+        private Builder() {
+
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder distance(int distance) {
+            this.distance = distance;
+            return this;
+        }
+
+        public Builder color(String color) {
+            this.color = color;
+            return this;
+        }
+
+        public Builder upStation(Station upStation) {
+            this.upStation = upStation;
+            return this;
+        }
+
+        public Builder downStation(Station downStation) {
+            this.downStation = downStation;
+            return this;
+        }
+
+        public Line build() {
+            return new Line(this);
+        }
     }
 }
