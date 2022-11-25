@@ -7,7 +7,6 @@ import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.exception.PathExceptionCode;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
-import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -21,11 +20,6 @@ public class StationGraph {
             new WeightedMultigraph(DefaultWeightedEdge.class);
 
     public StationGraph(List<Section> sections) {
-        validate(sections);
-        generateAll(sections);
-    }
-
-    public StationGraph(List<Section> sections, ShortestPathAlgorithm algorithm) {
         validate(sections);
         generateAll(sections);
     }
