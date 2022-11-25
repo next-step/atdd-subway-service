@@ -30,7 +30,7 @@ public class LineTest {
 
         @Nested
         @DisplayName("추가된 섹션이 하나이상이면 false를 반환")
-        class Context_with_section{
+        class ContextWithSection{
 
             private Line line = new Line();
             private Random random = new Random();
@@ -50,6 +50,5 @@ public class LineTest {
                 assertThat(line.isEmptySections()).isFalse();
             }
         }
-
     }
 }
