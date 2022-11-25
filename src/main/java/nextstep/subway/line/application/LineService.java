@@ -141,7 +141,7 @@ public class LineService {
 
 
     public List<Station> getStations(Line line) {
-        if (line.getSections().isEmpty()) {
+        if (line.isEmptySections()) {
             return Arrays.asList();
         }
 
