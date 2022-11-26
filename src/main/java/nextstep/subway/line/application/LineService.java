@@ -21,24 +21,32 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+
+    // TODO: 비즈니스 로직을 도메인으로 옮기기
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
     public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
     }
 
+    // 노선 저장
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
+
+
+
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+
         List<StationResponse> stations = getStations(persistLine).stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
         return LineResponse.of(persistLine, stations);
     }
 
+    // 경로 가져오기
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
