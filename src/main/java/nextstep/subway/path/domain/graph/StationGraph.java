@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class StationGraph {
-    private WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph =
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph =
             new WeightedMultigraph(DefaultWeightedEdge.class);
 
     public StationGraph(List<Section> sections) {
