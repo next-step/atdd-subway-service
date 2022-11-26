@@ -36,8 +36,8 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
-        Long sourceId = favoriteRequest.getSourceId();
-        Long targetId = favoriteRequest.getTargetId();
+        Long sourceId = favoriteRequest.findSourceId();
+        Long targetId = favoriteRequest.findTargetId();
 
         Member member = findMemberById(loginMember.getId());
         Station sourceStation = findStationById(sourceId);
@@ -47,7 +47,6 @@ public class FavoriteService {
         member.addFavorite(favorite);
         return FavoriteResponse.from(favorite);
     }
-
 
     public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
         Favorite favorite = findFavoriteById(favoriteId);

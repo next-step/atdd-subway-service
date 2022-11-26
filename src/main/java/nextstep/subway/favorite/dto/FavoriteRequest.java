@@ -15,11 +15,11 @@ public class FavoriteRequest {
         this.target = target;
     }
 
-    public Long getSourceId() {
+    public Long findSourceId() {
         return StringUtils.stringToLong(source);
     }
 
-    public Long getTargetId() {
+    public Long findTargetId() {
         return StringUtils.stringToLong(target);
     }
 
