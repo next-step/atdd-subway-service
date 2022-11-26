@@ -66,4 +66,8 @@ public class Line extends BaseEntity {
     public void deleteSection(Station station) {
         sections.deleteSection(station);
     }
+
+    public List<Station> stations() {
+        return sections.stationsBySorted();
+    }
 }

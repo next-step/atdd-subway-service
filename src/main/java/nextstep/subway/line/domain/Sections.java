@@ -5,9 +5,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Embeddable
@@ -121,5 +119,44 @@ public class Sections {
         return sections.stream()
                 .filter(section -> section.hasUpStation(station))
                 .findFirst();
+    }
+
+    public List<Station> stationsBySorted() {
+        Station firstUpStation = findFirstUpStation().orElse(null);
+        if (firstUpStation == null) {
+            return new ArrayList<>();
+        }
+        return sortStations(firstUpStation, stationsMap());
+    }
+
+    private List<Station> sortStations(Station firstUpStation, Map<Station, Station> stationMap) {
+        List<Station> stations = new LinkedList<>();
+
+        stations.add(firstUpStation);
+        Station upStation = firstUpStation;
+        while (stationMap.get(upStation) != null) {
+            upStation = stationMap.get(upStation);
+            stations.add(upStation);
+        }
+        return stations;
+    }
+
+    private Optional<Station> findFirstUpStation() {
+        Set<Station> downStations = downStationsSet();
+        return sections.stream()
+                .map(Section::getUpStation)
+                .filter(station -> !downStations.contains(station))
+                .findFirst();
+    }
+
+    private Set<Station> downStationsSet() {
+        return sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toSet());
+    }
+
+    private Map<Station, Station> stationsMap() {
+        return sections.stream()
+                .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
     }
 }
