@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.ui;
 
+import java.net.URI;
 import java.util.List;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
@@ -32,8 +33,8 @@ public class FavoriteController {
 
     @PostMapping
     public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest favoriteRequest) {
-        favoriteService.createFavorite(loginMember, favoriteRequest);
-        return ResponseEntity.ok().build();
+        FavoriteResponse favorite = favoriteService.createFavorite(loginMember, favoriteRequest);
+        return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
     }
 
     @DeleteMapping("/{favoriteId}")

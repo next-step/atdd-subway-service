@@ -6,18 +6,25 @@ import static nextstep.subway.member.domain.MemberTestFixture.createLoginMember;
 import static nextstep.subway.member.domain.MemberTestFixture.createMember;
 import static nextstep.subway.station.domain.StationTestFixture.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.common.constant.ErrorCode;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +40,12 @@ public class FavoriteServiceTest {
 
     @Mock
     private FavoriteRepository favoriteRepository;
+
+    @Mock
+    private MemberRepository memberRepository;
+
+    @Mock
+    private StationRepository stationRepository;
 
     @InjectMocks
     private FavoriteService favoriteService;
@@ -72,18 +85,51 @@ public class FavoriteServiceTest {
     @DisplayName("즐겨찾기를 생성한다.")
     @Test
     void createFavorite() {
+        // given
+        FavoriteRequest favoriteRequest = new FavoriteRequest("1", "2");
+        Favorite favorite = Favorite.of(회원, 강남역, 교대역);
+        when(memberRepository.findById(any())).thenReturn(Optional.of(회원));
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(강남역));
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(교대역));
+        when(favoriteRepository.save(any())).thenReturn(favorite);
 
+        // when
+        FavoriteResponse response = favoriteService.createFavorite(로그인한_회원, favoriteRequest);
+
+        // then
+        assertAll(
+                () -> assertThat(response.getSource().getName()).isEqualTo("강남역"),
+                () -> assertThat(response.getTarget().getName()).isEqualTo("교대역")
+        );
     }
 
     @DisplayName("즐겨찾기 생성 시, 존재하지 않는 지하철역을 시작점으로 하면 예외를 발생시킨다.")
     @Test
     void createFavoriteThrowErrorWhenSourceStationIsNotExists() {
+        // given
+        FavoriteRequest favoriteRequest = new FavoriteRequest("1", "2");
+        when(memberRepository.findById(any())).thenReturn(Optional.of(회원));
+        when(stationRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> favoriteService.createFavorite(로그인한_회원, favoriteRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorCode.존재하지_않는_역.getErrorMessage());
     }
 
     @DisplayName("즐겨찾기 생성 시, 존재하지 않는 지하철역을 종착점으로 하면 예외를 발생시킨다.")
     @Test
     void createFavoriteThrowErrorWhenTargetStationIsNotExists() {
+        // given
+        FavoriteRequest favoriteRequest = new FavoriteRequest("1", "2");
+        when(memberRepository.findById(any())).thenReturn(Optional.of(회원));
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(강남역));
+        when(stationRepository.findById(2L)).thenReturn(Optional.empty());
 
+        // when & then
+        assertThatThrownBy(() -> favoriteService.createFavorite(로그인한_회원, favoriteRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorCode.존재하지_않는_역.getErrorMessage());
     }
 
     @DisplayName("즐겨찾기 전체 목록을 조회한다.")
@@ -91,7 +137,7 @@ public class FavoriteServiceTest {
     void findFavorites() {
         // given
         when(favoriteRepository.findByMemberId(회원.getId())).thenReturn(
-                Arrays.asList(new Favorite(회원, 강남역, 양재역), new Favorite(회원, 교대역, 이수역)));
+                Arrays.asList(Favorite.of(회원, 강남역, 양재역), Favorite.of(회원, 교대역, 이수역)));
 
         // when
         List<FavoriteResponse> favorites = favoriteService.findFavorites(로그인한_회원);
