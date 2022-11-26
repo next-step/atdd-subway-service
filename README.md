@@ -52,3 +52,115 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+---
+
+# 인증 테스트 기반 TDD
+
+## 1단계 - 인수 테스트 기반 리팩터링
+
+### 요구사항
+
+```text
+- LineService 리팩터링
+- (선택) LineSectionAcceptanceTest 리팩터링
+```
+
+#### LineService 리팩토링
+
+1. Domain으로 옮길 로직을 찾기 (대상 : LineService)
+
+- [x] saveLine
+- [x] findLines
+- [x] findLineResponseById
+- [x] updateLine
+- [x] addLineStation
+- [x] removeLineStation
+
+2. Domain의 단위 테스트를 작성하기
+
+- 서비스 레이어에서 옮겨 올 로직의 기능을 테스트
+
+3. 로직을 옮기기
+
+- 기존 로직을 지우지 말고 새로운 로직을 만들어 수행
+- 정상 동작 확인 후 기존 로직 제거
+
+#### (선택) LineSectionAcceptanceTest 리팩터링
+
+```text
+Feature: 지하철 구간 관련 기능
+
+  Background 
+    Given 지하철역 등록되어 있음
+    And 지하철 노선 등록되어 있음
+    And 지하철 노선에 지하철역 등록되어 있음
+
+  Scenario: 지하철 구간을 관리
+    When 지하철 구간 등록 요청
+    Then 지하철 구간 등록됨
+    When 지하철 노선에 등록된 역 목록 조회 요청
+    Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+    When 지하철 구간 삭제 요청
+    Then 지하철 구간 삭제됨
+    When 지하철 노선에 등록된 역 목록 조회 요청
+    Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+```
+
+```text
+Feature: 지하철 구간 관련 기능
+
+  Background 
+    Given 지하철역 등록되어 있음
+    And 지하철 노선 등록되어 있음
+    And 지하철 노선에 지하철역 등록되어 있음
+
+  Scenario: 지하철 구간을 관리
+    When 지하철 구간 순서 없이 등록 요청
+    Then 지하철 구간 등록됨
+    When 지하철 노선에 등록된 역 목록 조회 요청
+    Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+    When 지하철 구간 삭제 요청
+    Then 지하철 구간 삭제됨
+    When 지하철 노선에 등록된 역 목록 조회 요청
+    Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+```
+
+```text
+Feature: 지하철 구간 관련 기능
+
+  Background 
+    Given 지하철역 등록되어 있음
+    And 지하철 노선 등록되어 있음
+    And 지하철 노선에 지하철역 등록되어 있음
+
+  Scenario: 지하철 구간을 관리
+    When 이미 존재하는 지하철 구간 등록 요청
+    Then 지하철 구간 등록 실패됨
+```
+
+```text
+Feature: 지하철 구간 관련 기능
+
+  Background 
+    Given 지하철역 등록되어 있음
+    And 지하철 노선 등록되어 있음
+    And 지하철 노선에 지하철역 등록되어 있음
+
+  Scenario: 지하철 구간을 관리
+    When 지하철 노선에 존재하지 않는 지하철역으로 지하철 구간 등록 요청
+    Then 지하철 구간 등록 실패됨
+```
+
+```text
+Feature: 지하철 구간 관련 기능
+
+  Background 
+    Given 지하철역 등록되어 있음
+    And 지하철 노선 등록되어 있음
+    And 지하철 노선에 지하철역 등록되어 있음
+
+  Scenario: 지하철 구간을 관리
+    When 지하철 노선에 지하철역이 두개일 때 지하철역 제외 요청
+    Then 지하철 구간 등록 실패됨
+```
