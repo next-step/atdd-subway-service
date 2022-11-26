@@ -40,4 +40,23 @@ public class LineTest {
         assertThat(line.getName()).isEqualTo(name);
         assertThat(line.getColor()).isEqualTo(color);
     }
+
+    @Test
+    @DisplayName("구간을 받아 노선에 추가")
+    void addSection() {
+        // given
+        Station 잠실역 = new Station("잠실역");
+        Station 문정역 = new Station("문정역");
+        Line line = new Line("8호선", "분홍색", 잠실역, 문정역, 10);
+
+        // given
+        Station 가락시장역 = new Station("가락시장역");
+        Section section = new Section(가락시장역, 문정역, 1);
+
+        // when
+        line.addSection(section);
+
+        // then
+        assertThat(line.getSections()).contains(section);
+    }
 }

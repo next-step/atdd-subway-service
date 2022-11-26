@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -65,19 +67,38 @@ public class Section {
         return distance;
     }
 
+    public void setLine(Line line) {
+        this.line = line;
+    }
+
     public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+        validateDistance(newDistance);
         this.upStation = station;
         this.distance -= newDistance;
     }
 
     public void updateDownStation(Station station, int newDistance) {
+        validateDistance(newDistance);
+        this.downStation = station;
+        this.distance -= newDistance;
+    }
+
+    private void validateDistance(int newDistance) {
         if (this.distance <= newDistance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+    }
+
+    public void update(Station upStation, Station downStation, int newDistance) {
+        if (this.upStation == upStation) {
+            updateUpStation(downStation, newDistance);
+        }
+        if (this.downStation == downStation) {
+            updateDownStation(upStation, newDistance);
+        }
+    }
+
+    public List<Station> getStations() {
+        return Arrays.asList(upStation, downStation);
     }
 }

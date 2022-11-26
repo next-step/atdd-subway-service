@@ -18,11 +18,36 @@ public class Sections {
     protected Sections() {}
 
     public Sections(List<Section> sections) {
-        this.sections = sections;
+        this.sections = new ArrayList<>(sections);
     }
 
     public void add(Section section) {
+        if (sections.isEmpty()) {
+            sections.add(section);
+            return;
+        }
+        validateAddExisted(section);
+        validateAddNothingExisted(section);
+        updateSection(section);
         sections.add(section);
+    }
+
+    private void validateAddExisted(Section section) {
+        if (getStations().containsAll(section.getStations())) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private void validateAddNothingExisted(Section section) {
+        List<Station> stations = getStations();
+        if (section.getStations().stream().noneMatch(stations::contains)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void updateSection(Section section) {
+        sections.stream()
+                .forEach(it -> it.update(section.getUpStation(), section.getDownStation(), section.getDistance()));
     }
 
     public List<Section> get() {
