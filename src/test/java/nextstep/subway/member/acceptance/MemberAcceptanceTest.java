@@ -91,7 +91,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("내 정보 관리")
     @TestFactory
-    Collection<DynamicTest> manageMyInfo() {
+    Collection<DynamicTest> manageMyInfoSenario() {
         // Background
         회원_생성되어_있음(정상회원_등록_요청);
         ExtractableResponse<Response> loginResponse = 로그인_되어_있음(new TokenRequest(정상회원_등록_요청.getEmail(), 정상회원_등록_요청.getPassword()));
