@@ -10,6 +10,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
+    private static final String CAN_NOT_FIND_PATH_WHEN_SOURCE_TARGET_IS_SAME = "출발역과 도착역이 동일한 경우 경로를 조회할 수 없습니다.";
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     public PathFinder(List<Line> lines) {
@@ -40,11 +41,18 @@ public class PathFinder {
     }
 
     public Path findShortestPath(Station source, Station target) {
+        validateSourceAndTargetIsSame(source, target);
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> stationShortedPath = dijkstraShortestPath.getPath(source, target);
         List<Station> stations = stationShortedPath.getVertexList();
         double totalDistance = stationShortedPath.getWeight();
 
         return new Path(stations, (int) totalDistance);
+    }
+
+    private void validateSourceAndTargetIsSame(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException(CAN_NOT_FIND_PATH_WHEN_SOURCE_TARGET_IS_SAME);
+        }
     }
 }
