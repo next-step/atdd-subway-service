@@ -1,8 +1,13 @@
 package nextstep.subway.line.domain;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
 
 @Entity
 public class Section {
@@ -15,16 +20,22 @@ public class Section {
     private Line line;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "up_station_id")
+    @JoinColumn(name = "up_station_id", nullable = false)
     private Station upStation;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "down_station_id")
+    @JoinColumn(name = "down_station_id", nullable = false)
     private Station downStation;
 
     private int distance;
 
-    public Section() {
+    protected Section() {
+    }
+
+    private Section(Station upStation, Station downStation, int distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
@@ -32,6 +43,10 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section of(Station upStation, Station downStation, int distance) {
+        return new Section(upStation, downStation, distance);
     }
 
     public Long getId() {
@@ -68,5 +83,9 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public void toLine(Line line) {
+        this.line = line;
     }
 }

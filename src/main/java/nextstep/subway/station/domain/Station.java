@@ -4,20 +4,35 @@ import nextstep.subway.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
 
 @Entity
 public class Station extends BaseEntity {
+    private static final String ERROR_MESSAGE_IS_BLANK_NAME = "노선명은 필수 입니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
     private String name;
 
-    public Station() {
+    protected Station() {
     }
 
-    public Station(String name) {
+    private Station(String name) {
         this.name = name;
+    }
+
+    public static Station from(String name) {
+        validName(name);
+
+        return new Station(name);
+    }
+
+    private static void validName(String name) {
+        if (StringUtils.isBlank(name)) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_IS_BLANK_NAME);
+        }
     }
 
     public Long getId() {
