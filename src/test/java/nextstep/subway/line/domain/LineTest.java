@@ -58,8 +58,8 @@ class LineTest {
         Station 양재역 = Station.from("광교역");
 
         // when
-        Line line = Line.of("신분당선", "bg-red-600", Section.of(강남역, 양재역, 5));
-        line.addSection(Section.of(신논현역, 강남역, 3));
+        Line line = Line.of("신분당선", "bg-red-600", Section.of(강남역, 양재역, Distance.from(5)));
+        line.addSection(Section.of(신논현역, 강남역, Distance.from(3)));
         List<Station> actual = line.getSortStations();
 
         // then
