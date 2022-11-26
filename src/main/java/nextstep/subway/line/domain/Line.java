@@ -4,10 +4,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Line extends BaseEntity {
@@ -67,16 +64,20 @@ public class Line extends BaseEntity {
 
     private void addDownSection(final Section section) {
         if (isStationExisted(section.downStation())) {
-            Optional<Section> originalSection = sections.findSameDownStation(section);
-            originalSection.ifPresent(it -> it.updateDownStation(section));
+            Section originalSection = sections.findSameDownStation(section);
+            if (Objects.nonNull(originalSection)) {
+                originalSection.updateDownStation(section);
+            }
             sections.add(section, this::syncLine);
         }
     }
 
     private boolean addUpSection(final Section section) {
         if (isStationExisted(section.upStation())) {
-            Optional<Section> originalSection = sections.findSameUpStation(section);
-            originalSection.ifPresent(it -> it.updateUpStation(section));
+            Section originalSection = sections.findSameUpStation(section);
+            if (Objects.nonNull(originalSection)) {
+                originalSection.updateUpStation(section);
+            }
             sections.add(section, this::syncLine);
             return true;
         }

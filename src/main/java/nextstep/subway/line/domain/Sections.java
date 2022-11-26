@@ -24,29 +24,31 @@ public class Sections {
 
     public Set<Station> getStations() {
         Set<Station> sortedStations = new LinkedHashSet<>();
-        Optional<Section> optionalSection = findFirstSection();
-        while (optionalSection.isPresent()) {
-            Section section = optionalSection.get();
+        Section optionalSection = findFirstSection();
+        while (Objects.nonNull(optionalSection)) {
+            Section section = optionalSection;
             sortedStations.addAll(section.stations());
             optionalSection = findNextSection(section);
         }
         return sortedStations;
     }
 
-    private Optional<Section> findFirstSection() {
+    private Section findFirstSection() {
         List<Station> downStations = this.sections.stream()
                 .map(Section::downStation)
                 .collect(Collectors.toList());
 
         return this.sections.stream()
                 .filter(section -> !downStations.contains(section.upStation()))
-                .findFirst();
+                .findFirst()
+                .orElse(null);
     }
 
-    private Optional<Section> findNextSection(final Section currentSection) {
+    private Section findNextSection(final Section currentSection) {
         return this.sections.stream()
                 .filter(section -> section.isNextOf(currentSection))
-                .findFirst();
+                .findFirst()
+                .orElse(null);
     }
 
     public List<Section> value() {
@@ -58,16 +60,18 @@ public class Sections {
         sections.add(section);
     }
 
-    public Optional<Section> findSameUpStation(final Section section) {
+    public Section findSameUpStation(final Section section) {
         return sections.stream()
                 .filter(section::isSameUpStation)
-                .findFirst();
+                .findFirst()
+                .orElse(null);
     }
 
-    public Optional<Section> findSameDownStation(final Section section) {
+    public Section findSameDownStation(final Section section) {
         return sections.stream()
                 .filter(section::isSameDownStation)
-                .findFirst();
+                .findFirst()
+                .orElse(null);
     }
 
     public int count() {
@@ -83,32 +87,39 @@ public class Sections {
 
     public void remove(final long stationId, Consumer<Section> syncLine) {
         Station station = findStationById(stationId);
-        Optional<Section> upLineStation = findUpStation(station);
-        Optional<Section> downLineStation = findDownStation(station);
+        Section upLineStation = findUpStation(station);
+        Section downLineStation = findDownStation(station);
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().upStation();
-            Station newDownStation = upLineStation.get().downStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+        if (Objects.nonNull(upLineStation) && Objects.nonNull(downLineStation)) {
+            Station newUpStation = downLineStation.upStation();
+            Station newDownStation = upLineStation.downStation();
+            int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
             Section section = new Section(newUpStation, newDownStation, newDistance);
             syncLine.accept(section);
             sections.add(section);
         }
 
-        upLineStation.ifPresent(sections::remove);
-        downLineStation.ifPresent(sections::remove);
+        if (Objects.nonNull(upLineStation)) {
+            sections.remove(upLineStation);
+        }
+
+        if (Objects.nonNull(downLineStation)) {
+            sections.remove(downLineStation);
+        }
     }
 
-    private Optional<Section> findDownStation(final Station station) {
+    private Section findDownStation(final Station station) {
         return sections.stream()
                 .filter(section -> section.isSameDownStation(station))
-                .findFirst();
+                .findFirst()
+                .orElse(null);
     }
 
-    private Optional<Section> findUpStation(final Station station) {
+    private Section findUpStation(final Station station) {
         return sections.stream()
                 .filter(section -> section.isSameUpStation(station))
-                .findFirst();
+                .findFirst()
+                .orElse(null);
     }
 
     public boolean isEmpty() {

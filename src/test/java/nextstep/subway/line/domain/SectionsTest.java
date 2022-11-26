@@ -8,7 +8,6 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -64,17 +63,17 @@ class SectionsTest {
     @DisplayName("구간리스트에서 같은 UpStation 찾는 작업에 성공한다")
     @Test
     void findSameUpStation() {
-        Optional<Section> section = sections.findSameUpStation(new Section(종각역, new Station("신설동역"), 3));
+        Section section = sections.findSameUpStation(new Section(종각역, new Station("신설동역"), 3));
 
-        assertThat(section).isPresent();
+        assertThat(section).isNotNull();
     }
 
     @DisplayName("구간리스트에서 같은 DownStation 찾는 작업에 성공한다")
     @Test
     void findSameDownStation() {
-        Optional<Section> section = sections.findSameDownStation(new Section(new Station("신설동역"), 서울역, 3));
+        Section section = sections.findSameDownStation(new Section(new Station("신설동역"), 서울역, 3));
 
-        assertThat(section).isPresent();
+        assertThat(section).isNotNull();
     }
 
     @DisplayName("구간리스트에서 Station 조회작업에 성공한다")
