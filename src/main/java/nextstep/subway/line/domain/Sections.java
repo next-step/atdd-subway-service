@@ -14,11 +14,12 @@ public class Sections {
     public Sections() {
     }
 
-    public int size(){
+    public int size() {
         return sections.size();
     }
 
-    public void addSection(Section section){
+    public void addSection(Section section) {
         sections.add(section);
     }
+
 }

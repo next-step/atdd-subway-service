@@ -3,7 +3,6 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -11,7 +10,6 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Line도메인의 ")
 public class LineTest {
@@ -141,8 +139,8 @@ public class LineTest {
 
             @BeforeEach
             void setUpSection() {
-                line.getSections().add(new Section(line,new Station("숭실대입구"),station,10));
-                line.getSections().add(new Section(line,station,new Station("건대입구역"),10));
+                line.getSections().add(new Section(line, new Station("숭실대입구"), station, 10));
+                line.getSections().add(new Section(line, station, new Station("건대입구역"), 10));
             }
 
             @Test
@@ -158,7 +156,7 @@ public class LineTest {
                         .map(Station::getName)
                         .collect(Collectors.toList());
                 upStationNames.addAll(downStationName);
-                assertThat(upStationNames).containsExactlyInAnyOrder("숭실대입구","건대입구역");
+                assertThat(upStationNames).containsExactlyInAnyOrder("숭실대입구", "건대입구역");
             }
         }
 
@@ -171,8 +169,8 @@ public class LineTest {
 
             @BeforeEach
             void setUpSection() {
-                line.getSections().add(new Section(line,new Station("숭실대입구"),station,10));
-                line.getSections().add(new Section(line,new Station("세종대"),new Station("건대입구역"),10));
+                line.getSections().add(new Section(line, new Station("숭실대입구"), station, 10));
+                line.getSections().add(new Section(line, new Station("세종대"), new Station("건대입구역"), 10));
             }
 
             @Test
@@ -188,8 +186,39 @@ public class LineTest {
                         .map(Station::getName)
                         .collect(Collectors.toList());
                 upStationNames.addAll(downStationName);
-                assertThat(upStationNames).containsExactlyInAnyOrder("세종대","건대입구역");
+                assertThat(upStationNames).containsExactlyInAnyOrder("세종대", "건대입구역");
             }
         }
     }
+
+    @Nested
+    @DisplayName("findUpStation메소드는 ")
+    class DescribeFindUpStation {
+        @Nested
+        @DisplayName("제일 앞단의 상행종점 반환")
+        class ContextWith {
+
+            private final Line line = new Line();
+            private final Random random = new Random();
+            private final Station station = new Station("강남역");
+
+            @BeforeEach
+            void before() {
+                line.getSections().add(new Section(line, station, new Station("신촌역"), 10));
+                line.getSections().add(new Section(line, new Station("삼성역"), new Station("종합운동장"), 10));
+                line.getSections().add(new Section(line, new Station("잠실역"), new Station("홍대입구역"), 10));
+            }
+
+            @Test
+            void returnsStations() {
+                assertThat(line.findUpStation()).isEqualTo(station);
+            }
+
+            @AfterEach
+            void after() {
+                line.getSections().clear();
+            }
+        }
+    }
+
 }
