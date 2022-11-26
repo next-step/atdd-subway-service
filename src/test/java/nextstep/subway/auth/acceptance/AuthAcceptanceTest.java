@@ -92,6 +92,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private static void 로그인_안됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
