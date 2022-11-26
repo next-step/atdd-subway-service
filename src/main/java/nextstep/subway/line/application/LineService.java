@@ -8,14 +8,10 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,7 +26,6 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    // 노선 저장
     public LineResponse saveLine(LineRequest request) {
         Line line = request.toLine();
         line.addSection(getSection(request));
@@ -43,7 +38,6 @@ public class LineService {
         Station downStation = stationService.findById(request.getDownStationId());
         return new Section(upStation, downStation, request.getDistance());
     }
-
 
     public List<LineResponse> findLines() {
         List<Line> stations = lineRepository.findAll();
