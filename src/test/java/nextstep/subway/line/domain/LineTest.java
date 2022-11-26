@@ -38,7 +38,7 @@ public class LineTest {
             private Random random = new Random();
 
             @BeforeEach
-            void setUpSection() {
+            void before() {
                 List<Section> sections = IntStream
                         .rangeClosed(1, random.nextInt(100) + 1)
                         .mapToObj(value -> new Section())
@@ -66,7 +66,7 @@ public class LineTest {
             private final Line line = new Line();
 
             @BeforeEach
-            void setUpSection() {
+            void before() {
                 List<Section> sections = IntStream
                         .rangeClosed(1, random.nextInt(1))
                         .mapToObj(value -> new Section())
@@ -87,7 +87,7 @@ public class LineTest {
             private Line line = new Line();
 
             @BeforeEach
-            void setUpSection() {
+            void before() {
                 List<Section> sections = IntStream
                         .rangeClosed(1, random.nextInt(100) + 2)
                         .mapToObj(value -> new Section())
@@ -115,7 +115,7 @@ public class LineTest {
             private final Line line = new Line();
 
             @BeforeEach
-            void setUpSection() {
+            void before() {
                 List<Section> sections = IntStream
                         .rangeClosed(1, random.nextInt(1))
                         .mapToObj(value -> new Section())
@@ -138,7 +138,7 @@ public class LineTest {
             private Station station = new Station("학동역");
 
             @BeforeEach
-            void setUpSection() {
+            void before() {
                 line.getSections().add(new Section(line, new Station("숭실대입구"), station, 10));
                 line.getSections().add(new Section(line, station, new Station("건대입구역"), 10));
             }
@@ -168,7 +168,7 @@ public class LineTest {
             private Station station = new Station("학동역");
 
             @BeforeEach
-            void setUpSection() {
+            void before() {
                 line.getSections().add(new Section(line, new Station("숭실대입구"), station, 10));
                 line.getSections().add(new Section(line, new Station("세종대"), new Station("건대입구역"), 10));
             }
