@@ -1,0 +1,28 @@
+package nextstep.subway;
+
+public class ErrMsg {
+    ErrMsg() {
+        throw new AssertionError();
+    }
+
+
+
+    public static String STATIONS_ALREADY_EXISTS = "이미 상행역과 하행역이 노선에 존재합니다.";
+    public static String STATIONS_NOT_EXISTS = "상행역과 하행역이 모두 노선에 존재하지 않습니다.";
+
+    public static final String CANNOT_DELETE_SECTION_WHEN_ONE = "구간이 하나인 경우에는 역을 삭제할 수 없습니다.";
+    private static final String CANNOT_FIND_LINE = "번 노선을 찾을 수 없습니다.";
+    private static final String CANNOT_FIND_STATION = "번 역을 찾을 수 없습니다.";
+    private static final String CANNOT_FIND_SECTION = "번 구간을 찾을 수 없습니다.";
+    public static String notFoundLine(Long id) {
+        return id + CANNOT_FIND_LINE;
+    }
+
+    public static String notFoundStation(Long id) {
+        return id + CANNOT_FIND_STATION;
+    }
+
+    public static String notFoundSection(Long id) {
+        return id + CANNOT_FIND_SECTION;
+    }
+}
