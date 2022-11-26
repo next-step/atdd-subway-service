@@ -1,5 +1,6 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.member.domain.Email;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.auth.dto.TokenRequest;
@@ -37,7 +38,7 @@ public class AuthServiceTest {
 
     @Test
     void login() {
-        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(Member.of(EMAIL, PASSWORD, AGE)));
+        when(memberRepository.findByEmail(Email.from("email@email.com"))).thenReturn(Optional.of(Member.of(EMAIL, PASSWORD, AGE)));
         when(jwtTokenProvider.createToken(anyString())).thenReturn("TOKEN");
 
         TokenResponse token = authService.login(new TokenRequest(EMAIL, PASSWORD));
