@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.common.constant.ErrorCode;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.Favorites;
 import org.apache.commons.lang3.StringUtils;
@@ -58,7 +59,14 @@ public class Member extends BaseEntity {
     }
 
     public void deleteFavorite(Favorite favorite) {
+        validateFavoriteMember(favorite);
         favorites.deleteFavorite(favorite);
+    }
+
+    private void validateFavoriteMember(Favorite favorite) {
+        if(!favorite.hasSameMember(this)) {
+            throw new IllegalArgumentException(ErrorCode.자신의_즐겨찾기여야_함.getErrorMessage());
+        }
     }
 
     public List<Favorite> favorites() {
