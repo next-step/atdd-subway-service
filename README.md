@@ -38,16 +38,17 @@ npm run dev
 ```
 <br>
 
-## ✏️ Code Review Process
-[텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
+## 🚀 1단계 - 인수 테스트 기반 리팩터링
+- [ ] LineService 리팩터링
+  - [ ] LineService의 비즈니스 로직을 도메인으로 옮기기
+    - [ ] Distance
+    - [ ] Sections 일급 컬렌션
+  - [ ] 인수 테스트 작성
+  - [ ] 단위 테스트 작성
+  - [ ] 코드 리팩토링
+- [ ] (선택) LineSectionAcceptanceTest 리팩터링
 
-<br>
-
-## 🐞 Bug Report
-
-버그를 발견한다면, [Issues](https://github.com/next-step/atdd-subway-service/issues) 에 등록해주세요 :)
-
-<br>
+---
 
 ## 📝 License
 
