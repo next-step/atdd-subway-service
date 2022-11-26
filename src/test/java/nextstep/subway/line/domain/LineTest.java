@@ -63,8 +63,8 @@ class LineTest {
         Line 이호선 = new Line("이호선", "green");
 
         //when
-        line.addSection(new Section(강남역, 역삼역));
-        line.addSection(new Section(역삼역, 선릉역));
+        이호선.addSection(강남역, 역삼역, 7);
+        이호선.addSection(역삼역, 선릉역, 3);
 
         //then
         assertThat(이호선.getStations()).isEqualTo(Arrays.asList(강남역, 역삼역, 선릉역));
@@ -74,10 +74,10 @@ class LineTest {
     void 동일_구간이_이미_존재하면_오류발생() {
         //given
         Line 이호선 = new Line("이호선", "green");
-        line.addSection(new Section(강남역, 역삼역));
+        이호선.addSection(강남역, 역삼역, 7);
 
         //when & then
-        assertThatThrownBy(() -> line.addSection(new Section(강남역, 역삼역)))
+        assertThatThrownBy(() -> 이호선.addSection(강남역, 역삼역, 7))
             .isInstanceOf(RuntimeException.class)
             .hasMessage("이미 등록된 구간 입니다.");
     }
@@ -86,10 +86,10 @@ class LineTest {
     void 구간내_상행선과_하행선중_동일한_항목이_없다면_등록_불가능() {
         //given
         Line 이호선 = new Line("이호선", "green");
-        line.addSection(new Section(강남역, 역삼역));
+        이호선.addSection(강남역, 역삼역, 7);
 
         //when & then
-        assertThatThrownBy(() -> line.addSection(new Section(선릉역, 블루보틀역)))
+        assertThatThrownBy(() -> 이호선.addSection(선릉역, 블루보틀역, 4))
             .isInstanceOf(RuntimeException.class)
             .hasMessage("등록할 수 없는 구간 입니다.");
     }
