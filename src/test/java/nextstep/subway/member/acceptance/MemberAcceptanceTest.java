@@ -71,6 +71,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
      *
      *   Background
      *     Given 정상회원 생성되어 있음
+     *     And 정상회원 로그인 되어 있음
      *     And 비정상회원 생성되어 있지 않음
      *
      *   Scenario: 내 정보를 관리
@@ -78,6 +79,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
      *     Then 자신의 정보 조회됨
      *     When 정상회원이 자신의 정보 수정 요청
      *     Then 자신의 정보 수정됨
+     *     Given 변경된 정보로 정상회원 재 로그인 되어 있음
      *     When 정상회원이 자신의 정보 삭제 요청
      *     Then 자신의 정보 삭제됨
      *     When 유효하지 않은 토큰을 가진 비정상회원이 자신의 정보 조회 요청
@@ -112,8 +114,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                     내_정보_수정됨(response);
                 }),
                 DynamicTest.dynamicTest("정상회원은 자신의 정보를 삭제할 수 있다.", () -> {
+                    // given
+                    ExtractableResponse<Response> reLoginResponse = 로그인_되어_있음(new TokenRequest(NEW_EMAIL, NEW_PASSWORD));
+
                     // when
-                    ExtractableResponse<Response> response = 내_정보_삭제_요청(accessToken);
+                    ExtractableResponse<Response> response = 내_정보_삭제_요청(reLoginResponse.jsonPath().getString("accessToken"));
 
                     // then
                     내_정보_삭제됨(response);
