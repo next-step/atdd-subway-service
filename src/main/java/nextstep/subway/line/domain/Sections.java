@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -133,5 +134,9 @@ public class Sections {
     private void deleteMiddle(Section prevSection, Section nextSection) {
         prevSection.merge(nextSection);
         this.sections.remove(nextSection);
+    }
+
+    public List<Section> value() {
+        return Collections.unmodifiableList(this.sections);
     }
 }
