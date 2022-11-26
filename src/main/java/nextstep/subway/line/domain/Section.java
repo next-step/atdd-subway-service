@@ -3,6 +3,8 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 public class Section {
@@ -22,7 +24,8 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    Distance distance;
 
     public Section() {
     }
@@ -31,7 +34,13 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
+    }
+
+    public Section(Station upStation, Station downStation, int distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = new Distance(distance);
     }
 
     public Long getId() {
@@ -42,31 +51,59 @@ public class Section {
         return line;
     }
 
-    public Station getUpStation() {
+    public Station upStation() {
         return upStation;
     }
 
-    public Station getDownStation() {
+    public Station downStation() {
         return downStation;
     }
 
     public int getDistance() {
-        return distance;
+        return distance.value();
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    public boolean isNextOf(Section section) {
+        return this.upStation.equals(section.downStation);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public List<Station> stations() {
+        return Arrays.asList(upStation, downStation);
+    }
+
+    public void updateUpStation(final Section section) {
+        if (this.distance.isSmallOrEqualTo(section.distance)) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+        this.upStation = section.downStation();
+        this.distance.minus(section.distance);
+    }
+
+    public void updateDownStation(final Section section) {
+        if (this.distance.isSmallOrEqualTo(section.distance)) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.downStation = section.upStation();
+        this.distance.minus(section.distance);
+    }
+
+    public boolean isSameDownStation(final Section section) {
+        return this.downStation.equals(section.downStation);
+    }
+
+    public boolean isSameUpStation(final Section section) {
+        return this.upStation.equals(section.upStation);
+    }
+
+    public void setLine(final Line line) {
+        this.line = line;
+    }
+
+    public boolean isSameUpStation(final Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean isSameDownStation(final Station station) {
+        return this.downStation.equals(station);
     }
 }

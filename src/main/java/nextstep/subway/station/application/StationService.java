@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class StationService {
-    private StationRepository stationRepository;
+    private final StationRepository stationRepository;
 
     public StationService(StationRepository stationRepository) {
         this.stationRepository = stationRepository;
@@ -27,19 +27,11 @@ public class StationService {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-                .map(station -> StationResponse.of(station))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
-    }
-
-    public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
-    public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 }
