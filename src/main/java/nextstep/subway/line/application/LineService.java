@@ -40,7 +40,7 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
     public LineResponse findLineResponseById(Long id) {
