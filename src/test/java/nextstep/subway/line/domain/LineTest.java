@@ -101,4 +101,54 @@ public class LineTest {
             }
         }
     }
+
+    @Nested
+    @DisplayName("removeStation메소드는 ")
+    class DescribeIsStation {
+
+        private Random random = new Random();
+
+        @Nested
+        @DisplayName("섹션개수가 1개 이하이면 예외발생")
+        class ContextWithNoSection {
+
+            private final Line line = new Line();
+
+            @BeforeEach
+            void setUpSection() {
+                List<Section> sections = IntStream
+                        .rangeClosed(1, random.nextInt(1))
+                        .mapToObj(value -> new Section())
+                        .collect(Collectors.toList());
+                line.getSections().addAll(sections);
+            }
+
+            @Test
+            void returnsTrue() {
+                assertThat(line.isUnderSingleSection()).isTrue();
+            }
+        }
+
+        @Nested
+        @DisplayName("섹션개수가 2개 이상이면 false를 반환")
+        class ContextWithSection {
+
+            private Line line = new Line();
+
+            @BeforeEach
+            void setUpSection() {
+                List<Section> sections = IntStream
+                        .rangeClosed(1, random.nextInt(100) + 2)
+                        .mapToObj(value -> new Section())
+                        .collect(Collectors.toList());
+                line.getSections().addAll(sections);
+            }
+
+            @Test
+            @RepeatedTest(100)
+            void returnFalse() {
+                assertThat(line.isUnderSingleSection()).isFalse();
+            }
+        }
+    }
 }
