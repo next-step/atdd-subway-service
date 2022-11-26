@@ -35,11 +35,11 @@ public class Sections {
 
     private Optional<Section> findFirstSection() {
         List<Station> downStations = this.sections.stream()
-                .map(Section::getDownStation)
+                .map(Section::downStation)
                 .collect(Collectors.toList());
 
         return this.sections.stream()
-                .filter(section -> !downStations.contains(section.getUpStation()))
+                .filter(section -> !downStations.contains(section.upStation()))
                 .findFirst();
     }
 
@@ -87,8 +87,8 @@ public class Sections {
         Optional<Section> downLineStation = findDownStation(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
+            Station newUpStation = downLineStation.get().upStation();
+            Station newDownStation = upLineStation.get().downStation();
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
             Section section = new Section(newUpStation, newDownStation, newDistance);
             syncLine.accept(section);
@@ -101,13 +101,13 @@ public class Sections {
 
     private Optional<Section> findDownStation(final Station station) {
         return sections.stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(section -> section.isSameDownStation(station))
                 .findFirst();
     }
 
     private Optional<Section> findUpStation(final Station station) {
         return sections.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(section -> section.isSameUpStation(station))
                 .findFirst();
     }
 

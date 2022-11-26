@@ -50,11 +50,11 @@ public class Section {
         return line;
     }
 
-    public Station getUpStation() {
+    public Station upStation() {
         return upStation;
     }
 
-    public Station getDownStation() {
+    public Station downStation() {
         return downStation;
     }
 
@@ -74,7 +74,7 @@ public class Section {
         if (this.distance <= section.distance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.upStation = section.getDownStation();
+        this.upStation = section.downStation();
         this.distance -= section.distance;
     }
 
@@ -82,7 +82,7 @@ public class Section {
         if (this.distance <= section.distance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = section.getUpStation();
+        this.downStation = section.upStation();
         this.distance -= section.distance;
     }
 

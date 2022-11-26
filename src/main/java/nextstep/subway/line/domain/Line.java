@@ -54,10 +54,6 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections.value();
-    }
-
     public Set<Station> getStations() {
         return sections.getStations();
     }
@@ -70,7 +66,7 @@ public class Line extends BaseEntity {
     }
 
     private void addDownSection(final Section section) {
-        if (isStationExisted(section.getDownStation())) {
+        if (isStationExisted(section.downStation())) {
             Optional<Section> originalSection = sections.findSameDownStation(section);
             originalSection.ifPresent(it -> it.updateDownStation(section));
             sections.add(section, this::syncLine);
@@ -78,7 +74,7 @@ public class Line extends BaseEntity {
     }
 
     private boolean addUpSection(final Section section) {
-        if (isStationExisted(section.getUpStation())) {
+        if (isStationExisted(section.upStation())) {
             Optional<Section> originalSection = sections.findSameUpStation(section);
             originalSection.ifPresent(it -> it.updateUpStation(section));
             sections.add(section, this::syncLine);
@@ -96,7 +92,7 @@ public class Line extends BaseEntity {
     }
 
     private void validateSection(final Section section) {
-        if (isStationExisted(section.getUpStation()) && isStationExisted(section.getDownStation())) {
+        if (isStationExisted(section.upStation()) && isStationExisted(section.downStation())) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
 
