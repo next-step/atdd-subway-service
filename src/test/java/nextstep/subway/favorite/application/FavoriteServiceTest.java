@@ -135,8 +135,9 @@ public class FavoriteServiceTest {
     @Test
     void findFavorites() {
         // given
-        when(favoriteRepository.findByMemberId(회원.getId())).thenReturn(
-                Arrays.asList(Favorite.of(회원, 강남역, 양재역), Favorite.of(회원, 교대역, 이수역)));
+        회원.addFavorite(Favorite.of(회원, 강남역, 양재역));
+        회원.addFavorite(Favorite.of(회원, 교대역, 이수역));
+        when(memberRepository.findById(회원.getId())).thenReturn(Optional.of(회원));
 
         // when
         List<FavoriteResponse> favorites = favoriteService.findFavorites(로그인한_회원);
