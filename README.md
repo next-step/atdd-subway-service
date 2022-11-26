@@ -253,6 +253,11 @@ public void getDijkstraShortestPath() {
       - [x] DELETE /members/me
 - 인증 - 즐겨 찾기 기능 완성하기
   - [ ] 즐겨찾기 기능 완성하기
+    - 즐겨찾기 도메인 구조
+      - id (generationType.IDENTITY) 
+      - member (회원:즐겨찾기 = 1:N, 즐겨찾기:회원 = N:1) -> 즐겨찾기 도메인에 @ManyToOne 설정 (양방향 설정 X)
+      - sourceStation (지하철역:즐겨찾기 = 1:N, 즐겨찾기:지하철역 = N:1) -> 즐겨찾기 도메인에 @ManyToOne 설정 (양방향 설정 X)
+      - targetStation (지하철역:즐겨찾기 = 1:N, 즐겨찾기:지하철역 = N:1) -> 즐겨찾기 도메인에 @ManyToOne 설정 (양방향 설정 X)
   - [ ] 인증을 포함해 ATDD 사이클 경험할 수 있도록 기능 구현
 
 #### 요구 사항 설명
