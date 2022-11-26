@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Embeddable
@@ -52,7 +53,12 @@ public class Sections {
         return sections;
     }
 
-    public void add(final Section section) {
+//    public void add(final Section section) {
+//        sections.add(section);
+//    }
+
+    public void add(final Section section, final Consumer<Section> syncLine) {
+        syncLine.accept(section);
         sections.add(section);
     }
 
@@ -79,7 +85,7 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException(stationId + "에 해당하는 Station을 찾을 수 없습니다."));
     }
 
-    public void remove(final long stationId) {
+    public void remove(final long stationId, Consumer<Section> syncLine) {
         Station station = findStationById(stationId);
         Optional<Section> upLineStation = findUpStation(station);
         Optional<Section> downLineStation = findDownStation(station);
@@ -88,7 +94,9 @@ public class Sections {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            sections.add(new Section(newUpStation, newDownStation, newDistance));
+            Section section = new Section(newUpStation, newDownStation, newDistance);
+            syncLine.accept(section);
+            sections.add(section);
         }
 
         upLineStation.ifPresent(sections::remove);

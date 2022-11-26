@@ -40,7 +40,7 @@ class SectionsTest {
     void addSection() {
         Station 시청역 = new Station("시청역");
 
-        sections.add(new Section(서울역, 시청역, 5));
+        sections.add(new Section(서울역, 시청역, 5), (section) -> new Line().addSection(section));
 
         assertThat(sections.count()).isEqualTo(2);
     }
@@ -52,9 +52,9 @@ class SectionsTest {
         Field 시청역_ID = ReflectionUtils.findField(Station.class, "id");
         Objects.requireNonNull(시청역_ID).setAccessible(true);
         ReflectionUtils.setField(시청역_ID, 시청역, 3L);
-        sections.add(new Section(서울역, 시청역, 5));
+        sections.add(new Section(서울역, 시청역, 5), (section) -> new Line().addSection(section));
 
-        sections.remove(3L);
+        sections.remove(3L, (section) -> new Line().addSection(section));
 
         assertThat(sections.count()).isEqualTo(1);
     }

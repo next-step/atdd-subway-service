@@ -73,8 +73,8 @@ public class Line extends BaseEntity {
         if (isStationExisted(section.getDownStation())) {
             Optional<Section> originalSection = sections.findSameDownStation(section);
             originalSection.ifPresent(it -> it.updateDownStation(section));
-            section.setLine(this);
-            sections.add(section);
+            syncLine(section);
+            sections.add(section, this::syncLine);
         }
     }
 
@@ -82,8 +82,8 @@ public class Line extends BaseEntity {
         if (isStationExisted(section.getUpStation())) {
             Optional<Section> originalSection = sections.findSameUpStation(section);
             originalSection.ifPresent(it -> it.updateUpStation(section));
-            section.setLine(this);
-            sections.add(section);
+            syncLine(section);
+            sections.add(section, this::syncLine);
             return true;
         }
         return false;
@@ -91,8 +91,8 @@ public class Line extends BaseEntity {
 
     private boolean addInitialSection(final Section section) {
         if (sections.count() == 0) {
-            section.setLine(this);
-            sections.add(section);
+            syncLine(section);
+            sections.add(section, this::syncLine);
             return true;
         }
         return false;
@@ -116,8 +116,11 @@ public class Line extends BaseEntity {
 
     public void deleteStationById(final long stationId) {
         validateIsDeletableStation();
-        sections.remove(stationId);
+        sections.remove(stationId, this::syncLine);
+    }
 
+    private void syncLine(Section section) {
+        section.setLine(this);
     }
 
     private void validateIsDeletableStation() {
