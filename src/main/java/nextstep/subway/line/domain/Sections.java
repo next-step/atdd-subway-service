@@ -19,6 +19,7 @@ public class Sections {
     private static final int ONE_SECTION = 1;
     private static final String CAN_NOT_DELETE_LAST_SECTION = "노선의 마지막 구간은 삭제할 수 없습니다.";
     private static final String CAN_NOT_DELETE_NOT_INCLUDED_STATION = "노선에 포함되지 않은 지하철 역은 삭제할 수 없습니다.";
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections;
 

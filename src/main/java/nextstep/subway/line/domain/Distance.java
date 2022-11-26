@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 public class Distance {
     private static final int MIN_DISTANCE = 0;
     private static final String CAN_NOT_LESS_THAN_ZERO = "거리는 0이하의 값일 수 없습니다.";
+
     @Column(name = "distance", nullable = false)
     private int value;
 
