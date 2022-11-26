@@ -20,7 +20,11 @@ public class Line extends BaseEntity {
 
     private List<Section> sections = new ArrayList<>();
 
-    public Line() {
+    protected Line() {
+    }
+
+    public static Line of() {
+        return new Line();
     }
 
     public Line(String name, String color) {
