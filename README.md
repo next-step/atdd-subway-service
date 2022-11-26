@@ -239,7 +239,7 @@ public void getDijkstraShortestPath() {
 - [x] 토큰 발급 기능 (로그인) 인수 테스트 만들기
   - [x] 이메일과 패스워드를 이용해 요청 시 access token 응답하는 기능 구현
   - 예외 상황 테스트 구현
-    - [x] 유요하지 않은 토큰으로 `/members/me` 요청 보낼 경우 예외 처리
+    - [x] 유효하지 않은 토큰으로 `/members/me` 요청 보낼 경우 예외 처리
 - 인증 - 내 정보 조회 기능 완성하기
   - [x] 인수 테스트(MemberAcceptanceTest 클래스의 `manageMyInfo` 메소드에 인수 테스트 추가)
     - [x] 내 정보 조회/수정/삭제 기능을 `/members/me`라는 URI 요청으로 동작하도록 검증
@@ -255,7 +255,7 @@ public void getDijkstraShortestPath() {
   - [x] 즐겨찾기 기능 완성하기
     - 즐겨찾기 도메인 구조
       - id (generationType.IDENTITY) 
-      - member (회원:즐겨찾기 = 1:N, 즐겨찾기:회원 = N:1) -> 즐겨찾기 도메인에 @ManyToOne 설정 (양방향 설정 X)
+      - member (회원:즐겨찾기 = 1:N, 즐겨찾기:회원 = N:1) -> 즐겨찾기 도메인에 @ManyToOne 설정
       - sourceStation (지하철역:즐겨찾기 = 1:N, 즐겨찾기:지하철역 = N:1) -> 즐겨찾기 도메인에 @ManyToOne 설정 (양방향 설정 X)
       - targetStation (지하철역:즐겨찾기 = 1:N, 즐겨찾기:지하철역 = N:1) -> 즐겨찾기 도메인에 @ManyToOne 설정 (양방향 설정 X)
   - [x] 인증을 포함해 ATDD 사이클 경험할 수 있도록 기능 구현
