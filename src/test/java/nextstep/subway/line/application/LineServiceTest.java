@@ -94,4 +94,18 @@ class LineServiceTest {
                 () -> assertThat(response.getStations()).hasSize(2)
         );
     }
+
+    @DisplayName("지하철 노선의 이름과 색상 변경 시 정상적으로 변경됨을 확인한다.")
+    @Test
+    void updateLine() {
+        Line line = new Line("신분당선", "red", new Station("강남역"), new Station("광교역"), 10);
+        when(lineRepository.findById(any())).thenReturn(Optional.of(line));
+
+        lineService.updateLine(1L, new LineRequest("분당선", "yellow", 1L, 2L, 10));
+
+        assertAll(
+                () -> assertThat(line.getName()).isEqualTo("분당선"),
+                () -> assertThat(line.getColor()).isEqualTo("yellow")
+        );
+    }
 }
