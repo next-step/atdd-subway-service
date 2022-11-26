@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import nextstep.subway.common.constant.ErrorCode;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
