@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -58,5 +59,24 @@ public class Favorite extends BaseEntity {
 
     public Station getTargetStation() {
         return targetStation;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Favorite favorite = (Favorite) o;
+        return Objects.equals(getId(), favorite.getId()) && Objects.equals(member, favorite.member)
+                && Objects.equals(getSourceStation(), favorite.getSourceStation()) && Objects.equals(
+                getTargetStation(), favorite.getTargetStation());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), member, getSourceStation(), getTargetStation());
     }
 }
