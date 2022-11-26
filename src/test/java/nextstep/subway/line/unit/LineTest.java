@@ -1,6 +1,7 @@
 package nextstep.subway.line.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -23,7 +24,7 @@ public class LineTest {
         신분당선.addSection(구간);
 
         // then
-        assertThat(신분당선.getSections()).contains(구간);
+        assertTrue(신분당선.containSection(구간));
     }
 
 }
