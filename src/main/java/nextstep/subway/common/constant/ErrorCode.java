@@ -20,6 +20,7 @@ public enum ErrorCode {
     출발역과_도착역이_서로_같음("[ERROR] 출발역과 도착역은 같을 수 없습니다."),
     경로는_비어있을_수_없음("[ERROR] 경로는 비어있을 수 없습니다."),
     해당_이메일을_가진_회원_없음("[ERROR] 해당 이메일을 가진 회원은 없습니다."),
+    존재하지_않는_회원("[ERROR] 존재하지 않는 회원입니다."),
     ;
 
     private final String errorMessage;
