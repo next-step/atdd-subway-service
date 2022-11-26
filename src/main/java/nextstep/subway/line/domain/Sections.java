@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Embeddable
@@ -79,5 +80,46 @@ public class Sections {
         }
     }
 
+    public void deleteSection(Station station) {
+        validDeleteStation(station);
+        Section upSection = findUpStationSection(station).orElse(null);
+        Section downSection = findDownStationSection(station).orElse(null);
 
+        if (upSection == null) {
+            deleteSection(downSection);
+            return;
+        }
+        if (downSection == null) {
+            deleteSection(upSection);
+            return;
+        }
+        upSection.disconnectDownSection(downSection);
+        deleteSection(downSection);
+    }
+
+    private void deleteSection(Section upSection) {
+        sections.remove(upSection);
+    }
+
+    private void validDeleteStation(Station station) {
+        if (sections.size() <= 1) {
+            throw new IllegalArgumentException("지하철 구간이 1개인 경우 삭제할 수 없습니다.");
+        }
+
+        if (!distinctStations().contains(station)) {
+            throw new IllegalArgumentException("삭제하려는 지하철 역이 올바르지 않습니다.");
+        }
+    }
+
+    private Optional<Section> findUpStationSection(Station station) {
+        return sections.stream()
+                .filter(section -> section.hasDownStation(station))
+                .findFirst();
+    }
+
+    private Optional<Section> findDownStationSection(Station station) {
+        return sections.stream()
+                .filter(section -> section.hasUpStation(station))
+                .findFirst();
+    }
 }
