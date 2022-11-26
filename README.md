@@ -74,7 +74,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] findLines
 - [x] findLineResponseById
 - [x] updateLine
-- [ ] addLineStation
+- [x] addLineStation
 - [ ] removeLineStation
 
 2. Domain의 단위 테스트를 작성하기
