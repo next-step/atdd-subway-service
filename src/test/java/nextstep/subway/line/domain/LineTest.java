@@ -237,7 +237,6 @@ public class LineTest {
         class ContextWith {
 
             private final Line line = new Line();
-            private List<Section> sections = new ArrayList<>();
 
             @BeforeEach
             void before() {
