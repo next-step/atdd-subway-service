@@ -46,7 +46,6 @@ public class LineTest {
                 line.getSections().addAll(sections);
             }
 
-            @Test
             @RepeatedTest(100)
             void returnFalse() {
                 assertThat(line.isEmptySections()).isFalse();
@@ -75,7 +74,7 @@ public class LineTest {
                 line.getSections().addAll(sections);
             }
 
-            @Test
+            @RepeatedTest(100)
             void returnsTrue() {
                 assertThat(line.isUnderSingleSection()).isTrue();
             }
@@ -96,7 +95,6 @@ public class LineTest {
                 line.getSections().addAll(sections);
             }
 
-            @Test
             @RepeatedTest(100)
             void returnFalse() {
                 assertThat(line.isUnderSingleSection()).isFalse();
