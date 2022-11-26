@@ -28,12 +28,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 공항선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 김포공항역;
+    private StationResponse 마곡나루역;
 
     /**
+     * 김포공항    --- *공항선* --- 마곡나루
      * 교대역    --- *2호선* ---   강남역
      * |                            |
      * *3호선*                   *신분당선*
@@ -48,13 +52,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        김포공항역 = 지하철역_등록되어_있음("김포공항역").as(StationResponse.class);
+        마곡나루역 = 지하철역_등록되어_있음("마곡나루역").as(StationResponse.class);
 
         LineRequest 신분당선_요청 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 5);
         신분당선 = 지하철_노선_등록되어_있음(신분당선_요청).as(LineResponse.class);
-        LineRequest 이호선_요청 = new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10);
+        LineRequest 이호선_요청 = new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10);
         이호선 = 지하철_노선_등록되어_있음(이호선_요청).as(LineResponse.class);
-        LineRequest 삼호선_요청 = new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 20);
+        LineRequest 삼호선_요청 = new LineRequest("삼호선", "bg-blue-600", 교대역.getId(), 양재역.getId(), 20);
         삼호선 = 지하철_노선_등록되어_있음(삼호선_요청).as(LineResponse.class);
+        LineRequest 공항선_요청 = new LineRequest("공항선", "bg-purple-600", 김포공항역.getId(), 마곡나루역.getId(), 30);
+        공항선 = 지하철_노선_등록되어_있음(공항선_요청).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 15);
     }
@@ -84,6 +92,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         최단_경로_조회_실패됨(response);
     }
+
+    /**
+     *  Given 지하철역과 지하철 노선을 생성하고
+     *  When 연결되어 있지 않은 출발역과 도착역의 최단 경로를 조회하면
+     *  Then 최단 경로 조회에 실패한다.
+     */
+    @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 최단 경로를 조회할 수 없다.")
+    @Test
+    void findShortestPathWithNotConnectStation() {
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(김포공항역, 강남역);
+
+        최단_경로_조회_실패됨(response);
+    }
+
 
     public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse target) {
         return RestAssured.given().log().all()
