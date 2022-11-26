@@ -15,7 +15,7 @@
 - 정상 동작 확인 후 기존 로직 제거
 
 ## 요구사항 기능 체크리스트 (LineService)
-- [ ] StationService 대신 StationRepository 사용
+- [X] StationService 대신 StationRepository 사용
 - [X] Domain으로 옮길 로직을 찾기
   - Section 추가
   - Section 조회

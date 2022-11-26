@@ -8,6 +8,7 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,20 +20,25 @@ import java.util.stream.Collectors;
 @Transactional
 public class LineService {
     private final LineRepository lineRepository;
-    private final StationService stationService;
+    private final StationRepository stationRepository;
 
-    public LineService(LineRepository lineRepository, StationService stationService) {
+    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
-        this.stationService = stationService;
+        this.stationRepository = stationRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = findStationById(request.getUpStationId());
+        Station downStation = findStationById(request.getDownStationId());
         Line line = new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
         Line persistLine = lineRepository.save(line);
         List<StationResponse> stations = toResponseOf(line.getStations());
         return LineResponse.of(persistLine, stations);
+    }
+
+    private Station findStationById(final Long id) {
+        return stationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 Station을 찾을 수 없습니다."));
     }
 
     public List<LineResponse> findLines() {
@@ -49,7 +55,8 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 Line을 찾을 수 없습니다."));
     }
 
     public LineResponse findLineResponseById(Long id) {
@@ -58,7 +65,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = findLineById(id);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -68,8 +75,8 @@ public class LineService {
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Station upStation = findStationById(request.getUpStationId());
+        Station downStation = findStationById(request.getDownStationId());
         line.addSection(new Section(upStation, downStation, request.getDistance()));
     }
 
