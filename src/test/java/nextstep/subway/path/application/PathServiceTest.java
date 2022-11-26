@@ -9,10 +9,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -116,5 +116,16 @@ class PathServiceTest {
         assertThatThrownBy(() -> pathService.findShortestPath(source, target))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발역과 도착역이 연결되어 있지 않은 경우 경로를 조회할 수 없습니다.");
+    }
+
+    @DisplayName("출발역과 도착역이 존재하지 않을 경우 최단 경로 조회 시 예외가 발생한다.")
+    @Test
+    void findShortestPathWithNotExistStation() {
+        Long source = 1L;
+        Long target = 2L;
+        when(stationRepository.findById(source)).thenThrow(EntityNotFoundException.class);
+
+        assertThatThrownBy(() -> pathService.findShortestPath(source, target))
+                .isInstanceOf(EntityNotFoundException.class);
     }
 }
