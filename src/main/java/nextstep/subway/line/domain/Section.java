@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
+import java.util.List;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -55,18 +57,22 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        this.upStation = station;
-        this.distance.subtract(Distance.from(newDistance));
+    public void updateUpStation(Section section) {
+        this.upStation = section.downStation;
+        this.distance = this.distance.subtract(section.distance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        this.downStation = station;
-        this.distance.subtract(Distance.from(newDistance));
+    public void updateDownStation(Section section) {
+        this.downStation = section.upStation;
+        this.distance = this.distance.subtract(section.distance);
     }
 
-    public void updateDownStationDelete(Station station, int newDistance) {
+    public void updateDownStationDelete(Station station, Distance distance) {
         this.downStation = station;
-        this.distance.add(Distance.from(newDistance));
+        this.distance = this.distance.add(distance);
+    }
+
+    public List<Station> getStations() {
+        return Arrays.asList(upStation, downStation);
     }
 }
