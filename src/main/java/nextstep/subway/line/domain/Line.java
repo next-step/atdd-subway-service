@@ -61,13 +61,17 @@ public class Line extends BaseEntity {
     }
 
     public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+        this.name = line.name;
+        this.color = line.color;
     }
 
     public void addSection(Section section) {
         sections.addSection(section);
         section.toLine(this);
+    }
+
+    public void removeSection(Station station) {
+        sections.removeStation(this, station);
     }
 
     public int totalDistance() {
@@ -88,9 +92,5 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
-    }
-
-    public List<Section> getSections() {
-        return sections.getSections();
     }
 }
