@@ -60,39 +60,56 @@ public class Sections {
         if (sections.isEmpty()) {
             return Arrays.asList();
         }
+        return getSortedStations();
+    }
 
+    private List<Station> getSortedStations() {
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        Station firstStation = findFirstStation();
+        stations.add(firstStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
+        Station currentStation = firstStation;
+        while (currentStation != null) {
+            Optional<Station> nextStation = findNextStation(currentStation);
+            if (!nextStation.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+            currentStation = nextStation.get();
+            stations.add(nextStation.get());
         }
-
         return stations;
     }
 
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
+    private Station findFirstStation() {
+        Station upStation = sections.get(0).getUpStation();
+        while (upStation != null) {
+            Optional<Station> prevStation = findPrevStation(upStation);
+            if (!prevStation.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getUpStation();
+            upStation = prevStation.get();
         }
-        return downStation;
+        return upStation;
+    }
+
+    private Optional<Station> findPrevStation(Station station) {
+        Optional<Section> prevSection = sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+        if (prevSection.isPresent()) {
+            return Optional.of(prevSection.get().getUpStation());
+        }
+        return Optional.empty();
+    }
+
+    private Optional<Station> findNextStation(Station station) {
+        Optional<Section> nextSection = sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        if (nextSection.isPresent()) {
+            return Optional.of(nextSection.get().getDownStation());
+        }
+        return Optional.empty();
     }
 
     public void remove(Station station) {
