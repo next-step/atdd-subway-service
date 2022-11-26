@@ -16,7 +16,7 @@ public class LineTest {
         // given
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
-        Line line = new Line("8호선", "분홍색", 잠실역, 문정역, 10);
+        Line line = Line.of("8호선", "분홍색", 잠실역, 문정역, 10);
 
         // when
         List<Station> stations = line.getStations();
@@ -31,7 +31,7 @@ public class LineTest {
         // given
         String name = "2호선";
         String color = "초록색";
-        Line line = new Line(name, color);
+        Line line = Line.of(name, color);
 
         // when
         line.update(name, color);
@@ -47,7 +47,7 @@ public class LineTest {
         // given
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
-        Line line = new Line("8호선", "분홍색", 잠실역, 문정역, 10);
+        Line line = Line.of("8호선", "분홍색", 잠실역, 문정역, 10);
 
         // given
         Station 가락시장역 = new Station("가락시장역");
@@ -66,7 +66,7 @@ public class LineTest {
         // given
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
-        Line line = new Line("8호선", "분홍색", 잠실역, 문정역, 10);
+        Line line = Line.of("8호선", "분홍색", 잠실역, 문정역, 10);
 
         // given
         Station 가락시장역 = new Station("가락시장역");

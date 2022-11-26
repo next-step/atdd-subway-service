@@ -22,18 +22,29 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
-    public Line() {
-    }
+    protected Line() {}
 
-    public Line(String name, String color) {
+    private Line(String name, String color) {
         this.name = name;
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    private Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public static Line empty() {
+        return new Line();
+    }
+
+    public static Line of(String name, String color) {
+        return new Line(name, color);
+    }
+
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
+        return new Line(name, color, upStation, downStation, distance);
     }
 
     public void update(Line line) {
