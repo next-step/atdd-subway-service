@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -219,5 +220,51 @@ class LineServiceTest {
         lineService.addLineStation(1L, new SectionRequest(1L, 2L, 5));
 
         Assertions.assertThat(신분당선.getStations()).containsExactly(강남역, 광교역, 수원역);
+    }
+
+    @DisplayName("지하철 구간이 1개인 경우 지하철역 제거 시 예외를 발생한다.")
+    @Test
+    void removeLineStationException() {
+        when(lineRepository.findById(any())).thenReturn(Optional.of(신분당선));
+        when(stationService.findStationById(any())).thenReturn(강남역);
+
+        Assertions.assertThatThrownBy(() -> lineService.removeLineStation(1L, 1L))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @DisplayName("지하철 노선에서 상행 종점역 제거하기")
+    @Test
+    void removeLineStation1() {
+        신분당선.addSection(new Section(신분당선, 강남역, 양재역, 5));
+        when(lineRepository.findById(any())).thenReturn(Optional.of(신분당선));
+        when(stationService.findStationById(any())).thenReturn(강남역);
+
+        lineService.removeLineStation(1L, 1L);
+
+        Assertions.assertThat(신분당선.getStations()).containsExactly(양재역, 광교역);
+    }
+
+    @DisplayName("지하철 노선에서 하행 종점역 제거하기")
+    @Test
+    void removeLineStation2() {
+        신분당선.addSection(new Section(신분당선, 강남역, 양재역, 5));
+        when(lineRepository.findById(any())).thenReturn(Optional.of(신분당선));
+        when(stationService.findStationById(any())).thenReturn(광교역);
+
+        lineService.removeLineStation(1L, 1L);
+
+        Assertions.assertThat(신분당선.getStations()).containsExactly(강남역, 양재역);
+    }
+
+    @DisplayName("지하철 노선에서 중간역 제거하기")
+    @Test
+    void removeLineStation3() {
+        신분당선.addSection(new Section(신분당선, 강남역, 양재역, 5));
+        when(lineRepository.findById(any())).thenReturn(Optional.of(신분당선));
+        when(stationService.findStationById(any())).thenReturn(양재역);
+
+        lineService.removeLineStation(1L, 1L);
+
+        Assertions.assertThat(신분당선.getStations()).containsExactly(강남역, 광교역);
     }
 }

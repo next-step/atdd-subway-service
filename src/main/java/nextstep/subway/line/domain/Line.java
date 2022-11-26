@@ -54,7 +54,7 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return this.sections;
+        return this.sectionsV2.getSections();
     }
 
     public void addSection(Section section) {

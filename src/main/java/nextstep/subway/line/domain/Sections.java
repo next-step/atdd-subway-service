@@ -74,7 +74,8 @@ public class Sections {
     }
 
     public List<Section> getSections() {
-        return Collections.unmodifiableList(this.sections);
+//        return Collections.unmodifiableList(this.sections);
+        return this.sections;
     }
 
     public List<Station> getStations() {
