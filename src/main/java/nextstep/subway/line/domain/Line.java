@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import java.util.Collections;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
@@ -14,28 +15,39 @@ public class Line extends BaseEntity {
     private Long id;
     @Embedded
     private Name name;
-    private String color;
+    @Embedded
+    private Color color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections;
 
     public Line() {
     }
 
     public Line(String name, String color) {
         this.name = Name.from(name);
-        this.color = color;
+        this.color = Color.from(color);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        Section section = Section.of(this, upStation, downStation, distance);
         this.name = Name.from(name);
-        this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        this.color = Color.from(color);
+        this.sections = Sections.from(Collections.singletonList(section));
     }
 
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+    public void update(String name, String color) {
+        this.name = Name.from(name);
+        this.color = Color.from(color);
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
+        section.belong(this);
+    }
+
+    public void removeSection(Station station) {
+        sections.remove(station);
     }
 
     public Long getId() {
@@ -46,11 +58,11 @@ public class Line extends BaseEntity {
         return name;
     }
 
-    public String getColor() {
+    public Color getColor() {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections;
+    public List<Station> getStations() {
+        return sections.getStations();
     }
 }
