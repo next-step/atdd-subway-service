@@ -119,7 +119,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                     // then
                     즐겨찾기_삭제됨(response);
                 }),
-                DynamicTest.dynamicTest("유효하지 않은 토큰을 가진 비정상회원은 즐겨찾기를 생성할 수 있다.", () -> {
+                DynamicTest.dynamicTest("유효하지 않은 토큰을 가진 비정상회원은 즐겨찾기를 생성할 수 없다.", () -> {
                     // when
                     ExtractableResponse<Response> response = 즐겨찾기_등록_요청(wrongAccessToken,
                             new FavoriteRequest(종합운동장역.getId().toString(), 선릉역.getId().toString()));
@@ -127,14 +127,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                     // then
                     즐겨찾기_등록_안됨(response);
                 }),
-                DynamicTest.dynamicTest("유효하지 않은 토큰을 가진 비정상회원은 즐겨찾기 목록을 조회 할 수 있다.", () -> {
+                DynamicTest.dynamicTest("유효하지 않은 토큰을 가진 비정상회원은 즐겨찾기 목록을 조회 할 수 없다.", () -> {
                     // when
                     ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(wrongAccessToken);
 
                     // then
                     즐겨찾기_목록_조회_안됨(response);
                 }),
-                DynamicTest.dynamicTest("유효하지 않은 토큰을 가진 비정상회원은 즐겨찾기를 삭제할 수 있다.", () -> {
+                DynamicTest.dynamicTest("유효하지 않은 토큰을 가진 비정상회원은 즐겨찾기를 삭제할 수 없다.", () -> {
                     // when
                     ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(wrongAccessToken, 1L);
 
@@ -157,14 +157,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private static void 즐겨찾기_등록_안됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private static void 즐겨찾기_목록_조회_안됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private static void 즐겨찾기_삭제_안됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
