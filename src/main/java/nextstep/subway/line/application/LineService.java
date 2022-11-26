@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class LineService {
 
     private LineRepository lineRepository;
@@ -25,6 +25,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -48,15 +49,18 @@ public class LineService {
         return LineResponse.of(findLineById(id));
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = findLineById(id);
         persistLine.update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -64,6 +68,7 @@ public class LineService {
         line.addSection(new Section(upStation, downStation, request.getDistance()));
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
