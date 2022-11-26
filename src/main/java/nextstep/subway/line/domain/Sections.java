@@ -50,7 +50,9 @@ public class Sections {
     }
 
     private Optional<Section> findFirstSection() {
-        List<Station> downStations = this.sections.stream().map(Section::getDownStation).collect(Collectors.toList());
+        List<Station> downStations = this.sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
         return this.sections.stream()
                 .filter(section -> !downStations.contains(section.getUpStation()))
                 .findFirst();
@@ -70,7 +72,8 @@ public class Sections {
     }
 
     private void validateDuplicateUpDownStation(Section newSection) {
-        boolean isSame = this.sections.stream().anyMatch(section -> section.isSameUpDownStation(newSection));
+        boolean isSame = this.sections.stream()
+                .anyMatch(section -> section.isSameUpDownStation(newSection));
         if (isSame) {
             throw new IllegalArgumentException(DUPLICATE_UP_DOWN_STATIONS);
         }
@@ -108,7 +111,8 @@ public class Sections {
     }
 
     private void validateNotIncludeStation(Station station) {
-        boolean isNotInclude = this.assignedStations().stream().noneMatch(station::equals);
+        boolean isNotInclude = this.assignedStations().stream()
+                .noneMatch(station::equals);
         if (isNotInclude) {
             throw new IllegalArgumentException(CAN_NOT_DELETE_NOT_INCLUDED_STATION);
         }

@@ -24,7 +24,11 @@ public class MockitoTest {
         LineRepository lineRepository = mock(LineRepository.class);
         StationService stationService = mock(StationService.class);
 
-        Line line = Line.builder().upStation(new Station("교대역")).downStation(new Station("강남역")).distance(5).build();
+        Line line = Line.builder()
+                .upStation(new Station("교대역"))
+                .downStation(new Station("강남역"))
+                .distance(5)
+                .build();
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(line));
         LineService lineService = new LineService(lineRepository, stationService);
 
