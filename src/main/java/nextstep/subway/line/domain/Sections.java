@@ -30,10 +30,6 @@ public class Sections {
         this.sections = new LinkedList(sections);
     }
 
-    public List<Section> value() {
-        return this.sections;
-    }
-
     public Set<Station> assignedOrderedStation() {
         Set<Station> sortedStations = new LinkedHashSet<>();
         Optional<Section> section = findFirstSection();
