@@ -154,12 +154,28 @@ public class FavoriteServiceTest {
     @DisplayName("즐겨찾기를 삭제한다.")
     @Test
     void deleteFavorite() {
+        // given
+        Favorite favorite = Favorite.of(회원, 반포역, 강남역);
+        회원.addFavorite(favorite);
+        when(favoriteRepository.findById(1L)).thenReturn(Optional.of(favorite));
+        when(memberRepository.findById(any())).thenReturn(Optional.of(회원));
 
+        // when
+        favoriteService.deleteFavorite(로그인한_회원, 1L);
+
+        // then
+        assertThat(favorite).isNotIn(회원.favorites());
     }
 
     @DisplayName("존재하지 않는 즐겨찾기를 삭제하려하면 예외를 발생시킨다.")
     @Test
     void deleteFavoriteThrowErrorWhenFavoriteIsNotExists() {
+
+    }
+
+    @DisplayName("삭제를 시도하는 회원의 즐겨찾기가 아닌 항목을 삭제하려하면 예외를 발생시킨다.")
+    @Test
+    void deleteFavoriteThrowErrorWhenNotAuthorizedMemberTryDelete() {
 
     }
 }

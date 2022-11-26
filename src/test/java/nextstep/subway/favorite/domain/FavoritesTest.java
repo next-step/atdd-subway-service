@@ -93,4 +93,17 @@ public class FavoritesTest {
                 .hasMessage(ErrorCode.즐겨찾기들의_회원은_동일해야_함.getErrorMessage());
     }
 
+    @DisplayName("즐겨찾기들 중 해당하는 즐겨찾기를 삭제한다.")
+    @Test
+    void deleteFavorite() {
+        // given
+        Favorites favorites = Favorites.from(Arrays.asList(Favorite.of(회원, 이수역, 반포역), Favorite.of(회원, 양재역, 반포역),
+                Favorite.of(회원, 남부터미널역, 교대역)));
+
+        // when
+        favorites.deleteFavorite(Favorite.of(회원, 양재역, 반포역));
+
+        // then
+        assertThat(Favorite.of(회원, 양재역, 반포역)).isNotIn(favorites);
+    }
 }

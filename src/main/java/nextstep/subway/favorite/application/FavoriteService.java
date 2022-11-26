@@ -49,7 +49,10 @@ public class FavoriteService {
     }
 
 
-    public void removeFavorite(LoginMember loginMember, Long favoriteId) {
+    public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
+        Favorite favorite = findFavoriteById(favoriteId);
+        Member member = findMemberById(loginMember.getId());
+        member.deleteFavorite(favorite);
     }
 
     private Member findMemberById(Long id) {
@@ -59,5 +62,10 @@ public class FavoriteService {
 
     private Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(ErrorCode.존재하지_않는_역.getErrorMessage()));
+    }
+
+    private Favorite findFavoriteById(Long id) {
+        return favoriteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.존재하지_않는_즐겨찾기.getErrorMessage()));
     }
 }

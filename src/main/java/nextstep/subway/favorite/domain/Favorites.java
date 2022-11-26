@@ -40,6 +40,10 @@ public class Favorites {
         }
     }
 
+    public void deleteFavorite(Favorite deleteFavorite) {
+        favorites.removeIf(favorite -> favorite.equals(deleteFavorite));
+    }
+
     private void validateMember(Favorite favorite) {
         if(isNotEqualMember(favorite)) {
             throw new IllegalArgumentException(ErrorCode.즐겨찾기들의_회원은_동일해야_함.getErrorMessage());
