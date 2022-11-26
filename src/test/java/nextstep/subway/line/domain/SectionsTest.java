@@ -80,4 +80,24 @@ public class SectionsTest {
                 .isInstanceOf(RuntimeException.class);
     }
 
+    @Test
+    @DisplayName("역을 받아 구간 삭제")
+    void removeSection() {
+        // given
+        Station 잠실역 = new Station("잠실역");
+        Station 문정역 = new Station("문정역");
+        Section section = new Section(잠실역, 문정역, 10);
+        Sections sections = new Sections(Arrays.asList(section));
+
+        // given
+        Station 가락시장역 = new Station("가락시장역");
+        Section newSection = new Section(가락시장역, 문정역, 1);
+        sections.add(newSection);
+
+        // when
+        sections.remove(가락시장역);
+
+        // then
+        assertThat(sections.getStations()).doesNotContain(가락시장역);
+    }
 }

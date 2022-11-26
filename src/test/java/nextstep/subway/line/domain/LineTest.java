@@ -59,4 +59,24 @@ public class LineTest {
         // then
         assertThat(line.getSections()).contains(section);
     }
+
+    @Test
+    @DisplayName("역을 받아 노선에서 역 삭제")
+    void removeStation() {
+        // given
+        Station 잠실역 = new Station("잠실역");
+        Station 문정역 = new Station("문정역");
+        Line line = new Line("8호선", "분홍색", 잠실역, 문정역, 10);
+
+        // given
+        Station 가락시장역 = new Station("가락시장역");
+        Section section = new Section(가락시장역, 문정역, 1);
+        line.addSection(section);
+
+        // when
+        line.removeSection(가락시장역);
+
+        // then
+        assertThat(line.getStations()).doesNotContain(가락시장역);
+    }
 }
