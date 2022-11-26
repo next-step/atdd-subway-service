@@ -49,6 +49,6 @@ class DistanceTest {
         Distance actual = distance.subtract(distance2);
 
         // then
-    assertThat(actual).isEqualTo(new Distance(5));
+        assertThat(actual).isEqualTo(new Distance(5));
     }
 }

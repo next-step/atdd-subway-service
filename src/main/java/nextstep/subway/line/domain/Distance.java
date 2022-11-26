@@ -48,6 +48,10 @@ public class Distance {
         }
     }
 
+    public Integer getDistance() {
+        return distance;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

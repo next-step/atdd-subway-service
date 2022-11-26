@@ -66,5 +66,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - API를 검증하기 보다는 시나리오, 흐름을 검증하는 테스트로 리팩터링 하기
 
 - [ ] LineService 리팩터링
-  - [ ] 노선 저장하기 리팩터링
+  - [x] 노선 저장하기 리팩터링
+  - [x] 구간 추가하기 리팩터링
+  - [ ] 구간 제거하기 리팩터링
 - [x] LineSectionAcceptanceTest 리팩터링

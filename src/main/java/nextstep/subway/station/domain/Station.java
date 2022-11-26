@@ -35,6 +35,10 @@ public class Station extends BaseEntity {
         }
     }
 
+    public boolean isSameStation(Station compareStation) {
+        return Objects.equals(this, compareStation);
+    }
+
     public Long getId() {
         return id;
     }
