@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 라인 테스트")
 class LineTest {
@@ -82,6 +82,22 @@ class LineTest {
         assertThatThrownBy(() -> 지하철_2호선.addSection(신림_강남_구간))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    }
+
+    @Test
+    @DisplayName("지하철노선 길이보다 작은 경우 구역을 추가할 수 있다.")
+    void possible_distance_section() {
+        // given
+        Line 지하철_2호선 = new Line("2호선", "green", 신림역, 잠실역, 10);
+        Section 신림_강남_구간 = new Section(신림역, 강남역, 9);
+
+        // when
+        지하철_2호선.addSection(신림_강남_구간);
+        // then
+        assertAll(
+                () -> assertThat(지하철_2호선.getSections()).hasSize(2),
+                () -> assertThat(지하철_2호선.stations()).contains(신림역, 강남역, 잠실역)
+        );
     }
 
 }
