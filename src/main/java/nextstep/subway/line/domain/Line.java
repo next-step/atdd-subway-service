@@ -61,4 +61,11 @@ public class Line extends BaseEntity {
     public boolean isUnderSingleSection() {
         return sections.size() <= 1;
     }
+
+    public void removeStation(Station station) {
+        if (isUnderSingleSection()) {
+            throw new RuntimeException();
+        }
+
+    }
 }

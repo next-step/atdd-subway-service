@@ -117,10 +117,7 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
-        if (line.isUnderSingleSection()) {
-            throw new RuntimeException();
-        }
-
+        line.removeStation(station);
         Optional<Section> upLineStation = line.getSections().stream()
                 .filter(it -> it.getUpStation() == station)
                 .findFirst();
