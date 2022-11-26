@@ -73,7 +73,6 @@ public class Line extends BaseEntity {
         if (isStationExisted(section.getDownStation())) {
             Optional<Section> originalSection = sections.findSameDownStation(section);
             originalSection.ifPresent(it -> it.updateDownStation(section));
-            syncLine(section);
             sections.add(section, this::syncLine);
         }
     }
@@ -82,7 +81,6 @@ public class Line extends BaseEntity {
         if (isStationExisted(section.getUpStation())) {
             Optional<Section> originalSection = sections.findSameUpStation(section);
             originalSection.ifPresent(it -> it.updateUpStation(section));
-            syncLine(section);
             sections.add(section, this::syncLine);
             return true;
         }
@@ -90,8 +88,7 @@ public class Line extends BaseEntity {
     }
 
     private boolean addInitialSection(final Section section) {
-        if (sections.count() == 0) {
-            syncLine(section);
+        if (sections.isEmpty()) {
             sections.add(section, this::syncLine);
             return true;
         }
@@ -103,11 +100,17 @@ public class Line extends BaseEntity {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
 
-        if (!getStations().isEmpty()
-                && getStations().stream().noneMatch(it -> it.equals(section.getUpStation()))
-                && getStations().stream().noneMatch(it -> it.equals(section.getDownStation()))) {
+        if (!getStations().isEmpty() && noneMatchUpStation(section) && noneMatchDownStation(section)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
+    }
+
+    private boolean noneMatchDownStation(final Section section) {
+        return getStations().stream().noneMatch(section::isSameDownStation);
+    }
+
+    private boolean noneMatchUpStation(final Section section) {
+        return getStations().stream().noneMatch(section::isSameUpStation);
     }
 
     private boolean isStationExisted(final Station station) {

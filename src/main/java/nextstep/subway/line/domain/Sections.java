@@ -53,10 +53,6 @@ public class Sections {
         return sections;
     }
 
-//    public void add(final Section section) {
-//        sections.add(section);
-//    }
-
     public void add(final Section section, final Consumer<Section> syncLine) {
         syncLine.accept(section);
         sections.add(section);
@@ -113,5 +109,9 @@ public class Sections {
         return sections.stream()
                 .filter(it -> it.getUpStation() == station)
                 .findFirst();
+    }
+
+    public boolean isEmpty() {
+        return count() == 0;
     }
 }
