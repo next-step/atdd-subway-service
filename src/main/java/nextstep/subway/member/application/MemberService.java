@@ -17,12 +17,12 @@ public class MemberService {
 
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
-        return MemberResponse.of(member);
+        return MemberResponse.from(member);
     }
 
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        return MemberResponse.of(member);
+        return MemberResponse.from(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {

@@ -4,8 +4,7 @@ public class TokenRequest {
     private String email;
     private String password;
 
-    public TokenRequest() {
-    }
+    private TokenRequest() {}
 
     public TokenRequest(String email, String password) {
         this.email = email;
