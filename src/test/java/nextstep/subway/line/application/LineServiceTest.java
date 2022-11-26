@@ -13,6 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,6 +55,25 @@ class LineServiceTest {
                 () -> assertThat(response.getName()).isEqualTo("신분당선"),
                 () -> assertThat(response.getColor()).isEqualTo("red"),
                 () -> assertThat(response.getStations()).hasSize(2)
+        );
+    }
+
+    @DisplayName("지하철 노선 생성 후 지하철 노선 목록 조회 결과 확인")
+    @Test
+    void findLines() {
+        when(lineRepository.findAll()).thenReturn(
+                Arrays.asList(
+                        new Line("신분당선", "red", new Station("강남역"), new Station("광교역"), 10),
+                        new Line("분당선", "yellow", new Station("죽전역"), new Station("수원역"), 10)
+                )
+        );
+
+        List<LineResponse> lines = lineService.findLines();
+
+        assertAll(
+                () -> assertThat(lines).hasSize(2),
+                () -> assertThat(lines.get(0).getName()).isEqualTo("신분당선"),
+                () -> assertThat(lines.get(1).getName()).isEqualTo("분당선")
         );
     }
 }
