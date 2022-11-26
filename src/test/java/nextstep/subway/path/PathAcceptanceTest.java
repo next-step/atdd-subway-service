@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -90,7 +91,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findShortestPathWithSameStation() {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역, 강남역);
 
-        최단_경로_조회_실패됨(response);
+        최단_경로_조회_실패됨_400(response);
     }
 
     /**
@@ -103,7 +104,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findShortestPathWithNotConnectStation() {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(김포공항역, 강남역);
 
-        최단_경로_조회_실패됨(response);
+        최단_경로_조회_실패됨_400(response);
+    }
+
+    /**
+     *  Given 지하철역과 지하철 노선을 생성하고
+     *  When 존재하지 않는 출발역이나 도착역으로 최단 경로를 조회하면
+     *  Then 최단 경로 조회에 실패한다.
+     */
+    @DisplayName("존재하지 않는 출발역이나 도착역으로 최단 경로를 조회할 수 없다.")
+    @Test
+    void findShortestPathWithNotExistStation() {
+        StationResponse 존재하지_않는_역 = new StationResponse(Long.MAX_VALUE, "구글역", LocalDateTime.now(), LocalDateTime.now());
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(김포공항역, 존재하지_않는_역);
+
+        최단_경로_조회_실패됨_404(response);
     }
 
 
@@ -129,7 +144,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public static void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
+    public static void 최단_경로_조회_실패됨_400(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 최단_경로_조회_실패됨_404(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }
