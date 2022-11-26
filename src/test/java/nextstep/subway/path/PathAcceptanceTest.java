@@ -11,6 +11,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -80,12 +81,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 최단_경로_조회됨(ExtractableResponse<Response> response, int expectTotalDistance, List<StationResponse> expectStations) {
-        List<StationResponse> responseStations = response.jsonPath().getList("stations", StationResponse.class);
+        List<Long> expectStationsIds = expectStations.stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+        List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
         int responseTotalDistance = response.jsonPath().getInt("distance");
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(responseStations).containsAll(expectStations),
+                () -> assertThat(actualStationIds).containsAll(expectStationsIds),
                 () -> assertThat(responseTotalDistance).isEqualTo(expectTotalDistance)
         );
     }
