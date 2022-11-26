@@ -16,7 +16,8 @@ public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
+    @Embedded
+    private Email email;
     private String password;
     @Embedded
     private Age age;
@@ -25,7 +26,7 @@ public class Member extends BaseEntity {
     }
 
     private Member(String email, String password, int age) {
-        this.email = email;
+        this.email = Email.from(email);
         this.password = password;
         this.age = Age.from(age);
     }
@@ -38,7 +39,7 @@ public class Member extends BaseEntity {
         return id;
     }
 
-    public String getEmail() {
+    public Email getEmail() {
         return email;
     }
 

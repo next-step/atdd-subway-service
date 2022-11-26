@@ -1,6 +1,7 @@
 package nextstep.subway.member.dto;
 
 import nextstep.subway.member.domain.Age;
+import nextstep.subway.member.domain.Email;
 import nextstep.subway.member.domain.Member;
 
 public class MemberResponse {
@@ -10,9 +11,9 @@ public class MemberResponse {
 
     private MemberResponse() {}
 
-    public MemberResponse(Long id, String email, Age age) {
+    public MemberResponse(Long id, Email email, Age age) {
         this.id = id;
-        this.email = email;
+        this.email = email.value();
         this.age = age.value();
     }
 
