@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -221,4 +222,35 @@ public class LineTest {
         }
     }
 
+    @Nested
+    @DisplayName("getStations메소드는 ")
+    class DescribeGetStations {
+
+        @DisplayName("노선이 없으면 빈배열 반환")
+        @Test
+        void returnEmptyArray(){
+            assertThat(new Line().getStations()).isEmpty();
+        }
+
+        @Nested
+        @DisplayName("노선이 존재하면 노선을 구성하는 모든역을 반환")
+        class ContextWith {
+
+            private final Line line = new Line();
+            private List<Section> sections = new ArrayList<>();
+
+            @BeforeEach
+            void before() {
+                line.getSections().add(new Section(line, new Station("강남역"), new Station("신촌역"), 10));
+                line.getSections().add(new Section(line, new Station("신촌역"), new Station("종합운동장"), 10));
+                line.getSections().add(new Section(line, new Station("종합운동장"), new Station("홍대입구역"), 10));
+            }
+
+            @Test
+            void returnsStations() {
+                assertThat(line.getStations().stream().map(station -> station.getName()))
+                        .containsExactlyInAnyOrder("강남역","신촌역","종합운동장","홍대입구역");
+            }
+        }
+    }
 }
