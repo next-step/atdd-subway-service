@@ -47,7 +47,7 @@ public class Line extends BaseEntity {
     }
 
     public static Line mock() {
-        return new Line();
+        return Line.of("신분당선", "bg-red-600", Section.of(Station.from("신논현역"), Station.from("강남역"), Distance.from(3)));
     }
 
     public static Line of(String name, String color) {
