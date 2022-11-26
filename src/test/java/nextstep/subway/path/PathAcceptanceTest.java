@@ -72,6 +72,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회됨(response, 10, Arrays.asList(남부터미널역, 양재역, 강남역));
     }
 
+    /**
+     *  Given 지하철역과 지하철 노선을 생성하고
+     *  When 동일한 출발역과 도착역으로 최단 경로를 조회하면
+     *  Then 최단 경로 조회에 실패한다.
+     */
+    @DisplayName("출발역과 도착역이 같을 경우 최단 경로를 조회할 수 없다.")
+    @Test
+    void findShortestPathWithSameStation() {
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역, 강남역);
+
+        최단_경로_조회_실패됨(response);
+    }
+
     public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse target) {
         return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -92,5 +105,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(actualStationIds).containsAll(expectStationsIds),
                 () -> assertThat(responseTotalDistance).isEqualTo(expectTotalDistance)
         );
+    }
+
+    public static void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
