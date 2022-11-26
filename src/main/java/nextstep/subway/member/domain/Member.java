@@ -1,29 +1,30 @@
 package nextstep.subway.member.domain;
 
 import nextstep.subway.common.BaseEntity;
-import nextstep.subway.auth.application.AuthorizationException;
-import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
-    private String password;
+
+    @Embedded
+    private Email email;
+
+    @Embedded
+    private Password password;
+
     private Integer age;
 
-    public Member() {
+    protected Member() {
     }
 
     public Member(String email, String password, Integer age) {
-        this.email = email;
-        this.password = password;
+        this.email = new Email(email);
+        this.password = new Password(password);
         this.age = age;
     }
 
@@ -32,11 +33,7 @@ public class Member extends BaseEntity {
     }
 
     public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
+        return email.getEmail();
     }
 
     public Integer getAge() {
@@ -50,8 +47,25 @@ public class Member extends BaseEntity {
     }
 
     public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+        this.password.checkPassword(password);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Member member = (Member) o;
+        return Objects.equals(email, member.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email);
     }
 }
