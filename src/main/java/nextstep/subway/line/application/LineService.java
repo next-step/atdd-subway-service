@@ -89,7 +89,4 @@ public class LineService {
         return line.getStations();
     }
 
-    private Station findUpStation(Line line) {
-        return line.findUpStation();
-    }
 }
