@@ -93,11 +93,11 @@ public class Line extends BaseEntity {
 
     private void validateSection(final Section section) {
         if (isStationExisted(section.upStation()) && isStationExisted(section.downStation())) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
 
         if (!getStations().isEmpty() && noneMatchUpStation(section) && noneMatchDownStation(section)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
     }
 
@@ -124,7 +124,7 @@ public class Line extends BaseEntity {
 
     private void validateIsDeletableStation() {
         if (sections.count() <= 1) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException("삭제할 수 있는 구간이 없습니다.");
         }
     }
 }

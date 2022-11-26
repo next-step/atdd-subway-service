@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SectionTest {
@@ -38,12 +39,28 @@ class SectionTest {
         assertThat(section.getDistance()).isEqualTo(7);
     }
 
+    @DisplayName("기존 구간거리 보다 크면 IllegalArgumentException을 반환한다")
+    @Test
+    void updateUpStationWithException() {
+        assertThatThrownBy(() -> section.updateUpStation(new Section(종각역, new Station("신설동역"),10)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    }
+
     @DisplayName("구간의 하행역 수정 작업에 성공한다")
     @Test
     void updateDownStation() {
         section.updateUpStation(new Section(new Station("신설동역"), 종각역,3));
 
         assertThat(section.getDistance()).isEqualTo(7);
+    }
+
+    @DisplayName("기존 구간거리 보다 크면 IllegalArgumentException을 반환한다")
+    @Test
+    void updateDownStationWithException() {
+        assertThatThrownBy(() -> section.updateDownStation(new Section(new Station("신설동역"), 종각역, 10)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 
     @DisplayName("2개의 구간의 하행역이 같으면 성공한다")

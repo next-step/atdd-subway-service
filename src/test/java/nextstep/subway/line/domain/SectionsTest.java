@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SectionsTest {
     private Station 종각역;
@@ -74,5 +75,21 @@ class SectionsTest {
         Optional<Section> section = sections.findSameDownStation(new Section(new Station("신설동역"), 서울역, 3));
 
         assertThat(section).isPresent();
+    }
+
+    @DisplayName("구간리스트에서 Station 조회작업에 성공한다")
+    @Test
+    void findStationById() {
+        assertThat(sections.findStationById(1L)).isEqualTo(종각역);
+    }
+
+    @DisplayName("구간리스트에서 요청 ID에 해당하는 Station이 없으면 IllegalArgumentException을 반환한다")
+    @Test
+    void findStationByIdWithException() {
+        long findingId = 7L;
+        assertThatThrownBy(() -> sections.findStationById(findingId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("%d", findingId)
+                .hasMessageContaining("에 해당하는 Station을 찾을 수 없습니다.");
     }
 }

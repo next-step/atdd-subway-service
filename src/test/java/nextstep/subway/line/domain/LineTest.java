@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class LineTest {
     private Station 종각역;
@@ -43,6 +44,35 @@ class LineTest {
         line.addSection(new Section(종각역, 시청역, 5));
 
         assertThat(line.getStations()).containsExactly(종각역, 시청역, 서울역);
+    }
+
+    @DisplayName("기존 구간거리 보다 크면 IllegalArgumentException을 반환한다")
+    @Test
+    void addSectionWithException() {
+        Station 시청역 = new Station("시청역");
+
+        assertThatThrownBy(() -> line.addSection(new Section(종각역, 시청역, 10)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    }
+
+    @DisplayName("이미 등록된 구간을 등록하면 IllegalArgumentException을 반환한다")
+    @Test
+    void addSectionWithException2() {
+        assertThatThrownBy(() -> line.addSection(new Section(종각역, 서울역, 10)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("이미 등록된 구간 입니다.");
+    }
+
+    @DisplayName("등록하려는 구간의 역이 하나라도 존재하지 않으면, IllegalArgumentException을 반환한다")
+    @Test
+    void addSectionWithException3() {
+        Station 시청역 = new Station("시청역");
+        Station 신설동역 = new Station("신설동역");
+
+        assertThatThrownBy(() -> line.addSection(new Section(시청역, 신설동역, 10)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("등록할 수 없는 구간 입니다.");
     }
 
     @DisplayName("노선에 구간 제거 작업을 성공한다")
