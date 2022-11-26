@@ -12,14 +12,13 @@ import java.util.stream.Collectors;
 public class Sections {
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private final List<Section> sections;
+    private final List<Section> sections = new ArrayList<>();
 
     public Sections() {
-        this.sections = new ArrayList<>();
     }
 
-    public Sections(final List<Section> sections) {
-        this.sections = sections;
+    public Sections(final Section section) {
+        this.sections.add(section);
     }
 
     public Set<Station> getStations() {
@@ -55,5 +54,21 @@ public class Sections {
 
     public void add(final Section section) {
         sections.add(section);
+    }
+
+    public Optional<Section> findSameUpStation(final Section section) {
+        return sections.stream()
+                .filter(section::isSameUpStation)
+                .findFirst();
+    }
+
+    public Optional<Section> findSameDownStation(final Section section) {
+        return sections.stream()
+                .filter(section::isSameDownStation)
+                .findFirst();
+    }
+
+    public int count() {
+        return sections.size();
     }
 }

@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.sql.PseudoColumnUsage;
 import java.util.Arrays;
 import java.util.List;
 
@@ -84,5 +85,33 @@ public class Section {
 
     public List<Station> stations() {
         return Arrays.asList(upStation, downStation);
+    }
+
+    public void updateUpStation(final Section section) {
+        if (this.distance <= section.distance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.upStation = section.getDownStation();
+        this.distance -= section.distance;
+    }
+
+    public void updateDownStation(final Section section) {
+        if (this.distance <= section.distance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.downStation = section.getUpStation();
+        this.distance -= section.distance;
+    }
+
+    public boolean isSameDownStation(final Section section) {
+        return this.downStation.equals(section.downStation);
+    }
+
+    public boolean isSameUpStation(final Section section) {
+        return this.upStation.equals(section.upStation);
+    }
+
+    public void setLine(final Line line) {
+        this.line = line;
     }
 }
