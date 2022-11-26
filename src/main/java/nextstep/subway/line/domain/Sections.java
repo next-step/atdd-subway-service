@@ -19,8 +19,12 @@ public class Sections {
 
     protected Sections() {}
 
-    public Sections(List<Section> sections) {
+    private Sections(List<Section> sections) {
         this.sections = new ArrayList<>(sections);
+    }
+
+    public static Sections from(List<Section> sections) {
+        return new Sections(sections);
     }
 
     public void add(Section section) {

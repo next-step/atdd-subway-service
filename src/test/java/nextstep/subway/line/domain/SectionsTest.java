@@ -19,7 +19,7 @@ public class SectionsTest {
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
         Section 구간 = Section.of(잠실역, 문정역, 10);
-        Sections sections = new Sections(Arrays.asList(구간));
+        Sections sections = Sections.from(Arrays.asList(구간));
 
         // when
         List<Station> stations = sections.getStations();
@@ -35,7 +35,7 @@ public class SectionsTest {
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
         Section 구간 = Section.of(잠실역, 문정역, 10);
-        Sections sections = new Sections(Arrays.asList(구간));
+        Sections sections = Sections.from(Arrays.asList(구간));
 
         // given
         Station 가락시장역 = new Station("가락시장역");
@@ -55,7 +55,7 @@ public class SectionsTest {
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
         Section section = Section.of(잠실역, 문정역, 10);
-        Sections sections = new Sections(Arrays.asList(section));
+        Sections sections = Sections.from(Arrays.asList(section));
 
         // expect
         assertThatThrownBy(() -> sections.add(section))
@@ -69,7 +69,7 @@ public class SectionsTest {
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
         Section section = Section.of(잠실역, 문정역, 10);
-        Sections sections = new Sections(Arrays.asList(section));
+        Sections sections = Sections.from(Arrays.asList(section));
 
         // given
         Station 가락시장역 = new Station("가락시장역");
@@ -87,7 +87,7 @@ public class SectionsTest {
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
         Section section = Section.of(잠실역, 문정역, 10);
-        Sections sections = new Sections(Arrays.asList(section));
+        Sections sections = Sections.from(Arrays.asList(section));
 
         // given
         Station 가락시장역 = new Station("가락시장역");
