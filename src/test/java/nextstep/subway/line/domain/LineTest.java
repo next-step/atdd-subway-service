@@ -24,4 +24,12 @@ class LineTest {
     void getStations() {
         assertThat(line.getStations()).containsExactly(종각역, 서울역);
     }
+
+    @DisplayName("노선에 구간 추가 작업을 성공한다")
+    @Test
+    void addSection() {
+        Station 시청역 = new Station("시청역");
+        line.addSection(new Section(종각역, 시청역, 5));
+        assertThat(line.getStations()).containsExactly(종각역, 시청역, 서울역);
+    }
 }
