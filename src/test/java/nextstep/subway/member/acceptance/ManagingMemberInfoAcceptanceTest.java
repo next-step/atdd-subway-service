@@ -47,6 +47,22 @@ public class ManagingMemberInfoAcceptanceTest extends AcceptanceTest {
 
     /**
      * Given 회원이 등록되어 있고
+     * When 유효하지 않은 토큰 정보로 내 정보를 조회하면
+     * Then 내 정보를 조회할 수 없다.
+     */
+    @DisplayName("유효하지 않은 토큰 정보로 내 정보를 조회한다.")
+    @Test
+    void selectMyInfoWithInvalidToken() {
+        // when
+        TokenResponse invalidToken = new TokenResponse("Invalid_Token");
+        ExtractableResponse<Response> response = MemberAcceptance.member_was_queried(invalidToken);
+
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+    }
+
+    /**
+     * Given 회원이 등록되어 있고
      * When 내 정보를 발급된 토큰 번호와 함께 수정하면
      * Then 내 정보를 수정할 수 있다.
      */

@@ -2,6 +2,8 @@ package nextstep.subway.auth.acceptance;
 
 import io.restassured.RestAssured;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import org.springframework.http.HttpStatus;
@@ -16,7 +18,17 @@ public class AuthAcceptance {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
                 .extract().as(TokenResponse.class);
+    }
+
+    public static ExtractableResponse<Response> token_request(String email, String password) {
+        TokenRequest tokenRequest = new TokenRequest(email, password);
+
+        return RestAssured.given().log().all()
+                .body(tokenRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .then().log().all()
+                .extract();
     }
 }
