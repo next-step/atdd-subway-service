@@ -19,7 +19,7 @@ public class Line extends BaseEntity {
     private List<Section> sections = new ArrayList<>();
 
     @Embedded
-    private Sections sectionsV2 = Sections.from(new ArrayList<>());
+    private Sections sectionsV2 = Sections.createEmpty();
 
     public Line() {
     }

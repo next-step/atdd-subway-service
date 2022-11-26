@@ -34,20 +34,6 @@ class LineTest {
         Assertions.assertThat(line1).isNotEqualTo(line2);
     }
 
-    @DisplayName("지하철 노선에 지하철 구간이 추가되었는지 확인한다.")
-    @Test
-    void addSection() {
-        Line line = new Line("신분당선", "red");
-        Station 강남역 = new Station("강남역");
-        Station 광교역 = new Station("광교역");
-        Section section = new Section(line, 강남역, 광교역, 10);
-
-        line.addSection(section);
-
-        Assertions.assertThat(line.getSections())
-                .containsExactlyInAnyOrder(new Section(line, 강남역, 광교역, 10));
-    }
-
     @DisplayName("지하철 노선에 지하철 구간이 없으면 빈 지하철역 목록을 반환한다.")
     @Test
     void emptyStations() {

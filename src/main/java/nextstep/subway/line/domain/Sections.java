@@ -20,8 +20,8 @@ public class Sections {
         this.sections = sections;
     }
 
-    public static Sections from(List<Section> sections) {
-        return new Sections(sections);
+    public static Sections createEmpty() {
+        return new Sections(new ArrayList<>());
     }
 
     public void add(Section section) {
