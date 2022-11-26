@@ -7,11 +7,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.subway.BaseEntity;
+import nextstep.subway.common.constant.ErrorCode;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 @Entity
-public class Favorite {
+public class Favorite extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,10 +31,21 @@ public class Favorite {
     protected Favorite() {
     }
 
-    public Favorite(Member member, Station sourceStation, Station targetStation) {
+    private Favorite(Member member, Station sourceStation, Station targetStation) {
+        validateSourceAndTargetEquals(sourceStation, targetStation);
         this.member = member;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
+    }
+
+    public static Favorite of(Member member, Station sourceStation, Station targetStation) {
+        return new Favorite(member, sourceStation, targetStation);
+    }
+
+    private void validateSourceAndTargetEquals(Station sourceStation, Station targetStation) {
+        if(sourceStation.equals(targetStation)) {
+            throw new IllegalArgumentException(ErrorCode.출발역과_도착역이_서로_같음.getErrorMessage());
+        }
     }
 
     public Long getId() {
