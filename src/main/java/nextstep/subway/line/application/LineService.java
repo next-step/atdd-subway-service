@@ -80,6 +80,7 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
+
         if (line.getSections().size() <= 1) {
             throw new RuntimeException();
         }
@@ -87,6 +88,7 @@ public class LineService {
         Optional<Section> upLineStation = line.getSections().stream()
                 .filter(it -> it.getUpStation() == station)
                 .findFirst();
+
         Optional<Section> downLineStation = line.getSections().stream()
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();

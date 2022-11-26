@@ -113,4 +113,16 @@ public class Line extends BaseEntity {
     private boolean isStationExisted(final Station station) {
         return getStations().stream().anyMatch(it -> it.equals(station));
     }
+
+    public void deleteStationById(final long stationId) {
+        validateIsDeletableStation();
+        sections.remove(stationId);
+
+    }
+
+    private void validateIsDeletableStation() {
+        if (sections.count() <= 1) {
+            throw new RuntimeException();
+        }
+    }
 }

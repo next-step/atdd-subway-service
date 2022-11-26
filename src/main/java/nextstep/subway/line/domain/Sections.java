@@ -71,4 +71,39 @@ public class Sections {
     public int count() {
         return sections.size();
     }
+
+    public Station findStationById(final long stationId) {
+        return getStations().stream()
+                .filter(station -> station.getId() == stationId)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(stationId + "에 해당하는 Station을 찾을 수 없습니다."));
+    }
+
+    public void remove(final long stationId) {
+        Station station = findStationById(stationId);
+        Optional<Section> upLineStation = findUpStation(station);
+        Optional<Section> downLineStation = findDownStation(station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(sections::remove);
+        downLineStation.ifPresent(sections::remove);
+    }
+
+    private Optional<Section> findDownStation(final Station station) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+    }
+
+    private Optional<Section> findUpStation(final Station station) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+    }
 }
