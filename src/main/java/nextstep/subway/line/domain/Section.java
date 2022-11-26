@@ -24,7 +24,8 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    Distance distance;
 
     public Section() {
     }
@@ -33,13 +34,13 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     public Section(Station upStation, Station downStation, int distance) {
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     public Long getId() {
@@ -59,7 +60,7 @@ public class Section {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.value();
     }
 
     public boolean isNextOf(Section section) {
@@ -71,19 +72,19 @@ public class Section {
     }
 
     public void updateUpStation(final Section section) {
-        if (this.distance <= section.distance) {
+        if (this.distance.isSmallOrEqualTo(section.distance)) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.upStation = section.downStation();
-        this.distance -= section.distance;
+        this.distance.minus(section.distance);
     }
 
     public void updateDownStation(final Section section) {
-        if (this.distance <= section.distance) {
+        if (this.distance.isSmallOrEqualTo(section.distance)) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.downStation = section.upStation();
-        this.distance -= section.distance;
+        this.distance.minus(section.distance);
     }
 
     public boolean isSameDownStation(final Section section) {
