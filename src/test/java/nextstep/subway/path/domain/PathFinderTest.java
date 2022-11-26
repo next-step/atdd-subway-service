@@ -18,11 +18,16 @@ class PathFinderTest {
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
+    private Station 김포공항역;
+    private Station 마곡나루역;
+
     private Line 이호선;
     private Line 삼호선;
     private Line 신분당선;
+    private Line 공항선;
 
     /**
+     * 김포공항    --- *공항선(30)* --- 마곡나루
      * 교대역    --- *2호선(10)* ---   강남역
      * |                                 |
      * *3호선(15)*                   *신분당선(5)*
@@ -35,9 +40,14 @@ class PathFinderTest {
         양재역 = new Station("양재역");
         교대역 = new Station("교대역");
         남부터미널역 = new Station("남부터미널역");
+        김포공항역 = new Station("김포공항역");
+        마곡나루역 = new Station("마곡나루역");
+
         이호선 = createLine("이호선", 교대역, 강남역, 10);
         삼호선 = createLine("삼호선", 교대역, 양재역, 20);
         신분당선 = createLine("신분당선", 강남역, 양재역, 5);
+        공항선 = createLine("공항선", 김포공항역, 마곡나루역, 30);
+
         삼호선.addSection(new Section(교대역, 남부터미널역, 15));
     }
 
@@ -61,5 +71,16 @@ class PathFinderTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발역과 도착역이 동일한 경우 경로를 조회할 수 없습니다.");
     }
+
+    @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 최단 경로 조회 시 예외가 발생한다.")
+    @Test
+    void findShortestPathWithNotConnectStation() {
+        PathFinder pathFinder = new PathFinder(Arrays.asList(이호선, 삼호선, 신분당선, 공항선));
+
+        assertThatThrownBy(() -> pathFinder.findShortestPath(김포공항역, 강남역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("출발역과 도착역이 연결되어 있지 않은 경우 경로를 조회할 수 없습니다.");
+    }
+
 
 }
