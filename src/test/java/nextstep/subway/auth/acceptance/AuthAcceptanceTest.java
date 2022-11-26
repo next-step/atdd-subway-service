@@ -28,8 +28,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String WRONG_EMAIL = "wrongemail@email.com";
     private static final String WRONG_PASSWORD = "wrongpassword";
     private static final int AGE = 20;
-    private static final int WRONG_AGE = 21;
-    private MemberResponse 정상회원;
     private TokenRequest 정상회원_로그인_요청;
     private TokenRequest 비정상회원_로그인_요청;
 
