@@ -51,7 +51,7 @@ public class LineTest {
 
         // given
         Station 가락시장역 = new Station("가락시장역");
-        Section section = new Section(가락시장역, 문정역, 1);
+        Section section = Section.of(가락시장역, 문정역, 1);
 
         // when
         line.addSection(section);
@@ -70,7 +70,7 @@ public class LineTest {
 
         // given
         Station 가락시장역 = new Station("가락시장역");
-        Section section = new Section(가락시장역, 문정역, 1);
+        Section section = Section.of(가락시장역, 문정역, 1);
         line.addSection(section);
 
         // when

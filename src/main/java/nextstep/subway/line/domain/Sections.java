@@ -149,7 +149,7 @@ public class Sections {
 
     private void removeMiddleSection(Section upSection, Section downSection) {
         sections.add(
-                new Section(upSection.getLine(), upSection.getUpStation(), downSection.getDownStation(), upSection.getDistance() + downSection.getDistance()));
+                Section.of(upSection.getLine(), upSection.getUpStation(), downSection.getDownStation(), upSection.getDistance() + downSection.getDistance()));
         sections.remove(upSection);
         sections.remove(downSection);
     }

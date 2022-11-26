@@ -32,7 +32,7 @@ public class Line extends BaseEntity {
     private Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        sections.add(Section.of(this, upStation, downStation, distance));
     }
 
     public static Line empty() {

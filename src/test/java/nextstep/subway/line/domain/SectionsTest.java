@@ -18,7 +18,7 @@ public class SectionsTest {
         // given
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
-        Section 구간 = new Section(잠실역, 문정역, 10);
+        Section 구간 = Section.of(잠실역, 문정역, 10);
         Sections sections = new Sections(Arrays.asList(구간));
 
         // when
@@ -34,12 +34,12 @@ public class SectionsTest {
         // given
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
-        Section 구간 = new Section(잠실역, 문정역, 10);
+        Section 구간 = Section.of(잠실역, 문정역, 10);
         Sections sections = new Sections(Arrays.asList(구간));
 
         // given
         Station 가락시장역 = new Station("가락시장역");
-        Section section = new Section(가락시장역, 문정역, 1);
+        Section section = Section.of(가락시장역, 문정역, 1);
 
         // when
         sections.add(section);
@@ -54,7 +54,7 @@ public class SectionsTest {
         // given
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
-        Section section = new Section(잠실역, 문정역, 10);
+        Section section = Section.of(잠실역, 문정역, 10);
         Sections sections = new Sections(Arrays.asList(section));
 
         // expect
@@ -68,12 +68,12 @@ public class SectionsTest {
         // given
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
-        Section section = new Section(잠실역, 문정역, 10);
+        Section section = Section.of(잠실역, 문정역, 10);
         Sections sections = new Sections(Arrays.asList(section));
 
         // given
         Station 가락시장역 = new Station("가락시장역");
-        Section newSection = new Section(가락시장역, 문정역, 11);
+        Section newSection = Section.of(가락시장역, 문정역, 11);
 
         // expect
         assertThatThrownBy(() -> sections.add(newSection))
@@ -86,12 +86,12 @@ public class SectionsTest {
         // given
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
-        Section section = new Section(잠실역, 문정역, 10);
+        Section section = Section.of(잠실역, 문정역, 10);
         Sections sections = new Sections(Arrays.asList(section));
 
         // given
         Station 가락시장역 = new Station("가락시장역");
-        Section newSection = new Section(가락시장역, 문정역, 1);
+        Section newSection = Section.of(가락시장역, 문정역, 1);
         sections.add(newSection);
 
         // when
