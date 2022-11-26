@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 
 import static nextstep.subway.line.domain.LineTestFixture.createLine;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import nextstep.subway.line.domain.Line;
@@ -50,4 +51,15 @@ class PathFinderTest {
 
         assertThat(expectedPath).isEqualTo(actualPath);
     }
+
+    @DisplayName("출발역과 도착역이 동일한 경우 최단 경로 조회 시 예외가 발생한다.")
+    @Test
+    void findShortestPathWithSameStation() {
+        PathFinder pathFinder = new PathFinder(Arrays.asList(이호선, 삼호선, 신분당선));
+
+        assertThatThrownBy(() -> pathFinder.findShortestPath(강남역, 강남역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("출발역과 도착역이 동일한 경우 경로를 조회할 수 없습니다.");
+    }
+
 }
