@@ -4,12 +4,16 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,8 +40,10 @@ class LineServiceTest {
     @InjectMocks
     private LineService lineService;
 
+    private Station 신사역;
     private Station 강남역;
     private Station 광교역;
+    private Station 양재역;
     private Station 죽전역;
     private Station 수원역;
     private Line 신분당선;
@@ -45,8 +51,10 @@ class LineServiceTest {
 
     @BeforeEach
     void setUp() {
+        신사역 = new Station("신사역");
         강남역 = new Station("강남역");
         광교역 = new Station("광교역");
+        양재역 = new Station("양재역");
         죽전역 = new Station("죽전역");
         수원역 = new Station("수원역");
         신분당선 = new Line("신분당선", "red", 강남역, 광교역, 10);
@@ -112,5 +120,104 @@ class LineServiceTest {
                 () -> assertThat(신분당선.getName()).isEqualTo("분당선"),
                 () -> assertThat(신분당선.getColor()).isEqualTo("yellow")
         );
+    }
+
+    @DisplayName("지하철 노선에 이미 등록된 지하철 구간을 등록하면 예외가 발생한다.")
+    @Test
+    void addLineStationWithException1() {
+        when(lineRepository.findById(any())).thenReturn(Optional.of(신분당선));
+        when(stationService.findStationById(1L)).thenReturn(강남역);
+        when(stationService.findStationById(2L)).thenReturn(광교역);
+
+        Assertions.assertThatThrownBy(() -> lineService.addLineStation(1L, new SectionRequest(1L, 2L, 10)))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageStartingWith("이미 등록된 구간 입니다.");
+    }
+
+    @DisplayName("지하철 노선에 존재하지 않는 상행역, 하행역으로 지하철 구간 추가 요청 시 예외가 발생한다.")
+    @Test
+    void addLineStationWithException2() {
+        when(lineRepository.findById(any())).thenReturn(Optional.of(신분당선));
+        when(stationService.findStationById(3L)).thenReturn(죽전역);
+        when(stationService.findStationById(4L)).thenReturn(수원역);
+
+        Assertions.assertThatThrownBy(() -> lineService.addLineStation(1L, new SectionRequest(3L, 4L, 10)))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageStartingWith("등록할 수 없는 구간 입니다.");
+    }
+
+    @DisplayName("지하철 노선에 상행역-신규역 구간을 추가할 때 기존 지하철 구간(상행역-하행역) 길이보다 크거나 같으면 예외가 발생한다. ")
+    @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
+    @ValueSource(ints = {10, 20, 30})
+    void addLineStationWithException3(int input) {
+        when(lineRepository.findById(any())).thenReturn(Optional.of(신분당선));
+        when(stationService.findStationById(1L)).thenReturn(강남역);
+        when(stationService.findStationById(2L)).thenReturn(양재역);
+
+        Assertions.assertThatThrownBy(() -> lineService.addLineStation(1L, new SectionRequest(1L, 2L, input)))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageStartingWith("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    }
+
+    @DisplayName("지하철 노선에 신규역-하행역 구간을 추가할 때 기존 지하철 구간(상행역-하행역) 길이보다 크거나 같으면 예외가 발생한다. ")
+    @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
+    @ValueSource(ints = {10, 20, 30})
+    void addLineStationWithException4(int input) {
+        when(lineRepository.findById(any())).thenReturn(Optional.of(신분당선));
+        when(stationService.findStationById(1L)).thenReturn(양재역);
+        when(stationService.findStationById(2L)).thenReturn(광교역);
+
+        Assertions.assertThatThrownBy(() -> lineService.addLineStation(1L, new SectionRequest(1L, 2L, input)))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageStartingWith("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    }
+
+    @DisplayName("지하철 구간이 없는 지하철 노선에 지하철 구간을 등록한다.")
+    @Test
+    void addLineStation1() {
+        Line line = new Line("신분당선", "red");
+        when(lineRepository.findById(any())).thenReturn(Optional.of(line));
+        when(stationService.findStationById(1L)).thenReturn(강남역);
+        when(stationService.findStationById(2L)).thenReturn(광교역);
+
+        lineService.addLineStation(1L, new SectionRequest(1L, 2L, 10));
+
+        Assertions.assertThat(line.getStations()).containsExactly(강남역, 광교역);
+    }
+
+    @DisplayName("지하철 노선에 지하철 구간을 등록한다.")
+    @Test
+    void addLineStation2() {
+        when(lineRepository.findById(any())).thenReturn(Optional.of(신분당선));
+        when(stationService.findStationById(1L)).thenReturn(강남역);
+        when(stationService.findStationById(3L)).thenReturn(양재역);
+
+        lineService.addLineStation(1L, new SectionRequest(1L, 3L, 5));
+
+        Assertions.assertThat(신분당선.getStations()).containsExactly(강남역, 양재역, 광교역);
+    }
+
+    @DisplayName("지하철 노선에 새로운 상행역으로 지하철 구간을 등록한다.")
+    @Test
+    void addLineStation3() {
+        when(lineRepository.findById(any())).thenReturn(Optional.of(신분당선));
+        when(stationService.findStationById(1L)).thenReturn(신사역);
+        when(stationService.findStationById(2L)).thenReturn(강남역);
+
+        lineService.addLineStation(1L, new SectionRequest(1L, 2L, 5));
+
+        Assertions.assertThat(신분당선.getStations()).containsExactly(신사역, 강남역, 광교역);
+    }
+
+    @DisplayName("지하철 노선에 새로운 하행역으로 지하철 구간을 등록한다.")
+    @Test
+    void addLineStations4() {
+        when(lineRepository.findById(any())).thenReturn(Optional.of(신분당선));
+        when(stationService.findStationById(1L)).thenReturn(광교역);
+        when(stationService.findStationById(2L)).thenReturn(수원역);
+
+        lineService.addLineStation(1L, new SectionRequest(1L, 2L, 5));
+
+        Assertions.assertThat(신분당선.getStations()).containsExactly(강남역, 광교역, 수원역);
     }
 }
