@@ -74,10 +74,4 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
-
-    @DisplayName("나의 정보를 관리한다.")
-    @Test
-    void manageMyInfo() {
-
-    }
 }

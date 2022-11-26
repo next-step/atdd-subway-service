@@ -20,8 +20,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceTest {
     public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 10;
+    public static final String PASSWORD = "password157#";
+    public static final int AGE = 20;
 
     private AuthService authService;
 
