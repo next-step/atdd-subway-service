@@ -9,7 +9,7 @@ public class Color {
 
     private static final String ROUTE_COLOR_ERROR = "노선 색상을 지정해주세요.";
 
-    @Column(unique = true)
+    @Column(nullable = false)
     private String color;
 
     protected Color() {
