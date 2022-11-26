@@ -58,4 +58,26 @@ class LineTest {
         // then
         assertThat(line.getStations()).hasSize(2);
     }
+
+    @DisplayName("노선의 구간을 삭제할 수 있다")
+    @Test
+    void deleteSection() {
+        // given
+        Station upStation = new Station("판교역");
+        Station downStation = new Station("강남역");
+        Station newStation = new Station("양재역");
+
+        Section section1 = new Section(upStation, downStation, new Distance(10));
+        Section section2 = new Section(downStation, newStation, new Distance(10));
+
+        Line line = new Line("신분당선", "bg-red-600");
+        line.addSection(section1);
+        line.addSection(section2);
+
+        // when
+        line.deleteSection(newStation);
+
+        // then
+        assertThat(line.getStations()).hasSize(2);
+    }
 }

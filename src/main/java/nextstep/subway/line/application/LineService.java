@@ -1,6 +1,7 @@
 package nextstep.subway.line.application;
 
 import nextstep.subway.constant.ErrorCode;
+import nextstep.subway.exception.EntityNotFound;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -76,11 +77,11 @@ public class LineService {
 
     private Line findLineById(Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(ErrorCode.ENTITY_NOT_FOUND_BY_ID.getMessage()));
+                .orElseThrow(() -> new EntityNotFound("존재하지 않는 노선입니다."));
     }
 
     private Station findStation(Long id) {
         return stationRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(ErrorCode.ENTITY_NOT_FOUND_BY_ID.getMessage()));
+                .orElseThrow(() -> new EntityNotFound("존재하지 않는 역입니다."));
     }
 }

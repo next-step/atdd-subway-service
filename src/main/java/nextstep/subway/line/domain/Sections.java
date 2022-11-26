@@ -18,7 +18,7 @@ public class Sections {
     private List<Section> sections;
 
     public Sections(List<Section> sections) {
-        this.sections = sections;
+        this.sections = new ArrayList<>(sections);
     }
 
     protected Sections() {}
@@ -55,6 +55,10 @@ public class Sections {
         }
 
         return sortedStations;
+    }
+
+    public List<Section> get() {
+        return Collections.unmodifiableList(sections);
     }
 
     public void add(Section newSection) {
