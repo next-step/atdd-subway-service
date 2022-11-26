@@ -71,7 +71,7 @@ class MemberTest {
     @Test
     void 입력된_비밀번호가_사용자의_비밀번호와_일치하지_않으면_AuthorizationException_발생() {
         Member member = new Member("testuser@test.com", "password157#", 20);
-        
+
         assertThatThrownBy(() -> {
             member.checkPassword("password369#");
         }).isInstanceOf(AuthorizationException.class)
