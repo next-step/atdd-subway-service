@@ -73,7 +73,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] saveLine
 - [x] findLines
 - [x] findLineResponseById
-- [ ] updateLine
+- [x] updateLine
 - [ ] deleteLineById
 - [ ] addLineStation
 - [ ] removeLineStation
