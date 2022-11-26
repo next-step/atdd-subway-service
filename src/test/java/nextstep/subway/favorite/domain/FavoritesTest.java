@@ -6,10 +6,11 @@ import static nextstep.subway.member.domain.MemberTestFixture.createLoginMember;
 import static nextstep.subway.member.domain.MemberTestFixture.createMember;
 import static nextstep.subway.station.domain.StationTestFixture.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
-import java.util.List;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.common.constant.ErrorCode;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
@@ -63,5 +64,18 @@ public class FavoritesTest {
 
         // then
         assertThat(isContainFavorite).isTrue();
+    }
+
+    @DisplayName("즐겨찾기 추가 시 이미 존재하는 즐겨찾기이면 예외를 반환한다.")
+    @Test
+    void addFavoriteThrowErrorWhenTryToAddDuplicateFavorite() {
+        // given
+        Favorites favorites = Favorites.from(Arrays.asList(Favorite.of(회원, 이수역, 반포역), Favorite.of(회원, 양재역, 반포역),
+                Favorite.of(회원, 남부터미널역, 교대역)));
+
+        // when & then
+        assertThatThrownBy(() -> favorites.addFavorite(Favorite.of(회원, 양재역, 반포역)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorCode.이미_존재하는_즐겨찾기.getErrorMessage());
     }
 }

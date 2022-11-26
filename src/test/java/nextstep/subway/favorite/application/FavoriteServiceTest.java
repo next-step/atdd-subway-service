@@ -91,7 +91,6 @@ public class FavoriteServiceTest {
         when(memberRepository.findById(any())).thenReturn(Optional.of(회원));
         when(stationRepository.findById(1L)).thenReturn(Optional.of(강남역));
         when(stationRepository.findById(2L)).thenReturn(Optional.of(교대역));
-        when(favoriteRepository.save(any())).thenReturn(favorite);
 
         // when
         FavoriteResponse response = favoriteService.createFavorite(로그인한_회원, favoriteRequest);

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.common.constant.ErrorCode;
 
 @Embeddable
 public class Favorites {
@@ -24,5 +25,16 @@ public class Favorites {
 
     public boolean isContainFavorite(Favorite checkFavorite) {
         return favorites.stream().anyMatch(favorite -> favorite.equals(checkFavorite));
+    }
+
+    public void addFavorite(Favorite favorite) {
+        validateDuplicateFavorite(favorite);
+        this.favorites.add(favorite);
+    }
+
+    private void validateDuplicateFavorite(Favorite favorite) {
+        if(isContainFavorite(favorite)) {
+            throw new IllegalArgumentException(ErrorCode.이미_존재하는_즐겨찾기.getErrorMessage());
+        }
     }
 }
