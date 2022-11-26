@@ -22,7 +22,8 @@ public class Member extends BaseEntity {
     private Long id;
     @Embedded
     private Email email;
-    private String password;
+    @Embedded
+    private Password password;
     @Embedded
     private Age age;
     @Embedded
@@ -33,7 +34,7 @@ public class Member extends BaseEntity {
 
     private Member(String email, String password, int age, List<Favorite> favorites) {
         this.email = Email.from(email);
-        this.password = password;
+        this.password = Password.from(password);
         this.age = Age.from(age);
         this.favorites = Favorites.from(favorites);
     }
@@ -49,9 +50,7 @@ public class Member extends BaseEntity {
     }
 
     public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
-        }
+        this.password.checkPassword(password);
     }
 
     public void addFavorite(Favorite favorite) {
@@ -79,10 +78,6 @@ public class Member extends BaseEntity {
 
     public Email getEmail() {
         return email;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public Age getAge() {
