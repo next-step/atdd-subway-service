@@ -8,6 +8,7 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,5 +58,21 @@ class SectionsTest {
         sections.remove(3L, (section) -> new Line().addSection(section));
 
         assertThat(sections.count()).isEqualTo(1);
+    }
+
+    @DisplayName("구간리스트에서 같은 UpStation 찾는 작업에 성공한다")
+    @Test
+    void findSameUpStation() {
+        Optional<Section> section = sections.findSameUpStation(new Section(종각역, new Station("신설동역"), 3));
+
+        assertThat(section).isPresent();
+    }
+
+    @DisplayName("구간리스트에서 같은 DownStation 찾는 작업에 성공한다")
+    @Test
+    void findSameDownStation() {
+        Optional<Section> section = sections.findSameDownStation(new Section(new Station("신설동역"), 서울역, 3));
+
+        assertThat(section).isPresent();
     }
 }
