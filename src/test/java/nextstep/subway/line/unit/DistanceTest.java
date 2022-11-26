@@ -47,7 +47,7 @@ public class DistanceTest {
         assertThatThrownBy(() -> Distance.from(거리)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("거리를 줄일때 줄이는 거리가 현재 거리보다 같거나 크면 IllegalStateException 발생합니다.")
+    @DisplayName("거리를 줄일때 줄이는 거리가 현재 거리보다 같거나 크면 IllegalArgumentException 발생합니다.")
     @ParameterizedTest
     @ValueSource(ints = {10, 11})
     void subtractDistance_exception(int 차감) {
@@ -56,7 +56,7 @@ public class DistanceTest {
         Distance 차감_거리 = Distance.from(차감);
 
         // then
-        assertThatThrownBy(() -> 거리.subtract(차감_거리)).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> 거리.subtract(차감_거리)).isInstanceOf(IllegalArgumentException.class);
     }
 
 }
