@@ -28,8 +28,8 @@ public class Path {
         return Collections.unmodifiableList(stations);
     }
 
-    public Distance getDistance() {
-        return distance;
+    public int getDistanceValue() {
+        return distance.value();
     }
 
     @Override
