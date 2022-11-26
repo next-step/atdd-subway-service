@@ -3,7 +3,6 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import nextstep.subway.station.domain.Station;
@@ -19,10 +18,9 @@ class LineTest {
     @Test
     void 정류장_조회() {
         //given
-        List<Section> sections = new ArrayList<>();
-        sections.add(new Section(강남역, 역삼역));
-        sections.add(new Section(역삼역, 선릉역));
-        Line 이호선 = new Line("이호선", "green", sections);
+        Line 이호선 = new Line("이호선", "green");
+        이호선.addSection(강남역, 역삼역, 3);
+        이호선.addSection(역삼역, 선릉역, 4);
 
         //when
         List<Station> stations = 이호선.getStations();
@@ -32,10 +30,9 @@ class LineTest {
 
     @Test
     void 구간이_한개인_경우_정류장_삭제_불가능() {
-        //given
-        List<Section> sections = new ArrayList<>();
-        sections.add(new Section(강남역, 역삼역));
-        Line 이호선 = new Line("이호선", "green", sections);
+        //given;
+        Line 이호선 = new Line("이호선", "green");
+        이호선.addSection(강남역, 역삼역, 7);
 
         //when & then
         assertThatThrownBy(() -> 이호선.removeStation(역삼역))
@@ -45,10 +42,9 @@ class LineTest {
     @Test
     void 정류장_삭제() {
         //given
-        List<Section> sections = new ArrayList<>();
-        sections.add(new Section(강남역, 역삼역));
-        sections.add(new Section(역삼역, 선릉역));
-        Line 이호선 = new Line("이호선", "green", sections);
+        Line 이호선 = new Line("이호선", "green");
+        이호선.addSection(강남역, 역삼역, 4);
+        이호선.addSection(역삼역, 선릉역, 3);
 
         //when
         이호선.removeStation(역삼역);

@@ -33,11 +33,6 @@ public class Section {
     public Section() {
     }
 
-    public Section(Station upStation, Station downStation) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-    }
-
     public Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
