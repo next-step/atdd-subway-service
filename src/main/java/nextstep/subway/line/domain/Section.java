@@ -76,12 +76,12 @@ public class Section extends BaseEntity {
     }
 
     public void divideSection(Section request) {
-        this.distance = distance.minus(new Distance(request.getDistance()));
+        this.distance = distance.minus(request.distance);
         this.upStation = request.downStation;
     }
 
     public void extendSection(Section request) {
-        this.distance = distance.plus(new Distance(request.getDistance()));
+        this.distance = distance.plus(request.distance);
         this.downStation = request.downStation;
     }
 
