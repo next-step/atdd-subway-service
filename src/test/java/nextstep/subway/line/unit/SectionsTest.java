@@ -3,6 +3,7 @@ package nextstep.subway.line.unit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import nextstep.subway.line.domain.Line;
@@ -72,15 +73,15 @@ public class SectionsTest {
         // given
         Sections 구간_목록 = new Sections();
         구간_목록.add(new Section(신분당선, 강남역, 광교역, 10));
-        Section 하행역_기준_추가_구간 = new Section(신분당선, 미금역, 광교역, 10);
-        Section 상행역_기준_추가_구간 = new Section(신분당선, 강남역, 정자역, 10);
+        Section 하행역_기준_추가_구간 = new Section(신분당선, 미금역, 광교역, 3);
+        Section 상행역_기준_추가_구간 = new Section(신분당선, 강남역, 정자역, 3);
 
         // when
         구간_목록.add(하행역_기준_추가_구간);
         구간_목록.add(상행역_기준_추가_구간);
 
         // then
-        assertThat(구간_목록.getAll()).containsAll(Arrays.asList(하행역_기준_추가_구간, 상행역_기준_추가_구간));
+        assertTrue(구간_목록.contains(하행역_기준_추가_구간, 상행역_기준_추가_구간));
     }
 
 
@@ -118,6 +119,7 @@ public class SectionsTest {
         // when
         Sections 구간_목록 = new Sections();
         구간_목록.add(new Section(신분당선, 강남역, 미금역, 10));
+
         구간_목록.add(new Section(신분당선, 미금역, 광교역, 10));
         // then
         assertThat(구간_목록.getOrderedStations()).containsExactly(강남역, 미금역, 광교역);
@@ -151,7 +153,7 @@ public class SectionsTest {
         // when
         구간_목록.deleteStation(미금역);
         // then
-        assertThat(구간_목록.getAll()).doesNotContain(추가_구간);
+        assertFalse(구간_목록.contains(추가_구간));
     }
 
     @DisplayName("노선의 역을 삭제할때, 현재 구간이 한개라면 IllegalStateException 발생한다.")
@@ -166,11 +168,11 @@ public class SectionsTest {
     }
 
     private Station 상행_종점_조회(Sections 구간_목록){
-        return 구간_목록.getOrderedStations().get(0);
+        return 구간_목록.getFirstUpStation();
     }
 
     private boolean 역이_존재한다(Sections 구간_목록, Station 역){
-        return 구간_목록.getOrderedStations().contains(역);
+        return 구간_목록.isExists(역);
     }
 
 }

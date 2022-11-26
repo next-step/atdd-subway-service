@@ -22,9 +22,10 @@ public class SectionTest {
     void updateUpStationWhenAdd_test() {
         // given
         Section 구간 = new Section(신분당선, 강남역, 광교역, 10);
+        Section 새_구간 = new Section(신분당선, 강남역, 미금역, 5);
         // when
 
-        구간.updateUpStation(미금역, Distance.from(5));
+        구간.updateUpStation(새_구간);
 
         // then
         assertEquals(미금역, 구간.getUpStation());
@@ -36,9 +37,10 @@ public class SectionTest {
     void updateDownStationWhenAdd_test() {
         // given
         Section 구간 = new Section(신분당선, 강남역, 광교역, 10);
+        Section 새_구간 = new Section(신분당선, 미금역, 광교역, 5);
         // when
 
-        구간.updateDownStation(미금역, Distance.from(5));
+        구간.updateDownStation(새_구간);
 
         // then
         assertEquals(미금역, 구간.getDownStation());
