@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -74,6 +75,23 @@ class LineServiceTest {
                 () -> assertThat(lines).hasSize(2),
                 () -> assertThat(lines.get(0).getName()).isEqualTo("신분당선"),
                 () -> assertThat(lines.get(1).getName()).isEqualTo("분당선")
+        );
+    }
+
+    @DisplayName("조회한 지하철 노선의 이름, 색상, 지하철 역 갯수를 확인한다.")
+    @Test
+    void findLineResponseById() {
+        when(lineRepository.findById(any()))
+                .thenReturn(
+                        Optional.of(new Line("신분당선", "red", new Station("강남역"), new Station("광교역"), 10))
+                );
+
+        LineResponse response = lineService.findLineResponseById(any());
+
+        assertAll(
+                () -> assertThat(response.getName()).isEqualTo("신분당선"),
+                () -> assertThat(response.getColor()).isEqualTo("red"),
+                () -> assertThat(response.getStations()).hasSize(2)
         );
     }
 }
