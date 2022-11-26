@@ -71,7 +71,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 1. Domain으로 옮길 로직을 찾기 (대상 : LineService)
 
 - [x] saveLine
-- [ ] findLines
+- [x] findLines
 - [ ] findLineResponseById
 - [ ] updateLine
 - [ ] deleteLineById
