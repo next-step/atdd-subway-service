@@ -23,6 +23,21 @@ public class LineTest {
 
         // then
         assertThat(stations).contains(잠실역, 문정역);
+    }
 
+    @Test
+    @DisplayName("이름과 색상을 받아 노선 업데이트")
+    void update() {
+        // given
+        String name = "2호선";
+        String color = "초록색";
+        Line line = new Line(name, color);
+
+        // when
+        line.update(name, color);
+
+        // then
+        assertThat(line.getName()).isEqualTo(name);
+        assertThat(line.getColor()).isEqualTo(color);
     }
 }
