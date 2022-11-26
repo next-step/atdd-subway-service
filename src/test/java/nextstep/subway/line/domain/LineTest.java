@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Line도메인의 ")
 public class LineTest {
@@ -129,27 +131,65 @@ public class LineTest {
                         .isInstanceOf(RuntimeException.class);
             }
         }
-/*
+
         @Nested
         @DisplayName("기존 노선중에 상행종점과 하행종점에 모두 포함될경우 기존 노선을 지우고 새로운 노선추가")
         class ContextWithUpStationAndDownStation {
 
             private Line line = new Line();
+            private Station station = new Station("학동역");
 
             @BeforeEach
             void setUpSection() {
-                List<Section> sections = IntStream
-                        .rangeClosed(1, random.nextInt(100) + 2)
-                        .mapToObj(value -> new Section())
-                        .collect(Collectors.toList());
-                line.getSections().addAll(sections);
+                line.getSections().add(new Section(line,new Station("숭실대입구"),station,10));
+                line.getSections().add(new Section(line,station,new Station("건대입구역"),10));
             }
 
             @Test
-            @RepeatedTest(100)
-            void returnFalse() {
-                assertThat(line.isUnderSingleSection()).isFalse();
+            void returnNewSection() {
+                line.removeStation(station);
+
+                List<String> upStationNames = line.getSections().stream()
+                        .map(Section::getUpStation)
+                        .map(Station::getName)
+                        .collect(Collectors.toList());
+                List<String> downStationName = line.getSections().stream()
+                        .map(Section::getDownStation)
+                        .map(Station::getName)
+                        .collect(Collectors.toList());
+                upStationNames.addAll(downStationName);
+                assertThat(upStationNames).containsExactlyInAnyOrder("숭실대입구","건대입구역");
             }
-        }*/
+        }
+
+        @Nested
+        @DisplayName("기존 노선중에 상행종점과 하행종점 하나만 포함될경우 해당 노선을 삭제")
+        class ContextWithUpStationOrDownStation {
+
+            private Line line = new Line();
+            private Station station = new Station("학동역");
+
+            @BeforeEach
+            void setUpSection() {
+                line.getSections().add(new Section(line,new Station("숭실대입구"),station,10));
+                line.getSections().add(new Section(line,new Station("세종대"),new Station("건대입구역"),10));
+            }
+
+            @Test
+            void returnRemainsSection() {
+                line.removeStation(station);
+
+                List<String> upStationNames = line.getSections().stream()
+                        .map(Section::getUpStation)
+                        .map(Station::getName)
+                        .collect(Collectors.toList());
+                List<String> downStationName = line.getSections().stream()
+                        .map(Section::getDownStation)
+                        .map(Station::getName)
+                        .collect(Collectors.toList());
+                upStationNames.addAll(downStationName);
+                assertThat(upStationNames).containsExactlyInAnyOrder("세종대","건대입구역");
+            }
+        }
     }
 }
