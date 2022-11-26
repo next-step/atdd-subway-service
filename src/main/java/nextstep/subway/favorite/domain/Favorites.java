@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -29,6 +30,7 @@ public class Favorites {
 
     public void addFavorite(Favorite favorite) {
         validateDuplicateFavorite(favorite);
+        validateMember(favorite);
         this.favorites.add(favorite);
     }
 
@@ -36,5 +38,22 @@ public class Favorites {
         if(isContainFavorite(favorite)) {
             throw new IllegalArgumentException(ErrorCode.이미_존재하는_즐겨찾기.getErrorMessage());
         }
+    }
+
+    private void validateMember(Favorite favorite) {
+        if(isNotEqualMember(favorite)) {
+            throw new IllegalArgumentException(ErrorCode.즐겨찾기들의_회원은_동일해야_함.getErrorMessage());
+        }
+    }
+
+    private boolean isNotEqualMember(Favorite favorite) {
+        if(favorites.isEmpty()) {
+            return false;
+        }
+        return !favorites.get(0).hasSameMember(favorite);
+    }
+
+    public List<Favorite> findFavorites() {
+        return Collections.unmodifiableList(favorites);
     }
 }

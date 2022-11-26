@@ -57,6 +57,10 @@ public class Member extends BaseEntity {
         favorites.addFavorite(favorite);
     }
 
+    public List<Favorite> favorites() {
+        return favorites.findFavorites();
+    }
+
     public Long getId() {
         return id;
     }

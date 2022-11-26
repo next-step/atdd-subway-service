@@ -78,4 +78,19 @@ public class FavoritesTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.이미_존재하는_즐겨찾기.getErrorMessage());
     }
+
+    @DisplayName("즐겨찾기 추가 시, 다른 회원의 즐겨찾기이면 예외를 반환한다.")
+    @Test
+    void addFavoriteThrowErrorWhenFavoriteOwnerIsNotMember() {
+        // given
+        Member 다른회원 = createMember("email2@email.com", "password2", 28);
+        Favorites favorites = Favorites.from(Arrays.asList(Favorite.of(회원, 이수역, 반포역), Favorite.of(회원, 양재역, 반포역),
+                Favorite.of(회원, 남부터미널역, 교대역)));
+
+        // when & then
+        assertThatThrownBy(() -> favorites.addFavorite(Favorite.of(다른회원, 강남역, 반포역)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorCode.즐겨찾기들의_회원은_동일해야_함.getErrorMessage());
+    }
+
 }
