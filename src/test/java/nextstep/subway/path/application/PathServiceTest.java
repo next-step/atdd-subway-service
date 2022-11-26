@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import static nextstep.subway.line.domain.LineTestFixture.createLine;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -77,5 +78,18 @@ class PathServiceTest {
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
         assertThat(actualStationNames).containsExactly("남부터미널역", "양재역", "강남역");
+    }
+
+    @DisplayName("출발역과 도착역이 동일한 경우 최단 경로 조회 시 예외가 발생한다.")
+    @Test
+    void findShortestPathWithSameStation() {
+        Long source = 1L;
+        Long target = 1L;
+        when(stationRepository.findById(source)).thenReturn(Optional.of(남부터미널역));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(이호선, 삼호선, 신분당선));
+
+        assertThatThrownBy(() -> pathService.findShortestPath(source, target))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("출발역과 도착역이 동일한 경우 경로를 조회할 수 없습니다.");
     }
 }
