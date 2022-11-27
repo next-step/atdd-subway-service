@@ -17,7 +17,7 @@ public class Distance {
     protected Distance() {
     }
 
-    protected Distance(Integer distance) {
+    private Distance(Integer distance) {
         validDistance(distance);
         this.distance = distance;
     }
