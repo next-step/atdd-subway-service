@@ -33,8 +33,8 @@ public class FavoriteService {
     }
 
     @Transactional
-    public FavoriteResponse createFavorite(Long id, FavoriteRequest request) {
-        Member member = findMemberId(id);
+    public FavoriteResponse createFavorite(Long memberId, FavoriteRequest request) {
+        Member member = findMemberId(memberId);
         Station source = findStationById(request.getSource());
         Station target = findStationById(request.getTarget());
         Favorite favorite = favoriteRepository.save(request.toFavorite(member, source, target));
@@ -43,8 +43,8 @@ public class FavoriteService {
     }
 
     @Transactional(readOnly = true)
-    public Member findMemberId(Long id) {
-        return memberRepository.findById(id)
+    public Member findMemberId(Long memberId) {
+        return memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(MemberExceptionCode.NOT_FOUND_BY_ID.getMessage()));
     }
 

@@ -56,11 +56,33 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavorite() {
         // when
-        FavoriteResponse favoriteResponse = FavoriteAcceptance.create_favorite(tokenResponse,
-                강남역.getId(), 잠실역.getId()).as(FavoriteResponse.class);
+        ExtractableResponse<Response> response = FavoriteAcceptance.create_favorite(tokenResponse,
+                강남역.getId(), 잠실역.getId());
 
         // then
-        assertThat(favoriteResponse.getId()).isNotNull();
+        assertEquals(HttpStatus.CREATED.value(), response.statusCode());
+    }
+
+    /**
+     * Given 지하철역이 등록되어 있고
+     * And 지하철 노선이 등록되어 있고
+     * And 지하철 노선에 지하철 구간이 등록되어 있고
+     * And 회원이 등록되어 있고
+     * When 유효하지 않은 토큰으로 즐겨찾기 생성을 요청하면
+     * Then 즐겨찾기를 생성할 수 없다.
+     */
+    @DisplayName("유효하지 않은 토큰으로 즐겨찾기를 생성한다.")
+    @Test
+    void createFavoriteWithInvalidToken() {
+        // given
+        TokenResponse invalidToken = new TokenResponse("Invalid_Token");
+
+        // when
+        ExtractableResponse<Response> response = FavoriteAcceptance.create_favorite(invalidToken,
+                강남역.getId(), 잠실역.getId());
+
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -80,10 +102,33 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         FavoriteAcceptance.create_favorite(tokenResponse, 강남역.getId(), 잠실역.getId());
 
         // when
-        List<FavoriteResponse> favorites = FavoriteAcceptance.favorite_list_was_queried(tokenResponse);
+        List<FavoriteResponse> favorites = FavoriteAcceptance.getFavoriteResponses(
+                FavoriteAcceptance.favorite_list_was_queried(tokenResponse));
 
         // then
         assertThat(favorites).hasSize(1);
+    }
+
+    /**
+     * Given 지하철역이 등록되어 있고
+     * And 지하철 노선이 등록되어 있고
+     * And 지하철 노선에 지하철 구간이 등록되어 있고
+     * And 회원이 등록되어 있고
+     * And 즐겨찾기가 생성되어 있고
+     * When 유효하지 않은 토큰으로 즐겨찾기 목록을 조회하면
+     * Then 즐겨찾기 목록을 조회할 수 없다.
+     */
+    @DisplayName("유효하지 않은 토큰으로 즐겨찾기를 조회한다.")
+    @Test
+    void selectFavoritesWithInvalidToken() {
+        // given
+        TokenResponse invalidToken = new TokenResponse("Invalid_Token");
+
+        // when
+        ExtractableResponse<Response> response = FavoriteAcceptance.favorite_list_was_queried(invalidToken);
+
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     /**
@@ -109,5 +154,30 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertEquals(HttpStatus.NO_CONTENT.value(), response.statusCode());
+    }
+
+    /**
+     * Given 지하철역이 등록되어 있고
+     * And 지하철 노선이 등록되어 있고
+     * And 지하철 노선에 지하철 구간이 등록되어 있고
+     * And 회원이 등록되어 있고
+     * And 즐겨찾기가 생성되어 있고
+     * When 유효하지 않은 토큰으로 즐겨찾기를 삭제하면
+     * Then 즐겨찾기를 삭제할 수 없다.
+     */
+    @DisplayName("유효하지 않은 토큰으로 즐겨찾기를 삭제한다.")
+    @Test
+    void deleteFavoriteWithInvalidToken() {
+        // given
+        TokenResponse invalidToken = new TokenResponse("Invalid_Token");
+        FavoriteResponse favoriteResponse = FavoriteAcceptance.create_favorite(tokenResponse, 강남역.getId(),
+                잠실역.getId()).as(FavoriteResponse.class);
+
+        // when
+        ExtractableResponse<Response> response =
+                FavoriteAcceptance.delete_favorite(invalidToken, favoriteResponse.getId());
+
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 }

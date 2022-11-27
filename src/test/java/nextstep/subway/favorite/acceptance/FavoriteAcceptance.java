@@ -22,17 +22,20 @@ public class FavoriteAcceptance {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/favorites")
                 .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
                 .extract();
     }
 
-    public static List<FavoriteResponse> favorite_list_was_queried(TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> favorite_list_was_queried(TokenResponse tokenResponse) {
         return RestAssured.given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/favorites")
                 .then().log().all()
-                .extract().jsonPath().getList(".", FavoriteResponse.class);
+                .extract();
+    }
+
+    public static List<FavoriteResponse> getFavoriteResponses(ExtractableResponse<Response> response) {
+        return response.jsonPath().getList(".", FavoriteResponse.class);
     }
 
     public static ExtractableResponse<Response> delete_favorite(TokenResponse tokenResponse, Long favoriteId) {
