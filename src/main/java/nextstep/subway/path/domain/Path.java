@@ -9,6 +9,7 @@ import nextstep.subway.station.domain.Station;
 
 public class Path {
     private static final String CAN_NOT_EMPTY = "경로는 비어있을 수 없습니다.";
+
     private final List<Station> stations;
     private final Distance distance;
 

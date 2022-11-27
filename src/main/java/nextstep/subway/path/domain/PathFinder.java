@@ -12,6 +12,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 public class PathFinder {
     private static final String CAN_NOT_FIND_PATH_WHEN_SOURCE_TARGET_IS_SAME = "출발역과 도착역이 동일한 경우 경로를 조회할 수 없습니다.";
     private static final String CAN_NOT_FIND_WHEN_SOURCE_TARGET_IS_NOT_CONNECT = "출발역과 도착역이 연결되어 있지 않은 경우 경로를 조회할 수 없습니다.";
+
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     public PathFinder(List<Line> lines) {
