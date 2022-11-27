@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LineService {
-    private static final String ERROR_MESSAGE_NOT_FOUND_LINE = "등록된 노선 정보가 없습니다.";
+    private static final String ERROR_MESSAGE_NOT_FOUND_LINE_FORMAT = "등록된 노선 정보가 없습니다. LineId : %d";
 
     private final LineRepository lineRepository;
     private final StationService stationService;
@@ -43,7 +44,7 @@ public class LineService {
 
     public Line findLineById(Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE_NOT_FOUND_LINE));
+                .orElseThrow(() -> new NotFoundException(ERROR_MESSAGE_NOT_FOUND_LINE_FORMAT, id));
     }
 
 

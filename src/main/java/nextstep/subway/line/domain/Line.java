@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.station.domain.Station;
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,11 +39,11 @@ public class Line extends BaseEntity {
 
     private void validNameAndColor(String name, String color) {
         if (StringUtils.isBlank(name)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_IS_BLANK_NAME);
+            throw new InvalidParameterException(ERROR_MESSAGE_IS_BLANK_NAME);
         }
 
         if (StringUtils.isBlank(color)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_IS_BLANK_COLOR);
+            throw new InvalidParameterException(ERROR_MESSAGE_IS_BLANK_COLOR);
         }
     }
 

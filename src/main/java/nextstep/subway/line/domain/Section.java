@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -50,17 +51,17 @@ public class Section {
 
     private void validEmptyStation(Station upStation, Station downStation) {
         if (Objects.isNull(upStation)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_NULL_UP_STATION);
+            throw new InvalidParameterException(ERROR_MESSAGE_NOT_NULL_UP_STATION);
         }
 
         if (Objects.isNull(downStation)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_NULL_DOWN_STATION);
+            throw new InvalidParameterException(ERROR_MESSAGE_NOT_NULL_DOWN_STATION);
         }
     }
 
     private void validEmptyDistance(Distance distance) {
         if (Objects.isNull(distance)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_NULL_DISTANCE);
+            throw new InvalidParameterException(ERROR_MESSAGE_NOT_NULL_DISTANCE);
         }
     }
 

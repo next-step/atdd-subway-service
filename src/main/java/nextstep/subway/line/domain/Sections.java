@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -42,7 +43,7 @@ public class Sections {
 
     private void validDuplicateSection(Section compareSection) {
         if (isContainsAllStation(compareSection)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_DUPLICATE_UP_DOWN_STATION);
+            throw new InvalidParameterException(ERROR_MESSAGE_DUPLICATE_UP_DOWN_STATION);
         }
     }
 
@@ -59,7 +60,7 @@ public class Sections {
         }
 
         if (getSortStations().stream().noneMatch(station -> compareSection.stations().contains(station))) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NONE_MATCH_UP_DOWN_STATION);
+            throw new InvalidParameterException(ERROR_MESSAGE_NONE_MATCH_UP_DOWN_STATION);
         }
     }
 
@@ -88,13 +89,13 @@ public class Sections {
 
     private void validDefaultSectionSize() {
         if (sections.size() == DEFAULT_SECTION_SIZE) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_EXIST_DEFAULT_SECTION_SIZE);
+            throw new InvalidParameterException(ERROR_MESSAGE_EXIST_DEFAULT_SECTION_SIZE);
         }
     }
 
     private void validNotContainSectionByStation(boolean upStation, boolean downStation) {
         if (!upStation && !downStation) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_LINE_NOT_CONTAIN_STATION);
+            throw new InvalidParameterException(ERROR_MESSAGE_LINE_NOT_CONTAIN_STATION);
         }
     }
 
@@ -151,6 +152,6 @@ public class Sections {
         return sections.stream().map(Section::getUpStation)
                 .filter(station -> !downStations.contains(station))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE_NOT_NULL_UP_STATION));
+                .orElseThrow(() -> new InvalidParameterException(ERROR_MESSAGE_NOT_NULL_UP_STATION));
     }
 }

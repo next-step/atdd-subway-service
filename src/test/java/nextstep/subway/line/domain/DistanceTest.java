@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import nextstep.subway.common.exception.InvalidParameterException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,7 @@ class DistanceTest {
     @DisplayName("거리 생성")
     void createDistance() {
         Distance actual = Distance.from(10);
-        assertThat(actual).isEqualTo(new Distance(10));
+        assertThat(actual).isEqualTo(Distance.from(10));
     }
 
     @Test
@@ -19,8 +20,8 @@ class DistanceTest {
     void createDistanceGraterThanZero() {
         assertAll(
                 () -> assertThat(Distance.from(1)).isInstanceOf(Distance.class),
-                () -> assertThrows(IllegalArgumentException.class, () -> Distance.from(0)),
-                () -> assertThrows(IllegalArgumentException.class, () -> Distance.from(-1))
+                () -> assertThrows(InvalidParameterException.class, () -> Distance.from(0)),
+                () -> assertThrows(InvalidParameterException.class, () -> Distance.from(-1))
         );
     }
 
@@ -35,7 +36,7 @@ class DistanceTest {
         Distance actual = distance.add(distance2);
 
         // then
-        assertThat(actual).isEqualTo(new Distance(15));
+        assertThat(actual).isEqualTo(Distance.from(15));
     }
 
     @Test
@@ -49,6 +50,6 @@ class DistanceTest {
         Distance actual = distance.subtract(distance2);
 
         // then
-        assertThat(actual).isEqualTo(new Distance(5));
+        assertThat(actual).isEqualTo(Distance.from(5));
     }
 }

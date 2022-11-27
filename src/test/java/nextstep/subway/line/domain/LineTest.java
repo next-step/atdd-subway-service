@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,10 +29,10 @@ class LineTest {
     void createLineNameIsNotBlank() {
         assertAll(
                 () -> assertThatThrownBy(() -> Line.of(null, "bg-red-600"))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(InvalidParameterException.class)
                         .hasMessage("노선 이름은 필수입니다."),
                 () -> assertThatThrownBy(() -> Line.of("", "bg-red-600"))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(InvalidParameterException.class)
                         .hasMessage("노선 이름은 필수입니다.")
         );
     }
@@ -41,10 +42,10 @@ class LineTest {
     void createLineColorIsNotBlank() {
         assertAll(
                 () -> assertThatThrownBy(() -> Line.of("신분당선", null))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(InvalidParameterException.class)
                         .hasMessage("노선 색상은 필수입니다."),
                 () -> assertThatThrownBy(() -> Line.of("신분당선", ""))
-                        .isInstanceOf(IllegalArgumentException.class)
+                        .isInstanceOf(InvalidParameterException.class)
                         .hasMessage("노선 색상은 필수입니다.")
         );
     }

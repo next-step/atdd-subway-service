@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import nextstep.subway.common.exception.InvalidParameterException;
 
 @Embeddable
 public class Distance {
@@ -28,11 +29,11 @@ public class Distance {
 
     private void validDistance(Integer distance) {
         if (Objects.isNull(distance)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_NULL_DISTANCE);
+            throw new InvalidParameterException(ERROR_MESSAGE_NOT_NULL_DISTANCE);
         }
 
         if (distance <= INVALID_DISTANCE_CRITERION) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_GRATER_THAN_ZERO_DISTANCE);
+            throw new InvalidParameterException(ERROR_MESSAGE_GRATER_THAN_ZERO_DISTANCE);
         }
     }
 
@@ -48,7 +49,7 @@ public class Distance {
 
     private static void validSectionDistance(int subtract) {
         if (subtract <= INVALID_DISTANCE_CRITERION) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_VALID_SECTION_DISTANCE);
+            throw new InvalidParameterException(ERROR_MESSAGE_VALID_SECTION_DISTANCE);
         }
     }
 

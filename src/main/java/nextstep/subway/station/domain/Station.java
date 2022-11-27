@@ -4,6 +4,7 @@ import nextstep.subway.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Objects;
+import nextstep.subway.common.exception.InvalidParameterException;
 import org.apache.commons.lang3.StringUtils;
 
 @Entity
@@ -31,7 +32,7 @@ public class Station extends BaseEntity {
 
     private static void validName(String name) {
         if (StringUtils.isBlank(name)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_IS_BLANK_NAME);
+            throw new InvalidParameterException(ERROR_MESSAGE_IS_BLANK_NAME);
         }
     }
 
