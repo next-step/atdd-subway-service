@@ -3,13 +3,8 @@ package nextstep.subway.path.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.line.dto.LineResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,8 +14,8 @@ public class PathAcceptanceStep {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .param("source", sourceId)
-                .param("target", targetId)
+                .param("sourceId", sourceId)
+                .param("targetId", targetId)
                 .when().get("/paths")
                 .then().log().all()
                 .extract();

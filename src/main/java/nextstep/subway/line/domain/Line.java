@@ -55,6 +55,10 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
+    public List<Section> getSections() {
+        return sections.value();
+    }
+
     public void addSection(final Section section) {
         validateSection(section);
         if (addInitialSection(section)) return;

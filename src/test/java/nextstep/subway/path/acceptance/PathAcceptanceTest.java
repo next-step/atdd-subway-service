@@ -52,7 +52,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(남부터미널역.getId(), 강남역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역.getId(), 남부터미널역.getId());
 
         // then
         최단경로_목록_응답됨(response);

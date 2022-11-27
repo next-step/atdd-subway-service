@@ -1,38 +1,19 @@
-package nextstep.subway.path.application;
+package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.ui.PathResponse;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import static nextstep.subway.Fixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
-@DisplayName("지하철 경로 관련 서비스 테스트")
-@ExtendWith(MockitoExtension.class)
-public class PathServiceTest {
-
-    @InjectMocks
-    PathService pathService;
-
-    @Mock
-    private LineRepository lineRepository;
-
-    @Mock
-    private StationRepository stationRepository;
+class PathFinderTest {
 
     private Line 신분당선;
     private Line 이호선;
@@ -62,15 +43,12 @@ public class PathServiceTest {
         삼호선.addSection(createSection(교대역, 남부터미널역, 3));
     }
 
-
     @DisplayName("최단 경로 조회에 성공한다.")
     @Test
-    void findShortestPath() {
-        when(stationRepository.findById(강남역.getId())).thenReturn(Optional.of(강남역));
-        when(stationRepository.findById(남부터미널역.getId())).thenReturn(Optional.of(남부터미널역));
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+    void getShortestPath() {
+        PathFinder pathFinder = PathFinder.from(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        PathResponse shortestPath = pathService.findShortestPath(강남역.getId(), 남부터미널역.getId());
+        PathResponse shortestPath = pathFinder.getShortestPath(강남역, 남부터미널역);
 
         assertThat(shortestPath.getStations().stream().map(StationResponse::getId))
                 .containsExactly(강남역.getId(), 양재역.getId(), 남부터미널역.getId());
