@@ -1,6 +1,7 @@
 package study.unit;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Name;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,9 +21,9 @@ public class UnitTest {
         Line newLine = new Line(newName, "GREEN");
 
         // when
-        line.update(newLine);
+        line.update(newLine.getName().value(), newLine.getColor().value());
 
         // then
-        assertThat(line.getName()).isEqualTo(newName);
+        assertThat(line.getName().value()).isEqualTo(newLine.getName().value());
     }
 }
