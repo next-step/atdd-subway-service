@@ -220,10 +220,20 @@ Feature: 지하철 경로 관련 기능
   ```text
   Feature: 로그인 기능
   
-    Scenario: 로그인을 시도한다.
+    Background
       Given 회원 등록되어 있음
+  
+    Scenario: 로그인을 시도한다.
       When 로그인 요청
       Then 로그인 됨
+  
+    Scenario: 잘못된 비밀번호로 로그인을 시도한다.
+      When 로그인 요청
+      Then 로그인 실패
+  
+    Scenario: 등록하지 않은 회원정보로 로그인을 시도한다.
+      When 로그인 요청
+      Then 로그인 실패
   ```
 - 예외 케이스도 고려하여 구현하기
 - 유효하지 않은 토큰으로 `/members/me` 요청을 보낼 경우에 대한 예외 처리
