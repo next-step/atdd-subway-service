@@ -123,7 +123,11 @@ public class Sections {
     }
 
     public int totalDistance() {
-        return sections.stream().map(Section::getDistance).mapToInt(Distance::getDistance).sum();
+        int totalDistance = 0;
+        for (Section section : sections) {
+            totalDistance = section.addTotalDistance(totalDistance);
+        }
+        return totalDistance;
     }
 
     public List<Station> getSortStations() {

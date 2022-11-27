@@ -41,6 +41,10 @@ public class Distance {
         return Distance.from(this.distance + distance.distance);
     }
 
+    public int addTotalDistance(int distance) {
+        return this.distance + distance;
+    }
+
     public Distance subtract(Distance distance) {
         validSectionDistance(distance);
 
