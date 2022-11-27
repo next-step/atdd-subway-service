@@ -62,7 +62,31 @@ public class SectionsTest {
 
             @Test
             void returnStation() {
-                sections.findUpStation().equals(station);
+                assertThat(sections.findUpStation()).isEqualTo(station);
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("getStations메소드는 ")
+    class DescribeGetStations {
+
+        @Nested
+        @DisplayName("모든 역을 노선순서에 따라 중복없이 반환")
+        class ContextWithSections {
+
+            private final Line line = new Line();
+            private final Sections sections = new Sections();
+
+            @BeforeEach
+            void before() {
+                sections.addSection(new Section(line,  new Station("강남역"), new Station("신림역"), 10));
+                sections.addSection(new Section(line, new Station("신림역"), new Station("방배역"), 10));
+            }
+
+            @Test
+            void returnStation() {
+                assertThat(sections.getStations()).containsAnyOf(new Station("강남역"), new Station("신림역"), new Station("방배역"));
             }
         }
     }
