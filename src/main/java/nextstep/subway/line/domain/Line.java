@@ -32,7 +32,12 @@ public class Line extends BaseEntity {
     private Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(Section.of(this, upStation, downStation, distance));
+        sections.add(new Section.Builder()
+                .line(this)
+                .upStation(upStation)
+                .downStation(downStation)
+                .distance(distance)
+                .build());
     }
 
     public static Line empty() {
@@ -125,6 +130,4 @@ public class Line extends BaseEntity {
             return new Line(name, color, upStation, downStation, distance);
         }
     }
-
-
 }

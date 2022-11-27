@@ -41,10 +41,6 @@ public class Section {
         this.distance = distance;
     }
 
-    public static Section of(Line line, Station upStation, Station downStation, int distance) {
-        return new Section(line, upStation, downStation, distance);
-    }
-
     public static Section of(Station upStation, Station downStation, int distance) {
         return new Section(null, upStation, downStation, distance);
     }
@@ -102,5 +98,43 @@ public class Section {
 
     public List<Station> getStations() {
         return Arrays.asList(upStation, downStation);
+    }
+
+    public static class Builder {
+
+        private Long id;
+        private Line line;
+        private Station upStation;
+        private Station downStation;
+        private int distance;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder line(Line line) {
+            this.line = line;
+            return this;
+        }
+
+        public Builder upStation(Station upStation) {
+            this.upStation = upStation;
+            return this;
+        }
+
+        public Builder downStation(Station downStation) {
+            this.downStation = downStation;
+            return this;
+        }
+
+        public Builder distance(int distance) {
+            this.distance = distance;
+            return this;
+        }
+
+        public Section build() {
+            return new Section(line, upStation, downStation, distance);
+        }
     }
 }

@@ -31,6 +31,10 @@ public class SectionRequest {
     }
 
     public Section toSection(Station upStation, Station downStation) {
-        return Section.of(upStation, downStation, distance);
+        return new Section.Builder()
+                .upStation(upStation)
+                .downStation(downStation)
+                .distance(distance)
+                .build();
     }
 }

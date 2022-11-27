@@ -149,8 +149,12 @@ public class Sections {
     }
 
     private void removeMiddleSection(Section upSection, Section downSection) {
-        sections.add(
-                Section.of(upSection.getLine(), upSection.getUpStation(), downSection.getDownStation(), upSection.getDistance() + downSection.getDistance()));
+        sections.add(new Section.Builder()
+                .line(upSection.getLine())
+                .upStation(upSection.getUpStation())
+                .downStation(downSection.getDownStation())
+                .distance(upSection.getDistance() + downSection.getDistance())
+                .build());
         sections.remove(upSection);
         sections.remove(downSection);
     }
