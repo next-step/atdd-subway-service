@@ -13,6 +13,7 @@ public class ExceptionMessage {
     public static final String LINE_NOT_EXIST = "지하철 노선이 존재하지 않습니다.";
     public static final String SOURCE_AND_TARGET_EQUAL = "출발역과 도착역이 같을 경우 최단경로를 찾을 수 없습니다.";
     public static final String SOURCE_NOT_CONNECTED_TO_TARGET = "출발역과 도착역이 연결되어 있지 않습니다.";
+    public static final String INVALID_TOKEN = "유효하지 않은 토큰입니다.";
 
     private ExceptionMessage() {
     }
