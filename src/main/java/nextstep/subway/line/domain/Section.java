@@ -55,16 +55,16 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        checkValidDistance(newDistance);
-        this.upStation = station;
-        this.distance -= newDistance;
+    public void updateUpStation(Section section) {
+        checkValidDistance(section.distance);
+        this.upStation = section.downStation;
+        this.distance -= section.distance;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        checkValidDistance(newDistance);
-        this.downStation = station;
-        this.distance -= newDistance;
+    public void updateDownStation(Section section) {
+        checkValidDistance(section.distance);
+        this.downStation = section.upStation;
+        this.distance -= section.distance;
     }
 
     private void checkValidDistance(int newDistance) {
@@ -83,6 +83,14 @@ public class Section {
 
     public boolean hasAnyMatchedThisDownStation(Section section) {
         return this.upStation.equals(section.downStation) || this.downStation.equals(section.downStation);
+    }
+
+    public boolean hasSameUpStation(Section section) {
+        return this.upStation.equals(section.upStation);
+    }
+
+    public boolean hasSameDownStation(Section section) {
+        return this.downStation.equals(section.downStation);
     }
 
     @Override

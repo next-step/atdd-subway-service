@@ -80,7 +80,8 @@ class SectionTest {
         Section 강남역_광교역_구간 = new Section(신분당선, 강남역, 광교역, 10);
 
         Station 양재역 = new Station("양재역");
-        Assertions.assertThatThrownBy(() -> 강남역_광교역_구간.updateUpStation(양재역, input))
+        Section 강남역_양재역_구간 = new Section(신분당선, 강남역, 양재역, input);
+        Assertions.assertThatThrownBy(() -> 강남역_광교역_구간.updateUpStation(강남역_양재역_구간))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageStartingWith("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
@@ -92,7 +93,8 @@ class SectionTest {
         Section 강남역_광교역_구간 = new Section(신분당선, 강남역, 광교역, 10);
 
         Station 양재역 = new Station("양재역");
-        Assertions.assertThatThrownBy(() -> 강남역_광교역_구간.updateDownStation(양재역, input))
+        Section 양재역_광교역_구간 = new Section(신분당선, 양재역, 광교역, input);
+        Assertions.assertThatThrownBy(() -> 강남역_광교역_구간.updateDownStation(양재역_광교역_구간))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageStartingWith("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
@@ -162,5 +164,23 @@ class SectionTest {
         Section 양재역_정자역_구간 = new Section(신분당선, 양재역, 정자역, 5);
 
         Assertions.assertThat(강남역_광교역_구간.hasAnyMatchedStation(양재역_정자역_구간)).isFalse();
+    }
+
+    @DisplayName("지하철 구간이 같은 상행역을 가지는지 확인한다.")
+    @Test
+    void hasSameUpStation() {
+        Section 강남역_광교역_구간 = new Section(신분당선, 강남역, 광교역, 10);
+        Section 강남역_양재역_구간 = new Section(신분당선, 강남역, new Station("양재역"), 5);
+
+        Assertions.assertThat(강남역_광교역_구간.hasSameUpStation(강남역_양재역_구간)).isTrue();
+    }
+
+    @DisplayName("지하철 구간이 같은 하행역을 가지는지 확인한다.")
+    @Test
+    void hasSameDownStation() {
+        Section 강남역_광교역_구간 = new Section(신분당선, 강남역, 광교역, 10);
+        Section 양재역_광교역_구간 = new Section(신분당선, new Station("양재역"), 광교역, 5);
+
+        Assertions.assertThat(강남역_광교역_구간.hasSameDownStation(양재역_광교역_구간)).isTrue();
     }
 }

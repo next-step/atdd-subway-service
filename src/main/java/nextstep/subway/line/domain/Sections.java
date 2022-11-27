@@ -49,28 +49,24 @@ public class Sections {
     }
 
     private void updateUpStation(Section section) {
-        List<Station> stations = this.getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
+        boolean isUpStationExisted = sections.stream().anyMatch(it -> it.hasAnyMatchedThisUpStation(section));
 
         if (isUpStationExisted) {
             this.sections.stream()
-                    .filter(it -> it.getUpStation() == section.getUpStation())
+                    .filter(it -> it.hasSameUpStation(section))
                     .findFirst()
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
+                    .ifPresent(it -> it.updateUpStation(section));
         }
     }
 
     private void updateDownStation(Section section) {
-        List<Station> stations = this.getStations();
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+        boolean isDownStationExisted = sections.stream().anyMatch(it -> it.hasAnyMatchedThisDownStation(section));
 
         if (isDownStationExisted) {
             this.sections.stream()
-                    .filter(it -> it.getDownStation() == section.getDownStation())
+                    .filter(it -> it.hasSameDownStation(section))
                     .findFirst()
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-
+                    .ifPresent(it -> it.updateDownStation(section));
         }
     }
 
