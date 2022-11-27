@@ -55,17 +55,17 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        Station nextStation = findUpStation();
+        stations.add(nextStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findSectionByUpStation(finalDownStation);
+        while (nextStation != null) {
+            Station upStation = nextStation;
+            Optional<Section> nextLineStation = findSectionByUpStation(upStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+            nextStation = nextLineStation.get().getDownStation();
+            stations.add(nextStation);
         }
 
         return stations;
