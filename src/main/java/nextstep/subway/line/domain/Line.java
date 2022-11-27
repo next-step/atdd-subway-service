@@ -60,10 +60,6 @@ public class Line extends BaseEntity {
         return getSections().isEmpty();
     }
 
-    public boolean isUnderSingleSection() {
-        return getSections().size() <= 1;
-    }
-
     public void addSection(Station upStation, Station downStation, int distance) {
         List<Station> stations = getStations();
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it.equals(upStation));
