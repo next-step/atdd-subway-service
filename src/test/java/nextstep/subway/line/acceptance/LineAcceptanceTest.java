@@ -27,72 +27,90 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 광교역;
 
+    /**
+     * Background
+     * Given 지하철역 등록되어 있음
+     */
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        // given 지하철역 등록되어 있음
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
     }
 
+    /**
+     * Scenario1: 지하철 노선 관리
+     * When 지하철 노선 생성 요청
+     * Then 지하철 노선 생성
+     * When 기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성 요청
+     * Then 지하철 노선 생성 실패됨
+     * When 기존에 존재하지 않는 지하철 노선 이름으로 지하철 노선 생성 요청
+     * Then 지하철 노선 생성
+     * When 지하철 노선 목록 조회 요청
+     * Then 지하철 노선 목록 응답됨
+     * and 등록된 지하철역 지하철 노선 목록 포함됨
+     * When 지하철 노선 조회 요청
+     * Then 지하철 노선 응답됨
+     * When 지하철 노선 수정 요청
+     * Then 지하철 노선 수정됨
+     * When 지하철 노선 제거 요청
+     * Then 지하철 노선 삭제됨
+     */
     @Test
     @DisplayName("지하철 노선 관리")
-    public void scenario() {
-        // when 지하철 노선 생성 요청
-        Map<String, String> createLineParams1 = 지하철_노선_생성_요청_파라미터1();
-        ExtractableResponse<Response> createLineResponse1 = 지하철_노선_생성_요청(createLineParams1);
+    public void scenario1() {
+        // when
+        ExtractableResponse<Response> 지하철_노선_생성_응답_신분당선 = 지하철_노선_생성_요청(지하철_노선_생성_요청_신분당선());
 
-        // then 지하철 노선 생성
-        지하철_노선_생성됨(createLineResponse1);
+        // then
+        지하철_노선_생성됨(지하철_노선_생성_응답_신분당선);
 
-        // when 기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성 요청
-        Map<String, String> alreadyExistsCreateLineParams = 지하철_노선_생성_요청_파라미터1();
-        ExtractableResponse<Response> createLineFailedResponse = 지하철_노선_생성_요청(alreadyExistsCreateLineParams);
+        // when
+        ExtractableResponse<Response> 지하철_노선_생성_응답_실패 = 지하철_노선_생성_요청(지하철_노선_생성_요청_신분당선());
 
-        // then 지하철 노선 생성 실패됨
-        지하철_노선_생성_실패됨(createLineFailedResponse);
+        // then
+        지하철_노선_생성_실패됨(지하철_노선_생성_응답_실패);
 
-        // when 기존에 존재하지 않는 지하철 노선 이름으로 지하철 노선 생성 요청
-        Map<String, String> createLineParams2 = 지하철_노선_생성_요청_파라미터2();
-        ExtractableResponse<Response> createLineResponse2 = 지하철_노선_생성_요청(createLineParams2);
+        // when
+        ExtractableResponse<Response> 지하철_노선_생성_응답_구신분당선 = 지하철_노선_생성_요청(지하철_노선_생성_요청_구신분당선());
 
-        // then 지하철 노선 생성
-        지하철_노선_생성됨(createLineResponse2);
+        // then
+        지하철_노선_생성됨(지하철_노선_생성_응답_구신분당선);
 
-        // when 지하철 노선 목록 조회 요청
-        ExtractableResponse<Response> getLinesResponse = 지하철_노선_목록_조회_요청();
+        // when
+        ExtractableResponse<Response> 지하철_노선_목록_조회_응답 = 지하철_노선_목록_조회_요청();
 
-        // then 지하철 노선 목록 응답됨
-        // and 등록된 지하철역 지하철 노선 목록 포함됨
-        지하철_노선_목록_응답됨(getLinesResponse);
-        지하철_노선_목록_포함됨(getLinesResponse, Arrays.asList(createLineResponse1, createLineResponse2));
+        // then
+        지하철_노선_목록_응답됨(지하철_노선_목록_조회_응답);
+        지하철_노선_목록_포함됨(지하철_노선_목록_조회_응답, Arrays.asList(지하철_노선_생성_응답_신분당선, 지하철_노선_생성_응답_구신분당선));
 
-        // when 지하철 노선 조회 요청
-        ExtractableResponse<Response> getLineResponse = 지하철_노선_목록_조회_요청(createLineResponse1);
+        // when
+        LineResponse 신분당선 = 지하철_노선_생성_응답_신분당선.as(LineResponse.class);
+        ExtractableResponse<Response> 지하철_노선_조회_응답 = 지하철_노선_조회_요청(신분당선);
 
-        // then 지하철 노선 응답됨
-        지하철_노선_응답됨(getLineResponse);
+        // then
+        지하철_노선_응답됨(지하철_노선_조회_응답);
 
-        // when 지하철 노선 수정 요청
-        Map<String, String> params = 지하철_노선_수정_요청_파라미터("변경신분당선", "bg-red-700");
-        ExtractableResponse<Response> updateLineResponse = 지하철_노선_수정_요청(createLineResponse1, params);
+        // when
+        ExtractableResponse<Response> 지하철_노선_수정_응답 = 지하철_노선_수정_요청(지하철_노선_생성_응답_신분당선,
+            지하철_노선_수정_요청_파라미터("변경신분당선", "bg-red-700"));
 
-        // then 지하철 노선 수정됨
-        지하철_노선_수정됨(updateLineResponse);
+        // then
+        지하철_노선_수정됨(지하철_노선_수정_응답);
 
-        // when 지하철 노선 제거 요청
-        ExtractableResponse<Response> response = 지하철_노선_제거_요청(createLineResponse1);
+        // when
+        ExtractableResponse<Response> 지하철_노선_제거_응답 = 지하철_노선_제거_요청(지하철_노선_생성_응답_신분당선);
 
-        // then 지하철 노선 삭제됨
-        지하철_노선_삭제됨(response);
+        // then
+        지하철_노선_삭제됨(지하철_노선_제거_응답);
     }
 
-    private Map<String, String> 지하철_노선_생성_요청_파라미터2() {
+    private Map<String, String> 지하철_노선_생성_요청_구신분당선() {
         return 지하철_노선_생성_요청_파라미터("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
     }
 
-    private Map<String, String> 지하철_노선_생성_요청_파라미터1() {
+    private Map<String, String> 지하철_노선_생성_요청_신분당선() {
         return 지하철_노선_생성_요청_파라미터("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
     }
 
@@ -123,12 +141,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
         return 지하철_노선_목록_조회_요청("/lines");
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-
-        return 지하철_노선_목록_조회_요청(uri);
     }
 
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String uri) {
