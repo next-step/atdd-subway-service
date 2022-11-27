@@ -27,4 +27,15 @@ class FavoriteTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발역과 도착역이 동일한 경우 즐겨찾기로 등록할 수 없습니다.");
     }
+
+    @DisplayName("즐겨찾기의 소유자가 아닌 경우 작업 요청 시 예외가 발생한다.")
+    @Test
+    void isNotOwner() {
+        Favorite favorite = new Favorite(member, source, target);
+        Member anotherMember = new Member("another@email.com", "another_password", 25);
+
+        assertThatThrownBy(() -> favorite.isOperateByOwner(anotherMember))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("본인의 즐겨찾기가 아닌 경우 작업을 진행할 수 없습니다.");
+    }
 }
