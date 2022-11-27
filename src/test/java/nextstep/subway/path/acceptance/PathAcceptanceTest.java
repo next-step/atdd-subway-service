@@ -81,4 +81,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         최단경로_목록_조회_실패(response);
     }
+
+    @DisplayName("최단 경로를 조회 시, 존재하지 않은 출발역이나 도착역을 조회 할 경우 예외를 반환한다.")
+    @Test
+    void getLinesWithException3() {
+        // given
+        long 없는역_ID = 100L;
+
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역.getId(), 없는역_ID);
+
+        // then
+        최단경로_목록_조회_실패(response);
+    }
 }

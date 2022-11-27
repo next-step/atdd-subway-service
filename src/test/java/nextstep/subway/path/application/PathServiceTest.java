@@ -106,4 +106,17 @@ public class PathServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
+
+    @DisplayName("최단 경로를 조회 시, 존재하지 않은 출발역이나 도착역을 조회 할 경우 예외를 반환한다.")
+    @Test
+    void getLinesWithException3() {
+        long 없는역_ID = 100L;
+        when(stationRepository.findById(강남역.getId())).thenReturn(Optional.of(강남역));
+        when(stationRepository.findById(없는역_ID)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 없는역_ID))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("%d", 없는역_ID)
+                .hasMessageContaining("에 해당하는 Station을 찾을 수 없습니다.");
+    }
 }
