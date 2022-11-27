@@ -12,11 +12,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.member.MemberRestAssured.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class AuthAcceptanceTest extends AcceptanceTest {
+public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "programmer-sjk@email.com";
     private static final String PASSWORD = "password";
     private static final String WRONG_EMAIL = "fake@email.com";
@@ -71,8 +71,8 @@ class AuthAcceptanceTest extends AcceptanceTest {
         유효하지_않은_토큰(response);
     }
 
-    public static ExtractableResponse<Response> 로그인_요청(String email, String pw) {
-        TokenRequest tokenRequest = new TokenRequest(email, pw);
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        TokenRequest tokenRequest = new TokenRequest(email, password);
 
         return RestAssured
                 .given().log().all()
