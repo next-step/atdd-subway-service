@@ -4,10 +4,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Line extends BaseEntity {
@@ -22,13 +19,11 @@ public class Line extends BaseEntity {
     private final Sections sections;
 
     public Line() {
-        this.sections = new Sections();
+        this(null, null, null, null, 0);
     }
 
     public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
-        this.sections = new Sections();
+        this(name, color, null, null, 0);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
@@ -58,6 +53,10 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
+    public List<Section> getSections() {
+        return sections.value();
+    }
+
     public void addSection(final Section section) {
         validateSection(section);
         if (addInitialSection(section)) return;
@@ -67,16 +66,20 @@ public class Line extends BaseEntity {
 
     private void addDownSection(final Section section) {
         if (isStationExisted(section.downStation())) {
-            Optional<Section> originalSection = sections.findSameDownStation(section);
-            originalSection.ifPresent(it -> it.updateDownStation(section));
+            Section originalSection = sections.findSameDownStation(section);
+            if (Objects.nonNull(originalSection)) {
+                originalSection.updateDownStation(section);
+            }
             sections.add(section, this::syncLine);
         }
     }
 
     private boolean addUpSection(final Section section) {
         if (isStationExisted(section.upStation())) {
-            Optional<Section> originalSection = sections.findSameUpStation(section);
-            originalSection.ifPresent(it -> it.updateUpStation(section));
+            Section originalSection = sections.findSameUpStation(section);
+            if (Objects.nonNull(originalSection)) {
+                originalSection.updateUpStation(section);
+            }
             sections.add(section, this::syncLine);
             return true;
         }
