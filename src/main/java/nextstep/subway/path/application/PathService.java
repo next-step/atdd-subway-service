@@ -1,6 +1,6 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.exception.StationNotFoundException;
+import nextstep.subway.exception.EntityNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.message.ExceptionMessage;
@@ -39,6 +39,6 @@ public class PathService {
 
     private Station findStationById(Long stationId) {
         return stationRepository.findById(stationId)
-                .orElseThrow(() -> new StationNotFoundException(ExceptionMessage.STATION_NOT_EXIST));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.STATION_NOT_EXIST));
     }
 }

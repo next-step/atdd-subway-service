@@ -10,6 +10,7 @@ public class ExceptionMessage {
     public static final String EMPTY_LINE_COLOR = "지하철 노선 색상은 필수값입니다.";
     public static final String EMPTY_STATION_NAME = "지하철 역 이름은 필수값입니다.";
     public static final String STATION_NOT_EXIST = "지하철역이 존재하지 않습니다.";
+    public static final String LINE_NOT_EXIST = "지하철 노선이 존재하지 않습니다.";
 
     private ExceptionMessage() {
     }
