@@ -6,7 +6,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.favorite.dto.FavoriteRequest;
-import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -52,11 +51,8 @@ public class FavoriteAcceptanceTestFixture {
     }
 
     public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, StationResponse source, StationResponse target) {
-        FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(favoriteResponse.getId()).isNotNull();
-        assertThat(favoriteResponse.getSource().getId()).isEqualTo(source.getId());
-        assertThat(favoriteResponse.getTarget().getId()).isEqualTo(target.getId());
+        assertThat(response.jsonPath().getList(".")).hasSize(1);
     }
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
