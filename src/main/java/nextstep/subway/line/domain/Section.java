@@ -82,6 +82,21 @@ public class Section {
         return distance.getValue();
     }
 
+    public boolean matchAllStations(Section section) {
+        return this.upStation.equals(section.upStation) &&
+                this.downStation.equals(section.downStation);
+    }
+
+    public boolean hasUpStations(Section section) {
+        return this.upStation.equals(section.upStation) ||
+                this.upStation.equals(section.downStation);
+    }
+
+    public boolean hasDownStations(Section section) {
+        return this.downStation.equals(section.upStation) ||
+                this.downStation.equals(section.downStation);
+    }
+
     @Override
     public String toString() {
         return "Section{" +

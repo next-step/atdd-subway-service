@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+
 public class LineService {
     private final LineRepository lineRepository;
     private final StationService stationService;
@@ -26,7 +27,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    public LineResponse saveLine(final LineRequest request) {
+    public LineResponse saveLine(LineRequest request) {
         final Station upStation = stationService.findById(request.getUpStationId());
         final Station downStation = stationService.findById(request.getDownStationId());
         final Line saveLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
@@ -41,27 +42,30 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public Line findLineById(final Long id) {
+    public Line findLineById(Long id) {
         return lineRepository.findById(id)
                 .orElseThrow(() -> new LineException(LineExceptionType.LINE_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
-    public LineResponse findLineResponseById(final Long id) {
+    public LineResponse findLineResponseById(Long id) {
         final Line line = findLineById(id);
         return LineResponse.of(line);
     }
 
-    public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
+    @Transactional
+    public void updateLine(Long id, LineRequest lineUpdateRequest) {
         final Line line = findLineById(id);
         line.update(lineUpdateRequest.toLine());
     }
 
-    public void deleteLineById(final Long id) {
+    @Transactional
+    public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
-    public void addSection(final Long lineId, final SectionRequest request) {
+    @Transactional
+    public void addSection(Long lineId, final SectionRequest request) {
         final Line line = findLineById(lineId);
         final Station upStation = stationService.findById(request.getUpStationId());
         final Station downStation = stationService.findById(request.getDownStationId());
@@ -69,7 +73,8 @@ public class LineService {
         line.addSection(new Section(line, upStation, downStation, request.getDistance()));
     }
 
-    public void removeLineStation(final Long lineId, final Long stationId) {
+    @Transactional
+    public void removeLineStation(Long lineId, Long stationId) {
         final Line line = findLineById(lineId);
         final Station station = stationService.findById(stationId);
         line.deleteStation(station);
