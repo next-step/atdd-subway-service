@@ -26,19 +26,24 @@ public class LineTest {
     }
 
     @Test
-    @DisplayName("이름과 색상을 받아 노선 업데이트")
+    @DisplayName("색상,이름이 다른 노선을 받아 노선 업데이트")
     void update() {
         // given
         String name = "2호선";
         String color = "초록색";
         Line line = Line.of(name, color);
 
+        // given
+        String newName = "8호선";
+        String newColor = "초록색";
+        Line newLine = Line.of(newName, newColor);
+
         // when
-        line.update(name, color);
+        line.update(newLine);
 
         // then
-        assertThat(line.getName()).isEqualTo(name);
-        assertThat(line.getColor()).isEqualTo(color);
+        assertThat(line.getName()).isEqualTo(newName);
+        assertThat(line.getColor()).isEqualTo(newColor);
     }
 
     @Test
