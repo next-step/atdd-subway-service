@@ -53,7 +53,7 @@ public class Sections {
 
     private void updateSection(Section section) {
         sections.stream()
-                .forEach(it -> it.update(section.getUpStation(), section.getDownStation(), section.getDistance()));
+                .forEach(it -> it.update(section));
     }
 
     public List<Section> get() {

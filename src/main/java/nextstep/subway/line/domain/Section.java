@@ -91,12 +91,12 @@ public class Section {
         }
     }
 
-    public void update(Station upStation, Station downStation, int newDistance) {
-        if (this.upStation == upStation) {
-            updateUpStation(downStation, newDistance);
+    public void update(Section section) {
+        if (this.upStation == section.upStation) {
+            updateUpStation(section.downStation, section.distance);
         }
-        if (this.downStation == downStation) {
-            updateDownStation(upStation, newDistance);
+        if (this.downStation == section.downStation) {
+            updateDownStation(section.upStation, section.distance);
         }
     }
 
