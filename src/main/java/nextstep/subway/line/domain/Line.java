@@ -6,15 +6,16 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
+
     private String color;
 
     @Embedded
@@ -32,6 +33,10 @@ public class Line extends BaseEntity {
         this.sections = new Sections(Collections.singletonList(section));
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public void changeName(String name) {
         this.name = name;
     }
@@ -44,6 +49,19 @@ public class Line extends BaseEntity {
         return sections.assignedOrderedStation();
     }
 
+    public void addSection(Section newSection) {
+        newSection.addLine(this);
+        this.sections.add(newSection);
+    }
+
+    public void deleteStation(Station station) {
+        this.sections.delete(station);
+    }
+
+    public Sections getSections() {
+        return this.sections;
+    }
+
     public Long getId() {
         return id;
     }
@@ -54,23 +72,6 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
-    }
-
-    public List<Section> getSections() {
-        return sections.value();
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public void addSection(Section newSection) {
-        newSection.addLine(this);
-        this.sections.add(newSection);
-    }
-
-    public void deleteStation(Station station) {
-        this.sections.delete(station);
     }
 
     public static class Builder {

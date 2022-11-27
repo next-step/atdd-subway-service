@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class Sections {
     private static final int ONE_SECTION = 1;
     private static final String CAN_NOT_DELETE_LAST_SECTION = "노선의 마지막 구간은 삭제할 수 없습니다.";
     private static final String CAN_NOT_DELETE_NOT_INCLUDED_STATION = "노선에 포함되지 않은 지하철 역은 삭제할 수 없습니다.";
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections;
 
@@ -28,10 +30,6 @@ public class Sections {
 
     public Sections(List<Section> sections) {
         this.sections = new LinkedList(sections);
-    }
-
-    public List<Section> value() {
-        return this.sections;
     }
 
     public Set<Station> assignedOrderedStation() {
@@ -53,7 +51,9 @@ public class Sections {
     }
 
     private Optional<Section> findFirstSection() {
-        List<Station> downStations = this.sections.stream().map(Section::getDownStation).collect(Collectors.toList());
+        List<Station> downStations = this.sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
         return this.sections.stream()
                 .filter(section -> !downStations.contains(section.getUpStation()))
                 .findFirst();
@@ -73,7 +73,8 @@ public class Sections {
     }
 
     private void validateDuplicateUpDownStation(Section newSection) {
-        boolean isSame = this.sections.stream().anyMatch(section -> section.isSameUpDownStation(newSection));
+        boolean isSame = this.sections.stream()
+                .anyMatch(section -> section.isSameUpDownStation(newSection));
         if (isSame) {
             throw new IllegalArgumentException(DUPLICATE_UP_DOWN_STATIONS);
         }
@@ -111,7 +112,8 @@ public class Sections {
     }
 
     private void validateNotIncludeStation(Station station) {
-        boolean isNotInclude = this.assignedStations().stream().noneMatch(station::equals);
+        boolean isNotInclude = this.assignedStations().stream()
+                .noneMatch(station::equals);
         if (isNotInclude) {
             throw new IllegalArgumentException(CAN_NOT_DELETE_NOT_INCLUDED_STATION);
         }
@@ -132,5 +134,9 @@ public class Sections {
     private void deleteMiddle(Section prevSection, Section nextSection) {
         prevSection.merge(nextSection);
         this.sections.remove(nextSection);
+    }
+
+    public List<Section> value() {
+        return Collections.unmodifiableList(this.sections);
     }
 }
