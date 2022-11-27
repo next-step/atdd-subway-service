@@ -9,11 +9,12 @@ public class Distance {
     @Column(name = "distance")
     private int value;
 
-    public Distance(final int value) {
-        this.value = value;
+    protected Distance() {
+        this(0);
     }
 
-    protected Distance() {
+    public Distance(final int value) {
+        this.value = value;
     }
 
     int value() {

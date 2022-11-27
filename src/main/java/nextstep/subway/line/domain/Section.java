@@ -27,17 +27,16 @@ public class Section {
     @Embedded
     Distance distance;
 
-    public Section() {
+    protected Section() {
+        this(null, null, 0);
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(final Station upStation, final Station downStation, final int distance) {
+        this(null, upStation, downStation, distance);
+    }
+
+    public Section(final Line line, final Station upStation, final Station downStation, final int distance) {
         this.line = line;
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = new Distance(distance);
-    }
-
-    public Section(Station upStation, Station downStation, int distance) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = new Distance(distance);
