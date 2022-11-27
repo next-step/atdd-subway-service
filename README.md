@@ -98,9 +98,9 @@ Connection: keep-alive
   - [x] 로그인 성공
   - [x] 로그인 실패
   - [x] 유효하지 않은 토큰
-- [ ] 인증 - 내 정보 조회 기능 완성하기
-  - [ ] 내 정보 조회, 수정, 삭제 기능에 대한 인수 테스트 작성(로그인 후 발급 받은 토큰을 포함해서 요청하기)
-  - [ ] 토큰을 확인하여 로그인 정보를 받아올 수 있도록 구현하기(`@AuthenticationPrincipal`과 `AuthenticationPrincipalArgumentResolver`를 활용)
+- [x] 인증 - 내 정보 조회 기능 완성하기
+  - [x] 내 정보 조회, 수정, 삭제 기능에 대한 인수 테스트 작성(로그인 후 발급 받은 토큰을 포함해서 요청하기)
+  - [x] 토큰을 확인하여 로그인 정보를 받아올 수 있도록 구현하기(`@AuthenticationPrincipal`과 `AuthenticationPrincipalArgumentResolver`를 활용)
 - [ ] 인증 - 즐겨 찾기 기능 완성하기
   - [ ] 인증을 포함하여 ATDD 사이클을 통해 기능 구현하기
   - [ ] 즐겨 찾기 생성
