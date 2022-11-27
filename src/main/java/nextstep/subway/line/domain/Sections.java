@@ -131,9 +131,9 @@ public class Sections {
     private void validateRegister(Station upStation, Station downStation) {
         List<Station> stations = getStations();
         if (
-                !stations.isEmpty()
-                        && stations.stream().noneMatch(it -> it == upStation)
-                        && stations.stream().noneMatch(it -> it == downStation)
+            !stations.isEmpty()
+            && stations.stream().noneMatch(it -> it == upStation)
+            && stations.stream().noneMatch(it -> it == downStation)
         ) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }

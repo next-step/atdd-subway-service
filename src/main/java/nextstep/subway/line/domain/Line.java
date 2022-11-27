@@ -38,13 +38,13 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
-    public void add(Section section){
-        sections.add(section);
-    }
-
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+    }
+
+    public void add(Section section){
+        sections.add(section);
     }
 
     public void removeStation(Station station) {
