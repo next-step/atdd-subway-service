@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import nextstep.subway.station.domain.Station;
 
 @Entity
-public class Section {
+public class Section implements Comparable<Section> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +38,11 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    @Override
+    public int compareTo(Section otherSection) {
+        return this.downStation == otherSection.upStation ? -1 : 1;
     }
 
     public Long getId() {

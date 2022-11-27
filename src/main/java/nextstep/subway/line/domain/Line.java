@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -73,21 +74,14 @@ public class Line extends BaseEntity {
         if (sections.isEmpty()) {
             return Arrays.asList();
         }
-
         List<Station> stations = new ArrayList<>();
-        Station downStation = findFirstStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findFromUpStation(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
+        stations.add(findFirstStation());
+        stations.addAll(
+            sections.stream()
+                .sorted()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList())
+        );
         return stations;
     }
 
