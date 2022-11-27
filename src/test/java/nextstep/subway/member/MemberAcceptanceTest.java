@@ -61,19 +61,19 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(response, EMAIL, AGE);
 
         // when
-        response = 내_정보_수정_요청(
+        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(
                 token,
                 new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE)
         );
 
         // then
-        회원_정보_수정됨(response);
+        회원_정보_수정됨(updateResponse);
 
         // when
-        response = 내_정보_삭제_요청(token);
+        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(token);
 
         // then
-        회원_삭제됨(response);
+        회원_삭제됨(deleteResponse);
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
