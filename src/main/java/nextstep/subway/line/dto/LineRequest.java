@@ -43,10 +43,19 @@ public class LineRequest {
     }
 
     public Line toLine() {
-        return Line.of(name, color);
+        return new Line.Builder()
+                .name(name)
+                .color(color)
+                .build();
     }
 
     public Line toLine(Station upStation, Station downStation) {
-        return Line.of(name, color, upStation, downStation, distance);
+        return new Line.Builder()
+                .name(name)
+                .color(color)
+                .upStation(upStation)
+                .downStation(downStation)
+                .distance(distance)
+                .build();
     }
 }

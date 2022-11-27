@@ -80,4 +80,51 @@ public class Line extends BaseEntity {
     public void removeSection(Station station) {
         sections.remove(station);
     }
+
+
+    public static class Builder {
+
+        private Long id;
+        private String name;
+        private String color;
+        private Station upStation;
+        private Station downStation;
+        int distance;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder color(String color) {
+            this.color = color;
+            return this;
+        }
+
+        public Builder upStation(Station upStation) {
+            this.upStation = upStation;
+            return this;
+        }
+
+        public Builder downStation(Station downStation) {
+            this.downStation = downStation;
+            return this;
+        }
+
+        public Builder distance(int distance) {
+            this.distance = distance;
+            return this;
+        }
+
+        public Line build() {
+            return new Line(name, color, upStation, downStation, distance);
+        }
+    }
+
+
 }
