@@ -123,20 +123,7 @@ public class Line extends BaseEntity {
     }
 
     public Station findUpStation() {
-        Station downStation = getSections().get(0).getUpStation();
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSections().stream()
-                    .filter(it -> it.getDownStation().equals(finalDownStation))
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
+        return sections.findUpStation();
     }
 
     public List<Station> getStations() {
