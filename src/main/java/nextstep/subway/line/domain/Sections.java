@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.common.exception.SubwayException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -40,14 +41,14 @@ public class Sections {
 
     private void validateAddExisted(Section section) {
         if (getStations().containsAll(section.getStations())) {
-            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+            throw new SubwayException("이미 등록된 구간 입니다.");
         }
     }
 
     private void validateAddNothingExisted(Section section) {
         List<Station> stations = getStations();
         if (section.getStations().stream().noneMatch(stations::contains)) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+            throw new SubwayException("등록할 수 없는 구간 입니다.");
         }
     }
 
@@ -128,7 +129,7 @@ public class Sections {
 
     private void validateRemoveLastSection() {
         if (sections.size() <= MIN_SECTION_SIZE) {
-            throw new IllegalArgumentException("더이상 구간을 삭제할 수 없습니다.");
+            throw new SubwayException("더이상 구간을 삭제할 수 없습니다.");
         }
     }
 

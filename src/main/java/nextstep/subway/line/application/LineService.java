@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.common.exception.SubwayException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -40,7 +41,7 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        return lineRepository.findById(id).orElseThrow(SubwayException::new);
     }
 
     public LineResponse findLineResponseById(Long id) {
