@@ -39,17 +39,13 @@ public class Sections {
     }
 
     private void checkValidSection(Section section) {
-        if (isNotIncludedStations(section)) {
+        if (sections.isEmpty()) {
+            return;
+        }
+
+        if (!hasAnyMatchedStation(section)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
-    }
-
-    private boolean isNotIncludedStations(Section section) {
-        List<Station> stations = this.getStations();
-
-        return !stations.isEmpty() &&
-                stations.stream().noneMatch(it1 -> it1 == section.getUpStation()) &&
-                stations.stream().noneMatch(it1 -> it1 == section.getDownStation());
     }
 
     private void updateUpStation(Section section) {
@@ -76,6 +72,10 @@ public class Sections {
                     .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
 
         }
+    }
+
+    private boolean hasAnyMatchedStation(Section section) {
+        return sections.stream().anyMatch(it -> it.hasAnyMatchedStation(section));
     }
 
     public List<Section> getSections() {

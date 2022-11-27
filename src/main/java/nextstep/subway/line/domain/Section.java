@@ -73,6 +73,18 @@ public class Section {
         }
     }
 
+    public boolean hasAnyMatchedStation(Section section) {
+        return this.hasAnyMatchedThisUpStation(section) || this.hasAnyMatchedThisDownStation(section);
+    }
+
+    public boolean hasAnyMatchedThisUpStation(Section section) {
+        return this.upStation.equals(section.upStation) || this.downStation.equals(section.upStation);
+    }
+
+    public boolean hasAnyMatchedThisDownStation(Section section) {
+        return this.upStation.equals(section.downStation) || this.downStation.equals(section.downStation);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
