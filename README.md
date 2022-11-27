@@ -40,7 +40,7 @@ npm run dev
 
 ## 🚀 1단계 - 인수 테스트 기반 리팩터링
 - [ ] LineService 리팩터링
-  - [ ] LineService의 비즈니스 로직을 도메인으로 옮기기
+  - [x] LineService의 비즈니스 로직을 도메인으로 옮기기
     - [x] Distance
     - [x] Sections 일급 컬렌션
   - [ ] 인수 테스트 작성

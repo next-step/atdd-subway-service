@@ -2,9 +2,11 @@ package nextstep.subway.line.domain;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
@@ -22,4 +24,8 @@ public class Sections {
         return this.sections;
     }
 
+    public List<Station> stations() {
+        Optional<Section> section = sections.stream().findFirst();
+        return section.get().stations();
+    }
 }
