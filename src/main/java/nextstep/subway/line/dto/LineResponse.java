@@ -27,8 +27,7 @@ public class LineResponse {
         );
     }
 
-    private LineResponse() {
-    }
+    private LineResponse() {}
 
     private LineResponse(
             Long id,
