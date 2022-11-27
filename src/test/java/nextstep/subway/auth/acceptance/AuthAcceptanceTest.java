@@ -59,11 +59,24 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Scenario: 잘못된 비밀번호로 로그인을 시도한다.
+     * Scenario: 등록하지 않은 회원정보로 로그인을 시도한다.
      * When 로그인 요청
      * Then 로그인 실패
      */
     @DisplayName("Bearer Auth 로그인 실패(잘못된 비밀번호로 로그인 시도)")
+    @Test
+    void myInfoWithBadBearerAuth2() {
+        ExtractableResponse<Response> response = 로그인_요청(new TokenRequest("not exist", "wrong password"));
+
+        로그인_안됨(response);
+    }
+
+    /**
+     * Scenario: 잘못된 비밀번호로 로그인을 시도한다.
+     * When 로그인 요청
+     * Then 로그인 실패
+     */
+    @DisplayName("Bearer Auth 로그인 실패(등록하지 않은 회원정보로 로그인 시도)")
     @Test
     void myInfoWithBadBearerAuth() {
         ExtractableResponse<Response> response = 로그인_요청(new TokenRequest(EMAIL, "wrong password"));
