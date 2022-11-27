@@ -1,11 +1,9 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -67,31 +65,9 @@ public class LineService {
         line.addSection(upStation, downStation, request.getDistance());
     }
 
-    public void removeLineStation(Long lineId, Long stationId) {
+    public void removeSection(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
-        if (line.getStations().size() <= 1) {
-            throw new RuntimeException();
-        }
-
-        Optional<Section> upLineStation = line.getSections().stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = line.getSections().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
-
-        if ((!upLineStation.isPresent() && downLineStation.isPresent())
-        || (upLineStation.isPresent() && !downLineStation.isPresent())) {
-            throw new RuntimeException();
-        }
-
-        Station newUpStation = downLineStation.get().getUpStation();
-        Station newDownStation = upLineStation.get().getDownStation();
-        int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-        line.add(new Section(line, newUpStation, newDownStation, newDistance));
-
-        upLineStation.ifPresent(line::remove);
-        downLineStation.ifPresent(line::remove);
+        line.removeStation(station);
     }
 }

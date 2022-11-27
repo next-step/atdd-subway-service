@@ -73,8 +73,35 @@ public class Sections {
         }
     }
 
-    public void remove(Section section) {
+    public void removeSection(Section section) {
         sections.remove(section);
+    }
+
+    public void removeStation(Line line, Station station) {
+        validateEmpty();
+
+        Optional<Section> upLineStation = getSections().stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = getSections().stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(this::removeSection);
+        downLineStation.ifPresent(this::removeSection);
+    }
+
+    private void validateEmpty() {
+        if (getStations().size() <= 1) {
+            throw new RuntimeException();
+        }
     }
 
     public List<Section> getSections() {
