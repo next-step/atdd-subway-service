@@ -18,8 +18,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -32,7 +32,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        getSections().add(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
@@ -53,7 +53,7 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return sections.getSections();
     }
 
     public boolean isEmptySections() {
@@ -61,7 +61,7 @@ public class Line extends BaseEntity {
     }
 
     public boolean isUnderSingleSection() {
-        return sections.size() <= 1;
+        return getSections().size() <= 1;
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
@@ -79,24 +79,24 @@ public class Line extends BaseEntity {
         }
 
         if (stations.isEmpty()) {
-            sections.add(new Section(this, upStation, downStation, distance));
+            getSections().add(new Section(this, upStation, downStation, distance));
             return;
         }
 
         if (isUpStationExisted) {
-            sections.stream()
+            getSections().stream()
                     .filter(it -> it.getUpStation().equals(upStation))
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(downStation, distance));
 
-            sections.add(new Section(this, upStation, downStation, distance));
+            getSections().add(new Section(this, upStation, downStation, distance));
         } else if (isDownStationExisted) {
-            sections.stream()
+            getSections().stream()
                     .filter(it -> it.getDownStation().equals(downStation))
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(upStation, distance));
 
-            sections.add(new Section(this, upStation, downStation, distance));
+            getSections().add(new Section(this, upStation, downStation, distance));
         } else {
             throw new RuntimeException();
         }
@@ -106,28 +106,29 @@ public class Line extends BaseEntity {
         if (isUnderSingleSection()) {
             throw new RuntimeException();
         }
-        Optional<Section> upLineStation = sections.stream()
+        Optional<Section> upLineStation = getSections().stream()
                 .filter(it -> it.getUpStation() == station)
                 .findFirst();
-        Optional<Section> downLineStation = sections.stream()
+        Optional<Section> downLineStation = getSections().stream()
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            sections.add(new Section(this, newUpStation, newDownStation, newDistance));
+            getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
         }
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+        upLineStation.ifPresent(it -> getSections().remove(it));
+        downLineStation.ifPresent(it -> getSections().remove(it));
     }
 
     public Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
+        Station downStation = getSections().get(0).getUpStation();
+
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
+            Optional<Section> nextLineStation = getSections().stream()
+                    .filter(it -> it.getDownStation().equals(finalDownStation))
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
@@ -150,7 +151,7 @@ public class Line extends BaseEntity {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
+            Optional<Section> nextLineStation = getSections().stream()
                     .filter(it -> it.getUpStation().equals(finalDownStation))
                     .findFirst();
             if (!nextLineStation.isPresent()) {
