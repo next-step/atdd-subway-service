@@ -1,16 +1,16 @@
 package nextstep.subway.member;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.member.MemberRestAssured.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,7 +49,31 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        String token = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class)
+                .getAccessToken();
 
+        // when
+        ExtractableResponse<Response> response = 내_정보_조회_요청(token);
+
+        // then
+        회원_정보_조회됨(response, EMAIL, AGE);
+
+        // when
+        response = 내_정보_수정_요청(
+                token,
+                new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE)
+        );
+
+        // then
+        회원_정보_수정됨(response);
+
+        // when
+        response = 내_정보_삭제_요청(token);
+
+        // then
+        회원_삭제됨(response);
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
