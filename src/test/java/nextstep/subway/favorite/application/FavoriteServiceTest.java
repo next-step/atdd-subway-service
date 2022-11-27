@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.List;
@@ -92,5 +93,30 @@ class FavoriteServiceTest {
         List<FavoriteResponse> findFavorites = favoriteService.findFavorites(1L);
 
         assertThat(findFavorites).hasSize(2);
+    }
+
+    @DisplayName("즐겨찾기를 삭제할 수 있다.")
+    @Test
+    void deleteFavorite() {
+        Favorite favorite = new Favorite(member, source, target);
+        given(favoriteRepository.findById(1L)).willReturn(Optional.of(favorite));
+        given(memberRepository.findById(1L)).willReturn(Optional.of(member));
+
+        favoriteService.deleteFavorite(1L, 1L);
+
+        verify(favoriteRepository).delete(favorite);
+    }
+
+    @DisplayName("본인의 즐겨찾기가 아닌 경우 즐겨찾기 삭제 시 예외가 발생한다.")
+    @Test
+    void deleteFavoriteWithAnotherMember() {
+        Favorite favorite = new Favorite(member, source, target);
+        Member anotherMember = new Member("another@email.com", "another_password", 25);
+        given(favoriteRepository.findById(1L)).willReturn(Optional.of(favorite));
+        given(memberRepository.findById(1L)).willReturn(Optional.of(anotherMember));
+
+        assertThatThrownBy(() -> favoriteService.deleteFavorite(1L, 1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("본인의 즐겨찾기가 아닌 경우 작업을 진행할 수 없습니다.");
     }
 }
