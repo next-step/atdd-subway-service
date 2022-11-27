@@ -1,5 +1,9 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.DuplicatedSectionException;
+import nextstep.subway.exception.InvalidSectionDistanceException;
+import nextstep.subway.exception.InvalidSectionException;
+import nextstep.subway.message.ExceptionMessage;
 import nextstep.subway.station.domain.Station;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,8 +35,8 @@ class SectionsTest {
     @Test
     void addException1() {
         Assertions.assertThatThrownBy(() -> sections.add(강남역_광교역_구간))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageStartingWith("이미 등록된 구간 입니다.");
+                .isInstanceOf(DuplicatedSectionException.class)
+                .hasMessageStartingWith(ExceptionMessage.DUPLICATED_SECTION);
     }
 
     @DisplayName("추가할 지하철 구간의 상행역, 하행역 둘다 기존 지하철 구간에 없는 역이면 예외가 발생한다.")
@@ -43,8 +47,8 @@ class SectionsTest {
         Section 죽전역_수원역_구간 = new Section(신분당선, 죽전역, 수원역, 5);
 
         Assertions.assertThatThrownBy(() -> sections.add(죽전역_수원역_구간))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageStartingWith("등록할 수 없는 구간 입니다.");
+                .isInstanceOf(InvalidSectionException.class)
+                .hasMessageStartingWith(ExceptionMessage.INVALID_SECTION);
     }
 
     @DisplayName("상행역-신규역 구간을 추가할 때 기존 지하철 구간(상행역-하행역) 길이보다 크거나 같으면 예외가 발생한다. ")
@@ -55,8 +59,8 @@ class SectionsTest {
         Section 강남역_양재역_구간 = new Section(신분당선, 강남역, 양재역, input);
 
         Assertions.assertThatThrownBy(() -> sections.add(강남역_양재역_구간))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageStartingWith("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+                .isInstanceOf(InvalidSectionDistanceException.class)
+                .hasMessageStartingWith(ExceptionMessage.INVALID_SECTION_DISTANCE);
     }
 
     @DisplayName("신규역-하행역 구간을 추가할 때 기존 지하철 구간(상행역-하행역) 길이보다 크거나 같으면 예외가 발생한다. ")
@@ -67,8 +71,8 @@ class SectionsTest {
         Section 양재역_광교역_구간 = new Section(신분당선, 양재역, 광교역, input);
 
         Assertions.assertThatThrownBy(() -> sections.add(양재역_광교역_구간))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageStartingWith("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+                .isInstanceOf(InvalidSectionDistanceException.class)
+                .hasMessageStartingWith(ExceptionMessage.INVALID_SECTION_DISTANCE);
     }
 
     @DisplayName("바어있는 지하철 구간이 새로운 지하철 구간을 추가한다.")

@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.InvalidSectionDistanceException;
+import nextstep.subway.message.ExceptionMessage;
 import nextstep.subway.station.domain.Station;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -82,8 +84,8 @@ class SectionTest {
         Station 양재역 = new Station("양재역");
         Section 강남역_양재역_구간 = new Section(신분당선, 강남역, 양재역, input);
         Assertions.assertThatThrownBy(() -> 강남역_광교역_구간.updateUpStation(강남역_양재역_구간))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageStartingWith("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+                .isInstanceOf(InvalidSectionDistanceException.class)
+                .hasMessageStartingWith(ExceptionMessage.INVALID_SECTION_DISTANCE);
     }
 
     @DisplayName("하행역 변경 시 기존 상행역-하행역 거리보다 같거나 클경우 예외가 발생한다.")
@@ -95,8 +97,8 @@ class SectionTest {
         Station 양재역 = new Station("양재역");
         Section 양재역_광교역_구간 = new Section(신분당선, 양재역, 광교역, input);
         Assertions.assertThatThrownBy(() -> 강남역_광교역_구간.updateDownStation(양재역_광교역_구간))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageStartingWith("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+                .isInstanceOf(InvalidSectionDistanceException.class)
+                .hasMessageStartingWith(ExceptionMessage.INVALID_SECTION_DISTANCE);
     }
 
     @DisplayName("지하철 구간에 상행역을 포함하면 true를 반환한다.")

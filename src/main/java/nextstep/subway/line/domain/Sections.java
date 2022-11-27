@@ -1,6 +1,10 @@
 package nextstep.subway.line.domain;
 
 import com.google.common.collect.Lists;
+import nextstep.subway.exception.DuplicatedSectionException;
+import nextstep.subway.exception.EmptySectionException;
+import nextstep.subway.exception.InvalidSectionException;
+import nextstep.subway.message.ExceptionMessage;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -35,7 +39,7 @@ public class Sections {
 
     private void checkUniqueSection(Section section) {
         if (this.sections.contains(section)) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new DuplicatedSectionException(ExceptionMessage.DUPLICATED_SECTION);
         }
     }
 
@@ -45,7 +49,7 @@ public class Sections {
         }
 
         if (!hasAnyMatchedStation(section)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new InvalidSectionException(ExceptionMessage.INVALID_SECTION);
         }
     }
 
@@ -151,7 +155,7 @@ public class Sections {
 
     private void checkValidRemovableStatus() {
         if (this.sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new EmptySectionException(ExceptionMessage.EMPTY_SECTION);
         }
     }
 }
