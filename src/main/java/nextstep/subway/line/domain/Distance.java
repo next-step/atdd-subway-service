@@ -42,13 +42,13 @@ public class Distance {
     }
 
     public Distance subtract(Distance distance) {
-        int subtractDistance = this.distance - distance.distance;
-        validSectionDistance(subtractDistance);
-        return Distance.from(subtractDistance);
+        validSectionDistance(distance);
+
+        return Distance.from(this.distance - distance.distance);
     }
 
-    private static void validSectionDistance(int subtract) {
-        if (subtract <= INVALID_DISTANCE_CRITERION) {
+    private void validSectionDistance(Distance distance) {
+        if (this.distance <= distance.distance) {
             throw new InvalidParameterException(ERROR_MESSAGE_VALID_SECTION_DISTANCE);
         }
     }
