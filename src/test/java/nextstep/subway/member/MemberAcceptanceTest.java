@@ -6,6 +6,13 @@ import nextstep.subway.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.로그인_됨;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.내_정보_삭제_요청;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.내_정보_삭제됨;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.내_정보_수정_요청;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.내_정보_수정됨;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.내_정보_조회_요청;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.내_정보_조회됨;
 import static nextstep.subway.member.MemberAcceptanceTestFixture.회원_삭제_요청;
 import static nextstep.subway.member.MemberAcceptanceTestFixture.회원_삭제됨;
 import static nextstep.subway.member.MemberAcceptanceTestFixture.회원_생성됨;
@@ -47,9 +54,39 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    /**
+     * Feature: 내 정보 관련 기능
+     *
+     *   Background
+     *     Given 회원 생성 요청
+     *     And 회원 생성 됨
+     *     And 로그인 됨
+     *
+     *   Scenario: 나의 정보를 관리
+     *     When 내 정보 조회 요청
+     *     Then 내 정보 조회 됨
+     *     When 내 정보 수정 요청
+     *     Then 내 정보 수정 됨
+     *     When 내 정보 삭제 요청
+     *     Then 내 정보 삭제 됨
+     */
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+        String accessToken = 로그인_됨(EMAIL, PASSWORD);
 
+        ExtractableResponse<Response> findResponse = 내_정보_조회_요청(accessToken);
+
+        내_정보_조회됨(findResponse, EMAIL, AGE);
+
+        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(accessToken, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        내_정보_수정됨(updateResponse, NEW_EMAIL, NEW_AGE);
+
+        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(accessToken);
+
+        내_정보_삭제됨(deleteResponse);
     }
 }
