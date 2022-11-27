@@ -100,17 +100,12 @@ public class Line extends BaseEntity {
     }
 
     private Station findFirstStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findFromDownStation(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
+        List<Station> downStations = downStationsInOrder();
+        return sections.stream()
+            .map(Section::getUpStation)
+            .filter(station -> !downStations.contains(station))
+            .findFirst()
+            .orElse(null);
     }
 
     public void removeStation(Station station) {
