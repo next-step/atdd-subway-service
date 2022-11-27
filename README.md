@@ -56,7 +56,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ## Step1
 - [ ] LineService 리팩토링
 
-- [ ] 인수 테스트 통합
+- [X] 인수 테스트 통합
   - [X] LineAcceptanceTest
-  - [ ] LineSectionAcceptanceTest
+  - [X] LineSectionAcceptanceTest
 
