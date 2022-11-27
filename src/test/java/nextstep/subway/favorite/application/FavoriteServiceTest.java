@@ -1,10 +1,6 @@
 package nextstep.subway.favorite.application;
 
-import nextstep.subway.auth.application.AuthService;
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -14,33 +10,23 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.utils.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Optional;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
-import static nextstep.subway.member.MemberRestAssured.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class FavoriteServiceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 10;
-
-    private String token;
 
     @Autowired
     private FavoriteService favoriteService;
@@ -53,6 +39,14 @@ public class FavoriteServiceTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private DatabaseCleanup databaseCleanup;
+
+    @BeforeEach
+    public void setUp() {
+        databaseCleanup.execute();
+    }
 
     @DisplayName("즐겨찾기를 생성할 수 있다")
     @Test
@@ -103,15 +97,14 @@ public class FavoriteServiceTest {
     void deleteFavorite() {
         // given
         Member member = memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
-        LoginMember loginMember = MemberTestFactory.createLoginMember(member);
         Station sourceStation = stationRepository.save(new Station("강남역"));
         Station targetStation = stationRepository.save(new Station("판교역"));
         Favorite favorite = favoriteRepository.save(new Favorite(member, sourceStation, targetStation));
 
         // when
-        favoriteService.deleteFavoriteById(loginMember, favorite.getId());
+        favoriteService.deleteFavoriteById(favorite.getId());
 
         // then
-        assertThat(favoriteRepository.findAll()).hasSize(0);
+        assertThat(favoriteRepository.findAll()).isEmpty();
     }
 }
