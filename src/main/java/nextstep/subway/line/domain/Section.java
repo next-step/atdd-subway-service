@@ -68,7 +68,7 @@ public class Section {
         return new Section(upStation, downStation, distance);
     }
 
-    public void toLine(Line line) {
+    void toLine(Line line) {
         this.line = line;
     }
 
