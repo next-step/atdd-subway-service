@@ -68,7 +68,7 @@ public class Sections {
     }
 
     private Station getNextStation(Station finalDownStation) {
-        return getSections().stream()
+        return sections.stream()
                 .filter(it -> it.getUpStation().equals(finalDownStation))
                 .findFirst()
                 .map(section -> section.getDownStation())
