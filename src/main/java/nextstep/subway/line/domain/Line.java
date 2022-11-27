@@ -142,26 +142,16 @@ public class Line extends BaseEntity {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
 
-        if (stations.isEmpty()) {
-            sections
-                .add(new Section(this, upStation, downStation, distance));
-            return;
-        }
-
         if (isUpStationExisted) {
             findFromUpStation(upStation)
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
+        }
 
-            sections
-                .add(new Section(this, upStation, downStation, distance));
-        } else if (isDownStationExisted) {
+        if (isDownStationExisted) {
             findFromDownStation(downStation)
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
-
-            sections
-                .add(new Section(this, upStation, downStation, distance));
-        } else {
-            throw new RuntimeException();
         }
+
+        sections.add(new Section(this, upStation, downStation, distance));
     }
 }
