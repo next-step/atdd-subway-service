@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 @Entity
 public class Station extends BaseEntity {
-    private static final String ERROR_MESSAGE_IS_BLANK_NAME = "노선명은 필수 입니다.";
+    private static final String ERROR_MESSAGE_IS_BLANK_NAME = "지하철명은 필수 입니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
