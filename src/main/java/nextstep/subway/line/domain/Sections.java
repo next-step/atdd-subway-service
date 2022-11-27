@@ -86,19 +86,32 @@ public class Sections {
         if (sections.size() <= 1) {
             throw new RuntimeException();
         }
-        Optional<Section> upLineStation = getSections().stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = getSections().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+        Optional<Section> upLineStation = getUpLineStation(station);
+        Optional<Section> downLineStation = getDownLineStation(station);
+        rebuildSection(line, upLineStation, downLineStation);
+        upLineStation.ifPresent(section -> sections.remove(section));
+        downLineStation.ifPresent(section -> sections.remove(section));
+    }
+
+    private void rebuildSection(Line line, Optional<Section> upLineStation, Optional<Section> downLineStation) {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
+            addSection(new Section(line, newUpStation, newDownStation, newDistance));
         }
-        upLineStation.ifPresent(it -> getSections().remove(it));
-        downLineStation.ifPresent(it -> getSections().remove(it));
     }
+
+    private Optional<Section> getUpLineStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getUpStation().equals(station))
+                .findFirst();
+    }
+
+    private Optional<Section> getDownLineStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getDownStation().equals(station))
+                .findFirst();
+    }
+
 }
