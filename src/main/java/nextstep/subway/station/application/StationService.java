@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class StationService {
     private StationRepository stationRepository;
 
@@ -20,6 +21,7 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
@@ -33,6 +35,7 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
