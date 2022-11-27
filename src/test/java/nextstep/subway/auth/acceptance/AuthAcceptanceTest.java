@@ -4,8 +4,8 @@ import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.로그�
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.로그인_실패;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.로그인_요청;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.인증_실패;
-import static nextstep.subway.member.MemberAcceptanceTest.내_정보_조회_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.내_정보_조회_요청;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.회원_생성을_요청;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
