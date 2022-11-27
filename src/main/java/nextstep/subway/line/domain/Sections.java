@@ -1,11 +1,14 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.station.domain.Station;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Embeddable
 public class Sections {
@@ -26,4 +29,23 @@ public class Sections {
         return sections;
     }
 
+    public boolean isEmpty() {
+        return sections.isEmpty();
+    }
+
+    public Station getFirstUpStation() {
+        return sections.get(0).getUpStation();
+    }
+
+    public Optional<Section> getBeforeLineStation(Station finalDownStation) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() == finalDownStation)
+                .findFirst();
+    }
+
+    public Optional<Section> getNextLineStation(Station finalUpStation) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == finalUpStation)
+                .findFirst();
+    }
 }
