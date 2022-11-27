@@ -54,8 +54,7 @@ public class LineService {
 
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE_NOT_FOUND_LINE));
+        Line persistLine = findLineById(id);
         persistLine.update(Line.of(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
