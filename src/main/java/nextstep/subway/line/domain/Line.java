@@ -76,13 +76,15 @@ public class Line extends BaseEntity {
         }
         List<Station> stations = new ArrayList<>();
         stations.add(findFirstStation());
-        stations.addAll(
-            sections.stream()
-                .sorted()
-                .map(Section::getDownStation)
-                .collect(Collectors.toList())
-        );
+        stations.addAll(downStationsInOrder());
         return stations;
+    }
+
+    private List<Station> downStationsInOrder() {
+        return sections.stream()
+            .sorted()
+            .map(Section::getDownStation)
+            .collect(Collectors.toList());
     }
 
     private Optional<Section> findFromUpStation(final Station station) {
