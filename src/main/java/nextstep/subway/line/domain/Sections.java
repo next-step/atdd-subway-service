@@ -19,7 +19,7 @@ public class Sections {
 
     }
 
-    public void addSection(Line line, Station upStation, Station downStation, int distance) {
+    public void addSection(Line line, Station upStation, Station downStation, Distance distance) {
         validateAddSection(upStation, downStation);
 
         Section newSection = new Section(line, upStation, downStation, distance);
@@ -85,15 +85,16 @@ public class Sections {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Section upSection = upLineStation.get();
             Section downSection = downLineStation.get();
-            sections.add(new Section(line, downSection.getUpStation(), upSection.getDownStation(), upSection.getDistance() + downSection.getDistance()));
+            Distance distance = Distance.sum(upSection.getDistance(), downSection.getDistance());
+            sections.add(new Section(line, downSection.getUpStation(), upSection.getDownStation(), distance));
         }
     }
 
-    private void updateUpStation(Station upStation, Station downStation, int distance) {
+    private void updateUpStation(Station upStation, Station downStation, Distance distance) {
         findSectionByUpStation(upStation).ifPresent(it -> it.updateUpStation(downStation, distance));
     }
 
-    private void updateDownStation(Station upStation, Station downStation, int distance) {
+    private void updateDownStation(Station upStation, Station downStation, Distance distance) {
         findSectionByDownStation(downStation).ifPresent(it -> it.updateDownStation(upStation, distance));
     }
 
