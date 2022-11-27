@@ -11,6 +11,7 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -103,7 +104,9 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역이 같은 경우 최단 경로 조회")
     @Test
     void findShortestPathWithException1() {
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(양재역.getId(), 양재역.getId());
 
+        지하철_최단_경로_조회_실패됨(response);
     }
 
     /**
@@ -144,5 +147,9 @@ class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(distance)
         );
+    }
+
+    private void 지하철_최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

@@ -1,7 +1,9 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.PathNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.message.ExceptionMessage;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -40,7 +42,14 @@ public class PathFinder {
     }
 
     public Path findShortestPath(Station source, Station target) {
+        checkNotEqual(source, target);
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
         return Path.of(path.getVertexList(), (int) path.getWeight());
+    }
+
+    private void checkNotEqual(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new PathNotFoundException(ExceptionMessage.SOURCE_AND_TARGET_EQUAL);
+        }
     }
 }
