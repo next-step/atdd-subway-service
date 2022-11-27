@@ -144,7 +144,9 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않은 출발역 또는 도착역으로 최단 경로 조회")
     @Test
     void findShortestPathWithException3() {
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(양재역.getId(), 0L);
 
+        지하철_최단_경로_조회_실패됨(response);
     }
 
     private ExtractableResponse<Response> 지하철_경로_조회_요청(Long upStationId, Long downStationId) {

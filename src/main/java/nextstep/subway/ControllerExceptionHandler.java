@@ -1,5 +1,7 @@
 package nextstep.subway;
 
+import nextstep.subway.exception.DomainException;
+import nextstep.subway.exception.EntityNotFoundException;
 import nextstep.subway.exception.PathNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +16,8 @@ public class ControllerExceptionHandler {
         return badRequest();
     }
 
-    @ExceptionHandler(PathNotFoundException.class)
-    public ResponseEntity<Void> handlePathNotFoundException() {
+    @ExceptionHandler(DomainException.class)
+    public ResponseEntity<Void> handleDomainException() {
         return badRequest();
     }
 

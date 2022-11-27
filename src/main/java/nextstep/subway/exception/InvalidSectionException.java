@@ -1,6 +1,6 @@
 package nextstep.subway.exception;
 
-public class InvalidSectionException extends RuntimeException {
+public class InvalidSectionException extends DomainException {
     public InvalidSectionException(String message) {
         super(message);
     }
