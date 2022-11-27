@@ -39,12 +39,17 @@ public class Sections {
     }
 
     private void checkValidSection(Section section) {
-        List<Station> stations = this.getStations();
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it1 -> it1 == section.getUpStation()) &&
-                stations.stream().noneMatch(it1 -> it1 == section.getDownStation())) {
+        if (isNotIncludedStations(section)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
+    }
+
+    private boolean isNotIncludedStations(Section section) {
+        List<Station> stations = this.getStations();
+
+        return !stations.isEmpty() &&
+                stations.stream().noneMatch(it1 -> it1 == section.getUpStation()) &&
+                stations.stream().noneMatch(it1 -> it1 == section.getDownStation());
     }
 
     private void updateUpStation(Section section) {
