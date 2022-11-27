@@ -3,9 +3,10 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.stream.Stream;
 
 @Entity
-public class Section {
+public class Section implements Comparable<Section> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -68,5 +69,16 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public Stream<Station> stations() {
+        return Stream.of(upStation, downStation);
+    }
+
+    @Override
+    public int compareTo(Section s) {
+        if (this.downStation.getId().equals(s.getUpStation().getId())) return -1;
+        else if (this.upStation.getId().equals(s.getDownStation().getId())) return 1;
+        return 0;
     }
 }

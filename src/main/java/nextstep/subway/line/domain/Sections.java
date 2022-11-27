@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Embeddable
 public class Sections {
@@ -30,7 +32,7 @@ public class Sections {
         checkValidSection(section);
         updateUpStation(section);
         updateDownStation(section);
-        sections.add(section);
+        this.sections.add(section);
     }
 
     private void checkUniqueSection(Section section) {
@@ -42,64 +44,61 @@ public class Sections {
     private void checkValidSection(Section section) {
         List<Station> stations = this.getStations();
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(s1 -> s1 == section.getUpStation()) &&
-                stations.stream().noneMatch(s1 -> s1 == section.getDownStation())) {
+        // noneMatch -> 모든 요소들이 주어진 조건을 만족하는지
+        if (!stations.isEmpty() && stations.stream().noneMatch(st -> st == section.getUpStation()) &&
+                stations.stream().noneMatch(st -> st == section.getDownStation())) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
     }
 
-    private void updateUpStation(Section section) {
+    private void updateUpStation(Section newSection) {
         List<Station> stations = this.getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(s -> s == section.getUpStation());
+        boolean isUpStationExisted = stations.stream().anyMatch(st -> st == newSection.getUpStation());
 
+        // upStation 일치하면 downStation 변경
         if (isUpStationExisted) {
             this.sections.stream()
-                    .filter(s -> s.getUpStation() == section.getUpStation())
+                    .filter(se -> se.getUpStation() == newSection.getUpStation())
                     .findFirst()
-                    .ifPresent(s -> s.updateUpStation(section.getDownStation(), section.getDistance()));
+                    .ifPresent(se -> se.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
 
         }
     }
 
-    private void updateDownStation(Section section) {
+    private void updateDownStation(Section newSection) {
         List<Station> stations = this.getStations();
-        boolean isDownStationExisted = stations.stream().anyMatch(s -> s == section.getDownStation());
+        boolean isDownStationExisted = stations.stream().anyMatch(st -> st == newSection.getDownStation());
 
+        // downStation 일치하면 upStation 변경
         if (isDownStationExisted) {
             this.sections.stream()
-                    .filter(s -> s.getDownStation() == section.getDownStation())
+                    .filter(se -> se.getDownStation() == newSection.getDownStation())
                     .findFirst()
-                    .ifPresent(s -> s.updateDownStation(section.getUpStation(), section.getDistance()));
+                    .ifPresent(se-> se.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
 
         }
     }
 
     public List<Station> getStations() {
-        if (this.sections.isEmpty()) {
+        if (sections.isEmpty()) {
             return Arrays.asList();
         }
 
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        List<Section> sortedSections = sortSections();
+        return sortedSections.stream()
+                .flatMap(Section::stations)// Stream<Station> return
+                .distinct()
+                .collect(Collectors.toList());
+    }
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
+    private List<Section> sortSections() {
+        return sections.stream()
+                .sorted(Section::compareTo)
+                .collect(Collectors.toList());
     }
 
     private Station findUpStation() {
-        Station downStation = this.sections.get(0).getUpStation();
+        Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = this.sections.stream()
