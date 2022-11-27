@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -77,5 +79,18 @@ class FavoriteServiceTest {
         assertThatThrownBy(() -> favoriteService.saveFavorite(1L, favoriteRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발역과 도착역이 동일한 경우 즐겨찾기로 등록할 수 없습니다.");
+    }
+
+    @DisplayName("즐겨찾기 목록을 조회할 수 있다.")
+    @Test
+    void findFavorites() {
+        Favorite first = new Favorite(member, source, target);
+        Favorite second = new Favorite(member, new Station("역곡역"), new Station("신도림역"));
+        List<Favorite> favorites = Arrays.asList(new Favorite(member, source, target), second);
+        given(favoriteRepository.findAllByMemberId(1L)).willReturn(favorites);
+
+        List<FavoriteResponse> findFavorites = favoriteService.findFavorites(1L);
+
+        assertThat(findFavorites).hasSize(2);
     }
 }
