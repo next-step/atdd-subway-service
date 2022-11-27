@@ -3,7 +3,7 @@ package nextstep.subway.path.application;
 import static nextstep.subway.line.domain.LineTestFixture.createLine;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
@@ -78,9 +78,9 @@ class PathServiceTest {
     void findShortestPath() {
         Long source = 1L;
         Long target = 2L;
-        when(stationRepository.findById(source)).thenReturn(Optional.of(남부터미널역));
-        when(stationRepository.findById(target)).thenReturn(Optional.of(강남역));
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(이호선, 삼호선, 신분당선));
+        given(stationRepository.findById(source)).willReturn(Optional.of(남부터미널역));
+        given(stationRepository.findById(target)).willReturn(Optional.of(강남역));
+        given(lineRepository.findAll()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
 
         PathResponse shortestPath = pathService.findShortestPath(source, target);
 
@@ -96,8 +96,8 @@ class PathServiceTest {
     void findShortestPathWithSameStation() {
         Long source = 1L;
         Long target = 1L;
-        when(stationRepository.findById(source)).thenReturn(Optional.of(남부터미널역));
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(이호선, 삼호선, 신분당선));
+        given(stationRepository.findById(source)).willReturn(Optional.of(남부터미널역));
+        given(lineRepository.findAll()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
 
         assertThatThrownBy(() -> pathService.findShortestPath(source, target))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -109,9 +109,9 @@ class PathServiceTest {
     void findShortestPathWithNotConnectStation() {
         Long source = 1L;
         Long target = 2L;
-        when(stationRepository.findById(source)).thenReturn(Optional.of(김포공항역));
-        when(stationRepository.findById(target)).thenReturn(Optional.of(강남역));
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(이호선, 삼호선, 신분당선, 공항선));
+        given(stationRepository.findById(source)).willReturn(Optional.of(김포공항역));
+        given(stationRepository.findById(target)).willReturn(Optional.of(강남역));
+        given(lineRepository.findAll()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선, 공항선));
 
         assertThatThrownBy(() -> pathService.findShortestPath(source, target))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -123,7 +123,7 @@ class PathServiceTest {
     void findShortestPathWithNotExistStation() {
         Long source = 1L;
         Long target = 2L;
-        when(stationRepository.findById(source)).thenThrow(EntityNotFoundException.class);
+        given(stationRepository.findById(source)).willThrow(EntityNotFoundException.class);
 
         assertThatThrownBy(() -> pathService.findShortestPath(source, target))
                 .isInstanceOf(EntityNotFoundException.class);
