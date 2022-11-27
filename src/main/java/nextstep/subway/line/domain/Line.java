@@ -22,7 +22,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-    private Sections sections = new Sections();
+    private final Sections sections = new Sections();
 
     public Line() {
     }
@@ -51,6 +51,10 @@ public class Line extends BaseEntity {
         sections.remove(section);
     }
 
+    public void addSection(Station upStation, Station downStation, int distance) {
+        sections.addSections(this, upStation, downStation, distance);
+    }
+
     public Long getId() {
         return id;
     }
@@ -67,11 +71,7 @@ public class Line extends BaseEntity {
         return sections.getSections();
     }
 
-    public List<Station> getStations(){
-        return sections.getStations();
-    }
-
-    public List<StationResponse> getStationResponse() {
+    public List<StationResponse> getStations() {
         return sections.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
