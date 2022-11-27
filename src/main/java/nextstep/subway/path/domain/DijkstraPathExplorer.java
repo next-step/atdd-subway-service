@@ -9,13 +9,13 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class PathFinder {
+public class DijkstraPathExplorer implements PathExplorer {
     private static final String CAN_NOT_FIND_PATH_WHEN_SOURCE_TARGET_IS_SAME = "출발역과 도착역이 동일한 경우 경로를 조회할 수 없습니다.";
     private static final String CAN_NOT_FIND_WHEN_SOURCE_TARGET_IS_NOT_CONNECT = "출발역과 도착역이 연결되어 있지 않은 경우 경로를 조회할 수 없습니다.";
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-    public PathFinder(List<Line> lines) {
+    public DijkstraPathExplorer(List<Line> lines) {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         initGraph(lines);
     }
@@ -42,7 +42,8 @@ public class PathFinder {
         graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
     }
 
-    public Path findShortestPath(Station source, Station target) {
+    @Override
+    public Path explore(Station source, Station target) {
         validateSourceAndTargetIsSame(source, target);
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> stationShortedPath = dijkstraShortestPath.getPath(source, target);

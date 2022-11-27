@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class PathFinderTest {
+class DijkstraPathExplorerTest {
     private Station 강남역;
     private Station 양재역;
     private Station 교대역;
@@ -54,10 +54,10 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역 사이의 최단 경로를 조회할 수 있다.")
     @Test
     void findShortestPath() {
-        PathFinder pathFinder = new PathFinder(Arrays.asList(이호선, 삼호선, 신분당선));
+        DijkstraPathExplorer dijkstraPathExplorer = new DijkstraPathExplorer(Arrays.asList(이호선, 삼호선, 신분당선));
         Path expectedPath = new Path(Arrays.asList(남부터미널역, 양재역, 강남역), 10);
 
-        Path actualPath = pathFinder.findShortestPath(남부터미널역, 강남역);
+        Path actualPath = dijkstraPathExplorer.explore(남부터미널역, 강남역);
 
         assertThat(expectedPath).isEqualTo(actualPath);
     }
@@ -65,9 +65,9 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역이 동일한 경우 최단 경로 조회 시 예외가 발생한다.")
     @Test
     void findShortestPathWithSameStation() {
-        PathFinder pathFinder = new PathFinder(Arrays.asList(이호선, 삼호선, 신분당선));
+        DijkstraPathExplorer dijkstraPathExplorer = new DijkstraPathExplorer(Arrays.asList(이호선, 삼호선, 신분당선));
 
-        assertThatThrownBy(() -> pathFinder.findShortestPath(강남역, 강남역))
+        assertThatThrownBy(() -> dijkstraPathExplorer.explore(강남역, 강남역))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발역과 도착역이 동일한 경우 경로를 조회할 수 없습니다.");
     }
@@ -75,12 +75,10 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 최단 경로 조회 시 예외가 발생한다.")
     @Test
     void findShortestPathWithNotConnectStation() {
-        PathFinder pathFinder = new PathFinder(Arrays.asList(이호선, 삼호선, 신분당선, 공항선));
+        DijkstraPathExplorer dijkstraPathExplorer = new DijkstraPathExplorer(Arrays.asList(이호선, 삼호선, 신분당선, 공항선));
 
-        assertThatThrownBy(() -> pathFinder.findShortestPath(김포공항역, 강남역))
+        assertThatThrownBy(() -> dijkstraPathExplorer.explore(김포공항역, 강남역))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발역과 도착역이 연결되어 있지 않은 경우 경로를 조회할 수 없습니다.");
     }
-
-
 }
