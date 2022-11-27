@@ -42,7 +42,7 @@ npm run dev
 - [ ] LineService 리팩터링
   - [ ] LineService의 비즈니스 로직을 도메인으로 옮기기
     - [x] Distance
-    - [ ] Sections 일급 컬렌션
+    - [x] Sections 일급 컬렌션
   - [ ] 인수 테스트 작성
   - [ ] 단위 테스트 작성
   - [ ] 코드 리팩토링
