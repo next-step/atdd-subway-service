@@ -14,6 +14,10 @@ import nextstep.subway.station.exception.StationExceptionCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+
 @Service
 public class FavoriteService {
 
@@ -48,5 +52,12 @@ public class FavoriteService {
     public Station findStationById(Long stationId) {
         return stationRepository.findById(stationId)
                 .orElseThrow(() -> new NotFoundException(StationExceptionCode.NOT_FOUND_BY_ID.getMessage()));
+    }
+
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> findAllFavorites(Long memberId) {
+        return favoriteRepository.findAllByMemberId(memberId).stream()
+                .map(FavoriteResponse::of)
+                .collect(toList());
     }
 }

@@ -15,6 +15,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
@@ -57,5 +59,28 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(favoriteResponse.getId()).isNotNull();
+    }
+
+    /**
+     * Given 지하철역이 등록되어 있고
+     * And 지하철 노선이 등록되어 있고
+     * And 지하철 노선에 지하철 구간이 등록되어 있고
+     * And 회원이 등록되어 있고
+     * And 로그인 되어 있고
+     * And 즐겨찾기가 생성되어 있고
+     * When 즐겨찾기 목록을 조회하면
+     * Then 즐겨찾기 목록을 조회할 수 있다.
+     */
+    @DisplayName("즐겨찾기 목록을 조회한다.")
+    @Test
+    void updateFavorite() {
+        // given
+        FavoriteAcceptance.create_favorite(tokenResponse, 강남역.getId(), 잠실역.getId()).as(FavoriteResponse.class);
+
+        // when
+        List<FavoriteResponse> favorites = FavoriteAcceptance.favorite_list_was_queried(tokenResponse);
+
+        // then
+        assertThat(favorites).hasSize(1);
     }
 }
