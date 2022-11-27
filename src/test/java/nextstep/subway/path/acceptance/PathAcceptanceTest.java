@@ -13,8 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.path.acceptance.PathAcceptanceStep.최단_경로_조회_요청;
-import static nextstep.subway.path.acceptance.PathAcceptanceStep.최단경로_목록_응답됨;
+import static nextstep.subway.path.acceptance.PathAcceptanceStep.*;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -56,5 +55,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단경로_목록_응답됨(response);
+    }
+
+    @DisplayName("최단 경로를 조회 시, 출발역과 도착역이 같으면 예외를 반환한다.")
+    @Test
+    void getLinesWithException() {
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역.getId(), 강남역.getId());
+
+        // then
+        최단경로_목록_조회_실패(response);
     }
 }
