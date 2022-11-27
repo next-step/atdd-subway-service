@@ -75,11 +75,8 @@ public class Sections {
         Station currentStation = firstStation;
         while (currentStation != null) {
             Optional<Station> nextStation = findNextStation(currentStation);
-            if (!nextStation.isPresent()) {
-                break;
-            }
-            currentStation = nextStation.get();
-            stations.add(nextStation.get());
+            nextStation.ifPresent(stations::add);
+            currentStation = nextStation.orElseGet(() -> null);
         }
         return stations;
     }
