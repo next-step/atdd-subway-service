@@ -4,8 +4,9 @@ import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.DijkstraPathExplorer;
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.PathExplorer;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -27,8 +28,8 @@ public class PathService {
         Station sourceStation = stationRepository.findById(source).orElseThrow(EntityNotFoundException::new);
         Station targetStation = stationRepository.findById(target).orElseThrow(EntityNotFoundException::new);
         List<Line> lines = lineRepository.findAll();
-        PathFinder pathFinder = new PathFinder(lines);
-        Path shortestPath = pathFinder.findShortestPath(sourceStation, targetStation);
+        PathExplorer pathExplorer = new DijkstraPathExplorer(lines);
+        Path shortestPath = pathExplorer.explore(sourceStation, targetStation);
         return PathResponse.from(shortestPath);
     }
 }
