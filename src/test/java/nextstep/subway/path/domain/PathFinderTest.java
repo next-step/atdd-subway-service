@@ -79,4 +79,14 @@ class PathFinderTest {
                 .isInstanceOf(PathNotFoundException.class)
                 .hasMessageStartingWith(ExceptionMessage.SOURCE_AND_TARGET_EQUAL);
     }
+
+    @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 예외가 발생한다.")
+    @Test
+    void findShortestPathException2() {
+        PathFinder pathFinder = PathFinder.from(Arrays.asList(신분당선, 분당선, 삼호선, 일호선));
+
+        Assertions.assertThatThrownBy(() -> pathFinder.findShortestPath(양재역, 소요산역))
+                .isInstanceOf(PathNotFoundException.class)
+                .hasMessageStartingWith(ExceptionMessage.SOURCE_NOT_CONNECTED_TO_TARGET);
+    }
 }
