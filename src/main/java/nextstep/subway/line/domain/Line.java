@@ -49,7 +49,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public void addSection(Section section){
+    public void addSection(Section section) {
         sections.addSection(section);
     }
 
@@ -69,7 +69,7 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
-    public int getSectionSize(){
+    public int getSectionSize() {
         return sections.size();
     }
 }

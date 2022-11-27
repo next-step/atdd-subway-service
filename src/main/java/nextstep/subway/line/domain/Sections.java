@@ -29,37 +29,30 @@ public class Sections {
         List<Station> stations = getStations();
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it.equals(upStation));
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it.equals(downStation));
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it.equals(upStation)) &&
-                stations.stream().noneMatch(it -> it.equals(downStation))) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
-            sections.add(section);
-            return;
-        }
+        validateSection(isUpStationExisted,isDownStationExisted,stations);
 
         if (isUpStationExisted) {
             sections.stream()
                     .filter(it -> it.getUpStation().equals(upStation))
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(downStation, distance));
-
-            sections.add(section);
-        } else if (isDownStationExisted) {
+        }
+        if (isDownStationExisted) {
             sections.stream()
                     .filter(it -> it.getDownStation().equals(downStation))
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(upStation, distance));
+        }
+        sections.add(section);
 
-            sections.add(section);
-        } else {
-            throw new RuntimeException();
+    }
+
+    private void validateSection(boolean isUpStationExisted, boolean isDownStationExisted, List<Station> stations) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+        if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
     }
 
