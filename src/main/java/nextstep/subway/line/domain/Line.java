@@ -15,7 +15,8 @@ public class Line extends BaseEntity {
     @Embedded
     private LineName name;
 
-    private String color;
+    @Embedded
+    private LineColor color;
 
     @Embedded
     private Sections sections = Sections.createEmpty();
@@ -25,18 +26,18 @@ public class Line extends BaseEntity {
 
     public Line(String name, String color) {
         this.name = LineName.from(name);
-        this.color = color;
+        this.color = LineColor.from(color);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = LineName.from(name);
-        this.color = color;
+        this.color = LineColor.from(color);
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
         this.name = LineName.from(line.getName());
-        this.color = line.getColor();
+        this.color = LineColor.from(line.getColor());
     }
 
     public Long getId() {
@@ -48,7 +49,7 @@ public class Line extends BaseEntity {
     }
 
     public String getColor() {
-        return color;
+        return color.getColor();
     }
 
     public void addSection(Section section) {
