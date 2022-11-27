@@ -33,8 +33,8 @@ public class FavoriteService {
     }
 
     @Transactional
-    public FavoriteResponse createFavorite(String email, FavoriteRequest request) {
-        Member member = findMemberByEmail(email);
+    public FavoriteResponse createFavorite(Long id, FavoriteRequest request) {
+        Member member = findMemberId(id);
         Station source = findStationById(request.getSource());
         Station target = findStationById(request.getTarget());
         Favorite favorite = favoriteRepository.save(request.toFavorite(member, source, target));
@@ -43,9 +43,9 @@ public class FavoriteService {
     }
 
     @Transactional(readOnly = true)
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException(MemberExceptionCode.NOT_FOUND_BY_EMAIL.getMessage()));
+    public Member findMemberId(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(MemberExceptionCode.NOT_FOUND_BY_ID.getMessage()));
     }
 
     @Transactional(readOnly = true)
@@ -59,5 +59,10 @@ public class FavoriteService {
         return favoriteRepository.findAllByMemberId(memberId).stream()
                 .map(FavoriteResponse::of)
                 .collect(toList());
+    }
+
+    @Transactional
+    public void deleteFavorite(Long favoriteId) {
+        favoriteRepository.deleteById(favoriteId);
     }
 }

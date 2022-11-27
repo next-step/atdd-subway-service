@@ -34,4 +34,13 @@ public class FavoriteAcceptance {
                 .then().log().all()
                 .extract().jsonPath().getList(".", FavoriteResponse.class);
     }
+
+    public static ExtractableResponse<Response> delete_favorite(TokenResponse tokenResponse, Long favoriteId) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/favorites/" + favoriteId)
+                .then().log().all()
+                .extract();
+    }
 }

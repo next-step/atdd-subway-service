@@ -14,10 +14,12 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -73,14 +75,39 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("즐겨찾기 목록을 조회한다.")
     @Test
-    void updateFavorite() {
+    void selectFavorites() {
         // given
-        FavoriteAcceptance.create_favorite(tokenResponse, 강남역.getId(), 잠실역.getId()).as(FavoriteResponse.class);
+        FavoriteAcceptance.create_favorite(tokenResponse, 강남역.getId(), 잠실역.getId());
 
         // when
         List<FavoriteResponse> favorites = FavoriteAcceptance.favorite_list_was_queried(tokenResponse);
 
         // then
         assertThat(favorites).hasSize(1);
+    }
+
+    /**
+     * Given 지하철역이 등록되어 있고
+     * And 지하철 노선이 등록되어 있고
+     * And 지하철 노선에 지하철 구간이 등록되어 있고
+     * And 회원이 등록되어 있고
+     * And 로그인 되어 있고
+     * And 즐겨찾기가 생성되어 있고
+     * When 즐겨찾기를 삭제하면
+     * Then 즐겨찾기를 삭제할 수 있다.
+     */
+    @DisplayName("즐겨찾기를 삭제한다.")
+    @Test
+    void deleteFavorite() {
+        // given
+        FavoriteResponse favoriteResponse = FavoriteAcceptance.create_favorite(tokenResponse, 강남역.getId(),
+                잠실역.getId()).as(FavoriteResponse.class);
+
+        // when
+        ExtractableResponse<Response> response =
+                FavoriteAcceptance.delete_favorite(tokenResponse, favoriteResponse.getId());
+
+        // then
+        assertEquals(HttpStatus.NO_CONTENT.value(), response.statusCode());
     }
 }

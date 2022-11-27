@@ -24,12 +24,19 @@ public class FavoriteController {
     @PostMapping
     public ResponseEntity<FavoriteResponse> createFavorite(@AuthenticationPrincipal LoginMember loginMember,
             @RequestBody FavoriteRequest favoriteRequest) {
-        FavoriteResponse favorite = favoriteService.createFavorite(loginMember.getEmail(), favoriteRequest);
+        FavoriteResponse favorite = favoriteService.createFavorite(loginMember.getId(), favoriteRequest);
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).body(favorite);
     }
 
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> findAllFavorites(@AuthenticationPrincipal LoginMember loginMember) {
         return ResponseEntity.ok(favoriteService.findAllFavorites(loginMember.getId()));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
+            @PathVariable Long id) {
+        favoriteService.deleteFavorite(id);
+        return ResponseEntity.noContent().build();
     }
 }
