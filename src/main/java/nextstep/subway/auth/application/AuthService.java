@@ -20,8 +20,7 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new AuthorizationException(ErrorCode.MEMBER_NOT_EXIST_BY_EMAIL.getMessage()));
+        Member member = findMemberByEmail(request.getEmail());
         member.checkPassword(request.getPassword());
 
         String token = jwtTokenProvider.createToken(request.getEmail());
@@ -30,12 +29,16 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException("유효하지 않은 토큰입니다.");
+            throw new AuthorizationException(ErrorCode.INVALID_TOKEN.getMessage());
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new AuthorizationException(ErrorCode.MEMBER_NOT_EXIST_BY_EMAIL.getMessage()));
+        Member member = findMemberByEmail(email);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+    }
+
+    private Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new AuthorizationException(ErrorCode.MEMBER_NOT_EXIST_BY_EMAIL.getMessage()));
     }
 }

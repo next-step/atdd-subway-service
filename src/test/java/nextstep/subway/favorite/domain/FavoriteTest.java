@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.constant.ErrorCode;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +19,6 @@ public class FavoriteTest {
         // when & then
         assertThatThrownBy(() -> new Favorite(member, station, station))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("출발지와 도착지가 동일할 수 없습니다.");
+                .hasMessageContaining(ErrorCode.FAVORITE_SAME_SOURCE_TARGET.getMessage());
     }
 }

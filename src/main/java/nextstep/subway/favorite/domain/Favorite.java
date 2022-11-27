@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.constant.ErrorCode;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -34,7 +35,7 @@ public class Favorite {
 
     private void validate(Station source, Station target) {
         if (source.equals(target)) {
-            throw new IllegalArgumentException("출발지와 도착지가 동일할 수 없습니다.");
+            throw new IllegalArgumentException(ErrorCode.FAVORITE_SAME_SOURCE_TARGET.getMessage());
         }
     }
 
