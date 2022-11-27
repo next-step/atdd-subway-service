@@ -1,8 +1,11 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.PathNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.message.ExceptionMessage;
 import nextstep.subway.station.domain.Station;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,5 +68,15 @@ class PathFinderTest {
                 () -> assertThat(path.getStations()).containsExactly(양재역, 수서역, 서현역),
                 () -> assertThat(path.getDistance()).isEqualTo(10)
         );
+    }
+
+    @DisplayName("출발역과 도착역이 같은 경우 예외가 발생한다.")
+    @Test
+    void findShortestPathException1() {
+        PathFinder pathFinder = PathFinder.from(Arrays.asList(신분당선, 분당선, 삼호선, 일호선));
+
+        Assertions.assertThatThrownBy(() -> pathFinder.findShortestPath(양재역, 양재역))
+                .isInstanceOf(PathNotFoundException.class)
+                .hasMessageStartingWith(ExceptionMessage.SOURCE_AND_TARGET_EQUAL);
     }
 }
