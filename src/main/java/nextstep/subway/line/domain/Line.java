@@ -80,9 +80,7 @@ public class Line extends BaseEntity {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == finalDownStation)
-                .findFirst();
+            Optional<Section> nextLineStation = findFromUpStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -91,6 +89,12 @@ public class Line extends BaseEntity {
         }
 
         return stations;
+    }
+
+    private Optional<Section> findFromUpStation(final Station station) {
+        return sections.stream()
+            .filter(it -> it.getUpStation() == station)
+            .findFirst();
     }
 
     private Station findUpStation() {
@@ -114,9 +118,7 @@ public class Line extends BaseEntity {
             throw new RuntimeException();
         }
 
-        Optional<Section> upLineStation = sections.stream()
-            .filter(it -> it.getUpStation() == station)
-            .findFirst();
+        Optional<Section> upLineStation = findFromUpStation(station);
         Optional<Section> downLineStation = sections.stream()
             .filter(it -> it.getDownStation() == station)
             .findFirst();
@@ -154,9 +156,7 @@ public class Line extends BaseEntity {
         }
 
         if (isUpStationExisted) {
-            sections.stream()
-                .filter(it -> it.getUpStation() == upStation)
-                .findFirst()
+            findFromUpStation(upStation)
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
 
             sections
