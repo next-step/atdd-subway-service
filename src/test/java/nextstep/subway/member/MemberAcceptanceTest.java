@@ -69,8 +69,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_정보_수정됨(updateResponse);
 
+        // given
+        String newToken = 로그인_요청(NEW_EMAIL, NEW_PASSWORD).as(TokenResponse.class)
+                .getAccessToken();
+
         // when
-        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(token);
+        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(newToken);
 
         // then
         회원_삭제됨(deleteResponse);
