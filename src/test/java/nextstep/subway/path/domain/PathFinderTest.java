@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class PathFinderTest {
@@ -46,7 +47,7 @@ public class PathFinderTest {
         // given
         final Station start = new Station("강남역");
         final Station destination = new Station("용산역");
-        final JgraphPathFinder pathFinder = new JgraphPathFinder();
+        final graphPathFinder pathFinder = new graphPathFinder();
         // when
         final StationPath graphPath = pathFinder.getShortestPath(lines, start, destination);
         // then
@@ -60,7 +61,7 @@ public class PathFinderTest {
         // given
         final Station start = new Station("강남역");
         final Station destination = new Station("강남역");
-        final JgraphPathFinder pathFinder = new JgraphPathFinder();
+        final graphPathFinder pathFinder = new graphPathFinder();
         // then
         assertThatThrownBy(() -> pathFinder.getShortestPath(lines, start, destination))
                 .isInstanceOf(PathException.class);
