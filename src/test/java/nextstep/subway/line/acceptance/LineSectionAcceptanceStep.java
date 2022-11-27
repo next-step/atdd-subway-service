@@ -16,6 +16,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineSectionAcceptanceStep {
 
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(
+            LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+        return 지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
+    }
+
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
