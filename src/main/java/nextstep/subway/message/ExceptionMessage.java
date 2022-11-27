@@ -8,6 +8,7 @@ public class ExceptionMessage {
     public static final String INVALID_SECTION_DISTANCE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
     public static final String EMPTY_LINE_NAME = "지하철 노선 이름은 필수값입니다.";
     public static final String EMPTY_LINE_COLOR = "지하철 노선 색상은 필수값입니다.";
+    public static final String EMPTY_STATION_NAME = "지하철 역 이름은 필수값입니다.";
 
     private ExceptionMessage() {
     }
