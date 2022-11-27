@@ -26,21 +26,9 @@ public class LineResponse {
         this.modifiedDate = modifiedDate;
     }
 
-    public static List<LineResponse> ofLines(final List<Line> lines) {
-        return Collections.unmodifiableList(lines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList()));
-    }
-
     public static LineResponse of(final Line line) {
         return new LineResponse(line.getId(), line.getName(), line.getColor(),
-                getAllStations(line.getSortedStations()), line.getCreatedDate(), line.getModifiedDate());
-    }
-
-    private static List<StationResponse> getAllStations(final List<Station> stations) {
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+                line.toStationResponses(), line.getCreatedDate(), line.getModifiedDate());
     }
 
     public Long getId() {

@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.line.exception.LineException;
 import nextstep.subway.line.exception.LineExceptionType;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -19,10 +20,6 @@ public class Sections {
 
     protected Sections() {
         this.list = new ArrayList<>();
-    }
-
-    public static Sections instance() {
-        return new Sections();
     }
 
     public void add(final Section section) {
@@ -156,6 +153,12 @@ public class Sections {
         }
 
         return Collections.unmodifiableList(new ArrayList<>(sortedStations));
+    }
+
+    public List<StationResponse> toStationResponses() {
+        return getSortedStations().stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
     }
 
     private Optional<Section> findFirstSection() {

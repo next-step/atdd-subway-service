@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.*;
 import java.util.List;
@@ -17,7 +18,7 @@ public class Line extends BaseEntity {
     @Column(nullable = false)
     private String color;
     @Embedded
-    private final Sections sections = Sections.instance();
+    private final Sections sections = new Sections();
 
     public Line() {
     }
@@ -88,5 +89,9 @@ public class Line extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, color, sections);
+    }
+
+    public List<StationResponse> toStationResponses() {
+        return sections.toStationResponses();
     }
 }

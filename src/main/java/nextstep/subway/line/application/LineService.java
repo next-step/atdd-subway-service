@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class LineService {
     private final LineRepository lineRepository;
     private final StationService stationService;
@@ -36,7 +36,8 @@ public class LineService {
     @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> lines = lineRepository.findAll();
-        return LineResponse.ofLines(lines);
+        return lines.stream().map(LineResponse::of)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -60,7 +61,7 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    public void addLineStation(final Long lineId, final SectionRequest request) {
+    public void addSection(final Long lineId, final SectionRequest request) {
         final Line line = findLineById(lineId);
         final Station upStation = stationService.findById(request.getUpStationId());
         final Station downStation = stationService.findById(request.getDownStationId());
