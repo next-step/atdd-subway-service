@@ -14,6 +14,7 @@ import nextstep.subway.station.domain.Station;
 @Entity
 public class Favorite extends BaseEntity {
     private static final String CAN_NOT_SOURCE_TARGET_IS_SAME = "출발역과 도착역이 동일한 경우 즐겨찾기로 등록할 수 없습니다.";
+    private static final String CAN_NOT_OPERATION_IS_NOT_OWNER = "본인의 즐겨찾기가 아닌 경우 작업을 진행할 수 없습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +46,12 @@ public class Favorite extends BaseEntity {
     private void validateSourceAndTargetIsSame(Station source, Station target) {
         if (source.equals(target)) {
             throw new IllegalArgumentException(CAN_NOT_SOURCE_TARGET_IS_SAME);
+        }
+    }
+
+    public void isOperateByOwner(Member requestMember) {
+        if (!member.equals(requestMember)) {
+            throw new IllegalArgumentException(CAN_NOT_OPERATION_IS_NOT_OWNER);
         }
     }
 
