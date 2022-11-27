@@ -48,11 +48,23 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void deleteFavorite(Long favoriteId, Long memberId) {
+        Favorite favorite = findFavorite(favoriteId);
+        Member requestMember = findMember(memberId);
+        favorite.isOperateByOwner(requestMember);
+        favoriteRepository.delete(favorite);
+    }
+
     private Member findMember(Long id) {
         return memberRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
     private Station findStation(Long favoriteRequest) {
         return stationRepository.findById(favoriteRequest).orElseThrow(EntityNotFoundException::new);
+    }
+
+    private Favorite findFavorite(Long favoriteId) {
+        return favoriteRepository.findById(favoriteId).orElseThrow(EntityNotFoundException::new);
     }
 }
