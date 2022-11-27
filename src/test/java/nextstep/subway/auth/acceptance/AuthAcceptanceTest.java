@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.member.MemberRestAssured.내_정보_조회_요청;
 import static nextstep.subway.member.MemberRestAssured.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -26,7 +27,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        // given
         회원_생성을_요청(EMAIL, PASSWORD, 33);
     }
 
@@ -60,12 +60,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_실패(response);
     }
 
-    @DisplayName("유효하지 않은 토큰으로 로그인할 경우 실패한다")
+    @DisplayName("유효하지 않은 토큰으로 정보를 조회하는 경우 실패한다")
     @Test
     void myInfoWithWrongBearerAuth() {
-        // Todo 내 정보 조회 기능 개발 후 테스트 추가
         // when
-        ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
+        ExtractableResponse<Response> response = 내_정보_조회_요청("InvalidToken");
 
         // then
         유효하지_않은_토큰(response);
