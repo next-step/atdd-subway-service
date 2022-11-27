@@ -84,7 +84,7 @@ public class Sections {
 
     public List<Station> getStations() {
         if (this.sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
