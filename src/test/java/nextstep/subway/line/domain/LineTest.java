@@ -1,5 +1,9 @@
 package nextstep.subway.line.domain;
 
+import static nextstep.subway.line.domain.StationFixture.강남역;
+import static nextstep.subway.line.domain.StationFixture.블루보틀역;
+import static nextstep.subway.line.domain.StationFixture.선릉역;
+import static nextstep.subway.line.domain.StationFixture.역삼역;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -10,10 +14,6 @@ import org.junit.jupiter.api.Test;
 
 class LineTest {
 
-    private final Station 강남역 = new Station("강남역");
-    private final Station 역삼역 = new Station("역삼역");
-    private final Station 선릉역 = new Station("선릉역");
-    private final Station 블루보틀역 = new Station("블루보틀역");
 
     @Test
     void 정류장_조회() {
