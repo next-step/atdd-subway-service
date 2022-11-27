@@ -5,6 +5,7 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.line.domain.LineTestFixture.createLine;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("단위 테스트")
@@ -16,8 +17,8 @@ public class UnitTest {
 
         Station upStation = new Station("강남역");
         Station downStation = new Station("광교역");
-        Line line = Line.builder().name("신분당선").color("RED").upStation(upStation).downStation(downStation).distance(10).build();
-        Line newLine = Line.builder().name(newName).color("GREEN").distance(10).build();
+        Line line = createLine("신분당선", upStation, downStation, 10);
+        Line newLine = createLine(newName, upStation, downStation, 10);
 
         // when
         line.changeName(newLine.getName());

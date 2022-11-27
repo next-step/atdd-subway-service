@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static nextstep.subway.line.domain.LineTestFixture.createLine;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -24,11 +25,7 @@ public class MockitoTest {
         LineRepository lineRepository = mock(LineRepository.class);
         StationService stationService = mock(StationService.class);
 
-        Line line = Line.builder()
-                .upStation(new Station("교대역"))
-                .downStation(new Station("강남역"))
-                .distance(5)
-                .build();
+        Line line = createLine("2호선", new Station("교대역"), new Station("강남역"), 10);
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(line));
         LineService lineService = new LineService(lineRepository, stationService);
 
