@@ -26,19 +26,19 @@ public class SectionsTest {
         class ContextWithSection {
 
             private final Sections sections = new Sections();
-            private int size;
-            private Random random = new Random();
+            private final Line line = new Line();
 
             @BeforeEach
             void before() {
-                size = random.nextInt(100);
-                IntStream.rangeClosed(1, size)
-                        .forEach(value -> sections.addSection(new Section()));
+                sections.addSection(new Section(line, new Station("영등포역"), new Station("신림역"), 10));
+                sections.addSection(new Section(line, new Station("신림역"), new Station("방배역"), 10));
+                sections.addSection(new Section(line, new Station("방배역"), new Station("삼성역"), 10));
+                sections.addSection(new Section(line, new Station("삼성역"), new Station("신도림역"), 10));
             }
 
-            @RepeatedTest(100)
+            @Test
             void returnsSize() {
-                assertThat(sections.size()).isEqualTo(size);
+                assertThat(sections.size()).isEqualTo(4);
             }
         }
     }
@@ -141,16 +141,10 @@ public class SectionsTest {
             void returnNewSection() {
                 sections.removeStation(station,line);
 
-                List<String> upStationNames = sections.getSections().stream()
-                        .map(Section::getUpStation)
+                List<String> stationNames = sections.getStations().stream()
                         .map(Station::getName)
                         .collect(Collectors.toList());
-                List<String> downStationName = sections.getSections().stream()
-                        .map(Section::getDownStation)
-                        .map(Station::getName)
-                        .collect(Collectors.toList());
-                upStationNames.addAll(downStationName);
-                assertThat(upStationNames).containsExactlyInAnyOrder("숭실대입구", "건대입구역");
+                assertThat(stationNames).containsExactlyInAnyOrder("숭실대입구", "건대입구역");
             }
         }
 
@@ -164,7 +158,7 @@ public class SectionsTest {
 
             @BeforeEach
             void before() {
-                sections.addSection(new Section(line, new Station("숭실대입구"), station, 10));
+                sections.addSection(new Section(line, station, new Station("세종대"), 10));
                 sections.addSection(new Section(line, new Station("세종대"), new Station("건대입구역"), 10));
             }
 
@@ -172,16 +166,10 @@ public class SectionsTest {
             void returnRemainsSection() {
                 sections.removeStation(station,line);
 
-                List<String> upStationNames = sections.getSections().stream()
-                        .map(Section::getUpStation)
+                List<String> stationNames = sections.getStations().stream()
                         .map(Station::getName)
                         .collect(Collectors.toList());
-                List<String> downStationName = sections.getSections().stream()
-                        .map(Section::getDownStation)
-                        .map(Station::getName)
-                        .collect(Collectors.toList());
-                upStationNames.addAll(downStationName);
-                assertThat(upStationNames).containsExactlyInAnyOrder("세종대", "건대입구역");
+                assertThat(stationNames).containsExactlyInAnyOrder("세종대", "건대입구역");
             }
         }
     }

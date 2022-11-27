@@ -28,11 +28,7 @@ public class LineTest {
 
             @BeforeEach
             void before() {
-                List<Section> sections = IntStream
-                        .rangeClosed(1, random.nextInt(1))
-                        .mapToObj(value -> new Section())
-                        .collect(Collectors.toList());
-                line.getSections().addAll(sections);
+                line.addSection(new Section());
             }
 
             @Test
@@ -51,24 +47,17 @@ public class LineTest {
 
             @BeforeEach
             void before() {
-                line.getSections().add(new Section(line, new Station("숭실대입구"), station, 10));
-                line.getSections().add(new Section(line, station, new Station("건대입구역"), 10));
+                line.addSection(new Section(line, new Station("숭실대입구"), station, 10));
+                line.addSection(new Section(line, station, new Station("건대입구역"), 10));
             }
 
             @Test
             void returnNewSection() {
                 line.removeStation(station);
-
-                List<String> upStationNames = line.getSections().stream()
-                        .map(Section::getUpStation)
+                List<String> stationNames = line.getStations().stream()
                         .map(Station::getName)
                         .collect(Collectors.toList());
-                List<String> downStationName = line.getSections().stream()
-                        .map(Section::getDownStation)
-                        .map(Station::getName)
-                        .collect(Collectors.toList());
-                upStationNames.addAll(downStationName);
-                assertThat(upStationNames).containsExactlyInAnyOrder("숭실대입구", "건대입구역");
+                assertThat(stationNames).containsExactlyInAnyOrder("숭실대입구", "건대입구역");
             }
         }
 
@@ -81,24 +70,17 @@ public class LineTest {
 
             @BeforeEach
             void before() {
-                line.getSections().add(new Section(line, new Station("숭실대입구"), station, 10));
-                line.getSections().add(new Section(line, new Station("세종대"), new Station("건대입구역"), 10));
+                line.addSection(new Section(line, new Station("숭실대입구"), station, 10));
+                line.addSection(new Section(line, station, new Station("건대입구역"), 10));
             }
 
             @Test
             void returnRemainsSection() {
                 line.removeStation(station);
-
-                List<String> upStationNames = line.getSections().stream()
-                        .map(Section::getUpStation)
+                List<String> stationNames = line.getStations().stream()
                         .map(Station::getName)
                         .collect(Collectors.toList());
-                List<String> downStationName = line.getSections().stream()
-                        .map(Section::getDownStation)
-                        .map(Station::getName)
-                        .collect(Collectors.toList());
-                upStationNames.addAll(downStationName);
-                assertThat(upStationNames).containsExactlyInAnyOrder("세종대", "건대입구역");
+                assertThat(stationNames).containsExactlyInAnyOrder("숭실대입구", "건대입구역");
             }
         }
     }
@@ -111,14 +93,13 @@ public class LineTest {
         class ContextWith {
 
             private final Line line = new Line();
-            private final Random random = new Random();
             private final Station station = new Station("강남역");
 
             @BeforeEach
             void before() {
-                line.getSections().add(new Section(line, station, new Station("신촌역"), 10));
-                line.getSections().add(new Section(line, new Station("삼성역"), new Station("종합운동장"), 10));
-                line.getSections().add(new Section(line, new Station("잠실역"), new Station("홍대입구역"), 10));
+                line.addSection(new Section(line, station, new Station("신촌역"), 10));
+                line.addSection(new Section(line, new Station("신촌역"), new Station("종합운동장"), 10));
+                line.addSection(new Section(line, new Station("종합운동장"), new Station("홍대입구역"), 10));
             }
 
             @Test
@@ -126,10 +107,6 @@ public class LineTest {
                 assertThat(line.findUpStation()).isEqualTo(station);
             }
 
-            @AfterEach
-            void after() {
-                line.getSections().clear();
-            }
         }
     }
 
@@ -151,9 +128,9 @@ public class LineTest {
 
             @BeforeEach
             void before() {
-                line.getSections().add(new Section(line, new Station("강남역"), new Station("신촌역"), 10));
-                line.getSections().add(new Section(line, new Station("신촌역"), new Station("종합운동장"), 10));
-                line.getSections().add(new Section(line, new Station("종합운동장"), new Station("홍대입구역"), 10));
+                line.addSection(new Station("강남역"), new Station("신촌역"), 10);
+                line.addSection(new Section(line, new Station("신촌역"), new Station("종합운동장"), 10));
+                line.addSection(new Section(line, new Station("종합운동장"), new Station("홍대입구역"), 10));
             }
 
             @Test
@@ -176,9 +153,9 @@ public class LineTest {
 
             @BeforeEach
             void before() {
-                line.getSections().add(new Section(line, new Station("강남역"), new Station("신촌역"), 10));
-                line.getSections().add(new Section(line, new Station("신촌역"), new Station("종합운동장"), 10));
-                line.getSections().add(new Section(line, new Station("종합운동장"), new Station("홍대입구역"), 10));
+                line.addSection(new Station("강남역"), new Station("신촌역"), 10);
+                line.addSection(new Station("신촌역"), new Station("종합운동장"), 10);
+                line.addSection(new Station("종합운동장"), new Station("홍대입구역"), 10);
             }
 
             @Test
@@ -197,8 +174,8 @@ public class LineTest {
 
             @BeforeEach
             void before() {
-                line.getSections().add(new Section(line, new Station("신촌역"), new Station("종합운동장"), 10));
-                line.getSections().add(new Section(line, new Station("종합운동장"), new Station("홍대입구역"), 10));
+                line.addSection(new Station("신촌역"), new Station("종합운동장"), 10);
+                line.addSection(new Station("종합운동장"), new Station("홍대입구역"), 10);
             }
 
             @Test
@@ -218,15 +195,15 @@ public class LineTest {
 
             @BeforeEach
             void before() {
-                line.getSections().add(section);
-                line.getSections().add(new Section(line, new Station("종합운동장"), new Station("홍대입구역"), 10));
+                line.addSection(section);
+                line.addSection(new Station("종합운동장"), new Station("홍대입구역"), 10);
             }
 
             @Test
             void returnsStations() {
                 line.addSection(new Station("신촌역"), new Station("방배역"), 3);
                 assertAll(
-                        () -> assertThat(line.getSections()).hasSize(3),
+                        () -> assertThat(line.getSectionSize()).isEqualTo(3),
                         () -> assertThat(section.getUpStation()).isEqualTo(new Station("방배역")),
                         () -> assertThat(section.getDownStation()).isEqualTo(new Station("종합운동장")),
                         () -> assertThat(section.getDistance()).isEqualTo(7),
@@ -246,15 +223,15 @@ public class LineTest {
 
             @BeforeEach
             void before() {
-                line.getSections().add(new Section(line, new Station("신촌역"), new Station("종합운동장"), 10));
-                line.getSections().add(new Section(line, new Station("종합운동장"), new Station("홍대입구역"), 10));
+                line.addSection(new Station("신촌역"), new Station("종합운동장"), 10);
+                line.addSection(new Station("종합운동장"), new Station("홍대입구역"), 10);
             }
 
             @Test
             void returnsStations() {
                 line.addSection(new Station("영등포역"), new Station("신촌역"), 3);
                 assertAll(
-                        () -> assertThat(line.getSections()).hasSize(3),
+                        () -> assertThat(line.getSectionSize()).isEqualTo(3),
                         () -> assertThat(line.getStations()).containsAnyOf(new Station("신촌역"),
                                 new Station("종합운동장"),
                                 new Station("홍대입구역"),

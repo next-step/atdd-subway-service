@@ -40,31 +40,27 @@ public class Sections {
         }
 
         if (stations.isEmpty()) {
-            getSections().add(section);
+            sections.add(section);
             return;
         }
 
         if (isUpStationExisted) {
-            getSections().stream()
+            sections.stream()
                     .filter(it -> it.getUpStation().equals(upStation))
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(downStation, distance));
 
-            getSections().add(section);
+            sections.add(section);
         } else if (isDownStationExisted) {
-            getSections().stream()
+            sections.stream()
                     .filter(it -> it.getDownStation().equals(downStation))
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(upStation, distance));
 
-            getSections().add(section);
+            sections.add(section);
         } else {
             throw new RuntimeException();
         }
-    }
-
-    public List<Section> getSections() {
-        return sections;
     }
 
     public Station findUpStation() {
@@ -134,7 +130,6 @@ public class Sections {
             return;
         }
         sections.remove(section);
-
     }
 
     private void rebuildSection(Line line, Section upLineStation, Section downLineStation) {
