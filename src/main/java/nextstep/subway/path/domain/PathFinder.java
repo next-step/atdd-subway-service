@@ -44,12 +44,19 @@ public class PathFinder {
     public Path findShortestPath(Station source, Station target) {
         checkNotEqual(source, target);
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+        checkPathExist(path);
         return Path.of(path.getVertexList(), (int) path.getWeight());
     }
 
     private void checkNotEqual(Station source, Station target) {
         if (source.equals(target)) {
             throw new PathNotFoundException(ExceptionMessage.SOURCE_AND_TARGET_EQUAL);
+        }
+    }
+
+    private void checkPathExist(GraphPath<Station, DefaultWeightedEdge> path) {
+        if (path == null) {
+            throw new PathNotFoundException(ExceptionMessage.SOURCE_NOT_CONNECTED_TO_TARGET);
         }
     }
 }

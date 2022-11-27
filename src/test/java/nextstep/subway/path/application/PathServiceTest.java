@@ -38,10 +38,13 @@ class PathServiceTest {
     private Line 신분당선;
     private Line 분당선;
     private Line 삼호선;
+    private Line 일호선;
     private Station 정자역;
     private Station 양재역;
     private Station 수서역;
     private Station 서현역;
+    private Station 소요산역;
+    private Station 병점역;
 
     /**
      * 양재역 ------*3호선(5)*------ 수서역
@@ -51,6 +54,8 @@ class PathServiceTest {
      * ㅣ                          ㅣ
      * ㅣ                          ㅣ
      * 정쟈역 ------*분당선(5)*------ 서현역
+     * <p>
+     * 소요산역 ------*일호선(20)* ------병점역
      */
     @BeforeEach
     void setUp() {
@@ -58,10 +63,13 @@ class PathServiceTest {
         양재역 = new Station("양재역");
         수서역 = new Station("수서역");
         서현역 = new Station("서현역");
+        소요산역 = new Station("소요산역");
+        병점역 = new Station("병점역");
 
         신분당선 = new Line("신분당선", "red", 양재역, 정자역, 10);
         분당선 = new Line("분당선", "yellow", 수서역, 정자역, 10);
         삼호선 = new Line("삼호선", "orange", 양재역, 수서역, 5);
+        일호선 = new Line("일호선", "blue", 소요산역, 병점역, 20);
 
         분당선.addSection(new Section(분당선, 서현역, 정자역, 5));
     }
@@ -94,5 +102,17 @@ class PathServiceTest {
         Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L))
                 .isInstanceOf(PathNotFoundException.class)
                 .hasMessageStartingWith(ExceptionMessage.SOURCE_AND_TARGET_EQUAL);
+    }
+
+    @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 예외가 발생한다.")
+    @Test
+    void findShortestPathException2() {
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(양재역));
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(소요산역));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 분당선, 삼호선, 일호선));
+
+        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L))
+                .isInstanceOf(PathNotFoundException.class)
+                .hasMessageStartingWith(ExceptionMessage.SOURCE_NOT_CONNECTED_TO_TARGET);
     }
 }
