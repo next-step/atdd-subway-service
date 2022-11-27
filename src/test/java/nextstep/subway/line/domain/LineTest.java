@@ -10,15 +10,21 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.Arrays;
 import java.util.List;
 import nextstep.subway.station.domain.Station;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class LineTest {
 
+    Line 이호선;
+
+    @BeforeEach
+    void setUp() {
+        이호선 = new Line("이호선", "green");
+    }
 
     @Test
     void 정류장_조회() {
         //given
-        Line 이호선 = new Line("이호선", "green");
         이호선.addSection(강남역, 역삼역, 3);
         이호선.addSection(역삼역, 선릉역, 4);
 
@@ -31,7 +37,6 @@ class LineTest {
     @Test
     void 구간이_한개인_경우_정류장_삭제_불가능() {
         //given;
-        Line 이호선 = new Line("이호선", "green");
         이호선.addSection(강남역, 역삼역, 7);
 
         //when & then
@@ -42,7 +47,6 @@ class LineTest {
     @Test
     void 정류장_삭제() {
         //given
-        Line 이호선 = new Line("이호선", "green");
         이호선.addSection(강남역, 역삼역, 4);
         이호선.addSection(역삼역, 선릉역, 3);
 
@@ -55,9 +59,6 @@ class LineTest {
 
     @Test
     void 구간_추가() {
-        //given
-        Line 이호선 = new Line("이호선", "green");
-
         //when
         이호선.addSection(강남역, 역삼역, 7);
         이호선.addSection(역삼역, 선릉역, 3);
@@ -69,7 +70,6 @@ class LineTest {
     @Test
     void 동일_구간이_이미_존재하면_오류발생() {
         //given
-        Line 이호선 = new Line("이호선", "green");
         이호선.addSection(강남역, 역삼역, 7);
 
         //when & then
@@ -81,7 +81,6 @@ class LineTest {
     @Test
     void 구간내_상행선과_하행선중_동일한_항목이_없다면_등록_불가능() {
         //given
-        Line 이호선 = new Line("이호선", "green");
         이호선.addSection(강남역, 역삼역, 7);
 
         //when & then
