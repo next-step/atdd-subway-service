@@ -27,7 +27,7 @@ public class PathFinder {
         validate(sourceStation, targetStation);
         GraphPath<Station, DefaultWeightedEdge> shortestPath =
                 new DijkstraShortestPath<>(graph).getPath(sourceStation, targetStation);
-
+        validate(shortestPath);
         List<StationResponse> responses = shortestPath.getVertexList()
                 .stream()
                 .map(StationResponse::of)
@@ -36,8 +36,14 @@ public class PathFinder {
         return new PathResponse(responses, (int) shortestPath.getWeight());
     }
 
+    private void validate(final GraphPath<Station, DefaultWeightedEdge> shortestPath) {
+        if (Objects.isNull(shortestPath)) {
+            throw new IllegalArgumentException("출발역과 도착역이 연결이 되어 있지 않습니다.");
+        }
+    }
+
     private void validate(final Station sourceStation, final Station targetStation) {
-        if(Objects.equals(sourceStation, targetStation)) {
+        if (Objects.equals(sourceStation, targetStation)) {
             throw new IllegalArgumentException("출발역과 도착역이 " + sourceStation.getName() + "으로 동일합니다.");
         }
     }
