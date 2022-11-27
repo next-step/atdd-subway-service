@@ -1,4 +1,4 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.acceptance;
 
 import nextstep.subway.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
