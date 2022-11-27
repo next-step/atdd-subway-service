@@ -1,4 +1,4 @@
-package nextstep.subway.line.acceptance;
+package nextstep.subway.path.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.line.acceptance.PathAcceptanceStep.최단_경로_조회_요청;
-import static nextstep.subway.line.acceptance.PathAcceptanceStep.최단경로_목록_응답됨;
+import static nextstep.subway.path.acceptance.PathAcceptanceStep.최단_경로_조회_요청;
+import static nextstep.subway.path.acceptance.PathAcceptanceStep.최단경로_목록_응답됨;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
