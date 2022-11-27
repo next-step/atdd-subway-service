@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.exception.EntityNotFoundException;
 import nextstep.subway.exception.PathNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -114,5 +115,16 @@ class PathServiceTest {
         Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L))
                 .isInstanceOf(PathNotFoundException.class)
                 .hasMessageStartingWith(ExceptionMessage.SOURCE_NOT_CONNECTED_TO_TARGET);
+    }
+
+    @DisplayName("존재하지 않은 출발역 또는 도착역으로 최단 경로 조회시 예외가 발생한다.")
+    @Test
+    void findShortestPathException3() {
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(양재역));
+        when(stationRepository.findById(0L)).thenReturn(Optional.empty());
+
+        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 0L))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageStartingWith(ExceptionMessage.STATION_NOT_EXIST);
     }
 }
