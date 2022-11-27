@@ -1,5 +1,7 @@
 package nextstep.subway.path.application;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.ui.PathResponse;
@@ -18,7 +20,10 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static nextstep.subway.Fixture.*;
+import static nextstep.subway.path.acceptance.PathAcceptanceStep.최단_경로_조회_요청;
+import static nextstep.subway.path.acceptance.PathAcceptanceStep.최단경로_목록_조회_실패;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @DisplayName("지하철 경로 관련 서비스 테스트")
@@ -75,5 +80,16 @@ public class PathServiceTest {
         assertThat(shortestPath.getStations().stream().map(StationResponse::getId))
                 .containsExactly(강남역.getId(), 양재역.getId(), 남부터미널역.getId());
         assertThat(shortestPath.getDistance()).isEqualTo(12);
+    }
+
+    @DisplayName("최단 경로를 조회 시, 출발역과 도착역이 같으면 예외를 반환한다.")
+    @Test
+    void getLinesWithException() {
+        when(stationRepository.findById(강남역.getId())).thenReturn(Optional.of(강남역));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 강남역.getId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("출발역과 도착역이 " + 강남역.getName() + "으로 동일합니다.");
     }
 }

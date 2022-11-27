@@ -9,6 +9,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class PathFinder {
@@ -23,6 +24,7 @@ public class PathFinder {
     }
 
     public PathResponse getShortestPath(final Station sourceStation, final Station targetStation) {
+        validate(sourceStation, targetStation);
         GraphPath<Station, DefaultWeightedEdge> shortestPath =
                 new DijkstraShortestPath<>(graph).getPath(sourceStation, targetStation);
 
@@ -32,5 +34,11 @@ public class PathFinder {
                 .collect(Collectors.toList());
 
         return new PathResponse(responses, (int) shortestPath.getWeight());
+    }
+
+    private void validate(final Station sourceStation, final Station targetStation) {
+        if(Objects.equals(sourceStation, targetStation)) {
+            throw new IllegalArgumentException("출발역과 도착역이 " + sourceStation.getName() + "으로 동일합니다.");
+        }
     }
 }

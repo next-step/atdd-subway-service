@@ -9,9 +9,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static nextstep.subway.Fixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
 class PathFinderTest {
 
@@ -53,5 +56,15 @@ class PathFinderTest {
         assertThat(shortestPath.getStations().stream().map(StationResponse::getId))
                 .containsExactly(강남역.getId(), 양재역.getId(), 남부터미널역.getId());
         assertThat(shortestPath.getDistance()).isEqualTo(12);
+    }
+
+    @DisplayName("최단 경로를 조회 시, 출발역과 도착역이 같으면 예외를 반환한다.")
+    @Test
+    void getLinesWithException() {
+        PathFinder pathFinder = PathFinder.from(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        assertThatThrownBy(() -> pathFinder.getShortestPath(강남역, 강남역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("출발역과 도착역이 " + 강남역.getName() + "으로 동일합니다.");
     }
 }
