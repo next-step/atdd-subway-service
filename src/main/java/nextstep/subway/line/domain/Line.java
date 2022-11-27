@@ -75,7 +75,7 @@ public class Line extends BaseEntity {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
+        Station downStation = findFirstStation();
         stations.add(downStation);
 
         while (downStation != null) {
@@ -103,7 +103,7 @@ public class Line extends BaseEntity {
             .findFirst();
     }
 
-    private Station findUpStation() {
+    private Station findFirstStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
