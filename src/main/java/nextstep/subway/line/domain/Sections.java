@@ -122,6 +122,14 @@ public class Sections {
         return stations;
     }
 
+    public int getSize(){
+        return this.sections.size();
+    }
+
+    public List<Section> getSections() {
+        return sections;
+    }
+
     private void validateAleadyExist(Station upStation, Station downStation){
         if (isUpStationExisted(upStation) && isDownStationExisted(downStation)) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
