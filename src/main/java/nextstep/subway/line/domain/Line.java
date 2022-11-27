@@ -97,13 +97,17 @@ public class Line extends BaseEntity {
             .findFirst();
     }
 
+    private Optional<Section> findFromDownStation(final Station station) {
+        return sections.stream()
+            .filter(it -> it.getDownStation() == station)
+            .findFirst();
+    }
+
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == finalDownStation)
-                .findFirst();
+            Optional<Section> nextLineStation = findFromDownStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -119,9 +123,7 @@ public class Line extends BaseEntity {
         }
 
         Optional<Section> upLineStation = findFromUpStation(station);
-        Optional<Section> downLineStation = sections.stream()
-            .filter(it -> it.getDownStation() == station)
-            .findFirst();
+        Optional<Section> downLineStation = findFromDownStation(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
@@ -162,9 +164,7 @@ public class Line extends BaseEntity {
             sections
                 .add(new Section(this, upStation, downStation, distance));
         } else if (isDownStationExisted) {
-            sections.stream()
-                .filter(it -> it.getDownStation() == downStation)
-                .findFirst()
+            findFromDownStation(downStation)
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
 
             sections
