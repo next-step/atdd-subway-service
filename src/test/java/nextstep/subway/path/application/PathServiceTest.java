@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import nextstep.subway.common.constant.ErrorCode;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -94,10 +93,8 @@ public class PathServiceTest {
         // then
         assertAll(
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(5),
-                () -> assertThat(pathResponse.getStations()).containsExactlyElementsOf(
-                        Stream.of(교대역, 남부터미널역, 양재역)
-                                .map(StationResponse::from)
-                                .collect(Collectors.toList()))
+                () -> assertThat(pathResponse.getStations().stream().map(StationResponse::getName).collect(Collectors.toList()))
+                        .containsExactlyElementsOf(Arrays.asList("교대역", "남부터미널역", "양재역"))
         );
     }
 

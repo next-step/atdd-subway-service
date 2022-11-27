@@ -19,8 +19,8 @@ public class LineRestAssured {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then().log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {

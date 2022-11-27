@@ -5,12 +5,11 @@ import nextstep.subway.member.domain.Member;
 public class MemberRequest {
     private String email;
     private String password;
-    private Integer age;
+    private int age;
 
-    public MemberRequest() {
-    }
+    private MemberRequest() {}
 
-    public MemberRequest(String email, String password, Integer age) {
+    public MemberRequest(String email, String password, int age) {
         this.email = email;
         this.password = password;
         this.age = age;
@@ -29,6 +28,6 @@ public class MemberRequest {
     }
 
     public Member toMember() {
-        return new Member(email, password, age);
+        return Member.of(email, password, age);
     }
 }
