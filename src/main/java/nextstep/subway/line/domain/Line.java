@@ -55,7 +55,7 @@ public class Line extends BaseEntity {
     public List<Section> getSections() {
         return sections.getSections();
     }
-    
+
     public void addSection(Station upStation, Station downStation, int distance) {
         List<Station> stations = getStations();
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it.equals(upStation));
