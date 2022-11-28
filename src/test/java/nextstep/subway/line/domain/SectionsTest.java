@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-import static nextstep.subway.station.StationFixture.stationA;
-import static nextstep.subway.station.StationFixture.stationB;
+import static nextstep.subway.station.StationFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -18,11 +17,24 @@ public class SectionsTest {
 
         Sections sections = new Sections();
         sections.add(SectionFixture.sectionAB());
+
+        assertAll(
+                () -> assertThat(sections.size()).isEqualTo(1),
+                () -> assertThat(sections.getStations()).containsExactly(stationA(), stationB())
+        );
+    }
+
+    @DisplayName("A-B-C 구간일 경우 A역 B역 C역을 반환한다.")
+    @Test
+    void addSection() {
+
+        Sections sections = new Sections();
+        sections.add(SectionFixture.sectionAB());
         sections.add(SectionFixture.sectionBC());
 
         assertAll(
                 () -> assertThat(sections.size()).isEqualTo(2),
-                () -> assertThat(sections.getStations()).containsExactly(stationA(), stationB())
+                () -> assertThat(sections.getStations()).containsExactly(stationA(), stationB(), stationC())
         );
     }
 
