@@ -2,7 +2,7 @@ package nextstep.subway.path;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static nextstep.subway.station.StationAcceptanceTestFixture.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

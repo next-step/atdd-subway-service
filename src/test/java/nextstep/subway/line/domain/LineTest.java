@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import static nextstep.subway.line.domain.LineTestFixture.createLine;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import nextstep.subway.station.domain.Station;
@@ -19,8 +20,8 @@ class LineTest {
         서초역 = new Station("서초역");
         교대역 = new Station("교대역");
         강남역 = new Station("강남역");
-        역2개_2호선 = Line.builder().upStation(서초역).downStation(강남역).distance(10).build();
-        역3개_2호선 = Line.builder().upStation(서초역).downStation(강남역).distance(10).build();
+        역2개_2호선 = createLine("2호선", 서초역, 강남역, 10);
+        역3개_2호선 = createLine("2호선", 서초역, 강남역, 10);
         역3개_2호선.addSection(new Section(서초역, 교대역, 5));
     }
 

@@ -1,17 +1,26 @@
 package nextstep.subway.member;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.로그인_됨;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.내_정보_삭제_요청;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.내_정보_삭제됨;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.내_정보_수정_요청;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.내_정보_수정됨;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.내_정보_조회_요청;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.내_정보_조회됨;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.회원_삭제_요청;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.회원_삭제됨;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.회원_생성됨;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.회원_생성을_요청;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.회원_정보_수정_요청;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.회원_정보_수정됨;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.회원_정보_조회_요청;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.회원_정보_조회됨;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -45,73 +54,39 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    /**
+     * Feature: 내 정보 관련 기능
+     *
+     *   Background
+     *     Given 회원 생성 요청
+     *     And 회원 생성 됨
+     *     And 로그인 됨
+     *
+     *   Scenario: 나의 정보를 관리
+     *     When 내 정보 조회 요청
+     *     Then 내 정보 조회 됨
+     *     When 내 정보 수정 요청
+     *     Then 내 정보 수정 됨
+     *     When 내 정보 삭제 요청
+     *     Then 내 정보 삭제 됨
+     */
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+        String accessToken = 로그인_됨(EMAIL, PASSWORD);
 
-    }
+        ExtractableResponse<Response> findResponse = 내_정보_조회_요청(accessToken);
 
-    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
+        내_정보_조회됨(findResponse, EMAIL, AGE);
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().post("/members")
-                .then().log().all()
-                .extract();
-    }
+        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(accessToken, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
 
-    public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
+        내_정보_수정됨(updateResponse, NEW_EMAIL, NEW_AGE);
 
-        return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(uri)
-                .then().log().all()
-                .extract();
-    }
+        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(accessToken);
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
-        String uri = response.header("Location");
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
-
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().put(uri)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-        return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
-    }
-
-    public static void 회원_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
-        MemberResponse memberResponse = response.as(MemberResponse.class);
-        assertThat(memberResponse.getId()).isNotNull();
-        assertThat(memberResponse.getEmail()).isEqualTo(email);
-        assertThat(memberResponse.getAge()).isEqualTo(age);
-    }
-
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 회원_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        내_정보_삭제됨(deleteResponse);
     }
 }
