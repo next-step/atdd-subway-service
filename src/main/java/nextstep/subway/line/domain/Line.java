@@ -43,10 +43,6 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
-    public void add(Section section){
-        sections.add(section);
-    }
-
     public void removeStation(Station station) {
         sections.removeStation(this, station);
     }
