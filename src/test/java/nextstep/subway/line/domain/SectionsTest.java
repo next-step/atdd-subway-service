@@ -87,4 +87,14 @@ class SectionsTest {
         assertThat(sections.getStations()).containsExactly(모란, 서현);
         assertThat(sections.getSections()).hasSize(1);
     }
+
+    @Test
+    void 상행역_매칭을_기준으로_사이_구간_추가() {
+        sections.add(null, 강남, 판교, 5);
+
+        sections.addSection(new Section(null, 강남, 서현, 1));
+
+        assertThat(sections.getStations()).containsExactly(강남, 서현, 판교);
+        assertThat(sections.getSections()).hasSize(2);
+    }
 }

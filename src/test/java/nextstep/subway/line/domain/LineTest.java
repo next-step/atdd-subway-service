@@ -73,4 +73,14 @@ class LineTest {
         assertThat(line.getStations()).containsExactly(모란, 서현);
         assertThat(line.getSections()).hasSize(1);
     }
+
+    @Test
+    void 상행역_매칭을_기준으로_사이_구간_추가() {
+        Line line = new Line("신분당선", "red", 강남, 판교, 10);
+
+        line.addSection(강남, 서현, 5);
+
+        assertThat(line.getStations()).containsExactly(강남, 서현, 판교);
+        assertThat(line.getSections()).hasSize(2);
+    }
 }

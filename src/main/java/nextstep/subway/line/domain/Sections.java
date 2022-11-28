@@ -67,18 +67,36 @@ public class Sections {
         return stations;
     }
 
-    public void addSection(Section section) {
+    public void addSection(Section newSection) {
         List<Station> stations = getStations();
-        validateAllOrNothingSection(section.getUpStation(), section.getDownStation(), stations);
+        validateAllOrNothingSection(newSection.getUpStation(), newSection.getDownStation(), stations);
 
-        ifStationsIsEmptyThenAddSection(section, stations);
+        ifStationsIsEmptyThenAddSection(newSection, stations);
     }
 
-    private void ifStationsIsEmptyThenAddSection(Section section, List<Station> stations) {
+    private void ifStationsIsEmptyThenAddSection(Section newSection, List<Station> stations) {
         if (stations.isEmpty()) {
-            sections.add(section);
+            sections.add(newSection);
             return;
         }
+        addBetweenByUpStation(newSection, stations);
+    }
+
+    private void addBetweenByUpStation(Section newSection, List<Station> stations) {
+        if (isAnyMatchInStations(stations, newSection.getUpStation())) {
+            sections.stream()
+                    .filter(section -> section.getUpStation() == newSection.getUpStation())
+                    .findFirst()
+                    .ifPresent(section -> section
+                            .updateUpStation(newSection.getDownStation(), newSection.getDistance())
+                    );
+
+            sections.add(newSection);
+        }
+    }
+
+    private boolean isAnyMatchInStations(List<Station> stations, Station findStation) {
+        return stations.stream().anyMatch(station -> station == findStation);
     }
 
     private void validateAllOrNothingSection(Station upStation, Station downStation, List<Station> stations) {
