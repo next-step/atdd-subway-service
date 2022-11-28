@@ -32,8 +32,8 @@ public class LineResponse {
         this.modifiedDate = modifiedDate;
     }
 
-    public static LineResponse of(Line line, List<Station> stations) {
-        List<StationResponse> stationResponses = stations
+    public static LineResponse of(Line line) {
+        List<StationResponse> stationResponses = line.getStations()
                 .stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());

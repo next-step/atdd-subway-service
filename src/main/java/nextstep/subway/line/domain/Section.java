@@ -25,13 +25,25 @@ public class Section {
     @Embedded
     private Distance distance;
 
-    public Section() {}
+    protected Section() {}
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = new Distance(distance);
+    }
+
+    public void updateUpStation(Station station, int newDistance) {
+        distance.checkValidationSize(newDistance);
+        distance.minusNewDistance(newDistance);
+        this.upStation = station;
+    }
+
+    public void updateDownStation(Station station, int newDistance) {
+        distance.checkValidationSize(newDistance);
+        distance.minusNewDistance(newDistance);
+        this.downStation = station;
     }
 
     public Long getId() {
@@ -54,15 +66,4 @@ public class Section {
         return distance.value();
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        distance.checkValidationSize(newDistance);
-        distance.minusNewDistance(newDistance);
-        this.upStation = station;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        distance.checkValidationSize(newDistance);
-        distance.minusNewDistance(newDistance);
-        this.downStation = station;
-    }
 }

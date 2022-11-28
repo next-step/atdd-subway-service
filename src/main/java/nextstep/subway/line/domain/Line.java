@@ -107,8 +107,8 @@ public class Line extends BaseEntity {
 
         addedResetRemoveSection(upLineStation, downLineStation);
 
-        upLineStation.ifPresent(it -> sections.getList().remove(it));
-        downLineStation.ifPresent(it -> sections.getList().remove(it));
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
     }
 
     private void addedResetRemoveSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
@@ -158,10 +158,6 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
-    }
-
-    public List<Section> getSections() {
-        return sections.getList();
     }
 
 }

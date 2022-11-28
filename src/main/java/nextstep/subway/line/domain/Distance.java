@@ -28,4 +28,5 @@ public class Distance {
     public void minusNewDistance(int newDistance) {
         this.distance -= newDistance;
     }
+
 }

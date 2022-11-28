@@ -25,8 +25,8 @@ public class Sections {
         sections.add(section);
     }
 
-    public List<Section> getList() {
-        return sections;
+    public void remove(Section section) {
+        sections.remove(section);
     }
 
     public boolean isEmpty() {
@@ -66,4 +66,5 @@ public class Sections {
     public boolean isLessThenSize(int size) {
         return sections.size() <= size;
     }
+
 }
