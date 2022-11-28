@@ -56,9 +56,9 @@ class PathServiceTest {
         불광역 = new Station("불광역");
         판교역 = new Station("판교역");
         양재역 = new Station("양재역");
-        일호선 = LineTestFactory.create("일호선", "bg-red-600", 인천역, 부평역, 10);
-        삼호선 = LineTestFactory.create("삼호선", "bg-red-500", 연신내역, 불광역, 10);
-        신분당선 = LineTestFactory.create("신분당선", "bg-red-400", 판교역, 양재역, 10);
+        일호선 = LineTestFactory.create("일호선", "bg-red-600", 인천역, 부평역, 10, 0);
+        삼호선 = LineTestFactory.create("삼호선", "bg-red-500", 연신내역, 불광역, 10, 0);
+        신분당선 = LineTestFactory.create("신분당선", "bg-red-400", 판교역, 양재역, 10, 0);
         일호선.addSection(SectionTestFactory.create(부평역, 연신내역, 10));
     }
 
