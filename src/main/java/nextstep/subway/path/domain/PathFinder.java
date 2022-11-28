@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PathFinder {
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private final WeightedMultigraph<Station, SectionEdge> graph;
     private final Lines lines;
 
     public PathFinder(List<Line> lines) {
-        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        graph = new WeightedMultigraph<>(SectionEdge.class);
         this.lines = new Lines(lines);
 
         initializeVertex();
@@ -33,16 +33,17 @@ public class PathFinder {
 
     private void initializeEdgeWeight() {
         lines.getSections()
-                .forEach(section -> graph.setEdgeWeight(
-                        graph.addEdge(section.getUpStation(), section.getDownStation()),
-                        section.getDistance().get())
-                );
+                .forEach(section -> {
+                    SectionEdge sectionEdge = new SectionEdge(section);
+                    graph.addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
+                    graph.setEdgeWeight(sectionEdge, section.getDistance().get());
+                });
     }
 
     public PathResponse shortestPath(Station sourceStation, Station targetStation) {
         validateBefore(sourceStation, targetStation);
 
-        GraphPath<Station, DefaultWeightedEdge> shortestPath =
+        GraphPath<Station, SectionEdge> shortestPath =
                 new DijkstraShortestPath<>(graph).getPath(sourceStation, targetStation);
 
         validateAfter(shortestPath);
@@ -72,7 +73,7 @@ public class PathFinder {
         }
     }
 
-    private void validateAfter(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
+    private void validateAfter(GraphPath<Station, SectionEdge> shortestPath) {
         if (shortestPath == null) {
             throw new IllegalArgumentException(ErrorCode.FIND_PATH_NOT_CONNECT.getMessage());
         }
