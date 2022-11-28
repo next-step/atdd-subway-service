@@ -22,7 +22,7 @@ public class SectionTest {
 
     @Test
     void 생성() {
-        Section section = new Section(신분당선, 강남역, 광교역, TEN);
+        Section section = Section.of(신분당선, 강남역, 광교역, TEN);
         assertAll(
                 () -> assertThat(section.getLine().getName()).isEqualTo("신분당선"),
                 () -> assertThat(section.getLine().getColor()).isEqualTo("red"),
@@ -34,7 +34,7 @@ public class SectionTest {
 
     @Test
     void 상행역_수정() {
-        Section section = new Section(신분당선, 강남역, 광교역, TEN);
+        Section section = Section.of(신분당선, 강남역, 광교역, TEN);
         section.updateUpStation(판교역, FOUR);
         assertAll(
                 () -> assertThat(section.getUpStation()).isEqualTo(판교역),
@@ -44,7 +44,7 @@ public class SectionTest {
 
     @Test
     void 하행역_수정() {
-        Section section = new Section(신분당선, 강남역, 광교역, TEN);
+        Section section = Section.of(신분당선, 강남역, 광교역, TEN);
         section.updateDownStation(판교역, FOUR);
         assertAll(
                 () -> assertThat(section.getDownStation()).isEqualTo(판교역),
@@ -54,7 +54,7 @@ public class SectionTest {
 
     @Test
     void 역과_역_사이_거리_초과_입력() {
-        Section section = new Section(신분당선, 강남역, 광교역, TEN);
+        Section section = Section.of(신분당선, 강남역, 광교역, TEN);
         assertThatThrownBy(
                 () -> section.updateUpStation(판교역, FIFTY))
         .isInstanceOf(RuntimeException.class);

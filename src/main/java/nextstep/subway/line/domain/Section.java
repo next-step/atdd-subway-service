@@ -31,14 +31,18 @@ public class Section {
     @Embedded
     private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, Distance distance) {
+    private Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section of(Line line, Station upStation, Station downStation, Distance distance){
+        return new Section(line, upStation, downStation, distance);
     }
 
     public Long getId() {
@@ -71,11 +75,6 @@ public class Section {
         validateDistance(newDistance);
         this.downStation = station;
         this.distance.minusDistance(newDistance);
-    }
-
-    public Distance plusDistance(Section otherSection){
-        this.distance.plusDistance(otherSection.getDistance());
-        return this.distance;
     }
 
     private void validateDistance(Distance newDistance){

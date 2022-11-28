@@ -29,13 +29,13 @@ public class Sections {
         validateRegister(upStation, downStation);
 
         if (sections.isEmpty()) {
-            add(new Section(line, upStation, downStation, distance));
+            add(Section.of(line, upStation, downStation, distance));
             return;
         }
 
         updateUpStation(upStation, downStation, distance);
         updateDownStation(upStation, downStation, distance);
-        add(new Section(line, upStation, downStation, distance));
+        add(Section.of(line, upStation, downStation, distance));
     }
 
     private void updateUpStation(Station upStation, Station downStation, Distance distance) {
@@ -67,8 +67,8 @@ public class Sections {
         if (upSection.isPresent() && downSection.isPresent()) {
             Station newUpStation = downSection.get().getUpStation();
             Station newDownStation = upSection.get().getDownStation();
-            Distance newDistance = upSection.get().plusDistance(downSection.get());
-            add(new Section(line, newUpStation, newDownStation, newDistance));
+            Distance newDistance = Distance.from(upSection.get().getDistance(), downSection.get().getDistance());
+            add(Section.of(line, newUpStation, newDownStation, newDistance));
         }
 
         upSection.ifPresent(this::removeSection);

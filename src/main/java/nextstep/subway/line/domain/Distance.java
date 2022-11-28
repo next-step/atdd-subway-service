@@ -9,7 +9,7 @@ public class Distance {
     @Column
     private int distance;
 
-    public Distance() {
+    protected Distance() {
     }
 
     private Distance(int value) {
@@ -18,6 +18,10 @@ public class Distance {
 
     public static Distance from(int value){
         return new Distance(value);
+    }
+
+    public static Distance from(Distance distance1, Distance distance2){
+        return from(distance1.getDistance() + distance2.getDistance());
     }
 
     public int getDistance() {

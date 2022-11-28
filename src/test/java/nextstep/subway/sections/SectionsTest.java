@@ -80,7 +80,7 @@ public class SectionsTest {
         assertAll(
                 () -> assertThat(sections.getSections().get(0).getUpStation()).isEqualTo(강남역),
                 () -> assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(광교역),
-                () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(TEN)
+                () -> assertThat(sections.getSections().get(0).getDistance().getDistance()).isEqualTo(10)
         );
     }
 
