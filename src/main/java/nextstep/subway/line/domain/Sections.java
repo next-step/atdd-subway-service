@@ -91,13 +91,12 @@ public class Sections {
         Station currentStation = findFirstStationOfLine();
         List<Station> stations = Lists.newArrayList(currentStation);
 
-        while (currentStation != null) {
-            Optional<Station> nextStation = findNextStation(currentStation);
-            if (!nextStation.isPresent()) {
-                break;
-            }
+        Optional<Station> nextStation = findNextStation(currentStation);
+
+        while (nextStation.isPresent()) {
             currentStation = nextStation.get();
             stations.add(currentStation);
+            nextStation = findNextStation(currentStation);
         }
 
         return stations;
@@ -105,13 +104,11 @@ public class Sections {
 
     private Station findFirstStationOfLine() {
         Station currentUpStation = sections.get(0).getUpStation();
+        Optional<Station> prevStation = findPrevStation(currentUpStation);
 
-        while (currentUpStation != null) {
-            Optional<Station> prevStation = findPrevStation(currentUpStation);
-            if (!prevStation.isPresent()) {
-                break;
-            }
+        while (prevStation.isPresent()) {
             currentUpStation = prevStation.get();
+            prevStation = findPrevStation(currentUpStation);
         }
 
         return currentUpStation;
