@@ -57,10 +57,12 @@ public class SectionsTest {
     void 노선_제거() {
         Sections sections = new Sections();
         sections.addSection(신분당선, 강남역, 광교역, 10);
+        sections.addSection(신분당선, 강남역, 판교역, 2);
+        sections.addSection(신분당선, 판교역, 정자역, 2);
 
-        sections.removeStation(신분당선, 강남역);
+        sections.removeStation(신분당선, 판교역);
 
-        assertThat(sections.getSize()).isEqualTo(0);
+        assertThat(sections.getSize()).isEqualTo(2);
     }
 
     @Test

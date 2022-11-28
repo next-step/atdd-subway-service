@@ -56,7 +56,7 @@ public class Sections {
     }
 
     public void removeStation(Line line, Station station) {
-        validateEmpty();
+        validateSize();
 
         Optional<Section> upSection = findUpStation(station);
         Optional<Section> downSection = findDownStation(station);
@@ -147,8 +147,8 @@ public class Sections {
         }
     }
 
-    private void validateEmpty() {
-        if (getStations().size() <= 1) {
+    private void validateSize() {
+        if (sections.size() <= 1) {
             throw new RuntimeException();
         }
     }
