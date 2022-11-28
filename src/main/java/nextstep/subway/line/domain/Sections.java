@@ -67,9 +67,18 @@ public class Sections {
         return stations;
     }
 
-    public void addSection(Station upStation, Station downStation) {
+    public void addSection(Section section) {
         List<Station> stations = getStations();
-        validateAllOrNothingSection(upStation, downStation, stations);
+        validateAllOrNothingSection(section.getUpStation(), section.getDownStation(), stations);
+
+        ifStationsIsEmptyThenAddSection(section, stations);
+    }
+
+    private void ifStationsIsEmptyThenAddSection(Section section, List<Station> stations) {
+        if (stations.isEmpty()) {
+            sections.add(section);
+            return;
+        }
     }
 
     private void validateAllOrNothingSection(Station upStation, Station downStation, List<Station> stations) {
@@ -82,12 +91,15 @@ public class Sections {
     }
 
     private boolean isNotExistedSection(Station upStation, Station downStation, List<Station> stations) {
-        return !stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation);
+        return !stations.isEmpty() && stations.stream()
+                .noneMatch(station -> station == upStation) && stations.stream()
+                .noneMatch(station -> station == downStation);
     }
 
     private boolean isAlreadyExistedSection(Station upStation, Station downStation,
                                             List<Station> stations) {
-        return stations.stream().anyMatch(it -> it == upStation) & stations.stream().anyMatch(it -> it == downStation);
+        return stations.stream()
+                .anyMatch(station -> station == upStation) && stations.stream()
+                .anyMatch(station -> station == downStation);
     }
 }

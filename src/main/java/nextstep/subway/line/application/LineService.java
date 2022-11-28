@@ -83,12 +83,7 @@ public class LineService {
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
-        line.addSection(upStation, downStation);
-
-        if (stations.isEmpty()) {
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-            return;
-        }
+        line.addSection(upStation, downStation, request.getDistance());
 
         if (isUpStationExisted) {
             line.getSections().stream()

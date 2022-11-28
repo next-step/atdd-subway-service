@@ -59,8 +59,9 @@ class SectionsTest {
     @Test
     void 이미_등록된_구간은_동일하게_등록_불가능() {
         sections.add(null, 강남, 판교, 5);
+        Section section = new Section(null, 강남, 판교, 1);
 
-        ThrowingCallable addExistedSection = () -> sections.addSection(강남, 판교);
+        ThrowingCallable addExistedSection = () -> sections.addSection(section);
 
         assertThatIllegalArgumentException().isThrownBy(addExistedSection)
                 .withMessageContaining("이미 등록된 구간 입니다.");
@@ -69,10 +70,21 @@ class SectionsTest {
     @Test
     void 매칭되는_역이_전혀_없으면_등록_불가능() {
         sections.add(null, 강남, 판교, 5);
+        Section section = new Section(null, 모란, 서현, 1);
 
-        ThrowingCallable addNotExistedSection = () -> sections.addSection(모란, 서현);
+        ThrowingCallable addNotExistedSection = () -> sections.addSection(section);
 
         assertThatIllegalArgumentException().isThrownBy(addNotExistedSection)
                 .withMessageContaining("등록할 수 없는 구간 입니다.");
+    }
+
+    @Test
+    void 등록된_역이_없으면_구간을_추가한다() {
+        Sections sections = new Sections();
+
+        sections.addSection(new Section(null, 모란, 서현, 1));
+
+        assertThat(sections.getStations()).containsExactly(모란, 서현);
+        assertThat(sections.getSections()).hasSize(1);
     }
 }

@@ -48,7 +48,7 @@ class LineTest {
     void 이미_등록된_구간은_동일하게_등록_불가능() {
         Line line = new Line("신분당선", "red", 강남, 판교, 10);
 
-        ThrowingCallable addExistedSection = () -> line.addSection(강남, 판교);
+        ThrowingCallable addExistedSection = () -> line.addSection(강남, 판교, 5);
 
         assertThatIllegalArgumentException().isThrownBy(addExistedSection)
                 .withMessageContaining("이미 등록된 구간 입니다.");
@@ -58,9 +58,19 @@ class LineTest {
     void 매칭되는_역이_전혀_없으면_등록_불가능() {
         Line line = new Line("신분당선", "red", 강남, 판교, 10);
 
-        ThrowingCallable addNotExistedSection = () -> line.addSection(모란, 서현);
+        ThrowingCallable addNotExistedSection = () -> line.addSection(모란, 서현, 5);
 
         assertThatIllegalArgumentException().isThrownBy(addNotExistedSection)
                 .withMessageContaining("등록할 수 없는 구간 입니다.");
+    }
+
+    @Test
+    void 등록된_역이_없으면_구간을_추가한다() {
+        Line line = new Line("신분당선", "red");
+
+        line.addSection(모란, 서현, 5);
+
+        assertThat(line.getStations()).containsExactly(모란, 서현);
+        assertThat(line.getSections()).hasSize(1);
     }
 }
