@@ -23,7 +23,7 @@ class SectionsTest {
     @DisplayName("Sections 등록된 노선이 없으면 조회시 빈 리스트가 반환된다.")
     @Test
     void empty_stations() {
-        List<Station> stations = new Sections().getStations();
+        List<Station> stations = new Sections().extractStations();
 
         assertThat(stations).isEmpty();
     }
@@ -34,7 +34,7 @@ class SectionsTest {
         Sections sections = new Sections();
         sections.addLineStation(null, 강남역, 광교역, 10);
 
-        assertThat(sections.getStations()).containsExactly(강남역, 광교역);
+        assertThat(sections.extractStations()).containsExactly(강남역, 광교역);
     }
 
     @DisplayName("역 사이에 새로운 역을 추가할 수 있다.")
@@ -46,7 +46,7 @@ class SectionsTest {
 
         sections.addLineStation(null, 강남역, 양재역, 5);
 
-        assertThat(sections.getStations()).containsExactly(강남역, 양재역, 광교역);
+        assertThat(sections.extractStations()).containsExactly(강남역, 양재역, 광교역);
 
     }
 
@@ -59,7 +59,7 @@ class SectionsTest {
 
         sections.addLineStation(null, 논현역, 강남역, 10);
 
-        assertThat(sections.getStations()).containsExactly(논현역, 강남역, 광교역);
+        assertThat(sections.extractStations()).containsExactly(논현역, 강남역, 광교역);
     }
 
 
@@ -72,7 +72,7 @@ class SectionsTest {
 
         sections.addLineStation(null, 광교역, 호매실역, 10);
 
-        assertThat(sections.getStations()).containsExactly(강남역, 광교역, 호매실역);
+        assertThat(sections.extractStations()).containsExactly(강남역, 광교역, 호매실역);
     }
 
     @DisplayName("구간이 하나인 노선에서 마지막 구간을 제거할때 RuntimeException 이 발생한다.")
@@ -94,7 +94,7 @@ class SectionsTest {
 
         sections.removeLineStation(null, 논현역);
 
-        assertThat(sections.getStations()).containsExactly(강남역, 광교역);
+        assertThat(sections.extractStations()).containsExactly(강남역, 광교역);
     }
 
 }

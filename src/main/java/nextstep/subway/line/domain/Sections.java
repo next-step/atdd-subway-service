@@ -15,7 +15,7 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    public List<Station> getStations() {
+    public List<Station> extractStations() {
         if (sections.isEmpty()) {
             return Collections.emptyList();
         }
@@ -37,7 +37,7 @@ public class Sections {
     }
 
     public void addLineStation(Line line, Station upStation, Station downStation, int distance) {
-        List<Station> stations = getStations();
+        List<Station> stations = extractStations();
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
