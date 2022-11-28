@@ -65,7 +65,7 @@ public class Sections {
             return;
         }
         addValidate(newSection);
-        sections.forEach(section -> section.update(newSection));
+        sections.forEach(section -> section.updateStation(newSection));
         sections.add(newSection);
     }
 

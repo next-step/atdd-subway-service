@@ -47,7 +47,7 @@ npm run dev
   - [ ] 인수 테스트 작성
   - [ ] 단위 테스트 작성
     - [ ] Line
-    - [ ] Section
+    - [x] Section
     - [x] Distance
     - [x] Sections 일급 컬렌션
 - [ ] (선택) LineSectionAcceptanceTest 리팩터링

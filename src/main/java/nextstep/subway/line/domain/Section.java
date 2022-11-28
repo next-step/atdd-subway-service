@@ -81,12 +81,12 @@ public class Section {
         return this.upStation.equals(section.downStation);
     }
 
-    public void update(Section newSection) {
+    public void updateStation(Section newSection) {
         distance.validNewDistance(newSection.distance);
-        if (isEqualUpStation(newSection.upStation)) {
+        if (isEqualUpStation(newSection)) {
             updateUpStation(newSection);
         }
-        if (isEqualDownStation(newSection.downStation)) {
+        if (isEqualDownStation(newSection)) {
             updateDownStation(newSection);
         }
     }
@@ -98,25 +98,26 @@ public class Section {
         return section;
     }
 
-    public boolean isEqualUpStation(Station station) {
-        return upStation.equals(station);
+    public boolean isEqualUpStation(Section section) {
+        return this.upStation.equals(section.upStation);
+    }
+
+    public boolean isEqualDownStation(Section section) {
+        return this.downStation.equals(section.downStation);
     }
 
     private void updateUpStation(Section newSection) {
-        upStation = newSection.upStation;
-        distance.subtract(newSection.distance);
-    }
-
-    public boolean isEqualDownStation(Station station) {
-        return downStation.equals(station);
+        this.upStation = newSection.downStation;
+        this.distance = this.distance.subtract(newSection.distance);
     }
 
     private void updateDownStation(Section newSection) {
-        downStation = newSection.upStation;
-        distance.subtract(newSection.distance);
+        this.downStation = newSection.upStation;
+        this.distance = this.distance.subtract(newSection.distance);
     }
 
     public Collection<Station> findStations() {
         return Arrays.asList(upStation, downStation);
     }
+
 }
