@@ -107,6 +107,28 @@ public class Line extends BaseEntity {
         }
     }
 
+    public void removeLineStation(Station station) {
+        validRemoveLineStation();
+
+        Optional<Section> upLineStation = sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+
+        Optional<Section> downLineStation = sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
     private void addNewSectionWhenDownStationExisted(Station upStation, Station downStation, int distance) {
         sections.stream()
                 .filter(it -> it.getDownStation() == downStation)
@@ -125,16 +147,6 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
-    private void validAddLineStation(boolean isUpStationExisted, boolean isDownStationExisted) {
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!sections.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-    }
-
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
@@ -149,5 +161,21 @@ public class Line extends BaseEntity {
         }
 
         return downStation;
+    }
+
+    private void validAddLineStation(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!sections.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void validRemoveLineStation() {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
     }
 }
