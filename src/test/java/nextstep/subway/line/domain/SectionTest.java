@@ -47,6 +47,19 @@ public class SectionTest {
     }
 
     @Test
+    void 구간_병합을_통해_하행역읇_변경한다() {
+        // given
+        Station 종합운동장역 = new Station("종합운동장역");
+        Section 새로운구간 = new Section(강남역, 종합운동장역, new Distance(2));
+
+        // when
+        구간.updateStation(새로운구간);
+
+        // then
+        assertThat(구간.getUpStation()).isEqualTo(종합운동장역);
+    }
+
+    @Test
     void 이미_노선에_포함된_상행역과_하행역을_등록할_경우_예외가_발생한다() {
         // given
         Section newSection = new Section(강남역, 잠실역, new Distance(2));

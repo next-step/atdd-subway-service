@@ -3,9 +3,15 @@ package nextstep.subway.line.domain;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
 
 @Entity
 public class Section {
@@ -65,18 +71,6 @@ public class Section {
         return distance.value();
     }
 
-    public void updateUpStation(Station station, Distance newDistance) {
-        this.upStation = station;
-        this.distance.validNewDistance(newDistance);
-        this.distance.subtract(newDistance);
-    }
-
-    public void updateDownStation(Station station, Distance newDistance) {
-        this.downStation = station;
-        this.distance.validNewDistance(newDistance);
-        this.distance.subtract(newDistance);
-    }
-
     public boolean isNext(Section section) {
         return this.upStation.equals(section.downStation);
     }
@@ -91,12 +85,12 @@ public class Section {
         }
     }
 
-    public Section merge(Section nextSection) {
-        Distance newDistance = distance.add(nextSection.distance);
-        Section section = new Section(upStation, nextSection.getDownStation(), newDistance);
-        section.addLine(line);
-        return section;
-    }
+//    public Section  merge(Section nextSection) {
+//        Distance newDistance = distance.add(nextSection.distance);
+//        Section section = new Section(upStation, nextSection.getDownStation(), newDistance);
+//        section.addLine(line);
+//        return section;
+//    }
 
     public boolean isEqualUpStation(Section section) {
         return this.upStation.equals(section.upStation);
