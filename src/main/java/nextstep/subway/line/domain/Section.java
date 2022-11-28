@@ -37,20 +37,24 @@ public class Section {
     protected Section() {
     }
 
-    private Section(Long id, Line line, Station upStation, Station downStation, int distance) {
+    private Section(Long id, Line line, Station upStation, Station downStation, Distance distance) {
         this.id = id;
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = Distance.of(distance);
+        this.distance = distance;
     }
 
     public static Section of(Line line, Station upStation, Station downStation, int distance) {
-        return new Section(null, line, upStation, downStation, distance);
+        return new Section(null, line, upStation, downStation, Distance.of(distance));
     }
 
     public static Section of(Long id, Station upStation, Station downStation) {
-        return new Section(id, null, upStation, downStation, 0);
+        return new Section(id, null, upStation, downStation, Distance.zero());
+    }
+
+    public static Section of(Long id, Station upStation, Station downStation, int distance) {
+        return new Section(id, null, upStation, downStation, Distance.of(distance));
     }
 
     public void modifyUpStation(Section newSection) {
@@ -93,6 +97,14 @@ public class Section {
 
     public boolean hasSameDownStation(Section other) {
         return this.downStation.equals(other.downStation);
+    }
+
+    public Section merge(Section other) {
+        return new Section(null, this.line, this.upStation, other.downStation, this.distance.sum(other.distance));
+    }
+
+    public boolean hasDistance(Distance distance) {
+        return this.distance.equals(distance);
     }
 
     public Long getId() {

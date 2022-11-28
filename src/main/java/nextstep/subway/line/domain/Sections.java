@@ -1,7 +1,9 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.persistence.CascadeType;
@@ -65,10 +67,6 @@ public class Sections {
         return this.sections.stream().filter(section -> section.hasUpStation(station)).findFirst();
     }
 
-    public List<Section> getList() {
-        return this.sections;
-    }
-
     public void addNewSection(Section newSection) {
         Stations stations = toStations();
         SectionsValidator.validateAddNew(newSection, stations);
@@ -88,5 +86,41 @@ public class Sections {
         return this.sections.stream()
             .filter(section -> section.hasSameDownStation(newSection))
             .findFirst();
+    }
+
+    public void removeStation(Station station) {
+        SectionsValidator.validateRemoveStation(this);
+
+        Section upLineSection = findHasDownStation(station).orElse(null);
+        Section downLineSection = findHasUpStation(station).orElse(null);
+
+        remove(upLineSection);
+        remove(downLineSection);
+
+        addMergeSection(upLineSection, downLineSection);
+    }
+
+    private void remove(Section upLineStation) {
+        if (Objects.nonNull(upLineStation)) {
+            sections.remove(upLineStation);
+        }
+    }
+
+    private void addMergeSection(Section upSection, Section downSection) {
+        if (Objects.isNull(upSection)) {
+            return;
+        }
+        if (Objects.isNull(downSection)) {
+            return;
+        }
+        sections.add(upSection.merge(downSection));
+    }
+
+    public List<Section> getList() {
+        return Collections.unmodifiableList(this.sections);
+    }
+
+    public int size() {
+        return sections.size();
     }
 }

@@ -6,6 +6,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Distance {
+    private static final int ZERO = 0;
     public static final String VALIDATE_SUB_MESSAGE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
     private int distance;
 
@@ -18,6 +19,10 @@ public class Distance {
 
     public static Distance of(int distance) {
         return new Distance(distance);
+    }
+
+    public static Distance zero() {
+        return new Distance(ZERO);
     }
 
     public Distance sum(Distance other) {
@@ -33,10 +38,6 @@ public class Distance {
         if (this.distance <= other.distance) {
             throw new RuntimeException(VALIDATE_SUB_MESSAGE);
         }
-    }
-
-    public int getInt() {
-        return distance;
     }
 
     @Override
