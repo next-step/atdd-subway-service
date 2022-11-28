@@ -38,6 +38,7 @@ class PathServiceTest {
 
     private Station 강남역;
     private Station 판교역;
+    private Station 도곡역;
     private Line 신분당선;
     private Line 수인분당선;
 
@@ -47,7 +48,7 @@ class PathServiceTest {
         강남역 = Station.from("강남역");
         판교역 = Station.from("판교역");
         Station 양재역 = Station.from("양재역");
-        Station 도곡역 = Station.from("도곡역");
+        도곡역 = Station.from("도곡역");
         Station 한티역 = Station.from("한티역");
         Section 도곡_한티_구간 = Section.of(도곡역, 한티역, Distance.from(5));
         Section 양재_판교_구간 = Section.of(양재역, 판교역, Distance.from(5));
@@ -79,7 +80,7 @@ class PathServiceTest {
 
     @Test
     @DisplayName("출발/도착역을 같은 역으로 조회할 수 없다.")
-    void findPathByDepartureArrivalNotSameStation() {
+    void findPathByDepartureArrivalSameStation() {
         // given
         PathRequest pathRequest = new PathRequest(1L, 1L);
         when(stationService.findStationById(pathRequest.getDepartureId())).thenReturn(강남역);
@@ -90,5 +91,20 @@ class PathServiceTest {
         assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
                 .isInstanceOf(InvalidParameterException.class)
                 .hasMessage("출발역과 도착역은 같을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("출발역과 도착역이 연결되지 않은 경우 조회할 수 없다.")
+    void findPathByDepartureArrivalNotConnectStation() {
+        // given
+        PathRequest pathRequest = new PathRequest(1L, 4L);
+        when(stationService.findStationById(pathRequest.getDepartureId())).thenReturn(강남역);
+        when(stationService.findStationById(pathRequest.getArrivalId())).thenReturn(도곡역);
+        when(lineService.findAll()).thenReturn(Arrays.asList(신분당선, 수인분당선));
+
+        // when & then
+        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
+                .isInstanceOf(InvalidParameterException.class)
+                .hasMessage("출발역과 도착역이 연결되지 않았습니다.");
     }
 }
