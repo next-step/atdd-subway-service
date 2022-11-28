@@ -70,15 +70,18 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - 지하철 노선 제거
 - LineService 기능 목록
   - saveLine - 노선 저장
-  - findLines - 노선 목로고 조회
+  - findLines - 노선 목록 조회
   - findLineById - 아이디로 지하철 노선 단일 조회
   - findLineResponseById - 아이디로 지하철 노선 저회 후 LineResponse로 반환
   - updateLine - 노선 이름과 색 업데이트
   - deleteLineById - 노선 삭제
   - addLineStation - 구간 추가
+    -> Line 으로 이동
   - removeLineStation - 구간 삭제
   - getStations - 노선에 추가된 역 조회
+    -> Line 으로 이동
   - findUpStation - 상행 종점 조회
+    -> Line 으로 이동
 
 ### 요구사항 설명
 #### 인수 테스트 기반 리팩터링
