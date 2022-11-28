@@ -70,9 +70,4 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
-
-    public Stream<Station> stations() {
-        return Stream.of(upStation, downStation);
-    }
-
 }
