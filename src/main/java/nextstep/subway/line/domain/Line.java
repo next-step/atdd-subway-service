@@ -50,6 +50,10 @@ public class Line extends BaseEntity {
         return sections.get();
     }
 
+    public ExtraFare getExtraFare() {
+        return extraFare;
+    }
+
     public void update(String name, String color) {
         this.name = name;
         this.color = color;

@@ -53,7 +53,13 @@ public class PathFinder {
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
 
-        return new PathResponse(responses, (int) shortestPath.getWeight(), new Fare(1250));
+        // Todo 리팩토링 대상
+        Lines pathLines = new Lines(shortestPath.getEdgeList()
+                .stream()
+                .map(SectionEdge::getLine)
+                .collect(Collectors.toList()));
+
+        return new PathResponse(responses, (int) shortestPath.getWeight(), new Fare(pathLines));
     }
 
     private void validateBefore(Station sourceStation, Station targetStation) {
