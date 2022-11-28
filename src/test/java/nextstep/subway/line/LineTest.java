@@ -14,7 +14,7 @@ public class LineTest {
 
     @Test
     void 생성() {
-        Line line = new Line(신분당선, RED);
+        Line line = Line.of(신분당선, RED);
         assertAll(
                 () -> assertThat(line.getName()).isEqualTo(신분당선),
                 () -> assertThat(line.getColor()).isEqualTo(RED)
@@ -23,7 +23,7 @@ public class LineTest {
 
     @Test
     void 노선_수정() {
-        Line line = new Line(신분당선, RED);
+        Line line = Line.of(신분당선, RED);
         line.update(수인분당선, YELLOW);
         assertAll(
                 () -> assertThat(line.getName()).isEqualTo(수인분당선),

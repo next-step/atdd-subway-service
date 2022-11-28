@@ -10,7 +10,7 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.Test;
 
 public class SectionsTest {
-    private final Line 신분당선 = new Line("신분당선", "red");
+    private final Line 신분당선 = Line.of("신분당선", "red");
     private final Station 강남역 = new Station("강남역");
     private final Station 광교역 = new Station("광교역");
     private final Station 판교역 = new Station("판교역");
