@@ -57,8 +57,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 # 🚀 1단계 - 인수 테스트 기반 리팩터링
 ## 요구사항
-- [ ] LineService 리팩터링
-- [ ] LineSectionAcceptanceTest 리팩터링
+- [x] LineService 리팩터링
+- [x] LineSectionAcceptanceTest 리팩터링
 
 ## 작업사항
 - LineAcceptanceTest 테스트 목록 
@@ -75,13 +75,15 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - findLineResponseById - 아이디로 지하철 노선 저회 후 LineResponse로 반환
   - updateLine - 노선 이름과 색 업데이트
   - deleteLineById - 노선 삭제
+  - addLineStation - 구간 추가 -> Line으로 비즈니스 로직 이동
+  - removeLineStation - 구간 삭제 -> Line으로 비즈니스 로직 이동
+  - ~~getStations - 노선에 추가된 역 조회~~
+  - ~~findUpStation - 상행 종점 조회~~
+- Line 기능 목록
   - addLineStation - 구간 추가
-    -> Line 으로 이동
   - removeLineStation - 구간 삭제
   - getStations - 노선에 추가된 역 조회
-    -> Line 으로 이동
   - findUpStation - 상행 종점 조회
-    -> Line 으로 이동
 
 ### 요구사항 설명
 #### 인수 테스트 기반 리팩터링
