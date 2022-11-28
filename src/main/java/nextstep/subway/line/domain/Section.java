@@ -92,11 +92,11 @@ public class Section {
     }
 
     public boolean isSameUpStationBySection(Section section) {
-        return upStation.isSameStation(section.getUpStation());
+        return upStation.isSameStation(section.upStation());
     }
 
     public boolean isSameDownStationBySection(Section section) {
-        return downStation.isSameStation(section.getDownStation());
+        return downStation.isSameStation(section.downStation());
     }
 
     public boolean isSameUpStationByStation(Station station) {
@@ -114,6 +114,10 @@ public class Section {
         return stations;
     }
 
+    public int distanceValue() {
+        return distance.value();
+    }
+
     public Long getId() {
         return id;
     }
@@ -122,11 +126,11 @@ public class Section {
         return line;
     }
 
-    public Station getUpStation() {
+    public Station upStation() {
         return upStation;
     }
 
-    public Station getDownStation() {
+    public Station downStation() {
         return downStation;
     }
 

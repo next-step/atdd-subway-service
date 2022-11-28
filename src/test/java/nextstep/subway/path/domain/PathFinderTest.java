@@ -49,9 +49,13 @@ class PathFinderTest {
     @Test
     @DisplayName("최단 경로 조회하기")
     void findShortestPath() {
+        // given
         PathFinder pathFinder = PathFinder.from(lines);
+
+        // when
         Path actual = pathFinder.findShortestPath(선릉역, 남부터미널역);
 
+        // then
         assertAll(
                 () -> assertThat(actual.stations()).hasSize(4),
                 () -> assertThat(actual.stations()).containsExactly(선릉역, 강남역, 양재역, 남부터미널역),

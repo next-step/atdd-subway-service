@@ -27,4 +27,12 @@ public class Path {
     public static Path of(List<Station> stations, Distance distance) {
         return new Path(stations, distance);
     }
+
+    public List<Station> stations() {
+        return stations;
+    }
+
+    public int distance() {
+        return distance.value();
+    }
 }

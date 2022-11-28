@@ -33,9 +33,9 @@ class SectionTest {
 
         // then
         assertAll(
-                () -> assertThat(actual.getUpStation()).isEqualTo(upStation),
-                () -> assertThat(actual.getDownStation()).isEqualTo(downStation),
-                () -> assertThat(actual.getDistance().getDistance()).isEqualTo(10)
+                () -> assertThat(actual.upStation()).isEqualTo(upStation),
+                () -> assertThat(actual.downStation()).isEqualTo(downStation),
+                () -> assertThat(actual.getDistance().value()).isEqualTo(10)
         );
     }
 

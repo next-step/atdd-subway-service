@@ -57,7 +57,7 @@ public class Distance {
         }
     }
 
-    public Integer getDistance() {
+    public Integer value() {
         return distance;
     }
 

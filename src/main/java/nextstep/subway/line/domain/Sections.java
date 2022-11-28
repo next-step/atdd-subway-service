@@ -104,7 +104,7 @@ public class Sections {
     }
 
     private void joinSections(Line line, Section upSection, Section downSection) {
-        Section section = Section.of(upSection.getUpStation(), downSection.getDownStation(),
+        Section section = Section.of(upSection.upStation(), downSection.downStation(),
                 upSection.addDistance(downSection));
         section.toLine(line);
         sections.add(section);
@@ -132,7 +132,7 @@ public class Sections {
 
     public List<Station> getSortStations() {
         Map<Station, Station> stationMap = sections.stream()
-                .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
+                .collect(Collectors.toMap(Section::upStation, Section::downStation));
 
         return sortStations(findTopStation(), stationMap);
     }
@@ -150,10 +150,10 @@ public class Sections {
 
     private Station findTopStation() {
         Set<Station> downStations = sections.stream()
-                .map(Section::getDownStation)
+                .map(Section::downStation)
                 .collect(Collectors.toSet());
 
-        return sections.stream().map(Section::getUpStation)
+        return sections.stream().map(Section::upStation)
                 .filter(station -> !downStations.contains(station))
                 .findAny()
                 .orElseThrow(() -> new InvalidParameterException(ERROR_MESSAGE_NOT_NULL_UP_STATION));
