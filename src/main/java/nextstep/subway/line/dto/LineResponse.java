@@ -27,8 +27,7 @@ public class LineResponse {
         );
     }
 
-    private LineResponse() {
-    }
+    private LineResponse() {}
 
     private LineResponse(
             Long id,
@@ -42,7 +41,7 @@ public class LineResponse {
         this.name = name;
         this.color = color;
         this.stations = stations.stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;

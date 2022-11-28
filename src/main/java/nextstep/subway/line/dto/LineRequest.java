@@ -12,8 +12,7 @@ public class LineRequest {
     private Long downStationId;
     private int distance;
 
-    private LineRequest() {
-    }
+    private LineRequest() {}
 
     private LineRequest(Builder builder) {
         this.name = builder.name;

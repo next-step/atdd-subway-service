@@ -1,24 +1,101 @@
 package nextstep.subway.auth.acceptance;
 
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import static nextstep.subway.member.MemberRestAssured.내_정보_조회_요청;
+import static nextstep.subway.member.MemberRestAssured.회원_생성을_요청;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
+    private static final String EMAIL = "programmer-sjk@email.com";
+    private static final String PASSWORD = "password";
+    private static final String WRONG_EMAIL = "fake@email.com";
+    private static final String WRONG_PASSWORD = "wrong_password";
 
-    @DisplayName("Bearer Auth")
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+
+        회원_생성을_요청(EMAIL, PASSWORD, 33);
+    }
+
+    @DisplayName("정상적으로 로그인을 할 수 있다")
     @Test
     void myInfoWithBearerAuth() {
+        // when
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
+
+        // then
+        로그인_성공(response);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
+    @DisplayName("잘못된 이메일로 로그인할 경우 실패한다")
     @Test
-    void myInfoWithBadBearerAuth() {
+    void myInfoWithWrongEmailAuth() {
+        // when
+        ExtractableResponse<Response> response = 로그인_요청(WRONG_EMAIL, PASSWORD);
+
+        // then
+        로그인_실패(response);
     }
 
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @DisplayName("잘못된 패스워드로 로그인할 경우 실패한다")
+    @Test
+    void myInfoWithWrongPasswordAuth() {
+        // when
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, WRONG_PASSWORD);
+
+        // then
+        로그인_실패(response);
+    }
+
+    @DisplayName("유효하지 않은 토큰으로 정보를 조회하는 경우 실패한다")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // when
+        ExtractableResponse<Response> response = 내_정보_조회_요청("InvalidToken");
+
+        // then
+        유효하지_않은_토큰(response);
     }
 
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        TokenRequest tokenRequest = new TokenRequest(email, password);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .extract();
+    }
+
+    private void 로그인_성공(ExtractableResponse<Response> response) {
+        TokenResponse tokenResponse = response.as(TokenResponse.class);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(tokenResponse.getAccessToken()).isNotEmpty()
+        );
+    }
+
+    private void 로그인_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private void 유효하지_않은_토큰(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }

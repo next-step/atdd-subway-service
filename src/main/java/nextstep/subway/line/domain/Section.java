@@ -27,8 +27,7 @@ public class Section {
     @Embedded
     private Distance distance;
 
-    public Section() {
-    }
+    protected Section() {}
 
     public Section(Station upStation, Station downStation, Distance distance) {
         this.upStation = upStation;

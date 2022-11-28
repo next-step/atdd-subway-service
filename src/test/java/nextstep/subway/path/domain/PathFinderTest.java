@@ -56,7 +56,7 @@ class PathFinderTest {
     void sameStationException() {
         // given
         Station 강남역 = new Station("강남역");
-        PathFinder pathFinder = new PathFinder(Arrays.asList(new Line()));
+        PathFinder pathFinder = new PathFinder(Arrays.asList(new Line("신분당선", "bg-red-600")));
 
         // when & then
         assertThatThrownBy(() -> pathFinder.shortestPath(강남역, 강남역))
@@ -70,7 +70,7 @@ class PathFinderTest {
         // given
         Station 강남역 = new Station("강남역");
         Station 판교역 = new Station("판교역");
-        PathFinder pathFinder = new PathFinder(Arrays.asList(new Line()));
+        PathFinder pathFinder = new PathFinder(Arrays.asList(new Line("신분당선", "bg-red-600")));
 
         // when & then
         assertThatThrownBy(() -> pathFinder.shortestPath(강남역, 판교역))

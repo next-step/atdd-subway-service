@@ -49,7 +49,7 @@ public class PathFinder {
 
         List<StationResponse> responses = shortestPath.getVertexList()
                 .stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
 
         return new PathResponse(responses, (int) shortestPath.getWeight());

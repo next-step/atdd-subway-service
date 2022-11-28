@@ -8,7 +8,10 @@ public enum ErrorCode {
     LAST_SECTION_CAN_NOT_DELETE("마지막 구간은 삭제할 수 없습니다."),
     FIND_PATH_SAME_SOURCE_TARGET("출발역과 도착역이 같습니다."),
     FIND_PATH_NOT_EXIST("최단 경로를 조회하려는 역이 존재하지 않습니다."),
-    FIND_PATH_NOT_CONNECT("출발역과 도착역이 연결이 되어 있지 않습니다.");
+    FIND_PATH_NOT_CONNECT("출발역과 도착역이 연결이 되어 있지 않습니다."),
+    MEMBER_NOT_EXIST_BY_EMAIL("해당 이메일로 조회되는 사용자가 없습니다."),
+    FAVORITE_SAME_SOURCE_TARGET("출발지와 도착지가 동일할 수 없습니다."),
+    INVALID_TOKEN("유효하지 않은 토큰입니다.");
 
     private final String message;
 

@@ -24,7 +24,7 @@ public class MockitoTest {
         LineRepository lineRepository = mock(LineRepository.class);
         StationRepository stationRepository = mock(StationRepository.class);
 
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
+        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line("신분당선", "bg-red-600")));
         LineService lineService = new LineService(lineRepository, stationRepository);
 
         // when
