@@ -1,5 +1,6 @@
 package nextstep.subway.line.unit;
 
+import nextstep.subway.exception.InvalidRequestException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("지하철 노선 기능")
 public class LineUnitTest {
@@ -38,6 +41,25 @@ public class LineUnitTest {
     @DisplayName("자히철 노선 내의 역 리스트 조회")
     void getStation() {
         assertThat(신분당선.getStations().size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("지하철 노선에 일부 영역 추가")
+    void addStation() {
+        신분당선.addStation(광교역, new Station("수원역"), 5);
+
+        assertAll(
+                () -> assertThat(신분당선.getStations().size()).isEqualTo(4),
+                () -> assertThrows(
+                        InvalidRequestException.class,
+                        () -> 신분당선.addStation(강남역, new Station("역삼역"), 15)),
+                () -> assertThrows(
+                        InvalidRequestException.class,
+                        () -> 신분당선.addStation(new Station("신논현역"), new Station("역삼역"), 15)),
+                () -> assertThrows(
+                        InvalidRequestException.class,
+                        () -> 신분당선.addStation(강남역, 판교역, 5))
+        );
     }
 
 }

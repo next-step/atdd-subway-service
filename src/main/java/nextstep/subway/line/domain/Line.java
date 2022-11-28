@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.exception.InvalidRequestException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -66,6 +67,47 @@ public class Line extends BaseEntity {
         }
 
         return stations;
+    }
+
+    public void addStation(Station upStation, Station downStation, int distance) {
+        List<Station> stations = getStations();
+
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+
+        checkExistAlreadySection(isUpStationExisted, isDownStationExisted);
+        checkValidAddedSection(stations, upStation, downStation);
+
+        if (stations.isEmpty()) {
+            sections.add(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        if (isUpStationExisted) {
+            sections.updateUpStation(upStation, downStation, distance);
+            sections.add(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        if (isDownStationExisted) {
+            sections.updateDownStation(upStation, downStation, distance);
+            sections.add(new Section(this, upStation, downStation, distance));
+            return;
+        }
+        throw new InvalidRequestException("추가할수 있는 지하철 역의 구간이 없습니다.");
+    }
+
+    private void checkValidAddedSection(List<Station> stations, Station upStation, Station downStation) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+                stations.stream().noneMatch(it -> it == downStation)) {
+            throw new InvalidRequestException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void checkExistAlreadySection(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new InvalidRequestException("이미 등록된 구간 입니다.");
+        }
     }
 
     private Station findUpStation() {

@@ -48,4 +48,18 @@ public class Sections {
                 .filter(it -> it.getUpStation() == finalUpStation)
                 .findFirst();
     }
+
+    public void updateUpStation(Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
+    }
+
+    public void updateDownStation(Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
+    }
 }
