@@ -33,7 +33,7 @@ public class Path {
         return stations.list();
     }
 
-    public int distance() {
+    public int distanceValue() {
         return distance.value();
     }
 }

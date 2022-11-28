@@ -59,7 +59,7 @@ class PathFinderTest {
         assertAll(
                 () -> assertThat(actual.stations()).hasSize(4),
                 () -> assertThat(actual.stations()).containsExactly(선릉역, 강남역, 양재역, 남부터미널역),
-                () -> assertThat(actual.distance()).isEqualTo(13)
+                () -> assertThat(actual.distanceValue()).isEqualTo(13)
         );
     }
 }

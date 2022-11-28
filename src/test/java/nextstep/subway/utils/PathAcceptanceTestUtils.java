@@ -13,13 +13,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class PathAcceptanceTestUtils {
-    private static final String DEPARTURE_PARAM = "departure";
-    private static final String ARRIVAL_PARAM = "arrival";
+    private static final String DEPARTURE_ID = "departureId";
+    private static final String ARRIVAL_ID = "arrivalId";
 
     public static ExtractableResponse<Response> 지하철_경로_조회_요청(StationResponse departure, StationResponse arrival) {
         Map<String, Long> params = new HashMap<>();
-        params.put(DEPARTURE_PARAM, departure.getId());
-        params.put(ARRIVAL_PARAM, arrival.getId());
+        params.put(DEPARTURE_ID, departure.getId());
+        params.put(ARRIVAL_ID, arrival.getId());
 
         return RestAssured
                 .given().log().all()
