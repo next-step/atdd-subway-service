@@ -73,7 +73,8 @@ public class LineService {
         line.removeSection(stationService.findStationById(stationId));
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+    private Line findLineById(Long id) {
+        return lineRepository.findById(id)
+                .orElseThrow(RuntimeException::new);
     }
 }
