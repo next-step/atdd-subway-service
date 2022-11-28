@@ -80,5 +80,21 @@ class LineTest {
         assertThat(신분당선.getStations()).containsExactly(강남역, 광교역, 호매실역);
     }
 
+    @DisplayName("구간이 하나인 노선에서 마지막 구간을 제거할때 RuntimeException 이 발생한다.")
+    @Test
+    void remove_last_one_section() {
 
+        assertThatThrownBy(() -> 신분당선.removeLineStation(강남역)).isInstanceOf(RuntimeException.class);
+    }
+
+    @DisplayName("노선에서 역을 제거할 수 있다.")
+    @Test
+    void name() {
+        Station 논현역 = new Station("논현역");
+        신분당선.addLineStation(논현역, 강남역, 10);
+
+        신분당선.removeLineStation(논현역);
+
+        assertThat(신분당선.getStations()).containsExactly(강남역, 광교역);
+    }
 }
