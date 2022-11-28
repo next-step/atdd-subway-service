@@ -48,6 +48,7 @@ public class FavoriteService {
         return FavoriteResponse.from(favorite);
     }
 
+    @Transactional
     public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
         Favorite favorite = findFavoriteById(favoriteId);
         Member member = findMemberById(loginMember.getId());
