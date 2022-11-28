@@ -116,11 +116,11 @@ public class Sections {
         sections.add(upSection.merge(downSection));
     }
 
-    public List<Section> getList() {
-        return Collections.unmodifiableList(this.sections);
-    }
-
     public int size() {
         return sections.size();
+    }
+
+    public List<Section> getList() {
+        return Collections.unmodifiableList(this.sections);
     }
 }

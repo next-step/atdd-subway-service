@@ -141,5 +141,4 @@ public class Section {
     public int hashCode() {
         return Objects.hash(getId());
     }
-
 }

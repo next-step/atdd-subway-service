@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -97,6 +98,34 @@ class SectionsTest {
         assertThat(sections.findHasDownStation(신당).get().hasDistance(Distance.of(5))).isTrue();
     }
 
+    @DisplayName("이미 존재하는 구획 추가 불가")
+    @Test
+    void addNewSection_ALREADY_EXISTED() {
+        // given
+        Section section = Section.of(4L, 왕십리, 신당, 5);
+
+        // when
+        // then
+        assertThatThrownBy(() -> sections.addNewSection(section))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessage(SectionsValidator.ALREADY_EXISTED_MESSAGE);
+    }
+
+    @DisplayName("상행 하행 모두 존재하지 않는 경우 구획 추가 불가")
+    @Test
+    void addNewSection_NOT_CONTAINS_ALL() {
+        // given
+        Station 청량리 = Station.of(5L, "청량리");
+        Station 시청 = Station.of(6L, "시청");
+        Section section = Section.of(4L, 청량리, 시청, 10);
+
+        // when
+        // then
+        assertThatThrownBy(() -> sections.addNewSection(section))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessage(SectionsValidator.NOT_CONTAINS_ALL_MESSAGE);
+    }
+
     @DisplayName("상행 종점 추가")
     @Test
     void addNewSection_upStation() {
@@ -156,5 +185,16 @@ class SectionsTest {
         // then
         assertThat(sections.toStations().getList()).containsExactly(왕십리, DDP, 을지로);
         assertThat(sections.findHasUpStation(왕십리).get().hasDistance(Distance.of(20))).isTrue();
+    }
+
+    @DisplayName("남은 역 갯수 1개 이하 제거 불가")
+    @Test
+    void removeStation_minSize() {
+        // given
+        Sections sections = Sections.from(Collections.singletonList(Section.of(4L, 왕십리, 을지로)));
+
+        // when
+        assertThatThrownBy(() -> sections.removeStation(왕십리))
+            .isInstanceOf(RuntimeException.class);
     }
 }
