@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -34,9 +35,14 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+    public void update(String name, String color) {
+        if (StringUtils.hasText(name)) {
+            this.name = name;
+        }
+
+        if (StringUtils.hasText(color)) {
+            this.color = color;
+        }
     }
 
     public Long getId() {
