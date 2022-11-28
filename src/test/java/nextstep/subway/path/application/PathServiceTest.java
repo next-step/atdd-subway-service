@@ -1,11 +1,13 @@
 package nextstep.subway.path.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
@@ -73,5 +75,20 @@ class PathServiceTest {
                         .containsExactly("강남역", "양재역", "판교역"),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(15)
         );
+    }
+
+    @Test
+    @DisplayName("출발/도착역을 같은 역으로 조회할 수 없다.")
+    void findPathByDepartureArrivalNotSameStation() {
+        // given
+        PathRequest pathRequest = new PathRequest(1L, 1L);
+        when(stationService.findStationById(pathRequest.getDepartureId())).thenReturn(강남역);
+        when(stationService.findStationById(pathRequest.getArrivalId())).thenReturn(강남역);
+        when(lineService.findAll()).thenReturn(Arrays.asList(신분당선, 수인분당선));
+
+        // when & then
+        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
+                .isInstanceOf(InvalidParameterException.class)
+                .hasMessage("출발역과 도착역은 같을 수 없습니다.");
     }
 }
