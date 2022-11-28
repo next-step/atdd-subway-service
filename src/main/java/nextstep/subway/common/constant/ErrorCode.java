@@ -29,6 +29,7 @@ public enum ErrorCode {
     즐겨찾기들의_회원은_동일해야_함("[ERROR] 즐겨찾기들의 회원은 동일해야 합니다."),
     자신의_즐겨찾기여야_함("[ERROR] 자신의 즐겨찾기여야 합니다."),
     비밀번호는_비어있을_수_없음("[ERROR] 비밀번호는 비어있을 수 없습니다."),
+    유효하지_않은_토큰("[ERROR] 유효하지 않은 토큰입니다."),
     ;
 
     private final String errorMessage;
