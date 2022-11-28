@@ -36,7 +36,7 @@ public class LineResponse {
                 line.getId(),
                 line.getName(),
                 line.getColor(),
-                line.getAllStations().stream()
+                line.getStations().stream()
                         .map(StationResponse::of)
                         .collect(Collectors.toList()),
                 line.getCreatedDate(),
