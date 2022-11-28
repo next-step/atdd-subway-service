@@ -140,4 +140,8 @@ public class Sections {
 
         return sortedStations;
     }
+
+    public List<Section> getSections() {
+        return sections;
+    }
 }
