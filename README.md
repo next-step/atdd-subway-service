@@ -40,12 +40,16 @@ npm run dev
 
 ## 🚀 1단계 - 인수 테스트 기반 리팩터링
 - [ ] LineService 리팩터링
-  - [x] LineService의 비즈니스 로직을 도메인으로 옮기기
-    - [x] Distance
-    - [x] Sections 일급 컬렌션
+- [ ] LineService의 비즈니스 로직을 도메인으로 옮기기
+    - [x] 노선 지하철 역 조회
+    - [ ] 노선 수정
+    - [ ] 노선 지하철 역 추가
   - [ ] 인수 테스트 작성
   - [ ] 단위 테스트 작성
-  - [ ] 코드 리팩토링
+    - [ ] Line
+    - [ ] Section
+    - [x] Distance
+    - [x] Sections 일급 컬렌션
 - [ ] (선택) LineSectionAcceptanceTest 리팩터링
 
 ---

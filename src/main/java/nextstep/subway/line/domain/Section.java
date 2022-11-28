@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import nextstep.subway.station.domain.Station;
 
@@ -27,14 +28,17 @@ public class Section {
     @Embedded
     private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
-        this.line = line;
+    public Section(Station upStation, Station downStation, Distance distance) {
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = new Distance(distance);
+        this.distance = distance;
+    }
+
+    public void addLine(Line line) {
+        this.line = line;
     }
 
     public Long getId() {
@@ -61,15 +65,58 @@ public class Section {
         return distance.value();
     }
 
-    public void updateUpStation(Station station, int newDistance) {
+    public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
         this.distance.validNewDistance(newDistance);
-        this.distance.subtract(new Distance(newDistance));
+        this.distance.subtract(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
+    public void updateDownStation(Station station, Distance newDistance) {
         this.downStation = station;
         this.distance.validNewDistance(newDistance);
-        this.distance.subtract(new Distance(newDistance));
+        this.distance.subtract(newDistance);
+    }
+
+    public boolean isNext(Section section) {
+        return this.upStation.equals(section.downStation);
+    }
+
+    public void update(Section newSection) {
+        distance.validNewDistance(newSection.distance);
+        if (isEqualUpStation(newSection.upStation)) {
+            updateUpStation(newSection);
+        }
+        if (isEqualDownStation(newSection.downStation)) {
+            updateDownStation(newSection);
+        }
+    }
+
+    public Section merge(Section nextSection) {
+        Distance newDistance = distance.add(nextSection.distance);
+        Section section = new Section(upStation, nextSection.getDownStation(), newDistance);
+        section.addLine(line);
+        return section;
+    }
+
+    public boolean isEqualUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    private void updateUpStation(Section newSection) {
+        upStation = newSection.upStation;
+        distance.subtract(newSection.distance);
+    }
+
+    public boolean isEqualDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
+    private void updateDownStation(Section newSection) {
+        downStation = newSection.upStation;
+        distance.subtract(newSection.distance);
+    }
+
+    public Collection<Station> findStations() {
+        return Arrays.asList(upStation, downStation);
     }
 }
