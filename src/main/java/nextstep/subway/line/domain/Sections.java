@@ -74,6 +74,35 @@ public class Sections {
         ifStationsIsEmptyThenAddSection(newSection, stations);
     }
 
+    public void removeSection(Line line, Station station) {
+        validateSectionsSize();
+
+        Optional<Section> upLineStation = findUpStationInSections(station);
+        Optional<Section> downLineStation = findDownStationInSections(station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private Optional<Section> findUpStationInSections(Station station) {
+        return sections.stream()
+                .filter(section -> section.getUpStation() == station)
+                .findFirst();
+    }
+
+    private Optional<Section> findDownStationInSections(Station station) {
+        return sections.stream()
+                .filter(section -> section.getDownStation() == station)
+                .findFirst();
+    }
+
     private void ifStationsIsEmptyThenAddSection(Section newSection, List<Station> stations) {
         if (stations.isEmpty()) {
             sections.add(newSection);
@@ -138,7 +167,7 @@ public class Sections {
                 .anyMatch(station -> station == downStation);
     }
 
-    public void removeLineStation() {
+    private void validateSectionsSize() {
         if (sections.size() <= 1) {
             throw new IllegalStateException();
         }

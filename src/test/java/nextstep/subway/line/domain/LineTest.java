@@ -99,8 +99,30 @@ class LineTest {
     void 구간이_하나_이하일때_지우려고_시도하면_오류가_발생한다() {
         Line line = new Line("신분당선", "red");
 
-        ThrowingCallable 구간_하나_이하일때_삭제시_오류_발생 = line::removeLineStation;
+        ThrowingCallable 구간_하나_이하일때_삭제시_오류_발생 = () -> line.removeSection(null);
 
         assertThatIllegalStateException().isThrownBy(구간_하나_이하일때_삭제시_오류_발생);
+    }
+
+    @Test
+    void 두개의_구간_사이_역을_지우면_하나의_구간으로_합쳐진다() {
+        Line line = new Line("신분당선", "red", 강남, 판교, 10);
+        line.addSection(서현, 판교, 5);
+
+        line.removeSection(서현);
+
+        assertThat(line.getStations()).containsExactly(강남, 판교);
+        assertThat(line.getSections()).hasSize(1);
+    }
+
+    @Test
+    void 두개의_구간_종점_역을_지우면_종점_구간만_지워진다() {
+        Line line = new Line("신분당선", "red", 강남, 판교, 10);
+        line.addSection(서현, 판교, 5);
+
+        line.removeSection(판교);
+
+        assertThat(line.getStations()).containsExactly(강남, 서현);
+        assertThat(line.getSections()).hasSize(1);
     }
 }

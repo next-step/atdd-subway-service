@@ -113,8 +113,30 @@ class SectionsTest {
     void 구간이_하나_이하일때_지우려고_시도하면_오류가_발생한다() {
         Sections sections = new Sections();
 
-        ThrowingCallable 구간_하나_이하일때_삭제시_오류_발생 = sections::removeLineStation;
+        ThrowingCallable 구간_하나_이하일때_삭제시_오류_발생 = () -> sections.removeSection(null, null);
 
         assertThatIllegalStateException().isThrownBy(구간_하나_이하일때_삭제시_오류_발생);
+    }
+
+    @Test
+    void 두개의_구간_사이_역을_지우면_하나의_구간으로_합쳐진다() {
+        sections.add(null, 강남, 판교, 5);
+        sections.addSection(new Section(null, 서현, 판교, 1));
+
+        sections.removeSection(null, 서현);
+
+        assertThat(sections.getStations()).containsExactly(강남, 판교);
+        assertThat(sections.getSections()).hasSize(1);
+    }
+
+    @Test
+    void 두개의_구간_종점_역을_지우면_종점_구간만_지워진다() {
+        sections.add(null, 강남, 판교, 5);
+        sections.addSection(new Section(null, 서현, 판교, 1));
+
+        sections.removeSection(null, 판교);
+
+        assertThat(sections.getStations()).containsExactly(강남, 서현);
+        assertThat(sections.getSections()).hasSize(1);
     }
 }
