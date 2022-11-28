@@ -87,6 +87,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(response);
     }
 
+    @DisplayName("타인의 즐겨찾기를 삭제할 수 없다")
+    @Test
+    void deleteOtherFavoriteException() {
+        // given
+        즐겨찾기_생성_요청(token, new FavoriteRequest(교대역.getId(), 연신내역.getId()));
+        String otherMemberEmail = "other@email.com";
+        회원_생성을_요청(otherMemberEmail, PASSWORD, AGE);
+        String otherToken = 로그인_요청(otherMemberEmail, PASSWORD).as(TokenResponse.class)
+                .getAccessToken();
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(otherToken, 1L);
+
+        // then
+        즐겨찾기_삭제_실패(response);
+    }
+
     private void 즐겨찾기_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -97,5 +114,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 즐겨찾기_삭제_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

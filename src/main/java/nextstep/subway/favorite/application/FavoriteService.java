@@ -52,8 +52,11 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void deleteFavoriteById(Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavoriteById(Long id, Long memberId) {
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(id, memberId)
+                .orElseThrow(() -> new EntityNotFound("즐겨찾기가 존재하지 않습니다."));
+
+        favoriteRepository.delete(favorite);
     }
 
     private Member findMemberById(Long id) {

@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.EntityNotFound;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
@@ -102,9 +104,25 @@ public class FavoriteServiceTest {
         Favorite favorite = favoriteRepository.save(new Favorite(member, sourceStation, targetStation));
 
         // when
-        favoriteService.deleteFavoriteById(favorite.getId());
+        favoriteService.deleteFavoriteById(favorite.getId(), member.getId());
 
         // then
         assertThat(favoriteRepository.findAll()).isEmpty();
+    }
+
+    @DisplayName("내 즐겨찾기가 아니라면 삭제할 수 없다")
+    @Test
+    void deleteOtherFavoriteException() {
+        // given
+        Member owner = memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        Station sourceStation = stationRepository.save(new Station("강남역"));
+        Station targetStation = stationRepository.save(new Station("판교역"));
+        Favorite favorite = favoriteRepository.save(new Favorite(owner, sourceStation, targetStation));
+        Member other = memberRepository.save(new Member("other@email.com", PASSWORD, AGE));
+
+        // when & then
+        assertThatThrownBy(() -> favoriteService.deleteFavoriteById(favorite.getId(), other.getId()))
+                .isInstanceOf(EntityNotFound.class)
+                .hasMessageContaining("즐겨찾기가 존재하지 않습니다.");
     }
 }
