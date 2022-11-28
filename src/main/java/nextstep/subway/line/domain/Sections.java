@@ -37,7 +37,7 @@ public class Sections {
     }
 
     private void validateRegister(Section section) {
-        if (!isFirst()) {
+        if (!sections.isEmpty()) {
             validateExistence(section);
         }
     }
@@ -49,10 +49,6 @@ public class Sections {
         if (!upStationExist && !downStationExist) {
             throw new LineException(LineExceptionType.CAN_NOT_REGISTER_SECTION);
         }
-    }
-
-    private boolean isFirst() {
-        return sections.size() == 0;
     }
 
     private void existsBothStation(final Section section) {
