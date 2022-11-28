@@ -121,4 +121,31 @@ public class Sections {
     public List<Section> getSections() {
         return sections;
     }
+
+    public void remove(Station station) {
+        validSectionSize();
+
+        Optional<Section> upLineStation = this.sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = this.sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        upLineStation.ifPresent(it -> this.sections.remove(it));
+        downLineStation.ifPresent(it -> this.sections.remove(it));
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            this.add(new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance));
+        }
+    }
+
+    private void validSectionSize() {
+        if (this.sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+    }
 }
