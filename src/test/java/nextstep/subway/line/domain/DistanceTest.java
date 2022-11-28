@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import nextstep.subway.common.constant.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
@@ -79,5 +80,23 @@ public class DistanceTest {
 
         // then
         assertThat(resultDistance.value()).isEqualTo(original + add);
+    }
+
+    @DisplayName("주어진 길이보다 크면 참을 반환한다.")
+    @Test
+    void isBiggerThanOtherDistance() {
+        // given
+        int actual = 50;
+        int expect = 40;
+        Distance distance = Distance.from(actual);
+
+        // when
+        boolean isBiggerThan = distance.isBiggerThan(Distance.from(expect));
+
+        // then
+        assertAll(
+                () -> assertThat(isBiggerThan).isTrue(),
+                () -> assertThat(isBiggerThan).isEqualTo(actual > expect)
+        );
     }
 }

@@ -38,6 +38,10 @@ public class Distance {
         return new Distance(this.distance + distance.distance);
     }
 
+    public boolean isBiggerThan(Distance distance) {
+        return this.distance > distance.distance;
+    }
+
     public int value() {
         return distance;
     }
