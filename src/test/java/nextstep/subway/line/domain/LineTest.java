@@ -89,7 +89,7 @@ class LineTest {
 
     @DisplayName("노선에서 역을 제거할 수 있다.")
     @Test
-    void name() {
+    void remove_station() {
         Station 논현역 = new Station("논현역");
         신분당선.addLineStation(논현역, 강남역, 10);
 
