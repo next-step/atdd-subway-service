@@ -67,4 +67,7 @@ public class Sections {
         return sections.size() <= size;
     }
 
+    public int size() {
+        return sections.size();
+    }
 }

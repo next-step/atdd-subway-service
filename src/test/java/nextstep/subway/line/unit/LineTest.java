@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("지하철 노선 기능")
-public class LineUnitTest {
+public class LineTest {
 
     private Station 강남역;
     private Station 광교역;
