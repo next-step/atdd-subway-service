@@ -41,7 +41,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
-    void createLine_new() {
+    void createLine() {
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
 
