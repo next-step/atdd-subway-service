@@ -131,6 +131,22 @@ public class FavoriteServiceTest {
                 .hasMessage(ErrorCode.존재하지_않는_역.getErrorMessage());
     }
 
+    @DisplayName("즐겨찾기 생성 시, 이미 존재하는 즐겨찾기라면 예외를 발생시킨다.")
+    @Test
+    void createFavoriteThrowErrorWhenFavoriteIsDuplicated() {
+        // given
+        FavoriteRequest favoriteRequest = new FavoriteRequest("1", "2");
+        when(memberRepository.findById(any())).thenReturn(Optional.of(회원));
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(강남역));
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(남부터미널역));
+        favoriteService.createFavorite(로그인한_회원, favoriteRequest);
+
+        // when & then
+        assertThatThrownBy(() -> favoriteService.createFavorite(로그인한_회원, favoriteRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorCode.이미_존재하는_즐겨찾기.getErrorMessage());
+    }
+
     @DisplayName("즐겨찾기 전체 목록을 조회한다.")
     @Test
     void findFavorites() {
