@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.InvalidSectionDistanceException;
+import nextstep.subway.message.ExceptionMessage;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -55,22 +57,42 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        checkValidDistance(newDistance);
-        this.upStation = station;
-        this.distance -= newDistance;
+    public void updateUpStation(Section section) {
+        checkValidDistance(section.distance);
+        this.upStation = section.downStation;
+        this.distance -= section.distance;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        checkValidDistance(newDistance);
-        this.downStation = station;
-        this.distance -= newDistance;
+    public void updateDownStation(Section section) {
+        checkValidDistance(section.distance);
+        this.downStation = section.upStation;
+        this.distance -= section.distance;
     }
 
     private void checkValidDistance(int newDistance) {
         if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new InvalidSectionDistanceException(ExceptionMessage.INVALID_SECTION_DISTANCE);
         }
+    }
+
+    public boolean hasAnyMatchedStation(Section section) {
+        return this.hasAnyMatchedThisUpStation(section) || this.hasAnyMatchedThisDownStation(section);
+    }
+
+    public boolean hasAnyMatchedThisUpStation(Section section) {
+        return this.upStation.equals(section.upStation) || this.downStation.equals(section.upStation);
+    }
+
+    public boolean hasAnyMatchedThisDownStation(Section section) {
+        return this.upStation.equals(section.downStation) || this.downStation.equals(section.downStation);
+    }
+
+    public boolean hasSameUpStation(Section section) {
+        return this.upStation.equals(section.upStation);
+    }
+
+    public boolean hasSameDownStation(Section section) {
+        return this.downStation.equals(section.downStation);
     }
 
     @Override

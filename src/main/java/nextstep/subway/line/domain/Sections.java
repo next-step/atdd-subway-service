@@ -1,5 +1,10 @@
 package nextstep.subway.line.domain;
 
+import com.google.common.collect.Lists;
+import nextstep.subway.exception.DuplicatedSectionException;
+import nextstep.subway.exception.EmptySectionException;
+import nextstep.subway.exception.InvalidSectionException;
+import nextstep.subway.message.ExceptionMessage;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -34,43 +39,44 @@ public class Sections {
 
     private void checkUniqueSection(Section section) {
         if (this.sections.contains(section)) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new DuplicatedSectionException(ExceptionMessage.DUPLICATED_SECTION);
         }
     }
 
     private void checkValidSection(Section section) {
-        List<Station> stations = this.getStations();
+        if (sections.isEmpty()) {
+            return;
+        }
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it1 -> it1 == section.getUpStation()) &&
-                stations.stream().noneMatch(it1 -> it1 == section.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        if (!hasAnyMatchedStation(section)) {
+            throw new InvalidSectionException(ExceptionMessage.INVALID_SECTION);
         }
     }
 
     private void updateUpStation(Section section) {
-        List<Station> stations = this.getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
+        boolean isUpStationExisted = sections.stream().anyMatch(it -> it.hasAnyMatchedThisUpStation(section));
 
         if (isUpStationExisted) {
             this.sections.stream()
-                    .filter(it -> it.getUpStation() == section.getUpStation())
+                    .filter(it -> it.hasSameUpStation(section))
                     .findFirst()
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
+                    .ifPresent(it -> it.updateUpStation(section));
         }
     }
 
     private void updateDownStation(Section section) {
-        List<Station> stations = this.getStations();
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+        boolean isDownStationExisted = sections.stream().anyMatch(it -> it.hasAnyMatchedThisDownStation(section));
 
         if (isDownStationExisted) {
             this.sections.stream()
-                    .filter(it -> it.getDownStation() == section.getDownStation())
+                    .filter(it -> it.hasSameDownStation(section))
                     .findFirst()
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-
+                    .ifPresent(it -> it.updateDownStation(section));
         }
+    }
+
+    private boolean hasAnyMatchedStation(Section section) {
+        return sections.stream().anyMatch(it -> it.hasAnyMatchedStation(section));
     }
 
     public List<Section> getSections() {
@@ -79,42 +85,47 @@ public class Sections {
 
     public List<Station> getStations() {
         if (this.sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        Station currentStation = findFirstStationOfLine();
+        List<Station> stations = Lists.newArrayList(currentStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        Optional<Station> nextStation = findNextStation(currentStation);
+
+        while (nextStation.isPresent()) {
+            currentStation = nextStation.get();
+            stations.add(currentStation);
+            nextStation = findNextStation(currentStation);
         }
 
         return stations;
     }
 
-    private Station findUpStation() {
-        Station downStation = this.sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+    private Station findFirstStationOfLine() {
+        Station currentUpStation = sections.get(0).getUpStation();
+        Optional<Station> prevStation = findPrevStation(currentUpStation);
+
+        while (prevStation.isPresent()) {
+            currentUpStation = prevStation.get();
+            prevStation = findPrevStation(currentUpStation);
         }
 
-        return downStation;
+        return currentUpStation;
+    }
+
+    private Optional<Station> findPrevStation(Station upStation) {
+        return sections.stream()
+                .filter(it -> it.getDownStation().equals(upStation))
+                .findFirst()
+                .map(Section::getUpStation);
+    }
+
+    private Optional<Station> findNextStation(Station downStation) {
+        return sections.stream()
+                .filter(it -> it.getUpStation().equals(downStation))
+                .findFirst()
+                .map(Section::getDownStation);
     }
 
     public void remove(Station station) {
@@ -141,7 +152,7 @@ public class Sections {
 
     private void checkValidRemovableStatus() {
         if (this.sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new EmptySectionException(ExceptionMessage.EMPTY_SECTION);
         }
     }
 }

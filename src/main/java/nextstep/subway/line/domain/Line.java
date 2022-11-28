@@ -11,30 +11,33 @@ public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String name;
-    private String color;
+
+    @Embedded
+    private LineName name;
+
+    @Embedded
+    private LineColor color;
 
     @Embedded
     private Sections sections = Sections.createEmpty();
 
-    public Line() {
+    protected Line() {
     }
 
     public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+        this.name = LineName.from(name);
+        this.color = LineColor.from(color);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
+        this.name = LineName.from(name);
+        this.color = LineColor.from(color);
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+        this.name = LineName.from(line.getName());
+        this.color = LineColor.from(line.getColor());
     }
 
     public Long getId() {
@@ -42,11 +45,11 @@ public class Line extends BaseEntity {
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     public String getColor() {
-        return color;
+        return color.getColor();
     }
 
     public void addSection(Section section) {
@@ -55,6 +58,10 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         return this.sections.getStations();
+    }
+
+    public List<Section> getSections() {
+        return sections.getSections();
     }
 
     public void removeSection(Station station) {
