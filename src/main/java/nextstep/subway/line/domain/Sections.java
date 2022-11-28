@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -88,16 +89,11 @@ public class Sections {
     }
 
     private Station findTerminalUpStation() {
-        Station downStation = this.sections.get(0).getUpStation();
-        while (downStation != null) {
-            Optional<Section> nextSection = findDownStation(downStation);
-            if (!nextSection.isPresent()) {
-                break;
-            }
-            downStation = nextSection.get().getUpStation();
-        }
-
-        return downStation;
+        return sections.stream()
+                .filter(section -> sections.stream().map(Section::getDownStation).noneMatch(Predicate.isEqual(section.getUpStation())))
+                .findFirst()
+                .map(Section::getUpStation)
+                .orElseThrow(RuntimeException::new);
     }
 
     public List<Station> getStations() {
@@ -109,13 +105,10 @@ public class Sections {
         Station downStation = findTerminalUpStation();
         stations.add(downStation);
 
-        while (downStation != null) {
-            Optional<Section> nextSection = findUpStation(downStation);
-            if (!nextSection.isPresent()) {
-                break;
-            }
-            downStation = nextSection.get().getDownStation();
-            stations.add(downStation);
+        Section nextSection = findUpStation(downStation).orElse(null);
+        while (nextSection != null) {
+            stations.add(nextSection.getDownStation());
+            nextSection = findUpStation(nextSection.getDownStation()).orElse(null);
         }
 
         return stations;
