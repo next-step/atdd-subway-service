@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,7 +31,8 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     protected Section() {
     }
@@ -40,7 +42,7 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = Distance.of(distance);
     }
 
     public static Section of(Line line, Station upStation, Station downStation, int distance) {
@@ -52,19 +54,13 @@ public class Section {
     }
 
     public void modifyUpStation(Section newSection) {
-        if (this.distance <= newSection.distance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
         this.upStation = newSection.downStation;
-        this.distance -= newSection.distance;
+        this.distance = this.distance.sub(newSection.distance);
     }
 
     public void modifyDownStation(Section newSection) {
-        if (this.distance <= newSection.distance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
         this.upStation = newSection.upStation;
-        this.distance -= newSection.distance;
+        this.distance = this.distance.sub(newSection.distance);
     }
 
     public boolean hasUpStation(Station station) {
@@ -115,7 +111,7 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
