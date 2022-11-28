@@ -5,7 +5,6 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.message.ExceptionMessage;
 import nextstep.subway.path.domain.DijkstraShortestPathFinder;
-import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -34,9 +33,10 @@ public class PathService {
         List<Section> sections = findAllSections();
 
         PathFinder pathFinder = DijkstraShortestPathFinder.from(sections);
-        Path path = pathFinder.findShortestPath(sourceStation, targetStation);
+        List<Station> stations = pathFinder.findAllStationsInShortestPath(sourceStation, targetStation);
+        int distance = pathFinder.findShortestDistance(sourceStation, targetStation);
 
-        return PathResponse.from(path);
+        return PathResponse.of(stations, distance);
     }
 
     private List<Section> findAllSections() {

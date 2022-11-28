@@ -70,11 +70,12 @@ class PathFinderTest {
     void findShortestPath() {
         PathFinder pathFinder = DijkstraShortestPathFinder.from(sections);
 
-        Path path = pathFinder.findShortestPath(양재역, 서현역);
+        List<Station> stations = pathFinder.findAllStationsInShortestPath(양재역, 서현역);
+        int distance = pathFinder.findShortestDistance(양재역, 서현역);
 
         assertAll(
-                () -> assertThat(path.getStations()).containsExactly(양재역, 수서역, 서현역),
-                () -> assertThat(path.getDistance()).isEqualTo(10)
+                () -> assertThat(stations).containsExactly(양재역, 수서역, 서현역),
+                () -> assertThat(distance).isEqualTo(10)
         );
     }
 
@@ -83,7 +84,7 @@ class PathFinderTest {
     void findShortestPathException1() {
         PathFinder pathFinder = DijkstraShortestPathFinder.from(sections);
 
-        Assertions.assertThatThrownBy(() -> pathFinder.findShortestPath(양재역, 양재역))
+        Assertions.assertThatThrownBy(() -> pathFinder.findAllStationsInShortestPath(양재역, 양재역))
                 .isInstanceOf(PathNotFoundException.class)
                 .hasMessageStartingWith(ExceptionMessage.SOURCE_AND_TARGET_EQUAL);
     }
@@ -93,7 +94,7 @@ class PathFinderTest {
     void findShortestPathException2() {
         PathFinder pathFinder = DijkstraShortestPathFinder.from(sections);
 
-        Assertions.assertThatThrownBy(() -> pathFinder.findShortestPath(양재역, 소요산역))
+        Assertions.assertThatThrownBy(() -> pathFinder.findAllStationsInShortestPath(양재역, 소요산역))
                 .isInstanceOf(PathNotFoundException.class)
                 .hasMessageStartingWith(ExceptionMessage.SOURCE_NOT_CONNECTED_TO_TARGET);
     }

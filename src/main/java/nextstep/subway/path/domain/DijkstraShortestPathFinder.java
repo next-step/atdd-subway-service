@@ -1,7 +1,6 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.PathNotFoundException;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.message.ExceptionMessage;
 import nextstep.subway.station.domain.Station;
@@ -37,11 +36,22 @@ public class DijkstraShortestPathFinder implements PathFinder {
     }
 
     @Override
-    public Path findShortestPath(Station source, Station target) {
+    public List<Station> findAllStationsInShortestPath(Station source, Station target) {
+        GraphPath<Station, DefaultWeightedEdge> path = getShortestPath(source, target);
+        return path.getVertexList();
+    }
+
+    @Override
+    public int findShortestDistance(Station source, Station target) {
+        GraphPath<Station, DefaultWeightedEdge> path = getShortestPath(source, target);
+        return (int) path.getWeight();
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> getShortestPath(Station source, Station target) {
         checkNotEqual(source, target);
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
         checkPathExist(path);
-        return Path.of(path.getVertexList(), (int) path.getWeight());
+        return path;
     }
 
     private void checkNotEqual(Station source, Station target) {
