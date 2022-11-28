@@ -68,4 +68,25 @@ public class Sections {
     public List<Section> getList() {
         return this.sections;
     }
+
+    public void addNewSection(Section newSection) {
+        Stations stations = toStations();
+        SectionsValidator.validateAddNew(newSection, stations);
+
+        findUpStationContained(newSection).ifPresent(section -> section.modifyUpStation(newSection));
+        findDownStationContained(newSection).ifPresent(section -> section.modifyDownStation(newSection));
+        this.sections.add(newSection);
+    }
+
+    private Optional<Section> findUpStationContained(Section newSection) {
+        return this.sections.stream()
+            .filter(section -> section.hasSameUpStation(newSection))
+            .findFirst();
+    }
+
+    private Optional<Section> findDownStationContained(Section newSection) {
+        return this.sections.stream()
+            .filter(section -> section.hasSameDownStation(newSection))
+            .findFirst();
+    }
 }

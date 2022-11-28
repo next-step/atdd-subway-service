@@ -25,6 +25,14 @@ public class Stations {
         this.stations.add(station);
     }
 
+    public boolean contains(Station station) {
+        return stations.contains(station);
+    }
+
+    public boolean isEmpty() {
+        return stations.isEmpty();
+    }
+
     public List<Station> getList() {
         return Collections.unmodifiableList(this.stations);
     }

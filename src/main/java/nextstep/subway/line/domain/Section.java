@@ -51,6 +51,54 @@ public class Section {
         return new Section(id, null, upStation, downStation, 0);
     }
 
+    public void modifyUpStation(Section newSection) {
+        if (this.distance <= newSection.distance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.upStation = newSection.downStation;
+        this.distance -= newSection.distance;
+    }
+
+    public void modifyDownStation(Section newSection) {
+        if (this.distance <= newSection.distance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.upStation = newSection.upStation;
+        this.distance -= newSection.distance;
+    }
+
+    public boolean hasUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean hasDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
+
+    public boolean isUpStationExisted(Stations stations) {
+        return stations.contains(this.upStation);
+    }
+
+    public boolean isDownStationExisted(Stations stations) {
+        return stations.contains(this.downStation);
+    }
+
+    public boolean isUpStationNotExisted(Stations stations) {
+        return !isUpStationExisted(stations);
+    }
+
+    public boolean isDownStationNotExisted(Stations stations) {
+        return !isDownStationExisted(stations);
+    }
+
+    public boolean hasSameUpStation(Section other) {
+        return this.upStation.equals(other.upStation);
+    }
+
+    public boolean hasSameDownStation(Section other) {
+        return this.downStation.equals(other.downStation);
+    }
+
     public Long getId() {
         return id;
     }
@@ -71,30 +119,6 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
-    }
-
-    public boolean hasUpStation(Station station) {
-        return this.upStation.equals(station);
-    }
-
-    public boolean hasDownStation(Station station) {
-        return this.downStation.equals(station);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -109,4 +133,5 @@ public class Section {
     public int hashCode() {
         return Objects.hash(getId());
     }
+
 }

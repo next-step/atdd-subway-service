@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -24,11 +25,13 @@ class SectionsTest {
         DDP = Station.of(3L, "DDP");
         을지로 = Station.of(4L, "을지로");
 
-        sections = Sections.from(Arrays.asList(
-            Section.of(1L, 신당, DDP),
-            Section.of(2L, 왕십리, 신당),
-            Section.of(3L, DDP, 을지로)
-        ));
+        sections = Sections.from(new ArrayList<>(
+            Arrays.asList(
+                Section.of(1L, 신당, DDP),
+                Section.of(2L, 왕십리, 신당),
+                Section.of(3L, DDP, 을지로)
+            ))
+        );
     }
 
     @Test
@@ -75,5 +78,18 @@ class SectionsTest {
 
         // then
         assertThat(section).isNull();
+    }
+
+    @Test
+    void addNewSection() {
+        // given
+        Station 시청 = Station.of(5L, "시청");
+        Section section = Section.of(4L, 을지로, 시청);
+
+        // when
+        sections.addNewSection(section);
+
+        // then
+        assertThat(sections.toStations().getList()).containsExactly(왕십리, 신당, DDP, 을지로, 시청);
     }
 }
