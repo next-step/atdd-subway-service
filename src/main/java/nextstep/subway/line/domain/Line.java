@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,22 +44,6 @@ public class Line extends BaseEntity {
         if (StringUtils.hasText(color)) {
             this.color = color;
         }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public List<Section> getSections() {
-        return sections;
     }
 
     public void addSection(Section section) {
@@ -99,6 +84,63 @@ public class Line extends BaseEntity {
         Distance newDistance = upLineStation.plusDistance(downLineStation);
         Section section = new Section(this, newUpStation, newDownStation, newDistance);
         this.addSection(section);
-
     }
+
+
+    public List<Station> getStations() {
+        if (this.sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Station> stations = new ArrayList<>();
+        Station downStation = findUpStation(this);
+        stations.add(downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = this.sections.stream()
+                    .filter(it -> it.getUpStation() == finalDownStation)
+                    .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getDownStation();
+            stations.add(downStation);
+        }
+
+        return stations;
+    }
+
+    private Station findUpStation(Line line) {
+        Station downStation = line.getSections().get(0).getUpStation();
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = line.getSections().stream()
+                    .filter(it -> it.getDownStation() == finalDownStation)
+                    .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getUpStation();
+        }
+
+        return downStation;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public List<Section> getSections() {
+        return sections;
+    }
+
 }
