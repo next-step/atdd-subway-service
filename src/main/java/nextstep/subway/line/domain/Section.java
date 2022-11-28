@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Section {
@@ -22,16 +23,43 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(final Line line, final Station upStation, final Station downStation, final int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
+    }
+
+    public boolean equalsUpStation(final Station upStation) {
+        return this.upStation.equals(upStation);
+    }
+
+    public boolean equalsDownStation(final Station downStation) {
+        return this.downStation.equals(downStation);
+    }
+
+    public void updateUpStation(final Station station, final int newDistance) {
+        distance.minusDistance(newDistance);
+        this.upStation = station;
+    }
+
+    public void updateDownStation(final Station station, final int newDistance) {
+        distance.minusDistance(newDistance);
+        this.downStation = station;
+    }
+
+    public Section updateMiddleStation(final Section downSection) {
+        final Station newUpStation = downSection.upStation;
+        final Station newDownStation = downStation;
+        distance.plusDistance(downSection.getDistance());
+
+        return new Section(line, newUpStation, newDownStation, distance.getValue());
     }
 
     public Long getId() {
@@ -51,22 +79,45 @@ public class Section {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getValue();
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    public boolean matchAllStations(Section section) {
+        return this.upStation.equals(section.upStation) &&
+                this.downStation.equals(section.downStation);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
+    public boolean hasUpStations(Section section) {
+        return this.upStation.equals(section.upStation) ||
+                this.upStation.equals(section.downStation);
+    }
+
+    public boolean hasDownStations(Section section) {
+        return this.downStation.equals(section.upStation) ||
+                this.downStation.equals(section.downStation);
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "id=" + id +
+                ", line=" + line.getId() +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Section section = (Section) o;
+        return Objects.equals(id, section.id) && Objects.equals(line, section.line) && Objects.equals(upStation, section.upStation) && Objects.equals(downStation, section.downStation) && Objects.equals(distance, section.distance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, line, upStation, downStation, distance);
     }
 }
