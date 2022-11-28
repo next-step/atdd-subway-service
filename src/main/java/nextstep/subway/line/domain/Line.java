@@ -58,6 +58,10 @@ public class Line extends BaseEntity {
         return sections.getSections();
     }
 
+    public Station findUpStation() {
+        return sections.findUpStation();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

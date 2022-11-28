@@ -28,19 +28,19 @@ public class Sections {
         return sections;
     }
 
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
+    public Station findUpStation() {
+        Station upStation = sections.get(0).getUpStation();
+        while (upStation != null) {
+            Station finalUpStation = upStation;
+            Optional<Section> findSection = sections.stream()
+                    .filter(section -> section.getDownStation() == finalUpStation)
                     .findFirst();
-            if (!nextLineStation.isPresent()) {
+            if (!findSection.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getUpStation();
+            upStation = findSection.get().getUpStation();
         }
 
-        return downStation;
+        return upStation;
     }
 }
