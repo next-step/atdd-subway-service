@@ -78,4 +78,8 @@ public class Line extends BaseEntity {
     public int hashCode() {
         return Objects.hash(getId());
     }
+
+    public List<Station> getStations() {
+        return sections.getStations();
+    }
 }

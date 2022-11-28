@@ -43,4 +43,27 @@ public class Sections {
 
         return upStation;
     }
+
+    public List<Station> getStations() {
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<Station> stations = new ArrayList<>();
+        Station downStation = findUpStation();
+        stations.add(downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> findSection = sections.stream()
+                    .filter(it -> it.getUpStation() == finalDownStation)
+                    .findFirst();
+            if (!findSection.isPresent()) {
+                break;
+            }
+            downStation = findSection.get().getDownStation();
+            stations.add(downStation);
+        }
+
+        return stations;
+    }
 }

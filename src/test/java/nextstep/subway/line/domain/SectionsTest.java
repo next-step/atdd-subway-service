@@ -45,4 +45,15 @@ class SectionsTest {
         assertThat(upStation.getName()).isEqualTo("강남");
     }
 
+    @Test
+    void 구간에_속한_역들을_가져온다() {
+        Line line = new Line("신분당선", "red", 강남, 판교, 10);
+        sections.add(line, 강남, 판교, 5);
+        sections.add(line, 판교, 모란, 5);
+        sections.add(line, 모란, 서현, 5);
+
+        List<Station> stations = sections.getStations();
+
+        assertThat(stations).containsExactly(강남, 판교, 모란, 서현);
+    }
 }
