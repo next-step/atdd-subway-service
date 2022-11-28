@@ -41,6 +41,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .upStationId(강남역.getId())
                 .downStationId(광교역.getId())
                 .distance(10)
+                .extraCharge(0)
                 .build();
 
         lineRequest2 = new LineRequest.Builder()
@@ -49,6 +50,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .upStationId(강남역.getId())
                 .downStationId(광교역.getId())
                 .distance(15)
+                .extraCharge(0)
                 .build();
     }
 
@@ -139,7 +141,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
             String color,
             Long upStationId,
             Long downStationId,
-            int distance
+            int distance,
+            int extraCharge
     ) {
         LineRequest request = new LineRequest.Builder()
                 .name(name)
@@ -147,6 +150,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .upStationId(upStationId)
                 .downStationId(downStationId)
                 .distance(distance)
+                .extraCharge(extraCharge)
                 .build();
 
         return 지하철_노선_생성_요청(request).as(LineResponse.class);
