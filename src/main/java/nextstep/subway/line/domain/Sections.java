@@ -69,11 +69,25 @@ public class Sections {
 
     public void addSection(Station upStation, Station downStation) {
         List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+        validateAllOrNothingSection(upStation, downStation, stations);
+    }
 
-        if (isUpStationExisted && isDownStationExisted) {
+    private void validateAllOrNothingSection(Station upStation, Station downStation, List<Station> stations) {
+        if (isAlreadyExistedSection(upStation, downStation, stations)) {
             throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
+        if (isNotExistedSection(upStation, downStation, stations)) {
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private boolean isNotExistedSection(Station upStation, Station downStation, List<Station> stations) {
+        return !stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+                stations.stream().noneMatch(it -> it == downStation);
+    }
+
+    private boolean isAlreadyExistedSection(Station upStation, Station downStation,
+                                            List<Station> stations) {
+        return stations.stream().anyMatch(it -> it == upStation) & stations.stream().anyMatch(it -> it == downStation);
     }
 }

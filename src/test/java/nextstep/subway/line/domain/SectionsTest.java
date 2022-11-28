@@ -65,4 +65,14 @@ class SectionsTest {
         assertThatIllegalArgumentException().isThrownBy(addExistedSection)
                 .withMessageContaining("이미 등록된 구간 입니다.");
     }
+
+    @Test
+    void 매칭되는_역이_전혀_없으면_등록_불가능() {
+        sections.add(null, 강남, 판교, 5);
+
+        ThrowingCallable addNotExistedSection = () -> sections.addSection(모란, 서현);
+
+        assertThatIllegalArgumentException().isThrownBy(addNotExistedSection)
+                .withMessageContaining("등록할 수 없는 구간 입니다.");
+    }
 }
