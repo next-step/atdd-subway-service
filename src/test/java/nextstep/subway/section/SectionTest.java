@@ -59,4 +59,18 @@ public class SectionTest {
                 () -> section.updateUpStation(판교역, FIFTY))
         .isInstanceOf(RuntimeException.class);
     }
+
+    @Test
+    void 상행역과_같은지_검사() {
+        Section section = Section.of(신분당선, 강남역, 광교역, TEN);
+        assertThat(section.isSameUpStation(강남역)).isTrue();
+        assertThat(section.isSameUpStation(광교역)).isFalse();
+    }
+
+    @Test
+    void 하행역과_같은지_검사() {
+        Section section = Section.of(신분당선, 강남역, 광교역, TEN);
+        assertThat(section.isSameDownStation(광교역)).isTrue();
+        assertThat(section.isSameDownStation(강남역)).isFalse();
+    }
 }

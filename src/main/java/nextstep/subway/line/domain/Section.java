@@ -82,4 +82,12 @@ public class Section {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
     }
+
+    public boolean isSameDownStation(Station otherStation){
+        return this.downStation == otherStation;
+    }
+
+    public boolean isSameUpStation(Station otherStation){
+        return this.upStation == otherStation;
+    }
 }

@@ -77,13 +77,13 @@ public class Sections {
 
     private Optional<Section> findDownStation(Station downStation){
         return this.sections.stream()
-                .filter(it -> it.getDownStation() == downStation)
+                .filter(it -> it.isSameDownStation(downStation))
                 .findFirst();
     }
 
     private Optional<Section> findUpStation(Station upStation){
         return this.sections.stream()
-                .filter(it -> it.getUpStation() == upStation)
+                .filter(it -> it.isSameUpStation(upStation))
                 .findFirst();
     }
 
