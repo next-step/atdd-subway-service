@@ -158,4 +158,8 @@ public class Sections {
                 .findAny()
                 .orElseThrow(() -> new InvalidParameterException(ERROR_MESSAGE_NOT_NULL_UP_STATION));
     }
+
+    public List<Section> list() {
+        return sections;
+    }
 }

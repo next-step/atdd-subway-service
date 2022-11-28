@@ -79,6 +79,10 @@ public class Line extends BaseEntity {
         return sections.getSortStations();
     }
 
+    public List<Section> sections() {
+        return sections.list();
+    }
+
     public Long getId() {
         return id;
     }
