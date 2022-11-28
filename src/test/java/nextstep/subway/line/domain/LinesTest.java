@@ -74,4 +74,24 @@ class LinesTest {
                 () -> assertThat(lines.hasNotStation(판교역)).isFalse()
         );
     }
+
+    @DisplayName("노선들 중 가장 높은 추가요금을 구할 수 있다.")
+    @Test
+    void maxExtraFare() {
+        // given
+        int expectExtraFare = 3_000;
+        Station 판교역 = new Station("판교역");
+        Station 강남역 = new Station("강남역");
+        Station 잠실역 = new Station("잠실역");
+
+        Line 신분당선 = LineTestFactory.create("신분당선", "bg-red-600", 판교역, 강남역, 10, expectExtraFare);
+        Line 이호선 = LineTestFactory.create("신분당선", "bg-red-600", 판교역, 강남역, 10, 1_000);
+        Lines lines = new Lines(Arrays.asList(신분당선, 이호선));
+
+        // when
+        ExtraFare result = lines.maxExtraFare();
+
+        // then
+        assertThat(result.get()).isEqualTo(expectExtraFare);
+    }
 }
