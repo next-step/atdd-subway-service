@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import java.util.Optional;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.station.domain.Station;
@@ -32,10 +31,6 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
-    }
-
-    public static Line to(LineRequest request, Station upStation, Station downStation){
-        return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
     }
 
     public void update(LineRequest request){
