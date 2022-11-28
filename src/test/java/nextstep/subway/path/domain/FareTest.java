@@ -18,8 +18,6 @@ class FareTest {
     @Test
     void basicPrice() {
         // given
-        Station station1 = new Station("강남역");
-        Station station2 = new Station("판교역");
         Line line = new Line("신분당선", "bg-red-600", new ExtraFare(0));
         Lines lines = new Lines(Arrays.asList(line));
 
@@ -35,8 +33,6 @@ class FareTest {
     void extraFarePrice() {
         // given
         int extraFare = 1_000;
-        Station station1 = new Station("강남역");
-        Station station2 = new Station("판교역");
         Line line = new Line("신분당선", "bg-red-600", new ExtraFare(extraFare));
         Lines lines = new Lines(Arrays.asList(line));
 
