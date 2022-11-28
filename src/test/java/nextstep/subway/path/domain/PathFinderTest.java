@@ -10,7 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -27,6 +28,7 @@ class PathFinderTest {
     private Station 서현역;
     private Station 소요산역;
     private Station 병점역;
+    private List<Section> sections;
 
     /**
      * 양재역 ------*3호선(5)*------ 수서역
@@ -55,12 +57,18 @@ class PathFinderTest {
         일호선 = new Line("일호선", "blue", 소요산역, 병점역, 20);
 
         분당선.addSection(new Section(분당선, 서현역, 정자역, 5));
+
+        sections = new ArrayList<>();
+        sections.addAll(신분당선.getSections());
+        sections.addAll(분당선.getSections());
+        sections.addAll(삼호선.getSections());
+        sections.addAll(일호선.getSections());
     }
 
     @DisplayName("출발역과 도착역 사이의 최단 경로를 조회한다.")
     @Test
     void findShortestPath() {
-        PathFinder pathFinder = DijkstraShortestPathFinder.from(Arrays.asList(신분당선, 분당선, 삼호선, 일호선));
+        PathFinder pathFinder = DijkstraShortestPathFinder.from(sections);
 
         Path path = pathFinder.findShortestPath(양재역, 서현역);
 
@@ -73,7 +81,7 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역이 같은 경우 예외가 발생한다.")
     @Test
     void findShortestPathException1() {
-        PathFinder pathFinder = DijkstraShortestPathFinder.from(Arrays.asList(신분당선, 분당선, 삼호선, 일호선));
+        PathFinder pathFinder = DijkstraShortestPathFinder.from(sections);
 
         Assertions.assertThatThrownBy(() -> pathFinder.findShortestPath(양재역, 양재역))
                 .isInstanceOf(PathNotFoundException.class)
@@ -83,7 +91,7 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 예외가 발생한다.")
     @Test
     void findShortestPathException2() {
-        PathFinder pathFinder = DijkstraShortestPathFinder.from(Arrays.asList(신분당선, 분당선, 삼호선, 일호선));
+        PathFinder pathFinder = DijkstraShortestPathFinder.from(sections);
 
         Assertions.assertThatThrownBy(() -> pathFinder.findShortestPath(양재역, 소요산역))
                 .isInstanceOf(PathNotFoundException.class)

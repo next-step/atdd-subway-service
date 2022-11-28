@@ -1,11 +1,11 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.exception.EntityNotFoundException;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.message.ExceptionMessage;
-import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.DijkstraShortestPathFinder;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,12 +31,19 @@ public class PathService {
     public PathResponse findShortestPath(Long source, Long target) {
         Station sourceStation = findStationById(source);
         Station targetStation = findStationById(target);
-        List<Line> lines = lineRepository.findAll();
+        List<Section> sections = findAllSections();
 
-        PathFinder pathFinder = DijkstraShortestPathFinder.from(lines);
+        PathFinder pathFinder = DijkstraShortestPathFinder.from(sections);
         Path path = pathFinder.findShortestPath(sourceStation, targetStation);
 
         return PathResponse.from(path);
+    }
+
+    private List<Section> findAllSections() {
+        return lineRepository.findAll()
+                .stream()
+                .flatMap(line -> line.getSections().stream())
+                .collect(Collectors.toList());
     }
 
     private Station findStationById(Long stationId) {

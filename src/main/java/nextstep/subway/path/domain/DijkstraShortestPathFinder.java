@@ -16,29 +16,24 @@ public class DijkstraShortestPathFinder implements PathFinder {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
-    private DijkstraShortestPathFinder(List<Line> lines) {
-        lines.forEach(line -> {
-            addVertex(line);
-            setEdgeWeight(line.getSections());
+    private DijkstraShortestPathFinder(List<Section> sections) {
+        sections.forEach(it -> {
+            addVertex(it.getUpStation());
+            addVertex(it.getDownStation());
+            graph.setEdgeWeight(graph.addEdge(it.getUpStation(), it.getDownStation()), it.getDistance());
         });
     }
 
-    public static DijkstraShortestPathFinder from(List<Line> lines) {
-        return new DijkstraShortestPathFinder(lines);
+    public static DijkstraShortestPathFinder from(List<Section> sections) {
+        return new DijkstraShortestPathFinder(sections);
     }
 
-    private void addVertex(Line line) {
-        line.getStations()
-                .forEach(graph::addVertex);
-    }
+    private void addVertex(Station station) {
+        if (graph.containsVertex(station)) {
+            return;
+        }
 
-    private void setEdgeWeight(List<Section> sections) {
-        sections.forEach(section ->
-                graph.setEdgeWeight(
-                        graph.addEdge(section.getUpStation(), section.getDownStation()),
-                        section.getDistance()
-                )
-        );
+        graph.addVertex(station);
     }
 
     @Override
