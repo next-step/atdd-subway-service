@@ -66,4 +66,14 @@ public class Sections {
 
         return stations;
     }
+
+    public void addSection(Station upStation, Station downStation) {
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+        }
+    }
 }

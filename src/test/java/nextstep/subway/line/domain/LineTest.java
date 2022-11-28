@@ -1,9 +1,11 @@
 package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.List;
 import nextstep.subway.station.domain.Station;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 
 class LineTest {
@@ -40,5 +42,15 @@ class LineTest {
         List<Station> stations = line.getStations();
 
         assertThat(stations).containsExactly(강남, 판교);
+    }
+
+    @Test
+    void 이미_등록된_구간은_동일하게_등록_불가능() {
+        Line line = new Line("신분당선", "red", 강남, 판교, 10);
+
+        ThrowingCallable addExistedSection = () -> line.addSection(강남, 판교);
+
+        assertThatIllegalArgumentException().isThrownBy(addExistedSection)
+                .withMessageContaining("이미 등록된 구간 입니다.");
     }
 }
