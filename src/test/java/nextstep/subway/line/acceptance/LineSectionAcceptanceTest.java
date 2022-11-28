@@ -1,6 +1,6 @@
 package nextstep.subway.line.acceptance;
 
-import static nextstep.subway.line.acceptance.LineSectionTestFixture.내부_서버_에러_발생함;
+import static nextstep.subway.line.acceptance.LineSectionTestFixture.잘못된_요청;
 import static nextstep.subway.line.acceptance.LineSectionTestFixture.응답이_성공임;
 import static nextstep.subway.line.acceptance.LineSectionTestFixture.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.line.acceptance.LineSectionTestFixture.지하철_노선에_지하철역_순서_정렬됨;
@@ -115,7 +115,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 광교역, 3);
 
         // then
-        내부_서버_에러_발생함(response);
+        잘못된_요청(response);
     }
 
     @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
@@ -125,7 +125,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 양재역, 3);
 
         // then
-        내부_서버_에러_발생함(response);
+        잘못된_요청(response);
     }
 
     @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
