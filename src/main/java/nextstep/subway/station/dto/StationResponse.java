@@ -20,7 +20,7 @@ public class StationResponse {
         this.modifiedDate = modifiedDate;
     }
 
-    public static StationResponse of(Station station) {
+    public static StationResponse from(Station station) {
         return new StationResponse(station.getId(), station.getName().value(), station.getCreatedDate(), station.getModifiedDate());
     }
 
