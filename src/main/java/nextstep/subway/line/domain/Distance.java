@@ -23,18 +23,18 @@ public class Distance {
     }
 
 
-    public void minus(Distance distance) {
-        if (this.distance <= distance.getDistance()) {
+    public void minus(int distance) {
+        if (this.distance <= distance) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.distance -= distance.getDistance();
+        this.distance -= distance;
     }
 
-    public void plus(Distance distance) {
-        this.distance += distance.getDistance();
+    public void plus(int distance) {
+        this.distance += distance;
     }
 
-    public int getDistance() {
+    public int value() {
         return distance;
     }
 }

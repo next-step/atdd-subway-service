@@ -23,6 +23,7 @@ public class Section {
     @JoinColumn(name = "down_station_id", foreignKey = @ForeignKey(name = "fk_section_down_station"))
     private Station downStation;
 
+    @Embedded
     private Distance distance;
 
     protected Section() {
@@ -48,6 +49,37 @@ public class Section {
         }
     }
 
+    public void changeLine(Line line) {
+        this.line = line;
+    }
+
+    public Stream<Station> streamOfStation() {
+        return Stream.of(upStation, downStation);
+    }
+
+    public void connectUpStationToDownStation(Section addSection) {
+        distance.minus(addSection.getDistance().value());
+        this.upStation = addSection.downStation;
+    }
+
+    public void connectDownStationToUpStation(Section addSection) {
+        distance.minus(addSection.getDistance().value());
+        this.downStation = addSection.upStation;
+    }
+
+    public void disconnectDownSection(Section downSection) {
+        this.downStation = downSection.downStation;
+        this.distance.plus(downSection.distance.value());
+    }
+
+    public boolean hasUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean hasDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
     public Long getId() {
         return id;
     }
@@ -66,36 +98,5 @@ public class Section {
 
     public Distance getDistance() {
         return distance;
-    }
-
-    public void changeLine(Line line) {
-        this.line = line;
-    }
-
-    public Stream<Station> streamOfStation() {
-        return Stream.of(upStation, downStation);
-    }
-
-    public void connectUpStationToDownStation(Section addSection) {
-        distance.minus(addSection.getDistance());
-        this.upStation = addSection.downStation;
-    }
-
-    public void connectDownStationToUpStation(Section addSection) {
-        distance.minus(addSection.getDistance());
-        this.downStation = addSection.upStation;
-    }
-
-    public void disconnectDownSection(Section downSection) {
-        this.downStation = downSection.downStation;
-        this.distance.plus(downSection.distance);
-    }
-
-    public boolean hasUpStation(Station station) {
-        return upStation.equals(station);
-    }
-
-    public boolean hasDownStation(Station station) {
-        return downStation.equals(station);
     }
 }
