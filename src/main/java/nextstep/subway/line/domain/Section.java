@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,12 +28,13 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -55,24 +57,29 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
-        return distance;
+    public Distance getDistance() {
+        return this.distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
+    public void updateUpStation(Station station, Distance newDistance) {
         validateDistance(newDistance);
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance.minusDistance(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
+    public void updateDownStation(Station station, Distance newDistance) {
         validateDistance(newDistance);
         this.downStation = station;
-        this.distance -= newDistance;
+        this.distance.minusDistance(newDistance);
     }
 
-    private void validateDistance(int newDistance){
-        if (this.distance <= newDistance) {
+    public Distance plusDistance(Section otherSection){
+        this.distance.plusDistance(otherSection.getDistance());
+        return this.distance;
+    }
+
+    private void validateDistance(Distance newDistance){
+        if (this.distance.isGreaterThan(newDistance.getDistance())) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
     }

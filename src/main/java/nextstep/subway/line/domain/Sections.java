@@ -24,7 +24,7 @@ public class Sections {
         sections.add(section);
     }
 
-    public void addSection(Line line, Station upStation, Station downStation, int distance) {
+    public void addSection(Line line, Station upStation, Station downStation, Distance distance) {
         validateAleadyExist(upStation, downStation);
         validateRegister(upStation, downStation);
 
@@ -38,11 +38,11 @@ public class Sections {
         add(new Section(line, upStation, downStation, distance));
     }
 
-    private void updateUpStation(Station upStation, Station downStation, int distance) {
+    private void updateUpStation(Station upStation, Station downStation, Distance distance) {
         findUpStation(upStation).ifPresent(it -> it.updateUpStation(downStation, distance));
     }
 
-    private void updateDownStation(Station upStation, Station downStation, int distance){
+    private void updateDownStation(Station upStation, Station downStation, Distance distance){
         findDownStation(downStation).ifPresent(it -> it.updateDownStation(upStation, distance));
     }
 
@@ -67,16 +67,12 @@ public class Sections {
         if (upSection.isPresent() && downSection.isPresent()) {
             Station newUpStation = downSection.get().getUpStation();
             Station newDownStation = upSection.get().getDownStation();
-            int newDistance = plusDistance(upSection.get(), downSection.get());
+            Distance newDistance = upSection.get().plusDistance(downSection.get());
             add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 
         upSection.ifPresent(this::removeSection);
         downSection.ifPresent(this::removeSection);
-    }
-
-    private int plusDistance(Section upSection, Section downSection){
-        return upSection.getDistance() + downSection.getDistance();
     }
 
     private Optional<Section> findDownStation(Station downStation){

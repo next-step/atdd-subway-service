@@ -1,16 +1,39 @@
 package nextstep.subway.line.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
+@Embeddable
 public class Distance {
+    @Column
     private int distance;
 
-    public Distance(int distance) {
-        this.distance = distance;
+    public Distance() {
     }
 
-    public int getValue() {
+    private Distance(int value) {
+        this.distance = value;
+    }
+
+    public static Distance from(int value){
+        return new Distance(value);
+    }
+
+    public int getDistance() {
         return distance;
+    }
+
+    public void plusDistance(Distance otherDistance){
+        this.distance += otherDistance.getDistance();
+    }
+
+    public void minusDistance(Distance newDistance){
+        this.distance -= newDistance.getDistance();
+    }
+
+    public boolean isGreaterThan(int newDistance){
+        return this.distance <= newDistance;
     }
 
     @Override

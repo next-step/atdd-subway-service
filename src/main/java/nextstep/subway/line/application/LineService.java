@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -27,7 +28,8 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(Line.of(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(Line.of(request.getName(), request.getColor(), upStation, downStation,
+                Distance.from(request.getDistance())));
         return LineResponse.of(persistLine);
     }
 
@@ -61,7 +63,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        line.addSection(upStation, downStation, request.getDistance());
+        line.addSection(upStation, downStation, Distance.from(request.getDistance()));
     }
 
     public void removeSection(Long lineId, Long stationId) {
