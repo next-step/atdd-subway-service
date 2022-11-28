@@ -3,7 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.constant.ErrorCode;
 import nextstep.subway.fixture.LineTestFactory;
 import nextstep.subway.fixture.SectionTestFactory;
-import nextstep.subway.line.domain.ExtraCharge;
+import nextstep.subway.line.domain.ExtraFare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -58,7 +58,7 @@ class PathFinderTest {
         // given
         Station 강남역 = new Station("강남역");
         PathFinder pathFinder = new PathFinder(
-                Arrays.asList(new Line("신분당선", "bg-red-600", new ExtraCharge(0)))
+                Arrays.asList(new Line("신분당선", "bg-red-600", new ExtraFare(0)))
         );
 
         // when & then
@@ -74,7 +74,7 @@ class PathFinderTest {
         Station 강남역 = new Station("강남역");
         Station 판교역 = new Station("판교역");
         PathFinder pathFinder = new PathFinder(
-                Arrays.asList(new Line("신분당선", "bg-red-600", new ExtraCharge(0)))
+                Arrays.asList(new Line("신분당선", "bg-red-600", new ExtraFare(0)))
         );
 
         // when & then

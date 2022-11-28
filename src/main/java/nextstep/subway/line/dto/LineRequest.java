@@ -1,7 +1,7 @@
 package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.ExtraCharge;
+import nextstep.subway.line.domain.ExtraFare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -12,7 +12,7 @@ public class LineRequest {
     private Long upStationId;
     private Long downStationId;
     private int distance;
-    private int extraCharge;
+    private int extraFare;
 
     private LineRequest() {}
 
@@ -22,7 +22,7 @@ public class LineRequest {
         this.upStationId = builder.upStationId;
         this.downStationId = builder.downStationId;
         this.distance = builder.distance;
-        this.extraCharge = builder.extraCharge;
+        this.extraFare = builder.extraFare;
     }
 
     public String getName() {
@@ -47,7 +47,7 @@ public class LineRequest {
 
     public Line toLine(Station upStation, Station downStation) {
         Section section = new Section(upStation, downStation, new Distance(distance));
-        Line line = new Line(name, color, new ExtraCharge(extraCharge));
+        Line line = new Line(name, color, new ExtraFare(extraFare));
         line.addSection(section);
 
         return line;
@@ -59,7 +59,7 @@ public class LineRequest {
         private Long upStationId;
         private Long downStationId;
         private int distance;
-        private int extraCharge;
+        private int extraFare;
 
         public Builder() {}
 
@@ -88,8 +88,8 @@ public class LineRequest {
             return this;
         }
 
-        public Builder extraCharge(int extraCharge) {
-            this.extraCharge = extraCharge;
+        public Builder extraFare(int extraFare) {
+            this.extraFare = extraFare;
             return this;
         }
 

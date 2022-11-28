@@ -1,7 +1,7 @@
 package study.unit;
 
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.ExtraCharge;
+import nextstep.subway.line.domain.ExtraFare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -20,7 +20,7 @@ public class UnitTest {
         Station upStation = new Station("강남역");
         Station downStation = new Station("광교역");
         Section section = new Section(upStation, downStation, new Distance(10));
-        Line line = new Line("신분당선", "RED", new ExtraCharge(0));
+        Line line = new Line("신분당선", "RED", new ExtraFare(0));
         line.addSection(section);
 
         // when

@@ -20,14 +20,14 @@ public class Line extends BaseEntity {
     private Sections sections = new Sections(new ArrayList<>());
 
     @Embedded
-    private ExtraCharge extraCharge;
+    private ExtraFare extraFare;
 
     protected Line() {}
 
-    public Line(String name, String color, ExtraCharge extraCharge) {
+    public Line(String name, String color, ExtraFare extraFare) {
         this.name = name;
         this.color = color;
-        this.extraCharge = extraCharge;
+        this.extraFare = extraFare;
     }
 
     public Long getId() {

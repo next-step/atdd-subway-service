@@ -4,15 +4,15 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class ExtraCharge {
+public class ExtraFare {
     private static final int MINIMUM = 0;
 
-    @Column(name = "extra_charge", nullable = false)
+    @Column(name = "extra_fare", nullable = false)
     private int value;
 
-    protected ExtraCharge() {}
+    protected ExtraFare() {}
 
-    public ExtraCharge(int value) {
+    public ExtraFare(int value) {
         validate(value);
         this.value = value;
     }
