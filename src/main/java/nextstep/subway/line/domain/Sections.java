@@ -92,7 +92,24 @@ public class Sections {
                     );
 
             sections.add(newSection);
+            return;
         }
+
+        addBetweenByDownStation(newSection, stations);
+    }
+
+    private void addBetweenByDownStation(Section newSection, List<Station> stations) {
+        if (isAnyMatchInStations(stations, newSection.getDownStation())) {
+            sections.stream()
+                    .filter(section -> section.getDownStation() == newSection.getDownStation())
+                    .findFirst()
+                    .ifPresent(
+                            section -> section.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
+
+            sections.add(newSection);
+            return;
+        }
+        throw new IllegalArgumentException();
     }
 
     private boolean isAnyMatchInStations(List<Station> stations, Station findStation) {
