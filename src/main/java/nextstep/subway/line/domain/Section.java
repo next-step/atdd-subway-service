@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.stream.Stream;
 
 @Entity
-public class Section implements {
+public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
