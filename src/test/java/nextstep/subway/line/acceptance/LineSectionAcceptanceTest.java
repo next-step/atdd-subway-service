@@ -1,8 +1,13 @@
 package nextstep.subway.line.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -15,14 +20,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 @DisplayName("지하철 구간 관련 기능")
 public class LineSectionAcceptanceTest extends AcceptanceTest {
+
     private LineResponse 신분당선;
     private StationResponse 강남역;
     private StationResponse 양재역;
@@ -113,6 +113,48 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
+    /**
+     * Feature: 지하철 구간 관련 기능
+     * <p>
+     * Background
+     * Given 지하철역 등록되어 있음
+     * And 지하철 노선 등록되어 있음
+     * And 지하철 노선에 지하철역 등록되어 있음
+     * <p>
+     * Scenario: 지하철 구간을 관리
+     * When 지하철 구간 등록 요청
+     * Then 지하철 구간 등록됨
+     * When 지하철 노선에 등록된 역 목록 조회 요청
+     * Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+     * When 지하철 구간 삭제 요청
+     * Then 지하철 구간 삭제됨
+     * When 지하철 노선에 등록된 역 목록 조회 요청
+     * Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+     */
+    @DisplayName("지하철 구간 관련 기능 통합 테스트")
+    @Test
+    void 통합테스트() {
+        // when 지하철 구간 등록 요청
+        ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청_결과 = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+        // then 지하철 구간 등록됨
+        지하철_노선에_지하철역_등록됨(지하철_노선에_지하철역_등록_요청_결과);
+
+        // when 지하철 노선에 등록된 역 목록 조회 요청
+        ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청_노선_조회_결과 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        // then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+        지하철_노선에_지하철역_순서_정렬됨(지하철_노선에_지하철역_등록_요청_노선_조회_결과, Arrays.asList(강남역, 양재역, 광교역));
+
+        // when 지하철 구간 삭제 요청
+        ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청_결과 = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+        // then 지하철 구간 삭제됨
+        지하철_노선에_지하철역_제외됨(지하철_노선에_지하철역_제외_요청_결과);
+
+        // when 지하철 노선에 등록된 역 목록 조회 요청
+        ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청_노선_조회_결과 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        // Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+        지하철_노선에_지하철역_순서_정렬됨(지하철_노선에_지하철역_제외_요청_노선_조회_결과, Arrays.asList(강남역, 광교역));
+    }
+
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
@@ -130,7 +172,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선에_지하철역_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
@@ -159,6 +201,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
