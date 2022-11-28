@@ -52,7 +52,7 @@ public class PathFinder {
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
 
-        return new PathResponse(responses, (int) shortestPath.getWeight());
+        return new PathResponse(responses, (int) shortestPath.getWeight(), new Fare(1250));
     }
 
     private void validateBefore(Station sourceStation, Station targetStation) {

@@ -67,7 +67,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단경로_조회_요청(강남역, 남부터미널역);
 
         // then
-        최단경로_요청이_정상_조회됨(response, 12, 강남역, 양재역, 남부터미널역);
+        최단경로_요청이_정상_조회됨(response, 12, 1_250, 강남역, 양재역, 남부터미널역);
     }
 
     @DisplayName("최단 경로를 조회 시, 출발역과 도착역이 같다면 예외가 발생한다")
@@ -110,12 +110,13 @@ class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단경로_조회_요청(강남역, 남부터미널역);
 
         // then
-        최단경로_요청이_정상_조회됨(response, 12, 강남역, 양재역, 남부터미널역);
+        최단경로_요청이_정상_조회됨(response, 12, 1_250, 강남역, 양재역, 남부터미널역);
     }
 
     private void 최단경로_요청이_정상_조회됨(
             ExtractableResponse<Response> response,
             int distance,
+            int fare,
             StationResponse... stations
     ) {
         PathResponse pathResponse = response.as(PathResponse.class);
@@ -131,7 +132,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(actualIds).containsAll(expectedIds);
         assertThat(pathResponse.getDistance()).isEqualTo(distance);
-//        assertThat(pathResponse.getFare()).isEqualTo(fare);
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 
     private static ExtractableResponse<Response> 최단경로_조회_요청(
