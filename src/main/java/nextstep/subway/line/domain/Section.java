@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.stream.Stream;
 
 @Entity
-public class Section implements Comparable<Section> {
+public class Section implements {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -75,10 +75,4 @@ public class Section implements Comparable<Section> {
         return Stream.of(upStation, downStation);
     }
 
-    @Override
-    public int compareTo(Section s) {
-        if (this.downStation.getId().equals(s.getUpStation().getId())) return -1;
-        else if (this.upStation.getId().equals(s.getDownStation().getId())) return 1;
-        return 0;
-    }
 }
