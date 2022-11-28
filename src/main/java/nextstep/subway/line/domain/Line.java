@@ -86,6 +86,55 @@ public class Line extends BaseEntity {
         return stations;
     }
 
+    public void addLineStation(Station upStation, Station downStation, int distance) {
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+
+        validAddLineStation(isUpStationExisted, isDownStationExisted);
+
+        if (stations.isEmpty()) {
+            sections.add(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        if (isUpStationExisted) {
+            addNewSectionWhenUpStationExisted(upStation, downStation, distance);
+        }
+
+        if (isDownStationExisted) {
+            addNewSectionWhenDownStationExisted(upStation, downStation, distance);
+        }
+    }
+
+    private void addNewSectionWhenDownStationExisted(Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    private void addNewSectionWhenUpStationExisted(Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    private void validAddLineStation(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!sections.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
