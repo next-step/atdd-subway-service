@@ -5,6 +5,7 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -38,6 +39,6 @@ public class PathFinder {
 
     public Path findShortestPath(Station departure, Station arrival) {
         GraphPath<Station, DefaultWeightedEdge> shortestPath = path.getPath(departure, arrival);
-        return Path.of(shortestPath.getVertexList(), Distance.from((int) shortestPath.getWeight()));
+        return Path.of(Stations.from(shortestPath.getVertexList()), Distance.from((int) shortestPath.getWeight()));
     }
 }

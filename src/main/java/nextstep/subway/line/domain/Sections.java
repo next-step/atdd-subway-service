@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -160,6 +161,6 @@ public class Sections {
     }
 
     public List<Section> list() {
-        return sections;
+        return Collections.unmodifiableList(sections);
     }
 }
