@@ -137,4 +137,10 @@ public class Sections {
                 .anyMatch(station -> station == upStation) && stations.stream()
                 .anyMatch(station -> station == downStation);
     }
+
+    public void removeLineStation() {
+        if (sections.size() <= 1) {
+            throw new IllegalStateException();
+        }
+    }
 }

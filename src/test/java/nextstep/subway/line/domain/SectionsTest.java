@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 import java.util.List;
 import nextstep.subway.station.domain.Station;
@@ -106,5 +107,14 @@ class SectionsTest {
 
         assertThat(sections.getStations()).containsExactly(강남, 서현, 판교);
         assertThat(sections.getSections()).hasSize(2);
+    }
+
+    @Test
+    void 구간이_하나_이하일때_지우려고_시도하면_오류가_발생한다() {
+        Sections sections = new Sections();
+
+        ThrowingCallable 구간_하나_이하일때_삭제시_오류_발생 = sections::removeLineStation;
+
+        assertThatIllegalStateException().isThrownBy(구간_하나_이하일때_삭제시_오류_발생);
     }
 }
