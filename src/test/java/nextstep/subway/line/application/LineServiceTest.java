@@ -36,12 +36,12 @@ class LineServiceTest {
     @InjectMocks
     private LineService lineService;
 
-    Line 신분당선;
-    Line 구분당선;
-    Line 현분당선;
-    Station 강남역;
-    Station 광교역;
-    Station 양재역;
+    private Line 신분당선;
+    private Line 구분당선;
+    private Line 현분당선;
+    private Station 강남역;
+    private Station 광교역;
+    private Station 양재역;
 
     @BeforeEach
     public void setUp() {
