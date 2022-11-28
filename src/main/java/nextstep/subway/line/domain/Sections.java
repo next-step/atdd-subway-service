@@ -34,7 +34,8 @@ public class Sections {
         if (this.sections.isEmpty()) {
             return Stations.empty();
         }
-        return collectStations();
+        Station nowStation = findTopStation();
+        return collectStations(nowStation);
     }
 
     private Station findTopStation() {
@@ -45,14 +46,13 @@ public class Sections {
         return nowStation;
     }
 
-    private Stations collectStations() {
+    private Stations collectStations(Station begin) {
         Stations stations = Stations.empty();
-        Station nowStation = findTopStation();
-        stations.add(nowStation);
+        stations.add(begin);
 
-        while (nowStation.hasNext(this)) {
-            nowStation = nowStation.next(this);
-            stations.add(nowStation);
+        while (begin.hasNext(this)) {
+            begin = begin.next(this);
+            stations.add(begin);
         }
         return stations;
     }
