@@ -13,9 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class PathAcceptanceTestFixture {
-    public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse target) {
+    public static ExtractableResponse<Response> 최단_경로_조회_요청(String 사용자, StationResponse source, StationResponse target) {
         return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(사용자)
                 .when().get("/paths?source={source}&target={target}", source.getId(), target.getId())
                 .then().log().all()
                 .extract();
