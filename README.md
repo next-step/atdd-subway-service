@@ -52,3 +52,7 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+
+## STEP1 - 인수테스트 기반 리펙터링
+-[ ] LineService 의 비즈니스 로직을 도메인으로 옮기기
