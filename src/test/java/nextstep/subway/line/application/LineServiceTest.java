@@ -3,6 +3,7 @@ package nextstep.subway.line.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -59,8 +60,8 @@ class LineServiceTest {
         String lineName = "신분당선";
         String lineColor = "bg-red-600";
         LineRequest lineRequest = new LineRequest(lineName, lineColor, 1L, 2L, 10);
-        when(stationService.findById(1L)).thenReturn(강남역);
-        when(stationService.findById(2L)).thenReturn(양재역);
+        given(stationService.findById(1L)).willReturn(강남역);
+        given(stationService.findById(2L)).willReturn(양재역);
         when(lineRepository.save(any())).thenReturn(new Line(lineName, lineColor));
 
         LineResponse lineResponse = lineService.saveLine(lineRequest);
@@ -118,8 +119,8 @@ class LineServiceTest {
     @DisplayName("노선에 역을 추가할 수 있다.")
     @Test
     void add_station() {
-        when(stationService.findById(1L)).thenReturn(강남역);
-        when(stationService.findById(2L)).thenReturn(양재역);
+        given(stationService.findById(1L)).willReturn(강남역);
+        given(stationService.findById(2L)).willReturn(양재역);
         when(lineRepository.findById(1L)).thenReturn(Optional.of(신분당선));
 
         lineService.addLineStation(1L, new SectionRequest(1L, 2L, 3));
@@ -130,8 +131,8 @@ class LineServiceTest {
     @DisplayName("노선에서 역을 제거할 수 있다.")
     @Test
     void remove_station() {
-        when(stationService.findById(1L)).thenReturn(강남역);
-        when(stationService.findById(3L)).thenReturn(양재역);
+        given(stationService.findById(1L)).willReturn(강남역);
+        given(stationService.findById(3L)).willReturn(양재역);
         when(lineRepository.findById(1L)).thenReturn(Optional.of(신분당선));
         lineService.addLineStation(1L, new SectionRequest(1L, 3L, 3));
 
