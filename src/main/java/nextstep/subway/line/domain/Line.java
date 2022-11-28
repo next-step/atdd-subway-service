@@ -69,9 +69,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<StationResponse> getStations() {
-        return sections.getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+    public List<Station> getStations() {
+        return sections.getStations();
     }
 }
