@@ -22,12 +22,12 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("멤버가 존재하지 않습니다."));
+        Member member = memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("멤버가 존재하지 않습니다.", id));
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("멤버가 존재하지 않습니다."));
+        Member member = memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("멤버가 존재하지 않습니다.", id));
         member.update(param.toMember());
     }
 
