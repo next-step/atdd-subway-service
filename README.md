@@ -110,7 +110,7 @@ new 로 교체하고, legacy 는 일정 기간 후 삭제하는 작업 패턴(**
 ## 1단계 - 인수 테스트 기반 리팩터링
 
 ### 요구사항
-- [ ] LineSectionAcceptanceTest 리팩터링
+- [x] LineSectionAcceptanceTest 리팩터링 ; 인수 테스트 통합 작성 완료
 - [ ] LineService 리팩터링
     - LineService의 비즈니스 로직을 도메인으로 옮기기
     - 부분부분 리팩터링
