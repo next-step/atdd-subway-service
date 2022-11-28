@@ -60,6 +60,26 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [ ] LineService 리팩터링
 - [ ] LineSectionAcceptanceTest 리팩터링
 
+## 작업사항
+- LineAcceptanceTest 테스트 목록 
+  - 지하철 노선 생성
+    - 기존의 존재하는 노선명으로 생성시 예외
+  - 지하철 노선 목록 조회
+  - 지하철 노선 조회
+  - 지하철 노선 수정
+  - 지하철 노선 제거
+- LineService 기능 목록
+  - saveLine - 노선 저장
+  - findLines - 노선 목로고 조회
+  - findLineById - 아이디로 지하철 노선 단일 조회
+  - findLineResponseById - 아이디로 지하철 노선 저회 후 LineResponse로 반환
+  - updateLine - 노선 이름과 색 업데이트
+  - deleteLineById - 노선 삭제
+  - addLineStation - 구간 추가
+  - removeLineStation - 구간 삭제
+  - getStations - 노선에 추가된 역 조회
+  - findUpStation - 상행 종점 조회
+
 ### 요구사항 설명
 #### 인수 테스트 기반 리팩터링
 1. Domain으로 옮길 로직을 찾기
