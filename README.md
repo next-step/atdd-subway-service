@@ -42,6 +42,7 @@ npm run dev
 - [ ] LineService 리팩터링
 - [ ] LineService의 비즈니스 로직을 도메인으로 옮기기
     - [x] 노선 지하철 역 조회
+    - [x] 노선 구가 등록
     - [ ] 노선 수정
     - [ ] 노선 지하철 역 추가
   - [ ] 인수 테스트 작성
@@ -51,6 +52,9 @@ npm run dev
     - [x] Distance
     - [x] Sections 일급 컬렌션
 - [ ] (선택) LineSectionAcceptanceTest 리팩터링
+- [ ] 리펙터링
+  - [ ] 스타일 포멧
+  - [ ] 상수 추출
 
 ---
 

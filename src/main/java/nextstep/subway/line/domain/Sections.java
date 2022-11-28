@@ -29,7 +29,7 @@ public class Sections {
         return this.sections;
     }
 
-    private List<Station> assignedStations() {
+    private List<Station> stations() {
         return this.sections.stream()
                 .map(Section::stations)
                 .flatMap(Collection::stream)
@@ -37,7 +37,7 @@ public class Sections {
                 .collect(Collectors.toList());
     }
 
-    public Set<Station> stations() {
+    public Set<Station> orderedStations() {
         Set<Station> sortedStations = new LinkedHashSet<>();
         Optional<Section> section = findFirstSection();
         while (section.isPresent()) {
@@ -64,18 +64,14 @@ public class Sections {
             sections.add(newSection);
             return;
         }
-        addValidate(newSection);
+        validateHasStations(newSection);
+        validateHasNotBothStations(newSection);
         sections.forEach(section -> section.updateStation(newSection));
         sections.add(newSection);
     }
 
-    private void addValidate(Section section) {
-        validateHasStations(section);
-        validateHasNotBothStations(section);
-    }
-
     private void validateHasStations(Section newSection) {
-        if (new HashSet<>(stations()).containsAll(newSection.findStations())) {
+        if (new HashSet<>(orderedStations()).containsAll(newSection.findStations())) {
             throw new IllegalArgumentException("등록하려는 역이 모두 존재합니다.");
         }
     }
@@ -87,7 +83,7 @@ public class Sections {
     }
 
     private boolean hasNotBothStations(Section section) {
-        Set<Station> stations = stations();
+        Set<Station> stations = orderedStations();
         return section.stations()
                 .stream()
                 .noneMatch(stations::contains);

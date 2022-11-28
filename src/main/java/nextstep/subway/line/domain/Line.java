@@ -58,11 +58,12 @@ public class Line extends BaseEntity {
     }
 
     public Set<Station> findStations() {
-        return sections.stations();
+        return sections.orderedStations();
     }
 
-//    public void addSection(Section newSection) {
-//        sections.add(newSection);
-//        newSection.addLine(this);
-//    }
+    public void addSection(Section newSection) {
+        sections.add(newSection);
+        newSection.addLine(this);
+    }
+
 }

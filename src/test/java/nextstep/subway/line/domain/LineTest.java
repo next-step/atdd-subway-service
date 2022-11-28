@@ -26,7 +26,11 @@ public class LineTest {
         assertThat(호선.findStations()).contains(강남역, 잠실역);
     }
 
-    // 노선 추가
+    @Test
+    void 노선_추가() {
+        // then
+        assertThat(호선.findStations()).contains(강남역, 잠실역);
+    }
 
     // 노선 삭제
 
