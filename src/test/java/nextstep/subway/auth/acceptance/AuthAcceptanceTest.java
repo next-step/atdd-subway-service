@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
  *       When 로그인 요청
  *       Then 로그인 실패
  */
-class AuthAcceptanceTest extends AcceptanceTest {
+public class AuthAcceptanceTest extends AcceptanceTest {
 
     @Override
     @BeforeEach
@@ -93,7 +93,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         내_정보_조회_안됨(response);
     }
 
-    private ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
+    public static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -103,7 +103,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 로그인_됨(ExtractableResponse<Response> response) {
+    public static void 로그인_됨(ExtractableResponse<Response> response) {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(TokenResponse.class).getAccessToken()).isNotBlank()
