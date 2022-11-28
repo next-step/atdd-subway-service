@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -69,7 +70,7 @@ class FavoriteServiceTest {
         when(memberRepository.findById(MEMBER_ID)).thenReturn(Optional.of(member));
         when(stationRepository.findById(SOURCE_ID)).thenReturn(Optional.of(source));
         when(stationRepository.findById(TARGET_ID)).thenReturn(Optional.of(target));
-        when(favoriteRepository.save(request.toFavorite(member, source, target))).thenReturn(favorite);
+        when(favoriteRepository.save(any())).thenReturn(favorite);
 
         FavoriteResponse response = favoriteService.createFavorite(MEMBER_ID, request);
 

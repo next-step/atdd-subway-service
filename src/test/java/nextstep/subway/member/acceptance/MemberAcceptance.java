@@ -56,7 +56,7 @@ public class MemberAcceptance {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> member_was_queried(TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> select_me(TokenResponse tokenResponse) {
         return RestAssured.given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -65,7 +65,7 @@ public class MemberAcceptance {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> member_was_updated(TokenResponse tokenResponse,
+    public static ExtractableResponse<Response> update_me(TokenResponse tokenResponse,
             String email, String password, int age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
@@ -79,7 +79,7 @@ public class MemberAcceptance {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> member_was_deleted(TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> delete_me(TokenResponse tokenResponse) {
         return RestAssured.given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)

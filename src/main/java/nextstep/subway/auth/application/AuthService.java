@@ -20,7 +20,7 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public TokenResponse login(TokenRequest request) {
         Member member = findMemberByEmail(request.getEmail());
         member.checkPassword(request.getPassword());

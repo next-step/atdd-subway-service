@@ -19,14 +19,13 @@ public class ManagingMemberInfoAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password157#";
     private static final int AGE = 20;
 
-    private ExtractableResponse createResponse;
     private TokenResponse tokenResponse;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        createResponse = MemberAcceptance.create_member(EMAIL, PASSWORD, AGE);
+        MemberAcceptance.create_member(EMAIL, PASSWORD, AGE);
         tokenResponse = AuthAcceptance.member_token_is_issued(EMAIL, PASSWORD);
     }
 
@@ -39,7 +38,7 @@ public class ManagingMemberInfoAcceptanceTest extends AcceptanceTest {
     @Test
     void selectMyInfo() {
         // when
-        MemberResponse memberResponse = MemberAcceptance.member_was_queried(tokenResponse).as(MemberResponse.class);
+        MemberResponse memberResponse = MemberAcceptance.select_me(tokenResponse).as(MemberResponse.class);
 
         // then
         assertEquals(EMAIL, memberResponse.getEmail());
@@ -55,7 +54,7 @@ public class ManagingMemberInfoAcceptanceTest extends AcceptanceTest {
     void selectMyInfoWithInvalidToken() {
         // when
         TokenResponse invalidToken = new TokenResponse("Invalid_Token");
-        ExtractableResponse<Response> response = MemberAcceptance.member_was_queried(invalidToken);
+        ExtractableResponse<Response> response = MemberAcceptance.select_me(invalidToken);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -70,7 +69,7 @@ public class ManagingMemberInfoAcceptanceTest extends AcceptanceTest {
     @Test
     void updateMyInfo() {
         // when
-        ExtractableResponse<Response> response = MemberAcceptance.member_was_updated(tokenResponse,
+        ExtractableResponse<Response> response = MemberAcceptance.update_me(tokenResponse,
                 "testuser-new@test.com", PASSWORD, AGE);
 
         // then
@@ -87,7 +86,7 @@ public class ManagingMemberInfoAcceptanceTest extends AcceptanceTest {
     void updateMyInfoWithInvalidToken() {
         // when
         TokenResponse invalidToken = new TokenResponse("Invalid_Token");
-        ExtractableResponse<Response> response = MemberAcceptance.member_was_updated(invalidToken,
+        ExtractableResponse<Response> response = MemberAcceptance.update_me(invalidToken,
                 "testuser-new@test.com", PASSWORD, AGE);
 
         // then
@@ -103,7 +102,7 @@ public class ManagingMemberInfoAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteMyInfo() {
         // when
-        ExtractableResponse<Response> response = MemberAcceptance.member_was_deleted(tokenResponse);
+        ExtractableResponse<Response> response = MemberAcceptance.delete_me(tokenResponse);
 
         // then
         assertEquals(HttpStatus.NO_CONTENT.value(), response.statusCode());
@@ -119,7 +118,7 @@ public class ManagingMemberInfoAcceptanceTest extends AcceptanceTest {
     void deleteMyInfoWithInvalidToken() {
         // when
         TokenResponse invalidToken = new TokenResponse("Invalid_Token");
-        ExtractableResponse<Response> response = MemberAcceptance.member_was_deleted(invalidToken);
+        ExtractableResponse<Response> response = MemberAcceptance.delete_me(invalidToken);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
