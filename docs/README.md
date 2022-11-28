@@ -38,7 +38,7 @@
     - [ ] updateLine
     - [ ] addLineStation
     - [ ] removeLineStation
-    - [ ] getStations
+    - [x] getStations 도메인 로직 이동
 - [ ] LineSectionAcceptanceTest 리팩터링
 
 ## 요구사항 설명

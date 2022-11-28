@@ -39,7 +39,7 @@ public class Sections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = getSections().stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
+                    .filter(it -> it.getUpStation().equals(finalDownStation))
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
