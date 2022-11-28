@@ -37,13 +37,13 @@ public class Sections {
         return sections.get(0).getUpStation();
     }
 
-    public Optional<Section> getBeforeLineStation(Station finalDownStation) {
+    public Optional<Section> getDownLineStation(Station finalDownStation) {
         return sections.stream()
                 .filter(it -> it.getDownStation() == finalDownStation)
                 .findFirst();
     }
 
-    public Optional<Section> getNextLineStation(Station finalUpStation) {
+    public Optional<Section> getUpLineStation(Station finalUpStation) {
         return sections.stream()
                 .filter(it -> it.getUpStation() == finalUpStation)
                 .findFirst();
@@ -61,5 +61,9 @@ public class Sections {
                 .filter(it -> it.getDownStation() == downStation)
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
+    }
+
+    public boolean isLessThenSize(int size) {
+        return sections.size() <= size;
     }
 }

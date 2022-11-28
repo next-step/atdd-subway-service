@@ -58,7 +58,7 @@ public class Line extends BaseEntity {
 
         while (upStation != null) {
             Station finalUpStation = upStation;
-            Optional<Section> nextLineStation = sections.getNextLineStation(finalUpStation);
+            Optional<Section> nextLineStation = sections.getUpLineStation(finalUpStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -97,6 +97,29 @@ public class Line extends BaseEntity {
         throw new InvalidRequestException("추가할수 있는 지하철 역의 구간이 없습니다.");
     }
 
+    public void removeStation(Station station) {
+        if (sections.isLessThenSize(1)) {
+            throw new InvalidRequestException("삭제할 수 있는 구간이 없습니다.");
+        }
+
+        Optional<Section> upLineStation = sections.getUpLineStation(station);
+        Optional<Section> downLineStation = sections.getDownLineStation(station);
+
+        addedResetRemoveSection(upLineStation, downLineStation);
+
+        upLineStation.ifPresent(it -> sections.getList().remove(it));
+        downLineStation.ifPresent(it -> sections.getList().remove(it));
+    }
+
+    private void addedResetRemoveSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+    }
+
     private void checkValidAddedSection(List<Station> stations, Station upStation, Station downStation) {
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
@@ -115,7 +138,7 @@ public class Line extends BaseEntity {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> beforeLineStation = sections.getBeforeLineStation(finalDownStation);
+            Optional<Section> beforeLineStation = sections.getDownLineStation(finalDownStation);
             if (!beforeLineStation.isPresent()) {
                 break;
             }
