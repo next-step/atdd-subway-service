@@ -9,7 +9,7 @@ import nextstep.subway.common.exception.InvalidParameterException;
 public class Distance {
     private static final String ERROR_MESSAGE_NOT_NULL_DISTANCE = "거리는 필수입니다.";
     private static final String ERROR_MESSAGE_GRATER_THAN_ZERO_DISTANCE = "거리는 0보다 커야합니다.";
-    public static final String ERROR_MESSAGE_VALID_SECTION_DISTANCE = "기존 노선의 거리보다 작거나 같을 수 없습니다.";
+    private static final String ERROR_MESSAGE_VALID_SECTION_DISTANCE = "기존 노선의 거리보다 작거나 같을 수 없습니다.";
     private static final int INVALID_DISTANCE_CRITERION = 0;
 
     @Column(nullable = false)

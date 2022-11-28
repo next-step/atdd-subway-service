@@ -3,11 +3,13 @@ package nextstep.subway.path.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import nextstep.subway.common.exception.InvalidParameterException;
+import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
@@ -39,6 +41,7 @@ class PathServiceTest {
     private Station 강남역;
     private Station 판교역;
     private Station 도곡역;
+
     private Line 신분당선;
     private Line 수인분당선;
 
@@ -47,12 +50,14 @@ class PathServiceTest {
 
         강남역 = Station.from("강남역");
         판교역 = Station.from("판교역");
-        Station 양재역 = Station.from("양재역");
         도곡역 = Station.from("도곡역");
+        Station 양재역 = Station.from("양재역");
         Station 한티역 = Station.from("한티역");
+
         Section 도곡_한티_구간 = Section.of(도곡역, 한티역, Distance.from(5));
         Section 양재_판교_구간 = Section.of(양재역, 판교역, Distance.from(5));
         Section 강남_판교_구간 = Section.of(강남역, 판교역, Distance.from(15));
+
         신분당선 = Line.of("신분당선", "bg-red-600", 강남_판교_구간);
         신분당선.addSection(양재_판교_구간);
         수인분당선 = Line.of("수인분당선", "bg-yellow-600", 도곡_한티_구간);
@@ -106,5 +111,18 @@ class PathServiceTest {
         assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
                 .isInstanceOf(InvalidParameterException.class)
                 .hasMessage("출발역과 도착역이 연결되지 않았습니다.");
+    }
+
+    @Test
+    @DisplayName("존재하지 않은 출발/도착역은 조회할 수 없다.")
+    void findPathByNoneLineStation() {
+        // given
+        PathRequest pathRequest = new PathRequest(1L, 6L);
+        when(stationService.findStationById(pathRequest.getDepartureId())).thenReturn(강남역);
+        given(stationService.findStationById(pathRequest.getArrivalId())).willThrow(NotFoundException.class);
+
+        // when & then
+        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
+                .isInstanceOf(NotFoundException.class);
     }
 }
