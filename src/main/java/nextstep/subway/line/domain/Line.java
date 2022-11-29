@@ -36,10 +36,6 @@ public class Line extends BaseEntity {
         sections.add(Section.of(this, upStation, downStation, distance));
     }
 
-    public static Line empty() {
-        return new Line();
-    }
-
     public void update(String name, String color) {
         this.name = name;
         this.color = color;

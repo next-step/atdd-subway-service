@@ -12,8 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.LineUtils;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
 
@@ -28,7 +28,7 @@ public class SpringExtensionTest {
     @Test
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Collections.singletonList(Line.empty()));
+        when(lineRepository.findAll()).thenReturn(Collections.singletonList(LineUtils.empty()));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when
