@@ -23,28 +23,27 @@ public class Sections {
         boolean isDownStationExisted = isDownStationExisted(section);
 
         if (getStations().isEmpty()) {
-            getSections().add(new Section(section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance()));
+            this.sections.add(new Section(section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance()));
             return;
         }
 
         if (isUpStationExisted) {
-            section.getLine().getSections().stream()
+            getSections().stream()
                     .filter(it -> it.getUpStation().equals(section.getUpStation()))
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
 
-            section.getLine().getSections().add(new Section(section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance()));
+            this.sections.add(new Section(section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance()));
         } else if (isDownStationExisted) {
-            section.getLine().getSections().stream()
+            getSections().stream()
                     .filter(it -> it.getDownStation().equals(section.getDownStation()))
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
 
-            section.getLine().getSections().add(new Section(section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance()));
+            this.sections.add(new Section(section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance()));
         } else {
             throw new RuntimeException();
         }
-        this.sections.add(section);
     }
 
     private boolean isDownStationExisted(Section section) {
@@ -114,7 +113,7 @@ public class Sections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = getSections().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
+                    .filter(it -> it.getDownStation().equals(finalDownStation))
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;

@@ -88,4 +88,17 @@ public class SectionsTest {
                 () -> assertThat(sections.getSections()).hasSize(2)
         );
     }
+
+    @DisplayName("새로운 역을 상행 종점으로 등록한다. / B-C 구간에 A-B 구간을 추가한다.")
+    @Test
+    void addFirstUpStation() {
+        Sections sections = new Sections();
+        sections.add(sectionBC());
+        sections.add(sectionAB());
+
+        assertAll(
+                () -> assertThat(sections.getStations()).containsExactly(stationA(), stationB(), stationC()),
+                () -> assertThat(sections.getSections()).hasSize(2)
+        );
+    }
 }
