@@ -8,13 +8,19 @@ import java.util.Objects;
 @Embeddable
 public class Distance {
 
+    public static final Distance ZERO = new Distance(0);
+
     private int value;
+
+    protected Distance() {
+    }
 
     public Distance(int value) {
         this.value = value;
     }
 
-    protected Distance() {
+    public Distance(double value) {
+        this(Double.valueOf(value).intValue());
     }
 
     private Distance subtract(int newDistance) {
@@ -34,6 +40,14 @@ public class Distance {
 
     private Distance plus(int value) {
         return new Distance(this.value + value);
+    }
+
+    public double toDouble() {
+        return this.value;
+    }
+
+    public int toInt() {
+        return value;
     }
 
     @Override
