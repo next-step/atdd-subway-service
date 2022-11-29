@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import java.util.Collections;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -22,7 +21,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-    private Sections sections;
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -62,9 +61,6 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-        if (sections == null) {
-            return Collections.emptyList();
-        }
         return sections.getStations();
     }
 
