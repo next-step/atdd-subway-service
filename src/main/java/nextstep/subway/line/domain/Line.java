@@ -63,7 +63,7 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
-    public Sections getSections() {
-        return sections;
+    public List<Section> getSections() {
+        return sections.getSections();
     }
 }

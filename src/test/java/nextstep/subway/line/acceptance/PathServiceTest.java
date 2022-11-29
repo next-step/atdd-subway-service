@@ -5,15 +5,14 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.application.PathService;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBootTest
-public class LineServiceTest {
+public class PathServiceTest {
 
     @Autowired
     LineService lineService;
+
+    @Autowired
+    PathService pathService;
 
     @Autowired
     StationService stationService;
@@ -45,7 +47,7 @@ public class LineServiceTest {
         lineService.addLineStation(line.getId(), new SectionRequest(station3.getId(), station4.getId(), 4));
 
         // when
-        PathResponse path = lineService.path(station1.getId(), station4.getId());
+        PathResponse path = pathService.path(station1.getId(), station4.getId());
 
         // then
         List<String> stationNames = path.getStations().stream()

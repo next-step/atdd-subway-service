@@ -4,15 +4,10 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,37 +82,5 @@ public class LineService {
         return persistLine.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-    }
-
-    public PathResponse path(Long sourceId, Long targetId) {
-
-        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        List<Line> lines = lineRepository.findAll();
-        lines.stream().forEach(
-                line -> line.getStations().stream().forEach(
-                        station -> graph.addVertex(station.getId().toString())
-                )
-        );
-        lines.stream().forEach(
-                line -> line.getSections().getSections()
-                        .stream()
-                        .forEach(
-                                section ->
-                                        graph.setEdgeWeight(
-                                                graph.addEdge(section.getUpStation().getId().toString(), section.getDownStation().getId().toString()),
-                                                section.getDistance()
-                                        )
-                        )
-        );
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath path = dijkstraShortestPath.getPath(sourceId.toString(), targetId.toString());
-
-        List<String> vertexList = path.getVertexList();
-        List<StationResponse> collect = vertexList.stream().map(
-                vertex -> StationResponse.of(stationService.findStationById(Long.valueOf(vertex)))
-        ).collect(Collectors.toList());
-
-        return new PathResponse(collect, (int)path.getWeight());
     }
 }
