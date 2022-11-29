@@ -204,4 +204,31 @@ public class SectionTest {
                 () -> assertThat(section.isContainStation(양재역)).isFalse()
         );
     }
+
+    @DisplayName("구간의 상행/하행역 내에 주어진 2가지 역이 모두 속하면 참을 반환한다.")
+    @Test
+    void isContainStationsReturnTrue() {
+        // given
+        Section section = createSection(신분당선, 신논현역, 강남역, 10);
+
+        // when
+        assertAll(
+                () -> assertThat(section.isContainStationsInAnyOrder(신논현역, 강남역)).isTrue(),
+                () -> assertThat(section.isContainStationsInAnyOrder(강남역, 신논현역)).isTrue()
+        );
+    }
+
+    @DisplayName("구간의 상행/하행역 내에 주어진 2가지 역 중 하나라도 속하지 않으면 거짓을 반환한다.")
+    @Test
+    void isContainStationsReturnFalse() {
+        // given
+        Section section = createSection(신분당선, 신논현역, 강남역, 10);
+
+        // when
+        assertAll(
+                () -> assertThat(section.isContainStationsInAnyOrder(신논현역, 양재역)).isFalse(),
+                () -> assertThat(section.isContainStationsInAnyOrder(강남역, 양재역)).isFalse(),
+                () -> assertThat(section.isContainStationsInAnyOrder(양재시민의숲역, 양재역)).isFalse()
+        );
+    }
 }

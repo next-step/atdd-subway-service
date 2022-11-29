@@ -114,6 +114,10 @@ public class Section {
         return upStation.equals(station) || downStation.equals(station);
     }
 
+    public boolean isContainStationsInAnyOrder(Station upStation, Station downStation) {
+        return isContainStation(upStation) && isContainStation(downStation);
+    }
+
     public int distanceValue() {
         return distance.value();
     }
