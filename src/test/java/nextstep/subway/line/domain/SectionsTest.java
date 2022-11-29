@@ -101,4 +101,17 @@ public class SectionsTest {
                 () -> assertThat(sections.getSections()).hasSize(2)
         );
     }
+
+    @DisplayName("구간 사이에 구간을 추가한다. / 상행역을 기준으로 구간을 추가한다. / A-C 구간에 A-B 구간 추가")
+    @Test
+    void addBetweenUpStation() {
+        Sections sections = new Sections();
+        sections.add(sectionAC());
+        sections.add(sectionAB());
+
+        assertAll(
+                () -> assertThat(sections.getStations()).containsExactly(stationA(), stationB(), stationC()),
+                () -> assertThat(sections.getSections()).hasSize(2)
+        );
+    }
 }
