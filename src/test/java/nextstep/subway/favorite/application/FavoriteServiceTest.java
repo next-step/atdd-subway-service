@@ -113,4 +113,14 @@ class FavoriteServiceTest {
 
         Assertions.assertThat(results).isNotEmpty();
     }
+
+    @DisplayName("삭제할 즐겨찾기가 없으면 예외가 발생한다.")
+    @Test
+    void delete() {
+        when(favoriteRepository.findByIdAndMemberId(any(), any())).thenReturn(Optional.empty());
+
+        Assertions.assertThatThrownBy(() -> favoriteService.delete(1L, 1L))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageStartingWith(ExceptionMessage.FAVORITE_NOT_EXIST);
+    }
 }
