@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.common.exception.DuplicateDataException;
+import nextstep.subway.common.exception.InvalidDataException;
+import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -23,8 +26,8 @@ import nextstep.subway.station.dto.StationResponse;
 @Service
 @Transactional
 public class LineService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
     public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
@@ -54,7 +57,8 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(String.format("해당 ID(%d) 에 해당하는 노선을 찾을 수 없습니다.", id)));
     }
 
 
@@ -67,7 +71,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineUpdateRequest request) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = findLineById(id);
         persistLine.update(Line.of(request.getName(), request.getColor()));
     }
 
@@ -84,12 +88,12 @@ public class LineService {
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new DuplicateDataException("이미 등록된 구간 입니다.");
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new InvalidDataException("등록할 수 없는 구간 입니다.");
         }
 
         if (stations.isEmpty()) {
@@ -112,7 +116,7 @@ public class LineService {
 
             line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
         } else {
-            throw new RuntimeException();
+            throw new InvalidDataException("등록할 수 없는 구간 입니다.");
         }
     }
 
@@ -120,7 +124,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         if (line.getSections().size() <= 1) {
-            throw new RuntimeException();
+            throw new InvalidDataException("구간이 하나인 노선에서는 역을 제거할 수 없습니다.");
         }
 
         Optional<Section> upLineStation = line.getSections().stream()
