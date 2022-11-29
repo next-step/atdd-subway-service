@@ -92,12 +92,12 @@ public class DistanceTest {
         Distance distance = Distance.from(actual);
 
         // when
-        boolean isBiggerThan = distance.isBiggerThan(Distance.from(expect));
+        boolean isBiggerThan = distance.isEqualOrBiggerThan(Distance.from(expect));
 
         // then
         assertAll(
                 () -> assertThat(isBiggerThan).isTrue(),
-                () -> assertThat(isBiggerThan).isEqualTo(actual > expect)
+                () -> assertThat(isBiggerThan).isEqualTo(actual >= expect)
         );
     }
 
