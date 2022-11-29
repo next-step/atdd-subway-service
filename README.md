@@ -92,8 +92,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### 2단계 - 경로 조회 기능
 
 1. 요구사항
-    - [ ] 최단 경로 조회 인수 테스트 만들기
-    - [ ] 최단 경로 조회 기능 구현하기
+    - [x] 최단 경로 조회 인수 테스트 만들기
+    - [x] 최단 경로 조회 기능 구현하기
 2. 목록정리
-    - [ ] jgrapht 라이브러리 이용
-    - [ ] 외부 라이브러리의 인수 테스트로 테스트
+    - [x] jgrapht 라이브러리 이용
+    - [x] 외부 라이브러리의 인수 테스트로 테스트
