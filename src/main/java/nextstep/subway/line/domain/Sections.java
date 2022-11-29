@@ -42,19 +42,17 @@ public class Sections {
     }
 
     public void add(Line line, Station upStation, Station downStation, Distance distance) {
-        List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+        boolean isUpStationExisted = sections.stream().map(Section::getUpStation).anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = sections.stream().map(Section::getDownStation).anyMatch(it -> it == downStation);
 
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new SectionAlreadyExistException();
-        }
+        validateNewSection(upStation, downStation, isUpStationExisted, isDownStationExisted);
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-            stations.stream().noneMatch(it -> it == downStation)) {
-            throw new NoRelateStationException();
-        }
+        updateBetweenSection(upStation, downStation, distance, isUpStationExisted, isDownStationExisted);
 
+        sections.add(new Section(line, upStation, downStation, distance));
+    }
+
+    private void updateBetweenSection(Station upStation, Station downStation, Distance distance, boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted) {
             findFromUpStation(upStation)
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
@@ -64,8 +62,17 @@ public class Sections {
             findFromDownStation(downStation)
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
         }
+    }
 
-        sections.add(new Section(line, upStation, downStation, distance));
+    private void validateNewSection(Station upStation, Station downStation, boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new SectionAlreadyExistException();
+        }
+
+        List<Station> stations = getStations();
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) && stations.stream().noneMatch(it -> it == downStation)) {
+            throw new NoRelateStationException();
+        }
     }
 
     public void remove(Line line, Station station) {
