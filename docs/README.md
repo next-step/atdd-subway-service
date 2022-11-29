@@ -37,7 +37,7 @@
     - [ ] deleteLineById
     - [ ] updateLine
     - [x] addLineStation
-    - [ ] removeLineStation
+    - [x] removeLineStation
     - [x] getStations 도메인 로직 이동
 - [ ] LineSectionAcceptanceTest 리팩터링
 
