@@ -18,7 +18,7 @@ public class SectionsTest {
         // given
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
-        Section 구간 = Section.of(잠실역, 문정역, 10);
+        Section 구간 = 지하철_구간_생성(잠실역, 문정역, 10);
         Sections sections = Sections.from(Arrays.asList(구간));
 
         // when
@@ -34,12 +34,12 @@ public class SectionsTest {
         // given
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
-        Section 구간 = Section.of(잠실역, 문정역, 10);
+        Section 구간 = 지하철_구간_생성(잠실역, 문정역, 10);
         Sections sections = Sections.from(Arrays.asList(구간));
 
         // given
         Station 가락시장역 = new Station("가락시장역");
-        Section section = Section.of(가락시장역, 문정역, 1);
+        Section section = 지하철_구간_생성(가락시장역, 문정역, 1);
 
         // when
         sections.add(section);
@@ -54,7 +54,7 @@ public class SectionsTest {
         // given
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
-        Section section = Section.of(잠실역, 문정역, 10);
+        Section section = 지하철_구간_생성(잠실역, 문정역, 10);
         Sections sections = Sections.from(Arrays.asList(section));
 
         // expect
@@ -68,12 +68,12 @@ public class SectionsTest {
         // given
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
-        Section section = Section.of(잠실역, 문정역, 10);
+        Section section = 지하철_구간_생성(잠실역, 문정역, 10);
         Sections sections = Sections.from(Arrays.asList(section));
 
         // given
         Station 가락시장역 = new Station("가락시장역");
-        Section newSection = Section.of(가락시장역, 문정역, 11);
+        Section newSection = 지하철_구간_생성(가락시장역, 문정역, 11);
 
         // expect
         assertThatThrownBy(() -> sections.add(newSection))
@@ -86,12 +86,12 @@ public class SectionsTest {
         // given
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
-        Section section = Section.of(잠실역, 문정역, 10);
+        Section section = 지하철_구간_생성(잠실역, 문정역, 10);
         Sections sections = Sections.from(Arrays.asList(section));
 
         // given
         Station 가락시장역 = new Station("가락시장역");
-        Section newSection = Section.of(가락시장역, 문정역, 1);
+        Section newSection = 지하철_구간_생성(가락시장역, 문정역, 1);
         sections.add(newSection);
 
         // when
@@ -99,5 +99,13 @@ public class SectionsTest {
 
         // then
         assertThat(sections.getStations()).doesNotContain(가락시장역);
+    }
+
+    private Section 지하철_구간_생성(Station upStation, Station downStation, int distance) {
+        return new Section.Builder()
+                .upStation(upStation)
+                .downStation(downStation)
+                .distance(distance)
+                .build();
     }
 }
