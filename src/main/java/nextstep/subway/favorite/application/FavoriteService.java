@@ -33,10 +33,7 @@ public class FavoriteService {
         Station targetStation = findStationById(request.getTarget());
         Member member = findMemberById(memberId);
 
-        Favorite favorite = Favorite.of(member, sourceStation, targetStation);
-        favoriteRepository.save(favorite);
-
-        return favorite;
+        return favoriteRepository.save(Favorite.of(member, sourceStation, targetStation));
     }
 
     private Station findStationById(Long request) {
