@@ -29,6 +29,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 잠실역;
 
     private TokenResponse tokenResponse;
+    private TokenResponse tokenResponseOfWrongMember;
 
     @BeforeEach
     public void setUp() {
@@ -40,7 +41,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 잠실역.getId(), 30).as(LineResponse.class);
 
         MemberAcceptance.create_member("testuser@test.com", "password157#", 20);
+        MemberAcceptance.create_member("testuser-12@test.com", "password157#", 20);
         tokenResponse = AuthAcceptance.member_token_is_issued("testuser@test.com", "password157#");
+        tokenResponseOfWrongMember = AuthAcceptance.member_token_is_issued("testuser-12@test.com", "password157#");
     }
 
     /**
@@ -80,6 +83,26 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = FavoriteAcceptance.create_favorite(invalidToken,
                 강남역.getId(), 잠실역.getId());
+
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+    }
+
+    /**
+     * Given 지하철역이 등록되어 있고
+     * And 지하철 노선이 등록되어 있고
+     * And 지하철 노선에 지하철 구간이 등록되어 있고
+     * And 회원이 등록되어 있고
+     * And 로그인 되어 있고
+     * When 같은 출발역과 도착역을 입력하여 즐겨찾기 생성을 요청하면
+     * Then 즐겨찾기를 생성할 수 없다.
+     */
+    @DisplayName("같은 출발역과 도착역을 입력하여 즐겨찾기를 생성한다.")
+    @Test
+    void createFavoriteWithSameSourceAndTarget() {
+        // when
+        ExtractableResponse<Response> response = FavoriteAcceptance.create_favorite(tokenResponse,
+                강남역.getId(), 강남역.getId());
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -176,6 +199,30 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response =
                 FavoriteAcceptance.delete_favorite(invalidToken, favoriteResponse.getId());
+
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+    }
+
+    /**
+     * Given 지하철역이 등록되어 있고
+     * And 지하철 노선이 등록되어 있고
+     * And 지하철 노선에 지하철 구간이 등록되어 있고
+     * And 회원이 등록되어 있고
+     * And 즐겨찾기가 생성되어 있고
+     * When 다른 회원으로 로그인하여 즐겨찾기를 삭제하면
+     * Then 즐겨찾기를 삭제할 수 없다.
+     */
+    @DisplayName("즐겨찾기를 등록한 회원과 다른 회원으로 로그인하여 즐겨찾기를 삭제한다.")
+    @Test
+    void deleteFavoriteWithWrongMember() {
+        // given
+        FavoriteResponse favoriteResponse = FavoriteAcceptance.create_favorite(tokenResponse, 강남역.getId(),
+                잠실역.getId()).as(FavoriteResponse.class);
+
+        // when
+        ExtractableResponse<Response> response =
+                FavoriteAcceptance.delete_favorite(tokenResponseOfWrongMember, favoriteResponse.getId());
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());

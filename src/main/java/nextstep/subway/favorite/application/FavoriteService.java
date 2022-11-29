@@ -1,10 +1,12 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.exception.FavoriteExceptionCode;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.exception.MemberExceptionCode;
@@ -42,14 +44,12 @@ public class FavoriteService {
         return FavoriteResponse.of(favorite);
     }
 
-    @Transactional(readOnly = true)
-    public Member findMemberId(Long memberId) {
+    private Member findMemberId(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(MemberExceptionCode.NOT_FOUND_BY_ID.getMessage()));
     }
 
-    @Transactional(readOnly = true)
-    public Station findStationById(Long stationId) {
+    private Station findStationById(Long stationId) {
         return stationRepository.findById(stationId)
                 .orElseThrow(() -> new NotFoundException(StationExceptionCode.NOT_FOUND_BY_ID.getMessage()));
     }
@@ -62,7 +62,14 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void deleteFavorite(Long favoriteId) {
-        favoriteRepository.deleteById(favoriteId);
+    public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
+        Favorite favorite = findById(favoriteId);
+        favorite.checkLoginMember(loginMember.getEmail());
+        favoriteRepository.delete(favorite);
+    }
+
+    private Favorite findById(Long favoriteId) {
+        return favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new NotFoundException(FavoriteExceptionCode.NOT_FOUND_BY_ID.getMessage()));
     }
 }
