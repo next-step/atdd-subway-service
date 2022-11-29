@@ -58,7 +58,6 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단경로를 조회한다")
     @Test
     void 최단경로를_조회한다() {
-        // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .param("source", 강남역.getId())
@@ -74,7 +73,6 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
 
-        // then
         assertThat(stationNames).containsExactlyElementsOf(Arrays.asList("강남역", "양재역", "남부터미널역"));
         assertThat(pathResponse.getDistance()).isEqualTo(12);
     }
