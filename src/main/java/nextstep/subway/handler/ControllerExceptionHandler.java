@@ -1,12 +1,13 @@
 package nextstep.subway.handler;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class ExceptionHandler {
+public class ControllerExceptionHandler {
 
-    @org.springframework.web.bind.annotation.ExceptionHandler({ IllegalArgumentException.class })
+    @ExceptionHandler({ IllegalArgumentException.class })
     public ResponseEntity<Void> handle() {
         return ResponseEntity.badRequest().build();
     }
