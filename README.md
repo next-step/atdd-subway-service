@@ -53,12 +53,17 @@ npm run dev
     - [x] Distance
     - [x] Sections 일급 컬렌션
 - [x] (선택) LineSectionAcceptanceTest 리팩터링
-- [ ] 리펙터링
-  - [ ] 스타일 포멧
-  - [ ] 상수 추출
+- [x] 리펙터링
+  - [x] 스타일 포멧
+  - [x] 상수 추출
 
 ---
 
+## 🚀 2단계 - 경로 조회 기능
+- [ ] 최단 경로 조회 인수 테스트 만들기
+- [ ] 최단 경로 조회 기능 구현하기
+
+---
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
