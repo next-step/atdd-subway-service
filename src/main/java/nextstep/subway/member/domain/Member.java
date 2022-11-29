@@ -46,6 +46,10 @@ public class Member extends BaseEntity {
         this.age = member.age;
     }
 
+    public void checkEmail(String email) {
+        this.email.checkEmail(email);
+    }
+
     public void checkPassword(String password) {
         this.password.checkPassword(password);
     }

@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.BaseEntity;
 import nextstep.subway.favorite.exception.FavoriteExceptionCode;
 import nextstep.subway.member.domain.Member;
@@ -14,15 +16,15 @@ public class Favorite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Station source;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Station target;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Member member;
 
@@ -56,6 +58,14 @@ public class Favorite extends BaseEntity {
         if (Objects.isNull(target)) {
             throw new IllegalArgumentException(FavoriteExceptionCode.REQUIRED_TARGET.getMessage());
         }
+
+        if(source.equals(target)) {
+            throw new IllegalArgumentException(FavoriteExceptionCode.CANNOT_EQUALS_SOURCE_TARGET.getMessage());
+        }
+    }
+
+    public void checkLoginMember(String email) {
+        this.member.checkEmail(email);
     }
 
     public Long getId() {
