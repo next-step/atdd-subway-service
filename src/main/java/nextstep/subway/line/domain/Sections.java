@@ -32,6 +32,20 @@ public class Sections {
         return sortedStation();
     }
 
+    public void updateUpStation(Station upStation, Station downStation, int distance) {
+        getSections().stream()
+            .filter(it -> it.getUpStation() == upStation)
+            .findFirst()
+            .ifPresent(it -> it.updateUpStation(downStation, distance));
+    }
+
+    public void updateDownStation(Station upStation, Station downStation, int distance) {
+        getSections().stream()
+            .filter(it -> it.getDownStation() == downStation)
+            .findFirst()
+            .ifPresent(it -> it.updateDownStation(upStation, distance));
+    }
+
     private List<Station> sortedStation() {
         List<Station> stations = new ArrayList<>();
         Station downStation = findUpStation();

@@ -35,6 +35,40 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
+    public void addLineStation(Station upStation, Station downStation, int distance) {
+        boolean isUpStationExisted = isExisted(upStation);
+        boolean isDownStationExisted = isExisted(downStation);
+
+        validate(upStation, downStation, isUpStationExisted, isDownStationExisted);
+
+        if (isUpStationExisted) {
+            sections.updateUpStation(upStation, downStation, distance);
+        }
+        if (isDownStationExisted) {
+            sections.updateDownStation(upStation, downStation, distance);
+        }
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    private void validate(Station upStation, Station downStation, boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!getStations().isEmpty() && isNoneMatch(upStation) &&
+            isNoneMatch(downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private boolean isNoneMatch(Station upStation) {
+        return getStations().stream().noneMatch(it -> it == upStation);
+    }
+
+    private boolean isExisted(Station upStation) {
+        return getStations().stream().anyMatch(it -> it == upStation);
+    }
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
