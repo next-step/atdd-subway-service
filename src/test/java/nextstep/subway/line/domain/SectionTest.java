@@ -2,8 +2,10 @@ package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,9 +33,9 @@ class SectionTest {
 
         // then
         assertAll(
-                () -> assertThat(actual.getUpStation()).isEqualTo(upStation),
-                () -> assertThat(actual.getDownStation()).isEqualTo(downStation),
-                () -> assertThat(actual.getDistance().getDistance()).isEqualTo(10)
+                () -> assertThat(actual.upStation()).isEqualTo(upStation),
+                () -> assertThat(actual.downStation()).isEqualTo(downStation),
+                () -> assertThat(actual.getDistance().value()).isEqualTo(10)
         );
     }
 
@@ -47,9 +49,9 @@ class SectionTest {
 
         // when & then
         assertAll(
-                () -> assertThrows(IllegalArgumentException.class, () -> Section.of(null, downStation, distance)),
-                () -> assertThrows(IllegalArgumentException.class, () -> Section.of(upStation, null, distance)),
-                () -> assertThrows(IllegalArgumentException.class, () -> Section.of(upStation, downStation, null))
+                () -> assertThrows(InvalidParameterException.class, () -> Section.of(null, downStation, distance)),
+                () -> assertThrows(InvalidParameterException.class, () -> Section.of(upStation, null, distance)),
+                () -> assertThrows(InvalidParameterException.class, () -> Section.of(upStation, downStation, null))
         );
     }
 
@@ -63,7 +65,7 @@ class SectionTest {
 
         // when & then
         assertThatThrownBy(() -> line.addSection(Section.of(upStation, downStation, distance)))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidParameterException.class)
                 .hasMessage("기존 노선의 거리보다 작거나 같을 수 없습니다.");
     }
 
@@ -78,7 +80,7 @@ class SectionTest {
 
         // when & then
         assertThatThrownBy(() -> line.addSection(Section.of(upStation, downStation, distance)))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidParameterException.class)
                 .hasMessage("이미 등록된 구간 입니다.");
     }
 
@@ -92,7 +94,7 @@ class SectionTest {
 
         // when & then
         assertThatThrownBy(() -> line.addSection(Section.of(upStation, downStation, distance)))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidParameterException.class)
                 .hasMessage("등록할 수 없는 구간 입니다.");
     }
 
@@ -215,7 +217,7 @@ class SectionTest {
     void deleteStationDefaultSectionSize() {
         // when & then
         assertThatThrownBy(() -> line.removeSection(Station.from("논현역")))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidParameterException.class)
                 .hasMessage("노선의 구간은 1개 이상 존재해야 합니다.");
     }
 
@@ -230,7 +232,7 @@ class SectionTest {
 
         // when & then
         assertThatThrownBy(() -> line.removeSection(Station.from("신사역")))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidParameterException.class)
                 .hasMessage("해당 역이 존재하지 않습니다.");
     }
 }

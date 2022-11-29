@@ -1,18 +1,20 @@
 package nextstep.subway.station.application;
 
+import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class StationService {
-    private StationRepository stationRepository;
+    private static final String ERROR_MESSAGE_NOT_FOUND_STATION_FORMAT = "역이 존재하지 않습니다. StationId : %d";
+
+    private final StationRepository stationRepository;
 
     public StationService(StationRepository stationRepository) {
         this.stationRepository = stationRepository;
@@ -27,7 +29,7 @@ public class StationService {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-                .map(station -> StationResponse.of(station))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -36,10 +38,7 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
-    public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        return stationRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ERROR_MESSAGE_NOT_FOUND_STATION_FORMAT, id));
     }
 }

@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -50,17 +51,17 @@ public class Section {
 
     private void validEmptyStation(Station upStation, Station downStation) {
         if (Objects.isNull(upStation)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_NULL_UP_STATION);
+            throw new InvalidParameterException(ERROR_MESSAGE_NOT_NULL_UP_STATION);
         }
 
         if (Objects.isNull(downStation)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_NULL_DOWN_STATION);
+            throw new InvalidParameterException(ERROR_MESSAGE_NOT_NULL_DOWN_STATION);
         }
     }
 
     private void validEmptyDistance(Distance distance) {
         if (Objects.isNull(distance)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_NULL_DISTANCE);
+            throw new InvalidParameterException(ERROR_MESSAGE_NOT_NULL_DISTANCE);
         }
     }
 
@@ -68,7 +69,7 @@ public class Section {
         return new Section(upStation, downStation, distance);
     }
 
-    public void toLine(Line line) {
+    void toLine(Line line) {
         this.line = line;
     }
 
@@ -86,12 +87,16 @@ public class Section {
         return distance.add(section.distance);
     }
 
+    public int addTotalDistance(int totalDistance) {
+        return distance.addTotalDistance(totalDistance);
+    }
+
     public boolean isSameUpStationBySection(Section section) {
-        return upStation.isSameStation(section.getUpStation());
+        return upStation.isSameStation(section.upStation());
     }
 
     public boolean isSameDownStationBySection(Section section) {
-        return downStation.isSameStation(section.getDownStation());
+        return downStation.isSameStation(section.downStation());
     }
 
     public boolean isSameUpStationByStation(Station station) {
@@ -109,6 +114,10 @@ public class Section {
         return stations;
     }
 
+    public int distanceValue() {
+        return distance.value();
+    }
+
     public Long getId() {
         return id;
     }
@@ -117,11 +126,11 @@ public class Section {
         return line;
     }
 
-    public Station getUpStation() {
+    public Station upStation() {
         return upStation;
     }
 
-    public Station getDownStation() {
+    public Station downStation() {
         return downStation;
     }
 

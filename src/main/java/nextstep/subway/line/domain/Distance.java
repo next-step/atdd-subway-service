@@ -3,13 +3,14 @@ package nextstep.subway.line.domain;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import nextstep.subway.common.exception.InvalidParameterException;
 
 @Embeddable
 public class Distance {
     private static final String ERROR_MESSAGE_NOT_NULL_DISTANCE = "거리는 필수입니다.";
     private static final String ERROR_MESSAGE_GRATER_THAN_ZERO_DISTANCE = "거리는 0보다 커야합니다.";
-    public static final String ERROR_MESSAGE_VALID_DISTANCE = "기존 노선의 거리보다 작거나 같을 수 없습니다.";
-    private static final int ZERO = 0;
+    private static final String ERROR_MESSAGE_VALID_SECTION_DISTANCE = "기존 노선의 거리보다 작거나 같을 수 없습니다.";
+    private static final int INVALID_DISTANCE_CRITERION = 0;
 
     @Column(nullable = false)
     private Integer distance;
@@ -17,7 +18,7 @@ public class Distance {
     protected Distance() {
     }
 
-    protected Distance(Integer distance) {
+    private Distance(Integer distance) {
         validDistance(distance);
         this.distance = distance;
     }
@@ -28,11 +29,11 @@ public class Distance {
 
     private void validDistance(Integer distance) {
         if (Objects.isNull(distance)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_NULL_DISTANCE);
+            throw new InvalidParameterException(ERROR_MESSAGE_NOT_NULL_DISTANCE);
         }
 
-        if (distance <= ZERO) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_GRATER_THAN_ZERO_DISTANCE);
+        if (distance <= INVALID_DISTANCE_CRITERION) {
+            throw new InvalidParameterException(ERROR_MESSAGE_GRATER_THAN_ZERO_DISTANCE);
         }
     }
 
@@ -40,15 +41,23 @@ public class Distance {
         return Distance.from(this.distance + distance.distance);
     }
 
+    public int addTotalDistance(int distance) {
+        return this.distance + distance;
+    }
+
     public Distance subtract(Distance distance) {
-        try {
-            return Distance.from(this.distance - distance.distance);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_VALID_DISTANCE);
+        validSectionDistance(distance);
+
+        return Distance.from(this.distance - distance.distance);
+    }
+
+    private void validSectionDistance(Distance distance) {
+        if (this.distance <= distance.distance) {
+            throw new InvalidParameterException(ERROR_MESSAGE_VALID_SECTION_DISTANCE);
         }
     }
 
-    public Integer getDistance() {
+    public Integer value() {
         return distance;
     }
 

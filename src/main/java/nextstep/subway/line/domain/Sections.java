@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -42,7 +44,7 @@ public class Sections {
 
     private void validDuplicateSection(Section compareSection) {
         if (isContainsAllStation(compareSection)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_DUPLICATE_UP_DOWN_STATION);
+            throw new InvalidParameterException(ERROR_MESSAGE_DUPLICATE_UP_DOWN_STATION);
         }
     }
 
@@ -59,7 +61,7 @@ public class Sections {
         }
 
         if (getSortStations().stream().noneMatch(station -> compareSection.stations().contains(station))) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NONE_MATCH_UP_DOWN_STATION);
+            throw new InvalidParameterException(ERROR_MESSAGE_NONE_MATCH_UP_DOWN_STATION);
         }
     }
 
@@ -88,13 +90,13 @@ public class Sections {
 
     private void validDefaultSectionSize() {
         if (sections.size() == DEFAULT_SECTION_SIZE) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_EXIST_DEFAULT_SECTION_SIZE);
+            throw new InvalidParameterException(ERROR_MESSAGE_EXIST_DEFAULT_SECTION_SIZE);
         }
     }
 
     private void validNotContainSectionByStation(boolean upStation, boolean downStation) {
         if (!upStation && !downStation) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_LINE_NOT_CONTAIN_STATION);
+            throw new InvalidParameterException(ERROR_MESSAGE_LINE_NOT_CONTAIN_STATION);
         }
     }
 
@@ -103,7 +105,7 @@ public class Sections {
     }
 
     private void joinSections(Line line, Section upSection, Section downSection) {
-        Section section = Section.of(upSection.getUpStation(), downSection.getDownStation(),
+        Section section = Section.of(upSection.upStation(), downSection.downStation(),
                 upSection.addDistance(downSection));
         section.toLine(line);
         sections.add(section);
@@ -122,12 +124,16 @@ public class Sections {
     }
 
     public int totalDistance() {
-        return sections.stream().map(Section::getDistance).mapToInt(Distance::getDistance).sum();
+        int totalDistance = 0;
+        for (Section section : sections) {
+            totalDistance = section.addTotalDistance(totalDistance);
+        }
+        return totalDistance;
     }
 
     public List<Station> getSortStations() {
         Map<Station, Station> stationMap = sections.stream()
-                .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
+                .collect(Collectors.toMap(Section::upStation, Section::downStation));
 
         return sortStations(findTopStation(), stationMap);
     }
@@ -145,12 +151,16 @@ public class Sections {
 
     private Station findTopStation() {
         Set<Station> downStations = sections.stream()
-                .map(Section::getDownStation)
+                .map(Section::downStation)
                 .collect(Collectors.toSet());
 
-        return sections.stream().map(Section::getUpStation)
+        return sections.stream().map(Section::upStation)
                 .filter(station -> !downStations.contains(station))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(ERROR_MESSAGE_NOT_NULL_UP_STATION));
+                .orElseThrow(() -> new InvalidParameterException(ERROR_MESSAGE_NOT_NULL_UP_STATION));
+    }
+
+    public List<Section> list() {
+        return Collections.unmodifiableList(sections);
     }
 }
