@@ -93,10 +93,16 @@ public class Sections {
 
     private Station findTerminalUpStation() {
         return sections.stream()
-                .filter(section -> sections.stream().map(Section::getDownStation).noneMatch(Predicate.isEqual(section.getUpStation())))
+                .filter(section -> findNoneMatchUpStation(section.getUpStation()))
                 .findFirst()
                 .map(Section::getUpStation)
                 .orElseThrow(RuntimeException::new);
+    }
+
+    private boolean findNoneMatchUpStation(Station upStation){
+        return sections.stream()
+                .map(Section::getDownStation)
+                .noneMatch(Predicate.isEqual(upStation));
     }
 
     public List<Station> getStations() {
