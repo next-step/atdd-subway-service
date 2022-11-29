@@ -7,6 +7,7 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class PathService {
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final StationService stationService;
 
-    public PathService(LineRepository lineRepository, StationRepository stationRepository) {
+    public PathService(
+            LineRepository lineRepository,
+            StationRepository stationRepository,
+            StationService stationService
+    ) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.stationService = stationService;
     }
 
     public PathResponse findPath(Long source, Long target) {
@@ -29,10 +36,7 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
         PathFinder pathFinder = new PathFinder(lines);
         Path path = pathFinder.findPath(source, target);
-        List<StationResponse> stations = stationRepository.findAllByIdIsIn(path.getStationIds())
-                .stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        List<StationResponse> stations = stationService.findAllByIdIsIn(path.getStationIds());
         return PathResponse.from(stations, path.getDistance());
     }
 
