@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.then;
 
 import java.util.Arrays;
 import java.util.List;
@@ -57,27 +57,22 @@ class LineServiceTest {
     @DisplayName("노선을 저장 할 수 있다.")
     @Test
     void line_save() {
-        String lineName = "신분당선";
-        String lineColor = "bg-red-600";
-        LineRequest lineRequest = new LineRequest(lineName, lineColor, 1L, 2L, 10);
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10);
         given(stationService.findById(1L)).willReturn(강남역);
         given(stationService.findById(2L)).willReturn(양재역);
-        when(lineRepository.save(any())).thenReturn(new Line(lineName, lineColor));
+        given(lineRepository.save(any())).willReturn(lineRequest.toLine());
 
-        LineResponse lineResponse = lineService.saveLine(lineRequest);
+        lineService.saveLine(lineRequest);
 
-        assertAll(
-                () -> assertThat(lineResponse).isNotNull(),
-                () -> assertThat(lineResponse.getName()).isEqualTo(lineName),
-                () -> assertThat(lineResponse.getColor()).isEqualTo(lineColor)
-        );
+        then(lineRepository).should()
+                .save(any());
 
     }
 
     @DisplayName("노선 목록을 조회할 수 있다.")
     @Test
     void find_lines() {
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 구분당선));
+        given(lineRepository.findAll()).willReturn(Arrays.asList(신분당선, 구분당선));
 
         List<LineResponse> lines = lineService.findLines();
 
@@ -92,7 +87,7 @@ class LineServiceTest {
     @DisplayName("노선을 조회할 수 있다.")
     @Test
     void find_line() {
-        when(lineRepository.findById(1L)).thenReturn(Optional.of(신분당선));
+        given(lineRepository.findById(1L)).willReturn(Optional.of(신분당선));
 
         LineResponse lines = lineService.findLineResponseById(1L);
 
@@ -106,7 +101,7 @@ class LineServiceTest {
     @DisplayName("노선의 이름과 색을 변경할 수 있다 ")
     @Test
     void update_line() {
-        when(lineRepository.findById(1L)).thenReturn(Optional.of(현분당선));
+        given(lineRepository.findById(1L)).willReturn(Optional.of(현분당선));
 
         lineService.updateLine(1L, new LineRequest("바뀐분당선", "pink", null, null, 0));
 
@@ -121,7 +116,7 @@ class LineServiceTest {
     void add_station() {
         given(stationService.findById(1L)).willReturn(강남역);
         given(stationService.findById(2L)).willReturn(양재역);
-        when(lineRepository.findById(1L)).thenReturn(Optional.of(신분당선));
+        given(lineRepository.findById(1L)).willReturn(Optional.of(신분당선));
 
         lineService.addLineStation(1L, new SectionRequest(1L, 2L, 3));
 
@@ -133,7 +128,7 @@ class LineServiceTest {
     void remove_station() {
         given(stationService.findById(1L)).willReturn(강남역);
         given(stationService.findById(3L)).willReturn(양재역);
-        when(lineRepository.findById(1L)).thenReturn(Optional.of(신분당선));
+        given(lineRepository.findById(1L)).willReturn(Optional.of(신분당선));
         lineService.addLineStation(1L, new SectionRequest(1L, 3L, 3));
 
         lineService.removeLineStation(1L, 3L);
