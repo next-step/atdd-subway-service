@@ -50,10 +50,10 @@ class SectionsTest {
         assertAll(
                 () -> assertThat(sections.getSections().get(0).getUpStation()).isEqualTo(판교역),
                 () -> assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(광교역),
-                () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(FIVE),
+                () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(5),
                 () -> assertThat(sections.getSections().get(1).getUpStation()).isEqualTo(강남역),
                 () -> assertThat(sections.getSections().get(1).getDownStation()).isEqualTo(판교역),
-                () -> assertThat(sections.getSections().get(1).getDistance()).isEqualTo(FIVE)
+                () -> assertThat(sections.getSections().get(1).getDistance()).isEqualTo(5)
         );
     }
 

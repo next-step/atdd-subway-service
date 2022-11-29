@@ -16,7 +16,6 @@ class SectionTest {
     private final Station 광교역 = new Station("광교역");
     private final Station 판교역 = new Station("판교역");
     private final Distance TEN = Distance.from(10);
-    private final Distance SIX = Distance.from(6);
     private final Distance FOUR = Distance.from(4);
     private final Distance FIFTY = Distance.from(15);
 
@@ -28,7 +27,7 @@ class SectionTest {
                 () -> assertThat(section.getLine().getColor()).isEqualTo("red"),
                 () -> assertThat(section.getUpStation()).isEqualTo(강남역),
                 () -> assertThat(section.getDownStation()).isEqualTo(광교역),
-                () -> assertThat(section.getDistance()).isEqualTo(TEN)
+                () -> assertThat(section.getDistance()).isEqualTo(10)
         );
     }
 
@@ -38,7 +37,7 @@ class SectionTest {
         section.updateUpStation(판교역, FOUR);
         assertAll(
                 () -> assertThat(section.getUpStation()).isEqualTo(판교역),
-                () -> assertThat(section.getDistance()).isEqualTo(SIX)
+                () -> assertThat(section.getDistance()).isEqualTo(6)
         );
     }
 
@@ -48,7 +47,7 @@ class SectionTest {
         section.updateDownStation(판교역, FOUR);
         assertAll(
                 () -> assertThat(section.getDownStation()).isEqualTo(판교역),
-                () -> assertThat(section.getDistance()).isEqualTo(SIX)
+                () -> assertThat(section.getDistance()).isEqualTo(6)
         );
     }
 
