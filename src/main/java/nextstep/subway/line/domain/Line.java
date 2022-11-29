@@ -31,7 +31,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        Section section = new Section(upStation, downStation, new Distance(distance));
+        Section section = new Section(upStation, downStation, distance);
         section.addLine(this);
         this.sections = new Sections(Collections.singletonList(section));
     }

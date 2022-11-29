@@ -57,8 +57,8 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSection2() {
         // when
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-        지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 강남역, 5);
+        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 5);
+        지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 강남역, 3);
 
         // then
         ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
@@ -90,7 +90,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void removeLineSection1() {
         // given
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
+        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 5);
         지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 2);
 
         // when

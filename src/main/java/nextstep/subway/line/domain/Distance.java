@@ -25,6 +25,12 @@ public class Distance {
         }
     }
 
+    public void validNewDistance(Distance newDistance) {
+        if (value <= newDistance.value) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+    }
+
     public int value() {
         return this.value;
     }
@@ -52,11 +58,5 @@ public class Distance {
 
     public Distance add(Distance distance) {
         return new Distance(this.value + distance.value);
-    }
-
-    public void validNewDistance(Distance newDistance) {
-        if (value <= newDistance.value) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
     }
 }
