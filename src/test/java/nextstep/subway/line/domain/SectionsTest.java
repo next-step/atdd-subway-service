@@ -29,7 +29,7 @@ class SectionsTest {
     void test0() {
         Sections sections = new Sections();
 
-        List<StationResponse> stationResponses = sections.getLineEndStations();
+        List<StationResponse> stationResponses = sections.getStationResponse();
 
         assertThat(stationResponses.size()).isEqualTo(0);
     }
@@ -40,20 +40,20 @@ class SectionsTest {
         Sections sections = new Sections();
         sections.add(new Section(line,upStation,downStation,10));
 
-        List<StationResponse> stationResponses = sections.getLineEndStations();
+        List<StationResponse> stationResponses = sections.getStationResponse();
 
         assertThat(stationResponses.size()).isEqualTo(2);
     }
 
     @Test
-    @DisplayName("구간이 2개일 때 상행역/하행역을 찾을 수 있다.")
+    @DisplayName("구간이 2개일 때 모든 역을 찾을 수 있다.")
     void test2() {
         Sections sections = new Sections();
         sections.add(new Section(line,upStation,middleStation,4));
         sections.add(new Section(line,middleStation,downStation,6));
 
-        List<StationResponse> stationResponses = sections.getLineEndStations();
+        List<StationResponse> stationResponses = sections.getStationResponse();
 
-        assertThat(stationResponses.size()).isEqualTo(2);
+        assertThat(stationResponses.size()).isEqualTo(3);
     }
 }
