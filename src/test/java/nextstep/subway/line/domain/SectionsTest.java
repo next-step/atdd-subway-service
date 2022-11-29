@@ -5,8 +5,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
+import static nextstep.subway.line.domain.SectionFixture.sectionAB;
+import static nextstep.subway.line.domain.SectionFixture.sectionBC;
+import static nextstep.subway.line.domain.Sections.ALREADY_EXIST_SECTION_EXCEPTION_MESSAGE;
 import static nextstep.subway.station.StationFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class SectionsTest {
@@ -16,7 +20,7 @@ public class SectionsTest {
     void add() {
 
         Sections sections = new Sections();
-        sections.add(SectionFixture.sectionAB());
+        sections.add(sectionAB());
 
         assertAll(
                 () -> assertThat(sections.size()).isEqualTo(1),
@@ -29,8 +33,8 @@ public class SectionsTest {
     void addSection() {
 
         Sections sections = new Sections();
-        sections.add(SectionFixture.sectionAB());
-        sections.add(SectionFixture.sectionBC());
+        sections.add(sectionAB());
+        sections.add(sectionBC());
 
         assertAll(
                 () -> assertThat(sections.size()).isEqualTo(2),
@@ -45,5 +49,18 @@ public class SectionsTest {
         Sections sections = new Sections();
 
         assertThat(sections.getStations()).isEqualTo(Collections.emptyList());
+    }
+
+    @DisplayName("상행역과 하행역이 이미 노선에 모두 등록되어 있다면 추가할 수 없다.")
+    @Test
+    void add_fail_exist() {
+
+        Sections sections = new Sections();
+        sections.add(sectionAB());
+        sections.add(sectionBC());
+
+        assertThatThrownBy(() -> sections.add(sectionBC()))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining(ALREADY_EXIST_SECTION_EXCEPTION_MESSAGE);
     }
 }
