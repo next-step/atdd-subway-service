@@ -52,6 +52,21 @@ public class DistanceTest {
         assertThat(resultDistance.value()).isEqualTo(original - target);
     }
 
+    @DisplayName("길이에서 int형 길이를 빼면 새로운 길이가 나온다.")
+    @Test
+    void subtractDistance2() {
+        // given
+        int original = 15;
+        int target = 5;
+        Distance distance = Distance.from(original);
+
+        // when
+        Distance resultDistance = distance.subtract(target);
+
+        // then
+        assertThat(resultDistance.value()).isEqualTo(original - target);
+    }
+
     @DisplayName("기존 길이보다 큰 길이를 빼려고 하면 에러가 발생한다.")
     @Test
     void subtractDistanceThrowErrorWhenOriginalSmallerThenTarget() {
@@ -92,7 +107,7 @@ public class DistanceTest {
         Distance distance = Distance.from(actual);
 
         // when
-        boolean isBiggerThan = distance.isEqualOrBiggerThan(Distance.from(expect));
+        boolean isBiggerThan = distance.isEqualOrBiggerThan(expect);
 
         // then
         assertAll(

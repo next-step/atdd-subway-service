@@ -34,12 +34,16 @@ public class Distance {
         return new Distance(this.distance - distance.distance);
     }
 
+    public Distance subtract(int distance) {
+        return new Distance(this.distance - distance);
+    }
+
     public Distance add(Distance distance) {
         return new Distance(this.distance + distance.distance);
     }
 
-    public boolean isEqualOrBiggerThan(Distance distance) {
-        return this.distance >= distance.distance;
+    public boolean isEqualOrBiggerThan(int distance) {
+        return this.distance >= distance;
     }
 
     public int divideAndCeil(Distance distance) {
