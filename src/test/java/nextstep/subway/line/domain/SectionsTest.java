@@ -107,7 +107,7 @@ class SectionsTest {
         // when
         // then
         assertThatThrownBy(() -> sections.addNewSection(section))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("이미 등록된 구간 입니다.");
     }
 
@@ -122,7 +122,7 @@ class SectionsTest {
         // when
         // then
         assertThatThrownBy(() -> sections.addNewSection(section))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("등록할 수 없는 구간 입니다.");
     }
 
@@ -195,6 +195,6 @@ class SectionsTest {
 
         // when
         assertThatThrownBy(() -> sections.removeStation(왕십리))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalStateException.class);
     }
 }

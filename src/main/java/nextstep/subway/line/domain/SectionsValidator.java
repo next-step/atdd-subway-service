@@ -21,7 +21,7 @@ class SectionsValidator {
         if (section.isDownStationExisted(stations)) {
             return;
         }
-        throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
     }
 
     private static void validateAlreadyExisted(Section section, Stations stations) {
@@ -31,12 +31,12 @@ class SectionsValidator {
         if (section.isDownStationNotExisted(stations)) {
             return;
         }
-        throw new RuntimeException("이미 등록된 구간 입니다.");
+        throw new IllegalArgumentException("이미 등록된 구간 입니다.");
     }
 
     static void validateRemoveStation(Sections sections) {
         if (sections.size() <= MIN_SIZE) {
-            throw new RuntimeException();
+            throw new IllegalStateException("노선에는 최소 2개 이상의 역이 있어야 합니다.");
         }
     }
 }

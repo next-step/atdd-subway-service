@@ -34,7 +34,7 @@ public class Distance {
 
     private void validateSub(Distance other) {
         if (this.distance <= other.distance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
     }
 

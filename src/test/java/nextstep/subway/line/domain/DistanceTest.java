@@ -24,7 +24,7 @@ class DistanceTest {
     @Test
     void sub_VALIDATE_SUB_MESSAGE() {
         assertThatThrownBy(() -> Distance.valueOf(5).sub(Distance.valueOf(5)))
-            .isInstanceOf(RuntimeException.class)
+            .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 }
