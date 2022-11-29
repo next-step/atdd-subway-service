@@ -15,6 +15,7 @@ import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
+    private static final int ONE_SECTION_SIZE = 0;
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections;
 
@@ -89,4 +90,45 @@ public class Sections {
                 .noneMatch(stations::contains);
     }
 
+    public void delete(Station station) {
+        deleteValidate();
+        Optional<Section> prevSection = findPrevSection(station);
+        Optional<Section> nextSection = findNextSection(station);
+        if (isMiddleSection(prevSection, nextSection)) {
+            deleteMiddleSection(prevSection.get(), nextSection.get());
+            return;
+        }
+        deleteEndSection(prevSection, nextSection);
+    }
+
+    private void deleteValidate() {
+        if (sections.size() == ONE_SECTION_SIZE) {
+            throw new IllegalArgumentException("마지막 구간은 삭제할 수 없습니다.");
+        }
+    }
+    private void deleteEndSection(Optional<Section> prevSection, Optional<Section> nextSection) {
+        nextSection.ifPresent(sections::remove);
+        prevSection.ifPresent(sections::remove);
+    }
+
+    private void deleteMiddleSection(Section prevSection, Section nextSection) {
+        prevSection.merge(nextSection);
+        this.sections.remove(nextSection);
+    }
+
+    private Optional<Section> findPrevSection(Station station) {
+        return sections.stream()
+                .filter(section -> section.isDownStation(station))
+                .findFirst();
+    }
+
+    private Optional<Section> findNextSection(Station station) {
+        return sections.stream()
+                .filter(section -> section.isUpStation(station))
+                .findFirst();
+    }
+
+    private boolean isMiddleSection(Optional<Section> prevSection, Optional<Section> nextSection) {
+        return prevSection.isPresent() && nextSection.isPresent();
+    }
 }

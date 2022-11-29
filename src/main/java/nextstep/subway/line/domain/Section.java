@@ -85,12 +85,10 @@ public class Section {
         }
     }
 
-//    public Section  merge(Section nextSection) {
-//        Distance newDistance = distance.add(nextSection.distance);
-//        Section section = new Section(upStation, nextSection.getDownStation(), newDistance);
-//        section.addLine(line);
-//        return section;
-//    }
+    public void merge(Section nextSection) {
+        this.downStation = nextSection.downStation;
+        this.distance = this.distance.add(nextSection.distance);
+    }
 
     public boolean isEqualUpStation(Section section) {
         return this.upStation.equals(section.upStation);
@@ -114,4 +112,11 @@ public class Section {
         return Arrays.asList(upStation, downStation);
     }
 
+    public boolean isDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
+
+    public boolean isUpStation(Station station) {
+        return this.downStation.equals(station);
+    }
 }

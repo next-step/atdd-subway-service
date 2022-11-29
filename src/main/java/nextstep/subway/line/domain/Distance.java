@@ -21,7 +21,7 @@ public class Distance {
 
     private static void validate(int distance) {
         if (distance <= ZERO) {
-            throw new IllegalArgumentException("길이는 0이상 숫자를 입력해야 합니다.");
+            throw new IllegalArgumentException("거리는 0이상 숫자를 입력해야 합니다.");
         }
     }
 
