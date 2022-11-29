@@ -58,7 +58,10 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void delete(Long memberId, Long favoriteId) {
-
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, memberId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.FAVORITE_NOT_EXIST));
+        favoriteRepository.delete(favorite);
     }
 }

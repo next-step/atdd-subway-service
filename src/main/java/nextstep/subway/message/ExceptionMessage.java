@@ -18,6 +18,7 @@ public class ExceptionMessage {
     public static final String INVALID_PASSWORD = "비밀번호가 일치하지 않습니다.";
     public static final String FAVORITE_NOT_HAVE_STATION = "즐겨찾기에 출발역 또는 도착역 정보가 없습니다.";
     public static final String FAVORITE_NOT_HAVE_MEMBER = "즐겨찾기에 회원 정보가 없습니다.";
+    public static final String FAVORITE_NOT_EXIST = "즐겨찾기가 존재하지 않습니다.";
 
     private ExceptionMessage() {
     }
