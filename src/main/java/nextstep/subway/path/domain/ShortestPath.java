@@ -15,11 +15,8 @@ public class ShortestPath {
         this.shortestPath = shortestPath;
     }
 
-    public List<StationResponse> getStations() {
-        return shortestPath.getVertexList()
-                .stream()
-                .map(StationResponse::from)
-                .collect(Collectors.toList());
+    public List<Station> getStations() {
+        return shortestPath.getVertexList();
     }
 
     public int getDistance() {

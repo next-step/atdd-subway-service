@@ -5,9 +5,7 @@ import nextstep.subway.fixture.LineTestFactory;
 import nextstep.subway.fixture.SectionTestFactory;
 import nextstep.subway.line.domain.ExtraFare;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +38,7 @@ class PathFinderTest {
 
         List<String> stationNames = path.getStations()
                 .stream()
-                .map(StationResponse::getName)
+                .map(Station::getName)
                 .collect(Collectors.toList());
 
         // then
