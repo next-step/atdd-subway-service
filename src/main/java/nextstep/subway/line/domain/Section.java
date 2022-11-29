@@ -45,19 +45,19 @@ public class Section {
     }
 
     public void updateUpStation(final Station station, final int newDistance) {
-        distance.minusDistance(newDistance);
+        distance = distance.minusDistance(newDistance);
         this.upStation = station;
     }
 
     public void updateDownStation(final Station station, final int newDistance) {
-        distance.minusDistance(newDistance);
+        distance = distance.minusDistance(newDistance);
         this.downStation = station;
     }
 
     public Section updateMiddleStation(final Section downSection) {
         final Station newUpStation = downSection.upStation;
         final Station newDownStation = downStation;
-        distance.plusDistance(downSection.getDistance());
+        distance = distance.plusDistance(downSection.getDistance());
 
         return new Section(line, newUpStation, newDownStation, distance.getValue());
     }
