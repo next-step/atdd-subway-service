@@ -118,7 +118,6 @@ public class Sections {
     }
 
     public List<Section> values() {
-//        return Collections.unmodifiableList(sections);
-        return sections;
+        return Collections.unmodifiableList(sections);
     }
 }
