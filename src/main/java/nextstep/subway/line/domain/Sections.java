@@ -44,19 +44,19 @@ public class Sections {
     private void checkValidSection(Section section) {
         List<Station> stations = this.getStations();
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
-                stations.stream().noneMatch(it -> it == section.getDownStation())) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> section.isUpStation(it)) &&
+                stations.stream().noneMatch(it -> section.isDownStation(it))) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
     }
 
     private void updateUpStation(Section newSection) {
         List<Station> stations = this.getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(st -> st == newSection.getUpStation());
+        boolean isUpStationExisted = stations.stream().anyMatch(newSection::isUpStation);
 
         if (isUpStationExisted) {
             this.sections.stream()
-                    .filter(se -> se.getUpStation() == newSection.getUpStation())
+                    .filter(se -> newSection.isUpStation(se.getUpStation()))
                     .findFirst()
                     .ifPresent(se -> se.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
 
@@ -65,11 +65,11 @@ public class Sections {
 
     private void updateDownStation(Section newSection) {
         List<Station> stations = this.getStations();
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == newSection.getDownStation());
+        boolean isDownStationExisted = stations.stream().anyMatch(newSection::isDownStation);
 
         if (isDownStationExisted) {
             this.sections.stream()
-                    .filter(se -> se.getDownStation() == newSection.getDownStation())
+                    .filter(se -> newSection.isDownStation(se.getDownStation()))
                     .findFirst()
                     .ifPresent(se-> se.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
 
