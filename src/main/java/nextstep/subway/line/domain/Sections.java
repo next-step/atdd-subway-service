@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import nextstep.subway.ErrMsg;
+import nextstep.subway.ErrorMessage;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -32,22 +32,19 @@ public class Sections {
     }
 
     private void addSectionInMiddle(Section section) {
-        if (!addUpMatchingSection(section)) {
-            addDownMatchingSection(section);
+        Optional<Section> upMatchingSection = getUpMatchingSection(section.getUpStation());
+        if (upMatchingSection.isPresent()) {
+            addUpMatchingSection(upMatchingSection.get(), section);
+            return;
         }
+        getDownMatchingSection(section.getDownStation()).ifPresent(it->addDownMatchingSection(it, section));
     }
 
-    private boolean addUpMatchingSection(Section section) {
-        Optional<Section> target = getUpMatchingSection(section.getUpStation());
-        if (target.isPresent()) {
-            target.get().updateUpStation(section);
-            sections.add(section);
-            return true;
-        }
-        return false;
+    private void addUpMatchingSection(Section target, Section section) {
+        target.updateUpStation(section);
+        sections.add(section);
     }
-    private void addDownMatchingSection(Section section) {
-        Section target = getDownMatchingSection(section.getDownStation()).get();
+    private void addDownMatchingSection(Section target, Section section) {
         target.updateDownStation(section);
         sections.add(section);
     }
@@ -63,10 +60,10 @@ public class Sections {
 
     private void validateAddSection(Section section) {
         if (!isExists(section.getDownStation()) && !isExists(section.getUpStation())) {
-            throw new IllegalStateException(ErrMsg.STATIONS_NOT_EXISTS);
+            throw new IllegalStateException(ErrorMessage.STATIONS_NOT_EXISTS);
         }
         if (isExists(section.getDownStation()) && isExists(section.getUpStation())) {
-            throw new IllegalStateException(ErrMsg.STATIONS_ALREADY_EXISTS);
+            throw new IllegalStateException(ErrorMessage.STATIONS_ALREADY_EXISTS);
 
         }
     }
@@ -158,7 +155,7 @@ public class Sections {
 
     private void validateDeleteCondition() {
         if (sections.size() <= NON_DELETABLE_SECTION_COUNT) {
-            throw new IllegalStateException(ErrMsg.CANNOT_DELETE_SECTION_WHEN_ONE);
+            throw new IllegalStateException(ErrorMessage.CANNOT_DELETE_SECTION_WHEN_ONE);
         }
     }
 
