@@ -1,6 +1,8 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import java.util.Objects;
+import nextstep.subway.common.exception.SubwayException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.Path;
@@ -36,11 +38,27 @@ public class DijkstraShortestPathFinder {
     }
 
     public Path find(Station source, Station target) {
+        validateSameStations(source, target);
+
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
+        validateNotConnectStations(graphPath);
 
         List<Station> stations = graphPath.getVertexList();
         double weight = graphPath.getWeight();
         return Path.of(stations, (int) weight);
     }
+
+    private void validateSameStations(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new SubwayException("출발역과 도착역이 같습니다.");
+        }
+    }
+
+    private void validateNotConnectStations(GraphPath<Station, DefaultWeightedEdge> graphPath) {
+        if (Objects.isNull(graphPath)) {
+            throw new SubwayException("출발역과 도착역이 연결되어 있지 않습니다.");
+        }
+    }
 }
+

@@ -8,8 +8,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
@@ -36,6 +39,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 매봉역;
     private StationResponse 양재시민의숲;
     private StationResponse 정자역;
+    private StationResponse 미금역;
 
     /**
      * 교대역    --- *2호선* ---   강남역  --- *2호선* --- 역삼역   --- *2호선* ---  선릉역
@@ -43,12 +47,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * *3호선*                   *신분당선*
      * |                        |
      * 남부터미널역  --- *3호선* ---   양재  --- *3호선* ---  매봉
-     *                          |
-     *                          *신분당선*
-     *                          |
-     *                          양재시민의숲
+     * |
+     * *신분당선*
+     * |
+     * 양재시민의숲
      * <p>
-     * --- *수인분당선* ---  정자
+     * 미금 --- *수인분당선* ---  정자
      */
     @BeforeEach
     public void setUp() {
@@ -63,11 +67,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         매봉역 = 지하철역_등록되어_있음("매봉역").as(StationResponse.class);
         양재시민의숲 = 지하철역_등록되어_있음("양재시민의숲").as(StationResponse.class);
         정자역 = 지하철역_등록되어_있음("정자역").as(StationResponse.class);
+        미금역 = 지하철역_등록되어_있음("미금역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역.getId(), 양재시민의숲.getId(), 20).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-green-600", 교대역.getId(), 선릉역.getId(), 30).as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-orange-600", 교대역.getId(), 매봉역.getId(), 30).as(LineResponse.class);
-        수인분당선 = 지하철_노선_등록되어_있음("수인분당선", "bg-yello-600", 교대역.getId(), 매봉역.getId(), 30).as(LineResponse.class);
+        수인분당선 = 지하철_노선_등록되어_있음("수인분당선", "bg-yello-600", 미금역.getId(), 정자역.getId(), 30).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 10);
         지하철_노선에_지하철역_등록되어_있음(삼호선, 남부터미널역, 양재역, 10);
@@ -87,6 +92,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 조회결과 = 지하철_경로_조회_요청(교대역.getId(), 매봉역.getId());
         // then
         지하철_경로_조회됨(조회결과);
+        지하철역_목록_포함_및_거리_일치(조회결과, Arrays.asList(교대역, 강남역, 양재역, 매봉역), 30);
     }
 
     /**
@@ -150,5 +156,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .when().get("/paths")
                 .then().log().all()
                 .extract();
+    }
+
+    private static void 지하철역_목록_포함_및_거리_일치(ExtractableResponse<Response> response, List<StationResponse> stationResponse, int distance) {
+        List<Long> stationIds = stationResponse.stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        List<Long> resultStationIds = response.jsonPath().getList("stations", StationResponse.class).stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        int resultDistance = response.jsonPath().getInt("distance");
+
+        assertThat(resultStationIds).containsAll(stationIds);
+        assertThat(resultDistance).isEqualTo(distance);
     }
 }
