@@ -40,7 +40,7 @@ public class Sections {
         return stations;
     }
 
-    public void add(Line line, Station upStation, Station downStation, int distance) {
+    public void add(Line line, Station upStation, Station downStation, Distance distance) {
         List<Station> stations = getStations();
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
@@ -68,23 +68,29 @@ public class Sections {
     }
 
     public void remove(Line line, Station station) {
-        if (sections.size() <= 1) {
-            throw new InvalidRemoveException("해당 정류장 제거시 구간이 모두 사라집니다.");
-        }
+        validateSizeLessThanOne();
 
         Optional<Section> upLineStation = findFromUpStation(station);
         Optional<Section> downLineStation = findFromDownStation(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance =
-                upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+            mergeSection(line, upLineStation.get(), downLineStation.get());
         }
 
         upLineStation.ifPresent(it -> sections.remove(it));
         downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private void mergeSection(Line line, Section newUpStation, Section newDownStation) {
+        Distance newDistance = newUpStation.plusDistance(newDownStation.getDistance());
+        sections.add(new Section(line, newDownStation.getUpStation(), newUpStation.getDownStation(),
+            newDistance));
+    }
+
+    private void validateSizeLessThanOne() {
+        if (sections.size() <= 1) {
+            throw new InvalidRemoveException("해당 정류장 제거시 구간이 모두 사라집니다.");
+        }
     }
 
     private Station findFirstStation() {

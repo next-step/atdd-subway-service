@@ -27,7 +27,7 @@ class SectionsTest {
     void 구간_추가() {
         Sections sections = Sections
             .of(new Section(null, 강남역, 역삼역, 4), new Section(null, 역삼역, 블루보틀역, 3));
-        sections.add(null, 블루보틀역, 선릉역, 3);
+        sections.add(null, 블루보틀역, 선릉역, new Distance(3));
         Assertions.assertThat(sections.getStations())
             .hasSize(4)
             .containsExactly(강남역, 역삼역, 블루보틀역, 선릉역);
@@ -37,7 +37,7 @@ class SectionsTest {
     void 구간_추가중_해당_구간이_이미_있을경우_에러발생() {
         Sections sections = Sections
             .of(new Section(null, 강남역, 역삼역, 4), new Section(null, 역삼역, 블루보틀역, 3));
-        Assertions.assertThatThrownBy(() -> sections.add(null, 역삼역, 블루보틀역, 3))
+        Assertions.assertThatThrownBy(() -> sections.add(null, 역삼역, 블루보틀역, new Distance(3)))
             .isInstanceOf(SectionAlreadyExistException.class)
             .hasMessage("이미 등록된 구간 입니다.");
     }
@@ -46,7 +46,7 @@ class SectionsTest {
     void 구간_추가중_구간에_연결되는_역이_없을경우_에러발생생() {
         Sections sections = Sections
             .of(new Section(null, 강남역, 역삼역, 4), new Section(null, 역삼역, 블루보틀역, 3));
-        Assertions.assertThatThrownBy(() -> sections.add(null, 선릉역, 스타벅스역, 3))
+        Assertions.assertThatThrownBy(() -> sections.add(null, 선릉역, 스타벅스역, new Distance(3)))
             .isInstanceOf(NoRelateStationException.class)
             .hasMessage("등록할 수 없는 구간 입니다.");
     }
