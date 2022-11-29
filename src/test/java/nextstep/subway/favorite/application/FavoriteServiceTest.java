@@ -4,6 +4,7 @@ import nextstep.subway.exception.EntityNotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.message.ExceptionMessage;
@@ -18,6 +19,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -96,5 +99,18 @@ class FavoriteServiceTest {
         Assertions.assertThatThrownBy(() -> favoriteService.create(1L, request))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageStartingWith(ExceptionMessage.MEMBER_NOT_EXIST);
+    }
+
+    @DisplayName("즐겨찾기 목록을 조회한다.")
+    @Test
+    void findAllFavorites() {
+        List<Favorite> favorites = new ArrayList<>();
+        favorites.add(Favorite.of(member, sourceStation, targetStation));
+
+        when(favoriteRepository.findByMemberId(any())).thenReturn(favorites);
+
+        List<FavoriteResponse> results = favoriteService.findAllFavorites(1L);
+
+        Assertions.assertThat(results).isNotEmpty();
     }
 }
