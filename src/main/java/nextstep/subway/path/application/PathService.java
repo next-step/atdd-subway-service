@@ -4,6 +4,8 @@ import java.util.List;
 import nextstep.subway.common.exception.SubwayException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.DijkstraShortestPathFinder;
+import nextstep.subway.path.dto.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -22,14 +24,13 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse findPath(Long source, Long target) {
-
         Station sourceStation = stationRepository.findById(source).orElseThrow(SubwayException::new);
         Station targetStation = stationRepository.findById(target).orElseThrow(SubwayException::new);
         List<Line> lines = lineRepository.findAll();
 
-
-
-        return null;
+        DijkstraShortestPathFinder dijkstraShortestPathFinder = new DijkstraShortestPathFinder(lines);
+        Path path = dijkstraShortestPathFinder.find(sourceStation, targetStation);
+        return PathResponse.from(path);
     }
 
 }
