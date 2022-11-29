@@ -114,10 +114,10 @@ public class Sections {
         Station downStation = findTerminalUpStation();
         stations.add(downStation);
 
-        Section nextSection = findUpStation(downStation).orElse(null);
-        while (nextSection != null) {
-            stations.add(nextSection.getDownStation());
-            nextSection = findUpStation(nextSection.getDownStation()).orElse(null);
+        Optional<Section> nextSection = findUpStation(downStation);
+        while (nextSection.isPresent()) {
+            stations.add(nextSection.get().getDownStation());
+            nextSection = findUpStation(nextSection.get().getDownStation());
         }
 
         return stations;
