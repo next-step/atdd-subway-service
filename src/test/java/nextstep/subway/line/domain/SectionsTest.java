@@ -36,7 +36,7 @@ public class SectionsTest {
         신분당선.addSection(강남역, 양재역, 20);
 
         List<String> stationNames = 신분당선.getStations().stream()
-                .map(it -> it.getName())
+                .map(Station::getName)
                 .collect(Collectors.toList());
 
         assertThat(stationNames).containsExactlyElementsOf(Arrays.asList(
@@ -52,7 +52,7 @@ public class SectionsTest {
         신분당선.addSection(양재역, 강남역, 20);
 
         List<String> stationNames = 신분당선.getStations().stream()
-                .map(it -> it.getName())
+                .map(Station::getName)
                 .collect(Collectors.toList());
 
         assertThat(stationNames).containsExactlyElementsOf(Arrays.asList(
@@ -68,7 +68,7 @@ public class SectionsTest {
         신분당선.addSection(광교역, 양재역, 20);
 
         List<String> stationNames = 신분당선.getStations().stream()
-                .map(it -> it.getName())
+                .map(Station::getName)
                 .collect(Collectors.toList());
 
         assertThat(stationNames).containsExactlyElementsOf(Arrays.asList(
@@ -84,7 +84,7 @@ public class SectionsTest {
         신분당선.addSection(양재역, 광교역, 20);
 
         List<String> stationNames = 신분당선.getStations().stream()
-                .map(it -> it.getName())
+                .map(Station::getName)
                 .collect(Collectors.toList());
 
         assertThat(stationNames).containsExactlyElementsOf(Arrays.asList(
@@ -98,6 +98,70 @@ public class SectionsTest {
     @Test
     void addSectionExceptionDistance() {
         assertThatThrownBy(() -> 신분당선.addSection(양재역, 광교역, 100))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @DisplayName("노선에서 상행 종점을 제거한다")
+    @Test
+    void removeSection1() {
+        // given
+        신분당선.addSection(강남역, 양재역, 50);
+
+        // when
+        신분당선.removeSection(강남역);
+        List<String> stationNames = 신분당선.getStations().stream()
+                .map(Station::getName)
+                .collect(Collectors.toList());
+
+        // then
+        assertThat(stationNames).containsExactlyElementsOf(Arrays.asList("양재역", "광교역"));
+    }
+
+    @DisplayName("노선에서 중간 역을 제거한다")
+    @Test
+    void removeSection2() {
+        // given
+        신분당선.addSection(강남역, 양재역, 50);
+
+        // when
+        신분당선.removeSection(양재역);
+        List<String> stationNames = 신분당선.getStations().stream()
+                .map(Station::getName)
+                .collect(Collectors.toList());
+
+        // then
+        assertThat(stationNames).containsExactlyElementsOf(Arrays.asList("강남역", "광교역"));
+    }
+
+    @DisplayName("노선에서 하행 종점 역을 제거한다")
+    @Test
+    void removeSection3() {
+        // given
+        신분당선.addSection(강남역, 양재역, 50);
+
+        // when
+        신분당선.removeSection(양재역);
+        List<String> stationNames = 신분당선.getStations().stream()
+                .map(Station::getName)
+                .collect(Collectors.toList());
+
+        // then
+        assertThat(stationNames).containsExactlyElementsOf(Arrays.asList("강남역", "광교역"));
+    }
+
+    @DisplayName("노선에서 모든 역을 제거하는 경우 예외 발생")
+    @Test
+    void removeSectionException1() {
+        // when / then
+        assertThatThrownBy(() -> 신분당선.removeSection(강남역))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @DisplayName("노선에 존재하지 않는 역을 제거하는 경우 예외 발생")
+    @Test
+    void removeSectionException2() {
+        // when / then
+        assertThatThrownBy(() -> 신분당선.removeSection(양재역))
                 .isInstanceOf(RuntimeException.class);
     }
 }

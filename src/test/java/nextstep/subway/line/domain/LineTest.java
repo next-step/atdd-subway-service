@@ -10,6 +10,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("노선 관련 도메인 테스트")
 public class LineTest {
 
     @DisplayName("노선 생성 테스트")
@@ -55,7 +56,7 @@ public class LineTest {
         Line newLine = new Line("신분당선", "빨간색");
         line.update(newLine);
 
-        assertThat(line.equals(newLine)).isTrue();
+        assertThat(line).isEqualTo(newLine);
         assertThat(line.getColor()).isEqualTo("빨간색");
     }
 }

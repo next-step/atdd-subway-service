@@ -17,7 +17,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-    private Sections sections = new Sections();
+    private final Sections sections = new Sections();
 
     public Line() {
     }
@@ -32,20 +32,24 @@ public class Line extends BaseEntity {
         validateLine(name, color);
         this.name = name;
         this.color = color;
-        sections.addSection(this, upStation, downStation, distance);
+        sections.add(this, upStation, downStation, distance);
+    }
+
+    public List<Station> getStations() {
+        return sections.getStations();
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
-        sections.addSection(this, upStation, downStation, distance);
+        sections.add(this, upStation, downStation, distance);
+    }
+
+    public void removeSection(Station station) {
+        sections.remove(this, station);
     }
 
     public void update(Line line) {
         this.name = line.name;
         this.color = line.color;
-    }
-
-    public List<Station> getStations() {
-        return sections.getStations();
     }
 
     public Long getId() {
