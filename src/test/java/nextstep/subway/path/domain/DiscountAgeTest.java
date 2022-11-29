@@ -3,10 +3,22 @@ package nextstep.subway.path.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DiscountAgeTest {
+    @DisplayName("어린이와 청소년이 아닐 경우, 할인이 적용되지 않는다")
+    @ParameterizedTest
+    @ValueSource(ints = {19, 20, 99})
+    void noDiscount(int age) {
+        // when
+        int result = DiscountAge.calculate(age, 1_250);
+
+        // then
+        assertThat(result).isEqualTo(0);
+    }
+
     @DisplayName("어린이들은 지하철 요금의 50%를 할인 받는다")
     @ParameterizedTest
     @CsvSource(value = {"6:450", "12:450"}, delimiter = ':')
