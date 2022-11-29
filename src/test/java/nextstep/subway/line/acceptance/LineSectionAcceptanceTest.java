@@ -3,6 +3,7 @@ package nextstep.subway.line.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.stream.Stream;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -11,7 +12,9 @@ import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -20,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("지하철 구간 관련 기능")
 public class LineSectionAcceptanceTest extends AcceptanceTest {
@@ -53,38 +57,49 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
      * *  And 지하철 노선에 지하철역 등록되어 있음
      *
      * Scenario: 지하철 구간을 관리
-     * * When 지하철 구간 등록 요청
+     * [1] 노선을 만드는 요청으로 새로운 노선을 생성한다.
+     * *  When 지하철 구간 등록 요청
      * *  Then 지하철 구간 등록됨
+     * [2] 노선에 등록된 역 목록을 조회하여 역을 순차적으로 조회한다.
      * *  When 지하철 노선에 등록된 역 목록 조회 요청
      * *  Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+     * [3] 노선을 삭제하는 요청으로 노선을 삭제한다.
      * *  When 지하철 구간 삭제 요청
      * *  Then 지하철 구간 삭제됨
+     * [4] 노선을 삭제한후 역 목록을 조회하여 삭제된 역 목록을 순차적으로 조회한다.
      * *  When 지하철 노선에 등록된 역 목록 조회 요청
      * *  Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
      */
     @DisplayName("지하철 구간 관련 기능 통합 테스트")
-    @Test
-    void 통합테스트() {
-        // when 지하철 구간 등록 요청
-        ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청_결과 = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
-        // then 지하철 구간 등록됨
-        지하철_노선에_지하철역_등록됨(지하철_노선에_지하철역_등록_요청_결과);
+    @TestFactory
+    Stream<DynamicTest> dynamicTestsFromCollection() {
+        return Stream.of(
+                dynamicTest("노선을 만드는 요청으로 새로운 노선을 생성한다.", () -> {
+                    // when 지하철 구간 등록 요청
+                    ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청_결과 = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+                    // then 지하철 구간 등록됨
+                    지하철_노선에_지하철역_등록됨(지하철_노선에_지하철역_등록_요청_결과);
+                }),
+                dynamicTest("노선에 등록된 역 목록을 조회하여 역을 순차적으로 조회한다.", () -> {
 
-        // when 지하철 노선에 등록된 역 목록 조회 요청
-        ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청_노선_조회_결과 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        // then 등록한 지하철 구간이 반영된 역 목록이 조회됨
-        지하철_노선에_지하철역_순서_정렬됨(지하철_노선에_지하철역_등록_요청_노선_조회_결과, Arrays.asList(강남역, 양재역, 광교역));
-
-        // when 지하철 구간 삭제 요청
-        ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청_결과 = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
-        // then 지하철 구간 삭제됨
-        지하철_노선에_지하철역_제외됨(지하철_노선에_지하철역_제외_요청_결과);
-
-        // when 지하철 노선에 등록된 역 목록 조회 요청
-        ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청_노선_조회_결과 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        // Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
-        지하철_노선에_지하철역_순서_정렬됨(지하철_노선에_지하철역_제외_요청_노선_조회_결과, Arrays.asList(강남역, 광교역));
-    }
+                    // when 지하철 노선에 등록된 역 목록 조회 요청
+                    ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청_노선_조회_결과 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+                    // then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+                    지하철_노선에_지하철역_순서_정렬됨(지하철_노선에_지하철역_등록_요청_노선_조회_결과, Arrays.asList(강남역, 양재역, 광교역));
+                }),
+                dynamicTest("노선을 삭제하는 요청으로 노선을 삭제한다.", () -> {
+                    // when 지하철 구간 삭제 요청
+                    ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청_결과 = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+                    // then 지하철 구간 삭제됨
+                    지하철_노선에_지하철역_제외됨(지하철_노선에_지하철역_제외_요청_결과);
+                }),
+                dynamicTest("노선을 삭제한후 역 목록을 조회하여 삭제된 역 목록을 순차적으로 조회한다.", () -> {
+                    // when 지하철 노선에 등록된 역 목록 조회 요청
+                    ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청_노선_조회_결과 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+                    // Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+                    지하철_노선에_지하철역_순서_정렬됨(지하철_노선에_지하철역_제외_요청_노선_조회_결과, Arrays.asList(강남역, 광교역));
+                })
+        );}
 
     @DisplayName("지하철 구간을 등록한다.")
     @Test
