@@ -123,4 +123,27 @@ public class Sections {
 
         return downStation;
     }
+
+    public void removeLineStation(Line line, Station station) {
+        if (getSections().size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = getSections().stream()
+                .filter(it -> it.getUpStation().equals(station))
+                .findFirst();
+        Optional<Section> downLineStation = getSections().stream()
+                .filter(it -> it.getDownStation().equals(station))
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            this.sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> getSections().remove(it));
+        downLineStation.ifPresent(it -> getSections().remove(it));
+    }
 }

@@ -15,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@DisplayName("구간 관련 기능")
 public class SectionsTest {
 
     @DisplayName("A-B 구간일 경우 A역 B역을 반환한다.")
