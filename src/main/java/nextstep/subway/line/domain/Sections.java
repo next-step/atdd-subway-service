@@ -104,7 +104,7 @@ public class Sections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
+                    .filter(it -> it.isDownStation(finalDownStation))
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
@@ -115,10 +115,6 @@ public class Sections {
         return downStation;
     }
 
-
-    public List<Section> getSections() {
-        return sections;
-    }
 
     public void remove(Station station) {
         validSectionSize();

@@ -126,21 +126,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addContainedLineSection() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 광교역, 10);
-
-        // then
-        지하철_노선에_지하철역_등록_실패됨(response);
-    }
-
-    /**
-     * Scenario: 지하철 구간을 관리
-     *     When 길이가 다른 중복 지하철 구간 등록 요청
-     *     Then 지하철 구간 등록 실패됨
-     */
-    @DisplayName("중복된 지하철 구간을 등록한다.")
-    @Test
-    void addContainedLineSectionNotMatchDistance() {
-        // when
         ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 광교역, 3);
 
         // then
