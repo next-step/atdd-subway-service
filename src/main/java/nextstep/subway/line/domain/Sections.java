@@ -15,7 +15,7 @@ import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
-    private static final int ONE_SECTION_SIZE = 0;
+    private static final int ONE_SECTION_SIZE = 1;
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections;
 
@@ -30,14 +30,6 @@ public class Sections {
         return this.sections;
     }
 
-    private List<Station> stations() {
-        return this.sections.stream()
-                .map(Section::stations)
-                .flatMap(Collection::stream)
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
     public Set<Station> orderedStations() {
         Set<Station> sortedStations = new LinkedHashSet<>();
         Optional<Section> section = findFirstSection();
@@ -46,6 +38,14 @@ public class Sections {
             section = findNextSection(section.get());
         }
         return sortedStations;
+    }
+
+    private List<Station> stations() {
+        return this.sections.stream()
+                .map(Section::stations)
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     private Optional<Section> findFirstSection() {
@@ -61,10 +61,6 @@ public class Sections {
     }
 
     public void add(Section newSection) {
-        if (sections.isEmpty()) {
-            sections.add(newSection);
-            return;
-        }
         validateHasStations(newSection);
         validateHasNotBothStations(newSection);
         sections.forEach(section -> section.updateStation(newSection));
@@ -72,26 +68,26 @@ public class Sections {
     }
 
     private void validateHasStations(Section newSection) {
-        if (new HashSet<>(orderedStations()).containsAll(newSection.findStations())) {
+        if (new HashSet<>(orderedStations()).containsAll(newSection.stations())) {
             throw new IllegalArgumentException("등록하려는 역이 모두 존재합니다.");
         }
     }
 
     private void validateHasNotBothStations(Section newSection) {
-        if (hasNotBothStations(newSection)) {
-            throw new IllegalArgumentException("상행성과 하행선 모두 존재하지 않습니다.");
+        if (notInclude(newSection)) {
+            throw new IllegalArgumentException("상행역과 하행역 모두 존재하지 않습니다.");
         }
     }
 
-    private boolean hasNotBothStations(Section section) {
-        Set<Station> stations = orderedStations();
-        return section.stations()
-                .stream()
-                .noneMatch(stations::contains);
+    private boolean notInclude(Section newSection) {
+        List<Station> assignedStations = this.stations();
+        return newSection.stations().stream()
+                .noneMatch(assignedStations::contains);
     }
 
     public void delete(Station station) {
-        deleteValidate();
+        validateNotIncludeStation(station);
+        validateLastSection();
         Optional<Section> prevSection = findPrevSection(station);
         Optional<Section> nextSection = findNextSection(station);
         if (isMiddleSection(prevSection, nextSection)) {
@@ -101,11 +97,19 @@ public class Sections {
         deleteEndSection(prevSection, nextSection);
     }
 
-    private void deleteValidate() {
+    private void validateLastSection() {
         if (sections.size() == ONE_SECTION_SIZE) {
             throw new IllegalArgumentException("마지막 구간은 삭제할 수 없습니다.");
         }
     }
+
+    private void validateNotIncludeStation(Station station) {
+        boolean isNotInclude = this.stations().stream().noneMatch(station::equals);
+        if (isNotInclude) {
+            throw new IllegalArgumentException("노선에 포함되지 않은 지하철 역은 삭제할 수 없습니다.");
+        }
+    }
+
     private void deleteEndSection(Optional<Section> prevSection, Optional<Section> nextSection) {
         nextSection.ifPresent(sections::remove);
         prevSection.ifPresent(sections::remove);
@@ -117,13 +121,13 @@ public class Sections {
     }
 
     private Optional<Section> findPrevSection(Station station) {
-        return sections.stream()
+        return this.sections.stream()
                 .filter(section -> section.isDownStation(station))
                 .findFirst();
     }
 
     private Optional<Section> findNextSection(Station station) {
-        return sections.stream()
+        return this.sections.stream()
                 .filter(section -> section.isUpStation(station))
                 .findFirst();
     }
