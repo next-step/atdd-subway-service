@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceStep.*;
-import static nextstep.subway.member.MemberAcceptanceStep.회원_생성을_요청;
+import static nextstep.subway.member.MemberAcceptanceStep.회원_생성_요청;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "koreatech93@naver.com";
@@ -16,7 +16,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     public void authSetup() {
-        회원_생성을_요청(EMAIL, PASSWORD, 30);
+        회원_생성_요청(EMAIL, PASSWORD, 30);
     }
 
     @DisplayName("Bearer Auth")

@@ -11,8 +11,7 @@ import org.junit.jupiter.api.TestFactory;
 
 import java.util.stream.Stream;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceStep.로그인_요청;
-import static nextstep.subway.auth.acceptance.AuthAcceptanceStep.로그인된_유저;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceStep.*;
 import static nextstep.subway.member.MemberAcceptanceStep.*;
 import static nextstep.subway.member.MyInfoAcceptanceStep.*;
 
@@ -28,7 +27,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMember() {
         // when
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
         // then
         회원_생성됨(createResponse);
 
@@ -52,7 +51,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @TestFactory
     Stream<DynamicTest> manageMyInfo() {
         생성된_회원(EMAIL, PASSWORD, AGE);
-        TokenResponse tokenResponse = 로그인된_유저(EMAIL, PASSWORD).as(TokenResponse.class);
+        TokenResponse tokenResponse = 로그인된_회원(EMAIL, PASSWORD).as(TokenResponse.class);
         return Stream.of(
                 DynamicTest.dynamicTest("내 정보 조회", () -> {
                     // when
@@ -60,7 +59,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                     // then
                     회원_정보_조회됨(findResponse, EMAIL, AGE);
                 }),
-                DynamicTest.dynamicTest("내 정보 조회", () -> {
+                DynamicTest.dynamicTest("내 정보 수정", () -> {
                     // when
                     ExtractableResponse<Response> updateResponse = 내_정보_수정(tokenResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
                     // then

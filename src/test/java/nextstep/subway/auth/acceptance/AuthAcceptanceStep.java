@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceStep {
 
-    public static ExtractableResponse<Response> 로그인된_유저(String email, String password) {
+    public static ExtractableResponse<Response> 로그인된_회원(String email, String password) {
         return 로그인_요청(email, password);
     }
 

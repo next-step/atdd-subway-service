@@ -13,10 +13,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MemberAcceptanceStep {
 
     public static ExtractableResponse<Response> 생성된_회원(String email, String password, Integer age) {
-        return 회원_생성을_요청(email, password, age);
+        return 회원_생성_요청(email, password, age);
     }
 
-    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 생성된_다른_회원(String email, String password, Integer age) {
+        return 회원_생성_요청(email, password, age);
+    }
+
+    public static ExtractableResponse<Response> 회원_생성_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured

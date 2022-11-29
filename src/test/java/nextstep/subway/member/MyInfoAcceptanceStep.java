@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 
 public class MyInfoAcceptanceStep {
 
-    public static ExtractableResponse<Response> 내_정보_조회(TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 내_정보_조회(final TokenResponse tokenResponse) {
 
         return RestAssured
                 .given().log().all()
