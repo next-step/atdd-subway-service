@@ -19,12 +19,12 @@ public class MemberService {
     @Transactional
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
-        return MemberResponse.of(member);
+        return MemberResponse.from(member);
     }
 
     public MemberResponse findMember(Long id) {
         Member member = findById(id);
-        return MemberResponse.of(member);
+        return MemberResponse.from(member);
     }
 
     @Transactional

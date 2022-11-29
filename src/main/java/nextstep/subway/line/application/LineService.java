@@ -31,19 +31,19 @@ public class LineService {
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(request.toLine(upStation, downStation));
 
-        return LineResponse.of(persistLine);
+        return LineResponse.from(persistLine);
     }
 
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-            .map(LineResponse::of)
+            .map(LineResponse::from)
             .collect(Collectors.toList());
     }
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findById(id);
-        return LineResponse.of(persistLine);
+        return LineResponse.from(persistLine);
     }
 
     @Transactional

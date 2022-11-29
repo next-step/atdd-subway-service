@@ -29,7 +29,7 @@ public class Station extends BaseEntity {
         this.name = name;
     }
 
-    public static Station of(String name) {
+    public static Station from(String name) {
         return new Station(null, name);
     }
 

@@ -15,7 +15,7 @@ public class Distance {
         this.distance = distance;
     }
 
-    public static Distance of(int distance) {
+    public static Distance valueOf(int distance) {
         return new Distance(distance);
     }
 

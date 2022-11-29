@@ -13,7 +13,7 @@ public class Stations {
         this.stations = stations;
     }
 
-    public static Stations of(List<Station> stations) {
+    public static Stations valueOf(List<Station> stations) {
         return new Stations(stations);
     }
 

@@ -29,11 +29,11 @@ public class LineResponse {
         this.modifiedDate = modifiedDate;
     }
 
-    public static LineResponse of(Line line) {
+    public static LineResponse from(Line line) {
         Stations stations = line.getStations();
 
         List<StationResponse> stationResponse = stations.getList().stream()
-            .map(StationResponse::of)
+            .map(StationResponse::from)
             .collect(Collectors.toList());
 
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stationResponse, line.getCreatedDate(),
