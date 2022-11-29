@@ -79,7 +79,7 @@ public class PathServiceTest {
     @Test
     void findShortestPath() {
         Long source = 1L;
-        Long target = 4L;
+        Long target = 2L;
         when(stationRepository.findById(source)).thenReturn(Optional.of(강남역));
         when(stationRepository.findById(target)).thenReturn(Optional.of(남부터미널역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 삼호선, 신분당선));
