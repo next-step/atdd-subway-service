@@ -8,7 +8,6 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Embeddable
 public class Sections {
@@ -26,20 +25,17 @@ public class Sections {
         if (this.sections.isEmpty()) {
             return Arrays.asList();
         }
+        return sortedStation();
+    }
 
+    private List<Station> sortedStation() {
         List<Station> stations = new ArrayList<>();
         Station downStation = findUpStation();
         stations.add(downStation);
 
-        while (downStation != null) {
+        while (isPresentNextSection(downStation)) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                .filter(it -> it.hasUpStation(finalDownStation))
-                .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
+            downStation = findNextStation(finalDownStation).getDownStation();
             stations.add(downStation);
         }
 
@@ -48,18 +44,37 @@ public class Sections {
 
     private Station findUpStation() {
         Station downStation = this.sections.get(0).getUpStation();
-        while (downStation != null) {
+        while (isPresentPreSection(downStation)) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                .filter(it -> it.hasDownStation(finalDownStation))
-                .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+            downStation = findPrevStation(finalDownStation).getUpStation();
         }
-
         return downStation;
+    }
+
+    private Section findPrevStation(Station station) {
+        return this.sections.stream()
+            .filter(it -> it.equalDownStation(station))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("이전 구간이 없습니다."));
+    }
+
+    private Section findNextStation(Station station) {
+        return this.sections.stream()
+            .filter(it -> it.equalUpStation(station))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("다음 구간이 없습니다."));
+    }
+
+    private boolean isPresentPreSection(Station station) {
+        return sections.stream()
+            .filter(Section::existDownStation)
+            .anyMatch(it -> it.equalDownStation(station));
+    }
+
+    private boolean isPresentNextSection(Station station) {
+        return sections.stream()
+            .filter(Section::existUpStation)
+            .anyMatch(it -> it.equalUpStation(station));
     }
 
     public List<Section> getSections() {
