@@ -1,4 +1,4 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
@@ -48,7 +48,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *                          |
      *                          양재시민의숲
      * <p>
-     *      --- *수인분당선* ---  정자
+     * --- *수인분당선* ---  정자
      */
     @BeforeEach
     public void setUp() {
