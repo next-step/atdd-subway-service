@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
+import static nextstep.subway.line.domain.LineFixture.lineA;
+import static nextstep.subway.line.domain.Section.SECTION_DISTANCE_EXCEPTION_MESSAGE;
 import static nextstep.subway.line.domain.SectionFixture.*;
 import static nextstep.subway.line.domain.Sections.ALREADY_EXIST_SECTION_EXCEPTION_MESSAGE;
 import static nextstep.subway.line.domain.Sections.NOT_EXIST_EXCEPTION_MESSAGE;
@@ -126,5 +128,16 @@ public class SectionsTest {
                 () -> assertThat(sections.getStations()).containsExactly(stationA(), stationB(), stationC()),
                 () -> assertThat(sections.getSections()).hasSize(2)
         );
+    }
+
+    @DisplayName("구간 사이에 구간을 추가한다. / 하행역을 기준으로 구간을 추가한다. / A-C 구간에 B-C 구간 추가 / A-B 구간의 거리가 A-C 구간의 거리보다 크거나 같으면 등록을 할 수 없다.")
+    @Test
+    void name() {
+        Sections sections = new Sections();
+        sections.add(sectionAC());
+
+        assertThatThrownBy(() -> sections.add(new Section(lineA(), stationB(), stationC(), 5)))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining(SECTION_DISTANCE_EXCEPTION_MESSAGE);
     }
 }
