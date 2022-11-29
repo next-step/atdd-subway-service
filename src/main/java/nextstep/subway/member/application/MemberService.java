@@ -23,18 +23,23 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findById(id);
         return MemberResponse.of(member);
     }
 
     @Transactional
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findById(id);
         member.update(param.toMember());
     }
 
     @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("해당 멤버를 찾을 수 없습니다. id: " + id));
     }
 }

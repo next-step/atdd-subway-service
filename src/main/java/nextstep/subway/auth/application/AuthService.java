@@ -34,7 +34,8 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("해당 멤버를 찾을 수 없습니다. email: " + email));
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

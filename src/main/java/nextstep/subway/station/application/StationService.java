@@ -40,10 +40,11 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        return findById(id);
     }
 
     public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        return stationRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("해당 지하철 역을 찾을 수 없습니다. id: " + id));
     }
 }
