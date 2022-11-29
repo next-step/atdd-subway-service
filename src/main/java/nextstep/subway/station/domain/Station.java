@@ -65,10 +65,12 @@ public class Station extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof Station))
+        }
+        if (!(o instanceof Station)) {
             return false;
+        }
         Station station = (Station)o;
         return Objects.equals(getId(), station.getId());
     }
