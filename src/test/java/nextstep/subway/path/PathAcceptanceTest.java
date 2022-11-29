@@ -98,6 +98,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//        assertThat(response.)
     }
 
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
