@@ -144,4 +144,8 @@ public class Sections {
 
         return downStation;
     }
+
+    public List<Section> getSections() {
+        return sections;
+    }
 }
