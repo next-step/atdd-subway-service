@@ -114,7 +114,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
                     // then
                     지하철_경로_조회됨(response);
-                    지하철_최단_경로_조회됨(response, Arrays.asList(신논현역, 강남역, 선릉역, 한티역), 21);
+                    지하철_최단_경로_조회됨(response, Arrays.asList(신논현역, 강남역, 선릉역, 한티역), 21, 1550);
                 }),
                 DynamicTest.dynamicTest("연결되지 않은 출발역과 도착역 사이의 경로를 조회할 수 없다.", () -> {
                     // when
@@ -148,16 +148,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private static void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectStations, int expectDistance) {
+    private static void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectStations, int expectDistance, int expectFare) {
         List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
         List<Long> expectStationIds = expectStations.stream().map(StationResponse::getId).collect(Collectors.toList());
         List<String> actualStationNames = response.jsonPath().getList("stations.name", String.class);
         List<String> expectStationNames = expectStations.stream().map(StationResponse::getName).collect(Collectors.toList());
         int actualDistance = response.jsonPath().getInt("distance");
+        int actualFare = response.jsonPath().getInt("fare");
         assertAll(
                 () -> assertThat(actualStationIds).containsExactlyElementsOf(expectStationIds),
                 () -> assertThat(actualStationNames).containsExactlyElementsOf(expectStationNames),
-                () -> assertThat(actualDistance).isEqualTo(expectDistance)
+                () -> assertThat(actualDistance).isEqualTo(expectDistance),
+                () -> assertThat(actualFare).isEqualTo(expectFare)
         );
     }
 }
