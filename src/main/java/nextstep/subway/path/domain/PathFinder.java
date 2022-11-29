@@ -40,7 +40,7 @@ public class PathFinder {
                 });
     }
 
-    public PathResponse shortestPath(Station sourceStation, Station targetStation) {
+    public ShortestPath shortestPath(Station sourceStation, Station targetStation) {
         validateBefore(sourceStation, targetStation);
 
         GraphPath<Station, SectionEdge> shortestPath =
@@ -48,19 +48,7 @@ public class PathFinder {
 
         validateAfter(shortestPath);
 
-        List<StationResponse> responses = shortestPath.getVertexList()
-                .stream()
-                .map(StationResponse::from)
-                .collect(Collectors.toList());
-
-        // Todo 리팩토링 대상
-        Lines pathLines = new Lines(shortestPath.getEdgeList()
-                .stream()
-                .map(SectionEdge::getLine)
-                .collect(Collectors.toList()));
-
-        int distance = (int) shortestPath.getWeight();
-        return new PathResponse(responses, distance, new Fare(pathLines, distance));
+        return new ShortestPath(shortestPath);
     }
 
     private void validateBefore(Station sourceStation, Station targetStation) {

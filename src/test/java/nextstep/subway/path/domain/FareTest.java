@@ -22,7 +22,7 @@ class FareTest {
         Lines lines = new Lines(Arrays.asList(line));
 
         // when
-        Fare result = new Fare(lines, 0);
+        Fare result = new Fare(lines, 0, 20);
 
         // then
         assertThat(result.get()).isEqualTo(BASIC_PRICE);
@@ -37,7 +37,7 @@ class FareTest {
         Lines lines = new Lines(Arrays.asList(line));
 
         // when
-        Fare result = new Fare(lines, 0);
+        Fare result = new Fare(lines, 0, 20);
 
         // then
         assertThat(result.get()).isEqualTo(BASIC_PRICE + extraFare);

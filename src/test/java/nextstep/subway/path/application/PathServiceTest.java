@@ -73,7 +73,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(일호선, 삼호선, 신분당선));
 
         // when
-        PathResponse response = pathService.findShortestPath(source, target);
+        PathResponse response = pathService.findShortestPath(source, target, 33);
 
         // then
         assertThat(response.getDistance()).isEqualTo(30);
@@ -95,7 +95,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(일호선, 삼호선, 신분당선));
 
         // when & then
-        assertThatThrownBy(() -> pathService.findShortestPath(source, source))
+        assertThatThrownBy(() -> pathService.findShortestPath(source, source, 33))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorCode.FIND_PATH_SAME_SOURCE_TARGET.getMessage());
     }
@@ -112,7 +112,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(일호선, 삼호선, 신분당선));
 
         // when & then
-        assertThatThrownBy(() -> pathService.findShortestPath(source, target))
+        assertThatThrownBy(() -> pathService.findShortestPath(source, target, 33))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorCode.FIND_PATH_NOT_EXIST.getMessage());
     }
@@ -128,7 +128,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(일호선, 삼호선, 신분당선));
 
         // when & then
-        assertThatThrownBy(() -> pathService.findShortestPath(source, target))
+        assertThatThrownBy(() -> pathService.findShortestPath(source, target, 33))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorCode.FIND_PATH_NOT_CONNECT.getMessage());
     }

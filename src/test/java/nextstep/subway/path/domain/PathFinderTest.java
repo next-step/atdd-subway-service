@@ -36,16 +36,16 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 일호선));
 
         // when
-        PathResponse response = pathFinder.shortestPath(강남역, 부평역);
+        ShortestPath path = pathFinder.shortestPath(강남역, 부평역);
 
-        List<String> stationNames = response.getStations()
+        List<String> stationNames = path.getStations()
                 .stream()
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
 
         // then
         assertAll(
-                () -> assertThat(response.getDistance()).isEqualTo(40),
+                () -> assertThat(path.getDistance()).isEqualTo(40),
                 () -> assertThat(stationNames).containsExactlyElementsOf(
                         Arrays.asList("강남역", "판교역", "인천역", "부평역")
                 )
