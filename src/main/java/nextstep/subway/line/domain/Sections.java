@@ -48,11 +48,13 @@ public class Sections {
     }
 
     private boolean isDownStationExisted(Station downStation) {
-        return getStations().stream().anyMatch(it -> it == downStation);
+        return this.sections.stream()
+                .anyMatch(it -> it.isSameDownStation(downStation));
     }
 
     private boolean isUpStationExisted(Station upStation) {
-        return getStations().stream().anyMatch(it -> it == upStation);
+        return this.sections.stream()
+                .anyMatch(it -> it.isSameUpStation(upStation));
     }
 
     public void removeSection(Section section) {
