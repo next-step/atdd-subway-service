@@ -12,6 +12,7 @@ public class Sections {
 
     public static final String ALREADY_EXIST_SECTION_EXCEPTION_MESSAGE = "이미 등록된 구간 입니다.";
     public static final String NOT_EXIST_EXCEPTION_MESSAGE = "등록할 수 없는 구간 입니다.";
+    public static final String MININUM_SECTIONS_SIZE_EXCEPTION_MESSAGE = "하나의 구간만 있을 경우 구간을 제거할 수 없다.";
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -126,7 +127,7 @@ public class Sections {
 
     public void removeLineStation(Line line, Station station) {
         if (getSections().size() <= 1) {
-            throw new RuntimeException();
+            throw new RuntimeException(MININUM_SECTIONS_SIZE_EXCEPTION_MESSAGE);
         }
 
         Optional<Section> upLineStation = getSections().stream()
