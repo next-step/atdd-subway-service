@@ -130,9 +130,20 @@ public class SectionsTest {
         );
     }
 
-    @DisplayName("구간 사이에 구간을 추가한다. / 하행역을 기준으로 구간을 추가한다. / A-C 구간에 B-C 구간 추가 / A-B 구간의 거리가 A-C 구간의 거리보다 크거나 같으면 등록을 할 수 없다.")
+    @DisplayName("구간 사이에 구간을 추가한다. / 상행역을 기준으로 구간을 추가한다. / A-C 구간에 A-B 구간 추가 / A-B 구간의 거리가 A-C 구간의 거리보다 크거나 같으면 등록을 할 수 없다.")
     @Test
-    void name() {
+    void addBetweenUpStation_fail() {
+        Sections sections = new Sections();
+        sections.add(sectionAC());
+
+        assertThatThrownBy(() -> sections.add(new Section(lineA(), stationA(), stationB(), 5)))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining(SECTION_DISTANCE_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("구간 사이에 구간을 추가한다. / 하행역을 기준으로 구간을 추가한다. / A-C 구간에 B-C 구간 추가 / B-C 구간의 거리가 A-C 구간의 거리보다 크거나 같으면 등록을 할 수 없다.")
+    @Test
+    void addBetweenDownStation_fail() {
         Sections sections = new Sections();
         sections.add(sectionAC());
 
