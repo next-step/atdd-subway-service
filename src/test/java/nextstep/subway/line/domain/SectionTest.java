@@ -47,16 +47,16 @@ public class SectionTest {
     }
 
     @Test
-    void 구간_병합을_통해_하행역읇_변경한다() {
+    void 구간_병합을_통해_하행역을_변경한다() {
         // given
         Station 종합운동장역 = new Station("종합운동장역");
-        Section 새로운구간 = new Section(강남역, 종합운동장역, new Distance(2));
+        Section 새로운구간 = new Section(잠실역, 종합운동장역, new Distance(2));
 
         // when
-        구간.updateStation(새로운구간);
+        구간.merge(새로운구간);
 
         // then
-        assertThat(구간.getUpStation()).isEqualTo(종합운동장역);
+        assertThat(구간.getDownStation()).isEqualTo(종합운동장역);
     }
 
     @Test
