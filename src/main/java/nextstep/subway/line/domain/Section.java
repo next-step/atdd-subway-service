@@ -63,10 +63,6 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
-        return distance.value();
-    }
-
     public void updateStation(Section newSection) {
         distance.validNewDistance(newSection.distance);
         if (isEqualUpStation(newSection)) {
@@ -106,10 +102,6 @@ public class Section {
 
     public boolean isDownStation(Station station) {
         return this.downStation.equals(station);
-    }
-
-    public boolean isSameUpDownStation(Section newSection) {
-        return isEqualUpStation(newSection) && isEqualDownStation(newSection);
     }
 
 }
