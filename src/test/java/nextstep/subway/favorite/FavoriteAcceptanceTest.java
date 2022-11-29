@@ -142,8 +142,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(favorites).hasSize(1),
-                () -> assertThat(favorites.get(0).getId()).isEqualTo(source),
-                () -> assertThat(favorites.get(1).getId()).isEqualTo(target)
+                () -> assertThat(favorites.get(0).getSource().getId()).isEqualTo(source),
+                () -> assertThat(favorites.get(0).getTarget().getId()).isEqualTo(target)
         );
     }
 
