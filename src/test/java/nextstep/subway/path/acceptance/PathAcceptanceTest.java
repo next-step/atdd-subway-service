@@ -74,7 +74,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         이호선 = 지하철_노선_등록되어_있음(이호선_요청).as(LineResponse.class);
         LineRequest 구호선_요청 = new LineRequest("구호선", "bg-gold-600", 신논현역.getId(), 선정릉역.getId(), 12);
         구호선 = 지하철_노선_등록되어_있음(구호선_요청).as(LineResponse.class);
-        LineRequest 칠호선_요청 = new LineRequest("칠호선", "bg-khaki-600", 이수역.getId(), 반포역.getId(), 20);
+        LineRequest 칠호선_요청 = new LineRequest("칠호선", "bg-khaki-600", 이수역.getId(), 반포역.getId(), 20, 1000);
         칠호선 = 지하철_노선_등록되어_있음(칠호선_요청).as(LineResponse.class);
         LineRequest 분당선_요청 = new LineRequest("분당선", "bg-yellow-600", 선정릉역.getId(), 선릉역.getId(), 5);
         분당선 = 지하철_노선_등록되어_있음(분당선_요청).as(LineResponse.class);
@@ -138,6 +138,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
                     지하철_경로_조회_실패됨(response);
                 })
         );
+    }
+
+    @DisplayName("최단 경로에 속한 노선에 추가 요금이 존재하면, 해당 요금이 포함된 최단 경로를 반환한다.")
+    @Test
+    void findShortestPathWithLineFare() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(이수역.getId(), 반포역.getId());
+        int fare = 1450;
+
+        // then
+        지하철_경로_조회됨(response);
+        지하철_최단_경로_조회됨(response, Arrays.asList(이수역, 반포역), 20, fare + 칠호선.getLineFare());
     }
 
     private static void 지하철_경로_조회_실패됨(ExtractableResponse<Response> response) {
