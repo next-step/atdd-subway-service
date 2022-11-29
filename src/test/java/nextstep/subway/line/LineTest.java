@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import nextstep.subway.line.domain.Line;
 import org.junit.jupiter.api.Test;
 
-public class LineTest {
+class LineTest {
     private final String 수인분당선 = "수인분당선";
     private final String 신분당선 = "신분당선";
     private final String YELLOW = "yellow";
