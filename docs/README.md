@@ -27,15 +27,10 @@
             - [x] A-B-C 구간의 노선에서 A역을 제거한다.
             - [x] A-B-C 구간의 노선에서 C역을 제거한다.
 
-- [ ] LineService 리팩터링
-    - [ ] saveLine
-        - [ ] getStations()를 도메인 로직으로 옮긴다
-        - [ ] line 생성 인수 테스트
-    - [ ] findLines
-    - [ ] findLineById
-    - [ ] findLineResponseById
-    - [ ] deleteLineById
-    - [ ] updateLine
+- [x] LineService 리팩터링
+    - [x] saveLine
+        - [x] getStations()를 도메인 로직으로 옮긴다
+        - [x] line 생성 인수 테스트
     - [x] addLineStation
     - [x] removeLineStation
     - [x] getStations 도메인 로직 이동
