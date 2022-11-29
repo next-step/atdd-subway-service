@@ -37,12 +37,12 @@ public class DijkstraShortestPathFinderTest {
      * *3호선*                   *신분당선*
      * |                        |
      * 남부터미널역  --- *3호선* ---   양재  --- *3호선* ---  매봉
-     * |
-     * *신분당선*
-     * |
-     * 양재시민의숲
+     * *                        |
+     * *                        *신분당선*
+     * *                        |
+     * *                        양재시민의숲
      * <p>
-     * --- *수인분당선* ---  정자
+     * 미금 --- *수인분당선* ---  정자
      */
 
     @BeforeEach
@@ -76,7 +76,7 @@ public class DijkstraShortestPathFinderTest {
     @DisplayName("다익스트라 길찾기 도메인 생성")
     void create() {
         // given
-        DijkstraShortestPathFinder dijkstraShortestPathFinder = new DijkstraShortestPathFinder(lines);
+        DijkstraShortestPathFinder dijkstraShortestPathFinder = DijkstraShortestPathFinder.from(lines);
 
         // expect
         assertThat(dijkstraShortestPathFinder).isNotNull();
@@ -86,10 +86,10 @@ public class DijkstraShortestPathFinderTest {
     @DisplayName("출발역과 도착역을 받아 최단경로 조회")
     void find() {
         // given
-        DijkstraShortestPathFinder dijkstraShortestPathFinder = new DijkstraShortestPathFinder(lines);
+        DijkstraShortestPathFinder dijkstraShortestPathFinder = DijkstraShortestPathFinder.from(lines);
 
         // when
-        Path path = dijkstraShortestPathFinder.find(강남역, 매봉역);
+        Path path = dijkstraShortestPathFinder.findPath(강남역, 매봉역);
 
         // then
         assertThat(path.getStations()).containsExactly(강남역, 양재역, 매봉역);

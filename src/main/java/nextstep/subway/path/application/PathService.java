@@ -9,28 +9,32 @@ import nextstep.subway.path.dto.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PathService {
 
-    @Autowired
-    private StationRepository stationRepository;
+    private final StationRepository stationRepository;
+    private final LineRepository lineRepository;
 
-    @Autowired
-    private LineRepository lineRepository;
+    public PathService(StationRepository stationRepository, LineRepository lineRepository) {
+        this.stationRepository = stationRepository;
+        this.lineRepository = lineRepository;
+    }
 
     @Transactional(readOnly = true)
     public PathResponse findPath(Long source, Long target) {
-        Station sourceStation = stationRepository.findById(source).orElseThrow(SubwayException::new);
-        Station targetStation = stationRepository.findById(target).orElseThrow(SubwayException::new);
+        Station sourceStation = findStationById(source);
+        Station targetStation = findStationById(target);
         List<Line> lines = lineRepository.findAll();
 
-        DijkstraShortestPathFinder dijkstraShortestPathFinder = new DijkstraShortestPathFinder(lines);
-        Path path = dijkstraShortestPathFinder.find(sourceStation, targetStation);
+        DijkstraShortestPathFinder dijkstraShortestPathFinder = DijkstraShortestPathFinder.from(lines);
+        Path path = dijkstraShortestPathFinder.findPath(sourceStation, targetStation);
         return PathResponse.from(path);
     }
 
+    private Station findStationById(Long id) {
+        return stationRepository.findById(id).orElseThrow(SubwayException::new);
+    }
 }
