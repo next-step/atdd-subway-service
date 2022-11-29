@@ -59,7 +59,8 @@ public class PathFinder {
                 .map(SectionEdge::getLine)
                 .collect(Collectors.toList()));
 
-        return new PathResponse(responses, (int) shortestPath.getWeight(), new Fare(pathLines));
+        int distance = (int) shortestPath.getWeight();
+        return new PathResponse(responses, distance, new Fare(pathLines, distance));
     }
 
     private void validateBefore(Station sourceStation, Station targetStation) {

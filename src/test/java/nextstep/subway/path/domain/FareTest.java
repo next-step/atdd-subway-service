@@ -16,13 +16,13 @@ class FareTest {
 
     @DisplayName("추가 요금이 없을 때의 기본 지하철 요금은 1250원이다.")
     @Test
-    void basicPrice() {
+    void basicFare() {
         // given
         Line line = new Line("신분당선", "bg-red-600", new ExtraFare(0));
         Lines lines = new Lines(Arrays.asList(line));
 
         // when
-        Fare result = new Fare(lines);
+        Fare result = new Fare(lines, 0);
 
         // then
         assertThat(result.get()).isEqualTo(BASIC_PRICE);
@@ -30,14 +30,14 @@ class FareTest {
 
     @DisplayName("추가 요금이 있을경우, 지하철 요금은 기본요금과 추가요금의 합이다.")
     @Test
-    void extraFarePrice() {
+    void extraFare() {
         // given
         int extraFare = 1_000;
         Line line = new Line("신분당선", "bg-red-600", new ExtraFare(extraFare));
         Lines lines = new Lines(Arrays.asList(line));
 
         // when
-        Fare result = new Fare(lines);
+        Fare result = new Fare(lines, 0);
 
         // then
         assertThat(result.get()).isEqualTo(BASIC_PRICE + extraFare);
