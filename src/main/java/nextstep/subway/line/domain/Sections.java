@@ -176,7 +176,6 @@ public class Sections {
     }
 
     public void addPath(PathFinder pathFinder) {
-        sections.forEach(section ->
-                pathFinder.addPath(section.getUpStation(), section.getDownStation(), section.getDistance()));
+        sections.forEach(section -> section.addPath(pathFinder));
     }
 }
