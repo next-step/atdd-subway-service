@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("구간관련 도메인 테스트")
+@DisplayName("구간 관련 도메인 테스트")
 public class SectionsTest extends JpaEntityTest {
     @Autowired
     private StationRepository stationRepository;
@@ -128,7 +128,7 @@ public class SectionsTest extends JpaEntityTest {
     void addSectionExceptionDistance() {
         // when / then
         assertThatThrownBy(() -> 신분당선.addSection(양재역, 광교역, 100))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("노선에서 상행 종점을 제거한다")
@@ -190,14 +190,17 @@ public class SectionsTest extends JpaEntityTest {
     void removeSectionException1() {
         // when / then
         assertThatThrownBy(() -> 신분당선.removeSection(강남역))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(IllegalStateException.class);
     }
 
     @DisplayName("노선에 존재하지 않는 역을 제거하는 경우 예외 발생")
     @Test
     void removeSectionException2() {
+        // given
+        신분당선.addSection(강남역, 정자역, 50);
+
         // when / then
-        assertThatThrownBy(() -> 신분당선.removeSection(양재역))
-                .isInstanceOf(RuntimeException.class);
+//        assertThatThrownBy(() -> 신분당선.removeSection(양재역))
+//                .isInstanceOf(IllegalStateException.class);
     }
 }

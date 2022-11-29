@@ -7,6 +7,8 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
 
+import static nextstep.subway.line.domain.BizExceptionMessages.*;
+
 @Embeddable
 public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
@@ -26,13 +28,13 @@ public class Sections {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
+            Optional<Section> nextSection = sections.stream()
                     .filter(it -> it.getUpStation() == finalDownStation)
                     .findFirst();
-            if (!nextLineStation.isPresent()) {
+            if (!nextSection.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getDownStation();
+            downStation = nextSection.get().getDownStation();
             stations.add(downStation);
         }
 
@@ -46,12 +48,12 @@ public class Sections {
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException(SECTION_ALREADY_REGISTERED.message());
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalStateException(SECTION_NOT_REACHABLE_ANY_STATION.message());
         }
 
         if (stations.isEmpty()) {
@@ -74,44 +76,44 @@ public class Sections {
 
             sections.add(new Section(line, upStation, downStation, distance));
         } else {
-            throw new RuntimeException();
+            throw new IllegalStateException();
         }
     }
 
     public void remove(Line line, Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new IllegalStateException(LINE_MIN_SECTIONS_SIZE.message());
         }
-
-        Optional<Section> upLineStation = sections.stream()
+        // TODO : upstation, downstation 둘다 없으면?? --> 삭제할 역이 없음
+        Optional<Section> preSection = sections.stream()
                 .filter(it -> it.getUpStation() == station)
                 .findFirst();
-        Optional<Section> downLineStation = sections.stream()
+        Optional<Section> nextSection = sections.stream()
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+        if (preSection.isPresent() && nextSection.isPresent()) {
+            Station newUpStation = nextSection.get().getUpStation();
+            Station newDownStation = preSection.get().getDownStation();
+            int newDistance = preSection.get().getDistance() + nextSection.get().getDistance();
             sections.add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+        preSection.ifPresent(it -> sections.remove(it));
+        nextSection.ifPresent(it -> sections.remove(it));
     }
 
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
+            Optional<Section> nextSection = sections.stream()
                     .filter(it -> it.getDownStation() == finalDownStation)
                     .findFirst();
-            if (!nextLineStation.isPresent()) {
+            if (!nextSection.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getUpStation();
+            downStation = nextSection.get().getUpStation();
         }
 
         return downStation;

@@ -7,6 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 import javax.persistence.*;
 import java.util.*;
 
+import static nextstep.subway.line.domain.BizExceptionMessages.LINE_COLOR_INVALID;
+import static nextstep.subway.line.domain.BizExceptionMessages.LINE_NAME_INVALID;
+
 @Entity
 public class Line extends BaseEntity {
     @Id
@@ -32,7 +35,7 @@ public class Line extends BaseEntity {
         validateLine(name, color);
         this.name = name;
         this.color = color;
-        sections.add(this, upStation, downStation, distance);
+        addSection(upStation, downStation, distance);
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
@@ -83,10 +86,10 @@ public class Line extends BaseEntity {
 
     private void validateLine(String name, String color) {
         if (Objects.isNull(name) || StringUtils.isEmpty(name)) {
-            throw new IllegalArgumentException("노선의 이름은 공백일 수 없습니다");
+            throw new IllegalArgumentException(LINE_NAME_INVALID.message());
         }
         if (Objects.isNull(color) || StringUtils.isEmpty(color)) {
-            throw new IllegalArgumentException("노선의 색은 공백일 수 없습니다");
+            throw new IllegalArgumentException(LINE_COLOR_INVALID.message());
         }
     }
 }
