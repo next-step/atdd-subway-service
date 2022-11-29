@@ -98,21 +98,35 @@ public class DistanceTest {
         assertThat(resultDistance.value()).isEqualTo(original + add);
     }
 
-    @DisplayName("주어진 길이보다 크면 참을 반환한다.")
-    @Test
-    void isBiggerThanOtherDistance() {
+    @ParameterizedTest(name = "주어진 길이({1})보다 값({0})이 크면 참을 반환한다.")
+    @CsvSource(value = {"30:29", "30:25", "40:35"}, delimiter = ':')
+    void isBiggerThanOtherDistance(int actual, int compare) {
         // given
-        int actual = 50;
-        int expect = 40;
         Distance distance = Distance.from(actual);
 
         // when
-        boolean isBiggerThan = distance.isEqualOrBiggerThan(expect);
+        boolean isBiggerThan = distance.isBiggerThen(compare);
 
         // then
         assertAll(
                 () -> assertThat(isBiggerThan).isTrue(),
-                () -> assertThat(isBiggerThan).isEqualTo(actual >= expect)
+                () -> assertThat(isBiggerThan).isEqualTo(actual > compare)
+        );
+    }
+
+    @ParameterizedTest(name = "주어진 길이({1})보다 값({0})이 작거나 같으면 거짓을 반환한다.")
+    @CsvSource(value = {"20:29", "30:30", "20:35"}, delimiter = ':')
+    void isEqualOrSmallerThanOtherDistance(int actual, int compare) {
+        // given
+        Distance distance = Distance.from(actual);
+
+        // when
+        boolean isBiggerThan = distance.isBiggerThen(compare);
+
+        // then
+        assertAll(
+                () -> assertThat(isBiggerThan).isFalse(),
+                () -> assertThat(isBiggerThan).isEqualTo(actual > compare)
         );
     }
 

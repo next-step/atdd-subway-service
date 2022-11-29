@@ -42,8 +42,8 @@ public class Distance {
         return new Distance(this.distance + distance.distance);
     }
 
-    public boolean isEqualOrBiggerThan(int distance) {
-        return this.distance >= distance;
+    public boolean isBiggerThen(int distance) {
+        return this.distance > distance;
     }
 
     public int divideAndCeil(Distance distance) {
