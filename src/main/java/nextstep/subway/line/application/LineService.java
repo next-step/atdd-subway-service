@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import javassist.NotFoundException;
 import nextstep.subway.ErrorMessage;
+import nextstep.subway.exception.EntityNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -39,17 +40,17 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public Line findLineById(Long id) throws NotFoundException {
-        return lineRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.notFoundLine(id)));
+    public Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Line", id));
     }
 
 
-    public LineResponse findLineResponseById(Long id) throws NotFoundException {
+    public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
     @Transactional
-    public void updateLine(Long id, LineRequest lineUpdateRequest) throws NotFoundException {
+    public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = findLineById(id);
         persistLine.update(lineUpdateRequest.toUpdateLineInfo());
     }
@@ -58,7 +59,7 @@ public class LineService {
         lineRepository.deleteById(id);
     }
     @Transactional
-    public void addLineStation(Long lineId, SectionRequest request) throws NotFoundException {
+    public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
@@ -66,14 +67,14 @@ public class LineService {
         line.addSection(section);
     }
     @Transactional
-    public void removeLineStation(Long lineId, Long stationId) throws NotFoundException {
+    public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeStation(station);
     }
     private Line createLineFromRequest(LineRequest request){
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
         Line line = request.toLine(upStation, downStation);
         return line;
     }

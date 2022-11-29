@@ -147,13 +147,16 @@ public class Sections {
 
 
     public void deleteStation(Station station) {
-        validateDeleteCondition();
+        validateDeleteCondition(station);
         if (!deleteFirstOrLastStation(station)) {
             deleteMiddleStation(station);
         }
     }
 
-    private void validateDeleteCondition() {
+    private void validateDeleteCondition(Station station) {
+        if(!isExists(station)){
+            throw new IllegalStateException(ErrorMessage.CANNOT_FIND_STATIONS_IN_LINE);
+        }
         if (sections.size() <= NON_DELETABLE_SECTION_COUNT) {
             throw new IllegalStateException(ErrorMessage.CANNOT_DELETE_SECTION_WHEN_ONE);
         }

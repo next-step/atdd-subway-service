@@ -1,5 +1,7 @@
 package nextstep.subway.station.ui;
 
+import nextstep.subway.exception.EntityNotFoundException;
+import nextstep.subway.line.dto.ErrorResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
@@ -36,8 +38,8 @@ public class StationController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
-        return ResponseEntity.badRequest().build();
+    @ExceptionHandler(value = {DataIntegrityViolationException.class, EntityNotFoundException.class})
+    public ResponseEntity<ErrorResponse> handleIllegalArgsException(RuntimeException e) {
+        return ResponseEntity.badRequest().body(ErrorResponse.of("BAD_REQUEST", 400, e.getMessage()));
     }
 }

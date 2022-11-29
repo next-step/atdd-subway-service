@@ -1,7 +1,9 @@
 package nextstep.subway.line.ui;
 
 import javassist.NotFoundException;
+import nextstep.subway.exception.EntityNotFoundException;
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.dto.ErrorResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -33,7 +35,7 @@ public class LineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) throws NotFoundException {
+    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findLineResponseById(id));
     }
 
@@ -51,26 +53,20 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest)
-            throws NotFoundException {
+    public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest){
         lineService.addLineStation(lineId, sectionRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{lineId}/sections")
-    public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId)
-            throws NotFoundException {
+    public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId){
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
     }
 
-    @ExceptionHandler(value = {DataIntegrityViolationException.class, IllegalStateException.class})
-    public ResponseEntity handleIllegalArgsException(Exception e) {
-        return ResponseEntity.badRequest().build();
-    }
-    @ExceptionHandler(value = {NotFoundException.class})
-    public ResponseEntity handleNotFoundExceptionException() {
-        return ResponseEntity.notFound().build();
+    @ExceptionHandler(value = {DataIntegrityViolationException.class, IllegalStateException.class, EntityNotFoundException.class})
+    public ResponseEntity<ErrorResponse> handleIllegalArgsException(RuntimeException e) {
+        return ResponseEntity.badRequest().body(ErrorResponse.of("BAD_REQUEST", 400, e.getMessage()));
     }
 
 }

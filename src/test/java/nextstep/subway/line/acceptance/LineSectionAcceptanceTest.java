@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.stream.Stream;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.ErrorMessage;
+import nextstep.subway.line.dto.ErrorResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -23,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("지하철 구간 관련 기능")
@@ -160,6 +163,23 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외됨(removeResponse);
         ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
         지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 정자역, 광교역));
+    }
+
+    @DisplayName("지하철 노선에 등록되지 않은 역을 제외하고자 하면 400 BAD_REQUEST를 응답한다.")
+    @Test
+    void removeLineSection_exception() {
+        // given
+        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
+
+        // when
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 정자역);
+
+        // then
+        assertAll(
+                ()->assertThat(removeResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                ()->assertThat(removeResponse.as(ErrorResponse.class).getMessage())
+                        .isEqualTo(ErrorMessage.CANNOT_FIND_STATIONS_IN_LINE)
+        );
     }
 
     @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
