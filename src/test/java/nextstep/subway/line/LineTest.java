@@ -64,11 +64,6 @@ class LineTest {
         line.addSection(강남역, 판교역, FIVE);
 
         List<Station> stations = line.getStations();
-
-        assertAll(
-                () -> assertThat(stations.get(0)).isEqualTo(강남역),
-                () -> assertThat(stations.get(1)).isEqualTo(판교역),
-                () -> assertThat(stations.get(2)).isEqualTo(광교역)
-        );
+        assertThat(stations).containsExactly(강남역, 판교역, 광교역);
     }
 }
