@@ -80,6 +80,14 @@ public class Section {
         return this.downStation.equals(station);
     }
 
+    public void updateLine(Line line) {
+        this.line = line;
+    }
+
+    public boolean isSameSection(Section target) {
+        return target.isUpStation(this.upStation) && target.isDownStation(this.downStation);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -103,4 +111,7 @@ public class Section {
                 ", distance=" + distance +
                 '}';
     }
+
+
+
 }

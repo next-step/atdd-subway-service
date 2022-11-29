@@ -29,11 +29,11 @@ public class Sections {
         checkValidSection(section);
         updateUpStation(section);
         updateDownStation(section);
-        this.sections.add(section);
+        sections.add(section);
     }
 
-    private void checkUniqueSection(Section section) {
-        if (this.sections.contains(section)) {
+    private void checkUniqueSection(Section newSection) {
+        if (this.sections.contains(newSection) || sections.stream().anyMatch(it -> newSection.isSameSection(it))) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
     }
@@ -75,7 +75,8 @@ public class Sections {
 
     public List<Station> getStations() {
         if (this.sections.isEmpty()) {
-            return Arrays.asList();
+            // Collections.EMPTY_LIST 타입 안정성 고려 -> Collections.emptyList
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
@@ -160,10 +161,5 @@ public class Sections {
         return Objects.hash(sections);
     }
 
-    @Override
-    public String toString() {
-        return "Sections{" +
-                "sections=" + sections +
-                '}';
-    }
+
 }
