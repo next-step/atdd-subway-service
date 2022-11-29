@@ -19,10 +19,30 @@ class LineTest {
         Section 역삼역_정자역_구간 = new Section(line, 역삼역, 정자역, 5);
         Section 강남역_역심역_구간 = new Section(line, 강남역, 역삼역, 10);
 
+        line.addSection(역삼역_정자역_구간);
+        line.addSection(강남역_역심역_구간);
+
+        Assertions.assertThat(line.getStations()).containsExactly(강남역, 역삼역, 정자역);
+    }
+
+    @DisplayName("노선에 구간을 제거할 수 있다")
+    @Test
+    void removeSections() {
+        Line line = new Line("신분당선", "red");
+
+        Station 강남역 = new Station("강남역");
+        Station 역삼역 = new Station("역삼역");
+        Station 정자역 = new Station("정자역");
+
+        Section 강남역_역심역_구간 = new Section(line, 강남역, 역삼역, 10);
+        Section 역삼역_정자역_구간 = new Section(line, 역삼역, 정자역, 5);
+
         line.addSection(강남역_역심역_구간);
         line.addSection(역삼역_정자역_구간);
 
-        Assertions.assertThat(line.getStations()).containsExactly(강남역, 역삼역, 정자역);
+        line.removeSection(역삼역);
+
+        Assertions.assertThat(line.getStations()).containsExactly(강남역, 정자역);
     }
 
 
