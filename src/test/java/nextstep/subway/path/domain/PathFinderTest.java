@@ -30,13 +30,12 @@ public class PathFinderTest {
         이호선.addSection(new Section(이호선, new Station("방배역"), new Station("사당역"), 3));
 
         final Line 사호선 = new Line("4호선", "bg-blue-400", new Station("사당역"), new Station("용산역"), 50);
-        이호선.addSection(new Section(사호선, new Station("사당역"), new Station("이수역"), 5));
-        이호선.addSection(new Section(사호선, new Station("이수역"), new Station("동작역"), 5));
-        이호선.addSection(new Section(사호선, new Station("동작역"), new Station("이촌역"), 10));
-        이호선.addSection(new Section(사호선, new Station("이촌역"), new Station("용산역"), 10));
+        사호선.addSection(new Section(사호선, new Station("사당역"), new Station("이수역"), 5));
+        사호선.addSection(new Section(사호선, new Station("이수역"), new Station("동작역"), 5));
+        사호선.addSection(new Section(사호선, new Station("동작역"), new Station("이촌역"), 10));
 
-        final Line 중앙선 = new Line("중앙선", "bg-blue-400", new Station("강남역"), new Station("용산역"), 25);
-        중앙선.addSection(new Section(중앙선, new Station("강남역"), new Station("중앙역"), 12));
+        final Line 중앙선 = new Line("중앙선", "bg-blue-400", new Station("백마역"), new Station("신촌역"), 25);
+        중앙선.addSection(new Section(중앙선, new Station("신촌역"), new Station("왕십리역"), 12));
 
         lines = Arrays.asList(이호선, 사호선, 중앙선);
     }
@@ -45,14 +44,14 @@ public class PathFinderTest {
     @DisplayName("최단 경로 구하기")
     void getShortestPath() {
         // given
-        final Station start = new Station("강남역");
-        final Station destination = new Station("용산역");
-        final graphPathFinder pathFinder = new graphPathFinder();
+        final Station start = new Station("방배역");
+        final Station destination = new Station("이수역");
+        final GraphPathFinder pathFinder = new GraphPathFinder();
         // when
         final StationPath graphPath = pathFinder.getShortestPath(lines, start, destination);
         // then
-        assertThat(graphPath.getStations()).containsExactlyElementsOf(Arrays.asList(new Station("강남역"), new Station("중앙역"), new Station("용산역")));
-        assertThat(graphPath.getDistance()).isEqualTo(25);
+        assertThat(graphPath.getStationNames()).containsExactlyElementsOf(Arrays.asList(new Station("방배역").getName(), new Station("사당역").getName(), new Station("이수역").getName()));
+        assertThat(graphPath.getDistance()).isEqualTo(8);
     }
 
     @Test
@@ -61,9 +60,33 @@ public class PathFinderTest {
         // given
         final Station start = new Station("강남역");
         final Station destination = new Station("강남역");
-        final graphPathFinder pathFinder = new graphPathFinder();
+        final GraphPathFinder pathFinder = new GraphPathFinder();
         // then
         assertThatThrownBy(() -> pathFinder.getShortestPath(lines, start, destination))
                 .isInstanceOf(PathException.class);
+    }
+
+    @Test
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
+    void cannotReachStationError() {
+        // given
+        final Station start = new Station("방배역");
+        final Station destination = new Station("왕십리역");
+        final GraphPathFinder pathFinder = new GraphPathFinder();
+        // then
+        assertThatThrownBy(() -> pathFinder.getShortestPath(lines, start, destination))
+                .isInstanceOf(PathException.class);
+    }
+
+    @Test
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
+    void NotFountStationError() {
+        // given
+        final Station start = new Station("방배역");
+        final Station destination = new Station("디지털미디어시티역");
+        final GraphPathFinder pathFinder = new GraphPathFinder();
+        // then
+        assertThatThrownBy(() -> pathFinder.getShortestPath(lines, start, destination))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

@@ -11,9 +11,9 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 
-public class graphPathFinder {
+public class GraphPathFinder {
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private WeightedMultigraph<String, DefaultWeightedEdge> graph;
 
     public StationPath getShortestPath(List<Line> lines, Station start, Station destination) {
         validation(start, destination);
@@ -21,7 +21,7 @@ public class graphPathFinder {
         addVertex(lines);
         addEdgeWeight(lines);
 
-        return StationPath.of(new DijkstraShortestPath<>(graph).getPath(start, destination));
+        return StationPath.of(new DijkstraShortestPath<>(graph).getPath(start.getName(), destination.getName()));
     }
 
     private void validation(final Station start, final Station destination) {
@@ -33,7 +33,7 @@ public class graphPathFinder {
     private void addVertex(final List<Line> lines) {
         for (Line line : lines) {
             line.getSortedStations()
-                    .forEach(it -> graph.addVertex(it));
+                    .forEach(it -> graph.addVertex(it.getName()));
         }
     }
 
@@ -41,7 +41,7 @@ public class graphPathFinder {
         for (Line line : lines) {
             line.getSections()
                     .forEach(section -> {
-                        DefaultWeightedEdge edge = graph.addEdge(section.getUpStation(), section.getDownStation());
+                        DefaultWeightedEdge edge = graph.addEdge(section.getUpStation().getName(), section.getDownStation().getName());
                         graph.setEdgeWeight(edge, section.getDistance());
                     });
         }

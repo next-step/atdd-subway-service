@@ -37,11 +37,11 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    public Station findStationById(final Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
     public Station findById(final Long id) {
         return stationRepository.findById(id).orElseThrow(() -> new StationException(StationExceptionType.STATION_NOT_FOUND));
+    }
+
+    public Station findByName(String name) {
+        return stationRepository.findByName(name).orElseThrow(() -> new StationException(StationExceptionType.STATION_NOT_FOUND));
     }
 }

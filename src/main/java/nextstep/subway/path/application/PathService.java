@@ -2,7 +2,8 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.graphPathFinder;
+import nextstep.subway.path.domain.GraphPathFinder;
+import nextstep.subway.path.domain.StationPath;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -26,8 +28,14 @@ public class PathService {
         final Station start = stationService.findById(startStationId);
         final Station destination = stationService.findById(destinationStationId);
         final List<Line> lines = lineService.findAll();
-        final graphPathFinder pathFinder = new graphPathFinder();
+        final GraphPathFinder pathFinder = new GraphPathFinder();
 
-        return PathResponse.of(pathFinder.getShortestPath(lines, start, destination));
+        StationPath stationPath =  pathFinder.getShortestPath(lines, start, destination);
+        List<Station> stations = stationPath.getStationNames()
+                .stream()
+                .map(stationService::findByName)
+                .collect(Collectors.toList());
+
+        return PathResponse.of(stations, stationPath.getDistance());
     }
 }
