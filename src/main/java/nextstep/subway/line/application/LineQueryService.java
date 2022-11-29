@@ -22,6 +22,10 @@ public class LineQueryService {
         return LineResponse.ofList(persistLines);
     }
 
+    public List<Line> getAllLines() {
+        return lineRepository.findAll();
+    }
+
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
@@ -30,5 +34,4 @@ public class LineQueryService {
     private Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
-
 }

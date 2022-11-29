@@ -53,11 +53,10 @@ public class LineService {
     }
 
     private Station findStationById(Long request) {
-        return stationService.findById(request);
+        return stationService.findStationById(request);
     }
 
     private Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
-
 }
