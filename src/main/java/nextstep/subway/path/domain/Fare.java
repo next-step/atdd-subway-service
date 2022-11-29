@@ -5,7 +5,7 @@ public class Fare {
 
     public Fare(int extraFare, int distance, int age) {
         int fare = extraFare + FareDistance.calculate(distance);
-        this.value =  fare - DiscountAge.calculate(age, fare);
+        this.value =  fare - AgeDiscount.calculate(age, fare);
     }
 
     public int get() {

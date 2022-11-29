@@ -7,13 +7,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class DiscountAgeTest {
+class AgeDiscountTest {
     @DisplayName("어린이와 청소년이 아닐 경우, 할인이 적용되지 않는다")
     @ParameterizedTest
     @ValueSource(ints = {19, 20, 99})
     void noDiscount(int age) {
         // when
-        int result = DiscountAge.calculate(age, 1_250);
+        int result = AgeDiscount.calculate(age, 1_250);
 
         // then
         assertThat(result).isEqualTo(0);
@@ -24,7 +24,7 @@ class DiscountAgeTest {
     @CsvSource(value = {"6:450", "12:450"}, delimiter = ':')
     void discountChild(int age, int fare) {
         // when
-        int result = DiscountAge.calculate(age, 1_250);
+        int result = AgeDiscount.calculate(age, 1_250);
 
         // then
         assertThat(result).isEqualTo(fare);
@@ -35,7 +35,7 @@ class DiscountAgeTest {
     @CsvSource(value = {"13:180", "18:180"}, delimiter = ':')
     void discountTeenager(int age, int fare) {
         // when
-        int result = DiscountAge.calculate(age, 1_250);
+        int result = AgeDiscount.calculate(age, 1_250);
 
         // then
         assertThat(result).isEqualTo(fare);
