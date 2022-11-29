@@ -96,7 +96,7 @@ public class Sections {
                 .filter(section -> findNoneMatchUpStation(section.getUpStation()))
                 .findFirst()
                 .map(Section::getUpStation)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new RuntimeException("종점 상행역을 찾을 수 없습니다."));
     }
 
     private boolean findNoneMatchUpStation(Station upStation){
