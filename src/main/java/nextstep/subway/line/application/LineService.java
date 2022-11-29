@@ -1,7 +1,7 @@
 package nextstep.subway.line.application;
 
 import javassist.NotFoundException;
-import nextstep.subway.ErrMsg;
+import nextstep.subway.ErrorMessage;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -30,28 +30,28 @@ public class LineService {
     @Transactional
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineRepository.save(createLineFromRequest(request));
-        return createLineResponse(persistLine);
+        return LineResponse.of(persistLine);
     }
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-                .map(this::createLineResponse)
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
     public Line findLineById(Long id) throws NotFoundException {
-        return lineRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrMsg.notFoundLine(id)));
+        return lineRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorMessage.notFoundLine(id)));
     }
 
 
     public LineResponse findLineResponseById(Long id) throws NotFoundException {
         Line persistLine = findLineById(id);
-        return createLineResponse(persistLine);
+        return LineResponse.of(persistLine);
     }
     @Transactional
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        persistLine.update(lineUpdateRequest.toLine());
+    public void updateLine(Long id, LineRequest lineUpdateRequest) throws NotFoundException {
+        Line persistLine = findLineById(id);
+        persistLine.update(lineUpdateRequest.toUpdateLineInfo());
     }
     @Transactional
     public void deleteLineById(Long id) {
@@ -62,7 +62,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        Section section = new Section(line, upStation, downStation, request.getDistance());
+        Section section = request.toSection(line, upStation, downStation);
         line.addSection(section);
     }
     @Transactional
@@ -71,21 +71,10 @@ public class LineService {
         Station station = stationService.findStationById(stationId);
         line.removeStation(station);
     }
-    private List<Station> getStations(Line line) {
-        return line.getOrderedStations().stream().collect(Collectors.toList());
-    }
-
     private Line createLineFromRequest(LineRequest request){
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line line = request.toLine();
-        line.addSection(new Section(line, upStation, downStation, request.getDistance()));
+        Line line = request.toLine(upStation, downStation);
         return line;
-    }
-    private LineResponse createLineResponse(Line line){
-        List<StationResponse> stations = getStations(line).stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
-        return LineResponse.of(line, stations);
     }
 }
