@@ -4,6 +4,7 @@ import nextstep.subway.exception.EntityNotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.message.ExceptionMessage;
@@ -11,6 +12,8 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -45,5 +48,9 @@ public class FavoriteService {
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.MEMBER_NOT_EXIST));
+    }
+
+    public List<FavoriteResponse> findAllFavorites(Long memberId) {
+        return null;
     }
 }
