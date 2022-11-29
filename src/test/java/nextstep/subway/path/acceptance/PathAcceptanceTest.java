@@ -2,14 +2,15 @@ package nextstep.subway.path.acceptance;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestActions.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.path.acceptance.PathAcceptanceTestActions.최단_경로가_조회됨;
+import static nextstep.subway.path.acceptance.PathAcceptanceTestActions.출발역과_도착역_입력;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
-import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -59,16 +60,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * Then 최단 경로가 조회된다
      */
     @Test
-    void pathFind() {
+    void findShortestPath() {
         //when
-        PathResponse response = RestAssured
-                .given().log().all()
-                .when().get("/paths?source={source}&target={target}", 남부터미널역.getId(), 강남역.getId())
-                .then().log().all()
-                .extract().as(PathResponse.class);
+        ExtractableResponse<Response> response = 출발역과_도착역_입력(남부터미널역, 강남역);
 
         //then
-        assertThat(response.getStations()).containsExactly(남부터미널역, 양재역, 강남역);
-        assertThat(response.getDistance()).isEqualTo(13);
+        최단_경로가_조회됨(response, 13, 남부터미널역, 양재역, 강남역);
     }
 }
