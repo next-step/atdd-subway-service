@@ -7,6 +7,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -17,23 +18,12 @@ public class PathFinder {
     public Path findPath(List<Line> lines, Long source, Long target) {
         validateSameSourceTarget(source, target);
         DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath = getDijkstraShortestPath(lines);
-        List<StationResponse> stationResponses
-                = getStationResponses(lines, getShortestPath(dijkstraShortestPath, source, target));
-        return new Path(stationResponses, getPathWeight(dijkstraShortestPath, source, target));
-    }
-
-    private List<String> getShortestPath(DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath, Long source, Long target) {
-        List<String> shortestPath;
         try {
-            shortestPath = dijkstraShortestPath.getPath(String.valueOf(source), String.valueOf(target)).getVertexList();
+            GraphPath<String, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(String.valueOf(source), String.valueOf(target));
+            return new Path(getStationResponses(lines, graphPath.getVertexList()), (int) graphPath.getWeight());
         } catch (RuntimeException e) {
             throw new IllegalArgumentException("경로를 찾을 수 없습니다");
         }
-        return shortestPath;
-    }
-
-    private int getPathWeight(DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath, Long source, Long target){
-        return (int) dijkstraShortestPath.getPathWeight(String.valueOf(source), String.valueOf(target));
     }
 
     private List<StationResponse> getStationResponses(List<Line> lines, List<String> shortestPath){
