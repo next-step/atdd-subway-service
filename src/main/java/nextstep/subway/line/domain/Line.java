@@ -52,12 +52,12 @@ public class Line extends BaseEntity {
 
     private void validate(Station upStation, Station downStation, boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalStateException("이미 등록된 구간 입니다.");
         }
 
         if (!getStations().isEmpty() && isNoneMatch(upStation) &&
             isNoneMatch(downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalStateException("등록할 수 없는 구간 입니다.");
         }
     }
 
