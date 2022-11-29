@@ -1,15 +1,18 @@
 package nextstep.subway.fare.domain;
 
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import nextstep.subway.common.constant.ErrorCode;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Line;
 
 @Embeddable
-public class Fare {
+public class Fare implements Comparable<Fare> {
 
     private static final Fare BASIC_FARE = Fare.from(1250);
+    private static final Fare ZERO_FARE = Fare.from(0);
     private static final int ZERO = 0;
 
     @Column(nullable = false)
@@ -34,6 +37,19 @@ public class Fare {
     public static Fare createFare(AgeFarePolicy ageFarePolicy, Distance distance) {
         Fare fare = createAdditionalFareOfDistance(distance);
         return ageFarePolicy.calculateFare(fare.add(BASIC_FARE));
+    }
+
+    public static Fare createFare(Fare maxLineFare, Distance distance) {
+        return createAdditionalFareOfDistance(distance)
+                .add(BASIC_FARE)
+                .add(maxLineFare);
+    }
+
+    public static Fare findMaxLineFare(Set<Line> lines) {
+        return lines.stream()
+                .map(Line::getLineFare)
+                .max(Fare::compareTo)
+                .orElse(ZERO_FARE);
     }
 
     private static Fare createAdditionalFareOfDistance(Distance distance) {
@@ -82,5 +98,10 @@ public class Fare {
     @Override
     public int hashCode() {
         return Objects.hash(fare);
+    }
+
+    @Override
+    public int compareTo(Fare compareFare) {
+        return Integer.compare(this.fare, compareFare.fare);
     }
 }

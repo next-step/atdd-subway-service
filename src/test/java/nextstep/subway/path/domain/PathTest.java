@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.Arrays;
 import java.util.Collections;
 import nextstep.subway.common.constant.ErrorCode;
+import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.line.domain.Distance;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,7 +19,7 @@ public class PathTest {
     @Test
     void createPathThrowErrorWhenStationsIsNull() {
         // when & then
-        assertThatThrownBy(() -> Path.of(Collections.emptyList(), 4))
+        assertThatThrownBy(() -> Path.of(Collections.emptyList(), Distance.from(4), Fare.from(1250)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.경로는_비어있을_수_없음.getErrorMessage());
     }
@@ -27,7 +29,7 @@ public class PathTest {
     @ValueSource(ints = {-1,-2,0})
     void createPathThrowErrorWhenDistanceSmallerThanOne(int distance) {
         // when & then
-        assertThatThrownBy(() -> Path.of(Arrays.asList(createStation("강남역"), createStation("역삼역")), distance))
+        assertThatThrownBy(() -> Path.of(Arrays.asList(createStation("강남역"), createStation("역삼역")), Distance.from(distance), Fare.from(0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.노선거리는_0보다_작거나_같을_수_없음.getErrorMessage());
 
