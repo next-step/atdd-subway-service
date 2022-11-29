@@ -73,11 +73,11 @@ public class Section {
         }
     }
 
-    public boolean equalUpStation(Station station) {
+    public boolean hasUpStation(Station station) {
         return this.upStation.equals(station);
     }
 
-    public boolean equalDownStation(Station station) {
+    public boolean hasDownStation(Station station) {
         return this.downStation.equals(station);
     }
 

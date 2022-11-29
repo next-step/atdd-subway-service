@@ -8,9 +8,12 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Embeddable
 public class Sections {
+    private static final int MINIMUM_SECTIONS_SIZE = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -23,6 +26,47 @@ public class Sections {
 
     public void add(Section newSection) {
         this.sections.add(newSection);
+    }
+
+    public void removeLineStation(Station station) {
+        validate();
+
+        Optional<Section> upLineStation = removeUpSection(station);
+        Optional<Section> downLineStation = removeDownSection(station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            this.add(mergeSection(upLineStation, downLineStation));
+        }
+    }
+
+    private Section mergeSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        Station newUpStation = downLineStation.get().getUpStation();
+        Station newDownStation = upLineStation.get().getDownStation();
+        int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+        Section newSection = new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance);
+        return newSection;
+    }
+
+    private Optional<Section> removeUpSection(Station station) {
+        Optional<Section> upSection = this.sections.stream()
+            .filter(section -> section.hasUpStation(station))
+            .findAny();
+        upSection.ifPresent(section -> this.sections.remove(section));
+        return upSection;
+    }
+
+    private Optional<Section> removeDownSection(Station station) {
+        Optional<Section> downSection = this.sections.stream()
+            .filter(section -> section.hasDownStation(station))
+            .findAny();
+        downSection.ifPresent(section -> this.sections.remove(section));
+        return downSection;
+    }
+
+    private void validate() {
+        if (getSections().size() <= MINIMUM_SECTIONS_SIZE) {
+            throw new IllegalStateException("더 이상 구간을 제거할 수 없습니다.");
+        }
     }
 
     public List<Station> getStations() {
@@ -71,14 +115,14 @@ public class Sections {
 
     private Section findPrevStation(Station station) {
         return this.sections.stream()
-            .filter(it -> it.equalDownStation(station))
+            .filter(it -> it.hasDownStation(station))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("이전 구간이 없습니다."));
     }
 
     private Section findNextStation(Station station) {
         return this.sections.stream()
-            .filter(it -> it.equalUpStation(station))
+            .filter(it -> it.hasUpStation(station))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("다음 구간이 없습니다."));
     }
@@ -86,13 +130,13 @@ public class Sections {
     private boolean isPresentPreSection(Station station) {
         return sections.stream()
             .filter(Section::existDownStation)
-            .anyMatch(it -> it.equalDownStation(station));
+            .anyMatch(it -> it.hasDownStation(station));
     }
 
     private boolean isPresentNextSection(Station station) {
         return sections.stream()
             .filter(Section::existUpStation)
-            .anyMatch(it -> it.equalUpStation(station));
+            .anyMatch(it -> it.hasUpStation(station));
     }
 
     public List<Section> getSections() {

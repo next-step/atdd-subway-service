@@ -3,11 +3,13 @@ package nextstep.subway.line.domain;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -50,6 +52,10 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
+    public void removeLineStation(Station station) {
+        sections.removeLineStation(station);
+    }
+
     private void validate(Station upStation, Station downStation, boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
             throw new IllegalStateException("이미 등록된 구간 입니다.");
@@ -62,11 +68,13 @@ public class Line extends BaseEntity {
     }
 
     private boolean isNoneMatch(Station upStation) {
-        return getStations().stream().noneMatch(it -> it == upStation);
+        return getStations().stream()
+            .noneMatch(it -> it == upStation);
     }
 
     private boolean isExisted(Station upStation) {
-        return getStations().stream().anyMatch(it -> it == upStation);
+        return getStations().stream()
+            .anyMatch(it -> it == upStation);
     }
 
     public void update(Line line) {
@@ -88,9 +96,5 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
-    }
-
-    public List<Section> getSections() {
-        return sections.getSections();
     }
 }
