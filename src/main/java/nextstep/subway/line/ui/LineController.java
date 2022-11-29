@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.NoResultException;
 import java.net.URI;
 import java.util.List;
 
@@ -49,19 +50,19 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity<Void> addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
-        lineService.addLineStation(lineId, sectionRequest);
+    public ResponseEntity<Void> addSection(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
+        lineService.addSection(lineId, sectionRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{lineId}/sections")
-    public ResponseEntity<Void> removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
-        lineService.removeLineStation(lineId, stationId);
+    public ResponseEntity<Void> removeSection(@PathVariable Long lineId, @RequestParam Long stationId) {
+        lineService.removeSection(lineId, stationId);
         return ResponseEntity.ok().build();
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Void> handleIllegalArgsException(DataIntegrityViolationException e) {
+    @ExceptionHandler({DataIntegrityViolationException.class, NoResultException.class})
+    public ResponseEntity<Void> handleIllegalArgsException() {
         return ResponseEntity.badRequest().build();
     }
 }

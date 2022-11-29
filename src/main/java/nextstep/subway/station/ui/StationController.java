@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.NoResultException;
 import java.net.URI;
 import java.util.List;
 
@@ -36,8 +37,8 @@ public class StationController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Void> handleIllegalArgsException(DataIntegrityViolationException e) {
+    @ExceptionHandler({DataIntegrityViolationException.class, NoResultException.class})
+    public ResponseEntity<Void> handleIllegalArgsException(Exception e) {
         return ResponseEntity.badRequest().build();
     }
 }
