@@ -14,7 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class SectionsTest {
-    private Line 신분당선 = new Line("신분당선", "빨간색");
+    private Line 신분당선 = Line.ofNameAndColor("신분당선", "빨간색");
     private Station 강남역= new Station("강남역");
 
     private Station 정자역 = new Station("정자역");
@@ -26,7 +26,7 @@ public class SectionsTest {
     void addSection_new_test() {
         // given
         Sections 구간_목록 = new Sections();
-        Section 구간 = new Section(신분당선, 강남역, 광교역, 10);
+        Section 구간 = Section.of(신분당선, 강남역, 광교역, 10);
 
         // when
         구간_목록.add(구간);
@@ -41,8 +41,8 @@ public class SectionsTest {
     void addSection_firstSection_test() {
         // given
         Sections 구간_목록 = new Sections();
-        구간_목록.add(new Section(신분당선, 미금역, 광교역, 10));
-        Section 상행_종점_구간 = new Section(신분당선, 강남역, 미금역, 10);
+        구간_목록.add(Section.of(신분당선, 미금역, 광교역, 10));
+        Section 상행_종점_구간 = Section.of(신분당선, 강남역, 미금역, 10);
 
         // when
         구간_목록.add(상행_종점_구간);
@@ -56,8 +56,8 @@ public class SectionsTest {
     void addSection_lastSection_test() {
         // given
         Sections 구간_목록 = new Sections();
-        구간_목록.add(new Section(신분당선, 강남역, 미금역, 10));
-        Section 하행_종점_구간 = new Section(신분당선, 미금역, 광교역, 10);
+        구간_목록.add(Section.of(신분당선, 강남역, 미금역, 10));
+        Section 하행_종점_구간 = Section.of(신분당선, 미금역, 광교역, 10);
 
         // when
         구간_목록.add(하행_종점_구간);
@@ -72,9 +72,9 @@ public class SectionsTest {
     void addSection_middleSection_test() {
         // given
         Sections 구간_목록 = new Sections();
-        구간_목록.add(new Section(신분당선, 강남역, 광교역, 10));
-        Section 하행역_기준_추가_구간 = new Section(신분당선, 미금역, 광교역, 3);
-        Section 상행역_기준_추가_구간 = new Section(신분당선, 강남역, 정자역, 3);
+        구간_목록.add(Section.of(신분당선, 강남역, 광교역, 10));
+        Section 하행역_기준_추가_구간 = Section.of(신분당선, 미금역, 광교역, 3);
+        Section 상행역_기준_추가_구간 = Section.of(신분당선, 강남역, 정자역, 3);
 
         // when
         구간_목록.add(하행역_기준_추가_구간);
@@ -90,7 +90,7 @@ public class SectionsTest {
     void addSection_duplicated_exception() {
         // when
         Sections 구간_목록 = new Sections();
-        Section 구간 = new Section(신분당선, 강남역, 광교역, 10);
+        Section 구간 = Section.of(신분당선, 강남역, 광교역, 10);
         구간_목록.add(구간);
 
         // then
@@ -103,10 +103,10 @@ public class SectionsTest {
     void addSection_notExists_exception() {
         // when
         Sections 구간_목록 = new Sections();
-        Section 구간 = new Section(신분당선, 강남역, 광교역, 10);
+        Section 구간 = Section.of(신분당선, 강남역, 광교역, 10);
         구간_목록.add(구간);
 
-        Section 신규_구간 = new Section(신분당선, 정자역, 미금역, 10);
+        Section 신규_구간 = Section.of(신분당선, 정자역, 미금역, 10);
 
         // then
         assertThatThrownBy(() -> 구간_목록.add(신규_구간)).isInstanceOf(IllegalStateException.class);
@@ -118,9 +118,9 @@ public class SectionsTest {
     void findOrderedStation_test() {
         // when
         Sections 구간_목록 = new Sections();
-        구간_목록.add(new Section(신분당선, 강남역, 미금역, 10));
+        구간_목록.add(Section.of(신분당선, 강남역, 미금역, 10));
 
-        구간_목록.add(new Section(신분당선, 미금역, 광교역, 10));
+        구간_목록.add(Section.of(신분당선, 미금역, 광교역, 10));
         // then
         assertThat(구간_목록.getOrderedStations()).containsExactly(강남역, 미금역, 광교역);
     }
@@ -130,8 +130,8 @@ public class SectionsTest {
     void deleteStation_firstStation_test() {
         // given
         Sections 구간_목록 = new Sections();
-        구간_목록.add(new Section(신분당선, 강남역, 미금역, 10));
-        구간_목록.add(new Section(신분당선, 미금역, 광교역, 10));
+        구간_목록.add(Section.of(신분당선, 강남역, 미금역, 10));
+        구간_목록.add(Section.of(신분당선, 미금역, 광교역, 10));
         Station 상행_종점 = 상행_종점_조회(구간_목록);
         // when
 
@@ -147,8 +147,8 @@ public class SectionsTest {
     void deleteStation_middleStation_test() {
         // given
         Sections 구간_목록 = new Sections();
-        구간_목록.add(new Section(신분당선, 강남역, 미금역, 10));
-        Section 추가_구간 = new Section(신분당선, 미금역, 광교역, 10);
+        구간_목록.add(Section.of(신분당선, 강남역, 미금역, 10));
+        Section 추가_구간 = Section.of(신분당선, 미금역, 광교역, 10);
         구간_목록.add(추가_구간);
         // when
         구간_목록.deleteStation(미금역);
@@ -161,7 +161,7 @@ public class SectionsTest {
     void deleteStation_onlyOneSection_exception() {
         // given
         Sections 구간_목록 = new Sections();
-        구간_목록.add(new Section(신분당선, 강남역, 미금역, 10));
+        구간_목록.add(Section.of(신분당선, 강남역, 미금역, 10));
 
         // then
         assertThatThrownBy(() -> 구간_목록.deleteStation(미금역)).isInstanceOf(IllegalStateException.class);

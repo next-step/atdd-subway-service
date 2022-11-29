@@ -3,12 +3,12 @@ package nextstep.subway.line.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import nextstep.subway.ErrorMessage;
 
 @Embeddable
 public class Distance {
-    private static int MINIMUM_DISTANCE = 0;
-    private static String DISTANCE_LOWER_THEN_MINIMUM = String.format("거리는 %d보다 커야 합니다.", MINIMUM_DISTANCE);
 
+    private static int MINIMUM_DISTANCE = 0;
     @Column(name = "distance", nullable = false)
     private int value;
 
@@ -25,7 +25,7 @@ public class Distance {
 
     private static void validateDistance(int distance) {
         if(distance<=MINIMUM_DISTANCE){
-            throw new IllegalArgumentException(DISTANCE_LOWER_THEN_MINIMUM);
+            throw new IllegalArgumentException(ErrorMessage.notValidDistance(MINIMUM_DISTANCE));
         }
     }
 

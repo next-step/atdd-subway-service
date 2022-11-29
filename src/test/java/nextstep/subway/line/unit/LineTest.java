@@ -18,8 +18,8 @@ public class LineTest {
     @Test
     void addSection_test() {
         // given
-        Line 신분당선 = new Line("신분당선", "빨간색");
-        Section 구간 = new Section(신분당선, 강남역, 광교역, 10);
+        Line 신분당선 = Line.ofNameAndColor("신분당선", "빨간색");
+        Section 구간 = Section.of(신분당선, 강남역, 광교역, 10);
         // when
         신분당선.addSection(구간);
 

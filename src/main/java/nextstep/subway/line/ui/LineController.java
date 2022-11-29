@@ -38,7 +38,8 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
+    public ResponseEntity updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest)
+            throws NotFoundException {
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }

@@ -20,10 +20,10 @@ public class LineRepositoryTest {
     void save_duplicatedName_exception() {
 
         // when
-        lineRepository.save(new Line("신분당선", "빨간색"));
+        lineRepository.save(Line.ofNameAndColor("신분당선", "빨간색"));
         
         // then
-        assertThatThrownBy(() -> lineRepository.save(new Line("신분당선", "파란색")))
+        assertThatThrownBy(() -> lineRepository.save(Line.ofNameAndColor("신분당선", "파란색")))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 

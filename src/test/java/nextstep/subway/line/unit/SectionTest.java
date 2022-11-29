@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 public class SectionTest {
 
-    private Line 신분당선 = new Line("신분당선", "빨간색");
+    private Line 신분당선 = Line.ofNameAndColor("신분당선", "빨간색");
     private Station 강남역= new Station("강남역");
     private Station 미금역 = new Station("미금역");
     private Station 광교역 = new Station("광교역");
@@ -21,8 +21,8 @@ public class SectionTest {
     @Test
     void updateUpStationWhenAdd_test() {
         // given
-        Section 구간 = new Section(신분당선, 강남역, 광교역, 10);
-        Section 새_구간 = new Section(신분당선, 강남역, 미금역, 5);
+        Section 구간 = Section.of(신분당선, 강남역, 광교역, 10);
+        Section 새_구간 = Section.of(신분당선, 강남역, 미금역, 5);
         // when
 
         구간.updateUpStation(새_구간);
@@ -36,8 +36,8 @@ public class SectionTest {
     @Test
     void updateDownStationWhenAdd_test() {
         // given
-        Section 구간 = new Section(신분당선, 강남역, 광교역, 10);
-        Section 새_구간 = new Section(신분당선, 미금역, 광교역, 5);
+        Section 구간 = Section.of(신분당선, 강남역, 광교역, 10);
+        Section 새_구간 = Section.of(신분당선, 미금역, 광교역, 5);
         // when
 
         구간.updateDownStation(새_구간);
@@ -51,7 +51,7 @@ public class SectionTest {
     @Test
     void updateDownStationWhenDelete_test() {
         // given
-        Section 구간 = new Section(신분당선, 강남역, 미금역, 5);
+        Section 구간 = Section.of(신분당선, 강남역, 미금역, 5);
         // when
 
         구간.updateDownStationDelete(미금역, Distance.from(10));
