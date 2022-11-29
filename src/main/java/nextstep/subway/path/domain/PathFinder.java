@@ -48,7 +48,11 @@ public class PathFinder {
 
         validateAfter(shortestPath);
 
-        return new ShortestPath(shortestPath);
+        return new ShortestPath(
+                shortestPath.getVertexList(),
+                (int) shortestPath.getWeight(),
+                getPathLine(shortestPath)
+        );
     }
 
     private void validateBefore(Station sourceStation, Station targetStation) {
@@ -72,5 +76,13 @@ public class PathFinder {
         if (shortestPath == null) {
             throw new IllegalArgumentException(ErrorCode.FIND_PATH_NOT_CONNECT.getMessage());
         }
+    }
+
+    private Lines getPathLine(GraphPath<Station, SectionEdge> shortestPath) {
+        return new Lines(shortestPath.getEdgeList()
+                .stream()
+                .map(SectionEdge::getLine)
+                .collect(Collectors.toList())
+        );
     }
 }
