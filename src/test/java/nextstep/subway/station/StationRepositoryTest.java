@@ -1,22 +1,20 @@
 package nextstep.subway.station;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
 import java.util.Arrays;
 import java.util.List;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import org.hibernate.annotations.Source;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.repository.query.Param;
+import org.springframework.test.annotation.DirtiesContext;
 
 @DataJpaTest
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 public class StationRepositoryTest {
     @Autowired
     StationRepository stationRepository;
@@ -35,8 +33,8 @@ public class StationRepositoryTest {
 
     @Test
     void Id에_해당하는_모든_역_조회() {
-        List<Long> ids = Arrays.asList(1L, 2L);
+        List<Long> ids = Arrays.asList(1L, 4L);
         List<Station> stations = stationRepository.findAllByIdIsIn(ids);
-        assertThat(stations).containsExactly(강남역, 판교역);
+        assertThat(stations).containsExactly(강남역, 광교역);
     }
 }
