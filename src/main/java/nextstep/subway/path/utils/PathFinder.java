@@ -1,6 +1,7 @@
 package nextstep.subway.path.utils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Path;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PathFinder {
     public Path findPath(List<Line> lines, Long source, Long target) {
+        validateSameSourceTarget(source, target);
         DijkstraShortestPath dijkstraShortestPath = getDijkstraShortestPath(lines);
         List<StationResponse> stationResponses
                 = getStationResponses(lines, getShortestPath(dijkstraShortestPath, source, target));
@@ -21,7 +23,13 @@ public class PathFinder {
     }
 
     private List<String> getShortestPath(DijkstraShortestPath dijkstraShortestPath, Long source, Long target) {
-        return dijkstraShortestPath.getPath(String.valueOf(source), String.valueOf(target)).getVertexList();
+        List<String> shortestPath;
+        try {
+            shortestPath = dijkstraShortestPath.getPath(String.valueOf(source), String.valueOf(target)).getVertexList();
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException("경로를 찾을 수 없습니다");
+        }
+        return shortestPath;
     }
 
     private int getPathWeight(DijkstraShortestPath dijkstraShortestPath, Long source, Long target){
@@ -47,7 +55,7 @@ public class PathFinder {
         return stations.stream()
                 .filter(station -> station.isEqualToStationId(stationId))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("station id와 일치하는 역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("station id와 일치하는 역을 찾을 수 없습니다."));
     }
 
     private DijkstraShortestPath getDijkstraShortestPath (List<Line> lines) {
@@ -74,5 +82,11 @@ public class PathFinder {
                         graph.addEdge(String.valueOf(section.getUpStation().getId()),
                                       String.valueOf(section.getDownStation().getId())),
                         section.getDistance().getDistance()));
+    }
+
+    private void validateSameSourceTarget(Long sourceId, Long targetId) {
+        if (Objects.equals(sourceId, targetId)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같습니다");
+        }
     }
 }
