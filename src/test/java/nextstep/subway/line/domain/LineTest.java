@@ -33,5 +33,16 @@ public class LineTest {
     }
 
     // 노선 삭제
+    @Test
+    void 노선_삭제() {
+        // given
+        호선.addSection(new Section(강남역, 종합운동장역, 3));
+        assertThat(호선.findStations()).containsExactly(강남역, 종합운동장역, 잠실역);
 
+        // when
+        호선.deleteStation(종합운동장역);
+
+        // then
+        assertThat(호선.findStations()).contains(강남역, 잠실역);
+    }
 }

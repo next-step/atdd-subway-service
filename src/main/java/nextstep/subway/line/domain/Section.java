@@ -1,11 +1,11 @@
 package nextstep.subway.line.domain;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,15 +19,15 @@ public class Section {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "line_id")
     private Line line;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "up_station_id")
     private Station upStation;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
@@ -37,22 +37,22 @@ public class Section {
     protected Section() {
     }
 
-    public Section(Station upStation, Station downStation, Distance distance) {
+    public Section(Station upStation, Station downStation, int distance) {
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     public void addLine(Line line) {
         this.line = line;
     }
 
-    public Long getId() {
-        return id;
+    public List<Station> stations() {
+        return Arrays.asList(upStation, downStation);
     }
 
-    public Line getLine() {
-        return line;
+    public boolean isNext(Section section) {
+        return this.upStation.equals(section.downStation);
     }
 
     public Station getUpStation() {
@@ -63,16 +63,8 @@ public class Section {
         return downStation;
     }
 
-    public List<Station> stations() {
-        return Arrays.asList(upStation, downStation);
-    }
-
     public int getDistance() {
         return distance.value();
-    }
-
-    public boolean isNext(Section section) {
-        return this.upStation.equals(section.downStation);
     }
 
     public void updateStation(Section newSection) {
@@ -90,12 +82,12 @@ public class Section {
         this.distance = this.distance.add(nextSection.distance);
     }
 
-    public boolean isEqualUpStation(Section section) {
-        return this.upStation.equals(section.upStation);
+    public boolean isEqualUpStation(Section newSection) {
+        return this.upStation.equals(newSection.upStation);
     }
 
-    public boolean isEqualDownStation(Section section) {
-        return this.downStation.equals(section.downStation);
+    public boolean isEqualDownStation(Section newSection) {
+        return this.downStation.equals(newSection.downStation);
     }
 
     private void updateUpStation(Section newSection) {
@@ -108,15 +100,16 @@ public class Section {
         this.distance = this.distance.subtract(newSection.distance);
     }
 
-    public Collection<Station> findStations() {
-        return Arrays.asList(upStation, downStation);
+    public boolean isUpStation(Station station) {
+        return this.upStation.equals(station);
     }
 
     public boolean isDownStation(Station station) {
         return this.downStation.equals(station);
     }
 
-    public boolean isUpStation(Station station) {
-        return this.downStation.equals(station);
+    public boolean isSameUpDownStation(Section newSection) {
+        return isEqualUpStation(newSection) && isEqualDownStation(newSection);
     }
+
 }
