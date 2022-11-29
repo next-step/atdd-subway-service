@@ -32,6 +32,6 @@ public class ShortestPath {
                 .map(SectionEdge::getLine)
                 .collect(Collectors.toList()));
 
-        return new Fare(lines, getDistance(), age);
+        return new Fare(lines.maxExtraFare().get(), getDistance(), age);
     }
 }

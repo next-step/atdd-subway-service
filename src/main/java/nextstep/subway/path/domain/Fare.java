@@ -1,12 +1,10 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.line.domain.Lines;
-
 public class Fare {
     private int value;
 
-    public Fare(Lines lines, int distance, int age) {
-        int fare = lines.maxExtraFare().get() + FareDistance.calculate(distance);
+    public Fare(int extraFare, int distance, int age) {
+        int fare = extraFare + FareDistance.calculate(distance);
         this.value =  fare - DiscountAge.calculate(age, fare);
     }
 

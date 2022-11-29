@@ -24,7 +24,7 @@ class FareTest {
         Lines lines = new Lines(Arrays.asList(line));
 
         // when
-        Fare result = new Fare(lines, 0, 20);
+        Fare result = new Fare(lines.maxExtraFare().get(), 0, 20);
 
         // then
         assertThat(result.get()).isEqualTo(BASIC_PRICE);
@@ -39,7 +39,7 @@ class FareTest {
         Lines lines = new Lines(Arrays.asList(line));
 
         // when
-        Fare result = new Fare(lines, 0, 20);
+        Fare result = new Fare(lines.maxExtraFare().get(), 0, 20);
 
         // then
         assertThat(result.get()).isEqualTo(BASIC_PRICE + extraFare);
@@ -54,7 +54,7 @@ class FareTest {
         Lines lines = new Lines(Arrays.asList(line));
 
         // when
-        Fare result = new Fare(lines, distance, 20);
+        Fare result = new Fare(lines.maxExtraFare().get(), distance, 20);
 
         // then
         assertThat(result.get()).isEqualTo(fare);
@@ -71,7 +71,7 @@ class FareTest {
         Lines lines = new Lines(Arrays.asList(line));
 
         // when
-        Fare result = new Fare(lines, 0, age);
+        Fare result = new Fare(lines.maxExtraFare().get(), 0, age);
 
         // then
         assertThat(result.get()).isEqualTo(BASIC_PRICE + extraFare - expectDiscount);
@@ -88,7 +88,7 @@ class FareTest {
         Lines lines = new Lines(Arrays.asList(line));
 
         // when
-        Fare result = new Fare(lines, 0, age);
+        Fare result = new Fare(lines.maxExtraFare().get(), 0, age);
 
         // then
         assertThat(result.get()).isEqualTo(BASIC_PRICE + extraFare - expectDiscount);
@@ -104,7 +104,7 @@ class FareTest {
         Lines lines = new Lines(Arrays.asList(line));
 
         // when
-        Fare result = new Fare(lines, 0, age);
+        Fare result = new Fare(lines.maxExtraFare().get(), 0, age);
 
         // then
         assertThat(result.get()).isEqualTo(BASIC_PRICE + extraFare);
