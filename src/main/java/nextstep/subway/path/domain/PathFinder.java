@@ -9,7 +9,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
-    private WeightedMultigraph<Long, DefaultWeightedEdge> graph;
+    private final WeightedMultigraph<Long, DefaultWeightedEdge> graph;
 
     public PathFinder(List<Line> lines) {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
