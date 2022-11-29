@@ -108,7 +108,7 @@ class SectionsTest {
         // then
         assertThatThrownBy(() -> sections.addNewSection(section))
             .isInstanceOf(RuntimeException.class)
-            .hasMessage(SectionsValidator.ALREADY_EXISTED_MESSAGE);
+            .hasMessage("이미 등록된 구간 입니다.");
     }
 
     @DisplayName("상행 하행 모두 존재하지 않는 경우 구획 추가 불가")
@@ -123,7 +123,7 @@ class SectionsTest {
         // then
         assertThatThrownBy(() -> sections.addNewSection(section))
             .isInstanceOf(RuntimeException.class)
-            .hasMessage(SectionsValidator.NOT_CONTAINS_ALL_MESSAGE);
+            .hasMessage("등록할 수 없는 구간 입니다.");
     }
 
     @DisplayName("상행 종점 추가")
