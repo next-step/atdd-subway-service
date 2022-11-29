@@ -29,8 +29,7 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    @Transactional(readOnly = true)
-    public Member findMemberByEmail(String email) {
+    private Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new AuthorizationException(MemberExceptionCode.NOT_FOUND_BY_EMAIL.getMessage()));
     }

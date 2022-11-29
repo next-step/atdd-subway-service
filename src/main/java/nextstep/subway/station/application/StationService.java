@@ -40,6 +40,7 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public Station findById(Long id) {
         return stationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(StationExceptionCode.NOT_FOUND_BY_ID.getMessage()));

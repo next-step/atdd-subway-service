@@ -42,8 +42,7 @@ public class LineService {
                 StationResponse.toStationResponses(persistLine.getSortedStations()));
     }
 
-    @Transactional(readOnly = true)
-    public Station findStationById(Long stationId) {
+    private Station findStationById(Long stationId) {
         return stationRepository.findById(stationId)
                 .orElseThrow(() -> new NotFoundException(StationExceptionCode.NOT_FOUND_BY_ID.getMessage()));
     }
