@@ -30,6 +30,7 @@ public enum ErrorCode {
     자신의_즐겨찾기여야_함("[ERROR] 자신의 즐겨찾기여야 합니다."),
     비밀번호는_비어있을_수_없음("[ERROR] 비밀번호는 비어있을 수 없습니다."),
     유효하지_않은_토큰("[ERROR] 유효하지 않은 토큰입니다."),
+    나누는_값은_0일_수_없음("[ERROR] 나누는 값은 0일 수 없습니다."),
     ;
 
     private final String errorMessage;

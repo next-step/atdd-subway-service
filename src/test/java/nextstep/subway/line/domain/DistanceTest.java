@@ -8,6 +8,7 @@ import nextstep.subway.common.constant.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @DisplayName("거리 관련 도메인 테스트")
@@ -98,5 +99,12 @@ public class DistanceTest {
                 () -> assertThat(isBiggerThan).isTrue(),
                 () -> assertThat(isBiggerThan).isEqualTo(actual > expect)
         );
+    }
+
+    @ParameterizedTest(name = "{0}을 {1}로 나누면 올림 처리된 값인 {2}를 반환한다.")
+    @CsvSource(value = {"1000:10:100", "234:10:24", "122:10:13", "147:10:15"}, delimiter = ':')
+    void divideAndCeil(int number, int divideNumber, int expect) {
+        // when & then
+        assertThat(Distance.from(number).divideAndCeil(Distance.from(divideNumber))).isEqualTo(expect);
     }
 }

@@ -42,6 +42,17 @@ public class Distance {
         return this.distance > distance.distance;
     }
 
+    public int divideAndCeil(Distance distance) {
+        if(isZero(distance)) {
+            throw new IllegalArgumentException(ErrorCode.나누는_값은_0일_수_없음.getErrorMessage());
+        }
+        return (int) Math.ceil((double) this.distance / distance.distance);
+    }
+
+    private boolean isZero(Distance distance) {
+        return distance.distance == ZERO;
+    }
+
     public int value() {
         return distance;
     }
