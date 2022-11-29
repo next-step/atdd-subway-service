@@ -15,7 +15,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     public static final String PASSWORD = "123123";
 
     @BeforeEach
-    public void authSetUp() {
+    public void authSetup() {
         회원_생성을_요청(EMAIL, PASSWORD, 30);
     }
 

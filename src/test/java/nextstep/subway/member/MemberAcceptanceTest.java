@@ -1,18 +1,20 @@
 package nextstep.subway.member;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.junit.jupiter.api.TestFactory;
 
+import java.util.stream.Stream;
+
+import static nextstep.subway.auth.acceptance.AuthAcceptanceStep.로그인_요청;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceStep.로그인된_유저;
 import static nextstep.subway.member.MemberAcceptanceStep.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.subway.member.MyInfoAcceptanceStep.*;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -47,8 +49,31 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("나의 정보를 관리한다.")
-    @Test
-    void manageMyInfo() {
-
+    @TestFactory
+    Stream<DynamicTest> manageMyInfo() {
+        생성된_회원(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인된_유저(EMAIL, PASSWORD).as(TokenResponse.class);
+        return Stream.of(
+                DynamicTest.dynamicTest("내 정보 조회", () -> {
+                    // when
+                    ExtractableResponse<Response> findResponse = 내_정보_조회(tokenResponse);
+                    // then
+                    회원_정보_조회됨(findResponse, EMAIL, AGE);
+                }),
+                DynamicTest.dynamicTest("내 정보 조회", () -> {
+                    // when
+                    ExtractableResponse<Response> updateResponse = 내_정보_수정(tokenResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+                    // then
+                    회원_정보_수정됨(updateResponse);
+                }),
+                DynamicTest.dynamicTest("내 정보 삭제", () -> {
+                    // given
+                    TokenResponse newToken = 로그인_요청(NEW_EMAIL, NEW_PASSWORD).as(TokenResponse.class);
+                    // when
+                    ExtractableResponse<Response> deleteResponse = 내_정보_삭제(newToken);
+                    // then
+                    회원_삭제됨(deleteResponse);
+                })
+        );
     }
 }

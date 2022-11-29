@@ -11,12 +11,10 @@ import org.springframework.http.MediaType;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceStep {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final String NEW_EMAIL = "newemail@email.com";
-    public static final String NEW_PASSWORD = "newpassword";
-    public static final int AGE = 20;
-    public static final int NEW_AGE = 21;
+
+    public static ExtractableResponse<Response> 생성된_회원(String email, String password, Integer age) {
+        return 회원_생성을_요청(email, password, age);
+    }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
