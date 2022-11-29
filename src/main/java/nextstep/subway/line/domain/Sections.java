@@ -20,62 +20,12 @@ public class Sections {
     public void add(Section section) {
         validate(section);
 
-        boolean isUpStationExisted = isUpStationExisted(section);
-        boolean isDownStationExisted = isDownStationExisted(section);
-
         if (getStations().isEmpty()) {
             this.sections.add(new Section(section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance()));
             return;
         }
 
-        if (isUpStationExisted) {
-            getSections().stream()
-                    .filter(it -> it.getUpStation().equals(section.getUpStation()))
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
-            this.sections.add(new Section(section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance()));
-        } else if (isDownStationExisted) {
-            getSections().stream()
-                    .filter(it -> it.getDownStation().equals(section.getDownStation()))
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-
-            this.sections.add(new Section(section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance()));
-        } else {
-            throw new RuntimeException();
-        }
-    }
-
-    private boolean isDownStationExisted(Section section) {
-        return getStations().stream().anyMatch(it -> Objects.equals(it, section.getDownStation()));
-    }
-
-    private boolean isUpStationExisted(Section section) {
-        return getStations().stream().anyMatch(station -> Objects.equals(station, section.getUpStation()));
-    }
-
-    private void validate(Section section) {
-        List<Station> stations = getStations();
-
-        boolean isUpStationExisted = stations.stream().anyMatch(station -> Objects.equals(station, section.getUpStation()));
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> Objects.equals(it, section.getDownStation()));
-
-        validateExist(isUpStationExisted, isDownStationExisted);
-        validateNotExist(section, stations);
-    }
-
-    private static void validateNotExist(Section section, List<Station> stations) {
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it.equals(section.getUpStation())) &&
-                stations.stream().noneMatch(it -> it.equals(section.getDownStation()))) {
-            throw new RuntimeException(NOT_EXIST_EXCEPTION_MESSAGE);
-        }
-    }
-
-    private static void validateExist(boolean isUpStationExisted, boolean isDownStationExisted) {
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException(ALREADY_EXIST_SECTION_EXCEPTION_MESSAGE);
-        }
+        addSection(section);
     }
 
     public int size() {
@@ -84,6 +34,30 @@ public class Sections {
 
     public List<Section> getSections() {
         return this.sections;
+    }
+
+    public void removeLineStation(Line line, Station station) {
+        if (getSections().size() <= 1) {
+            throw new RuntimeException(MININUM_SECTIONS_SIZE_EXCEPTION_MESSAGE);
+        }
+
+        Optional<Section> upLineStation = getSections().stream()
+                .filter(it -> it.getUpStation().equals(station))
+                .findFirst();
+
+        Optional<Section> downLineStation = getSections().stream()
+                .filter(it -> it.getDownStation().equals(station))
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            this.sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> getSections().remove(it));
+        downLineStation.ifPresent(it -> getSections().remove(it));
     }
 
     public List<Station> getStations() {
@@ -109,6 +83,16 @@ public class Sections {
         return stations;
     }
 
+    private void validate(Section section) {
+        List<Station> stations = getStations();
+
+        boolean isUpStationExisted = stations.stream().anyMatch(station -> Objects.equals(station, section.getUpStation()));
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> Objects.equals(it, section.getDownStation()));
+
+        validateExist(isUpStationExisted, isDownStationExisted);
+        validateNotExist(section, stations);
+    }
+
     private Station findUpStation() {
         Station downStation = getSections().get(0).getUpStation();
         while (downStation != null) {
@@ -125,26 +109,57 @@ public class Sections {
         return downStation;
     }
 
-    public void removeLineStation(Line line, Station station) {
-        if (getSections().size() <= 1) {
-            throw new RuntimeException(MININUM_SECTIONS_SIZE_EXCEPTION_MESSAGE);
+    private static void validateNotExist(Section section, List<Station> stations) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it.equals(section.getUpStation())) &&
+                stations.stream().noneMatch(it -> it.equals(section.getDownStation()))) {
+            throw new RuntimeException(NOT_EXIST_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private static void validateExist(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException(ALREADY_EXIST_SECTION_EXCEPTION_MESSAGE);
+        }
+    }
+
+    private void addSection(Section section) {
+
+        boolean isUpStationExisted = isUpStationExisted(section);
+        boolean isDownStationExisted = isDownStationExisted(section);
+
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException();
         }
 
-        Optional<Section> upLineStation = getSections().stream()
-                .filter(it -> it.getUpStation().equals(station))
-                .findFirst();
-        Optional<Section> downLineStation = getSections().stream()
-                .filter(it -> it.getDownStation().equals(station))
-                .findFirst();
+        addBetweenDownSection(section, isUpStationExisted);
+        addBetweenUpSection(section, isDownStationExisted);
+    }
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            this.sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+    private void addBetweenUpSection(Section section, boolean isDownStationExisted) {
+        if (isDownStationExisted) {
+            getSections().stream()
+                    .filter(it -> it.getDownStation().equals(section.getDownStation()))
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+            this.sections.add(new Section(section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance()));
         }
+    }
 
-        upLineStation.ifPresent(it -> getSections().remove(it));
-        downLineStation.ifPresent(it -> getSections().remove(it));
+    private void addBetweenDownSection(Section section, boolean isUpStationExisted) {
+        if (isUpStationExisted) {
+            getSections().stream()
+                    .filter(it -> it.getUpStation().equals(section.getUpStation()))
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+            this.sections.add(new Section(section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance()));
+        }
+    }
+
+    private boolean isDownStationExisted(Section section) {
+        return getStations().stream().anyMatch(it -> Objects.equals(it, section.getDownStation()));
+    }
+
+    private boolean isUpStationExisted(Section section) {
+        return getStations().stream().anyMatch(station -> Objects.equals(station, section.getUpStation()));
     }
 }
