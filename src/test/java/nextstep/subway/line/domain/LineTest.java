@@ -48,4 +48,15 @@ public class LineTest {
 
         assertThat(line.getStations()).containsExactly(stationA(), stationC());
     }
+
+    @DisplayName("A-B-C 구간의 노선에서 A역을 제거한다.")
+    @Test
+    void removeUpStation_success() {
+        Line line = lineA();
+        line.add(sectionBC());
+
+        line.removeLineStation(stationA());
+
+        assertThat(line.getStations()).containsExactly(stationB(), stationC());
+    }
 }
