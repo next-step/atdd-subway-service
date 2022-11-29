@@ -5,6 +5,8 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.*;
 import java.util.stream.Stream;
 
+import static nextstep.subway.exception.ErrorMessage.SAME_SUBWAY_SECTION_ERROR;
+
 @Entity
 public class Section {
     @Id
@@ -45,7 +47,7 @@ public class Section {
 
     private static void validateSection(Station upStation, Station downStation) {
         if (upStation.equals(downStation)) {
-            throw new IllegalArgumentException("상행선과 하행선이 동일할 수 없습니다.");
+            throw new IllegalArgumentException(SAME_SUBWAY_SECTION_ERROR.getMessage());
         }
     }
 

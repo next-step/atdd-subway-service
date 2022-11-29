@@ -14,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.exception.ErrorMessage.LINE_ID_NOT_FOUND;
+import static nextstep.subway.exception.ErrorMessage.STATION_ID_NOT_FOUND;
+
 @Service
 @Transactional
 public class LineService {
@@ -48,12 +51,10 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
-    public LineResponse findLineResponseById(Long id) {
-        Line line = findLineById(id);
-        return LineResponse.of(line);
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format(LINE_ID_NOT_FOUND.getMessage(), id))
+                );
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {

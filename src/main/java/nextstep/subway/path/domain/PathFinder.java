@@ -10,6 +10,9 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 
+import static nextstep.subway.exception.ErrorMessage.NOT_CONNECT_START_ARRIVE_STATION;
+import static nextstep.subway.exception.ErrorMessage.NOT_SEARCH_SAME_START_ARRIVE_STATION;
+
 public class PathFinder {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
@@ -43,10 +46,10 @@ public class PathFinder {
 
     private void validCheck(Station sourceStation, Station targetStation) {
         if (sourceStation.equals(targetStation)) {
-            throw new IllegalArgumentException("출발역과 도착역이 같은 경우 최단 경로를 조회할 수 없습니다.");
+            throw new IllegalArgumentException(NOT_SEARCH_SAME_START_ARRIVE_STATION.getMessage());
         }
         if (!graph.containsVertex(sourceStation) || !graph.containsVertex(targetStation)) {
-            throw new IllegalArgumentException("출발역과 도착역은 서로 연결이 되어있어야 최단 경로를 조회할 수 있습니다.");
+            throw new IllegalArgumentException(NOT_CONNECT_START_ARRIVE_STATION.getMessage());
         }
     }
 

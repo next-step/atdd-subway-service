@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
+import static nextstep.subway.exception.ErrorMessage.NOT_CONNECT_START_ARRIVE_STATION;
+import static nextstep.subway.exception.ErrorMessage.NOT_SEARCH_SAME_START_ARRIVE_STATION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -69,7 +71,7 @@ class PathFinderTest {
         // when && then
         assertThatThrownBy(() -> pathFinder.getShortestPath(교대역, 교대역))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("출발역과 도착역이 같은 경우 최단 경로를 조회할 수 없습니다.");
+                .hasMessage(NOT_SEARCH_SAME_START_ARRIVE_STATION.getMessage());
     }
 
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우 경로 조회 불가")
@@ -78,7 +80,7 @@ class PathFinderTest {
         // when && then
         assertThatThrownBy(() -> pathFinder.getShortestPath(강남역, 구로디지털단지역))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("출발역과 도착역은 서로 연결이 되어있어야 최단 경로를 조회할 수 있습니다.");
+                .hasMessage(NOT_CONNECT_START_ARRIVE_STATION.getMessage());
     }
 
 }

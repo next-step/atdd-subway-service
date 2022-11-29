@@ -8,6 +8,8 @@ import javax.persistence.OneToMany;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.exception.ErrorMessage.*;
+
 @Embeddable
 public class Sections {
 
@@ -34,11 +36,11 @@ public class Sections {
         boolean isExistsUpStation = containUpStation(section);
         boolean isExistsDownStation = containDownStation(section);
         if (isExistsUpStation && isExistsDownStation) {
-            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException(UP_STATION_AND_DOWN_STATION_ENROLLMENT.getMessage());
 
         }
         if (!isExistsUpStation && !isExistsDownStation) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException(UP_STATION_AND_DOWN_STATION_NOT_FOUND.getMessage());
 
         }
     }
@@ -101,11 +103,11 @@ public class Sections {
 
     private void validDeleteStation(Station station) {
         if (sections.size() <= 1) {
-            throw new IllegalArgumentException("지하철 구간이 1개인 경우 삭제할 수 없습니다.");
+            throw new IllegalArgumentException(ONE_SECTION_NOT_DELETE.getMessage());
         }
 
         if (!distinctStations().contains(station)) {
-            throw new IllegalArgumentException("삭제하려는 지하철 역이 올바르지 않습니다.");
+            throw new IllegalArgumentException(STATION_NOT_CONTAINS_NOT_DELETE.getMessage());
         }
     }
 

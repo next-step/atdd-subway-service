@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.exception.ErrorMessage.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -55,7 +56,7 @@ class LineTest {
         // when && then
         assertThatThrownBy(() -> 지하철_2호선.addSection(신림_잠실_구간))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("이미 등록된 구간 입니다.");
+                .hasMessage(UP_STATION_AND_DOWN_STATION_ENROLLMENT.getMessage());
     }
 
     @Test
@@ -68,7 +69,7 @@ class LineTest {
         // when && then
         assertThatThrownBy(() -> 지하철_2호선.addSection(잠실_왕십리_구간))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("등록할 수 없는 구간 입니다.");
+                .hasMessage(UP_STATION_AND_DOWN_STATION_NOT_FOUND.getMessage());
     }
 
     @Test
@@ -81,7 +82,7 @@ class LineTest {
         // when && then
         assertThatThrownBy(() -> 지하철_2호선.addSection(신림_강남_구간))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+                .hasMessage(DISTANCE_BETWEEN_STATION_OVER.getMessage());
     }
 
     @Test

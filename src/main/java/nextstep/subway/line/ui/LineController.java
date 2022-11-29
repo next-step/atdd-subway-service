@@ -33,7 +33,7 @@ public class LineController {
 
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+        return ResponseEntity.ok(LineResponse.of(lineService.findLineById(id)));
     }
 
     @PutMapping("/{id}")
@@ -60,8 +60,4 @@ public class LineController {
         return ResponseEntity.ok().build();
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
-        return ResponseEntity.badRequest().build();
-    }
 }
