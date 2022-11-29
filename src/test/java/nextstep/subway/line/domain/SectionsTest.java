@@ -75,4 +75,17 @@ public class SectionsTest {
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining(NOT_EXIST_EXCEPTION_MESSAGE);
     }
+
+    @DisplayName("새로운 역을 하행 종점으로 등록한다. / A-B 구간에 B-C 구간을 추가한다.")
+    @Test
+    void addLastDownStation() {
+        Sections sections = new Sections();
+        sections.add(sectionAB());
+        sections.add(sectionBC());
+
+        assertAll(
+                () -> assertThat(sections.getStations()).containsExactly(stationA(), stationB(), stationC()),
+                () -> assertThat(sections.getSections()).hasSize(2)
+        );
+    }
 }
