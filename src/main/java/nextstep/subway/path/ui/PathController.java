@@ -1,4 +1,4 @@
-package nextstep.subway.path;
+package nextstep.subway.path.ui;
 
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
