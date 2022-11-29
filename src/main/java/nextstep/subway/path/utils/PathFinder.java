@@ -16,13 +16,13 @@ import org.springframework.stereotype.Component;
 public class PathFinder {
     public Path findPath(List<Line> lines, Long source, Long target) {
         validateSameSourceTarget(source, target);
-        DijkstraShortestPath dijkstraShortestPath = getDijkstraShortestPath(lines);
+        DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath = getDijkstraShortestPath(lines);
         List<StationResponse> stationResponses
                 = getStationResponses(lines, getShortestPath(dijkstraShortestPath, source, target));
         return new Path(stationResponses, getPathWeight(dijkstraShortestPath, source, target));
     }
 
-    private List<String> getShortestPath(DijkstraShortestPath dijkstraShortestPath, Long source, Long target) {
+    private List<String> getShortestPath(DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath, Long source, Long target) {
         List<String> shortestPath;
         try {
             shortestPath = dijkstraShortestPath.getPath(String.valueOf(source), String.valueOf(target)).getVertexList();
@@ -32,7 +32,7 @@ public class PathFinder {
         return shortestPath;
     }
 
-    private int getPathWeight(DijkstraShortestPath dijkstraShortestPath, Long source, Long target){
+    private int getPathWeight(DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath, Long source, Long target){
         return (int) dijkstraShortestPath.getPathWeight(String.valueOf(source), String.valueOf(target));
     }
 
@@ -58,8 +58,8 @@ public class PathFinder {
                 .orElseThrow(() -> new IllegalArgumentException("station id와 일치하는 역을 찾을 수 없습니다."));
     }
 
-    private DijkstraShortestPath getDijkstraShortestPath (List<Line> lines) {
-        return new DijkstraShortestPath(getLineGraph(lines));
+    private DijkstraShortestPath<String, DefaultWeightedEdge> getDijkstraShortestPath (List<Line> lines) {
+        return new DijkstraShortestPath<>(getLineGraph(lines));
     }
 
     private WeightedMultigraph<String, DefaultWeightedEdge> getLineGraph(List<Line> lines){
@@ -81,7 +81,7 @@ public class PathFinder {
                 .forEach(section -> graph.setEdgeWeight(
                         graph.addEdge(String.valueOf(section.getUpStation().getId()),
                                       String.valueOf(section.getDownStation().getId())),
-                        section.getDistance().getDistance()));
+                        section.getDistance()));
     }
 
     private void validateSameSourceTarget(Long sourceId, Long targetId) {

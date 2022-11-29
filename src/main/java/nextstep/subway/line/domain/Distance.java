@@ -20,8 +20,8 @@ public class Distance {
         return new Distance(value);
     }
 
-    public static Distance from(Distance distance1, Distance distance2){
-        return from(distance1.getDistance() + distance2.getDistance());
+    public static Distance from(int distance1, int distance2){
+        return from(distance1 + distance2);
     }
 
     public int getDistance() {
