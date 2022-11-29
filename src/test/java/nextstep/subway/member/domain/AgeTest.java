@@ -7,6 +7,7 @@ import nextstep.subway.common.constant.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @DisplayName("나이 관련 도메인 테스트")
@@ -32,5 +33,19 @@ public class AgeTest {
 
         // then
         assertThat(age.value()).isEqualTo(actual);
+    }
+
+    @ParameterizedTest(name = "주어진 나이보다보다 크거나 같으면 참을 반환한다.({0} >= {1})")
+    @CsvSource(value = {"5:5", "6:4", "8:6"}, delimiter = ':')
+    void isEqualOrOlderThanAge(int actual, int compare) {
+        // given
+        Age actualAge = Age.from(actual);
+        Age compareAge = Age.from(compare);
+
+        // when
+        boolean isEqualOrOlderThan = actualAge.isEqualOrOlderThan(compareAge);
+
+        // then
+        assertThat(isEqualOrOlderThan).isEqualTo(actual >= compare);
     }
 }
