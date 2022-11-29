@@ -1,12 +1,12 @@
 package nextstep.subway.line.domain;
 
-public class SectionsValidator {
+class SectionsValidator {
     private static final int MIN_SIZE = 1;
 
     private SectionsValidator() {
     }
 
-    public static void validateAddNew(Section section, Stations stations) {
+    static void validateAddNew(Section section, Stations stations) {
         validateAlreadyExisted(section, stations);
         validateNotContainsAll(section, stations);
     }
@@ -34,7 +34,7 @@ public class SectionsValidator {
         throw new RuntimeException("이미 등록된 구간 입니다.");
     }
 
-    public static void validateRemoveStation(Sections sections) {
+    static void validateRemoveStation(Sections sections) {
         if (sections.size() <= MIN_SIZE) {
             throw new RuntimeException();
         }
