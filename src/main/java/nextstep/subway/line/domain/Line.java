@@ -35,21 +35,25 @@ public class Line extends BaseEntity {
         sections.add(this, upStation, downStation, distance);
     }
 
-    public List<Station> getStations() {
-        return sections.getStations();
-    }
-
     public void addSection(Station upStation, Station downStation, int distance) {
         sections.add(this, upStation, downStation, distance);
+    }
+
+    public List<Section> getSections() {
+        return sections.values();
+    }
+
+    public void update(Line line) {
+        this.name = line.name;
+        this.color = line.color;
     }
 
     public void removeSection(Station station) {
         sections.remove(this, station);
     }
 
-    public void update(Line line) {
-        this.name = line.name;
-        this.color = line.color;
+    public List<Station> getStations() {
+        return sections.getStations();
     }
 
     public Long getId() {
@@ -64,19 +68,6 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections.values();
-    }
-
-    private void validateLine(String name, String color) {
-        if (Objects.isNull(name) || StringUtils.isEmpty(name)) {
-            throw new IllegalArgumentException("노선의 이름은 공백일 수 없습니다");
-        }
-        if (Objects.isNull(color) || StringUtils.isEmpty(color)) {
-            throw new IllegalArgumentException("노선의 색은 공백일 수 없습니다");
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -88,5 +79,14 @@ public class Line extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(getName());
+    }
+
+    private void validateLine(String name, String color) {
+        if (Objects.isNull(name) || StringUtils.isEmpty(name)) {
+            throw new IllegalArgumentException("노선의 이름은 공백일 수 없습니다");
+        }
+        if (Objects.isNull(color) || StringUtils.isEmpty(color)) {
+            throw new IllegalArgumentException("노선의 색은 공백일 수 없습니다");
+        }
     }
 }
