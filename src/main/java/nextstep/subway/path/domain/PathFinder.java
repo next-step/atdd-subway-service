@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.PathCannotFindException;
+import nextstep.subway.exception.StationNotIncludedException;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
@@ -19,10 +21,10 @@ public class PathFinder {
 
     private void validate(Station source, Station target) {
         if (source.equals(target)) {
-            throw new RuntimeException("경로 조회가 불가능합니다.");
+            throw new PathCannotFindException();
         }
         if (!stationGraph.containsStation(source) || !stationGraph.containsStation(target)) {
-            throw new RuntimeException("역이 그래프에 포함되지 않았습니다.");
+            throw new StationNotIncludedException();
         }
     }
 }

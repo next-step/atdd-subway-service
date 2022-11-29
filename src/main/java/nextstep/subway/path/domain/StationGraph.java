@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.PathCannotFindException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -58,7 +59,7 @@ public class StationGraph {
 
     private void validateGraphPath(GraphPath<Station, DefaultWeightedEdge> graphPath) {
         if(Objects.isNull(graphPath)) {
-            throw new RuntimeException("경로 조회가 불가능합니다.");
+            throw new PathCannotFindException();
         }
     }
 }
