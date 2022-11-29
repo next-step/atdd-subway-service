@@ -2,6 +2,7 @@ package nextstep.subway.line.ui;
 
 import java.net.URI;
 import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -73,8 +74,8 @@ public class LineController {
                 .build();
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
+    @ExceptionHandler(value = {DataIntegrityViolationException.class, EntityNotFoundException.class})
+    public ResponseEntity handleIllegalArgsException(Exception e) {
         return ResponseEntity.badRequest()
                 .build();
     }

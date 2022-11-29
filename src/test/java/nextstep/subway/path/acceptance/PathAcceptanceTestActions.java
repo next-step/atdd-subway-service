@@ -6,6 +6,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class PathAcceptanceTestActions {
@@ -25,5 +26,9 @@ public class PathAcceptanceTestActions {
         assertThat(response.jsonPath().getList("stations.name", String.class))
                 .containsExactly(stationResponses[0].getName(), stationResponses[1].getName(),
                         stationResponses[2].getName());
+    }
+
+    public static void 조회_불가능(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
