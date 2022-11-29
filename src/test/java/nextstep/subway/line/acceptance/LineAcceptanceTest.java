@@ -128,47 +128,23 @@ public class LineAcceptanceTest extends AcceptanceTest {
     Background
         Given 지하철역 등록되어 있음
 
-    Scenario: 지하철 노선을 관리
+    Scenario: 지하철 노선을 관리 (생성 후 삭제)
         When 지하철 노선 등록 요청
         Then 지하철 노선 등록됨
-        When 존재하는 이름으로 지하철 노선 등록 요청
-        Then 지하철 노선이 등록되지 않음
-        When 추가된 지하철 노선 조회 요청
-        Then 지하철 노선이 조회됨
-        When 지하철 노선 수정 요청
-        Then 지하철 노선 정보가 수정됨
         When 지하철 노선 삭제 요청
         Then 지하철 노선 삭제됨
         When 지하철 노선 목록 조회 요청
         Then 추가된 지하철 노선은 포함되고 삭제된 지하철 노선은 미포함됨
     */
     @Test
-    @DisplayName("지하철 노선 통합기능 테스트")
-    void all() {
+    @DisplayName("지하철 노선을 관리 (생성 후 삭제)")
+    void all_1() {
         // When 지하철 노선 등록 요청
         ExtractableResponse<Response> createResponse1 = 지하철_노선_생성_요청(lineRequest1);
         ExtractableResponse<Response> createResponse2 = 지하철_노선_생성_요청(lineRequest2);
-        ExtractableResponse<Response> createResponse3 = 지하철_노선_생성_요청(lineRequest3);
         // Then 지하철 노선 등록됨
         지하철_노선_생성됨(createResponse1);
         지하철_노선_생성됨(createResponse2);
-        지하철_노선_생성됨(createResponse3);
-
-        // When 존재하는 이름으로 지하철 노선 등록 요청
-        ExtractableResponse<Response> failCreateResponse = 지하철_노선_생성_요청(lineRequest1);
-        // Then 지하철 노선이 등록되지 않음
-        지하철_노선_생성_실패됨(failCreateResponse);
-
-        // When 추가된 지하철 노선 조회 요청
-        ExtractableResponse<Response> findResponse = 지하철_노선_조회_요청(createResponse1.as(LineResponse.class).getId());
-        // Then 지하철 노선이 조회됨
-        지하철_노선_응답됨(findResponse);
-        지하철_노선_정보_비교(findResponse, createResponse1);
-
-        // When 지하철 노선 수정 요청
-        ExtractableResponse<Response> updateResponse = 지하철_노선_수정_요청(createResponse1, lineRequest4);
-        // Then 지하철 노선 정보가 수정됨
-        지하철_노선_수정됨(updateResponse);
 
         // When 지하철 노선 삭제 요청
         ExtractableResponse<Response> deleteResponse = 지하철_노선_제거_요청(createResponse1);
@@ -181,6 +157,39 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_목록_응답됨(response);
         지하철_노선_목록_포함됨(response, Arrays.asList(createResponse2, createResponse2));
         지하철_노선_목록_미포함됨(response, Arrays.asList(createResponse1));
+    }
+
+    /*
+    Feature: 지하철 노선 관련 기능
+
+    Background
+        Given 지하철역 등록되어 있음
+
+    Scenario: 지하철 노선을 관리 (생성 후 수정)
+        When 지하철 노선 등록 요청
+        Then 지하철 노선 등록됨
+        When 존재하는 이름으로 지하철 노선 등록 요청
+        Then 지하철 노선이 등록되지 않음
+        When 지하철 노선 수정 요청
+        Then 지하철 노선 정보가 수정됨
+    */
+    @Test
+    @DisplayName("지하철 노선을 관리 (생성 후 수정)")
+    void all_2() {
+        // When 지하철 노선 등록 요청
+        ExtractableResponse<Response> createResponse1 = 지하철_노선_생성_요청(lineRequest1);
+        // Then 지하철 노선 등록됨
+        지하철_노선_생성됨(createResponse1);
+
+        // When 존재하는 이름으로 지하철 노선 등록 요청
+        ExtractableResponse<Response> failCreateResponse = 지하철_노선_생성_요청(lineRequest1);
+        // Then 지하철 노선이 등록되지 않음
+        지하철_노선_생성_실패됨(failCreateResponse);
+
+        // When 지하철 노선 수정 요청
+        ExtractableResponse<Response> updateResponse = 지하철_노선_수정_요청(createResponse1, lineRequest4);
+        // Then 지하철 노선 정보가 수정됨
+        지하철_노선_수정됨(updateResponse);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {

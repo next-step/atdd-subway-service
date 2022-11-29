@@ -126,15 +126,9 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         And 지하철 노선 등록되어 있음
         And 지하철 노선에 지하철역 등록되어 있음
 
-    Scenario: 지하철 구간을 관리
+    Scenario: 지하철 구간을 관리 (생성 후 삭제)
         When 지하철 구간 등록 요청
         Then 지하철 구간 등록됨
-        When 이미 등록되어있는 구간 등록 요청
-        Then 지하철 구간이 등록되지 않음
-        When 동륵되있지 않은 역을 기준으로 구간 등록 요청
-        Then 지하철 구간이 등록되지 않음
-        When 지하철 노선에 등록된 역 목록 조회 요청
-        Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
         When 지하철 구간 삭제 요청
         Then 지하철 구간 삭제됨
         When 지하철 구간이 한개만 있을때 삭제 요청
@@ -143,8 +137,48 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
     */
     @Test
-    @DisplayName("지하철 노선 통합기능 테스트")
-    void all() {
+    @DisplayName("지하철 구간을 관리 (생성 후 삭제)")
+    void all_1() {
+        // When 지하철 구간 등록 요청
+        ExtractableResponse<Response> createResponse = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+        // Then 지하철 구간 등록됨
+        지하철_노선에_지하철역_등록됨(createResponse);
+
+        // When 지하철 구간 삭제 요청
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+        // Then 지하철 구간 삭제됨
+        지하철_노선에_지하철역_제외됨(removeResponse);
+
+        // When 지하철 구간이 한개만 있을때 삭제 요청
+        ExtractableResponse<Response> failRemoveResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
+        // Then 지하철 구간 삭제되지 않음
+        지하철_노선에_지하철역_제외_실패됨(failRemoveResponse);
+
+        // When 지하철 노선에 등록된 역 목록 조회 요청
+        ExtractableResponse<Response> fineResponse = LineAcceptanceTest.지하철_노선_조회_요청(신분당선.getId());
+        // Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+        지하철_노선에_지하철역_순서_정렬됨(fineResponse, Arrays.asList(강남역, 광교역));
+    }
+
+    /*
+    Feature: 지하철 구간 관련 기능
+
+    Background
+        Given 지하철역 등록되어 있음
+        And 지하철 노선 등록되어 있음
+        And 지하철 노선에 지하철역 등록되어 있음
+
+    Scenario: 지하철 구간을 관리 (잘못된 생성 처리)
+        When 지하철 구간 등록 요청
+        Then 지하철 구간 등록됨
+        When 이미 등록되어있는 구간 등록 요청
+        Then 지하철 구간이 등록되지 않음
+        When 동륵되있지 않은 역을 기준으로 구간 등록 요청
+        Then 지하철 구간이 등록되지 않음
+    */
+    @Test
+    @DisplayName("지하철 구간을 관리 (잘못된 생성 처리)")
+    void all_2() {
         // When 지하철 구간 등록 요청
         ExtractableResponse<Response> createResponse = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
         // Then 지하철 구간 등록됨
@@ -159,26 +193,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         failCreateResponse = 지하철_노선에_지하철역_등록_요청(신분당선, 판교역, 역삼역, 3);
         // Then 지하철 구간이 등록되지 않음
         지하철_노선에_지하철역_등록_실패됨(failCreateResponse);
-
-        // When 지하철 노선에 등록된 역 목록 조회 요청
-        ExtractableResponse<Response> fineResponse = LineAcceptanceTest.지하철_노선_조회_요청(신분당선.getId());
-        // Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
-        지하철_노선에_지하철역_순서_정렬됨(fineResponse, Arrays.asList(강남역, 양재역, 광교역));
-
-        // When 지하철 구간 삭제 요청
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
-        // Then 지하철 구간 삭제됨
-        지하철_노선에_지하철역_제외됨(removeResponse);
-
-        // When 지하철 구간이 한개만 있을때 삭제 요청
-        ExtractableResponse<Response> failRemoveResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
-        // Then 지하철 구간 삭제되지 않음
-        지하철_노선에_지하철역_제외_실패됨(failRemoveResponse);
-
-        // When 지하철 노선에 등록된 역 목록 조회 요청
-        fineResponse = LineAcceptanceTest.지하철_노선_조회_요청(신분당선.getId());
-        // Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
-        지하철_노선에_지하철역_순서_정렬됨(fineResponse, Arrays.asList(강남역, 광교역));
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {

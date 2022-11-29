@@ -21,8 +21,8 @@ public class DistanceTest {
 
     @Test
    @DisplayName("거리 계산")
-    void minusNewDistance() {
-        distance.minusNewDistance(5);
+    void minusChangeDistance() {
+        distance.minusChangeDistance(5);
         assertThat(distance.value()).isEqualTo(5);
     }
 

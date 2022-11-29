@@ -28,7 +28,7 @@ public class SectionTest {
     @Test
     @DisplayName("상행역 수정")
    void updateUpStation() {
-        강남_광교_구간.updateUpStation(판교역, 5);
+        강남_광교_구간.updateUpStation(new Section(null, null, 판교역, 5));
         assertThat(강남_광교_구간.getUpStation().getName()).isEqualTo(판교역.getName());
         assertThat(강남_광교_구간.getDistance()).isEqualTo(5);
     }
@@ -36,7 +36,7 @@ public class SectionTest {
     @Test
    @DisplayName("하행역 수정")
     void updateDownStation() {
-        강남_광교_구간.updateDownStation(판교역, 5);
+        강남_광교_구간.updateDownStation(new Section(null, 판교역, null, 5));
         assertThat(강남_광교_구간.getDownStation().getName()).isEqualTo(판교역.getName());
         assertThat(강남_광교_구간.getDistance()).isEqualTo(5);
     }

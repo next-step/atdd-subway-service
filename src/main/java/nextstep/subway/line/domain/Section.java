@@ -5,7 +5,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.*;
 
 @Entity
-public class Section {
+public class Section implements Comparable<Section> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,24 +34,24 @@ public class Section {
         this.distance = new Distance(distance);
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        distance.checkValidationSize(newDistance);
-        distance.minusNewDistance(newDistance);
-        this.upStation = station;
+    public void updateUpStation(Section section) {
+        distance.checkValidationSize(section.distance.value());
+        distance.minusChangeDistance(section.distance.value());
+        this.upStation = section.downStation;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        distance.checkValidationSize(newDistance);
-        distance.minusNewDistance(newDistance);
-        this.downStation = station;
+    public void updateDownStation(Section section) {
+        distance.checkValidationSize(section.distance.value());
+        distance.minusChangeDistance(section.distance.value());
+        this.downStation = section.upStation;
     }
 
-    public Long getId() {
-        return id;
+    public boolean equalsUpStation(Section section) {
+        return upStation == section.upStation;
     }
 
-    public Line getLine() {
-        return line;
+    public boolean equalsDownStation(Section section) {
+        return downStation == section.downStation;
     }
 
     public Station getUpStation() {
@@ -64,6 +64,11 @@ public class Section {
 
     public int getDistance() {
         return distance.value();
+    }
+
+    @Override
+    public int compareTo(Section o) {
+        return this.downStation == o.upStation ? -1 : 1;
     }
 
 }

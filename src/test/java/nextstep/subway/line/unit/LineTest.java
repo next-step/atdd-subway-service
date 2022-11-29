@@ -49,19 +49,31 @@ public class LineTest {
     @DisplayName("지하철 노선에 일부 영역 추가")
     void addStation() {
         신분당선.addStation(광교역, new Station("수원역"), 5);
+        assertThat(신분당선.getStations().size()).isEqualTo(4);
+    }
 
-        assertAll(
-                () -> assertThat(신분당선.getStations().size()).isEqualTo(4),
-                () -> assertThrows(
-                        InvalidRequestException.class,
-                        () -> 신분당선.addStation(강남역, new Station("역삼역"), 15)),
-                () -> assertThrows(
-                        InvalidRequestException.class,
-                        () -> 신분당선.addStation(new Station("신논현역"), new Station("역삼역"), 15)),
-                () -> assertThrows(
-                        InvalidRequestException.class,
-                        () -> 신분당선.addStation(강남역, 판교역, 5))
-        );
+    @Test
+    @DisplayName("지하철 노선에 기존 길이보다 긴 영역 추가")
+    void addStationOverSize() {
+        신분당선.addStation(광교역, new Station("수원역"), 5);
+        assertThrows(InvalidRequestException.class,
+                () -> 신분당선.addStation(강남역, new Station("역삼역"), 15));
+    }
+
+    @Test
+    @DisplayName("지하철 노선에 미존재 하는 영역 추가")
+    void addStationNotFoundStation() {
+        신분당선.addStation(광교역, new Station("수원역"), 5);
+        assertThrows(InvalidRequestException.class,
+                () -> 신분당선.addStation(new Station("신논현역"), new Station("역삼역"), 15));
+    }
+
+    @Test
+    @DisplayName("지하철 노선에 존재하는 동일한 영역 재추가")
+    void addStationExistSection() {
+        신분당선.addStation(광교역, new Station("수원역"), 5);
+        assertThrows(InvalidRequestException.class,
+                () -> 신분당선.addStation(강남역, 판교역, 5));
     }
 
     @Test

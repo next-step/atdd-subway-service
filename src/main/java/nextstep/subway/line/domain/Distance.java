@@ -19,14 +19,14 @@ public class Distance {
         return distance;
     }
 
-    public void checkValidationSize(int newDistance) {
-        if (this.distance <= newDistance) {
+    public void checkValidationSize(int changeDistance) {
+        if (this.distance <= changeDistance) {
             throw new InvalidRequestException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
     }
 
-    public void minusNewDistance(int newDistance) {
-        this.distance -= newDistance;
+    public void minusChangeDistance(int changeDistance) {
+        this.distance -= changeDistance;
     }
 
 }
