@@ -5,7 +5,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.*;
 
 @Entity
-public class Section {
+public class Section implements Comparable<Section> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,24 +22,36 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
-    public Section() {
-    }
+    protected Section() {}
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
-    public Long getId() {
-        return id;
+    public void updateUpStation(Section section) {
+        distance.checkValidationSize(section.distance.value());
+        distance.minusChangeDistance(section.distance.value());
+        this.upStation = section.downStation;
     }
 
-    public Line getLine() {
-        return line;
+    public void updateDownStation(Section section) {
+        distance.checkValidationSize(section.distance.value());
+        distance.minusChangeDistance(section.distance.value());
+        this.downStation = section.upStation;
+    }
+
+    public boolean equalsUpStation(Section section) {
+        return upStation == section.upStation;
+    }
+
+    public boolean equalsDownStation(Section section) {
+        return downStation == section.downStation;
     }
 
     public Station getUpStation() {
@@ -51,22 +63,12 @@ public class Section {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.value();
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    @Override
+    public int compareTo(Section o) {
+        return this.downStation == o.upStation ? -1 : 1;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
-    }
 }
