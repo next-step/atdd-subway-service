@@ -19,21 +19,6 @@ public class PathFinder {
         this.dijkstraShortestPath = new DijkstraShortestPath(graph);
     }
 
-    public static void main(String[] args) {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-                = new WeightedMultigraph(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.addVertex("v3");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-        graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
-        graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        System.out.println(dijkstraShortestPath.getPathWeight("v4", "v2"));
-
-    }
-
     public Path findShortestPath(List<Line> lines, Station source, Station target) {
         addStationsInGraph(lines);
         addSectionsInGraph(lines);
