@@ -25,7 +25,7 @@ public class Sections {
             return Collections.emptyList();
         }
 
-        return sections;
+        return new ArrayList<>(sections);
     }
 
     public Station findUpStation() {
@@ -33,7 +33,9 @@ public class Sections {
         while (upStation != null) {
             Station finalUpStation = upStation;
             Optional<Section> findSection = sections.stream()
-                    .filter(section -> section.getDownStation() == finalUpStation)
+                    .filter(section -> section
+                            .getDownStation() == finalUpStation
+                    )
                     .findFirst();
             if (!findSection.isPresent()) {
                 break;
@@ -55,7 +57,9 @@ public class Sections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> findSection = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
+                    .filter(section -> section
+                            .getUpStation() == finalDownStation
+                    )
                     .findFirst();
             if (!findSection.isPresent()) {
                 break;
@@ -93,13 +97,17 @@ public class Sections {
 
     private Optional<Section> findUpStationInSections(Station station) {
         return sections.stream()
-                .filter(section -> section.getUpStation() == station)
+                .filter(section -> section
+                        .getUpStation() == station
+                )
                 .findFirst();
     }
 
     private Optional<Section> findDownStationInSections(Station station) {
         return sections.stream()
-                .filter(section -> section.getDownStation() == station)
+                .filter(section -> section
+                        .getDownStation() == station
+                )
                 .findFirst();
     }
 
@@ -114,7 +122,9 @@ public class Sections {
     private void addBetweenByUpStation(Section newSection, List<Station> stations) {
         if (isAnyMatchInStations(stations, newSection.getUpStation())) {
             sections.stream()
-                    .filter(section -> section.getUpStation() == newSection.getUpStation())
+                    .filter(section -> section
+                            .getUpStation() == newSection.getUpStation()
+                    )
                     .findFirst()
                     .ifPresent(section -> section
                             .updateUpStation(newSection.getDownStation(), newSection.getDistance())
@@ -130,10 +140,13 @@ public class Sections {
     private void addBetweenByDownStation(Section newSection, List<Station> stations) {
         if (isAnyMatchInStations(stations, newSection.getDownStation())) {
             sections.stream()
-                    .filter(section -> section.getDownStation() == newSection.getDownStation())
+                    .filter(section -> section
+                            .getDownStation() == newSection.getDownStation()
+                    )
                     .findFirst()
-                    .ifPresent(
-                            section -> section.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
+                    .ifPresent(section -> section
+                            .updateDownStation(newSection.getUpStation(), newSection.getDistance())
+                    );
 
             sections.add(newSection);
             return;
@@ -142,7 +155,8 @@ public class Sections {
     }
 
     private boolean isAnyMatchInStations(List<Station> stations, Station findStation) {
-        return stations.stream().anyMatch(station -> station == findStation);
+        return stations.stream()
+                .anyMatch(station -> station == findStation);
     }
 
     private void validateAllOrNothingSection(Station upStation, Station downStation, List<Station> stations) {
