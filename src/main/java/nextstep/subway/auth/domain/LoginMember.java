@@ -7,6 +7,12 @@ public class LoginMember {
 
     private LoginMember() {}
 
+    public static LoginMember guest() {
+        LoginMember guest = new LoginMember();
+        guest.age = 0;
+        return guest;
+    }
+
     public LoginMember(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
