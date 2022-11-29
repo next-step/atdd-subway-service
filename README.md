@@ -52,7 +52,7 @@ npm run dev
     - [x] Section
     - [x] Distance
     - [x] Sections 일급 컬렌션
-- [ ] (선택) LineSectionAcceptanceTest 리팩터링
+- [x] (선택) LineSectionAcceptanceTest 리팩터링
 - [ ] 리펙터링
   - [ ] 스타일 포멧
   - [ ] 상수 추출
