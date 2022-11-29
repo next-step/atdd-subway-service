@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import nextstep.subway.common.exception.ErrorEnum;
 
 @Embeddable
 public class Distance {
@@ -21,13 +22,13 @@ public class Distance {
 
     private static void validate(int distance) {
         if (distance <= ZERO) {
-            throw new IllegalArgumentException("거리는 0이상 숫자를 입력해야 합니다.");
+            throw new IllegalArgumentException(ErrorEnum.VALID_LINE_LENGTH_GREATER_THAN_ZERO.message());
         }
     }
 
     public void validNewDistance(Distance newDistance) {
         if (value <= newDistance.value) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException(ErrorEnum.VALID_GREATER_OR_EQUAL_LENGTH_BETWEEN_STATION.message());
         }
     }
 

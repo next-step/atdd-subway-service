@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import jdk.nashorn.internal.runtime.regexp.joni.exception.ErrorMessages;
+import nextstep.subway.common.exception.ErrorEnum;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -69,13 +71,13 @@ public class Sections {
 
     private void validateHasStations(Section newSection) {
         if (new HashSet<>(orderedStations()).containsAll(newSection.stations())) {
-            throw new IllegalArgumentException("등록하려는 역이 모두 존재합니다.");
+            throw new IllegalArgumentException(ErrorEnum.EXISTS_STATION.message());
         }
     }
 
     private void validateHasNotBothStations(Section newSection) {
         if (notInclude(newSection)) {
-            throw new IllegalArgumentException("상행역과 하행역 모두 존재하지 않습니다.");
+            throw new IllegalArgumentException(ErrorEnum.EXISTS_UP_STATION_AND_DOWN_STATION.message());
         }
     }
 
@@ -99,14 +101,14 @@ public class Sections {
 
     private void validateLastSection() {
         if (sections.size() == ONE_SECTION_SIZE) {
-            throw new IllegalArgumentException("마지막 구간은 삭제할 수 없습니다.");
+            throw new IllegalArgumentException(ErrorEnum.LAST_STATION_NOT_DELETE.message());
         }
     }
 
     private void validateNotIncludeStation(Station station) {
         boolean isNotInclude = this.stations().stream().noneMatch(station::equals);
         if (isNotInclude) {
-            throw new IllegalArgumentException("노선에 포함되지 않은 지하철 역은 삭제할 수 없습니다.");
+            throw new IllegalArgumentException(ErrorEnum.NOT_EXISTS_NOT_DELETE.message());
         }
     }
 
