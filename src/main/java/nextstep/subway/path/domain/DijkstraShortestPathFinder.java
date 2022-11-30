@@ -12,19 +12,23 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class DijkstraShortestPathFinder {
+public class DijkstraShortestPathFinder implements PathFinder {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
     private DijkstraShortestPathFinder(List<Line> lines) {
-        lines.stream().forEach(line -> {
-            addVertex(line);
-            setEdgeWeight(line.getSections());
-        });
+        initGraph(lines);
     }
 
     public static DijkstraShortestPathFinder from(List<Line> lines) {
         return new DijkstraShortestPathFinder(lines);
+    }
+
+    private void initGraph(List<Line> lines) {
+        lines.stream().forEach(line -> {
+            addVertex(line);
+            setEdgeWeight(line.getSections());
+        });
     }
 
     private void addVertex(Line line) {
@@ -41,6 +45,7 @@ public class DijkstraShortestPathFinder {
         return graph.addEdge(section.getUpStation(), section.getDownStation());
     }
 
+    @Override
     public Path findPath(Station source, Station target) {
         validateSameStations(source, target);
 
