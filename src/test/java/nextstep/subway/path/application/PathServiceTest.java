@@ -3,7 +3,8 @@ package nextstep.subway.path.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,9 +67,9 @@ class PathServiceTest {
     @Test
     void findShortestPath() {
         PathRequest request = new PathRequest(4L, 1L);
-        when(lineService.findAll()).thenReturn(lines);
-        when(stationService.findStationById(request.getSource())).thenReturn(남부터미널역);
-        when(stationService.findStationById(request.getTarget())).thenReturn(강남역);
+        given(lineService.findAll()).willReturn(lines);
+        given(stationService.findStationById(request.getSource())).willReturn(남부터미널역);
+        given(stationService.findStationById(request.getTarget())).willReturn(강남역);
         PathService pathService = new PathService(lineService, stationService);
 
         PathResponse shortestPath = pathService.findShortestPath(request);
@@ -76,17 +77,19 @@ class PathServiceTest {
         List<String> stationNames = shortestPath.getStations().stream()
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
-        assertThat(stationNames).containsExactly(남부터미널역.getName(), 양재역.getName(), 강남역.getName());
-        assertThat(shortestPath.getDistance()).isEqualTo(13);
+        assertAll(
+                () -> assertThat(stationNames).containsExactly(남부터미널역.getName(), 양재역.getName(), 강남역.getName()),
+                () -> assertThat(shortestPath.getDistance()).isEqualTo(13)
+        );
     }
 
     @DisplayName("출발역과 도착역이 같으면 EX 발생")
     @Test
     void sameSourceAndTarget() {
         PathRequest request = new PathRequest(4L, 4L);
-        when(lineService.findAll()).thenReturn(lines);
-        when(stationService.findStationById(request.getSource())).thenReturn(남부터미널역);
-        when(stationService.findStationById(request.getTarget())).thenReturn(남부터미널역);
+        given(lineService.findAll()).willReturn(lines);
+        given(stationService.findStationById(request.getSource())).willReturn(남부터미널역);
+        given(stationService.findStationById(request.getTarget())).willReturn(남부터미널역);
         PathService pathService = new PathService(lineService, stationService);
 
         ThrowingCallable 출발역과_도착역이_같다 = () -> pathService.findShortestPath(request);
@@ -99,9 +102,9 @@ class PathServiceTest {
     @Test
     void notAddedEdge() {
         PathRequest request = new PathRequest(4L, 1L);
-        when(lineService.findAll()).thenReturn(lines);
-        when(stationService.findStationById(request.getSource())).thenReturn(남부터미널역);
-        when(stationService.findStationById(request.getTarget())).thenReturn(공사중인역);
+        given(lineService.findAll()).willReturn(lines);
+        given(stationService.findStationById(request.getSource())).willReturn(남부터미널역);
+        given(stationService.findStationById(request.getTarget())).willReturn(공사중인역);
         PathService pathService = new PathService(lineService, stationService);
 
         ThrowingCallable 출발역과_도착역이_연결되어_있지_않다 = () -> pathService.findShortestPath(request);
@@ -114,9 +117,9 @@ class PathServiceTest {
     @Test
     void notExistStation() {
         PathRequest request = new PathRequest(4L, 1L);
-        when(lineService.findAll()).thenReturn(lines);
-        when(stationService.findStationById(request.getSource())).thenReturn(남부터미널역);
-        when(stationService.findStationById(request.getTarget())).thenThrow(EntityNotFoundException.class);
+        given(lineService.findAll()).willReturn(lines);
+        given(stationService.findStationById(request.getSource())).willReturn(남부터미널역);
+        given(stationService.findStationById(request.getTarget())).willThrow(EntityNotFoundException.class);
         PathService pathService = new PathService(lineService, stationService);
 
         ThrowingCallable 도착역이_존재하지_않는다 = () -> pathService.findShortestPath(request);

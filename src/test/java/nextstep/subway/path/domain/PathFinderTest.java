@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +51,10 @@ class PathFinderTest {
 
         Path shortestPath = pathFinder.findShortestPath(lines, 남부터미널역, 강남역);
 
-        assertThat(shortestPath.getStations()).containsExactly(남부터미널역, 양재역, 강남역);
-        assertThat(shortestPath.getDistance()).isEqualTo(13);
+        assertAll(
+                () -> assertThat(shortestPath.getStations()).containsExactly(남부터미널역, 양재역, 강남역),
+                () -> assertThat(shortestPath.getDistance()).isEqualTo(13)
+        );
     }
 
     @DisplayName("출발역과 도착역이 같으면 EX 발생")
