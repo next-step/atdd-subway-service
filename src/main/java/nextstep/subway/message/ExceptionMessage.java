@@ -20,6 +20,7 @@ public class ExceptionMessage {
     public static final String FAVORITE_NOT_HAVE_MEMBER = "즐겨찾기에 회원 정보가 없습니다.";
     public static final String FAVORITE_NOT_EXIST = "즐겨찾기가 존재하지 않습니다.";
     public static final String INVALID_SOURCE_AND_TARGET_STATION = "즐겨찾기 추가 시 출발역과 도착역이 같을 수 없습니다.";
+    public static final String OVER_FARE_POLICY_NOT_EXIST = "추가요금 정책이 존재하지 않습니다.";
 
     private ExceptionMessage() {
     }
