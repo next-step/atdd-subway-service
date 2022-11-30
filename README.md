@@ -106,10 +106,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [ ] 인증 - 즐겨 찾기 기능 완성하기
 2. 목록정리
     - [ ] 토큰 발급 인수 테스트
-        - [ ] 이메일과 패스워드를 이용하여 access token 응답하는 기능 구현
-        - [ ] AuthAcceptanceTest를 만족하도록 구현
-        - [ ] AuthAcceptanceTest에서 제시하는 예외 케이스도 함께 고려하여 구현
-        - [ ] 유효하지 않은 토큰으로 /members/me 요청을 보낼 경우에 대한 예외 처리
+        - [x] 이메일과 패스워드를 이용하여 access token 응답하는 기능 구현
+        - [x] AuthAcceptanceTest를 만족하도록 구현
+        - [x] AuthAcceptanceTest에서 제시하는 예외 케이스도 함께 고려하여 구현
+        - [x] 유효하지 않은 토큰으로 /members/me 요청을 보낼 경우에 대한 예외 처리
     - [ ] 내 정보 조회 기능
         - [ ] MemberAccptanceTest 클래스의 manageMyInfo 메서드에 인수 테스트 추가
         - [ ] 내 정보 조회, 수정, 삭제 기능 /members/me URI 요청으로 기능 구현

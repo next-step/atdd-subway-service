@@ -13,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class AuthAcceptanceFixture {
 
-    public static ExtractableResponse<Response> 로그인_요청(TokenRequest 토큰_정보) {
+    public static ExtractableResponse<Response> 로그인_요청(TokenRequest 토큰_요청_정보) {
         return RestAssured.given().log().all()
-                .body(토큰_정보)
+                .body(토큰_요청_정보)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
                 .then().log().all()

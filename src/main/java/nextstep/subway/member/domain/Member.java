@@ -37,7 +37,7 @@ public class Member extends BaseEntity {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException(LOGIN_INVALID_PASSWORD.getMessage());
+            throw new AuthorizationException(LOGIN_INVALID_PASSWORD);
         }
     }
 
