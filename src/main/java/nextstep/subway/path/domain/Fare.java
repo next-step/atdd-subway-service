@@ -1,12 +1,20 @@
 package nextstep.subway.path.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
+@Embeddable
 public class Fare {
     private static final int ZERO = 0;
     private static final String CAN_NOT_NEGATIVE = "요금은 음수일 수 없습니다.";
 
-    private final int value;
+    @Column(name = "extra_fare")
+    private int value;
+
+    protected Fare() {
+
+    }
 
     public Fare(int value) {
         validate(value);
