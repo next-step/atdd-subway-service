@@ -35,15 +35,11 @@ class PathFinderTest {
         청구 = Station.of(4L, "청구");
         DDP = Station.of(5L, "DDP");
 
-        Line LINE_2 = givenLine(Arrays.asList(
-            Section.of(1L, 왕십리, 신당, 10),
-            Section.of(2L, 신당, DDP, 10)
-        ));
-        Line LINE_5 = givenLine(Arrays.asList(
-            Section.of(3L, 왕십리, 행당, 10),
-            Section.of(4L, 행당, 청구, 10),
-            Section.of(5L, 청구, DDP, 10)
-        ));
+        Line LINE_2 = new Line("2호선", "green", 왕십리, DDP, 20);
+        LINE_2.addLineStation(왕십리, 신당, 10);
+        Line LINE_5 = new Line("2호선", "purple", 왕십리, DDP, 30);
+        LINE_5.addLineStation(왕십리, 행당, 10);
+        LINE_5.addLineStation(행당, 청구, 10);
 
         lines = Lines.from(Arrays.asList(LINE_2, LINE_5));
     }
