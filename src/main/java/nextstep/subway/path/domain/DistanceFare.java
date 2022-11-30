@@ -10,6 +10,7 @@ public enum DistanceFare {
     DEFAULT(1, 0, distance -> 0);
 
     private static final int OVER_FARE = 100;
+    private static final int BASIC_FARE = 1250;
 
     private final Distance minDistance;
     private final int overDistance;
@@ -23,7 +24,8 @@ public enum DistanceFare {
 
     public static Fare calculate(Distance distance) {
         DistanceFare distanceFare = find(distance);
-        return new Fare(distanceFare.expression.apply(distance));
+        int extraFare = distanceFare.expression.apply(distance) + BASIC_FARE;
+        return new Fare(extraFare);
     }
 
     private static DistanceFare find(Distance distance) {
