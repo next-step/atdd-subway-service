@@ -7,7 +7,7 @@ import nextstep.subway.common.exception.ErrorEnum;
 
 @Embeddable
 public class Distance {
-    private static final int ZERO = 0;
+    public static final int ZERO = 0;
 
     @Column(nullable = false)
     private int value;
