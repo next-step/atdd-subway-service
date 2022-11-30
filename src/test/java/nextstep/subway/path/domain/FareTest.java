@@ -43,4 +43,13 @@ class FareTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("요금은 음수일 수 없습니다.");
     }
+
+    @DisplayName("요금을 비교할 수 있다.")
+    @Test
+    void compare() {
+        Fare fare = new Fare(1500);
+        Fare extraFare = new Fare(2000);
+
+        assertThat(fare.compareTo(extraFare)).isEqualTo(-1);
+    }
 }

@@ -5,7 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class Fare {
+public class Fare implements Comparable<Fare> {
     private static final int ZERO = 0;
     private static final String CAN_NOT_NEGATIVE = "요금은 음수일 수 없습니다.";
 
@@ -53,9 +53,7 @@ public class Fare {
     }
 
     @Override
-    public String toString() {
-        return "Fare{" +
-                "value=" + value +
-                '}';
+    public int compareTo(Fare another) {
+        return Integer.compare(this.value, another.value);
     }
 }
