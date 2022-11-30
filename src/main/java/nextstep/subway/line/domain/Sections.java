@@ -23,7 +23,7 @@ public class Sections {
 
     public void addSection(Line line, Station upStation, Station downStation, Distance distance) {
         validCheckAddSection(upStation, downStation);
-        Section newSection = new Section(line, upStation, downStation, distance);
+        Section newSection = Section.of(line, upStation, downStation, distance);
 
         if (sections.isEmpty()) {
             sections.add(newSection);
@@ -92,7 +92,7 @@ public class Sections {
 
     private void addSection(Section upSection, Section downSection, Line line) {
         Distance newDistance = upSection.plusDistance(downSection);
-        Section section = new Section(line, downSection.getUpStation(), upSection.getDownStation(), newDistance);
+        Section section = Section.of(line, downSection.getUpStation(), upSection.getDownStation(), newDistance);
         sections.add(section);
     }
 
