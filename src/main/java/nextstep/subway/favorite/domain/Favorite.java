@@ -70,6 +70,10 @@ public class Favorite {
         }
     }
 
+    public void changeMember(Member member) {
+        this.member = member;
+    }
+
     public Long getId() {
         return id;
     }

@@ -105,8 +105,10 @@ class FavoriteServiceTest {
     @Test
     @DisplayName("즐겨찾기 목록을 조회한다")
     void findFavorites() {
-        // given - BeforeEach에 즐겨찾기 1개 등록되어 있음
-        Favorite.of(member, Station.from("잠실역"), Station.from("몽촌토성역"));
+        // given
+        Favorite favorite2 = Favorite.of(member, Station.from("잠실역"), Station.from("몽촌토성역"));
+        member.addFavorite(favorite);
+        member.addFavorite(favorite2);
         when(memberService.findMemberById(1L)).thenReturn(member);
 
         // when

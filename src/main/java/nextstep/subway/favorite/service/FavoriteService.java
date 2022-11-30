@@ -28,7 +28,7 @@ public class FavoriteService {
 
     public List<FavoriteResponse> findFavoritesByMemberId(LoginMember loginMember) {
         Member member = memberService.findMemberById(loginMember.getId());
-        return member.getFavorites().stream().map(FavoriteResponse::of).collect(Collectors.toList());
+        return member.favorites().stream().map(FavoriteResponse::from).collect(Collectors.toList());
     }
 
     @Transactional

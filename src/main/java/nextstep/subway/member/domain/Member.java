@@ -1,12 +1,16 @@
 package nextstep.subway.member.domain;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.common.exception.AuthorizationException;
-
-import javax.persistence.*;
 import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.Favorites;
 
 @Entity
 public class Member extends BaseEntity {
@@ -21,26 +25,20 @@ public class Member extends BaseEntity {
     private Password password;
     @Embedded
     private Age age;
-    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<Favorite> favorites = new ArrayList<>();
+    @Embedded
+    private Favorites favorites;
 
     protected Member() {}
 
-    public Member(Long id, String email, String password, Integer age) {
-        this.id = id;
+    private Member(String email, String password, Integer age, List<Favorite> favorites) {
         this.email = Email.from(email);
         this.password = Password.from(password);
         this.age = Age.from(age);
-    }
-
-    private Member(String email, String password, Integer age) {
-        this.email = Email.from(email);
-        this.password = Password.from(password);
-        this.age = Age.from(age);
+        this.favorites = Favorites.from(favorites);
     }
 
     public static Member of(String email, String password, Integer age) {
-        return new Member(email, password, age);
+        return new Member(email, password, age, Collections.emptyList());
     }
 
     public void update(Member member) {
@@ -56,7 +54,8 @@ public class Member extends BaseEntity {
     }
 
     public void addFavorite(Favorite favorite) {
-        favorites.add(favorite);
+        favorites.addFavorite(favorite);
+        favorite.changeMember(this);
     }
 
     public Long getId() {
@@ -75,7 +74,7 @@ public class Member extends BaseEntity {
         return password.value();
     }
 
-    public List<Favorite> getFavorites() {
-        return favorites;
+    public List<Favorite> favorites() {
+        return favorites.list();
     }
 }

@@ -106,6 +106,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [ ] 인증 - 즐겨찾기 기능 완성하기
   - [x] 즐겨찾기 인수 테스트 만들기
   - [ ] 즐겨찾기 기능 구현하기
-    - [ ] 즐겨찾기 목록 조회
+    - [x] 즐겨찾기 목록 조회
     - [x] 즐겨찾기 생성
     - [ ] 즐겨찾기 삭제
