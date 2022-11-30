@@ -1,7 +1,7 @@
 package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.common.exception.AuthorizationException;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;
@@ -11,6 +11,8 @@ import javax.persistence.Id;
 
 @Entity
 public class Member extends BaseEntity {
+    public static final String ERROR_MESSAGE_VALID_ID_OR_PASSWORD = "아이디 또는 비밀번호가 일치하지 않습니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -49,9 +51,13 @@ public class Member extends BaseEntity {
         this.age = member.age;
     }
 
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+    public void validPassword(String password) {
+        if (checkPassword(password)) {
+            throw new AuthorizationException(ERROR_MESSAGE_VALID_ID_OR_PASSWORD);
         }
+    }
+
+    private boolean checkPassword(String password) {
+        return !StringUtils.equals(this.password, password);
     }
 }
