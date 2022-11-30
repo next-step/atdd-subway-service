@@ -1,6 +1,6 @@
 package nextstep.subway.line.acceptance;
 
-import static nextstep.subway.utils.LineSectionAcceptanceTestUtils.*;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestUtils.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.response.ExtractableResponse;

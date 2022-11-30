@@ -1,9 +1,9 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.station.acceptance.StationAcceptanceTest.지하철역_등록되어_있음;
-import static nextstep.subway.utils.LineSectionAcceptanceTestUtils.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.utils.PathAcceptanceTestUtils.*;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestUtils.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.path.acceptance.PathAcceptanceTestUtils.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.response.ExtractableResponse;

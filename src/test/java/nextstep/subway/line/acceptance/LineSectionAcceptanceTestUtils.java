@@ -1,4 +1,4 @@
-package nextstep.subway.utils;
+package nextstep.subway.line.acceptance;
 
 import static nextstep.subway.utils.CommonTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;

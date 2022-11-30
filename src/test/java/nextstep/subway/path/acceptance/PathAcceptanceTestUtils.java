@@ -1,4 +1,4 @@
-package nextstep.subway.utils;
+package nextstep.subway.path.acceptance;
 
 import static nextstep.subway.utils.CommonTestFixture.PATH_BASE_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
