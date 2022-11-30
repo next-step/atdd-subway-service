@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import static nextstep.subway.exception.ErrorMessage.LOGIN_INVALID_PASSWORD;
+
 @Entity
 public class Member extends BaseEntity {
     @Id
@@ -35,7 +37,7 @@ public class Member extends BaseEntity {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException(LOGIN_INVALID_PASSWORD.getMessage());
         }
     }
 

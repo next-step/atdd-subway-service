@@ -14,6 +14,8 @@ public enum ErrorMessage {
     STATION_NOT_CONTAINS_NOT_DELETE("삭제하려는 지하철 역이 올바르지 않습니다."),
     NOT_SEARCH_SAME_START_ARRIVE_STATION("출발역과 도착역이 같은 경우 최단 경로를 조회할 수 없습니다."),
     NOT_CONNECT_START_ARRIVE_STATION("출발역과 도착역은 서로 연결이 되어있어야 최단 경로를 조회할 수 있습니다."),
+    LOGIN_UNKNOWN_EMAIL("알 수 없는 이메일 회원 정보입니다."),
+    LOGIN_INVALID_PASSWORD("비밀번호가 올바르지 않습니다.")
     ;
     private final String message;
 
