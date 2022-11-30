@@ -208,7 +208,7 @@ public class SectionsTest extends JpaEntityTest {
         신분당선.addSection(강남역, 정자역, 50);
 
         // when / then
-//        assertThatThrownBy(() -> 신분당선.removeSection(양재역))
-//                .isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> 신분당선.removeSection(양재역))
+                .isInstanceOf(IllegalStateException.class);
     }
 }
