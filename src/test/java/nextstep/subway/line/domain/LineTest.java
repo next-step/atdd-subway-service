@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import static nextstep.subway.line.domain.LineTestFixture.createLine;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,8 +21,8 @@ class LineTest {
         서초역 = new Station("서초역");
         교대역 = new Station("교대역");
         강남역 = new Station("강남역");
-        역2개_2호선 = createLine("2호선", 서초역, 강남역, 10);
-        역3개_2호선 = createLine("2호선", 서초역, 강남역, 10);
+        역2개_2호선 = createLine("2호선", 서초역, 강남역, 10, 500);
+        역3개_2호선 = createLine("2호선", 서초역, 강남역, 10, 500);
         역3개_2호선.addSection(new Section(서초역, 교대역, 5));
     }
 
@@ -47,5 +48,14 @@ class LineTest {
         역3개_2호선.deleteStation(교대역);
 
         assertThat(역3개_2호선.findAssignedStations()).containsExactly(서초역, 강남역);
+    }
+
+    @DisplayName("노선에 추가 요금을 등록할 수 있다.")
+    @Test
+    void createLineWithExtraFare() {
+        Fare expectedFare = new Fare(500);
+        Line newLine = createLine("2호선", 서초역, 강남역, 10, 500);
+
+        assertThat(newLine.getExtraFare()).isEqualTo(expectedFare);
     }
 }

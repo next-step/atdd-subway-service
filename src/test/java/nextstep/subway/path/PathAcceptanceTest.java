@@ -58,13 +58,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         김포공항역 = 지하철역_등록되어_있음("김포공항역").as(StationResponse.class);
         마곡나루역 = 지하철역_등록되어_있음("마곡나루역").as(StationResponse.class);
 
-        LineRequest 신분당선_요청 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 5);
+        LineRequest 신분당선_요청 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 5, 100);
         신분당선 = 지하철_노선_등록되어_있음(신분당선_요청).as(LineResponse.class);
-        LineRequest 이호선_요청 = new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10);
+        LineRequest 이호선_요청 = new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10, 200);
         이호선 = 지하철_노선_등록되어_있음(이호선_요청).as(LineResponse.class);
-        LineRequest 삼호선_요청 = new LineRequest("삼호선", "bg-blue-600", 교대역.getId(), 양재역.getId(), 20);
+        LineRequest 삼호선_요청 = new LineRequest("삼호선", "bg-blue-600", 교대역.getId(), 양재역.getId(), 20, 300);
         삼호선 = 지하철_노선_등록되어_있음(삼호선_요청).as(LineResponse.class);
-        LineRequest 공항선_요청 = new LineRequest("공항선", "bg-purple-600", 김포공항역.getId(), 마곡나루역.getId(), 30);
+        LineRequest 공항선_요청 = new LineRequest("공항선", "bg-purple-600", 김포공항역.getId(), 마곡나루역.getId(), 30, 500);
         공항선 = 지하철_노선_등록되어_있음(공항선_요청).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 15);

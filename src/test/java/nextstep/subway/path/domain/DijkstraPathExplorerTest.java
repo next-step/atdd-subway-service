@@ -43,10 +43,10 @@ class DijkstraPathExplorerTest {
         김포공항역 = new Station("김포공항역");
         마곡나루역 = new Station("마곡나루역");
 
-        이호선 = createLine("이호선", 교대역, 강남역, 10);
-        삼호선 = createLine("삼호선", 교대역, 양재역, 20);
-        신분당선 = createLine("신분당선", 강남역, 양재역, 5);
-        공항선 = createLine("공항선", 김포공항역, 마곡나루역, 30);
+        이호선 = createLine("이호선", 교대역, 강남역, 10, 100);
+        삼호선 = createLine("삼호선", 교대역, 양재역, 20, 200);
+        신분당선 = createLine("신분당선", 강남역, 양재역, 5, 300);
+        공항선 = createLine("공항선", 김포공항역, 마곡나루역, 30, 500);
 
         삼호선.addSection(new Section(교대역, 남부터미널역, 15));
     }
