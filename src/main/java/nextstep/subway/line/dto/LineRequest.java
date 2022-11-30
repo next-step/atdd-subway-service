@@ -30,6 +30,7 @@ public class LineRequest {
                 .distance(this.distance)
                 .upStation(upStation)
                 .downStation(downStation)
+                .extraFare(extraFare)
                 .build();
     }
 

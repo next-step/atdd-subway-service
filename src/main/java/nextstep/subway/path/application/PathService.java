@@ -24,12 +24,12 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(int age, Long source, Long target) {
         Station sourceStation = stationRepository.findById(source).orElseThrow(EntityNotFoundException::new);
         Station targetStation = stationRepository.findById(target).orElseThrow(EntityNotFoundException::new);
         List<Line> lines = lineRepository.findAll();
         PathExplorer pathExplorer = new DijkstraPathExplorer(lines);
         Path shortestPath = pathExplorer.explore(sourceStation, targetStation);
-        return PathResponse.from(shortestPath);
+        return PathResponse.from(shortestPath, shortestPath.calculateTotalFare(age));
     }
 }
