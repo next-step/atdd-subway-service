@@ -1,9 +1,11 @@
 package nextstep.subway.fare.domain;
 
+import nextstep.subway.exception.InvalidFareException;
 import nextstep.subway.exception.NotFoundAgeFarePolicy;
 import nextstep.subway.message.ExceptionMessage;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -21,7 +23,7 @@ class AgeFarePolicyTest {
 
     @DisplayName("나이에 맞는 정책이 없으면 예외를 발생한다.")
     @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
-    @ValueSource(ints = {5, 19})
+    @ValueSource(ints = {0, 5})
     void exception(int input) {
         Assertions.assertThatThrownBy(() -> AgeFarePolicy.findByAge(input))
                 .isInstanceOf(NotFoundAgeFarePolicy.class)
@@ -39,4 +41,13 @@ class AgeFarePolicyTest {
         Assertions.assertThat(result).isEqualTo(expected);
     }
 
+    @DisplayName("운임요금이 공제금액보다 작으면 예외를 발생한다.")
+    @Test
+    void discountException() {
+        AgeFarePolicy policy = AgeFarePolicy.findByAge(10);
+
+        Assertions.assertThatThrownBy(() -> policy.discount(0))
+                .isInstanceOf(InvalidFareException.class)
+                .hasMessageStartingWith(ExceptionMessage.FARE_LESS_THAN_DEDUCTION_FARE);
+    }
 }

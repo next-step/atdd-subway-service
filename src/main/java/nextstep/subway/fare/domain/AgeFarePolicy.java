@@ -1,11 +1,13 @@
 package nextstep.subway.fare.domain;
 
+import nextstep.subway.exception.InvalidFareException;
 import nextstep.subway.exception.NotFoundAgeFarePolicy;
 import nextstep.subway.message.ExceptionMessage;
 
 import java.util.Arrays;
 
 public enum AgeFarePolicy {
+    ADULT(19, Integer.MAX_VALUE, 0, 0),
     TEENAGER(13, 19, 350, 0.2),
     CHILD(6, 13, 350, 0.5);
 
@@ -33,6 +35,13 @@ public enum AgeFarePolicy {
     }
 
     public int discount(int fare) {
+        checkFareIsNotLessThanDeductionFare(fare);
         return (int) ((fare - this.deductionFare) * (1 - this.discountRate));
+    }
+
+    private void checkFareIsNotLessThanDeductionFare(int fare) {
+        if (fare < this.deductionFare) {
+            throw new InvalidFareException(ExceptionMessage.FARE_LESS_THAN_DEDUCTION_FARE);
+        }
     }
 }
