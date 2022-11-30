@@ -114,7 +114,7 @@ new 로 교체하고, legacy 는 일정 기간 후 삭제하는 작업 패턴(**
 
 ### 요구사항
 - [x] LineSectionAcceptanceTest 리팩터링 ; 인수 테스트 통합 작성 완료
-- [ ] LineService 리팩터링
+- [x] LineService 리팩터링
     - LineService의 비즈니스 로직을 도메인으로 옮기기
     - 부분 부분 리팩터링
     - 인수테스트로 보호한 뒤 세부 기능을 TDD로 리팩터링
