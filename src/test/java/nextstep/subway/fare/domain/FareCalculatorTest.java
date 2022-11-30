@@ -5,6 +5,7 @@ import nextstep.subway.message.ExceptionMessage;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -62,5 +63,15 @@ class FareCalculatorTest {
         Assertions.assertThatThrownBy(() -> fareCalculator.calculate(input))
                 .isInstanceOf(NegativeDistanceException.class)
                 .hasMessageStartingWith(ExceptionMessage.INVALID_DISTANCE);
+    }
+
+    @DisplayName("지하철 노선 추가요금이 있는 경우 노선요금도 더해서 계산한다.")
+    @Test
+    void calculateWithLineFare() {
+        SubwayFareCalculator subwayFareCalculator = SubwayFareCalculator.from(100);
+
+        int result = subwayFareCalculator.calculate(10);
+
+        Assertions.assertThat(result).isEqualTo(1350);
     }
 }
