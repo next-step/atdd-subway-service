@@ -24,6 +24,13 @@ public class Sections {
         this.sections = new ArrayList<>(sections);
     }
 
+    public List<Station> getStations() {
+        if (this.sections.isEmpty()) {
+            return Arrays.asList();
+        }
+        return sortedStation();
+    }
+
     public void add(Section newSection) {
         validateNotContainsAny(newSection);
         validateAlreadyContainsAll(newSection);
@@ -39,7 +46,7 @@ public class Sections {
         Optional<Section> downLineStation = removeDownSection(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            this.add(mergeSection(upLineStation, downLineStation));
+            this.add(Section.merge(upLineStation, downLineStation));
         }
     }
 
@@ -85,14 +92,6 @@ public class Sections {
         }
     }
 
-    private Section mergeSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
-        Station newUpStation = downLineStation.get().getUpStation();
-        Station newDownStation = upLineStation.get().getDownStation();
-        int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-        Section newSection = new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance);
-        return newSection;
-    }
-
     private Optional<Section> removeUpSection(Station station) {
         Optional<Section> upSection = this.sections.stream()
             .filter(section -> section.hasUpStation(station))
@@ -107,13 +106,6 @@ public class Sections {
             .findAny();
         downSection.ifPresent(section -> this.sections.remove(section));
         return downSection;
-    }
-
-    public List<Station> getStations() {
-        if (this.sections.isEmpty()) {
-            return Arrays.asList();
-        }
-        return sortedStation();
     }
 
     public List<Section> getSections() {
