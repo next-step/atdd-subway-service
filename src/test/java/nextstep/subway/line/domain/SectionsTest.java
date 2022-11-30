@@ -125,9 +125,17 @@ public class SectionsTest extends JpaEntityTest {
 
     @DisplayName("중간 앞구간 추가 시 거리 오류로 인한 예외 테스트")
     @Test
-    void addSectionExceptionDistance() {
+    void addSectionExceptionDistance1() {
         // when / then
         assertThatThrownBy(() -> 신분당선.addSection(양재역, 광교역, 100))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("중간 뒷구간 추가 시 거리 오류로 인한 예외 테스트")
+    @Test
+    void addSectionExceptionDistance2() {
+        // when / then
+        assertThatThrownBy(() -> 신분당선.addSection(강남역, 양재역, 100))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

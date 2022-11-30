@@ -23,7 +23,7 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
+        Station downStation = findFirstUpStation();
         stations.add(downStation);
 
         while (downStation != null) {
@@ -41,43 +41,20 @@ public class Sections {
         return Collections.unmodifiableList(stations);
     }
 
-
     public void add(Line line, Station upStation, Station downStation, int distance) {
-        List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new IllegalArgumentException(SECTION_ALREADY_REGISTERED.message());
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
-            throw new IllegalStateException(SECTION_NOT_REACHABLE_ANY_STATION.message());
-        }
-
-        if (stations.isEmpty()) {
-            sections.add(new Section(line, upStation, downStation, distance));
-            return;
-        }
+        boolean isUpStationExisted = isExistStation(upStation);
+        boolean isDownStationExisted = isExistStation(downStation);
+        validAddableSection(isUpStationExisted, isDownStationExisted);
 
         if (isUpStationExisted) {
-            sections.stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, distance));
-
-            sections.add(new Section(line, upStation, downStation, distance));
-        } else if (isDownStationExisted) {
-            sections.stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, distance));
-
-            sections.add(new Section(line, upStation, downStation, distance));
-        } else {
-            throw new IllegalStateException();
+            updateUpStation(upStation, downStation, distance);
         }
+
+        if (isDownStationExisted) {
+            updateDownStation(upStation, downStation, distance);
+        }
+
+        sections.add(new Section(line, upStation, downStation, distance));
     }
 
     public void remove(Line line, Station station) {
@@ -103,7 +80,11 @@ public class Sections {
         nextSection.ifPresent(it -> sections.remove(it));
     }
 
-    private Station findUpStation() {
+    public List<Section> values() {
+        return Collections.unmodifiableList(sections);
+    }
+
+    private Station findFirstUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
@@ -119,7 +100,30 @@ public class Sections {
         return downStation;
     }
 
-    public List<Section> values() {
-        return Collections.unmodifiableList(sections);
+    private void updateDownStation(Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(it -> it.isSameWithDownStation(downStation))
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
+    }
+
+    private void updateUpStation(Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(it -> it.isSameWithUpStation(upStation))
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
+    }
+
+    private void validAddableSection(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new IllegalArgumentException(SECTION_ALREADY_REGISTERED.message());
+        }
+        if (!getStations().isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+            throw new IllegalStateException(SECTION_NOT_REACHABLE_ANY_STATION.message());
+        }
+    }
+
+    private boolean isExistStation(Station station) {
+        return getStations().stream().anyMatch(it -> it.isSame(station));
     }
 }

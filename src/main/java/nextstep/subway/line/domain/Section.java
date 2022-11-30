@@ -56,11 +56,11 @@ public class Section {
         return distance;
     }
 
-    public boolean isExistUpStation(Station station) {
+    public boolean isSameWithUpStation(Station station) {
         return this.upStation.equals(station);
     }
 
-    public boolean isExistDownStation(Station station) {
+    public boolean isSameWithDownStation(Station station) {
         return this.downStation.equals(station);
     }
 

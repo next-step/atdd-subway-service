@@ -7,8 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.persistence.*;
 import java.util.*;
 
-import static nextstep.subway.line.domain.BizExceptionMessages.LINE_COLOR_INVALID;
-import static nextstep.subway.line.domain.BizExceptionMessages.LINE_NAME_INVALID;
+import static nextstep.subway.line.domain.BizExceptionMessages.*;
 
 @Entity
 public class Line extends BaseEntity {
@@ -37,7 +36,7 @@ public class Line extends BaseEntity {
         this.color = color;
         addSection(upStation, downStation, distance);
     }
-
+    
     public void addSection(Station upStation, Station downStation, int distance) {
         sections.add(this, upStation, downStation, distance);
     }
