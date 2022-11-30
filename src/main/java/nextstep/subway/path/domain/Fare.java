@@ -23,6 +23,10 @@ public class Fare {
         return new Fare(this.value + fare.value);
     }
 
+    public Fare subtract(Fare fare) {
+        return new Fare(this.value - fare.value);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -38,5 +42,12 @@ public class Fare {
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return "Fare{" +
+                "value=" + value +
+                '}';
     }
 }
