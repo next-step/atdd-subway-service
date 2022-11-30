@@ -118,11 +118,7 @@ class PathServiceTest {
     @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우 IllegalArgumentException 이 발생한다.")
     @Test
     void none_station() {
-        //given
-
-        //when
-
-        //then
-
+        assertThatThrownBy(() -> pathService.findPaths(1L, 2L))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
