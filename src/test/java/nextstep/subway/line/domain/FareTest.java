@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.constant.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +13,6 @@ class FareTest {
         // when & then
         assertThatThrownBy(() -> new Fare(-1))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("추가요금은 0 보다 작을 수 없습니다.");
+                .hasMessageContaining(ErrorCode.FARE_BIGGEST_THAN_ZERO.getMessage());
     }
 }

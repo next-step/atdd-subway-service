@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.constant.ErrorCode;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -20,7 +22,7 @@ public class Fare {
 
     private void validate(int value) {
         if (value < MINIMUM) {
-            throw new IllegalArgumentException("추가요금은 0 보다 작을 수 없습니다.");
+            throw new IllegalArgumentException(ErrorCode.FARE_BIGGEST_THAN_ZERO.getMessage());
         }
     }
 

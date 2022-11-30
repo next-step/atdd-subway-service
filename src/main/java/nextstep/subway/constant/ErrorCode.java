@@ -11,7 +11,8 @@ public enum ErrorCode {
     FIND_PATH_NOT_CONNECT("출발역과 도착역이 연결이 되어 있지 않습니다."),
     MEMBER_NOT_EXIST_BY_EMAIL("해당 이메일로 조회되는 사용자가 없습니다."),
     FAVORITE_SAME_SOURCE_TARGET("출발지와 도착지가 동일할 수 없습니다."),
-    INVALID_TOKEN("유효하지 않은 토큰입니다.");
+    INVALID_TOKEN("유효하지 않은 토큰입니다."),
+    FARE_BIGGEST_THAN_ZERO("추가요금은 0 보다 커야 합니다.");
 
     private final String message;
 
