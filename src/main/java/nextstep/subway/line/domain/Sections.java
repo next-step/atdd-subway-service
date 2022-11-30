@@ -92,10 +92,10 @@ public class Sections {
         if (sections.isEmpty()) {
             return Arrays.asList();
         }
-        Station downStation = findUpStation();
+        Station upStation = findUpStation();
         List<Station> stations = new ArrayList<>();
-        stations.add(downStation);
-        addNextStation(stations, downStation);
+        stations.add(upStation);
+        addNextStation(stations, upStation);
         return stations;
     }
 
@@ -163,4 +163,7 @@ public class Sections {
                 .findFirst().orElse(null);
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
 }

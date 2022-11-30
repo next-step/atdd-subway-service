@@ -18,8 +18,6 @@ public class LineTest {
     @DisplayName("removeStation메소드는 ")
     class DescribeRemoveStation {
 
-        private Random random = new Random();
-
         @Nested
         @DisplayName("노선개수가 1개 이하이면 예외발생")
         class ContextWithUnderSingleSection {
