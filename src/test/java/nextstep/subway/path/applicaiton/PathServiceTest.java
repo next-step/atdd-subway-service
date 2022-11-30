@@ -100,10 +100,18 @@ class PathServiceTest {
     @Test
     void not_linked_line() {
         //given
+        Station 인천터미널역 = new Station("인천터미널");
+        Station 동춘역 = new Station("동춘역");
+        Section 인터_동춘 = new Section(null, 인천터미널역, 동춘역, 10);
 
-        //when
+        given(stationRepository.findById(1L)).willReturn(Optional.of(교대역));
+        given(stationRepository.findById(2L)).willReturn(Optional.of(인천터미널역));
+        given(stationRepository.findAll()).willReturn(Arrays.asList(교대역, 강남역, 양재역, 남부터미널역, 인천터미널역, 동춘역));
+        given(sectionRepository.findAll()).willReturn(Arrays.asList(강남_교대, 교대_강남, 교대_남부, 남부_양재, 인터_동춘));
 
-        //then
+        //when & then
+        assertThatThrownBy(() -> pathService.findPaths(1L, 2L))
+                .isInstanceOf(IllegalArgumentException.class);
 
     }
 
