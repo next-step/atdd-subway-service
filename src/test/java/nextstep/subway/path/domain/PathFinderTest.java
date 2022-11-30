@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.line.exception.InvalidPathException.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PathFinderTest {
@@ -96,7 +97,8 @@ class PathFinderTest {
 
         PathFinder pathFinder = new PathFinder(Lists.newArrayList(신분당선, 이호선));
         assertThatThrownBy(() -> pathFinder.find(교대역, 교대역))
-                .isInstanceOf(InvalidPathException.class);
+                .isInstanceOf(InvalidPathException.class)
+                .hasMessage(SOURCE_AND_TARGET_EQUAL);
     }
 
     @Test
@@ -107,7 +109,8 @@ class PathFinderTest {
 
         PathFinder pathFinder = new PathFinder(Lists.newArrayList(신분당선, 삼호선));
         assertThatThrownBy(() -> pathFinder.find(강남역, 남부터미널역))
-                .isInstanceOf(InvalidPathException.class);
+                .isInstanceOf(InvalidPathException.class)
+                .hasMessage(SOURCE_AND_TARGET_NOT_CONNECTED);
     }
 
     @Test
@@ -117,7 +120,8 @@ class PathFinderTest {
 
         PathFinder pathFinder = new PathFinder(Lists.newArrayList(신분당선));
         assertThatThrownBy(() -> pathFinder.find(강남역, 남부터미널역))
-                .isInstanceOf(InvalidPathException.class);
+                .isInstanceOf(InvalidPathException.class)
+                .hasMessage(STATION_NOT_EXISTS);
     }
 
     @Test
@@ -127,6 +131,7 @@ class PathFinderTest {
 
         PathFinder pathFinder = new PathFinder(Lists.newArrayList(신분당선));
         assertThatThrownBy(() -> pathFinder.find(교대역, 양재역))
-                .isInstanceOf(InvalidPathException.class);
+                .isInstanceOf(InvalidPathException.class)
+                .hasMessage(STATION_NOT_EXISTS);
     }
 }
