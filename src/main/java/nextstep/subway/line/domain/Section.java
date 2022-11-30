@@ -2,7 +2,15 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -59,6 +67,10 @@ public class Section {
 
     public int getDistance() {
         return distance;
+    }
+
+    public List<Station> getStations() {
+        return Arrays.asList(this.upStation, this.downStation);
     }
 
     public void updateUpStation(Station station, int newDistance) {

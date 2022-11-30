@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -60,7 +61,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = findStationById(request.getUpStationId());
         Station downStation = findStationById(request.getDownStationId());
-        line.addLineStation(upStation, downStation, request.getDistance());
+        line.addLineStation(new Section(line, upStation, downStation, request.getDistance()));
     }
 
     @Transactional
