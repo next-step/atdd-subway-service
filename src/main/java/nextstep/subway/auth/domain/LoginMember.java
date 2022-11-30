@@ -7,6 +7,7 @@ import nextstep.subway.member.domain.Email;
 public class LoginMember {
 
     private static final Age ADULT = AgeFarePolicy.ADULT.getMinAge();
+    private static final LoginMember nonMember = new LoginMember(ADULT);
 
     private Long id;
     private String email;
@@ -25,7 +26,7 @@ public class LoginMember {
     }
 
     public static LoginMember nonMember() {
-        return new LoginMember(ADULT);
+        return nonMember;
     }
 
     public Long getId() {
