@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,12 +33,20 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     protected Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
+        this.line = line;
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = Distance.from(distance);
+    }
+
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -47,13 +56,13 @@ public class Section {
     public Section(Station upStation, Station downStation, int distance) {
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = Distance.from(distance);
     }
 
     public static Section merge(Optional<Section> upLineStation, Optional<Section> downLineStation) {
         Station newUpStation = downLineStation.get().getUpStation();
         Station newDownStation = upLineStation.get().getDownStation();
-        int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+        Distance newDistance = Distance.sum(upLineStation.get().getDistance(), downLineStation.get().getDistance());
         Section newSection = new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance);
         return newSection;
     }
@@ -74,7 +83,7 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
@@ -82,22 +91,14 @@ public class Section {
         return Arrays.asList(this.upStation, this.downStation);
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        validate(newDistance);
+    public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance.modifyDistance(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        validate(newDistance);
+    public void updateDownStation(Station station, Distance newDistance) {
         this.downStation = station;
-        this.distance -= newDistance;
-    }
-
-    private void validate(int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+        this.distance.modifyDistance(newDistance);
     }
 
     public boolean hasUpStation(Station station) {
