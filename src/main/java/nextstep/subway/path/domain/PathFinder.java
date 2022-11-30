@@ -44,8 +44,8 @@ public class PathFinder {
 
     private Path createPath(Station source, Station target) {
         List<Station> stations = find.getVertexList(source, target);
-        double weight = find.getWeight(source, target);
-        return new Path(stations, (int) weight);
+        int weight = find.getWeight(source, target);
+        return new Path(stations, weight);
     }
 
     private void addSectionsInGraph(List<Line> lines) {
