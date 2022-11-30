@@ -16,7 +16,7 @@ public class LineTest {
         // given
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
-        Line line = Line.of("8호선", "분홍색", 잠실역, 문정역, 10);
+        Line line = 지하철_노선_생성("8호선", "분홍색", 잠실역, 문정역, 10);
 
         // when
         List<Station> stations = line.getStations();
@@ -31,12 +31,12 @@ public class LineTest {
         // given
         String name = "2호선";
         String color = "초록색";
-        Line line = Line.of(name, color);
+        Line line = 지하철_노선_생성(name, color);
 
         // given
         String newName = "8호선";
         String newColor = "초록색";
-        Line newLine = Line.of(newName, newColor);
+        Line newLine = 지하철_노선_생성(newName, newColor);
 
         // when
         line.update(newLine);
@@ -52,7 +52,7 @@ public class LineTest {
         // given
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
-        Line line = Line.of("8호선", "분홍색", 잠실역, 문정역, 10);
+        Line line = 지하철_노선_생성("8호선", "분홍색", 잠실역, 문정역, 10);
 
         // given
         Station 가락시장역 = new Station("가락시장역");
@@ -71,11 +71,11 @@ public class LineTest {
         // given
         Station 잠실역 = new Station("잠실역");
         Station 문정역 = new Station("문정역");
-        Line line = Line.of("8호선", "분홍색", 잠실역, 문정역, 10);
+        Line line = 지하철_노선_생성("8호선", "분홍색", 잠실역, 문정역, 10);
 
         // given
         Station 가락시장역 = new Station("가락시장역");
-        Section section = Section.of(가락시장역, 문정역, 1);
+        Section section = 지하철_구간_생성(가락시장역, 문정역, 1);
         line.addSection(section);
 
         // when
@@ -84,4 +84,31 @@ public class LineTest {
         // then
         assertThat(line.getStations()).doesNotContain(가락시장역);
     }
+
+
+    private Line 지하철_노선_생성(String name, String color) {
+        return new Line.Builder()
+                .name(name)
+                .color(color)
+                .build();
+    }
+
+    private Line 지하철_노선_생성(String name, String color, Station upStation, Station downStation, int distance) {
+        return new Line.Builder()
+                .name(name)
+                .color(color)
+                .upStation(upStation)
+                .downStation(downStation)
+                .distance(distance)
+                .build();
+    }
+
+    private Section 지하철_구간_생성(Station upStation, Station downStation, int distance) {
+        return new Section.Builder()
+                .upStation(upStation)
+                .downStation(downStation)
+                .distance(distance)
+                .build();
+    }
+
 }
