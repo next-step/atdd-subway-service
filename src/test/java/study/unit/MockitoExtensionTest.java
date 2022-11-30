@@ -1,26 +1,25 @@
 package study.unit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
 import com.google.common.collect.Lists;
+import java.util.List;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
 @DisplayName("단위 테스트 - mockito의 MockitoExtension을 활용한 가짜 협력 객체 사용")
 @ExtendWith(MockitoExtension.class)
 public class MockitoExtensionTest {
+
     @Mock
     private LineRepository lineRepository;
     @Mock
@@ -29,7 +28,7 @@ public class MockitoExtensionTest {
     @Test
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
+        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line("일호선", "red")));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when

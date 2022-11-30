@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile("!test")
 public class DataLoaderConfig implements CommandLineRunner {
+
     private LineRepository lineRepository;
     private MemberRepository memberRepository;
 
