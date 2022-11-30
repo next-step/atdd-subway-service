@@ -62,6 +62,10 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public Sections getSections() {
+        return this.sections;
+    }
+
     public Stations getStations() {
         return this.sections.toStations();
     }

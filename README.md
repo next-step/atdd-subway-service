@@ -67,4 +67,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [X] 존재하지 않는 역을 출발역이나 도착역으로 조회할 경우 최단 경로 조회 실패
   - [X] 최단 경로가 존재하는 경우 최단 경로 조회 성공
  
-- [ ] 최단 경로 조회 기능 구현하기
+- [X] 최단 경로 조회 기능 구현하기

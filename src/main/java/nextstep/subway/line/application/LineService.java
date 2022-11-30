@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -76,6 +77,10 @@ public class LineService {
 
     public Line findById(Long id) {
         return lineRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("해당 노선을 찾을 수 없습니다. id: " + id));
+            .orElseThrow(() -> new IllegalArgumentException("해당 노선을 찾을 수 없습니다. id: " + id));
+    }
+
+    public Lines findAllLines() {
+        return Lines.from(lineRepository.findAll());
     }
 }

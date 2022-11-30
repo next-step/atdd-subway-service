@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import nextstep.subway.station.domain.Station;
 
@@ -13,7 +14,7 @@ public class Stations {
         this.stations = stations;
     }
 
-    public static Stations valueOf(List<Station> stations) {
+    public static Stations from(List<Station> stations) {
         return new Stations(stations);
     }
 
@@ -35,5 +36,22 @@ public class Stations {
 
     public List<Station> getList() {
         return Collections.unmodifiableList(this.stations);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Stations stations1 = (Stations)o;
+        return Objects.equals(stations, stations1.stations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stations);
     }
 }

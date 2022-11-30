@@ -15,8 +15,12 @@ public class Distance {
         this.distance = distance;
     }
 
-    public static Distance valueOf(int distance) {
+    public static Distance from(int distance) {
         return new Distance(distance);
+    }
+
+    public static Distance from(double weight) {
+        return new Distance((int)weight);
     }
 
     public static Distance zero() {
@@ -36,6 +40,10 @@ public class Distance {
         if (this.distance <= other.distance) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
+    }
+
+    public int value() {
+        return distance;
     }
 
     @Override

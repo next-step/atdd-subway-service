@@ -1,16 +1,17 @@
 package nextstep.subway.member.application;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -40,6 +41,6 @@ public class MemberService {
 
     public Member findById(Long id) {
         return memberRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("해당 멤버를 찾을 수 없습니다. id: " + id));
+            .orElseThrow(() -> new IllegalArgumentException("해당 멤버를 찾을 수 없습니다. id: " + id));
     }
 }
