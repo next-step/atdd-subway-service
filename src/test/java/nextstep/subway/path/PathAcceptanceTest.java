@@ -9,6 +9,7 @@ import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 
 /**
@@ -21,23 +22,23 @@ import org.junit.jupiter.api.DisplayName;
  * </p>
  * <p>
  * Scenario: 출발역과 도착역 사이의 최단 경로 조회
- *  When
- *  Then
+ *  When 지하철 경로 조회 요청
+ *  Then 출발역과 도착역 사이의 최단 경로 조회됨
  * </p>
  * <p>
  * Scenario: 출발역과 도착역이 같은 경우
- *  When
- *  Then
+ *  When 지하철 경로 조회 요청
+ *  Then 최단 경로 조회 실패
  * </p>
  * <p>
  * Scenario: 출발역과 도착역이 연결이 되어 있지 않은 경우
- *  When
- *  Then
+ *  When 지하철 경로 조회 요청
+ *  Then 최단 경로 조회 실패
  * </p>
  * <p>
  * Scenario: 존재하지 않은 출발역이나 도착역을 조회 할 경우
- *  When
- *  Then
+ *  When 지하철 경로 조회 요청
+ *  Then 최단 경로 조회 실패
  * </p>
  */
 @DisplayName("지하철 경로 조회")
@@ -74,5 +75,25 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+    }
+
+    @Test
+    void 출발역과_도착역_사이의_최단_경로_조회() {
+
+    }
+
+    @Test
+    void 출발역과_도착역이_같은_경우() {
+
+    }
+
+    @Test
+    void 출발역과_도착역이_연결이_되어_있지_않은_경우() {
+
+    }
+
+    @Test
+    void 존재하지_않은_출발역이나_도착역을_조회_할_경우() {
+
     }
 }
