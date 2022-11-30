@@ -5,6 +5,8 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.*;
 import java.util.stream.Stream;
 
+import static nextstep.subway.exception.ErrorMessage.SAME_SUBWAY_SECTION_ERROR;
+
 @Entity
 public class Section {
     @Id
@@ -23,6 +25,7 @@ public class Section {
     @JoinColumn(name = "down_station_id", foreignKey = @ForeignKey(name = "fk_section_down_station"))
     private Station downStation;
 
+    @Embedded
     private Distance distance;
 
     protected Section() {
@@ -44,8 +47,39 @@ public class Section {
 
     private static void validateSection(Station upStation, Station downStation) {
         if (upStation.equals(downStation)) {
-            throw new IllegalArgumentException("상행선과 하행선이 동일할 수 없습니다.");
+            throw new IllegalArgumentException(SAME_SUBWAY_SECTION_ERROR.getMessage());
         }
+    }
+
+    public void changeLine(Line line) {
+        this.line = line;
+    }
+
+    public Stream<Station> streamOfStation() {
+        return Stream.of(upStation, downStation);
+    }
+
+    public void connectUpStationToDownStation(Section addSection) {
+        distance.minus(addSection.getDistance().value());
+        this.upStation = addSection.downStation;
+    }
+
+    public void connectDownStationToUpStation(Section addSection) {
+        distance.minus(addSection.getDistance().value());
+        this.downStation = addSection.upStation;
+    }
+
+    public void disconnectDownSection(Section downSection) {
+        this.downStation = downSection.downStation;
+        this.distance.plus(downSection.distance.value());
+    }
+
+    public boolean hasUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean hasDownStation(Station station) {
+        return downStation.equals(station);
     }
 
     public Long getId() {
@@ -66,36 +100,5 @@ public class Section {
 
     public Distance getDistance() {
         return distance;
-    }
-
-    public void changeLine(Line line) {
-        this.line = line;
-    }
-
-    public Stream<Station> streamOfStation() {
-        return Stream.of(upStation, downStation);
-    }
-
-    public void connectUpStationToDownStation(Section addSection) {
-        distance.minus(addSection.getDistance());
-        this.upStation = addSection.downStation;
-    }
-
-    public void connectDownStationToUpStation(Section addSection) {
-        distance.minus(addSection.getDistance());
-        this.downStation = addSection.upStation;
-    }
-
-    public void disconnectDownSection(Section downSection) {
-        this.downStation = downSection.downStation;
-        this.distance.plus(downSection.distance);
-    }
-
-    public boolean hasUpStation(Station station) {
-        return upStation.equals(station);
-    }
-
-    public boolean hasDownStation(Station station) {
-        return downStation.equals(station);
     }
 }

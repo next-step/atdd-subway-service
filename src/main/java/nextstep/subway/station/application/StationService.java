@@ -10,9 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.exception.ErrorMessage.STATION_ID_NOT_FOUND;
+
 @Service
 public class StationService {
-    private StationRepository stationRepository;
+    private final StationRepository stationRepository;
 
     public StationService(StationRepository stationRepository) {
         this.stationRepository = stationRepository;
@@ -36,10 +38,10 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        return stationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format(STATION_ID_NOT_FOUND.getMessage(), id))
+                );
     }
 
-    public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
 }

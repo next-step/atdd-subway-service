@@ -18,13 +18,25 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
-    public Member() {
+    protected Member() {
     }
 
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
+    }
+
+    public void update(Member member) {
+        this.email = member.email;
+        this.password = member.password;
+        this.age = member.age;
+    }
+
+    public void checkPassword(String password) {
+        if (!StringUtils.equals(this.password, password)) {
+            throw new AuthorizationException();
+        }
     }
 
     public Long getId() {
@@ -41,17 +53,5 @@ public class Member extends BaseEntity {
 
     public Integer getAge() {
         return age;
-    }
-
-    public void update(Member member) {
-        this.email = member.email;
-        this.password = member.password;
-        this.age = member.age;
-    }
-
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
-        }
     }
 }
