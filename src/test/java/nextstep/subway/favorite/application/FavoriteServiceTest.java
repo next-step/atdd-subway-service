@@ -96,4 +96,14 @@ class FavoriteServiceTest {
     private AbstractLongAssert<?> assertStationId(final StationResponse stationResponse, final Station station) {
         return assertThat(stationResponse.getId()).isEqualTo(station.getId());
     }
+
+    @DisplayName("즐겨찾기 삭제에 성공한다")
+    @Test
+    void deleteFavoriteById() {
+        when(favoriteRepository.findByIdAndMemberId(any(), any())).thenReturn(Optional.of(favorite));
+
+        favoriteService.deleteFavoriteById(1L, 1L);
+
+        verify(favoriteRepository, times(1)).delete(favorite);
+    }
 }

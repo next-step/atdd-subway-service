@@ -61,6 +61,10 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void deleteFavoriteById(Long id, Long memberId) {
+    public void deleteFavoriteById(final Long id, final Long memberId) {
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(id, memberId)
+                .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 즐겨찾기 경로를 찾을 수 없습니다."));
+
+        favoriteRepository.delete(favorite);
     }
 }
