@@ -32,6 +32,17 @@ public class Sections {
         this.sections.add(newSection);
     }
 
+    public void removeLineStation(Station station) {
+        validateSectionSize();
+        validateNotContainsStation(station);
+        Optional<Section> upLineStation = removeUpSection(station);
+        Optional<Section> downLineStation = removeDownSection(station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            this.add(mergeSection(upLineStation, downLineStation));
+        }
+    }
+
     private void validateNotContainsAny(Section section) {
         List<Station> stations = this.getStations();
         if (stations.isEmpty()) {
@@ -48,14 +59,29 @@ public class Sections {
         }
     }
 
-    public void removeLineStation(Station station) {
-        validateSectionSize();
-        validateNotContainsStation(station);
-        Optional<Section> upLineStation = removeUpSection(station);
-        Optional<Section> downLineStation = removeDownSection(station);
+    private void updateUpStation(Section newSection) {
+        sections.stream()
+            .filter(it -> it.hasUpStation(newSection.getUpStation()))
+            .findFirst()
+            .ifPresent(it -> it.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
+    }
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            this.add(mergeSection(upLineStation, downLineStation));
+    private void updateDownStation(Section newSection) {
+        sections.stream()
+            .filter(it -> it.hasDownStation(newSection.getDownStation()))
+            .findFirst()
+            .ifPresent(it -> it.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
+    }
+
+    private void validateSectionSize() {
+        if (getSections().size() <= MINIMUM_SECTIONS_SIZE) {
+            throw new IllegalStateException("더 이상 구간을 제거할 수 없습니다.");
+        }
+    }
+
+    private void validateNotContainsStation(Station station) {
+        if (!this.getStations().contains(station)) {
+            throw new IllegalArgumentException("노선에 등록되어있지 않은 역입니다.");
         }
     }
 
@@ -83,18 +109,6 @@ public class Sections {
         return downSection;
     }
 
-    private void validateSectionSize() {
-        if (getSections().size() <= MINIMUM_SECTIONS_SIZE) {
-            throw new IllegalStateException("더 이상 구간을 제거할 수 없습니다.");
-        }
-    }
-
-    public void validateNotContainsStation(Station station) {
-        if (!this.getStations().contains(station)) {
-            throw new IllegalArgumentException("노선에 등록되어있지 않은 역입니다.");
-        }
-    }
-
     public List<Station> getStations() {
         if (this.sections.isEmpty()) {
             return Arrays.asList();
@@ -102,18 +116,8 @@ public class Sections {
         return sortedStation();
     }
 
-    public void updateUpStation(Section newSection) {
-        sections.stream()
-            .filter(it -> it.hasUpStation(newSection.getUpStation()))
-            .findFirst()
-            .ifPresent(it -> it.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
-    }
-
-    public void updateDownStation(Section newSection) {
-        sections.stream()
-            .filter(it -> it.hasDownStation(newSection.getDownStation()))
-            .findFirst()
-            .ifPresent(it -> it.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
+    public List<Section> getSections() {
+        return sections;
     }
 
     private List<Station> sortedStation() {
@@ -164,7 +168,4 @@ public class Sections {
             .anyMatch(it -> it.hasUpStation(station));
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
 }
