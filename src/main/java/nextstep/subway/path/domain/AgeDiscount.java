@@ -20,18 +20,18 @@ public enum AgeDiscount {
     }
 
     public static int calculate(int age, int fare) {
-        AgeDiscount ageDiscount = find(age);
+        AgeDiscount ageDiscount = findDiscountByAge(age);
         return (int) ((fare - DEFAULT_DISCOUNT_FARE) * ageDiscount.percent);
     }
 
-    private static AgeDiscount find(int age) {
+    private static AgeDiscount findDiscountByAge(int age) {
         return Arrays.stream(AgeDiscount.values())
-                .filter(ageDiscount -> ageDiscount.isBetween(age))
+                .filter(ageDiscount -> ageDiscount.isIncluded(age))
                 .findFirst()
                 .orElse(ADULT);
     }
 
-    private boolean isBetween(int age) {
+    private boolean isIncluded(int age) {
         return start <= age && age < end;
     }
 }

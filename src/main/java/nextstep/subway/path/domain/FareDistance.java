@@ -22,7 +22,7 @@ public enum FareDistance {
     }
 
     public static int calculate(int distance) {
-        FareDistance fareDistance = find(distance);
+        FareDistance fareDistance = findByDistance(distance);
         if (fareDistance.equals(BASIC)) {
             return BASIC_PRICE;
         }
@@ -36,7 +36,7 @@ public enum FareDistance {
                 + fareDistance.calculateFare(distance - LONG.start + 1, LONG.condition);
     }
 
-    private static FareDistance find(int distance) {
+    private static FareDistance findByDistance(int distance) {
         return Arrays.stream(FareDistance.values())
                 .filter(fareDistance -> fareDistance.isBetween(distance))
                 .findFirst()
