@@ -10,7 +10,7 @@ public class FavoriteResponse {
 
     private FavoriteResponse() {}
 
-    public FavoriteResponse(final Long id, final StationResponse sourceStation, final StationResponse targetStation) {
+    private FavoriteResponse(final Long id, final StationResponse sourceStation, final StationResponse targetStation) {
         this.id = id;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
