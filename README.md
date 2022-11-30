@@ -68,3 +68,35 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
  - 출발역과 도착역이 같은 경우
  - 출발역과 도착역이 연결이 되어 있지 않은 경우
  - 존재하지 않은 출발역이나 도착역을 조회 할 경우
+
+# 🚀 3단계 - 인증을 통한 기능 구현
+## 요구사항
+- 토큰 발급 기능 (로그인) 인수 테스트 만들기
+- 인증 - 내 정보 조회 기능 완성하기
+- 인증 - 즐겨 찾기 기능 완성하기
+
+## 인수테스트
+
+### 로그인 기능
+- 이메일과 패스워드를 이용하여 요청 시 access token을 응답하는 기능 구현
+- `AuthAcceptanceTest`을 만족하도록 구현
+- `AuthAcceptanceTest`의 예외 케이스 고려하여 구현
+- 유효하지 않은 토큰으로 `/members/me` 요청을 보낼 경우에 대한 예외 처리
+
+### 내 정보 조회 기능
+- `MemberAcceptanceTest` 클래스의 `manageMyInfo()` 메서드에 인수 테스트 추가
+- 내 정보 조회, 수정, 삭제 기능을 `/members/me` 라는 URI 요청으로 동작하도록 검증
+- 로그인 후 발급 받은 토큰을 포함해서 요청
+- `/members/me` 요청 시 토큰을 확인하여 로그인 정보를 받아올 수 있도록 하기
+- `@AuthenticationPrincipal`과 `AuthenticationPrincipalArgumentResolver` 활용
+
+### 즐겨 찾기 기능
+- 즐겨찾기 생성
+- 즐겨찾기 목록 조회
+- 즐겨찾기 삭제
+- 인증을 포함하여 전체 ATDD 사이클을 경험할 수 있도록 기능을 구현하기
+
+
+
+
+
