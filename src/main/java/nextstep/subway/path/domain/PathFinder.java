@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import nextstep.subway.common.exception.ErrorEnum;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -39,7 +40,14 @@ public class PathFinder {
     }
 
     public Path findShortestPath(Station sourceStation, Station targetStation) {
+        checkEqualStation(sourceStation, targetStation);
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
         return Path.of(path.getVertexList(), (int) path.getWeight());
+    }
+
+    private void checkEqualStation(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new RuntimeException(ErrorEnum.SOURCE_AND_TARGET_EQUAL_STATION.message());
+        }
     }
 }

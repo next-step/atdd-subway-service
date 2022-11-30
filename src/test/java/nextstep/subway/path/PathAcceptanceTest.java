@@ -58,17 +58,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 구호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
 
     /**
-     * 교대역       --- *2호선(10)* ---   강남역
-     * |                                    |
-     * *3호선(3)*                       *신분당선(10)*
-     * |                                    |
-     * 남부터미널역  --- *3호선(2)* ---     양재
+     * 교대역      ----- *2호선(10)* -----   강남역
+     * |                                   |
+     * |                                   |
+     * *3호선(3)*             가         *신분당선(10)*
+     * |                                   |
+     * |                                   |
+     * 남부터미널역 ----- *3호선(2)* -----     양재
+     *
+     * 동작역     ----- *9호선(13)* -----    석촌역
+     *
      */
     @BeforeEach
     public void setUp() {
@@ -120,17 +126,30 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 출발역과_도착역이_같은_경우() {
+    void 출발역과_도착역이_같은_경우_예외_발생() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역.getId(), 교대역.getId());
 
+        // then
+        지하철_최단_경로_실패됨(response);
     }
 
     @Test
     void 출발역과_도착역이_연결이_되어_있지_않은_경우() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역.getId(), 교대역.getId());
+
+        // then
+        지하철_최단_경로_실패됨(response);
 
     }
 
     @Test
     void 존재하지_않은_출발역이나_도착역을_조회_할_경우() {
 
+    }
+
+    private void 지하철_최단_경로_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

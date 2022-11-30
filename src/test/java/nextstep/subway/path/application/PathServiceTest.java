@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
@@ -57,9 +58,8 @@ public class PathServiceTest {
         삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5);
     }
 
-    @DisplayName("교대역에서 양재역 최단 경로 조회")
     @Test
-    void findShortestPath() {
+    void 출발역과_도착역이_같은_경우_최단_경로_조회() {
         when(stationRepository.findById(1L)).thenReturn(Optional.of(교대역));
         when(stationRepository.findById(2L)).thenReturn(Optional.of(양재역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(삼호선, 이호선));
@@ -71,6 +71,16 @@ public class PathServiceTest {
                 () -> assertThat(response.getDistance()).isEqualTo(5)
         );
 
+    }
+
+    @Test
+    void 출발역과_도착역이_같은_경우_예외_발생() {
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(교대역));
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(교대역));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(삼호선, 이호선));
+
+        assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L))
+                        .isInstanceOf(RuntimeException.class);
     }
 
 }
