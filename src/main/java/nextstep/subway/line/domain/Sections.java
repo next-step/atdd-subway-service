@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -48,11 +49,13 @@ public class Sections {
     }
 
     private boolean isDownStationExisted(Station downStation) {
-        return getStations().stream().anyMatch(it -> it == downStation);
+        return this.sections.stream()
+                .anyMatch(it -> it.isSameDownStation(downStation));
     }
 
     private boolean isUpStationExisted(Station upStation) {
-        return getStations().stream().anyMatch(it -> it == upStation);
+        return this.sections.stream()
+                .anyMatch(it -> it.isSameUpStation(upStation));
     }
 
     public void removeSection(Section section) {
@@ -90,25 +93,31 @@ public class Sections {
 
     private Station findTerminalUpStation() {
         return sections.stream()
-                .filter(section -> sections.stream().map(Section::getDownStation).noneMatch(Predicate.isEqual(section.getUpStation())))
+                .filter(section -> findNoneMatchUpStation(section.getUpStation()))
                 .findFirst()
                 .map(Section::getUpStation)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new RuntimeException("종점 상행역을 찾을 수 없습니다."));
+    }
+
+    private boolean findNoneMatchUpStation(Station upStation){
+        return sections.stream()
+                .map(Section::getDownStation)
+                .noneMatch(Predicate.isEqual(upStation));
     }
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
         Station downStation = findTerminalUpStation();
         stations.add(downStation);
 
-        Section nextSection = findUpStation(downStation).orElse(null);
-        while (nextSection != null) {
-            stations.add(nextSection.getDownStation());
-            nextSection = findUpStation(nextSection.getDownStation()).orElse(null);
+        Optional<Section> nextSection = findUpStation(downStation);
+        while (nextSection.isPresent()) {
+            stations.add(nextSection.get().getDownStation());
+            nextSection = findUpStation(nextSection.get().getDownStation());
         }
 
         return stations;

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import nextstep.subway.line.domain.Distance;
 import org.junit.jupiter.api.Test;
 
-public class DistanceTest {
+class DistanceTest {
     @Test
     void 생성() {
         Distance distance = Distance.from(1);

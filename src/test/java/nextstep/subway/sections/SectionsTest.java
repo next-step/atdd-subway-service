@@ -10,7 +10,7 @@ import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.Test;
 
-public class SectionsTest {
+class SectionsTest {
     private final Line 신분당선 = Line.of("신분당선", "red");
     private final Station 강남역 = new Station("강남역");
     private final Station 광교역 = new Station("광교역");
@@ -50,10 +50,10 @@ public class SectionsTest {
         assertAll(
                 () -> assertThat(sections.getSections().get(0).getUpStation()).isEqualTo(판교역),
                 () -> assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(광교역),
-                () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(FIVE),
+                () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(5),
                 () -> assertThat(sections.getSections().get(1).getUpStation()).isEqualTo(강남역),
                 () -> assertThat(sections.getSections().get(1).getDownStation()).isEqualTo(판교역),
-                () -> assertThat(sections.getSections().get(1).getDistance()).isEqualTo(FIVE)
+                () -> assertThat(sections.getSections().get(1).getDistance()).isEqualTo(5)
         );
     }
 
@@ -80,7 +80,7 @@ public class SectionsTest {
         assertAll(
                 () -> assertThat(sections.getSections().get(0).getUpStation()).isEqualTo(강남역),
                 () -> assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(광교역),
-                () -> assertThat(sections.getSections().get(0).getDistance().getDistance()).isEqualTo(10)
+                () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(10)
         );
     }
 

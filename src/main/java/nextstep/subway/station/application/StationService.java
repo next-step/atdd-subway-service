@@ -27,7 +27,7 @@ public class StationService {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-                .map(station -> StationResponse.of(station))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -41,5 +41,12 @@ public class StationService {
 
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+    }
+
+    public List<StationResponse> findAllByIdIsIn(List<Long> ids) {
+        return stationRepository.findAllByIdIsIn(ids)
+                .stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
     }
 }
