@@ -1,6 +1,7 @@
 package nextstep.subway.path.applicaiton;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
@@ -90,11 +91,9 @@ class PathServiceTest {
     @DisplayName("출발역과 도착역이 같은 경우 IllegalArgumentException 이 발생한다.")
     @Test
     void same_source_target() {
-        //given
-
-        //when
-
-        //then
+        //when & then
+        assertThatThrownBy(() -> pathService.findPaths(1L, 1L))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우 IllegalArgumentException 이 발생한다.")
