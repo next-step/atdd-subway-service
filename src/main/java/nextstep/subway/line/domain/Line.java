@@ -57,11 +57,12 @@ public class Line extends BaseEntity {
         return sections.getStationResponse();
     }
 
-    public List<Station> getStations() {
-        return sections.getStations();
+    public void addLineStation(Station upStation, Station downStation, int distance) {
+        this.sections.getSectionAdder(upStation, downStation)
+                .addSection(this, upStation,downStation,distance);
     }
 
-    public void checkToAddSection(Station upStation, Station downStation) {
-        this.sections.checkToAddSection(upStation,downStation);
+    public void addSection(Station upperStation, Station downStation, int distance) {
+        this.sections.add(new Section(this,upperStation,downStation,distance));
     }
 }

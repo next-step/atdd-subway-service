@@ -61,7 +61,7 @@ class SectionsTest {
     void checkToAddSection() {
         Sections sections = getSectionsHasTwoSection();
 
-        assertThatThrownBy(() -> sections.checkToAddSection(upStation,downStation))
+        assertThatThrownBy(() -> sections.getSectionAdder(upStation,downStation))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -73,8 +73,45 @@ class SectionsTest {
         Station 존재하지_않는_역1 = new Station(5L,"존재하지 않는 역1");
         Station 존재하지_않는_역2 = new Station(6L,"존재하지 않는 역2");
 
-        assertThatThrownBy(() -> sections.checkToAddSection(존재하지_않는_역1,존재하지_않는_역2))
+        assertThatThrownBy(() -> sections.getSectionAdder(존재하지_않는_역1,존재하지_않는_역2))
                 .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    @DisplayName("구간이 비어있으면 EmptySectionAdder가 반환됨")
+    void checkToAddSection3() {
+        Sections sections = new Sections();
+
+        Station 존재하지_않는_역1 = new Station(5L,"존재하지 않는 역1");
+        Station 존재하지_않는_역2 = new Station(6L,"존재하지 않는 역2");
+
+        SectionAdder sectionAdder = sections.getSectionAdder(존재하지_않는_역1, 존재하지_않는_역2);
+
+        assertThat(sectionAdder).isInstanceOf(EmptySectionAdder.class);
+    }
+
+    @Test
+    @DisplayName("상행역으로 시작하는 구간을 추가하려고 할 때 FromUpperSectionAdder가 반환됨")
+    void checkToAddSection4() {
+        Sections sections = getSectionsHasTwoSection();
+
+        Station 존재하지_않는_역2 = new Station(6L,"존재하지 않는 역2");
+
+        SectionAdder sectionAdder = sections.getSectionAdder(upStation, 존재하지_않는_역2);
+
+        assertThat(sectionAdder).isInstanceOf(FromUpperSectionAdder.class);
+    }
+
+    @Test
+    @DisplayName("하행역에서 끝나는 구간을 추가하려고 할 때 FromUpperSectionAdder가 반환됨")
+    void checkToAddSection5() {
+        Sections sections = getSectionsHasTwoSection();
+
+        Station 존재하지_않는_역2 = new Station(6L,"존재하지 않는 역2");
+
+        SectionAdder sectionAdder = sections.getSectionAdder(존재하지_않는_역2,downStation);
+
+        assertThat(sectionAdder).isInstanceOf(FromDownSectionAdder.class);
     }
 
     private Sections getSectionsHasTwoSection() {
