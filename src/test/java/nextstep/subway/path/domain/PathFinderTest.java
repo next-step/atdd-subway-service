@@ -54,7 +54,7 @@ public class PathFinderTest {
                 .hasMessageContaining("노선이 존재해야합니다");
     }
 
-    @DisplayName("최단경로를 조회할때 출발역과 도착역이 같으면 예외발생")
+    @DisplayName("출발역과 도착역이 같으면 예외발생")
     @Test
     void returnsExceptionWithSameStations() {
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));

@@ -3,7 +3,6 @@ package nextstep.subway.path.application;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -66,7 +65,7 @@ public class PathServiceTest {
         칠호선 = createLine("칠호선", "bg-green-600", 학동역, 강남구청역, 10);
     }
 
-    @DisplayName("최단경로를 조회할때 출발역과 도착역이 같으면 예외발생")
+    @DisplayName("출발역과 도착역이 같으면 예외발생")
     @Test
     void returnsExceptionWithSameStations() {
         when(stationRepository.findById(강남역.getId())).thenReturn(Optional.of(강남역));
@@ -106,7 +105,7 @@ public class PathServiceTest {
         when(stationRepository.findById(양재역.getId())).thenReturn(Optional.of(양재역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        PathResponse pathResponse = pathService.findShortestPath(광산역.getId(),양재역.getId());
+        PathResponse pathResponse = pathService.findShortestPath(광산역.getId(), 양재역.getId());
         assertThat(pathResponse.getStations().stream().map(StationResponse::getId))
                 .containsExactly(광산역.getId(), 교대역.getId(), 남부터미널역.getId(), 양재역.getId());
     }
