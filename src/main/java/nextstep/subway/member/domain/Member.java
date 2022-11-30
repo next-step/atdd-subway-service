@@ -74,4 +74,8 @@ public class Member extends BaseEntity {
     public String passwordValue() {
         return password.value();
     }
+
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
 }

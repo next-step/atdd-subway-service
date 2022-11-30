@@ -43,7 +43,7 @@ class FavoriteTest {
         // when & then
         assertThatThrownBy(() -> Favorite.of(null, departureStation, arrivalStation))
                 .isInstanceOf(InvalidParameterException.class)
-                .hasMessage("필수값을 확인해주세요. (회원정보, 출발역, 도착역)");
+                .hasMessage("회원정보를 확인해주세요.");
     }
 
     @Test
@@ -52,7 +52,7 @@ class FavoriteTest {
         // when & then
         assertThatThrownBy(() -> Favorite.of(member, null, arrivalStation))
                 .isInstanceOf(InvalidParameterException.class)
-                .hasMessage("필수값을 확인해주세요. (회원정보, 출발역, 도착역)");
+                .hasMessage("출발역을 확인해주세요.");
     }
 
     @Test
@@ -61,7 +61,7 @@ class FavoriteTest {
         // when & then
         assertThatThrownBy(() -> Favorite.of(member, departureStation, null))
                 .isInstanceOf(InvalidParameterException.class)
-                .hasMessage("필수값을 확인해주세요. (회원정보, 출발역, 도착역)");
+                .hasMessage("도착역을 확인해주세요.");
     }
 
     @Test

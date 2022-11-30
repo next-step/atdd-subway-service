@@ -1,15 +1,20 @@
 package nextstep.subway.favorite.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.when;
 
+import java.util.List;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
@@ -50,6 +55,36 @@ class FavoriteServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 역을 출발역으로 즐겨찾기를 생성할 수 없다.")
+    void createFavoriteByEmptyDepartureStation() {
+        // given
+        FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
+        when(memberService.findMemberById(1L)).thenReturn(member);
+        when(stationService.findStationById(1L)).thenReturn(null);
+        when(stationService.findStationById(2L)).thenReturn(arrivalStation);
+
+        // when
+        assertThatThrownBy(() -> favoriteService.createFavorite(loginMember, favoriteRequest))
+                .isInstanceOf(InvalidParameterException.class)
+                .hasMessage("출발역을 확인해주세요.");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 역을 도착역으로 즐겨찾기를 생성할 수 없다.")
+    void createFavoriteByEmptyArrivalStation() {
+        // given
+        FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
+        when(memberService.findMemberById(1L)).thenReturn(member);
+        when(stationService.findStationById(1L)).thenReturn(departureStation);
+        when(stationService.findStationById(2L)).thenReturn(null);
+
+        // when
+        assertThatThrownBy(() -> favoriteService.createFavorite(loginMember, favoriteRequest))
+                .isInstanceOf(InvalidParameterException.class)
+                .hasMessage("도착역을 확인해주세요.");
+    }
+
+    @Test
     @DisplayName("즐겨찾기를 생성한다")
     void createFavorite() {
         // given
@@ -65,5 +100,20 @@ class FavoriteServiceTest {
         // then
         assertNotNull(actual);
         assertThat(actual).isInstanceOf(Favorite.class);
+    }
+    
+    @Test
+    @DisplayName("즐겨찾기 목록을 조회한다")
+    void findFavorites() {
+        // given - BeforeEach에 즐겨찾기 1개 등록되어 있음
+        Favorite.of(member, Station.from("잠실역"), Station.from("몽촌토성역"));
+        when(memberService.findMemberById(1L)).thenReturn(member);
+
+        // when
+        List<FavoriteResponse> favoriteResponses = favoriteService.findFavoritesByMemberId(loginMember);
+
+        assertAll(
+                () -> assertThat(favoriteResponses).hasSize(2)
+        );
     }
 }

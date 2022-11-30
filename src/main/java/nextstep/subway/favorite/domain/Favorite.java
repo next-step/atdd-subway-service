@@ -14,7 +14,9 @@ import nextstep.subway.station.domain.Station;
 @Entity
 public class Favorite {
     private static final String ERROR_MESSAGE_FAVORITE_SAME_STATIONS = "출발역과 도착역이 같을 수 없습니다.";
-    private static final String ERROR_MESSAGE_FAVORITE_NOT_NULL_STATIONS = "필수값을 확인해주세요. (회원정보, 출발역, 도착역)";
+    private static final String ERROR_MESSAGE_FAVORITE_NOT_NULL_MEMBER = "회원정보를 확인해주세요.";
+    private static final String ERROR_MESSAGE_FAVORITE_NOT_NULL_DEPARTURE_STATION = "출발역을 확인해주세요.";
+    private static final String ERROR_MESSAGE_FAVORITE_NOT_NULL_ARRIVAL_STATION = "도착역을 확인해주세요.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,8 +51,16 @@ public class Favorite {
     }
 
     private void validNotNull(Member member, Station departureStation, Station arrivalStation) {
-        if (Objects.isNull(member) || Objects.isNull(departureStation) || Objects.isNull(arrivalStation)) {
-            throw new InvalidParameterException(ERROR_MESSAGE_FAVORITE_NOT_NULL_STATIONS);
+        if (Objects.isNull(member)) {
+            throw new InvalidParameterException(ERROR_MESSAGE_FAVORITE_NOT_NULL_MEMBER);
+        }
+
+        if (Objects.isNull(departureStation)) {
+            throw new InvalidParameterException(ERROR_MESSAGE_FAVORITE_NOT_NULL_DEPARTURE_STATION);
+        }
+
+        if (Objects.isNull(arrivalStation)) {
+            throw new InvalidParameterException(ERROR_MESSAGE_FAVORITE_NOT_NULL_ARRIVAL_STATION);
         }
     }
 

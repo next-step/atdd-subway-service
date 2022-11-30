@@ -1,9 +1,12 @@
 package nextstep.subway.favorite.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
@@ -21,6 +24,11 @@ public class FavoriteService {
         this.memberService = memberService;
         this.stationService = stationService;
         this.favoriteRepository = favoriteRepository;
+    }
+
+    public List<FavoriteResponse> findFavoritesByMemberId(LoginMember loginMember) {
+        Member member = memberService.findMemberById(loginMember.getId());
+        return member.getFavorites().stream().map(FavoriteResponse::of).collect(Collectors.toList());
     }
 
     @Transactional
