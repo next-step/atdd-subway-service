@@ -48,6 +48,23 @@ class ShortestPathTest {
         assertThat(result.get()).isEqualTo(BASIC_PRICE + extraFare);
     }
 
+    @DisplayName("환승의 경우 추가 요금이 가장 큰 라인의 추가 요금이 적용된다.")
+    @Test
+    void calculateMultiExtraFare() {
+        // given
+        int extraFare = 1_000;
+        Line line = new Line("신분당선", "bg-red-600", new Fare(extraFare));
+        Line line2 = new Line("일호선", "bg-red-400", new Fare(300));
+        Lines lines = new Lines(Arrays.asList(line, line2));
+        ShortestPath path = new ShortestPath(new ArrayList<>(), 0, lines);
+
+        // when
+        Fare result = path.calculateFare(33);
+
+        // then
+        assertThat(result.get()).isEqualTo(BASIC_PRICE + extraFare);
+    }
+
     @DisplayName("거리에 따라 요금 정책이 적용된다")
     @ParameterizedTest
     @CsvSource(value = {"10:1250", "20:1450", "45:1950", "50:2050", "58:2150", "178:3650"}, delimiter = ':')

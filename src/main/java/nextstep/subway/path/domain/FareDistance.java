@@ -8,7 +8,8 @@ public enum FareDistance {
     MIDDLE(11, 50, distance ->
             BASIC.expression.apply(distance) + calculateFare(distance - BASIC.end, 5)),
     LONG(51, 178, distance ->
-            MIDDLE.expression.apply(MIDDLE.end) + calculateFare(distance - MIDDLE.end, 8));
+            MIDDLE.expression.apply(MIDDLE.end) + calculateFare(distance - MIDDLE.end, 8)),
+    NOT_MATCH(0, 0, distance -> 0);
 
     private static final int ZERO = 0;
     private static final int INCREMENT_FARE = 100;
@@ -36,7 +37,7 @@ public enum FareDistance {
         return Arrays.stream(FareDistance.values())
                 .filter(fareDistance -> fareDistance.isBetween(distance))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("거리별 요금 정책에 부합하지 않은 값입니다."));
+                .orElse(NOT_MATCH);
     }
 
     private boolean isBetween(int distance) {
