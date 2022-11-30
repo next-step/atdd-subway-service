@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.exception.NotValidDataException;
 import nextstep.subway.station.domain.Station;
 import org.springframework.util.StringUtils;
 
@@ -9,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static nextstep.subway.exception.type.ValidExceptionType.ALREADY_EXIST_LINE_STATION;
+import static nextstep.subway.exception.type.ValidExceptionType.STATION_BOTH_NOT_EXIST;
 
 @Entity
 public class Line extends BaseEntity {
@@ -155,19 +159,18 @@ public class Line extends BaseEntity {
         if (isUpStationExisted) {
             updateUpStation(upStation, downStation, distance);
             this.addSection(new Section(this, upStation, downStation, Distance.from(distance)));
-        } else if (isDownStationExisted) {
+        }
+
+        if (isDownStationExisted) {
             updateDownStation(upStation, downStation, distance);
-            Section section = new Section(this, upStation, downStation, Distance.from(distance));
-            this.addSection(section);
-        } else {
-            throw new RuntimeException();
+            this.addSection(new Section(this, upStation, downStation, Distance.from(distance)));
         }
     }
 
     private void updateDownStation(Station upStation, Station downStation, int distance) {
         this.getSections()
                 .stream()
-                .filter(it -> it.getDownStation() == downStation)
+                .filter(it -> it.isSameDownStation(downStation))
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
     }
@@ -175,20 +178,20 @@ public class Line extends BaseEntity {
     private void updateUpStation(Station upStation, Station downStation, int distance) {
         this.getSections()
                 .stream()
-                .filter(it -> it.getUpStation() == upStation)
+                .filter(it -> it.isSameUpStation(upStation))
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
     }
 
     private void validCheckAddRejectSection(List<Station> stations, Station upStation, Station downStation) {
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) && stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new NotValidDataException(STATION_BOTH_NOT_EXIST.getMessage());
         }
     }
 
     private void validCheckAlreadyBothExistStation(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new NotValidDataException(ALREADY_EXIST_LINE_STATION.getMessage());
         }
     }
 }

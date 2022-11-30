@@ -68,4 +68,12 @@ public class Section {
     public Distance plusDistance(Section section) {
         return this.distance.plus(section.distance);
     }
+
+    public boolean isSameDownStation(Station downStation) {
+        return this.downStation.equals(downStation);
+    }
+
+    public boolean isSameUpStation(Station upStation) {
+        return this.upStation.equals(upStation);
+    }
 }
