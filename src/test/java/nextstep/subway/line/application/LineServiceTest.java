@@ -33,6 +33,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class LineServiceTest {
 
+    private static final long LINE_ID = 1L;
+    private static final long UP_STATION_ID = 2L;
+    private static final long DOWN_STATION_ID = 3L;
+
     @Mock
     private LineRepository lineRepository;
 
@@ -51,15 +55,15 @@ class LineServiceTest {
 
     @BeforeEach
     void setUp() {
-        request = new LineRequest("2호선", "bg-green-600", 1L, 2L, 10);
+        request = new LineRequest("2호선", "bg-green-600", UP_STATION_ID, DOWN_STATION_ID, 10);
         upStation = new Station("강남역");
         downStation = new Station("역삼역");
     }
 
     @Test
     void 지하철_노선_저장() {
-        when(stationRepository.findById(1L)).thenReturn(Optional.of(upStation));
-        when(stationRepository.findById(2L)).thenReturn(Optional.of(downStation));
+        when(stationRepository.findById(UP_STATION_ID)).thenReturn(Optional.of(upStation));
+        when(stationRepository.findById(DOWN_STATION_ID)).thenReturn(Optional.of(downStation));
         when(lineRepository.save(request.toLineWithSection(upStation, downStation)))
                 .thenReturn(request.toLineWithSection(upStation, downStation));
 
@@ -74,10 +78,10 @@ class LineServiceTest {
 
     @Test
     void id로_지하철_노선_검색() {
-        when(lineRepository.findById(1L))
+        when(lineRepository.findById(LINE_ID))
                 .thenReturn(Optional.of(new Line("신분당선", "bg-red-600")));
 
-        Line line = lineService.findLineById(1L);
+        Line line = lineService.findLineById(LINE_ID);
 
         assertEquals("신분당선", line.getName());
     }
@@ -85,7 +89,7 @@ class LineServiceTest {
     @Test
     void id로_지하철_노선_검색시_데이터가_존재하지_않으면_NotFoundException_발생() {
         assertThatThrownBy(() -> {
-            lineService.findLineById(1L);
+            lineService.findLineById(LINE_ID);
         }).isInstanceOf(NotFoundException.class)
                 .hasMessage(LineExceptionCode.NOT_FOUND_BY_ID.getMessage());
     }
@@ -110,8 +114,8 @@ class LineServiceTest {
         Line line = new Line("2호선", "bg-green-600");
         LineRequest request = new LineRequest("3호선", "bg-orange-600", null, null, 0);
 
-        when(lineRepository.findById(1L)).thenReturn(Optional.of(line));
-        lineService.updateLine(1L, request);
+        when(lineRepository.findById(LINE_ID)).thenReturn(Optional.of(line));
+        lineService.updateLine(LINE_ID, request);
 
         assertThat(line).satisfies(res -> {
             assertEquals("3호선", res.getName());
@@ -128,14 +132,14 @@ class LineServiceTest {
         Line line = new Line("2호선", "bg-green-600");
         Section section = new Section(line, 교대역, 강남역, 10);
         line.addSection(section);
-        SectionRequest request = new SectionRequest(2L, 3L, 10);
+        SectionRequest request = new SectionRequest(UP_STATION_ID, DOWN_STATION_ID, 10);
 
-        when(stationRepository.findById(2L)).thenReturn(Optional.of(강남역));
-        when(stationRepository.findById(3L)).thenReturn(Optional.of(역삼역));
+        when(stationRepository.findById(UP_STATION_ID)).thenReturn(Optional.of(강남역));
+        when(stationRepository.findById(DOWN_STATION_ID)).thenReturn(Optional.of(역삼역));
         when(sectionRepository.findAllByRequestedSection(강남역, 역삼역)).thenReturn(Arrays.asList(section));
-        when(lineRepository.findById(1L)).thenReturn(Optional.of(line));
+        when(lineRepository.findById(LINE_ID)).thenReturn(Optional.of(line));
 
-        lineService.updateSection(1L, request);
+        lineService.updateSection(LINE_ID, request);
 
         assertThat(line.getSections()).hasSize(2);
     }
@@ -152,11 +156,11 @@ class LineServiceTest {
         line.addSection(downSection);
         line.addSection(upSection);
 
-        when(sectionRepository.findByUpStationId(2L)).thenReturn(Optional.of(upSection));
-        when(sectionRepository.findByDownStationId(2L)).thenReturn(Optional.of(downSection));
-        when(lineRepository.findById(1L)).thenReturn(Optional.of(line));
+        when(sectionRepository.findByUpStationId(UP_STATION_ID)).thenReturn(Optional.of(upSection));
+        when(sectionRepository.findByDownStationId(UP_STATION_ID)).thenReturn(Optional.of(downSection));
+        when(lineRepository.findById(LINE_ID)).thenReturn(Optional.of(line));
 
-        lineService.deleteSection(1L, 2L);
+        lineService.deleteSection(LINE_ID, UP_STATION_ID);
 
         assertThat(line.getSections()).hasSize(1);
     }

@@ -1,9 +1,6 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.exception.CannotFindPathException;
-import nextstep.subway.path.exception.PathExceptionCode;
 import nextstep.subway.station.domain.Station;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
