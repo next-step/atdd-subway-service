@@ -14,7 +14,7 @@ public class MemberResponse {
     }
 
     public static MemberResponse of(Member member) {
-        return new MemberResponse(member.getId(), member.emailValue(), member.getAge());
+        return new MemberResponse(member.getId(), member.emailValue(), member.ageValue());
     }
 
     public Long getId() {

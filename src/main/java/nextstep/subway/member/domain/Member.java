@@ -16,14 +16,15 @@ public class Member extends BaseEntity {
     @Embedded
     private Email email;
     private String password;
-    private Integer age;
+    @Embedded
+    private Age age;
 
     protected Member() {}
 
     private Member(String email, String password, Integer age) {
         this.email = Email.from(email);
         this.password = password;
-        this.age = age;
+        this.age = Age.from(age);
     }
 
     public static Member of(String email, String password, Integer age) {
@@ -58,7 +59,7 @@ public class Member extends BaseEntity {
         return password;
     }
 
-    public Integer getAge() {
-        return age;
+    public Integer ageValue() {
+        return age.value();
     }
 }

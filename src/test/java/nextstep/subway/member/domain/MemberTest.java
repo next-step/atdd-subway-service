@@ -34,7 +34,7 @@ class MemberTest {
         assertAll(
                 () -> assertThat(actual.emailValue()).isEqualTo("update@email.com"),
                 () -> assertThat(actual.getPassword()).isEqualTo("update"),
-                () -> assertThat(actual.getAge()).isEqualTo(21)
+                () -> assertThat(actual.ageValue()).isEqualTo(21)
         );
     }
 }

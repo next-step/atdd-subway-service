@@ -36,6 +36,10 @@ public class Email {
         validEmailFormat(email);
     }
 
+    public String value() {
+        return email;
+    }
+
     private static void validNullAndBlank(String email) {
         if (!StringUtils.hasText(email)) {
             throw new InvalidParameterException(ERROR_MESSAGE_EMPTY_EMAIL);
@@ -46,10 +50,6 @@ public class Email {
         if (!EMAIL_PATTERN.matcher(email).find()) {
             throw new InvalidParameterException(ERROR_MESSAGE_INCORRECT_EMAIL_FORMAT);
         }
-    }
-
-    public String value() {
-        return email;
     }
 
     @Override
