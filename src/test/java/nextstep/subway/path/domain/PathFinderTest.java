@@ -3,16 +3,14 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Objects;
 
+import static nextstep.subway.Fixture.createLine;
+import static nextstep.subway.Fixture.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -91,19 +89,8 @@ public class PathFinderTest {
     void returnsShortestPath() {
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        assertThat(pathFinder.getShortestPath(광산역, 양재역).stream().map(StationResponse::getName))
-                .containsExactly("광산역", "교대역", "남부터미널역", "양재역");
-    }
-
-    public Station createStation(String name, long id) {
-        Station station = new Station(name);
-        Field field = ReflectionUtils.findField(Station.class, "id");
-        Objects.requireNonNull(field).setAccessible(true);
-        ReflectionUtils.setField(field, station, id);
-        return station;
-    }
-
-    public Line createLine(String name, String color, Station upStation, Station downStation, int distance) {
-        return new Line(name, color, upStation, downStation, distance);
+        assertThat(pathFinder.getShortestPath(광산역, 양재역))
+                .containsExactly(광산역, 교대역, 남부터미널역, 양재역);
     }
 }
+

@@ -2,7 +2,6 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -29,12 +28,11 @@ public class PathFinder {
         }
     }
 
-    public List<StationResponse> getShortestPath(Station sourceStation, Station targetStation) {
+    public List<Station> getShortestPath(Station sourceStation, Station targetStation) {
         vlidateStation(sourceStation, targetStation);
         return new DijkstraShortestPath<>(subwayGraph).getPath(sourceStation, targetStation)
                 .getVertexList()
                 .stream()
-                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
