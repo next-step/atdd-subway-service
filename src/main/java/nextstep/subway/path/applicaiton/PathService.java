@@ -3,6 +3,7 @@ package nextstep.subway.path.applicaiton;
 import java.util.List;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.jgrapht.GraphPath;
@@ -24,7 +25,7 @@ public class PathService {
         this.sectionRepository = sectionRepository;
     }
 
-    public List<Station> findPaths(Long sourceId, Long targetId) {
+    public PathResponse findPaths(Long sourceId, Long targetId) {
         Station source = findStationById(sourceId);
         Station target = findStationById(targetId);
 
@@ -34,7 +35,7 @@ public class PathService {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = makeGraph(stations, sections);
         GraphPath path = findShortestPath(source, target, graph);
 
-        return path.getVertexList();
+        return PathResponse.of(path.getVertexList(), path.getWeight());
     }
 
     private GraphPath findShortestPath(Station source, Station target,

@@ -5,12 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,19 +67,24 @@ class PathServiceTest {
     @DisplayName("출발역과 도착역으로 최단거리를 조회할 수 있다.")
     @Test
     void shortest_path() {
+        //given
         given(stationRepository.findById(1L)).willReturn(Optional.of(교대역));
         given(stationRepository.findById(2L)).willReturn(Optional.of(양재역));
         given(stationRepository.findAll()).willReturn(Arrays.asList(교대역, 강남역, 양재역, 남부터미널역));
         given(sectionRepository.findAll()).willReturn(Arrays.asList(강남_교대, 교대_강남, 교대_남부, 남부_양재));
 
         //when
-        List<Station> stations = pathService.findPaths(1L, 2L);
+        PathResponse paths = pathService.findPaths(1L, 2L);
 
         //then
         assertAll(
-                () -> assertThat(stations.size()).isEqualTo(3),
-                () -> assertThat(stations).containsExactly(교대역, 남부터미널역, 양재역)
+                () -> assertThat(paths.getDistance()).isEqualTo(5),
+                () -> assertThat(paths.getStations()
+                        .stream()
+                        .map(StationResponse::getName)
+                        .collect(Collectors.toList())).containsExactly("교대역", "남부터미널역", "양재역")
         );
+
     }
 
     @DisplayName("출발역과 도착역이 같은 경우 IllegalArgumentException 이 발생한다.")
