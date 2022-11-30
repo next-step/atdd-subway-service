@@ -1,6 +1,7 @@
 package nextstep.subway.path.applicaiton;
 
 import java.util.List;
+import java.util.Objects;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.path.dto.PathResponse;
@@ -26,6 +27,7 @@ public class PathService {
     }
 
     public PathResponse findPaths(Long sourceId, Long targetId) {
+        validFindPaths(sourceId, targetId);
         Station source = findStationById(sourceId);
         Station target = findStationById(targetId);
 
@@ -36,6 +38,12 @@ public class PathService {
         GraphPath path = findShortestPath(source, target, graph);
 
         return PathResponse.of(path.getVertexList(), path.getWeight());
+    }
+
+    private static void validFindPaths(Long sourceId, Long targetId) {
+        if (Objects.equals(sourceId, targetId)) {
+            throw new IllegalArgumentException("동일한 역으로 경로조회할 수 없습니다.");
+        }
     }
 
     private GraphPath findShortestPath(Station source, Station target,
