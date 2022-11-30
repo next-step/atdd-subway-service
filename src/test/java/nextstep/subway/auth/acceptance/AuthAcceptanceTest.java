@@ -35,7 +35,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBearerAuth() {
         //when
-        ExtractableResponse<Response> 로그인_요청 = 로그인_요청(TokenRequest.of(EMAIL, "PASSWORD"));
+        ExtractableResponse<Response> 로그인_요청 = 로그인_요청(TokenRequest.of(EMAIL, PASSWORD));
         //then
         final String accessToken = 로그인_성공됨(로그인_요청);
 
@@ -85,7 +85,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 로그인_실패됨(final ExtractableResponse<Response> 로그인_요청) {
-        assertThat(로그인_요청.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(로그인_요청.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
 }
