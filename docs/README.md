@@ -23,3 +23,19 @@
   * 인수 테스트 성공 시키기(mock 서버와 dto 정의)
   * 기능 구현(Outside In, Inside Out)
   
+### 인증을 통한 기능 구현
+* 토큰 발급 기능(로그인) 인수 테스트 만들기
+  * [ ] 이메일과 패스워드를 이용하여 요청 시 access token 을 응답
+  * [ ] AuthAcceptanceTest 에서 제시하는 예외 케이스도 함께 고려하여 구현하기
+  * [ ] Bearer Auth 유효하지 않은 토큰 인수 테스트
+    * 유효하지 않은 토큰으로 /members/me 요청을 보낼 경우에 대한 예외 처리
+* 인증 - 내 정보 조회 기능 완성하기
+  * 인수테스트
+    * [ ] 내 정보 조회, 수정, 삭제 기능을 /members/me 라는 URI 요청으로 동작하도록 검증
+    * [ ] 로그인 후 발급 받은 토큰을 포함해서 요청 하기
+  * 토큰을 통한 인증
+    * [ ] /members/me 요청 시 토큰을 확인하여 로그인 정보를 받아올 수 있도록 하기
+    * [ ] @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용하기
+    * [ ] )findMemberOfMine(), updateMemberOfMine(), deleteMemberOfMine() 제대로 동작하도록 구현하기
+* [ ] 인증 - 즐겨 찾기 기능 완성하기
+  * 인증을 포함하여 전체 ATDD 사이클을 경험할 수 있도록 기능을 구현하기
