@@ -31,4 +31,10 @@ public class AuthAcceptanceTestFixture {
     public static void 로그인_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
+
+    public static void 유효성_인증_실패(ExtractableResponse<Response> response) {
+        System.out.println("=============================");
+        System.out.println(response.statusCode());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }

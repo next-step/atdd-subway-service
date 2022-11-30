@@ -3,6 +3,8 @@ package nextstep.subway.auth.acceptance;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.로그인_성공;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.로그인_실패;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.로그인_요청;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.유효성_인증_실패;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTestFixture.내_정보_조회_요청;
 import static nextstep.subway.member.acceptance.MemberAcceptanceTestFixture.회원_생성을_요청;
 
 import io.restassured.response.ExtractableResponse;
@@ -45,6 +47,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        ExtractableResponse<Response> response = 내_정보_조회_요청("wrongAccessToken");
 
+        유효성_인증_실패(response);
     }
 }
