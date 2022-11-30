@@ -28,8 +28,8 @@ public class Distance {
         return Distance.from(this.distance - otherDistance.getDistance());
     }
 
-    public static Distance sum(Distance distance, Distance otherDistance) {
-        return Distance.from(distance.getDistance() + otherDistance.getDistance());
+    public Distance sum(Distance otherDistance) {
+        return Distance.from(getDistance() + otherDistance.getDistance());
     }
 
     private void validateDistance(int distance) {

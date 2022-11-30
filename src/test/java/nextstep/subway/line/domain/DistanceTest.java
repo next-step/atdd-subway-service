@@ -17,9 +17,9 @@ class DistanceTest {
         Distance distance = Distance.from(10);
         int expected = distance.getDistance() - input;
 
-        distance.subtract(Distance.from(input));
+        Distance actual = distance.subtract(Distance.from(input));
 
-        assertThat(distance.getDistance()).isEqualTo(expected);
+        assertThat(actual.getDistance()).isEqualTo(expected);
     }
 
     @DisplayName("기존의 길이보다 크거나 같으면 길이 수정에 실패한다.")
