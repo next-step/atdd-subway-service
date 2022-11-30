@@ -58,6 +58,10 @@ public class Member extends BaseEntity {
         favorite.changeMember(this);
     }
 
+    public void removeFavorite(Favorite favorite) {
+        favorites.removeFavorite(favorite);
+    }
+
     public Long getId() {
         return id;
     }

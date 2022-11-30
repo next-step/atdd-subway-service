@@ -9,6 +9,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.when;
 
 import java.util.List;
+import java.util.Optional;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.favorite.domain.Favorite;
@@ -117,5 +118,32 @@ class FavoriteServiceTest {
         assertAll(
                 () -> assertThat(favoriteResponses).hasSize(2)
         );
+    }
+    
+    @Test
+    @DisplayName("본인이 아닌 다른 회원의 즐겨찾기는 삭제 할 수 없다.")
+    void deleteFavoriteByAnotherMember() {
+        // given
+        Member newMember = Member.of("email2@email.com", "password", 21);
+        when(memberService.findMemberById(any())).thenReturn(newMember);
+        when(favoriteRepository.findById(1L)).thenReturn(Optional.of(favorite));
+
+        // when & then
+        assertThatThrownBy(() -> favoriteService.deleteFavorite(loginMember, 1L))
+                .isInstanceOf(InvalidParameterException.class)
+                .hasMessage("즐겨찾기를 삭제할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("즐겨찾기를 삭제한다")
+    void deleteFavorite() {
+        // given
+        when(memberService.findMemberById(1L)).thenReturn(member);
+        when(favoriteRepository.findById(1L)).thenReturn(Optional.of(favorite));
+
+        // when
+        favoriteService.deleteFavorite(loginMember, 1L);
+
+        assertThat(member.favorites()).doesNotContain(favorite);
     }
 }

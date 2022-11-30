@@ -5,9 +5,12 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.common.exception.InvalidParameterException;
 
 @Embeddable
 public class Favorites {
+    private static final String ERROR_MESSAGE_IS_NOT_CONTAIN_FAVORITE = "즐겨찾기를 삭제할 수 없습니다.";
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Favorite> favorites = new ArrayList<>();
 
@@ -25,6 +28,13 @@ public class Favorites {
         if (isNotContain(favorite)){
             favorites.add(favorite);
         }
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        if (isNotContain(favorite)) {
+            throw new InvalidParameterException(ERROR_MESSAGE_IS_NOT_CONTAIN_FAVORITE);
+        }
+        favorites.remove(favorite);
     }
 
     private boolean isNotContain(Favorite favorite) {
