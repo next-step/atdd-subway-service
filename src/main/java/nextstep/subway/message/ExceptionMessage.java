@@ -13,6 +13,12 @@ public class ExceptionMessage {
     public static final String LINE_NOT_EXIST = "지하철 노선이 존재하지 않습니다.";
     public static final String SOURCE_AND_TARGET_EQUAL = "출발역과 도착역이 같을 경우 최단경로를 찾을 수 없습니다.";
     public static final String SOURCE_NOT_CONNECTED_TO_TARGET = "출발역과 도착역이 연결되어 있지 않습니다.";
+    public static final String INVALID_TOKEN = "유효하지 않은 토큰입니다.";
+    public static final String MEMBER_NOT_EXIST = "회원이 존재하지 않습니다.";
+    public static final String INVALID_PASSWORD = "비밀번호가 일치하지 않습니다.";
+    public static final String FAVORITE_NOT_HAVE_STATION = "즐겨찾기에 출발역 또는 도착역 정보가 없습니다.";
+    public static final String FAVORITE_NOT_HAVE_MEMBER = "즐겨찾기에 회원 정보가 없습니다.";
+    public static final String FAVORITE_NOT_EXIST = "즐겨찾기가 존재하지 않습니다.";
 
     private ExceptionMessage() {
     }
