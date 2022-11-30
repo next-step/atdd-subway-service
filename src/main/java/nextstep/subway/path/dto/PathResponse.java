@@ -29,7 +29,8 @@ public class PathResponse {
         return new PathResponse(stations.stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList()),
-                path.getDistance(), path.getFare());
+                path.getDistance(),
+                path.getFare());
     }
 
     public List<StationResponse> getStations() {
