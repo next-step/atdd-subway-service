@@ -12,11 +12,13 @@ public class Path {
 
     private final List<Station> stations;
     private final Distance distance;
+    private final Fare fare;
 
-    public Path(List<Station> stations, int distance) {
+    public Path(List<Station> stations, int distance, Fare fare) {
         validate(stations);
         this.stations = new ArrayList<>(stations);
         this.distance = new Distance(distance);
+        this.fare = fare;
     }
 
     private void validate(List<Station> stations) {
@@ -42,11 +44,12 @@ public class Path {
             return false;
         }
         Path path = (Path) o;
-        return Objects.equals(stations, path.stations) && Objects.equals(distance, path.distance);
+        return Objects.equals(stations, path.stations) && Objects.equals(distance, path.distance)
+                && Objects.equals(fare, path.fare);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(stations, distance);
+        return Objects.hash(stations, distance, fare);
     }
 }

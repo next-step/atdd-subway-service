@@ -55,7 +55,7 @@ class DijkstraPathExplorerTest {
     @Test
     void findShortestPath() {
         DijkstraPathExplorer dijkstraPathExplorer = new DijkstraPathExplorer(Arrays.asList(이호선, 삼호선, 신분당선));
-        Path expectedPath = new Path(Arrays.asList(남부터미널역, 양재역, 강남역), 10);
+        Path expectedPath = new Path(Arrays.asList(남부터미널역, 양재역, 강남역), 10, new Fare(300));
 
         Path actualPath = dijkstraPathExplorer.explore(남부터미널역, 강남역);
 

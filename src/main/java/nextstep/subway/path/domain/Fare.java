@@ -6,6 +6,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Fare implements Comparable<Fare> {
+    public static Fare DEFAULT_FARE = new Fare(1250);
     private static final int ZERO = 0;
     private static final String CAN_NOT_NEGATIVE = "요금은 음수일 수 없습니다.";
 
