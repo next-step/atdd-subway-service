@@ -95,7 +95,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역.getId(), 양재역.getId());
 
         // then
-        지하철_최단_경로_조회됨(response, 10);
+        지하철_최단_경로_조회됨(response, 5);
     }
 
     private void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, int distance) {

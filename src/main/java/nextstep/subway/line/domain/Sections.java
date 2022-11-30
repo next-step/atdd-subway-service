@@ -42,12 +42,16 @@ public class Sections {
         return sortedStations;
     }
 
-    private List<Station> stations() {
+    List<Station> stations() {
         return this.sections.stream()
                 .map(Section::stations)
                 .flatMap(Collection::stream)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    List<Section> sections() {
+        return sections;
     }
 
     private Optional<Section> findFirstSection() {

@@ -63,6 +63,10 @@ public class Section {
         return downStation;
     }
 
+    public int getDistance() {
+        return distance.value();
+    }
+
     public void updateStation(Section newSection) {
         distance.validNewDistance(newSection.distance);
         if (isEqualUpStation(newSection)) {

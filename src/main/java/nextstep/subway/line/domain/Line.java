@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -9,7 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
-import nextstep.subway.common.exception.ErrorEnum;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -35,20 +35,9 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        validateLine(upStation, downStation, distance);
         Section section = new Section(upStation, downStation, distance);
         section.addLine(this);
         this.sections = new Sections(Collections.singletonList(section));
-    }
-
-    private void validateLine(Station upStation, Station downStation, int distance) {
-        if (upStation == null || downStation == null) {
-            throw new IllegalArgumentException(ErrorEnum.VALID_STATION_REQUIRE.message());
-        }
-
-        if (distance == Distance.ZERO) {
-            throw new IllegalArgumentException(ErrorEnum.VALID_LINE_LENGTH_GREATER_THAN_ZERO.message());
-        }
     }
 
     public void update(Line line) {
@@ -67,6 +56,14 @@ public class Line extends BaseEntity {
     public void addSection(Section newSection) {
         newSection.addLine(this);
         this.sections.add(newSection);
+    }
+
+    public List<Section> getSections() {
+        return this.sections.sections();
+    }
+
+    public List<Station> getStations() {
+        return this.sections.stations();
     }
 
     public void deleteStation(Station station) {
