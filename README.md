@@ -103,6 +103,10 @@ Feature: 지하철 경로 관련 기능
 - [ ] 최단 경로 조회 인수 테스트 만들기
   - [x] 인수 테스트 픽스쳐 정의
   - [ ] 인수 테스트 코드 작성(Outside In 방식으로 시작)
+    - PathAcceptanceTest -> Request, Response 응답
+    - Controller에서 성공 응답
+    - Service 테스트 코드 작성
+    - Service 기능 구현
   - [ ] controller -> service 순서로 시작 
 - [ ] 최단 경로 조회 기능 구현하기
   - [ ] 최단 경로 조회 기능 구현하기
