@@ -8,12 +8,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.NoResultException;
 import java.net.URI;
 import java.util.List;
 
 @RestController
 public class StationController {
-    private StationService stationService;
+    private final StationService stationService;
 
     public StationController(StationService stationService) {
         this.stationService = stationService;
@@ -31,13 +32,13 @@ public class StationController {
     }
 
     @DeleteMapping("/stations/{id}")
-    public ResponseEntity deleteStation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
+    @ExceptionHandler({DataIntegrityViolationException.class, NoResultException.class, IllegalStateException.class, IllegalArgumentException.class})
+    public ResponseEntity<Void> handleIllegalArgsException() {
         return ResponseEntity.badRequest().build();
     }
 }

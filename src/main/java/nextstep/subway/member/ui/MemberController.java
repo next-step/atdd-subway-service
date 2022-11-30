@@ -1,8 +1,6 @@
 package nextstep.subway.member.ui;
 
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -13,14 +11,14 @@ import java.net.URI;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
     @PostMapping("/members")
-    public ResponseEntity createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
