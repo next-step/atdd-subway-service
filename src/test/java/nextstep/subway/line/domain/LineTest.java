@@ -13,12 +13,12 @@ class LineTest {
     void removeLine() {
         Line line = new Line("1호선", "red");
         Station deleteStation = new Station("수원역");
-        Section sectionA = new Section(line, deleteStation, new Station("성균관대역"), Distance.from(20));
-        Section sectionB = new Section(line, new Station("화서역"), deleteStation, Distance.from(20));
-        Section sectionC = new Section(line, new Station("화서역"), new Station("성균관대역"), Distance.from(20));
-        line.addSection(sectionA);
-        line.addSection(sectionB);
-        line.addSection(sectionC);
+        Section sectionA = new Section(line, deleteStation, new Station("성균관대역"), Distance.from(10));
+        Section sectionB = new Section(line, new Station("화서역"), deleteStation, Distance.from(10));
+        Section sectionC = new Section(line, new Station("화서역"), new Station("성균관대역"), Distance.from(10));
+        line.addSection(sectionA, Distance.from(10));
+        line.addSection(sectionB, Distance.from(10));
+        line.addSection(sectionC, Distance.from(10));
 
         line.removeLineStation(deleteStation);
 
