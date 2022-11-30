@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -8,19 +9,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class LineTest {
 
+    private final Line line = Line.of("1호선", "red");
+    private final Station stationA = Station.of("수원역");
+    private final Station stationB = Station.of("성균관대역");
+    private final Station stationC = Station.of("화서역");
+    private final Station stationD = Station.of("세류역");
+
+    @Test
+    @DisplayName("노선에서 역을 조회한다")
+    void getLine() {
+        line.addSection(stationA, stationB, 10);
+        line.addSection(stationB, stationC, 10);
+        line.addSection(stationC, stationD, 10);
+
+        assertThat(line.getStations()).containsOnly(stationA, stationB, stationC, stationD);
+        assertThat(line.getStations()).hasSize(4);
+    }
+
     @Test
     @DisplayName("노선에서 역을 삭제한다")
     void removeLine() {
-        Line line = Line.of("1호선", "red");
-        Station deleteStation = Station.of("수원역");
-        Section sectionA = Section.of(line, deleteStation, Station.of("성균관대역"), Distance.from(10));
-        Section sectionB = Section.of(line, Station.of("화서역"), deleteStation, Distance.from(10));
-        Section sectionC = Section.of(line, Station.of("화서역"), Station.of("성균관대역"), Distance.from(10));
-        line.addSection(sectionA, Distance.from(10));
-        line.addSection(sectionB, Distance.from(10));
-        line.addSection(sectionC, Distance.from(10));
+        line.addSection(stationA, stationB, 10);
+        line.addSection(stationB, stationC, 10);
+        line.addSection(stationC, stationD, 10);
 
-        line.removeLineStation(deleteStation);
+        line.removeLineStation(stationB);
 
         assertThat(line.getSections()).hasSize(2);
     }
