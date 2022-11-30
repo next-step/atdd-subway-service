@@ -64,9 +64,12 @@ public class MemberController {
                 .body(member);
     }
 
-    @PutMapping("/members/me")
+    @PutMapping(value = "/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
                                                              @RequestBody MemberRequest param) {
+        System.out.println("param = " + param.getEmail());
+        System.out.println("param = " + param.getPassword());
+        System.out.println("param = " + param.getAge());
         memberService.updateMember(loginMember.getId(), param);
 
         return ResponseEntity.ok()

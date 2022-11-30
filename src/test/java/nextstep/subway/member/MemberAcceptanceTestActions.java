@@ -1,5 +1,7 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestActions.정상적인_토큰_요청_응답;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestActions.토큰과_함께_요청_시도;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -12,6 +14,52 @@ import org.springframework.http.MediaType;
 
 public class MemberAcceptanceTestActions {
 
+
+    private static final String BASE_PATH = "/members";
+    private static final String MY_PATH = BASE_PATH + "/me";
+
+    public static void 내_정보_삭제_성공(ExtractableResponse<Response> deleteResponse) {
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 내_정보를_삭제한다(String accessToken) {
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(MY_PATH)
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 내_정보_수정_성공(ExtractableResponse<Response> updateResponse) {
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static ExtractableResponse<Response> 내_정보를_수정한다(String accessToken, String email, String password,
+                                                           Integer age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put(MY_PATH)
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 내_정보_조회_성공(ExtractableResponse<Response> getResponse, String email,
+                                  int age) {
+        정상적인_토큰_요청_응답(getResponse, HttpStatus.OK.value(), email, age);
+    }
+
+    public static ExtractableResponse<Response> 내_정보를_조회한다(String accessToken) {
+        return 토큰과_함께_요청_시도(accessToken);
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
@@ -19,7 +67,7 @@ public class MemberAcceptanceTestActions {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
-                .when().post("/members")
+                .when().post(BASE_PATH)
                 .then().log().all()
                 .extract();
     }
