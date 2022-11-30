@@ -1,19 +1,17 @@
 package nextstep.subway.line.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+
+import org.springframework.util.Assert;
 
 import nextstep.subway.common.domain.BaseEntity;
 import nextstep.subway.common.domain.Name;
-import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Line extends BaseEntity {
@@ -27,8 +25,8 @@ public class Line extends BaseEntity {
     @Embedded
     private Color color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections;
 
     public Line() {
     }
@@ -42,17 +40,27 @@ public class Line extends BaseEntity {
         return new Line(name, color);
     }
 
-    private Line(Name name, Color color, Station upStation, Station downStation, Distance distance) {
+    private Line(Name name, Color color, Sections sections) {
+        Assert.notNull(name, "이름은 필수입니다.");
+        Assert.notNull(color, "색상은 필수입니다.");
+        Assert.notNull(sections, "구간들은 필수입니다.");
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        setSections(sections);
     }
 
-    public static Line of(Name name, Color color, Station upStation, Station downStation, Distance distance) {
-        return new Line(name, color, upStation, downStation, distance);
+    private void setSections(Sections sections) {
+        sections.setLine(this);
+        this.sections = sections;
+    }
+
+    public static Line of(Name name, Color color, Sections sections) {
+        return new Line(name, color, sections);
     }
 
     public void update(Name name, Color color) {
+        Assert.notNull(name, "이름은 필수입니다.");
+        Assert.notNull(color, "색상은 필수입니다.");
         this.name = name;
         this.color = color;
     }
@@ -70,6 +78,6 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return sections.getList();
     }
 }

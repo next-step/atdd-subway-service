@@ -48,8 +48,6 @@ public class Color {
 
 	@Override
 	public String toString() {
-		return "Color{" +
-			"value='" + value + '\'' +
-			'}';
+		return value;
 	}
 }

@@ -62,8 +62,6 @@ public class Distance {
 
 	@Override
 	public String toString() {
-		return "Distance{" +
-			"distance=" + value +
-			'}';
+		return "value = " + value;
 	}
 }

@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.springframework.util.Assert;
+
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -32,14 +34,25 @@ public class Section {
     @Embedded
     private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, Distance distance) {
+    private Section(Line line, Station upStation, Station downStation, Distance distance) {
+        Assert.notNull(upStation, "상행역은 필수입니다.");
+        Assert.notNull(downStation, "하행역은 필수입니다.");
+        Assert.notNull(distance, "거리는 필수입니다.");
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section of(Line line, Station upStation, Station downStation, Distance distance) {
+        return new Section(line, upStation, downStation, distance);
+    }
+
+    public static Section of(Station upStation, Station downStation, Distance distance) {
+        return new Section(null, upStation, downStation, distance);
     }
 
     public Long getId() {
@@ -76,5 +89,9 @@ public class Section {
         }
         this.downStation = station;
         this.distance.subtract(newDistance);
+    }
+
+    public void updateLine(Line line) {
+        this.line = line;
     }
 }
