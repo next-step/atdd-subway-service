@@ -1,5 +1,8 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.domain.AgeFarePolicy;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.MediaType;
@@ -20,7 +23,8 @@ public class PathController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PathResponse> findShortestPath(@RequestParam Long source, @RequestParam Long target) {
-        return ResponseEntity.ok().body(pathService.findShortestPath(source, target));
+    public ResponseEntity<PathResponse> findShortestPath(@AuthenticationPrincipal(required = false) LoginMember loginMember, @RequestParam Long source, @RequestParam Long target) {
+        return ResponseEntity.ok()
+                .body(pathService.findShortestPath(AgeFarePolicy.findAgeFarePolicy(loginMember.getAge()), source, target));
     }
 }

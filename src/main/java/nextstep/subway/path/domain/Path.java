@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import nextstep.subway.common.constant.ErrorCode;
+import nextstep.subway.fare.domain.AgeFarePolicy;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.station.domain.Station;
@@ -29,6 +30,10 @@ public class Path {
         if(stations == null || stations.isEmpty()) {
             throw new IllegalArgumentException(ErrorCode.경로는_비어있을_수_없음.getErrorMessage());
         }
+    }
+
+    public void convertFareByAgeFarePolicy(AgeFarePolicy ageFarePolicy) {
+        this.fare = ageFarePolicy.calculateFare(this.fare);
     }
 
     public List<Station> unmodifiableStations() {
