@@ -30,15 +30,19 @@ public class Section {
     public Section() {
     }
 
-    private Section(Line line, Station upStation, Station downStation, int distance) {
-        this.line = line;
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = Distance.from(distance);
+    private Section(Builder builder) {
+        this.line = builder.line;
+        this.upStation = builder.upStation;
+        this.downStation = builder.downStation;
+        this.distance = Distance.from(builder.distance);
     }
 
     public static Section of(Line line, Station upStation, Station downStation, int distance) {
-        return new Section(line, upStation, downStation, distance);
+        return new Builder().line(line)
+            .upStation(upStation)
+            .downStation(downStation)
+            .distance(distance)
+            .build();
     }
 
     public Long getId() {
@@ -98,5 +102,38 @@ public class Section {
 
     public void belong(Line line) {
         this.line = line;
+    }
+
+    public static class Builder {
+        private Line line;
+        private Station upStation;
+        private Station downStation;
+        private int distance;
+
+        public Builder() {}
+
+        public Builder line(Line line) {
+            this.line = line;
+            return this;
+        }
+
+        public Builder upStation(Station upStation) {
+            this.upStation = upStation;
+            return this;
+        }
+
+        public Builder downStation(Station downStation) {
+            this.downStation = downStation;
+            return this;
+        }
+
+        public Builder distance(int distance) {
+            this.distance = distance;
+            return this;
+        }
+
+        public Section build() {
+            return new Section(this);
+        }
     }
 }

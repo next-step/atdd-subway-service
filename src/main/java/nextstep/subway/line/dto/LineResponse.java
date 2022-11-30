@@ -32,7 +32,7 @@ public class LineResponse {
             line.getName().value(),
             line.getColor().value(),
             line.getStations().stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList()),
             line.getCreatedDate(),
             line.getModifiedDate());
