@@ -7,7 +7,7 @@ import javax.persistence.Id;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nextstep.subway.BaseEntity;
+import nextstep.subway.common.domain.BaseEntity;
 import nextstep.subway.common.exception.AuthorizationException;
 
 @Entity

@@ -1,4 +1,4 @@
-package nextstep.subway;
+package nextstep.subway.config;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
 
+import nextstep.subway.common.domain.Name;
+import nextstep.subway.line.domain.Color;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.member.domain.Member;
@@ -30,9 +33,9 @@ public class DataLoaderConfig implements CommandLineRunner {
         Station 양재역 = new Station("양재역");
         Station 남부터미널역 = new Station("남부터미널역");
 
-        Line 신분당선 = Line.of("신분당선", "red lighten-1", 강남역, 양재역, 10);
-        Line 이호선 = Line.of("2호선", "green lighten-1", 교대역, 강남역, 10);
-        Line 삼호선 = Line.of("3호선", "orange darken-1", 교대역, 양재역, 10);
+        Line 신분당선 = Line.of(Name.from("신분당선"), Color.from("red lighten-1"), 강남역, 양재역, Distance.from(10));
+        Line 이호선 = Line.of(Name.from("2호선"), Color.from("green lighten-1"), 교대역, 강남역, Distance.from(10));
+        Line 삼호선 = Line.of(Name.from("3호선"), Color.from("orange darken-1"), 교대역, 양재역, Distance.from(10));
 
         lineRepository.saveAll(Lists.newArrayList(신분당선, 이호선, 삼호선));
 

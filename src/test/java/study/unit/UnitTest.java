@@ -5,25 +5,28 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.common.domain.Name;
+import nextstep.subway.line.domain.Color;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
 @DisplayName("단위 테스트")
-public class UnitTest {
+class UnitTest {
     @Test
     void update() {
         // given
-        String newName = "구분당선";
+        Name newName = Name.from( "구분당선" );
+        Color newColor = Color.from("GREEN");
 
         Station upStation = new Station("강남역");
         Station downStation = new Station("광교역");
-        Line line = Line.of("신분당선", "RED", upStation, downStation, 10);
-        Line newLine = Line.of(newName, "GREEN");
+        Line line = Line.of(Name.from("신분당선"), Color.from("RED"), upStation, downStation, Distance.from(10));
 
         // when
-        line.update(newLine);
+        line.update(newName, newColor);
 
         // then
-        assertThat(line.getName()).isEqualTo(newName);
+        assertThat(line.getName()).isEqualTo(newName.toString());
     }
 }
