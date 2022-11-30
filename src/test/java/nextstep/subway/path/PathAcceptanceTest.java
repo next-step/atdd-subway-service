@@ -8,7 +8,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
@@ -62,13 +61,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
+    private StationResponse 동작역;
+    private StationResponse 석촌역;
     private StationResponse 남부터미널역;
 
     /**
      * 교대역      ----- *2호선(10)* -----   강남역
      * |                                   |
      * |                                   |
-     * *3호선(3)*             가         *신분당선(10)*
+     * *3호선(3)*                       *신분당선(10)*
      * |                                   |
      * |                                   |
      * 남부터미널역 ----- *3호선(2)* -----     양재
@@ -84,6 +85,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        동작역 = StationAcceptanceTest.지하철역_등록되어_있음("동작역").as(StationResponse.class);
+        석촌역 = StationAcceptanceTest.지하철역_등록되어_있음("석촌역").as(StationResponse.class);
 
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
                 new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
@@ -91,6 +94,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
                 new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        구호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
+                new LineRequest("구호선", "bg-red-600", 동작역.getId(), 석촌역.getId(), 13)).as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -102,6 +107,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_최단_경로_조회됨(response, 5);
+    }
+
+    @Test
+    void 출발역과_도착역이_같은_경우_예외_발생() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역.getId(), 교대역.getId());
+
+        // then
+        지하철_최단_경로_실패됨(response);
+    }
+
+    @Test
+    void 출발역과_도착역이_연결이_되어_있지_않은_경우_예외_발생() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(강남역.getId(), 석촌역.getId());
+
+        // then
+        지하철_최단_경로_실패됨(response);
     }
 
     private void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, int distance) {
@@ -123,30 +146,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .when().get("/paths")
                 .then().log().all()
                 .extract();
-    }
-
-    @Test
-    void 출발역과_도착역이_같은_경우_예외_발생() {
-        // when
-        ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역.getId(), 교대역.getId());
-
-        // then
-        지하철_최단_경로_실패됨(response);
-    }
-
-    @Test
-    void 출발역과_도착역이_연결이_되어_있지_않은_경우() {
-        // when
-        ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역.getId(), 교대역.getId());
-
-        // then
-        지하철_최단_경로_실패됨(response);
-
-    }
-
-    @Test
-    void 존재하지_않은_출발역이나_도착역을_조회_할_경우() {
-
     }
 
     private void 지하철_최단_경로_실패됨(ExtractableResponse<Response> response) {

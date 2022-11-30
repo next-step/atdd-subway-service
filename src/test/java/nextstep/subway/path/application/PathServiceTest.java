@@ -39,6 +39,7 @@ public class PathServiceTest {
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
+    private Station 석촌역;
 
     /**
      * 교대역       --- *2호선(10)* ---   강남역
@@ -53,6 +54,7 @@ public class PathServiceTest {
         양재역 = new Station("양재역");
         교대역 = new Station("교대역");
         남부터미널역 = new Station("남부터미널역");
+        석촌역 = new Station("석촌역");
         신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10);
         삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5);
@@ -70,7 +72,6 @@ public class PathServiceTest {
                 () -> assertThat(response.getStations()).hasSize(2),
                 () -> assertThat(response.getDistance()).isEqualTo(5)
         );
-
     }
 
     @Test
@@ -80,6 +81,16 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(삼호선, 이호선));
 
         assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L))
+                        .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void 출발역과_도착역이_연결이_되어_있지_않은_경우_예외_발생() {
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(강남역));
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(석촌역));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(삼호선, 이호선));
+
+        assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L))
                         .isInstanceOf(RuntimeException.class);
     }
 

@@ -57,4 +57,12 @@ public class PathFinderTest {
                 .isInstanceOf(RuntimeException.class);
     }
 
+    @Test
+    void 출발역과_도착역이_연결이_되어_있지_않는_경우_예외_발생() {
+        PathFinder pathFinder = PathFinder.from(Arrays.asList(삼호선, 이호선));
+
+        assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, 남부터미널역))
+                .isInstanceOf(RuntimeException.class);
+    }
+
 }

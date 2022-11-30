@@ -42,6 +42,7 @@ public class PathFinder {
     public Path findShortestPath(Station sourceStation, Station targetStation) {
         checkEqualStation(sourceStation, targetStation);
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
+//        checkPathExist(path);
         return Path.of(path.getVertexList(), (int) path.getWeight());
     }
 
@@ -50,4 +51,10 @@ public class PathFinder {
             throw new RuntimeException(ErrorEnum.SOURCE_AND_TARGET_EQUAL_STATION.message());
         }
     }
+
+//    private void checkPathExist(GraphPath<Station, DefaultWeightedEdge> path) {
+//        if(path == null){
+//            throw new RuntimeException(ErrorEnum.NOT_CONNECTED_STATIONS.message());
+//        }
+//    }
 }
