@@ -73,7 +73,7 @@ public class LineService {
 
     private Line findLineById(Long id) {
         return lineRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("노선을 찾을 수 없습니다."));
+            .orElseThrow(() -> new IllegalArgumentException(String.format("노선을 찾을 수 없습니다. id = %d", id)));
     }
 
     private Station findStationById(Long stationId) {
