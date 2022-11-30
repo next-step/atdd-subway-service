@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SectionsTest {
 
@@ -19,9 +20,9 @@ class SectionsTest {
 
     @BeforeEach
     void setUp() {
-        upStation = new Station("상행역");
-        downStation = new Station("하행역");
-        middleStation = new Station("중앙역");
+        upStation = new Station(1L,"상행역");
+        downStation = new Station(2L,"하행역");
+        middleStation = new Station(3L,"중앙역");
         line = new Line("노선","색상",upStation,downStation,10);
     }
     @Test
@@ -48,12 +49,38 @@ class SectionsTest {
     @Test
     @DisplayName("구간이 2개일 때 모든 역을 찾을 수 있다.")
     void test2() {
-        Sections sections = new Sections();
-        sections.add(new Section(line,upStation,middleStation,4));
-        sections.add(new Section(line,middleStation,downStation,6));
+        Sections sections = getSectionsHasTwoSection();
 
         List<StationResponse> stationResponses = sections.getStationResponse();
 
         assertThat(stationResponses.size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("이미 구간으로 등록된 역은 새로운 구간으로 추가할 수 없음")
+    void checkToAddSection() {
+        Sections sections = getSectionsHasTwoSection();
+
+        assertThatThrownBy(() -> sections.checkToAddSection(upStation,downStation))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    @DisplayName("추가하려는 역이 모두 기존 구간에 존재하지 않으면 추가할 수 없음")
+    void checkToAddSection2() {
+        Sections sections = getSectionsHasTwoSection();
+
+        Station 존재하지_않는_역1 = new Station(5L,"존재하지 않는 역1");
+        Station 존재하지_않는_역2 = new Station(6L,"존재하지 않는 역2");
+
+        assertThatThrownBy(() -> sections.checkToAddSection(존재하지_않는_역1,존재하지_않는_역2))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    private Sections getSectionsHasTwoSection() {
+        Sections sections = new Sections();
+        sections.add(new Section(line,upStation,middleStation,4));
+        sections.add(new Section(line,middleStation,downStation,6));
+        return sections;
     }
 }

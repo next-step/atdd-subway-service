@@ -72,4 +72,8 @@ public class Sections {
         }
         return stations;
     }
+
+    public void checkToAddSection(Station upStation, Station downStation) {
+        
+    }
 }
