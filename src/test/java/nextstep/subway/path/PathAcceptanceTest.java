@@ -1,15 +1,27 @@
 package nextstep.subway.path;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 
 /**
@@ -52,11 +64,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
 
     /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
+     * 교대역       --- *2호선(10)* ---   강남역
+     * |                                    |
+     * *3호선(3)*                       *신분당선(10)*
+     * |                                    |
+     * 남부터미널역  --- *3호선(2)* ---     양재
      */
     @BeforeEach
     public void setUp() {
@@ -79,7 +91,32 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 출발역과_도착역_사이의_최단_경로_조회() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역.getId(), 양재역.getId());
 
+        // then
+        지하철_최단_경로_조회됨(response, 10);
+    }
+
+    private void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, int distance) {
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(distance)
+        );
+
+    }
+
+    private ExtractableResponse<Response> 지하철_경로_조회_요청(Long startStationId, Long endStationId) {
+        Map<String, Long> params = new HashMap<>();
+        params.put("source", startStationId);
+        params.put("target", endStationId);
+
+        return RestAssured.given().log().all()
+                .queryParams(params)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
     }
 
     @Test
