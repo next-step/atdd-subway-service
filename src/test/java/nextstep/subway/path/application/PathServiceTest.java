@@ -73,7 +73,7 @@ class PathServiceTest {
         삼호선.addSection(new Section(교대역, 남부터미널역, 15));
     }
 
-    @DisplayName("출발역과 도착역 사이의 최단 경로를 조회할 수 있다.")
+    @DisplayName("출발역과 도착역 사이의 최단 경로와 요금을 조회할 수 있다.")
     @Test
     void findShortestPath() {
         Long source = 1L;
@@ -82,13 +82,14 @@ class PathServiceTest {
         given(stationRepository.findById(target)).willReturn(Optional.of(강남역));
         given(lineRepository.findAll()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
 
-        PathResponse shortestPath = pathService.findShortestPath(source, target);
+        PathResponse shortestPath = pathService.findShortestPath(20, source, target);
 
         assertThat(shortestPath.getDistance()).isEqualTo(10);
         List<String> actualStationNames = shortestPath.getStations().stream()
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
         assertThat(actualStationNames).containsExactly("남부터미널역", "양재역", "강남역");
+        assertThat(shortestPath.getFare()).isEqualTo(1550);
     }
 
     @DisplayName("출발역과 도착역이 동일한 경우 최단 경로 조회 시 예외가 발생한다.")
@@ -99,7 +100,7 @@ class PathServiceTest {
         given(stationRepository.findById(source)).willReturn(Optional.of(남부터미널역));
         given(lineRepository.findAll()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
 
-        assertThatThrownBy(() -> pathService.findShortestPath(source, target))
+        assertThatThrownBy(() -> pathService.findShortestPath(20, source, target))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발역과 도착역이 동일한 경우 경로를 조회할 수 없습니다.");
     }
@@ -113,7 +114,7 @@ class PathServiceTest {
         given(stationRepository.findById(target)).willReturn(Optional.of(강남역));
         given(lineRepository.findAll()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선, 공항선));
 
-        assertThatThrownBy(() -> pathService.findShortestPath(source, target))
+        assertThatThrownBy(() -> pathService.findShortestPath(20, source, target))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발역과 도착역이 연결되어 있지 않은 경우 경로를 조회할 수 없습니다.");
     }
@@ -125,7 +126,7 @@ class PathServiceTest {
         Long target = 2L;
         given(stationRepository.findById(source)).willThrow(EntityNotFoundException.class);
 
-        assertThatThrownBy(() -> pathService.findShortestPath(source, target))
+        assertThatThrownBy(() -> pathService.findShortestPath(20, source, target))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 }
