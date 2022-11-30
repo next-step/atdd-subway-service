@@ -20,11 +20,11 @@ public class Line extends BaseEntity {
     private Sections sections = new Sections(new ArrayList<>());
 
     @Embedded
-    private ExtraFare extraFare;
+    private Fare extraFare;
 
     protected Line() {}
 
-    public Line(String name, String color, ExtraFare extraFare) {
+    public Line(String name, String color, Fare extraFare) {
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
@@ -50,7 +50,7 @@ public class Line extends BaseEntity {
         return sections.get();
     }
 
-    public ExtraFare getExtraFare() {
+    public Fare getExtraFare() {
         return extraFare;
     }
 

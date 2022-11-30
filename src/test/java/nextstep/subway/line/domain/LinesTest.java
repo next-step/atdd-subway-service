@@ -44,7 +44,7 @@ class LinesTest {
         Section section1 = SectionTestFactory.create(판교역, 강남역, 10);
         Section section2 = SectionTestFactory.create(강남역, 인천역, 10);
 
-        Line 신분당선 = new Line("신분당선", "bg-red-600", new ExtraFare(0));
+        Line 신분당선 = new Line("신분당선", "bg-red-600", new Fare(0));
         신분당선.addSection(section1);
         신분당선.addSection(section2);
 
@@ -89,7 +89,7 @@ class LinesTest {
         Lines lines = new Lines(Arrays.asList(신분당선, 이호선));
 
         // when
-        ExtraFare result = lines.maxExtraFare();
+        Fare result = lines.maxExtraFare();
 
         // then
         assertThat(result.get()).isEqualTo(expectExtraFare);

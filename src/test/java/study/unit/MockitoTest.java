@@ -2,7 +2,7 @@ package study.unit;
 
 import com.google.common.collect.Lists;
 import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.domain.ExtraFare;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineResponse;
@@ -25,7 +25,7 @@ public class MockitoTest {
         StationRepository stationRepository = mock(StationRepository.class);
 
         when(lineRepository.findAll()).thenReturn(
-                Lists.newArrayList(new Line("신분당선", "bg-red-600", new ExtraFare(0)))
+                Lists.newArrayList(new Line("신분당선", "bg-red-600", new Fare(0)))
         );
         LineService lineService = new LineService(lineRepository, stationRepository);
 

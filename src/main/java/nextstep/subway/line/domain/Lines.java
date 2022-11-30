@@ -33,10 +33,10 @@ public class Lines {
                 .noneMatch(line -> line.getStations().contains(station));
     }
 
-    public ExtraFare maxExtraFare() {
+    public Fare maxExtraFare() {
         return lines.stream()
                 .map(Line::getExtraFare)
-                .max(Comparator.comparingInt(ExtraFare::get))
-                .orElse(new ExtraFare(ExtraFare.FREE));
+                .max(Comparator.comparingInt(Fare::get))
+                .orElse(new Fare(Fare.FREE));
     }
 }

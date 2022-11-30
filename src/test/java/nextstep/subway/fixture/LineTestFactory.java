@@ -1,6 +1,6 @@
 package nextstep.subway.fixture;
 
-import nextstep.subway.line.domain.ExtraFare;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -14,7 +14,7 @@ public class LineTestFactory {
             int distance,
             int extraFare
     ) {
-        Line line = new Line(name, color, new ExtraFare(extraFare));
+        Line line = new Line(name, color, new Fare(extraFare));
         Section section = SectionTestFactory.create(upStation, downStation, distance);
         line.addSection(section);
 
