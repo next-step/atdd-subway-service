@@ -2,7 +2,12 @@ package nextstep.subway.path.acceptance;
 
 import static nextstep.subway.line.acceptance.LineSectionTestFixture.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineTestFixture.지하철_노선_등록되어_있음;
+import static nextstep.subway.path.acceptance.PathTestFixture.경로_조회_요청_성공됨;
+import static nextstep.subway.path.acceptance.PathTestFixture.경로_조회_요청_실패됨;
+import static nextstep.subway.path.acceptance.PathTestFixture.출발역에서_도착역_경로_조회됨;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -43,67 +48,56 @@ public class PathAcceptanceTest extends AcceptanceTest {
         이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
 
-        지하철_노선에_지하철역_등록되어_있음(신분당선, 강남역, 양재역, 8);
-        지하철_노선에_지하철역_등록되어_있음(이호선, 교대역, 강남역, 7);
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 5);
-        지하철_노선에_지하철역_등록되어_있음(삼호선, 남부터미널역, 양재역, 9);
     }
 
     @DisplayName("출발역과 도착역의 최단거리를 조회된다.")
     @Test
     void find_path() {
-        //given
-        //출발지 교대역
-        //도착지 양재역
-
         //when
-        //출발역에서 도착역 경로를 조회한다.
+        ExtractableResponse<Response> response = 출발역에서_도착역_경로_조회됨(교대역, 강남역);
 
         //then
-        //교대에서 남부터미널 양재로 조회된다.
-
+        경로_조회_요청_성공됨(response);
     }
 
     @DisplayName("출발역과 도착역이 다른 경우를 조회환다.")
     @Test
     void different_source_target() {
-        //given
-        // 출발역 교대역
-        // 도착역 교대역
-
         //when
-        //출발지에서 도착역 경로를 조회한다.
+        ExtractableResponse<Response> response = 출발역에서_도착역_경로_조회됨(교대역, 교대역);
 
         //then
-        //출발지에서 도착지 경로 조회가 실패한다.
+        경로_조회_요청_실패됨(response);
     }
 
     @DisplayName("출발역과 도착역이 연결된 경우를 조회한다.")
     @Test
     void linked_source_target() {
         //given
-        // 지하철 역 등록
-        // 지하철 역 등록
-        // 지하철 노선 등록
+        StationResponse 캠퍼스타운역 = StationAcceptanceTest.지하철역_등록되어_있음("캠퍼스타운역").as(StationResponse.class);
+        StationResponse 지식정보단지역 = StationAcceptanceTest.지하철역_등록되어_있음("지식정보단지역").as(StationResponse.class);
+        LineResponse 인천일호선 = 지하철_노선_등록되어_있음(new LineRequest("인천일호선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
+        지하철_노선에_지하철역_등록되어_있음(인천일호선, 캠퍼스타운역, 지식정보단지역, 8);
 
         //when
-        //출발지에서 도착역 경로를 조회한다.
+        ExtractableResponse<Response> response = 출발역에서_도착역_경로_조회됨(교대역, 캠퍼스타운역);
 
         //then
-        //출발지에서 도착지 경로 조회가 실패한다.
+        경로_조회_요청_실패됨(response);
     }
 
     @DisplayName("존재하는 출발역과 도착역을 조회한다.")
     @Test
     void exist_source_target() {
         //given
-        // 지하철 역 등록
+        StationResponse 캠퍼스타운역 = StationAcceptanceTest.지하철역_등록되어_있음("캠퍼스타운역").as(StationResponse.class);
 
         //when
-        //출발지에서 도착역 경로를 조회한다.
+        ExtractableResponse<Response> response = 출발역에서_도착역_경로_조회됨(교대역, 캠퍼스타운역);
 
         //then
-        //출발지에서 도착지 경로 조회가 실패한다.
+        경로_조회_요청_실패됨(response);
 
     }
 }
