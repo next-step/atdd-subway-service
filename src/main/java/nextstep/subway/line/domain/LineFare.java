@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.exception.NegativeOverFareException;
 import nextstep.subway.message.ExceptionMessage;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
@@ -10,6 +11,7 @@ import java.util.Objects;
 public class LineFare implements Comparable<LineFare> {
     private static final int MIN_FARE = 0;
 
+    @Column
     private int fare;
 
     protected LineFare() {
@@ -32,6 +34,10 @@ public class LineFare implements Comparable<LineFare> {
         if (fare < MIN_FARE) {
             throw new NegativeOverFareException(ExceptionMessage.INVALID_OVER_FARE);
         }
+    }
+
+    public int getFare() {
+        return fare;
     }
 
     @Override

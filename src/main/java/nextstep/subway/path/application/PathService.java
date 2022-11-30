@@ -1,8 +1,12 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.exception.EntityNotFoundException;
+import nextstep.subway.fare.domain.FareCalculator;
+import nextstep.subway.fare.domain.SubwayFareCalculator;
+import nextstep.subway.line.domain.LineFare;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.message.ExceptionMessage;
 import nextstep.subway.path.domain.DijkstraShortestPathFinder;
 import nextstep.subway.path.domain.PathFinder;
@@ -27,23 +31,35 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(Long source, Long target, int age) {
         Station sourceStation = findStationById(source);
         Station targetStation = findStationById(target);
-        List<Section> sections = findAllSections();
+        Sections sections = findAllSections();
 
-        PathFinder pathFinder = DijkstraShortestPathFinder.from(sections);
+        PathFinder pathFinder = DijkstraShortestPathFinder.from(sections.getSections());
         List<Station> stations = pathFinder.findAllStationsInShortestPath(sourceStation, targetStation);
         int distance = pathFinder.findShortestDistance(sourceStation, targetStation);
 
-        return PathResponse.of(stations, distance);
+        int fare = findFare(sections, stations, distance, age);
+
+        return PathResponse.of(stations, distance, fare);
     }
 
-    private List<Section> findAllSections() {
-        return lineRepository.findAll()
-                .stream()
-                .flatMap(line -> line.getSections().stream())
-                .collect(Collectors.toList());
+    private Sections findAllSections() {
+        return Sections.from(
+                lineRepository.findAll()
+                        .stream()
+                        .flatMap(line -> line.getSections().stream())
+                        .collect(Collectors.toList())
+        );
+    }
+
+    private int findFare(Sections sections, List<Station> stations, int distance, int age) {
+        Lines lines = sections.findLinesFrom(stations);
+        LineFare lineFare = lines.findMaxLineFare();
+
+        FareCalculator fareCalculator = SubwayFareCalculator.of(lineFare.getFare(), age);
+        return fareCalculator.calculate(distance);
     }
 
     private Station findStationById(Long stationId) {
