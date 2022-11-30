@@ -11,6 +11,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -27,6 +28,10 @@ public class Sections {
 
     public static Sections createEmpty() {
         return new Sections(new ArrayList<>());
+    }
+
+    public static Sections from(List<Section> sections) {
+        return new Sections(sections);
     }
 
     public void add(Section section) {
@@ -154,5 +159,13 @@ public class Sections {
         if (this.sections.size() <= 1) {
             throw new EmptySectionException(ExceptionMessage.EMPTY_SECTION);
         }
+    }
+
+    public Lines findLinesFrom(List<Station> stations) {
+        return Lines.of(sections.stream()
+                .filter(it -> stations.contains(it.getUpStation()) && stations.contains(it.getDownStation()))
+                .map(Section::getLine)
+                .distinct()
+                .collect(Collectors.toList()));
     }
 }
