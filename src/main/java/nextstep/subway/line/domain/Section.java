@@ -93,12 +93,12 @@ public class Section {
 
     public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
-        this.distance.modifyDistance(newDistance);
+        this.distance = this.distance.subtract(newDistance);
     }
 
     public void updateDownStation(Station station, Distance newDistance) {
         this.downStation = station;
-        this.distance.modifyDistance(newDistance);
+        this.distance = this.distance.subtract(newDistance);
     }
 
     public boolean hasUpStation(Station station) {
