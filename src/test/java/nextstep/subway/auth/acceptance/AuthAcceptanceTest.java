@@ -38,6 +38,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
      *     Then 로그인 성공
      */
     @TestFactory
+    @DisplayName("로그인 통합 인수 테스트")
     Collection<DynamicTest> loginAuthAcceptance() {
         return Arrays.asList(
                 dynamicTest("로그인 요청시 로그인 실패 (아이디 오입력)", () -> {

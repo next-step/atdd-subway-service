@@ -8,6 +8,8 @@ import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.utils.CommonTestFixture.MEMBER_BASE_PATH;
+import static nextstep.subway.utils.CommonTestFixture.MY_INFO_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTestUtils {
@@ -18,7 +20,7 @@ public class MemberAcceptanceTestUtils {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
-                .when().post("/members")
+                .when().post(MEMBER_BASE_PATH)
                 .then().log().all()
                 .extract();
     }
@@ -60,7 +62,29 @@ public class MemberAcceptanceTestUtils {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
-                .when().get("/members/me")
+                .when().get(MEMBER_BASE_PATH + MY_INFO_PATH)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 나의_정보_수정_요청(String accessToken, String email, String password, Integer age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put(MEMBER_BASE_PATH + MY_INFO_PATH)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 나의_정보_삭제_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete(MEMBER_BASE_PATH + MY_INFO_PATH)
                 .then().log().all()
                 .extract();
     }
