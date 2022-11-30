@@ -31,13 +31,16 @@ public class PathService {
         Station source = findStationById(sourceId);
         Station target = findStationById(targetId);
 
-        List<Station> stations = stationRepository.findAll();
-        List<Section> sections = sectionRepository.findAll();
-
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = makeGraph(stations, sections);
-        GraphPath path = findShortestPath(source, target, graph);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = makeGraph();
+        GraphPath<Station, DefaultWeightedEdge> path = findShortestPath(source, target, graph);
 
         return PathResponse.of(path.getVertexList(), path.getWeight());
+    }
+
+    private void validPathFindResult(GraphPath<Station, DefaultWeightedEdge> path) {
+        if (path == null) {
+            throw new IllegalArgumentException("연결되지 않은 역 입니다.");
+        }
     }
 
     private static void validFindPaths(Long sourceId, Long targetId) {
@@ -46,18 +49,22 @@ public class PathService {
         }
     }
 
-    private GraphPath findShortestPath(Station source, Station target,
-                                          WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath path = dijkstraShortestPath.getPath(source, target);
+    private GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target,
+                                                                     WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+        validPathFindResult(path);
         return path;
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> makeGraph(List<Station> stations, List<Section> sections) {
+    private WeightedMultigraph<Station, DefaultWeightedEdge> makeGraph() {
+        List<Station> stations = stationRepository.findAll();
+        List<Section> sections = sectionRepository.findAll();
+
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         stations.forEach(graph::addVertex);
         sections.forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
-                section.getDistance()));
+                        section.getDistance()));
         return graph;
     }
 
