@@ -26,11 +26,11 @@ public class Distance {
     }
 
 
-    public void minus(int distance) {
-        if (this.distance <= distance) {
+    public void minus(Distance distance) {
+        if (this.distance <= distance.distance) {
             throw new IllegalArgumentException(DISTANCE_BETWEEN_STATION_OVER.getMessage());
         }
-        this.distance -= distance;
+        this.distance -= distance.distance;
     }
 
     public void plus(int distance) {
