@@ -94,4 +94,12 @@ public class PathServiceTest {
                         .isInstanceOf(RuntimeException.class);
     }
 
+    @Test
+    void 존재하지_않는_출발역이나_도착역을_조회_할_경우_예외_발생() {
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(교대역));
+        when(stationRepository.findById(0L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> pathService.findShortestPath( 1L, 0L))
+                .isInstanceOf(RuntimeException.class);
+    }
 }

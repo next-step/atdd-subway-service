@@ -127,6 +127,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_최단_경로_실패됨(response);
     }
 
+    @Test
+    void 존재하지_않는_출발역이나_도착역을_조회_할_경우_예외_발생() {
+        // when
+        ExtractableResponse<Response> 존재하지_않는_도착역_응답 = 지하철_경로_조회_요청(양재역.getId(), 0L);
+
+        // then
+        지하철_최단_경로_실패됨(존재하지_않는_도착역_응답);
+    }
+
     private void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, int distance) {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
