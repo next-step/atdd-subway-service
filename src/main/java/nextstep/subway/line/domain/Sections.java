@@ -163,4 +163,7 @@ public class Sections {
                 .findFirst().orElse(null);
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
 }
