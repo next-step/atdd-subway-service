@@ -33,6 +33,12 @@ public class Line extends BaseEntity {
         this.fare = LineFare.zero();
     }
 
+    public Line(String name, String color, int fare) {
+        this.name = LineName.from(name);
+        this.color = LineColor.from(color);
+        this.fare = LineFare.from(fare);
+    }
+
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = LineName.from(name);
         this.color = LineColor.from(color);
@@ -55,6 +61,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color.getColor();
+    }
+
+    public LineFare getFare() {
+        return fare;
     }
 
     public void addSection(Section section) {
