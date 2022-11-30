@@ -45,6 +45,10 @@ public class LineRequest {
         return distance;
     }
 
+    public int getExtraFare() {
+        return extraFare;
+    }
+
     public Line toLine(Station upStation, Station downStation) {
         Section section = new Section(upStation, downStation, new Distance(distance));
         Line line = new Line(name, color, new Fare(extraFare));
