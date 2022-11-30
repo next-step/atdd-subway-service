@@ -66,7 +66,6 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    @Transactional(readOnly = true)
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
