@@ -10,7 +10,7 @@ public class Fare implements Comparable<Fare> {
     private static final int ZERO = 0;
     private static final String CAN_NOT_NEGATIVE = "요금은 음수일 수 없습니다.";
 
-    @Column(name = "extra_fare")
+    @Column(name = "extra_fare", nullable = false)
     private int value;
 
     protected Fare() {
@@ -34,6 +34,10 @@ public class Fare implements Comparable<Fare> {
 
     public Fare subtract(Fare fare) {
         return new Fare(this.value - fare.value);
+    }
+
+    public int value() {
+        return value;
     }
 
     @Override
