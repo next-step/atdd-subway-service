@@ -38,6 +38,7 @@ public class Favorite {
         checkMemberNotNull(member);
         checkStationNotNull(sourceStation);
         checkStationNotNull(targetStation);
+        checkSourceAndTargetStationNotEqual(sourceStation, targetStation);
         return new Favorite(member, sourceStation, targetStation);
     }
 
@@ -50,6 +51,12 @@ public class Favorite {
     private static void checkStationNotNull(Station station) {
         if (station == null) {
             throw new FavoriteCreateException(ExceptionMessage.FAVORITE_NOT_HAVE_STATION);
+        }
+    }
+
+    private static void checkSourceAndTargetStationNotEqual(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new FavoriteCreateException(ExceptionMessage.INVALID_SOURCE_AND_TARGET_STATION);
         }
     }
 

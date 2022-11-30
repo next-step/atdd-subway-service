@@ -46,6 +46,14 @@ class FavoriteTest {
                 .hasMessageStartingWith(ExceptionMessage.FAVORITE_NOT_HAVE_STATION);
     }
 
+    @DisplayName("즐겨찾기 생성 시 출발역과 도착역이 같으면 예외가 발생한다.")
+    @Test
+    void createException4() {
+        Assertions.assertThatThrownBy(() -> Favorite.of(member, sourceStation, sourceStation))
+                .isInstanceOf(FavoriteCreateException.class)
+                .hasMessageStartingWith(ExceptionMessage.INVALID_SOURCE_AND_TARGET_STATION);
+    }
+
     @DisplayName("즐겨찾기를 생성한다.")
     @Test
     void create() {
