@@ -72,7 +72,8 @@ npm run dev
   - 도메인 설계 후 도메인 테스트를 시작으로 기능 구현 시작
   - 해당 도메인의 단위 테스트를 통해 도메인의 역할과 경계를 설계
   - 도메인의 구현이 끝나면 해당 도메인과 관계를 맺는 객체에 대해 기능 구현 시작
-
+- PathAcceptanceTest -> Request, Response 응답
+- Controller에서 -> Service 테스트 코드 -> Service 기능
 ### 최단 경로 조회 인수 테스트 픽스쳐
 ```text
 Feature: 지하철 경로 관련 기능 
@@ -103,16 +104,14 @@ Feature: 지하철 경로 관련 기능
 - [ ] 최단 경로 조회 인수 테스트 만들기
   - [x] 인수 테스트 픽스쳐 정의
   - [ ] 인수 테스트 코드 작성(Outside In 방식으로 시작)
-    - PathAcceptanceTest -> Request, Response 응답
-    - Controller에서 성공 응답
-    - Service 테스트 코드 작성
-    - Service 기능 구현
-  - [ ] controller -> service 순서로 시작 
+    - [x] 출발역과 도착역 사이의 최단 경로 조회
+    - [ ] 출발역과 도착역이 같은 경우
+    - [ ] 출발역과 도착역이 연결이 되어 있지 않은 경우
+    - [ ] 존재하지 않은 출발역이나 도착역을 조회 할 경우 
 - [ ] 최단 경로 조회 기능 구현하기
-  - [ ] 최단 경로 조회 기능 구현하기
-
----
 
 ## 📝 License
+
+--- 
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
