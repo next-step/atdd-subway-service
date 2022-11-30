@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.line.exception.InvalidAddSectionException;
 import nextstep.subway.line.exception.InvalidRemoveSectionException;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -174,4 +175,7 @@ public class Sections {
         return sections.size() <= ONE;
     }
 
+    public void addPath(PathFinder pathFinder) {
+        sections.forEach(section -> section.addPath(pathFinder));
+    }
 }

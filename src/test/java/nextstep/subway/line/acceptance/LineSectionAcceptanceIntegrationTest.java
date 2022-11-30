@@ -75,6 +75,10 @@ public class LineSectionAcceptanceIntegrationTest extends AcceptanceTest {
         광교역 = 지하철역_등록되어_있음("광교역");
     }
 
+    public static StationResponse 지하철역_등록되어_있음(String 역이름) {
+        return StationAcceptanceTest.지하철역_등록되어_있음(역이름).as(StationResponse.class);
+    }
+
     private void 지하철_노선_등록되어_있음() {
         LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
@@ -106,10 +110,6 @@ public class LineSectionAcceptanceIntegrationTest extends AcceptanceTest {
 
     private void 등록한_지하철_구간이_반영된_역_목록이_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         지하철_노선에_지하철역_순서_정렬됨(response, expectedStations);
-    }
-
-    private static StationResponse 지하철역_등록되어_있음(String 역이름) {
-        return StationAcceptanceTest.지하철역_등록되어_있음(역이름).as(StationResponse.class);
     }
 
     private void 지하철_노선에_지하철역_등록됨(ExtractableResponse<Response> response) {

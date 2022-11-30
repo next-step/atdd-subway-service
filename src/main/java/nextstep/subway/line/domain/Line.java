@@ -1,10 +1,11 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.List;
 
 @Entity
 public class Line extends BaseEntity {
@@ -62,4 +63,7 @@ public class Line extends BaseEntity {
         sections.removeSection(station);
     }
 
+    public void addPath(PathFinder pathFinder) {
+        sections.addPath(pathFinder);
+    }
 }
