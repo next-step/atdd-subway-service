@@ -32,19 +32,20 @@ public class PathFinder {
     }
 
     public List<StationResponse> getShortestPath(Station sourceStation, Station targetStation) {
+        vlidateStation(sourceStation, targetStation);
+        return null;
+    }
+
+    private void vlidateStation(Station sourceStation, Station targetStation) {
         validateEqualStation(sourceStation, targetStation);
         validateExistsStation(sourceStation, targetStation);
         validateLinkStation(sourceStation, targetStation);
-
-        //subwayGraph.containsVertex(startStation);
-
-        return null;
     }
 
     private void validateLinkStation(Station sourceStation, Station targetStation) {
         GraphPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(subwayGraph).getPath(sourceStation, targetStation);
 
-        if(Objects.isNull(shortestPath)){
+        if (Objects.isNull(shortestPath)) {
             throw new IllegalArgumentException(NONE_LINK_PATH);
         }
     }
@@ -60,5 +61,6 @@ public class PathFinder {
             throw new IllegalArgumentException(NONE_EXISTS_STATION);
         }
     }
+
 
 }
