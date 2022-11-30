@@ -99,8 +99,10 @@ class FavoriteServiceTest {
         Favorite actual = favoriteService.createFavorite(loginMember, favoriteRequest);
 
         // then
-        assertNotNull(actual);
-        assertThat(actual).isInstanceOf(Favorite.class);
+        assertAll(
+                () -> assertNotNull(actual),
+                () -> assertThat(actual).isInstanceOf(Favorite.class)
+        );
     }
     
     @Test
@@ -115,9 +117,7 @@ class FavoriteServiceTest {
         // when
         List<FavoriteResponse> favoriteResponses = favoriteService.findFavoritesByMemberId(loginMember);
 
-        assertAll(
-                () -> assertThat(favoriteResponses).hasSize(2)
-        );
+        assertThat(favoriteResponses).hasSize(2);
     }
     
     @Test

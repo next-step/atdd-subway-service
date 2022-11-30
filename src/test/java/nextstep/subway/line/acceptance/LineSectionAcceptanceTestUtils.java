@@ -1,9 +1,9 @@
 package nextstep.subway.line.acceptance;
 
+import static io.restassured.RestAssured.*;
 import static nextstep.subway.utils.CommonTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
@@ -20,8 +20,7 @@ public class LineSectionAcceptanceTestUtils {
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
-        return RestAssured
-                .given().log().all()
+        return given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(sectionRequest)
                 .when().post(LINE_BASE_PATH + LINE_PATH_VARIABLE + SECTION_BASE_PATH, line.getId())
@@ -55,8 +54,7 @@ public class LineSectionAcceptanceTestUtils {
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
-        return RestAssured
-                .given().log().all()
+        return given().log().all()
                 .param(STATION_ID, station.getId())
                 .when().delete(LINE_BASE_PATH + LINE_PATH_VARIABLE + SECTION_BASE_PATH, line.getId())
                 .then().log().all()
@@ -72,8 +70,7 @@ public class LineSectionAcceptanceTestUtils {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse line) {
-        return RestAssured
-                .given().log().all()
+        return given().log().all()
                 .when().get(LINE_BASE_PATH + LINE_PATH_VARIABLE, line.getId())
                 .then().log().all()
                 .extract();

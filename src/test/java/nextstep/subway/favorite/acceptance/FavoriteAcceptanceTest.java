@@ -1,10 +1,26 @@
 package nextstep.subway.favorite.acceptance;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestUtils.로그인되어_있음;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_목록_조회_실패됨;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_목록_조회_요청;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_목록_조회됨;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_삭제_실패됨;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_삭제_요청;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_삭제됨;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_생성_실패됨;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_생성_요청;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_생성됨;
+import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestUtils.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTestUtils.회원_등록되어_있음;
+import static nextstep.subway.station.acceptance.StationAcceptanceTest.지하철역_등록되어_있음;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
+import java.util.Collection;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
@@ -12,15 +28,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
-
-import java.util.Arrays;
-import java.util.Collection;
-
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTestUtils.로그인되어_있음;
-import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.*;
-import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestUtils.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.member.acceptance.MemberAcceptanceTestUtils.회원_등록되어_있음;
-import static nextstep.subway.station.acceptance.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("즐겨찾기 관련 기능")
 class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -46,9 +53,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         판교역 = 지하철역_등록되어_있음("판교역").as(StationResponse.class);
 
         LineRequest 신분당선_등록_요청 = new LineRequest("신분당선", "bg-red-600", 신논현역.getId(), 판교역.getId(), 30);
-        LineResponse 신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(신분당선_등록_요청).as(LineResponse.class);
+        LineResponse 신분당선 = 지하철_노선_등록되어_있음(신분당선_등록_요청).as(LineResponse.class);
         LineRequest 삼호선_등록_요청 = new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 10);
-        LineResponse 삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(삼호선_등록_요청).as(LineResponse.class);
+        LineResponse 삼호선 = 지하철_노선_등록되어_있음(삼호선_등록_요청).as(LineResponse.class);
         지하철_노선에_지하철역_등록되어_있음(신분당선, 신논현역, 강남역, 5);
         지하철_노선에_지하철역_등록되어_있음(신분당선, 양재역, 판교역, 15);
         회원_등록되어_있음(EMAIL, PASSWORD, AGE);
