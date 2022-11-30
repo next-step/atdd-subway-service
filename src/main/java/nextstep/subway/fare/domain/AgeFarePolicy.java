@@ -32,4 +32,8 @@ public enum AgeFarePolicy {
         return fare.subtract(this.deductionFare)
                 .multiplyAndCeil(rate);
     }
+
+    public Age getMinAge() {
+        return minAge;
+    }
 }
