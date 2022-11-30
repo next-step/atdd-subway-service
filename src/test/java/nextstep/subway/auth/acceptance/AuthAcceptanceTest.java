@@ -4,18 +4,12 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.member.domain.MemberRepository;
-import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceFixture.*;
-import static nextstep.subway.member.MemberAcceptanceTest.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.subway.member.MemberAcceptanceFixture.*;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
