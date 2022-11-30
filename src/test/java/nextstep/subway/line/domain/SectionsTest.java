@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-import static nextstep.subway.line.domain.SectionFixture.sectionAB;
-import static nextstep.subway.line.domain.SectionFixture.sectionBC;
+import static nextstep.subway.line.domain.SectionFixture.*;
 import static nextstep.subway.line.domain.Sections.ALREADY_EXIST_SECTION_EXCEPTION_MESSAGE;
+import static nextstep.subway.line.domain.Sections.NOT_EXIST_EXCEPTION_MESSAGE;
 import static nextstep.subway.station.StationFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -62,5 +62,17 @@ public class SectionsTest {
         assertThatThrownBy(() -> sections.add(sectionBC()))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining(ALREADY_EXIST_SECTION_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("상행역과 하행역 둘 중 하나도 포함되어있지 않으면 추가할 수 없다.")
+    @Test
+    void add_fail_not_exist() {
+
+        Sections sections = new Sections();
+        sections.add(sectionAB());
+
+        assertThatThrownBy(() -> sections.add(sectionCD()))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining(NOT_EXIST_EXCEPTION_MESSAGE);
     }
 }

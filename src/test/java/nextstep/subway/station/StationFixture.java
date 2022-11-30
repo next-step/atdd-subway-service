@@ -7,6 +7,7 @@ public class StationFixture {
     public static final String STATION_A = "A";
     public static final String STATION_B = "B";
     public static final String STATION_C = "C";
+    public static final String STATION_D = "D";
 
     public static Station stationA() {
         return new Station(STATION_A);
@@ -18,6 +19,10 @@ public class StationFixture {
 
     public static Station stationC() {
         return new Station(STATION_C);
+    }
+
+    public static Station stationD() {
+        return new Station(STATION_D);
     }
 }
 

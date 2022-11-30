@@ -11,6 +11,7 @@ import java.util.*;
 public class Sections {
 
     public static final String ALREADY_EXIST_SECTION_EXCEPTION_MESSAGE = "이미 등록된 구간 입니다.";
+    public static final String NOT_EXIST_EXCEPTION_MESSAGE = "등록할 수 없는 구간 입니다.";
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -22,10 +23,18 @@ public class Sections {
     private void validate(Section section) {
         List<Station> stations = getStations();
 
-        boolean isUpStationExisted= stations.stream().anyMatch(station -> Objects.equals(station, section.getUpStation()));
+        boolean isUpStationExisted = stations.stream().anyMatch(station -> Objects.equals(station, section.getUpStation()));
         boolean isDownStationExisted = stations.stream().anyMatch(it -> Objects.equals(it, section.getDownStation()));
 
         validateExist(isUpStationExisted, isDownStationExisted);
+        validateNotExist(section, stations);
+    }
+
+    private static void validateNotExist(Section section, List<Station> stations) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it.equals(section.getUpStation())) &&
+                stations.stream().noneMatch(it -> it.equals(section.getDownStation()))) {
+            throw new RuntimeException(NOT_EXIST_EXCEPTION_MESSAGE);
+        }
     }
 
     private static void validateExist(boolean isUpStationExisted, boolean isDownStationExisted) {
