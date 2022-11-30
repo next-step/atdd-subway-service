@@ -93,7 +93,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         최단_경로_조회됨(response, Arrays.asList(남부터미널역, 양재역, 강남역));
         총_거리_조회됨(response, 10);
-        이용_요금_조회됨(response, 2250);
+        이용_요금_조회됨(response, 1550);
     }
 
     /**

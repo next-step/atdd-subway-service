@@ -44,7 +44,7 @@ public class PathAcceptanceTestFixture {
     }
 
     public static void 이용_요금_조회됨(ExtractableResponse<Response> response, int expectedTotalFare) {
-        int responseTotalFare = response.jsonPath().getInt("Fare");
+        int responseTotalFare = response.jsonPath().getInt("fare");
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
