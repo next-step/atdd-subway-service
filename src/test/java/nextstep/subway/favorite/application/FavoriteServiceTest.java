@@ -19,6 +19,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static nextstep.subway.Fixture.createMember;
@@ -26,7 +28,7 @@ import static nextstep.subway.Fixture.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @DisplayName("즐겾찾기 관련 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -74,6 +76,20 @@ class FavoriteServiceTest {
         assertAll(
                 () -> assertStationId(favoriteResponse.getSourceStation(), 강남역),
                 () -> assertStationId(favoriteResponse.getTargetStation(), 양재역)
+        );
+    }
+
+    @DisplayName("즐겨찾기 목록 조회에 성공한다")
+    @Test
+    void findFavorites() {
+        when(favoriteRepository.findAllByMemberId(any())).thenReturn(Collections.singletonList(favorite));
+
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
+
+        assertAll(
+                () -> assertThat(favorites).hasSize(1),
+                () -> assertStationId(favorites.get(0).getSourceStation(), favorite.getSourceStation()),
+                () -> assertStationId(favorites.get(0).getTargetStation(), favorite.getTargetStation())
         );
     }
 

@@ -12,8 +12,8 @@ import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -53,8 +53,11 @@ public class FavoriteService {
                 .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 Station을 찾을 수 없습니다."));
     }
 
-    public List<FavoriteResponse> findFavorites(LoginMember member) {
-        return Collections.emptyList();
+    public List<FavoriteResponse> findFavorites(final LoginMember member) {
+        return favoriteRepository.findAllByMemberId(member.getId())
+                .stream()
+                .map(FavoriteResponse::from)
+                .collect(Collectors.toList());
     }
 
     @Transactional
