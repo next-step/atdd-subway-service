@@ -1,7 +1,7 @@
 package nextstep.subway.path.domain;
 
 import java.util.Arrays;
-import java.util.function.Function;
+import java.util.function.IntFunction;
 
 public enum FareDistance {
     BASIC(0, 10, distance -> Constant.BASIC_PRICE),
@@ -20,9 +20,9 @@ public enum FareDistance {
 
     private final int start;
     private final int end;
-    private final Function<Integer, Integer> expression;
+    private final IntFunction<Integer> expression;
 
-    FareDistance(int start, int end, Function<Integer, Integer> expression) {
+    FareDistance(int start, int end, IntFunction<Integer> expression) {
         this.start = start;
         this.end = end;
         this.expression = expression;
