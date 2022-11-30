@@ -2,7 +2,6 @@ package nextstep.subway.favorite.domain;
 
 import java.util.Objects;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,13 +19,13 @@ public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "departure_id", nullable = false)
     private Station departureStation;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "arrival_id", nullable = false)
     private Station arrivalStation;
 
@@ -34,6 +33,7 @@ public class Favorite {
 
     private Favorite(Member member, Station departureStation, Station arrivalStation) {
         validFavorite(member, departureStation, arrivalStation);
+        member.addFavorite(this);
         this.member = member;
         this.departureStation = departureStation;
         this.arrivalStation = arrivalStation;
@@ -58,5 +58,17 @@ public class Favorite {
         if (departureStation.isSameStation(arrivalStation)) {
             throw new InvalidParameterException(ERROR_MESSAGE_FAVORITE_SAME_STATIONS);
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Station departureStation() {
+        return departureStation;
+    }
+
+    public Station arrivalStation() {
+        return arrivalStation;
     }
 }

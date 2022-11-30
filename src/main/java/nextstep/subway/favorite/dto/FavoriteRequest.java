@@ -8,4 +8,12 @@ public class FavoriteRequest {
         this.departureId = departureId;
         this.arrivalId = arrivalId;
     }
+
+    public Long getDepartureId() {
+        return departureId;
+    }
+
+    public Long getArrivalId() {
+        return arrivalId;
+    }
 }

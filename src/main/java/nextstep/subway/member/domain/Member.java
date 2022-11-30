@@ -1,9 +1,12 @@
 package nextstep.subway.member.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.common.exception.AuthorizationException;
 
 import javax.persistence.*;
+import nextstep.subway.favorite.domain.Favorite;
 
 @Entity
 public class Member extends BaseEntity {
@@ -18,8 +21,17 @@ public class Member extends BaseEntity {
     private Password password;
     @Embedded
     private Age age;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Favorite> favorites = new ArrayList<>();
 
     protected Member() {}
+
+    public Member(Long id, String email, String password, Integer age) {
+        this.id = id;
+        this.email = Email.from(email);
+        this.password = Password.from(password);
+        this.age = Age.from(age);
+    }
 
     private Member(String email, String password, Integer age) {
         this.email = Email.from(email);
@@ -41,6 +53,10 @@ public class Member extends BaseEntity {
         if (this.password.checkPassword(password)) {
             throw new AuthorizationException(ERROR_MESSAGE_VALID_ID_OR_PASSWORD);
         }
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
     }
 
     public Long getId() {
