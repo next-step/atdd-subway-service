@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import com.google.common.collect.Lists;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -79,42 +80,46 @@ public class Sections {
             return Collections.emptyList();
         }
 
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        Station currentStation = findFirstStationOfLine();
+        List<Station> stations = Lists.newArrayList(currentStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        Optional<Station> nextStation = findAfterStation(currentStation);
+
+        while (nextStation.isPresent()) {
+            currentStation = nextStation.get();
+            stations.add(currentStation);
+            nextStation = findAfterStation(currentStation);
         }
 
         return stations;
     }
 
+    private Station findFirstStationOfLine() {
+        Station currentUpStation = sections.get(0).getUpStation();
+        Optional<Station> prevStation = findBeforeStation(currentUpStation);
 
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.isDownStation(finalDownStation))
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+        while (prevStation.isPresent()) {
+            currentUpStation = prevStation.get();
+            prevStation = findBeforeStation(currentUpStation);
         }
 
-        return downStation;
+        return currentUpStation;
     }
 
+    private Optional<Station> findBeforeStation(Station upStation) {
+        return sections.stream()
+                .filter(it -> it.getDownStation().equals(upStation))
+                .findFirst()
+                .map(Section::getUpStation);
+    }
+
+    private Optional<Station> findAfterStation(Station downStation) {
+        return sections.stream()
+                .filter(it -> it.getUpStation().equals(downStation))
+                .findFirst()
+                .map(Section::getDownStation);
+    }
+    
 
     public void remove(Station station) {
         validSectionSize();
