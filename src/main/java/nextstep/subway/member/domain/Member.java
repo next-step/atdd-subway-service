@@ -4,10 +4,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.common.exception.AuthorizationException;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Member extends BaseEntity {
@@ -16,33 +13,21 @@ public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
+    @Embedded
+    private Email email;
     private String password;
     private Integer age;
 
-    public Member() {
-    }
+    protected Member() {}
 
-    public Member(String email, String password, Integer age) {
-        this.email = email;
+    private Member(String email, String password, Integer age) {
+        this.email = Email.from(email);
         this.password = password;
         this.age = age;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
+    public static Member of(String email, String password, Integer age) {
+        return new Member(email, password, age);
     }
 
     public void update(Member member) {
@@ -59,5 +44,21 @@ public class Member extends BaseEntity {
 
     private boolean checkPassword(String password) {
         return !StringUtils.equals(this.password, password);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String emailValue() {
+        return email.value();
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Integer getAge() {
+        return age;
     }
 }

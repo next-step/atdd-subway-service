@@ -43,7 +43,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         return Arrays.asList(
                 dynamicTest("로그인 요청시 로그인 실패 (아이디 오입력)", () -> {
                     // when
-                    ExtractableResponse<Response> response = 로그인_요청("wrongEmail", PASSWORD);
+                    ExtractableResponse<Response> response = 로그인_요청("wrong@email.com", PASSWORD);
 
                     // then
                     로그인_실패(response);

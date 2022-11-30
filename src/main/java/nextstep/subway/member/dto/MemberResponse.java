@@ -7,9 +7,6 @@ public class MemberResponse {
     private String email;
     private Integer age;
 
-    public MemberResponse() {
-    }
-
     public MemberResponse(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
@@ -17,7 +14,7 @@ public class MemberResponse {
     }
 
     public static MemberResponse of(Member member) {
-        return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
+        return new MemberResponse(member.getId(), member.emailValue(), member.getAge());
     }
 
     public Long getId() {

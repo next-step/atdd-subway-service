@@ -5,6 +5,7 @@ import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.common.exception.AuthorizationException;
+import nextstep.subway.member.domain.Email;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -13,8 +14,8 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private static final String ERROR_MESSAGE_INVALID_TOKEN = "유효하지 않은 로그인 정보입니다.";
 
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
@@ -22,9 +23,7 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(
-                () -> new AuthorizationException(Member.ERROR_MESSAGE_VALID_ID_OR_PASSWORD)
-        );
+        Member member = findMemberByEmail(request.getEmail());
         member.validPassword(request.getPassword());
 
         String token = jwtTokenProvider.createToken(request.getEmail());
@@ -37,9 +36,13 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(
-                () -> new AuthorizationException(ERROR_MESSAGE_INVALID_TOKEN)
+        Member member = findMemberByEmail(email);
+        return new LoginMember(member.getId(), member.emailValue(), member.getAge());
+    }
+
+    private Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(Email.from(email)).orElseThrow(
+                () -> new AuthorizationException(Member.ERROR_MESSAGE_VALID_ID_OR_PASSWORD)
         );
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }
