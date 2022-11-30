@@ -9,9 +9,11 @@ import java.util.Objects;
 @Embeddable
 public class Distance {
     private static final int MIN_DISTANCE = 0;
-    private int value;
+    private final int value;
 
-    protected Distance(){}
+    protected Distance(){
+        value = 0;
+    }
     
     public Distance(final int value) {
         if (value <= MIN_DISTANCE) {
@@ -20,15 +22,15 @@ public class Distance {
         this.value = value;
     }
 
-    public void minusDistance(final int value) {
+    public Distance minusDistance(final int value) {
         if (this.value < value) {
             throw new LineException(LineExceptionType.DISTANCE_MINUS_ERROR);
         }
-        this.value = this.value - value;
+        return new Distance(this.value - value);
     }
 
-    public void plusDistance(final int value) {
-        this.value = this.value + value;
+    public Distance plusDistance(final int value) {
+        return new Distance(this.value + value);
     }
 
     public int getValue() {

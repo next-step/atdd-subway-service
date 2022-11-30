@@ -33,9 +33,9 @@ public class DistanceTest {
         // given
         Distance distance = new Distance(10);
         // when
-        distance.minusDistance(8);
+        Distance expect = distance.minusDistance(8);
         // then
-        assertThat(distance.getValue()).isEqualTo(2);
+        assertThat(expect.getValue()).isEqualTo(2);
     }
 
     @Test
@@ -44,8 +44,8 @@ public class DistanceTest {
         // given
         Distance distance = new Distance(10);
         // when
-        distance.plusDistance(3);
+        Distance expect = distance.plusDistance(3);
         // then
-        assertThat(distance.getValue()).isEqualTo(13);
+        assertThat(expect.getValue()).isEqualTo(13);
     }
 }
