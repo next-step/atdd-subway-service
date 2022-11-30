@@ -20,12 +20,15 @@ class SectionsTest {
     private Station 선릉역;
     private Station 삼성역;
 
+    private Line 신분당선;
+
     @BeforeEach
     void setup() {
         교대역 = new Station("교대역");
         강남역 = new Station("강남역");
         선릉역 = new Station("선릉역");
         삼성역 = new Station("삼성역");
+        신분당선 = new Line("신분당선", "bg-red-600");
     }
 
     @Test
@@ -47,7 +50,7 @@ class SectionsTest {
     @Test
     void add() {
         Sections sections = new Sections();
-        sections.add(new Section(교대역, 강남역, 10));
+        sections.add(new Section(신분당선, 교대역, 강남역, 10));
 
         assertThat(sections.getStations()).contains(교대역, 강남역);
     }
@@ -56,9 +59,9 @@ class SectionsTest {
     @Test
     void add_already_contains_all() {
         Sections sections = new Sections();
-        sections.add(new Section(교대역, 강남역, 10));
+        sections.add(new Section(신분당선, 교대역, 강남역, 10));
 
-        assertThatThrownBy(() -> sections.add(new Section(교대역, 강남역, 10)))
+        assertThatThrownBy(() -> sections.add(new Section(신분당선, 교대역, 강남역, 10)))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -66,9 +69,9 @@ class SectionsTest {
     @Test
     void add_not_contains_any() {
         Sections sections = new Sections();
-        sections.add(new Section(교대역, 강남역, 10));
+        sections.add(new Section(신분당선, 교대역, 강남역, 10));
 
-        assertThatThrownBy(() -> sections.add(new Section(선릉역, 삼성역, 10)))
+        assertThatThrownBy(() -> sections.add(new Section(신분당선, 선릉역, 삼성역, 10)))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -77,9 +80,9 @@ class SectionsTest {
     @ValueSource(ints = {10, 20})
     void add_distance_over(int distance) {
         Sections sections = new Sections();
-        sections.add(new Section(교대역, 삼성역, 10));
+        sections.add(new Section(신분당선, 교대역, 삼성역, 10));
 
-        assertThatThrownBy(() -> sections.add(new Section(교대역, 강남역, distance)))
+        assertThatThrownBy(() -> sections.add(new Section(신분당선, 교대역, 강남역, distance)))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -87,8 +90,8 @@ class SectionsTest {
     @Test
     void remove_section_up_station() {
         Sections sections = new Sections();
-        sections.add(new Section(교대역, 강남역, 10));
-        sections.add(new Section(강남역, 선릉역, 10));
+        sections.add(new Section(신분당선, 교대역, 강남역, 10));
+        sections.add(new Section(신분당선, 강남역, 선릉역, 10));
 
         sections.removeLineStation(교대역);
 
@@ -102,8 +105,8 @@ class SectionsTest {
     @Test
     void remove_section_down_station() {
         Sections sections = new Sections();
-        sections.add(new Section(교대역, 강남역, 10));
-        sections.add(new Section(강남역, 선릉역, 10));
+        sections.add(new Section(신분당선, 교대역, 강남역, 10));
+        sections.add(new Section(신분당선, 강남역, 선릉역, 10));
 
         sections.removeLineStation(선릉역);
 
@@ -117,8 +120,8 @@ class SectionsTest {
     @Test
     void remove_section_mid_station() {
         Sections sections = new Sections();
-        sections.add(new Section(교대역, 강남역, 10));
-        sections.add(new Section(강남역, 선릉역, 10));
+        sections.add(new Section(신분당선, 교대역, 강남역, 10));
+        sections.add(new Section(신분당선, 강남역, 선릉역, 10));
 
         sections.removeLineStation(강남역);
         assertAll(
@@ -131,8 +134,8 @@ class SectionsTest {
     @Test
     void remove_section_not_contains_station() {
         Sections sections = new Sections();
-        sections.add(new Section(교대역, 강남역, 10));
-        sections.add(new Section(강남역, 선릉역, 10));
+        sections.add(new Section(신분당선, 교대역, 강남역, 10));
+        sections.add(new Section(신분당선, 강남역, 선릉역, 10));
 
         assertThatThrownBy(() -> sections.removeLineStation(삼성역))
             .isInstanceOf(IllegalArgumentException.class);
@@ -142,7 +145,7 @@ class SectionsTest {
     @Test
     void remove_section_only_section_stations() {
         Sections sections = new Sections();
-        sections.add(new Section(교대역, 강남역, 10));
+        sections.add(new Section(신분당선, 교대역, 강남역, 10));
 
         assertThatThrownBy(() -> sections.removeLineStation(교대역))
             .isInstanceOf(IllegalStateException.class);

@@ -42,12 +42,18 @@ public class Sections {
     public void removeLineStation(Station station) {
         validateSectionSize();
         validateNotContainsStation(station);
-        Optional<Section> upLineStation = removeUpSection(station);
-        Optional<Section> downLineStation = removeDownSection(station);
+        Optional<Section> upSection = findUpSection(station);
+        Optional<Section> downSection = findDownSection(station);
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            this.add(Section.merge(upLineStation, downLineStation));
+        removeSection(upSection, downSection);
+
+        if (upSection.isPresent() && downSection.isPresent()) {
+            this.add(merge(upSection.get(), downSection.get()));
         }
+    }
+
+    private Section merge(Section upSection, Section downSection) {
+        return upSection.merge(downSection);
     }
 
     private void validateNotContainsAny(Section section) {
@@ -92,20 +98,23 @@ public class Sections {
         }
     }
 
-    private Optional<Section> removeUpSection(Station station) {
+    private Optional<Section> findUpSection(Station station) {
         Optional<Section> upSection = this.sections.stream()
-            .filter(section -> section.hasUpStation(station))
+            .filter(section -> section.hasDownStation(station))
             .findAny();
-        upSection.ifPresent(section -> this.sections.remove(section));
         return upSection;
     }
 
-    private Optional<Section> removeDownSection(Station station) {
+    private Optional<Section> findDownSection(Station station) {
         Optional<Section> downSection = this.sections.stream()
-            .filter(section -> section.hasDownStation(station))
+            .filter(section -> section.hasUpStation(station))
             .findAny();
-        downSection.ifPresent(section -> this.sections.remove(section));
         return downSection;
+    }
+
+    private void removeSection(Optional<Section> upSection, Optional<Section> downSection) {
+        upSection.ifPresent(section -> this.sections.remove(section));
+        downSection.ifPresent(section -> this.sections.remove(section));
     }
 
     public List<Section> getSections() {
@@ -117,7 +126,7 @@ public class Sections {
         Station downStation = findUpStation();
         stations.add(downStation);
 
-        while (isPresentNextSection(downStation)) {
+        while (isPresentNextSectionByStation(downStation)) {
             Station finalDownStation = downStation;
             downStation = findNextStation(finalDownStation).getDownStation();
             stations.add(downStation);
@@ -127,7 +136,7 @@ public class Sections {
 
     private Station findUpStation() {
         Station downStation = this.sections.get(0).getUpStation();
-        while (isPresentPreSection(downStation)) {
+        while (isPresentPrevSectionByStation(downStation)) {
             Station finalDownStation = downStation;
             downStation = findPrevStation(finalDownStation).getUpStation();
         }
@@ -148,15 +157,13 @@ public class Sections {
             .orElseThrow(() -> new IllegalArgumentException("다음 구간이 없습니다."));
     }
 
-    private boolean isPresentPreSection(Station station) {
+    private boolean isPresentPrevSectionByStation(Station station) {
         return sections.stream()
-            .filter(Section::existDownStation)
             .anyMatch(it -> it.hasDownStation(station));
     }
 
-    private boolean isPresentNextSection(Station station) {
+    private boolean isPresentNextSectionByStation(Station station) {
         return sections.stream()
-            .filter(Section::existUpStation)
             .anyMatch(it -> it.hasUpStation(station));
     }
 

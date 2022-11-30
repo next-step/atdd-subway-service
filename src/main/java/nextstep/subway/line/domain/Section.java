@@ -13,7 +13,6 @@ import javax.persistence.ManyToOne;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Entity
 public class Section {
@@ -53,18 +52,8 @@ public class Section {
         this.distance = distance;
     }
 
-    public Section(Station upStation, Station downStation, int distance) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = Distance.from(distance);
-    }
-
-    public static Section merge(Optional<Section> upLineStation, Optional<Section> downLineStation) {
-        Station newUpStation = downLineStation.get().getUpStation();
-        Station newDownStation = upLineStation.get().getDownStation();
-        Distance newDistance = Distance.sum(upLineStation.get().getDistance(), downLineStation.get().getDistance());
-        Section newSection = new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance);
-        return newSection;
+    public Section merge(Section other) {
+        return new Section(this.line, this.upStation, other.downStation, distance.sum(other.distance));
     }
 
     public Long getId() {
@@ -107,14 +96,6 @@ public class Section {
 
     public boolean hasDownStation(Station station) {
         return this.downStation.equals(station);
-    }
-
-    public boolean existDownStation() {
-        return this.downStation != null;
-    }
-
-    public boolean existUpStation() {
-        return this.upStation != null;
     }
 
     @Override
