@@ -110,4 +110,12 @@ public class Sections {
             throw new RuntimeException(MESSAGE_EXCEPTION_SECTION_IS_ALREADY_EXIST);
         }
     }
+
+    public void remove(Station station) {
+
+    }
+
+    public int size() {
+        return this.sections.size();
+    }
 }

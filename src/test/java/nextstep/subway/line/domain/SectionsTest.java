@@ -120,4 +120,13 @@ class SectionsTest {
         sections.add(new Section(line,middleStation,downStation,6));
         return sections;
     }
+
+    @Test
+    void remove() {
+        Sections sections = getSectionsHasTwoSection();
+
+        sections.remove(middleStation);
+
+        assertThat(sections.size()).isEqualTo(1);
+    }
 }
