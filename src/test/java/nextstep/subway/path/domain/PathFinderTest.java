@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class PathFinderTest {
@@ -21,30 +23,25 @@ public class PathFinderTest {
     private Line 삼호선;
     private Line 칠호선;
     private Station 강남역;
+    private Station 광산역;
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
     private Station 학동역;
     private Station 강남구청역;
 
-
-    /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
-     */
     @BeforeEach
     public void setUp() {
         강남역 = createStation("강남역", 1l);
         양재역 = createStation("양재역", 2l);
         교대역 = createStation("교대역", 3l);
         남부터미널역 = createStation("남부터미널역", 4l);
+        광산역 = createStation("광산역", 7l);
         신분당선 = createLine("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = createLine("이호선", "bg-red-600", 교대역, 강남역, 10);
         삼호선 = createLine("삼호선", "bg-red-600", 교대역, 양재역, 5);
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, 3));
+        삼호선.addSection(new Section(삼호선, 광산역, 교대역, 5));
         학동역 = createStation("강남역", 10l);
         강남구청역 = createStation("강남역", 11l);
         칠호선 = createLine("칠호선", "bg-green-600", 학동역, 강남구청역, 10);
@@ -89,6 +86,14 @@ public class PathFinderTest {
                 .hasMessageContaining("출발역과 도착역이 연결되있어야 합니다");
     }
 
+    @DisplayName("출발역과 도착역이 연결된상태로 존재하면 최단거리 반환")
+    @Test
+    void returnsShortestPath() {
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        assertThat(pathFinder.getShortestPath(광산역, 양재역).stream().map(StationResponse::getName))
+                .containsExactly("광산역", "교대역", "남부터미널역", "양재역");
+    }
 
     public Station createStation(String name, long id) {
         Station station = new Station(name);

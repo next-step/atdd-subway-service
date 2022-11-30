@@ -9,20 +9,18 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class PathFinder {
     private static final String NONE_EQUAL_STATION = "출발역과 도착역 다른 경우만 조회할 수 있습니다";
     private static final String NONE_EXISTS_STATION = "출발역과 도착역이 모두 존재해야합니다";
     private static final String NONE_LINK_PATH = "출발역과 도착역이 연결되있어야 합니다";
-
     private static final String NULL_LINES = "노선이 존재해야합니다";
-
     private SubwayGraph subwayGraph;
 
     public PathFinder(List<Line> lines) {
         validateLines(lines);
         this.subwayGraph = new SubwayGraph(DefaultWeightedEdge.class, lines);
-
     }
 
     private void validateLines(List<Line> lines) {
@@ -33,7 +31,11 @@ public class PathFinder {
 
     public List<StationResponse> getShortestPath(Station sourceStation, Station targetStation) {
         vlidateStation(sourceStation, targetStation);
-        return null;
+        return new DijkstraShortestPath<>(subwayGraph).getPath(sourceStation, targetStation)
+                .getVertexList()
+                .stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
     }
 
     private void vlidateStation(Station sourceStation, Station targetStation) {
@@ -44,7 +46,6 @@ public class PathFinder {
 
     private void validateLinkStation(Station sourceStation, Station targetStation) {
         GraphPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(subwayGraph).getPath(sourceStation, targetStation);
-
         if (Objects.isNull(shortestPath)) {
             throw new IllegalArgumentException(NONE_LINK_PATH);
         }
