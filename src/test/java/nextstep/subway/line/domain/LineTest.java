@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,10 +9,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class LineTest {
 
     private final Line line = Line.of("1호선", "red");
-    private final Station stationA = Station.of("수원역");
-    private final Station stationB = Station.of("성균관대역");
-    private final Station stationC = Station.of("화서역");
-    private final Station stationD = Station.of("세류역");
+    private final Station stationA = Station.from("수원역");
+    private final Station stationB = Station.from("성균관대역");
+    private final Station stationC = Station.from("화서역");
+    private final Station stationD = Station.from("세류역");
 
     @Test
     @DisplayName("노선에서 역을 조회한다")

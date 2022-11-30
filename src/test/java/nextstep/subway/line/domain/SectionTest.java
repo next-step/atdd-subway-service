@@ -9,10 +9,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SectionTest {
 
     private final Line line = Line.of("1호선", "red");
-    private final Station stationA = Station.of("수원역");
-    private final Station stationB = Station.of("성균관대역");
-    private final Station stationC = Station.of("화서역");
-    private final Station stationD = Station.of("세류역");
+    private final Station stationA = Station.from("수원역");
+    private final Station stationB = Station.from("성균관대역");
+    private final Station stationC = Station.from("화서역");
+    private final Station stationD = Station.from("세류역");
     private final Distance distance = Distance.from(10);
 
     @Test

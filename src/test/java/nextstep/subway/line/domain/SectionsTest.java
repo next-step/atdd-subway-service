@@ -11,13 +11,12 @@ import static nextstep.subway.exception.type.ValidExceptionType.ALREADY_EXIST_LI
 import static nextstep.subway.exception.type.ValidExceptionType.SECTIONS_MIN_SIZE_ONE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class SectionsTest {
     private final Line line = Line.of("1호선", "red");
-    private final Station stationA = Station.of("수원역");
-    private final Station stationB = Station.of("성균관대역");
-    private final Station stationC = Station.of("화서역");
+    private final Station stationA = Station.from("수원역");
+    private final Station stationB = Station.from("성균관대역");
+    private final Station stationC = Station.from("화서역");
     private final Distance distance = Distance.from(10);
 
     @Test
