@@ -64,14 +64,14 @@ public class PathFinderTest {
                 .hasMessageContaining("출발역과 도착역 다른 경우만 조회할 수 있습니다");
     }
 
-    @DisplayName("존재하지 않는 역을 조회하면 같으면 예외발생")
+    @DisplayName("노선에 존재하지 않는 역을 조회하면 예외발생")
     @Test
     void returnsExceptionWithNoneExistsStartStation() {
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
         assertThatThrownBy(() -> pathFinder.getShortestPath(createStation("마포역", 3l), 강남역))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("출발역과 도착역이 모두 존재해야합니다");
+                .hasMessageContaining("출발역과 도착역이 노선에 존재해야합니다");
     }
 
     @DisplayName("출발역과 도착역이 연결되지않으면 예외발생")

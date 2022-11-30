@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class PathFinder {
     private static final String NONE_EQUAL_STATION = "출발역과 도착역 다른 경우만 조회할 수 있습니다";
-    private static final String NONE_EXISTS_STATION = "출발역과 도착역이 모두 존재해야합니다";
+    private static final String NONE_EXISTS_STATION = "출발역과 도착역이 노선에 존재해야합니다";
     private static final String NONE_LINK_PATH = "출발역과 도착역이 연결되있어야 합니다";
     private static final String NULL_LINES = "노선이 존재해야합니다";
     private SubwayGraph subwayGraph;
