@@ -2,7 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
 
-public class FromDownSectionAdder implements SectionAdder{
+public class FromDownSectionAdder implements SectionAdder {
     @Override
     public void addSection(Line line, Station upStation, Station downStation, int distance) {
         line.getSections().stream()
@@ -10,6 +10,6 @@ public class FromDownSectionAdder implements SectionAdder{
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
 
-        line.addSection(upStation,downStation,distance);
+        line.addSection(upStation, downStation, distance);
     }
 }

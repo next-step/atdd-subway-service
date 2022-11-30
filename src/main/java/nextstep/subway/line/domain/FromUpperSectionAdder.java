@@ -10,6 +10,6 @@ public class FromUpperSectionAdder implements SectionAdder {
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
 
-        line.addSection(upStation,downStation,distance);
+        line.addSection(upStation, downStation, distance);
     }
 }
