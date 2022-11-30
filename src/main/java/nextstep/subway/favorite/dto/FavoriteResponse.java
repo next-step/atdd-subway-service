@@ -20,18 +20,6 @@ public class FavoriteResponse {
                 StationResponse.of(favorite.arrivalStation()));
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setDepartureStation(StationResponse departureStation) {
-        this.departureStation = departureStation;
-    }
-
-    public void setArrivalStation(StationResponse arrivalStation) {
-        this.arrivalStation = arrivalStation;
-    }
-
     public Long getId() {
         return id;
     }
