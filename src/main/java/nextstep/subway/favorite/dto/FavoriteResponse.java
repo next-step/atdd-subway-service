@@ -10,7 +10,7 @@ public class FavoriteResponse {
 
     private FavoriteResponse() {}
 
-    private FavoriteResponse(final Long id, final StationResponse sourceStation, final StationResponse targetStation) {
+    public FavoriteResponse(final Long id, final StationResponse sourceStation, final StationResponse targetStation) {
         this.id = id;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
@@ -19,8 +19,8 @@ public class FavoriteResponse {
     public static FavoriteResponse from(Favorite favorite) {
         return new FavoriteResponse(
                 favorite.getId(),
-                StationResponse.of(favorite.getSource()),
-                StationResponse.of(favorite.getTarget())
+                StationResponse.of(favorite.getSourceStation()),
+                StationResponse.of(favorite.getTargetStation())
         );
     }
 
