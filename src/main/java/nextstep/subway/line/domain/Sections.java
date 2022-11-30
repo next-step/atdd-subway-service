@@ -23,18 +23,12 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findFirstUpStation();
+        Station downStation = findFirstStation();
         stations.add(downStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextSection = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextSection.isPresent()) {
-                break;
-            }
-            downStation = nextSection.get().getDownStation();
+        while (isPresentDownStation(downStation)) {
+            Section preSection = getSectionBySameUpStation(downStation);
+            downStation = preSection.getDownStation();
             stations.add(downStation);
         }
 
@@ -70,6 +64,10 @@ public class Sections {
         removeBeforeSections(preSection, nextSection);
     }
 
+    public List<Section> values() {
+        return Collections.unmodifiableList(sections);
+    }
+
     private void connectNewSection(Section preSection, Section nextSection) {
         Line line = preSection.getLine();
         Station newUpStation = nextSection.getUpStation();
@@ -83,24 +81,21 @@ public class Sections {
         nextSection.ifPresent(section -> sections.remove(section));
     }
 
-    public List<Section> values() {
-        return Collections.unmodifiableList(sections);
+    private Station findFirstStation() {
+        Station upStation = sections.get(0).getUpStation();
+        while (isPresentUpStation(upStation)) {
+            Section preSection = getSectionBySameDownStation(upStation);
+            upStation = preSection.getUpStation();
+        }
+        return upStation;
     }
 
-    private Station findFirstUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextSection = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextSection.isPresent()) {
-                break;
-            }
-            downStation = nextSection.get().getUpStation();
-        }
+    private boolean isPresentDownStation(Station station) {
+        return sections.stream().anyMatch(it -> it.isSameWithUpStation(station));
+    }
 
-        return downStation;
+    private boolean isPresentUpStation(Station station) {
+        return sections.stream().anyMatch(it -> it.isSameWithDownStation(station));
     }
 
     private void updateDownStation(Station upStation, Station downStation, int distance) {
@@ -113,6 +108,18 @@ public class Sections {
                 .ifPresent(section -> section.updateUpStation(downStation, distance));
     }
 
+    private Optional<Section> findSectionBySameUpStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.isSameWithUpStation(station))
+                .findFirst();
+    }
+
+    private Optional<Section> findSectionBySameDownStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.isSameWithDownStation(station))
+                .findFirst();
+    }
+
     private Section getSectionBySameUpStation(Station station) {
         return sections.stream()
                 .filter(it -> it.isSameWithUpStation(station))
@@ -120,23 +127,11 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException(SECTION_IS_NOT_CONTAIN_STATION.message()));
     }
 
-    private Optional<Section> findSectionBySameUpStation(Station station) {
-        return sections.stream()
-                .filter(it -> it.isSameWithUpStation(station))
-                .findFirst();
-    }
-
     private Section getSectionBySameDownStation(Station station) {
         return sections.stream()
                 .filter(it -> it.isSameWithDownStation(station))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(SECTION_IS_NOT_CONTAIN_STATION.message()));
-    }
-
-    private Optional<Section> findSectionBySameDownStation(Station station) {
-        return sections.stream()
-                .filter(it -> it.isSameWithDownStation(station))
-                .findFirst();
     }
 
     private boolean isExistStation(Station station) {
