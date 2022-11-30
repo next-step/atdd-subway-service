@@ -16,12 +16,14 @@ public class SectionsTest {
     private Station 강남역;
     private Station 종합운동장역;
     private Station 잠실역;
+    private Station 수서역;
     private Sections 구간;
 
     @BeforeEach
     void setUp() {
         강남역 = new Station("강남역");
         잠실역 = new Station("잠실역");
+        수서역 = new Station("수서역");
         종합운동장역 = new Station("종합운동장역");
         구간 = new Sections(Collections.singletonList(new Section(강남역, 잠실역, 5)));
     }
@@ -80,7 +82,13 @@ public class SectionsTest {
 
     @Test
     void 노선에_등록되지_않은_역_제거시_예외발생() {
+        // given
+        구간.add(new Section(잠실역, 종합운동장역, 3));
+        assertThat(구간.orderedStations()).containsExactly(강남역, 잠실역, 종합운동장역);
 
+        // then
+        assertThatThrownBy(() -> 구간.delete(수서역))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
 }

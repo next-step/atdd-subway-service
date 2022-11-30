@@ -7,7 +7,7 @@ public enum ErrorEnum {
     EXISTS_STATION("등록하려는 역이 모두 존재합니다."),
     EXISTS_UP_STATION_AND_DOWN_STATION("상행성과 하행선 모두 존재하지 않습니다."),
     LAST_STATION_NOT_DELETE("마지막 구간은 삭제할 수 없습니다."),
-    NOT_EXISTS_NOT_DELETE("마지막 구간은 삭제할 수 없습니다.");
+    NOT_EXISTS_NOT_DELETE("존재하지않는 역이므로 삭제할 수 없습니다.");
 
     private final String message;
 
