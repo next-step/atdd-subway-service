@@ -2,7 +2,6 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -112,7 +111,35 @@ public class Sections {
     }
 
     public void remove(Station station) {
+        throwIfSectionSizeIsOne();
+        Optional<Section> upLineStation = getSections().stream()
+                .filter(it -> it.getUpStation().equals(station))
+                .findFirst();
+        Optional<Section> downLineStation = getSections().stream()
+                .filter(it -> it.getDownStation().equals(station))
+                .findFirst();
+        mergeSectionIfStationIsCenterOfTwoLineStation(upLineStation, downLineStation);
+        removeSectionIfPresent(upLineStation, downLineStation);
+    }
 
+    private void throwIfSectionSizeIsOne() {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+    }
+
+    private void removeSectionIfPresent(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        upLineStation.ifPresent(it -> getSections().remove(it));
+        downLineStation.ifPresent(it -> getSections().remove(it));
+    }
+
+    private void mergeSectionIfStationIsCenterOfTwoLineStation(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        if (!(upLineStation.isPresent() && downLineStation.isPresent())) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            getSections().add(new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance));
+        }
     }
 
     public int size() {
