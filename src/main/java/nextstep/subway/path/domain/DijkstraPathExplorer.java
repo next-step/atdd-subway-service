@@ -6,7 +6,6 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class DijkstraPathExplorer implements PathExplorer {
@@ -73,6 +72,6 @@ public class DijkstraPathExplorer implements PathExplorer {
                 .map(SectionEdge::getLine)
                 .map(Line::getExtraFare)
                 .max(Fare::compareTo)
-                .orElse(Fare.DEFAULT_FARE);
+                .orElseThrow(IllegalArgumentException::new);
     }
 }
