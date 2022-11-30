@@ -41,6 +41,16 @@ public class Section {
         this.distance = new Distance(distance);
     }
 
+    public void updateUpStation(Station station, int newDistance) {
+        this.upStation = station;
+        this.distance.setMinusDistance(newDistance);
+    }
+
+    public void updateDownStation(Station station, int newDistance) {
+        this.downStation = station;
+        this.distance.setMinusDistance(newDistance);
+    }
+
     public Long getId() {
         return id;
     }
@@ -59,15 +69,5 @@ public class Section {
 
     public int getDistance() {
         return distance.getDistance();
-    }
-
-    public void updateUpStation(Station station, int newDistance) {
-        this.upStation = station;
-        this.distance.setMinusDistance(newDistance);
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        this.downStation = station;
-        this.distance.setMinusDistance(newDistance);
     }
 }
