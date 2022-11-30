@@ -15,23 +15,29 @@ public class Distance {
     @Column(nullable = false)
     private Integer distance;
 
-    protected Distance() {
-    }
+    protected Distance() {}
 
     private Distance(Integer distance) {
-        validDistance(distance);
+        validNull(distance);
         this.distance = distance;
     }
 
+    public static Distance zero() {
+        return new Distance(0);
+    }
+
     public static Distance from(Integer distance) {
+        validDistanceCriterion(distance);
         return new Distance(distance);
     }
 
-    private void validDistance(Integer distance) {
+    private void validNull(Integer distance) {
         if (Objects.isNull(distance)) {
             throw new InvalidParameterException(ERROR_MESSAGE_NOT_NULL_DISTANCE);
         }
+    }
 
+    private static void validDistanceCriterion(int distance) {
         if (distance <= INVALID_DISTANCE_CRITERION) {
             throw new InvalidParameterException(ERROR_MESSAGE_GRATER_THAN_ZERO_DISTANCE);
         }
@@ -39,10 +45,6 @@ public class Distance {
 
     public Distance add(Distance distance) {
         return Distance.from(this.distance + distance.distance);
-    }
-
-    public int addTotalDistance(int distance) {
-        return this.distance + distance;
     }
 
     public Distance subtract(Distance distance) {

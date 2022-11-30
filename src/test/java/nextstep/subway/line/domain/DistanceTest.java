@@ -12,7 +12,17 @@ class DistanceTest {
     @DisplayName("거리 생성")
     void createDistance() {
         Distance actual = Distance.from(10);
-        assertThat(actual).isEqualTo(Distance.from(10));
+        assertAll(
+                () -> assertNotNull(actual),
+                () -> assertThat(actual).isInstanceOf(Distance.class)
+        );
+    }
+
+    @Test
+    @DisplayName("거리 값 검증")
+    void crateDistanceValue() {
+        Distance actual = Distance.from(10);
+        assertThat(actual.value()).isEqualTo(10);
     }
 
     @Test
