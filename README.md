@@ -104,7 +104,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] 인증 - 나의 조회 기능 완성하기
   - [x] 나의 정보 인수 테스트 만들기
 - [ ] 인증 - 즐겨찾기 기능 완성하기
-  - [ ] 즐겨찾기 인수 테스트 만들기
+  - [x] 즐겨찾기 인수 테스트 만들기
   - [ ] 즐겨찾기 기능 구현하기
     - [ ] 즐겨찾기 목록 조회
     - [ ] 즐겨찾기 생성
