@@ -24,7 +24,7 @@ public class AuthService {
 
     public TokenResponse login(TokenRequest request) {
         Member member = findMemberByEmail(request.getEmail());
-        member.validPassword(request.getPassword());
+        member.checkPassword(request.getPassword());
 
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);

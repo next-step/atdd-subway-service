@@ -2,7 +2,6 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.common.exception.AuthorizationException;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 
@@ -15,7 +14,8 @@ public class Member extends BaseEntity {
     private Long id;
     @Embedded
     private Email email;
-    private String password;
+    @Embedded
+    private Password password;
     @Embedded
     private Age age;
 
@@ -23,7 +23,7 @@ public class Member extends BaseEntity {
 
     private Member(String email, String password, Integer age) {
         this.email = Email.from(email);
-        this.password = password;
+        this.password = Password.from(password);
         this.age = Age.from(age);
     }
 
@@ -37,14 +37,10 @@ public class Member extends BaseEntity {
         this.age = member.age;
     }
 
-    public void validPassword(String password) {
-        if (checkPassword(password)) {
+    public void checkPassword(String password) {
+        if (this.password.checkPassword(password)) {
             throw new AuthorizationException(ERROR_MESSAGE_VALID_ID_OR_PASSWORD);
         }
-    }
-
-    private boolean checkPassword(String password) {
-        return !StringUtils.equals(this.password, password);
     }
 
     public Long getId() {
@@ -55,11 +51,11 @@ public class Member extends BaseEntity {
         return email.value();
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public Integer ageValue() {
         return age.value();
+    }
+
+    public String passwordValue() {
+        return password.value();
     }
 }
