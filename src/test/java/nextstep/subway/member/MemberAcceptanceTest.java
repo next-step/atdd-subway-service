@@ -134,4 +134,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
+    public static ExtractableResponse<Response>  회원_생성_되어_있음(String email, String password, Integer age) {
+        return 회원_생성을_요청(email, password, age);
+    }
+
 }

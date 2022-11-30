@@ -16,6 +16,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 public class FavoriteTest {
+
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
+    public static final int AGE = 10;
+
     private Member member;
     private Station sourceStation;
     private Station targetStation;
@@ -29,7 +34,7 @@ public class FavoriteTest {
 
     @BeforeEach
     void setUp() {
-        member = memberRepository.save(Member.of("lcjltj@gmail.com", "password", 33));
+        member = memberRepository.save(Member.of(EMAIL, PASSWORD, AGE));
         sourceStation = stationRepository.save(Station.of("강남역"));
         targetStation = stationRepository.save(targetStation = Station.of("서울역"));
     }

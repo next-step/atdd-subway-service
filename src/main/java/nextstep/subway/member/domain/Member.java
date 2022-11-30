@@ -27,6 +27,10 @@ public class Member extends BaseEntity {
         this.age = age;
     }
 
+    public static Member of(final String email, final String password, final Integer age) {
+        return new Member(email, password, age);
+    }
+
     public Long getId() {
         return id;
     }

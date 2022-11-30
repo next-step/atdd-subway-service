@@ -68,7 +68,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         MemberAcceptanceTest.내_회원_정보_토큰_실패(내_회원_정보_조회);
     }
 
-    public ExtractableResponse<Response> 로그인_요청(final TokenRequest request) {
+    public static ExtractableResponse<Response> 로그인_요청(final TokenRequest request) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
