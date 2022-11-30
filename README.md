@@ -38,17 +38,32 @@ npm run dev
 ```
 <br>
 
-## ✏️ Code Review Process
-[텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
+## 🚀 1단계 - 인수 테스트 기반 리팩터링
+- [x] LineService 리팩터링
+  - [x] LineService의 비즈니스 로직을 도메인으로 옮기기
+    - [x] 노선 지하철 역 조회
+    - [x] 노선 구가 등록
+    - [x] 노선 수정
+    - [x] 역 제거
+    - [x] 노선 지하철 역 추가
+  - [x] 인수 테스트 작성
+  - [x] 단위 테스트 작성
+    - [x] Line
+    - [x] Section
+    - [x] Distance
+    - [x] Sections 일급 컬렌션
+- [x] (선택) LineSectionAcceptanceTest 리팩터링
+- [x] 리펙터링
+  - [x] 스타일 포멧
+  - [x] 상수 추출
 
-<br>
+---
 
-## 🐞 Bug Report
+## 🚀 2단계 - 경로 조회 기능
+- [ ] 최단 경로 조회 인수 테스트 만들기
+- [ ] 최단 경로 조회 기능 구현하기
 
-버그를 발견한다면, [Issues](https://github.com/next-step/atdd-subway-service/issues) 에 등록해주세요 :)
-
-<br>
-
+---
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
