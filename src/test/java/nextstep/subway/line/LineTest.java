@@ -44,7 +44,7 @@ class LineTest {
         Line line = Line.of(신분당선, RED);
         line.addSection(강남역, 광교역, TEN);
 
-        assertThat(line.getSectionsSize()).isEqualTo(1);
+        assertThat(line.getSections().getSize()).isEqualTo(1);
     }
 
     @Test
@@ -54,7 +54,7 @@ class LineTest {
         line.addSection(강남역, 판교역, FIVE);
         line.removeStation(판교역);
 
-        assertThat(line.getSectionsSize()).isEqualTo(1);
+        assertThat(line.getSections().getSize()).isEqualTo(1);
     }
 
     @Test
