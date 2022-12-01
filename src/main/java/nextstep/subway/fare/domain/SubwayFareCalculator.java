@@ -44,7 +44,7 @@ public class SubwayFareCalculator implements FareCalculator {
         return policy.discount(fare);
     }
 
-    private static int calculateWithDistance(int distance) {
+    private int calculateWithDistance(int distance) {
         int fare = BASIC_FARE;
 
         OverFarePolicy policy = OverFarePolicy.findPolicyByDistance(distance);
