@@ -67,23 +67,31 @@ public class Line extends BaseEntity {
     private void addDownSection(final Section section) {
         if (isStationExisted(section.downStation())) {
             Section originalSection = sections.findSameDownStation(section);
-            if (Objects.nonNull(originalSection)) {
-                originalSection.updateDownStation(section);
-            }
+            updateDownStation(section, originalSection);
             sections.add(section, this::syncLine);
+        }
+    }
+
+    private void updateDownStation(final Section section, final Section originalSection) {
+        if (Objects.nonNull(originalSection)) {
+            originalSection.updateDownStation(section);
         }
     }
 
     private boolean addUpSection(final Section section) {
         if (isStationExisted(section.upStation())) {
             Section originalSection = sections.findSameUpStation(section);
-            if (Objects.nonNull(originalSection)) {
-                originalSection.updateUpStation(section);
-            }
+            updateUpStation(section, originalSection);
             sections.add(section, this::syncLine);
             return true;
         }
         return false;
+    }
+
+    private void updateUpStation(final Section section, final Section originalSection) {
+        if (Objects.nonNull(originalSection)) {
+            originalSection.updateUpStation(section);
+        }
     }
 
     private boolean addInitialSection(final Section section) {

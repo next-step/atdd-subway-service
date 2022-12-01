@@ -6,11 +6,14 @@ import java.util.Objects;
 
 @Embeddable
 public class Distance {
+
+    private static final int ZERO = 0;
+
     @Column(name = "distance")
     private int value;
 
     protected Distance() {
-        this(0);
+        this(ZERO);
     }
 
     public Distance(final int value) {
