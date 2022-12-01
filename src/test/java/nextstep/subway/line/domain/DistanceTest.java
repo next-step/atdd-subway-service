@@ -55,8 +55,9 @@ public class DistanceTest {
     }
 
     @DisplayName("차를 구한다.")
-    @Test
-    void subtract() {
-
+    @ParameterizedTest
+    @CsvSource({"2, 1, 1"})
+    void subtract(int target, int source, int result) {
+        assertThat(new Distance(target).subtract(new Distance(source))).isEqualTo(new Distance(result));
     }
 }
