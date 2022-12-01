@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Entity
 public class Section {
     public static final String SECTION_DISTANCE_EXCEPTION_MESSAGE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
+    public static final int MINIMUM_DISTANCE = 0;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -56,7 +57,7 @@ public class Section {
     }
 
     public void updateUpStation(Station station, Distance newDistance) {
-        if (this.distance.compareTo(newDistance) <= 0) {
+        if (this.distance.compareTo(newDistance) <= MINIMUM_DISTANCE) {
             throw new RuntimeException(SECTION_DISTANCE_EXCEPTION_MESSAGE);
         }
         this.upStation = station;
