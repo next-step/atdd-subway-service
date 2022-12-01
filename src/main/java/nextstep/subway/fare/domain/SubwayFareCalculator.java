@@ -51,9 +51,6 @@ public class SubwayFareCalculator implements FareCalculator {
 
         fare += policy.calculateOverFare(distance);
 
-        if (policy == OVER_FIFTY) {
-            fare += TO_FIFTY.calculateOverFare(MIN_DISTANCE_OF_SECOND_OVER_FARE_SECTION);
-        }
         return fare;
     }
 

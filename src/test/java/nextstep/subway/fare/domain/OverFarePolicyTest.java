@@ -41,7 +41,7 @@ class OverFarePolicyTest {
 
     @DisplayName("50km 초과 거리에 대한 추가요금 계산")
     @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
-    @CsvSource(value = {"51:100", "58:100", "100:700"}, delimiter = ':')
+    @CsvSource(value = {"51:900", "58:900", "100:1500"}, delimiter = ':')
     void overFiftyOverFare(int input, int expected) {
         int result = OVER_FIFTY.calculateOverFare(input);
 

@@ -17,7 +17,7 @@ public enum OverFarePolicy {
             overDistance -> (int) ((Math.floor((overDistance - 1) / PER_5_KM) + 1) * OVER_FARE_BY_DISTANCE)),
     OVER_FIFTY(MIN_DISTANCE_OF_SECOND_OVER_FARE_SECTION,
             OverFarePolicy::isValidForOverFifty,
-            overDistance -> (int) ((Math.floor((overDistance - 1) / PER_8_KM) + 1) * OVER_FARE_BY_DISTANCE));
+            overDistance -> (int) ((Math.floor((overDistance - 1) / PER_8_KM) + 1) * OVER_FARE_BY_DISTANCE) + TOTAL_OVER_FARE_IN_FIRST_OVER_FARE_SECTION);
 
     private int minDistance;
     private IntFunction<Boolean> valid;
