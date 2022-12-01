@@ -88,10 +88,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - `/members/me` 요청 시 토큰을 확인하여 로그인 정보를 받아올 수 있도록 하기
 
 ### 즐겨 찾기 기능
-- 즐겨찾기 생성
-- 즐겨찾기 목록 조회
-- 즐겨찾기 삭제
-- 인증을 포함하여 전체 ATDD 사이클을 경험할 수 있도록 기능을 구현하기
+- 즐겨찾기 생성, 조회, 삭제 기능을 `/favorites` 라는 URI 요청으로 동작하도록 검증
 
 
 
