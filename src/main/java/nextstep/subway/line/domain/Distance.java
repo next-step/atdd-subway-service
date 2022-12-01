@@ -46,7 +46,7 @@ public class Distance implements Comparable<Distance> {
         return compare(this.distance, o.distance);
     }
 
-    public Distance substract(Distance distance) {
+    public Distance subtract(Distance distance) {
         return new Distance(this.distance - distance.getDistance());
     }
 

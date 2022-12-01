@@ -52,7 +52,7 @@ public class DistanceTest {
 
     @DisplayName("차를 구한다.")
     @Test
-    void substract() {
+    void subtract() {
 
     }
 }
