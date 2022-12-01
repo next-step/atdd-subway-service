@@ -2,9 +2,7 @@ package nextstep.subway.path.ui;
 
 import nextstep.subway.path.applicaiton.PathService;
 import nextstep.subway.path.dto.PathResponse;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,13 +21,6 @@ public class PathController {
     @GetMapping
     public ResponseEntity<PathResponse> extractShortestPath(@RequestParam(value = "source") Long sourceId,
                                                             @RequestParam(value = "target") Long targetId) {
-        System.out.println("sourceId : " + sourceId);
-        System.out.println("targetId : " + targetId);
         return ResponseEntity.ok(pathService.findPaths(sourceId, targetId));
-    }
-
-    @ExceptionHandler({DataIntegrityViolationException.class, RuntimeException.class})
-    public ResponseEntity handleIllegalArgsException(Exception e) {
-        return ResponseEntity.badRequest().build();
     }
 }
