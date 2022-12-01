@@ -1,6 +1,7 @@
 package nextstep.subway.member.ui;
 
 import java.net.URI;
+import javax.persistence.EntityNotFoundException;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.application.MemberService;
@@ -34,7 +35,7 @@ public class MemberController {
 
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
-        MemberResponse member = memberService.findMember(id);
+        MemberResponse member = memberService.findMemberResponse(id);
 
         return ResponseEntity.ok()
                 .body(member);
@@ -58,7 +59,7 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponse member = memberService.findMember(loginMember.getId());
+        MemberResponse member = memberService.findMemberResponse(loginMember.getId());
 
         return ResponseEntity.ok()
                 .body(member);
@@ -67,9 +68,6 @@ public class MemberController {
     @PutMapping(value = "/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
                                                              @RequestBody MemberRequest param) {
-        System.out.println("param = " + param.getEmail());
-        System.out.println("param = " + param.getPassword());
-        System.out.println("param = " + param.getAge());
         memberService.updateMember(loginMember.getId(), param);
 
         return ResponseEntity.ok()
@@ -84,7 +82,7 @@ public class MemberController {
                 .build();
     }
 
-    @ExceptionHandler(value = IllegalArgumentException.class)
+    @ExceptionHandler(value = {IllegalArgumentException.class, EntityNotFoundException.class})
     public ResponseEntity handleIllegalArgsException(Exception e) {
         return ResponseEntity.badRequest()
                 .build();
