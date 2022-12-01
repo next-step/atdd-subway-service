@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceFixture.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineAcceptanceFixture.지하철_노선_조회_요청;
-import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static nextstep.subway.station.StationAcceptanceFixture.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 구간 관련 기능")

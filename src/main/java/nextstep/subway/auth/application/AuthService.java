@@ -8,11 +8,13 @@ import nextstep.subway.exception.ErrorMessage;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static nextstep.subway.exception.ErrorMessage.LOGIN_INVALID_TOKEN;
 import static nextstep.subway.exception.ErrorMessage.LOGIN_UNKNOWN_EMAIL;
 
 @Service
+@Transactional(readOnly = true)
 public class AuthService {
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
