@@ -18,13 +18,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @DisplayName("로그인 기능")
-class AuthAcceptanceTest extends AcceptanceTest {
+public class AuthAcceptanceTest extends AcceptanceTest {
     private final String EMAIL = "email@email.com";
     private final String WRONG_EMAIL = "wrong@email.com";
     private final String PASSWORD = "password";
     private final String WRONG_PASSWORD = "wrong_password";
     private final int AGE = 20;
-    private final String INVALID_TOKEN = "invalid_token";
 
     @BeforeEach
     public void setUp() {
@@ -67,35 +66,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 로그인_요청(EMAIL, WRONG_PASSWORD);
 
         로그인_실패됨(response);
-    }
-
-    @DisplayName("Bearer Auth")
-    @Test
-    void myInfoWithBearerAuth() {
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
-
-        String accessToken = 로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
-
-        ExtractableResponse<Response> response = 내정보_조회_요청(accessToken);
-        내정보_조회_성공(response);
-    }
-
-    @DisplayName("Bearer Auth 로그인 실패")
-    @Test
-    void myInfoWithBadBearerAuth() {
-        ExtractableResponse<Response> response = 내정보_조회_요청(INVALID_TOKEN);
-        내정보_조회_실패(response);
-    }
-
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
-    @Test
-    void myInfoWithWrongBearerAuth() {
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
-
-        로그인_요청(EMAIL, PASSWORD);
-
-        ExtractableResponse<Response> response = 내정보_조회_요청(INVALID_TOKEN);
-        내정보_조회_실패(response);
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
