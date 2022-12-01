@@ -5,20 +5,21 @@ import java.util.Collection;
 import java.util.List;
 import nextstep.subway.line.exception.WrongPathException;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
 
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     public PathFinder(Line... lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
             DefaultWeightedEdge.class);
         addVertex(graph, lines);
         putEdgeWeight(graph, lines);
-        dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        this.graph = graph;
     }
 
     private void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line[] lines) {
@@ -37,13 +38,30 @@ public class PathFinder {
     }
 
     public List<Station> shortestPath(Station from, Station to) {
-        validateFromAndTo(from, to);
-        return dijkstraShortestPath.getPath(from, to).getVertexList();
+        validateArgument(from, to);
+
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
+            graph);
+
+        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(from, to);
+        validatePath(path);
+
+        return path.getVertexList();
     }
 
-    private void validateFromAndTo(Station from, Station to) {
+    private void validateArgument(Station from, Station to) {
         if (from.equals(to)) {
             throw new WrongPathException("출발역과 도착역이 동일합니다.");
+        }
+
+        if (!graph.containsVertex(from) || !graph.containsVertex(to)) {
+            throw new WrongPathException("존재하지 않는 역입니다.");
+        }
+    }
+
+    private void validatePath(GraphPath<Station, DefaultWeightedEdge> path) {
+        if (path == null) {
+            throw new WrongPathException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
     }
 }
