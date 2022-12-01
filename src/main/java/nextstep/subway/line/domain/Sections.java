@@ -8,6 +8,7 @@ import javax.persistence.OneToMany;
 import java.util.*;
 
 import static nextstep.subway.line.domain.BizExceptionMessages.*;
+import static nextstep.subway.line.domain.BizMagicNumber.*;
 
 @Embeddable
 public class Sections {
@@ -167,7 +168,7 @@ public class Sections {
     }
 
     private void validSectionsSize() {
-        if (sections.size() <= 1) {
+        if (sections.size() <= SECTION_MIN_SIZE.number()) {
             throw new IllegalStateException(LINE_MIN_SECTIONS_SIZE.message());
         }
     }
