@@ -7,7 +7,6 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.path.dto.PathResponse;
@@ -80,10 +79,9 @@ class PathServiceTest {
         //then
         assertAll(
                 () -> assertThat(paths.getDistance()).isEqualTo(5),
-                () -> assertThat(paths.getStations()
-                        .stream()
-                        .map(StationResponse::getName)
-                        .collect(Collectors.toList())).containsExactly("교대역", "남부터미널역", "양재역")
+                () -> assertThat(paths.getStations())
+                        .extracting(StationResponse::getName)
+                        .containsExactly("교대역", "남부터미널역", "양재역")
         );
 
     }
