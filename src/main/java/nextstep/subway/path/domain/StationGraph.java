@@ -47,6 +47,10 @@ public class StationGraph {
         return stationGraph.containsVertex(station);
     }
 
+    public boolean notContainsStation(Station station) {
+        return !stationGraph.containsVertex(station);
+    }
+
     public Path findShortestPath(Station source, Station target) {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstra = new DijkstraShortestPath<>(stationGraph);
         return convertToPath(dijkstra.getPath(source, target));

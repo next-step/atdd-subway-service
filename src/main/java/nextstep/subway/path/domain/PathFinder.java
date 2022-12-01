@@ -23,7 +23,7 @@ public class PathFinder {
         if (source.equals(target)) {
             throw new PathCannotFindException();
         }
-        if (!stationGraph.containsStation(source) || !stationGraph.containsStation(target)) {
+        if (stationGraph.notContainsStation(source) || stationGraph.notContainsStation(target)) {
             throw new StationNotIncludedException();
         }
     }
