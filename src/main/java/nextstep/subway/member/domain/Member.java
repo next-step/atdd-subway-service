@@ -55,7 +55,6 @@ public class Member extends BaseEntity {
 
     public void addFavorite(Favorite favorite) {
         favorites.addFavorite(favorite);
-        favorite.changeMember(this);
     }
 
     public void removeFavorite(Favorite favorite) {

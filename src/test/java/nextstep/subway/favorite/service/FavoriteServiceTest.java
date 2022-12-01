@@ -138,6 +138,7 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기를 삭제한다")
     void deleteFavorite() {
         // given
+        member.addFavorite(favorite);
         when(memberService.findMemberById(1L)).thenReturn(member);
         when(favoriteRepository.findById(1L)).thenReturn(Optional.of(favorite));
 

@@ -35,7 +35,6 @@ public class Favorite {
 
     private Favorite(Member member, Station departureStation, Station arrivalStation) {
         validFavorite(member, departureStation, arrivalStation);
-        member.addFavorite(this);
         this.member = member;
         this.departureStation = departureStation;
         this.arrivalStation = arrivalStation;
@@ -68,10 +67,6 @@ public class Favorite {
         if (departureStation.isSameStation(arrivalStation)) {
             throw new InvalidParameterException(ERROR_MESSAGE_FAVORITE_SAME_STATIONS);
         }
-    }
-
-    public void changeMember(Member member) {
-        this.member = member;
     }
 
     public Long getId() {
