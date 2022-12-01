@@ -71,4 +71,8 @@ public class Section {
         this.downStation = station;
         this.distance = this.distance.subtract(newDistance);
     }
+
+    public Distance sumDistance(Section section) {
+        return new Distance(this.distance.sum(section.getDistance()));
+    }
 }

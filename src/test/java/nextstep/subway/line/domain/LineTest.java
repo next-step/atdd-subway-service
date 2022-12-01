@@ -4,9 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.line.domain.LineFixture.lineA;
-import static nextstep.subway.line.domain.SectionFixture.sectionAB;
 import static nextstep.subway.line.domain.SectionFixture.sectionBC;
-import static nextstep.subway.line.domain.Sections.MININUM_SECTIONS_SIZE_EXCEPTION_MESSAGE;
+import static nextstep.subway.line.domain.Sections.MINIMUM_SECTIONS_SIZE_EXCEPTION_MESSAGE;
 import static nextstep.subway.station.StationFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -35,7 +34,7 @@ public class LineTest {
 
         assertThatThrownBy(() -> line.removeLineStation(stationA()))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining(MININUM_SECTIONS_SIZE_EXCEPTION_MESSAGE);
+                .hasMessageContaining(MINIMUM_SECTIONS_SIZE_EXCEPTION_MESSAGE);
     }
 
     @DisplayName("A-B-C 구간의 노선에서 B역이 포함된 구간을 제거한다")

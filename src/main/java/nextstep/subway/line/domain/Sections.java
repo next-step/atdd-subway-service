@@ -12,7 +12,8 @@ public class Sections {
 
     public static final String ALREADY_EXIST_SECTION_EXCEPTION_MESSAGE = "이미 등록된 구간 입니다.";
     public static final String NOT_EXIST_EXCEPTION_MESSAGE = "등록할 수 없는 구간 입니다.";
-    public static final String MININUM_SECTIONS_SIZE_EXCEPTION_MESSAGE = "하나의 구간만 있을 경우 구간을 제거할 수 없다.";
+    public static final String MINIMUM_SECTIONS_SIZE_EXCEPTION_MESSAGE = "하나의 구간만 있을 경우 구간을 제거할 수 없다.";
+    public static final int MINIMUM_SECTIONS_SIZE = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
@@ -37,26 +38,26 @@ public class Sections {
     }
 
     public void removeLineStation(Line line, Station station) {
-        if (this.sections.size() <= 1) {
-            throw new RuntimeException(MININUM_SECTIONS_SIZE_EXCEPTION_MESSAGE);
+        if (this.sections.size() <= MINIMUM_SECTIONS_SIZE) {
+            throw new RuntimeException(MINIMUM_SECTIONS_SIZE_EXCEPTION_MESSAGE);
         }
 
-        Optional<Section> upLineStation = this.sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
-                .findFirst();
+        boolean hasPreviousLineStation = hasPreviousSection(station);
+        boolean hasNextLineStation = hasNextSection(station);
 
-        Optional<Section> downLineStation = this.sections.stream()
-                .filter(it -> it.getDownStation().equals(station))
-                .findFirst();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            this.sections.add(new Section(line, newUpStation, newDownStation, new Distance(upLineStation.get().getDistance().sum(downLineStation.get().getDistance()))));
+        if (hasPreviousLineStation && hasNextLineStation) {
+            Section previousSection = findPreviousSection(station).orElseThrow(NoSuchElementException::new);
+            Section nextSection = findNextSection(station).orElseThrow(NoSuchElementException::new);
+            this.sections.add(new Section(line, previousSection.getUpStation(), nextSection.getDownStation(), previousSection.sumDistance(nextSection)));
         }
 
-        upLineStation.ifPresent(this.sections::remove);
-        downLineStation.ifPresent(this.sections::remove);
+        if (hasPreviousLineStation) {
+            this.sections.remove(findPreviousSection(station).orElseThrow(NoSuchElementException::new));
+        }
+
+        if (hasNextLineStation) {
+            this.sections.remove(findNextSection(station).orElseThrow(NoSuchElementException::new));
+        }
     }
 
     public List<Station> getStations() {
@@ -67,19 +68,38 @@ public class Sections {
         Station downStation = findUpStation();
         stations.add(downStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getUpStation().equals(finalDownStation))
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
+        while (hasNextSection(downStation)) {
+            downStation = findUpStationSection(downStation).getDownStation();
             stations.add(downStation);
         }
 
         return stations;
+    }
+
+    private boolean hasNextSection(Station station) {
+        if (station == null) {
+            return false;
+        }
+        return findNextSection(station).isPresent();
+    }
+
+    private boolean hasPreviousSection(Station station) {
+        if (station == null) {
+            return false;
+        }
+        return findPreviousSection(station).isPresent();
+    }
+
+    private Optional<Section> findNextSection(Station station) {
+        return this.sections.stream()
+                .filter(it -> it.getUpStation().equals(station))
+                .findFirst();
+    }
+
+    private Section findUpStationSection(Station station) {
+        return this.sections.stream()
+                .filter(it -> it.getUpStation().equals(station))
+                .findFirst().orElseThrow(NoSuchElementException::new);
     }
 
     private void validate(Section section) {
@@ -94,18 +114,18 @@ public class Sections {
 
     private Station findUpStation() {
         Station downStation = this.sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getDownStation().equals(finalDownStation))
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+
+        while (hasPreviousSection(downStation)) {
+            downStation = findPreviousSection(downStation).orElseThrow(NoSuchElementException::new).getUpStation();
         }
 
         return downStation;
+    }
+
+    private Optional<Section> findPreviousSection(Station station) {
+        return this.sections.stream()
+                .filter(it -> it.getDownStation().equals(station))
+                .findFirst();
     }
 
     private static void validateNotExist(Section section, List<Station> stations) {
