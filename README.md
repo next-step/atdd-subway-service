@@ -135,5 +135,5 @@ new 로 교체하고, legacy 는 일정 기간 후 삭제하는 작업 패턴(**
 ### 1단계 피드백 기능 목록
 - [x] 기능 목록 작성 시 인수 조건, 도메인 기능 목록 등 상세화
 - [x] Service에서 Service를 의존하면 순환참조 발생 가능 --> 방향은 아래로 흐르는 것이 좋음
-- [ ] 조회 메서드에 `@Transactional(readOnly=true)` 선언하여, `Lazy Loading` 대비
+- [x] 조회 메서드에 `@Transactional(readOnly=true)` 선언하여, `Lazy Loading` 대비
 - [ ] 매직넘버에 이름 부여
