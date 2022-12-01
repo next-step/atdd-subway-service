@@ -47,20 +47,35 @@ public class Favorite extends BaseEntity {
 
     private void validateMember(Member member) {
         if (Objects.isNull(member)) {
-            throw new FavoriteException(NONE_EXISTS_MEMBER);
+            throw new FavoriteException(NULL_MEMBER);
         }
     }
 
     private void validateSourceStation(Station station) {
         if (Objects.isNull(station)) {
-            throw new FavoriteException(NONE_EXISTS_SOURCE_STATION);
+            throw new FavoriteException(NULL_SOURCE_STATION);
         }
     }
 
     private void validateTargetStation(Station station) {
         if (Objects.isNull(station)) {
-            throw new FavoriteException(NONE_EXISTS_TARGET_STATION);
+            throw new FavoriteException(NULL_TARGET_STATION);
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Favorite favorite = (Favorite) o;
+        return id.equals(favorite.id) &&
+                member.equals(favorite.member) &&
+                sourceStation.equals(favorite.sourceStation) &&
+                targetStation.equals(favorite.targetStation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, member, sourceStation, targetStation);
+    }
 }
