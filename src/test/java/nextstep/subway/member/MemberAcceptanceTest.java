@@ -168,7 +168,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 본인_정보_조회_안됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     public static void 본인_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
