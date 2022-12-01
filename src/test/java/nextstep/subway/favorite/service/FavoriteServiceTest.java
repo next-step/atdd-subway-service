@@ -1,12 +1,12 @@
 package nextstep.subway.favorite.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static nextstep.subway.favorite.domain.FavoriteTestFixture.favorite;
+import static nextstep.subway.member.domain.MemberTestFixture.member;
+import static nextstep.subway.station.domain.StationTestFixture.station;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.when;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,11 +48,11 @@ class FavoriteServiceTest {
 
     @BeforeEach
     void setUp() {
-        member = Member.of("email@email.com", "password", 20);
+        member = member("email@email.com", "password", 20);
         loginMember = new LoginMember(1L, member.emailValue(), member.ageValue());
-        departureStation = Station.from("강남역");
-        arrivalStation = Station.from("잠실역");
-        favorite = Favorite.of(member, departureStation, arrivalStation);
+        departureStation = station("강남역");
+        arrivalStation = station("잠실역");
+        favorite = favorite(member, departureStation, arrivalStation);
     }
 
     @Test
@@ -60,9 +60,9 @@ class FavoriteServiceTest {
     void createFavoriteByEmptyDepartureStation() {
         // given
         FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
-        when(memberService.findMemberById(1L)).thenReturn(member);
-        when(stationService.findStationById(1L)).thenReturn(null);
-        when(stationService.findStationById(2L)).thenReturn(arrivalStation);
+        given(memberService.findMemberById(1L)).willReturn(member);
+        given(stationService.findStationById(1L)).willReturn(null);
+        given(stationService.findStationById(2L)).willReturn(arrivalStation);
 
         // when
         assertThatThrownBy(() -> favoriteService.createFavorite(loginMember, favoriteRequest))
@@ -75,9 +75,9 @@ class FavoriteServiceTest {
     void createFavoriteByEmptyArrivalStation() {
         // given
         FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
-        when(memberService.findMemberById(1L)).thenReturn(member);
-        when(stationService.findStationById(1L)).thenReturn(departureStation);
-        when(stationService.findStationById(2L)).thenReturn(null);
+        given(memberService.findMemberById(1L)).willReturn(member);
+        given(stationService.findStationById(1L)).willReturn(departureStation);
+        given(stationService.findStationById(2L)).willReturn(null);
 
         // when
         assertThatThrownBy(() -> favoriteService.createFavorite(loginMember, favoriteRequest))
@@ -90,9 +90,9 @@ class FavoriteServiceTest {
     void createFavorite() {
         // given
         FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
-        when(memberService.findMemberById(1L)).thenReturn(member);
-        when(stationService.findStationById(1L)).thenReturn(departureStation);
-        when(stationService.findStationById(2L)).thenReturn(arrivalStation);
+        given(memberService.findMemberById(1L)).willReturn(member);
+        given(stationService.findStationById(1L)).willReturn(departureStation);
+        given(stationService.findStationById(2L)).willReturn(arrivalStation);
         given(favoriteRepository.save(any())).willReturn(favorite);
 
         // when
@@ -109,10 +109,10 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기 목록을 조회한다")
     void findFavorites() {
         // given
-        Favorite favorite2 = Favorite.of(member, Station.from("잠실역"), Station.from("몽촌토성역"));
+        Favorite favorite2 = favorite(member, station("잠실역"), station("몽촌토성역"));
         member.addFavorite(favorite);
         member.addFavorite(favorite2);
-        when(memberService.findMemberById(1L)).thenReturn(member);
+        given(memberService.findMemberById(1L)).willReturn(member);
 
         // when
         List<FavoriteResponse> favoriteResponses = favoriteService.findFavoritesByMemberId(loginMember);
@@ -124,9 +124,9 @@ class FavoriteServiceTest {
     @DisplayName("본인이 아닌 다른 회원의 즐겨찾기는 삭제 할 수 없다.")
     void deleteFavoriteByAnotherMember() {
         // given
-        Member newMember = Member.of("email2@email.com", "password", 21);
-        when(memberService.findMemberById(any())).thenReturn(newMember);
-        when(favoriteRepository.findById(1L)).thenReturn(Optional.of(favorite));
+        Member newMember = member("email2@email.com", "password", 21);
+        given(memberService.findMemberById(any())).willReturn(newMember);
+        given(favoriteRepository.findById(1L)).willReturn(Optional.of(favorite));
 
         // when & then
         assertThatThrownBy(() -> favoriteService.deleteFavorite(loginMember, 1L))
@@ -139,8 +139,8 @@ class FavoriteServiceTest {
     void deleteFavorite() {
         // given
         member.addFavorite(favorite);
-        when(memberService.findMemberById(1L)).thenReturn(member);
-        when(favoriteRepository.findById(1L)).thenReturn(Optional.of(favorite));
+        given(memberService.findMemberById(1L)).willReturn(member);
+        given(favoriteRepository.findById(1L)).willReturn(Optional.of(favorite));
 
         // when
         favoriteService.deleteFavorite(loginMember, 1L);
