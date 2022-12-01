@@ -1,6 +1,8 @@
 package nextstep.subway.auth.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
@@ -14,7 +16,7 @@ public class AuthAcceptanceTestRestAssured {
     public static final String MEMBERS = "/members";
     public static final String MEMBERS_ME = "/members/me";
 
-    static MemberResponse 내_정보_조회(TokenResponse tokenResponse) {
+    static ExtractableResponse<Response> 내_정보_조회(TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
@@ -22,10 +24,18 @@ public class AuthAcceptanceTestRestAssured {
                 .when()
                 .get(MEMBERS_ME)
                 .then().log().all()
-                .extract().body().as(MemberResponse.class);
+                .extract();
     }
 
-    static TokenResponse 로그인_요청(MemberRequest memberRequest) {
+    static MemberResponse 내_정보_조회됨(TokenResponse tokenResponse) {
+        return 내_정보_조회(tokenResponse).body().as(MemberResponse.class);
+    }
+
+    static TokenResponse 로그인_요청됨(MemberRequest memberRequest) {
+        return 로그인_요청(memberRequest).body().as(TokenResponse.class);
+    }
+
+    static ExtractableResponse<Response> 로그인_요청(MemberRequest memberRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -33,9 +43,9 @@ public class AuthAcceptanceTestRestAssured {
                 .when()
                 .post(LOGIN)
                 .then().log().all()
-                .extract().body().as(TokenResponse.class);
-
+                .extract();
     }
+
     static void 회원_등록되어_있음(MemberRequest memberRequest) {
         RestAssured
                 .given().log().all()

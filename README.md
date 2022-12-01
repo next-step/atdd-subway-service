@@ -80,8 +80,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### 로그인 기능
 - 이메일과 패스워드를 이용하여 요청 시 access token을 응답하는 기능 구현
 - `AuthAcceptanceTest`을 만족하도록 구현
-- `AuthAcceptanceTest`의 예외 케이스 고려하여 구현
-- 유효하지 않은 토큰으로 `/members/me` 요청을 보낼 경우에 대한 예외 처리
+- 잘못된 이메일과 패스워드를 사용하여 로그인 요청시 로그인을 실패한다.
+- 유효하지 않은 토큰으로 "내정보" 요청을 보낼 경우  
 
 ### 내 정보 조회 기능
 - `MemberAcceptanceTest` 클래스의 `manageMyInfo()` 메서드에 인수 테스트 추가
