@@ -37,15 +37,15 @@ public class Sections {
     }
 
     public void removeLineStation(Line line, Station station) {
-        if (getSections().size() <= 1) {
+        if (this.sections.size() <= 1) {
             throw new RuntimeException(MININUM_SECTIONS_SIZE_EXCEPTION_MESSAGE);
         }
 
-        Optional<Section> upLineStation = getSections().stream()
+        Optional<Section> upLineStation = this.sections.stream()
                 .filter(it -> it.getUpStation().equals(station))
                 .findFirst();
 
-        Optional<Section> downLineStation = getSections().stream()
+        Optional<Section> downLineStation = this.sections.stream()
                 .filter(it -> it.getDownStation().equals(station))
                 .findFirst();
 
@@ -55,8 +55,8 @@ public class Sections {
             this.sections.add(new Section(line, newUpStation, newDownStation, new Distance(upLineStation.get().getDistance().sum(downLineStation.get().getDistance()))));
         }
 
-        upLineStation.ifPresent(it -> getSections().remove(it));
-        downLineStation.ifPresent(it -> getSections().remove(it));
+        upLineStation.ifPresent(this.sections::remove);
+        downLineStation.ifPresent(this.sections::remove);
     }
 
     public List<Station> getStations() {
@@ -69,7 +69,7 @@ public class Sections {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSections().stream()
+            Optional<Section> nextLineStation = this.sections.stream()
                     .filter(it -> it.getUpStation().equals(finalDownStation))
                     .findFirst();
             if (!nextLineStation.isPresent()) {
@@ -93,10 +93,10 @@ public class Sections {
     }
 
     private Station findUpStation() {
-        Station downStation = getSections().get(0).getUpStation();
+        Station downStation = this.sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSections().stream()
+            Optional<Section> nextLineStation = this.sections.stream()
                     .filter(it -> it.getDownStation().equals(finalDownStation))
                     .findFirst();
             if (!nextLineStation.isPresent()) {
@@ -136,7 +136,7 @@ public class Sections {
 
     private void addBetweenUpSection(Section section, boolean isDownStationExisted) {
         if (isDownStationExisted) {
-            getSections().stream()
+            this.sections.stream()
                     .filter(it -> it.getDownStation().equals(section.getDownStation()))
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
@@ -146,7 +146,7 @@ public class Sections {
 
     private void addBetweenDownSection(Section section, boolean isUpStationExisted) {
         if (isUpStationExisted) {
-            getSections().stream()
+            this.sections.stream()
                     .filter(it -> it.getUpStation().equals(section.getUpStation()))
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
