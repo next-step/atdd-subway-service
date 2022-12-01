@@ -6,12 +6,16 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
@@ -52,21 +56,37 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
 
-    // Given : 경로 조회 가능한 노선들이 등록되어 있다
-    // When : 출발역과 도착역의 경로 조회 요청하면
-    // Then : 최단 경로와 거리를 응답한다.
+    /**
+     * Given : 경로 조회 가능한 노선들이 등록되어 있다
+     * When : 출발역과 도착역의 경로 조회 요청하면
+     * Then : 최단 경로와 거리를 응답한다.
+     */
+    @DisplayName("지하철 노선의 최단 경로를 조회한다")
     @Test
-    void name() {
-        // given
-        String uri = "/paths?source=1&target=2";
-
+    void findPaths() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when().get("/paths?source={sourceId}&target={targetId}", 강남역.getId(), 양재역.getId())
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = 지하철_경로_조회(교대역.getId(), 양재역.getId());
 
         // then
+        지하철_경로_조회됨(response);
+        지하철_경로_이름_확인됨(response, Arrays.asList("교대역", "남부터미널역", "양재역"));
+    }
+
+    public static ExtractableResponse<Response> 지하철_경로_조회(Long sourceId, Long targetId) {
+        return RestAssured.given().log().all()
+                .when().get("/paths?source={sourceId}&target={targetId}", sourceId, targetId)
+                .then().log().all()
+                .extract();
+    }
+
+    private static void 지하철_경로_이름_확인됨(ExtractableResponse<Response> response, List<String> stationNames) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getStations())
+                .extracting(StationResponse::getName)
+                .containsExactlyElementsOf(stationNames);
+    }
+
+    public static void 지하철_경로_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }

@@ -139,6 +139,57 @@ new 로 교체하고, legacy 는 일정 기간 후 삭제하는 작업 패턴(**
 - [x] 매직넘버에 이름 부여
 
 ## 2단계 - 경로 조회 기능
+
+### Request / Response
+```http request
+HTTP/1.1 200 
+Request method:	GET
+Request URI:	http://localhost:55494/paths?source=1&target=6
+Headers: 	Accept=application/json
+		Content-Type=application/json; charset=UTF-8
+```
+
+```http response
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 09 May 2020 14:54:11 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    "stations": [
+        {
+            "id": 5,
+            "name": "양재시민의숲역",
+            "createdAt": "2020-05-09T23:54:12.007"
+        },
+        {
+            "id": 4,
+            "name": "양재역",
+            "createdAt": "2020-05-09T23:54:11.995"
+        },
+        {
+            "id": 1,
+            "name": "강남역",
+            "createdAt": "2020-05-09T23:54:11.855"
+        },
+        {
+            "id": 2,
+            "name": "역삼역",
+            "createdAt": "2020-05-09T23:54:11.876"
+        },
+        {
+            "id": 3,
+            "name": "선릉역",
+            "createdAt": "2020-05-09T23:54:11.893"
+        }
+    ],
+    "distance": 40
+}
+```
+
+
 ```text
      교대역    --- 2호선 : 10 ---   강남역
      |                             |
@@ -153,8 +204,8 @@ new 로 교체하고, legacy 는 일정 기간 후 삭제하는 작업 패턴(**
   - Then : 최단 경로와 거리를 응답한다.
 
 ### Domain
-- [ ] Paths 구현
-  - [ ] 최단 경로 찾기
+- [ ] PathFinder 구현
+  - [x] 최단 경로 찾기
   - [ ] 예외 케이스 구현
     - [ ] 출발역과 도착역이 같은 경우
     - [ ] 출발역과 도착역이 견결되어 있지 않은 경우

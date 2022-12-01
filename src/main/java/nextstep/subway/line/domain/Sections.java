@@ -18,6 +18,10 @@ public class Sections {
     protected Sections() {
     }
 
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+    }
+
     public List<Station> getStations() {
         if (sections.isEmpty()) {
             return Arrays.asList();
