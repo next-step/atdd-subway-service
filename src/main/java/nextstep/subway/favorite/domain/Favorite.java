@@ -41,4 +41,12 @@ public class Favorite {
     public Long getId() {
         return id;
     }
+
+    public Station getSourceStation() {
+        return sourceStation;
+    }
+
+    public Station getTargetStation() {
+        return targetStation;
+    }
 }

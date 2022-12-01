@@ -64,8 +64,10 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> 생성_응답 = 즐겨찾기_생성_요청(로그인_토큰, 양재역, 강남역);
         즐겨찾기_생성됨(생성_응답);
-        즐겨찾기_목록_조회_요청();
-        즐겨찾기_목록_조회됨();
+
+        ExtractableResponse<Response> 조회_응답 = 즐겨찾기_목록_조회_요청(로그인_토큰);
+        즐겨찾기_목록_조회됨(조회_응답, 양재역, 강남역);
+
         즐겨찾기_삭제_요청();
         즐겨찾기_삭제됨();
     }
