@@ -12,7 +12,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.line.exception.InvalidPathException.*;
+import static nextstep.subway.line.exception.InvalidPathException.SOURCE_AND_TARGET_EQUAL;
+import static nextstep.subway.line.exception.InvalidPathException.SOURCE_AND_TARGET_NOT_CONNECTED;
+import static nextstep.subway.line.exception.InvalidPathException.STATION_NOT_EXISTS;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PathFinderTest {

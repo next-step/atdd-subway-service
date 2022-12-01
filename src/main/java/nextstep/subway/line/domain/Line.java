@@ -4,7 +4,12 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.List;
 
 @Entity
