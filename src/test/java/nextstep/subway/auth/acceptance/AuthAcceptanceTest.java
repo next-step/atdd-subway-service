@@ -50,7 +50,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("유효하지 않은 토큰으로 유저인증을하면 실패")
     @Test
     void myInfoWithWrongBearerAuth() {
-        ExtractableResponse<Response> response = 회원_정보_조회_요청("invalid_token");
+        ExtractableResponse<Response> response = 인증회원_정보_조회_요청("invalid_token");
 
         회원_정보_인증_실패(response);
     }
