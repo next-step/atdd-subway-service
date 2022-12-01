@@ -68,7 +68,9 @@ class SectionsTest {
     void whenDistanceSplitDistanceLessThanBefore() {
         구간.addSection(new Section(노선, 당산역, 동작역, 100));
 
-        assertThatThrownBy(() ->구간.addSection(new Section(노선, 당산역, 여의도역, 100+1)))
+        Section section = new Section(노선, 당산역, 여의도역, 100 + 1);
+
+        assertThatThrownBy(() -> 구간.addSection(section))
                 .isInstanceOf(InvalidDistanceException.class);
     }
 
