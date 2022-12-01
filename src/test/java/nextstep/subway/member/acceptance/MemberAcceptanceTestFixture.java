@@ -67,6 +67,26 @@ public class MemberAcceptanceTestFixture {
             .extract();
     }
 
+    public static ExtractableResponse<Response> 내_정보_수정_요청(String accessToken, MemberRequest memberRequest) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(memberRequest)
+            .when().put("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_삭제_요청(String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().delete("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
