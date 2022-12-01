@@ -18,7 +18,7 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> findShortestPath(
-            @AuthenticationPrincipal LoginMember loginMember,
+            @AuthenticationPrincipal(required = false) LoginMember loginMember,
             @RequestParam Long source,
             @RequestParam Long target
     ) {
