@@ -28,7 +28,7 @@ public class Distance {
 
     public static Distance subtract(Distance distance1, Distance distance2) {
         if (isValidate(distance1.value - distance2.value)) {
-            throw new InvalidDistanceException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
+            throw new InvalidDistanceException("거리의 차이는 0보다 작을 수 없습니다.");
         }
         return new Distance(distance1.value - distance2.value);
     }
