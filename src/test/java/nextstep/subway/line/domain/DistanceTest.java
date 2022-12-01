@@ -53,4 +53,13 @@ class DistanceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("거리는 0이하의 값일 수 없습니다.");
     }
+
+    @DisplayName("거리의 크기를 비교할 수 있다.")
+    @Test
+    void isOver() {
+        Distance distance = new Distance(7);
+        Distance anotherDistance = new Distance(5);
+
+        assertThat(distance.isOver(anotherDistance)).isTrue();
+    }
 }

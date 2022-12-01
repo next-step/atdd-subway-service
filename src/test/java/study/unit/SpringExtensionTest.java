@@ -29,7 +29,7 @@ public class SpringExtensionTest {
     @Test
     void findAllLines() {
         // given
-        Line line = createLine("2호선", new Station("교대역"), new Station("강남역"), 10);
+        Line line = createLine("2호선", new Station("교대역"), new Station("강남역"), 10, 500);
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(line));
         LineService lineService = new LineService(lineRepository, stationService);
 

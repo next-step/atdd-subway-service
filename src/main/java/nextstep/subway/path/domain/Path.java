@@ -12,11 +12,13 @@ public class Path {
 
     private final List<Station> stations;
     private final Distance distance;
+    private final Fare lineExtraFare;
 
-    public Path(List<Station> stations, int distance) {
+    public Path(List<Station> stations, int distance, Fare lineExtraFare) {
         validate(stations);
         this.stations = new ArrayList<>(stations);
         this.distance = new Distance(distance);
+        this.lineExtraFare = lineExtraFare;
     }
 
     private void validate(List<Station> stations) {
@@ -33,6 +35,11 @@ public class Path {
         return distance.value();
     }
 
+    public Fare calculateTotalFare(int age) {
+        Fare extraFare = lineExtraFare.add(DistanceFare.calculate(distance));
+        return AgeDiscountFare.calculate(age, extraFare.value());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -42,11 +49,12 @@ public class Path {
             return false;
         }
         Path path = (Path) o;
-        return Objects.equals(stations, path.stations) && Objects.equals(distance, path.distance);
+        return Objects.equals(stations, path.stations) && Objects.equals(distance, path.distance)
+                && Objects.equals(lineExtraFare, path.lineExtraFare);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(stations, distance);
+        return Objects.hash(stations, distance, lineExtraFare);
     }
 }

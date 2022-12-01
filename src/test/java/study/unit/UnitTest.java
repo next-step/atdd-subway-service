@@ -17,8 +17,8 @@ public class UnitTest {
 
         Station upStation = new Station("강남역");
         Station downStation = new Station("광교역");
-        Line line = createLine("신분당선", upStation, downStation, 10);
-        Line newLine = createLine(newName, upStation, downStation, 10);
+        Line line = createLine("신분당선", upStation, downStation, 10, 500);
+        Line newLine = createLine(newName, upStation, downStation, 10, 500);
 
         // when
         line.changeName(newLine.getName());
