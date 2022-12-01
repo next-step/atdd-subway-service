@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceFixture.로그인_요청;
+import static nextstep.subway.favorite.FavoriteAcceptanceFixture.즐겨찾기_생성_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceFixture.지하철_노선_등록되어_있음;
 import static nextstep.subway.member.MemberAcceptanceFixture.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceFixture.지하철역_등록되어_있음;
@@ -63,7 +64,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         LineRequest lineRequest = new LineRequest("이호선", "bg-green-600", 신림역, 왕십리역, 10);
         이호선 = 지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class).getId();
 
-        System.out.println(로그인_성공_토큰_값);
 
     }
 
@@ -81,17 +81,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void manage_favorite() {
 
-        FavoriteRequest favoriteRequest = new FavoriteRequest(신림역, 강남역);
+        // when
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(로그인_성공_토큰_값, 신림역, 강남역);
+        // then
+        Assertions.assertThat(즐겨찾기_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .auth().oauth2(로그인_성공_토큰_값)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(favoriteRequest)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
 
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
+
+
 }
