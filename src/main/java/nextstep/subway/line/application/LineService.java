@@ -41,13 +41,8 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(NoResultException::new);
-    }
-
-    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
+        Line persistLine = lineRepository.findById(id).orElseThrow(NoResultException::new);
         return LineResponse.of(persistLine);
     }
 
@@ -64,16 +59,15 @@ public class LineService {
 
     @Transactional
     public void addSection(Long lineId, SectionRequest request) {
-        Line line = findLineById(lineId);
+        Line line = lineRepository.findById(lineId).orElseThrow(NoResultException::new);
         Station upStation = stationRepository.findById(request.getUpStationId()).orElseThrow(NoResultException::new);
         Station downStation = stationRepository.findById(request.getDownStationId()).orElseThrow(NoResultException::new);
         line.addSection(upStation, downStation, request.getDistance());
     }
 
-
     @Transactional
     public void removeSection(Long lineId, Long stationId) {
-        Line line = findLineById(lineId);
+        Line line = lineRepository.findById(lineId).orElseThrow(NoResultException::new);
         Station station = stationRepository.findById(stationId).orElseThrow(NoResultException::new);
         line.removeSection(station);
     }
