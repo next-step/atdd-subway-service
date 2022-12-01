@@ -26,7 +26,7 @@ class DistanceTest {
     @DisplayName("거리를 뺀다.")
     void 거리_빼기() {
         Distance distance = new Distance(10);
-        distance = Distance.diff(distance, new Distance(3));
+        distance = Distance.subtract(distance, new Distance(3));
         assertThat(distance).isEqualTo(new Distance(7));
     }
 }

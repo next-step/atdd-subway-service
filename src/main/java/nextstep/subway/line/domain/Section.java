@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.exception.InvalidDistanceException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -59,12 +58,12 @@ public class Section {
 
     public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
-        this.distance = Distance.diff(this.distance, newDistance);
+        this.distance = Distance.subtract(this.distance, newDistance);
     }
 
     public void updateDownStation(Station station, Distance newDistance) {
         this.downStation = station;
-        this.distance = Distance.diff(this.distance, newDistance);
+        this.distance = Distance.subtract(this.distance, newDistance);
     }
 
     public boolean equalsUpStation(Station station) {

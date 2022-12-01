@@ -26,7 +26,7 @@ public class Distance {
         return new Distance(distance1.value + distance2.value);
     }
 
-    public static Distance diff(Distance distance1, Distance distance2) {
+    public static Distance subtract(Distance distance1, Distance distance2) {
         if (isValidate(distance1.value - distance2.value)) {
             throw new InvalidDistanceException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
         }
