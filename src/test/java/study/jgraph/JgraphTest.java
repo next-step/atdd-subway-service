@@ -1,5 +1,8 @@
 package study.jgraph;
 
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.alg.shortestpath.KShortestPaths;
@@ -51,5 +54,30 @@ public class JgraphTest {
                     assertThat(it.getVertexList()).startsWith(source);
                     assertThat(it.getVertexList()).endsWith(target);
                 });
+    }
+
+    @Test
+    void getSectionTestPath() {
+        Station 강남역 = new Station("강남역");
+        Station 양재역 = new Station("양재역");
+        Station 광교역 = new Station("광교역");
+
+        Line 신분당선 = new Line("신분당선", "빨간색", 강남역, 광교역, 90);
+        신분당선.addSection(양재역, 광교역, 70);
+
+        assertThat(신분당선.getStations()).hasSize(3);
+
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        graph.addVertex(강남역);
+        graph.addVertex(양재역);
+        graph.addVertex(광교역);
+        for (Section section : 신분당선.getSections()) {
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+        }
+
+        List<GraphPath> kshortestPaths = new KShortestPaths(graph, 100).getPaths(강남역, 광교역);
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+
+        assertThat(dijkstraShortestPath.getPath(양재역, 광교역).getWeight()).isEqualTo(70);
     }
 }
