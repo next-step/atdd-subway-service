@@ -10,9 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Lists;
 
-import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.LineUtils;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
 
@@ -24,8 +23,8 @@ public class MockitoTest {
         LineRepository lineRepository = mock(LineRepository.class);
         StationService stationService = mock(StationService.class);
 
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(Line.empty()));
-        LineService lineService = new LineService(lineRepository, stationService);
+        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(LineUtils.empty()));
+        nextstep.subway.line.application.LineService lineService = new nextstep.subway.line.application.LineService(lineRepository, stationService);
 
         // when
         List<LineResponse> responses = lineService.findLines();

@@ -6,8 +6,6 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Distance {
-    private static final int ZERO = 0;
-    public static final String VALIDATE_SUB_MESSAGE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
     private int distance;
 
     protected Distance() {
@@ -17,12 +15,16 @@ public class Distance {
         this.distance = distance;
     }
 
-    public static Distance of(int distance) {
+    public static Distance from(int distance) {
         return new Distance(distance);
     }
 
+    public static Distance from(double weight) {
+        return new Distance((int)weight);
+    }
+
     public static Distance zero() {
-        return new Distance(ZERO);
+        return new Distance(0);
     }
 
     public Distance sum(Distance other) {
@@ -36,16 +38,22 @@ public class Distance {
 
     private void validateSub(Distance other) {
         if (this.distance <= other.distance) {
-            throw new RuntimeException(VALIDATE_SUB_MESSAGE);
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
+    }
+
+    public int value() {
+        return distance;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
         Distance distance1 = (Distance)o;
         return distance == distance1.distance;
     }

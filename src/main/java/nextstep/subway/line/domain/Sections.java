@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -42,21 +43,39 @@ public class Sections {
 
     private Station findTopStation() {
         Station nowStation = sections.get(0).getUpStation();
-        while (nowStation.hasPrev(this)) {
-            nowStation = nowStation.prev(this);
+        while (hasPrev(nowStation)) {
+            nowStation = prev(nowStation);
         }
         return nowStation;
     }
 
-    private Stations collectStations(Station begin) {
-        Stations stations = Stations.empty();
-        stations.add(begin);
+    private boolean hasPrev(Station station) {
+        return findHasDownStation(station).isPresent();
+    }
 
-        while (begin.hasNext(this)) {
-            begin = begin.next(this);
-            stations.add(begin);
+    private Station prev(Station station) {
+        Section section = findHasDownStation(station).orElseThrow(NoSuchElementException::new);
+        return section.getUpStation();
+    }
+
+    private Stations collectStations(Station nowStation) {
+        Stations stations = Stations.empty();
+        stations.add(nowStation);
+
+        while (hasNext(nowStation)) {
+            nowStation = next(nowStation);
+            stations.add(nowStation);
         }
         return stations;
+    }
+
+    private boolean hasNext(Station station) {
+        return findHasUpStation(station).isPresent();
+    }
+
+    private Station next(Station station) {
+        Section section = findHasUpStation(station).orElseThrow(NoSuchElementException::new);
+        return section.getDownStation();
     }
 
     public Optional<Section> findHasDownStation(Station station) {

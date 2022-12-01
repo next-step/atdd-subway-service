@@ -60,3 +60,11 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [X] LineAcceptanceTest
   - [X] LineSectionAcceptanceTest
 
+## Step2
+- [X] 최단 경로 조회 인수 테스트 만들기
+  - [X] 출발역과 도착역이 같은 경우 최단 경로 조회 실패
+  - [X] 출발역과 도착역이 연결되어 있지 않은 경우 최단 경로 조회 실패
+  - [X] 존재하지 않는 역을 출발역이나 도착역으로 조회할 경우 최단 경로 조회 실패
+  - [X] 최단 경로가 존재하는 경우 최단 경로 조회 성공
+ 
+- [X] 최단 경로 조회 기능 구현하기

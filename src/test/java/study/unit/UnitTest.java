@@ -17,8 +17,8 @@ public class UnitTest {
         String newColor = "GREEN";
 
 
-        Station upStation = Station.of("강남역");
-        Station downStation = Station.of("광교역");
+        Station upStation = Station.from("강남역");
+        Station downStation = Station.from("광교역");
         Line line = new Line("신분당선", "RED", upStation, downStation, 10);
 
         // when

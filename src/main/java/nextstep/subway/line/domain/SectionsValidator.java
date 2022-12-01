@@ -1,14 +1,12 @@
 package nextstep.subway.line.domain;
 
-public class SectionsValidator {
-    protected static final String ALREADY_EXISTED_MESSAGE = "이미 등록된 구간 입니다.";
-    protected static final String NOT_CONTAINS_ALL_MESSAGE = "등록할 수 없는 구간 입니다.";
+class SectionsValidator {
     private static final int MIN_SIZE = 1;
 
     private SectionsValidator() {
     }
 
-    public static void validateAddNew(Section section, Stations stations) {
+    static void validateAddNew(Section section, Stations stations) {
         validateAlreadyExisted(section, stations);
         validateNotContainsAll(section, stations);
     }
@@ -23,7 +21,7 @@ public class SectionsValidator {
         if (section.isDownStationExisted(stations)) {
             return;
         }
-        throw new RuntimeException(NOT_CONTAINS_ALL_MESSAGE);
+        throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
     }
 
     private static void validateAlreadyExisted(Section section, Stations stations) {
@@ -33,12 +31,12 @@ public class SectionsValidator {
         if (section.isDownStationNotExisted(stations)) {
             return;
         }
-        throw new RuntimeException(ALREADY_EXISTED_MESSAGE);
+        throw new IllegalArgumentException("이미 등록된 구간 입니다.");
     }
 
-    public static void validateRemoveStation(Sections sections) {
+    static void validateRemoveStation(Sections sections) {
         if (sections.size() <= MIN_SIZE) {
-            throw new RuntimeException();
+            throw new IllegalStateException("노선에는 최소 2개 이상의 역이 있어야 합니다.");
         }
     }
 }

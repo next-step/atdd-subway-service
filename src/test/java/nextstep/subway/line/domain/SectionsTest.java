@@ -94,8 +94,8 @@ class SectionsTest {
 
         // then
         assertThat(sections.toStations().getList()).containsExactly(왕십리, 상왕십리, 신당, DDP, 을지로);
-        assertThat(sections.findHasUpStation(왕십리).get().hasDistance(Distance.of(5))).isTrue();
-        assertThat(sections.findHasDownStation(신당).get().hasDistance(Distance.of(5))).isTrue();
+        assertThat(sections.findHasUpStation(왕십리).get().hasDistance(Distance.from(5))).isTrue();
+        assertThat(sections.findHasDownStation(신당).get().hasDistance(Distance.from(5))).isTrue();
     }
 
     @DisplayName("이미 존재하는 구획 추가 불가")
@@ -107,8 +107,8 @@ class SectionsTest {
         // when
         // then
         assertThatThrownBy(() -> sections.addNewSection(section))
-            .isInstanceOf(RuntimeException.class)
-            .hasMessage(SectionsValidator.ALREADY_EXISTED_MESSAGE);
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("이미 등록된 구간 입니다.");
     }
 
     @DisplayName("상행 하행 모두 존재하지 않는 경우 구획 추가 불가")
@@ -122,8 +122,8 @@ class SectionsTest {
         // when
         // then
         assertThatThrownBy(() -> sections.addNewSection(section))
-            .isInstanceOf(RuntimeException.class)
-            .hasMessage(SectionsValidator.NOT_CONTAINS_ALL_MESSAGE);
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("등록할 수 없는 구간 입니다.");
     }
 
     @DisplayName("상행 종점 추가")
@@ -138,7 +138,7 @@ class SectionsTest {
 
         // then
         assertThat(sections.toStations().getList()).containsExactly(청량리, 왕십리, 신당, DDP, 을지로);
-        assertThat(sections.findHasUpStation(청량리).get().hasDistance(Distance.of(10))).isTrue();
+        assertThat(sections.findHasUpStation(청량리).get().hasDistance(Distance.from(10))).isTrue();
     }
 
     @DisplayName("하행 종점 추가")
@@ -153,7 +153,7 @@ class SectionsTest {
 
         // then
         assertThat(sections.toStations().getList()).containsExactly(왕십리, 신당, DDP, 을지로, 시청);
-        assertThat(sections.findHasDownStation(시청).get().hasDistance(Distance.of(10))).isTrue();
+        assertThat(sections.findHasDownStation(시청).get().hasDistance(Distance.from(10))).isTrue();
     }
 
     @DisplayName("상행 종점 제거")
@@ -184,7 +184,7 @@ class SectionsTest {
 
         // then
         assertThat(sections.toStations().getList()).containsExactly(왕십리, DDP, 을지로);
-        assertThat(sections.findHasUpStation(왕십리).get().hasDistance(Distance.of(20))).isTrue();
+        assertThat(sections.findHasUpStation(왕십리).get().hasDistance(Distance.from(20))).isTrue();
     }
 
     @DisplayName("남은 역 갯수 1개 이하 제거 불가")
@@ -195,6 +195,6 @@ class SectionsTest {
 
         // when
         assertThatThrownBy(() -> sections.removeStation(왕십리))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalStateException.class);
     }
 }

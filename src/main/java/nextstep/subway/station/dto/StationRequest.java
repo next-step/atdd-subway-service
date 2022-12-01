@@ -17,6 +17,6 @@ public class StationRequest {
     }
 
     public Station toStation() {
-        return Station.of(name);
+        return Station.from(name);
     }
 }

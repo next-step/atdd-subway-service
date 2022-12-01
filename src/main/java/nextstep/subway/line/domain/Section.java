@@ -46,7 +46,7 @@ public class Section {
     }
 
     public static Section of(Line line, Station upStation, Station downStation, int distance) {
-        return new Section(null, line, upStation, downStation, Distance.of(distance));
+        return new Section(null, line, upStation, downStation, Distance.from(distance));
     }
 
     public static Section of(Long id, Station upStation, Station downStation) {
@@ -54,7 +54,7 @@ public class Section {
     }
 
     public static Section of(Long id, Station upStation, Station downStation, int distance) {
-        return new Section(id, null, upStation, downStation, Distance.of(distance));
+        return new Section(id, null, upStation, downStation, Distance.from(distance));
     }
 
     public void modifyUpStation(Section newSection) {
@@ -119,12 +119,18 @@ public class Section {
         return downStation;
     }
 
+    public int getDistanceValue() {
+        return this.distance.value();
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof Section))
+        }
+        if (!(o instanceof Section)) {
             return false;
+        }
         Section section = (Section)o;
         return Objects.equals(getId(), section.getId());
     }
