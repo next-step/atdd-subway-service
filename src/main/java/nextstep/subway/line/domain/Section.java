@@ -24,6 +24,9 @@ public class Section {
 
     private int distance;
 
+    @Embedded
+    private TempDistance tempDistance;
+
     public Section() {
     }
 
@@ -32,6 +35,13 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public Section(Line line, Station upStation, Station downStation, TempDistance tempDistance) {
+        this.line = line;
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.tempDistance = tempDistance;
     }
 
     public Long getId() {
