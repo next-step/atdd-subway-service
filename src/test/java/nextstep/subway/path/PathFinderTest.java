@@ -1,4 +1,4 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path;
 
 import static nextstep.subway.line.domain.StationFixture.강남역;
 import static nextstep.subway.line.domain.StationFixture.교대역;
@@ -8,7 +8,10 @@ import static nextstep.subway.line.domain.StationFixture.스타벅스역;
 import static nextstep.subway.line.domain.StationFixture.양재;
 
 import java.util.List;
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.exception.WrongPathException;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,8 +1,9 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.exception.WrongPathException;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
