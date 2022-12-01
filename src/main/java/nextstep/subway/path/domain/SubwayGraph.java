@@ -12,8 +12,8 @@ public class SubwayGraph extends WeightedMultigraph<Station, DefaultWeightedEdge
 
     private final List<Line> lines;
 
-    public SubwayGraph(Class<? extends DefaultWeightedEdge> edgeClass, List<Line> lines) {
-        super(edgeClass);
+    public SubwayGraph(List<Line> lines) {
+        super(DefaultWeightedEdge.class);
         this.lines = lines;
         addVertex();
         setEdgeWeight();

@@ -4,6 +4,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class PathFinder {
 
     public PathFinder(List<Line> lines) {
         validateLines(lines);
-        this.subwayGraph = new SubwayGraph(DefaultWeightedEdge.class, lines);
+        this.subwayGraph = new SubwayGraph(lines);
     }
 
     private void validateLines(List<Line> lines) {
