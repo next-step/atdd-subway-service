@@ -32,9 +32,15 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
-        Member member = memberService.findMemberById(loginMember.getId());
+        Member member = findMember(loginMember);
         Favorite favorite = toFavorite(member, request);
         return new FavoriteResponse(favoriteRepository.save(favorite));
+    }
+
+    @Transactional
+    public void removeFavorite(LoginMember loginMember, long favoriteId) {
+        Member member = findMember(loginMember);
+        member.removeFavorite(favoriteId);
     }
 
     private Favorite toFavorite(Member member, FavoriteRequest request) {
@@ -45,10 +51,14 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> getFavorite(LoginMember loginMember) {
-        Member member = memberService.findMemberById(loginMember.getId());
+        Member member = findMember(loginMember);
 
         List<Favorite> favorites = member.getFavorites();
 
         return FavoriteResponse.ofList(favorites);
+    }
+
+    private Member findMember(LoginMember loginMember) {
+        return memberService.findMemberById(loginMember.getId());
     }
 }

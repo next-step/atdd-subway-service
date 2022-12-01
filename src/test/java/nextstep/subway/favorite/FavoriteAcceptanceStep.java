@@ -76,10 +76,17 @@ public class FavoriteAcceptanceStep {
                 .collect(Collectors.toList());
     }
 
-    static void 즐겨찾기_삭제_요청() {
+    static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse token, ExtractableResponse<Response> response) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token.getAccessToken())
+                .when().delete(response.header(HttpHeaders.LOCATION))
+                .then().log().all()
+                .extract();
+
     }
 
-    static void 즐겨찾기_삭제됨() {
-
+    static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

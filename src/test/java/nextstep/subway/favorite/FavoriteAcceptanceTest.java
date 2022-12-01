@@ -68,8 +68,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 조회_응답 = 즐겨찾기_목록_조회_요청(로그인_토큰);
         즐겨찾기_목록_조회됨(조회_응답, 양재역, 강남역);
 
-        즐겨찾기_삭제_요청();
-        즐겨찾기_삭제됨();
+        ExtractableResponse<Response> 삭제_응답 = 즐겨찾기_삭제_요청(로그인_토큰, 생성_응답);
+        즐겨찾기_삭제됨(삭제_응답);
     }
 
     private void 지하철_노선에_지하철역_등록되어_있음() {

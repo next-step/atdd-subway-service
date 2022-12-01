@@ -49,4 +49,8 @@ public class Favorite {
     public Station getTargetStation() {
         return targetStation;
     }
+
+    public boolean isId(long favoriteId) {
+        return this.id == favoriteId;
+    }
 }

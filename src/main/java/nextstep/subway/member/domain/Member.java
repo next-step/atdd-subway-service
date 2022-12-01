@@ -3,6 +3,7 @@ package nextstep.subway.member.domain;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.exception.NotFoundFavoriteException;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.CascadeType;
@@ -64,5 +65,16 @@ public class Member extends BaseEntity {
 
     public List<Favorite> getFavorites() {
         return favorites;
+    }
+
+    public void removeFavorite(long favoriteId) {
+        Favorite favorite = findFavorite(favoriteId);
+        favorites.remove(favorite);
+    }
+
+    public Favorite findFavorite(long favoriteId) {
+        return favorites.stream().filter(favorite -> favorite.isId(favoriteId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundFavoriteException(favoriteId));
     }
 }
