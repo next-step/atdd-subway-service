@@ -48,9 +48,10 @@ public class DistanceTest {
     }
 
     @DisplayName("합을 구한다.")
-    @Test
-    void sum() {
-
+    @ParameterizedTest
+    @CsvSource({"1, 1, 2"})
+    void sum(int target, int source, int result) {
+        assertThat(new Distance(target).sum(new Distance(source))).isEqualTo(result);
     }
 
     @DisplayName("차를 구한다.")
