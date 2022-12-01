@@ -41,9 +41,10 @@ public class DistanceTest {
     }
 
     @DisplayName("크기를 비교한다. / 크기가 같으면 0을 반환한다.")
-    @Test
-    void compare_0() {
-
+    @ParameterizedTest
+    @CsvSource({"1, 1, 0"})
+    void compare_0(int target, int source, int result) {
+        assertThat(new Distance(target).compareTo(new Distance(source))).isEqualTo(result);
     }
 
     @DisplayName("합을 구한다.")
