@@ -26,7 +26,15 @@ public class Fare {
         }
     }
 
-    public int get() {
+    public int value() {
         return value;
+    }
+
+    public Fare add(Fare another) {
+        return new Fare(value + another.value);
+    }
+
+    public Fare subtract(Fare another) {
+        return new Fare(value - another.value);
     }
 }

@@ -26,10 +26,10 @@ class ShortestPathTest {
         ShortestPath path = new ShortestPath(new ArrayList<>(), 0, lines);
 
         // when
-        Fare result = path.calculateFare(33);
+        int result = path.calculateFare(33);
 
         // then
-        assertThat(result.get()).isEqualTo(BASIC_PRICE);
+        assertThat(result).isEqualTo(BASIC_PRICE);
     }
 
     @DisplayName("추가 요금이 있을경우, 지하철 요금은 기본요금과 추가요금의 합이다.")
@@ -42,10 +42,10 @@ class ShortestPathTest {
         ShortestPath path = new ShortestPath(new ArrayList<>(), 0, lines);
 
         // when
-        Fare result = path.calculateFare(33);
+        int result = path.calculateFare(33);
 
         // then
-        assertThat(result.get()).isEqualTo(BASIC_PRICE + extraFare);
+        assertThat(result).isEqualTo(BASIC_PRICE + extraFare);
     }
 
     @DisplayName("환승의 경우 추가 요금이 가장 큰 라인의 추가 요금이 적용된다.")
@@ -59,10 +59,10 @@ class ShortestPathTest {
         ShortestPath path = new ShortestPath(new ArrayList<>(), 0, lines);
 
         // when
-        Fare result = path.calculateFare(33);
+        int result = path.calculateFare(33);
 
         // then
-        assertThat(result.get()).isEqualTo(BASIC_PRICE + extraFare);
+        assertThat(result).isEqualTo(BASIC_PRICE + extraFare);
     }
 
     @DisplayName("거리에 따라 요금 정책이 적용된다")
@@ -75,10 +75,10 @@ class ShortestPathTest {
         ShortestPath path = new ShortestPath(new ArrayList<>(), distance, lines);
 
         // when
-        Fare result = path.calculateFare(33);
+        int result = path.calculateFare(33);
 
         // then
-        assertThat(result.get()).isEqualTo(fare);
+        assertThat(result).isEqualTo(fare);
     }
 
     @DisplayName("어린이는 지하철 요금의 50%를 할인받는다.")
@@ -93,10 +93,10 @@ class ShortestPathTest {
         ShortestPath path = new ShortestPath(new ArrayList<>(), 0, lines);
 
         // when
-        Fare result = path.calculateFare(age);
+        int result = path.calculateFare(age);
 
         // then
-        assertThat(result.get()).isEqualTo(BASIC_PRICE + extraFare - expectDiscount);
+        assertThat(result).isEqualTo(BASIC_PRICE + extraFare - expectDiscount);
     }
 
     @DisplayName("청소년은 지하철 요금의 20%를 할인받는다.")
@@ -111,10 +111,10 @@ class ShortestPathTest {
         ShortestPath path = new ShortestPath(new ArrayList<>(), 0, lines);
 
         // when
-        Fare result = path.calculateFare(age);
+        int result = path.calculateFare(age);
 
         // then
-        assertThat(result.get()).isEqualTo(BASIC_PRICE + extraFare - expectDiscount);
+        assertThat(result).isEqualTo(BASIC_PRICE + extraFare - expectDiscount);
     }
 
     @DisplayName("어린이와 청소년이 아닐 경우, 할인이 적용되지 않는다.")
@@ -128,9 +128,9 @@ class ShortestPathTest {
         ShortestPath path = new ShortestPath(new ArrayList<>(), 0, lines);
 
         // when
-        Fare result = path.calculateFare(age);
+        int result = path.calculateFare(age);
 
         // then
-        assertThat(result.get()).isEqualTo(BASIC_PRICE + extraFare);
+        assertThat(result).isEqualTo(BASIC_PRICE + extraFare);
     }
 }

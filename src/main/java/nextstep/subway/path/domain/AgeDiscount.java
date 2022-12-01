@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Fare;
+
 import java.util.Arrays;
 
 public enum AgeDiscount {
@@ -11,17 +13,17 @@ public enum AgeDiscount {
 
     private final int start;
     private final int end;
-    private final double percent;
+    private final double rate;
 
-    AgeDiscount(int start, int end, double percent) {
+    AgeDiscount(int start, int end, double rate) {
         this.start = start;
         this.end = end;
-        this.percent = percent;
+        this.rate = rate;
     }
 
-    public static int calculate(int age, int fare) {
+    public static Fare calculate(int age, int fare) {
         AgeDiscount ageDiscount = findDiscountByAge(age);
-        return (int) ((fare - DEFAULT_DISCOUNT_FARE) * ageDiscount.percent);
+        return new Fare((int) ((fare - DEFAULT_DISCOUNT_FARE) * ageDiscount.rate));
     }
 
     private static AgeDiscount findDiscountByAge(int age) {

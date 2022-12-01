@@ -12,12 +12,12 @@ public class PathResponse {
     private int distance;
     private int fare;
 
-    public PathResponse(List<Station> stations, int distance, Fare fare) {
+    public PathResponse(List<Station> stations, int distance, int fare) {
         this.stations = stations.stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
         this.distance = distance;
-        this.fare = fare.get();
+        this.fare = fare;
     }
 
     private PathResponse() {}

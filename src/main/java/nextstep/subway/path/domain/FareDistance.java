@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Fare;
+
 import java.util.Arrays;
 import java.util.function.IntFunction;
 
@@ -28,9 +30,9 @@ public enum FareDistance {
         this.expression = expression;
     }
 
-    public static int calculate(int distance) {
+    public static Fare calculate(int distance) {
         FareDistance fareDistance = findByDistance(distance);
-        return fareDistance.expression.apply(distance);
+        return new Fare(fareDistance.expression.apply(distance));
     }
 
     private static FareDistance findByDistance(int distance) {

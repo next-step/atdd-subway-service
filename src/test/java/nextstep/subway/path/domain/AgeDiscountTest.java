@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Fare;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -13,10 +14,10 @@ class AgeDiscountTest {
     @ValueSource(ints = {19, 20, 99})
     void noDiscount(int age) {
         // when
-        int result = AgeDiscount.calculate(age, 1_250);
+        Fare result = AgeDiscount.calculate(age, 1_250);
 
         // then
-        assertThat(result).isEqualTo(0);
+        assertThat(result.value()).isEqualTo(0);
     }
 
     @DisplayName("어린이들은 지하철 요금의 50%를 할인 받는다")
@@ -24,10 +25,10 @@ class AgeDiscountTest {
     @CsvSource(value = {"6:450", "12:450"}, delimiter = ':')
     void discountChild(int age, int fare) {
         // when
-        int result = AgeDiscount.calculate(age, 1_250);
+        Fare result = AgeDiscount.calculate(age, 1_250);
 
         // then
-        assertThat(result).isEqualTo(fare);
+        assertThat(result.value()).isEqualTo(fare);
     }
 
     @DisplayName("청소년들은 지하철 요금의 20%를 할인 받는다")
@@ -35,9 +36,9 @@ class AgeDiscountTest {
     @CsvSource(value = {"13:180", "18:180"}, delimiter = ':')
     void discountTeenager(int age, int fare) {
         // when
-        int result = AgeDiscount.calculate(age, 1_250);
+        Fare result = AgeDiscount.calculate(age, 1_250);
 
         // then
-        assertThat(result).isEqualTo(fare);
+        assertThat(result.value()).isEqualTo(fare);
     }
 }

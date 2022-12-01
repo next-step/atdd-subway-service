@@ -14,7 +14,7 @@ public class ShortestPath {
     public ShortestPath(List<Station> stations, int distance, Lines lines) {
         this.stations = stations;
         this.distance = distance;
-        this.lineExtraFare = lines.maxExtraFare().get();
+        this.lineExtraFare = lines.maxExtraFare();
     }
 
     public List<Station> getStations() {
@@ -25,8 +25,8 @@ public class ShortestPath {
         return distance;
     }
 
-    public Fare calculateFare(int age) {
-        int fare = lineExtraFare + FareDistance.calculate(distance);
-        return new Fare(fare - AgeDiscount.calculate(age, fare));
+    public int calculateFare(int age) {
+        Fare originFare = new Fare(lineExtraFare).add(FareDistance.calculate(distance));
+        return originFare.subtract(AgeDiscount.calculate(age, originFare.value())).value();
     }
 }

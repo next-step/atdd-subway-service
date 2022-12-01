@@ -89,9 +89,9 @@ class LinesTest {
         Lines lines = new Lines(Arrays.asList(신분당선, 이호선));
 
         // when
-        Fare result = lines.maxExtraFare();
+        int result = lines.maxExtraFare();
 
         // then
-        assertThat(result.get()).isEqualTo(expectExtraFare);
+        assertThat(result).isEqualTo(expectExtraFare);
     }
 }
