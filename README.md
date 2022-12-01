@@ -100,3 +100,61 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 #### 인수 테스트 통합
 - API를 검증하기 보다는 시나리오, 흐름을 검증하는 테스트로 리팩터링 하기
 - 반드시 하나의 시나리오로 통합할 필요는 없음, 기능의 인수 조건을 설명할 때 하나 이상의 시나리오가 필요한 경우 여러개의 시나리오를 만들어 인수 테스트를 작성할 수 있음
+---
+# 🚀 2단계 - 경로 조회 기능
+
+## 요구사항
+- [x] 최단 경로 조회 인수 테스트 만들기
+- [x] 최단 경로 조회 기능 구현하기
+
+## 요청 / 응답 포맷
+### Request
+```http request
+HTTP/1.1 200
+Request method:	GET
+Request URI:	http://localhost:55494/paths?source=1&target=6
+Headers: 	Accept=application/json
+Content-Type=application/json; charset=UTF-8
+```
+### Response
+```http request
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 09 May 2020 14:54:11 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    "stations": [
+        {
+            "id": 5,
+            "name": "양재시민의숲역",
+            "createdAt": "2020-05-09T23:54:12.007"
+        },
+        {
+            "id": 4,
+            "name": "양재역",
+            "createdAt": "2020-05-09T23:54:11.995"
+        },
+        {
+            "id": 1,
+            "name": "강남역",
+            "createdAt": "2020-05-09T23:54:11.855"
+        },
+        {
+            "id": 2,
+            "name": "역삼역",
+            "createdAt": "2020-05-09T23:54:11.876"
+        },
+        {
+            "id": 3,
+            "name": "선릉역",
+            "createdAt": "2020-05-09T23:54:11.893"
+        }
+    ],
+    "distance": 40
+}
+```
+
+

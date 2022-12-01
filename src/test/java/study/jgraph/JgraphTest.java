@@ -1,15 +1,16 @@
 package study.jgraph;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.alg.shortestpath.KShortestPaths;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class JgraphTest {
     @Test
@@ -51,5 +52,78 @@ public class JgraphTest {
                     assertThat(it.getVertexList()).startsWith(source);
                     assertThat(it.getVertexList()).endsWith(target);
                 });
+    }
+
+    @DisplayName("Dijkstra 최단거리")
+    @Test
+    void getDijkstraShortestPath_station() {
+        String source = "교대역";
+        String target = "양재역";
+
+        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        graph.addVertex("교대역");
+        graph.addVertex("양재역");
+        graph.addVertex("강남역");
+        graph.addVertex("남부터미널역");
+        graph.setEdgeWeight(graph.addEdge("양재역", "강남역"), 8);
+        graph.setEdgeWeight(graph.addEdge("교대역", "강남역"), 7);
+        graph.setEdgeWeight(graph.addEdge("교대역", "남부터미널역"), 5);
+        graph.setEdgeWeight(graph.addEdge("양재역", "남부터미널역"), 9);
+
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        List<String> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
+
+        assertThat(shortestPath).containsExactly("교대역", "남부터미널역", "양재역");
+    }
+
+    @DisplayName("KShortestPaths 최단거리")
+    @Test
+    void getKShortestPaths_station() {
+        String source = "교대역";
+        String target = "양재역";
+
+        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        graph.addVertex("교대역");
+        graph.addVertex("양재역");
+        graph.addVertex("강남역");
+        graph.addVertex("남부터미널역");
+        graph.setEdgeWeight(graph.addEdge("양재역", "강남역"), 8);
+        graph.setEdgeWeight(graph.addEdge("교대역", "강남역"), 7);
+        graph.setEdgeWeight(graph.addEdge("교대역", "남부터미널역"), 5);
+        graph.setEdgeWeight(graph.addEdge("양재역", "남부터미널역"), 9);
+
+        List<GraphPath> paths = new KShortestPaths(graph, 100).getPaths(source, target);
+
+        assertThat(paths).hasSize(2);
+        paths.stream()
+                .forEach(it -> {
+                    assertThat(it.getVertexList()).startsWith(source);
+                    assertThat(it.getVertexList()).endsWith(target);
+                });
+    }
+
+    @DisplayName("Dijkstra 연결이 안된경우")
+    @Test
+    void notLinked() {
+        String source = "교대역";
+        String target = "인천터미널역";
+
+        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        graph.addVertex("교대역");
+        graph.addVertex("양재역");
+        graph.addVertex("강남역");
+        graph.addVertex("남부터미널역");
+        graph.addVertex("부평역");
+        graph.addVertex("인천터미널역");
+        graph.setEdgeWeight(graph.addEdge("양재역", "강남역"), 8);
+        graph.setEdgeWeight(graph.addEdge("교대역", "강남역"), 7);
+        graph.setEdgeWeight(graph.addEdge("교대역", "남부터미널역"), 5);
+        graph.setEdgeWeight(graph.addEdge("양재역", "남부터미널역"), 9);
+        graph.setEdgeWeight(graph.addEdge("부평역", "인천터미널역"), 20);
+
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        GraphPath path = dijkstraShortestPath.getPath(source, target);
+
+        assertThat(path).isNull();
     }
 }
