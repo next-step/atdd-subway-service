@@ -108,4 +108,11 @@ public class FavoriteServiceTest {
                 () -> assertThat(favorite.getTarget().getName()).isEqualTo(양재역.getName()));
     }
 
+    @DisplayName("즐겨찾기 목록조회")
+    @Test
+    void returnsResponse1() { }
+
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void returnsResponse2() { }
 }
