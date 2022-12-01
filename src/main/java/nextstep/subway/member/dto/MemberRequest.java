@@ -7,9 +7,6 @@ public class MemberRequest {
     private String password;
     private Integer age;
 
-    public MemberRequest() {
-    }
-
     public MemberRequest(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
@@ -29,6 +26,6 @@ public class MemberRequest {
     }
 
     public Member toMember() {
-        return new Member(email, password, age);
+        return Member.of(email, password, age);
     }
 }

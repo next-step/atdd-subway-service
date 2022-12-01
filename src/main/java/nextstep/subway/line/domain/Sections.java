@@ -1,19 +1,13 @@
 package nextstep.subway.line.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import nextstep.subway.common.exception.InvalidParameterException;
+import nextstep.subway.station.domain.Station;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import nextstep.subway.common.exception.InvalidParameterException;
-import nextstep.subway.station.domain.Station;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -124,11 +118,9 @@ public class Sections {
     }
 
     public int totalDistance() {
-        int totalDistance = 0;
-        for (Section section : sections) {
-            totalDistance = section.addTotalDistance(totalDistance);
-        }
-        return totalDistance;
+        return sections.stream()
+                .map(Section::getDistance)
+                .reduce(Distance.zero(), Distance::add).value();
     }
 
     public List<Station> getSortStations() {

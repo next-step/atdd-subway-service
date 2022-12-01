@@ -8,8 +8,6 @@ import nextstep.subway.station.domain.Station;
 public class Lines {
     private List<Line> lines;
 
-    private Lines() {}
-
     private Lines(List<Line> lines) {
         this.lines = lines;
     }

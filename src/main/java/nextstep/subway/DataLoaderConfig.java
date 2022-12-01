@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile("!test")
 public class DataLoaderConfig implements CommandLineRunner {
-    private LineRepository lineRepository;
-    private MemberRepository memberRepository;
+    private final LineRepository lineRepository;
+    private final MemberRepository memberRepository;
 
     public DataLoaderConfig(LineRepository lineRepository, MemberRepository memberRepository) {
         this.lineRepository = lineRepository;
@@ -24,7 +24,7 @@ public class DataLoaderConfig implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Station 강남역 = Station.from("강남역");
         Station 교대역 = Station.from("교대역");
         Station 양재역 = Station.from("양재역");
@@ -36,6 +36,6 @@ public class DataLoaderConfig implements CommandLineRunner {
 
         lineRepository.saveAll(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
-        memberRepository.save(new Member("probitanima11@gmail.com", "11", 10));
+        memberRepository.save(Member.of("probitanima11@gmail.com", "11", 10));
     }
 }

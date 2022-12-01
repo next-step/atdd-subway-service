@@ -1,9 +1,9 @@
-package nextstep.subway.utils;
+package nextstep.subway.path.acceptance;
 
+import static io.restassured.RestAssured.*;
 import static nextstep.subway.utils.CommonTestFixture.PATH_BASE_PATH;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
@@ -21,8 +21,7 @@ public class PathAcceptanceTestUtils {
         params.put(DEPARTURE_ID, departure.getId());
         params.put(ARRIVAL_ID, arrival.getId());
 
-        return RestAssured
-                .given().log().all()
+        return given().log().all()
                 .params(params)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
