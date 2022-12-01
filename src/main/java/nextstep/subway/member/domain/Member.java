@@ -48,7 +48,7 @@ public class Member extends BaseEntity {
     }
 
     public void checkPassword(String password) {
-        if (this.password.checkPassword(password)) {
+        if (this.password.isWrongPassword(password)) {
             throw new AuthorizationException(ERROR_MESSAGE_VALID_ID_OR_PASSWORD);
         }
     }

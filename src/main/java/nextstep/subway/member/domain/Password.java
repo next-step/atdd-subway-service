@@ -1,10 +1,12 @@
 package nextstep.subway.member.domain;
 
+import javax.persistence.Embeddable;
 import nextstep.subway.common.exception.InvalidParameterException;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.Column;
 
+@Embeddable
 public class Password {
     private static final String ERROR_MESSAGE_NOT_BLANK_PASSWORD = "비밀번호를 입력해주세요.";
 
@@ -28,7 +30,7 @@ public class Password {
         }
     }
 
-    public boolean checkPassword(String password) {
+    public boolean isWrongPassword(String password) {
         return !this.password.equals(password);
     }
 

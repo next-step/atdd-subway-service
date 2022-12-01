@@ -50,7 +50,7 @@ class PasswordTest {
         Password password = Password.from("password");
 
         // when
-        boolean actual = password.checkPassword(input);
+        boolean actual = password.isWrongPassword(input);
 
         // then
         assertThat(actual).isEqualTo(expect);
