@@ -128,12 +128,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, ExtractableResponse<Response> response) {
-        Long id = Long.parseLong(response.header("Location"));
+        String url = response.header("Location");
 
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
-                .when().delete("/favorites/{id}", id)
+                .when().delete(url)
                 .then().log().all()
                 .extract();
     }

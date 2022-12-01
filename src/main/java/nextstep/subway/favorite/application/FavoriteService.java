@@ -60,6 +60,11 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void deleteFavoriteById(Long memberId, Long id) {
+        favoriteRepository.deleteByMemberIdAndId(memberId, id);
+    }
+
     private Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow(AuthorizationException::new);
     }

@@ -71,6 +71,15 @@ class FavoriteRepositoryTest {
         assertThat(favorites).contains(즐겨찾기);
     }
 
+    @Test
+    @DisplayName("해당 회원의 아이디와, 즐겨찾기 아이디로 즐겨찾기 삭제")
+    void deleteByMemberIdAndId() {
+        // expect
+        favoriteRepository.deleteByMemberIdAndId(회원.getId(), 즐겨찾기.getId());
+        entityManager.flush();
+        entityManager.clear();
+    }
+
     public static Favorite 즐겨찾기_생성(Member member, Station sourceStation, Station targetStation) {
         return new Favorite.Builder()
                 .member(member)
