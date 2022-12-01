@@ -43,7 +43,7 @@ public class PathService {
         }
     }
 
-    private static void validFindPaths(Long sourceId, Long targetId) {
+    private void validFindPaths(Long sourceId, Long targetId) {
         if (Objects.equals(sourceId, targetId)) {
             throw new IllegalArgumentException("동일한 역으로 경로조회할 수 없습니다.");
         }
