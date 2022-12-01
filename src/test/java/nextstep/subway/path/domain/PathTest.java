@@ -80,7 +80,7 @@ public class PathTest extends JpaEntityTest {
 
         // then
         assertThat(path.getStationPaths()).containsExactlyElementsOf(Arrays.asList(교대역, 남부터미널역, 양재역));
-        assertThat(path.getDistance()).isEqualTo(5);
+        assertThat(path.getDistance()).isEqualTo(7);
     }
 
     @DisplayName("최단경로 찾기 테스트 - 환승 1회")
