@@ -23,12 +23,12 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    private Distance distance;
 
     protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -51,23 +51,23 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public void updateUpStation(Station station, Distance newDistance) {
+        if (this.distance.compareTo(newDistance) <= 0) {
             throw new RuntimeException(SECTION_DISTANCE_EXCEPTION_MESSAGE);
         }
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance.substract(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public void updateDownStation(Station station, Distance newDistance) {
+        if (this.distance.compareTo(newDistance) <= 0) {
             throw new RuntimeException(SECTION_DISTANCE_EXCEPTION_MESSAGE);
         }
         this.downStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance.substract(newDistance);
     }
 }

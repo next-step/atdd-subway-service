@@ -137,7 +137,7 @@ public class SectionsTest {
         Sections sections = new Sections();
         sections.add(sectionAC());
 
-        assertThatThrownBy(() -> sections.add(new Section(lineA(), stationA(), stationB(), 5)))
+        assertThatThrownBy(() -> sections.add(new Section(lineA(), stationA(), stationB(), new Distance(DISTANCE_A_C))))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining(SECTION_DISTANCE_EXCEPTION_MESSAGE);
     }
@@ -148,7 +148,7 @@ public class SectionsTest {
         Sections sections = new Sections();
         sections.add(sectionAC());
 
-        assertThatThrownBy(() -> sections.add(new Section(lineA(), stationB(), stationC(), 5)))
+        assertThatThrownBy(() -> sections.add(new Section(lineA(), stationB(), stationC(), new Distance(DISTANCE_A_C))))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining(SECTION_DISTANCE_EXCEPTION_MESSAGE);
     }

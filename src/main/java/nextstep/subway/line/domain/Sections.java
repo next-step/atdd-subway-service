@@ -52,8 +52,7 @@ public class Sections {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            this.sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+            this.sections.add(new Section(line, newUpStation, newDownStation, new Distance(upLineStation.get().getDistance().sum(downLineStation.get().getDistance()))));
         }
 
         upLineStation.ifPresent(it -> getSections().remove(it));

@@ -11,18 +11,18 @@ public class SectionFixture {
     public static final int DISTANCE_C_D = 2;
 
     public static Section sectionAB() {
-        return new Section(lineA(), stationA(), stationB(), DISTANCE_A_B);
+        return new Section(lineA(), stationA(), stationB(), new Distance(DISTANCE_A_B));
     }
 
     public static Section sectionBC() {
-        return new Section(lineA(), stationB(), stationC(), DISTANCE_B_C);
+        return new Section(lineA(), stationB(), stationC(), new Distance(DISTANCE_B_C));
     }
 
     public static Section sectionAC() {
-        return new Section(lineA(), stationA(), stationC(), DISTANCE_A_C);
+        return new Section(lineA(), stationA(), stationC(), new Distance(DISTANCE_A_C));
     }
 
     public static Section sectionCD() {
-        return new Section(lineA(), stationC(), stationD(), DISTANCE_C_D);
+        return new Section(lineA(), stationC(), stationD(), new Distance(DISTANCE_C_D));
     }
 }
