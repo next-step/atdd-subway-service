@@ -10,4 +10,8 @@ public class Favorites {
 
     @OneToMany(mappedBy = "member")
     private List<Favorite> favorites = new ArrayList<>();
+
+    public List<Favorite> getFavorites() {
+        return new ArrayList<>(favorites);
+    }
 }

@@ -89,7 +89,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         내_정보_조회_성공(getResponse, EMAIL, AGE);
 
         // When 내 정보를 수정한다
-        ExtractableResponse<Response> updateResponse = 내_정보를_수정한다(accessToken, "email@kakao.com", "password", 29);
+        ExtractableResponse<Response> updateResponse = 내_정보를_수정한다(accessToken, EMAIL, "password", 29);
 
         // Then 수정 성공
         내_정보_수정_성공(updateResponse);

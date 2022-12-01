@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import java.util.Collections;
+import java.util.List;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -58,6 +60,21 @@ class FavoriteServiceTest {
                 () -> assertThat(favoriteResponse.getSource().getId()).isEqualTo(1L),
                 () -> assertThat(favoriteResponse.getTarget().getId()).isEqualTo(2L)
         );
+    }
 
+    @DisplayName("사용자가 등록한 즐겨찾기 목록을 조회한다")
+    @Test
+    void findAllFavorites() {
+        given(memberService.findMember(any())).willReturn(사용자);
+        given(사용자.getFavorites()).willReturn(Collections.singletonList(new Favorite(사용자, 강남역, 광교역)));
+        FavoriteService favoriteService = new FavoriteService(memberService, stationService, favoriteRepository);
+
+        List<FavoriteResponse> favorites = favoriteService.findAllFavorites(new LoginMember(1L, EMAIL, AGE));
+
+        assertAll(
+                () -> assertThat(favorites).hasSize(1),
+                () -> assertThat(favorites.get(0).getSource().getName()).isEqualTo(강남역.getName()),
+                () -> assertThat(favorites.get(0).getTarget().getName()).isEqualTo(광교역.getName())
+        );
     }
 }
