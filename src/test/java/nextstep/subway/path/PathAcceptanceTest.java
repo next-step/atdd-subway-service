@@ -144,7 +144,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return RestAssured.given().log().all()
                 .body(pathRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/paths")
+                .when().get("/paths")
                 .then().log().all()
                 .extract();
     }
