@@ -1,5 +1,6 @@
 package nextstep.subway;
 
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
@@ -21,7 +22,19 @@ public class Fixture {
         return new Line(name, color, upStation, downStation, distance);
     }
 
+    public static Member createMember(long id, String email, String password, Integer age) {
+        Member member = new Member(email, password, age);
+        Field field = ReflectionUtils.findField(Member.class, "id");
+        Objects.requireNonNull(field).setAccessible(true);
+        ReflectionUtils.setField(field, member, id);
+        return member;
+    }
+
     public static Member createMember(String email, String password, Integer age) {
         return new Member(email, password, age);
+    }
+
+    public static Favorite createFavorite(Member member, Station sourceStation, Station targetStation) {
+        return new Favorite(member, sourceStation, targetStation);
     }
 }
