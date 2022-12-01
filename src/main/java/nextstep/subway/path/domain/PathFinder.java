@@ -4,13 +4,13 @@ import java.util.List;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
+            DefaultWeightedEdge.class);
 
     private PathFinder(List<Station> stations, List<Section> sections) {
         makeGraph(stations, sections);
@@ -20,9 +20,9 @@ public class PathFinder {
         return new PathFinder(stations, sections);
     }
 
-    public Path findPath(Station source, Station target){
+    public Path findPath(PathFindStrategy pathFindStrategy, Station source, Station target) {
         validFindPaths(source, target);
-        return Path.from(findShortestPath(source, target));
+        return Path.from(findShortestPath(pathFindStrategy, source, target));
     }
 
     private void makeGraph(List<Station> stations, List<Section> sections) {
@@ -31,9 +31,9 @@ public class PathFinder {
                 section.getDistance()));
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(source, target);
+    private GraphPath<Station, DefaultWeightedEdge> findShortestPath(PathFindStrategy pathFindStrategy, Station source,
+                                                                     Station target) {
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = pathFindStrategy.findShortestPath(source, target, graph);
         validPathFindResult(shortestPath);
         return shortestPath;
     }

@@ -41,7 +41,7 @@ class PathFinderTest {
     void shortest_path() {
         PathFinder pathFinder = PathFinder.of(stations, sections);
 
-        Path path = pathFinder.findPath(교대역, 양재역);
+        Path path = pathFinder.findPath(new DijkstraPathFindStrategy(), 교대역, 양재역);
 
         assertAll(
                 () -> assertThat(path.getDistance()).isEqualTo(5),
@@ -55,7 +55,7 @@ class PathFinderTest {
     void same_source_target() {
         PathFinder pathFinder = PathFinder.of(stations, sections);
 
-        assertThatThrownBy(() -> pathFinder.findPath(교대역, 교대역))
+        assertThatThrownBy(() -> pathFinder.findPath(new DijkstraPathFindStrategy(), 교대역, 교대역))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -69,7 +69,7 @@ class PathFinderTest {
         sections.add(인터_동춘);
         PathFinder pathFinder = PathFinder.of(stations, sections);
 
-        assertThatThrownBy(() -> pathFinder.findPath(강남역, 인천터미널역))
+        assertThatThrownBy(() -> pathFinder.findPath(new DijkstraPathFindStrategy(), 강남역, 인천터미널역))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }

@@ -1,6 +1,7 @@
 package nextstep.subway.path.applicaiton;
 
 import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.path.domain.DijkstraPathFindStrategy;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -22,7 +23,8 @@ public class PathService {
 
     public PathResponse findPaths(Long sourceId, Long targetId) {
         PathFinder pathFinder = PathFinder.of(stationRepository.findAll(), sectionRepository.findAll());
-        return PathResponse.from(pathFinder.findPath(findStationById(sourceId), findStationById(targetId)));
+        return PathResponse.from(pathFinder.findPath(new DijkstraPathFindStrategy(), findStationById(sourceId),
+                findStationById(targetId)));
     }
 
 
