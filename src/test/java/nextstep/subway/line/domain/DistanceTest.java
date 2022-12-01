@@ -34,9 +34,10 @@ public class DistanceTest {
     }
 
     @DisplayName("크기를 비교한다. / 크기가 작으면 음수를 받환한다.")
-    @Test
-    void compare_negative() {
-
+    @ParameterizedTest
+    @CsvSource({"1, 2, -1"})
+    void compare_negative(int target, int source, int result) {
+        assertThat(new Distance(target).compareTo(new Distance(source))).isEqualTo(result);
     }
 
     @DisplayName("크기를 비교한다. / 크기가 같으면 0을 반환한다.")
