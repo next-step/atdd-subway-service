@@ -114,4 +114,28 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    public static ExtractableResponse<Response> 내_회원_정보_조회(String accessToken) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static MemberResponse 내_회원_정보_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.as(MemberResponse.class));
+
+        return response.as(MemberResponse.class);
+    }
+
+    public static void 내_회원_정보_토큰_실패(final ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static ExtractableResponse<Response>  회원_생성_되어_있음(String email, String password, Integer age) {
+        return 회원_생성을_요청(email, password, age);
+    }
+
 }
