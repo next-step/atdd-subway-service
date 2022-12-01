@@ -13,6 +13,8 @@ import nextstep.subway.line.exception.InvalidRemoveException;
 import nextstep.subway.line.exception.NoRelateStationException;
 import nextstep.subway.line.exception.SectionAlreadyExistException;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 @Embeddable
 public class Sections {
@@ -127,5 +129,9 @@ public class Sections {
         return sections.stream()
             .filter(it -> it.getDownStation() == station)
             .findFirst();
+    }
+
+    public void putEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        sections.forEach(section -> section.putEdgeWeight(graph));
     }
 }
