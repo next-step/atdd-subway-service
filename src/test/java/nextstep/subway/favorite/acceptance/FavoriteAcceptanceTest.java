@@ -6,6 +6,8 @@ import static nextstep.subway.auth.application.AuthServiceTest.EMAIL;
 import static nextstep.subway.auth.application.AuthServiceTest.PASSWORD;
 import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestActions.즐겨찾기_목록_조회_요청;
 import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestActions.즐겨찾기_목록_조회됨;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestActions.즐겨찾기_삭제_요청;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestActions.즐겨찾기_삭제됨;
 import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestActions.즐겨찾기_생성_요청;
 import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestActions.즐겨찾기_생성됨;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
@@ -77,5 +79,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // Then 즐겨찾기 목록 조회됨
         즐겨찾기_목록_조회됨(getFavoriteResponses);
+
+        // When 즐겨찾기 삭제 요청
+        ExtractableResponse<Response> deleteFavoriteResponse = 즐겨찾기_삭제_요청(accessToken, getFavoriteResponses);
+
+        // Then 즐겨찾기 삭제됨
+        즐겨찾기_삭제됨(deleteFavoriteResponse);
     }
 }

@@ -14,6 +14,22 @@ import org.springframework.http.HttpStatus;
 
 public class FavoriteAcceptanceTestActions {
 
+    public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> deleteFavoriteResponse) {
+        assertThat(deleteFavoriteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken,
+                                                           ExtractableResponse<Response> getFavoriteResponses) {
+        String favoriteId = getFavoriteResponses.jsonPath().getString("id[0]");
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete("/favorites/{id}", favoriteId)
+                .then().log().all()
+                .extract();
+    }
+
     public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> getFavoriteResponses) {
         JsonPath jsonPath = getFavoriteResponses.jsonPath();
         assertAll(

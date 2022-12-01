@@ -4,12 +4,14 @@ import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -19,6 +21,7 @@ import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -76,5 +79,17 @@ class FavoriteServiceTest {
                 () -> assertThat(favorites.get(0).getSource().getName()).isEqualTo(강남역.getName()),
                 () -> assertThat(favorites.get(0).getTarget().getName()).isEqualTo(광교역.getName())
         );
+    }
+
+    @DisplayName("사용자가 등록했던 즐겨찾기를 삭제한다")
+    @Test
+    void deleteFavorite() {
+        Favorite favorite = new Favorite(사용자, 강남역, 광교역);
+        given(favoriteRepository.findById(any())).willReturn(Optional.of(favorite));
+        FavoriteService favoriteService = new FavoriteService(memberService, stationService, favoriteRepository);
+
+        ThrowingCallable 즐겨찾기_삭제 = () -> favoriteService.deleteFavorite(1L);
+
+        assertThatNoException().isThrownBy(즐겨찾기_삭제);
     }
 }

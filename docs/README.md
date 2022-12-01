@@ -37,5 +37,5 @@
     * [x] /members/me 요청 시 토큰을 확인하여 로그인 정보를 받아올 수 있도록 하기
     * [x] @AuthenticationPrincipal 과 AuthenticationPrincipalArgumentResolver 를 활용하기
     * [x] findMemberOfMine(), updateMemberOfMine(), deleteMemberOfMine() 제대로 동작하도록 구현하기
-* [ ] 인증 - 즐겨 찾기 기능 완성하기
+* [x] 인증 - 즐겨 찾기 기능 완성하기
   * 인증을 포함하여 전체 ATDD 사이클을 경험할 수 있도록 기능을 구현하기
