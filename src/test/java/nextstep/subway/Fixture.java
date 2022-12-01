@@ -1,6 +1,7 @@
 package nextstep.subway;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.springframework.util.ReflectionUtils;
 
@@ -18,5 +19,9 @@ public class Fixture {
 
     public static Line createLine(String name, String color, Station upStation, Station downStation, int distance) {
         return new Line(name, color, upStation, downStation, distance);
+    }
+
+    public static Member createMember(String email, String password, Integer age) {
+        return new Member(email, password, age);
     }
 }
