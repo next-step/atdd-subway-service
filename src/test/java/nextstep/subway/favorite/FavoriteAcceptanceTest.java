@@ -68,6 +68,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * When 즐겨찾기 목록 조회 요청
      * Then 즐겨찾기 목록 조회됨
      * <p>
+     * Given 즐겨찾기 첫번째 목록 식별 번호 조회
      * When 즐겨찾기 삭제 요청
      * Then 즐겨찾기 삭제됨
      */
@@ -80,13 +81,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         즐겨찾기_생성됨(즐겨찾기_생성_응답);
 
-        // Given
+        // given
         즐겨찾기_생성_요청(로그인_성공_토큰_값, 강남역, 잠실역);
         // when
-        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_목록_조회_요청(로그인_성공_토큰_값);
+        ExtractableResponse<Response> 즐겨찾기_목록_조회_응답 = 즐겨찾기_목록_조회_요청(로그인_성공_토큰_값);
         // then
-        즐겨찾기_목록_조회_요청됨(즐겨찾기_조회_응답);
+        즐겨찾기_목록_조회_요청됨(즐겨찾기_목록_조회_응답);
 
+        // given
+        Long 즐겨찾기_목록_첫번째_응답 = 즐겨찾기_목록_첫번째_요청(즐겨찾기_목록_조회_응답);
+        // when
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(로그인_성공_토큰_값, 즐겨찾기_목록_첫번째_응답);
+        // then
+        즐겨찾기_삭제_요청됨(즐겨찾기_삭제_응답);
+
+    }
+
+    private static Long 즐겨찾기_목록_첫번째_요청(ExtractableResponse<Response> 즐겨찾기_목록_조회_응답) {
+        return 즐겨찾기_목록_조회_응답.jsonPath().getList("id", Long.class).get(0);
     }
 
 }

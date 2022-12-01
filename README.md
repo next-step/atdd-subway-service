@@ -103,7 +103,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 1. 요구사항
     - [x] 토큰 발급 기능(로그인) 인수 테스트 만들기
     - [x] 인증 - 내 정보 조회 기능 완성하기
-    - [ ] 인증 - 즐겨 찾기 기능 완성하기
+    - [x] 인증 - 즐겨 찾기 기능 완성하기
 2. 목록정리
     - [x] 토큰 발급 인수 테스트
         - [x] 이메일과 패스워드를 이용하여 access token 응답하는 기능 구현
@@ -117,9 +117,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - [x] 수정
             - [x] 삭제
         - [x] 로그인 후 발급 받은 토큰을 포함해서 요청
-    - [ ] 토큰을 통한 인증
+    - [x] 토큰을 통한 인증
         - [x] /members/me 요청 시 토큰을 확인하여 로그인 정보 받아오게 하기
         - [x] @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용하기
-    - [ ] 즐겨 찾기 기능 구현하기
-        - [ ] 즐겨찾기 기능 완성
-        - [ ] 인증을 포함하여 전체 ATDD 사이클을 경험할 수 있도록 기능 구현하기
+    - [x] 즐겨 찾기 기능 구현하기
+        - [x] 즐겨찾기 기능 완성
+        - [x] 인증을 포함하여 전체 ATDD 사이클을 경험할 수 있도록 기능 구현하기
