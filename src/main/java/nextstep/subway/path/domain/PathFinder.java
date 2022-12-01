@@ -16,6 +16,10 @@ public class PathFinder {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     public PathFinder(Line... lines) {
+        this(Arrays.asList(lines));
+    }
+
+    public PathFinder(List<Line> lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
             DefaultWeightedEdge.class);
         addVertex(graph, lines);
@@ -23,8 +27,9 @@ public class PathFinder {
         this.graph = graph;
     }
 
-    private void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line[] lines) {
-        Arrays.stream(lines)
+    private void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
+        List<Line> lines) {
+        lines.stream()
             .map(Line::getStations)
             .flatMap(Collection::stream)
             .distinct()
@@ -32,8 +37,8 @@ public class PathFinder {
     }
 
     private void putEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
-        Line[] lines) {
-        Arrays.stream(lines)
+        List<Line> lines) {
+        lines.stream()
             .map(Line::getSections)
             .forEach(sections -> sections.putEdgeWeight(graph));
     }
