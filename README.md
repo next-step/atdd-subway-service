@@ -59,6 +59,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [X] 도메인의 단위 테스트를 작성
 - [X] 최단 경로 조회 인수 테스트 만들기
 - [X] 최단 경로 조회 기능 구현하기
-- [ ] 토큰 발급 기능 인수 테스트 만들기
+- [X] 토큰 발급 기능 인수 테스트 만들기
 - [ ] 내 정보 조회 기능 완성하기
 - [ ] 즐겨 찾기 기능 완성하기
