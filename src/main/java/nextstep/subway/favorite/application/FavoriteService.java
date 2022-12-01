@@ -2,6 +2,7 @@ package nextstep.subway.favorite.application;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.common.exception.SubwayException;
 import nextstep.subway.favorite.domain.Favorite;
@@ -49,6 +50,14 @@ public class FavoriteService {
                 .targetStation(targetStation)
                 .build();
         return FavoriteResponse.from(favoriteRepository.save(favorite));
+    }
+
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> findAllFavorites(Long memberId) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
+        return favorites.stream()
+                .map(FavoriteResponse::from)
+                .collect(Collectors.toList());
     }
 
     private Member findMemberById(Long id) {

@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -52,6 +53,7 @@ class FavoriteServiceTest {
     private Station 양재역;
     private Line 이호선;
     private Line 신분당선;
+    private Favorite 즐겨찾기;
 
     @BeforeEach
     void setUp() {
@@ -61,6 +63,7 @@ class FavoriteServiceTest {
         교대역 = 지하철역_생성("교대역");
         이호선 = 지하철_노선_생성("이호선", "bg-green-600", 교대역, 강남역, 10);
         신분당선 = 지하철_노선_생성("신분당선", "bg-red-600", 강남역, 양재역, 10);
+        즐겨찾기 = 즐겨찾기_생성(회원, 강남역, 양재역);
     }
 
 
@@ -77,13 +80,27 @@ class FavoriteServiceTest {
         when(stationRepository.findById(source)).thenReturn(Optional.of(강남역));
         when(stationRepository.findById(target)).thenReturn(Optional.of(양재역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(이호선, 신분당선));
-        when(favoriteRepository.save(any(Favorite.class))).thenReturn(즐겨찾기_생성(회원, 강남역, 양재역));
+        when(favoriteRepository.save(any(Favorite.class))).thenReturn(즐겨찾기);
 
         // when
         FavoriteResponse favoriteResponse = favoriteService.createFavorite(memberId, favoriteRequest);
 
         // then
         assertThat(favoriteResponse).isNotNull();
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 목록 조회")
+    void findAllFavorites() {
+        // given
+        Long memberId = 1L;
+        when(favoriteRepository.findAllByMemberId(memberId)).thenReturn(Arrays.asList(즐겨찾기));
+
+        // when
+        List<FavoriteResponse> favorites = favoriteService.findAllFavorites(memberId);
+
+        // then
+        assertThat(favorites).hasSize(1);
     }
 
     public static Favorite 즐겨찾기_생성(Member member, Station sourceStation, Station targetStation) {
