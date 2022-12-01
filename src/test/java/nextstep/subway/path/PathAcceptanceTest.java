@@ -6,9 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.response.ResponseBodyExtractionOptions;
 import java.util.HashMap;
 import java.util.Map;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.common.exception.ErrorEnum;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
@@ -115,7 +117,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역.getId(), 교대역.getId());
 
         // then
-        지하철_최단_경로_실패됨(response);
+        지하철_최단_경로_실패됨(response, ErrorEnum.SOURCE_AND_TARGET_EQUAL_STATION.message());
     }
 
     @Test
@@ -124,7 +126,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(강남역.getId(), 석촌역.getId());
 
         // then
-        지하철_최단_경로_실패됨(response);
+        지하철_최단_경로_실패됨(response, ErrorEnum.NOT_CONNECTED_STATIONS.message());
     }
 
     @Test
@@ -133,7 +135,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 존재하지_않는_도착역_응답 = 지하철_경로_조회_요청(양재역.getId(), 0L);
 
         // then
-        지하철_최단_경로_실패됨(존재하지_않는_도착역_응답);
+        지하철_최단_경로_실패됨(존재하지_않는_도착역_응답, ErrorEnum.STATION_NOT_EXISTS.message());
     }
 
     private void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, int distance) {
@@ -157,7 +159,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 지하철_최단_경로_실패됨(ExtractableResponse<Response> response) {
+    private void 지하철_최단_경로_실패됨(ExtractableResponse<Response> response, String expectedErrorMessage) {
+        String errorMessage = response.body().path("errorMessage").toString();
+        assertThat(errorMessage).isEqualTo(expectedErrorMessage);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

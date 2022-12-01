@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @org.springframework.web.bind.annotation.RestControllerAdvice
 public class RestControllerAdvice {
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<HashMap> handleIllegalArgsException(IllegalArgumentException e) {
+    @ExceptionHandler({IllegalStateException.class, IllegalArgumentException.class, RuntimeException.class})
+    public ResponseEntity<HashMap> IllegalStateException(Exception e) {
         HashMap<Object, Object> errorMap = new HashMap<>();
         errorMap.put("errorMessage", e.getMessage());
         return ResponseEntity.badRequest().body(errorMap);
