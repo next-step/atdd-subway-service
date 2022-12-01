@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,7 @@ public class Member extends BaseEntity {
     private Integer age;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Favorite> favorites;
+    private List<Favorite> favorites = new ArrayList<>();
 
     public Member() {
     }
@@ -69,6 +70,10 @@ public class Member extends BaseEntity {
 
     public void removeFavorite(long favoriteId) {
         Favorite favorite = findFavorite(favoriteId);
+        removeFavorite(favorite);
+    }
+
+    public void removeFavorite(Favorite favorite) {
         favorites.remove(favorite);
     }
 
@@ -76,5 +81,10 @@ public class Member extends BaseEntity {
         return favorites.stream().filter(favorite -> favorite.isId(favoriteId))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundFavoriteException(favoriteId));
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
+        favorite.setMember(this);
     }
 }

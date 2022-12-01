@@ -2,10 +2,9 @@ package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
-import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.application.MemberQueryService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -18,23 +17,19 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class FavoriteService {
 
+    private final MemberQueryService memberQueryService;
     private final StationService stationService;
-    private final MemberService memberService;
-    private final FavoriteRepository favoriteRepository;
 
-    public FavoriteService(StationService stationService,
-                           MemberService memberService,
-                           FavoriteRepository favoriteRepository) {
+    public FavoriteService(MemberQueryService memberQueryService,
+                           StationService stationService) {
+        this.memberQueryService = memberQueryService;
         this.stationService = stationService;
-        this.memberService = memberService;
-        this.favoriteRepository = favoriteRepository;
     }
 
     @Transactional
-    public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
+    public Favorite createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = findMember(loginMember);
-        Favorite favorite = toFavorite(member, request);
-        return new FavoriteResponse(favoriteRepository.save(favorite));
+        return toFavorite(member, request);
     }
 
     @Transactional
@@ -43,22 +38,19 @@ public class FavoriteService {
         member.removeFavorite(favoriteId);
     }
 
-    private Favorite toFavorite(Member member, FavoriteRequest request) {
+    public List<FavoriteResponse> getFavorite(LoginMember loginMember) {
+        return FavoriteResponse.ofList(
+                memberQueryService.findMemberById(loginMember.getId()).getFavorites());
+    }
+
+    public Favorite toFavorite(Member member, FavoriteRequest request) {
         Station sourceStation = stationService.findStationById(request.getSource());
         Station targetStation = stationService.findStationById(request.getTarget());
 
         return new Favorite(member, sourceStation, targetStation);
     }
 
-    public List<FavoriteResponse> getFavorite(LoginMember loginMember) {
-        Member member = findMember(loginMember);
-
-        List<Favorite> favorites = member.getFavorites();
-
-        return FavoriteResponse.ofList(favorites);
-    }
-
     private Member findMember(LoginMember loginMember) {
-        return memberService.findMemberById(loginMember.getId());
+        return memberQueryService.findMemberById(loginMember.getId());
     }
 }
