@@ -70,6 +70,7 @@ class MembersAcceptanceTest extends AcceptanceTest {
      *     Then 나의 정보 조회됨
      *     When 나의 정보 수정 요청함
      *     Then 나의 정보 수정됨
+     *     Given 토큰 재발급됨
      *     When 나의 정보 삭제 요청함
      *     Then 나의 정보 삭제됨
      */
@@ -84,10 +85,16 @@ class MembersAcceptanceTest extends AcceptanceTest {
         나의_정보_조회됨(조회응답, EMAIL, AGE);
 
         ExtractableResponse<Response> 수정응답 = 나의_정보_수정_요청(토큰_정보, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
-        나의_정보_수정됨(수정응답, EMAIL, AGE);
+        나의_정보_수정됨(수정응답);
+
+        토큰_정보 = 토큰_재발급됨();
 
         ExtractableResponse<Response> 삭제응답 = 나의_정보_삭제_요청(토큰_정보);
         나의_정보_삭제됨(삭제응답);
+    }
+
+    private TokenResponse 토큰_재발급됨() {
+        return MembersMeAcceptanceStep.로그인됨(NEW_EMAIL, NEW_PASSWORD, AGE);
     }
 
 }

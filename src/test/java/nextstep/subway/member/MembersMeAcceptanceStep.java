@@ -48,7 +48,7 @@ public class MembersMeAcceptanceStep {
                 .extract();
     }
 
-    static void 나의_정보_수정됨(ExtractableResponse<Response> response, String email, int age) {
+    static void 나의_정보_수정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
@@ -66,7 +66,7 @@ public class MembersMeAcceptanceStep {
     }
 
     public static TokenResponse 로그인됨(String email, String password, int age) {
-        return AuthAcceptanceTestStep.로그인_요청(email, password, age)
+        return AuthAcceptanceTestStep.로그인_요청(email, password)
                 .body().as(TokenResponse.class);
     }
 }

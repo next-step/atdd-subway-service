@@ -35,7 +35,7 @@ public class AuthAcceptanceTestStep {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 로그인_요청(String email, String password, int age) {
-        return 로그인_요청(new MemberRequest(email, password, age));
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        return 로그인_요청(new MemberRequest(email, password, null));
     }
 }
