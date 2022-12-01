@@ -15,7 +15,7 @@ public class Sections {
     public static final String MINIMUM_SECTIONS_SIZE_EXCEPTION_MESSAGE = "하나의 구간만 있을 경우 구간을 제거할 수 없다.";
     public static final int MINIMUM_SECTIONS_SIZE = 1;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
     public void add(Section section) {
@@ -40,7 +40,6 @@ public class Sections {
     public void removeLineStation(Line line, Station station) {
 
         validateSize();
-
         mergeSection(line, station);
 
         removePreviousSection(station);
