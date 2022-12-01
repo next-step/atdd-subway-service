@@ -65,7 +65,7 @@ public class MembersMeAcceptanceStep {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    static TokenResponse 로그인됨(String email, String password, int age) {
+    public static TokenResponse 로그인됨(String email, String password, int age) {
         return AuthAcceptanceTestStep.로그인_요청(email, password, age)
                 .body().as(TokenResponse.class);
     }
