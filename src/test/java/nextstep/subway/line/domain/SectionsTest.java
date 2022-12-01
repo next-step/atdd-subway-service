@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -20,11 +21,12 @@ class SectionsTest {
 
     @BeforeEach
     void setUp() {
-        upStation = new Station(1L,"상행역");
-        downStation = new Station(2L,"하행역");
-        middleStation = new Station(3L,"중앙역");
-        line = new Line("노선","색상",upStation,downStation,10);
+        upStation = new Station(1L, "상행역");
+        downStation = new Station(2L, "하행역");
+        middleStation = new Station(3L, "중앙역");
+        line = new Line("노선", "색상", upStation, downStation, 10);
     }
+
     @Test
     @DisplayName("구간이 0개일 찾을 수 없다.")
     void test0() {
@@ -39,11 +41,13 @@ class SectionsTest {
     @DisplayName("구간이 1개일 때 상행역/하행역을 찾을 수 있다.")
     void test1() {
         Sections sections = new Sections();
-        sections.add(new Section(line,upStation,downStation,10));
+        sections.add(new Section(line, upStation, downStation, 10));
 
         List<StationResponse> stationResponses = sections.getStationResponse();
 
         assertThat(stationResponses.size()).isEqualTo(2);
+        assertThat(stationResponses.stream().map(StationResponse::getId).collect(Collectors.toList()))
+                .containsExactly(1L, 2L);
     }
 
     @Test
@@ -54,6 +58,8 @@ class SectionsTest {
         List<StationResponse> stationResponses = sections.getStationResponse();
 
         assertThat(stationResponses.size()).isEqualTo(3);
+        assertThat(stationResponses.stream().map(StationResponse::getId).collect(Collectors.toList()))
+                .containsExactly(1L, 3L, 2L);
     }
 
     @Test
@@ -61,7 +67,7 @@ class SectionsTest {
     void checkToAddSection() {
         Sections sections = getSectionsHasTwoSection();
 
-        assertThatThrownBy(() -> sections.getSectionAdder(upStation,downStation))
+        assertThatThrownBy(() -> sections.getSectionAdder(upStation, downStation))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -70,10 +76,10 @@ class SectionsTest {
     void checkToAddSection2() {
         Sections sections = getSectionsHasTwoSection();
 
-        Station 존재하지_않는_역1 = new Station(5L,"존재하지 않는 역1");
-        Station 존재하지_않는_역2 = new Station(6L,"존재하지 않는 역2");
+        Station 존재하지_않는_역1 = new Station(5L, "존재하지 않는 역1");
+        Station 존재하지_않는_역2 = new Station(6L, "존재하지 않는 역2");
 
-        assertThatThrownBy(() -> sections.getSectionAdder(존재하지_않는_역1,존재하지_않는_역2))
+        assertThatThrownBy(() -> sections.getSectionAdder(존재하지_않는_역1, 존재하지_않는_역2))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -82,8 +88,8 @@ class SectionsTest {
     void checkToAddSection3() {
         Sections sections = new Sections();
 
-        Station 존재하지_않는_역1 = new Station(5L,"존재하지 않는 역1");
-        Station 존재하지_않는_역2 = new Station(6L,"존재하지 않는 역2");
+        Station 존재하지_않는_역1 = new Station(5L, "존재하지 않는 역1");
+        Station 존재하지_않는_역2 = new Station(6L, "존재하지 않는 역2");
 
         SectionAdder sectionAdder = sections.getSectionAdder(존재하지_않는_역1, 존재하지_않는_역2);
 
@@ -95,7 +101,7 @@ class SectionsTest {
     void checkToAddSection4() {
         Sections sections = getSectionsHasTwoSection();
 
-        Station 존재하지_않는_역2 = new Station(6L,"존재하지 않는 역2");
+        Station 존재하지_않는_역2 = new Station(6L, "존재하지 않는 역2");
 
         SectionAdder sectionAdder = sections.getSectionAdder(upStation, 존재하지_않는_역2);
 
@@ -107,26 +113,56 @@ class SectionsTest {
     void checkToAddSection5() {
         Sections sections = getSectionsHasTwoSection();
 
-        Station 존재하지_않는_역2 = new Station(6L,"존재하지 않는 역2");
+        Station 존재하지_않는_역2 = new Station(6L, "존재하지 않는 역2");
 
-        SectionAdder sectionAdder = sections.getSectionAdder(존재하지_않는_역2,downStation);
+        SectionAdder sectionAdder = sections.getSectionAdder(존재하지_않는_역2, downStation);
 
         assertThat(sectionAdder).isInstanceOf(FromDownSectionAdder.class);
     }
 
     private Sections getSectionsHasTwoSection() {
         Sections sections = new Sections();
-        sections.add(new Section(line,upStation,middleStation,4));
-        sections.add(new Section(line,middleStation,downStation,6));
+        sections.add(new Section(line, upStation, middleStation, 4));
+        sections.add(new Section(line, middleStation, downStation, 6));
         return sections;
     }
 
     @Test
+    @DisplayName("중간에 존재하는 역을 제거함")
     void remove() {
         Sections sections = getSectionsHasTwoSection();
 
         sections.remove(middleStation);
 
         assertThat(sections.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("상행역 종점을 제거함")
+    void remove2() {
+        Sections sections = getSectionsHasTwoSection();
+
+        sections.remove(upStation);
+
+        assertThat(sections.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("하행역 종점을 제거함")
+    void remove3() {
+        Sections sections = getSectionsHasTwoSection();
+
+        sections.remove(downStation);
+
+        assertThat(sections.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("하행역 종점을 제거함")
+    void remove4() {
+        Sections sections = getSectionsHasTwoSection();
+
+        assertThatThrownBy(() -> sections.remove(new Station(4L, "존재하지 않는 역")))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
