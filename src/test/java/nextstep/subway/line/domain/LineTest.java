@@ -18,7 +18,7 @@ public class LineTest {
     @Test
     void remove_fail_exist() {
         Line line = lineA();
-        line.add(sectionBC());
+        line.add(sectionBC(line));
 
         line.removeLineStation(stationD());
 
@@ -41,7 +41,7 @@ public class LineTest {
     @Test
     void removeBetweenStation() {
         Line line = lineA();
-        line.add(sectionBC());
+        line.add(sectionBC(line));
 
         line.removeLineStation(stationB());
 
@@ -52,7 +52,7 @@ public class LineTest {
     @Test
     void removeUpStation_success() {
         Line line = lineA();
-        line.add(sectionBC());
+        line.add(sectionBC(line));
 
         line.removeLineStation(stationA());
 
@@ -63,7 +63,7 @@ public class LineTest {
     @Test
     void removeDownStation_success() {
         Line line = lineA();
-        line.add(sectionBC());
+        line.add(sectionBC(line));
 
         line.removeLineStation(stationC());
 

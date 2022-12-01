@@ -38,32 +38,51 @@ public class Sections {
     }
 
     public void removeLineStation(Line line, Station station) {
-        if (this.sections.size() <= MINIMUM_SECTIONS_SIZE) {
-            throw new RuntimeException(MINIMUM_SECTIONS_SIZE_EXCEPTION_MESSAGE);
-        }
 
-        boolean hasPreviousLineStation = hasPreviousSection(station);
-        boolean hasNextLineStation = hasNextSection(station);
+        validateSize();
 
-        if (hasPreviousLineStation && hasNextLineStation) {
-            Section previousSection = findPreviousSection(station).orElseThrow(NoSuchElementException::new);
-            Section nextSection = findNextSection(station).orElseThrow(NoSuchElementException::new);
-            this.sections.add(new Section(line, previousSection.getUpStation(), nextSection.getDownStation(), previousSection.sumDistance(nextSection)));
-        }
+        mergeSection(line, station);
 
-        if (hasPreviousLineStation) {
-            this.sections.remove(findPreviousSection(station).orElseThrow(NoSuchElementException::new));
-        }
+        removePreviousSection(station);
+        removeNextSection(station);
+    }
 
-        if (hasNextLineStation) {
+    private void removeNextSection(Station station) {
+        if (hasNextSection(station)) {
             this.sections.remove(findNextSection(station).orElseThrow(NoSuchElementException::new));
         }
     }
 
+    private void removePreviousSection(Station station) {
+        if (hasPreviousSection(station)) {
+            this.sections.remove(findPreviousSection(station).orElseThrow(NoSuchElementException::new));
+        }
+    }
+
+    private void mergeSection(Line line, Station station) {
+        if (hasPreviousSection(station) && hasNextSection(station)) {
+            Section previousSection = findPreviousSection(station).orElseThrow(NoSuchElementException::new);
+            Section nextSection = findNextSection(station).orElseThrow(NoSuchElementException::new);
+            this.sections.add(new Section(line, previousSection.getUpStation(), nextSection.getDownStation(), previousSection.sumDistance(nextSection)));
+        }
+    }
+
+    private void validateSize() {
+        if (this.sections.size() <= MINIMUM_SECTIONS_SIZE) {
+            throw new RuntimeException(MINIMUM_SECTIONS_SIZE_EXCEPTION_MESSAGE);
+        }
+    }
+
     public List<Station> getStations() {
+
         if (this.sections.isEmpty()) {
             return Collections.emptyList();
         }
+
+        return addStations();
+    }
+
+    private List<Station> addStations() {
         List<Station> stations = new ArrayList<>();
         Station downStation = findUpStation();
         stations.add(downStation);
@@ -72,22 +91,15 @@ public class Sections {
             downStation = findUpStationSection(downStation).getDownStation();
             stations.add(downStation);
         }
-
         return stations;
     }
 
     private boolean hasNextSection(Station station) {
-        if (station == null) {
-            return false;
-        }
-        return findNextSection(station).isPresent();
+        return station != null && findNextSection(station).isPresent();
     }
 
     private boolean hasPreviousSection(Station station) {
-        if (station == null) {
-            return false;
-        }
-        return findPreviousSection(station).isPresent();
+        return station != null && findPreviousSection(station).isPresent();
     }
 
     private Optional<Section> findNextSection(Station station) {
