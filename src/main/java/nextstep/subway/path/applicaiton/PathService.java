@@ -18,8 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PathService {
 
-    private StationRepository stationRepository;
-    private SectionRepository sectionRepository;
+    private final StationRepository stationRepository;
+    private final SectionRepository sectionRepository;
 
     public PathService(StationRepository stationRepository, SectionRepository sectionRepository) {
         this.stationRepository = stationRepository;
