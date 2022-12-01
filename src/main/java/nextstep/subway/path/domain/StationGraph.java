@@ -15,6 +15,7 @@ import java.util.Objects;
 
 public class StationGraph {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+
     public StationGraph(List<Section> sections) {
         validate(sections);
         sections.forEach(section -> {
