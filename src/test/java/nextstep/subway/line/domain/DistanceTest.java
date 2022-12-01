@@ -3,10 +3,10 @@ package nextstep.subway.line.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("거리")
 public class DistanceTest {
@@ -27,9 +27,10 @@ public class DistanceTest {
     }
 
     @DisplayName("크기를 비교한다. / 크기가 크면 양수를 받환한다.")
-    @Test
-    void compare_positive() {
-
+    @ParameterizedTest
+    @CsvSource({"2, 1, 1"})
+    void compare_positive(int target, int source, int result) {
+        assertThat(new Distance(target).compareTo(new Distance(source))).isEqualTo(result);
     }
 
     @DisplayName("크기를 비교한다. / 크기가 작으면 음수를 받환한다.")

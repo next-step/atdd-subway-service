@@ -60,7 +60,7 @@ public class Section {
             throw new RuntimeException(SECTION_DISTANCE_EXCEPTION_MESSAGE);
         }
         this.upStation = station;
-        this.distance = this.distance.substract(newDistance);
+        this.distance = this.distance.subtract(newDistance);
     }
 
     public void updateDownStation(Station station, Distance newDistance) {
@@ -68,6 +68,6 @@ public class Section {
             throw new RuntimeException(SECTION_DISTANCE_EXCEPTION_MESSAGE);
         }
         this.downStation = station;
-        this.distance = this.distance.substract(newDistance);
+        this.distance = this.distance.subtract(newDistance);
     }
 }
