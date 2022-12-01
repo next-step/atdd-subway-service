@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -42,6 +43,47 @@ public class Sections {
     }
 
     public void add(Section section) {
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it.equals(section.getUpStation()));
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it.equals(section.getDownStation()));
+        throwIfSectionAlreadyExist(isUpStationExisted, isDownStationExisted);
+        throwIfNoStationExistInSections(section, stations);
+        addSection(section, stations, isUpStationExisted, isDownStationExisted);
+    }
+
+    private void addSection(Section newSection, List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (CollectionUtils.isEmpty(stations)) {
+            addSectionIfSectionIsEmpty(newSection);
+            return;
+        }
+        if (isUpStationExisted) {
+            addSectionUpStationIsExisted(newSection);
+            return;
+        }
+        if (isDownStationExisted) {
+            addSectionDownStationIsExisted(newSection);
+            return;
+        }
+        throw new IllegalArgumentException(MESSAGE_EXCEPTION_CAN_NOT_ADD_SECTION);
+    }
+
+    private void addSectionDownStationIsExisted(Section newSection) {
+        sections.stream()
+                .filter(it -> it.getDownStation().equals(newSection.getDownStation()))
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
+        sections.add(newSection);
+    }
+
+    private void addSectionUpStationIsExisted(Section newSection) {
+        sections.stream()
+                .filter(it -> it.getUpStation().equals(newSection.getUpStation()))
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
+        sections.add(newSection);
+    }
+
+    private void addSectionIfSectionIsEmpty(Section section) {
         sections.add(section);
     }
 
@@ -78,31 +120,9 @@ public class Sections {
         return stations;
     }
 
-    public SectionAdder getSectionAdder(Station upStation, Station downStation) {
-        List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it.equals(upStation));
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it.equals(downStation));
-        throwIfSectionAlreadyExist(isUpStationExisted, isDownStationExisted);
-        throwIfNoStationExistInSections(upStation, downStation, stations);
-        return createSectionAdder(stations, isUpStationExisted, isDownStationExisted);
-    }
-
-    private SectionAdder createSectionAdder(List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
-        if (stations.isEmpty()) {
-            return new EmptySectionAdder();
-        }
-        if (isUpStationExisted) {
-            return new FromUpperSectionAdder();
-        }
-        if (isDownStationExisted) {
-            return new FromDownSectionAdder();
-        }
-        throw new IllegalArgumentException(MESSAGE_EXCEPTION_CAN_NOT_ADD_SECTION);
-    }
-
-    private void throwIfNoStationExistInSections(Station upStation, Station downStation, List<Station> stations) {
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it.equals(upStation)) &&
-                stations.stream().noneMatch(it -> it.equals(downStation))) {
+    private void throwIfNoStationExistInSections(Section newSection, List<Station> stations) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it.equals(newSection.getUpStation())) &&
+                stations.stream().noneMatch(it -> it.equals(newSection.getDownStation()))) {
             throw new RuntimeException(MESSAGE_EXCEPTION_SECTION_CAN_NOT_BE_ADDED);
         }
     }

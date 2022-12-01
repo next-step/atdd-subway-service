@@ -9,8 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 class SectionsTest {
 
@@ -67,7 +66,7 @@ class SectionsTest {
     void checkToAddSection() {
         Sections sections = getSectionsHasTwoSection();
 
-        assertThatThrownBy(() -> sections.getSectionAdder(upStation, downStation))
+        assertThatThrownBy(() -> sections.add(new Section(line, upStation, downStation, 10)))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -79,52 +78,69 @@ class SectionsTest {
         Station 존재하지_않는_역1 = new Station(5L, "존재하지 않는 역1");
         Station 존재하지_않는_역2 = new Station(6L, "존재하지 않는 역2");
 
-        assertThatThrownBy(() -> sections.getSectionAdder(존재하지_않는_역1, 존재하지_않는_역2))
+        assertThatThrownBy(() -> sections.add(new Section(line, 존재하지_않는_역1, 존재하지_않는_역2, 10)))
                 .isInstanceOf(RuntimeException.class);
     }
 
     @Test
-    @DisplayName("구간이 비어있으면 EmptySectionAdder가 반환됨")
-    void checkToAddSection3() {
-        Sections sections = new Sections();
-
-        Station 존재하지_않는_역1 = new Station(5L, "존재하지 않는 역1");
-        Station 존재하지_않는_역2 = new Station(6L, "존재하지 않는 역2");
-
-        SectionAdder sectionAdder = sections.getSectionAdder(존재하지_않는_역1, 존재하지_않는_역2);
-
-        assertThat(sectionAdder).isInstanceOf(EmptySectionAdder.class);
-    }
-
-    @Test
-    @DisplayName("상행역으로 시작하는 구간을 추가하려고 할 때 FromUpperSectionAdder가 반환됨")
+    @DisplayName("상행역으로 시작하는 구간을 추가하려고 하면 구간이 추가됨")
     void checkToAddSection4() {
         Sections sections = getSectionsHasTwoSection();
 
         Station 존재하지_않는_역2 = new Station(6L, "존재하지 않는 역2");
 
-        SectionAdder sectionAdder = sections.getSectionAdder(upStation, 존재하지_않는_역2);
+        sections.add(new Section(line, upStation, 존재하지_않는_역2, 2));
 
-        assertThat(sectionAdder).isInstanceOf(FromUpperSectionAdder.class);
+        assertThat(sections.size()).isEqualTo(3);
+        assertThat(sections.getStations().stream().map(Station::getId))
+                .containsExactly(1L, 6L, 3L, 2L);
     }
 
     @Test
-    @DisplayName("하행역에서 끝나는 구간을 추가하려고 할 때 FromUpperSectionAdder가 반환됨")
+    @DisplayName("하행역에서 끝나는 구간을 추가하려고 할 때 구간이 추가됨")
     void checkToAddSection5() {
         Sections sections = getSectionsHasTwoSection();
 
         Station 존재하지_않는_역2 = new Station(6L, "존재하지 않는 역2");
 
-        SectionAdder sectionAdder = sections.getSectionAdder(존재하지_않는_역2, downStation);
+        sections.add(new Section(line, 존재하지_않는_역2, downStation, 3));
 
-        assertThat(sectionAdder).isInstanceOf(FromDownSectionAdder.class);
+        assertThat(sections.size()).isEqualTo(3);
+        assertThat(sections.getStations().stream().map(Station::getId))
+                .containsExactly(1L, 3L, 6L, 2L);
+    }
+
+    @Test
+    @DisplayName("상행역 종점에서 끝나는 구간을 추가하여 연장됨")
+    void checkToAddSection6() {
+        Sections sections = getSectionsHasTwoSection();
+
+        Station 존재하지_않는_역2 = new Station(6L, "존재하지 않는 역2");
+
+        sections.add(new Section(line, 존재하지_않는_역2, upStation, 5));
+
+        assertThat(sections.size()).isEqualTo(3);
+        assertThat(sections.getStations().stream().map(Station::getId))
+                .containsExactly(6L, 1L, 3L, 2L);
+    }
+
+    @Test
+    @DisplayName("하행역 종점에서 시작되는 구간을 추가하여 연장됨")
+    void checkToAddSection7() {
+        Sections sections = getSectionsHasTwoSection();
+
+        Station 존재하지_않는_역2 = new Station(6L, "존재하지 않는 역2");
+
+        sections.add(new Section(line, downStation, 존재하지_않는_역2, 5));
+
+        assertThat(sections.size()).isEqualTo(3);
+        assertThat(sections.getStations().stream().map(Station::getId))
+                .containsExactly(1L, 3L, 2L, 6L);
     }
 
     private Sections getSectionsHasTwoSection() {
-        Sections sections = new Sections();
-        sections.add(new Section(line, upStation, middleStation, 4));
-        sections.add(new Section(line, middleStation, downStation, 6));
-        return sections;
+        line.addSection(upStation,middleStation,4);
+        return line.getSections();
     }
 
     @Test

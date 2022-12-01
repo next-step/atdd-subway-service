@@ -29,7 +29,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        addSection(upStation,downStation,distance);
     }
 
     public void update(Line line) {
@@ -49,17 +49,12 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections.getSections();
+    public Sections getSections() {
+        return sections;
     }
 
     public List<StationResponse> getStationResponse() {
         return sections.getStationResponse();
-    }
-
-    public void addLineStation(Station upStation, Station downStation, int distance) {
-        this.sections.getSectionAdder(upStation, downStation)
-                .addSection(this, upStation, downStation, distance);
     }
 
     public void addSection(Station upperStation, Station downStation, int distance) {
