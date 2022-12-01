@@ -48,6 +48,19 @@ public class PathFinderTest {
     }
 
     @Test
+    void 총거리_반환() {
+        //given
+        PathFinder pathFinder = new PathFinder(이호선, 삼호선, 신분당선);
+
+        //when
+        int totalDistance = pathFinder.getShortestDistance(강남역, 교대역);
+
+        //then
+        Assertions.assertThat(totalDistance)
+            .isEqualTo(14);
+    }
+
+    @Test
     void 최단경로_조회시_출발역과_도착역이_같으면_에러() {
         //given
         PathFinder pathFinder = new PathFinder(이호선);

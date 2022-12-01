@@ -39,6 +39,19 @@ public class PathFinder {
     }
 
     public List<Station> shortestPath(Station from, Station to) {
+        GraphPath<Station, DefaultWeightedEdge> path = getPath(from, to);
+
+        return path.getVertexList();
+    }
+
+    public int getShortestDistance(Station from, Station to) {
+        GraphPath<Station, DefaultWeightedEdge> path = getPath(from, to);
+
+        return (int) path.getWeight();
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> getPath(
+        Station from, Station to) {
         validateArgument(from, to);
 
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
@@ -46,8 +59,7 @@ public class PathFinder {
 
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(from, to);
         validatePath(path);
-
-        return path.getVertexList();
+        return path;
     }
 
     private void validateArgument(Station from, Station to) {
