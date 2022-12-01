@@ -10,7 +10,6 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -25,11 +24,6 @@ public class Sections {
 
     public List<Section> getSections() {
         return this.sections;
-    }
-
-    public List<StationResponse> getStationResponse() {
-        List<Station> stations = getStations();
-        return stations.stream().map(StationResponse::of).collect(Collectors.toList());
     }
 
     public List<Station> getStations() {

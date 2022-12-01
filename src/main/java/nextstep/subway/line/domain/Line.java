@@ -53,15 +53,15 @@ public class Line extends BaseEntity {
         return sections;
     }
 
-    public List<StationResponse> getStationResponse() {
-        return sections.getStationResponse();
-    }
-
     public void addSection(Station upperStation, Station downStation, int distance) {
         this.sections.add(new Section(this, upperStation, downStation, distance));
     }
 
     public void removeStation(Station station) {
         this.sections.remove(station);
+    }
+
+    public List<Station> getStation() {
+        return this.sections.getStations();
     }
 }

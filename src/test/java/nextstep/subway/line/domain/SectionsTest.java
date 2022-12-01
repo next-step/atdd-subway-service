@@ -31,9 +31,9 @@ class SectionsTest {
     void test0() {
         Sections sections = new Sections();
 
-        List<StationResponse> stationResponses = sections.getStationResponse();
+        List<Station> stations = sections.getStations();
 
-        assertThat(stationResponses.size()).isEqualTo(0);
+        assertThat(stations.size()).isEqualTo(0);
     }
 
     @Test
@@ -42,10 +42,10 @@ class SectionsTest {
         Sections sections = new Sections();
         sections.add(new Section(line, upStation, downStation, 10));
 
-        List<StationResponse> stationResponses = sections.getStationResponse();
+        List<Station> stations = sections.getStations();
 
-        assertThat(stationResponses.size()).isEqualTo(2);
-        assertThat(stationResponses.stream().map(StationResponse::getId).collect(Collectors.toList()))
+        assertThat(stations.size()).isEqualTo(2);
+        assertThat(stations.stream().map(Station::getId).collect(Collectors.toList()))
                 .containsExactly(1L, 2L);
     }
 
@@ -54,10 +54,10 @@ class SectionsTest {
     void test2() {
         Sections sections = getSectionsHasTwoSection();
 
-        List<StationResponse> stationResponses = sections.getStationResponse();
+        List<Station> stations = sections.getStations();
 
-        assertThat(stationResponses.size()).isEqualTo(3);
-        assertThat(stationResponses.stream().map(StationResponse::getId).collect(Collectors.toList()))
+        assertThat(stations.size()).isEqualTo(3);
+        assertThat(stations.stream().map(Station::getId).collect(Collectors.toList()))
                 .containsExactly(1L, 3L, 2L);
     }
 
@@ -139,7 +139,7 @@ class SectionsTest {
     }
 
     private Sections getSectionsHasTwoSection() {
-        line.addSection(upStation,middleStation,4);
+        line.addSection(upStation, middleStation, 4);
         return line.getSections();
     }
 
