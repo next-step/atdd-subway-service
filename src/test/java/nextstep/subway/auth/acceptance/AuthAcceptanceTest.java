@@ -5,7 +5,6 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,8 +33,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void loginWithBearerAuth() {
         회원_등록되어_있음(memberRequest);
-        TokenResponse 토큰 = 로그인_요청됨(memberRequest);
-        로그인_됨(토큰);
+        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(memberRequest);
+        로그인_됨(로그인_응답);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -61,9 +60,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(로그인_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private void 로그인_됨(TokenResponse tokenResponse) {
-        MemberResponse 로그인_응답 = 내_정보_조회됨(tokenResponse);
-        assertThat(로그인_응답.getEmail()).isEqualTo(memberRequest.getEmail());
+    private void 로그인_됨(ExtractableResponse<Response> tokenResponse) {
+        assertThat(tokenResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(tokenResponse.body().as(TokenResponse.class))
+                .extracting(TokenResponse::getAccessToken)
+                .isNotNull();
+
     }
 
 }

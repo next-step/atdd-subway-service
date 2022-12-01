@@ -6,7 +6,6 @@ import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -25,14 +24,6 @@ public class AuthAcceptanceTestRestAssured {
                 .get(MEMBERS_ME)
                 .then().log().all()
                 .extract();
-    }
-
-    static MemberResponse 내_정보_조회됨(TokenResponse tokenResponse) {
-        return 내_정보_조회(tokenResponse).body().as(MemberResponse.class);
-    }
-
-    static TokenResponse 로그인_요청됨(MemberRequest memberRequest) {
-        return 로그인_요청(memberRequest).body().as(TokenResponse.class);
     }
 
     static ExtractableResponse<Response> 로그인_요청(MemberRequest memberRequest) {
