@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.persistence.*;
 import java.util.*;
 
-import static nextstep.subway.line.domain.BizExceptionMessages.*;
+import static nextstep.subway.common.domain.BizExceptionMessages.*;
 
 @Entity
 public class Line extends BaseEntity {

@@ -10,6 +10,8 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 
+import static nextstep.subway.common.domain.BizExceptionMessages.PATH_SAME_SOURCE_WITH_TARGET;
+
 public class PathFinder {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
@@ -18,8 +20,16 @@ public class PathFinder {
     }
 
     public Path find(Sections sections, Station sourceStation, Station targetStation) {
+        validatePath(sourceStation, targetStation);
+
         fillVerticesAndEdges(graph, sections);
         return findShortestPath(graph, sourceStation, targetStation);
+    }
+
+    private void validatePath(Station sourceStation, Station targetStation) {
+        if (sourceStation.isSame(targetStation)) {
+            throw new IllegalArgumentException(PATH_SAME_SOURCE_WITH_TARGET.message());
+        }
     }
 
     private void fillVerticesAndEdges(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Sections sections) {

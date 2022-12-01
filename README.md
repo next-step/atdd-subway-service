@@ -207,12 +207,13 @@ Connection: keep-alive
 - [ ] PathFinder 구현
   - [x] 최단 경로 찾기
   - [ ] 예외 케이스 구현
-    - [ ] 출발역과 도착역이 같은 경우
-    - [ ] 출발역과 도착역이 견결되어 있지 않은 경우
+    - [x] 출발역과 도착역이 같은 경우
+    - [ ] 출발역과 도착역이 연결되어 있지 않은 경우
     - [ ] 존재하지 않은 출발역이나 도착역을 조회 할 경우
 
 ### Repository
-- [ ] SectionRepository 구현
+- [x] SectionRepository 구현
+  - [x] EntityGraph 로 join 쿼리로 조회 
 
 ### Service
-- [ ] PathService 구현
+- [x] PathService 구현

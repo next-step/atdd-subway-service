@@ -72,6 +72,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_경로_이름_확인됨(response, Arrays.asList("교대역", "남부터미널역", "양재역"));
     }
 
+    /**
+     * When : 출발역과 도착역을 같은 역으로 경로 조회 하면
+     * Then : 최단 경로 조회에 실패한다.
+     */
+    @DisplayName("동일역 경로 조회 예외")
+    @Test
+    void findPathsException() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회(교대역.getId(), 교대역.getId());
+
+        // then
+        지하철_경로_실패됨(response);
+    }
+
     public static ExtractableResponse<Response> 지하철_경로_조회(Long sourceId, Long targetId) {
         return RestAssured.given().log().all()
                 .when().get("/paths?source={sourceId}&target={targetId}", sourceId, targetId)
@@ -88,5 +102,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_경로_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 지하철_경로_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

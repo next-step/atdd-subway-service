@@ -1,9 +1,9 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.common.domain;
 
 public enum BizMagicNumber {
     SECTION_MIN_SIZE(1);
 
-    private int number;
+    private final int number;
 
     BizMagicNumber(int number) {
         this.number = number;
