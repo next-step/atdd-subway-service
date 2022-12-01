@@ -1,5 +1,6 @@
 package study.jgraph;
 
+import com.google.common.collect.Lists;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -71,13 +72,14 @@ public class JgraphTest {
         graph.addVertex(강남역);
         graph.addVertex(양재역);
         graph.addVertex(광교역);
+
         for (Section section : 신분당선.getSections()) {
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
         }
 
-        List<GraphPath> kshortestPaths = new KShortestPaths(graph, 100).getPaths(강남역, 광교역);
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 
         assertThat(dijkstraShortestPath.getPath(양재역, 광교역).getWeight()).isEqualTo(70);
+        assertThat(dijkstraShortestPath.getPath(양재역, 광교역).getVertexList()).containsExactlyElementsOf(Lists.newArrayList(양재역, 광교역));
     }
 }
