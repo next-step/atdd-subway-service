@@ -25,13 +25,13 @@ public class StationGraph {
     }
 
     private void validate(List<Section> sections) {
-        if(CollectionUtils.isEmpty(sections)) {
+        if (CollectionUtils.isEmpty(sections)) {
             throw new IllegalArgumentException("빈 구간 목록으로 그래프를 생성할 수 없습니다.");
         }
     }
 
     private void addVertex(Station station) {
-        if(stationGraph.containsVertex(station)) {
+        if (stationGraph.containsVertex(station)) {
             return;
         }
         stationGraph.addVertex(station);
@@ -62,7 +62,7 @@ public class StationGraph {
     }
 
     private void validateGraphPath(GraphPath<Station, DefaultWeightedEdge> graphPath) {
-        if(Objects.isNull(graphPath)) {
+        if (Objects.isNull(graphPath)) {
             throw new PathCannotFindException();
         }
     }
