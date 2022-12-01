@@ -10,10 +10,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTestRestAssured.*;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestStep.내_정보_조회;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestStep.로그인_요청;
+import static nextstep.subway.member.MemberAcceptanceStep.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AuthAcceptanceTest extends AcceptanceTest {
+class AuthAcceptanceTest extends AcceptanceTest {
 
     MemberRequest memberRequest;
 
@@ -32,7 +34,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인을 시도한다")
     @Test
     void loginWithBearerAuth() {
-        회원_등록되어_있음(memberRequest);
+        회원_생성을_요청(memberRequest);
         ExtractableResponse<Response> 로그인_응답 = 로그인_요청(memberRequest);
         로그인_됨(로그인_응답);
     }

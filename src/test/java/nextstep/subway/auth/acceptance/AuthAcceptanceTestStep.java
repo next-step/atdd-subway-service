@@ -6,13 +6,11 @@ import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-public class AuthAcceptanceTestRestAssured {
+public class AuthAcceptanceTestStep {
 
     public static final String LOGIN = "/login/token";
-    public static final String MEMBERS = "/members";
     public static final String MEMBERS_ME = "/members/me";
 
     static ExtractableResponse<Response> 내_정보_조회(TokenResponse tokenResponse) {
@@ -26,7 +24,7 @@ public class AuthAcceptanceTestRestAssured {
                 .extract();
     }
 
-    static ExtractableResponse<Response> 로그인_요청(MemberRequest memberRequest) {
+    public static ExtractableResponse<Response> 로그인_요청(MemberRequest memberRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -37,14 +35,7 @@ public class AuthAcceptanceTestRestAssured {
                 .extract();
     }
 
-    static void 회원_등록되어_있음(MemberRequest memberRequest) {
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when()
-                .post(MEMBERS)
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password, int age) {
+        return 로그인_요청(new MemberRequest(email, password, age));
     }
 }
