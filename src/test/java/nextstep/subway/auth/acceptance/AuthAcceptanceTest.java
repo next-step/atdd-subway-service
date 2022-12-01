@@ -30,7 +30,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         super.setUp();
     }
 
-    @DisplayName("로그인 성공")
+    @DisplayName("Bearer Auth")
     @Test
     void loginSuccess() {
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
@@ -40,7 +40,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_성공됨(response);
     }
 
-    @DisplayName("로그인 실패")
+    @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void loginFail() {
         ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
