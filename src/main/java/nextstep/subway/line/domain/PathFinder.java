@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import nextstep.subway.line.exception.WrongPathException;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -36,6 +37,13 @@ public class PathFinder {
     }
 
     public List<Station> shortestPath(Station from, Station to) {
+        validateFromAndTo(from, to);
         return dijkstraShortestPath.getPath(from, to).getVertexList();
+    }
+
+    private void validateFromAndTo(Station from, Station to) {
+        if (from.equals(to)) {
+            throw new WrongPathException("출발역과 도착역이 동일합니다.");
+        }
     }
 }
