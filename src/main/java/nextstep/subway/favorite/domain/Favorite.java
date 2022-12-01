@@ -78,4 +78,26 @@ public class Favorite extends BaseEntity {
     public int hashCode() {
         return Objects.hash(id, member, sourceStation, targetStation);
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public Station getSourceStation() {
+        return sourceStation;
+    }
+
+    public Station getTargetStation() {
+        return targetStation;
+    }
+
+    public void validateOwner(Member member) {
+        if(!this.member.equals(member)){
+            throw new FavoriteException(NOT_OWNER_FAVORITE);
+        }
+    }
 }
