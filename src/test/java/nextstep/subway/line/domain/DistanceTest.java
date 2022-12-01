@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -23,5 +24,35 @@ public class DistanceTest {
     void negative(int distance) {
         assertThatThrownBy(() -> new Distance(distance))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("크기를 비교한다. / 크기가 크면 양수를 받환한다.")
+    @Test
+    void compare_positive() {
+
+    }
+
+    @DisplayName("크기를 비교한다. / 크기가 작으면 음수를 받환한다.")
+    @Test
+    void compare_negative() {
+
+    }
+
+    @DisplayName("크기를 비교한다. / 크기가 같으면 0을 반환한다.")
+    @Test
+    void compare_0() {
+
+    }
+
+    @DisplayName("합을 구한다.")
+    @Test
+    void sum() {
+
+    }
+
+    @DisplayName("차를 구한다.")
+    @Test
+    void substract() {
+
     }
 }
