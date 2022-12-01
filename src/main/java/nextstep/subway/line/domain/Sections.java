@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
@@ -62,19 +61,27 @@ public class Sections {
     }
 
     private void addSectionDownStationIsExisted(Section newSection) {
-        sections.stream()
-                .filter(it -> it.getDownStation().equals(newSection.getDownStation()))
-                .findFirst()
+        findSectionHasSameDownStation(newSection.getDownStation())
                 .ifPresent(it -> it.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
         sections.add(newSection);
     }
 
+    private Optional<Section> findSectionHasSameDownStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getDownStation().equals(station))
+                .findFirst();
+    }
+
     private void addSectionUpStationIsExisted(Section newSection) {
-        sections.stream()
-                .filter(it -> it.getUpStation().equals(newSection.getUpStation()))
-                .findFirst()
+        findSectionHasSameUpStation(newSection.getUpStation())
                 .ifPresent(it -> it.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
         sections.add(newSection);
+    }
+
+    private Optional<Section> findSectionHasSameUpStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getUpStation().equals(station))
+                .findFirst();
     }
 
     private void addSectionIfSectionIsEmpty(Section section) {
@@ -84,10 +91,7 @@ public class Sections {
     private Station findUpEndStation() {
         Station downStation = this.sections.get(0).getUpStation();
         while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = findSectionHasSameDownStation(downStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -101,10 +105,7 @@ public class Sections {
         List<Station> stations = new ArrayList<>();
         Station downStation = startStation;
         while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = findSectionHasSameUpStation(downStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -130,12 +131,8 @@ public class Sections {
     public void remove(Station station) {
         throwIfSectionSizeIsOne();
         throwIfStationNotExistInSections(station);
-        Optional<Section> upLineStation = getSections().stream()
-                .filter(it -> it.getUpStation().equals(station))
-                .findFirst();
-        Optional<Section> downLineStation = getSections().stream()
-                .filter(it -> it.getDownStation().equals(station))
-                .findFirst();
+        Optional<Section> upLineStation = findSectionHasSameUpStation(station);
+        Optional<Section> downLineStation = findSectionHasSameDownStation(station);
         mergeSectionIfStationIsCenterOfTwoLineStation(upLineStation, downLineStation);
         removeSectionIfPresent(upLineStation, downLineStation);
     }
