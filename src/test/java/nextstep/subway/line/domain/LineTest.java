@@ -17,7 +17,7 @@ class LineTest {
         Station upStation = new Station("판교역");
         Station downStation = new Station("강남역");
         Section section = new Section(upStation, downStation, new Distance(10));
-        Line line = new Line("신분당선", "bg-red-600");
+        Line line = new Line("신분당선", "bg-red-600", new Fare(0));
         line.addSection(section);
 
         // when
@@ -31,7 +31,7 @@ class LineTest {
     @Test
     void update() {
         // given
-        Line line = new Line("신분당선", "bg-red-600");
+        Line line = new Line("신분당선", "bg-red-600", new Fare(0));
 
         // when
         line.update("분당선", "bg-blue-400");
@@ -47,7 +47,7 @@ class LineTest {
     @Test
     void addSection() {
         // given
-        Line line = new Line("신분당선", "bg-red-600");
+        Line line = new Line("신분당선", "bg-red-600", new Fare(0));
         Station upStation = new Station("판교역");
         Station downStation = new Station("강남역");
         Section section = new Section(upStation, downStation, new Distance(10));
@@ -70,7 +70,7 @@ class LineTest {
         Section section1 = new Section(upStation, downStation, new Distance(10));
         Section section2 = new Section(downStation, newStation, new Distance(10));
 
-        Line line = new Line("신분당선", "bg-red-600");
+        Line line = new Line("신분당선", "bg-red-600", new Fare(0));
         line.addSection(section1);
         line.addSection(section2);
 

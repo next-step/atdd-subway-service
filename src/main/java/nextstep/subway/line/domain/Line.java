@@ -19,11 +19,15 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections(new ArrayList<>());
 
+    @Embedded
+    private Fare extraFare;
+
     protected Line() {}
 
-    public Line(String name, String color) {
+    public Line(String name, String color, Fare extraFare) {
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
     public Long getId() {
@@ -44,6 +48,10 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections.get();
+    }
+
+    public Fare getExtraFare() {
+        return extraFare;
     }
 
     public void update(String name, String color) {

@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.exception.EntityNotFound;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -20,12 +21,13 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(Long source, Long target, int age) {
         Station sourceStation = findStationById(source);
         Station targetStation = findStationById(target);
 
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
-        return pathFinder.shortestPath(sourceStation, targetStation);
+        ShortestPath path = pathFinder.shortestPath(sourceStation, targetStation);
+        return new PathResponse(path.getStations(), path.getDistance(), path.calculateFare(age));
     }
 
     private Station findStationById(Long id) {

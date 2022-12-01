@@ -1,17 +1,13 @@
 package nextstep.subway.path.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +15,7 @@ import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptance.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.path.acceptance.PathRestAssured.최단경로_조회_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,10 +49,10 @@ class PathAcceptanceTest extends AcceptanceTest {
         인천역 = 지하철역_등록되어_있음("인천역").as(StationResponse.class);
         부평역 = 지하철역_등록되어_있음("부평역").as(StationResponse.class);
 
-        지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
-        지하철_노선_등록되어_있음("이호선", "bg-blue-600", 교대역.getId(), 강남역.getId(), 10);
-        지하철_노선_등록되어_있음("일호선", "bg-yellow-600", 인천역.getId(), 부평역.getId(), 5);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-400", 교대역.getId(), 양재역.getId(), 5);
+        지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 0);
+        지하철_노선_등록되어_있음("이호선", "bg-blue-600", 교대역.getId(), 강남역.getId(), 10, 0);
+        지하철_노선_등록되어_있음("일호선", "bg-yellow-600", 인천역.getId(), 부평역.getId(), 5, 0);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-400", 교대역.getId(), 양재역.getId(), 5, 0);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -67,7 +64,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단경로_조회_요청(강남역, 남부터미널역);
 
         // then
-        최단경로_요청이_정상_조회됨(response, 12, 강남역, 양재역, 남부터미널역);
+        최단경로_요청이_정상_조회됨(response, 12, 1_350, 강남역, 양재역, 남부터미널역);
     }
 
     @DisplayName("최단 경로를 조회 시, 출발역과 도착역이 같다면 예외가 발생한다")
@@ -106,6 +103,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     private void 최단경로_요청이_정상_조회됨(
             ExtractableResponse<Response> response,
             int distance,
+            int fare,
             StationResponse... stations
     ) {
         PathResponse pathResponse = response.as(PathResponse.class);
@@ -121,21 +119,15 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(actualIds).containsAll(expectedIds);
         assertThat(pathResponse.getDistance()).isEqualTo(distance);
-    }
-
-    private static ExtractableResponse<Response> 최단경로_조회_요청(
-            StationResponse upStation,
-            StationResponse downStation
-    ) {
-        return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths?source={upStationId}&target={downStationId}", upStation.getId(), downStation.getId())
-                .then().log().all()
-                .extract();
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 
     private static void 최단_경로_조회_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void 지하철_이용금액_확인됨(ExtractableResponse<Response> response, int fare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 }

@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,5 +31,13 @@ public class Lines {
     public boolean hasNotStation(Station station) {
         return lines.stream()
                 .noneMatch(line -> line.getStations().contains(station));
+    }
+
+    public int maxExtraFare() {
+        Fare maxFare = lines.stream()
+                .map(Line::getExtraFare)
+                .max(Comparator.comparingInt(Fare::value))
+                .orElse(new Fare(Fare.FREE));
+        return maxFare.value();
     }
 }

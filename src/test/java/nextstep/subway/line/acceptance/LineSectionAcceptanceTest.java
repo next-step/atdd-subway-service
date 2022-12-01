@@ -38,6 +38,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
                 .upStationId(강남역.getId())
                 .downStationId(광교역.getId())
                 .distance(10)
+                .extraFare(0)
                 .build();
 
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);

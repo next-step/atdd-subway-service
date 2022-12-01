@@ -1,6 +1,5 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.constant.ErrorCode;
 import nextstep.subway.exception.EntityNotFound;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;

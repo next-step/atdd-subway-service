@@ -2,6 +2,7 @@ package nextstep.subway.auth.ui;
 
 import nextstep.subway.auth.application.AuthService;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -26,6 +27,19 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
+        boolean authenticationRequired = getRequired(parameter);
+
+        if (!authenticationRequired && credentials == null) {
+            return LoginMember.guest();
+        }
         return authService.findMemberByToken(credentials);
+    }
+
+    private boolean getRequired(MethodParameter parameter) {
+        AuthenticationPrincipal parameterAnnotation = parameter.getParameterAnnotation(AuthenticationPrincipal.class);
+        if (parameterAnnotation == null) {
+            return true;
+        }
+        return parameterAnnotation.required();
     }
 }

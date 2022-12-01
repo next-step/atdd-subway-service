@@ -56,9 +56,9 @@ class PathServiceTest {
         불광역 = new Station("불광역");
         판교역 = new Station("판교역");
         양재역 = new Station("양재역");
-        일호선 = LineTestFactory.create("일호선", "bg-red-600", 인천역, 부평역, 10);
-        삼호선 = LineTestFactory.create("삼호선", "bg-red-500", 연신내역, 불광역, 10);
-        신분당선 = LineTestFactory.create("신분당선", "bg-red-400", 판교역, 양재역, 10);
+        일호선 = LineTestFactory.create("일호선", "bg-red-600", 인천역, 부평역, 10, 0);
+        삼호선 = LineTestFactory.create("삼호선", "bg-red-500", 연신내역, 불광역, 10, 0);
+        신분당선 = LineTestFactory.create("신분당선", "bg-red-400", 판교역, 양재역, 10, 0);
         일호선.addSection(SectionTestFactory.create(부평역, 연신내역, 10));
     }
 
@@ -73,7 +73,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(일호선, 삼호선, 신분당선));
 
         // when
-        PathResponse response = pathService.findShortestPath(source, target);
+        PathResponse response = pathService.findShortestPath(source, target, 33);
 
         // then
         assertThat(response.getDistance()).isEqualTo(30);
@@ -95,7 +95,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(일호선, 삼호선, 신분당선));
 
         // when & then
-        assertThatThrownBy(() -> pathService.findShortestPath(source, source))
+        assertThatThrownBy(() -> pathService.findShortestPath(source, source, 33))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorCode.FIND_PATH_SAME_SOURCE_TARGET.getMessage());
     }
@@ -112,7 +112,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(일호선, 삼호선, 신분당선));
 
         // when & then
-        assertThatThrownBy(() -> pathService.findShortestPath(source, target))
+        assertThatThrownBy(() -> pathService.findShortestPath(source, target, 33))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorCode.FIND_PATH_NOT_EXIST.getMessage());
     }
@@ -128,7 +128,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(일호선, 삼호선, 신분당선));
 
         // when & then
-        assertThatThrownBy(() -> pathService.findShortestPath(source, target))
+        assertThatThrownBy(() -> pathService.findShortestPath(source, target, 33))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ErrorCode.FIND_PATH_NOT_CONNECT.getMessage());
     }
