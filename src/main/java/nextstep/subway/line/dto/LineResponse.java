@@ -41,7 +41,7 @@ public class LineResponse {
 
     private static List<StationResponse> toList(List<Station> stations) {
         return stations.stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 

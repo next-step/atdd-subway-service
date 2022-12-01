@@ -6,13 +6,16 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceFixture.로그인_요청;
@@ -78,5 +81,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void manage_favorite() {
 
+        FavoriteRequest favoriteRequest = new FavoriteRequest(신림역, 강남역);
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .auth().oauth2(로그인_성공_토큰_값)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(favoriteRequest)
+                .when().post("/favorites")
+                .then().log().all()
+                .extract();
+
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 }
