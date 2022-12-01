@@ -31,6 +31,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 사당역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -47,6 +48,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        사당역 = StationAcceptanceTest.지하철역_등록되어_있음("사당역").as(StationResponse.class);
 
 
         신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
@@ -78,9 +80,37 @@ public class PathAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("동일역 경로 조회 예외")
     @Test
-    void findPathsException() {
+    void findPathsSameSourceTargetException() {
         // when
         ExtractableResponse<Response> response = 지하철_경로_조회(교대역.getId(), 교대역.getId());
+
+        // then
+        지하철_경로_실패됨(response);
+    }
+
+    /**
+     * When : 구간에 등록되지 않은 역을 경로에 포함하여 조회하는 경우
+     * Then : 최단 경로 조회에 실패한다.
+     */
+    @DisplayName("구간에 등록되지 않은 역을 경로 조회 하는 경우")
+    @Test
+    void findPathsUnconnectedException() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회(사당역.getId(), 교대역.getId());
+
+        // then
+        지하철_경로_실패됨(response);
+    }
+
+    /**
+     * When : 존재하지 않는 역의 id로 경로 조회 하는 경우
+     * Then : 최단 경로 조회에 실패한다.
+     */
+    @DisplayName("구간에 등록되지 않은 역을 경로 조회 하는 경우")
+    @Test
+    void findPathsUnenrolledException() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회(1000L, 교대역.getId());
 
         // then
         지하철_경로_실패됨(response);

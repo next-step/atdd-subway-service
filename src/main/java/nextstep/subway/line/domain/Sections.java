@@ -73,6 +73,10 @@ public class Sections {
         return Collections.unmodifiableList(sections);
     }
 
+    public boolean isEnroll(Station station) {
+        return isPresentUpStation(station) || isPresentDownStation(station);
+    }
+
     private void connectNewSection(Section preSection, Section nextSection) {
         Line line = preSection.getLine();
         Station newUpStation = nextSection.getUpStation();

@@ -7,6 +7,7 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,10 @@ public class PathTest extends JpaEntityTest {
     private LineRepository lineRepository;
     @Autowired
     private SectionRepository sectionRepository;
+    @Autowired
+    private StationRepository stationRepository;
 
+    private Station 사당역;
     private Station 교대역;
     private Station 강남역;
     private Station 역삼역;
@@ -40,6 +44,9 @@ public class PathTest extends JpaEntityTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
+        // 비이상 지하철역 생성
+        사당역 = new Station("사당역");
+        stationRepository.save(사당역);
 
         // 신분당
         신사역 = new Station("신사역");
@@ -111,9 +118,18 @@ public class PathTest extends JpaEntityTest {
 
     @DisplayName("출발역과 도착역이 같은 경우 예외 발생")
     @Test
-    void pathFinderExceptionTest() {
+    void pathFinderSameStationExceptionTest() {
         // when / then
         assertThatThrownBy(() -> new PathFinder().find(new Sections(sectionRepository.findAll()), 강남역, 강남역))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("출발역과 도착역이 연결되지 않은 경우 예외 발생")
+    @Test
+    void pathFinderUnconnectedExceptionTest() {
+        // when / then
+        assertThatThrownBy(() -> new PathFinder().find(new Sections(sectionRepository.findAll()), 사당역, 신사역))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
 }
