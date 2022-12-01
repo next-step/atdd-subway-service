@@ -49,7 +49,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
 
-    @DisplayName("최단경로 조회에서 노선에 포함되지 않는 역을 조회하면 예외발생")
+    @DisplayName("최단경로 조회에서 노선에 포함되지 않는 역을 조회하면 조회안됨")
     @Test
     void returnsExceptionWithNoneExistsStartStationInLines() {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(광산역.getId(), 남부터미널역.getId());
@@ -57,7 +57,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_목록_조회_실패(response);
     }
 
-    @DisplayName("최단경로 조회에서 존재하지 않는 역을 조회하면 예외발생")
+    @DisplayName("최단경로 조회에서 존재하지 않는 역을 조회하면 조회안됨")
     @Test
     void returnsExceptionWithNoneExistsStartStation() {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(-1l, 남부터미널역.getId());
@@ -65,7 +65,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_목록_조회_실패(response);
     }
 
-    @DisplayName("최단경로 조회에서 출발역과 도착역이 같으면 예외발생")
+    @DisplayName("최단경로 조회에서 출발역과 도착역이 같으면 조회안됨")
     @Test
     void returnsExceptionWithSameStations() {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(남부터미널역.getId(), 남부터미널역.getId());
@@ -73,7 +73,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_목록_조회_실패(response);
     }
 
-    @DisplayName("최단경로 조회에서 출발역과 도착역이 연결되지않으면 예외발생")
+    @DisplayName("최단경로 조회에서 출발역과 도착역이 연결되지않으면 조회안됨")
     @Test
     void returnsExceptionWithNoneLinkStation() {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(학동역.getId(), 강남역.getId());
