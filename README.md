@@ -38,6 +38,15 @@ npm run dev
 ```
 <br>
 
+## 🚀 미션 진행 상황
+
+### 1단계 - 인수 테스트 기반 리팩터링
+
+#### 기능 요구사항
+
+* [x] LineService 리팩터링
+* [x] (선택) LineSectionAcceptanceTest 리팩터링
+
 ## ✏️ Code Review Process
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
 
