@@ -1,20 +1,15 @@
 package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.domain.Stations;
 import nextstep.subway.station.domain.Station;
 
@@ -66,13 +61,5 @@ class PathFinderTest {
 
         assertThatThrownBy(() -> new PathFinder(lines).findPath(왕십리, 대구역))
             .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    private Line givenLine(List<Section> sections) {
-        Line line = Mockito.mock(Line.class);
-        given(line.getSections()).willReturn(
-            Sections.from(sections)
-        );
-        return line;
     }
 }
