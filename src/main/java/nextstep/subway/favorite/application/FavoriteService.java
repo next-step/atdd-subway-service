@@ -47,6 +47,7 @@ public class FavoriteService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> getFavorites(Long loginMemberId) {
         List<Favorite> favorites = favoriteRepository.findAllByMember_Id(loginMemberId);
         return favorites.stream()
