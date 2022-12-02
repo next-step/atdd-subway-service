@@ -4,7 +4,7 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
-import static nextstep.subway.line.domain.BizExceptionMessages.SECTION_UNENROLLABLE_DISTANCE;
+import static nextstep.subway.common.domain.BizExceptionMessages.SECTION_UNENROLLABLE_DISTANCE;
 
 @Entity
 public class Section {

@@ -7,7 +7,8 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
 
-import static nextstep.subway.line.domain.BizExceptionMessages.*;
+import static nextstep.subway.common.domain.BizExceptionMessages.*;
+import static nextstep.subway.common.domain.BizMagicNumber.*;
 
 @Embeddable
 public class Sections {
@@ -15,6 +16,10 @@ public class Sections {
     private List<Section> sections = new ArrayList<>();
 
     protected Sections() {
+    }
+
+    public Sections(List<Section> sections) {
+        this.sections = sections;
     }
 
     public List<Station> getStations() {
@@ -66,6 +71,10 @@ public class Sections {
 
     public List<Section> values() {
         return Collections.unmodifiableList(sections);
+    }
+
+    public boolean isEnroll(Station station) {
+        return isPresentUpStation(station) || isPresentDownStation(station);
     }
 
     private void connectNewSection(Section preSection, Section nextSection) {
@@ -167,7 +176,7 @@ public class Sections {
     }
 
     private void validSectionsSize() {
-        if (sections.size() <= 1) {
+        if (sections.size() <= SECTION_MIN_SIZE.number()) {
             throw new IllegalStateException(LINE_MIN_SECTIONS_SIZE.message());
         }
     }

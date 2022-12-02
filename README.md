@@ -131,3 +131,89 @@ new 로 교체하고, legacy 는 일정 기간 후 삭제하는 작업 패턴(**
 3. 로직을 옮기기
    - 기존 로직을 지우지 말고 새로운 로직을 만들어 수행
    - 정상 동작 확인 후 기존 로직 제거
+
+### 1단계 피드백 기능 목록
+- [x] 기능 목록 작성 시 인수 조건, 도메인 기능 목록 등 상세화
+- [x] Service에서 Service를 의존하면 순환참조 발생 가능 --> 방향은 아래로 흐르는 것이 좋음
+- [x] 조회 메서드에 `@Transactional(readOnly=true)` 선언하여, `Lazy Loading` 대비
+- [x] 매직넘버에 이름 부여
+
+## 2단계 - 경로 조회 기능
+
+### Request / Response
+```http request
+HTTP/1.1 200 
+Request method:	GET
+Request URI:	http://localhost:55494/paths?source=1&target=6
+Headers: 	Accept=application/json
+		Content-Type=application/json; charset=UTF-8
+```
+
+```http response
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 09 May 2020 14:54:11 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    "stations": [
+        {
+            "id": 5,
+            "name": "양재시민의숲역",
+            "createdAt": "2020-05-09T23:54:12.007"
+        },
+        {
+            "id": 4,
+            "name": "양재역",
+            "createdAt": "2020-05-09T23:54:11.995"
+        },
+        {
+            "id": 1,
+            "name": "강남역",
+            "createdAt": "2020-05-09T23:54:11.855"
+        },
+        {
+            "id": 2,
+            "name": "역삼역",
+            "createdAt": "2020-05-09T23:54:11.876"
+        },
+        {
+            "id": 3,
+            "name": "선릉역",
+            "createdAt": "2020-05-09T23:54:11.893"
+        }
+    ],
+    "distance": 40
+}
+```
+
+
+```text
+     교대역    --- 2호선 : 10 ---   강남역
+     |                             |
+    3호선 : 3                     신분당선 : 10
+     |                             |
+     남부터미널역  --- 3호선 : 2 ---   양재
+```
+### 인수 테스트
+- [x] 최단 경로 조회 인수 테스트 만들기
+  - Given : 경로 조회 가능한 노선들이 등록되어 있다
+  - When : 출발역과 도착역의 경로 조회 요청하면
+  - Then : 최단 경로와 거리를 응답한다.
+
+### Domain
+- [x] PathFinder 구현
+  - [x] 최단 경로 찾기
+  - [x] 예외 케이스 구현
+    - [x] 출발역과 도착역이 같은 경우
+    - [x] 출발역과 도착역이 연결되어 있지 않은 경우
+    - [x] 존재하지 않은 출발역이나 도착역을 조회 할 경우
+
+### Repository
+- [x] SectionRepository 구현
+  - [x] EntityGraph 로 join 쿼리로 조회 
+
+### Service
+- [x] PathService 구현

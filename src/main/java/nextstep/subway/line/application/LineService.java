@@ -5,8 +5,8 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,21 +17,22 @@ import java.util.stream.Collectors;
 @Service
 public class LineService {
     private final LineRepository lineRepository;
-    private final StationService stationService;
+    private final StationRepository stationRepository;
 
-    public LineService(LineRepository lineRepository, StationService stationService) {
+    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
-        this.stationService = stationService;
+        this.stationRepository = stationRepository;
     }
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Station upStation = stationRepository.findById(request.getUpStationId()).orElseThrow(NoResultException::new);
+        Station downStation = stationRepository.findById(request.getDownStationId()).orElseThrow(NoResultException::new);
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         return LineResponse.of(persistLine);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -39,13 +40,9 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(NoResultException::new);
-    }
-
-
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
+        Line persistLine = lineRepository.findById(id).orElseThrow(NoResultException::new);
         return LineResponse.of(persistLine);
     }
 
@@ -62,17 +59,16 @@ public class LineService {
 
     @Transactional
     public void addSection(Long lineId, SectionRequest request) {
-        Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Line line = lineRepository.findById(lineId).orElseThrow(NoResultException::new);
+        Station upStation = stationRepository.findById(request.getUpStationId()).orElseThrow(NoResultException::new);
+        Station downStation = stationRepository.findById(request.getDownStationId()).orElseThrow(NoResultException::new);
         line.addSection(upStation, downStation, request.getDistance());
     }
 
-
     @Transactional
     public void removeSection(Long lineId, Long stationId) {
-        Line line = findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
+        Line line = lineRepository.findById(lineId).orElseThrow(NoResultException::new);
+        Station station = stationRepository.findById(stationId).orElseThrow(NoResultException::new);
         line.removeSection(station);
     }
 }
