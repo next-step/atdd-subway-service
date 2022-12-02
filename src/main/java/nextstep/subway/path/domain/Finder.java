@@ -4,7 +4,7 @@ import java.util.List;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
-public interface Find {
+public interface Finder {
 
     void isExistPath(Station source, Station target) throws IllegalArgumentException;
 

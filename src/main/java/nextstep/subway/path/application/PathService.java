@@ -4,7 +4,7 @@ import java.util.List;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.ShortestPathFinder;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -29,8 +29,8 @@ public class PathService {
         Station source = stationService.findStationById(request.getSource());
         Station target = stationService.findStationById(request.getTarget());
 
-        PathFinder pathFinder = new PathFinder();
-        Path shortestPath = pathFinder.findShortestPath(lines, source, target);
+        ShortestPathFinder shortestPathFinder = new ShortestPathFinder();
+        Path shortestPath = shortestPathFinder.findShortestPath(lines, source, target);
 
         return new PathResponse(shortestPath);
     }
