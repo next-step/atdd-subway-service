@@ -3,10 +3,9 @@ package nextstep.subway.line.domain;
 import java.util.Objects;
 import javax.persistence.Embeddable;
 import nextstep.subway.line.exception.IllegalDistanceException;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 @Embeddable
-public class Distance extends DefaultWeightedEdge {
+public class Distance {
 
     private int distance;
 
@@ -28,6 +27,10 @@ public class Distance extends DefaultWeightedEdge {
         return new Distance(this.distance + newDistance.distance);
     }
 
+    public int distance() {
+        return distance;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -43,9 +46,5 @@ public class Distance extends DefaultWeightedEdge {
     @Override
     public int hashCode() {
         return Objects.hash(distance);
-    }
-
-    public int distance() {
-        return distance;
     }
 }
