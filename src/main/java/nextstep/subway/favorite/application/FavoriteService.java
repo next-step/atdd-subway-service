@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -34,8 +35,16 @@ public class FavoriteService {
         Member member = memberRepository.findById(loginMemberId).orElseThrow(RuntimeException::new);
         Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(RuntimeException::new);
         Station target = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(RuntimeException::new);
+        validateAlreadyExist(member, source, target);
         Favorite favorite = favoriteRepository.save(new Favorite(source, target, member));
         return FavoriteResponse.from(favorite);
+    }
+
+    private void validateAlreadyExist(Member member, Station source, Station target) {
+        Optional<Favorite> favorite = favoriteRepository.findBySourceAndTargetAndMember(source, target, member);
+        if(favorite.isPresent()){
+            throw new RuntimeException("이미 등록하였습니다.");
+        }
     }
 
     public List<FavoriteResponse> getFavorites(Long loginMemberId) {
