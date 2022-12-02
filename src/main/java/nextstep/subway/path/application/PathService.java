@@ -30,17 +30,12 @@ public class PathService {
     }
 
     public PathResponse findPath(Long source, Long target) {
-        validateStation(source);
-        validateStation(target);
+        stationService.validateStation(source);
+        stationService.validateStation(target);
         List<Line> lines = lineRepository.findAll();
         PathFinder pathFinder = new PathFinder(lines);
         Path path = pathFinder.findPath(source, target);
         List<StationResponse> stations = stationService.findAllByIdIsIn(path.getStationIds());
         return PathResponse.from(stations, path.getDistance());
-    }
-
-    private void validateStation(Long stationId){
-        stationRepository.findById(stationId)
-                .orElseThrow(() -> new IllegalArgumentException("station id와 일치하는 역을 찾을 수 없습니다."));
     }
 }

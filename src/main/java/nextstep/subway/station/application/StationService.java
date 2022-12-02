@@ -49,4 +49,9 @@ public class StationService {
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
+
+    public void validateStation(Long stationId){
+        stationRepository.findById(stationId)
+                .orElseThrow(() -> new IllegalArgumentException("station id와 일치하는 역을 찾을 수 없습니다."));
+    }
 }
