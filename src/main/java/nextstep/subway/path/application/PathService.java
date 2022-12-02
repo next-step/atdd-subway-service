@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.GraphPathFinder;
@@ -24,7 +25,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse getShortestPath(final Long startStationId, final Long destinationStationId) {
+    public PathResponse getShortestPath(final int age, final Long startStationId, final Long destinationStationId) {
         final Station start = stationService.findById(startStationId);
         final Station destination = stationService.findById(destinationStationId);
         final List<Line> lines = lineService.findAll();
@@ -36,6 +37,6 @@ public class PathService {
                 .map(stationService::findByName)
                 .collect(Collectors.toList());
 
-        return PathResponse.of(stations, stationPath.getDistance());
+        return PathResponse.of(stations, stationPath.getDistance(), Fare.of(stationPath.getDistance(), stationPath.getExtraCharge(), age).getValue());
     }
 }
