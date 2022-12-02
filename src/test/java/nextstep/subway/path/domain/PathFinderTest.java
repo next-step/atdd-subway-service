@@ -41,12 +41,17 @@ class PathFinderTest {
 
     @Test
     void 경로_조회_성공() {
-        assertThat(new PathFinder(lines).findPath(왕십리, DDP)).isEqualTo(
-            Path.of(
-                Stations.from(Arrays.asList(왕십리, 신당, DDP)),
-                Distance.from(20)
-            )
+        // given
+        Path expected = Path.of(
+            Stations.from(Arrays.asList(왕십리, 신당, DDP)),
+            Distance.from(20)
         );
+
+        // when
+        Path actual = new PathFinder(lines).findPath(왕십리, DDP);
+
+        // then
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
