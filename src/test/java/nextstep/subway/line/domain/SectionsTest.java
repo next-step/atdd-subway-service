@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Arrays;
+
 class SectionsTest {
 
     private Line 신분당선;
@@ -114,5 +116,13 @@ class SectionsTest {
 
         Assertions.assertThat(sections.getStations())
                 .containsExactlyInAnyOrder(강남역, 광교역, 수원역);
+    }
+
+    @DisplayName("주어진 지하철 역 목록을 상행역과 하행역으로 가지는 지하철 구간으로부터 지하철 노선을 찾는다.")
+    @Test
+    void findLines() {
+        Lines lines = sections.findLinesFrom(Arrays.asList(강남역, 광교역));
+
+        Assertions.assertThat(lines.getLines().get(0)).isEqualTo(신분당선);
     }
 }

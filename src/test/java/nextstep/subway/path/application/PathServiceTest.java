@@ -46,6 +46,7 @@ class PathServiceTest {
     private Station 서현역;
     private Station 소요산역;
     private Station 병점역;
+    private int age = 19;
 
     /**
      * 양재역 ------*3호선(5)*------ 수서역
@@ -85,7 +86,7 @@ class PathServiceTest {
         when(stationRepository.findById(2L)).thenReturn(Optional.of(서현역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 분당선, 삼호선));
 
-        PathResponse response = pathService.findShortestPath(1L, 2L);
+        PathResponse response = pathService.findShortestPath(1L, 2L, age);
 
         assertAll(
                 () -> assertThat(response.getStations()).hasSize(3),
@@ -100,7 +101,7 @@ class PathServiceTest {
         when(stationRepository.findById(1L)).thenReturn(Optional.of(양재역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 분당선, 삼호선));
 
-        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L))
+        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L, age))
                 .isInstanceOf(PathNotFoundException.class)
                 .hasMessageStartingWith(ExceptionMessage.SOURCE_AND_TARGET_EQUAL);
     }
@@ -112,7 +113,7 @@ class PathServiceTest {
         when(stationRepository.findById(2L)).thenReturn(Optional.of(소요산역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 분당선, 삼호선, 일호선));
 
-        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L))
+        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L, age))
                 .isInstanceOf(PathNotFoundException.class)
                 .hasMessageStartingWith(ExceptionMessage.SOURCE_NOT_CONNECTED_TO_TARGET);
     }
@@ -123,7 +124,7 @@ class PathServiceTest {
         when(stationRepository.findById(1L)).thenReturn(Optional.of(양재역));
         when(stationRepository.findById(0L)).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 0L))
+        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 0L, age))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageStartingWith(ExceptionMessage.STATION_NOT_EXIST);
     }
