@@ -6,6 +6,8 @@ import javax.persistence.*;
 
 @Entity
 public class Section {
+    public static final String SECTION_DISTANCE_EXCEPTION_MESSAGE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
+    public static final int MINIMUM_DISTANCE = 0;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,12 +24,12 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -50,23 +52,27 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public void updateUpStation(Station station, Distance newDistance) {
+        if (this.distance.compareTo(newDistance) <= MINIMUM_DISTANCE) {
+            throw new RuntimeException(SECTION_DISTANCE_EXCEPTION_MESSAGE);
         }
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance.subtract(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public void updateDownStation(Station station, Distance newDistance) {
+        if (this.distance.compareTo(newDistance) <= 0) {
+            throw new RuntimeException(SECTION_DISTANCE_EXCEPTION_MESSAGE);
         }
         this.downStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance.subtract(newDistance);
+    }
+
+    public Distance sumDistance(Section section) {
+        return new Distance(this.distance.sum(section.getDistance()));
     }
 }
