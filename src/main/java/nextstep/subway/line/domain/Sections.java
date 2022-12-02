@@ -70,7 +70,7 @@ public class Sections {
         }
 
         if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException(ErrorMessage.NO_EXIST_STATIONS.getMessage());
+            throw new RuntimeException(ErrorMessage.NO_EXIST_STATIONS_TO_REGISTER.getMessage());
         }
     }
 
@@ -113,11 +113,11 @@ public class Sections {
 
     public void removeSectionByStation(Station station) {
         if(!isStationExisted(station)) {
-            throw new RuntimeException();
+            throw new RuntimeException(ErrorMessage.NO_EXIST_STATIONS_TO_DELETE.getMessage());
         }
 
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new RuntimeException(ErrorMessage.DO_NOT_DELETE_UNIQUE_SECTION.getMessage());
         }
 
         Optional<Section> upLineStation = sections.stream()
