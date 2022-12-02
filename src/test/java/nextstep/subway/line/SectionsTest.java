@@ -3,7 +3,7 @@ package nextstep.subway.line;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
-import nextstep.subway.line.domain.TempDistance;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,8 +34,8 @@ public class SectionsTest {
     @BeforeEach
     public void setUp() {
         List<Section> sections = new ArrayList<>();
-        sections.add(new Section(line, station1, station2, new TempDistance(10)));
-        sections.add(new Section(line, station2, station3, new TempDistance(10)));
+        sections.add(new Section(line, station1, station2, new Distance(10)));
+        sections.add(new Section(line, station2, station3, new Distance(10)));
         this.sections = new Sections(sections);
     }
 
@@ -95,7 +95,7 @@ public class SectionsTest {
         Station newStation = new Station(newStationName);
 
         //when
-        Section newSection = new Section(line, newStation, station1, new TempDistance(5));
+        Section newSection = new Section(line, newStation, station1, new Distance(5));
         sections.add(newSection);
 
         //then
@@ -110,7 +110,7 @@ public class SectionsTest {
         Station newStation = new Station(newStationName);
 
         //when
-        Section newSection = new Section(line, station1, newStation, new TempDistance(5));
+        Section newSection = new Section(line, station1, newStation, new Distance(5));
         sections.add(newSection);
 
         //then
@@ -125,7 +125,7 @@ public class SectionsTest {
         Station newStation = new Station(newStationName);
 
         //when
-        Section newSection = new Section(line, newStation, station2, new TempDistance(5));
+        Section newSection = new Section(line, newStation, station2, new Distance(5));
         sections.add(newSection);
 
         //then
@@ -140,7 +140,7 @@ public class SectionsTest {
         Station newStation = new Station(newStationName);
 
         //when
-        Section newSection = new Section(line, station2, newStation, new TempDistance(5));
+        Section newSection = new Section(line, station2, newStation, new Distance(5));
         sections.add(newSection);
 
         //then

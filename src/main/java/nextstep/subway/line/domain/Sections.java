@@ -43,7 +43,7 @@ public class Sections {
             sections.stream()
                     .filter(it -> it.getUpStation() == requestUpStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateUpStation(requestDownStation, section.getTempDistance()));
+                    .ifPresent(it -> it.updateUpStation(requestDownStation, section.getDistance()));
             this.sections.add(section);
             return;
         }
@@ -52,7 +52,7 @@ public class Sections {
             sections.stream()
                     .filter(it -> it.getDownStation() == requestDownStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateDownStation(requestUpStation, section.getTempDistance()));
+                    .ifPresent(it -> it.updateDownStation(requestUpStation, section.getDistance()));
             this.sections.add(section);
             return;
         }
@@ -128,15 +128,13 @@ public class Sections {
                 .findFirst();
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
             sections.add(new Section(upLineStation.get().getLine(),
-                    newUpStation, newDownStation, newDistance));
+                    downLineStation.get().getUpStation(),
+                    upLineStation.get().getDownStation(),
+                    upLineStation.get().getDistance().add(downLineStation.get().getDistance())));
         }
 
         upLineStation.ifPresent(it -> sections.remove(it));
         downLineStation.ifPresent(it -> sections.remove(it));
-
     }
 }

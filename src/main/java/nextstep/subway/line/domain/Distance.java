@@ -6,13 +6,13 @@ import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
-public class TempDistance {
+public class Distance {
 
     private static int LOWER_LIMIT = 0;
 
     private int tempDistance;
 
-    public TempDistance(int distance) {
+    public Distance(int distance) {
         if(distance <= LOWER_LIMIT) {
             throw new RuntimeException(
                     ErrorMessage.INVALID_DISTANCE_VALUE.setLimitValueAndGetMessage(String.valueOf(LOWER_LIMIT)));
@@ -20,11 +20,11 @@ public class TempDistance {
         this.tempDistance = distance;
     }
 
-    protected TempDistance() {
+    protected Distance() {
 
     }
 
-    public int getTempDistance() {
+    public int getDistance() {
         return tempDistance;
     }
 
@@ -32,7 +32,7 @@ public class TempDistance {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TempDistance that = (TempDistance) o;
+        Distance that = (Distance) o;
         return tempDistance == that.tempDistance;
     }
 
@@ -41,8 +41,8 @@ public class TempDistance {
         return Objects.hash(tempDistance);
     }
 
-    public TempDistance subtract(TempDistance distance) {
-        int newDistance = this.tempDistance - distance.getTempDistance();
+    public Distance subtract(Distance distance) {
+        int newDistance = this.tempDistance - distance.getDistance();
         if (newDistance <= LOWER_LIMIT) {
             throw new RuntimeException(ErrorMessage.EXCEED_SECTION_DISTANCE.getMessage());
         }
@@ -50,8 +50,8 @@ public class TempDistance {
         return this;
     }
 
-    public TempDistance add(TempDistance distance) {
-        this.tempDistance += distance.getTempDistance();
+    public Distance add(Distance distance) {
+        this.tempDistance += distance.getDistance();
         return this;
     }
 
