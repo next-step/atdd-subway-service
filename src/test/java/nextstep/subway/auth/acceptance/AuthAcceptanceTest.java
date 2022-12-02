@@ -18,6 +18,33 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+/**
+ * Feature: 로그인 기능
+ *
+ *   Background
+ *     Given 회원 등록되어 있음
+ *
+ *   Scenario: 로그인을 시도한다.
+ *     When 로그인 요청
+ *     Then 로그인 됨
+ *
+ *   Scenario: 등록되지 않은 이메일로 로그인을 시도한다.
+ *     When 로그인 요청
+ *     Then 로그인 실패
+ *
+ *   Scenario: 등록되지 않은 비밀번호로 로그인을 시도한다.
+ *     When 로그인 요청
+ *     Then 로그인 실패
+ *
+ *   Scenario: 유효하지 않은 토큰으로 로그인을 시도한다.
+ *     When 로그인 요청
+ *     Then 로그인 실패
+ *
+ *   Scenario: 유효하지 않은 토큰으로 `/members/me` URL 을 요청한다.
+ *     When URL 요청
+ *     Then 페이지 접근 거부
+ *
+ */
 public class AuthAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
