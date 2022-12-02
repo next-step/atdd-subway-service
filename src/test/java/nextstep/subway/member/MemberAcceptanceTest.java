@@ -1,5 +1,9 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -11,15 +15,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-class MemberAcceptanceTest extends AcceptanceTest {
+public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final String NEW_EMAIL = "newemail@email.com";
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
+    private final String INVALID_TOKEN = "invalid_token";
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -45,10 +48,53 @@ class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
-    @DisplayName("나의 정보를 관리한다.")
+    @DisplayName("내 정보 조회")
     @Test
-    void manageMyInfo() {
+    void myInfoWithBearerAuth() {
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
 
+        String accessToken = 로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+
+        ExtractableResponse<Response> response = 내정보_조회_요청(accessToken);
+        내정보_조회_성공(response);
+    }
+
+    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @Test
+    void myInfoWithWrongBearerAuth() {
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
+        로그인_요청(EMAIL, PASSWORD);
+
+        ExtractableResponse<Response> response = 내정보_조회_요청(INVALID_TOKEN);
+        내정보_조회_실패(response);
+    }
+
+    @DisplayName("내 정보 수정")
+    @Test
+    void myInfoUpdateWithBearerAuth() {
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
+        String accessToken = 로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+        내정보_수정_요청(accessToken, new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
+
+        accessToken = 로그인_요청(NEW_EMAIL, NEW_PASSWORD).jsonPath().getString("accessToken");
+        ExtractableResponse<Response> response = 내정보_조회_요청(accessToken);
+        assertAll(
+            () -> assertThat(response.jsonPath().getString("email")).isEqualTo(NEW_EMAIL),
+            () -> assertThat(response.jsonPath().getInt("age")).isEqualTo(NEW_AGE)
+        );
+    }
+
+    @DisplayName("내 정보 삭제")
+    @Test
+    void myInfoDeleteWithBearerAuth() {
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
+        String accessToken = 로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+
+        ExtractableResponse<Response> response = 내정보_삭제_요청(accessToken);
+        내정보_삭제됨(response);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -112,6 +158,49 @@ class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 내정보_조회_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내정보_수정_요청(String accessToken, MemberRequest memberRequest) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내정보_삭제_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 내정보_조회_성공(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 내정보_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static void 내정보_삭제됨(ExtractableResponse<Response> response){
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
