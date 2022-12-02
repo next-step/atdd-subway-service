@@ -110,8 +110,44 @@ Feature: 지하철 경로 관련 기능
     - [x] 존재하지 않은 출발역이나 도착역을 조회 할 경우 
 - [x] 최단 경로 조회 기능 구현하기
 
-## 📝 License
+---
+
+## 🚀 3단계 - 인증을 통한 기능 구현
+#### 요구사항
+- [ ] 토큰 발급 기능(로그인) 인수 테스트 만들기
+  - [x] 인수 조건 작성
+  - [ ] 인수 테스트
+  - [ ] 이메일과 패스워드를 이용하여 요청 시 access token을 응답하는 기능 구현
+  - [ ] 기능 완료
+- [ ] 내 정보 조회 기능
+- [ ] 즐겨 찾기 기능
+
+#### 인수 조건
+```text
+Feature: 로그인 기능
+
+  Background
+    Given 회원 등록되어 있음
+  
+  Scenario: 로그인을 시도한다.
+    When 로그인 요청
+    Then 로그인 됨
+    
+  Scenario: 등록되지 않은 이메일로 로그인을 시도한다.
+    When 로그인 요청
+    Then 로그인 실패
+    
+  Scenario: 등록되지 않은 비밀번호로 로그인을 시도한다.
+    When 로그인 요청
+    Then 로그인 실패
+
+  Scenario: 등록되지 않은 토큰으로 `/members/me` URL 을 요청한다.
+    When URL 요청
+    Then 페이지 접근 거부
+```
 
 --- 
+
+## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
