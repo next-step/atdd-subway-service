@@ -1,4 +1,4 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -8,8 +8,8 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.dto.PathStation;
-import nextstep.subway.path.dto.PathsResponse;
+import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.dto.PathStationResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,10 +31,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 별도호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 이어지지않은역_1;
+    private StationResponse 이어지지않은역_2;
+    private StationResponse 없는역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -47,10 +51,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
-        교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
-        남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(nextstep.subway.station.dto.StationResponse.class);
+        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(nextstep.subway.station.dto.StationResponse.class);
+        교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(nextstep.subway.station.dto.StationResponse.class);
+        남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(nextstep.subway.station.dto.StationResponse.class);
+
+        이어지지않은역_1 = StationAcceptanceTest.지하철역_등록되어_있음("이어지지않은역_1").as(nextstep.subway.station.dto.StationResponse.class);
+        이어지지않은역_2 = StationAcceptanceTest.지하철역_등록되어_있음("이어지지않은역_2").as(nextstep.subway.station.dto.StationResponse.class);
+
+        없는역 = new nextstep.subway.station.dto.StationResponse(999L, "없는역", null, null);
 
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
                 new LineRequest(
@@ -78,6 +87,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
                         5))
                 .as(LineResponse.class);
 
+        별도호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
+                new LineRequest(
+                        "별도호선",
+                        "bg-red-600",
+                        이어지지않은역_1.getId(),
+                        이어지지않은역_2.getId(),
+                        5))
+                .as(LineResponse.class);
+
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
 
@@ -89,14 +107,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_최단_경로_응답됨(response);
-        지하철_최단_경로_결과_비교(response, Arrays.asList(남부터미널역.getId()));
+        지하철_최단_경로_결과_비교(response, Arrays.asList(교대역.getId(), 남부터미널역.getId(), 양재역.getId()), 5);
     }
 
     @Test
     @DisplayName("지하철 최단 경로 조회 - 출발역과 도착역이 같은 경우")
     void getPathsSameSourceAndTarget() {
         // when
-        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(교대역, 교대역);
 
         // then
         지하철_최단_경로_응답_실패됨(response);
@@ -106,7 +124,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 최단 경로 조회 - 출발역과 도착역이 연결이 되어 있지 않은 경우")
     void getPathsNotLinkedSourceAndTarget() {
         // when
-        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(교대역, 이어지지않은역_1);
 
         // then
         지하철_최단_경로_응답_실패됨(response);
@@ -116,13 +134,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 최단 경로 조회 - 존재하지 않은 출발역이나 도착역을 조회 할 경우")
     void getPathsNotFoundSourceAndTarget() {
         // when
-        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(없는역, 양재역);
 
         // then
         지하철_최단_경로_응답_실패됨(response);
     }
 
-    public static ExtractableResponse<Response> 지하철_최단_경로_조회_요청(StationResponse source, StationResponse target) {
+    public static ExtractableResponse<Response> 지하철_최단_경로_조회_요청(nextstep.subway.station.dto.StationResponse source, nextstep.subway.station.dto.StationResponse target) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -133,15 +151,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_최단_경로_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.as(PathsResponse.class)).isNotNull();
+        assertThat(response.as(PathResponse.class)).isNotNull();
     }
 
-    public static void 지하철_최단_경로_결과_비교(ExtractableResponse<Response> response, List<Long> ids) {
-        PathsResponse pathsResponse = response.as(PathsResponse.class);
-        List<Long> pathStationIds = pathsResponse.getStations().stream()
-                .map(PathStation::getId)
+    public static void 지하철_최단_경로_결과_비교(ExtractableResponse<Response> response, List<Long> ids, int distance) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        List<Long> pathStationIds = pathResponse.getStations().stream()
+                .map(PathStationResponse::getId)
                 .collect(Collectors.toList());
         assertThat(pathStationIds.containsAll(ids)).isTrue();
+        assertThat(pathResponse.getDistance()).isEqualTo(distance);
     }
 
     public static void 지하철_최단_경로_응답_실패됨(ExtractableResponse<Response> response) {
