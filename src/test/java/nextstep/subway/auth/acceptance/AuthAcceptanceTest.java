@@ -66,15 +66,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void Bearer_Auth_등록되지_않은_이메일로_로그인_요청시_실페() {
-
+    void Bearer_Auth_등록되지_않은_이메일로_로그인_요청시_실패() {
         ExtractableResponse<Response> response = 로그인_요청(new TokenRequest(UN_REGISTERED_EMAIL, PASSWORD));
 
         로그인_실패(response, ErrorEnum.NOT_EXISTS_EMAIL.message());
     }
 
     @Test
-    void Bearer_Auth_등록되지_않은_비밀번호로_로그인_요청시_실페() {
+    void Bearer_Auth_등록되지_않은_비밀번호로_로그인_요청시_실패() {
         ExtractableResponse<Response> response = 로그인_요청(new TokenRequest(EMAIL, NOT_MATCH_PASSWORD));
 
         로그인_실패(response, ErrorEnum.NOT_MATCH_PASSWORD.message());
