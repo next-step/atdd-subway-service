@@ -160,7 +160,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void 지하철_최단_경로_실패됨(ExtractableResponse<Response> response, String expectedErrorMessage) {
-        String errorMessage = response.body().path("errorMessage").toString();
+        String errorMessage = response.body().path("message").toString();
         assertThat(errorMessage).isEqualTo(expectedErrorMessage);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
