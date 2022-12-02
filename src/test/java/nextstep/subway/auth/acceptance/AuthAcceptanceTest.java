@@ -3,24 +3,13 @@ package nextstep.subway.auth.acceptance;
 import static nextstep.subway.auth.acceptance.AuthTestFixture.로그인_요청_성공함;
 import static nextstep.subway.auth.acceptance.AuthTestFixture.로그인_요청_실패함;
 import static nextstep.subway.auth.acceptance.AuthTestFixture.로그인을_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.member.MemberTestFixture.회원_생성을_요청;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.auth.dto.TokenResponse;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.autoconfigure.web.ServerProperties.Jetty.Accesslog.FORMAT;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
@@ -59,9 +48,5 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         //  When /members/me에 유효하지 않는 요청
         // then 요청 실패함.
     }
-
-
-
-
 
 }
