@@ -75,12 +75,12 @@ public class Sections {
         }
     }
 
-    private boolean isDownStationExisted(Section section) {
-        return getStations().stream().anyMatch(it -> Objects.equals(it, section.getDownStation()));
-    }
-
     private boolean isUpStationExisted(Section section) {
         return getStations().stream().anyMatch(station -> Objects.equals(station, section.getUpStation()));
+    }
+
+    private boolean isDownStationExisted(Section section) {
+        return getStations().stream().anyMatch(it -> Objects.equals(it, section.getDownStation()));
     }
 
     private void addSection(Section section) {
@@ -124,9 +124,9 @@ public class Sections {
                 .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
     }
 
-    private void removeNextSection(Station station) {
-        if (hasNextSection(station)) {
-            this.sections.remove(findNextSection(station).orElseThrow(NoSuchElementException::new));
+    private void validateSize() {
+        if (this.sections.size() <= MINIMUM_SECTIONS_SIZE) {
+            throw new RuntimeException(MINIMUM_SECTIONS_SIZE_EXCEPTION_MESSAGE);
         }
     }
 
@@ -134,6 +134,16 @@ public class Sections {
         if (hasPreviousSection(station)) {
             this.sections.remove(findPreviousSection(station).orElseThrow(NoSuchElementException::new));
         }
+    }
+
+    private void removeNextSection(Station station) {
+        if (hasNextSection(station)) {
+            this.sections.remove(findNextSection(station).orElseThrow(NoSuchElementException::new));
+        }
+    }
+
+    private boolean hasPreviousSection(Station station) {
+        return station != null && findPreviousSection(station).isPresent();
     }
 
     private void mergeSection(Line line, Station station) {
@@ -144,10 +154,20 @@ public class Sections {
         }
     }
 
-    private void validateSize() {
-        if (this.sections.size() <= MINIMUM_SECTIONS_SIZE) {
-            throw new RuntimeException(MINIMUM_SECTIONS_SIZE_EXCEPTION_MESSAGE);
-        }
+    private boolean hasNextSection(Station station) {
+        return station != null && findNextSection(station).isPresent();
+    }
+
+    private Optional<Section> findPreviousSection(Station station) {
+        return this.sections.stream()
+                .filter(it -> it.getDownStation().equals(station))
+                .findFirst();
+    }
+
+    private Optional<Section> findNextSection(Station station) {
+        return this.sections.stream()
+                .filter(it -> it.getUpStation().equals(station))
+                .findFirst();
     }
 
     private List<Station> addStations() {
@@ -160,20 +180,6 @@ public class Sections {
             stations.add(downStation);
         }
         return stations;
-    }
-
-    private boolean hasNextSection(Station station) {
-        return station != null && findNextSection(station).isPresent();
-    }
-
-    private boolean hasPreviousSection(Station station) {
-        return station != null && findPreviousSection(station).isPresent();
-    }
-
-    private Optional<Section> findNextSection(Station station) {
-        return this.sections.stream()
-                .filter(it -> it.getUpStation().equals(station))
-                .findFirst();
     }
 
     private Section findUpStationSection(Station station) {
@@ -190,12 +196,6 @@ public class Sections {
         }
 
         return downStation;
-    }
-
-    private Optional<Section> findPreviousSection(Station station) {
-        return this.sections.stream()
-                .filter(it -> it.getDownStation().equals(station))
-                .findFirst();
     }
 
 }
