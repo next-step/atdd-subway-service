@@ -27,6 +27,10 @@ public class FavoriteResponse {
         return new FavoriteResponse(favorite.getMember(),favorite.getSourceStation(),favorite.getTargetStation());
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public StationResponse getSource() {
         return source;
     }
