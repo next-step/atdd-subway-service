@@ -121,7 +121,35 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_최단_경로_조회_실패됨(response);
     }
 
+    /**
+     * Scenario: 최단 구간을 조회
+     * When 출발역과 같은 도착역으로 최단 거리 조회 요청
+     * Then 최단 경로 조회 실패
+     */
+    @DisplayName("출발역과 같은 도착역을 입력하면 예외가 발생한다.")
+    @Test
+    void findShortestPathInvalidSameStationsException() {
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(수서역.getId(), 수서역.getId());
 
+        //then
+        지하철_최단_경로_조회_실패됨(response);
+    }
+
+    /**
+     * Scenario: 최단 구간을 조회
+     * When 존재하지 않는 역으로 최단 거리 조회 요청
+     * Then 최단 경로 조회 실패
+     */
+    @DisplayName("존재하지 않는 역으로 최단 거리를 조회할 때 예외가 발생한다.")
+    @Test
+    void findShortestPathNotExistsException() {
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(수서역.getId(), 0L);
+
+        //then
+        지하철_최단_경로_조회_실패됨(response);
+    }
 
 
     private ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceStationId, Long targetStationId) {
