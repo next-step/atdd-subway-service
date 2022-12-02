@@ -4,6 +4,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class PathFinder {
 
     public PathFinder(List<Line> lines) {
         validateLines(lines);
-        this.subwayGraph = new SubwayGraph(DefaultWeightedEdge.class, lines);
+        this.subwayGraph = new SubwayGraph(lines);
     }
 
     private void validateLines(List<Line> lines) {
@@ -30,7 +31,9 @@ public class PathFinder {
 
     public List<Station> getShortestPath(Station sourceStation, Station targetStation) {
         vlidateStation(sourceStation, targetStation);
-        return new DijkstraShortestPath<>(subwayGraph).getPath(sourceStation, targetStation)
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(subwayGraph).getPath(sourceStation, targetStation);
+        validateLinkGraph(shortestPath);
+        return shortestPath
                 .getVertexList()
                 .stream()
                 .collect(Collectors.toList());
@@ -39,12 +42,10 @@ public class PathFinder {
     private void vlidateStation(Station sourceStation, Station targetStation) {
         validateEqualStation(sourceStation, targetStation);
         validateExistsStation(sourceStation, targetStation);
-        validateLinkStation(sourceStation, targetStation);
     }
 
-    private void validateLinkStation(Station sourceStation, Station targetStation) {
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(subwayGraph).getPath(sourceStation, targetStation);
-        if (Objects.isNull(shortestPath)) {
+    private void validateLinkGraph(GraphPath<Station, DefaultWeightedEdge> graphPath) {
+        if (Objects.isNull(graphPath)) {
             throw new IllegalArgumentException(NONE_LINK_PATH);
         }
     }
