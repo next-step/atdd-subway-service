@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -30,5 +31,17 @@ public class DijkstraPathFinder implements PathFinder {
             return;
         }
         graph.addVertex(station);
+    }
+
+    @Override
+    public List<Station> findAllStationsByStations(Station source, Station target) {
+        GraphPath<Station, DefaultWeightedEdge> path = getShortestPath(source, target);
+        return path.getVertexList();
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> getShortestPath(Station source, Station target) {
+        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+
+        return path;
     }
 }
