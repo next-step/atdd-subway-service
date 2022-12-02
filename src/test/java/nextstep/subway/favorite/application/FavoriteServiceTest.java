@@ -2,6 +2,7 @@ package nextstep.subway.favorite.application;
 
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.favorite.exception.FavoriteException;
 import nextstep.subway.member.domain.Member;
@@ -10,7 +11,6 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +25,7 @@ import java.util.Optional;
 import static nextstep.subway.Fixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,7 +58,7 @@ public class FavoriteServiceTest {
         학동역 = createStation("학동역", 4l);
         천호역 = createStation("천호역", 5l);
         길동역 = createStation("길동역", 6l);
-        회원 = createMember(14,"test@github.com", "test1023", 25);
+        회원 = createMember(14, "test@github.com", "test1023", 25);
     }
 
     @DisplayName("즐겨찾기 등록시 회원이 없으면 예외발생")
@@ -65,7 +66,7 @@ public class FavoriteServiceTest {
     void returnsExceptionWithNoneMember() {
         when(memberRepository.findById(회원.getId())).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> favoriteService.createFavorite(회원.getId(), 강남역.getId(), 양재역.getId()))
+        Assertions.assertThatThrownBy(() -> favoriteService.createFavorite(회원.getId(), new FavoriteRequest(강남역.getId(), 양재역.getId())))
                 .isInstanceOf(FavoriteException.class)
                 .hasMessageStartingWith("존재하지 않는 회원입니다");
     }
@@ -77,7 +78,7 @@ public class FavoriteServiceTest {
         when(memberRepository.findById(회원.getId())).thenReturn(Optional.of(회원));
         when(stationRepository.findById(강남역.getId())).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> favoriteService.createFavorite(회원.getId(), 강남역.getId(), 양재역.getId()))
+        Assertions.assertThatThrownBy(() -> favoriteService.createFavorite(회원.getId(), new FavoriteRequest(강남역.getId(), 양재역.getId())))
                 .isInstanceOf(FavoriteException.class)
                 .hasMessageStartingWith("존재하지 않는 출발역입니다");
     }
@@ -89,7 +90,7 @@ public class FavoriteServiceTest {
         when(stationRepository.findById(강남역.getId())).thenReturn(Optional.of(강남역));
         when(stationRepository.findById(양재역.getId())).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> favoriteService.createFavorite(회원.getId(), 강남역.getId(), 양재역.getId()))
+        Assertions.assertThatThrownBy(() -> favoriteService.createFavorite(회원.getId(), new FavoriteRequest(강남역.getId(), 양재역.getId())))
                 .isInstanceOf(FavoriteException.class)
                 .hasMessageStartingWith("존재하지 않는 도착역입니다");
     }
@@ -97,11 +98,13 @@ public class FavoriteServiceTest {
     @DisplayName("즐겨찾기 등록시 즐겨찾기 조회")
     @Test
     void returnsFavorite() {
+        즐겨찾기1 = createFavorite(회원, 강남역, 양재역);
         when(memberRepository.findById(회원.getId())).thenReturn(Optional.of(회원));
         when(stationRepository.findById(강남역.getId())).thenReturn(Optional.of(강남역));
         when(stationRepository.findById(양재역.getId())).thenReturn(Optional.of(양재역));
+        when(favoriteRepository.save(any())).thenReturn(즐겨찾기1);
 
-        FavoriteResponse favorite = favoriteService.createFavorite(회원.getId(), 강남역.getId(), 양재역.getId());
+        FavoriteResponse favorite = favoriteService.createFavorite(회원.getId(), new FavoriteRequest(강남역.getId(), 양재역.getId()));
 
         assertAll(() -> assertThat(favorite).isNotNull(),
                 () -> assertThat(favorite.getSource().getName()).isEqualTo(강남역.getName()),
@@ -118,7 +121,7 @@ public class FavoriteServiceTest {
         when(favoriteRepository.findByMemberAndSourceStationAndTargetStation(회원, 강남역, 양재역))
                 .thenReturn(Optional.of(즐겨찾기1));
 
-        Assertions.assertThatThrownBy(() -> favoriteService.createFavorite(회원.getId(), 강남역.getId(), 양재역.getId()))
+        Assertions.assertThatThrownBy(() -> favoriteService.createFavorite(회원.getId(), new FavoriteRequest(강남역.getId(), 양재역.getId())))
                 .isInstanceOf(FavoriteException.class)
                 .hasMessageStartingWith("이미 등록된 역입니다");
     }
@@ -151,7 +154,7 @@ public class FavoriteServiceTest {
         when(memberRepository.findById(회원.getId())).thenReturn(Optional.of(회원));
         when(favoriteRepository.findById(즐겨찾기1.getId())).thenReturn(Optional.empty());
 
-        Assertions.assertThatThrownBy(() -> favoriteService.deleteFavorite(즐겨찾기1.getId(),회원.getId()))
+        Assertions.assertThatThrownBy(() -> favoriteService.deleteFavorite(즐겨찾기1.getId(), 회원.getId()))
                 .isInstanceOf(FavoriteException.class)
                 .hasMessageStartingWith("존재하지 않는 즐겨찾기 입니다");
     }
@@ -160,12 +163,12 @@ public class FavoriteServiceTest {
     @Test
     void returnsExceptionWithDifferMember() {
         즐겨찾기1 = createFavorite(회원, 강남역, 양재역);
-        Member 새로운회원 = createMember(13,"test@test.com","aeeaf234",234);
+        Member 새로운회원 = createMember(13, "test@test.com", "aeeaf234", 234);
 
         when(memberRepository.findById(새로운회원.getId())).thenReturn(Optional.of(새로운회원));
         when(favoriteRepository.findById(즐겨찾기1.getId())).thenReturn(Optional.of(즐겨찾기1));
 
-        Assertions.assertThatThrownBy(() -> favoriteService.deleteFavorite(즐겨찾기1.getId(),새로운회원.getId()))
+        Assertions.assertThatThrownBy(() -> favoriteService.deleteFavorite(즐겨찾기1.getId(), 새로운회원.getId()))
                 .isInstanceOf(FavoriteException.class)
                 .hasMessageStartingWith("등록한사람과 다른사람입니다");
     }
