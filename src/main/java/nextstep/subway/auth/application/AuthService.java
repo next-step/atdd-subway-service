@@ -31,12 +31,10 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
-        }
+        jwtTokenProvider.validateToken(credentials);
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(AuthorizationException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }
