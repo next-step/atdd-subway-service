@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.PathNotFoundException;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -57,13 +58,13 @@ public class DijkstraPathFinder implements PathFinder {
 
     private void checkSameStations(Station source, Station target) {
         if(source.equals(target)) {
-            throw new RuntimeException(INVALID_SAME_STATIONS);
+            throw new PathNotFoundException(INVALID_SAME_STATIONS);
         }
     }
 
     private void checkConnectedPath(GraphPath<Station, DefaultWeightedEdge> path) {
         if (path == null) {
-            throw new RuntimeException(INVALID_CONNECTED_STATIONS);
+            throw new PathNotFoundException(INVALID_CONNECTED_STATIONS);
         }
     }
 }
