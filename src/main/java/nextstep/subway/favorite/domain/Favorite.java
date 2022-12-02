@@ -53,6 +53,12 @@ public class Favorite {
         }
     }
 
+    public void validateSameMember(Member member) {
+        if(this.member == member){
+            throw new RuntimeException("사용자가 일치하지 않습니다.");
+        }
+    }
+
     public Long getId() {
         return id;
     }

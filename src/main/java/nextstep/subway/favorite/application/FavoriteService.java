@@ -32,9 +32,9 @@ public class FavoriteService {
     }
 
     public FavoriteResponse createFavorite(Long loginMemberId, FavoriteRequest favoriteRequest) {
-        Member member = memberRepository.findById(loginMemberId).orElseThrow(RuntimeException::new);
-        Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(RuntimeException::new);
-        Station target = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(loginMemberId).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(() -> new RuntimeException("출발역을 찾을 수 없습니다."));
+        Station target = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(() -> new RuntimeException("도착역을 찾을 수 없습니다."));
         validateAlreadyExist(member, source, target);
         Favorite favorite = favoriteRepository.save(new Favorite(source, target, member));
         return FavoriteResponse.from(favorite);
@@ -49,13 +49,16 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> getFavorites(Long loginMemberId) {
-        List<Favorite> favorites = favoriteRepository.findAllByMember_Id(loginMemberId);
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMemberId);
         return favorites.stream()
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(Long loginMemberId, Long id) {
+        Member member = memberRepository.findById(loginMemberId).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new RuntimeException("즐겨찾기를 찾을 수 없습니다."));
+        favorite.validateSameMember(member);
+        favoriteRepository.delete(favorite);
     }
 }
