@@ -69,8 +69,9 @@ public class Sections {
     }
 
     private void validateNotExist(Section section, List<Station> stations) {
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it.equals(section.getUpStation())) &&
-                stations.stream().noneMatch(it -> it.equals(section.getDownStation()))) {
+        if (!stations.isEmpty()
+                && stations.stream().noneMatch(it -> it.equals(section.getUpStation()))
+                && stations.stream().noneMatch(it -> it.equals(section.getDownStation()))) {
             throw new RuntimeException(NOT_EXIST_EXCEPTION_MESSAGE);
         }
     }
@@ -132,13 +133,15 @@ public class Sections {
 
     private void removePreviousSection(Station station) {
         if (hasPreviousSection(station)) {
-            this.sections.remove(findPreviousSection(station).orElseThrow(NoSuchElementException::new));
+            this.sections.remove(findPreviousSection(station)
+                    .orElseThrow(NoSuchElementException::new));
         }
     }
 
     private void removeNextSection(Station station) {
         if (hasNextSection(station)) {
-            this.sections.remove(findNextSection(station).orElseThrow(NoSuchElementException::new));
+            this.sections.remove(findNextSection(station)
+                    .orElseThrow(NoSuchElementException::new));
         }
     }
 
@@ -148,8 +151,10 @@ public class Sections {
 
     private void mergeSection(Line line, Station station) {
         if (hasPreviousSection(station) && hasNextSection(station)) {
-            Section previousSection = findPreviousSection(station).orElseThrow(NoSuchElementException::new);
-            Section nextSection = findNextSection(station).orElseThrow(NoSuchElementException::new);
+            Section previousSection = findPreviousSection(station)
+                    .orElseThrow(NoSuchElementException::new);
+            Section nextSection = findNextSection(station)
+                    .orElseThrow(NoSuchElementException::new);
             this.sections.add(new Section(line, previousSection.getUpStation(), nextSection.getDownStation(), previousSection.sumDistance(nextSection)));
         }
     }
@@ -192,7 +197,8 @@ public class Sections {
         Station downStation = this.sections.get(0).getUpStation();
 
         while (hasPreviousSection(downStation)) {
-            downStation = findPreviousSection(downStation).orElseThrow(NoSuchElementException::new).getUpStation();
+            downStation = findPreviousSection(downStation)
+                    .orElseThrow(NoSuchElementException::new).getUpStation();
         }
 
         return downStation;
