@@ -158,4 +158,7 @@ public class Sections {
         }
     }
 
+    public List<Section> getList() {
+        return sections;
+    }
 }

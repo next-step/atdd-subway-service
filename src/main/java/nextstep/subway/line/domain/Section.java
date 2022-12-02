@@ -47,7 +47,7 @@ public class Section implements Comparable<Section> {
     }
 
     public boolean equalsUpStation(Section section) {
-        return upStation == section.upStation;
+        return upStation.equals(section.upStation);
     }
 
     public boolean equalsDownStation(Section section) {

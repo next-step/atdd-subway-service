@@ -29,14 +29,10 @@ public class LineTest {
         광교역 = new Station("광교역");
         판교역 = new Station("판교역");
 
-        신분당선 = new Line("신분당선", "빨간색");
+        신분당선 = new Line("신분당선", "빨간색", 강남역, 광교역, 10);
         영역이없는호선 = new Line("영역이없는호선", "노란색");
 
-        상행종점역 = new Section(신분당선, 강남역, 광교역, 10);
-        하행종점역 = new Section(신분당선, 광교역, 판교역, 7);
-
-        신분당선.addSection(상행종점역);
-        신분당선.addSection(하행종점역);
+        신분당선.addStation(광교역, 판교역, 7);
     }
 
     @Test

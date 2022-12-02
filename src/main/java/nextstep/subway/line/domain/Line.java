@@ -41,10 +41,6 @@ public class Line extends BaseEntity {
         this.color = line.color;
     }
 
-    public void addSection(Section section) {
-        sections.add(section);
-    }
-
     public List<Station> getStations() {
         if (sections.isEmpty()) {
             return Arrays.asList();
@@ -76,4 +72,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public Sections getSections() {
+        return sections;
+    }
 }
