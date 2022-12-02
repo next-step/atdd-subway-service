@@ -7,4 +7,6 @@ import java.util.List;
 public interface PathFinder {
 
     List<Station> findAllStationsByStations(Station 양재역, Station 서현역);
+
+    int findShortestDistance(Station 양재역, Station 서현역);
 }
