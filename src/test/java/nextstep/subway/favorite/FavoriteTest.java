@@ -13,9 +13,12 @@ class FavoriteTest {
     private final Station 강남역 = new Station("강남역");
     private final Station 광교역 = new Station("광교역");
     private final String EMAIL = "email@email.com";
+    private final String OTHER_EMAIL = "otherEmail@email.com";
     private final String PASSWORD = "password";
+    private final String OTHER_PASSWORD = "otherPassword";
     private final Integer AGE = 30;
     private final Member 사용자 = new Member(EMAIL, PASSWORD, AGE);
+    private final Member 다른_사용자 = new Member(OTHER_EMAIL, OTHER_PASSWORD, AGE);
 
     @Test
     void 생성() {
@@ -40,5 +43,11 @@ class FavoriteTest {
                         () -> new Favorite(강남역, 광교역, null)
                 ).isInstanceOf(IllegalArgumentException.class)
         );
+    }
+
+    @Test
+    void 삭제_요청에서_사용자_검증() {
+        Favorite favorite = new Favorite(강남역, 광교역, 사용자);
+        assertThatThrownBy(() -> favorite.validateSameMember(다른_사용자)).isInstanceOf(RuntimeException.class);
     }
 }
