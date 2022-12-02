@@ -11,14 +11,16 @@ import java.util.Objects;
 public class PathResponse {
     private final List<Station> stations;
     private final int distance;
+    private final int fare;
 
-    public PathResponse(final List<Station> stations, final int distance) {
+    public PathResponse(List<Station> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = fare;
     }
 
-    public static PathResponse of(List<Station> stations, final int distance) {
-        return new PathResponse(stations, distance);
+    public static PathResponse of(List<Station> stations, final int distance, int fare) {
+        return new PathResponse(stations, distance, fare);
     }
 
     public List<Station> getStations() {
@@ -31,9 +33,10 @@ public class PathResponse {
 
     @Override
     public String toString() {
-        return "ShortestPathResponse{" +
+        return "PathResponse{" +
                 "stations=" + stations +
                 ", distance=" + distance +
+                ", fare=" + fare +
                 '}';
     }
 
@@ -48,5 +51,9 @@ public class PathResponse {
     @Override
     public int hashCode() {
         return Objects.hash(stations, distance);
+    }
+
+    public int getFare() {
+        return fare;
     }
 }
