@@ -37,10 +37,10 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("역이 존재하지 않습니다."));
+        return stationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("역이 존재하지 않습니다.", id));
     }
 
     public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("역이 존재하지 않습니다."));
+        return stationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("역이 존재하지 않습니다.", id));
     }
 }
