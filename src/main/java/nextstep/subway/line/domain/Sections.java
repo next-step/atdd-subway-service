@@ -28,6 +28,8 @@ public class Sections {
         return new Sections(new ArrayList<>());
     }
 
+    public List<Section> getSections() { return sections; }
+
     public void add(Section section) {
         checkUniqueSection(section);
         checkValidSection(section);
@@ -164,6 +166,7 @@ public class Sections {
     public int hashCode() {
         return Objects.hash(sections);
     }
+
 
 
 }
