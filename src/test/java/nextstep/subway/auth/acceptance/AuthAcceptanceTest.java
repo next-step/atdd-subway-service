@@ -60,19 +60,25 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_성공(response);
     }
 
-    private void 로그인_성공(ExtractableResponse<Response> response) {
+    @Test
+    void Bearer_Auth_등록되지_않은_이메일로_로그인_요청시_실페() {
+        final String UN_REGISTERED_EMAIL = "no@gmail.com";
+        ExtractableResponse<Response> response = 로그인_요청(new TokenRequest(UN_REGISTERED_EMAIL, PASSWORD));
+
+        로그인_실패(response);
+    }
+
+    private void 로그인_실패(ExtractableResponse<Response> response) {
+        String errorMessage = response.body().path("errorMessage").toString();
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.as(TokenResponse.class).getAccessToken()).isNotBlank()
+                () -> assertThat(errorMessage).isEqualTo(errorMessage),
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
         );
     }
 
     @Test
-    void Bearer_Auth_등록되지_않은_이메일로_로그인_요청시_실페() {
-    }
-
-    @Test
     void Bearer_Auth_등록되지_않은_비밀번호로_로그인_요청시_실페() {
+        final String NOT_MATCH_PASSWORD = "0000";
     }
 
     @Test
@@ -93,4 +99,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    private void 로그인_성공(ExtractableResponse<Response> response) {
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(TokenResponse.class).getAccessToken()).isNotBlank()
+        );
+    }
 }
