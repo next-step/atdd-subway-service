@@ -28,27 +28,27 @@ class PathFinderTest {
     @Test
     @DisplayName("출발역과 도착역이 같으면 예외가 발생한다.")
     void 출발역과_도착역이_같으면_예외_발생() {
-        PathFinder pathFinder = new PathFinder(Collections.singletonList(new Section(이호선, 교대역, 강남역, 거리_10)));
+        StationGraph stationGraph = new StationGraph(Collections.singletonList(new Section(이호선, 교대역, 강남역, 거리_10)));
 
-        assertThatThrownBy(() -> pathFinder.getShortestPath(강남역, 강남역)).isInstanceOf(RuntimeException.class)
+        assertThatThrownBy(() -> stationGraph.findShortestPath(강남역, 강남역)).isInstanceOf(RuntimeException.class)
                 .hasMessage("경로 조회가 불가능합니다.");
     }
 
     @Test
     @DisplayName("출발역이 그래프에 포함되어 있지 않으면 예외가 발생한다.")
     void 출발역이_그래프에_없으면_예외_발생() {
-        PathFinder pathFinder = new PathFinder(Collections.singletonList(new Section(이호선, 강남역, 역삼역, 거리_10)));
+        StationGraph stationGraph = new StationGraph(Collections.singletonList(new Section(이호선, 강남역, 역삼역, 거리_10)));
 
-        assertThatThrownBy(() -> pathFinder.getShortestPath(교대역, 강남역)).isInstanceOf(RuntimeException.class)
+        assertThatThrownBy(() -> stationGraph.findShortestPath(교대역, 강남역)).isInstanceOf(RuntimeException.class)
                 .hasMessage("역이 그래프에 포함되지 않았습니다.");
     }
 
     @Test
     @DisplayName("도착역이 그래프에 포함되어 있지 않으면 예외가 발생한다.")
     void 도착역이_그래프에_없으면_예외_발생() {
-        PathFinder pathFinder = new PathFinder(Collections.singletonList(new Section(이호선, 교대역, 강남역, 거리_10)));
+        StationGraph stationGraph = new StationGraph(Collections.singletonList(new Section(이호선, 교대역, 강남역, 거리_10)));
 
-        assertThatThrownBy(() -> pathFinder.getShortestPath(강남역, 역삼역)).isInstanceOf(RuntimeException.class)
+        assertThatThrownBy(() -> stationGraph.findShortestPath(강남역, 역삼역)).isInstanceOf(RuntimeException.class)
                 .hasMessage("역이 그래프에 포함되지 않았습니다.");
     }
 
@@ -60,10 +60,10 @@ class PathFinderTest {
         Section 교대역_남부터미널역 = new Section(삼호선, 교대역, 남부터미널역, 거리_5);
         Section 남부터미널역_양재역 = new Section(삼호선, 남부터미널역, 양재역, 거리_5);
 
-        PathFinder pathFinder = new PathFinder(Arrays.asList(
+        StationGraph stationGraph = new StationGraph(Arrays.asList(
                 강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
 
-        assertThat(pathFinder.getShortestPath(양재역, 교대역)).satisfies(path -> {
+        assertThat(stationGraph.findShortestPath(양재역, 교대역)).satisfies(path -> {
             assertThat(path.getStations()).containsExactly(양재역, 남부터미널역, 교대역);
             assertThat(path.getDistance()).isEqualTo(거리_10);
         });
