@@ -146,4 +146,14 @@ public class SectionsTest {
         //then
         assertThat(sections.getStations()).contains(newStation);
     }
+
+    @DisplayName("구간 삭제 테스트")
+    @Test
+    void remove_section_test() {
+        //when
+        sections.removeSectionByStation(station1);
+
+        //then
+        assertThat(sections.getStations()).doesNotContain(station1);
+    }
 }

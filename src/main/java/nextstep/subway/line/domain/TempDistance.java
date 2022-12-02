@@ -28,15 +28,6 @@ public class TempDistance {
         return tempDistance;
     }
 
-    public TempDistance subtract(TempDistance distance) {
-        int newDistance = this.tempDistance - distance.getTempDistance();
-        if (newDistance <= LOWER_LIMIT) {
-            throw new RuntimeException(ErrorMessage.EXCEED_SECTION_DISTANCE.getMessage());
-        }
-        this.tempDistance = newDistance;
-        return this;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,4 +40,19 @@ public class TempDistance {
     public int hashCode() {
         return Objects.hash(tempDistance);
     }
+
+    public TempDistance subtract(TempDistance distance) {
+        int newDistance = this.tempDistance - distance.getTempDistance();
+        if (newDistance <= LOWER_LIMIT) {
+            throw new RuntimeException(ErrorMessage.EXCEED_SECTION_DISTANCE.getMessage());
+        }
+        this.tempDistance = newDistance;
+        return this;
+    }
+
+    public TempDistance add(TempDistance distance) {
+        this.tempDistance += distance.getTempDistance();
+        return this;
+    }
+
 }

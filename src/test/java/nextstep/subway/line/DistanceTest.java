@@ -26,8 +26,13 @@ public class DistanceTest {
     @DisplayName("길이 차감 테스트")
     @Test
     void distance_abstract_test() {
-        assertThat((new TempDistance(10)).subtract(new TempDistance(5)))
-                .isEqualTo(new TempDistance(5));
+        int distance1Value = 10;
+        int distance2Value = 5;
+        TempDistance distance1 = new TempDistance(distance1Value);
+        TempDistance distance2 = new TempDistance(distance2Value);
+
+        assertThat(distance1.subtract(distance2))
+                .isEqualTo(new TempDistance(distance1Value - distance2Value));
     }
 
     @DisplayName("길이 차감 오류 테스트")
@@ -37,5 +42,17 @@ public class DistanceTest {
                 .isInstanceOf(RuntimeException.class);
         assertThatThrownBy(() -> (new TempDistance(10)).subtract(new TempDistance(15)))
                 .isInstanceOf(RuntimeException.class);
+    }
+
+    @DisplayName("길이 추가 테스트")
+    @Test
+    void distance_add_test() {
+        int distance1Value = 10;
+        int distance2Value = 5;
+        TempDistance distance1 = new TempDistance(distance1Value);
+        TempDistance distance2 = new TempDistance(distance2Value);
+
+        assertThat(distance1.add(distance2))
+                .isEqualTo(new TempDistance(distance1Value + distance2Value));
     }
 }
