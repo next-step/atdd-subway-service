@@ -1,5 +1,7 @@
 package nextstep.subway.line.acceptance;
 
+import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
+import static nextstep.subway.station.StationAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
@@ -24,11 +26,11 @@ import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 구간 관련 기능")
 public class LineSectionAcceptanceTest extends AcceptanceTest {
-    private LineResponse 신분당선;
-    private StationResponse 강남역;
-    private StationResponse 양재역;
-    private StationResponse 정자역;
-    private StationResponse 광교역;
+    private Long 신분당선;
+    private Long 강남역;
+    private Long 양재역;
+    private Long 정자역;
+    private Long 광교역;
 
     /**
      * Given 지하철역 등록되어 있음
@@ -40,14 +42,14 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         // given
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
-        정자역 = StationAcceptanceTest.지하철역_등록되어_있음("정자역").as(StationResponse.class);
-        광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
+        강남역 = 지하철역_ID_추출(지하철역_등록되어_있음("강남역"));
+        양재역 = 지하철역_ID_추출(지하철역_등록되어_있음("양재역"));
+        정자역 = 지하철역_ID_추출(지하철역_등록되어_있음("정자역"));
+        광교역 = 지하철역_ID_추출(지하철역_등록되어_있음("광교역"));
 
-        Map<String, String> lineRequest = LineAcceptanceTest.지하철_노선_생성_요청_파라미터("신분당선", "bg-red-600", 강남역.getId(),
-            광교역.getId(), 10);
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+        Map<String, String> lineRequest = LineAcceptanceTest.지하철_노선_생성_요청_파라미터("신분당선", "bg-red-600", 강남역,
+            광교역, 10);
+        신분당선 = 지하철_노선_ID_추출(지하철_노선_등록되어_있음(lineRequest));
     }
 
     /**
@@ -137,15 +139,15 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_순서_정렬됨(지하철_노선_조회_응답, Arrays.asList(강남역, 광교역));
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation,
-        StationResponse downStation, int distance) {
-        SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(Long line, Long upStation,
+        Long downStation, int distance) {
+        SectionRequest sectionRequest = new SectionRequest(upStation, downStation, distance);
 
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(sectionRequest)
-            .when().post("/lines/{lineId}/sections", line.getId())
+            .when().post("/lines/{lineId}/sections", line)
             .then().log().all()
             .extract();
     }
@@ -159,23 +161,19 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response,
-        List<StationResponse> expectedStations) {
+        List<Long> expectedStations) {
         LineResponse line = response.as(LineResponse.class);
         List<Long> stationIds = line.getStations().stream()
             .map(StationResponse::getId)
             .collect(Collectors.toList());
 
-        List<Long> expectedStationIds = expectedStations.stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
-
-        assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+        assertThat(stationIds).containsExactlyElementsOf(expectedStations);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(Long line, Long station) {
         return RestAssured
             .given().log().all()
-            .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
+            .when().delete("/lines/{lineId}/sections?stationId={stationId}", line, station)
             .then().log().all()
             .extract();
     }

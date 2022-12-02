@@ -1,5 +1,7 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
+import static nextstep.subway.station.StationAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,14 +28,14 @@ import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
-    private StationResponse 왕십리;
-    private StationResponse 신당;
-    private StationResponse 행당;
-    private StationResponse 청구;
-    private StationResponse DDP;
+    private Long 왕십리;
+    private Long 신당;
+    private Long 행당;
+    private Long 청구;
+    private Long DDP;
 
-    LineResponse LINE_2;
-    LineResponse LINE_5;
+    private Long LINE_2;
+    private Long LINE_5;
 
     /**
      * Background
@@ -46,11 +48,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         // given
-        왕십리 = StationAcceptanceTest.지하철역_등록되어_있음("왕십리").as(StationResponse.class);
-        신당 = StationAcceptanceTest.지하철역_등록되어_있음("신당").as(StationResponse.class);
-        행당 = StationAcceptanceTest.지하철역_등록되어_있음("행당").as(StationResponse.class);
-        청구 = StationAcceptanceTest.지하철역_등록되어_있음("청구").as(StationResponse.class);
-        DDP = StationAcceptanceTest.지하철역_등록되어_있음("DDP").as(StationResponse.class);
+        왕십리 = 지하철역_ID_추출(지하철역_등록되어_있음("왕십리"));
+        신당 = 지하철역_ID_추출(지하철역_등록되어_있음("신당"));
+        행당 = 지하철역_ID_추출(지하철역_등록되어_있음("행당"));
+        청구 = 지하철역_ID_추출(지하철역_등록되어_있음("청구"));
+        DDP = 지하철역_ID_추출(지하철역_등록되어_있음("DDP"));
 
         LINE_2 = 지하철_노선과_구역_등록되어_있음_2호선();
         LINE_5 = 지하철_노선과_구역_등록되어_있음_5호선();
@@ -85,9 +87,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 최단_경로_조회_출발역_도착역_미연결_실패() {
         // given
-        StationResponse 동대구 = StationAcceptanceTest.지하철역_등록되어_있음("동대구").as(StationResponse.class);
-        StationResponse 서대구 = StationAcceptanceTest.지하철역_등록되어_있음("서대구").as(StationResponse.class);
-        지하철_노선_등록되어_있음_대구(서대구, 동대구, 10);
+        Long 동대구 = 지하철역_등록되어_있음("동대구").jsonPath().getLong("id");
+        Long 서대구 = 지하철역_등록되어_있음("서대구").jsonPath().getLong("id");
+        int distance = 10;
+        지하철_노선_등록되어_있음_대구(서대구, 동대구, distance);
 
         // when
         ExtractableResponse<Response> 미연결_출발역_최단_경로_조회_응답 = 최단_경로_조회_요청(동대구, 왕십리);
@@ -105,7 +108,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 미연결_역간_최단_경로_조회_응답 = 최단_경로_조회_요청(서대구, 동대구);
 
         // then
-        최단_경로_조회_성공(미연결_역간_최단_경로_조회_응답, 10);
+        최단_경로_조회_성공(미연결_역간_최단_경로_조회_응답, distance);
     }
 
     /**
@@ -120,8 +123,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 최단_경로_조회_출발역_도착역_미존재_실패() {
         // given
-        StationResponse 미존재 = Mockito.mock(StationResponse.class);
-        BDDMockito.given(미존재.getId()).willReturn(-1L);
+        Long 미존재 = -1L;
 
         // when
         ExtractableResponse<Response> 미존재_출발역_최단_경로_조회_응답 = 최단_경로_조회_요청(미존재, 왕십리);
@@ -183,10 +185,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse target) {
+    public static ExtractableResponse<Response> 최단_경로_조회_요청(Long source, Long target) {
         Map<String, String> params = new HashMap<>();
-        params.put("source", source.getId().toString());
-        params.put("target", target.getId().toString());
+        params.put("source", source.toString());
+        params.put("target", target.toString());
 
         return RestAssured
             .given().log().all()
@@ -197,52 +199,52 @@ public class PathAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    private LineResponse 지하철_노선_등록되어_있음_대구(StationResponse start, StationResponse end, int distance) {
-        Map<String, String> params = LineAcceptanceTest.지하철_노선_생성_요청_파라미터(
+    private LineResponse 지하철_노선_등록되어_있음_대구(Long start, Long end, int distance) {
+        Map<String, String> params = 지하철_노선_생성_요청_파라미터(
             "대구",
             "bg-blue-600",
-            start.getId(),
-            end.getId(),
+            start,
+            end,
             distance
         );
-        return LineAcceptanceTest.지하철_노선_등록되어_있음(params).as(LineResponse.class);
+        return 지하철_노선_등록되어_있음(params).as(LineResponse.class);
     }
 
-    private LineResponse 지하철_노선과_구역_등록되어_있음_2호선() {
-        Map<String, String> params = LineAcceptanceTest.지하철_노선_생성_요청_파라미터(
+    private Long 지하철_노선과_구역_등록되어_있음_2호선() {
+        Map<String, String> params = 지하철_노선_생성_요청_파라미터(
             "2호선",
             "bg-green-600",
-            왕십리.getId(),
-            DDP.getId(),
+            왕십리,
+            DDP,
             20
         );
-        LineResponse LINE_2 = LineAcceptanceTest.지하철_노선_등록되어_있음(params).as(LineResponse.class);
+        Long LINE_2 = 지하철_노선_ID_추출(지하철_노선_등록되어_있음(params));
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(LINE_2, 왕십리, 신당, 10);
         return LINE_2;
     }
 
-    private LineResponse 지하철_노선과_구역_등록되어_있음_5호선() {
-        Map<String, String> params = LineAcceptanceTest.지하철_노선_생성_요청_파라미터(
+    private Long 지하철_노선과_구역_등록되어_있음_5호선() {
+        Map<String, String> params = 지하철_노선_생성_요청_파라미터(
             "5호선",
             "bg-pupple-600",
-            왕십리.getId(),
-            DDP.getId(),
+            왕십리,
+            DDP,
             30
         );
-        LineResponse LINE_5 = LineAcceptanceTest.지하철_노선_등록되어_있음(params).as(LineResponse.class);
+        Long LINE_5 = 지하철_노선_ID_추출(지하철_노선_등록되어_있음(params));
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(LINE_5, 왕십리, 행당, 10);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(LINE_5, 행당, 청구, 10);
         return LINE_5;
     }
 
-    private LineResponse 지름길_노선_개통(StationResponse start, StationResponse end, int distance) {
-        Map<String, String> params = LineAcceptanceTest.지하철_노선_생성_요청_파라미터(
+    private LineResponse 지름길_노선_개통(Long start, Long end, int distance) {
+        Map<String, String> params = 지하철_노선_생성_요청_파라미터(
             "지름길노선",
             "bg-red-600",
-            start.getId(),
-            end.getId(),
+            start,
+            end,
             distance
         );
-        return LineAcceptanceTest.지하철_노선_등록되어_있음(params).as(LineResponse.class);
+        return 지하철_노선_등록되어_있음(params).as(LineResponse.class);
     }
 }
