@@ -1,11 +1,14 @@
 package nextstep.subway.line.unit;
 
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,8 +20,7 @@ public class SectionsTest {
     private Station 판교역;
     private Station 역삼역;
     private Station 없는역;
-    private Section 강남_광교_구간;
-    private Section 광교_판교_구간;
+    private Line 신분당선;
     private Section 판교_역삼_구간;
     private Sections 구간들;
 
@@ -30,13 +32,12 @@ public class SectionsTest {
         역삼역 = new Station("역삼역");
         없는역 = new Station("없는역");
 
-        강남_광교_구간 = new Section(null, 강남역, 광교역, 10);
-        광교_판교_구간 = new Section(null, 광교역, 판교역, 10);
+        신분당선 = new Line("신분당선", "빨간색", 강남역, 판교역, 10);
+        신분당선.addStation(광교역, 판교역, 5);
+
         판교_역삼_구간 = new Section(null, 판교역, 역삼역, 10);
 
-        구간들 = new Sections();
-        구간들.add(강남_광교_구간);
-        구간들.add(광교_판교_구간);
+        구간들 = 신분당선.getSections();
     }
 
     @Test
@@ -49,7 +50,7 @@ public class SectionsTest {
     @Test
     @DisplayName("구간 삭제")
     void remove() {
-        구간들.remove(광교_판교_구간);
+        구간들.remove(구간들.getList().get(0));
         assertThat(구간들.size()).isEqualTo(1);
     }
 
@@ -65,6 +66,17 @@ public class SectionsTest {
     void getDownLineStation() {
         assertThat(구간들.getDownLineStation(광교역)).isPresent();
         assertThat(구간들.getDownLineStation(없는역)).isEmpty();
+    }
+
+    @Test
+    @DisplayName("구간 내 지하철역 정렬")
+    void getStations() {
+        구간들.add(판교_역삼_구간);
+        List<Station> stations = 구간들.getStations();
+        assertThat(stations.get(0)).isEqualTo(강남역);
+        assertThat(stations.get(1)).isEqualTo(광교역);
+        assertThat(stations.get(2)).isEqualTo(판교역);
+        assertThat(stations.get(3)).isEqualTo(역삼역);
     }
 
 }
