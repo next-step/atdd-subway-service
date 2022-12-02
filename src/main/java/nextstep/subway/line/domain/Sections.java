@@ -31,10 +31,9 @@ public class Sections {
         Station requestUpStation = section.getUpStation();
         Station requestDownStation = section.getDownStation();
 
-        List<Station> stations = getStations();
         checkValidSection(requestUpStation, requestDownStation);
 
-        if (stations.isEmpty()) {
+        if (getStations().isEmpty()) {
             this.sections.add(section);
             return;
         }
@@ -61,7 +60,6 @@ public class Sections {
     }
 
     public void checkValidSection(Station requestUpStation, Station requestDownStation) {
-        List<Station> stations = getStations();
         boolean isUpStationExisted = isStationExisted(requestUpStation);
         boolean isDownStationExisted = isStationExisted(requestDownStation);
 
@@ -69,7 +67,7 @@ public class Sections {
             throw new RuntimeException(ErrorMessage.ALREADY_EXIST_SECTION.getMessage());
         }
 
-        if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+        if (!getStations().isEmpty() && !isUpStationExisted && !isDownStationExisted) {
             throw new RuntimeException(ErrorMessage.NO_EXIST_STATIONS_TO_REGISTER.getMessage());
         }
     }

@@ -10,14 +10,14 @@ public class Distance {
 
     private static int LOWER_LIMIT = 0;
 
-    private int tempDistance;
+    private int distance;
 
     public Distance(int distance) {
         if(distance <= LOWER_LIMIT) {
             throw new RuntimeException(
                     ErrorMessage.INVALID_DISTANCE_VALUE.setLimitValueAndGetMessage(String.valueOf(LOWER_LIMIT)));
         }
-        this.tempDistance = distance;
+        this.distance = distance;
     }
 
     protected Distance() {
@@ -25,7 +25,7 @@ public class Distance {
     }
 
     public int getDistance() {
-        return tempDistance;
+        return distance;
     }
 
     @Override
@@ -33,25 +33,25 @@ public class Distance {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Distance that = (Distance) o;
-        return tempDistance == that.tempDistance;
+        return distance == that.distance;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tempDistance);
+        return Objects.hash(distance);
     }
 
     public Distance subtract(Distance distance) {
-        int newDistance = this.tempDistance - distance.getDistance();
+        int newDistance = this.distance - distance.getDistance();
         if (newDistance <= LOWER_LIMIT) {
             throw new RuntimeException(ErrorMessage.EXCEED_SECTION_DISTANCE.getMessage());
         }
-        this.tempDistance = newDistance;
+        this.distance = newDistance;
         return this;
     }
 
     public Distance add(Distance distance) {
-        this.tempDistance += distance.getDistance();
+        this.distance += distance.getDistance();
         return this;
     }
 
