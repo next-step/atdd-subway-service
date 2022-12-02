@@ -35,6 +35,7 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+        this.tempDistance = new TempDistance(distance);
     }
 
     public Section(Line line, Station upStation, Station downStation, TempDistance tempDistance) {
@@ -42,6 +43,7 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.tempDistance = tempDistance;
+        this.distance = tempDistance.getTempDistance();
     }
 
     public Long getId() {
@@ -64,19 +66,29 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+    public void updateUpStation(Station station, TempDistance newDistance) {
         this.upStation = station;
-        this.distance -= newDistance;
+        this.tempDistance.subtract(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+    public void updateDownStation(Station station, TempDistance newDistance) {
         this.downStation = station;
-        this.distance -= newDistance;
+        this.tempDistance.subtract(newDistance);
+    }
+
+    public TempDistance getTempDistance() {
+        return tempDistance;
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "id=" + id +
+                ", line=" + line +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                ", tempDistance=" + tempDistance +
+                '}';
     }
 }
