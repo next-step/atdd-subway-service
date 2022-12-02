@@ -7,6 +7,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
@@ -48,6 +51,10 @@ public class Line extends BaseEntity {
 
     public void removeStation(Station station) {
         sections.removeStation(station);
+    }
+
+    public void addVertexAndEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        sections.addVertexAndEdge(graph);
     }
 
     public Long getId() {

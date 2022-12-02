@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -105,6 +108,10 @@ public class Section {
 
     public boolean hasDistance(Distance distance) {
         return this.distance.equals(distance);
+    }
+
+    public void addEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        graph.setEdgeWeight(graph.addEdge(upStation, downStation), distance.value());
     }
 
     public Long getId() {

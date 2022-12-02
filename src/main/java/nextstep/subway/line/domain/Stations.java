@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+
 import nextstep.subway.station.domain.Station;
 
 public class Stations {
@@ -32,6 +35,10 @@ public class Stations {
 
     public boolean isEmpty() {
         return stations.isEmpty();
+    }
+
+    public void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        stations.forEach(graph::addVertex);
     }
 
     public List<Station> getList() {

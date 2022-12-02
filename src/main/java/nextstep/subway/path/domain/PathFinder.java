@@ -9,7 +9,6 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Lines;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Stations;
 import nextstep.subway.station.domain.Station;
 
@@ -18,18 +17,7 @@ public class PathFinder {
 
     public PathFinder(Lines lines) {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        lines.getList().forEach(line -> line.getSections().toStations().getList().forEach(graph::addVertex));
-        lines.getList().forEach(line -> line.getSections().getList().forEach(this::addEdgeWeight));
-    }
-
-    private void addEdgeWeight(Section section) {
-        graph.setEdgeWeight(
-            graph.addEdge(
-                section.getUpStation(),
-                section.getDownStation()
-            ),
-            section.getDistanceValue()
-        );
+        lines.addVertexAndEdge(graph);
     }
 
     public Path findPath(Station source, Station target) {
