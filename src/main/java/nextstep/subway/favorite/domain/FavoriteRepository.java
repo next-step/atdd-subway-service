@@ -7,7 +7,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
-    List<Favorite> findAllByMember_Id(Long loginMemberId);
+    List<Favorite> findAllByMemberId(Long loginMemberId);
 
     Optional<Favorite> findBySourceAndTargetAndMember(Station source, Station target, Member member);
 }
