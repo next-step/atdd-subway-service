@@ -41,7 +41,7 @@ public class JwtTokenProvider {
     }
 
     private void validExpirationDate(Jws<Claims> claims) {
-        if (!claims.getBody().getExpiration().before(new Date())) {
+        if (claims.getBody().getExpiration().before(new Date())) {
             throw new AuthorizationException();
         }
     }
