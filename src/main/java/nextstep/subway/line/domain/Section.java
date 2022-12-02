@@ -68,27 +68,16 @@ public class Section {
 
     public void updateUpStation(Station station, TempDistance newDistance) {
         this.upStation = station;
-        this.tempDistance.subtract(newDistance);
+        this.tempDistance = this.tempDistance.subtract(newDistance);
     }
 
     public void updateDownStation(Station station, TempDistance newDistance) {
         this.downStation = station;
-        this.tempDistance.subtract(newDistance);
+        this.tempDistance = this.tempDistance.subtract(newDistance);
     }
 
     public TempDistance getTempDistance() {
         return tempDistance;
     }
 
-    @Override
-    public String toString() {
-        return "Section{" +
-                "id=" + id +
-                ", line=" + line +
-                ", upStation=" + upStation +
-                ", downStation=" + downStation +
-                ", distance=" + distance +
-                ", tempDistance=" + tempDistance +
-                '}';
-    }
 }

@@ -7,7 +7,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Embeddable
@@ -35,9 +34,8 @@ public class Sections {
         List<Station> stations = getStations();
         checkValidSection(requestUpStation, requestDownStation);
 
-        this.sections.add(section);
-
         if (stations.isEmpty()) {
+            this.sections.add(section);
             return;
         }
 
@@ -45,7 +43,8 @@ public class Sections {
             sections.stream()
                     .filter(it -> it.getUpStation() == requestUpStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateUpStation(requestDownStation, new TempDistance(section.getDistance())));
+                    .ifPresent(it -> it.updateUpStation(requestDownStation, section.getTempDistance()));
+            this.sections.add(section);
             return;
         }
 
@@ -53,14 +52,15 @@ public class Sections {
             sections.stream()
                     .filter(it -> it.getDownStation() == requestDownStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateDownStation(requestUpStation, new TempDistance(section.getDistance())));
+                    .ifPresent(it -> it.updateDownStation(requestUpStation, section.getTempDistance()));
+            this.sections.add(section);
             return;
         }
 
         throw new RuntimeException();
     }
 
-    private void checkValidSection(Station requestUpStation, Station requestDownStation) {
+    public void checkValidSection(Station requestUpStation, Station requestDownStation) {
         List<Station> stations = getStations();
         boolean isUpStationExisted = isStationExisted(requestUpStation);
         boolean isDownStationExisted = isStationExisted(requestDownStation);
@@ -74,7 +74,7 @@ public class Sections {
         }
     }
 
-    private List<Station> getStations() {
+    public List<Station> getStations() {
         if (sections.isEmpty()) {
             return Arrays.asList();
         }
@@ -98,7 +98,7 @@ public class Sections {
         return stations;
     }
 
-    private Station findUpStation() {
+    public Station findUpStation() {
         List<Station> upStations = sections.stream().map(Section::getUpStation).collect(Collectors.toList());
         List<Station> downStations = sections.stream().map(Section::getDownStation).collect(Collectors.toList());
         for(Station downStation : downStations) {
@@ -107,7 +107,7 @@ public class Sections {
         return upStations.get(0);
     }
 
-    private boolean isStationExisted(Station station) {
+    public boolean isStationExisted(Station station) {
         return getStations().contains(station);
     }
 }
