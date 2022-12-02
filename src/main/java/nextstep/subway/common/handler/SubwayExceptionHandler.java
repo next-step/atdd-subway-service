@@ -1,5 +1,6 @@
 package nextstep.subway.common.handler;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,4 +17,10 @@ public class SubwayExceptionHandler {
                 .body(e.getMessage());
     }
 
+    @ExceptionHandler({AuthorizationException.class})
+    public ResponseEntity handleAuthorizationException(Exception e) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(e.getMessage());
+    }
 }
