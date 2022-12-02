@@ -61,3 +61,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ## Step2 - 경로 조회 기능
 - 최단 경로 조회 인수 테스트 작성
 - 최단 경로 조회 기능 구현
+
+## Step3 - 인증을 통한 기능 구현
+- 토큰 발급 기능(로그인) 인수 테스트 작성
+- 인증 - 내 정보 조회 기능 구현
+- 인증 - 즐겨 찾기 기능 구현
