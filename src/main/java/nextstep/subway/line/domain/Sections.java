@@ -35,7 +35,7 @@ public class Sections {
 
     private void checkUniqueSection(Section newSection) {
         if (this.sections.contains(newSection) || sections.stream().anyMatch(it -> newSection.isSameSection(it))) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new RuntimeException(DUPLICATED_SECTION);
         }
     }
 
@@ -44,7 +44,7 @@ public class Sections {
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> section.isUpStation(it)) &&
                 stations.stream().noneMatch(it -> section.isDownStation(it))) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new RuntimeException(INVALID_SECTION);
         }
     }
 
@@ -119,7 +119,7 @@ public class Sections {
                 .findFirst()
                 .map(Section::getDownStation);
     }
-    
+
 
     public void remove(Station station) {
         validSectionSize();
