@@ -17,7 +17,6 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +56,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //And 지하철 노선에 지하철역 등록되어 있음
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
         //And 회원 등록되어 있음
-        회원_생성을_요청(EMAIL, PASSWORD, AGE).as(MemberResponse.class);
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
         //And 로그인 되어있음
         token = 로그인을_요청(EMAIL, PASSWORD).as(TokenResponse.class);
     }

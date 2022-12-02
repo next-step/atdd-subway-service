@@ -13,6 +13,7 @@ public class FavoriteTestFixture {
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(TokenResponse token) {
         return RestAssured
                 .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(token)
                 .auth().oauth2(token.getAccessToken())
                 .when().post("/favorites")
