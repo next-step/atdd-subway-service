@@ -15,6 +15,7 @@ import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -97,10 +98,30 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역 사이의 최단 경로를 조회한다.")
     @Test
     void findShortestPath() {
+        // when
         ExtractableResponse<Response> response = 최단_경로_조회_요청(양재역.getId(), 서현역.getId());
 
+        // then
         지하철_최단_경로_조회됨(response, 10);
     }
+
+
+    /**
+     * Scenario: 최단 구간을 조회
+     * When 열결되지 않은 출발역과 도착역으로 최단 거리 조회 요청
+     * Then 최단 경로 조회 실패
+     */
+    @DisplayName("연결되지 않은 역의 최단 거리를 조회할 때 예외가 발생한다.")
+    @Test
+    void findShortestPathNotConnectedException() {
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(수서역.getId(), 잠실역.getId());
+
+        //then
+        지하철_최단_경로_조회_실패됨(response);
+    }
+
+
 
 
     private ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceStationId, Long targetStationId) {
@@ -126,6 +147,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(distance),
                 () -> assertThat(stationNames).containsExactly("양재역", "수서역", "서현역")
         );
+    }
+
+    private void 지하철_최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 }
