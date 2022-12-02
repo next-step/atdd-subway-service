@@ -2,7 +2,11 @@ package nextstep.subway.auth.acceptance;
 
 import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
+import static nextstep.subway.member.MemberAcceptanceTest.NOT_MATCH_PASSWORD;
 import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
+import static nextstep.subway.member.MemberAcceptanceTest.UN_REGISTERED_EMAIL;
+import static nextstep.subway.member.MemberAcceptanceTest.내_정보_조회_실패;
+import static nextstep.subway.member.MemberAcceptanceTest.내_정보_조회_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -63,7 +67,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     @Test
     void Bearer_Auth_등록되지_않은_이메일로_로그인_요청시_실페() {
-        final String UN_REGISTERED_EMAIL = "no@gmail.com";
+
         ExtractableResponse<Response> response = 로그인_요청(new TokenRequest(UN_REGISTERED_EMAIL, PASSWORD));
 
         로그인_실패(response, ErrorEnum.NOT_EXISTS_EMAIL.message());
@@ -71,7 +75,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     @Test
     void Bearer_Auth_등록되지_않은_비밀번호로_로그인_요청시_실페() {
-        final String NOT_MATCH_PASSWORD = "0000";
         ExtractableResponse<Response> response = 로그인_요청(new TokenRequest(EMAIL, NOT_MATCH_PASSWORD));
 
         로그인_실패(response, ErrorEnum.NOT_MATCH_PASSWORD.message());
@@ -79,6 +82,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     @Test
     void Bearer_Auth_유효하지_않은_토큰으로_로그인_요청시_실패() {
+        ExtractableResponse<Response> response = 내_정보_조회_요청("invalidToken");
+
+        내_정보_조회_실패(response, ErrorEnum.INVALID_TOKEN.message());
     }
 
     @Test

@@ -12,7 +12,8 @@ public enum ErrorEnum {
     LAST_STATION_NOT_DELETE("마지막 구간은 삭제할 수 없습니다."),
     NOT_EXISTS_NOT_DELETE("마지막 구간은 삭제할 수 없습니다."),
     NOT_EXISTS_EMAIL("로그인 실패! 등록되지 않은 이메일입니다."),
-    NOT_MATCH_PASSWORD("로그인 실패! 비밀번호가 일치하지 않습니다.");
+    NOT_MATCH_PASSWORD("로그인 실패! 비밀번호가 일치하지 않습니다."),
+    INVALID_TOKEN("유효하지 않은 토큰입니다.");
 
     private final String message;
 
