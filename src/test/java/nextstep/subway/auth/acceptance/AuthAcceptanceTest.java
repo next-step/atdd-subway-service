@@ -1,8 +1,5 @@
 package nextstep.subway.auth.acceptance;
 
-import static nextstep.subway.member.MemberAcceptanceTest.내정보_조회_성공;
-import static nextstep.subway.member.MemberAcceptanceTest.내정보_조회_실패;
-import static nextstep.subway.member.MemberAcceptanceTest.내정보_조회_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -85,6 +82,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 로그인_성공됨(ExtractableResponse<Response> response) {
+        assertThat(response.jsonPath().getString("accessToken")).isNotNull();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
