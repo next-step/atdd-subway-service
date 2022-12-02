@@ -4,12 +4,15 @@ import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요�
 import static nextstep.subway.member.MemberAcceptanceTest.내정보_조회_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -56,6 +59,21 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(response);
     }
 
+    @DisplayName("즐겨찾기를 조회한다.")
+    @Test
+    void getFavorites() {
+        즐겨찾기_생성_요청(TOKEN, new FavoriteRequest(강남역.getId(), 광교역.getId()));
+
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(TOKEN);
+
+        List<FavoriteResponse> favorites = response.jsonPath().getList(".", FavoriteResponse.class);
+        assertAll(
+                () -> assertThat(favorites.get(0).getId()).isEqualTo(1L),
+                () -> assertThat(favorites.get(0).getSource().getName()).isEqualTo(강남역.getName()),
+                () -> assertThat(favorites.get(0).getTarget().getName()).isEqualTo(광교역.getName())
+        );
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, FavoriteRequest favoriteRequest) {
         return RestAssured
                 .given().log().all()
@@ -63,6 +81,16 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(favoriteRequest)
                 .when().post("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
                 .then().log().all()
                 .extract();
     }
