@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import nextstep.subway.station.domain.Station;
@@ -85,8 +86,10 @@ class SectionsTest {
 
         sections.addSection(new Section(null, 모란, 서현, 1));
 
-        assertThat(sections.getStations()).containsExactly(모란, 서현);
-        assertThat(sections.getSections()).hasSize(1);
+        assertAll(
+                () -> assertThat(sections.getStations()).containsExactly(모란, 서현),
+                () -> assertThat(sections.getSections()).hasSize(1)
+        );
     }
 
     @Test
@@ -95,8 +98,10 @@ class SectionsTest {
 
         sections.addSection(new Section(null, 강남, 서현, 1));
 
-        assertThat(sections.getStations()).containsExactly(강남, 서현, 판교);
-        assertThat(sections.getSections()).hasSize(2);
+        assertAll(
+                () -> assertThat(sections.getStations()).containsExactly(강남, 서현, 판교),
+                () -> assertThat(sections.getSections()).hasSize(2)
+        );
     }
 
     @Test
@@ -105,8 +110,10 @@ class SectionsTest {
 
         sections.addSection(new Section(null, 서현, 판교, 1));
 
-        assertThat(sections.getStations()).containsExactly(강남, 서현, 판교);
-        assertThat(sections.getSections()).hasSize(2);
+        assertAll(
+                () -> assertThat(sections.getStations()).containsExactly(강남, 서현, 판교),
+                () -> assertThat(sections.getSections()).hasSize(2)
+        );
     }
 
     @Test
@@ -125,8 +132,10 @@ class SectionsTest {
 
         sections.removeSection(null, 서현);
 
-        assertThat(sections.getStations()).containsExactly(강남, 판교);
-        assertThat(sections.getSections()).hasSize(1);
+        assertAll(
+                () -> assertThat(sections.getStations()).containsExactly(강남, 판교),
+                () -> assertThat(sections.getSections()).hasSize(1)
+        );
     }
 
     @Test
@@ -136,7 +145,9 @@ class SectionsTest {
 
         sections.removeSection(null, 판교);
 
-        assertThat(sections.getStations()).containsExactly(강남, 서현);
-        assertThat(sections.getSections()).hasSize(1);
+        assertAll(
+                () -> assertThat(sections.getStations()).containsExactly(강남, 서현),
+                () -> assertThat(sections.getSections()).hasSize(1)
+        );
     }
 }

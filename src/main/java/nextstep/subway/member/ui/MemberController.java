@@ -1,15 +1,21 @@
 package nextstep.subway.member.ui;
 
-import nextstep.subway.auth.domain.LoginMember;
+import java.net.URI;
+import javax.persistence.EntityNotFoundException;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class MemberController {
@@ -22,42 +28,63 @@ public class MemberController {
     @PostMapping("/members")
     public ResponseEntity createMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createMember(request);
-        return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
+
+        return ResponseEntity.created(URI.create("/members/" + member.getId()))
+                .build();
     }
 
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
-        MemberResponse member = memberService.findMember(id);
-        return ResponseEntity.ok().body(member);
+        MemberResponse member = memberService.findMemberResponse(id);
+
+        return ResponseEntity.ok()
+                .body(member);
     }
 
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
-        return ResponseEntity.ok().build();
+
+        return ResponseEntity.ok()
+                .build();
     }
 
     @DeleteMapping("/members/{id}")
     public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
-        return ResponseEntity.noContent().build();
+
+        return ResponseEntity.noContent()
+                .build();
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(LoginMember loginMember) {
-        MemberResponse member = memberService.findMember(loginMember.getId());
-        return ResponseEntity.ok().body(member);
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        MemberResponse member = memberService.findMemberResponse(loginMember.getId());
+
+        return ResponseEntity.ok()
+                .body(member);
     }
 
-    @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(LoginMember loginMember, @RequestBody MemberRequest param) {
+    @PutMapping(value = "/members/me")
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
+                                                             @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember.getId(), param);
-        return ResponseEntity.ok().build();
+
+        return ResponseEntity.ok()
+                .build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(LoginMember loginMember) {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getId());
-        return ResponseEntity.noContent().build();
+
+        return ResponseEntity.noContent()
+                .build();
+    }
+
+    @ExceptionHandler(value = {IllegalArgumentException.class, EntityNotFoundException.class})
+    public ResponseEntity handleIllegalArgsException(Exception e) {
+        return ResponseEntity.badRequest()
+                .build();
     }
 }

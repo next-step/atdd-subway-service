@@ -1,6 +1,7 @@
 package nextstep.subway.path.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -22,10 +23,12 @@ public class PathAcceptanceTestActions {
 
     public static void 최단_경로가_조회됨(ExtractableResponse<Response> response, int distance,
                                   StationResponse... stationResponses) {
-        assertThat(response.jsonPath().getInt("distance")).isEqualTo(distance);
-        assertThat(response.jsonPath().getList("stations.name", String.class))
-                .containsExactly(stationResponses[0].getName(), stationResponses[1].getName(),
-                        stationResponses[2].getName());
+        assertAll(
+                () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(distance),
+                () -> assertThat(response.jsonPath().getList("stations.name", String.class))
+                        .containsExactly(stationResponses[0].getName(), stationResponses[1].getName(),
+                                stationResponses[2].getName())
+        );
     }
 
     public static void 조회_불가능(ExtractableResponse<Response> response) {
