@@ -2,7 +2,6 @@ package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.line.dto.PathResponse;
@@ -32,7 +31,7 @@ public class PathGraphTest {
         line.addSection(station2, station3, 10);
 
         // when
-        PathResponse pathResponse = pathGraph.findPath(station1.getId(), station3.getId(), Arrays.asList(line));
+        PathResponse pathResponse = pathGraph.findPath(station1, station3, line.getSections());
         List<String> list = pathResponse.getStations().stream()
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
