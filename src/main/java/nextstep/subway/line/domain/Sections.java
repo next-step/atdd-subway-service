@@ -28,7 +28,7 @@ public class Sections {
         return new Sections(new ArrayList<>());
     }
 
-    public List<Section> getSections() { return sections; }
+    public List<Section> getSections() { return Collections.unmodifiableList(sections); }
 
     public void add(Section section) {
         checkUniqueSection(section);

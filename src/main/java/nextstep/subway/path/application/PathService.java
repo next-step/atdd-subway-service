@@ -2,6 +2,8 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.DijkstraPathFinder;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -31,6 +33,8 @@ public class PathService {
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
         List<Section> sections = findAllSections();
+
+        PathFinder pathFinder = DijkstraPathFinder.from(sections);
 
         return null;
     }
