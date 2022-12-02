@@ -8,6 +8,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static nextstep.subway.utils.Message.DUPLICATED_SECTION;
+import static nextstep.subway.utils.Message.INVALID_SECTION;
+
 @Embeddable
 public class Sections {
 
