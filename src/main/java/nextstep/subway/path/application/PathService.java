@@ -35,8 +35,10 @@ public class PathService {
         List<Section> sections = findAllSections();
 
         PathFinder pathFinder = DijkstraPathFinder.from(sections);
+        List<Station> stations = pathFinder.findAllStationsByStations(sourceStation, targetStation);
+        int distance = pathFinder.findShortestDistance(sourceStation, targetStation);
 
-        return null;
+        return PathResponse.of(stations, distance);
     }
 
     private List<Section> findAllSections() {
