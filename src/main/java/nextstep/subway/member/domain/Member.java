@@ -2,12 +2,15 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.favorite.domain.Favorite;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import static nextstep.subway.exception.ErrorMessage.LOGIN_INVALID_PASSWORD;
 
 @Entity
 public class Member extends BaseEntity {
@@ -35,7 +38,7 @@ public class Member extends BaseEntity {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException(LOGIN_INVALID_PASSWORD);
         }
     }
 
@@ -54,4 +57,5 @@ public class Member extends BaseEntity {
     public Integer getAge() {
         return age;
     }
+
 }

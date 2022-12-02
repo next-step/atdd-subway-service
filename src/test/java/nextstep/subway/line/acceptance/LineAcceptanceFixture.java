@@ -20,8 +20,7 @@ public class LineAcceptanceFixture {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
-        return RestAssured
-                .given().log().all()
+        return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/lines")
@@ -40,8 +39,7 @@ public class LineAcceptanceFixture {
     }
 
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String uri) {
-        return RestAssured
-                .given().log().all()
+        return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(uri)
                 .then().log().all()
@@ -49,8 +47,7 @@ public class LineAcceptanceFixture {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response) {
-        return RestAssured
-                .given().log().all()
+        return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines/{lineId}", response.getId())
                 .then().log().all()
@@ -60,8 +57,7 @@ public class LineAcceptanceFixture {
     public static ExtractableResponse<Response> 지하철_노선_수정_요청(ExtractableResponse<Response> response, LineRequest params) {
         String uri = response.header("Location");
 
-        return RestAssured
-                .given().log().all()
+        return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().put(uri)
@@ -72,8 +68,7 @@ public class LineAcceptanceFixture {
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
-        return RestAssured
-                .given().log().all()
+        return RestAssured.given().log().all()
                 .when().delete(uri)
                 .then().log().all()
                 .extract();

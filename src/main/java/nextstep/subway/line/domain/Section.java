@@ -60,12 +60,12 @@ public class Section {
     }
 
     public void connectUpStationToDownStation(Section addSection) {
-        distance.minus(addSection.getDistance().value());
+        distance.minus(addSection.getDistance());
         this.upStation = addSection.downStation;
     }
 
     public void connectDownStationToUpStation(Section addSection) {
-        distance.minus(addSection.getDistance().value());
+        distance.minus(addSection.getDistance());
         this.downStation = addSection.upStation;
     }
 
