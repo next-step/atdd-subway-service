@@ -20,6 +20,10 @@ public class AuthTestFixture {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 
+    public static void 인증_실패함(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
+
     public static ExtractableResponse<Response> 로그인을_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
         return RestAssured
