@@ -19,6 +19,8 @@ public class Line extends BaseEntity {
     private String color;
     @Embedded
     private final Sections sections = new Sections();
+    @Embedded
+    private ExtraCharge extraCharge = new ExtraCharge();
 
     public Line() {
     }
@@ -30,9 +32,15 @@ public class Line extends BaseEntity {
 
     public Line(final String name, final String color, final Station upStation,
                 final Station downStation, final int distance) {
+        this(name, color, upStation, downStation, distance, 0);
+    }
+
+    public Line(final String name, final String color, final Station upStation,
+                final Station downStation, final int distance, final int extraCharge) {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
+        this.extraCharge = ExtraCharge.of(extraCharge);
     }
 
     public void update(final Line line) {
@@ -93,5 +101,9 @@ public class Line extends BaseEntity {
 
     public List<StationResponse> toStationResponses() {
         return sections.toStationResponses();
+    }
+
+    public int getExtraCharge() {
+        return extraCharge.getValue();
     }
 }

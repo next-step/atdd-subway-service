@@ -12,17 +12,17 @@ public class StationPath {
 
     private final List<String> stationNames;
     private final int distance;
+    private final int extraCharge;
 
-    public StationPath(final List<String> stationNames, final int distance) {
+    public StationPath(final List<String> stationNames, final int distance, final int extraCharge) {
         this.stationNames = stationNames;
         this.distance = distance;
+        this.extraCharge = extraCharge;
     }
 
-    public static StationPath of(GraphPath<String, DefaultWeightedEdge> path) {
-        if(Objects.isNull(path)){
-            throw new PathException(PathExceptionType.NO_PATH);
-        }
-        return new StationPath(path.getVertexList(), (int) path.getWeight());
+    public static StationPath of(GraphPath<String, SectionWeightedEdge> path, int extraCharge) {
+
+        return new StationPath(path.getVertexList(), (int) path.getWeight(), extraCharge);
     }
 
     public List<String> getStationNames() {
@@ -33,11 +33,16 @@ public class StationPath {
         return distance;
     }
 
+    public int getExtraCharge() {
+        return extraCharge;
+    }
+
     @Override
     public String toString() {
-        return "ShortestPathResponse{" +
+        return "StationPath{" +
                 "stationNames=" + stationNames +
                 ", distance=" + distance +
+                ", extraCharge=" + extraCharge +
                 '}';
     }
 

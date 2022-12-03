@@ -6,7 +6,8 @@ public enum LineExceptionType {
     CAN_NOT_REGISTER_SECTION("등록할 수 없는 구간 입니다."),
     MIN_SECTION_DELETION("최소 구간은 삭제할수 없습니다."),
     DISTANCE_MINUS_ERROR("역과 역 사이의 거리보다 좁은 거리를 입력해주세요"),
-    DISTANCE_MIN_ERROR("역과의 거리는 0보다 커야 합니다.");
+    DISTANCE_MIN_ERROR("역과의 거리는 0보다 커야 합니다."),
+    MIN_DEFAULT_EXTRA_CHARGE("노선 추가 요금은 0원보다 커야 합니다.");
 
 
     private final String message;
