@@ -1,6 +1,6 @@
 package nextstep.subway.path;
 
-import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceSupport.지하철_노선에_지하철역_등록_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -35,7 +35,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
     private StationResponse 사당역;
     private StationResponse 길음역;
-    private Long 존재하지_않는_역_ID = 100L;
+    private final Long 존재하지_않는_역_ID = 100L;
 
     /**
      * 교대역    --- *2호선* ---   강남역
