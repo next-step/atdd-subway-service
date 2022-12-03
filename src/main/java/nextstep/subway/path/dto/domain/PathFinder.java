@@ -1,6 +1,7 @@
 package nextstep.subway.path.dto.domain;
 
 import nextstep.subway.exception.PathNotFoundException;
+import nextstep.subway.exception.StationNotFoundException;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.vo.Path;
 import nextstep.subway.station.domain.Station;
@@ -11,8 +12,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 
-import static nextstep.subway.utils.Message.INVALID_CONNECTED_STATIONS;
-import static nextstep.subway.utils.Message.INVALID_SAME_STATIONS;
+import static nextstep.subway.utils.Message.*;
 
 public class PathFinder {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
@@ -42,9 +42,10 @@ public class PathFinder {
 
         return Path.from(graphPath);
     }
-    
+
 
     private GraphPath<Station, DefaultWeightedEdge> getShortestPath(Station source, Station target) {
+        checkStationIsNotEmpty(source, target);
         checkSameStations(source, target);
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
         checkConnectedPath(path);
@@ -61,6 +62,12 @@ public class PathFinder {
     private void checkConnectedPath(GraphPath<Station, DefaultWeightedEdge> path) {
         if (path == null) {
             throw new PathNotFoundException(INVALID_CONNECTED_STATIONS);
+        }
+    }
+
+    private void checkStationIsNotEmpty(Station source, Station target) {
+        if(source == null || target == null) {
+            throw new StationNotFoundException(NOT_EXISTS_STATION);
         }
     }
 }

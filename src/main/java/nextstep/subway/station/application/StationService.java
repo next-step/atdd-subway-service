@@ -47,4 +47,5 @@ public class StationService {
         return stationRepository.findById(id)
                 .orElseThrow(RuntimeException::new);
     }
+
 }

@@ -7,6 +7,7 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.assertj.core.api.Assertions;
@@ -38,7 +39,7 @@ class PathServiceTest {
     private LineRepository lineRepository;
 
     @Mock
-    private StationRepository stationRepository;
+    private StationService stationService;
 
     @InjectMocks
     private PathService pathService;
@@ -97,8 +98,8 @@ class PathServiceTest {
     @Test
     void findShortestPath() {
         // 리턴값 지정
-        when(stationRepository.findById(1L)).thenReturn(Optional.of(양재역));
-        when(stationRepository.findById(2L)).thenReturn(Optional.of(서현역));
+        when(stationService.findStationById(1L)).thenReturn(양재역);
+        when(stationService.findStationById(2L)).thenReturn(서현역);
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 분당선, 삼호선, 팔호선));
 
         PathResponse response = pathService.findShortestPath(1L, 2L);
@@ -118,8 +119,8 @@ class PathServiceTest {
     @DisplayName("연결되지 않은 역의 최단 거리를 조회할 때 예외가 발생한다.")
     @Test
     void findShortestPathNotConnectedException() {
-        when(stationRepository.findById(1L)).thenReturn(Optional.of(수서역));
-        when(stationRepository.findById(2L)).thenReturn(Optional.of(잠실역));
+        when(stationService.findStationById(1L)).thenReturn(수서역);
+        when(stationService.findStationById(2L)).thenReturn(잠실역);
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 분당선, 삼호선, 팔호선));
 
         Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L))
@@ -131,8 +132,8 @@ class PathServiceTest {
     @DisplayName("출발역과 같은 도착역을 입력하면 예외가 발생한다.")
     @Test
     void findShortestPathInvalidSameStationsException() {
-        when(stationRepository.findById(1L)).thenReturn(Optional.of(수서역));
-        when(stationRepository.findById(1L)).thenReturn(Optional.of(수서역));
+        when(stationService.findStationById(1L)).thenReturn(수서역);
+        when(stationService.findStationById(1L)).thenReturn(수서역);
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 분당선, 삼호선, 팔호선));
 
         Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L))
@@ -144,8 +145,8 @@ class PathServiceTest {
     @DisplayName("존재하지 않는 역으로 최단 거리를 조회할 때 예외가 발생한다.")
     @Test
     void findShortestPathNotExistsException() {
-        when(stationRepository.findById(1L)).thenReturn(Optional.of(수서역));
-        when(stationRepository.findById(2L)).thenReturn(Optional.empty());
+        when(stationService.findStationById(1L)).thenReturn(수서역);
+        when(stationService.findStationById(2L)).thenReturn(null);
 
         Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L))
                 .isInstanceOf(StationNotFoundException.class)

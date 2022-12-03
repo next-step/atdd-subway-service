@@ -1,11 +1,11 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.exception.StationNotFoundException;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.dto.domain.PathFinder;
 import nextstep.subway.path.vo.Path;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
@@ -14,18 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static nextstep.subway.utils.Message.NOT_EXISTS_STATION;
-
 @Service
 @Transactional(readOnly = true)
 public class PathService {
 
     private final LineRepository lineRepository;
-    private final StationRepository stationRepository;
+    private final StationService stationService;
 
-    public PathService(LineRepository lineRepository, StationRepository stationRepository) {
+    public PathService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
-        this.stationRepository = stationRepository;
+        this.stationService = stationService;
     }
 
 
@@ -49,7 +47,6 @@ public class PathService {
     }
 
     private Station findStationById(Long stationId) {
-        return stationRepository.findById(stationId)
-                .orElseThrow(() -> new StationNotFoundException(NOT_EXISTS_STATION));
+        return stationService.findStationById(stationId);
     }
 }
