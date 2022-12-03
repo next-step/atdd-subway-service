@@ -217,3 +217,8 @@ Connection: keep-alive
 
 ### Service
 - [x] PathService 구현
+
+### 2단계 피드백
+- [x] 매직넘버에 대해서 책임을 enum으로 분리 vs 해당 객체에 위임 고민
+  - 확장성을 고려한다면? --> enum으로 분리
+  - 객체의 책임에 집중한다면? --> 멤버 변수로
