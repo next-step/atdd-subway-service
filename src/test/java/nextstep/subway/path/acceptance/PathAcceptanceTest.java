@@ -93,6 +93,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         지하철_경로_조회됨(조회결과);
         지하철역_목록_포함_및_거리_일치(조회결과, Arrays.asList(교대역, 강남역, 양재역, 매봉역), 30);
+        지하철역_이용_요금_확인(조회결과, 1_250 + 100 * ((30 - 10) / 5));
     }
 
     /**
@@ -171,5 +172,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(resultStationIds).containsAll(stationIds);
         assertThat(resultDistance).isEqualTo(distance);
+    }
+
+    public static void 지하철역_이용_요금_확인(ExtractableResponse<Response> response, int fare) {
+        int resultFare = response.jsonPath().getInt("fare");
+        assertThat(resultFare).isEqualTo(fare);
     }
 }
