@@ -23,8 +23,8 @@ public class PathFinder {
     public Path find(Sections sections, Station sourceStation, Station targetStation) {
         validatePath(sections, sourceStation, targetStation);
 
-        fillVerticesAndEdges(graph, sections);
-        return findShortestPath(graph, sourceStation, targetStation);
+        fillVerticesAndEdges(sections);
+        return findShortestPath(sourceStation, targetStation);
     }
 
     private void validatePath(Sections sections, Station sourceStation, Station targetStation) {
@@ -36,7 +36,7 @@ public class PathFinder {
         }
     }
 
-    private void fillVerticesAndEdges(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Sections sections) {
+    private void fillVerticesAndEdges(Sections sections) {
         for (Section section : sections.values()) {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
@@ -44,7 +44,7 @@ public class PathFinder {
         }
     }
 
-    private Path findShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Station sourceStation, Station targetStation) {
+    private Path findShortestPath(Station sourceStation, Station targetStation) {
         GraphPath path = new DijkstraShortestPath(graph).getPath(sourceStation, targetStation);
         List<Station> stationPaths = path.getVertexList();
         Integer distance = (int) path.getWeight();
