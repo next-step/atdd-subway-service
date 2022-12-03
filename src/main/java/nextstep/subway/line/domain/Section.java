@@ -1,7 +1,9 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -13,9 +15,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import nextstep.subway.common.constant.ErrorCode;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
 @Entity
-public class Section {
+public class Section extends DefaultWeightedEdge {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -126,6 +129,14 @@ public class Section {
 
     public boolean isContainStationsInAnyOrder(Station upStation, Station downStation) {
         return isContainStation(upStation) && isContainStation(downStation);
+    }
+
+    public static Section findMinDistanceSection(Set<Section> sections) {
+        Comparator<Section> comparatorByDistance = Comparator.comparingInt(Section::distanceValue);
+
+        return sections.stream()
+                .min(comparatorByDistance)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.해당하는_구간_없음.getErrorMessage()));
     }
 
     public int distanceValue() {

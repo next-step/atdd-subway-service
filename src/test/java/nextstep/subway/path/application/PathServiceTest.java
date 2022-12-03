@@ -44,6 +44,7 @@ public class PathServiceTest {
     private Line 신분당선;
     private Line 이호선;
     private Line 삼호선;
+    private Line 분당선;
     private Station 이수역;
     private Station 반포역;
     private Station 강남역;
@@ -51,6 +52,8 @@ public class PathServiceTest {
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
+    private Station 미금역;
+    private Station 정자역;
 
     /**
      * 이수역 --- *7호선*[20] --- 반포역
@@ -60,6 +63,14 @@ public class PathServiceTest {
      * *3호선*[3]           *신분당선*[10]
      *   |                         |
      * 남부터미널역 --- *3호선*[2] --- 양재역
+     *                              |
+     *                          *신분당선*[12]
+     *                            미금역
+     *                             |
+     *                           *신분당선*[12], *분당선*[10]
+     *                             |
+     *                            정자역
+     *
      */
     @BeforeEach
     public void setUp() {
@@ -69,13 +80,18 @@ public class PathServiceTest {
         역삼역 = createStation("역삼역");
         양재역 = createStation("양재역");
         교대역 = createStation("교대역");
+        미금역 = createStation("미금역");
+        정자역 = createStation("정자역");
         남부터미널역 = createStation("남부터미널역");
         칠호선 = createLine("칠호선", "bg-khaki", 이수역, 반포역, 20, 1000);
         신분당선 = createLine("신분당선", "bg-red", 강남역, 양재역, 10, 700);
         이호선 = createLine("이호선", "bg-green", 교대역, 강남역, 10, 500);
+        분당선 = createLine("분당선", "bg-yellow", 미금역, 정자역, 10, 500);
         삼호선 = createLine("삼호선", "bg-orange", 교대역, 양재역, 5);
         삼호선.addSection(createSection(삼호선, 교대역, 남부터미널역, 3));
         이호선.addSection(createSection(이호선, 강남역, 역삼역, 5));
+        신분당선.addSection(createSection(신분당선, 양재역, 미금역, 12));
+        신분당선.addSection(createSection(신분당선, 미금역, 정자역, 12));
     }
 
     @DisplayName("지하철 경로 조회를 하면 최단 거리의 경로가 조회된다.")
@@ -99,6 +115,30 @@ public class PathServiceTest {
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(5),
                 () -> assertThat(pathResponse.getStations().stream().map(StationResponse::getName).collect(Collectors.toList()))
                         .containsExactlyElementsOf(Arrays.asList("교대역", "남부터미널역", "양재역"))
+        );
+    }
+
+    @DisplayName("노선만 다른 중복된 구역(신분당선의 미금역 - 정자역, 분당선의 미금역 - 정자역)이 존재할 때, 더 작은 거리를 가진 경로가 반환된다.")
+    @Test
+    void findShortestPathWhenDuplicationSectionUnlikeLine() {
+        // given
+        Long source = 1L;
+        Long target = 4L;
+        when(stationRepository.findById(source))
+                .thenReturn(Optional.of(양재역));
+        when(stationRepository.findById(target))
+                .thenReturn(Optional.of(정자역));
+        when(lineRepository.findAll())
+                .thenReturn(Arrays.asList(이호선, 신분당선, 삼호선, 분당선));
+
+        // when
+        PathResponse pathResponse = pathService.findShortestPath(AgeFarePolicy.ADULT, source, target);
+
+        // then
+        assertAll(
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(22),
+                () -> assertThat(pathResponse.getStations().stream().map(StationResponse::getName).collect(Collectors.toList()))
+                        .containsExactlyElementsOf(Arrays.asList("양재역", "미금역", "정자역"))
         );
     }
 

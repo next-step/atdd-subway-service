@@ -7,7 +7,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import nextstep.subway.common.constant.ErrorCode;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,15 +23,21 @@ public class SectionTest {
     private Station 강남역;
     private Station 양재역;
     private Station 양재시민의숲역;
+    private Station 미금역;
+    private Station 정자역;
     private Line 신분당선;
+    private Line 분당선;
 
     @BeforeEach
     void setUp() {
         신논현역 = createStation("신논현역");
         강남역 = createStation("강남역");
         양재역 = createStation("양재역");
+        미금역 = createStation("미금역");
+        정자역 = createStation("정자역");
         양재시민의숲역 = createStation("양재시민의숲역");
         신분당선 = createLine("신분당선", "bg-red", 강남역, 양재역, 10);
+        분당선 = createLine("분당선", "bg-yellow", 미금역, 정자역, 10);
     }
 
     @DisplayName("구간에 존재하는 지하철역들을 조회한다.")
@@ -185,7 +193,7 @@ public class SectionTest {
         // given
         Section section = createSection(신분당선, 신논현역, 강남역, 10);
 
-        // when
+        // when & then
         assertAll(
                 () -> assertThat(section.isContainStation(신논현역)).isTrue(),
                 () -> assertThat(section.isContainStation(강남역)).isTrue()
@@ -198,7 +206,7 @@ public class SectionTest {
         // given
         Section section = createSection(신분당선, 신논현역, 강남역, 10);
 
-        // when
+        // when & then
         assertAll(
                 () -> assertThat(section.isContainStation(양재시민의숲역)).isFalse(),
                 () -> assertThat(section.isContainStation(양재역)).isFalse()
@@ -211,7 +219,7 @@ public class SectionTest {
         // given
         Section section = createSection(신분당선, 신논현역, 강남역, 10);
 
-        // when
+        // when & then
         assertAll(
                 () -> assertThat(section.isContainStationsInAnyOrder(신논현역, 강남역)).isTrue(),
                 () -> assertThat(section.isContainStationsInAnyOrder(강남역, 신논현역)).isTrue()
@@ -224,11 +232,29 @@ public class SectionTest {
         // given
         Section section = createSection(신분당선, 신논현역, 강남역, 10);
 
-        // when
+        // when & then
         assertAll(
                 () -> assertThat(section.isContainStationsInAnyOrder(신논현역, 양재역)).isFalse(),
                 () -> assertThat(section.isContainStationsInAnyOrder(강남역, 양재역)).isFalse(),
                 () -> assertThat(section.isContainStationsInAnyOrder(양재시민의숲역, 양재역)).isFalse()
+        );
+    }
+
+    @DisplayName("주어진 구간들 중 가장 작은 거리를 가진 구간을 반환한다.")
+    @Test
+    void findMinDistanceSection() {
+        // given
+        Set<Section> sections = new HashSet<>();
+        sections.add(createSection(신분당선, 미금역, 정자역, 12));
+        sections.add(createSection(분당선, 미금역, 정자역, 10));
+
+        // when
+        Section minDistanceSection = Section.findMinDistanceSection(sections);
+
+        // then
+        assertAll(
+                () -> assertThat(minDistanceSection.getDistance()).isEqualTo(Distance.from(10)),
+                () -> assertThat(minDistanceSection.getLine()).isEqualTo(분당선)
         );
     }
 }
