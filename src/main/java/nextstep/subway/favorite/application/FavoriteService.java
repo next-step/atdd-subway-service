@@ -35,8 +35,7 @@ public class FavoriteService {
         Station sourceStation = findStationById(favoriteRequest.getSource());
         Station targetStation = findStationById(favoriteRequest.getTarget());
         Favorite favorite = Favorite.of(member, sourceStation, targetStation);
-        favoriteRepository.save(favorite);
-        return FavoriteResponse.from(favorite);
+        return FavoriteResponse.from(favoriteRepository.save(favorite));
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember member) {
@@ -49,14 +48,14 @@ public class FavoriteService {
     @Transactional
     public void deleteFavorite(Long id, Long memberId) {
         Favorite favorite = favoriteRepository.findByIdAndMemberId(id, memberId)
-            .orElseThrow(() -> new NotFoundException());
+            .orElseThrow(NotFoundException::new);
 
         favoriteRepository.delete(favorite);
     }
 
     private Member findMemberById(Long id) {
         return memberRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException());
+            .orElseThrow(NotFoundException::new);
     }
 
     private Station findStationById(Long id) {
