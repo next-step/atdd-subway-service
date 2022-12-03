@@ -36,7 +36,8 @@ public class FavoriteService {
         Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(() -> new RuntimeException("출발역을 찾을 수 없습니다."));
         Station target = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(() -> new RuntimeException("도착역을 찾을 수 없습니다."));
         validateAlreadyExist(member, source, target);
-        Favorite favorite = favoriteRepository.save(new Favorite(source, target, member));
+        Favorite favorite = new Favorite(source, target, member);
+        favoriteRepository.save(favorite);
         return FavoriteResponse.from(favorite);
     }
 
