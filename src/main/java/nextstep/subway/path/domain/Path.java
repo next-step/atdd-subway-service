@@ -11,8 +11,6 @@ public class Path {
     private Distance distance;
 
     private Path(List<Station> stations, int distance) {
-        System.out.println("distance");
-        System.out.println(distance);
         this.stations = stations;
         this.distance = Distance.from(distance);
     }

@@ -5,7 +5,8 @@ import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
-public class DijkstraShortestPathStrategy implements PathStrategy{
+public class DijkstraShortestPathStrategy implements PathStrategy {
+
     private DijkstraShortestPath path;
 
     @Override

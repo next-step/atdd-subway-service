@@ -28,8 +28,6 @@ public class PathFinderController {
 
     @GetMapping
     public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target) {
-        System.out.println(source);
-        System.out.println(target);
         return ResponseEntity.ok(pathFinderService.getShortestPath(source, target));
     }
 

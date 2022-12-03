@@ -19,12 +19,8 @@ public class PathFinder {
         return new PathFinder(stationGraph);
     }
 
-    public void addSection(Section section) {
-        stationGraph.addGraphEdge(section);
-    }
-
     public Path findPathFromGraph(Station source, Station target) {
-        if(source.equals(target)){
+        if (source.equals(target)) {
             throw new IllegalStateException(ErrorMessage.FIND_PATH_SAME_STATION);
         }
         return stationGraph.findPath(source, target);

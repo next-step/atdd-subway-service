@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import nextstep.subway.ErrorMessage;
@@ -31,7 +32,7 @@ public class StationGraph{
         validateContains(source, target);
         GraphPath graphPath = pathStrategy.getGraphPath(source, target);
         validateConnected(graphPath);
-        List<Station> shortestPath = graphPath.getVertexList();
+        List<Station> shortestPath = Collections.unmodifiableList(graphPath.getVertexList());
         Double distance = pathStrategy.getGraphPath(source, target).getWeight();
         return Path.of(shortestPath, distance.intValue());
     }

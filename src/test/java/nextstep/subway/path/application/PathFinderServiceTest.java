@@ -26,7 +26,6 @@ import org.mockito.quality.Strictness;
 
 @DisplayName("경로 조회 서비스 기능 테스트")
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class PathFinderServiceTest {
     @Mock
     private SectionRepository sectionRepository;
