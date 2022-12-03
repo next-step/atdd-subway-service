@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -55,6 +56,14 @@ public class Line extends BaseEntity {
     public void addSection(Section newSection) {
         newSection.addLine(this);
         this.sections.add(newSection);
+    }
+
+    public List<Section> getSections() {
+        return this.sections.sections();
+    }
+
+    public List<Station> getStations() {
+        return this.sections.stations();
     }
 
     public void deleteStation(Station station) {
