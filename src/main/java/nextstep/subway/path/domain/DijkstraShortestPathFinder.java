@@ -7,7 +7,6 @@ import nextstep.subway.common.exception.SubwayException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.Path;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -60,7 +59,11 @@ public class DijkstraShortestPathFinder implements PathFinder {
 
         List<Station> stations = graphPath.getVertexList();
         double weight = graphPath.getWeight();
-        return Path.of(stations, (int) weight, getMaxExtraFare(graphPath));
+        return new Path.Builder()
+                .stations(stations)
+                .distance((int) weight)
+                .extraFare(getMaxExtraFare(graphPath))
+                .build();
     }
 
     private void validateSameStations(Station source, Station target) {
@@ -81,7 +84,7 @@ public class DijkstraShortestPathFinder implements PathFinder {
                 .collect(Collectors.toList()));
     }
 
-    private int getMaxExtraFare(GraphPath<Station, SectionEdge> graphPath){
+    private int getMaxExtraFare(GraphPath<Station, SectionEdge> graphPath) {
         return getLines(graphPath).maxExtraFare();
     }
 }

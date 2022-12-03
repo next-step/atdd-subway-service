@@ -7,7 +7,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.DijkstraShortestPathFinder;
 import nextstep.subway.path.domain.PathFinder;
-import nextstep.subway.path.dto.Path;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;

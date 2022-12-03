@@ -15,7 +15,7 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.path.domain.DijkstraShortestPathFinder;
 import nextstep.subway.path.domain.PathFinder;
-import nextstep.subway.path.dto.Path;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
