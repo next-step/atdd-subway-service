@@ -49,8 +49,8 @@ public class FavoriteServiceTest {
 
     @BeforeEach
     void setUp() {
-        강남역 = new Station(1L, "강남역");
-        광교역 = new Station(2L, "광교역");
+        강남역 = new Station("강남역");
+        광교역 = new Station("광교역");
         사용자 = new Member("email@email.com", "password", 10);
         다른_사용자 = new Member("other@email.com", "password", 20);
         로그인_사용자 = new LoginMember(1L, "email@email.com", 10);
