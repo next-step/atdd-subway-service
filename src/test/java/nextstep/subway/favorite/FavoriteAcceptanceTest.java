@@ -96,13 +96,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
     void manageFavorite() {
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(accessToken, 강남역.getId(), 양재역.getId());
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(accessToken, 강남역.getId(), 광교역.getId());
 
         즐겨찾기_생성됨(createResponse);
 
         ExtractableResponse<Response> readResponse = 즐겨찾기_목록_조회_요청(accessToken);
 
-        즐겨찾기_목록_조회됨(readResponse, 강남역.getId(), 양재역.getId());
+        즐겨찾기_목록_조회됨(readResponse, 강남역.getId(), 광교역.getId());
 
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, readResponse.as(FavoriteResponse[].class)[0].getId());
 
@@ -129,13 +129,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new FavoriteRequest(accessToken, source, target))
+                .body(new FavoriteRequest(source, target))
                 .when().post("/favorites/")
                 .then().log().all()
                 .extract();
     }
 
     private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, Long source, Long target) {
+        String errorMessage = response.body().path("errorMessage").toString();
         List<FavoriteResponse> favorites = Arrays.asList(response.as(FavoriteResponse[].class));
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),

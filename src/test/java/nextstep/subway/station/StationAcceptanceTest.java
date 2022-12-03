@@ -1,6 +1,7 @@
 package nextstep.subway.station;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -114,8 +115,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response, String expectedErrorMessage) {
         String errorMessage = response.body().path("errorMessage").toString();
-        assertThat(errorMessage).isEqualTo(expectedErrorMessage);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+        assertAll(
+                () -> assertThat(errorMessage).isEqualTo(expectedErrorMessage),
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+        );
     }
 
     public static void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {

@@ -7,7 +7,7 @@ public class FavoriteRequest{
     protected FavoriteRequest() {
     }
 
-    public FavoriteRequest(String accessToken, Long source, Long target) {
+    public FavoriteRequest(Long source, Long target) {
         this.source = source;
         this.target = target;
     }

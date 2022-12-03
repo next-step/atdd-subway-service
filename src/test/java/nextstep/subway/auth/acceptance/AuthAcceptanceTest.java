@@ -111,7 +111,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         String errorMessage = response.body().path("errorMessage").toString();
         assertAll(
                 () -> assertThat(errorMessage).isEqualTo(expectedErrorMessage),
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value())
         );
     }
 }

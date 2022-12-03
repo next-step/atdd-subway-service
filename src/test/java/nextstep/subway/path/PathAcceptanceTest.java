@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import io.restassured.response.ResponseBodyExtractionOptions;
 import java.util.HashMap;
 import java.util.Map;
 import nextstep.subway.AcceptanceTest;
@@ -135,7 +134,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 존재하지_않는_도착역_응답 = 지하철_경로_조회_요청(양재역.getId(), 0L);
 
         // then
-        지하철_최단_경로_실패됨(존재하지_않는_도착역_응답, ErrorEnum.STATION_NOT_EXISTS.message());
+        지하철_최단_경로_실패됨(존재하지_않는_도착역_응답, ErrorEnum.NOT_EXISTS_STATION.message());
     }
 
     private void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, int distance) {
