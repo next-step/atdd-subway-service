@@ -3,7 +3,12 @@ package nextstep.subway.station.domain;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.line.domain.Sections;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity

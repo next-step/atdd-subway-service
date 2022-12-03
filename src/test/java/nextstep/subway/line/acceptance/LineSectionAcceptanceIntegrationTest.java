@@ -17,7 +17,10 @@ import java.util.List;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_목록_응답됨;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_조회_요청;
-import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.*;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_순서_정렬됨;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_제외_요청;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_제외됨;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 구간 관련 기능 통합 테스트")

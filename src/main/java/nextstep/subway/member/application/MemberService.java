@@ -8,10 +8,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberQueryService memberQueryService;
+    private final MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberQueryService memberQueryService,
+                         MemberRepository memberRepository) {
+        this.memberQueryService = memberQueryService;
         this.memberRepository = memberRepository;
     }
 
@@ -20,13 +24,8 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        return MemberResponse.of(member);
-    }
-
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberQueryService.findMemberById(id);
         member.update(param.toMember());
     }
 
