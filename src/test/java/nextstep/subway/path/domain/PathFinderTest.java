@@ -56,10 +56,20 @@ class PathFinderTest {
     @Test
     void findPath_fail_sameStation() {
 
-        PathFinder pathFinder = PathFinder.of(Arrays.asList(lineA, lineB, lineC));
+        PathFinder pathFinder = new PathFinder(Arrays.asList(lineA, lineB, lineC));
 
         assertThatThrownBy(() -> pathFinder.findPath(stationA, stationA))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(SOURCE_TARGET_NOT_SAME_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우 조회할 수 없다.")
+    @Test
+    void findPath_fail_notConnect() {
+
+        PathFinder pathFinder = new PathFinder(Arrays.asList(lineA, lineB, lineC));
+
+        assertThatThrownBy(() -> pathFinder.findPath(stationA, stationE))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
