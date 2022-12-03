@@ -15,6 +15,7 @@ import static nextstep.subway.line.acceptance.LineSteps.지하철_노선_생성_
 import static nextstep.subway.path.PathSteps.지하철_경로_조회_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -105,6 +106,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     */
     @Test
     void findPath_success() {
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(stationA, stationC);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(stationA, stationD, stationC),
+                () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(2)
+        );
+
     }
 
     /*
