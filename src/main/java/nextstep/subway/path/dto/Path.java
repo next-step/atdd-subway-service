@@ -9,14 +9,16 @@ public class Path {
 
     private List<Station> stations;
     private int distance;
+    private int extraFare;
 
-    private Path(List<Station> stations, int distance) {
+    private Path(List<Station> stations, int distance, int extraFare) {
         this.stations = stations;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
-    public static Path of(List<Station> stations, int distance) {
-        return new Path(stations, distance);
+    public static Path of(List<Station> stations, int distance, int extraFare) {
+        return new Path(stations, distance, extraFare);
     }
 
     public List<Station> getStations() {
@@ -28,7 +30,10 @@ public class Path {
     }
 
     public int calculateFare() {
-        Fare fare = Fare.from(1250).add(FareDistanceCalculator.calculate(distance));
+        Fare fare = Fare.from(1250)
+                .add(Fare.from(extraFare))
+                .add(FareDistanceCalculator.calculate(distance));
+
         return fare.getValue();
     }
 }

@@ -68,6 +68,10 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
+    public Fare getExtraFare() {
+        return extraFare;
+    }
+
     public void addSection(Section section) {
         sections.add(section);
         section.setLine(this);

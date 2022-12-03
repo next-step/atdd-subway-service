@@ -17,14 +17,14 @@ public class PathResponseTest {
         Station 교대역 = 지하철역_생성("교대역");
         Station 강남역 = 지하철역_생성("강남역");
         Station 양재역 = 지하철역_생성("양재역");
-        path = Path.of(Arrays.asList(교대역, 강남역, 양재역), 20);
+        path = Path.of(Arrays.asList(교대역, 강남역, 양재역), 20, 1000);
     }
 
     @Test
-    @DisplayName("Path를 받아 생성")
+    @DisplayName("지하철역 목록, 거리, 요금을 받아 생성")
     void fromPath() {
         // when
-        PathResponse pathResponse = PathResponse.from(path);
+        PathResponse pathResponse = PathResponse.from(path.getStations(), path.getDistance(), 1250);
 
         // then
         assertThat(pathResponse).isNotNull();

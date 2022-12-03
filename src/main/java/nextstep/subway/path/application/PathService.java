@@ -4,6 +4,7 @@ import java.util.List;
 import nextstep.subway.common.exception.SubwayException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.DijkstraShortestPathFinder;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.Path;
@@ -32,7 +33,7 @@ public class PathService {
 
         PathFinder pathFinder = DijkstraShortestPathFinder.from(lines);
         Path path = pathFinder.findPath(sourceStation, targetStation);
-        return PathResponse.from(path);
+        return PathResponse.from(path.getStations(), path.getDistance(),path.calculateFare());
     }
 
     private Station findStationById(Long id) {

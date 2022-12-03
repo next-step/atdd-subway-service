@@ -12,7 +12,7 @@ public class FareDistanceCalculator {
         FareDistance fareDistance = FareDistance.findByDistance(distance);
 
         if (fareDistance == FareDistance.BASIC) {
-            return Fare.from(0);
+            return Fare.free();
         }
 
         if (fareDistance == FareDistance.MIDDLE) {

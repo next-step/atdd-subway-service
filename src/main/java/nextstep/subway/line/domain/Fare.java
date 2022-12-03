@@ -23,7 +23,7 @@ public class Fare {
         return new Fare(value);
     }
 
-    public static Fare empty() {
+    public static Fare free() {
         return new Fare(0);
     }
 
