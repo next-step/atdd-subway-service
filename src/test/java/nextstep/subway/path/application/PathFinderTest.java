@@ -67,4 +67,12 @@ class PathFinderTest {
         ).isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("출발지와 목적지가 같을 수 없습니다.");
     }
+
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 최단 경로를 조회한다.")
+    @Test
+    void find_shortest_path_no_connect_station() {
+        assertThatThrownBy(() ->
+            pathFinder.findShortestPath(강남역, 부산역)
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
 }
