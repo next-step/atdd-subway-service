@@ -1,5 +1,7 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_성공;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -7,6 +9,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -48,10 +51,38 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    /**
+     * Feature: 나의 정보 관리 기능
+     *
+     * Background
+     *  Given 회원 등록되어 있음
+     *  And 로그인 되어 있음
+     *
+     * Scenario: 나의 정보를 조회, 수정, 삭제한다.
+     *  When 내 정보 조회 요청
+     *  Then 내 정보 조회 됨
+     *
+     *  When 내 정보 수정 요청
+     *  Then 내 정보 수정 됨
+     *
+     *  When 내 정보 삭제 요청
+     *  Then 내 정보 삭제 됨
+     *
+     */
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // Given 회원 등록되어 있음
+        // And 로그인 되어 있음
 
+        // When 내 정보 조회 요청
+        // Then 내 정보 조회 됨
+
+        // When 내 정보 수정 요청
+        // Then 내 정보 수정 됨
+
+        // When 내 정보 삭제 요청
+        // Then 내 정보 삭제 됨
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {

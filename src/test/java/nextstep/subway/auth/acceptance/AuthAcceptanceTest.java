@@ -90,7 +90,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void Bearer_Auth_유효하지_않은_토큰으로_회원정보_페이지_요청() {
     }
 
-    private ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
+    public static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -100,7 +100,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 로그인_성공(ExtractableResponse<Response> response) {
+    public static void 로그인_성공(ExtractableResponse<Response> response) {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(TokenResponse.class).getAccessToken()).isNotBlank()
