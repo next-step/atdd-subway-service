@@ -44,7 +44,7 @@ npm run dev
     - 정적 메소드 from 사용하기
     - Sections 일급컬렉션 사용하여 비즈니스 로직 옮기기
     - Distance 값 타입 변경
-  - [ ] findLines
+  - [X] findLines
   - [ ] findLineById
   - [ ] findLineResponseById
   - [ ] updateLine
