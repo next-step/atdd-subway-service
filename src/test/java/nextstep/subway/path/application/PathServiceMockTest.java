@@ -18,7 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static nextstep.subway.path.domain.PathFinder.SOURCE_TARGET_NOT_SAME_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -95,5 +97,21 @@ class PathServiceMockTest {
 
         assertThat(pathResponse.getStations()).hasSize(3);
         assertThat(pathResponse.getDistance()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("출발역과 도착역이 같은 경우 조회할 수 없다.")
+    void findPath_fail_sameStation() {
+
+        Long sourceId = 1L;
+        Long targetId = 2L;
+
+        when(stationRepository.findById(sourceId)).thenReturn(Optional.of(stationA));
+        when(stationRepository.findById(targetId)).thenReturn(Optional.of(stationA));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(lineA, lineB, lineC, lineD, lineE));
+
+        assertThatThrownBy(() -> pathService.findPath(sourceId, targetId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(SOURCE_TARGET_NOT_SAME_EXCEPTION_MESSAGE);
     }
 }
