@@ -8,12 +8,13 @@ import nextstep.subway.member.dto.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestStep.내_정보_조회;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestStep.로그인_됨;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestStep.로그인_실패;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestStep.로그인_요청;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestStep.토큰_유효하지_않음;
 import static nextstep.subway.member.MemberAcceptanceStep.회원_생성을_요청;
-import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
 
@@ -54,20 +55,5 @@ class AuthAcceptanceTest extends AcceptanceTest {
         토큰_유효하지_않음(응답);
     }
 
-    private void 토큰_유효하지_않음(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    private void 로그인_실패(ExtractableResponse<Response> 로그인_응답) {
-        assertThat(로그인_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    private void 로그인_됨(ExtractableResponse<Response> tokenResponse) {
-        assertThat(tokenResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(tokenResponse.body().as(TokenResponse.class))
-                .extracting(TokenResponse::getAccessToken)
-                .isNotNull();
-
-    }
 
 }
