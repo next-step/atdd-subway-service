@@ -88,6 +88,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     */
     @Test
     void findPath_fail_notConnect() {
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(stationA, stationF);d
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     /*
