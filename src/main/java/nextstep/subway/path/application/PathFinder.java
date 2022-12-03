@@ -41,7 +41,14 @@ public class PathFinder {
     }
 
     public Path findShortestPath(Station source, Station target) {
+        validateSameStation(source, target);
         GraphPath path = shortestPath.getPath(source, target);
         return new Path(path.getVertexList(), (int) path.getWeight());
+    }
+
+    private void validateSameStation(Station source, Station target) {
+        if (source == target) {
+            throw new IllegalArgumentException("출발지와 목적지가 같을 수 없습니다.");
+        }
     }
 }
