@@ -42,22 +42,6 @@ public class Section {
         return new Section(line, upStation, downStation, distance);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Line getLine() {
-        return line;
-    }
-
-    public Station getUpStation() {
-        return upStation;
-    }
-
-    public Station getDownStation() {
-        return downStation;
-    }
-
     public void updateUpStation(Station station, int newDistance) {
         validCheckIsOverDistance(newDistance);
 
@@ -88,5 +72,25 @@ public class Section {
 
     public boolean isSameUpStation(Station upStation) {
         return this.upStation.equals(upStation);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Line getLine() {
+        return line;
+    }
+
+    public Station getUpStation() {
+        return upStation;
+    }
+
+    public Station getDownStation() {
+        return downStation;
+    }
+
+    public int getDistance() {
+        return distance.getDistance();
     }
 }
