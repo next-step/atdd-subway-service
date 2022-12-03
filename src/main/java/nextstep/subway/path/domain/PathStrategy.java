@@ -4,6 +4,6 @@ import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-public interface PathInterface {
+public interface PathStrategy {
     GraphPath<Station, DefaultWeightedEdge> getShortPath(Station source, Station target);
 }

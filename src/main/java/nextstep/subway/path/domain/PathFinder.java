@@ -11,7 +11,7 @@ public class PathFinder {
     private final List<Station> stations;
     private final double weight;
 
-    private PathFinder(PathInterface strategy, Station source, Station target) {
+    private PathFinder(PathStrategy strategy, Station source, Station target) {
         GraphPath<Station, DefaultWeightedEdge> graph = strategy.getShortPath(source, target);
         graph.getWeight();
         graph.getVertexList();
@@ -20,7 +20,7 @@ public class PathFinder {
         this.weight = graph.getWeight();
     }
 
-    public static PathFinder of(PathInterface strategy, Station source, Station target) {
+    public static PathFinder of(PathStrategy strategy, Station source, Station target) {
         return new PathFinder(strategy, source, target);
     }
 

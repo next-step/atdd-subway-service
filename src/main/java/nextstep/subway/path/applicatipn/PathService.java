@@ -4,7 +4,7 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.DijkstraShortestPathStrategy;
 import nextstep.subway.path.domain.PathFinder;
-import nextstep.subway.path.domain.PathInterface;
+import nextstep.subway.path.domain.PathStrategy;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.GetStationDto;
@@ -29,7 +29,7 @@ public class PathService {
     public PathResponse getPath(Long sourceId, Long targetId) {
         GetStationDto station = stationService.findStationById(sourceId, targetId);
         List<Line> lines = lineService.findAll();
-        PathInterface strategy = DijkstraShortestPathStrategy.from(lines);
+        PathStrategy strategy = DijkstraShortestPathStrategy.from(lines);
         PathFinder pathFinder = PathFinder.of(strategy, station.getSourceStation(), station.getTargetStation());
 
         return PathResponse.from(pathFinder);

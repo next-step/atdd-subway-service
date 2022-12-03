@@ -13,7 +13,7 @@ import java.util.List;
 
 import static nextstep.subway.exception.type.ValidExceptionType.IS_TARGET_ANS_SOURCE_SAME;
 
-public class DijkstraShortestPathStrategy implements PathInterface {
+public class DijkstraShortestPathStrategy implements PathStrategy {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
