@@ -11,17 +11,17 @@ public class PathFinder {
     private final List<Station> stations;
     private final double weight;
 
-    private PathFinder(PathStrategy strategy, Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> graph = strategy.getShortPath(source, target);
-        graph.getWeight();
-        graph.getVertexList();
-
-        this.stations = graph.getVertexList();
-        this.weight = graph.getWeight();
+    public PathFinder(List<Station> stations, double weight) {
+        this.stations = stations;
+        this.weight = weight;
     }
 
-    public static PathFinder of(PathStrategy strategy, Station source, Station target) {
-        return new PathFinder(strategy, source, target);
+    public static PathFinder of(PathStrategy strategy, Station sourceStation, Station targetStation) {
+        return strategy.getShortPath(sourceStation, targetStation);
+    }
+
+    public static PathFinder from(GraphPath<Station, DefaultWeightedEdge> graph) {
+        return new PathFinder(graph.getVertexList(), graph.getWeight());
     }
 
     public List<Station> getStations() {

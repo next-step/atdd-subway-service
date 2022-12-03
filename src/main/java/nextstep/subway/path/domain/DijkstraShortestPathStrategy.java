@@ -4,7 +4,6 @@ import nextstep.subway.exception.NotValidDataException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -47,12 +46,12 @@ public class DijkstraShortestPathStrategy implements PathStrategy {
     }
 
     @Override
-    public GraphPath<Station, DefaultWeightedEdge> getShortPath(Station source, Station target) {
+    public PathFinder getShortPath(Station source, Station target) {
         validCheckIsSameStation(source, target);
 
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraStrategy = new DijkstraShortestPath<>(graph);
 
-        return dijkstraStrategy.getPath(source, target);
+        return PathFinder.from(dijkstraStrategy.getPath(source, target));
     }
 
     private void validCheckIsSameStation(Station source, Station target) {
