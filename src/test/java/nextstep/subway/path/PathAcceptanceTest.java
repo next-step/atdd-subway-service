@@ -1,6 +1,7 @@
 package nextstep.subway.path;
 
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceSupport.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.path.PathAcceptanceSupport.지하철_노선_등록되어_있음;
 import static nextstep.subway.station.StationAcceptanceSupport.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,8 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.line.acceptance.LineAcceptanceSupport;
-import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
@@ -143,11 +142,5 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    }
-
-    private LineResponse 지하철_노선_등록되어_있음(
-            String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        return LineAcceptanceSupport.지하철_노선_등록되어_있음(
-                new LineRequest(name, color, upStation.getId(), downStation.getId(), distance)).as(LineResponse.class);
     }
 }
