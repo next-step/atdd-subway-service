@@ -1,6 +1,7 @@
 package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.station.domain.Station;
 
 public class LineRequest {
     private String name;
@@ -23,6 +24,10 @@ public class LineRequest {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    public static Line toLine(LineRequest request, Station upStation, Station downStation){
+        return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
     }
 
     public String getName() {

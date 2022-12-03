@@ -20,8 +20,8 @@ public class Sections {
     }
 
     public void updateSection(Station upStation, Station downStation, int distance){
-        boolean isUpStationExisted = isExistsUpStation(upStation);
-        boolean isDownStationExisted = isExistsDownStation(downStation);
+        boolean isUpStationExisted = isExistsStation(upStation);
+        boolean isDownStationExisted = isExistsStation(downStation);
 
         validateStation(isUpStationExisted, isDownStationExisted);
 
@@ -33,12 +33,8 @@ public class Sections {
         }
     }
 
-    private boolean isExistsUpStation(Station upStation){
-        return getStations().stream().anyMatch(it -> it == upStation);
-    }
-
-    private boolean isExistsDownStation(Station downStation){
-        return getStations().stream().anyMatch(it -> it == downStation);
+    private boolean isExistsStation(Station station){
+        return getStations().stream().anyMatch(it -> it == station);
     }
 
     private void validateStation(boolean isUpStationExisted, boolean isDownStationExisted){
@@ -147,5 +143,9 @@ public class Sections {
         }
 
         return downStation;
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 }
