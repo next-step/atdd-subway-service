@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PathFinderTest {
 
@@ -56,5 +57,14 @@ class PathFinderTest {
 
         assertThat(path.getStations()).containsExactly(교대역, 남부터미널역, 양재역);
         assertThat(path.getDistance()).isEqualTo(5);
+    }
+
+    @DisplayName("출발지와 목적지가 같은 최단 경로를 조회한다.")
+    @Test
+    void find_shortest_path_same_station() {
+        assertThatThrownBy(() ->
+            pathFinder.findShortestPath(교대역, 교대역)
+        ).isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("출발지와 목적지가 같을 수 없습니다.");
     }
 }
