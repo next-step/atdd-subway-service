@@ -79,10 +79,6 @@ class PathServiceMockTest {
         lineE.addSection(new Section(lineE, stationE, stationF, new Distance(2)));
     }
 
-//    출발역과 도착역이 같은 경우 조회할 수 없다.
-//    출발역과 도착역이 연결이 되어 있지 않은 경우 조회할 수 없다.
-//    존재하지 않은 출발역이나 도착역을 조회 할 경우 조회할 수 없다.
-
     @DisplayName("최단 경로를 조회")
     @Test
     void findPath() {
