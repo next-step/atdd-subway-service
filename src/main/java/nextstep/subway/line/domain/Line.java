@@ -2,12 +2,14 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.CannotAddSectionException;
+import nextstep.subway.exception.CannotRemoveSectionException;
 import nextstep.subway.exception.DuplicatedSectionException;
 import nextstep.subway.exception.NotAllowRegisterSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -98,6 +100,33 @@ public class Line extends BaseEntity {
         return !isStationsEmpty()
                 && this.sections.isStationNotExisted(upStation)
                 && this.sections.isStationNotExisted(downStation);
+    }
+
+    public void removeLineStation(Station station) {
+        validateRemoveSection();
+
+        Optional<Section> upLineStation = this.getSections().stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = this.getSections().stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().plus(downLineStation.get().getDistance());
+            this.addSection(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(this::deleteSection);
+        downLineStation.ifPresent(this::deleteSection);
+    }
+
+    private void validateRemoveSection() {
+        if (this.getSections().size() <= 1) {
+            throw new CannotRemoveSectionException();
+        }
     }
 
     public Long getId() {

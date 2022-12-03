@@ -51,9 +51,9 @@ npm run dev
   - [X] updateLine
   - [X] addLineStation
     - 비즈니스 로직 도메인으로 이동
-  - [ ] removeLineStation
-  - [ ] getStations
-  - [ ] findUpStation
+  - [X] removeLineStation
+    - 비즈니스 로직 도메인으로 이동
+
 - LineSectionAcceptanceTest 리팩터링
   - [ ] 시나리오, 흐름을 검증하는 테스트로 리팩터링 하기
 
