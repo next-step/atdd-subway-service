@@ -57,9 +57,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         공사중인역 = 지하철역_등록되어_있음("공사중인역").as(StationResponse.class);
         공사중인역2 = new StationResponse(10L, "공사중인역2", LocalDateTime.now(), LocalDateTime.now());
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10))
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 900))
                 .as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 1000))
+                .as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 남부터미널역.getId(), 5))
                 .as(LineResponse.class);
         지하철_노선에_지하철역_등록되어_있음(삼호선, 남부터미널역, 양재역, 3);
@@ -76,7 +77,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * <p>  And 총 거리도 함께 응답함
      * <p>  And 지하철 이용 요금도 함께 응답함
      */
-    @DisplayName("최단 경로를 조회한다")
+    @DisplayName("로그인 상태로 최단 경로를 조회한다")
     @Test
     void findShortestPathWithAuth() {
         //given 회원 등록되어 있음
@@ -91,7 +92,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 로그인_상태로_출발역과_도착역_입력(accessToken, 남부터미널역, 강남역);
 
         //then
-        최단_경로가_조회됨(response, 13, 850, 남부터미널역, 양재역, 강남역);
+        최단_경로가_조회됨(response, 13, 1350, 남부터미널역, 양재역, 강남역);
     }
 
     /**
@@ -103,14 +104,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * <p>  And 총 거리도 함께 응답함
      * <p>  And 지하철 이용 요금도 함께 응답함
      */
-    @DisplayName("최단 경로를 조회한다")
+    @DisplayName("비로그인 상태로 최단 경로를 조회한다")
     @Test
     void findShortestPathWithOutAuth() {
         //when
         ExtractableResponse<Response> response = 출발역과_도착역_입력(남부터미널역, 강남역);
 
         //then
-        최단_경로가_조회됨(response, 13, 1350, 남부터미널역, 양재역, 강남역);
+        최단_경로가_조회됨(response, 13, 2350, 남부터미널역, 양재역, 강남역);
     }
 
     /**

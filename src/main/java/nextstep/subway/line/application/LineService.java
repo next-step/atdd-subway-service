@@ -30,7 +30,8 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository
-                .save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+                .save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(),
+                        request.getExtraCost()));
         List<StationResponse> stations = persistLine.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
