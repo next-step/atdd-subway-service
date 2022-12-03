@@ -3,6 +3,8 @@ package nextstep.subway.path.domain;
 import java.util.List;
 import java.util.Objects;
 import java.util.OptionalInt;
+import java.util.Set;
+import java.util.stream.Collectors;
 import nextstep.subway.line.domain.ExtraFare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
@@ -20,8 +22,6 @@ public class PathFinder {
 
     private final WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
 
-    private final ExtraFare extraFare;
-
     private PathFinder(List<Line> lines) {
         lines.forEach(line -> {
             line.getStations()
@@ -34,11 +34,6 @@ public class PathFinder {
                     graph.setEdgeWeight(sectionEdge, section.getDistance().value());
                 });
         });
-        extraFare = ExtraFare.from(lines.stream()
-            .map(line -> line.getExtraFare().value())
-            .mapToInt(x -> x)
-            .max()
-            .getAsInt());
     }
 
     public static PathFinder from(List<Line> lines) {
@@ -53,7 +48,7 @@ public class PathFinder {
         validateNotConnect(shortestPath);
         List<Station> shortestPathVertexes = shortestPath.getVertexList();
         double shortestPathWeight = shortestPath.getWeight();
-        return Path.of(shortestPathVertexes, (int) shortestPathWeight, extraFare.value());
+        return Path.of(shortestPathVertexes, (int) shortestPathWeight, getLineExtraFare(shortestPath));
     }
 
     private void validateSameStation(Station sourceStation, Station targetStation) {
@@ -76,5 +71,17 @@ public class PathFinder {
 
     private boolean isContainsStation(Station sourceStation, Station targetStation) {
         return !graph.containsVertex(sourceStation) || !graph.containsVertex(targetStation);
+    }
+
+    private int getLineExtraFare(GraphPath<Station, SectionEdge> shortestPath) {
+        return shortestPath.getEdgeList()
+            .stream()
+            .map(SectionEdge::getLine)
+            .collect(Collectors.toList())
+            .stream()
+            .map(line -> line.getExtraFare().value())
+            .mapToInt(x -> x)
+            .max()
+            .getAsInt();
     }
 }

@@ -13,6 +13,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.domain.ExtraFare;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,18 +54,40 @@ public class ExtraFareAcceptanceTest extends AcceptanceTest {
         종로3가역 = 지하철역_등록되어_있음("종로3가역").as(StationResponse.class);
 
         이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 강남역.getId(), 영등포구청역.getId(), 8, 이호선_추가요금)).as(LineResponse.class);
-        지하철_노선에_지하철역_등록_요청(이호선, 영등포구청역, 신당역, 13);
+        지하철_노선에_지하철역_등록_요청(이호선, 영등포구청역, 신당역, 49);
         오호선 = 지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-red-600", 마곡역.getId(), 영등포구청역.getId(), 9, 오호선_추가요금)).as(LineResponse.class);
-        지하철_노선에_지하철역_등록_요청(오호선, 영등포구청역, 종로3가역, 11);
+        지하철_노선에_지하철역_등록_요청(오호선, 영등포구청역, 종로3가역, 70);
     }
 
-    @DisplayName("기본 요금을 조회한다.")
+    @DisplayName("거리가 0KM ~ 10KM 사이인 경우 기본 요금을 조회한다.")
     @Test
     void basicExtraFare() {
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(강남역, 영등포구청역);
 
         지하철_최단경로_조회_요청_응답됨(response);
-        지하철_최단경로_요금_확인됨(response, ExtraFare.BASIC);
+        지하철_최단경로_요금_확인됨(response, 이호선_추가요금 + ExtraFare.BASIC);
+    }
+
+    @DisplayName("거리가 11KM ~ 50KM 사이인 경우 5KM당 100원의 추가 요금이 발생한다.")
+    @Test
+    void middleExtraFare() {
+        int 추가요금 = 800;
+
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(영등포구청역, 신당역);
+
+        지하철_최단경로_조회_요청_응답됨(response);
+        지하철_최단경로_요금_확인됨(response, 이호선_추가요금 + ExtraFare.BASIC + 추가요금);
+    }
+
+    @DisplayName("거리가 11KM ~ 50KM 사이인 경우 5KM당 100원의 추가 요금이 발생한다.")
+    @Test
+    void longExtraFare() {
+        int 추가요금 = 1100;
+
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(영등포구청역, 종로3가역);
+
+        지하철_최단경로_조회_요청_응답됨(response);
+        지하철_최단경로_요금_확인됨(response, 오호선_추가요금 + ExtraFare.BASIC + 추가요금);
     }
 
     @DisplayName("노선의 추가요금을 더한 값을 계산한다.")
