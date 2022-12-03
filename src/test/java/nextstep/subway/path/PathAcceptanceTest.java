@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.line.acceptance.LineAcceptanceTest;
+import nextstep.subway.line.acceptance.LineAcceptanceSupport;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -147,7 +147,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     private LineResponse 지하철_노선_등록되어_있음(
             String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        return LineAcceptanceTest.지하철_노선_등록되어_있음(
+        return LineAcceptanceSupport.지하철_노선_등록되어_있음(
                 new LineRequest(name, color, upStation.getId(), downStation.getId(), distance)).as(LineResponse.class);
     }
 }
