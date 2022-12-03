@@ -23,14 +23,6 @@ public class Fare {
         this.value = isDiscountableAge(calculateExtraCharge(distance) + extraCharge, age) ;
     }
 
-    public static Fare of(int distance) {
-        return new Fare(distance);
-    }
-
-    public static Fare of(int distance, int age) {
-        return new Fare(distance, age);
-    }
-
     public static Fare of(int distance, int extraCharge, int age) {
         return new Fare(distance, extraCharge, age);
     }
