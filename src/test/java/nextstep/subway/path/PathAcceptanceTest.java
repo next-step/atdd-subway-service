@@ -48,7 +48,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * 남부터미널역  --- *3호선* ---   양재
      */
 
-    @DisplayName("지하철 구간 관리 시나리오 테스트")
+    @DisplayName("최단 경로 조회 시나리오 테스트")
     @TestFactory
     Stream<DynamicNode> scenario() {
         return Stream.of(
