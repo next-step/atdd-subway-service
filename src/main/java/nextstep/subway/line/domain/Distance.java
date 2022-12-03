@@ -20,7 +20,11 @@ public class Distance {
     }
 
     public Distance(double value) {
-        this(Double.valueOf(value).intValue());
+        this((int) value);
+    }
+
+    public static Distance valueOf(int value) {
+        return new Distance(value);
     }
 
     private Distance subtract(int newDistance) {
@@ -48,6 +52,18 @@ public class Distance {
 
     public int toInt() {
         return value;
+    }
+
+    public Distance minus(Distance other) {
+        return Distance.valueOf(value - other.value);
+    }
+
+    public boolean isLessThan(Distance compareDistance) {
+        return value < compareDistance.value;
+    }
+
+    public Distance divide(Distance other) {
+        return Distance.valueOf(value / other.value);
     }
 
     @Override
