@@ -8,16 +8,10 @@ public class FareAgeCalculator {
 
     public static Fare calculate(int fare, int age) {
         FareAge fareAge = FareAge.findByAge(age);
-
-        if (fareAge == FareAge.ADULT) {
-            return Fare.from(calculateOverFare(fare, fareAge.getRate(), 0));
-        }
-
-        return Fare.from(calculateOverFare(fare, fareAge.getRate(), DISCOUNT_FARE));
+        return Fare.from(calculateFare(fare, fareAge.getRate()));
     }
 
-    private static int calculateOverFare(int fare, double rate, int discountFare) {
-        int a = 1;
-        return (int) ((fare - discountFare) * rate);
+    private static int calculateFare(int fare, double rate) {
+        return (int) ((fare - DISCOUNT_FARE) * rate);
     }
 }

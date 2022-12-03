@@ -19,7 +19,7 @@ public class PathResponse {
         this.fare = fare;
     }
 
-    public static PathResponse from(List<Station> stations, int distance, int fare) {
+    public static PathResponse of(List<Station> stations, int distance, int fare) {
         List<StationResponse> stationResponses = stations.stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());

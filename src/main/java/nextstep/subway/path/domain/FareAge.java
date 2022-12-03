@@ -1,7 +1,6 @@
 package nextstep.subway.path.domain;
 
 import java.util.Arrays;
-import nextstep.subway.common.exception.SubwayException;
 
 public enum FareAge {
 
