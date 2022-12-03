@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.subway.line.acceptance.LineSteps.지하철_노선_생성_요청;
-import static nextstep.subway.line.domain.LineFixture.*;
 import static nextstep.subway.path.PathSteps.지하철_경로_조회_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,11 +19,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
 
+    private Long lineA;
+    private Long lineB;
+    private Long lineC;
+    private Long lineD;
+    private Long lineE;
+
     private Long stationA;
     private Long stationB;
     private Long stationC;
     private Long stationD;
+    private Long stationE;
+    private Long stationF;
 
+    /**
+     * stationA  --- lineD    --- stationD                      stationF
+     * /             거리 1        /                              /
+     * *lineA* 거리 5                lineC 거리 1               *lineE* 거리 2
+     * /                             /                            /
+     * stationB  ---   lineB ---  stationC                      stationE
+     * 거리 3
+     */
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -32,8 +47,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         stationB = 지하철역_생성_요청("B").jsonPath().getLong("id");
         stationC = 지하철역_생성_요청("C").jsonPath().getLong("id");
         stationD = 지하철역_생성_요청("D").jsonPath().getLong("id");
-    }
+        stationE = 지하철역_생성_요청("E").jsonPath().getLong("id");
+        stationF = 지하철역_생성_요청("F").jsonPath().getLong("id");
 
+        lineA = 지하철_노선_생성_요청(createLineCreateParams("A", "red", stationA, stationB, 5)).jsonPath().getLong("id");
+        lineB = 지하철_노선_생성_요청(createLineCreateParams("B", "blue", stationB, stationC, 3)).jsonPath().getLong("id");
+        lineC = 지하철_노선_생성_요청(createLineCreateParams("C", "yellow", stationC, stationD, 1)).jsonPath().getLong("id");
+        lineD = 지하철_노선_생성_요청(createLineCreateParams("D", "orange", stationD, stationA, 1)).jsonPath().getLong("id");
+        lineE = 지하철_노선_생성_요청(createLineCreateParams("E", "grey", stationE, stationF, 2)).jsonPath().getLong("id");
+    }
 
     /*
         Scenario: 출발역과 도착역이 같은 두 역의 최단 거리 경로를 조회
@@ -48,12 +70,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     */
     @Test
     void findPath_fail_sameStation() {
-        지하철_노선_생성_요청(createLineCreateParams(LINE_A_NAME, LINE_A_COLOR, stationA, stationB, 5)).jsonPath().getLong("id");
-        지하철_노선_생성_요청(createLineCreateParams(LINE_B_NAME, LINE_B_COLOR, stationC, stationD, 5)).jsonPath().getLong("id");
-
-        ExtractableResponse<Response> response = 지하철_경로_조회_요청(stationA, stationC);
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(stationA, stationA);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-
     }
 
     /*
