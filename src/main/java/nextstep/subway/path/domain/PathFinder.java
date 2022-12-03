@@ -18,7 +18,7 @@ public class PathFinder {
 
     private final static String NOT_EXIST_STATION_ERROR = "지하철 역이 존재하지 않습니다.";
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private final WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
 
     private PathFinder(List<Line> lines) {
         lines.forEach(line -> {
@@ -27,7 +27,9 @@ public class PathFinder {
             line.getSections()
                 .getSections()
                 .forEach(section -> {
-                    graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().value());
+                    SectionEdge sectionEdge = new SectionEdge(section);
+                    graph.addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
+                    graph.setEdgeWeight(sectionEdge, section.getDistance().value());
                 });
         });
     }
@@ -39,8 +41,8 @@ public class PathFinder {
     public Path findShortestPath(Station sourceStation, Station targetStation) {
         validateSameStation(sourceStation, targetStation);
         validateNotExistStation(sourceStation, targetStation);
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, SectionEdge> shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         validateNotConnect(shortestPath);
         List<Station> shortestPathVertexes = shortestPath.getVertexList();
         double shortestPathWeight = shortestPath.getWeight();
@@ -53,7 +55,7 @@ public class PathFinder {
         }
     }
 
-    private void validateNotConnect(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
+    private void validateNotConnect(GraphPath<Station, SectionEdge> shortestPath) {
         if (Objects.isNull(shortestPath)) {
             throw new IllegalArgumentException(STATION_NOT_CONNECT_ERROR);
         }
