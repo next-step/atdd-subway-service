@@ -14,6 +14,11 @@ import java.util.stream.Collectors;
 
 public class PathFinder {
     private final SubwayGraph graph;
+    public static final int BASIC_FARE = 1250;
+    public static final int ADDITIONAL_FARE_DISTANCE_LEVEL1 = 10;
+    public static final int ADDITIONAL_FARE_DISTANCE_LEVEL2 = 50;
+    public static final int DISTANCE_UNIT_LEVEL1 = 5;
+    public static final int DISTANCE_UNIT_LEVEL2 = 8;
 
     private PathFinder(List<Line> lines) {
         this.graph = new SubwayGraph(DefaultWeightedEdge.class, lines);
@@ -32,8 +37,24 @@ public class PathFinder {
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
+        int additionalFare = calculateAdditionalFare(shortestPath.getWeight());
+        return new PathResponse(responses, (int) shortestPath.getWeight(), additionalFare);
+    }
 
-        return new PathResponse(responses, (int) shortestPath.getWeight());
+    private int calculateAdditionalFare(final double weight) {
+        if (weight > ADDITIONAL_FARE_DISTANCE_LEVEL2) {
+            return BASIC_FARE + calculateOverFare(weight - ADDITIONAL_FARE_DISTANCE_LEVEL2, DISTANCE_UNIT_LEVEL2);
+        }
+
+        if (weight > ADDITIONAL_FARE_DISTANCE_LEVEL1) {
+            return BASIC_FARE + calculateOverFare(weight - ADDITIONAL_FARE_DISTANCE_LEVEL1, DISTANCE_UNIT_LEVEL1);
+        }
+
+        return BASIC_FARE;
+    }
+
+    private int calculateOverFare(double distance, int distanceUnit) {
+        return (int) ((Math.floor((distance - 1) / distanceUnit) + 1) * 100);
     }
 
     private void validate(final GraphPath<Station, DefaultWeightedEdge> shortestPath) {

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static nextstep.subway.Fixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,9 +46,9 @@ class PathFinderTest {
         사당역 = createStation("사당역", 6L);
         신분당선 = createLine("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = createLine("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = createLine("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        삼호선 = createLine("삼호선", "bg-red-600", 교대역, 양재역, 10);
         사호선 = createLine("사호선", "bg-red-600", 명동역, 사당역, 30);
-        삼호선.addSection(createSection(교대역, 남부터미널역, 3));
+        삼호선.addSection(createSection(교대역, 남부터미널역, 8));
     }
 
     @DisplayName("최단 경로 조회에 성공한다.")
@@ -60,6 +61,39 @@ class PathFinderTest {
         assertThat(shortestPath.getStations().stream().map(StationResponse::getId))
                 .containsExactly(강남역.getId(), 양재역.getId(), 남부터미널역.getId());
         assertThat(shortestPath.getDistance()).isEqualTo(12);
+    }
+
+    @DisplayName("10km 이내 경로 조회 시 기본운임 1,250원 요금 정보가 포함된다")
+    @Test
+    void getShortestPath_basicFare() {
+        PathFinder pathFinder = PathFinder.from(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        PathResponse shortestPath = pathFinder.getShortestPath(강남역, 양재역);
+
+        assertThat(shortestPath.getDistance()).isEqualTo(10);
+        assertThat(shortestPath.getAdditionalFare()).isEqualTo(1250);
+    }
+
+    @DisplayName("10km 초과 ∼ 50km 이내 경로 조회 시 5km마다 100원 추가된 요금 정보가 포함된다")
+    @Test
+    void getShortestPath_additionalFare_level1() {
+        PathFinder pathFinder = PathFinder.from(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        PathResponse shortestPath = pathFinder.getShortestPath(강남역, 남부터미널역);
+
+        assertThat(shortestPath.getDistance()).isEqualTo(12);
+        assertThat(shortestPath.getAdditionalFare()).isEqualTo(1350);
+    }
+
+    @DisplayName("50km 초과 경로 조회 시 8km마다 100원 추가된 요금 정보가 포함된다")
+    @Test
+    void getShortestPath_additionalFare_level2() {
+        PathFinder pathFinder = PathFinder.from(Collections.singletonList(사호선));
+
+        PathResponse shortestPath = pathFinder.getShortestPath(명동역, 사당역);
+
+        assertThat(shortestPath.getDistance()).isEqualTo(30);
+        assertThat(shortestPath.getAdditionalFare()).isEqualTo(1650);
     }
 
     @DisplayName("최단 경로를 조회 시, 출발역과 도착역이 같으면 예외를 반환한다.")
