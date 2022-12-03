@@ -17,6 +17,7 @@ public class Path {
 
     private Path(List<Station> stations, Distance distance, Fare fare) {
         validatePathStations(stations);
+        validatePathDistance(distance);
         this.stations = new ArrayList<>(stations);
         this.distance = distance;
         this.fare = fare;
@@ -29,6 +30,12 @@ public class Path {
     private void validatePathStations(List<Station> stations) {
         if(stations == null || stations.isEmpty()) {
             throw new IllegalArgumentException(ErrorCode.경로는_비어있을_수_없음.getErrorMessage());
+        }
+    }
+
+    private void validatePathDistance(Distance distance) {
+        if(distance.isZero()) {
+            throw new IllegalArgumentException(ErrorCode.노선거리는_0보다_작거나_같을_수_없음.getErrorMessage());
         }
     }
 

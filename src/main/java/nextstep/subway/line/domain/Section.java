@@ -33,18 +33,20 @@ public class Section {
 
     public Section() {}
 
-    private Section(Line line, Station upStation, Station downStation, int distance) {
+    private Section(Line line, Station upStation, Station downStation, int intDistance) {
         validateLine(line);
         validateStations(upStation, downStation);
+        Distance distance = Distance.from(intDistance);
+        validateSectionDistance(distance);
 
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = Distance.from(distance);
+        this.distance = distance;
     }
 
-    public static Section of(Line line, Station upStation, Station downStation, int distance) {
-        return new Section(line, upStation, downStation, distance);
+    public static Section of(Line line, Station upStation, Station downStation, int intDistance) {
+        return new Section(line, upStation, downStation, intDistance);
     }
 
     private void validateLine(Line line) {
@@ -58,6 +60,12 @@ public class Section {
         validateDownStation(downStation);
         if(upStation.equals(downStation)) {
             throw new IllegalArgumentException(ErrorCode.구간의_상행역과_하행역이_동일할_수_없음.getErrorMessage());
+        }
+    }
+
+    private void validateSectionDistance(Distance distance) {
+        if(distance.isZero()) {
+            throw new IllegalArgumentException(ErrorCode.노선거리는_0보다_작거나_같을_수_없음.getErrorMessage());
         }
     }
 
@@ -87,11 +95,13 @@ public class Section {
 
     public void updateUpStation(Section section) {
         this.distance = this.distance.subtract(section.distance);
+        validateSectionDistance(this.distance);
         this.upStation = section.downStation;
     }
 
     public void updateDownStation(Section section) {
         this.distance = this.distance.subtract(section.distance);
+        validateSectionDistance(this.distance);
         this.downStation = section.upStation;
     }
 

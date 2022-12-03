@@ -25,8 +25,8 @@ public class Distance {
     }
 
     private void validateDistance(int distance) {
-        if(distance <= ZERO) {
-            throw new IllegalArgumentException(ErrorCode.노선거리는_0보다_작거나_같을_수_없음.getErrorMessage());
+        if(distance < ZERO) {
+            throw new IllegalArgumentException(ErrorCode.거리는_0보다_작을_수_없음.getErrorMessage());
         }
     }
 
@@ -42,8 +42,12 @@ public class Distance {
         return new Distance(this.distance + distance.distance);
     }
 
-    public boolean isBiggerThen(int distance) {
-        return this.distance > distance;
+    public boolean isBiggerThen(Distance distance) {
+        return this.distance > distance.distance;
+    }
+
+    public boolean isZero() {
+        return this.distance == ZERO;
     }
 
     public int divideAndCeil(Distance distance) {

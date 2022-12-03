@@ -33,6 +33,7 @@ public enum ErrorCode {
     나누는_값은_0일_수_없음("[ERROR] 나누는 값은 0일 수 없습니다."),
     요금은_0보다_작을_수_없음("[ERROR] 요금은 0보다 작을 수 없습니다."),
     해당하는_구간_없음("[ERROR] 해당하는 구간이 없습니다."),
+    거리는_0보다_작을_수_없음("[ERROR] 거리는 0보다 작을 수 없습니다."),
     ;
 
     private final String errorMessage;

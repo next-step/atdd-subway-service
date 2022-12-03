@@ -29,13 +29,22 @@ public class PathTest {
 
     @DisplayName("경로 생성 시, 거리가 음수이면 생성되지 않는다.")
     @ParameterizedTest
-    @ValueSource(ints = {-1,-2,0})
-    void createPathThrowErrorWhenDistanceSmallerThanOne(int distance) {
+    @ValueSource(ints = {-1,-2,-3})
+    void createPathThrowErrorWhenDistanceSmallerThanZero(int distance) {
         // when & then
         assertThatThrownBy(() -> Path.of(Arrays.asList(createStation("강남역"), createStation("역삼역")), Distance.from(distance), Fare.from(0)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.노선거리는_0보다_작거나_같을_수_없음.getErrorMessage());
+                .hasMessage(ErrorCode.거리는_0보다_작을_수_없음.getErrorMessage());
 
+    }
+
+    @DisplayName("경로 생성 시, 거리가 0이면 생성되지 않는다.")
+    @Test
+    void createPathThrowErrorWhenDistanceIsZero() {
+        // when & then
+        assertThatThrownBy(() -> Path.of(Arrays.asList(createStation("강남역"), createStation("역삼역")), Distance.from(0), Fare.from(0)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorCode.노선거리는_0보다_작거나_같을_수_없음.getErrorMessage());
     }
 
     @DisplayName("어린이일 경우, 성인 경로 요금에서 350원을 제한 후 50% 할인 해준다.")

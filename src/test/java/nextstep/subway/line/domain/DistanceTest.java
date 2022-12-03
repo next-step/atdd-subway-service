@@ -14,13 +14,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 @DisplayName("거리 관련 도메인 테스트")
 public class DistanceTest {
 
-    @ParameterizedTest(name = "길이 생성 시, 길이가 0보다 작거나 같으면 에러가 발생한다.(distance: {0})")
-    @ValueSource(ints = {0, -1, -5})
-    void createDistanceThrowErrorWhenDistanceLessThenOrEqualToZero(int distance) {
+    @ParameterizedTest(name = "길이 생성 시, 길이가 0보다 작으면 에러가 발생한다.(distance: {0})")
+    @ValueSource(ints = {-10, -1, -5})
+    void createDistanceThrowErrorWhenDistanceLessThenZero(int distance) {
         // when & then
         assertThatThrownBy(() -> Distance.from(distance))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.노선거리는_0보다_작거나_같을_수_없음.getErrorMessage());
+                .hasMessage(ErrorCode.거리는_0보다_작을_수_없음.getErrorMessage());
     }
 
     @DisplayName("길이를 생성하면 조회할 수 있다.")
@@ -79,7 +79,7 @@ public class DistanceTest {
         // when & then
         assertThatThrownBy(() -> distance.subtract(subtractDistance))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.노선거리는_0보다_작거나_같을_수_없음.getErrorMessage());
+                .hasMessage(ErrorCode.거리는_0보다_작을_수_없음.getErrorMessage());
     }
 
     @DisplayName("길이에서 길이를 더하면 새로운 길이가 나온다.")
@@ -105,7 +105,7 @@ public class DistanceTest {
         Distance distance = Distance.from(actual);
 
         // when
-        boolean isBiggerThan = distance.isBiggerThen(compare);
+        boolean isBiggerThan = distance.isBiggerThen(Distance.from(compare));
 
         // then
         assertAll(
@@ -121,7 +121,7 @@ public class DistanceTest {
         Distance distance = Distance.from(actual);
 
         // when
-        boolean isBiggerThan = distance.isBiggerThen(compare);
+        boolean isBiggerThan = distance.isBiggerThen(Distance.from(compare));
 
         // then
         assertAll(
