@@ -29,7 +29,7 @@ public class PathResponse {
         return new PathResponse(
                 toList(path.getStations()),
                 path.getDistance(),
-                DistanceFare.calculateDistanceFare(path.getDistance())
+                path.getExtraFare()
         );
     }
 
