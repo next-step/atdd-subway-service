@@ -226,7 +226,7 @@ Connection: keep-alive
 ## 3단계 - 인증을 통한 기능 구현
 
 ### 기능 목록 작성
-- [ ] 토큰 발급 기능(로그인) 인수 테스트
+- [x] 토큰 발급 기능(로그인) 인수 테스트
   - 토큰 발급 정상 케이스에 대한 인수 테스트 만들기
     ```text
     Feature: 로그인 기능
@@ -301,7 +301,7 @@ Connection: keep-alive
      Then 즐겨찾기 삭제됨
   ```
 
-### 즐겨찾기 관련 Request / Response
+#### 즐겨찾기 관련 Request / Response
 - 즐겨찾기 생성 요청 / 응답
 ```http request
 POST /favorites HTTP/1.1
