@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FavoriteAcceptanceStep {
 
     private static final String FAVORITES = "/favorites";
+    public static final Long NOT_EXIST_FAVORITE_ID = Long.MAX_VALUE;
 
     static ExtractableResponse<Response> 즐겨찾기_생성_요청(TokenResponse token,
                                                     StationResponse sourceStation,
@@ -59,7 +60,7 @@ public class FavoriteAcceptanceStep {
     }
 
     static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, StationResponse ...expectedStations) {
-        List<FavoriteResponse> favoriteResponses = response.body().as(new TypeRef<List<FavoriteResponse>>() {});
+        List<FavoriteResponse> favoriteResponses = toFavoritesResponseList(response);
 
         assertThat(Stream.concat(
                 favoriteResponses.stream()
@@ -70,23 +71,39 @@ public class FavoriteAcceptanceStep {
                 .containsExactlyInAnyOrderElementsOf(getStationsName(expectedStations));
     }
 
+    private static List<FavoriteResponse> toFavoritesResponseList(ExtractableResponse<Response> response) {
+        return response.body().as(new TypeRef<List<FavoriteResponse>>() {});
+    }
+
     private static List<String> getStationsName(StationResponse ...stations) {
         return Arrays.stream(stations)
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
     }
 
-    static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse token, ExtractableResponse<Response> response) {
+
+    static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse token, String uri) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token.getAccessToken())
-                .when().delete(response.header(HttpHeaders.LOCATION))
+                .when().delete(uri)
                 .then().log().all()
                 .extract();
+    }
 
+    static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse token, ExtractableResponse<Response> response) {
+        return 즐겨찾기_삭제_요청(token, response.header(HttpHeaders.LOCATION));
+    }
+
+    static ExtractableResponse<Response> 존재하지_않는_즐겨찾기_삭제_요청(TokenResponse token) {
+        return 즐겨찾기_삭제_요청(token, FAVORITES + "/" + NOT_EXIST_FAVORITE_ID);
     }
 
     static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    static void 즐겨찾기_삭제_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

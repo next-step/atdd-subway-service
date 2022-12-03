@@ -10,14 +10,17 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.MembersMeAcceptanceStep;
 import nextstep.subway.station.dto.StationResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.auth.application.AuthServiceTest.AGE;
 import static nextstep.subway.auth.application.AuthServiceTest.EMAIL;
 import static nextstep.subway.auth.application.AuthServiceTest.PASSWORD;
+import static nextstep.subway.favorite.FavoriteAcceptanceStep.존재하지_않는_즐겨찾기_삭제_요청;
 import static nextstep.subway.favorite.FavoriteAcceptanceStep.즐겨찾기_목록_조회_요청;
 import static nextstep.subway.favorite.FavoriteAcceptanceStep.즐겨찾기_목록_조회됨;
+import static nextstep.subway.favorite.FavoriteAcceptanceStep.즐겨찾기_삭제_실패함;
 import static nextstep.subway.favorite.FavoriteAcceptanceStep.즐겨찾기_삭제_요청;
 import static nextstep.subway.favorite.FavoriteAcceptanceStep.즐겨찾기_삭제됨;
 import static nextstep.subway.favorite.FavoriteAcceptanceStep.즐겨찾기_생성_요청;
@@ -44,6 +47,18 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
      *    And 지하철 노선에 지하철역 등록되어 있음
      *    And 회원 등록되어 있음
      *    And 로그인 되어있음
+     */
+    @BeforeEach
+    void setup() {
+        지하철역_등록되어_있음();
+        지하철_노선_등록되어_있음();
+        지하철_노선에_지하철역_등록되어_있음();
+
+        회원_등록되어_있음();
+        로그인_되어있음();
+    }
+
+    /**
      *  Scenario: 즐겨찾기를 관리
      *    When 즐겨찾기 생성을 요청
      *    Then 즐겨찾기 생성됨
@@ -55,12 +70,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 관리한다")
     @Test
     void manageMyFavorites() {
-        지하철역_등록되어_있음();
-        지하철_노선_등록되어_있음();
-        지하철_노선에_지하철역_등록되어_있음();
-
-        회원_등록되어_있음();
-        로그인_되어있음();
 
         ExtractableResponse<Response> 생성_응답 = 즐겨찾기_생성_요청(로그인_토큰, 양재역, 강남역);
         즐겨찾기_생성됨(생성_응답);
@@ -70,6 +79,27 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> 삭제_응답 = 즐겨찾기_삭제_요청(로그인_토큰, 생성_응답);
         즐겨찾기_삭제됨(삭제_응답);
+    }
+
+
+    /**
+     *  Scenario: 존재하지 않는 즐겨찾기를 삭제할 수 없다
+     *    When 즐겨찾기 생성을 요청
+     *    Then 즐겨찾기 생성됨
+     *    When 존재하지 않는 즐겨찾기 삭제 요청
+     *    Then 즐겨찾기 삭제되지 않음
+     */
+    @DisplayName("존재하지 않는 즐겨찾기를 삭제할 수 없다")
+    @Test
+    void deleteNotExistFavoriteException() {
+        ExtractableResponse<Response> 생성_응답 = 즐겨찾기_생성_요청(로그인_토큰, 양재역, 강남역);
+        즐겨찾기_생성됨(생성_응답);
+
+        ExtractableResponse<Response> 조회_응답 = 즐겨찾기_목록_조회_요청(로그인_토큰);
+        즐겨찾기_목록_조회됨(조회_응답, 양재역, 강남역);
+
+        ExtractableResponse<Response> 삭제_응답 = 존재하지_않는_즐겨찾기_삭제_요청(로그인_토큰);
+        즐겨찾기_삭제_실패함(삭제_응답);
     }
 
     private void 지하철_노선에_지하철역_등록되어_있음() {
