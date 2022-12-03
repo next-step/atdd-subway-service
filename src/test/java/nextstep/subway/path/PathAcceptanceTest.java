@@ -88,7 +88,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     */
     @Test
     void findPath_fail_notConnect() {
-        ExtractableResponse<Response> response = 지하철_경로_조회_요청(stationA, stationF);d
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(stationA, stationF);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -120,6 +120,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     */
     @Test
     void findPath_fail_notExist() {
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(100L, stationF);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     private Map<String, String> createLineCreateParams(String name, String color, Long upStationId, Long downStationId, int distance) {
