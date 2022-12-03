@@ -79,7 +79,7 @@ public class ExtraFareAcceptanceTest extends AcceptanceTest {
         지하철_최단경로_요금_확인됨(response, 이호선_추가요금 + ExtraFare.BASIC + 추가요금);
     }
 
-    @DisplayName("거리가 11KM ~ 50KM 사이인 경우 5KM당 100원의 추가 요금이 발생한다.")
+    @DisplayName("거리가 51KM ~ 178KM 사이인 경우 8KM당 100원의 추가 요금이 발생한다.")
     @Test
     void longExtraFare() {
         int 추가요금 = 1100;
