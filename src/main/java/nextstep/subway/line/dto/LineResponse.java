@@ -1,7 +1,7 @@
 package nextstep.subway.line.dto;
 
 import java.util.stream.Collectors;
-import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Color;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Name;

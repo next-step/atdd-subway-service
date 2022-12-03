@@ -1,8 +1,10 @@
-package nextstep.subway.fare.domain;
+package nextstep.subway.line.domain;
 
-import static nextstep.subway.fare.domain.AgeFarePolicy.findAgeFarePolicy;
+import static nextstep.subway.line.domain.AgeFarePolicy.findAgeFarePolicy;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import nextstep.subway.line.domain.AgeFarePolicy;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.member.domain.Age;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

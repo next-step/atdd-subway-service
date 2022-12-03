@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import nextstep.subway.common.constant.ErrorCode;
-import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;

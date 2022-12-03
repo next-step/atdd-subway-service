@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;

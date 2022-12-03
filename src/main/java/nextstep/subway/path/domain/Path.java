@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import nextstep.subway.common.constant.ErrorCode;
-import nextstep.subway.fare.domain.AgeFarePolicy;
-import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.line.domain.AgeFarePolicy;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.station.domain.Station;
 

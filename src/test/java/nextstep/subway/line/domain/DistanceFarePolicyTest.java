@@ -1,9 +1,11 @@
-package nextstep.subway.fare.domain;
+package nextstep.subway.line.domain;
 
-import static nextstep.subway.fare.domain.DistanceFarePolicy.findDistanceFarePolicy;
+import static nextstep.subway.line.domain.DistanceFarePolicy.findDistanceFarePolicy;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.DistanceFarePolicy;
+import nextstep.subway.line.domain.Fare;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

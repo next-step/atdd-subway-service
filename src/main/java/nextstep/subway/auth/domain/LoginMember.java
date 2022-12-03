@@ -1,6 +1,6 @@
 package nextstep.subway.auth.domain;
 
-import nextstep.subway.fare.domain.AgeFarePolicy;
+import nextstep.subway.line.domain.AgeFarePolicy;
 import nextstep.subway.member.domain.Age;
 import nextstep.subway.member.domain.Email;
 

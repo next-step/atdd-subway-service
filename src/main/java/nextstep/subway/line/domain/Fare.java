@@ -1,12 +1,10 @@
-package nextstep.subway.fare.domain;
+package nextstep.subway.line.domain;
 
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import nextstep.subway.common.constant.ErrorCode;
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Line;
 
 @Embeddable
 public class Fare implements Comparable<Fare> {

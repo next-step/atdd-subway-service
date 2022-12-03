@@ -1,9 +1,8 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.constant.ErrorCode;
-import nextstep.subway.fare.domain.AgeFarePolicy;
+import nextstep.subway.line.domain.AgeFarePolicy;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.DijkstraPathFinder;

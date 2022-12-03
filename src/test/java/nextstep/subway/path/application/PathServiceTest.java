@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import nextstep.subway.common.constant.ErrorCode;
-import nextstep.subway.fare.domain.AgeFarePolicy;
+import nextstep.subway.line.domain.AgeFarePolicy;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;

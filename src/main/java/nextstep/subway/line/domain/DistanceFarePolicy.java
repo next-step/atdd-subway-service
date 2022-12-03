@@ -1,7 +1,6 @@
-package nextstep.subway.fare.domain;
+package nextstep.subway.line.domain;
 
 import java.util.Arrays;
-import nextstep.subway.line.domain.Distance;
 
 public enum DistanceFarePolicy {
 

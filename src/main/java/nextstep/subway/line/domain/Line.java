@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.common.constant.ErrorCode;
-import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.utils.StringUtils;
 
