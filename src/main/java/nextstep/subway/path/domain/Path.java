@@ -7,18 +7,18 @@ import java.util.List;
 
 public class Path {
     private final List<Station> stations;
-    private final long distance;
+    private final int distance;
 
     public Path(List<Station> stations, double distance) {
         this.stations = stations;
-        this.distance = (long) distance;
+        this.distance = (int) distance;
     }
 
     public List<Station> getStations() {
         return Collections.unmodifiableList(stations);
     }
 
-    public long getDistance() {
+    public int getDistance() {
         return distance;
     }
 }
