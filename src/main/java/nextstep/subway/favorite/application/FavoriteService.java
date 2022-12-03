@@ -1,9 +1,11 @@
 package nextstep.subway.favorite.application;
 
+import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import nextstep.subway.common.exception.ErrorEnum;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -47,5 +49,9 @@ public class FavoriteService {
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorEnum.NOT_EXISTS_MEMBER.message()));
+    }
+
+    public List<FavoriteResponse> findAllFavorites(Long memberId) {
+        return null;
     }
 }
