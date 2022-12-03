@@ -16,6 +16,8 @@ import java.util.*;
 
 import static nextstep.subway.exception.type.NotFoundDataExceptionType.NOT_FOUND_LINE;
 
+import static nextstep.subway.exception.type.NotFoundDataExceptionType.NOT_FOUND_LINE;
+
 @Service
 @Transactional
 public class LineService {

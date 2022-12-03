@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SectionsTest {
+
     private final Line line = new Line.Builder().name("1호선").color("red").build();
     private final Station stationA = Station.from("수원역");
     private final Station stationB = Station.from("성균관대역");

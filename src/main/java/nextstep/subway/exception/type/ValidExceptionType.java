@@ -8,6 +8,7 @@ public enum ValidExceptionType {
     SECTIONS_MIN_SIZE_ONE("구간의 사이즈는 1보다 커야합니다"),
     IS_TARGET_ANS_SOURCE_SAME("시작역과 출발역이 같습니다."),
     NOT_CONNECT_STATION("시작역과 출발역이 연결되어있지 않습니다.");
+
     private final String message;
 
     ValidExceptionType(String message) {
