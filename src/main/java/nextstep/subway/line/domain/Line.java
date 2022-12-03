@@ -20,19 +20,15 @@ public class Line extends BaseEntity {
     public Line() {
     }
 
-    public Line(String name, String color) {
-        this(name, color, null, null, 0);
+    public Line(Builder builder) {
+        this.name = builder.name;
+        this.color = builder.color;
+        this.sections.add(new Section(this, builder.upStation, builder.downStation, builder.distance));
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public void update(String name, String color) {
         this.name = name;
         this.color = color;
-        this.sections.add(new Section(this, upStation, downStation, distance));
-    }
-
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
     }
 
     public void addSection(Section section) {
@@ -61,5 +57,49 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         return sections.getStations();
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String name;
+        private String color;
+        private Station upStation;
+        private Station downStation;
+        private int distance;
+
+        public Builder(){
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder color(String color) {
+            this.color = color;
+            return this;
+        }
+
+        public Builder upStation(Station upStation) {
+            this.upStation = upStation;
+            return this;
+        }
+
+        public Builder downStation(Station downStation) {
+            this.downStation = downStation;
+            return this;
+        }
+
+        public Builder distance(int distance) {
+            this.distance = distance;
+            return this;
+        }
+
+        public Line build() {
+            return new Line(this);
+        }
     }
 }
