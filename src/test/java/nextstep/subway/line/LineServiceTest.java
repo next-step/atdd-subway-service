@@ -29,7 +29,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class LineServiceTest {
     private Station 강남역;
     private Station 광교역;
-    private Station 판교역;
     private Line 신분당선;
     private List<Line> 노선_목록;
     @Mock
@@ -43,25 +42,8 @@ public class LineServiceTest {
     void setUp() {
         강남역 = new Station("강남역");
         광교역 = new Station("광교역");
-        판교역 = new Station("판교역");
         신분당선 = Line.of("신분당선", "bg-red-300", 강남역, 광교역, Distance.from(10));
         노선_목록 = Arrays.asList(신분당선);
-    }
-
-    @Test
-    void saveLine() {
-        LineRequest request = new LineRequest("신분당선", "bg-red-300", 강남역.getId(), 광교역.getId(), 10);
-
-        when(stationService.findById(강남역.getId())).thenReturn(강남역);
-        when(stationService.findById(광교역.getId())).thenReturn(광교역);
-
-        LineResponse lineResponse = lineService.saveLine(request);
-        assertAll(
-                () -> assertThat(lineResponse.getName()).isEqualTo("신분당선"),
-                () -> assertThat(lineResponse.getColor()).isEqualTo("bg-red-300"),
-                () -> assertThat(lineResponse.getStations().get(0).getName()).isEqualTo(강남역.getName()),
-                () -> assertThat(lineResponse.getStations().get(1).getName()).isEqualTo(광교역.getName())
-        );
     }
 
     @Test
