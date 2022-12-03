@@ -15,7 +15,8 @@ public enum ErrorEnum {
     NOT_MATCH_PASSWORD("로그인 실패! 비밀번호가 일치하지 않습니다."),
     INVALID_TOKEN("유효하지 않은 토큰입니다."),
     NOT_EXISTS_MEMBER("회원 정보를 찾을 수 없습니다."),
-    NOT_EXISTS_FAVORITE("즐겨찾기 정보를 찾을 수 없습니다.");
+    NOT_EXISTS_FAVORITE("즐겨찾기 정보를 찾을 수 없습니다."),
+    DISTANCE_GREATER_ZERO("거리는 0보타 커야합니다.");
 
     private final String message;
 
