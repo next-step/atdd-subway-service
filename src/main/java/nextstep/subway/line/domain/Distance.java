@@ -23,7 +23,7 @@ public class Distance implements Comparable<Distance> {
     }
 
     private static void validate(int distance) {
-        if (distance <= MINIMUM_DISTANCE) {
+        if (distance < MINIMUM_DISTANCE) {
             throw new IllegalArgumentException();
         }
     }
@@ -50,8 +50,8 @@ public class Distance implements Comparable<Distance> {
         return new Distance(this.distance - distance.getDistance());
     }
 
-    public int sum(Distance o) {
-        return Integer.sum(this.distance, o.distance);
+    public Distance sum(Distance o) {
+        return new Distance(Integer.sum(this.distance, o.distance));
     }
 
     public int getDistance() {

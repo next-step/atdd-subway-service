@@ -8,7 +8,6 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +15,7 @@ public class PathFinder {
 
     public static final String SOURCE_TARGET_NOT_SAME_EXCEPTION_MESSAGE = "출발역과 도착역이 같을 수 없습니다.";
 
-    private List<Line> lines = new ArrayList<>();
+    private final List<Line> lines;
 
     public PathFinder(List<Line> lines) {
         this.lines = lines;
@@ -24,7 +23,7 @@ public class PathFinder {
 
     private static Sections createSections(GraphPath<Station, SectionEdge> result) {
         Sections sections = new Sections();
-        result.getEdgeList().stream().map(SectionEdge::getSection).collect(Collectors.toList()).forEach(sections::add);
+        result.getEdgeList().stream().map(SectionEdge::getSection).forEach(sections::add);
         return sections;
     }
 
@@ -52,15 +51,24 @@ public class PathFinder {
 
     private SimpleDirectedWeightedGraph<Station, SectionEdge> registerStationInfo() {
         SimpleDirectedWeightedGraph<Station, SectionEdge> graph = new SimpleDirectedWeightedGraph<>(SectionEdge.class);
+        addStations(graph);
         registerStations(graph);
         registerSections(graph);
         return graph;
     }
 
+    private void addStations(SimpleDirectedWeightedGraph<Station, SectionEdge> graph) {
+        lines.stream()
+                .flatMap(it -> {
+                    return it.getStations().stream();
+                })
+                .distinct()
+                .collect(Collectors.toList()).forEach(graph::addVertex);
+    }
+
     private void registerStations(SimpleDirectedWeightedGraph<Station, SectionEdge> graph) {
-        this.lines.stream()
+        lines.stream()
                 .flatMap(it -> it.getSections().stream())
-                .map(it -> new Section(it.getLine(), it.getDownStation(), it.getUpStation(), it.getDistance()))
                 .forEach(it -> {
                     SectionEdge sectionEdge = SectionEdge.of(it);
                     graph.addEdge(it.getUpStation(), it.getDownStation(), sectionEdge);
@@ -69,8 +77,9 @@ public class PathFinder {
     }
 
     private void registerSections(SimpleDirectedWeightedGraph<Station, SectionEdge> graph) {
-        this.lines.stream()
+        lines.stream()
                 .flatMap(it -> it.getSections().stream())
+                .map(it -> new Section(it.getLine(), it.getDownStation(), it.getUpStation(), it.getDistance()))
                 .forEach(it -> {
                     SectionEdge sectionEdge = SectionEdge.of(it);
                     graph.addEdge(it.getUpStation(), it.getDownStation(), sectionEdge);

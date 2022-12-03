@@ -55,6 +55,14 @@ public class Sections {
         return addStations();
     }
 
+    public Distance findDistance() {
+        Distance distance = new Distance(0);
+        for (Section section : this.sections) {
+            distance = distance.sum(section.getDistance());
+        }
+        return distance;
+    }
+
     private void validate(Section section) {
         List<Station> stations = getStations();
 

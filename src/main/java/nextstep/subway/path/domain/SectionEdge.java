@@ -16,6 +16,6 @@ public class SectionEdge extends DefaultWeightedEdge {
     }
 
     public Section getSection() {
-        return section;
+        return this.section;
     }
 }
