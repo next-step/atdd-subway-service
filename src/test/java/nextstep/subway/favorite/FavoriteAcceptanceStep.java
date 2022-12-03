@@ -46,7 +46,7 @@ public class FavoriteAcceptanceStep {
 
     static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header(HttpHeaders.LOCATION)).isNotBlank();
+        assertThat(getLocation(response)).isNotBlank();
     }
 
     static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(TokenResponse token) {
@@ -81,7 +81,6 @@ public class FavoriteAcceptanceStep {
                 .collect(Collectors.toList());
     }
 
-
     static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse token, String uri) {
         return RestAssured
                 .given().log().all()
@@ -92,15 +91,31 @@ public class FavoriteAcceptanceStep {
     }
 
     static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse token, ExtractableResponse<Response> response) {
-        return 즐겨찾기_삭제_요청(token, response.header(HttpHeaders.LOCATION));
+        return 즐겨찾기_삭제_요청(token, getLocation(response));
     }
 
     static ExtractableResponse<Response> 존재하지_않는_즐겨찾기_삭제_요청(TokenResponse token) {
         return 즐겨찾기_삭제_요청(token, FAVORITES + "/" + NOT_EXIST_FAVORITE_ID);
     }
 
-    static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+    static void 즐겨찾기_삭제됨(TokenResponse token,
+                         ExtractableResponse<Response> response,
+                         ExtractableResponse<Response> createResponse) {
+        long removedFavoriteId = getFavoriteId(createResponse);
+
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(toFavoritesResponseList(즐겨찾기_목록_조회_요청(token)))
+                .extracting(FavoriteResponse::getId)
+                .doesNotContain(removedFavoriteId);
+    }
+
+    private static long getFavoriteId(ExtractableResponse<Response> createResponse) {
+        String location = getLocation(createResponse);
+        return Long.parseLong(location.substring(FAVORITES.length() + 1));
+    }
+
+    private static String getLocation(ExtractableResponse<Response> createResponse) {
+        return createResponse.header(HttpHeaders.LOCATION);
     }
 
     static void 즐겨찾기_삭제_실패함(ExtractableResponse<Response> response) {

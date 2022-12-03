@@ -78,9 +78,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_조회됨(조회_응답, 양재역, 강남역);
 
         ExtractableResponse<Response> 삭제_응답 = 즐겨찾기_삭제_요청(로그인_토큰, 생성_응답);
-        즐겨찾기_삭제됨(삭제_응답);
+        즐겨찾기_삭제됨(로그인_토큰, 삭제_응답, 생성_응답);
     }
-
 
     /**
      *  Scenario: 존재하지 않는 즐겨찾기를 삭제할 수 없다
