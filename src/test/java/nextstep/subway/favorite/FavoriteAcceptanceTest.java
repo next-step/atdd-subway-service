@@ -107,7 +107,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, readResponse.as(FavoriteResponse[].class)[0].getId());
 
         즐겨찾기_삭제됨(deleteResponse);
-
     }
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {

@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -105,5 +106,14 @@ public class FavoriteServiceTest {
         List<FavoriteResponse> results = favoriteService.findAllFavorites(1L);
 
         assertThat(results).isNotEmpty();
+    }
+
+    @Test
+    void 삭제할_즐겨찾기_없는경우_예외_발생() {
+        when(favoriteRepository.findByIdAndMemberId(any(), any())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> favoriteService.delete(1L, 1L))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageStartingWith(ErrorEnum.NOT_EXISTS_FAVORITE.message());
     }
 }

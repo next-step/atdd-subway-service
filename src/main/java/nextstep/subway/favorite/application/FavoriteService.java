@@ -59,6 +59,10 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    public void delete(Long id, Long favoriteId) {
+    @Transactional
+    public void delete(Long memberId, Long favoriteId) {
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, memberId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorEnum.NOT_EXISTS_FAVORITE.message()));
+        favoriteRepository.delete(favorite);
     }
 }
