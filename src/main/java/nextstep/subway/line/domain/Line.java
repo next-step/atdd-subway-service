@@ -21,6 +21,9 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections;
 
+    @Embedded
+    private ExtraFare extraFare;
+
     public Line() {
     }
 
@@ -29,11 +32,16 @@ public class Line extends BaseEntity {
         this.color = Color.from(color);
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int extraFare) {
         Section section = Section.of(this, upStation, downStation, distance);
         this.name = Name.from(name);
         this.color = Color.from(color);
         this.sections = Sections.from(Collections.singletonList(section));
+        this.extraFare = ExtraFare.from(extraFare);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this(name, color, upStation, downStation, distance, ExtraFare.ZERO);
     }
 
     public void update(String name, String color) {
