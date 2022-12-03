@@ -1,0 +1,65 @@
+package nextstep.subway.path.domain;
+
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.station.domain.Station;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+
+import static nextstep.subway.path.domain.PathFinder.SOURCE_TARGET_NOT_SAME_EXCEPTION_MESSAGE;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+@DisplayName("PathFinderDomain")
+class PathFinderTest {
+
+
+    private Line lineA;
+    private Line lineB;
+    private Line lineC;
+
+    private Station stationA;
+    private Station stationB;
+    private Station stationC;
+    private Station stationD;
+    private Station stationE;
+
+    /**
+     * stationA                                                  stationE
+     * /                                                         /
+     * *lineA* 거리 5                                             *lineC* 거리 2
+     * /                                                         /
+     * stationB  --- *lineB* ---  stationC                       stationD
+     * 거리 3
+     */
+    @BeforeEach
+    void setUp() {
+        stationA = new Station("A");
+        stationB = new Station("B");
+        stationC = new Station("C");
+        stationD = new Station("D");
+        stationE = new Station("E");
+
+        lineA = Line.of("A", "RED");
+        lineB = Line.of("B", "BLUE");
+        lineC = Line.of("C", "GREEN");
+
+        lineA.addSection(new Section(lineA, stationA, stationB, new Distance(5)));
+        lineB.addSection(new Section(lineB, stationB, stationC, new Distance(3)));
+        lineC.addSection(new Section(lineC, stationD, stationE, new Distance(2)));
+    }
+
+    @DisplayName("지하철 경로 조회 시 출발역과 도착역이 같을 경우 예외 발생")
+    @Test
+    void findPath_fail_sameStation() {
+
+        PathFinder pathFinder = PathFinder.of(Arrays.asList(lineA, lineB, lineC));
+
+        assertThatThrownBy(() -> pathFinder.findPath(stationA, stationA))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(SOURCE_TARGET_NOT_SAME_EXCEPTION_MESSAGE);
+    }
+}
