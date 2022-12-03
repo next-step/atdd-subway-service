@@ -1,7 +1,5 @@
 package nextstep.subway.favorite.domain;
 
-import nextstep.subway.auth.application.AuthorizationException;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.BaseEntity;
 import nextstep.subway.favorite.exception.FavoriteExceptionCode;
 import nextstep.subway.member.domain.Member;

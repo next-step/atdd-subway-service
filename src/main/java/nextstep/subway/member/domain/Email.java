@@ -1,7 +1,6 @@
 package nextstep.subway.member.domain;
 
 import nextstep.subway.auth.application.AuthorizationException;
-import nextstep.subway.favorite.exception.FavoriteExceptionCode;
 import nextstep.subway.member.exception.MemberExceptionCode;
 import org.apache.commons.lang3.StringUtils;
 
