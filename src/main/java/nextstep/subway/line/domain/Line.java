@@ -1,6 +1,9 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.exception.CannotAddSectionException;
+import nextstep.subway.exception.DuplicatedSectionException;
+import nextstep.subway.exception.NotAllowRegisterSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -37,6 +40,64 @@ public class Line extends BaseEntity {
 
     public void deleteSection(Section section) {
         this.sections.remove(section);
+    }
+
+    public void addLineStation(Station upStation, Station downStation, int distance) {
+        validateDuplicate(upStation, downStation);
+        validateNotExist(upStation, downStation);
+
+        if (isStationsEmpty()) {
+            this.addSection(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        if (this.sections.isStationExisted(upStation)) {
+            this.getSections().stream()
+                    .filter(it -> it.getUpStation() == upStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+            this.addSection(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        if (this.sections.isStationExisted(downStation)) {
+            this.getSections().stream()
+                    .filter(it -> it.getDownStation() == downStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+            this.addSection(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        throw new CannotAddSectionException();
+    }
+
+    private void validateNotExist(Station upStation, Station downStation) {
+        if (isNotExisted(upStation, downStation)) {
+            throw new NotAllowRegisterSectionException();
+        }
+    }
+
+    private void validateDuplicate(Station upStation, Station downStation) {
+        if (isDuplicated(upStation, downStation)) {
+            throw new DuplicatedSectionException();
+        }
+    }
+
+    private boolean isDuplicated(Station upStation, Station downStation) {
+        return this.sections.isStationExisted(upStation) && this.sections.isStationExisted(downStation);
+    }
+
+    private boolean isStationsEmpty() {
+        return this.sections.getStations().isEmpty();
+    }
+
+    private boolean isNotExisted(Station upStation, Station downStation) {
+        return !isStationsEmpty()
+                && this.sections.isStationNotExisted(upStation)
+                && this.sections.isStationNotExisted(downStation);
     }
 
     public Long getId() {

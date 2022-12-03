@@ -30,6 +30,14 @@ public class Sections {
         this.sections.remove(section);
     }
 
+    public boolean isStationExisted(Station station) {
+        return this.getStations().stream().anyMatch(it -> it == station);
+    }
+
+    public boolean isStationNotExisted(Station station) {
+        return this.getStations().stream().noneMatch(it -> it == station);
+    }
+
     public List<Station> getStations() {
         if (this.sections.isEmpty()) {
             return Collections.emptyList();

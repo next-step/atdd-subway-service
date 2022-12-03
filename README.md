@@ -46,9 +46,11 @@ npm run dev
     - Distance 값 타입 변경
   - [X] findLines
   - [X] findLineById
-  - [ ] findLineResponseById
-  - [ ] updateLine
-  - [ ] addLineStation
+    - 커스텀 예외 사용
+  - [X] findLineResponseById
+  - [X] updateLine
+  - [X] addLineStation
+    - 비즈니스 로직 도메인으로 이동
   - [ ] removeLineStation
   - [ ] getStations
   - [ ] findUpStation
