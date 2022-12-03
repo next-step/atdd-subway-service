@@ -48,7 +48,11 @@ public class LineRequest {
         return distance;
     }
 
+    public int getExtraFare() {
+        return extraFare;
+    }
+
     public Line toLine(Station upStation, Station downStation) {
-        return new Line(name, color, upStation, downStation, distance);
+        return new Line(name, color, upStation, downStation, distance, extraFare);
     }
 }

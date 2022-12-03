@@ -2,12 +2,12 @@ package nextstep.subway.path.domain;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.OptionalInt;
 import nextstep.subway.line.domain.ExtraFare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
@@ -19,6 +19,8 @@ public class PathFinder {
     private final static String NOT_EXIST_STATION_ERROR = "지하철 역이 존재하지 않습니다.";
 
     private final WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
+
+    private final ExtraFare extraFare;
 
     private PathFinder(List<Line> lines) {
         lines.forEach(line -> {
@@ -32,6 +34,11 @@ public class PathFinder {
                     graph.setEdgeWeight(sectionEdge, section.getDistance().value());
                 });
         });
+        extraFare = ExtraFare.from(lines.stream()
+            .map(line -> line.getExtraFare().value())
+            .mapToInt(x -> x)
+            .max()
+            .getAsInt());
     }
 
     public static PathFinder from(List<Line> lines) {
@@ -46,7 +53,7 @@ public class PathFinder {
         validateNotConnect(shortestPath);
         List<Station> shortestPathVertexes = shortestPath.getVertexList();
         double shortestPathWeight = shortestPath.getWeight();
-        return Path.of(shortestPathVertexes, (int) shortestPathWeight, ExtraFare.ZERO);
+        return Path.of(shortestPathVertexes, (int) shortestPathWeight, extraFare.value());
     }
 
     private void validateSameStation(Station sourceStation, Station targetStation) {

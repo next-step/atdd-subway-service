@@ -17,15 +17,15 @@ public class Path {
     private Path(List<Station> stations, int distance, int extraFare) {
         this.stations = stations;
         this.distance = Distance.from(distance);
-        this.extraFare = calculateExtraFare(distance);
+        this.extraFare = calculateExtraFare(extraFare, distance);
     }
 
     public static Path of(List<Station> stations, int distance, int extraFare) {
         return new Path(stations, distance, extraFare);
     }
 
-    private ExtraFare calculateExtraFare(int distance) {
-        return ExtraFare.from(ExtraFare.ZERO).add(DistanceDiscount.calculate(distance));
+    private ExtraFare calculateExtraFare(int extraFare, int distance) {
+        return ExtraFare.from(extraFare).add(DistanceDiscount.calculate(distance));
     }
 
     public List<Station> getStations() {
