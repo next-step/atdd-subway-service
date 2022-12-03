@@ -10,7 +10,7 @@ import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestActions.
 import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestActions.즐겨찾기_삭제됨;
 import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestActions.즐겨찾기_생성_요청;
 import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestActions.즐겨찾기_생성됨;
-import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static nextstep.subway.line.acceptance.LineAcceptanceTestActions.지하철_노선_등록되어_있음;
 import static nextstep.subway.member.MemberAcceptanceTestActions.회원_생성됨;
 import static nextstep.subway.member.MemberAcceptanceTestActions.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;

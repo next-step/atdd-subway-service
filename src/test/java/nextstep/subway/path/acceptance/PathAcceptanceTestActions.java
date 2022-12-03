@@ -27,7 +27,8 @@ public class PathAcceptanceTestActions {
                 () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(distance),
                 () -> assertThat(response.jsonPath().getList("stations.name", String.class))
                         .containsExactly(stationResponses[0].getName(), stationResponses[1].getName(),
-                                stationResponses[2].getName())
+                                stationResponses[2].getName()),
+                () -> assertThat(response.jsonPath().getInt("cost")).isEqualTo(1350)
         );
     }
 

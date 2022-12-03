@@ -1,6 +1,6 @@
 package nextstep.subway.path.acceptance;
 
-import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static nextstep.subway.line.acceptance.LineAcceptanceTestActions.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestActions.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestActions.조회_불가능;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestActions.최단_경로가_조회됨;
@@ -59,11 +59,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given 지하철 노선이 등록되어 있다
+     * <p> Given 지하철 노선이 등록되어 있다
      * <p>
-     * When 출발역과 도착역을 입력하면
+     * <p> When 출발역과 도착역을 입력하면
      * <p>
-     * Then 최단 경로가 조회된다
+     * <p> Then 최단 경로가 조회된다
+     * <p> And 총 거리도 함께 응답함
+     * <p> And 지하철 이용 요금도 함께 응답함
      */
     @DisplayName("최단 경로를 조회한다")
     @Test

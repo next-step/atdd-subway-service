@@ -31,6 +31,7 @@ public class PathService {
 
         ShortestPathFinder shortestPathFinder = new ShortestPathFinder();
         Path shortestPath = shortestPathFinder.findShortestPath(lines, source, target);
+        shortestPath.addMaxExtraCostInLines();
 
         return new PathResponse(shortestPath);
     }
