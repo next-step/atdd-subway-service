@@ -1,9 +1,12 @@
 package nextstep.subway.auth.domain;
 
+import nextstep.subway.auth.domain.discount.DiscountPolicy;
+import nextstep.subway.auth.domain.discount.NoDiscountPolicy;
+
 public class LoginMember {
     private Long id;
     private String email;
-    private Integer age;
+    private Age age;
 
     public LoginMember() {
     }
@@ -11,7 +14,14 @@ public class LoginMember {
     public LoginMember(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
-        this.age = age;
+        this.age = new Age(age);
+    }
+
+    public DiscountPolicy createDiscountPolicy() {
+        if (age == null) {
+            return new NoDiscountPolicy();
+        }
+        return age.createDiscountPolicy();
     }
 
     public Long getId() {
@@ -23,6 +33,6 @@ public class LoginMember {
     }
 
     public Integer getAge() {
-        return age;
+        return age.getAge();
     }
 }

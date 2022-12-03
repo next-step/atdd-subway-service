@@ -1,7 +1,14 @@
 package nextstep.subway.path.acceptance;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestActions.로그인_요청;
+import static nextstep.subway.auth.application.AuthServiceTest.AGE;
+import static nextstep.subway.auth.application.AuthServiceTest.EMAIL;
+import static nextstep.subway.auth.application.AuthServiceTest.PASSWORD;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestActions.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestActions.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.MemberAcceptanceTestActions.회원_생성됨;
+import static nextstep.subway.member.MemberAcceptanceTestActions.회원_생성을_요청;
+import static nextstep.subway.path.acceptance.PathAcceptanceTestActions.로그인_상태로_출발역과_도착역_입력;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestActions.조회_불가능;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestActions.최단_경로가_조회됨;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestActions.출발역과_도착역_입력;
@@ -60,21 +67,50 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     /**
      * <p> Given 지하철 노선이 등록되어 있다
+     * <p>  And 회원 등록되어 있음
+     * <p>  And 로그인 되어있음
      * <p>
      * <p> When 출발역과 도착역을 입력하면
      * <p>
      * <p> Then 최단 경로가 조회된다
-     * <p> And 총 거리도 함께 응답함
-     * <p> And 지하철 이용 요금도 함께 응답함
+     * <p>  And 총 거리도 함께 응답함
+     * <p>  And 지하철 이용 요금도 함께 응답함
      */
     @DisplayName("최단 경로를 조회한다")
     @Test
-    void findShortestPath() {
+    void findShortestPathWithAuth() {
+        //given 회원 등록되어 있음
+        ExtractableResponse<Response> createMemberResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createMemberResponse);
+
+        //given 로그인 되어있음
+        ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
+        String accessToken = loginResponse.jsonPath().getString("accessToken");
+
+        //when
+        ExtractableResponse<Response> response = 로그인_상태로_출발역과_도착역_입력(accessToken, 남부터미널역, 강남역);
+
+        //then
+        최단_경로가_조회됨(response, 13, 850, 남부터미널역, 양재역, 강남역);
+    }
+
+    /**
+     * <p> Given 지하철 노선이 등록되어 있다
+     * <p>
+     * <p> When 출발역과 도착역을 입력하면
+     * <p>
+     * <p> Then 최단 경로가 조회된다
+     * <p>  And 총 거리도 함께 응답함
+     * <p>  And 지하철 이용 요금도 함께 응답함
+     */
+    @DisplayName("최단 경로를 조회한다")
+    @Test
+    void findShortestPathWithOutAuth() {
         //when
         ExtractableResponse<Response> response = 출발역과_도착역_입력(남부터미널역, 강남역);
 
         //then
-        최단_경로가_조회됨(response, 13, 남부터미널역, 양재역, 강남역);
+        최단_경로가_조회됨(response, 13, 1350, 남부터미널역, 양재역, 강남역);
     }
 
     /**

@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import nextstep.subway.auth.domain.discount.DiscountPolicy;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
@@ -48,5 +49,9 @@ public class Path {
 
     public int getCost() {
         return cost;
+    }
+
+    public void applyDiscountPolicy(DiscountPolicy discountPolicy) {
+        cost = discountPolicy.discount(cost);
     }
 }

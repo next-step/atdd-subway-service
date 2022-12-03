@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -13,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathRequest;
@@ -26,6 +28,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.ReflectionUtils;
@@ -53,6 +57,8 @@ class PathServiceTest {
     Line 신분당선;
     List<Line> lines;
 
+    LoginMember loginMember;
+
     @BeforeEach
     void setUp() {
         교대역 = new Station("교대역");
@@ -75,6 +81,29 @@ class PathServiceTest {
         lines.add(이호선);
         lines.add(삼호선);
         lines.add(신분당선);
+        loginMember = new LoginMember(1L, EMAIL, 20);
+    }
+
+    @DisplayName("나이별로 적용되는 할인율이 달라진다")
+    @ParameterizedTest
+    @CsvSource(value = {"13:1870", "6:1300", "20:2250"}, delimiter = ':')
+    void applyDiscountPolicy(int ageParam, int expectedCost) {
+        PathRequest request = new PathRequest(4L, 1L);
+        given(lineService.findAll()).willReturn(lines);
+        given(stationService.findStationById(request.getSource())).willReturn(남부터미널역);
+        given(stationService.findStationById(request.getTarget())).willReturn(강남역);
+        given(남부터미널역.getLinesInSections()).willReturn(Collections.singleton(삼호선));
+        given(양재역.getLinesInSections()).willReturn(Collections.singleton(신분당선));
+        given(강남역.getLinesInSections()).willReturn(Sets.newHashSet(Arrays.asList(이호선, 신분당선)));
+        PathService pathService = new PathService(lineService, stationService);
+        LoginMember loginMember = new LoginMember(1L, EMAIL, ageParam);
+
+        PathResponse shortestPath = pathService.findShortestPath(request, loginMember.createDiscountPolicy());
+        //2250
+        assertAll(
+                () -> assertThat(shortestPath.getCost()).isEqualTo(expectedCost),
+                () -> assertThat(shortestPath.getDistance()).isEqualTo(13)
+        );
     }
 
     @DisplayName("경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용한다")
@@ -89,7 +118,7 @@ class PathServiceTest {
         given(강남역.getLinesInSections()).willReturn(Sets.newHashSet(Arrays.asList(이호선, 신분당선)));
         PathService pathService = new PathService(lineService, stationService);
 
-        PathResponse shortestPath = pathService.findShortestPath(request);
+        PathResponse shortestPath = pathService.findShortestPath(request, loginMember.createDiscountPolicy());
 
         assertAll(
                 () -> assertThat(shortestPath.getCost()).isEqualTo(2250),
@@ -106,7 +135,7 @@ class PathServiceTest {
         given(stationService.findStationById(request.getTarget())).willReturn(강남역);
         PathService pathService = new PathService(lineService, stationService);
 
-        PathResponse shortestPath = pathService.findShortestPath(request);
+        PathResponse shortestPath = pathService.findShortestPath(request, loginMember.createDiscountPolicy());
 
         List<String> stationNames = shortestPath.getStations().stream()
                 .map(StationResponse::getName)
@@ -126,7 +155,7 @@ class PathServiceTest {
         given(stationService.findStationById(request.getTarget())).willReturn(남부터미널역);
         PathService pathService = new PathService(lineService, stationService);
 
-        ThrowingCallable 출발역과_도착역이_같다 = () -> pathService.findShortestPath(request);
+        ThrowingCallable 출발역과_도착역이_같다 = () -> pathService.findShortestPath(request, loginMember.createDiscountPolicy());
 
         assertThatIllegalArgumentException().isThrownBy(출발역과_도착역이_같다)
                 .withMessageContaining("출발역과 도착역이 같을 수 없습니다.");
@@ -141,7 +170,8 @@ class PathServiceTest {
         given(stationService.findStationById(request.getTarget())).willReturn(공사중인역);
         PathService pathService = new PathService(lineService, stationService);
 
-        ThrowingCallable 출발역과_도착역이_연결되어_있지_않다 = () -> pathService.findShortestPath(request);
+        ThrowingCallable 출발역과_도착역이_연결되어_있지_않다 = () -> pathService.findShortestPath(request,
+                loginMember.createDiscountPolicy());
 
         assertThatIllegalArgumentException().isThrownBy(출발역과_도착역이_연결되어_있지_않다)
                 .withMessageContaining("출발역과 도착역의 연결정보가 없습니다.");
@@ -156,7 +186,8 @@ class PathServiceTest {
         given(stationService.findStationById(request.getTarget())).willThrow(EntityNotFoundException.class);
         PathService pathService = new PathService(lineService, stationService);
 
-        ThrowingCallable 도착역이_존재하지_않는다 = () -> pathService.findShortestPath(request);
+        ThrowingCallable 도착역이_존재하지_않는다 = () -> pathService
+                .findShortestPath(request, loginMember.createDiscountPolicy());
 
         assertThatExceptionOfType(EntityNotFoundException.class).isThrownBy(도착역이_존재하지_않는다);
     }

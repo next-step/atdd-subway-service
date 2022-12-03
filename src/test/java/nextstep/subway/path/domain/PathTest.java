@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.Set;
 import javax.persistence.EntityManager;
+import nextstep.subway.auth.domain.Age;
+import nextstep.subway.auth.domain.discount.DiscountPolicy;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.station.domain.Station;
@@ -12,6 +14,8 @@ import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -70,6 +74,18 @@ class PathTest {
         path.addMaxExtraCostInLines();
 
         assertThat(path.getCost()).isEqualTo(2350);
+    }
+
+    @DisplayName("나이별로 적용되는 할인율이 달라진다")
+    @ParameterizedTest
+    @CsvSource(value = {"13:1150", "6:850", "20:1350"}, delimiter = ':')
+    void applyDiscountPolicy(int ageParam, int expectedCost) {
+        Path path = new Path(Arrays.asList(강남역, 모란역, 광교역, 판교역), 12);
+        DiscountPolicy discountPolicy = new Age(ageParam).createDiscountPolicy();
+
+        path.applyDiscountPolicy(discountPolicy);
+
+        assertThat(path.getCost()).isEqualTo(expectedCost);
     }
 
     private void flushAndClear() {

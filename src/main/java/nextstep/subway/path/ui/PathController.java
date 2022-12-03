@@ -1,6 +1,8 @@
 package nextstep.subway.path.ui;
 
 import javax.persistence.EntityNotFoundException;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -23,8 +25,9 @@ public class PathController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PathResponse> findShortestPath(PathRequest request) {
-        return ResponseEntity.ok(pathService.findShortestPath(request));
+    public ResponseEntity<PathResponse> findShortestPath(@AuthenticationPrincipal LoginMember loginMember,
+                                                         PathRequest request) {
+        return ResponseEntity.ok(pathService.findShortestPath(request, loginMember.createDiscountPolicy()));
     }
 
     @ExceptionHandler(value = {DataIntegrityViolationException.class, IllegalArgumentException.class,
