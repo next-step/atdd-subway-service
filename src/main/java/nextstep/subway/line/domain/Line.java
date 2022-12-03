@@ -22,16 +22,15 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    @Embedded
+    private Fare extraFare;
+
     protected Line() {}
 
-    private Line(String name, String color) {
+    private Line(String name, String color, Station upStation, Station downStation, int distance, int extraFare) {
         this.name = name;
         this.color = color;
-    }
-
-    private Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
+        this.extraFare = Fare.from(extraFare);
         sections.add(new Section.Builder()
                 .line(this)
                 .upStation(upStation)
@@ -42,14 +41,6 @@ public class Line extends BaseEntity {
 
     public static Line empty() {
         return new Line();
-    }
-
-    public static Line of(String name, String color) {
-        return new Line(name, color);
-    }
-
-    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
-        return new Line(name, color, upStation, downStation, distance);
     }
 
     public void update(Line line) {
@@ -95,6 +86,7 @@ public class Line extends BaseEntity {
         private Station upStation;
         private Station downStation;
         int distance;
+        int extraFare;
 
         public Builder id(Long id) {
             this.id = id;
@@ -126,8 +118,13 @@ public class Line extends BaseEntity {
             return this;
         }
 
+        public Builder extraFare(int extraFare) {
+            this.extraFare = extraFare;
+            return this;
+        }
+
         public Line build() {
-            return new Line(name, color, upStation, downStation, distance);
+            return new Line(name, color, upStation, downStation, distance, extraFare);
         }
     }
 }

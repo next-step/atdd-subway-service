@@ -35,8 +35,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        lineRequest1 = 노선_요청_객체_생성("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 500);
+        lineRequest2 = 노선_요청_객체_생성("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15, 500);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -122,7 +122,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, Long upStationId, Long downStationId, int distance) {
-        return 지하철_노선_생성_요청(new LineRequest(name, color, upStationId, downStationId, distance));
+        return 지하철_노선_생성_요청(노선_요청_객체_생성(name, color, upStationId, downStationId, distance, 500));
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
@@ -221,5 +221,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static LineRequest 노선_요청_객체_생성(String name, String color, Long upStationId, Long downStationId, int distance, int extraFare){
+        return new LineRequest.Builder()
+                .name(name)
+                .color(color)
+                .upStationId(upStationId)
+                .downStationId(downStationId)
+                .distance(distance)
+                .extraFare(extraFare)
+                .build();
     }
 }

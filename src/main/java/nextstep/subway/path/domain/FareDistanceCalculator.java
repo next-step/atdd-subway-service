@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Fare;
+
 public class FareDistanceCalculator {
 
     private static final int INCREMENT_FARE = 100;
