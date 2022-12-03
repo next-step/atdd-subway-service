@@ -21,9 +21,4 @@ public class PathController {
     public ResponseEntity<PathResponse> findShortestPath(Long source, Long target) {
         return ResponseEntity.ok(pathService.findShortestPath(source, target));
     }
-
-    @ExceptionHandler({DataIntegrityViolationException.class, IllegalArgumentException.class, IllegalStateException.class})
-    public ResponseEntity<Void> handleIllegalArgsException() {
-        return ResponseEntity.badRequest().build();
-    }
 }
