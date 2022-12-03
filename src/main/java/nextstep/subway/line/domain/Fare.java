@@ -40,4 +40,8 @@ public class Fare {
     public Fare add(Fare fare) {
         return new Fare(this.value + fare.value);
     }
+
+    public Fare subtract(Fare fare) {
+        return new Fare(this.value - fare.value);
+    }
 }

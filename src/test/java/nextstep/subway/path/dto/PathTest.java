@@ -17,16 +17,12 @@ public class PathTest {
     private Station 양재역;
     private Station 교대역;
     private List<Station> stations;
-    private int distance;
-    private int extraFare;
 
     @BeforeEach
     void setUp() {
         교대역 = 지하철역_생성("교대역");
         강남역 = 지하철역_생성("강남역");
         양재역 = 지하철역_생성("양재역");
-        distance = 20;
-        extraFare = 1000;
         stations = Arrays.asList(교대역, 강남역, 양재역);
     }
 
@@ -34,7 +30,7 @@ public class PathTest {
     @DisplayName("지하철역 리스트와 거리, 추가요금을 받아 생성")
     void create() {
         // given
-        Path path = Path.of(stations, distance, extraFare);
+        Path path = Path.of(stations, 10, 1000);
 
         // expect
         assertThat(path).isNotNull();
@@ -44,13 +40,26 @@ public class PathTest {
     @DisplayName("20 거리의 추가요금 1000원 지하철 요금 계산")
     void calculateFare() {
         // given
-        Path path = Path.of(stations, distance, extraFare);
+        Path path = Path.of(stations, 20, 1000);
 
         // when
-        int fare = path.calculateFare();
+        int fare = path.calculateFare(0);
 
         // then
-        assertThat(fare).isEqualTo(1_450 + extraFare);
+        assertThat(fare).isEqualTo(1_450 + 1000);
+    }
+
+    @Test
+    @DisplayName("기본 거리의 추가요금 100원 청소년 지하철 요금 계산")
+    void calculateFare_청소년() {
+        // given
+        Path path = Path.of(stations, 5, 100);
+
+        // when
+        int fare = path.calculateFare(14);
+
+        // then
+        assertThat(fare).isEqualTo(1150);
     }
 
     private Station 지하철역_생성(String name) {

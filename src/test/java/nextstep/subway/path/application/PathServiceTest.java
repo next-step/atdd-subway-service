@@ -88,7 +88,7 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선, 수인분당선));
 
         // when
-        PathResponse pathResponse = pathService.findPath(source, target);
+        PathResponse pathResponse = pathService.findPath(null, source, target);
 
         // then
         assertThat(pathResponse).isNotNull();

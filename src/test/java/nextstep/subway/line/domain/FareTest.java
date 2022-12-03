@@ -35,4 +35,17 @@ public class FareTest {
         assertThat(fare_30.getValue()).isEqualTo(30);
     }
 
+    @Test
+    @DisplayName("30의 Fare에 10의 Fare를 빼면 20의 Fare가 생성된다.")
+    void subtract() {
+        // given
+        Fare fare_30 = Fare.from(30);
+        Fare fare_10 = Fare.from(10);
+
+        // when
+        Fare fare_20 = fare_30.subtract(fare_10);
+
+        // then
+        assertThat(fare_20.getValue()).isEqualTo(20);
+    }
 }
