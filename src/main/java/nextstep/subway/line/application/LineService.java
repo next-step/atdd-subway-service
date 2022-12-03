@@ -79,4 +79,9 @@ public class LineService {
     private Station findStationById(Long stationId) {
         return stationService.findById(stationId);
     }
+
+    @Transactional(readOnly = true)
+    public List<Line> findAllLines() {
+        return lineRepository.findAll();
+    }
 }
