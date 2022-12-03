@@ -58,4 +58,7 @@ public class FavoriteService {
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
     }
+
+    public void delete(Long id, Long favoriteId) {
+    }
 }
