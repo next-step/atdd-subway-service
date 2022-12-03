@@ -16,23 +16,27 @@ public class PathGraph {
 
     public PathResponse findPath(Station source, Station target, List<Section> sections){
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        DijkstraShortestPath stationGraph = getStationGraph(graph, sections, source);
+        DijkstraShortestPath stationGraph = getStationGraph(graph, sections);
         GraphPath path = stationGraph.getPath(source, target);
 
         return new PathResponse(createStations(path), (int)path.getWeight());
     }
 
-    private DijkstraShortestPath getStationGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections, Station source) {
-        setVertex(graph, sections, source);
+    private DijkstraShortestPath getStationGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
+        setVertex(graph, sections);
         setEdgeWeight(graph, sections);
         return new DijkstraShortestPath(graph);
     }
 
-    private void setVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections, Station source) {
-        graph.addVertex(source);
+    private void setVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
         sections.stream().forEach(
-                section -> graph.addVertex(section.getDownStation())
+                section -> addVertex(graph, section)
         );
+    }
+
+    private void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Section section){
+        graph.addVertex(section.getUpStation());
+        graph.addVertex(section.getDownStation());
     }
 
     private void setEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
