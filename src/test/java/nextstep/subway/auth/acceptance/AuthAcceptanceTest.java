@@ -3,7 +3,7 @@ package nextstep.subway.auth.acceptance;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceSupport.로그인_성공됨;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceSupport.로그인_실패됨;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceSupport.로그인_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.member.MemberAcceptanceSupport.회원_생성을_요청;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
