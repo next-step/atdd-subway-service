@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.exception.*;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -47,7 +48,7 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     public LineResponse findLineResponseById(Long id) {
@@ -56,7 +57,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = lineRepository.findById(id).orElseThrow(NotFoundException::new);
         persistLine.update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 
@@ -73,12 +74,12 @@ public class LineService {
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new DuplicatedSectionException();
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new NotAllowRegisterSectionException();
         }
 
         if (stations.isEmpty()) {
@@ -101,7 +102,7 @@ public class LineService {
 
             line.addSection(new Section(line, upStation, downStation, request.getDistance()));
         } else {
-            throw new RuntimeException();
+            throw new CannotAddSectionException();
         }
     }
 
@@ -109,7 +110,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         if (line.getSections().size() <= 1) {
-            throw new RuntimeException();
+            throw new CannotRemoveSectionException();
         }
 
         Optional<Section> upLineStation = line.getSections().stream()

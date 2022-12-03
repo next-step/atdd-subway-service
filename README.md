@@ -45,7 +45,7 @@ npm run dev
     - Sections 일급컬렉션 사용하여 비즈니스 로직 옮기기
     - Distance 값 타입 변경
   - [X] findLines
-  - [ ] findLineById
+  - [X] findLineById
   - [ ] findLineResponseById
   - [ ] updateLine
   - [ ] addLineStation
