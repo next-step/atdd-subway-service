@@ -1,5 +1,7 @@
 package nextstep.subway.line.dto;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Color;
@@ -15,7 +17,7 @@ public class LineResponse {
     private String name;
     private String color;
     private List<StationResponse> stations;
-    private int lineFare;
+    private BigDecimal lineFare;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
@@ -72,7 +74,7 @@ public class LineResponse {
         return modifiedDate;
     }
 
-    public int getLineFare() {
-        return lineFare;
+    public BigDecimal getLineFare() {
+        return lineFare.setScale(0, RoundingMode.CEILING);
     }
 }

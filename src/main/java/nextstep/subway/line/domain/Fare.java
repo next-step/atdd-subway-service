@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
@@ -9,22 +11,26 @@ import nextstep.subway.common.constant.ErrorCode;
 @Embeddable
 public class Fare implements Comparable<Fare> {
 
-    private static final Fare BASIC_FARE = Fare.from(1250);
-    private static final Fare ZERO_FARE = Fare.from(0);
     private static final int ZERO = 0;
+    private static final Fare BASIC_FARE = Fare.from(1250);
+    private static final Fare ZERO_FARE = Fare.from(ZERO);
 
     @Column(nullable = false)
-    private int fare;
+    private BigDecimal fare;
 
     protected Fare() {}
 
-    private Fare(int fare) {
+    private Fare(BigDecimal fare) {
         validateFare(fare);
         this.fare = fare;
     }
 
-    public static Fare from(int fare) {
+    public static Fare from(BigDecimal fare) {
         return new Fare(fare);
+    }
+
+    public static Fare from(int fare) {
+        return new Fare(BigDecimal.valueOf(fare));
     }
 
     public static Fare createFare(Distance distance) {
@@ -55,29 +61,29 @@ public class Fare implements Comparable<Fare> {
         return distanceFarePolicy.calculateAdditionalFareOfDistance(distance);
     }
 
-    private void validateFare(int fare) {
-        if(fare < ZERO) {
+    private void validateFare(BigDecimal fare) {
+        if(fare.compareTo(BigDecimal.ZERO) < ZERO) {
             throw new IllegalArgumentException(ErrorCode.요금은_0보다_작을_수_없음.getErrorMessage());
         }
     }
 
     public Fare add(Fare fare) {
-        return new Fare(this.fare + fare.fare);
+        return new Fare(this.fare.add(fare.fare));
     }
 
     public Fare subtract(Fare fare) {
-        return new Fare(this.fare - fare.fare);
+        return new Fare(this.fare.subtract(fare.fare));
     }
 
     public Fare multiply(int count) {
-        return new Fare(fare * count);
+        return new Fare(this.fare.multiply(BigDecimal.valueOf(count)));
     }
 
     public Fare multiplyAndCeil(double percent) {
-        return new Fare((int) Math.ceil((double) this.fare * percent));
+        return new Fare(this.fare.multiply(BigDecimal.valueOf(percent)).setScale(0, RoundingMode.CEILING));
     }
 
-    public int value() {
+    public BigDecimal value() {
         return this.fare;
     }
 
@@ -90,7 +96,7 @@ public class Fare implements Comparable<Fare> {
             return false;
         }
         Fare fare1 = (Fare) o;
-        return fare == fare1.fare;
+        return Objects.equals(fare, fare1.fare);
     }
 
     @Override
@@ -100,6 +106,6 @@ public class Fare implements Comparable<Fare> {
 
     @Override
     public int compareTo(Fare compareFare) {
-        return Integer.compare(this.fare, compareFare.fare);
+        return this.fare.compareTo(compareFare.fare);
     }
 }

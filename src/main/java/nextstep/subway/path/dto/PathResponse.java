@@ -1,5 +1,7 @@
 package nextstep.subway.path.dto;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +16,7 @@ public class PathResponse {
 
     private List<StationResponse> stations;
     private int distance;
-    private int fare;
+    private BigDecimal fare;
 
     private PathResponse() {}
 
@@ -41,7 +43,7 @@ public class PathResponse {
         return distance;
     }
 
-    public int getFare() {
-        return fare;
+    public BigDecimal getFare() {
+        return fare.setScale(0, RoundingMode.CEILING);
     }
 }

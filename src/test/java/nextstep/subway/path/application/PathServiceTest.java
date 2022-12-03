@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -163,7 +164,7 @@ public class PathServiceTest {
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(20),
                 () -> assertThat(pathResponse.getStations().stream().map(StationResponse::getName).collect(Collectors.toList()))
                         .containsExactlyElementsOf(Arrays.asList("이수역", "반포역")),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(2450)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(BigDecimal.valueOf(2450))
         );
     }
 
@@ -188,7 +189,7 @@ public class PathServiceTest {
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(15),
                 () -> assertThat(pathResponse.getStations().stream().map(StationResponse::getName).collect(Collectors.toList()))
                         .containsExactlyElementsOf(Arrays.asList("양재역", "강남역", "역삼역")),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(2050)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(BigDecimal.valueOf(2050))
         );
     }
 
@@ -213,7 +214,7 @@ public class PathServiceTest {
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(15),
                 () -> assertThat(pathResponse.getStations().stream().map(StationResponse::getName).collect(Collectors.toList()))
                         .containsExactlyElementsOf(Arrays.asList("양재역", "강남역", "역삼역")),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(850)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(BigDecimal.valueOf(850))
         );
     }
 
@@ -238,7 +239,7 @@ public class PathServiceTest {
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(20),
                 () -> assertThat(pathResponse.getStations().stream().map(StationResponse::getName).collect(Collectors.toList()))
                         .containsExactlyElementsOf(Arrays.asList("이수역", "반포역")),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1680)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(BigDecimal.valueOf(1680))
         );
     }
 
@@ -263,7 +264,7 @@ public class PathServiceTest {
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(5),
                 () -> assertThat(pathResponse.getStations().stream().map(StationResponse::getName).collect(Collectors.toList()))
                         .containsExactlyElementsOf(Arrays.asList("교대역", "남부터미널역", "양재역")),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(0)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(BigDecimal.ZERO)
         );
     }
 

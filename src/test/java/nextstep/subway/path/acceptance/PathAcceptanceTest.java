@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -114,7 +115,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
                     // then
                     지하철_경로_조회됨(response);
-                    지하철_최단_경로_조회됨(response, Arrays.asList(신논현역, 강남역, 선릉역, 한티역), 21, 1550);
+                    지하철_최단_경로_조회됨(response, Arrays.asList(신논현역, 강남역, 선릉역, 한티역), 21, BigDecimal.valueOf(1550));
                 }),
                 DynamicTest.dynamicTest("연결되지 않은 출발역과 도착역 사이의 경로를 조회할 수 없다.", () -> {
                     // when
@@ -145,11 +146,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findShortestPathWithLineFare() {
         // when
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(이수역.getId(), 반포역.getId());
-        int fare = 1450;
+        BigDecimal fare = BigDecimal.valueOf(1450);
 
         // then
         지하철_경로_조회됨(response);
-        지하철_최단_경로_조회됨(response, Arrays.asList(이수역, 반포역), 20, fare + 칠호선.getLineFare());
+        지하철_최단_경로_조회됨(response, Arrays.asList(이수역, 반포역), 20, fare.add(칠호선.getLineFare()));
     }
 
     private static void 지하철_경로_조회_실패됨(ExtractableResponse<Response> response) {
@@ -160,18 +161,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private static void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectStations, int expectDistance, int expectFare) {
+    private static void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectStations, int expectDistance, BigDecimal expectFare) {
         List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
         List<Long> expectStationIds = expectStations.stream().map(StationResponse::getId).collect(Collectors.toList());
         List<String> actualStationNames = response.jsonPath().getList("stations.name", String.class);
         List<String> expectStationNames = expectStations.stream().map(StationResponse::getName).collect(Collectors.toList());
         int actualDistance = response.jsonPath().getInt("distance");
         int actualFare = response.jsonPath().getInt("fare");
+
         assertAll(
                 () -> assertThat(actualStationIds).containsExactlyElementsOf(expectStationIds),
                 () -> assertThat(actualStationNames).containsExactlyElementsOf(expectStationNames),
                 () -> assertThat(actualDistance).isEqualTo(expectDistance),
-                () -> assertThat(actualFare).isEqualTo(expectFare)
+                () -> assertThat(BigDecimal.valueOf(actualFare)).isEqualTo(expectFare)
         );
     }
 }

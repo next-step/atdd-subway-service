@@ -4,6 +4,7 @@ import static nextstep.subway.station.domain.StationTestFixture.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import nextstep.subway.common.constant.ErrorCode;
@@ -48,9 +49,9 @@ public class PathTest {
     }
 
     @DisplayName("어린이일 경우, 성인 경로 요금에서 350원을 제한 후 50% 할인 해준다.")
-    @ParameterizedTest
+    @ParameterizedTest(name = "어른 요금: {0}원이면 어린이 요금: {1}")
     @CsvSource(value = {"1450:550", "1850:750", "2650:1150"}, delimiter = ':')
-    void createChildFareInPath(int adultFare, int childFare) {
+    void createChildFareInPath(BigDecimal adultFare, BigDecimal childFare) {
         // given
         Path path = Path.of(Arrays.asList(createStation("강남역"), createStation("역삼역")), Distance.from(10), Fare.from(adultFare));
 
@@ -62,9 +63,9 @@ public class PathTest {
     }
 
     @DisplayName("청소년일 경우, 성인 경로 요금에서 350원을 제한 후 20% 할인 해준다.")
-    @ParameterizedTest
+    @ParameterizedTest(name = "어른 요금: {0}원이면 청소년 요금: {1}")
     @CsvSource(value = {"1450:880", "1850:1200", "2650:1840"}, delimiter = ':')
-    void createTeenagerFareInPath(int adultFare, int teenagerFare) {
+    void createTeenagerFareInPath(BigDecimal adultFare, BigDecimal teenagerFare) {
         // given
         Path path = Path.of(Arrays.asList(createStation("강남역"), createStation("역삼역")), Distance.from(10), Fare.from(adultFare));
 
