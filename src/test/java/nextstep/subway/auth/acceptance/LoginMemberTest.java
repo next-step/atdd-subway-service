@@ -1,4 +1,4 @@
-package nextstep.subway.member.domain;
+package nextstep.subway.auth.acceptance;
 
 import nextstep.subway.auth.domain.LoginMember;
 import org.assertj.core.api.Assertions;
