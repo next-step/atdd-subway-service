@@ -40,7 +40,9 @@ public class Path {
     }
 
     public void convertFareByAgeFarePolicy(AgeFarePolicy ageFarePolicy) {
-        this.fare = ageFarePolicy.calculateFare(this.fare);
+        if(ageFarePolicy.isNotAdult()) {
+            this.fare = ageFarePolicy.calculateFare(this.fare);
+        }
     }
 
     public List<Station> unmodifiableStations() {

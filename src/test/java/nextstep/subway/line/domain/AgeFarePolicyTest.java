@@ -2,9 +2,8 @@ package nextstep.subway.line.domain;
 
 import static nextstep.subway.line.domain.AgeFarePolicy.findAgeFarePolicy;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
-import nextstep.subway.line.domain.AgeFarePolicy;
-import nextstep.subway.line.domain.Fare;
 import nextstep.subway.member.domain.Age;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,5 +73,16 @@ class AgeFarePolicyTest {
     void isBabyFare() {
         // when & then
         assertThat(AgeFarePolicy.BABY.calculateFare(Fare.from(1000000))).isEqualTo(Fare.from(0));
+    }
+
+    @DisplayName("성인이 아닐 경우 참을 반환한다.")
+    @Test
+    void isNotAdult() {
+        // when & then
+        assertAll(
+                () -> assertThat(AgeFarePolicy.BABY.isNotAdult()).isTrue(),
+                () -> assertThat(AgeFarePolicy.CHILD.isNotAdult()).isTrue(),
+                () -> assertThat(AgeFarePolicy.TEENAGER.isNotAdult()).isTrue()
+        );
     }
 }

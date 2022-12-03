@@ -28,9 +28,7 @@ public class PathService {
 
     public PathResponse findShortestPath(AgeFarePolicy ageFarePolicy, Long source, Long target) {
         Path shortestPath = findShortestPathInGraph(source, target);
-        if(ageFarePolicy != AgeFarePolicy.ADULT) {
-            shortestPath.convertFareByAgeFarePolicy(ageFarePolicy);
-        }
+        shortestPath.convertFareByAgeFarePolicy(ageFarePolicy);
         return PathResponse.from(shortestPath);
     }
 

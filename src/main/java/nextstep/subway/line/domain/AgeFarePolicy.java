@@ -33,6 +33,10 @@ public enum AgeFarePolicy {
                 .multiplyAndCeil(rate);
     }
 
+    public boolean isNotAdult() {
+        return this != ADULT;
+    }
+
     public Age getMinAge() {
         return minAge;
     }
