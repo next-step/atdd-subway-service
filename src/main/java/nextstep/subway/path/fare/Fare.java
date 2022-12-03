@@ -1,15 +1,20 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.fare;
 
+import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
+@Embeddable
 public class Fare {
 
     public static final int SCALE = 0;
     public static final Fare ZERO = Fare.valueOf(0);
 
-    private final BigDecimal value;
+    private BigDecimal value;
+
+    protected Fare() {
+    }
 
     private Fare(BigDecimal value) {
         this.value = value.setScale(SCALE, RoundingMode.FLOOR);

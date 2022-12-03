@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class InvalidFarePolicyException extends RuntimeException {
 
-    private static final String MESSAGE = "계산할 수 없는 요금 입력입니다";
+    public static final String MESSAGE = "계산할 수 없는 요금 입력입니다";
 
     public InvalidFarePolicyException() {
         super(MESSAGE);

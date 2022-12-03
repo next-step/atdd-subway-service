@@ -1,7 +1,7 @@
-package nextstep.subway.path.fare;
+package nextstep.subway.path.fare.policy;
 
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.path.domain.Fare;
+import nextstep.subway.path.fare.Fare;
 
 public class BasicFarePolicy implements FarePolicy {
 
