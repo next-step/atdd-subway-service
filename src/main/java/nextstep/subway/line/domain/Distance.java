@@ -27,6 +27,10 @@ public class Distance {
         return new Distance(this.distance + newDistance.distance);
     }
 
+    public int distance() {
+        return distance;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -43,6 +47,4 @@ public class Distance {
     public int hashCode() {
         return Objects.hash(distance);
     }
-
-
 }
