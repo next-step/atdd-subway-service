@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import nextstep.subway.common.exception.ErrorEnum;
 import nextstep.subway.favorite.domain.Favorite;
@@ -52,6 +53,9 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findAllFavorites(Long memberId) {
-        return null;
+        List<Favorite> favorites = favoriteRepository.findByMemberId(memberId);
+        return favorites.stream()
+                .map(FavoriteResponse::from)
+                .collect(Collectors.toList());
     }
 }

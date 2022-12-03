@@ -44,6 +44,7 @@ public class Favorite {
         checkStationNotNull(targetStation);
         return new Favorite(member, sourceStation, targetStation);
     }
+
     private static void checkMemberNotNull(Member member) {
         if (member == null) {
             throw new EntityNotFoundException(ErrorEnum.NOT_EXISTS_MEMBER.message());
@@ -55,7 +56,16 @@ public class Favorite {
             throw new EntityNotFoundException(ErrorEnum.NOT_EXISTS_STATION.message());
         }
     }
+
     public Long getId() {
         return id;
+    }
+
+    public Station getSourceStation() {
+        return sourceStation;
+    }
+
+    public Station getTargetStation() {
+        return targetStation;
     }
 }

@@ -6,7 +6,6 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class FavoriteTest {
@@ -29,25 +28,22 @@ class FavoriteTest {
         Assertions.assertThat(favorite).isNotNull();
     }
 
-    @DisplayName("즐겨찾기 생성 시 회원이 없으면 예외가 발생한다.")
     @Test
-    void createException1() {
+    void 즐겨찾기_생성시_회원정보_없으면_예외() {
         Assertions.assertThatThrownBy(() -> Favorite.of(null, sourceStation, targetStation))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageStartingWith(ErrorEnum.NOT_EXISTS_MEMBER.message());
     }
 
-    @DisplayName("즐겨찾기 생성 시 출발역이 없으면 예외가 발생한다.")
     @Test
-    void createException2() {
+    void 즐겨찾기_생성시_출발역_없으면_예외() {
         Assertions.assertThatThrownBy(() -> Favorite.of(member, null, targetStation))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageStartingWith(ErrorEnum.NOT_EXISTS_STATION.message());
     }
 
-    @DisplayName("즐겨찾기 생성 시 도착역이 없으면 예외가 발생한다.")
     @Test
-    void createException3() {
+    void 즐겨찾기_생성시_도착역_없으면_예외() {
         Assertions.assertThatThrownBy(() -> Favorite.of(member, sourceStation, null))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageStartingWith(ErrorEnum.NOT_EXISTS_STATION.message());

@@ -136,13 +136,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, Long source, Long target) {
-        String errorMessage = response.body().path("errorMessage").toString();
         List<FavoriteResponse> favorites = Arrays.asList(response.as(FavoriteResponse[].class));
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(favorites).hasSize(1),
-                () -> assertThat(favorites.get(0).getId()).isEqualTo(source),
-                () -> assertThat(favorites.get(1).getId()).isEqualTo(target)
+                () -> assertThat(favorites.get(0).getSource().getId()).isEqualTo(source),
+                () -> assertThat(favorites.get(0).getTarget().getId()).isEqualTo(target)
         );
     }
 
