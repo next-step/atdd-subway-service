@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -117,7 +118,7 @@ class PathServiceMockTest {
 
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우 조회할 수 없다.")
     @Test
-    void name() {
+    void findPath_fail_notConnect() {
         Long sourceId = 1L;
         Long targetId = 2L;
 
@@ -127,5 +128,19 @@ class PathServiceMockTest {
 
         assertThatThrownBy(() -> pathService.findPath(sourceId, targetId))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우 조회할 수 없다.")
+    @Test
+    void findPath_fail_notExist() {
+
+        Long sourceId = 1L;
+        Long targetId = 2L;
+
+        when(stationRepository.findById(sourceId)).thenThrow(EntityNotFoundException.class);
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(lineA, lineB, lineC, lineD, lineE));
+
+        assertThatThrownBy(() -> pathService.findPath(sourceId, targetId))
+                .isInstanceOf(EntityNotFoundException.class);
     }
 }
