@@ -35,6 +35,9 @@ public class PathAcceptanceTestFixture {
     public static void 지하철_최단경로_조회_요청_포함됨(ExtractableResponse<Response> response, List<String> stations, int distance, int extraFare) {
         PathResponse pathResponse = response.as(PathResponse.class);
 
+        System.out.println("=============================================");
+        System.out.println(response.jsonPath().getInt("extraFare"));
+
         assertAll(
             () -> assertThat(pathResponse.getStations()
                 .stream()

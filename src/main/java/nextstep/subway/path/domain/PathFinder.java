@@ -46,7 +46,7 @@ public class PathFinder {
         validateNotConnect(shortestPath);
         List<Station> shortestPathVertexes = shortestPath.getVertexList();
         double shortestPathWeight = shortestPath.getWeight();
-        return Path.of(shortestPathVertexes, (int) shortestPathWeight, ExtraFare.BASIC);
+        return Path.of(shortestPathVertexes, (int) shortestPathWeight, ExtraFare.ZERO);
     }
 
     private void validateSameStation(Station sourceStation, Station targetStation) {
