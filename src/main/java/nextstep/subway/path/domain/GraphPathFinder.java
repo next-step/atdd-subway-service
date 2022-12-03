@@ -12,6 +12,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.Objects;
 
 public class GraphPathFinder {
 
@@ -28,6 +29,9 @@ public class GraphPathFinder {
 
     private StationPath toStationPath(final Station start, final Station destination) {
         GraphPath<String, SectionWeightedEdge> path = new DijkstraShortestPath<>(graph).getPath(start.getName(), destination.getName());
+        if(Objects.isNull(path)){
+            throw new PathException(PathExceptionType.NO_PATH);
+        }
         Integer extraCharge = getExtraCharge(path.getEdgeList());
         return StationPath.of(path, extraCharge);
     }

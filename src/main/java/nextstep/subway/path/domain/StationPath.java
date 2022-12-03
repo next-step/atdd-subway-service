@@ -21,9 +21,7 @@ public class StationPath {
     }
 
     public static StationPath of(GraphPath<String, SectionWeightedEdge> path, int extraCharge) {
-        if(Objects.isNull(path)){
-            throw new PathException(PathExceptionType.NO_PATH);
-        }
+
         return new StationPath(path.getVertexList(), (int) path.getWeight(), extraCharge);
     }
 
