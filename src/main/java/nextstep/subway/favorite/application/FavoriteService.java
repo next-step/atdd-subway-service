@@ -27,6 +27,7 @@ public class FavoriteService {
         this.memberRepository = memberRepository;
     }
 
+    @Transactional
     public Favorite create(Long memberId, FavoriteRequest request) {
         Station sourceStation = findStationById(request.getSource());
         Station targetStation = findStationById(request.getTarget());
