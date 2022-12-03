@@ -40,6 +40,19 @@ public class PathTest {
         assertThat(path).isNotNull();
     }
 
+    @Test
+    @DisplayName("20 거리의 지하철 요금 계산")
+    void calculateFare() {
+        // given
+        Path path = Path.of(stations, distance);
+
+        // when
+        int fare = path.calculateFare();
+
+        // then
+        assertThat(fare).isEqualTo(1_450);
+    }
+
     private Station 지하철역_생성(String name) {
         return new Station.Builder()
                 .name(name)
