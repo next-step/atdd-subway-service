@@ -33,7 +33,7 @@ public class LineService {
         Line line = Line.of(request.getName(), request.getColor(), upStation, downStation, Distance.from(request.getDistance()));
         Line persistLine = lineRepository.save(line);
 
-        return LineResponse.of(persistLine);
+        return LineResponse.from(persistLine);
     }
 
     @Transactional(readOnly = true)
@@ -53,7 +53,7 @@ public class LineService {
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
 
-        return LineResponse.of(persistLine);
+        return LineResponse.from(persistLine);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
