@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.common.BaseEntity;
 import nextstep.subway.favorite.exception.FavoriteExceptionCode;
 import nextstep.subway.member.domain.Member;
@@ -62,8 +63,10 @@ public class Favorite extends BaseEntity {
         }
     }
 
-    public void checkLoginMember(String email) {
-        this.member.checkEmail(email);
+    public void checkLoginMember(Long loginMemberId) {
+        if(!this.id.equals(loginMemberId)) {
+            throw new AuthorizationException(FavoriteExceptionCode.MEMBER_NOT_MATCH.getMessage());
+        }
     }
 
     public Long getId() {

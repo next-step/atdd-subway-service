@@ -35,12 +35,6 @@ public class Email {
         }
     }
 
-    public void checkEmail(String email) {
-        if(!this.email.equals(email)) {
-            throw new AuthorizationException(MemberExceptionCode.EMAIL_NOT_MATCH.getMessage());
-        }
-    }
-
     public String getEmail() {
         return email;
     }

@@ -77,14 +77,4 @@ class MemberTest {
         }).isInstanceOf(AuthorizationException.class)
                 .hasMessage(MemberExceptionCode.PASSWORD_NOT_MATCH.getMessage());
     }
-
-    @Test
-    void 입력된_이메일이_사용자의_이메일과_일치하지_않으면_AuthorizationException_발생() {
-        Member member = new Member("testuser@test.com", "password157#", 20);
-
-        assertThatThrownBy(() -> {
-            member.checkEmail("loginuser@test.com");
-        }).isInstanceOf(AuthorizationException.class)
-                .hasMessage(MemberExceptionCode.EMAIL_NOT_MATCH.getMessage());
-    }
 }
