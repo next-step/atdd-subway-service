@@ -55,16 +55,15 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    // todo 임시로 사용. 리팩토링 끝난 후 제거
-    public List<Section> getSections() {
-        return sections.getSections();
-    }
-
     public List<Station> getStations() {
         return this.sections.getStations();
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
         this.sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public void removeStation(Station station) {
+        this.sections.remove(station);
     }
 }

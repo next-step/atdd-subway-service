@@ -17,17 +17,12 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    // todo 임시로 사용. 리팩토링 끝난 후 제거
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public List<Station> getStations() {
         if (this.sections.isEmpty()) {
             return Collections.emptyList();
         }
         List<Station> stations = new ArrayList<>();
-        stations.add(findUpStation());
+        stations.add(findFirstStation());
         stations.addAll(findStationsFrom(stations.get(0)));
         return stations;
     }
@@ -43,17 +38,39 @@ public class Sections {
         this.sections.add(section);
     }
 
+    public void remove(Station station) {
+        validateLastSection();
+
+        Optional<Section> upLineStation = findByUpStation(station);
+        Optional<Section> downLineStation = findByDownStation(station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            addWhenMiddleStationRemove(upLineStation.get(), downLineStation.get());
+        }
+        upLineStation.ifPresent(it -> this.sections.remove(it));
+        downLineStation.ifPresent(it -> this.sections.remove(it));
+    }
+
+    private void addWhenMiddleStationRemove(Section upLineStation, Section downLineStation) {
+        Station newUpStation = downLineStation.getUpStation();
+        Station newDownStation = upLineStation.getDownStation();
+        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+        this.sections.add(new Section(upLineStation.getLine(), newUpStation, newDownStation, newDistance));
+    }
+
+    private void validateLastSection() {
+        if (this.sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+    }
+
     private void addWhenDownStationExisted(Section section) {
-        this.sections.stream()
-            .filter(it -> it.getDownStation() == section.getDownStation())
-            .findFirst()
+        findByDownStation(section.getDownStation())
             .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
     }
 
     private void addWhenUpStationExisted(Section section) {
-        this.sections.stream()
-            .filter(it -> it.getUpStation() == section.getUpStation())
-            .findFirst()
+        findByUpStation(section.getUpStation())
             .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
     }
 
@@ -75,9 +92,7 @@ public class Sections {
         Station downStation = upStation;
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                .filter(it -> it.getUpStation() == finalDownStation)
-                .findFirst();
+            Optional<Section> nextLineStation = findByUpStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -87,13 +102,11 @@ public class Sections {
         return stations;
     }
 
-    private Station findUpStation() {
+    private Station findFirstStation() {
         Station downStation = this.sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                .filter(it -> it.getDownStation() == finalDownStation)
-                .findFirst();
+            Optional<Section> nextLineStation = findByDownStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -101,5 +114,17 @@ public class Sections {
         }
 
         return downStation;
+    }
+
+    private Optional<Section> findByUpStation(Station upStation) {
+        return this.sections.stream()
+            .filter(it -> it.getUpStation() == upStation)
+            .findFirst();
+    }
+
+    private Optional<Section> findByDownStation(Station downStation) {
+        return this.sections.stream()
+            .filter(it -> it.getDownStation() == downStation)
+            .findFirst();
     }
 }
