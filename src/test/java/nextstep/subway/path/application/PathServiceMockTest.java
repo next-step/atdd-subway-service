@@ -82,8 +82,8 @@ class PathServiceMockTest {
 //    출발역과 도착역이 연결이 되어 있지 않은 경우 조회할 수 없다.
 //    존재하지 않은 출발역이나 도착역을 조회 할 경우 조회할 수 없다.
 
-    @Test
     @DisplayName("최단 경로를 조회")
+    @Test
     void findPath() {
 
         Long sourceId = 1L;
@@ -99,8 +99,8 @@ class PathServiceMockTest {
         assertThat(pathResponse.getDistance()).isEqualTo(2);
     }
 
-    @Test
     @DisplayName("출발역과 도착역이 같은 경우 조회할 수 없다.")
+    @Test
     void findPath_fail_sameStation() {
 
         Long sourceId = 1L;
@@ -113,5 +113,19 @@ class PathServiceMockTest {
         assertThatThrownBy(() -> pathService.findPath(sourceId, targetId))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(SOURCE_TARGET_NOT_SAME_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우 조회할 수 없다.")
+    @Test
+    void name() {
+        Long sourceId = 1L;
+        Long targetId = 2L;
+
+        when(stationRepository.findById(sourceId)).thenReturn(Optional.of(stationA));
+        when(stationRepository.findById(targetId)).thenReturn(Optional.of(stationF));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(lineA, lineB, lineC, lineD, lineE));
+
+        assertThatThrownBy(() -> pathService.findPath(sourceId, targetId))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
