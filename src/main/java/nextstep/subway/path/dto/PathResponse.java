@@ -11,6 +11,8 @@ public class PathResponse {
 
     private int distance;
 
+    private int extraFare;
+
     protected PathResponse() {}
 
     private PathResponse(Path path) {
@@ -18,6 +20,7 @@ public class PathResponse {
             .map(StationResponse::from)
             .collect(Collectors.toList());
         this.distance = path.getDistance().value();
+        this.extraFare = path.getExtraFare().value();
     }
 
     public static PathResponse from(Path path) {
@@ -30,5 +33,9 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

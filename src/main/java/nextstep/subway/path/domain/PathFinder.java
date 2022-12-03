@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import java.util.List;
 import java.util.Objects;
+import nextstep.subway.line.domain.ExtraFare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -43,7 +44,7 @@ public class PathFinder {
         validateNotConnect(shortestPath);
         List<Station> shortestPathVertexes = shortestPath.getVertexList();
         double shortestPathWeight = shortestPath.getWeight();
-        return Path.of(shortestPathVertexes, (int) shortestPathWeight);
+        return Path.of(shortestPathVertexes, (int) shortestPathWeight, ExtraFare.BASIC);
     }
 
     private void validateSameStation(Station sourceStation, Station targetStation) {

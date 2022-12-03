@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import java.util.Collections;
 import java.util.List;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.ExtraFare;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
@@ -11,13 +12,16 @@ public class Path {
 
     private final Distance distance;
 
-    private Path(List<Station> stations, int distance) {
+    private final ExtraFare extraFare;
+
+    private Path(List<Station> stations, int distance, int extraFare) {
         this.stations = stations;
         this.distance = Distance.from(distance);
+        this.extraFare = ExtraFare.from(extraFare);
     }
 
-    public static Path of(List<Station> stations, int distance) {
-        return new Path(stations, distance);
+    public static Path of(List<Station> stations, int distance, int extraFare) {
+        return new Path(stations, distance, extraFare);
     }
 
     public List<Station> getStations() {
@@ -26,5 +30,9 @@ public class Path {
 
     public Distance getDistance() {
         return distance;
+    }
+
+    public ExtraFare getExtraFare() {
+        return extraFare;
     }
 }

@@ -8,6 +8,8 @@ public class ExtraFare {
 
     public static final int ZERO = 0;
 
+    public static final int BASIC = 1_250;
+
     private static final String EXTRA_FARE_THAN_ZERO = "추가요금은 0보다 작을 수 없습니다.";
 
     @Column(name = "extra_fare", nullable = false)
@@ -24,5 +26,9 @@ public class ExtraFare {
 
     public static ExtraFare from(int extraFare) {
         return new ExtraFare(extraFare);
+    }
+
+    public int value() {
+        return extraFare;
     }
 }
