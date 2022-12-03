@@ -1,8 +1,11 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.NotValidDataException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+
+import static nextstep.subway.exception.type.ValidExceptionType.NOT_SHORT_VALID_DISTANCE;
 
 @Entity
 public class Section {
@@ -56,17 +59,23 @@ public class Section {
     }
 
     public void updateUpStation(Station station, int newDistance) {
-        distance.validCheckOverDistance(newDistance);
+        validCheckIsOverDistance(newDistance);
 
         this.upStation = station;
         this.distance = this.distance.minus(newDistance);
     }
 
     public void updateDownStation(Station station, int newDistance) {
-        distance.validCheckOverDistance(newDistance);
+        validCheckIsOverDistance(newDistance);
 
         this.downStation = station;
         this.distance.minus(newDistance);
+    }
+
+    private void validCheckIsOverDistance(int checkTargetDistance) {
+        if (distance.isOverDistance(checkTargetDistance)) {
+            throw new NotValidDataException(NOT_SHORT_VALID_DISTANCE.getMessage());
+        }
     }
 
     public Distance plusDistance(Section section) {

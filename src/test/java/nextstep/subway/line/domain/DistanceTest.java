@@ -45,9 +45,8 @@ class DistanceTest {
     void validCheckOverDistance() {
         Distance distance = Distance.from(10);
 
-        assertThatThrownBy(() -> {
-            distance.validCheckOverDistance(12);
-        }).isInstanceOf(NotValidDataException.class)
-                .hasMessageContaining(NOT_SHORT_VALID_DISTANCE.getMessage());
+        boolean result = distance.isOverDistance(12);
+
+        assertThat(result).isTrue();
     }
 }

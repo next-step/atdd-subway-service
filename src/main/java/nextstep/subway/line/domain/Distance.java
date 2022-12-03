@@ -6,8 +6,6 @@ import nextstep.subway.exception.type.ValidExceptionType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import static nextstep.subway.exception.type.ValidExceptionType.NOT_SHORT_VALID_DISTANCE;
-
 @Embeddable
 public class Distance {
 
@@ -22,10 +20,11 @@ public class Distance {
         this.distance = distance;
     }
 
-    public void validCheckOverDistance(int distance) {
+    public boolean isOverDistance(int distance) {
         if (this.distance <= distance) {
-            throw new NotValidDataException(NOT_SHORT_VALID_DISTANCE.getMessage());
+            return true;
         }
+        return false;
     }
 
     public void validCheckMinDistanceSize(int distance) {
