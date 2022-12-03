@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.SectionValidException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -60,7 +61,7 @@ public class Section {
 
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new RuntimeException(INVALID_OVER_SECTION_DISTANCE);
+            throw new SectionValidException(INVALID_OVER_SECTION_DISTANCE);
         }
         this.upStation = station;
         this.distance -= newDistance;
@@ -68,7 +69,7 @@ public class Section {
 
     public void updateDownStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new RuntimeException(INVALID_OVER_SECTION_DISTANCE);
+            throw new SectionValidException(INVALID_OVER_SECTION_DISTANCE);
         }
         this.downStation = station;
         this.distance -= newDistance;

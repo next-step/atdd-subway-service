@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.exception.PathNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.dto.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,15 +67,15 @@ class PathFinderTest {
         sections.addAll(삼호선.getSections());
         sections.addAll(팔호선.getSections());
 
-        pathFinder = DijkstraPathFinder.from(sections);
+        pathFinder = PathFinder.from(sections);
     }
 
 
     @DisplayName("출발역과 도착역 사이의 최단 경로를 조회한다.")
     @Test
     void findShortestPath() {
-        List<Station> stations = pathFinder.findAllStationsByStations(양재역, 서현역);
-        int distance = pathFinder.findShortestDistance(양재역, 서현역);
+        List<Station> stations = pathFinder.findAllStationsByStations(양재역, 서현역).getStations();
+        int distance = pathFinder.findAllStationsByStations(양재역, 서현역).getDistance();
 
         assertAll(
                 () -> assertThat(stations).containsExactly(양재역, 수서역, 서현역),

@@ -32,7 +32,7 @@ class SectionsTest {
     void sameSectionException() {
         Assertions.assertThatThrownBy(() -> sections.add(강남역_정자역_구간))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageStartingWith(DUPLICATED_SECTION);
+                .hasMessage(DUPLICATED_SECTION);
     }
 
     @DisplayName("노선에 포함되지 않는 역이 있는 구간을 포함하면 에러가 발생한다")
@@ -44,7 +44,7 @@ class SectionsTest {
 
         Assertions.assertThatThrownBy(() -> sections.add(서현역_왕십리역_구간))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageStartingWith(INVALID_SECTION);
+                .hasMessage(INVALID_SECTION);
     }
 
     @DisplayName("상행역을 등록할 때 기존 구간 길이보다 크거나 같으면 예외가 발생한다. ")
@@ -56,7 +56,7 @@ class SectionsTest {
 
         Assertions.assertThatThrownBy(() -> sections.add(강남역_역삼역_구간))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageStartingWith(INVALID_OVER_SECTION_DISTANCE);
+                .hasMessage(INVALID_OVER_SECTION_DISTANCE);
     }
 
     @DisplayName("하행역을 등록할 때 기존 구간 길이보다 크거나 같으면 예외가 발생한다. ")
@@ -68,7 +68,7 @@ class SectionsTest {
 
         Assertions.assertThatThrownBy(() -> sections.add(역삼역_정자역_구간))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageStartingWith(INVALID_OVER_SECTION_DISTANCE);
+                .hasMessage(INVALID_OVER_SECTION_DISTANCE);
     }
 
     @DisplayName("기존 지하철 구간에 새로운 종점이 아닌 지하철 구간을 추가한다.")

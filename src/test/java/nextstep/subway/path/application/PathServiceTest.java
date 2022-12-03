@@ -5,8 +5,7 @@ import nextstep.subway.exception.StationNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.DijkstraPathFinder;
-import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.dto.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -90,7 +89,7 @@ class PathServiceTest {
         sections.addAll(삼호선.getSections());
         sections.addAll(팔호선.getSections());
 
-        pathFinder = DijkstraPathFinder.from(sections);
+        pathFinder = PathFinder.from(sections);
     }
 
 

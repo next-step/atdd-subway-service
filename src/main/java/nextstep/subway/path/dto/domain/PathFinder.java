@@ -1,7 +1,8 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.dto.domain;
 
 import nextstep.subway.exception.PathNotFoundException;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.vo.Path;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -10,14 +11,14 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 
-import static nextstep.subway.utils.Message.*;
+import static nextstep.subway.utils.Message.INVALID_CONNECTED_STATIONS;
+import static nextstep.subway.utils.Message.INVALID_SAME_STATIONS;
 
-public class DijkstraPathFinder implements PathFinder {
-
+public class PathFinder {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
-    private DijkstraPathFinder(List<Section> sections) {
+    private PathFinder(List<Section> sections) {
         sections.forEach(it -> {
             addVertex(it.getUpStation());
             addVertex(it.getDownStation());
@@ -25,8 +26,8 @@ public class DijkstraPathFinder implements PathFinder {
         });
     }
 
-    public static DijkstraPathFinder from(List<Section> sections) {
-        return new DijkstraPathFinder(sections);
+    public static PathFinder from(List<Section> sections) {
+        return new PathFinder(sections);
     }
 
     private void addVertex(Station station) {
@@ -36,17 +37,12 @@ public class DijkstraPathFinder implements PathFinder {
         graph.addVertex(station);
     }
 
-    @Override
-    public List<Station> findAllStationsByStations(Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> path = getShortestPath(source, target);
-        return path.getVertexList();
-    }
+    public Path findAllStationsByStations(Station source, Station target) {
+        GraphPath<Station, DefaultWeightedEdge> graphPath = getShortestPath(source, target);
 
-    @Override
-    public int findShortestDistance(Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> path = getShortestPath(source, target);
-        return (int) path.getWeight();
+        return Path.from(graphPath);
     }
+    
 
     private GraphPath<Station, DefaultWeightedEdge> getShortestPath(Station source, Station target) {
         checkSameStations(source, target);
