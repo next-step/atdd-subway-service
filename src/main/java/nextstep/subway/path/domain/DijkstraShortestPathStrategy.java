@@ -4,13 +4,16 @@ import nextstep.subway.exception.NotValidDataException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.Objects;
 
 import static nextstep.subway.exception.type.ValidExceptionType.IS_TARGET_ANS_SOURCE_SAME;
+import static nextstep.subway.exception.type.ValidExceptionType.NOT_CONNECT_STATION;
 
 public class DijkstraShortestPathStrategy implements PathStrategy {
 
@@ -48,10 +51,17 @@ public class DijkstraShortestPathStrategy implements PathStrategy {
     @Override
     public PathFinder getShortPath(Station source, Station target) {
         validCheckIsSameStation(source, target);
-
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraStrategy = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, DefaultWeightedEdge> graphResult = dijkstraStrategy.getPath(source, target);
+        validCheckConnectStation(graphResult);
 
-        return PathFinder.from(dijkstraStrategy.getPath(source, target));
+        return PathFinder.from(graphResult);
+    }
+
+    private void validCheckConnectStation(GraphPath<Station, DefaultWeightedEdge> graph) {
+        if (Objects.isNull(graph)) {
+            throw new NotValidDataException(NOT_CONNECT_STATION.getMessage());
+        }
     }
 
     private void validCheckIsSameStation(Station source, Station target) {
@@ -59,4 +69,5 @@ public class DijkstraShortestPathStrategy implements PathStrategy {
             throw new NotValidDataException(IS_TARGET_ANS_SOURCE_SAME.getMessage());
         }
     }
+
 }

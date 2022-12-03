@@ -31,16 +31,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 일호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 역삼역;
-
     private StationResponse 선릉역;
-
+    private StationResponse 수원역;
+    private StationResponse 화서역;
     private StationResponse 고속터미널역;
     private StationResponse 남부터미널역;
-
     private StationResponse 양재시민의숲;
 
     /**
@@ -60,6 +60,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *                          |
      *                          양재시민의 숲
      *
+     * 화서역 --- *1호선* --- 수원역
      */
 
     @BeforeEach
@@ -73,8 +74,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         선릉역 = 지하철역_등록되어_있음("선릉역").as(StationResponse.class);
         양재시민의숲 = 지하철역_등록되어_있음("양재시민의숲").as(StationResponse.class);
         고속터미널역 = 지하철역_등록되어_있음("고속터미널역").as(StationResponse.class);
+        수원역 = 지하철역_등록되어_있음("수원역").as(StationResponse.class);
+        화서역 = 지하철역_등록되어_있음("화서역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재시민의숲.getId(), 40)).as(LineResponse.class);
+        일호선 = 지하철_노선_등록되어_있음(new LineRequest("일호선", "blue", 수원역.getId(), 화서역.getId(), 20)).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 선릉역.getId(), 20)).as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 고속터미널역.getId(), 양재역.getId(), 30)).as(LineResponse.class);
 
@@ -122,6 +126,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void isNotExistEndStationException() {
         // when
         ExtractableResponse<Response> 결과 = 지하철_경로_조회_요청(교대역.getId(), Station.from("성균관대학교역").getId());
+
+        // then
+        상태값이_기대값과_일치하는지_체크한다(결과, HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("시작역과 도착역이 연결되어 있지 않으면 예외가 발생한다")
+    void isNotConnectStation() {
+        // when
+        ExtractableResponse<Response> 결과 = 지하철_경로_조회_요청(수원역.getId(), 교대역.getId());
 
         // then
         상태값이_기대값과_일치하는지_체크한다(결과, HttpStatus.BAD_REQUEST);

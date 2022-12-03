@@ -9,7 +9,6 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.GetStationDto;
 import nextstep.subway.station.dto.StationResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static nextstep.subway.exception.type.ValidExceptionType.IS_TARGET_ANS_SOURCE_SAME;
-import static nextstep.subway.exception.type.ValidExceptionType.NOT_ZERO_VALID_DISTANCE;
+import static nextstep.subway.exception.type.ValidExceptionType.NOT_CONNECT_STATION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -42,6 +41,8 @@ class PathServiceTest {
     private Station 신도림역 = Station.from("신도림역");
     private Station 가디역 = Station.from("가디역");
     private Station 대림역 = Station.from("대림역");
+
+    private Station 수원역 = Station.from("수원역");
 
     private Line 일호선 = Line.of("1호선", "blue", 가디역, 신도림역, Distance.from(30));
     private Line 이호선 = Line.of("2호선", "green", 신도림역, 대림역, Distance.from(10));
