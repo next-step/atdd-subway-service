@@ -37,7 +37,7 @@ public class FavoriteService {
         Station target = findStation(favoriteRequest.getTarget());
 
         Favorite save = favoriteRepository.save(new Favorite(member, source, target));
-        return FavoriteResponse.of(save);
+        return FavoriteResponse.from(save);
     }
 
     @Transactional(readOnly = true)
@@ -45,8 +45,20 @@ public class FavoriteService {
         Member member = findMember(loginMember);
         List<Favorite> favorites = favoriteRepository.findFavoritesByMember(member);
         return favorites.stream()
-                .map(FavoriteResponse::of)
+                .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public void deleteFavorite(LoginMember loginMember, Long id) {
+        Member member = findMember(loginMember);
+        Favorite favorite = findFavorite(id);
+        favorite.isOwner(member);
+
+        favoriteRepository.delete(favorite);
+    }
+
+    private Favorite findFavorite(Long id) {
+        return favoriteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("즐겨찾기를 찾을 수 없습니다."));
     }
 
     private Station findStation(Long favoriteRequest) {
