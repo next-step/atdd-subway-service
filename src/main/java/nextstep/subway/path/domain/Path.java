@@ -8,10 +8,14 @@ import java.util.List;
 public class Path {
     private final List<Station> stations;
     private final int distance;
+    private int fare = 0;
 
     public Path(List<Station> stations, double distance) {
         this.stations = stations;
         this.distance = (int) distance;
+
+        PathFare pathFare = PathFare.match(this.distance);
+        this.fare = pathFare.getFare(this.distance);
     }
 
     public List<Station> getStations() {
