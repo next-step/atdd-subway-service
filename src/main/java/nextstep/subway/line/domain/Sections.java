@@ -25,6 +25,14 @@ public class Sections {
     protected Sections() {
     }
 
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+    }
+
+    public static Sections of(List<Section> sections) {
+        return new Sections(sections);
+    }
+
     public void addSection(Line line, Section section) {
         if(!hasSection(section)) {
             this.sections.add(section);
@@ -88,6 +96,14 @@ public class Sections {
         }
 
         return LineStationSorter.sort(getSections());
+    }
+
+    public Lines findLinesContainedStations(List<Station> stations) {
+        return new Lines(sections.stream()
+                .filter(section -> stations.containsAll(section.getStations()))
+                .map(Section::getLine)
+                .distinct()
+                .collect(toList()));
     }
 
     public List<Section> getSections() {

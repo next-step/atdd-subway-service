@@ -85,6 +85,10 @@ public class Section extends BaseEntity {
         this.downStation = request.downStation;
     }
 
+    public Line getLine() {
+        return line;
+    }
+
     public Station getUpStation() {
         return upStation;
     }

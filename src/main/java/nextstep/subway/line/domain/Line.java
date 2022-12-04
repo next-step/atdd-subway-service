@@ -92,8 +92,8 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public int getFare() {
-        return fare.getFare();
+    public Fare getFare() {
+        return fare;
     }
 
     public List<Station> getSortedStations() {

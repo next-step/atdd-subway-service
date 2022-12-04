@@ -1,5 +1,6 @@
 package nextstep.subway.line.dto;
 
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -20,12 +21,12 @@ public class LineResponse {
     public LineResponse() {
     }
 
-    public LineResponse(Long id, String name, String color, int fare, List<StationResponse> stations,
+    public LineResponse(Long id, String name, String color, Fare fare, List<StationResponse> stations,
             LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.fare = fare;
+        this.fare = fare.getFare();
         this.stations = stations;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
