@@ -3,6 +3,7 @@ package nextstep.subway.path;
 import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -70,7 +71,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return RestAssured
             .given().log().all()
             .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get(String.format("/paths?source=%d?target=%d", source.getId(), target.getId()))
+            .when().get(String.format("/paths?source=%d&target=%d", source.getId(), target.getId()))
             .then().log().all()
             .extract();
     }
@@ -91,7 +92,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
             stationResponses.stream().map(StationResponse::getId).collect(toList()));
         assertThat(stationNames).containsExactlyElementsOf(
             stationResponses.stream().map(StationResponse::getName).collect(toList()));
-        List<String> createAtList = stations.stream()
+        List<LocalDateTime> createAtList = stations.stream()
             .map(PathResponse.PathStationResponse::getCreatedAt)
             .collect(toList());
         assertThat(createAtList).hasSize(stationResponses.size());
