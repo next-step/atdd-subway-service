@@ -16,12 +16,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MemberSteps {
 
     public static String 로그인_되어_있음(String email, String password) {
-        return 로그인_요청(email, password).jsonPath().getString("accessToken");
+        ExtractableResponse<Response> response = 로그인_요청(email, password);
+        로그인_됨(response);
+        return response.jsonPath().getString("accessToken");
     }
 
     public static void 회원_생성_되어_있음(String email, String password, int age) {
         ExtractableResponse<Response> response = 회원_생성을_요청(email, password, age);
         회원_생성됨(response);
+    }
+
+    public static void 로그인_됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
@@ -34,7 +40,7 @@ public class MemberSteps {
                 .body(params)
                 .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {

@@ -6,9 +6,11 @@ import nextstep.subway.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.auth.acceptance.AuthSteps.*;
 import static nextstep.subway.member.MemberSteps.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
@@ -16,6 +18,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
     public static final String INVALID_TOKEN = "invalid_token";
+    public static final String INVALID_EMAIL = "em";
+    public static final String INVALID_PASSWORD = "pw";
 
     @BeforeEach
     public void setUp() {
@@ -39,6 +43,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
+        ExtractableResponse<Response> response = 로그인_요청(INVALID_EMAIL, INVALID_PASSWORD);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
