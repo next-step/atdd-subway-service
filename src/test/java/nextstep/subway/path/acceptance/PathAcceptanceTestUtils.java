@@ -7,7 +7,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,5 +38,21 @@ public class PathAcceptanceTestUtils {
 
     public static void 지하철_경로_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 지하철_경로_목록_검증(ExtractableResponse<Response> response, List<StationResponse> stationResponses) {
+        List<String> actual = response.jsonPath().getList("stations.name", String.class);
+        List<String> expect = stationResponses.stream().map(StationResponse::getName).collect(Collectors.toList());
+        assertThat(actual).isEqualTo(expect);
+    }
+
+    public static void 지하철_경로_거리_검증(ExtractableResponse<Response> response, int expect) {
+        Integer actual = response.jsonPath().getInt("distance");
+        assertThat(actual).isEqualTo(expect);
+    }
+
+    public static void 지하철_경로_운임_검증(ExtractableResponse<Response> response, int expect) {
+        Integer actual = response.jsonPath().getInt("fare");
+        assertThat(actual).isEqualTo(expect);
     }
 }
