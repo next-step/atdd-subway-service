@@ -1,7 +1,5 @@
 package nextstep.subway.fare.domain;
 
-import static nextstep.subway.fare.domain.AgeFarePolicy.ADULT;
-
 import nextstep.subway.common.exception.ErrorEnum;
 
 public class SubwayFareCalculator {
@@ -15,7 +13,7 @@ public class SubwayFareCalculator {
     public static final int SECOND_SECTION_DISTANCE = 50;
 
     private static int lineFare;
-    private static int age;
+    private static int age = 19;
 
     private static final int MIN_LINE_FARE = 0;
     private static final int MIN_ADULT_AGE = 19;
@@ -39,7 +37,6 @@ public class SubwayFareCalculator {
         int fare = calculateWithDistance(distance);
         fare += lineFare;
 
-        // TODO: 연령별 운임 요금 기능 테스트
         AgeFarePolicy policy = AgeFarePolicy.findByAge(age);
         return policy.discount(fare);
     }

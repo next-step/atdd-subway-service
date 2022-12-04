@@ -1,10 +1,14 @@
 package nextstep.subway.line.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import nextstep.subway.common.exception.ErrorEnum;
 
+@Embeddable
 public class LineFare implements Comparable<LineFare> {
     private static final int MIN_FARE = 0;
+    @Column
     private int fare;
 
     protected LineFare() {
@@ -27,6 +31,10 @@ public class LineFare implements Comparable<LineFare> {
         if (fare < MIN_FARE) {
             throw new IllegalArgumentException(ErrorEnum.LINE_FARE_GREATER_ZERO.message());
         }
+    }
+
+    public int getFare() {
+        return fare;
     }
 
     @Override

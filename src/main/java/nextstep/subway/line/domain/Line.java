@@ -50,6 +50,15 @@ public class Line extends BaseEntity {
         this.sections = new Sections(Collections.singletonList(section));
     }
 
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int fare) {
+        this.name = name;
+        this.color = color;
+        Section section = new Section(upStation, downStation, distance);
+        section.addLine(this);
+        this.fare = LineFare.from(fare);
+        this.sections = new Sections(Collections.singletonList(section));
+    }
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();

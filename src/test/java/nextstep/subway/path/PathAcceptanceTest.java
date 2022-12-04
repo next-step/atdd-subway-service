@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.common.exception.ErrorEnum;
+import nextstep.subway.fare.domain.AgeFarePolicy;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
@@ -146,9 +147,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 지하철_경로_조회_요청(Long startStationId, Long endStationId) {
-        Map<String, Long> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("source", startStationId);
         params.put("target", endStationId);
+        params.put("age", 19);
 
         return RestAssured.given().log().all()
                 .queryParams(params)

@@ -56,5 +56,4 @@ public class SubwayFareCalculatorTest {
 
         assertThat(fare).isEqualTo(expectedFare);
     }
-
 }
