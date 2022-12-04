@@ -25,7 +25,8 @@ public class PathFinder {
 
     private void setEdgeWeight(List<Line> lines, WeightedMultigraph<Long, DefaultWeightedEdge> graph){
         lines.stream()
-                .flatMap(line -> line.getSections().getSections().stream())
+                .map(Line::getSections)
+                .flatMap(sections -> sections.getSections().stream())
                 .forEach(section -> graph.setEdgeWeight(
                         graph.addEdge(section.getUpStation().getId(), section.getDownStation().getId()),
                         section.getDistance()));
