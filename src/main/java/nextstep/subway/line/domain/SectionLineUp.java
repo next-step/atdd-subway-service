@@ -17,6 +17,7 @@ import java.util.Set;
 public class SectionLineUp {
 
     private static final int FIRST_INDEX = 0;
+    private static final int MIN_SIZE = 1;
 
     @OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -131,7 +132,7 @@ public class SectionLineUp {
     }
 
     public void remove(Station station) {
-        if (this.sections.size() <= 1) {
+        if (this.sections.size() <= MIN_SIZE) {
             throw new IllegalStateException("구간 삭제는 구간이 2개 이상일 경우 가능합니다");
         }
 
