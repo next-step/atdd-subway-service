@@ -8,6 +8,9 @@ import java.util.Objects;
 
 @Embeddable
 public class Distance {
+    private static final int MAX_DEFAULT_DISTANCE = 10;
+    private static final int MAX_MIDDLE_DISTANCE = 50;
+
     @Column(name = "distance")
     private int value;
 
@@ -31,6 +34,18 @@ public class Distance {
             throw new InvalidDistanceException("거리의 차이는 0보다 작을 수 없습니다.");
         }
         return new Distance(this.value - other.value);
+    }
+
+    public boolean isDefaultDistance() {
+        return value <= MAX_DEFAULT_DISTANCE;
+    }
+
+    public boolean isMiddleDistance() {
+        return value > MAX_DEFAULT_DISTANCE && value <= MAX_MIDDLE_DISTANCE;
+    }
+
+    public boolean isLongDistance() {
+        return value > MAX_MIDDLE_DISTANCE;
     }
 
     public int getDistance() {
