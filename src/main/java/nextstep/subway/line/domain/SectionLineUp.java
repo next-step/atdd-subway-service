@@ -33,8 +33,8 @@ public class SectionLineUp {
             this.sections.add(section);
             return;
         }
-        isAlreadyExistSection(stationLineUp, section);
-        isNotExistSection(stationLineUp, section);
+        validAlreadyExistSection(stationLineUp, section);
+        validNotExistSection(stationLineUp, section);
 
         addSection(stationLineUp, section);
     }
@@ -80,14 +80,14 @@ public class SectionLineUp {
         return section.isSameUpSection(findDownStation());
     }
 
-    private void isAlreadyExistSection(StationLineUp stationLineUp, Section section) {
+    private void validAlreadyExistSection(StationLineUp stationLineUp, Section section) {
         if (stationLineUp.stationExisted(section.getUpStation()) &&
                 stationLineUp.stationExisted(section.getDownStation())) {
             throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
     }
 
-    private void isNotExistSection(StationLineUp stationLineUp, Section section) {
+    private void validNotExistSection(StationLineUp stationLineUp, Section section) {
         if (!stationLineUp.isEmpty() && stationLineUp.unKnownStation(section.getUpStation())
                 && stationLineUp.unKnownStation(section.getDownStation())) {
             throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
