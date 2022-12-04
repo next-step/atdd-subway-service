@@ -16,12 +16,10 @@ import nextstep.subway.station.domain.Station;
 public class PathService {
     private final LineService lineService;
     private final StationService stationService;
-    private final PathFinderGenerator pathFinderGenerator;
 
-    public PathService(LineService lineService, StationService stationService, PathFinderGenerator pathFinderGenerator) {
+    public PathService(LineService lineService, StationService stationService) {
         this.lineService = lineService;
         this.stationService = stationService;
-        this.pathFinderGenerator = pathFinderGenerator;
     }
 
     public PathResponse findPath(Long source, Long target) {
@@ -29,8 +27,7 @@ public class PathService {
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
 
-        PathFinder pathFinder = pathFinderGenerator.generate(lines);
-        Path path = pathFinder.findPath(sourceStation, targetStation);
+        Path path = new PathFinder(lines).findPath(sourceStation, targetStation);
 
         return PathResponse.from(path);
     }

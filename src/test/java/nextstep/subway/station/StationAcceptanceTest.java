@@ -135,4 +135,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
+
+    public static Long 지하철역_ID_추출(ExtractableResponse<Response> response) {
+        return response.jsonPath().getLong("id");
+    }
 }
