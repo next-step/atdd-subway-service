@@ -69,4 +69,7 @@ public class LineService {
         line.removeStation(station);
     }
 
+    public List<Line> findAll() {
+        return lineRepository.findAll();
+    }
 }

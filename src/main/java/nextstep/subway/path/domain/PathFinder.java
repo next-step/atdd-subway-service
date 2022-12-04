@@ -10,12 +10,14 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.alg.shortestpath.KShortestPaths;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathFinderResult;
 import nextstep.subway.station.domain.Station;
 
+@Component
 public class PathFinder {
 
     public PathFinderResult find(List<Line> allLines, Long sourceId, Long targetId) {
