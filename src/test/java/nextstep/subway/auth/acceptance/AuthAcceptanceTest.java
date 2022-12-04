@@ -66,19 +66,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void 유효하지_않은_토큰으로_정보_조회() {
         // given
-        ExtractableResponse<Response> createResponse = MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
         TokenResponse tokenResponse = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
-        String accessToken = tokenResponse.getAccessToken();
 
         // when
-        // TODO: request 정보에 토큰 추가
-        ExtractableResponse<Response> findResponse = MemberAcceptanceTest.회원_정보_조회_요청(createResponse);
+        ExtractableResponse<Response> findResponse = MemberAcceptanceTest.토큰으로_회원_정보_조회_요청("INVALID_TOKEN");
 
         // then
-        MemberAcceptanceTest.회원_정보_조회됨(findResponse, EMAIL, AGE);
+        assertEquals(findResponse.statusCode(), HttpStatus.UNAUTHORIZED.value());
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
 
         return RestAssured
