@@ -17,12 +17,20 @@ public class FavoriteResponse {
         this.target = target;
     }
 
-    public static FavoriteResponse of(Favorite save) {
-        return new FavoriteResponse(save.getId(), StationResponse.of(save.getSourceStation()),
-                StationResponse.of(save.getTargetStation()));
+    public static FavoriteResponse from(Favorite save) {
+        return new FavoriteResponse(save.getId(), StationResponse.from(save.getSourceStation()),
+                StationResponse.from(save.getTargetStation()));
     }
 
     public Long getId() {
         return id;
+    }
+
+    public StationResponse getSource() {
+        return source;
+    }
+
+    public StationResponse getTarget() {
+        return target;
     }
 }
