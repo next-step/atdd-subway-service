@@ -3,6 +3,7 @@ package nextstep.subway.path.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.apache.groovy.util.Maps;
@@ -14,6 +15,16 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PathAcceptanceStep {
+
+    public static ExtractableResponse<Response> get(StationResponse source, StationResponse target, TokenResponse token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().params(toParam(source, target)).get("/paths")
+                .then().log().all()
+                .extract();
+    }
 
     public static ExtractableResponse<Response> get(StationResponse source, StationResponse target) {
         return RestAssured
