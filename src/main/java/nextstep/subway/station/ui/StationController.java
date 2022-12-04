@@ -1,13 +1,14 @@
 package nextstep.subway.station.ui;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import nextstep.subway.common.exception.ErrorEnum;
+import nextstep.subway.common.exception.ErrorResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,8 +46,7 @@ public class StationController {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
-        HashMap<Object, Object> errorMap = new HashMap<>();
-        errorMap.put("errorMessage", ErrorEnum.EXISTS_STATION.message());
-        return ResponseEntity.badRequest().body(errorMap);
+        ErrorResponse errorResponse = new ErrorResponse(ErrorEnum.EXISTS_STATION.message());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

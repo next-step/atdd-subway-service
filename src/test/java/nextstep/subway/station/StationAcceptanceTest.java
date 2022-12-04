@@ -114,7 +114,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response, String expectedErrorMessage) {
-        String errorMessage = response.body().path("errorMessage").toString();
+        String errorMessage = response.body().path("message").toString();
 
         assertAll(
                 () -> assertThat(errorMessage).isEqualTo(expectedErrorMessage),
