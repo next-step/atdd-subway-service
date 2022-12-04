@@ -11,9 +11,13 @@ public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
+
     private String color;
+
+    private int extraFare;
 
     @Embedded
     private Sections sections = new Sections();
@@ -25,20 +29,23 @@ public class Line extends BaseEntity {
         return new Line();
     }
 
-    public Line(String name, String color) {
+    public Line(String name, String color, int extraFare) {
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int extraFare) {
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
         this.addSection(new Section(upStation, downStation, distance));
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+        this.extraFare = line.getExtraFare();
     }
 
     public Long getId() {
@@ -55,6 +62,10 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections.getSections();
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 
     public void addSection(Section section) {

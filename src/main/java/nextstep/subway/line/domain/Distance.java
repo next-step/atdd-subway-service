@@ -25,7 +25,6 @@ public class Distance {
         }
     }
 
-
     public void minus(Distance distance) {
         if (this.distance <= distance.distance) {
             throw new IllegalArgumentException(DISTANCE_BETWEEN_STATION_OVER.getMessage());

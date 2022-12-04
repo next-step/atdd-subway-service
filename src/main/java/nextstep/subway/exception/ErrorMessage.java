@@ -22,6 +22,8 @@ public enum ErrorMessage {
 
     FAVORITE_SOURCE_TARGET_STATION_CANNOT_SAME("출발역과 도착역이 같을 수는 없습니다."),
 
+    FARE_CANNOT_BE_ZERO("요금이 0원 이하로 될수 없습니다."),
+
     ;
     private final String message;
 

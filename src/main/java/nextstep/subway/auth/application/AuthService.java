@@ -1,5 +1,6 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.auth.domain.AuthMember;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -10,7 +11,6 @@ import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static nextstep.subway.exception.ErrorMessage.LOGIN_INVALID_TOKEN;
 import static nextstep.subway.exception.ErrorMessage.LOGIN_UNKNOWN_EMAIL;
 
 @Service
@@ -33,9 +33,9 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public AuthMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException(LOGIN_INVALID_TOKEN);
+            throw new AuthorizationException(ErrorMessage.LOGIN_INVALID_TOKEN);
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
