@@ -25,6 +25,19 @@ public class PathFinder {
         lines.forEach(line -> line.addPath(this));
     }
 
+    public Path find2(Station sourceStation, Station targetStation) {
+        verifyPath(sourceStation, targetStation);
+
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+
+        GraphPath<Station, DefaultWeightedEdge> shortestDistancePath = findPath(sourceStation, targetStation, dijkstraShortestPath);
+
+        List<Station> shortestPathStations = shortestDistancePath.getVertexList();
+        Distance distance = new Distance(dijkstraShortestPath.getPathWeight(sourceStation, targetStation));
+
+        return new Path(shortestPathStations, distance);
+    }
+
     public PathResponse find(Station sourceStation, Station targetStation) {
         verifyPath(sourceStation, targetStation);
 
@@ -36,6 +49,12 @@ public class PathFinder {
         Distance distance = new Distance(dijkstraShortestPath.getPathWeight(sourceStation, targetStation));
 
         return new PathResponse(shortestPathStations, distance);
+    }
+
+    public void addPath(Station upStation, Station downStation, Distance distance) {
+        graph.addVertex(upStation);
+        graph.addVertex(downStation);
+        graph.setEdgeWeight(graph.addEdge(upStation, downStation), distance.toDouble());
     }
 
     private GraphPath<Station, DefaultWeightedEdge> findPath(Station sourceStation, Station targetStation,
@@ -61,11 +80,5 @@ public class PathFinder {
         if (!stations.contains(sourceStation) || !stations.contains(targetStation)) {
             throw new InvalidPathException(STATION_NOT_EXISTS);
         }
-    }
-
-    public void addPath(Station upStation, Station downStation, Distance distance) {
-        graph.addVertex(upStation);
-        graph.addVertex(downStation);
-        graph.setEdgeWeight(graph.addEdge(upStation, downStation), distance.toDouble());
     }
 }

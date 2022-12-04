@@ -1,14 +1,17 @@
 package nextstep.subway.station.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.line.domain.Sections;
+import nextstep.subway.line.domain.Section;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -21,8 +24,11 @@ public class Station extends BaseEntity {
     @Column(unique = true)
     private String name;
 
-    @Embedded
-    private Sections sections = new Sections();
+    @OneToMany(mappedBy = "upStation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Section> upStationSections = new ArrayList<>();
+
+    @OneToMany(mappedBy = "downStation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Section> downStationSections = new ArrayList<>();
 
     protected Station() {
     }

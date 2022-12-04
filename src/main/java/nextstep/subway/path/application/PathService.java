@@ -1,8 +1,12 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineQueryService;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.dto.PathResponse2;
+import nextstep.subway.path.fare.Fare;
+import nextstep.subway.path.fare.policy.FarePolicies;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -14,10 +18,13 @@ public class PathService {
 
     private final StationService stationService;
     private final LineQueryService lineQueryService;
+    private final FarePolicies farePolicies;
 
-    public PathService(StationService stationService, LineQueryService lineQueryService) {
+    public PathService(StationService stationService, LineQueryService lineQueryService,
+                       FarePolicies farePolicies) {
         this.stationService = stationService;
         this.lineQueryService = lineQueryService;
+        this.farePolicies = farePolicies;
     }
 
     public PathResponse findPath(Long sourceStationId, Long targetStationId) {
@@ -26,6 +33,17 @@ public class PathService {
         PathFinder pathFinder = createPathFinder();
 
         return pathFinder.find(sourceStation, targetStation);
+    }
+
+    public PathResponse2 findPath2(Long sourceStationId, Long targetStationId) {
+        Station sourceStation = stationService.findStationById(sourceStationId);
+        Station targetStation = stationService.findStationById(targetStationId);
+        PathFinder pathFinder = createPathFinder();
+
+        Path path = pathFinder.find2(sourceStation, targetStation);
+        Fare fare = farePolicies.calculate(path);
+
+        return PathResponse2.of(path, fare);
     }
 
     private PathFinder createPathFinder() {
